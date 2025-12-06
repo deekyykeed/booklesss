@@ -1,13 +1,12 @@
 import { StyleSheet } from 'react-native';
 import { Text, View } from '@/components/Themed';
 
-export default function HomeScreen() {
+export default function ChatScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Booklesss</Text>
-      <Text style={styles.subtitle}>Your School Social Network</Text>
+      <Text style={styles.title}>Messages</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <Text style={styles.description}>Welcome to your feed!</Text>
+      <Text style={styles.description}>Connect with your classmates</Text>
     </View>
   );
 }
@@ -19,13 +18,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
-  },
-  subtitle: {
-    fontSize: 16,
-    marginTop: 8,
-    opacity: 0.7,
   },
   separator: {
     marginVertical: 30,
@@ -33,6 +27,7 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   description: {
-    fontSize: 18,
+    fontSize: 16,
+    opacity: 0.7,
   },
 });
