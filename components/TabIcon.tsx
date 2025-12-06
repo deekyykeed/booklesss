@@ -1,42 +1,50 @@
 import React from 'react';
-
-// Example imports - you'll replace these with your actual SVG imports
-// import HomeFilled from '@/assets/icons/tab-icons/Home/filled.svg';
-// import HomeLine from '@/assets/icons/tab-icons/Home/line.svg';
+import { View, StyleSheet } from 'react-native';
 
 interface TabIconProps {
-  FilledIcon: React.FC<{ fill?: string; stroke?: string; width?: number; height?: number }>;
-  LineIcon: React.FC<{ fill?: string; stroke?: string; width?: number; height?: number }>;
+  IconComponent: React.FC<{ width?: number; height?: number; fill?: string; stroke?: string }>;
   focused: boolean;
-  color: string;
+  color?: string;
   size?: number;
 }
 
 /**
- * TabIcon Component
+ * TabIcon Component with Opacity-Based Active State
  *
- * A reusable component for tab bar icons that supports both filled and line variants.
- * Automatically switches between filled (active) and line (inactive) states.
+ * Uses a single icon SVG and adjusts opacity based on focused state:
+ * - Inactive: 50% opacity
+ * - Active: 100% opacity
  *
- * @param FilledIcon - The filled SVG icon component (active state)
- * @param LineIcon - The line SVG icon component (inactive state)
+ * @param IconComponent - The SVG icon component
  * @param focused - Whether the tab is currently active
- * @param color - The color to apply to the icon (automatically provided by React Navigation)
+ * @param color - The color to apply to the icon (default: #000000)
  * @param size - The size of the icon in pixels (default: 24)
  *
  * @example
- * import HomeFilled from '@/assets/icons/tab-icons/Home/filled.svg';
- * import HomeLine from '@/assets/icons/tab-icons/Home/line.svg';
+ * import HomeIcon from '@/assets/icons/tabs/home.svg';
  *
  * <TabIcon
- *   FilledIcon={HomeFilled}
- *   LineIcon={HomeLine}
+ *   IconComponent={HomeIcon}
  *   focused={focused}
- *   color={color}
+ *   color="#000000"
  * />
  */
-export default function TabIcon({ FilledIcon, LineIcon, focused, color, size = 24 }: TabIconProps) {
-  const Icon = focused ? FilledIcon : LineIcon;
-
-  return <Icon fill={color} stroke={color} width={size} height={size} />;
+export default function TabIcon({ IconComponent, focused, color = '#000000', size = 24 }: TabIconProps) {
+  return (
+    <View style={[styles.container, { opacity: focused ? 1 : 0.5 }]}>
+      <IconComponent
+        width={size}
+        height={size}
+        fill={color}
+        stroke={color}
+      />
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

@@ -1,26 +1,26 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { BlurView } from 'expo-blur';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, Pressable } from 'react-native';
+import * as Haptics from 'expo-haptics';
 
 import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import TabIcon from '@/components/TabIcon';
 
-// Import custom SVG icons
-import HomeFilled from '@/assets/icons/tab-icons/Home/filled.svg';
-import HomeLine from '@/assets/icons/tab-icons/Home/line.svg';
-import HighlightsFilled from '@/assets/icons/tab-icons/Highlights/filled.svg';
-import HighlightsLine from '@/assets/icons/tab-icons/Highlights/line.svg';
-import ChatFilled from '@/assets/icons/tab-icons/Chat/filled.svg';
-import ChatLine from '@/assets/icons/tab-icons/Chat/line.svg';
-import SearchFilled from '@/assets/icons/tab-icons/Search/filled.svg';
-import SearchLine from '@/assets/icons/tab-icons/Search/line.svg';
-import ProfileFilled from '@/assets/icons/tab-icons/Profile/filled.svg';
-import ProfileLine from '@/assets/icons/tab-icons/Profile/line.svg';
+// Import tab SVG icons
+import HomeIcon from '@/assets/icons/tabs/home.svg';
+import HighlightsIcon from '@/assets/icons/tabs/highlights.svg';
+import ChatIcon from '@/assets/icons/tabs/chat.svg';
+import SearchIcon from '@/assets/icons/tabs/search.svg';
+import ProfileIcon from '@/assets/icons/tabs/profile.svg';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+
+  const handleTabPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
 
   return (
     <Tabs
@@ -44,6 +44,15 @@ export default function TabLayout() {
             style={StyleSheet.absoluteFill}
           />
         ),
+        tabBarButton: (props) => (
+          <Pressable
+            {...props}
+            onPress={(e) => {
+              handleTabPress();
+              props.onPress?.(e);
+            }}
+          />
+        ),
       }}>
       <Tabs.Screen
         name="index"
@@ -51,8 +60,7 @@ export default function TabLayout() {
           title: 'Home',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              FilledIcon={HomeFilled}
-              LineIcon={HomeLine}
+              IconComponent={HomeIcon}
               focused={focused}
               color="#000000"
             />
@@ -65,8 +73,7 @@ export default function TabLayout() {
           title: 'Highlights',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              FilledIcon={HighlightsFilled}
-              LineIcon={HighlightsLine}
+              IconComponent={HighlightsIcon}
               focused={focused}
               color="#000000"
             />
@@ -79,8 +86,7 @@ export default function TabLayout() {
           title: 'Chat',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              FilledIcon={ChatFilled}
-              LineIcon={ChatLine}
+              IconComponent={ChatIcon}
               focused={focused}
               color="#000000"
             />
@@ -93,8 +99,7 @@ export default function TabLayout() {
           title: 'Search',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              FilledIcon={SearchFilled}
-              LineIcon={SearchLine}
+              IconComponent={SearchIcon}
               focused={focused}
               color="#000000"
             />
@@ -107,8 +112,7 @@ export default function TabLayout() {
           title: 'Profile',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              FilledIcon={ProfileFilled}
-              LineIcon={ProfileLine}
+              IconComponent={ProfileIcon}
               focused={focused}
               color="#000000"
             />
