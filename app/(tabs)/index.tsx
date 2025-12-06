@@ -1,33 +1,35 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 import { Text, View } from '@/components/Themed';
-import ScreenWrapper from '@/components/ScreenWrapper';
 
 export default function HomeScreen() {
   return (
-    <ScreenWrapper>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
         <Text style={styles.title}>Booklesss</Text>
         <Text style={styles.subtitle}>Your School Social Network</Text>
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
         <Text style={styles.description}>Welcome to your feed!</Text>
 
-        {/* Demo content to enable scrolling */}
+        {/* Demo content */}
         {Array.from({ length: 20 }).map((_, i) => (
           <View key={i} style={styles.card}>
             <Text style={styles.cardTitle}>Post {i + 1}</Text>
             <Text style={styles.cardText}>
-              This is a sample post in your feed. Scroll down to hide the header, scroll up to reveal it again.
+              This is a sample post in your feed.
             </Text>
           </View>
         ))}
       </View>
-    </ScreenWrapper>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    paddingTop: 20,
+    paddingBottom: 100,
+  },
   container: {
-    flex: 1,
     alignItems: 'center',
     paddingHorizontal: 20,
   },
