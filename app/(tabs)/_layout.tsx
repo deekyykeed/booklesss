@@ -1,19 +1,23 @@
 import React from 'react';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from 'expo-router';
 import { BlurView } from 'expo-blur';
 import { Platform, StyleSheet } from 'react-native';
 
 import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import TabIcon from '@/components/TabIcon';
 
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={24} style={{ marginBottom: -3 }} {...props} />;
-}
+// Import custom SVG icons
+import HomeFilled from '@/assets/icons/tab-icons/Home/filled.svg';
+import HomeLine from '@/assets/icons/tab-icons/Home/line.svg';
+import HighlightsFilled from '@/assets/icons/tab-icons/Highlights/filled.svg';
+import HighlightsLine from '@/assets/icons/tab-icons/Highlights/line.svg';
+import ChatFilled from '@/assets/icons/tab-icons/Chat/filled.svg';
+import ChatLine from '@/assets/icons/tab-icons/Chat/line.svg';
+import SearchFilled from '@/assets/icons/tab-icons/Search/filled.svg';
+import SearchLine from '@/assets/icons/tab-icons/Search/line.svg';
+import ProfileFilled from '@/assets/icons/tab-icons/Profile/filled.svg';
+import ProfileLine from '@/assets/icons/tab-icons/Profile/line.svg';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -45,35 +49,70 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: () => <TabBarIcon name="home" color="#000000" />,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon
+              FilledIcon={HomeFilled}
+              LineIcon={HomeLine}
+              focused={focused}
+              color="#000000"
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="highlights"
         options={{
           title: 'Highlights',
-          tabBarIcon: () => <TabBarIcon name="star" color="#000000" />,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon
+              FilledIcon={HighlightsFilled}
+              LineIcon={HighlightsLine}
+              focused={focused}
+              color="#000000"
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="chat"
         options={{
           title: 'Chat',
-          tabBarIcon: () => <TabBarIcon name="comments" color="#000000" />,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon
+              FilledIcon={ChatFilled}
+              LineIcon={ChatLine}
+              focused={focused}
+              color="#000000"
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="search"
         options={{
           title: 'Search',
-          tabBarIcon: () => <TabBarIcon name="search" color="#000000" />,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon
+              FilledIcon={SearchFilled}
+              LineIcon={SearchLine}
+              focused={focused}
+              color="#000000"
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: () => <TabBarIcon name="user" color="#000000" />,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon
+              FilledIcon={ProfileFilled}
+              LineIcon={ProfileLine}
+              focused={focused}
+              color="#000000"
+            />
+          ),
         }}
       />
     </Tabs>

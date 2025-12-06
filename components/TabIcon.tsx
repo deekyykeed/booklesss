@@ -5,8 +5,8 @@ import React from 'react';
 // import HomeLine from '@/assets/icons/tab-icons/Home/line.svg';
 
 interface TabIconProps {
-  FilledIcon: React.FC<{ fill?: string; width?: number; height?: number }>;
-  LineIcon: React.FC<{ fill?: string; width?: number; height?: number }>;
+  FilledIcon: React.FC<{ fill?: string; stroke?: string; width?: number; height?: number }>;
+  LineIcon: React.FC<{ fill?: string; stroke?: string; width?: number; height?: number }>;
   focused: boolean;
   color: string;
   size?: number;
@@ -38,5 +38,5 @@ interface TabIconProps {
 export default function TabIcon({ FilledIcon, LineIcon, focused, color, size = 24 }: TabIconProps) {
   const Icon = focused ? FilledIcon : LineIcon;
 
-  return <Icon fill={color} width={size} height={size} />;
+  return <Icon fill={color} stroke={color} width={size} height={size} />;
 }
