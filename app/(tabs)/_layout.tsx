@@ -1,8 +1,9 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from 'expo-router';
+import { BlurView } from 'expo-blur';
+import { Platform, StyleSheet } from 'react-native';
 
-import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 
@@ -20,44 +21,59 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
+        tabBarActiveTintColor: '#000000',
+        tabBarInactiveTintColor: '#000000',
+        tabBarShowLabel: false,
         headerShown: useClientOnlyValue(false, true),
+        headerTransparent: Platform.OS === 'ios',
+        headerBlurEffect: colorScheme === 'dark' ? 'dark' : 'light',
+        headerShadowVisible: false,
+        tabBarStyle: {
+          position: 'absolute',
+          borderTopWidth: 0,
+          elevation: 0,
+        },
+        tabBarBackground: () => (
+          <BlurView
+            intensity={100}
+            tint={colorScheme === 'dark' ? 'dark' : 'light'}
+            style={StyleSheet.absoluteFill}
+          />
+        ),
       }}>
       <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          tabBarIcon: () => <TabBarIcon name="home" color="#000000" />,
         }}
       />
       <Tabs.Screen
         name="highlights"
         options={{
           title: 'Highlights',
-          tabBarIcon: ({ color }) => <TabBarIcon name="star" color={color} />,
+          tabBarIcon: () => <TabBarIcon name="star" color="#000000" />,
         }}
       />
       <Tabs.Screen
         name="chat"
         options={{
           title: 'Chat',
-          tabBarIcon: ({ color }) => <TabBarIcon name="comments" color={color} />,
+          tabBarIcon: () => <TabBarIcon name="comments" color="#000000" />,
         }}
       />
       <Tabs.Screen
         name="search"
         options={{
           title: 'Search',
-          tabBarIcon: ({ color }) => <TabBarIcon name="search" color={color} />,
+          tabBarIcon: () => <TabBarIcon name="search" color="#000000" />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+          tabBarIcon: () => <TabBarIcon name="user" color="#000000" />,
         }}
       />
     </Tabs>
