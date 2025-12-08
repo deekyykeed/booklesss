@@ -1,23 +1,137 @@
-import { useState } from 'react';
-import { StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useState, useEffect } from 'react';
+import { StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { Text, View } from '@/components/Themed';
+import { useRouter } from 'expo-router';
 import CreateCourseModal from '@/components/CreateCourseModal';
 import { CourseFormData } from '@/types/course';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
+import { createCourse, getCourses, type Course } from '@/services/courseService';
+import { uploadPDF, createPDFRecord, getCoursePDFs } from '@/services/pdfService';
+import { processPendingPDFs } from '@/services/pdfExtraction';
+import { generateCourseOutline } from '@/services/outlineService';
+
+interface CourseWithStats extends Course {
+  pdfCount: number;
+}
 
 export default function HomeScreen() {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [courses, setCourses] = useState<CourseFormData[]>([]);
+  const [courses, setCourses] = useState<CourseWithStats[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  const router = useRouter();
 
-  const handleCreateCourse = (courseData: CourseFormData) => {
-    console.log('Course created:', courseData);
-    // TODO: Save to Supabase later
-    setCourses([...courses, courseData]);
-    setIsModalVisible(false);
+  // Load courses on mount
+  useEffect(() => {
+    loadCourses();
+  }, []);
+
+  const loadCourses = async () => {
+    try {
+      setLoading(true);
+      const fetchedCourses = await getCourses();
+
+      // Get PDF counts for each course
+      const coursesWithStats = await Promise.all(
+        fetchedCourses.map(async (course) => {
+          const pdfs = await getCoursePDFs(course.id);
+          return {
+            ...course,
+            pdfCount: pdfs.length,
+          };
+        })
+      );
+
+      setCourses(coursesWithStats);
+    } catch (error: any) {
+      console.error('Error loading courses:', error);
+      Alert.alert('Error', 'Failed to load courses. Please check your connection and try again.');
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleCreateCourse = async (courseData: CourseFormData) => {
+    try {
+      setCreating(true);
+      console.log('[Home] Creating course:', courseData.name);
+
+      // 1. Create course in database
+      const course = await createCourse({
+        name: courseData.name,
+        description: courseData.description,
+        writing_style: courseData.writingStyle!,
+      });
+
+      console.log('[Home] Course created with ID:', course.id);
+
+      // 2. Upload PDFs
+      console.log(`[Home] Uploading ${courseData.pdfs.length} PDFs...`);
+
+      for (const pdf of courseData.pdfs) {
+        // Upload file to storage
+        const fileUrl = await uploadPDF(course.id, pdf.uri, pdf.name);
+
+        // Create PDF record
+        await createPDFRecord(course.id, pdf.name, fileUrl, pdf.size);
+      }
+
+      console.log('[Home] All PDFs uploaded');
+
+      // 3. Process PDFs in background
+      const pdfs = await getCoursePDFs(course.id);
+      processPendingPDFs(pdfs).catch((error) => {
+        console.error('[Home] PDF processing error:', error);
+      });
+
+      // 4. Generate outline in background
+      generateCourseOutline(course.id, course.writing_style).catch((error) => {
+        console.error('[Home] Outline generation error:', error);
+      });
+
+      // 5. Refresh courses list
+      await loadCourses();
+
+      // Close modal
+      setIsModalVisible(false);
+
+      // Show success message
+      Alert.alert(
+        'Course Created!',
+        `${course.name} has been created. We're processing your PDFs and generating the course outline. This may take a few minutes.`,
+        [
+          {
+            text: 'View Course',
+            onPress: () => router.push(`/course/${course.id}`),
+          },
+          {
+            text: 'OK',
+            style: 'cancel',
+          },
+        ]
+      );
+    } catch (error: any) {
+      console.error('[Home] Error creating course:', error);
+      Alert.alert(
+        'Error',
+        error.message || 'Failed to create course. Please try again.'
+      );
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <ActivityIndicator size="large" color={colors.tint} />
+        <Text style={[styles.loadingText, { color: colors.text }]}>Loading courses...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -41,6 +155,7 @@ export default function HomeScreen() {
               style={[styles.createButton, { backgroundColor: colors.tint }]}
               onPress={() => setIsModalVisible(true)}
               activeOpacity={0.8}
+              disabled={creating}
             >
               <Text style={styles.createButtonText}>+ Create Your First Course</Text>
             </TouchableOpacity>
@@ -48,9 +163,9 @@ export default function HomeScreen() {
         ) : (
           // Courses list
           <View style={styles.coursesContainer}>
-            {courses.map((course, index) => (
-              <View
-                key={index}
+            {courses.map((course) => (
+              <TouchableOpacity
+                key={course.id}
                 style={[
                   styles.courseCard,
                   {
@@ -58,8 +173,18 @@ export default function HomeScreen() {
                     borderColor: colors.border,
                   },
                 ]}
+                onPress={() => router.push(`/course/${course.id}`)}
+                activeOpacity={0.7}
               >
-                <Text style={[styles.courseName, { color: colors.text }]}>{course.name}</Text>
+                <View style={styles.courseHeader}>
+                  <Text style={[styles.courseName, { color: colors.text }]}>{course.name}</Text>
+                  {course.status === 'processing' && (
+                    <ActivityIndicator size="small" color={colors.tint} />
+                  )}
+                  {course.status === 'ready' && (
+                    <Text style={styles.statusBadge}>✓</Text>
+                  )}
+                </View>
                 {course.description && (
                   <Text style={[styles.courseDescription, { color: colors.tabIconDefault }]}>
                     {course.description}
@@ -67,21 +192,20 @@ export default function HomeScreen() {
                 )}
                 <View style={styles.courseFooter}>
                   <Text style={[styles.courseInfo, { color: colors.tabIconDefault }]}>
-                    📄 {course.pdfs.length} PDF{course.pdfs.length !== 1 ? 's' : ''}
+                    📄 {course.pdfCount} PDF{course.pdfCount !== 1 ? 's' : ''}
                   </Text>
-                  {course.writingStyle && (
-                    <Text style={[styles.courseInfo, { color: colors.tabIconDefault }]}>
-                      ✨ {course.writingStyle}
-                    </Text>
-                  )}
+                  <Text style={[styles.courseInfo, { color: colors.tabIconDefault }]}>
+                    ✨ {course.writing_style}
+                  </Text>
                 </View>
-              </View>
+              </TouchableOpacity>
             ))}
 
             <TouchableOpacity
               style={[styles.addButton, { borderColor: colors.tint }]}
               onPress={() => setIsModalVisible(true)}
               activeOpacity={0.8}
+              disabled={creating}
             >
               <Text style={[styles.addButtonText, { color: colors.tint }]}>
                 + Add Another Course
@@ -92,10 +216,24 @@ export default function HomeScreen() {
       </ScrollView>
 
       <CreateCourseModal
-        visible={isModalVisible}
+        visible={isModalVisible && !creating}
         onClose={() => setIsModalVisible(false)}
         onComplete={handleCreateCourse}
       />
+
+      {creating && (
+        <View style={styles.creatingOverlay}>
+          <View style={[styles.creatingCard, { backgroundColor: colors.background }]}>
+            <ActivityIndicator size="large" color={colors.tint} />
+            <Text style={[styles.creatingText, { color: colors.text }]}>
+              Creating course...
+            </Text>
+            <Text style={[styles.creatingSubtext, { color: colors.tabIconDefault }]}>
+              Uploading PDFs and setting up your course
+            </Text>
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -103,6 +241,14 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  centerContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
   },
   scrollContainer: {
     flexGrow: 1,
@@ -166,10 +312,20 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
   },
+  courseHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
   courseName: {
     fontSize: 20,
     fontWeight: '600',
-    marginBottom: 6,
+    flex: 1,
+  },
+  statusBadge: {
+    fontSize: 20,
+    color: '#4CAF50',
   },
   courseDescription: {
     fontSize: 14,
@@ -194,5 +350,31 @@ const styles = StyleSheet.create({
   addButtonText: {
     fontSize: 16,
     fontWeight: '600',
+  },
+  creatingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  creatingCard: {
+    padding: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    minWidth: 250,
+  },
+  creatingText: {
+    marginTop: 16,
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  creatingSubtext: {
+    marginTop: 8,
+    fontSize: 14,
+    textAlign: 'center',
   },
 });
