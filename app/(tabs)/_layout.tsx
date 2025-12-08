@@ -1,16 +1,16 @@
-import React from 'react';
-import { Tabs } from 'expo-router';
 import { BlurView } from 'expo-blur';
-import { Platform, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
+import { Tabs } from 'expo-router';
+import React from 'react';
+import { Platform, Pressable, StyleSheet } from 'react-native';
 
-import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import TabIcon from '@/components/TabIcon';
+import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 
 // Import Hugeicons free icons
-import { Home01Icon, FireIcon, Message01Icon, Search01Icon, UserIcon } from '@hugeicons/core-free-icons';
+import { FireIcon, Home01Icon, Message01Icon, Search01Icon, UserIcon } from '@hugeicons/core-free-icons';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -28,7 +28,13 @@ export default function TabLayout() {
         tabBarShowLabel: false,
         headerShown: useClientOnlyValue(false, true),
         headerTransparent: Platform.OS === 'ios',
-        headerBlurEffect: colorScheme === 'dark' ? 'dark' : 'light',
+        headerBackground: () => (
+          <BlurView
+            intensity={80}
+            tint={colorScheme === 'dark' ? 'dark' : 'light'}
+            style={StyleSheet.absoluteFill}
+          />
+        ),
         headerShadowVisible: false,
         tabBarStyle: {
           position: 'absolute',
