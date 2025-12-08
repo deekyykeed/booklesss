@@ -7,12 +7,14 @@ import * as Haptics from 'expo-haptics';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import TabIcon from '@/components/TabIcon';
+import Colors from '@/constants/Colors';
 
 // Import Hugeicons free icons
 import { Home01Icon, Fire01Icon, Message01Icon, Search01Icon, UserIcon } from '@hugeicons/core-free-icons';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const iconColor = Colors[colorScheme ?? 'light'].icon;
 
   const handleTabPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -21,8 +23,8 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#000000',
-        tabBarInactiveTintColor: '#000000',
+        tabBarActiveTintColor: iconColor,
+        tabBarInactiveTintColor: iconColor,
         tabBarShowLabel: false,
         headerShown: useClientOnlyValue(false, true),
         headerTransparent: Platform.OS === 'ios',
@@ -58,7 +60,7 @@ export default function TabLayout() {
             <TabIcon
               icon={Home01Icon}
               focused={focused}
-              color="#000000"
+              color={iconColor}
             />
           ),
         }}
@@ -71,7 +73,7 @@ export default function TabLayout() {
             <TabIcon
               icon={Fire01Icon}
               focused={focused}
-              color="#000000"
+              color={iconColor}
             />
           ),
         }}
@@ -84,7 +86,7 @@ export default function TabLayout() {
             <TabIcon
               icon={Message01Icon}
               focused={focused}
-              color="#000000"
+              color={iconColor}
             />
           ),
         }}
@@ -97,7 +99,7 @@ export default function TabLayout() {
             <TabIcon
               icon={Search01Icon}
               focused={focused}
-              color="#000000"
+              color={iconColor}
             />
           ),
         }}
@@ -110,7 +112,7 @@ export default function TabLayout() {
             <TabIcon
               icon={UserIcon}
               focused={focused}
-              color="#000000"
+              color={iconColor}
             />
           ),
         }}

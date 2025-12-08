@@ -5,7 +5,7 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 interface TabIconProps {
   icon: any;
   focused: boolean;
-  color?: string;
+  color: string;
   size?: number;
 }
 
@@ -18,7 +18,7 @@ interface TabIconProps {
  *
  * @param icon - The Hugeicons icon from @hugeicons/core-free-icons
  * @param focused - Whether the tab is currently active
- * @param color - The color to apply to the icon (default: #000000)
+ * @param color - The color to apply to the icon (from theme)
  * @param size - The size of the icon in pixels (default: 24)
  *
  * @example
@@ -27,10 +27,10 @@ interface TabIconProps {
  * <TabIcon
  *   icon={Home01Icon}
  *   focused={focused}
- *   color="#000000"
+ *   color={Colors[colorScheme].icon}
  * />
  */
-export default function TabIcon({ icon, focused, color = '#000000', size = 24 }: TabIconProps) {
+export default function TabIcon({ icon, focused, color, size = 24 }: TabIconProps) {
   return (
     <View style={[styles.container, { opacity: focused ? 1 : 0.5 }]}>
       <HugeiconsIcon
