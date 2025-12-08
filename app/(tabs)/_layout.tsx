@@ -10,7 +10,7 @@ import TabIcon from '@/components/TabIcon';
 import Colors from '@/constants/Colors';
 
 // Import Hugeicons free icons
-import { Home01Icon, Fire01Icon, Message01Icon, Search01Icon, UserIcon } from '@hugeicons/core-free-icons';
+import { Home01Icon, FireIcon, Message01Icon, Search01Icon, UserIcon } from '@hugeicons/core-free-icons';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -71,7 +71,7 @@ export default function TabLayout() {
           title: 'Highlights',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              icon={Fire01Icon}
+              icon={FireIcon}
               focused={focused}
               color={iconColor}
             />
