@@ -1,23 +1,23 @@
-import { StyleSheet, ScrollView } from 'react-native';
-import { Text, View } from '@/components/Themed';
+import { StyleSheet, ScrollView, View } from 'react-native';
+import { Text, View as ThemedView } from '@/components/Themed';
 
 export default function HomeScreen() {
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <ScrollView contentContainerStyle={styles.scrollContainer} style={styles.scrollView}>
       <View style={styles.container}>
         <Text style={styles.title}>Booklesss</Text>
         <Text style={styles.subtitle}>Your School Social Network</Text>
-        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+        <ThemedView style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
         <Text style={styles.description}>Welcome to your feed!</Text>
 
         {/* Demo content */}
         {Array.from({ length: 20 }).map((_, i) => (
-          <View key={i} style={styles.card}>
+          <ThemedView key={i} style={styles.card}>
             <Text style={styles.cardTitle}>Post {i + 1}</Text>
             <Text style={styles.cardText}>
               This is a sample post in your feed.
             </Text>
-          </View>
+          </ThemedView>
         ))}
       </View>
     </ScrollView>
@@ -25,6 +25,9 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
   scrollContainer: {
     paddingTop: 20,
     paddingBottom: 100,

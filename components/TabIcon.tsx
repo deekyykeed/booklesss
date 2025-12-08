@@ -32,7 +32,7 @@ interface TabIconProps {
  */
 export default function TabIcon({ icon, focused, color, size = 24 }: TabIconProps) {
   return (
-    <View style={[styles.container, { opacity: focused ? 1 : 0.5 }]}>
+    <View style={[styles.container, { opacity: focused ? 1 : 0.4 }]}>
       <HugeiconsIcon
         icon={icon}
         size={size}

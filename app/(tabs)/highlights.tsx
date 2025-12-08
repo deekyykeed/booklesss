@@ -1,11 +1,11 @@
-import { StyleSheet } from 'react-native';
-import { Text, View } from '@/components/Themed';
+import { StyleSheet, View } from 'react-native';
+import { Text, View as ThemedView } from '@/components/Themed';
 
 export default function HighlightsScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Highlights</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+      <ThemedView style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <Text style={styles.description}>Discover trending posts and popular content</Text>
     </View>
   );
