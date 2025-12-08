@@ -9,6 +9,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
+import Colors from '@/constants/Colors';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -49,13 +50,18 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  const backgroundColor = Colors[colorScheme ?? 'light'].background;
 
   return (
     <SafeAreaProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack
           screenOptions={{
-            contentStyle: styles.globalBackground,
+            contentStyle: {
+              flex: 1,
+              backgroundColor,
+              padding: 0,
+            },
           }}
         >
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -65,11 +71,3 @@ function RootLayoutNav() {
     </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  globalBackground: {
-    flex: 1,
-    backgroundColor: '#f2f2f2',
-    padding: 0,
-  },
-});
