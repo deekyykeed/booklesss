@@ -7,6 +7,7 @@ import {
   Alert,
 } from 'react-native';
 import { Text, View } from '@/components/Themed';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
@@ -77,9 +78,9 @@ export default function CourseDetailScreen() {
     return (
       <>
         <Stack.Screen options={{ title: 'Loading...' }} />
-        <View style={[styles.container, styles.centerContent]}>
+        <SafeAreaView style={[styles.container, styles.centerContent]} edges={['bottom']}>
           <ActivityIndicator size="large" color={colors.tint} />
-        </View>
+        </SafeAreaView>
       </>
     );
   }
@@ -88,9 +89,9 @@ export default function CourseDetailScreen() {
     return (
       <>
         <Stack.Screen options={{ title: 'Error' }} />
-        <View style={[styles.container, styles.centerContent]}>
+        <SafeAreaView style={[styles.container, styles.centerContent]} edges={['bottom']}>
           <Text style={{ color: colors.text }}>Course not found</Text>
-        </View>
+        </SafeAreaView>
       </>
     );
   }
@@ -98,7 +99,8 @@ export default function CourseDetailScreen() {
   return (
     <>
       <Stack.Screen options={{ title: course.name }} />
-      <ScrollView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['bottom']}>
+        <ScrollView>
         {/* Course Header */}
         <View style={styles.header}>
           <Text style={[styles.title, { color: colors.text }]}>{course.name}</Text>
@@ -165,7 +167,8 @@ export default function CourseDetailScreen() {
             ))}
           </View>
         )}
-      </ScrollView>
+        </ScrollView>
+      </SafeAreaView>
     </>
   );
 }
