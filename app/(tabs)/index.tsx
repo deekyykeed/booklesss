@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { useState, useCallback } from 'react';
+import { StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator, RefreshControl } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, View } from '@/components/Themed';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import CreateCourseModal from '@/components/CreateCourseModal';
 import { CourseFormData } from '@/types/course';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -18,16 +19,19 @@ interface CourseWithStats extends Course {
 export default function HomeScreen() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [courses, setCourses] = useState<CourseWithStats[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [creating, setCreating] = useState(false);
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const router = useRouter();
 
-  // Load courses on mount
-  useEffect(() => {
-    loadCourses();
-  }, []);
+  // Load courses when screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      loadCourses();
+    }, [])
+  );
 
   const loadCourses = async () => {
     try {
@@ -48,11 +52,18 @@ export default function HomeScreen() {
       setCourses(coursesWithStats);
     } catch (error: any) {
       console.error('Error loading courses:', error);
-      Alert.alert('Error', 'Failed to load courses. Please check your connection and try again.');
+      // Silently handle errors - just show empty state
+      setCourses([]);
     } finally {
       setLoading(false);
     }
   };
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await loadCourses();
+    setRefreshing(false);
+  }, []);
 
   const handleCreateCourse = async (courseData: CourseFormData) => {
     try {
@@ -124,18 +135,14 @@ export default function HomeScreen() {
     }
   };
 
-  if (loading) {
-    return (
-      <View style={[styles.container, styles.centerContent]}>
-        <ActivityIndicator size="large" color={colors.tint} />
-        <Text style={[styles.loadingText, { color: colors.text }]}>Loading courses...</Text>
-      </View>
-    );
-  }
-
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <View style={styles.header}>
           <View>
             <Text style={styles.title}>My Courses</Text>
@@ -143,7 +150,13 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {courses.length === 0 ? (
+        {loading && courses.length === 0 ? (
+          // Loading state
+          <View style={styles.emptyState}>
+            <ActivityIndicator size="large" color={colors.tint} />
+            <Text style={[styles.loadingText, { color: colors.text }]}>Loading courses...</Text>
+          </View>
+        ) : courses.length === 0 ? (
           // Empty state
           <View style={styles.emptyState}>
             <Text style={styles.emptyIcon}>📚</Text>
@@ -234,7 +247,7 @@ export default function HomeScreen() {
           </View>
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 

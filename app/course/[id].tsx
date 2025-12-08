@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, View } from '@/components/Themed';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -98,7 +99,8 @@ export default function CourseDetailScreen() {
   return (
     <>
       <Stack.Screen options={{ title: course.name }} />
-      <ScrollView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['bottom']}>
+        <ScrollView style={styles.scrollView}>
         {/* Course Header */}
         <View style={styles.header}>
           <Text style={[styles.title, { color: colors.text }]}>{course.name}</Text>
@@ -165,13 +167,17 @@ export default function CourseDetailScreen() {
             ))}
           </View>
         )}
-      </ScrollView>
+        </ScrollView>
+      </SafeAreaView>
     </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  scrollView: {
     flex: 1,
   },
   centerContent: {
