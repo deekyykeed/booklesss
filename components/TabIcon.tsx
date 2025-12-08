@@ -1,43 +1,42 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { HugeiconsIcon } from '@hugeicons/react-native';
 
 interface TabIconProps {
-  icon: any;
+  IconComponent: React.FC<{ width?: number; height?: number; fill?: string; stroke?: string }>;
   focused: boolean;
-  color: string;
+  color?: string;
   size?: number;
 }
 
 /**
  * TabIcon Component with Opacity-Based Active State
  *
- * Uses Hugeicons and adjusts opacity based on focused state:
+ * Uses a single icon SVG and adjusts opacity based on focused state:
  * - Inactive: 50% opacity
  * - Active: 100% opacity
  *
- * @param icon - The Hugeicons icon from @hugeicons/core-free-icons
+ * @param IconComponent - The SVG icon component
  * @param focused - Whether the tab is currently active
- * @param color - The color to apply to the icon (from theme)
+ * @param color - The color to apply to the icon (default: #000000)
  * @param size - The size of the icon in pixels (default: 24)
  *
  * @example
- * import { Home01Icon } from '@hugeicons/core-free-icons';
+ * import HomeIcon from '@/assets/icons/tabs/home.svg';
  *
  * <TabIcon
- *   icon={Home01Icon}
+ *   IconComponent={HomeIcon}
  *   focused={focused}
- *   color={Colors[colorScheme].icon}
+ *   color="#000000"
  * />
  */
-export default function TabIcon({ icon, focused, color, size = 24 }: TabIconProps) {
+export default function TabIcon({ IconComponent, focused, color = '#000000', size = 24 }: TabIconProps) {
   return (
-    <View style={[styles.container, { opacity: focused ? 1 : 0.4 }]}>
-      <HugeiconsIcon
-        icon={icon}
-        size={size}
-        color={color}
-        strokeWidth={1.5}
+    <View style={[styles.container, { opacity: focused ? 1 : 0.5 }]}>
+      <IconComponent
+        width={size}
+        height={size}
+        fill={color}
+        stroke={color}
       />
     </View>
   );

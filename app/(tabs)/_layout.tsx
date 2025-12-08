@@ -1,20 +1,22 @@
-import { BlurView } from 'expo-blur';
-import * as Haptics from 'expo-haptics';
-import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform, Pressable, StyleSheet } from 'react-native';
+import { Tabs } from 'expo-router';
+import { BlurView } from 'expo-blur';
+import { Platform, StyleSheet, Pressable } from 'react-native';
+import * as Haptics from 'expo-haptics';
 
-import TabIcon from '@/components/TabIcon';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { useColorScheme } from '@/components/useColorScheme';
-import Colors from '@/constants/Colors';
+import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import TabIcon from '@/components/TabIcon';
 
-// Import Hugeicons free icons
-import { FireIcon, Home01Icon, Message01Icon, Search01Icon, UserIcon } from '@hugeicons/core-free-icons';
+// Import tab SVG icons
+import HomeIcon from '@/assets/icons/tabs/home.svg';
+import HighlightsIcon from '@/assets/icons/tabs/highlights.svg';
+import ChatIcon from '@/assets/icons/tabs/chat.svg';
+import SearchIcon from '@/assets/icons/tabs/search.svg';
+import ProfileIcon from '@/assets/icons/tabs/profile.svg';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const iconColor = Colors[colorScheme ?? 'light'].icon;
 
   const handleTabPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -23,18 +25,12 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: iconColor,
-        tabBarInactiveTintColor: iconColor,
+        tabBarActiveTintColor: '#000000',
+        tabBarInactiveTintColor: '#000000',
         tabBarShowLabel: false,
         headerShown: useClientOnlyValue(false, true),
         headerTransparent: Platform.OS === 'ios',
-        headerBackground: () => (
-          <BlurView
-            intensity={80}
-            tint={colorScheme === 'dark' ? 'dark' : 'light'}
-            style={StyleSheet.absoluteFill}
-          />
-        ),
+        headerBlurEffect: colorScheme === 'dark' ? 'dark' : 'light',
         headerShadowVisible: false,
         tabBarStyle: {
           position: 'absolute',
@@ -64,9 +60,9 @@ export default function TabLayout() {
           title: 'Home',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              icon={Home01Icon}
+              IconComponent={HomeIcon}
               focused={focused}
-              color={iconColor}
+              color="#000000"
             />
           ),
         }}
@@ -77,9 +73,9 @@ export default function TabLayout() {
           title: 'Highlights',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              icon={FireIcon}
+              IconComponent={HighlightsIcon}
               focused={focused}
-              color={iconColor}
+              color="#000000"
             />
           ),
         }}
@@ -90,9 +86,9 @@ export default function TabLayout() {
           title: 'Chat',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              icon={Message01Icon}
+              IconComponent={ChatIcon}
               focused={focused}
-              color={iconColor}
+              color="#000000"
             />
           ),
         }}
@@ -103,9 +99,9 @@ export default function TabLayout() {
           title: 'Search',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              icon={Search01Icon}
+              IconComponent={SearchIcon}
               focused={focused}
-              color={iconColor}
+              color="#000000"
             />
           ),
         }}
@@ -116,9 +112,9 @@ export default function TabLayout() {
           title: 'Profile',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              icon={UserIcon}
+              IconComponent={ProfileIcon}
               focused={focused}
-              color={iconColor}
+              color="#000000"
             />
           ),
         }}

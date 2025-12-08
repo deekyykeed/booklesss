@@ -1,28 +1,3 @@
-<<<<<<< HEAD
-import { StyleSheet, ScrollView, View } from 'react-native';
-import { Text, View as ThemedView } from '@/components/Themed';
-
-export default function HomeScreen() {
-  return (
-    <ScrollView contentContainerStyle={styles.scrollContainer} style={styles.scrollView}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Booklesss</Text>
-        <Text style={styles.subtitle}>Your School Social Network</Text>
-        <ThemedView style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-        <Text style={styles.description}>Welcome to your feed!</Text>
-
-        {/* Demo content */}
-        {Array.from({ length: 20 }).map((_, i) => (
-          <ThemedView key={i} style={styles.card}>
-            <Text style={styles.cardTitle}>Post {i + 1}</Text>
-            <Text style={styles.cardText}>
-              This is a sample post in your feed.
-            </Text>
-          </ThemedView>
-        ))}
-      </View>
-    </ScrollView>
-=======
 import { useState, useEffect } from 'react';
 import { StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { Text, View } from '@/components/Themed';
@@ -260,16 +235,10 @@ export default function HomeScreen() {
         </View>
       )}
     </View>
->>>>>>> 3354d2185f9137567f98ed643f29f56622d4bbac
   );
 }
 
 const styles = StyleSheet.create({
-<<<<<<< HEAD
-  scrollView: {
-    flex: 1,
-  },
-=======
   container: {
     flex: 1,
   },
@@ -281,7 +250,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
     fontSize: 16,
   },
->>>>>>> 3354d2185f9137567f98ed643f29f56622d4bbac
   scrollContainer: {
     flexGrow: 1,
     paddingBottom: 100,
