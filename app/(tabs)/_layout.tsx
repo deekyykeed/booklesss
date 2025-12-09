@@ -34,7 +34,7 @@ export default function TabLayout() {
         headerStyle: {
           backgroundColor: 'transparent',
           borderBottomWidth: 1,
-          borderBottomColor: 'rgba(0, 0, 0, 0.1)',
+          borderBottomColor: 'rgba(255, 255, 255, 0.3)',
         },
         headerBackground: () => (
           <BlurView
@@ -46,7 +46,7 @@ export default function TabLayout() {
         tabBarStyle: {
           position: 'absolute',
           borderTopWidth: 1,
-          borderTopColor: 'rgba(0, 0, 0, 0.1)',
+          borderTopColor: 'rgba(255, 255, 255, 0.3)',
           elevation: 0,
         },
         tabBarBackground: () => (

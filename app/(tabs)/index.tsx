@@ -140,7 +140,7 @@ export default function HomeScreen() {
       <ScrollView
         contentContainerStyle={[
           styles.scrollContainer,
-          { paddingTop: Platform.OS === 'ios' ? 0 : insets.top }
+          { paddingTop: insets.top + (Platform.OS === 'ios' ? 50 : 20) }
         ]}
       >
         <View style={styles.header}>
