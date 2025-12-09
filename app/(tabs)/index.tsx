@@ -3,6 +3,7 @@ import { StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator, Pla
 import { Text, View } from '@/components/Themed';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SquircleView } from 'expo-squircle-view';
 import CreateCourseModal from '@/components/CreateCourseModal';
 import { CourseFormData } from '@/types/course';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -159,12 +160,20 @@ export default function HomeScreen() {
               Create your first course to get started with studying
             </Text>
             <TouchableOpacity
-              style={[styles.createButton, { backgroundColor: colors.tint }]}
               onPress={() => setIsModalVisible(true)}
               activeOpacity={0.8}
               disabled={creating}
             >
-              <Text style={styles.createButtonText}>+ Create Your First Course</Text>
+              <SquircleView
+                style={[styles.createButton, { backgroundColor: colors.tint }]}
+                squircleParams={{
+                  cornerSmoothing: 0.6,
+                  cornerRadius: 16,
+                  fillColor: colors.tint,
+                }}
+              >
+                <Text style={styles.createButtonText}>+ Create Your First Course</Text>
+              </SquircleView>
             </TouchableOpacity>
           </View>
         ) : (
@@ -173,50 +182,68 @@ export default function HomeScreen() {
             {courses.map((course) => (
               <TouchableOpacity
                 key={course.id}
-                style={[
-                  styles.courseCard,
-                  {
-                    backgroundColor: colorScheme === 'dark' ? '#1a1a1a' : '#f5f5f5',
-                    borderColor: colors.border,
-                  },
-                ]}
                 onPress={() => router.push(`/course/${course.id}`)}
                 activeOpacity={0.7}
               >
-                <View style={styles.courseHeader}>
-                  <Text style={[styles.courseName, { color: colors.text }]}>{course.name}</Text>
-                  {course.status === 'processing' && (
-                    <ActivityIndicator size="small" color={colors.tint} />
+                <SquircleView
+                  style={[
+                    styles.courseCard,
+                    {
+                      backgroundColor: colorScheme === 'dark' ? '#1a1a1a' : '#f5f5f5',
+                    },
+                  ]}
+                  squircleParams={{
+                    cornerSmoothing: 0.6,
+                    cornerRadius: 16,
+                    fillColor: colorScheme === 'dark' ? '#1a1a1a' : '#f5f5f5',
+                    strokeColor: colors.border,
+                    strokeWidth: 1,
+                  }}
+                >
+                  <View style={styles.courseHeader}>
+                    <Text style={[styles.courseName, { color: colors.text }]}>{course.name}</Text>
+                    {course.status === 'processing' && (
+                      <ActivityIndicator size="small" color={colors.tint} />
+                    )}
+                    {course.status === 'ready' && (
+                      <Text style={styles.statusBadge}>✓</Text>
+                    )}
+                  </View>
+                  {course.description && (
+                    <Text style={[styles.courseDescription, { color: colors.tabIconDefault }]}>
+                      {course.description}
+                    </Text>
                   )}
-                  {course.status === 'ready' && (
-                    <Text style={styles.statusBadge}>✓</Text>
-                  )}
-                </View>
-                {course.description && (
-                  <Text style={[styles.courseDescription, { color: colors.tabIconDefault }]}>
-                    {course.description}
-                  </Text>
-                )}
-                <View style={styles.courseFooter}>
-                  <Text style={[styles.courseInfo, { color: colors.tabIconDefault }]}>
-                    📄 {course.pdfCount} PDF{course.pdfCount !== 1 ? 's' : ''}
-                  </Text>
-                  <Text style={[styles.courseInfo, { color: colors.tabIconDefault }]}>
-                    ✨ {course.writing_style}
-                  </Text>
-                </View>
+                  <View style={styles.courseFooter}>
+                    <Text style={[styles.courseInfo, { color: colors.tabIconDefault }]}>
+                      📄 {course.pdfCount} PDF{course.pdfCount !== 1 ? 's' : ''}
+                    </Text>
+                    <Text style={[styles.courseInfo, { color: colors.tabIconDefault }]}>
+                      ✨ {course.writing_style}
+                    </Text>
+                  </View>
+                </SquircleView>
               </TouchableOpacity>
             ))}
 
             <TouchableOpacity
-              style={[styles.addButton, { borderColor: colors.tint }]}
               onPress={() => setIsModalVisible(true)}
               activeOpacity={0.8}
               disabled={creating}
             >
-              <Text style={[styles.addButtonText, { color: colors.tint }]}>
-                + Add Another Course
-              </Text>
+              <SquircleView
+                style={[styles.addButton, { borderColor: colors.tint }]}
+                squircleParams={{
+                  cornerSmoothing: 0.6,
+                  cornerRadius: 16,
+                  strokeColor: colors.tint,
+                  strokeWidth: 2,
+                }}
+              >
+                <Text style={[styles.addButtonText, { color: colors.tint }]}>
+                  + Add Another Course
+                </Text>
+              </SquircleView>
             </TouchableOpacity>
           </View>
         )}
@@ -230,7 +257,14 @@ export default function HomeScreen() {
 
       {creating && (
         <View style={styles.creatingOverlay}>
-          <View style={[styles.creatingCard, { backgroundColor: colors.background }]}>
+          <SquircleView
+            style={[styles.creatingCard, { backgroundColor: colors.background }]}
+            squircleParams={{
+              cornerSmoothing: 0.6,
+              cornerRadius: 20,
+              fillColor: colors.background,
+            }}
+          >
             <ActivityIndicator size="large" color={colors.tint} />
             <Text style={[styles.creatingText, { color: colors.text }]}>
               Creating course...
@@ -238,7 +272,7 @@ export default function HomeScreen() {
             <Text style={[styles.creatingSubtext, { color: colors.tabIconDefault }]}>
               Uploading PDFs and setting up your course
             </Text>
-          </View>
+          </SquircleView>
         </View>
       )}
     </View>
@@ -303,7 +337,6 @@ const styles = StyleSheet.create({
   createButton: {
     paddingVertical: 16,
     paddingHorizontal: 32,
-    borderRadius: 12,
   },
   createButtonText: {
     color: '#fff',
@@ -316,8 +349,6 @@ const styles = StyleSheet.create({
   },
   courseCard: {
     padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
   },
   courseHeader: {
     flexDirection: 'row',
@@ -348,9 +379,6 @@ const styles = StyleSheet.create({
   },
   addButton: {
     paddingVertical: 16,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderStyle: 'dashed',
     alignItems: 'center',
     marginTop: 8,
   },
@@ -370,7 +398,6 @@ const styles = StyleSheet.create({
   },
   creatingCard: {
     padding: 32,
-    borderRadius: 16,
     alignItems: 'center',
     minWidth: 250,
   },
