@@ -8,12 +8,14 @@ import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import TabIcon from '@/components/TabIcon';
 
-// Import tab SVG icons
-import HomeIcon from '@/assets/icons/tabs/home.svg';
-import HighlightsIcon from '@/assets/icons/tabs/highlights.svg';
-import ChatIcon from '@/assets/icons/tabs/chat.svg';
-import SearchIcon from '@/assets/icons/tabs/search.svg';
-import ProfileIcon from '@/assets/icons/tabs/profile.svg';
+// Import Hugeicons
+import {
+  Home09Icon,
+  FavouriteIcon,
+  Chatting01Icon,
+  Search01Icon,
+  UserIcon
+} from '@hugeicons/core-free-icons';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -60,7 +62,7 @@ export default function TabLayout() {
           title: 'Home',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              IconComponent={HomeIcon}
+              icon={Home09Icon}
               focused={focused}
               color="#000000"
             />
@@ -73,7 +75,7 @@ export default function TabLayout() {
           title: 'Highlights',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              IconComponent={HighlightsIcon}
+              icon={FavouriteIcon}
               focused={focused}
               color="#000000"
             />
@@ -86,7 +88,7 @@ export default function TabLayout() {
           title: 'Chat',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              IconComponent={ChatIcon}
+              icon={Chatting01Icon}
               focused={focused}
               color="#000000"
             />
@@ -99,7 +101,7 @@ export default function TabLayout() {
           title: 'Search',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              IconComponent={SearchIcon}
+              icon={Search01Icon}
               focused={focused}
               color="#000000"
             />
@@ -112,7 +114,7 @@ export default function TabLayout() {
           title: 'Profile',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              IconComponent={ProfileIcon}
+              icon={UserIcon}
               focused={focused}
               color="#000000"
             />
