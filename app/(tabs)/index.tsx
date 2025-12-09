@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator, Platform } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CreateCourseModal from '@/components/CreateCourseModal';
 import { CourseFormData } from '@/types/course';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -23,6 +24,7 @@ export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   // Load courses on mount
   useEffect(() => {
@@ -135,7 +137,12 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView
+        contentContainerStyle={[
+          styles.scrollContainer,
+          { paddingTop: Platform.OS === 'ios' ? 0 : insets.top }
+        ]}
+      >
         <View style={styles.header}>
           <View>
             <Text style={styles.title}>My Courses</Text>

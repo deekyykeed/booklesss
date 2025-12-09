@@ -31,12 +31,23 @@ export default function TabLayout() {
         tabBarInactiveTintColor: '#000000',
         tabBarShowLabel: false,
         headerShown: useClientOnlyValue(false, true),
-        headerTransparent: Platform.OS === 'ios',
+        headerTransparent: true,
         headerBlurEffect: colorScheme === 'dark' ? 'dark' : 'light',
         headerShadowVisible: false,
+        headerStyle: {
+          backgroundColor: 'transparent',
+        },
+        headerBackground: () => (
+          <BlurView
+            intensity={100}
+            tint={colorScheme === 'dark' ? 'dark' : 'light'}
+            style={StyleSheet.absoluteFill}
+          />
+        ),
         tabBarStyle: {
           position: 'absolute',
-          borderTopWidth: 0,
+          borderTopWidth: 1,
+          borderTopColor: 'rgba(0, 0, 0, 0.1)',
           elevation: 0,
         },
         tabBarBackground: () => (
