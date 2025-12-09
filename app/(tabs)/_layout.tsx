@@ -9,7 +9,13 @@ import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import TabIcon from '@/components/TabIcon';
 
 // Import Hugeicons
-import { Home03Icon, Star01Icon, Message01Icon, Search01Icon, UserIcon } from '@hugeicons/react-native';
+import {
+  Home09Icon,
+  FavouriteIcon,
+  Chatting01Icon,
+  Search01Icon,
+  UserIcon
+} from '@hugeicons/core-free-icons';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -56,7 +62,7 @@ export default function TabLayout() {
           title: 'Home',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              IconComponent={Home03Icon}
+              icon={Home09Icon}
               focused={focused}
               color="#000000"
             />
@@ -69,7 +75,7 @@ export default function TabLayout() {
           title: 'Highlights',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              IconComponent={Star01Icon}
+              icon={FavouriteIcon}
               focused={focused}
               color="#000000"
             />
@@ -82,7 +88,7 @@ export default function TabLayout() {
           title: 'Chat',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              IconComponent={Message01Icon}
+              icon={Chatting01Icon}
               focused={focused}
               color="#000000"
             />
@@ -95,7 +101,7 @@ export default function TabLayout() {
           title: 'Search',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              IconComponent={Search01Icon}
+              icon={Search01Icon}
               focused={focused}
               color="#000000"
             />
@@ -108,7 +114,7 @@ export default function TabLayout() {
           title: 'Profile',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              IconComponent={UserIcon}
+              icon={UserIcon}
               focused={focused}
               color="#000000"
             />
