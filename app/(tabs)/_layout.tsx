@@ -1,10 +1,9 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { BlurView } from 'expo-blur';
-import { Platform, StyleSheet, Pressable } from 'react-native';
+import { Platform, StyleSheet, Pressable, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
-import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import TabIcon from '@/components/TabIcon';
 
@@ -18,8 +17,6 @@ import {
 } from '@hugeicons/core-free-icons';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   const handleTabPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
@@ -32,15 +29,17 @@ export default function TabLayout() {
         tabBarShowLabel: false,
         headerShown: useClientOnlyValue(false, true),
         headerTransparent: true,
-        headerBlurEffect: colorScheme === 'dark' ? 'dark' : 'light',
+        headerBlurEffect: 'light',
         headerShadowVisible: false,
         headerStyle: {
           backgroundColor: 'transparent',
+          borderBottomWidth: 1,
+          borderBottomColor: 'rgba(0, 0, 0, 0.1)',
         },
         headerBackground: () => (
           <BlurView
             intensity={100}
-            tint={colorScheme === 'dark' ? 'dark' : 'light'}
+            tint="light"
             style={StyleSheet.absoluteFill}
           />
         ),
@@ -53,7 +52,7 @@ export default function TabLayout() {
         tabBarBackground: () => (
           <BlurView
             intensity={100}
-            tint={colorScheme === 'dark' ? 'dark' : 'light'}
+            tint="light"
             style={StyleSheet.absoluteFill}
           />
         ),
