@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, View } from '@/components/Themed';
 import { useRouter, useFocusEffect } from 'expo-router';
 import CreateCourseModal from '@/components/CreateCourseModal';
+import CourseCard from '@/components/CourseCard';
 import { CourseFormData } from '@/types/course';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
@@ -148,6 +149,14 @@ export default function HomeScreen() {
             <Text style={styles.title}>My Courses</Text>
             <Text style={styles.subtitle}>Organize and study your course materials</Text>
           </View>
+        </View>
+
+        {/* Demo Course Cards */}
+        <View style={styles.demoCardsContainer}>
+          <CourseCard />
+          <CourseCard />
+          <CourseCard />
+          <CourseCard />
         </View>
 
         {loading && courses.length === 0 ? (
@@ -389,5 +398,10 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 14,
     textAlign: 'center',
+  },
+  demoCardsContainer: {
+    paddingHorizontal: 20,
+    gap: 12,
+    marginBottom: 20,
   },
 });
