@@ -1,4 +1,5 @@
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { Text, View } from './Themed';
 import { useColorScheme } from './useColorScheme';
 import Colors from '@/constants/Colors';
@@ -7,11 +8,13 @@ interface CourseCardProps {
   title?: string;
   description?: string;
   onPress?: () => void;
+  useNativeInput?: boolean;
 }
 
-export default function CourseCard({ title, description, onPress }: CourseCardProps) {
+export default function CourseCard({ title, description, onPress, useNativeInput = false }: CourseCardProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  const [inputValue, setInputValue] = useState('Course Title');
 
   if (onPress) {
     return (
@@ -20,30 +23,40 @@ export default function CourseCard({ title, description, onPress }: CourseCardPr
         onPress={onPress}
         activeOpacity={0.7}
       >
-        <Text style={styles.cardText}>Course Title</Text>
-        {title && (
-          <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
-        )}
-        {description && (
-          <Text style={[styles.description, { color: colors.tabIconDefault }]}>
-            {description}
-          </Text>
-        )}
+        <View style={styles.textWrapper}>
+          {useNativeInput ? (
+            <TextInput
+              style={styles.cardText}
+              value={inputValue}
+              onChangeText={setInputValue}
+              placeholder="Course Title"
+              placeholderTextColor="rgba(0, 0, 0, 0.4)"
+            />
+          ) : (
+            <Text style={styles.cardText}>Course Title</Text>
+          )}
+          <Text style={styles.subtitle}>Dec 2023 - Q3</Text>
+        </View>
       </TouchableOpacity>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.cardText}>Course Title</Text>
-      {title && (
-        <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
-      )}
-      {description && (
-        <Text style={[styles.description, { color: colors.tabIconDefault }]}>
-          {description}
-        </Text>
-      )}
+      <View style={styles.textWrapper}>
+        {useNativeInput ? (
+          <TextInput
+            style={styles.cardText}
+            value={inputValue}
+            onChangeText={setInputValue}
+            placeholder="Course Title"
+            placeholderTextColor="rgba(0, 0, 0, 0.4)"
+          />
+        ) : (
+          <Text style={styles.cardText}>Course Title</Text>
+        )}
+        <Text style={styles.subtitle}>Dec 2023 - Q3</Text>
+      </View>
     </View>
   );
 }
@@ -71,6 +84,18 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
+  textWrapper: {
+    flex: 1,
+    width: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    padding: 0,
+    gap: 0,
+    borderRadius: 0,
+    overflow: 'hidden',
+  },
   cardText: {
     width: '100%',
     fontWeight: '700',
@@ -81,11 +106,15 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
   },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  description: {
+  subtitle: {
+    width: '100%',
+    fontWeight: '500',
+    color: 'rgba(31, 31, 31, 0.6)',
     fontSize: 14,
+    lineHeight: 16.8, // 14 * 1.2
+    textShadowColor: 'rgba(0, 0, 0, 0.1)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+    position: 'absolute',
   },
 });
