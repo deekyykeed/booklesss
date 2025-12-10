@@ -13,14 +13,27 @@ export default function CourseCard({ title, description, onPress }: CourseCardPr
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
 
-  const CardWrapper = onPress ? TouchableOpacity : View;
+  if (onPress) {
+    return (
+      <TouchableOpacity
+        style={styles.container}
+        onPress={onPress}
+        activeOpacity={0.7}
+      >
+        {title && (
+          <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
+        )}
+        {description && (
+          <Text style={[styles.description, { color: colors.tabIconDefault }]}>
+            {description}
+          </Text>
+        )}
+      </TouchableOpacity>
+    );
+  }
 
   return (
-    <CardWrapper
-      style={styles.container}
-      onPress={onPress}
-      activeOpacity={onPress ? 0.7 : 1}
-    >
+    <View style={styles.container}>
       {title && (
         <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
       )}
@@ -29,7 +42,7 @@ export default function CourseCard({ title, description, onPress }: CourseCardPr
           {description}
         </Text>
       )}
-    </CardWrapper>
+    </View>
   );
 }
 
