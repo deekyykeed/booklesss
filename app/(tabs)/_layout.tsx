@@ -10,7 +10,7 @@ import TabIcon from '@/components/TabIcon';
 
 // Import Hugeicons
 import {
-  Home09Icon,
+  DashboardSquare03Icon,
   FavouriteIcon,
   Chatting01Icon,
   Search01Icon,
@@ -62,7 +62,7 @@ export default function TabLayout() {
           title: 'Home',
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              icon={Home09Icon}
+              icon={DashboardSquare03Icon}
               focused={focused}
               color="#000000"
             />
