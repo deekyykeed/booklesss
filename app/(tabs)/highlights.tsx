@@ -1,12 +1,10 @@
-import { StyleSheet, View } from 'react-native';
-import { Text, View as ThemedView } from '@/components/Themed';
+import { StyleSheet } from 'react-native';
+import { View } from '@/components/Themed';
 
 export default function HighlightsScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Highlights</Text>
-      <ThemedView style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <Text style={styles.description}>Discover trending posts and popular content</Text>
+      {/* Content will go here */}
     </View>
   );
 }
@@ -14,20 +12,14 @@ export default function HighlightsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-  description: {
-    fontSize: 16,
-    opacity: 0.7,
+    backgroundColor: '#f8f7f6',
+    overflow: 'visible',
+    padding: 0,
+    alignContent: 'center',
+    flexWrap: 'nowrap',
+    gap: 0,
   },
 });

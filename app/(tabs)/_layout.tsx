@@ -30,7 +30,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: '#000000',
         tabBarInactiveTintColor: '#000000',
         tabBarShowLabel: false,
-        headerShown: useClientOnlyValue(false, true),
+        headerShown: false,
         headerTransparent: Platform.OS === 'ios',
         headerBlurEffect: colorScheme === 'dark' ? 'dark' : 'light',
         headerShadowVisible: false,
