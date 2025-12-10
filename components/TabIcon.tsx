@@ -36,7 +36,21 @@ export default function TabIcon({ icon, focused, color = '#000000', size = 24, s
   const defaultStrokeWidth = focused ? 2 : 1.5;
 
   return (
-    <View style={[styles.container, { opacity: focused ? 1 : 0.35 }]}>
+    <View
+      style={[
+        styles.container,
+        {
+          opacity: focused ? 1 : 0.35,
+          ...(focused && {
+            shadowColor: '#000000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.25,
+            shadowRadius: 1,
+            elevation: 3,
+          }),
+        },
+      ]}
+    >
       <HugeiconsIcon
         icon={icon}
         size={size}
