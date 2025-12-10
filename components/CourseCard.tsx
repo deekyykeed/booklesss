@@ -20,6 +20,7 @@ export default function CourseCard({ title, description, onPress }: CourseCardPr
         onPress={onPress}
         activeOpacity={0.7}
       >
+        <Text style={styles.cardText}>Course Title</Text>
         {title && (
           <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
         )}
@@ -34,6 +35,7 @@ export default function CourseCard({ title, description, onPress }: CourseCardPr
 
   return (
     <View style={styles.container}>
+      <Text style={styles.cardText}>Course Title</Text>
       {title && (
         <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
       )}
@@ -62,6 +64,22 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(33, 33, 33, 0.1)',
     overflow: 'hidden',
     flexWrap: 'nowrap',
+    // Subtle shadow
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  cardText: {
+    width: '100%',
+    fontWeight: '700',
+    color: '#000000',
+    fontSize: 16,
+    lineHeight: 20.8, // 16 * 1.3
+    textShadowColor: 'rgba(0, 0, 0, 0.25)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   title: {
     fontSize: 18,
