@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, View } from './Themed';
 import { useColorScheme } from './useColorScheme';
 import Colors from '@/constants/Colors';
@@ -8,13 +7,11 @@ interface CourseCardProps {
   title?: string;
   description?: string;
   onPress?: () => void;
-  useNativeInput?: boolean;
 }
 
-export default function CourseCard({ title, description, onPress, useNativeInput = false }: CourseCardProps) {
+export default function CourseCard({ title, description, onPress }: CourseCardProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
-  const [inputValue, setInputValue] = useState('Course Title');
 
   if (onPress) {
     return (
@@ -24,17 +21,7 @@ export default function CourseCard({ title, description, onPress, useNativeInput
         activeOpacity={0.7}
       >
         <View style={styles.textWrapper}>
-          {useNativeInput ? (
-            <TextInput
-              style={styles.cardText}
-              value={inputValue}
-              onChangeText={setInputValue}
-              placeholder="Course Title"
-              placeholderTextColor="rgba(0, 0, 0, 0.4)"
-            />
-          ) : (
-            <Text style={styles.cardText}>Course Title</Text>
-          )}
+          <Text style={styles.cardText}>Course Title</Text>
           <Text style={styles.subtitle}>Dec 2023 - Q3</Text>
         </View>
       </TouchableOpacity>
@@ -44,17 +31,7 @@ export default function CourseCard({ title, description, onPress, useNativeInput
   return (
     <View style={styles.container}>
       <View style={styles.textWrapper}>
-        {useNativeInput ? (
-          <TextInput
-            style={styles.cardText}
-            value={inputValue}
-            onChangeText={setInputValue}
-            placeholder="Course Title"
-            placeholderTextColor="rgba(0, 0, 0, 0.4)"
-          />
-        ) : (
-          <Text style={styles.cardText}>Course Title</Text>
-        )}
+        <Text style={styles.cardText}>Course Title</Text>
         <Text style={styles.subtitle}>Dec 2023 - Q3</Text>
       </View>
     </View>
@@ -86,15 +63,12 @@ const styles = StyleSheet.create({
   },
   textWrapper: {
     flex: 1,
-    width: 1,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     alignContent: 'center',
     padding: 0,
-    gap: 0,
-    borderRadius: 0,
-    overflow: 'hidden',
+    gap: 4,
   },
   cardText: {
     width: '100%',
@@ -115,6 +89,5 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.1)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
-    position: 'absolute',
   },
 });
