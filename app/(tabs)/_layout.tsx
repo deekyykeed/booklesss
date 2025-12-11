@@ -33,7 +33,8 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle: {
           position: 'absolute',
-          borderTopWidth: 0,
+          borderTopWidth: 1,
+          borderTopColor: 'rgba(33, 33, 33, 0.1)',
           elevation: 0,
         },
         tabBarBackground: () => (
