@@ -14,8 +14,8 @@ interface TabIconProps {
  * TabIcon Component with Opacity-Based Active State
  *
  * Uses Hugeicons and adjusts opacity based on focused state:
- * - Inactive: 50% opacity
- * - Active: 100% opacity
+ * - Inactive: 35% opacity
+ * - Active: 100% opacity with enhanced stroke and shadow
  *
  * @param icon - The Hugeicons icon object
  * @param focused - Whether the tab is currently active
@@ -33,13 +33,19 @@ interface TabIconProps {
  * />
  */
 export default function TabIcon({ icon, focused, color = '#000000', size = 24, strokeWidth = 1.5 }: TabIconProps) {
+  const activeStrokeWidth = strokeWidth + 1; // Slightly bigger stroke for active icons
+
   return (
-    <View style={[styles.container, { opacity: focused ? 1 : 0.5 }]}>
+    <View style={[
+      styles.container,
+      { opacity: focused ? 1 : 0.35 },
+      focused && styles.activeShadow
+    ]}>
       <HugeiconsIcon
         icon={icon}
         size={size}
         color={color}
-        strokeWidth={strokeWidth}
+        strokeWidth={focused ? activeStrokeWidth : strokeWidth}
       />
     </View>
   );
@@ -49,5 +55,15 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  activeShadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
+    elevation: 3, // For Android
   },
 });
