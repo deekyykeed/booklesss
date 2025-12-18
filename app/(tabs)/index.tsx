@@ -179,13 +179,7 @@ export default function HomeScreen() {
             {courses.map((course) => (
               <TouchableOpacity
                 key={course.id}
-                style={[
-                  styles.courseCard,
-                  {
-                    backgroundColor: colorScheme === 'dark' ? '#1a1a1a' : '#f5f5f5',
-                    borderColor: colors.border,
-                  },
-                ]}
+                style={styles.courseCard}
                 onPress={() => router.push(`/course/${course.id}`)}
                 activeOpacity={0.7}
               >
@@ -322,8 +316,6 @@ const styles = StyleSheet.create({
   },
   courseCard: {
     padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
   },
   courseHeader: {
     flexDirection: 'row',
