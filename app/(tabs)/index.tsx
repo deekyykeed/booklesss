@@ -11,6 +11,9 @@ import { createCourse, getCourses, type Course } from '@/services/courseService'
 import { uploadPDF, createPDFRecord, getCoursePDFs } from '@/services/pdfService';
 import { processPendingPDFs } from '@/services/pdfExtraction';
 import { generateCourseOutline } from '@/services/outlineService';
+import { HugeiconsIcon } from '@hugeicons/react-native';
+import { CircleArrowRight01Icon } from '@hugeicons/core-free-icons';
+import * as Haptics from 'expo-haptics';
 
 interface CourseWithStats extends Course {
   pdfCount: number;
@@ -180,30 +183,46 @@ export default function HomeScreen() {
               <TouchableOpacity
                 key={course.id}
                 style={styles.courseCard}
-                onPress={() => router.push(`/course/${course.id}`)}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  router.push(`/course/${course.id}`);
+                }}
                 activeOpacity={0.7}
               >
-                <View style={styles.courseHeader}>
-                  <Text style={[styles.courseName, { color: colors.text }]}>{course.name}</Text>
-                  {course.status === 'processing' && (
-                    <ActivityIndicator size="small" color={colors.tint} />
-                  )}
-                  {course.status === 'ready' && (
-                    <Text style={styles.statusBadge}>✓</Text>
-                  )}
-                </View>
-                {course.description && (
-                  <Text style={[styles.courseDescription, { color: colors.tabIconDefault }]}>
-                    {course.description}
-                  </Text>
-                )}
-                <View style={styles.courseFooter}>
-                  <Text style={[styles.courseInfo, { color: colors.tabIconDefault }]}>
-                    📄 {course.pdfCount} PDF{course.pdfCount !== 1 ? 's' : ''}
-                  </Text>
-                  <Text style={[styles.courseInfo, { color: colors.tabIconDefault }]}>
-                    ✨ {course.writing_style}
-                  </Text>
+                <View style={styles.cardContent}>
+                  <View style={styles.courseMain}>
+                    <View style={styles.courseHeader}>
+                      <Text style={[styles.courseName, { color: colors.text }]}>{course.name}</Text>
+                      {course.status === 'processing' && (
+                        <ActivityIndicator size="small" color={colors.tint} />
+                      )}
+                      {course.status === 'ready' && (
+                        <Text style={styles.statusBadge}>✓</Text>
+                      )}
+                    </View>
+                    {course.description && (
+                      <Text style={[styles.courseDescription, { color: colors.tabIconDefault }]}>
+                        {course.description}
+                      </Text>
+                    )}
+                    <View style={styles.courseFooter}>
+                      <Text style={[styles.courseInfo, { color: colors.tabIconDefault }]}>
+                        📄 {course.pdfCount} PDF{course.pdfCount !== 1 ? 's' : ''}
+                      </Text>
+                      <Text style={[styles.courseInfo, { color: colors.tabIconDefault }]}>
+                        ✨ {course.writing_style}
+                      </Text>
+                    </View>
+                  </View>
+                  <View style={styles.courseActions}>
+                    <ActivityIndicator size={24} color={colors.tint} />
+                    <HugeiconsIcon
+                      icon={CircleArrowRight01Icon}
+                      size={24}
+                      color={colors.text}
+                      strokeWidth={1.5}
+                    />
+                  </View>
                 </View>
               </TouchableOpacity>
             ))}
@@ -316,6 +335,19 @@ const styles = StyleSheet.create({
   },
   courseCard: {
     padding: 16,
+  },
+  cardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  courseMain: {
+    flex: 1,
+  },
+  courseActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   courseHeader: {
     flexDirection: 'row',
