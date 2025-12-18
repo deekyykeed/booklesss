@@ -139,9 +139,10 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
+        contentInsetAdjustmentBehavior="automatic"
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
@@ -267,6 +268,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 14,
   },
   centerContent: {
     justifyContent: 'center',
@@ -281,8 +283,7 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
   },
   header: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 6,
     paddingBottom: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -301,7 +302,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 40,
+    paddingHorizontal: 26,
     paddingVertical: 60,
   },
   emptyIcon: {
@@ -330,7 +331,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   coursesContainer: {
-    paddingHorizontal: 20,
     gap: 12,
   },
   courseCard: {
