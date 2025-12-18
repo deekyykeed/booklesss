@@ -13,15 +13,15 @@ interface TabIconProps {
 /**
  * TabIcon Component with Opacity-Based Active State
  *
- * Uses Hugeicons and adjusts opacity based on focused state:
- * - Inactive: 50% opacity
- * - Active: 100% opacity
+ * Uses Hugeicons and adjusts opacity and stroke width based on focused state:
+ * - Inactive: 35% opacity, 1.5 stroke width
+ * - Active: 100% opacity, 2 stroke width
  *
  * @param icon - The Hugeicons icon object
  * @param focused - Whether the tab is currently active
  * @param color - The color to apply to the icon (default: #000000)
  * @param size - The size of the icon in pixels (default: 24)
- * @param strokeWidth - The stroke width of the icon (default: 1.5)
+ * @param strokeWidth - The stroke width of the icon (overrides default behavior)
  *
  * @example
  * import { Home01Icon } from '@hugeicons/core-free-icons';
@@ -32,14 +32,30 @@ interface TabIconProps {
  *   color="#000000"
  * />
  */
-export default function TabIcon({ icon, focused, color = '#000000', size = 24, strokeWidth = 1.5 }: TabIconProps) {
+export default function TabIcon({ icon, focused, color = '#000000', size = 24, strokeWidth }: TabIconProps) {
+  const defaultStrokeWidth = focused ? 2 : 1.5;
+
   return (
-    <View style={[styles.container, { opacity: focused ? 1 : 0.5 }]}>
+    <View
+      style={[
+        styles.container,
+        {
+          opacity: focused ? 1 : 0.35,
+          ...(focused && {
+            shadowColor: '#000000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.25,
+            shadowRadius: 1,
+            elevation: 3,
+          }),
+        },
+      ]}
+    >
       <HugeiconsIcon
         icon={icon}
         size={size}
         color={color}
-        strokeWidth={strokeWidth}
+        strokeWidth={strokeWidth ?? defaultStrokeWidth}
       />
     </View>
   );
