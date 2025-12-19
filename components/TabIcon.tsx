@@ -20,7 +20,7 @@ interface TabIconProps {
  * @param icon - The Hugeicons icon object
  * @param focused - Whether the tab is currently active
  * @param color - The color to apply to the icon (default: #000000)
- * @param size - The size of the icon in pixels (default: 24)
+ * @param size - The size of the icon in pixels (default: 20)
  * @param strokeWidth - The stroke width of the icon (default: 1.5)
  *
  * @example
@@ -32,7 +32,7 @@ interface TabIconProps {
  *   color="#000000"
  * />
  */
-export default function TabIcon({ icon, focused, color = '#000000', size = 24, strokeWidth = 1.5 }: TabIconProps) {
+export default function TabIcon({ icon, focused, color = '#000000', size = 20, strokeWidth = 1.5 }: TabIconProps) {
   const activeStrokeWidth = strokeWidth + 1; // Slightly bigger stroke for active icons
 
   return (
