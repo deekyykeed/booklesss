@@ -1,13 +1,12 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
 import { HugeiconsIcon } from '@hugeicons/react-native';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 
 interface TabIconProps {
   icon: any; // Hugeicons icon object
   focused: boolean;
   color?: string;
   size?: number;
-  strokeWidth?: number;
 }
 
 /**
@@ -15,13 +14,12 @@ interface TabIconProps {
  *
  * Uses Hugeicons and adjusts opacity based on focused state:
  * - Inactive: 35% opacity
- * - Active: 100% opacity with enhanced stroke and shadow
+ * - Active: 100% opacity with shadow
  *
  * @param icon - The Hugeicons icon object
  * @param focused - Whether the tab is currently active
  * @param color - The color to apply to the icon (default: #000000)
  * @param size - The size of the icon in pixels (default: 24)
- * @param strokeWidth - The stroke width of the icon (default: 1.5)
  *
  * @example
  * import { Home01Icon } from '@hugeicons/core-free-icons';
@@ -32,9 +30,7 @@ interface TabIconProps {
  *   color="#000000"
  * />
  */
-export default function TabIcon({ icon, focused, color = '#000000', size = 24, strokeWidth = 1.5 }: TabIconProps) {
-  const activeStrokeWidth = strokeWidth + 1; // Slightly bigger stroke for active icons
-
+export default function TabIcon({ icon, focused, color = '#000000', size = 24 }: TabIconProps) {
   return (
     <View style={[
       styles.container,
@@ -45,7 +41,7 @@ export default function TabIcon({ icon, focused, color = '#000000', size = 24, s
         icon={icon}
         size={size}
         color={color}
-        strokeWidth={focused ? activeStrokeWidth : strokeWidth}
+        strokeWidth={1.8}
       />
     </View>
   );
@@ -60,10 +56,10 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 1,
     },
-    shadowOpacity: 0.15,
-    shadowRadius: 3,
-    elevation: 3, // For Android
+    shadowOpacity: 0.25,
+    shadowRadius: 2,
+    elevation: 2, // For Android
   },
 });
