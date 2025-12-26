@@ -4,17 +4,17 @@ import Colors from '@/constants/Colors';
 import { StyleSheet, View } from 'react-native';
 
 interface WorkChartProps {
-  data?: { day: string; hours: number }[];
+  data?: { day: string; hours: number; isToday?: boolean }[];
 }
 
 const DEFAULT_DATA = [
-  { day: 'Mon', hours: 2.5 },
-  { day: 'Tue', hours: 3.0 },
-  { day: 'Wed', hours: 1.5 },
-  { day: 'Thu', hours: 4.0 },
-  { day: 'Fri', hours: 2.0 },
-  { day: 'Sat', hours: 3.5 },
-  { day: 'Sun', hours: 1.0 },
+  { day: 'M', hours: 2.5, isToday: false },
+  { day: 'T', hours: 3.0, isToday: false },
+  { day: 'W', hours: 1.5, isToday: false },
+  { day: 'T', hours: 4.0, isToday: false },
+  { day: 'F', hours: 2.0, isToday: false },
+  { day: 'S', hours: 3.5, isToday: false },
+  { day: 'S', hours: 1.8, isToday: true },
 ];
 
 const MAX_HOURS = 5;
@@ -22,12 +22,17 @@ const MAX_HOURS = 5;
 export default function WorkChart({ data = DEFAULT_DATA }: WorkChartProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
-  
+  const isDark = colorScheme === 'dark';
+
   const maxHours = Math.max(...data.map(d => d.hours), MAX_HOURS);
   const totalHours = data.reduce((sum, d) => sum + d.hours, 0);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {
+      backgroundColor: isDark ? colors.background : '#ffffff',
+      borderWidth: isDark ? 1 : 0,
+      borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+    }]}>
       <View style={styles.header}>
         <Text style={[styles.title, { color: colors.text }]}>
           This Week
@@ -36,10 +41,16 @@ export default function WorkChart({ data = DEFAULT_DATA }: WorkChartProps) {
           {totalHours.toFixed(1)}h
         </Text>
       </View>
-      
+
       <View style={styles.chartContainer}>
         {data.map((item, index) => {
-          const height = (item.hours / maxHours) * 100;
+          const heightPercentage = (item.hours / maxHours) * 100;
+          const barColor = item.isToday
+            ? colors.tint
+            : isDark
+              ? 'rgba(255, 255, 255, 0.15)'
+              : 'rgba(0, 0, 0, 0.1)';
+
           return (
             <View key={index} style={styles.barContainer}>
               <View style={styles.barWrapper}>
@@ -47,17 +58,24 @@ export default function WorkChart({ data = DEFAULT_DATA }: WorkChartProps) {
                   style={[
                     styles.bar,
                     {
-                      height: height,
-                      backgroundColor: colors.tint,
+                      height: `${heightPercentage}%`,
+                      backgroundColor: barColor,
                     },
                   ]}
                 />
               </View>
-              <Text style={[styles.dayLabel, { color: 'rgba(0, 0, 0, 0.6)' }]}>
+              <Text style={[
+                styles.dayLabel,
+                {
+                  color: item.isToday
+                    ? colors.tint
+                    : isDark
+                      ? 'rgba(255, 255, 255, 0.5)'
+                      : 'rgba(0, 0, 0, 0.4)',
+                  fontWeight: item.isToday ? '600' : '400',
+                }
+              ]}>
                 {item.day}
-              </Text>
-              <Text style={[styles.hoursLabel, { color: 'rgba(0, 0, 0, 0.4)' }]}>
-                {item.hours.toFixed(1)}h
               </Text>
             </View>
           );
@@ -69,58 +87,52 @@ export default function WorkChart({ data = DEFAULT_DATA }: WorkChartProps) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: 16,
+    padding: 20,
     marginBottom: 16,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 24,
   },
   title: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '600',
-    fontFamily: 'GoogleSans-Medium',
+    letterSpacing: -0.4,
   },
   totalHours: {
-    fontSize: 18,
+    fontSize: 28,
     fontWeight: '600',
-    fontFamily: 'GoogleSans-Medium',
+    letterSpacing: -0.5,
   },
   chartContainer: {
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'space-between',
-    height: 140,
+    height: 120,
+    gap: 8,
   },
   barContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-end',
+    gap: 8,
   },
   barWrapper: {
-    width: '80%',
-    height: 100,
+    width: '100%',
+    height: 90,
     justifyContent: 'flex-end',
-    marginBottom: 8,
   },
   bar: {
     width: '100%',
-    borderRadius: 4,
-    minHeight: 4,
+    borderRadius: 6,
+    minHeight: 3,
   },
   dayLabel: {
-    fontSize: 11,
-    fontFamily: 'FamiljenGrotesk-Regular',
-    marginTop: 4,
-  },
-  hoursLabel: {
-    fontSize: 9,
-    fontFamily: 'FamiljenGrotesk-Regular',
-    marginTop: 2,
+    fontSize: 13,
+    letterSpacing: -0.2,
   },
 });
 

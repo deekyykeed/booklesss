@@ -24,13 +24,23 @@ export default function CourseCard({ name, lastOpened, completionPercentage, liv
     onPress?.();
   };
 
-  const activityText = liveUsers && liveUsers > 0 
+  const activityText = liveUsers && liveUsers > 0
     ? `${liveUsers} ${liveUsers === 1 ? 'person' : 'people'} live`
     : null;
 
+  const isDark = colorScheme === 'dark';
+  const secondaryTextColor = isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.6)';
+
   return (
     <TouchableOpacity
-      style={styles.courseCard}
+      style={[
+        styles.courseCard,
+        {
+          borderBottomColor: isDark
+            ? 'rgba(255, 255, 255, 0.1)'
+            : 'rgba(0, 0, 0, 0.05)',
+        }
+      ]}
       onPress={handlePress}
       activeOpacity={0.7}
     >
@@ -39,12 +49,12 @@ export default function CourseCard({ name, lastOpened, completionPercentage, liv
           {name}
         </Text>
         <View style={styles.metaContainer}>
-          <Text style={[styles.metaText, { color: 'rgba(0, 0, 0, 0.6)' }]}>
+          <Text style={[styles.metaText, { color: secondaryTextColor }]}>
             {lastOpened}
           </Text>
           {activityText && (
             <>
-              <Text style={[styles.metaSeparator, { color: 'rgba(0, 0, 0, 0.6)' }]}> • </Text>
+              <Text style={[styles.metaSeparator, { color: secondaryTextColor }]}> • </Text>
               <Text style={[styles.metaText, { color: colors.tint }]}>
                 {activityText}
               </Text>
@@ -72,7 +82,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0, 0, 0, 0.05)',
   },
   courseContent: {
     flex: 1,
