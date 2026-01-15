@@ -11,25 +11,21 @@ const courses = [
     name: 'Financial Management', 
     lastOpened: '3 days ago',
     liveUsers: 12,
-    completionPercentage: 56,
   },
   { 
     name: 'Innovation & Entrepreneurship', 
     lastOpened: '4 days ago',
     liveUsers: 8,
-    completionPercentage: 42,
   },
   { 
     name: 'Research Methods', 
     lastOpened: '3 weeks ago',
     liveUsers: 3,
-    completionPercentage: 78,
   },
   { 
     name: 'Financial Modeling & Finance', 
     lastOpened: '3 weeks ago',
     liveUsers: 5,
-    completionPercentage: 35,
   },
 ];
 
@@ -46,6 +42,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]} edges={['top']}>
+      <Text style={[styles.pageTitle, { color: colors.text }]}>Home</Text>
       <View style={styles.coursesContainer}>
         {courses.map((course, index) => (
           <CourseCard
@@ -53,7 +50,6 @@ export default function HomeScreen() {
             name={course.name}
             lastOpened={course.lastOpened}
             liveUsers={course.liveUsers}
-            completionPercentage={course.completionPercentage}
             onPress={() => handleCoursePress(course.name)}
           />
         ))}
@@ -67,6 +63,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 14,
     paddingHorizontal: 14,
+  },
+  pageTitle: {
+    fontSize: 28,
+    fontWeight: '700',
+    fontFamily: 'GoogleSans-Bold',
+    marginBottom: 20,
   },
   coursesContainer: {
     gap: 0,

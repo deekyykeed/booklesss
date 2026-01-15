@@ -41,7 +41,7 @@ export default function CourseCard({ name, lastOpened, completionPercentage, liv
     >
       <View style={styles.courseContent}>
         <View style={styles.titleRow}>
-          <HugeiconsIcon icon={Folder01Icon} size={18} color={colors.text} strokeWidth={2} />
+          <HugeiconsIcon icon={Folder01Icon} size={20} color={colors.text} strokeWidth={2} />
           <Text style={[styles.courseTitle, { color: colors.text }]}>
             {name}
           </Text>
