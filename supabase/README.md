@@ -44,16 +44,14 @@ This will create all necessary tables, indexes, and security policies.
    EXPO_PUBLIC_SUPABASE_ANON_KEY=your-actual-anon-key-here
    ```
 
-## Step 6: Get Anthropic API Key
+## Step 6: Get Gemini API Key
 
-1. Go to [Anthropic Console](https://console.anthropic.com/)
-2. Sign in or create an account
-3. Go to API Keys section
-4. Click "Create Key"
-5. Copy the key
-6. Add it to your `.env` file:
+1. Go to [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Click "Create API key"
+3. Copy the key
+4. Add it to your `.env` file:
    ```
-   EXPO_PUBLIC_ANTHROPIC_API_KEY=your-anthropic-api-key-here
+   EXPO_PUBLIC_GEMINI_API_KEY=your-gemini-api-key-here
    ```
 
 ## Step 7: Enable Authentication (Optional)

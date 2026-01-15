@@ -1,5 +1,4 @@
 import CourseCard from '@/components/CourseCard';
-import WorkChart from '@/components/WorkChart';
 import { Text } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
@@ -12,21 +11,25 @@ const courses = [
     name: 'Financial Management', 
     lastOpened: '3 days ago',
     liveUsers: 12,
+    completionPercentage: 56,
   },
   { 
     name: 'Innovation & Entrepreneurship', 
     lastOpened: '4 days ago',
     liveUsers: 8,
+    completionPercentage: 42,
   },
   { 
     name: 'Research Methods', 
     lastOpened: '3 weeks ago',
     liveUsers: 3,
+    completionPercentage: 78,
   },
   { 
     name: 'Financial Modeling & Finance', 
     lastOpened: '3 weeks ago',
     liveUsers: 5,
+    completionPercentage: 35,
   },
 ];
 
@@ -43,7 +46,6 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]} edges={['top']}>
-      <WorkChart />
       <View style={styles.coursesContainer}>
         {courses.map((course, index) => (
           <CourseCard
@@ -51,6 +53,7 @@ export default function HomeScreen() {
             name={course.name}
             lastOpened={course.lastOpened}
             liveUsers={course.liveUsers}
+            completionPercentage={course.completionPercentage}
             onPress={() => handleCoursePress(course.name)}
           />
         ))}

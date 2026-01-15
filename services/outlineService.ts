@@ -1,14 +1,12 @@
-import { generateContent } from '@/lib/claude';
 import { WRITING_STYLES, WritingStyleId } from '@/constants/WritingStyles';
+import { model } from '@/lib/gemini';
+import { updateCourseStatus } from './courseService';
 import {
   createLesson,
   createStep,
-  deleteCourseLessons,
-  type Lesson,
-  type Step,
+  deleteCourseLessons
 } from './lessonService';
 import { getAllExtractedText } from './pdfService';
-import { updateCourseStatus } from './courseService';
 
 interface OutlineLesson {
   title: string;
@@ -30,7 +28,7 @@ interface GeneratedOutline {
 }
 
 /**
- * Generate course outline using Claude AI
+ * Generate course outline using Gemini AI
  */
 export async function generateCourseOutline(
   courseId: string,
@@ -91,12 +89,14 @@ Return ONLY a valid JSON object in this exact format (no markdown, no extra text
   ]
 }`;
 
-    console.log('[Outline] Sending prompt to Claude...');
+    console.log('[Outline] Sending prompt to Gemini...');
 
-    // Call Claude AI
-    const text = await generateContent(prompt);
+    // Call Gemini AI
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    const text = response.text();
 
-    console.log('[Outline] Received response from Claude');
+    console.log('[Outline] Received response from Gemini');
 
     // Parse JSON response
     let outline: GeneratedOutline;
@@ -185,7 +185,9 @@ Instructions:
 
 Rewritten Content:`;
 
-  return await generateContent(prompt);
+  const result = await model.generateContent(prompt);
+  const response = result.response;
+  return response.text();
 }
 
 /**

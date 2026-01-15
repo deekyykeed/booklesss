@@ -48,6 +48,9 @@ export default function RootLayout() {
     'RobotoCondensed-SemiBold': require('../assets/fonts/custom/RobotoCondensed/RobotoCondensed-SemiBold.ttf'),
     'RobotoCondensed-Bold': require('../assets/fonts/custom/RobotoCondensed/RobotoCondensed-Bold.ttf'),
     
+    // Fortnite font
+    'Fortnite': require('../assets/fonts/custom/Fortnite.ttf'),
+    
     // Icon fonts
     ...FontAwesome.font,
   });

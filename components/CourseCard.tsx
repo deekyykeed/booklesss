@@ -3,7 +3,6 @@ import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import * as Haptics from 'expo-haptics';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import Ring from './Ring';
 import { Text } from './Themed';
 import { useColorScheme } from './useColorScheme';
 
@@ -53,12 +52,14 @@ export default function CourseCard({ name, lastOpened, completionPercentage, liv
         </View>
       </View>
       <View style={styles.rightSection}>
-        <Ring percentage={completionPercentage} size={16} />
+        <Text style={[styles.percentage, { color: colors.text }]}>
+          {completionPercentage !== undefined ? Math.round(completionPercentage) : 0}%
+        </Text>
         <HugeiconsIcon
           icon={ArrowRight01Icon}
           size={24}
           color={colors.text}
-          strokeWidth={1.6}
+          strokeWidth={2}
         />
       </View>
     </TouchableOpacity>
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0, 0, 0, 0.05)',
+    borderBottomColor: 'rgba(0, 0, 0, 0.12)',
   },
   courseContent: {
     flex: 1,
@@ -101,6 +102,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+  },
+  percentage: {
+    fontSize: 16,
+    fontFamily: 'Fortnite',
   },
 });
 
