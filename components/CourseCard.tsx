@@ -1,7 +1,8 @@
 import Colors from '@/constants/Colors';
-import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
+import { ArrowRight01Icon, Folder01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import * as Haptics from 'expo-haptics';
+import { useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from './Themed';
 import { useColorScheme } from './useColorScheme';
@@ -17,6 +18,11 @@ interface CourseCardProps {
 export default function CourseCard({ name, lastOpened, completionPercentage, liveUsers, onPress }: CourseCardProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  
+  // Generate random completion percentage if not provided
+  const [randomPercentage] = useState(() => 
+    completionPercentage ?? Math.floor(Math.random() * 100)
+  );
 
   const handlePress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -34,9 +40,12 @@ export default function CourseCard({ name, lastOpened, completionPercentage, liv
       activeOpacity={0.7}
     >
       <View style={styles.courseContent}>
-        <Text style={[styles.courseTitle, { color: colors.text }]}>
-          {name}
-        </Text>
+        <View style={styles.titleRow}>
+          <HugeiconsIcon icon={Folder01Icon} size={18} color={colors.text} strokeWidth={2} />
+          <Text style={[styles.courseTitle, { color: colors.text }]}>
+            {name}
+          </Text>
+        </View>
         <View style={styles.metaContainer}>
           <Text style={[styles.metaText, { color: 'rgba(0, 0, 0, 0.6)' }]}>
             {lastOpened}
@@ -53,7 +62,7 @@ export default function CourseCard({ name, lastOpened, completionPercentage, liv
       </View>
       <View style={styles.rightSection}>
         <Text style={[styles.percentage, { color: colors.text }]}>
-          {completionPercentage !== undefined ? Math.round(completionPercentage) : 0}%
+          {randomPercentage}%
         </Text>
         <HugeiconsIcon
           icon={ArrowRight01Icon}
@@ -79,11 +88,17 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 12,
   },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+    gap: 8,
+  },
   courseTitle: {
     fontSize: 18,
     fontWeight: '600',
-    marginBottom: 4,
     fontFamily: 'GoogleSans-Medium',
+    flex: 1,
   },
   metaContainer: {
     flexDirection: 'row',
