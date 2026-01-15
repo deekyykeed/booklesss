@@ -1,5 +1,5 @@
 import Colors from '@/constants/Colors';
-import { ArrowRight01Icon, Folder01Icon } from '@hugeicons/core-free-icons';
+import { ArrowRight01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import * as Haptics from 'expo-haptics';
 import { useState } from 'react';
@@ -40,12 +40,9 @@ export default function CourseCard({ name, lastOpened, completionPercentage, liv
       activeOpacity={0.7}
     >
       <View style={styles.courseContent}>
-        <View style={styles.titleRow}>
-          <HugeiconsIcon icon={Folder01Icon} size={20} color={colors.text} strokeWidth={2} />
-          <Text style={[styles.courseTitle, { color: colors.text }]}>
-            {name}
-          </Text>
-        </View>
+        <Text style={[styles.courseTitle, { color: colors.text }]}>
+          {name}
+        </Text>
         <View style={styles.metaContainer}>
           <Text style={[styles.metaText, { color: 'rgba(0, 0, 0, 0.6)' }]}>
             {lastOpened}
@@ -88,17 +85,11 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 12,
   },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 4,
-    gap: 8,
-  },
   courseTitle: {
+    marginBottom: 4,
     fontSize: 18,
     fontWeight: '600',
     fontFamily: 'GoogleSans-Medium',
-    flex: 1,
   },
   metaContainer: {
     flexDirection: 'row',
