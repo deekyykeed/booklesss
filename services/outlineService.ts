@@ -1,5 +1,5 @@
 import { WRITING_STYLES, WritingStyleId } from '@/constants/WritingStyles';
-import { model } from '@/lib/gemini';
+import { generateContent } from '@/lib/claude';
 import { updateCourseStatus } from './courseService';
 import {
   createLesson,
@@ -28,7 +28,7 @@ interface GeneratedOutline {
 }
 
 /**
- * Generate course outline using Gemini AI
+ * Generate course outline using Claude AI
  */
 export async function generateCourseOutline(
   courseId: string,
@@ -59,7 +59,7 @@ export async function generateCourseOutline(
     const prompt = `You are an expert educational content organizer. Analyze the following course materials and create a structured learning outline.
 
 Course Materials:
-${combinedText.substring(0, 50000)} ${combinedText.length > 50000 ? '...(truncated)' : ''}
+${combinedText.substring(0, 50000)}${combinedText.length > 50000 ? '...(truncated)' : ''}
 
 Instructions:
 1. Organize the content into 4-8 main lessons (major topics)
@@ -89,14 +89,12 @@ Return ONLY a valid JSON object in this exact format (no markdown, no extra text
   ]
 }`;
 
-    console.log('[Outline] Sending prompt to Gemini...');
+    console.log('[Outline] Sending prompt to Claude...');
 
-    // Call Gemini AI
-    const result = await model.generateContent(prompt);
-    const response = result.response;
-    const text = response.text();
+    // Call Claude AI
+    const text = await generateContent(prompt);
 
-    console.log('[Outline] Received response from Gemini');
+    console.log('[Outline] Received response from Claude');
 
     // Parse JSON response
     let outline: GeneratedOutline;
@@ -159,35 +157,41 @@ Return ONLY a valid JSON object in this exact format (no markdown, no extra text
 }
 
 /**
- * Generate content for a specific step
+ * Generate content for a specific step using Claude AI
+ *
+ * @param stepTitle - The title of the step
+ * @param pdfExcerpts - Relevant text excerpts from PDFs
+ * @param writingStyle - The writing style to use
  */
 export async function generateStepContent(
-  stepId: string,
-  originalContent: string,
+  stepTitle: string,
+  pdfExcerpts: string,
   writingStyle: WritingStyleId
 ): Promise<string> {
   const stylePrompt = WRITING_STYLES[writingStyle].prompt;
 
-  const prompt = `You are an expert educational content writer. Rewrite the following content in a clear, study-friendly format.
+  const prompt = `You are an expert educational content writer. Create comprehensive learning content for this step in a study course.
+
+Step Title: ${stepTitle}
+
+Source Material:
+${pdfExcerpts}
 
 Writing Style: ${WRITING_STYLES[writingStyle].name}
 ${stylePrompt}
 
-Original Content:
-${originalContent}
-
 Instructions:
-- Rewrite the content to be clear and easy to understand
+- Create clear, educational content that teaches this topic
+- Use the source material as the foundation
 - Maintain all key information and facts
-- Use the specified writing style
-- Format with bullet points, headings, or other formatting as appropriate
-- Keep it concise but comprehensive
+- Structure with headings, bullet points, and paragraphs as appropriate
+- Make it engaging and easy to understand
+- Keep it focused on the step title's topic
+- Length: 300-800 words
 
-Rewritten Content:`;
+Generated Content:`;
 
-  const result = await model.generateContent(prompt);
-  const response = result.response;
-  return response.text();
+  return await generateContent(prompt);
 }
 
 /**

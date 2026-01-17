@@ -286,8 +286,8 @@ Edit prompts in `services/outlineService.ts`:
 - Ensure PDFs are under 50MB (or adjust bucket limit)
 
 **Outline Generation Takes Forever**
-- Check Gemini API key is valid
-- Verify you haven't hit rate limits (free tier: 60 requests/minute)
+- Check Claude API key is valid (EXPO_PUBLIC_ANTHROPIC_API_KEY)
+- Verify you haven't hit rate limits
 - Check console for error logs
 
 **No Content in Steps**

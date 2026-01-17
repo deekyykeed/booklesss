@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   courseTitle: {
     marginBottom: 4,
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     fontFamily: 'GoogleSans-Medium',
   },
   metaContainer: {

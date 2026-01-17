@@ -11,7 +11,11 @@ import { Text, View } from '@/components/Themed';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
-import { getStep, toggleStepCompletion, type Step } from '@/services/lessonService';
+import { getStep, toggleStepCompletion, updateStepContent, type Step } from '@/services/lessonService';
+import { getCourse } from '@/services/courseService';
+import { getAllExtractedText } from '@/services/pdfService';
+import { generateStepContent } from '@/services/outlineService';
+import { supabase } from '@/lib/supabase';
 import * as Haptics from 'expo-haptics';
 
 export default function StepDetailScreen() {
@@ -19,6 +23,7 @@ export default function StepDetailScreen() {
   const [step, setStep] = useState<Step | null>(null);
   const [loading, setLoading] = useState(true);
   const [toggling, setToggling] = useState(false);
+  const [generatingContent, setGeneratingContent] = useState(false);
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const router = useRouter();
@@ -39,11 +44,79 @@ export default function StepDetailScreen() {
       }
 
       setStep(fetchedStep);
+
+      // Check if content needs to be generated
+      if (!fetchedStep.content) {
+        console.log('[Step] Content is null, triggering generation');
+        await generateContent(fetchedStep);
+      }
     } catch (error: any) {
       console.error('Error loading step:', error);
       Alert.alert('Error', 'Failed to load step');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const generateContent = async (currentStep: Step) => {
+    try {
+      setGeneratingContent(true);
+      console.log('[Step] Starting content generation for:', currentStep.title);
+
+      // Get lesson to retrieve course_id
+      const { data: lesson } = await supabase
+        .from('lessons')
+        .select('course_id')
+        .eq('id', currentStep.lesson_id)
+        .single();
+
+      if (!lesson) {
+        throw new Error('Lesson not found');
+      }
+
+      // Get course to retrieve writing_style
+      const course = await getCourse(lesson.course_id);
+      if (!course) {
+        throw new Error('Course not found');
+      }
+
+      console.log('[Step] Found course with writing style:', course.writing_style);
+
+      // Get PDF content for context
+      const pdfTexts = await getAllExtractedText(course.id);
+      const combinedText = pdfTexts.join('\n\n---\n\n');
+
+      console.log('[Step] Got PDF content, generating with Claude...');
+
+      // Generate content using Claude
+      const content = await generateStepContent(
+        currentStep.title,
+        combinedText.substring(0, 30000), // Limit context size to avoid token limits
+        course.writing_style
+      );
+
+      console.log('[Step] Content generated, saving to database...');
+
+      // Save to database
+      await updateStepContent(currentStep.id, content);
+
+      // Update local state
+      setStep({ ...currentStep, content });
+
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      console.log('[Step] Content generation complete!');
+    } catch (error: any) {
+      console.error('[Step] Error generating content:', error);
+      Alert.alert(
+        'Content Generation Failed',
+        'Unable to generate content for this step. Please try again.',
+        [
+          { text: 'Retry', onPress: () => generateContent(currentStep) },
+          { text: 'Cancel', style: 'cancel' },
+        ]
+      );
+    } finally {
+      setGeneratingContent(false);
     }
   };
 
@@ -111,12 +184,22 @@ export default function StepDetailScreen() {
 
           {/* Content */}
           <View style={styles.contentContainer}>
-            {step.content ? (
+            {generatingContent ? (
+              <View style={styles.generatingContainer}>
+                <ActivityIndicator size="large" color={colors.tint} />
+                <Text style={[styles.generatingText, { color: colors.text }]}>
+                  Generating content...
+                </Text>
+                <Text style={[styles.generatingSubtext, { color: colors.tabIconDefault }]}>
+                  This will only take a moment
+                </Text>
+              </View>
+            ) : step.content ? (
               <Text style={[styles.content, { color: colors.text }]}>{step.content}</Text>
             ) : (
               <View style={styles.noContent}>
                 <Text style={[styles.noContentText, { color: colors.tabIconDefault }]}>
-                  Content is being generated for this step. Please check back in a few minutes.
+                  Content generation failed. Please try reloading the step.
                 </Text>
               </View>
             )}
@@ -227,6 +310,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     lineHeight: 24,
+  },
+  generatingContainer: {
+    padding: 40,
+    alignItems: 'center',
+    gap: 12,
+  },
+  generatingText: {
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  generatingSubtext: {
+    fontSize: 14,
+    textAlign: 'center',
   },
   referencesContainer: {
     marginTop: 32,

@@ -15,10 +15,7 @@
 import { updatePDFStatus, type CoursePDF } from './pdfService';
 
 /**
- * Extract text from a PDF file
- *
- * TODO: Implement actual PDF text extraction
- * For now, this is a placeholder that simulates the process
+ * Extract text from a PDF file using Supabase Edge Function
  */
 export async function extractTextFromPDF(pdf: CoursePDF): Promise<{
   text: string;
@@ -27,42 +24,56 @@ export async function extractTextFromPDF(pdf: CoursePDF): Promise<{
   console.log('[PDF Extraction] Starting extraction for:', pdf.filename);
 
   try {
-    // Update status to processing
     await updatePDFStatus(pdf.id, 'processing');
 
-    // TODO: Implement actual PDF text extraction
-    // For MVP, you could:
-    // 1. Use a Supabase Edge Function with pdf-parse
-    // 2. Call a third-party API
-    // 3. Use OCR for scanned PDFs
+    // Get Supabase credentials from environment
+    const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
-    // Placeholder simulation
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    if (!supabaseUrl || !supabaseAnonKey) {
+      throw new Error('Supabase credentials not found in environment');
+    }
 
-    // Mock extracted text (for testing)
-    const mockText = `This is mock extracted text from ${pdf.filename}.
+    console.log('[PDF Extraction] Calling edge function for:', pdf.filename);
 
-In a production environment, this would contain the actual text content from the PDF file.
+    // Call Supabase Edge Function
+    const response = await fetch(
+      `${supabaseUrl}/functions/v1/extract-pdf-text`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabaseAnonKey}`,
+        },
+        body: JSON.stringify({
+          pdfUrl: pdf.file_url,
+          pdfId: pdf.id,
+        }),
+      }
+    );
 
-The text extraction process would:
-- Parse all pages of the PDF
-- Extract text content while preserving structure
-- Handle different PDF formats (text-based, scanned)
-- Extract metadata like page count
-- Handle tables, images, and special formatting
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(
+        `Edge function failed: ${response.statusText}. ${errorData.error || ''}`
+      );
+    }
 
-For now, this placeholder allows you to test the rest of the application flow.`;
+    const result = await response.json();
 
-    const mockPageCount = Math.floor(Math.random() * 50) + 10;
+    if (!result.success) {
+      throw new Error(result.error || 'Unknown error from edge function');
+    }
 
-    // Update status to completed with extracted text
-    await updatePDFStatus(pdf.id, 'completed', mockText, mockPageCount);
-
-    console.log('[PDF Extraction] Completed for:', pdf.filename);
+    console.log(
+      '[PDF Extraction] Completed for:',
+      pdf.filename,
+      `(${result.pages} pages, ${result.text.length} characters)`
+    );
 
     return {
-      text: mockText,
-      pageCount: mockPageCount,
+      text: result.text,
+      pageCount: result.pages,
     };
   } catch (error) {
     console.error('[PDF Extraction] Error:', error);

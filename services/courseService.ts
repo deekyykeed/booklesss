@@ -1,6 +1,6 @@
-import { supabase } from '@/lib/supabase';
-import { ensureAuthenticated } from '@/lib/auth';
 import { WritingStyleId } from '@/constants/WritingStyles';
+import { ensureAuthenticated } from '@/lib/auth';
+import { supabase } from '@/lib/supabase';
 
 export interface Course {
   id: string;
