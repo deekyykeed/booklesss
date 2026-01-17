@@ -1,18 +1,18 @@
-import { useState, useEffect, useCallback } from 'react';
 import CourseCard from '@/components/CourseCard';
 import CreateCourseModal from '@/components/CreateCourseModal';
 import { Text, View as ThemedView } from '@/components/Themed';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
-import { FolderAddIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react-native';
-import { useRouter } from 'expo-router';
-import { StyleSheet, TouchableOpacity, View, ActivityIndicator, RefreshControl, ScrollView, Alert } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getCourses, type Course } from '@/services/courseService';
 import { createCourseWithPDFs, type CourseCreationProgress } from '@/services/courseWorkflowService';
 import { CourseFormData } from '@/types/course';
+import { FolderAddIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
