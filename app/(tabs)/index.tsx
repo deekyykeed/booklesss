@@ -32,11 +32,17 @@ export default function HomeScreen() {
 
   const loadCourses = async () => {
     try {
+      setLoading(true);
       const fetchedCourses = await getCourses();
-      setCourses(fetchedCourses);
-    } catch (error) {
+      setCourses(fetchedCourses || []);
+    } catch (error: any) {
       console.error('Error loading courses:', error);
-      Alert.alert('Error', 'Failed to load courses. Please try again.');
+      // Don't show alert on initial load to avoid blocking the UI
+      // Just log and show empty state
+      setCourses([]);
+      if (!loading) {
+        Alert.alert('Error', error?.message || 'Failed to load courses. Please try again.');
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);

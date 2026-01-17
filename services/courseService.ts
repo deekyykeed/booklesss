@@ -46,6 +46,9 @@ export async function createCourse(data: CreateCourseData): Promise<Course> {
  * Get all courses for the current user
  */
 export async function getCourses(): Promise<Course[]> {
+  // Ensure user is authenticated
+  await ensureAuthenticated();
+  
   const { data, error } = await supabase
     .from('courses')
     .select('*')

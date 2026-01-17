@@ -42,17 +42,15 @@ This will create all necessary tables, indexes, and security policies.
    ```
    EXPO_PUBLIC_SUPABASE_URL=https://your-actual-project-url.supabase.co
    EXPO_PUBLIC_SUPABASE_ANON_KEY=your-actual-anon-key-here
+   EXPO_PUBLIC_ANTHROPIC_API_KEY=your-claude-api-key-here
    ```
 
-## Step 6: Get Gemini API Key
+## Step 6: Get Claude API Key
 
-1. Go to [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. Click "Create API key"
+1. Go to [Anthropic Console](https://console.anthropic.com/settings/keys)
+2. Click "Create Key"
 3. Copy the key
-4. Add it to your `.env` file:
-   ```
-   EXPO_PUBLIC_GEMINI_API_KEY=your-gemini-api-key-here
-   ```
+4. Add it to your `.env` file as `EXPO_PUBLIC_ANTHROPIC_API_KEY`
 
 ## Step 7: Enable Authentication (Optional)
 
