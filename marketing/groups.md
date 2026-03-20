@@ -60,27 +60,96 @@ Create each link at bit.ly before posting. Name them clearly so the dashboard is
 
 ---
 
-## Post Template (copy-paste for WhatsApp)
+## Post Templates
+
+Framework applied: Give First → One CTA → everything else inside the PDF.
+Score each message before sending: Give First / Micro Commitment / Social Proof / Authority / Rapport / Scarcity / Shared Identity. Aim 5+/7.
+
+---
+
+### Template A — Friend group / casual (score: 6/7)
 
 ```
-Hey 👋
+Yo — if you're doing Treasury Management this sem, here's something I made.
 
-If you're doing Treasury Management this semester, I made something that
-might help.
+3 concepts that show up in almost every exam paper, with worked examples
+in Kwacha. Free, no strings.
 
-It's a free PDF — 3 concepts that come up almost every exam, with worked
-examples in Kwacha.
+[bit.ly/booklesss-GROUP]
 
-[bit.ly link]
-
-I'm also building a full study community on Slack — all 11 Treasury
-Management lessons, weekly quizzes, leaderboard. Founding member spots
-are open at K550/month (locks in for life) until April 18.
-
-More info inside the PDF.
+Everything else is in the PDF.
 ```
 
-Adjust the message based on the group — be more casual in friend groups, slightly more formal in official class groups.
+**Why it works:** Peer tone. One ask (click). No pitch in the message — the PDF handles the rest.
+**Adjust:** Swap "Yo" for "Hey" depending on how well you know the group.
+
+---
+
+### Template B — Official class group / larger group (score: 6/7)
+
+```
+Hey — made a free study resource for Treasury Management (BBF4302).
+
+3 exam concepts explained in plain English, worked out in Kwacha. Based
+on past paper patterns.
+
+[bit.ly/booklesss-GROUP]
+
+Worth a look if you're preparing for finals.
+```
+
+**Why it works:** Credible framing ("past paper patterns" = authority). Low ask. No pitch.
+
+---
+
+### Template C — After social proof exists (use once you have members — score: 7/7)
+
+```
+Hey — I've been running a Treasury Management study group for a while now.
+[X] students are using it this sem to prep for BBF4302.
+
+Made a free PDF pulling out 3 concepts that keep showing up in past papers.
+Worked examples in Kwacha.
+
+[bit.ly/booklesss-GROUP]
+
+Everything's in there.
+```
+
+**Why it works:** Social proof up front. Still one ask. Authority through numbers.
+
+---
+
+### Template D — Urgency drop (use April 14–17 only)
+
+```
+Dropping this here before the price changes on the 18th.
+
+Made a free Treasury Management guide — 3 concepts, worked examples in
+Kwacha, based on past papers. No catch.
+
+Inside the PDF there's also a founding member offer for the full study
+community. That rate closes April 18 and won't come back.
+
+[bit.ly/booklesss-GROUP]
+```
+
+**Why it works:** Real scarcity (not manufactured). Give First still leads. Urgency is honest.
+
+---
+
+### Scoring reminder (from cold outreach framework)
+| # | Principle | Quick check |
+|---|-----------|------------|
+| 1 | Give First | Does the message lead with free value, not a pitch? |
+| 2 | Micro Commitment | Is there only ONE ask? |
+| 3 | Social Proof | Any numbers, names, or "X students"? |
+| 4 | Authority | Does it sound confident? No "might help" hedging? |
+| 5 | Rapport | Would a classmate send this? Passes the text message test? |
+| 6 | Scarcity | Is there a real deadline or constraint mentioned? |
+| 7 | Shared Identity | ZCAS / BBF4302 / same course = in-group signal? |
+
+Adjust the message based on the group. More casual in friend groups, tighter in official class groups.
 
 ---
 
