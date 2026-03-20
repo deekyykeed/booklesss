@@ -1,4 +1,5 @@
-# Gamma Slide Deck — Lesson 2: Working Capital & Liquidity Management
+# Gamma Slide Deck — 
+
 **Gamma URL:** [paste after publishing]
 **Course:** BBF4302 Treasury Management
 **Last updated:** 2026-03-16

@@ -31,7 +31,16 @@
       "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Users\\\\deeky\\\\OneDrive\\\\Desktop\\\\Booklesss\\\\Treasury Management\\\\lesson-01-foundations'' -Recurse | Select-Object Name\")",
       "Bash(gh pr:*)",
       "Bash(gh repo:*)",
-      "Bash(powershell.exe -Command \"New-Item -ItemType Directory -Path ''C:\\\\Users\\\\deeky\\\\OneDrive\\\\Desktop\\\\Booklesss\\\\.claude\\\\skills\\\\humanizer'' -Force | Out-Null; Copy-Item ''C:\\\\Users\\\\deeky\\\\.claude\\\\skills\\\\humanizer\\\\SKILL.md'' ''C:\\\\Users\\\\deeky\\\\OneDrive\\\\Desktop\\\\Booklesss\\\\.claude\\\\skills\\\\humanizer\\\\SKILL.md'' -Force; Get-ChildItem ''C:\\\\Users\\\\deeky\\\\OneDrive\\\\Desktop\\\\Booklesss\\\\.claude\\\\skills\\\\''\")"
+      "Bash(powershell.exe -Command \"New-Item -ItemType Directory -Path ''C:\\\\Users\\\\deeky\\\\OneDrive\\\\Desktop\\\\Booklesss\\\\.claude\\\\skills\\\\humanizer'' -Force | Out-Null; Copy-Item ''C:\\\\Users\\\\deeky\\\\.claude\\\\skills\\\\humanizer\\\\SKILL.md'' ''C:\\\\Users\\\\deeky\\\\OneDrive\\\\Desktop\\\\Booklesss\\\\.claude\\\\skills\\\\humanizer\\\\SKILL.md'' -Force; Get-ChildItem ''C:\\\\Users\\\\deeky\\\\OneDrive\\\\Desktop\\\\Booklesss\\\\.claude\\\\skills\\\\''\")",
+      "Bash(python3:*)",
+      "Bash(cmd.exe /c \"mkdir \"\"C:\\\\Users\\\\deeky\\\\OneDrive\\\\Desktop\\\\Booklesss\\\\marketing\\\\lead-magnets\"\" 2>nul && echo done\")",
+      "Bash(python \"marketing/lead-magnets/generate_tm_lead_magnet.py\")",
+      "Bash(python \"Treasury Management/lesson-01-foundations/notes/generate_1_1_pdf.py\")",
+      "Bash(mv \"Treasury Management/notes/raw_pdf_extract.txt\" \"Treasury Management/_source/\")",
+      "Bash(rmdir \"Treasury Management/notes\")",
+      "Bash(rmdir \"Treasury Management/quizzes\")",
+      "Bash(rm -rf \"Treasury Management/past-papers\")",
+      "Bash(rm -rf \"Blader Humanizer\")"
     ]
   }
 }
