@@ -408,7 +408,7 @@ def build_pdf():
     # Founding offer box
     offer_content = [
         Paragraph("K550/month — locked in for life", styles["offer_title"]),
-        Paragraph("Offer closes April 12, 2026", styles["offer_sub"]),
+        Paragraph("Offer closes April 18, 2026", styles["offer_sub"]),
         Paragraph("After that: K800/month", styles["offer_note"]),
         gap(8),
         Paragraph("Join at  booklesss20.slack.com", styles["cta_link"]),

@@ -110,8 +110,8 @@ Keep this updated. It's your editorial calendar.
 
 | Date | Event | Action Needed |
 |------|-------|---------------|
-| **April 12, 2026** | Slack Pro trial ends — founding rate deadline | Announce to all WhatsApp groups by April 9 |
-| **April 12, 2026** | Founding member rate (K550) closes | Update website + lead magnet CTA after this date |
+| **April 18, 2026** | Slack Pro trial ends — founding rate deadline | Announce to all WhatsApp groups by April 15 |
+| **April 18, 2026** | Founding member rate (K550) closes | Update website + lead magnet CTA after this date |
 | Ongoing | Business+ billing starts after trial | Ensure ≥1 paid student to cover Slack cost |
 
 ---

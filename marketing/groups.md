@@ -75,7 +75,7 @@ examples in Kwacha.
 
 I'm also building a full study community on Slack — all 11 Treasury
 Management lessons, weekly quizzes, leaderboard. Founding member spots
-are open at K550/month (locks in for life) until April 12.
+are open at K550/month (locks in for life) until April 18.
 
 More info inside the PDF.
 ```
