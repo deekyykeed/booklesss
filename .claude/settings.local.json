@@ -42,7 +42,8 @@
       "Bash(rm -rf \"Treasury Management/past-papers\")",
       "Bash(rm -rf \"Blader Humanizer\")",
       "Bash(mkdir -p courses)",
-      "Bash(mv \"Treasury Management\" \"Corporate Finance\" \"Strategic Management\" courses/)"
+      "Bash(mv \"Treasury Management\" \"Corporate Finance\" \"Strategic Management\" courses/)",
+      "Bash(ls C:/Windows/Fonts/*.ttf)"
     ]
   }
 }

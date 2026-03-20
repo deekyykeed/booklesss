@@ -51,6 +51,8 @@ pdfmetrics.registerFontFamily(
     italic="Calibri-Italic",
     boldItalic="Calibri-Bold",
 )
+pdfmetrics.registerFont(TTFont("ArialBlack",    os.path.join(FONT_DIR, "ariblk.ttf")))
+pdfmetrics.registerFont(TTFont("SegoeUIBlack",  os.path.join(FONT_DIR, "seguibl.ttf")))
 
 COURSE_SHORT = "BBF4302 TM"
 LESSON_SHORT = "Treasury Management Lead Magnet"
@@ -97,19 +99,24 @@ def draw_navy_cover(canvas, doc):
     canvas.setLineWidth(1)
     canvas.line(MARGIN * 2.5, PAGE_H * 0.78, PAGE_W - MARGIN * 2.5, PAGE_H * 0.78)
 
-    # Main title
-    canvas.setFont("Calibri-Bold", 26)
+    # Main title — Arial Black for impact
+    canvas.setFont("ArialBlack", 28)
     canvas.setFillColor(WHITE)
     canvas.drawCentredString(PAGE_W / 2, PAGE_H * 0.66, "3 Treasury Management")
-    canvas.drawCentredString(PAGE_W / 2, PAGE_H * 0.58, "Concepts That Will Show")
-    canvas.drawCentredString(PAGE_W / 2, PAGE_H * 0.50, "Up in Your Exam")
+    canvas.drawCentredString(PAGE_W / 2, PAGE_H * 0.57, "Concepts That Will")
+    canvas.drawCentredString(PAGE_W / 2, PAGE_H * 0.49, "Show Up in Your Exam")
 
     # Subtitle
     canvas.setFont("Calibri-Italic", 13)
     canvas.setFillColor(colors.HexColor("#C8C0B0"))
-    canvas.drawCentredString(PAGE_W / 2, PAGE_H * 0.42,
-                             "Real explanations. Worked examples in Kwacha.")
-    canvas.drawCentredString(PAGE_W / 2, PAGE_H * 0.38, "No textbook fluff.")
+    canvas.drawCentredString(PAGE_W / 2, PAGE_H * 0.41,
+                             "Worked examples in Kwacha. Written for ZCAS students.")
+
+    # Deadline nudge on cover
+    canvas.setFont("Calibri-Bold", 9.5)
+    canvas.setFillColor(AMBER)
+    canvas.drawCentredString(PAGE_W / 2, PAGE_H * 0.35,
+                             "Founding member rate — K550/month — closes April 18")
 
     # Bottom strip text
     canvas.setFont("Calibri-Bold", 10)
@@ -143,9 +150,9 @@ def make_styles():
     s = {}
     s["h1"] = ParagraphStyle("h1", fontName="Calibri-Bold", fontSize=18,
                               textColor=NAVY, leading=24, spaceAfter=6, spaceBefore=10)
-    s["h2"] = ParagraphStyle("h2", fontName="Calibri-Bold", fontSize=14,
+    s["h2"] = ParagraphStyle("h2", fontName="SegoeUIBlack", fontSize=13,
                               textColor=NAVY, leading=18, spaceAfter=4, spaceBefore=12)
-    s["h2_white"] = ParagraphStyle("h2_white", fontName="Calibri-Bold", fontSize=18,
+    s["h2_white"] = ParagraphStyle("h2_white", fontName="SegoeUIBlack", fontSize=17,
                                     textColor=WHITE, leading=24, spaceAfter=8, spaceBefore=4,
                                     alignment=TA_CENTER)
     s["body"] = ParagraphStyle("body", fontName="Calibri", fontSize=10.5,
@@ -268,11 +275,12 @@ def build_pdf():
 
     # ── PAGE 2 — CONCEPT 1 ────────────────────────────────────────────────
     story.extend(concept_heading(
-        "1. The Cash Conversion Cycle — and why it matters more than you think", styles))
+        "1. The Cash Conversion Cycle", styles))
 
     story.append(Paragraph(
-        "The CCC tells you how long a business has its money tied up before it gets paid. "
-        "Examiners love it because it connects inventory, debtors, and creditors in one number.",
+        "The CCC measures how long a business has money locked up before it gets paid back. "
+        "It pulls three things together — inventory days, debtor days, creditor days — into a "
+        "single number that tells you a lot about how efficiently a company runs.",
         styles["body"]))
     story.append(gap(8))
 
@@ -316,14 +324,12 @@ def build_pdf():
 
     # ── PAGE 3 — CONCEPTS 2 & 3 ───────────────────────────────────────────
     story.extend(concept_heading(
-        "2. The Cost of Not Taking a Cash Discount", styles))
+        "2. The Cost of Ignoring a Cash Discount", styles))
 
     story.append(Paragraph(
-        "Many businesses offer <b>2/10 net 30</b> — pay within 10 days and get 2% off, "
-        "or pay the full amount within 30 days.",
-        styles["body"]))
-    story.append(Paragraph(
-        "Most people think ignoring the discount is fine. The maths says otherwise.",
+        "A supplier offers <b>2/10 net 30</b> — pay within 10 days and get 2% off, "
+        "or pay the full amount in 30 days. Sounds like a small discount. "
+        "Run the numbers and it's the equivalent of a 37% loan.",
         styles["body"]))
     story.append(gap(8))
 
@@ -348,30 +354,53 @@ def build_pdf():
     story.append(gap(16))
 
     story.extend(concept_heading(
-        "3. Segregation of Duties — why it always comes up", styles))
+        "3. Segregation of Duties", styles))
 
     story.append(Paragraph(
-        "Treasury controls exist because treasury handles large sums of money. "
-        "The most tested control is <b>segregation of duties</b>: "
-        "the person who makes a trade cannot also confirm it.",
+        "Treasury handles serious money. The most tested control in every past paper is "
+        "<b>segregation of duties</b>: the person who authorises a transaction cannot be "
+        "the same person who records it.",
         styles["body"]))
     story.append(gap(6))
 
     sod_content = [
         Paragraph("Nick Leeson — Barings Bank, 1995", styles["example_title"]),
         Paragraph(
-            "Leeson had no segregation of duties. He traded AND confirmed his own trades, "
-            "hiding £800 million in losses. Barings Bank — 200 years old — collapsed. "
-            "One person with too much access ended a whole bank.",
+            "Leeson traded and confirmed his own positions with no oversight. "
+            "By the time anyone noticed, he had hidden £800 million in losses. "
+            "Barings Bank — 233 years old — collapsed in weeks. "
+            "One control missing. One bank gone.",
             styles["example_body"]),
     ]
     story.append(KeepTogether(amber_example_box(sod_content, styles)))
 
     story.append(gap(8))
     story.append(Paragraph(
-        "Examiners will give you a scenario and ask which control is missing. "
-        "Nine times out of ten, it's this one.",
+        "In the exam, you'll get a scenario and be asked to identify what's wrong. "
+        "If someone has too much access — that's your answer.",
         styles["body"]))
+
+    # Deadline nudge before page break
+    story.append(gap(16))
+    deadline_content = [
+        Paragraph(
+            "These 3 concepts are from Lesson 1 of 11. The full course — "
+            "all lessons, weekly quizzes, past papers — is inside Booklesss. "
+            "Founding rate: <b>K550/month, locked in for life. Closes April 18.</b>",
+            ParagraphStyle("deadline_note", fontName="Calibri", fontSize=9.5,
+                           textColor=NAVY, leading=14, alignment=TA_CENTER,
+                           spaceAfter=0)),
+    ]
+    t = Table([[deadline_content]], colWidths=[CONTENT_W - 0.4 * cm])
+    t.setStyle(TableStyle([
+        ("BACKGROUND",    (0, 0), (-1, -1), colors.HexColor("#FDF3E3")),
+        ("LEFTPADDING",   (0, 0), (-1, -1), 12),
+        ("RIGHTPADDING",  (0, 0), (-1, -1), 12),
+        ("TOPPADDING",    (0, 0), (-1, -1), 8),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+        ("BOX",           (0, 0), (-1, -1), 1.5, AMBER),
+    ]))
+    story.append(KeepTogether(t))
 
     # Force to page 4 — teal CTA
     story.append(NextPageTemplate("teal"))
@@ -385,9 +414,9 @@ def build_pdf():
                              spaceAfter=10, spaceBefore=4))
 
     story.append(Paragraph(
-        "Booklesss is a study community built specifically for ZCAS students. "
-        "Every lesson is rewritten in plain English, with worked examples in Kwacha "
-        "and weekly quizzes to test yourself.",
+        "Booklesss is a study community for ZCAS students. Every lesson is rewritten "
+        "in plain English, with worked examples in Kwacha and weekly quizzes. "
+        "The leaderboard keeps it competitive.",
         styles["body_white"]))
 
     story.append(gap(10))
