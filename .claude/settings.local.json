@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell -Command \"Rename-Item -Path ''C:\\\\Users\\\\deeky\\\\OneDrive\\\\Desktop\\\\Bookless Source Content'' -NewName ''Booklesss''\")",
+      "Bash(find 'C:/Users/deeky/OneDrive/Desktop/Booklesss/Treasury Management' -type f -name *.txt -o -name *.md -o -name *.docx)",
+      "Bash(python3 -c \"import zipfile; print\\(''zipfile available''\\)\")",
+      "Bash(cd /tmp)",
+      "Bash(unzip -l \"/c/Users/deeky/OneDrive/Desktop/Booklesss/Treasury Management/07_Working Capital_Liquidity Management/1_Working and Liquidity Management updated.pptx\")",
+      "Bash(__NEW_LINE_80bac4a539b2dc47__ 'FILE1=/c/Users/deeky/OneDrive/Desktop/Booklesss/Treasury Management/07_Working Capital_Liquidity Management/1_Working and Liquidity Management updated.pptx' __NEW_LINE_80bac4a539b2dc47__ export LC_ALL=C.UTF-8 unzip -p $FILE1 ppt/slides/slide1.xml)",
+      "Bash(__NEW_LINE_88ddf77cf972f83e__ 'FILE1=/c/Users/deeky/OneDrive/Desktop/Booklesss/Treasury Management/07_Working Capital_Liquidity Management/1_Working and Liquidity Management updated.pptx' __NEW_LINE_88ddf77cf972f83e__ unzip -p $FILE1 ppt/slides/slide1.xml)",
+      "Bash(tr '>' '\\\\n')",
+      "Bash(sed 's/.*<a:t>//')",
+      "Bash(sed 's/<.*//')",
+      "Bash(__NEW_LINE_ee0b563bfb3b22ca__ 'FILE1=/c/Users/deeky/OneDrive/Desktop/Booklesss/Treasury Management/07_Working Capital_Liquidity Management/1_Working and Liquidity Management updated.pptx' __NEW_LINE_ee0b563bfb3b22ca__ echo '=== FILE 1: Working and Liquidity Management updated.pptx ===' unzip -p $FILE1 ppt/slides/slide*.xml)",
+      "Bash(__NEW_LINE_d26d602f7932f42c__ 'FILE1=/c/Users/deeky/OneDrive/Desktop/Booklesss/Treasury Management/07_Working Capital_Liquidity Management/1_Working and Liquidity Management updated.pptx' __NEW_LINE_d26d602f7932f42c__ unzip -p $FILE1 ppt/slides/slide2.xml)",
+      "Bash(grep -v '^$' echo \"\" done)",
+      "Bash(__NEW_LINE_951702ac663cc7d1__ 'FILE1=/c/Users/deeky/OneDrive/Desktop/Booklesss/Treasury Management/07_Working Capital_Liquidity Management/1_Working and Liquidity Management updated.pptx' __NEW_LINE_951702ac663cc7d1__ echo '=== FILE 1: Working and Liquidity Management Updated ===' unzip -p $FILE1 ppt/slides/slide2.xml)",
+      "Bash(__NEW_LINE_997b40ec3d669c19__ 'FILE1=/c/Users/deeky/OneDrive/Desktop/Booklesss/Treasury Management/07_Working Capital_Liquidity Management/1_Working and Liquidity Management updated.pptx' __NEW_LINE_997b40ec3d669c19__ unzip -p $FILE1 ppt/slides/slide2.xml)",
+      "Bash(python3 -c \":*)",
+      "Bash(pip install:*)",
+      "Bash(python3 -c \"import pptx; print\\(''''pptx ok''''\\)\")",
+      "Bash(pip3 install:*)",
+      "Bash(python3 -c \"from pptx import Presentation; print\\(''''ok''''\\)\")",
+      "Bash(python -c \"from pptx import Presentation; print\\(''pptx ok''\\)\")",
+      "Bash(python -c \"import pdfplumber; print\\(''pdf ok''\\)\")",
+      "Bash(python -c \":*)"
+    ]
+  }
+}
