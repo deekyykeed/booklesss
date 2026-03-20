@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1 1 introduction to tm — Booklesss</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:   #1B2A4A;
+  --amber:  #C17E3A;
+  --cream:  #F5F0E8;
+  --ink:    #18181B;
+  --steel:  #71717A;
+  --mist:   #9CA3AF;
+  --rule:   #E5E7EB;
+  --ghost:  #F9FAFB;
+  --white:  #FFFFFF;
+  --warn-bg: #FEF3C7;
+  --warn-tx: #92400E;
+  --info-bg: #EFF6FF;
+  --info-tx: #1D4ED8;
+  --succ-bg: #ECFDF5;
+  --succ-tx: #065F46;
+  --note-bg: #FFF7ED;
+  --note-tx: #9A3412;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+  background: #0D1117;
+  overflow: hidden;
+}
+
+/* ── DECK WRAPPER ── */
+.deck {
+  width: 100vw; height: 100dvh;
+  display: flex; align-items: stretch;
+  position: relative;
+}
+
+/* ── CARDS ── */
+.card {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.35s cubic-bezier(0.16,1,0.3,1),
+              transform 0.35s cubic-bezier(0.16,1,0.3,1);
+  transform: translateY(18px);
+  overflow-y: auto;
+}
+.card.active {
+  opacity: 1; pointer-events: all;
+  transform: translateY(0);
+}
+.card.exit {
+  opacity: 0; transform: translateY(-18px);
+}
+
+/* ── COVER CARD ── */
+.card-cover {
+  background: var(--navy);
+  justify-content: flex-end;
+  padding: 0;
+}
+.cover-inner {
+  padding: 10vmin 8vmin;
+  max-width: 860px;
+}
+.cover-eyebrow {
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em;
+  color: var(--amber); text-transform: uppercase; margin-bottom: 1rem;
+}
+.cover-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(2rem, 5.5vw, 3.8rem);
+  font-weight: 700; line-height: 1.1; letter-spacing: -0.02em;
+  color: var(--white); margin-bottom: 1.5rem;
+}
+.cover-rule {
+  width: 3rem; height: 2px; background: var(--amber);
+  margin-bottom: 1.2rem;
+}
+.cover-sub {
+  font-size: 0.95rem; color: #8B9AB0; line-height: 1.6;
+  max-width: 52ch; margin-bottom: 0.5rem;
+}
+.cover-tag {
+  font-size: 0.75rem; font-weight: 600;
+  color: var(--amber); margin-top: 0.5rem;
+}
+/* Accent strip */
+.card-cover::before {
+  content: ''; position: absolute;
+  left: 0; top: 0; bottom: 0; width: 4px;
+  background: var(--amber);
+}
+
+/* ── CONTENT CARDS ── */
+.card-body {
+  background: var(--white);
+}
+.card-content {
+  padding: clamp(2rem, 5vmin, 3.5rem) clamp(1.5rem, 7vmin, 5rem);
+  max-width: 860px; width: 100%; margin: 0 auto;
+  flex: 1;
+}
+
+/* ── TYPOGRAPHY ── */
+.card-eyebrow {
+  font-size: 0.63rem; font-weight: 700; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--amber);
+  margin-bottom: 0.4rem;
+}
+.card-content h2 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+  font-weight: 700; line-height: 1.15; letter-spacing: -0.015em;
+  color: var(--ink); margin-bottom: 1rem;
+}
+.card-content h3 {
+  font-size: 0.85rem; font-weight: 700;
+  color: var(--steel); text-transform: uppercase;
+  letter-spacing: 0.06em; margin: 1.4rem 0 0.5rem;
+}
+.card-content p {
+  font-size: clamp(0.9rem, 1.8vw, 1rem);
+  color: var(--ink); line-height: 1.7;
+  max-width: 68ch; margin-bottom: 0.8rem;
+}
+.card-content strong { font-weight: 700; }
+.card-content em { font-style: italic; color: var(--steel); }
+.card-content code {
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+  font-size: 0.88em; background: var(--ghost);
+  padding: 0.1em 0.4em; border-radius: 3px; color: var(--navy);
+}
+.card-content ul, .card-content ol {
+  padding-left: 1.4rem; margin-bottom: 0.8rem;
+}
+.card-content li {
+  font-size: clamp(0.9rem, 1.8vw, 1rem);
+  color: var(--ink); line-height: 1.7; margin-bottom: 0.3rem;
+}
+.card-content blockquote {
+  border-left: 2.5px solid var(--amber);
+  padding: 0.6rem 0 0.6rem 1.1rem;
+  margin: 1rem 0; background: #FBF7F0; border-radius: 0 4px 4px 0;
+}
+.card-content blockquote p {
+  color: var(--steel); font-style: italic; margin: 0;
+}
+
+/* ── TABLES ── */
+.card-content table {
+  width: 100%; border-collapse: collapse;
+  margin: 1rem 0; font-size: 0.88rem;
+}
+.card-content th {
+  background: var(--ink); color: var(--white);
+  font-weight: 600; text-align: left;
+  padding: 0.5rem 0.75rem;
+}
+.card-content td {
+  padding: 0.45rem 0.75rem;
+  border-bottom: 0.5px solid var(--rule);
+  color: var(--ink); vertical-align: top;
+}
+.card-content tr:nth-child(even) td { background: var(--ghost); }
+.card-content tr:last-child td {
+  font-weight: 700; background: #ECFDF5; color: #065F46;
+}
+
+/* ── CALLOUT BOXES ── */
+.callout {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  padding: 0.85rem 1.1rem; border-radius: 6px;
+  margin: 0.8rem 0; font-size: 0.9rem; line-height: 1.6;
+}
+.callout-icon { font-size: 1rem; flex-shrink: 0; margin-top: 0.1rem; }
+.callout-warning, .callout-caution {
+  background: var(--warn-bg); color: var(--warn-tx);
+  border: 0.5px solid #D97706;
+}
+.callout-info {
+  background: var(--info-bg); color: var(--info-tx);
+  border: 0.5px solid #3B82F6;
+}
+.callout-success {
+  background: var(--succ-bg); color: var(--succ-tx);
+  border: 0.5px solid #10B981;
+}
+.callout-note, .callout-question {
+  background: var(--note-bg); color: var(--note-tx);
+  border: 0.5px solid #F97316;
+}
+
+/* ── FOOTER ── */
+.card-footer {
+  padding: 0.6rem clamp(1.5rem, 7vmin, 5rem);
+  display: flex; justify-content: space-between; align-items: center;
+  border-top: 0.5px solid var(--rule);
+  font-size: 0.7rem; color: var(--mist);
+}
+.card-cover .card-footer {
+  border-top: 0.5px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.3);
+}
+
+/* ── NAVIGATION ── */
+.nav {
+  position: fixed; bottom: 1.8rem; left: 50%;
+  transform: translateX(-50%);
+  display: flex; align-items: center; gap: 1.2rem;
+  z-index: 100; pointer-events: none;
+}
+.nav-dots {
+  display: flex; gap: 0.4rem; align-items: center;
+}
+.nav-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  transition: all 0.25s ease; cursor: pointer; pointer-events: all;
+}
+.nav-dot.active {
+  background: var(--amber); width: 18px; border-radius: 3px;
+}
+.nav-arrows {
+  display: flex; gap: 0.5rem;
+}
+.nav-btn {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,0.08); border: 0.5px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.6); font-size: 0.9rem;
+  cursor: pointer; pointer-events: all;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s ease; backdrop-filter: blur(8px);
+}
+.nav-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+.nav-btn:disabled { opacity: 0.2; pointer-events: none; }
+
+/* ── PROGRESS BAR ── */
+.progress {
+  position: fixed; top: 0; left: 0; height: 2px;
+  background: var(--amber); transition: width 0.35s ease;
+  z-index: 200;
+}
+
+/* ── CARD COUNT ── */
+.card-count {
+  position: fixed; top: 1rem; right: 1.4rem;
+  font-size: 0.68rem; color: rgba(255,255,255,0.3);
+  z-index: 100; font-weight: 500; letter-spacing: 0.06em;
+}
+
+/* ── MOBILE ── */
+@media (max-width: 600px) {
+  .cover-title { font-size: 1.9rem; }
+  .card-content { padding: 1.5rem 1.2rem; }
+  .card-content h2 { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+<div id="progress" class="progress"></div>
+<div id="card-count" class="card-count"></div>
+<div class="deck">
+
+<div class="card card-cover" data-idx="0">
+  <div class="cover-inner">
+    <div class="cover-eyebrow">BBF4302  ·  BOOKLESSS</div>
+    <h1 class="cover-title">1 1 introduction to tm</h1>
+    <div class="cover-rule"></div>
+    <p class="cover-sub"># Gamma Slide Deck — Lesson 1: Introduction to Treasury Management</p><p class="cover-sub"><strong>Gamma URL:</strong> [paste after publishing]</p>
+    
+  </div>
+  <div class="card-footer">
+    <span>Booklesss</span>
+    <span>booklesss.framer.ai</span>
+  </div>
+</div>
+<div class="card card-body" data-idx="1">
+  <div class="card-content">
+    <div class="card-eyebrow">SLIDE 1</div>
+    <h2>Introduction to Treasury Management</h2>
+    <p>BBF4302 Treasury Management</p><p>What does a treasury department actually do — and why does every organisation need one?</p>
+  </div>
+  <div class="card-footer">
+    <span>Booklesss  ·  BBF4302</span>
+    <span>1 1 introduction to tm</span>
+  </div>
+</div>
+<div class="card card-body" data-idx="2">
+  <div class="card-content">
+    <div class="card-eyebrow">SLIDE 2</div>
+    <h2>What is Treasury Management?</h2>
+    <p>The treasury department is the <strong>financial centre</strong> of any organisation. Its core job is to protect the organisation's money and make sure there is always enough cash to keep things running.</p><p>Think of it this way: the rest of the business makes decisions — treasury makes sure those decisions can actually be paid for.</p><p>Three things treasury is always responsible for:</p><ul><li><strong>Safeguarding</strong> financial assets — cash, investments, receivables</li><li><strong>Managing liabilities</strong> — loans, debt, obligations</li><li><strong>Ensuring daily liquidity</strong> — the organisation never runs out of cash to operate</li></ul><p>The structure of a treasury function varies depending on the size, type, and complexity of the organisation.</p><blockquote>VISUAL [/columns — 3 columns]: Column 1: Safeguard Assets. Column 2: Manage Liabilities. Column 3: Ensure Liquidity. Add a one-line description under each heading.</blockquote>
+  </div>
+  <div class="card-footer">
+    <span>Booklesss  ·  BBF4302</span>
+    <span>1 1 introduction to tm</span>
+  </div>
+</div>
+<div class="card card-body" data-idx="3">
+  <div class="card-content">
+    <div class="card-eyebrow">SLIDE 3</div>
+    <h2>The 3 Key Decisions of the Finance Function</h2>
+    <p>Treasury sits at the centre of three fundamental financial decisions every organisation must make.</p><h3>1. Investment Decision — where do we put our resources?</h3><ul><li>Which projects to fund (capital budgeting)</li><li>How much to invest in working capital (stock, debtors)</li><li>When to invest or divest</li></ul><h3>2. Financing Decision — how do we raise the money?</h3><ul><li>Choosing the right mix of debt and equity</li><li>Understanding cost of funds and building a sound capital structure</li><li>Managing the difference between profit and cash</li></ul><h3>3. Dividend Decision — what do we do with profits?</h3><ul><li>How much to pay out vs. retain for growth</li><li>The level and growth of dividends affects the company's market value</li></ul><blockquote>VISUAL [Smart diagram — Semi circle or Arch]: Three segments labelled Investment, Financing, Dividend. Centre label: Treasury.</blockquote>
+  </div>
+  <div class="card-footer">
+    <span>Booklesss  ·  BBF4302</span>
+    <span>1 1 introduction to tm</span>
+  </div>
+</div>
+<div class="card card-body" data-idx="4">
+  <div class="card-content">
+    <div class="card-eyebrow">SLIDE 4</div>
+    <h2>The 10 Main Functions of Treasury</h2>
+    <table><thead><tr><th>#</th><th>Function</th><th>What it means</th></tr></thead><tbody><tr><td>1</td><td>Cash Forecasting</td><td>Compile short and long-term cash forecasts</td></tr><tr><td>2</td><td>Working Capital Management</td><td>Monitor levels and trends of current assets and liabilities</td></tr><tr><td>3</td><td>Cash Management</td><td>Ensure sufficient cash for daily operations</td></tr><tr><td>4</td><td>Investment Management</td><td>Invest excess cash appropriately</td></tr><tr><td>5</td><td>Risk Management</td><td>Manage exposure to interest rate and FX movements</td></tr><tr><td>6</td><td>Management Advice</td><td>Brief management on market conditions</td></tr><tr><td>7</td><td>Credit Rating Relations</td><td>Liaise with rating agencies when issuing debt</td></tr><tr><td>8</td><td>Bank Relationships</td><td>Manage the company's banking relationships</td></tr><tr><td>9</td><td>Fund Raising</td><td>Maintain investor relationships for capital raising</td></tr><tr><td>10</td><td>Credit Granting</td><td>Approve credit extended to customers</td></tr></tbody></table>
+  </div>
+  <div class="card-footer">
+    <span>Booklesss  ·  BBF4302</span>
+    <span>1 1 introduction to tm</span>
+  </div>
+</div>
+<div class="card card-body" data-idx="5">
+  <div class="card-content">
+    <div class="card-eyebrow">SLIDE 5</div>
+    <h2>Three Levels of Treasury Work</h2>
+    <p>Treasury staff operate at three levels — from big-picture strategy down to day-to-day tasks.</p><h3>Strategic</h3><p>Long-term, board-level decisions:</p><ul><li>Capital structure of the business</li><li>Dividend and retention policies</li><li>Capital raising and assessing likely returns</li></ul><h3>Tactical</h3><p>Medium-term, management decisions:</p><ul><li>Managing cash investments</li><li>Deciding whether and how to hedge currency or interest rate risk</li></ul><h3>Operational</h3><p>Day-to-day execution:</p><ul><li>Transferring cash between accounts</li><li>Placing surplus cash in short-term instruments</li><li>Dealing with banks on transactions</li></ul><blockquote>VISUAL [Smart diagram — Semi circle road]: Three layers. Top = Strategic, Middle = Tactical, Bottom = Operational. Each labelled with 2-3 keywords.</blockquote>
+  </div>
+  <div class="card-footer">
+    <span>Booklesss  ·  BBF4302</span>
+    <span>1 1 introduction to tm</span>
+  </div>
+</div>
+<div class="card card-body" data-idx="6">
+  <div class="card-content">
+    <div class="card-eyebrow">SLIDE 6</div>
+    <h2>Cost Centre vs Profit Centre</h2>
+    <p>How treasury is measured depends on how it's structured.</p><h3>Cost Centre — most common</h3><ul><li>Treasury is a support function, not expected to generate profit</li><li>Funded by an internal budget</li><li>Risk: management focuses on cutting costs rather than recognising treasury's value</li></ul><h3>Profit Centre — large corporates and financial firms</h3><ul><li>Treasury expected to generate income through trading, hedging, or FX management</li><li>Business units charged a market rate for treasury services</li><li>Risk: temptation to speculate</li></ul><table><thead><tr><th></th><th>Cost Centre</th><th>Profit Centre</th></tr></thead><tbody><tr><td>Goal</td><td>Minimise cost</td><td>Generate income</td></tr><tr><td>Accountability</td><td>Budget</td><td>P&L</td></tr><tr><td>Main risk</td><td>Undervalued</td><td>Speculation</td></tr><tr><td>Common in</td><td>Most organisations</td><td>Banks, MNCs, financial firms</td></tr></tbody></table><blockquote>VISUAL [/warning]: Add a warning box after the table — text: "The profit centre model creates a temptation to speculate. Nick Leeson at Barings Bank is the most famous example — a rogue treasury trader brought down an entire 200-year-old bank in 1995."</blockquote>
+  </div>
+  <div class="card-footer">
+    <span>Booklesss  ·  BBF4302</span>
+    <span>1 1 introduction to tm</span>
+  </div>
+</div>
+<div class="card card-body" data-idx="7">
+  <div class="card-content">
+    <div class="card-eyebrow">SLIDE 7</div>
+    <h2>The 6 Treasury Controls</h2>
+    <p>Because treasury handles large sums of money, strong controls are non-negotiable.</p><h3>1. Segregation of Duties</h3><p>Front office (trading) must be separated from back office (settlement). The person making a trade cannot also confirm it.</p><h3>2. Delegation of Authority</h3><p>Clear limits on who can authorise what. Decision-making power must sit with the right people.</p><h3>3. Transaction Limits</h3><p>Caps on individual transaction sizes. Prevents staff from investing in high-risk instruments.</p><h3>4. Approvals</h3><p>All trades approved by a senior manager. A separate person reconciles every transaction.</p><h3>5. Internal Audits</h3><p>Regular checks to verify actual transactions match company policy.</p><h3>6. Automation — STP</h3><p>Straight-Through Processing automates routine transactions end-to-end, reducing manual errors.</p>
+  </div>
+  <div class="card-footer">
+    <span>Booklesss  ·  BBF4302</span>
+    <span>1 1 introduction to tm</span>
+  </div>
+</div>
+<div class="card card-body" data-idx="8">
+  <div class="card-content">
+    <div class="card-eyebrow">SLIDE 8</div>
+    <h2>Centralised vs Decentralised Treasury</h2>
+    <p>Should an organisation run treasury from one place, or let each region manage its own?</p><h3>Centralised — managed from HQ or one country</h3><ul><li>Stronger controls, economies of scale, lower costs, tax advantages for MNCs</li><li>Less flexibility for local operations</li></ul><h3>Decentralised — each subsidiary manages its own treasury</h3><ul><li>Local expertise: knowledge of local banking, language, customs</li><li>Downside: duplication of effort, higher compliance burden</li></ul><h3>Hybrid / Regional Treasury Centres</h3><ul><li>Large MNCs set up regional centres (e.g. one for Africa, one for Europe)</li><li>Local input feeds into a central treasury management system</li></ul><table><thead><tr><th></th><th>Centralised</th><th>Decentralised</th><th>Hybrid</th></tr></thead><tbody><tr><td>Control</td><td>High</td><td>Low</td><td>Medium</td></tr><tr><td>Local expertise</td><td>Low</td><td>High</td><td>Medium</td></tr><tr><td>Cost efficiency</td><td>High</td><td>Low</td><td>Medium</td></tr></tbody></table><blockquote>VISUAL [/columns — 3 columns]: Use 3 columns with headers Centralised / Decentralised / Hybrid. List 3-4 bullet points per column instead of a table for a cleaner visual.</blockquote>
+  </div>
+  <div class="card-footer">
+    <span>Booklesss  ·  BBF4302</span>
+    <span>1 1 introduction to tm</span>
+  </div>
+</div>
+<div class="card card-body" data-idx="9">
+  <div class="card-content">
+    <div class="card-eyebrow">SLIDE 9</div>
+    <h2>Key Terms — Lesson 1</h2>
+    <table><thead><tr><th>Term</th><th>Definition</th></tr></thead><tbody><tr><td>Treasury Department</td><td>Financial centre of an organisation — manages cash, assets, liabilities, and risk</td></tr><tr><td>Liquidity</td><td>Having enough cash to meet obligations when they fall due</td></tr><tr><td>Cost Centre</td><td>A unit measured by costs, not expected to generate profit</td></tr><tr><td>Profit Centre</td><td>A unit expected to generate income</td></tr><tr><td>Segregation of Duties</td><td>Separating incompatible tasks (e.g. trading vs. settlement)</td></tr><tr><td>STP</td><td>Straight-Through Processing — automated end-to-end transaction processing</td></tr><tr><td>Front Office</td><td>The dealing/trading function of treasury</td></tr><tr><td>Back Office</td><td>Settlement, confirmation, and reconciliation</td></tr><tr><td>Centralised Treasury</td><td>All treasury functions managed from one location</td></tr><tr><td>Delegation of Authority</td><td>Formal assignment of decision-making power to appropriate levels</td></tr></tbody></table>
+  </div>
+  <div class="card-footer">
+    <span>Booklesss  ·  BBF4302</span>
+    <span>1 1 introduction to tm</span>
+  </div>
+</div>
+<div class="card card-body" data-idx="10">
+  <div class="card-content">
+    <div class="card-eyebrow">SLIDE 10</div>
+    <h2>What You Should Now Be Able To Do</h2>
+    <p>By the end of this lesson, you should be able to:</p><ol><li>Define treasury management and explain the role of the treasury department</li><li>Identify the 3 key decisions of the finance function — investment, financing, dividend</li><li>List and explain the 10 main functions of a treasury department</li><li>Distinguish between strategic, tactical, and operational treasury tasks</li><li>Compare cost centre and profit centre approaches — including the risks of each</li><li>Explain the 6 treasury controls and why segregation of duties is critical</li><li>Compare centralised, decentralised, and hybrid treasury structures</li></ol><p><strong>Next: Lesson 2 — Working Capital and Liquidity Management</strong></p>
+  </div>
+  <div class="card-footer">
+    <span>Booklesss  ·  BBF4302</span>
+    <span>1 1 introduction to tm</span>
+  </div>
+</div>
+</div>
+<nav class="nav">
+  <div class="nav-arrows">
+    <button class="nav-btn" id="btn-prev" title="Previous (←)">&#8592;</button>
+  </div>
+  <div class="nav-dots"><div class="nav-dot" title="Slide 1"></div><div class="nav-dot" title="Slide 2"></div><div class="nav-dot" title="Slide 3"></div><div class="nav-dot" title="Slide 4"></div><div class="nav-dot" title="Slide 5"></div><div class="nav-dot" title="Slide 6"></div><div class="nav-dot" title="Slide 7"></div><div class="nav-dot" title="Slide 8"></div><div class="nav-dot" title="Slide 9"></div><div class="nav-dot" title="Slide 10"></div><div class="nav-dot" title="Slide 11"></div></div>
+  <div class="nav-arrows">
+    <button class="nav-btn" id="btn-next" title="Next (→)">&#8594;</button>
+  </div>
+</nav>
+<script>
+const cards = document.querySelectorAll('.card');
+const dots = document.querySelectorAll('.nav-dot');
+const btnPrev = document.getElementById('btn-prev');
+const btnNext = document.getElementById('btn-next');
+const progress = document.getElementById('progress');
+const countEl = document.getElementById('card-count');
+let current = 0;
+
+function goTo(n) {
+  if (n < 0 || n >= cards.length) return;
+  cards[current].classList.remove('active');
+  cards[current].classList.add('exit');
+  setTimeout(() => cards[current < n ? current : n + 1]?.classList.remove('exit'), 400);
+  current = n;
+  cards.forEach(c => c.classList.remove('active', 'exit'));
+  cards[current].classList.add('active');
+  dots.forEach((d, i) => d.classList.toggle('active', i === current));
+  btnPrev.disabled = current === 0;
+  btnNext.disabled = current === cards.length - 1;
+  progress.style.width = ((current + 1) / cards.length * 100) + '%';
+  countEl.textContent = (current + 1) + ' / ' + cards.length;
+}
+
+btnPrev.addEventListener('click', () => goTo(current - 1));
+btnNext.addEventListener('click', () => goTo(current + 1));
+dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)));
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')  { e.preventDefault(); goTo(current - 1); }
+});
+
+// Touch/swipe
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true});
+document.addEventListener('touchend', e => {
+  const dx = tx - e.changedTouches[0].clientX;
+  if (Math.abs(dx) > 40) { dx > 0 ? goTo(current + 1) : goTo(current - 1); }
+}, {passive:true});
+
+goTo(0);
+</script>
+</body>
+</html>
