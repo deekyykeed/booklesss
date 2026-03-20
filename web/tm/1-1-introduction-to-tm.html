@@ -255,6 +255,31 @@ html, body {
   z-index: 100; font-weight: 500; letter-spacing: 0.06em;
 }
 
+/* ── LINKS & BUTTONS ── */
+.inline-link {
+  color: var(--amber); text-decoration: underline;
+  text-underline-offset: 3px; transition: opacity 0.2s;
+}
+.inline-link:hover { opacity: 0.75; }
+
+.btn-cta {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  margin-top: 0.8rem;
+  padding: 0.65rem 1.4rem;
+  background: var(--amber); color: #fff;
+  font-size: 0.88rem; font-weight: 700;
+  letter-spacing: 0.03em; border-radius: 4px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-cta:hover { background: #A8692E; }
+.btn-cta:active { transform: scale(0.98); }
+
+/* CTA page overrides — dark bg so invert button */
+.card-cover .btn-cta, .cta-card .btn-cta {
+  background: var(--amber); color: #fff;
+}
+
 /* ── MOBILE ── */
 @media (max-width: 600px) {
   .cover-title { font-size: 1.9rem; }

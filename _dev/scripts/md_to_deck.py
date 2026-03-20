@@ -21,6 +21,14 @@ import re
 
 def parse_inline(text):
     """Convert inline markdown to HTML."""
+    # Links [text](url) — render as styled button if text starts with a CTA keyword
+    def link_sub(m):
+        label, url = m.group(1), m.group(2)
+        cta_words = ('join', 'click', 'sign up', 'get started', 'access', 'enrol', 'register')
+        is_cta = any(label.lower().startswith(w) for w in cta_words)
+        cls = ' class="btn-cta"' if is_cta else ' class="inline-link"'
+        return f'<a href="{url}" target="_blank"{cls}>{label}</a>'
+    text = re.sub(r'\[(.+?)\]\((.+?)\)', link_sub, text)
     # Bold
     text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
     # Italic
@@ -426,6 +434,31 @@ html, body {
   position: fixed; top: 1rem; right: 1.4rem;
   font-size: 0.68rem; color: rgba(255,255,255,0.3);
   z-index: 100; font-weight: 500; letter-spacing: 0.06em;
+}
+
+/* ── LINKS & BUTTONS ── */
+.inline-link {
+  color: var(--amber); text-decoration: underline;
+  text-underline-offset: 3px; transition: opacity 0.2s;
+}
+.inline-link:hover { opacity: 0.75; }
+
+.btn-cta {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  margin-top: 0.8rem;
+  padding: 0.65rem 1.4rem;
+  background: var(--amber); color: #fff;
+  font-size: 0.88rem; font-weight: 700;
+  letter-spacing: 0.03em; border-radius: 4px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-cta:hover { background: #A8692E; }
+.btn-cta:active { transform: scale(0.98); }
+
+/* CTA page overrides — dark bg so invert button */
+.card-cover .btn-cta, .cta-card .btn-cta {
+  background: var(--amber); color: #fff;
 }
 
 /* ── MOBILE ── */

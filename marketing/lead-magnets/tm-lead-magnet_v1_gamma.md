@@ -97,6 +97,6 @@ These 3 concepts are from **Lesson 1 of 11** of the full Treasury Management cou
 
 Founding member rate. Closes April 18, 2026. After that: K800/month.
 
-**Join at booklesss20.slack.com**
+[Join Booklesss — founding member rate](https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8OFwcZTqTbPpC2Dg0q__Cg)
 
-*Questions? DM on WhatsApp or find us at booklesss.framer.ai*
+*Questions? Find us at [booklesss.framer.ai](https://booklesss.framer.ai)*
