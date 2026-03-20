@@ -23,7 +23,12 @@
       "Bash(python3 -c \"from pptx import Presentation; print\\(''''ok''''\\)\")",
       "Bash(python -c \"from pptx import Presentation; print\\(''pptx ok''\\)\")",
       "Bash(python -c \"import pdfplumber; print\\(''pdf ok''\\)\")",
-      "Bash(python -c \":*)"
+      "Bash(python -c \":*)",
+      "Bash(cmd.exe /c \"mkdir \"\"C:\\\\Users\\\\deeky\\\\.claude\\\\skills\\\\humanizer\"\" && copy \"\"C:\\\\Users\\\\deeky\\\\OneDrive\\\\Desktop\\\\Booklesss\\\\Blader Humanizer\\\\humanizer-main\\\\SKILL.md\"\" \"\"C:\\\\Users\\\\deeky\\\\.claude\\\\skills\\\\humanizer\\\\SKILL.md\"\" && echo done\")",
+      "Bash(cmd.exe /c \"dir \"\"C:\\\\Users\\\\deeky\\\\.claude\\\\skills\"\"\")",
+      "Bash(powershell.exe -Command \"New-Item -ItemType Directory -Path ''C:\\\\Users\\\\deeky\\\\.claude\\\\skills\\\\humanizer'' -Force | Out-Null; Copy-Item ''C:\\\\Users\\\\deeky\\\\OneDrive\\\\Desktop\\\\Booklesss\\\\Blader Humanizer\\\\humanizer-main\\\\SKILL.md'' ''C:\\\\Users\\\\deeky\\\\.claude\\\\skills\\\\humanizer\\\\SKILL.md'' -Force; Get-ChildItem ''C:\\\\Users\\\\deeky\\\\.claude\\\\skills\\\\humanizer\\\\''\")",
+      "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Users\\\\deeky\\\\OneDrive\\\\Desktop\\\\Booklesss\\\\Treasury Management'' -Recurse | Where-Object { !$_PSIsContainer } | Select-Object FullName\")",
+      "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Users\\\\deeky\\\\OneDrive\\\\Desktop\\\\Booklesss\\\\Treasury Management\\\\lesson-01-foundations'' -Recurse | Select-Object Name\")"
     ]
   }
 }
