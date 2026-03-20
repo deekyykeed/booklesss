@@ -35,15 +35,87 @@ A 3–4 page teaser PDF for WhatsApp marketing. Gives real value but leaves the 
 | Element | Value |
 |---------|-------|
 | Background | `#F5F0E8` cream |
-| Navy | `#1B2A4A` |
-| Amber | `#C17E3A` |
-| Teal | `#0E6B6B` |
-| Body text | `#2C2C2C` |
+| Navy | `#1B2A4A` — cover + strong emphasis ONLY |
+| Amber | `#C17E3A` — single accent, used sparingly |
+| Teal | `#0E6B6B` — secondary accent |
+| Primary text | `#18181B` — zinc-950, never pure black |
+| Secondary text | `#71717A` — steel, for subheadings + labels |
+| Tertiary / meta | `#94A3B8` — muted slate, for metadata + captions |
 | Cover title font | **Arial Black** (`ariblk.ttf`) |
-| Section heading font | **Segoe UI Black** (`seguibl.ttf`) |
+| Section heading font | **Calibri Bold** (`calibrib.ttf`) |
 | Body / all other text | **Calibri** (all weights) |
 | Page size | A4 |
-| Margins | 2.5cm all sides |
+| Margins | 2cm sides, 1.8cm top/bottom |
+
+---
+
+## Design taste standard (applied to every PDF)
+
+These principles are extracted from the taste/minimalist/high-end design skills and translated for print. Apply them every time a PDF is generated.
+
+### Typography hierarchy
+
+Every section heading must be preceded by an **eyebrow tag** — a small label in amber ALL CAPS that tells the reader where they are before the heading lands.
+
+```
+CONCEPT 01                    ← 7pt Calibri Bold, #C17E3A, ALL CAPS, spacious
+The Cash Conversion Cycle     ← 16pt Calibri Bold, #18181B, tight leading
+```
+
+Full hierarchy (size, weight, color):
+| Level | Size | Weight | Color | Use |
+|-------|------|--------|-------|-----|
+| Eyebrow tag | 7pt | Bold | `#C17E3A` | Before every H2 |
+| H2 (section) | 16pt | Bold | `#18181B` | Section title |
+| H3 (sub-section) | 12pt | Bold | `#71717A` | Sub-heading |
+| Body | 10.5pt | Regular | `#18181B` | All body text |
+| Caption / meta | 8pt | Regular | `#94A3B8` | Footnotes, labels, metadata |
+
+Leading (line height): 1.65× for body (= 17.3pt at 10.5pt). Never cramped.
+
+### Color discipline
+- Max ONE accent color per element — amber for headings/rules, teal for secondary callouts, navy for cover only
+- Body text is always `#18181B` — never pure navy, never pure black
+- Secondary labels and subheadings in `#71717A` (steel), not ink-black
+- Saturate nothing above 80%
+
+### Callout box backgrounds (muted pastels — not heavy fills)
+Replace heavy navy/teal background boxes with light, editorial pastel backgrounds:
+
+| Type | Background | Border | Text |
+|------|-----------|--------|------|
+| Warning / Caution | `#FBF3DB` pale yellow | 0.5pt `#956400` | `#956400` |
+| Info / Note | `#E1F3FE` pale blue | 0.5pt `#1F6C9F` | `#1F6C9F` |
+| Success / Formula | `#EDF3EC` pale green | 0.5pt `#346538` | `#346538` |
+| Worked example | `#F5F0E8` cream + amber left bar | 2pt amber left only | `#18181B` |
+| CTA / Deadline | `#1B2A4A` navy | none | `#FFFFFF` |
+
+### Rules and dividers
+- Section dividers: **0.5pt amber hairline** — not 2–3pt thick bars
+- Table borders: **0.5pt** `rgba(0,0,0,0.12)` — barely visible, structural only
+- No thick decorative bars filling the full page width
+
+### Spacing
+- Before each section (eyebrow + heading block): 18pt spacer
+- After heading before body: 8pt spacer
+- Between body paragraphs: 6pt spacer
+- Inside callout boxes: 10pt padding all sides
+- Tables: internal cell padding 6pt top/bottom, 8pt left/right
+
+### Layout principles
+- **Left-aligned throughout** — no centered body text
+- **Asymmetric hierarchy** — vary element widths (full-width body, inset formula boxes, narrow callouts)
+- **Breathe** — generous whitespace between sections. If a page looks packed, add a spacer
+- **Cards only for elevation** — only use bordered boxes when they serve a purpose (formulas, worked examples, CTAs). Not decorative
+
+### Anti-slop rules (forbidden patterns)
+- No navy background on body content pages (only cover + CTA page)
+- No centered headings unless on the cover
+- No thick horizontal rules as decoration
+- No "Elevate", "Seamless", "Unleash", "Game-changer" in any copy
+- No pure black (`#000000`) anywhere
+- No round fake numbers — use real calculated values
+- Body text color is NEVER the same as the accent color
 
 ### Footer — on every page, every document
 ```

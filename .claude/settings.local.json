@@ -43,7 +43,13 @@
       "Bash(rm -rf \"Blader Humanizer\")",
       "Bash(mkdir -p courses)",
       "Bash(mv \"Treasury Management\" \"Corporate Finance\" \"Strategic Management\" courses/)",
-      "Bash(ls C:/Windows/Fonts/*.ttf)"
+      "Bash(ls C:/Windows/Fonts/*.ttf)",
+      "mcp__e9d82111-66a8-48ce-bdc0-898101dbecdd__get_folders",
+      "Bash(find C:/Users/deeky/OneDrive/Desktop -name *taste* -o -name *Taste*)",
+      "Bash(cp \"C:/Users/deeky/OneDrive/Desktop/Booklesss/taste-skill-main/taste-skill-main/skills/taste-skill/SKILL.md\" \"C:/Users/deeky/OneDrive/Desktop/Booklesss/.claude/skills/design-taste/SKILL.md\")",
+      "Bash(cp \"C:/Users/deeky/OneDrive/Desktop/Booklesss/taste-skill-main/taste-skill-main/skills/minimalist-skill/SKILL.md\" \"C:/Users/deeky/OneDrive/Desktop/Booklesss/.claude/skills/design-minimalist/SKILL.md\")",
+      "Bash(cp \"C:/Users/deeky/OneDrive/Desktop/Booklesss/taste-skill-main/taste-skill-main/skills/soft-skill/SKILL.md\" \"C:/Users/deeky/OneDrive/Desktop/Booklesss/.claude/skills/design-high-end/SKILL.md\")",
+      "Bash(cp \"C:/Users/deeky/OneDrive/Desktop/Booklesss/taste-skill-main/taste-skill-main/skills/output-skill/SKILL.md\" \"C:/Users/deeky/OneDrive/Desktop/Booklesss/.claude/skills/output-enforcement/SKILL.md\")"
     ]
   }
 }
