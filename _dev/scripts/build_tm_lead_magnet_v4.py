@@ -1,8 +1,8 @@
 """
-Booklesss Lead Magnet — Treasury Management v3
-Style: Swiss editorial. Dark covers. White body. Emerald accent.
+Booklesss Lead Magnet — Treasury Management v4
+Style: Swiss editorial. Deep navy covers. White body. Emerald accent.
 Georgia serif for display. Trebuchet MS for body.
-Completely different personality from v2.
+v4: replaces near-black with luxury deep navy (#0B1D3A).
 """
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
@@ -35,7 +35,7 @@ pdfmetrics.registerFontFamily(
 # ─────────────────────────────────────────────
 #  COLOUR SYSTEM  —  Dark + White + Emerald
 # ─────────────────────────────────────────────
-C_DARK      = colors.HexColor("#0D1117")   # near-black cover/CTA bg
+C_DARK      = colors.HexColor("#0B1D3A")   # deep navy cover/CTA bg — luxury, not tech
 C_INK       = colors.HexColor("#111827")   # primary text (gray-900)
 C_STEEL     = colors.HexColor("#6B7280")   # secondary text (gray-500)
 C_MIST      = colors.HexColor("#9CA3AF")   # meta / captions (gray-400)
@@ -195,7 +195,7 @@ def cover_bg(canvas, doc):
     canvas.setFillColor(C_GREEN)
     canvas.rect(0, 0, 4, H, fill=1, stroke=0)
     # Subtle grid texture — light horizontal lines
-    canvas.setStrokeColor(colors.HexColor("#1F2937"))
+    canvas.setStrokeColor(colors.HexColor("#132646"))
     canvas.setLineWidth(0.3)
     for y in range(40, int(H), 40):
         canvas.line(0, y, W, y)
@@ -247,7 +247,7 @@ def cta_bg(canvas, doc):
     canvas.setFillColor(C_GREEN)
     canvas.rect(0, 0, 4, H, fill=1, stroke=0)
     # Ghost grid
-    canvas.setStrokeColor(colors.HexColor("#1F2937"))
+    canvas.setStrokeColor(colors.HexColor("#132646"))
     canvas.setLineWidth(0.3)
     for y in range(40, int(H), 40):
         canvas.line(0, y, W, y)
@@ -257,13 +257,13 @@ def cta_bg(canvas, doc):
 # ─────────────────────────────────────────────
 #  DOCUMENT
 # ─────────────────────────────────────────────
-OUT = r"C:\Users\deeky\OneDrive\Desktop\Booklesss\marketing\lead-magnets\tm-lead-magnet_v3.pdf"
+OUT = r"C:\Users\deeky\OneDrive\Desktop\Booklesss\marketing\lead-magnets\tm-lead-magnet_v4.pdf"
 
 doc = BaseDocTemplate(
     OUT, pagesize=A4,
     leftMargin=MARGIN_X, rightMargin=MARGIN_X,
     topMargin=MARGIN_Y + 14, bottomMargin=FOOTER_H + 16,
-    title="3 Treasury Management Concepts — Booklesss",
+    title="3 Treasury Management Concepts — Booklesss v4",
     author="Booklesss"
 )
 

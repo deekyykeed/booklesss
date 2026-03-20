@@ -20,6 +20,61 @@ Generate a branded Booklesss PDF document.
 
 ---
 
+## Per-course visual identity
+
+Each course has a distinct palette, font pairing, and personality. Never mix styles across courses. When generating a PDF, check which course it belongs to and apply the correct system below.
+
+---
+
+### Treasury Management — BBF4302
+
+| Element | Value |
+|---------|-------|
+| Cover bg | `#0B1D3A` deep navy |
+| Accent | `#10B981` emerald |
+| Grid lines (cover/CTA) | `#132646` navy-toned |
+| Display font | Georgia Bold (serif — gravitas) |
+| Body font | Trebuchet MS |
+| Callout note bg | `#ECFDF5` emerald-50 |
+| Result/highlight | `#065F46` dark emerald |
+| **Feel** | Premium treasury report. Serious money. |
+
+Reference script: `_dev/scripts/build_tm_lead_magnet_v4.py`
+
+---
+
+### Corporate Finance — BAC4301
+
+| Element | Value |
+|---------|-------|
+| Cover bg | `#1A1200` deep espresso |
+| Accent | `#C9A020` gold |
+| Display font | Arial Black (bold modern corporate) |
+| Body font | Calibri |
+| Callout note bg | `#FEF9E7` gold-tinted cream |
+| Result/highlight | `#7A5C00` dark gold |
+| **Feel** | Investment banking. Deal analysis. IBD aesthetic. |
+
+---
+
+### Strategic Management
+
+| Element | Value |
+|---------|-------|
+| Cover bg | `#0F1F35` slate-navy |
+| Accent | `#DC2626` cardinal red |
+| Display font | Georgia Bold (editorial authority) |
+| Body font | Calibri |
+| Callout note bg | `#FEF2F2` red-tinted cream |
+| Result/highlight | `#991B1B` dark red |
+| **Feel** | Management consulting. Direction and urgency. |
+
+---
+
+**Rule:** body pages are always white `#FFFFFF` regardless of course. Only cover and CTA pages use the dark cover bg. The accent colour runs through eyebrow tags, hairlines, left-bar boxes, and result lines — never the body text.
+
+---
+
 ## Two document types
 
 ### lesson
