@@ -449,7 +449,9 @@ offer.setStyle(TableStyle([
 ]))
 story.append(offer)
 
-story.append(Paragraph("booklesss20.slack.com", s["cta_link"]))
+story.append(Paragraph(
+    "join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8OFwcZTqTbPpC2Dg0q__Cg",
+    s["cta_link"]))
 story.append(Paragraph("booklesss.framer.ai", s["cta_body"]))
 
 # ─────────────────────────────────────────────
