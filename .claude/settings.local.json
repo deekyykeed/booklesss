@@ -40,7 +40,9 @@
       "Bash(rmdir \"Treasury Management/notes\")",
       "Bash(rmdir \"Treasury Management/quizzes\")",
       "Bash(rm -rf \"Treasury Management/past-papers\")",
-      "Bash(rm -rf \"Blader Humanizer\")"
+      "Bash(rm -rf \"Blader Humanizer\")",
+      "Bash(mkdir -p courses)",
+      "Bash(mv \"Treasury Management\" \"Corporate Finance\" \"Strategic Management\" courses/)"
     ]
   }
 }
