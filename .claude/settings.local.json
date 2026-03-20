@@ -28,7 +28,10 @@
       "Bash(cmd.exe /c \"dir \"\"C:\\\\Users\\\\deeky\\\\.claude\\\\skills\"\"\")",
       "Bash(powershell.exe -Command \"New-Item -ItemType Directory -Path ''C:\\\\Users\\\\deeky\\\\.claude\\\\skills\\\\humanizer'' -Force | Out-Null; Copy-Item ''C:\\\\Users\\\\deeky\\\\OneDrive\\\\Desktop\\\\Booklesss\\\\Blader Humanizer\\\\humanizer-main\\\\SKILL.md'' ''C:\\\\Users\\\\deeky\\\\.claude\\\\skills\\\\humanizer\\\\SKILL.md'' -Force; Get-ChildItem ''C:\\\\Users\\\\deeky\\\\.claude\\\\skills\\\\humanizer\\\\''\")",
       "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Users\\\\deeky\\\\OneDrive\\\\Desktop\\\\Booklesss\\\\Treasury Management'' -Recurse | Where-Object { !$_PSIsContainer } | Select-Object FullName\")",
-      "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Users\\\\deeky\\\\OneDrive\\\\Desktop\\\\Booklesss\\\\Treasury Management\\\\lesson-01-foundations'' -Recurse | Select-Object Name\")"
+      "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Users\\\\deeky\\\\OneDrive\\\\Desktop\\\\Booklesss\\\\Treasury Management\\\\lesson-01-foundations'' -Recurse | Select-Object Name\")",
+      "Bash(gh pr:*)",
+      "Bash(gh repo:*)",
+      "Bash(powershell.exe -Command \"New-Item -ItemType Directory -Path ''C:\\\\Users\\\\deeky\\\\OneDrive\\\\Desktop\\\\Booklesss\\\\.claude\\\\skills\\\\humanizer'' -Force | Out-Null; Copy-Item ''C:\\\\Users\\\\deeky\\\\.claude\\\\skills\\\\humanizer\\\\SKILL.md'' ''C:\\\\Users\\\\deeky\\\\OneDrive\\\\Desktop\\\\Booklesss\\\\.claude\\\\skills\\\\humanizer\\\\SKILL.md'' -Force; Get-ChildItem ''C:\\\\Users\\\\deeky\\\\OneDrive\\\\Desktop\\\\Booklesss\\\\.claude\\\\skills\\\\''\")"
     ]
   }
 }
