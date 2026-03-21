@@ -53,6 +53,19 @@ Section name in Slack: **Treasury Management**
 
 ---
 
+## Strategic Management — Channels (LIVE)
+
+Section name in Slack: **Strategic Management**
+
+| Channel | Link | Content |
+|---------|------|---------|
+| `#sm-updates` | https://bookless10.slack.com/archives/C0AN0T23YKC | Announcements, new lesson drops |
+| `#sm-foundations` | https://bookless10.slack.com/archives/C0AN0T2HGR0 | Lessons 1–2 (Intro to Strategy, Mission & Vision) |
+| `#sm-environment` | https://bookless10.slack.com/archives/C0AMKDVAE95 | Lessons 3–4 (External & Internal Environment) |
+| `#sm-strategy` | https://bookless10.slack.com/archives/C0ANV5S89EU | Lessons 5–6 (Implementation & Competitive Strategy) |
+
+---
+
 ## Global Channels
 
 | Channel | Purpose |
