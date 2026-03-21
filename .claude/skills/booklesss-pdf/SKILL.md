@@ -264,12 +264,20 @@ Lesson PDFs are less strict — they're internal study docs — but still avoid 
 
 ## File naming
 
-| Type | Path | Filename |
-|------|------|----------|
-| Lesson PDF | `courses/[Course]/lesson-0N-[name]/notes/` | `[L]_[S]_[slug]_v1.pdf` |
-| Lead magnet | `marketing/lead-magnets/` | `[slug]-lead-magnet_v1.pdf` |
+PDF filenames are the public face of the document. WhatsApp and Slack display the filename as the document title — it must read like a real title, not a code.
 
-Increment version number (v2, v3) when content changes. Never overwrite v1.
+**Rule: always use a human-readable title. No slugs, no underscores, no version numbers in the filename.**
+
+| Type | Format | Example |
+|------|--------|---------|
+| Lesson PDF | `Step [X.Y] - [Full Title].pdf` | `Step 1.1 - Introduction to Treasury Management.pdf` |
+| Lead magnet | `[Hook Title] - Booklesss.pdf` | `3 Questions Your TM Exam Will Ask - Booklesss.pdf` |
+
+- Use ` - ` (space hyphen space) as separator
+- Title case for all words
+- No underscores, no version numbers, no course codes in the filename
+- Lead magnets always end with ` - Booklesss` so the brand shows in previews
+- Lesson PDFs include the step number so students can find them in order
 
 ---
 
@@ -321,8 +329,7 @@ def channel_button(channel_url, channel_name, accent_hex):
                        fontSize=7, textColor=colors.white, spaceAfter=4)
     )
     body = Paragraph(
-        f'Ask questions, share your answers → <b>#{channel_name}</b><br/>'
-        f'<link href="{channel_url}"><u>{channel_url}</u></link>',
+        f'<link href="{channel_url}">Ask questions, share your answers — <u><b>open #{channel_name} in Slack</b></u></link>',
         ParagraphStyle('btn_body', fontName='Calibri', fontSize=10,
                        textColor=colors.white, leading=15)
     )

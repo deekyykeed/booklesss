@@ -65,7 +65,7 @@ CONTENT_W   = W - 2 * MX
 CHANNEL_URL  = "https://bookless10.slack.com/archives/C0ANULGE6SU"
 CHANNEL_NAME = "tm-operations"
 
-OUT_PATH = r"C:\Users\deeky\OneDrive\Desktop\Booklesss\courses\Treasury Management\content\lesson-01-treasury-foundations\1_1_introduction-to-tm_v1.pdf"
+OUT_PATH = r"C:\Users\deeky\OneDrive\Desktop\Booklesss\courses\Treasury Management\content\lesson-01-treasury-foundations\Step 1.1 - Introduction to Treasury Management.pdf"
 
 # ─────────────────────────────────────────────
 #  STYLES
@@ -254,12 +254,9 @@ def table_std(data, col_widths):
 def channel_button():
     label   = Paragraph("JOIN THE DISCUSSION", ST["btn_eyebrow"])
     main    = Paragraph(
-        f'Ask questions, share your answers → <b>#{CHANNEL_NAME}</b>',
+        f'<link href="{CHANNEL_URL}">Ask questions, share your answers — <u><b>open #{CHANNEL_NAME} in Slack</b></u></link>',
         ST["btn_body"])
-    link    = Paragraph(
-        f'<link href="{CHANNEL_URL}"><u>{CHANNEL_URL}</u></link>',
-        ST["btn_sub"])
-    t = Table([[label], [main], [link]], colWidths=[CONTENT_W])
+    t = Table([[label], [main]], colWidths=[CONTENT_W])
     t.setStyle(TableStyle([
         ('BACKGROUND',    (0,0), (-1,-1), C_GREEN),
         ('TOPPADDING',    (0,0), (-1,-1), 12),
