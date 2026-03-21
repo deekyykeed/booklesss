@@ -328,7 +328,7 @@ def build():
 
     cover_frame = Frame(0, 0, W, H,
                         leftPadding=MX + 10, rightPadding=MX,
-                        topPadding=H * 0.25, bottomPadding=MY + 50)
+                        topPadding=MY + 30, bottomPadding=MY + 50)
     body_frame  = Frame(MX, MY + FOOTER_H, CONTENT_W,
                         H - MY*2 - HEADER_H - FOOTER_H,
                         leftPadding=0, rightPadding=0,

@@ -296,6 +296,23 @@ Before writing the Python script, confirm:
 
 ---
 
+## Lead magnet cover — top-aligned (critical for WhatsApp preview)
+
+WhatsApp shows only the top ~20% of page 1 as the preview thumbnail. The title must appear in that zone or the preview is blank.
+
+**Rule: lead magnet cover frames always use `topPadding=MY + 30`, never `H * 0.25` or any large fraction.**
+
+```python
+cover_frame = Frame(0, 0, W, H,
+                    leftPadding=MX + 10, rightPadding=MX,
+                    topPadding=MY + 30,   # ← keeps title in WhatsApp preview
+                    bottomPadding=MY + 50)
+```
+
+This applies to lead magnets only. Lesson PDF covers are internal — preview position doesn't matter.
+
+---
+
 ## Slack channel button (lesson PDFs only)
 
 Every lesson PDF must include a prominent, clickable channel button — **not a footer link**. Place it at the end of the document, just before or replacing the cross-reference block.
