@@ -63,7 +63,7 @@ FOOTER_H    = 28
 HEADER_H    = 28
 CONTENT_W   = W - 2 * MX
 
-OUT_PATH = r"C:\Users\deeky\OneDrive\Desktop\Booklesss\courses\Treasury Management\content\lesson-01-treasury-foundations\3 Questions Your TM Exam Will Ask - Booklesss.pdf"
+OUT_PATH = r"C:\Users\deeky\OneDrive\Desktop\Booklesss\courses\Treasury Management\content\lesson-01-treasury-foundations\lead-magnets\3 Questions Your TM Exam Will Ask - Booklesss.pdf"
 
 # ─────────────────────────────────────────────
 #  STYLES

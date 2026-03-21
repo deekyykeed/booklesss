@@ -10,8 +10,11 @@ description: >
   WhatsApp marketing with CTA). Every PDF gets the Booklesss footer, amber
   accent, cross-references to related docs, and a unique tracking link slot.
   Always generate by running the Python script via Bash — do not use a library
-  that requires a GUI. Save all PDFs — lessons and lead magnets — inside the
-  lesson folder they belong to: courses/[Course]/content/[lesson-folder]/
+  that requires a GUI. Save lesson PDFs inside the lesson folder:
+  courses/[Course]/content/[lesson-folder]/
+  Save lead magnets inside a lead-magnets/ subfolder within that lesson:
+  courses/[Course]/content/[lesson-folder]/lead-magnets/
+  A single step can have multiple magnets — each gets its own file there.
 ---
 
 # booklesss-pdf
