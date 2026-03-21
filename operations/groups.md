@@ -70,7 +70,7 @@ Score each message before sending: Give First / Micro Commitment / Social Proof 
 ### Template A — Friend group / casual (score: 6/7)
 
 ```
-Part 1 of a free BBF4302 series — 3 concepts that show up in almost every exam.
+Part 1 of a free Treasury Management series — 3 concepts that show up in almost every exam.
 
 [PDF attached]
 
@@ -84,7 +84,7 @@ Part 2 drops tomorrow. Join to get it directly: [invite link]
 ### Template B — Official class group / larger group (score: 6/7)
 
 ```
-Free BBF4302 study guide — 3 exam concepts, based on past paper patterns.
+Free Treasury Management study guide — 3 exam concepts, based on past paper patterns.
 
 [PDF attached]
 
@@ -98,7 +98,7 @@ More dropping this week. Join the study group to get them: [invite link]
 ### Template C — After social proof exists (use once you have members — score: 7/7)
 
 ```
-[X] BBF4302 students are using this to prep. Here's the free guide I started with.
+[X] Treasury Management students are using this to prep. Here's the free guide I started with.
 
 [PDF attached]
 
@@ -112,7 +112,7 @@ Full series inside: [invite link]
 ### Template D — Urgency drop (use April 14–17 only)
 
 ```
-Free BBF4302 guide — dropping this before the founding rate closes on the 18th.
+Free Treasury Management guide — dropping this before the founding rate closes on the 18th.
 
 [PDF attached]
 
