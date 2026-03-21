@@ -70,71 +70,56 @@ Score each message before sending: Give First / Micro Commitment / Social Proof 
 ### Template A — Friend group / casual (score: 6/7)
 
 ```
-Yo — if you're doing Treasury Management this sem, here's something I made.
+Part 1 of a free BBF4302 series — 3 concepts that show up in almost every exam.
 
-3 concepts that show up in almost every exam paper, with worked examples
-in Kwacha. Free, no strings.
+[PDF attached]
 
-[bit.ly/booklesss-GROUP]
-
-Everything else is in the PDF.
+Part 2 drops tomorrow. Join to get it directly: [invite link]
 ```
 
-**Why it works:** Peer tone. One ask (click). No pitch in the message — the PDF handles the rest.
-**Adjust:** Swap "Yo" for "Hey" depending on how well you know the group.
+**Why it works:** Short. One ask. Series angle pulls people to join rather than wait.
 
 ---
 
 ### Template B — Official class group / larger group (score: 6/7)
 
 ```
-Hey — made a free study resource for Treasury Management (BBF4302).
+Free BBF4302 study guide — 3 exam concepts, based on past paper patterns.
 
-3 exam concepts explained in plain English, worked out in Kwacha. Based
-on past paper patterns.
+[PDF attached]
 
-[bit.ly/booklesss-GROUP]
-
-Worth a look if you're preparing for finals.
+More dropping this week. Join the study group to get them: [invite link]
 ```
 
-**Why it works:** Credible framing ("past paper patterns" = authority). Low ask. No pitch.
+**Why it works:** Credible framing. Low ask. No pitch.
 
 ---
 
 ### Template C — After social proof exists (use once you have members — score: 7/7)
 
 ```
-Hey — I've been running a Treasury Management study group for a while now.
-[X] students are using it this sem to prep for BBF4302.
+[X] BBF4302 students are using this to prep. Here's the free guide I started with.
 
-Made a free PDF pulling out 3 concepts that keep showing up in past papers.
-Worked examples in Kwacha.
+[PDF attached]
 
-[bit.ly/booklesss-GROUP]
-
-Everything's in there.
+Full series inside: [invite link]
 ```
 
-**Why it works:** Social proof up front. Still one ask. Authority through numbers.
+**Why it works:** Social proof leads. Tight. One ask.
 
 ---
 
 ### Template D — Urgency drop (use April 14–17 only)
 
 ```
-Dropping this here before the price changes on the 18th.
+Free BBF4302 guide — dropping this before the founding rate closes on the 18th.
 
-Made a free Treasury Management guide — 3 concepts, worked examples in
-Kwacha, based on past papers. No catch.
+[PDF attached]
 
-Inside the PDF there's also a founding member offer for the full study
-community. That rate closes April 18 and won't come back.
-
-[bit.ly/booklesss-GROUP]
+That offer is inside. Won't come back after the 18th.
 ```
 
-**Why it works:** Real scarcity (not manufactured). Give First still leads. Urgency is honest.
+**Why it works:** Real scarcity. Still leads with the free PDF, not the pitch.
 
 ---
 
