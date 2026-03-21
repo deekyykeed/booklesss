@@ -2,13 +2,14 @@
 name: booklesss-write
 description: >
   The single writing skill for all Booklesss content. Use whenever the user wants
-  to write, create, or generate lesson notes, study steps, or a web deck for any
-  course or topic. Triggers on: "write the notes for Step X", "do Lesson 2",
-  "next step", "let's do working capital", "write step 3", or any request to
-  turn raw PPT/PDF content into student-friendly notes.
+  to write, create, or generate lesson notes or study steps for any course or topic.
+  Triggers on: "write the notes for Step X", "do Lesson 2", "next step",
+  "let's do working capital", "write step 3", or any request to turn raw
+  PPT/PDF content into student-friendly notes.
   This skill handles the full content pipeline: reading source material →
-  rewriting in plain English → structuring as a markdown deck → humanizing all
-  copy → saving the file → generating the HTML deck via md_to_deck.py.
+  rewriting in plain English → structuring as a PDF-ready document → humanizing
+  all copy → saving the file → triggering the booklesss-pdf skill to generate
+  the lesson PDF.
   The humanizer is built in — never run a separate humanizer pass for notes content.
   Always output complete files. Never truncate, never use placeholders.
 ---
@@ -19,42 +20,50 @@ One skill. Full content pipeline — notes, humanizing, deck generation.
 
 ---
 
+## Before you start — required inputs
+
+Before writing any lesson, confirm these two things if not already provided:
+
+1. **Which lesson is this?** (e.g. Lesson 1 — Treasury Foundations)
+2. **What is the Slack channel link for this lesson?**
+   (e.g. `https://bookless10.slack.com/channels/tm-working-capital`)
+   This gets embedded as a button in the lesson PDF — it is not optional.
+
+If the channel link is missing, ask before writing:
+> "What's the Slack channel link for this lesson? It goes into the PDF as a discussion button."
+
+---
+
 ## Terminology
 
 | Term | Meaning |
 |------|---------|
 | **Course** | Full subject, e.g. BBF4302 Treasury Management |
 | **Lesson** | Group of related steps, maps to one Slack channel |
-| **Step** | One HTML deck. One `.md` file, one web presentation, one Slack post |
-| **Card** | One slide within a step. Each `##` heading = one card |
+| **Step** | One PDF. One set of notes, one Slack post |
+| **Card** | One section within a step. Each `##` heading = one section |
 
 ---
 
 ## File naming and save location
 
-`[lesson]_[step]_[slug].md` inside the lesson's `notes/` folder.
+Notes are saved as `.md` files inside the lesson's `content/` folder.
 
 ```
-courses/[Course Folder]/lesson-0[N]-[name]/notes/[lesson]_[step]_[slug].md
+courses/[Course Folder]/content/lesson-0[N]-[name]/[lesson]_[step]_[slug].md
 ```
 
 Examples:
-- `lesson-01-foundations/notes/1_1_introduction-to-tm.md`
-- `lesson-02-liquidity/notes/2_1_working-capital-liquidity.md`
-- `lesson-03-risk/notes/3_1_interest-rate-risk.md`
+- `courses/Treasury Management/content/lesson-01-treasury-foundations/1_1_introduction-to-tm.md`
+- `courses/Treasury Management/content/lesson-02-working-capital-management/2_1_working-capital-liquidity.md`
 
 ---
 
-## After saving — always generate the HTML deck
+## After saving — always generate the PDF
 
-Run immediately after saving the `.md` file:
-
-```bash
-python3 _dev/scripts/md_to_deck.py "[path to .md file]"
-```
-
-This produces `web/[course]/[slug].html` — the shareable link to post in Slack.
-Report the output URL to the user.
+Once the `.md` file is saved, immediately trigger the `booklesss-pdf` skill to generate the lesson PDF. Pass it:
+- The path to the `.md` file
+- The Slack channel link confirmed at the start
 
 ---
 

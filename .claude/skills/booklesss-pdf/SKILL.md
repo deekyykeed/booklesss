@@ -273,14 +273,81 @@ Increment version number (v2, v3) when content changes. Never overwrite v1.
 
 ---
 
+## Before generating — required inputs
+
+Before writing the Python script, confirm:
+
+1. **Document type** — lesson or lead magnet?
+2. **Slack channel link** — where students discuss this lesson.
+   (e.g. `https://bookless10.slack.com/channels/tm-working-capital`)
+   If not provided, ask: "What's the Slack channel link for this lesson?"
+   This is **not optional** — the channel button must appear in every lesson PDF.
+
+---
+
+## Slack channel button (lesson PDFs only)
+
+Every lesson PDF must include a prominent, clickable channel button — **not a footer link**. Place it at the end of the document, just before or replacing the cross-reference block.
+
+### Button design spec
+
+```
+┌──────────────────────────────────────────────────────────┐
+│  JOIN THE DISCUSSION                                      │
+│  Ask questions, share answers → #tm-working-capital       │
+│  [full channel URL as clickable link]                     │
+└──────────────────────────────────────────────────────────┘
+```
+
+- Background: course accent color (e.g. `#10B981` emerald for TM)
+- Text: `#FFFFFF` white
+- Eyebrow: `JOIN THE DISCUSSION` — 7pt bold ALL CAPS
+- Body: `Ask questions, share your answers →` then channel name in bold
+- The entire box is a clickable hyperlink to the channel URL
+- Width: full text frame width
+- Padding: 12pt all sides
+
+### ReportLab implementation
+
+```python
+from reportlab.platypus import Table, TableStyle
+from reportlab.lib import colors
+
+def channel_button(channel_url, channel_name, accent_hex):
+    accent = HexColor(accent_hex)
+    label = Paragraph(
+        'JOIN THE DISCUSSION',
+        ParagraphStyle('btn_eyebrow', fontName='Calibri-Bold',
+                       fontSize=7, textColor=colors.white, spaceAfter=4)
+    )
+    body = Paragraph(
+        f'Ask questions, share your answers → <b>#{channel_name}</b><br/>'
+        f'<link href="{channel_url}"><u>{channel_url}</u></link>',
+        ParagraphStyle('btn_body', fontName='Calibri', fontSize=10,
+                       textColor=colors.white, leading=15)
+    )
+    t = Table([[label], [body]], colWidths=[CONTENT_WIDTH])
+    t.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,-1), accent),
+        ('TOPPADDING',    (0,0), (-1,-1), 12),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 12),
+        ('LEFTPADDING',   (0,0), (-1,-1), 14),
+        ('RIGHTPADDING',  (0,0), (-1,-1), 14),
+    ]))
+    return t
+```
+
+---
+
 ## How to generate
 
-1. Read the source .md file (lesson type) or draft content from scratch (lead magnet)
-2. Humanize all body copy before writing the script
-3. Write a Python script using ReportLab
-4. Run via Bash: `python3 [script_path]`
-5. Confirm the output path to the user
-6. Update the cross-references in related documents if any new steps were added
+1. Confirm channel link and document type (see Required inputs above)
+2. Read the source .md file (lesson type) or draft content from scratch (lead magnet)
+3. Humanize all body copy before writing the script
+4. Write a Python script using ReportLab — include channel button for lesson type
+5. Run via Bash: `python3 [script_path]`
+6. Confirm the output path to the user
+7. Update the cross-references in related documents if any new steps were added
 
 ### Python stack
 ```python
