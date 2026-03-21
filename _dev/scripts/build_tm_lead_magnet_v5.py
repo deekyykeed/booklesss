@@ -63,7 +63,7 @@ FOOTER_H    = 28
 HEADER_H    = 28
 CONTENT_W   = W - 2 * MX
 
-OUT_PATH = r"C:\Users\deeky\OneDrive\Desktop\Booklesss\marketing\lead-magnets\3 Questions Your TM Exam Will Ask - Booklesss.pdf"
+OUT_PATH = r"C:\Users\deeky\OneDrive\Desktop\Booklesss\courses\Treasury Management\content\lesson-01-treasury-foundations\3 Questions Your TM Exam Will Ask - Booklesss.pdf"
 
 # ─────────────────────────────────────────────
 #  STYLES
@@ -298,12 +298,11 @@ def table_std(data, col_widths):
     return t
 
 def nudge_box():
-    lines = [
-        Paragraph("These 3 concepts are from Step 1.1 of the full Treasury Management course.", ST["nudge_text"]),
-        Spacer(1, 4),
-        Paragraph(f"Inside Booklesss: all 10 steps, worked examples, past paper breakdowns, and a study community. Founding rate closes <b>{DEADLINE}</b>.", ST["nudge_text"]),
-    ]
-    t = Table([lines], colWidths=[CONTENT_W])
+    t = Table([
+        [Paragraph("These 3 concepts are from Step 1.1 of the full Treasury Management course.", ST["nudge_text"])],
+        [Spacer(1, 4)],
+        [Paragraph(f"Inside Booklesss: all 10 steps, worked examples, past paper breakdowns, and a study community. Founding rate closes <b>{DEADLINE}</b>.", ST["nudge_text"])],
+    ], colWidths=[CONTENT_W])
     t.setStyle(TableStyle([
         ('BACKGROUND',    (0,0), (-1,-1), BG_WARN),
         ('LINEBEFORE',    (0,0), (-1,-1), 3,   C_AMBER),
