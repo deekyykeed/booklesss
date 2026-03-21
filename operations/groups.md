@@ -74,7 +74,7 @@ Part 1 of a free Treasury Management series — 3 concepts that show up in almos
 
 [PDF attached]
 
-Part 2 drops tomorrow. Join to get it directly: [invite link]
+Part 2 drops tomorrow. Join to get it directly: https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8OFwcZTqTbPpC2Dg0q__Cg
 ```
 
 **Why it works:** Short. One ask. Series angle pulls people to join rather than wait.
@@ -88,7 +88,7 @@ Free Treasury Management study guide — 3 exam concepts, based on past paper pa
 
 [PDF attached]
 
-More dropping this week. Join the study group to get them: [invite link]
+More dropping this week. Join the study group to get them: https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8OFwcZTqTbPpC2Dg0q__Cg
 ```
 
 **Why it works:** Credible framing. Low ask. No pitch.
@@ -102,7 +102,7 @@ More dropping this week. Join the study group to get them: [invite link]
 
 [PDF attached]
 
-Full series inside: [invite link]
+Full series inside: https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8OFwcZTqTbPpC2Dg0q__Cg
 ```
 
 **Why it works:** Social proof leads. Tight. One ask.
