@@ -35,22 +35,27 @@ Update this file whenever any link or setting changes.
 
 - All lead magnet PDFs (CTA page)
 - WhatsApp post templates (marketing/groups.md)
-- Gamma decks (CTA card)
 - Any social or email mention
 
 ---
 
-## Channels to create (priority order)
+## Treasury Management — Channels (LIVE)
+
+Section name in Slack: **Treasury Management**
+
+| Channel | Link | Content |
+|---------|------|---------|
+| `#tm-updates` | https://bookless10.slack.com/archives/C0AN40BMZFW | Announcements, new lesson drops |
+| `#tm-operations` | https://bookless10.slack.com/archives/C0ANULGE6SU | Lesson 1 (Foundations), Lesson 10 (Systems & Clearing) |
+| `#tm-working-capital` | https://bookless10.slack.com/archives/C0AN3UPFG2G | Lessons 2–6 (Working Capital, Liquidity, Cash, Forecasting) |
+| `#tm-risk` | https://bookless10.slack.com/archives/C0ANUKH3L64 | Lessons 7–8 (Interest Rate Risk, FX Risk) |
+| `#tm-investment` | https://bookless10.slack.com/archives/C0AMJUKGNLX | Lesson 9 (Debt & Investment Management) |
+
+---
+
+## Global Channels
 
 | Channel | Purpose |
 |---------|---------|
-| `#welcome` | Onboarding, rules, how it works |
-| `#announcements` | New notes posted (admin only posts) |
-| `#bbf4302-notes` | Treasury Management notes + Gamma links |
-| `#bbf4302-quiz` | Weekly quizzes |
-| `#leaderboard` | Weekly rankings |
-| `#general` | Student chat |
-
-Future:
-- `#bbf4301-notes`, `#bbf4301-quiz` — when Corporate Finance launches
-- `#_admin` — private internal ops channel
+| `#all-bookless-10` | General community chat |
+| `#social` | Off-topic, student life |

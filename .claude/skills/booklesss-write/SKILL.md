@@ -2,21 +2,20 @@
 name: booklesss-write
 description: >
   The single writing skill for all Booklesss content. Use whenever the user wants
-  to write, create, or generate lesson notes or study steps for any course or topic.
+  to write, create, or generate lesson notes for any course or topic.
   Triggers on: "write the notes for Step X", "do Lesson 2", "next step",
   "let's do working capital", "write step 3", or any request to turn raw
-  PPT/PDF content into student-friendly notes.
+  PPT/PDF/PPTX source content into student-friendly lesson PDFs.
   This skill handles the full content pipeline: reading source material →
-  rewriting in plain English → structuring as a PDF-ready document → humanizing
-  all copy → saving the file → triggering the booklesss-pdf skill to generate
-  the lesson PDF.
-  The humanizer is built in — never run a separate humanizer pass for notes content.
-  Always output complete files. Never truncate, never use placeholders.
+  writing content directly into a ReportLab Python script → running it to
+  produce the PDF. No markdown files. No intermediate formats. PDFs only.
+  The humanizer is built in — never run a separate humanizer pass.
+  Always produce complete, runnable scripts. Never truncate.
 ---
 
 # booklesss-write
 
-One skill. Full content pipeline — notes, humanizing, deck generation.
+One skill. Full content pipeline — source material in, PDF out.
 
 ---
 
@@ -24,12 +23,12 @@ One skill. Full content pipeline — notes, humanizing, deck generation.
 
 Before writing any lesson, confirm these two things if not already provided:
 
-1. **Which lesson is this?** (e.g. Lesson 1 — Treasury Foundations)
+1. **Which lesson/step is this?** (e.g. Step 1.1 — Introduction to Treasury Management)
 2. **What is the Slack channel link for this lesson?**
-   (e.g. `https://bookless10.slack.com/channels/tm-working-capital`)
-   This gets embedded as a button in the lesson PDF — it is not optional.
+   Check `operations/workspace.md` for all saved channel links.
+   This is embedded as a button in the PDF — it is not optional.
 
-If the channel link is missing, ask before writing:
+If the channel link is missing, ask:
 > "What's the Slack channel link for this lesson? It goes into the PDF as a discussion button."
 
 ---
@@ -39,166 +38,92 @@ If the channel link is missing, ask before writing:
 | Term | Meaning |
 |------|---------|
 | **Course** | Full subject, e.g. BBF4302 Treasury Management |
-| **Lesson** | Group of related steps, maps to one Slack channel |
-| **Step** | One PDF. One set of notes, one Slack post |
-| **Card** | One section within a step. Each `##` heading = one section |
+| **Lesson** | A topic group mapped to one Slack channel (e.g. lesson-07-interest-rate-risk) |
+| **Step** | One PDF document. One Slack post. e.g. Step 1.1, Step 2.3 |
+| **Section** | One content block within a step PDF, separated by a heading + hairline |
 
 ---
 
-## File naming and save location
-
-Notes are saved as `.md` files inside the lesson's `content/` folder.
+## Workflow — PDF direct (no markdown)
 
 ```
-courses/[Course Folder]/content/lesson-0[N]-[name]/[lesson]_[step]_[slug].md
+1. Read source files from courses/[Course]/_source/
+2. Plan the step content (sections, examples, tables, callouts)
+3. Invoke booklesss-pdf skill — write the Python script directly
+4. Run: python3 _dev/scripts/build_[course]_[step].py
+5. Confirm PDF output path to user
+```
+
+No .md files. No intermediate formats. The script IS the content.
+
+---
+
+## Output location
+
+```
+courses/[Course]/content/[lesson-folder]/[step-slug]_v1.pdf
 ```
 
 Examples:
-- `courses/Treasury Management/content/lesson-01-treasury-foundations/1_1_introduction-to-tm.md`
-- `courses/Treasury Management/content/lesson-02-working-capital-management/2_1_working-capital-liquidity.md`
+- `courses/Treasury Management/content/lesson-01-treasury-foundations/1_1_introduction-to-tm_v1.pdf`
+- `courses/Treasury Management/content/lesson-07-interest-rate-risk/7_1_interest-rate-risk_v1.pdf`
 
----
-
-## After saving — always generate the PDF
-
-Once the `.md` file is saved, immediately trigger the `booklesss-pdf` skill to generate the lesson PDF. Pass it:
-- The path to the `.md` file
-- The Slack channel link confirmed at the start
-
----
-
-## Markdown format reference
-
-| Syntax | Renders as |
-|--------|-----------|
-| `## Title` | New card — always include space after `##` |
-| `### Sub-heading` | H3 within a card — for named sections |
-| `- item` | Bullet list |
-| `1. item` | Numbered list |
-| `**bold**` | Bold — for emphasis on words/phrases only |
-| `*italic*` | Italic |
-| `\| table \|` | Table |
-| `***` | **Card split** — on its own line between every card |
-| `> text` | Blockquote |
-| `[label](url)` | Clickable link. CTA labels (Join, Click, Get started) render as buttons |
-
-**Callout boxes** — use these slash-style markers, they render in the HTML deck:
-| Marker | Renders as |
-|--------|-----------|
-| `/warning text` | Orange warning box |
-| `/info text` | Blue info box |
-| `/success text` | Green success box |
-| `/note text` | Amber note box |
-| `/caution text` | Orange caution box |
-
----
-
-## Output format
-
-Every notes file begins with this header block:
-
+Scripts live in:
 ```
-# Deck — [Lesson].[Step]: [Title]
-**Deck URL:** [leave blank — paste after publishing]
-**Course:** [Course code] [Course name]
-**Last updated:** [today's date]
----
+_dev/scripts/build_[course-code]_[step]_[slug].py
 ```
 
-Then the deck content:
+---
 
-```markdown
-## [Concept name only — no "Lesson X" prefix]
-[Course code] [Course name]
+## Content structure — what goes in every step
 
-[One sentence: what this step is about and why it matters]
+Every lesson step PDF contains these sections, in order:
 
-***
-
-## [Card 2 — first concept]
-
-[Plain English explanation. No labels, no "Title:", "Body:". Just text.]
-
-### [Sub-section if needed]
-[Content...]
-
-/info [Key fact or definition that students must know]
-
-***
-
-## [Worked Example card — if calculations exist]
-
-### [Company name] — Example
-
-| Item | Value | Calculation | Result |
-|------|-------|------------|--------|
-| ... | ... | ... | ... |
-
-/success [Key conclusion or exam answer]
-
-***
-
-[8–10 cards total]
-
-## Key Terms
-
-| Term | Definition |
-|------|-----------|
-| [Term] | [Definition] |
-
-***
-
-## What You Should Now Be Able To Do
-
-1. [Outcome 1]
-2. [Outcome 2]
-3. [Outcome 3]
-4. [Outcome 4]
-5. [Outcome 5]
-
-**Next: [Lesson].[Step+1] — [Title]**
-```
+1. **Cover** — course code, step number, title, Booklesss branding
+2. **Introduction section** — what this step covers and why it matters (2-3 sentences)
+3. **Core concept sections** (4-7 sections) — one per major concept, with eyebrow tag + heading + body + callouts/tables as needed
+4. **Worked example** (if calculations exist) — ZMW, Zambian companies
+5. **Key Terms table** — two columns, all terms from the step
+6. **Learning Outcomes** — 5-6 numbered outcomes
+7. **Channel button** — accent-coloured block linking to the Slack channel
 
 ---
 
 ## Writing rules
 
-- **Title card:** Concept name only. No "Lesson X —" prefix. `## Working Capital & Liquidity Management` not `## Lesson 2 — Working Capital`.
-- **No labels.** Never write `**Title:**`, `**Body:**`, `**Key point:**`. Just write the content.
-- **Spaces after `##`.** Always `## Title` never `##Title`.
-- **`***` between every card.** On its own line, after every card's content.
-- **`###` for named sections.** If a card has distinct named sections (e.g. Centralised / Decentralised), those are `###` not bold text.
-- **Examples use ZMW and Zambian companies:** Zanaco, Zambeef, ZESCO, First Quantum, Mutengo.
-- **Formulas always have a worked example card.** Show each calculation step.
-- **8–10 cards per step.** Split if dense, combine if thin.
-- **Last card is always learning outcomes.** 5–6 numbered outcomes.
-- **Next step reference:** `**Next: 2.2 — Inventory, EOQ & Creditor Management**`
+- Write in plain English. No textbook voice. No chatbot voice.
+- Short sentences. Vary length. Some punchy one-liners, some longer explanations.
+- No labels in running text: never write "Title:", "Body:", "Key point:" inline.
+- ZMW examples use Zambian companies: Zanaco, Zambeef, ZESCO, First Quantum, Mutengo.
+- Formulas always get a worked example with step-by-step calculations.
+- Every section has an eyebrow tag (see booklesss-pdf skill for spec).
+- Invoke booklesss-pdf skill for all PDF generation — that skill owns the design.
 
 ---
 
 ## Humanizer — baked in (apply while writing, not after)
 
-Do not write AI-sounding content in the first place. Apply these rules as you write.
-
-### Banned words and phrases
-Do not use these anywhere in notes or lead magnet copy:
-
-`tapestry` `nuance` `multifaceted` `robust` `delve` `foster` `showcase` `underscore` `highlight` (as verb) `pivotal` `crucial` `vital` `groundbreaking` `vibrant` `rich` (figurative) `nestled` `testament` `interplay` `landscape` (abstract) `additionally` `furthermore` `moreover` `it's worth noting` `it is important to note` `in order to` `due to the fact that` `at this point in time`
+### Banned words
+`tapestry` `nuance` `multifaceted` `robust` `delve` `foster` `showcase`
+`underscore` `highlight` (verb) `pivotal` `crucial` `vital` `groundbreaking`
+`vibrant` `rich` (figurative) `nestled` `testament` `interplay`
+`landscape` (abstract) `additionally` `furthermore` `moreover`
+`it's worth noting` `it is important to note` `in order to`
+`due to the fact that` `at this point in time`
 
 ### Banned patterns
-- **Em dash overuse** — one per document maximum. Use commas or periods instead.
-- **Rule of three** — do not force three examples/points unless there are naturally three.
-- **Negative parallelism** — no "It's not just about X, it's about Y."
-- **Promotional language** — no "groundbreaking", "game-changing", "revolutionary" in copy.
-- **Vague attribution** — no "experts say", "research shows", "industry observers note". Name the source or cut it.
-- **Sycophantic openers** — no "Great question!", "Certainly!", "Of course!".
-- **Generic conclusions** — no "the future looks bright", "exciting times ahead".
-- **Inline-header lists** — no `**Speed:** The speed is fast.` style bullets. Write prose or use clean bullets without bold headers.
-- **Copula avoidance** — write "is" not "serves as", "stands as", "functions as".
-- **Emoji in body copy** — banned entirely.
+- Em dash overuse — one per document maximum
+- Rule of three — don't force three points unless there are naturally three
+- Negative parallelism — no "It's not just X, it's Y"
+- Vague attribution — no "experts say", "research shows"
+- Sycophantic openers — no "Great question!", "Certainly!"
+- Generic conclusions — no "the future looks bright"
+- Inline bold headers — no `**Speed:** The speed is fast.` style
+- Copula avoidance — write "is" not "serves as", "stands as"
+- Emoji in body copy — banned
 
-### Tone target
-Direct, confident, student-to-student. Like a classmate who studied harder than you sharing what they know. Not a textbook. Not a chatbot. Not a press release.
+### Tone
+Direct, confident, peer-to-peer. Like a classmate who studied harder than you sharing what they know. Not a textbook. Not a press release.
 
 **Before:**
 > Working capital management is a crucial aspect of treasury management that highlights the importance of maintaining adequate liquidity levels to ensure operational continuity.
@@ -206,17 +131,13 @@ Direct, confident, student-to-student. Like a classmate who studied harder than 
 **After:**
 > Working capital is the cash a business has available to run day-to-day. Too little and suppliers don't get paid. Too much and money is sitting idle when it could be earning.
 
-### Final anti-AI check (do before saving)
-Before saving any file, ask: *"What would make this obviously AI-generated?"*
-If any patterns remain, fix them. Common culprits: even paragraph lengths, no opinions or reactions, every sentence makes a complete point, no variation in sentence length.
-
 ---
 
-## Output completeness rule
+## Completeness rule
 
-Every file must be complete. No truncation, no `[continue pattern]`, no `[add more content here]`.
-If a step is long and the file might hit context limits, write up to a clean card boundary and report:
+Scripts must be complete and runnable. No truncation, no placeholders, no `# add content here`.
+If the step is very long and context is running low, stop at a clean section boundary and report:
 ```
-[PAUSED — X of Y cards complete. Send "continue" to resume from: [next card title]]
+[PAUSED — sections 1-4 complete. Script written to _dev/scripts/build_[x].py.
+Send "continue" to add sections 5 onwards.]
 ```
-On "continue" — pick up exactly where you stopped. No recap.
