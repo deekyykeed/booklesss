@@ -80,12 +80,41 @@ _dev/scripts/build_[course-code]_[step]_[slug].py
 Every lesson step PDF contains these sections, in order:
 
 1. **Cover** — course code, step number, title, Booklesss branding
-2. **Introduction section** — what this step covers and why it matters (2-3 sentences)
-3. **Core concept sections** (4-7 sections) — one per major concept, with eyebrow tag + heading + body + callouts/tables as needed
+2. **Core concept sections** (4-7 sections) — one per major concept, with eyebrow tag + heading + body + callouts/tables as needed
+3. **Discussion question × 2** — genuine thought questions embedded mid-content (see Community CTA rules below)
 4. **Worked example** (if calculations exist) — ZMW, Zambian companies
 5. **Key Terms table** — two columns, all terms from the step
 6. **Learning Outcomes** — 5-6 numbered outcomes
-7. **Channel button** — accent-coloured block linking to the Slack channel
+7. **Community closer** — soft 2-line paragraph at the end (see Community CTA rules below)
+
+---
+
+## Community CTA rules — no pushy buttons
+
+The PDF is read by strangers (WhatsApp) and existing members. The CTA must work for both without feeling like a pitch.
+
+### Two discussion questions (mid-content)
+Embed two genuine thought questions within the content — one mid-way, one near the end. These are real questions worth thinking about, not CTAs dressed as questions. They should:
+- Arise naturally from the material just covered
+- Have no obvious single answer — require actual thinking
+- Not say "bring this to the channel" or "discuss below" — just ask the question
+
+Style: italic, light green left-bar box. Tone: a classmate asking something they genuinely want to think through.
+
+### Community closer (end of document — replaces channel button)
+Two short paragraphs after Learning Outcomes. No button. No all-caps. No pricing.
+
+**Paragraph 1:** Name the channel and describe what happens there in one sentence. Example:
+> "This is one step in the [Course] series running in the Booklesss study group. The channel for this topic is #[channel-name] — that's where students going through [course code] are working through this material together."
+
+**Paragraph 2:** One line. Works for strangers and existing members.
+> "If you're already there, you know where to find it. If not, [join the group here.](INVITE_URL)"
+
+**Link rules:**
+- Always use the **invite link** (`INVITE_URL`) — not the channel archive link. The invite works for both strangers (join flow) and existing members (redirects to workspace).
+- Invite link: `https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8OFwcZTqTbPpC2Dg0q__Cg`
+- Hide the URL behind anchor text — never show the raw URL. Use "join the group here" or "the study group" as the visible text.
+- Channel archive links (e.g. `https://bookless10.slack.com/archives/C0AN3UPFG2G`) go in the script as comments only — for reference, not for display.
 
 ---
 
@@ -130,6 +159,28 @@ Direct, confident, peer-to-peer. Like a classmate who studied harder than you sh
 
 **After:**
 > Working capital is the cash a business has available to run day-to-day. Too little and suppliers don't get paid. Too much and money is sitting idle when it could be earning.
+
+---
+
+## WhatsApp caption — always output after generating the PDF
+
+Every time a PDF is generated, output a ready-to-copy WhatsApp caption immediately after confirming the PDF path. This is the one-liner Deeky pastes as the message text when sending the PDF.
+
+**Format:** One sentence. 15 words max. No emoji. No exclamation marks. No "join", "subscribe", or pricing.
+
+**Formula:** `[Subject] [topic] — [what's inside in plain terms]. Free.`
+
+**Examples:**
+- `Working capital notes — cash conversion cycle, debtor management, and factoring. Free.`
+- `Strategic Management notes — PESTEL, Porter's Five Forces, and how to apply them. Free.`
+- `Interest rate risk notes — hedging methods, FRAs, and swaps with worked examples. Free.`
+
+**Rules:**
+- No course codes — nobody outside the lecturer's office knows what BBF4302 means
+- Use the subject name, not the code: "Treasury Management" or just the topic itself
+- Worked examples and Zambian companies are in the content — don't call them out in the caption. Let readers discover them.
+- "Free." at the end is intentional — it removes hesitation without selling anything
+- Output it as a plain code block so Deeky can copy-paste without formatting
 
 ---
 

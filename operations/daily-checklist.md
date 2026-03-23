@@ -6,16 +6,17 @@ Keep this open. Work top-to-bottom. Every item you skip today is a conversion yo
 
 ## Every Day (15–30 min)
 
-### Morning — Content
-- [ ] Check `marketing/groups.md` — any groups you haven't posted to yet?
-- [ ] If new group → create bit.ly link → add to `groups.md` → drop the lead magnet
-- [ ] Check bit.ly dashboard — log click counts for any links >48h old
-- [ ] Reply to any WhatsApp DMs from the lead magnet within 2 hours
+### Morning — Post a step
+- [ ] Pick the next unposted step from any course (check course `_course.md` files)
+- [ ] Post the PDF directly to the WhatsApp group (full step, no teasing)
+- [ ] In the same message: mention the Slack community as a place to discuss + ask questions
+- [ ] Mention relevant Slack features naturally: channels by topic, searchable threads, no noise
+- [ ] If you get DMs from the post → log in `operations/leads.md`
 
 ### Morning — Slack
-- [ ] Check #bbf4302-notes, #bbf4302-discussion, #bbf4302-quiz for unanswered questions
-- [ ] Reply to every question in discussion channels (even "good question — see Module X")
-- [ ] React ✅ to any module posts that new students just read (acknowledges them)
+- [ ] Check all active channels for unanswered questions
+- [ ] Reply to every question (even "good question — check Step X for the full answer")
+- [ ] Acknowledge any new members who joined overnight
 
 ### Evening — Growth
 - [ ] Did anyone DM you on WhatsApp today? → Log in `operations/leads.md`
@@ -69,30 +70,52 @@ Keep this updated. It's your editorial calendar.
 
 ### Treasury Management — BBF4302
 
-| Step | Title | Notes Written | Gamma Done | Quiz Done | PDF Done | Slack Posted |
-|------|-------|:---:|:---:|:---:|:---:|:---:|
-| 1.1 | Introduction to Treasury Management | ✅ | — | — | ✅ | — |
-| 2.1 | Working Capital & Liquidity Management | ✅ | — | — | — | — |
-| 2.2 | Inventory Management, EOQ & Creditor Mgmt | ✅ | — | — | — | — |
-| 2.3 | Cash Management & Cash Flow Forecasting | — | — | — | — | — |
-| 3.1 | Interest Rate Risk Management | — | — | — | — | — |
-| 3.2 | Foreign Exchange Risk Management | — | — | — | — | — |
-| 4.1 | Debt Management | — | — | — | — | — |
-| 4.2 | Investment Management | — | — | — | — | — |
-| 4.3 | Clearing & Settlement Systems | — | — | — | — | — |
-| 4.4 | Treasury Management Systems | — | — | — | — | — |
+See full detail: `courses/Treasury Management/_course.md`
+
+| Step | Title | PDF | WhatsApp Posted | Slack Posted |
+|------|-------|:---:|:---:|:---:|
+| 1.1 | Introduction to Treasury Management | ✅ | — | — |
+| 2.1 | Working Capital & Liquidity Management | ✅ | — | — |
+| 2.2 | Inventory Management, EOQ & Creditor Mgmt | — | — | — |
+| 2.3 | Cash Management & Cash Flow Forecasting | — | — | — |
+| 3.1 | Interest Rate Risk Management | — | — | — |
+| 3.2 | Foreign Exchange Risk Management | — | — | — |
+| 4.1 | Debt Management | — | — | — |
+| 4.2 | Investment Management | — | — | — |
+| 4.3 | Clearing & Settlement Systems | — | — | — |
+| 4.4 | Treasury Management Systems | — | — | — |
 
 ### Corporate Finance — BAC4301
 
-| Step | Title | Notes Written | Gamma Done | Quiz Done | PDF Done | Slack Posted |
-|------|-------|:---:|:---:|:---:|:---:|:---:|
-| 1.1 | Investment Appraisal | ✅ | — | — | — | — |
+See full detail: `courses/Corporate Finance/_course.md`
+
+> **Blocked:** CF Slack channels not created yet. Create them first, then write Step 1.1.
+
+| Step | Title | PDF | WhatsApp Posted | Slack Posted |
+|------|-------|:---:|:---:|:---:|
+| 1.1 | Investment Fundamentals | — | — | — |
+| 2.1 | Advanced Investment Appraisal | — | — | — |
+| 3.1 | International Project Appraisal | — | — | — |
+| 4.1 | Cost of Capital Foundations | — | — | — |
+| 5.1 | Capital Structure Decisions | — | — | — |
+| 6.1 | Company Valuation | — | — | — |
+| 7.1 | Mergers & Acquisitions | — | — | — |
+| 8.1 | Interest Rate Risk Management | — | — | — |
+| 9.1 | Currency Risk Management | — | — | — |
+| 10.1 | Dividend Policy | — | — | — |
 
 ### Strategic Management
 
-| Step | Title | Notes Written | Gamma Done | Quiz Done | PDF Done | Slack Posted |
-|------|-------|:---:|:---:|:---:|:---:|:---:|
-| — | — | — | — | — | — | — |
+See full detail: `courses/Strategic Management/_course.md`
+
+| Step | Title | PDF | WhatsApp Posted | Slack Posted |
+|------|-------|:---:|:---:|:---:|
+| 1.1 | Introduction to Corporate Strategy | ✅ | — | — |
+| 2.1 | Mission & Vision | — | — | — |
+| 3.1 | External Environment | — | — | — |
+| 4.1 | Internal Environment | — | — | — |
+| 5.1 | Strategy Implementation | — | — | — |
+| 6.1 | Competitive Strategy | — | — | — |
 
 ---
 

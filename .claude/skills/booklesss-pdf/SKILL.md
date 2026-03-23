@@ -36,8 +36,8 @@ Each course has a distinct palette, font pairing, and personality. Never mix sty
 | Cover bg | `#0B1D3A` deep navy |
 | Accent | `#10B981` emerald |
 | Grid lines (cover/CTA) | `#132646` navy-toned |
-| Display font | Georgia Bold (serif — gravitas) |
-| Body font | Trebuchet MS |
+| Display font | Georgia Bold / Display-Bold (serif — gravitas) |
+| Body font | Aptos / Body (fallback: Liberation Sans on Linux) |
 | Callout note bg | `#ECFDF5` emerald-50 |
 | Result/highlight | `#065F46` dark emerald |
 | **Feel** | Premium treasury report. Serious money. |
@@ -192,19 +192,49 @@ A 1pt amber line below.
 
 ---
 
-## Font registration (always include all three families)
+## Font registration — Aptos preferred (always include all three families)
+
+**Preferred body font: Aptos** (Microsoft's modern default, replaces Calibri).
+Scripts must detect the OS and register the correct fonts automatically.
 
 ```python
-F = r"C:\Windows\Fonts"
-pdfmetrics.registerFont(TTFont("Calibri",        F + r"\calibri.ttf"))
-pdfmetrics.registerFont(TTFont("Calibri-Bold",   F + r"\calibrib.ttf"))
-pdfmetrics.registerFont(TTFont("Calibri-Italic", F + r"\calibrii.ttf"))
-pdfmetrics.registerFontFamily(
-    "Calibri", normal="Calibri", bold="Calibri-Bold",
-    italic="Calibri-Italic", boldItalic="Calibri-Bold")
-pdfmetrics.registerFont(TTFont("ArialBlack",   F + r"\ariblk.ttf"))
-pdfmetrics.registerFont(TTFont("SegoeUIBlack", F + r"\seguibl.ttf"))
+import sys, os
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+
+if sys.platform == "win32":
+    F = r"C:\Windows\Fonts"
+    # Body: Aptos (preferred). Falls back to Calibri if Aptos not present.
+    _aptos = os.path.join(F, "Aptos.ttf")
+    if os.path.exists(_aptos):
+        pdfmetrics.registerFont(TTFont("Body",        F + r"\Aptos.ttf"))
+        pdfmetrics.registerFont(TTFont("Body-Bold",   F + r"\Aptos-Bold.ttf"))
+        pdfmetrics.registerFont(TTFont("Body-Italic", F + r"\Aptos-Italic.ttf"))
+    else:
+        pdfmetrics.registerFont(TTFont("Body",        F + r"\calibri.ttf"))
+        pdfmetrics.registerFont(TTFont("Body-Bold",   F + r"\calibrib.ttf"))
+        pdfmetrics.registerFont(TTFont("Body-Italic", F + r"\calibrii.ttf"))
+    pdfmetrics.registerFontFamily("Body", normal="Body", bold="Body-Bold", italic="Body-Italic")
+    # Display (TM/SM): Georgia serif
+    pdfmetrics.registerFont(TTFont("Display",        F + r"\georgia.ttf"))
+    pdfmetrics.registerFont(TTFont("Display-Bold",   F + r"\georgiab.ttf"))
+    pdfmetrics.registerFont(TTFont("Display-Italic", F + r"\georgiai.ttf"))
+    pdfmetrics.registerFontFamily("Display", normal="Display", bold="Display-Bold", italic="Display-Italic")
+else:
+    # Linux (Cowork/VM) fallbacks
+    FD = "/usr/share/fonts/truetype/dejavu"
+    FL = "/usr/share/fonts/truetype/liberation"
+    pdfmetrics.registerFont(TTFont("Body",        FL + "/LiberationSans-Regular.ttf"))
+    pdfmetrics.registerFont(TTFont("Body-Bold",   FL + "/LiberationSans-Bold.ttf"))
+    pdfmetrics.registerFont(TTFont("Body-Italic", FL + "/LiberationSans-Italic.ttf"))
+    pdfmetrics.registerFontFamily("Body", normal="Body", bold="Body-Bold", italic="Body-Italic")
+    pdfmetrics.registerFont(TTFont("Display",        FD + "/DejaVuSerif.ttf"))
+    pdfmetrics.registerFont(TTFont("Display-Bold",   FD + "/DejaVuSerif-Bold.ttf"))
+    pdfmetrics.registerFont(TTFont("Display-Italic", FD + "/DejaVuSerif-Italic.ttf"))
+    pdfmetrics.registerFontFamily("Display", normal="Display", bold="Display-Bold", italic="Display-Italic")
 ```
+
+**In all styles and scripts:** use `"Body"` / `"Body-Bold"` / `"Body-Italic"` as font names — never hardcode `"Calibri"` or `"Trebuchet"`. Use `"Display-Bold"` for section headings. This makes every script portable between Windows (Aptos) and Linux (Liberation Sans).
 
 ---
 
