@@ -66,6 +66,23 @@ Section name in Slack: **Strategic Management**
 
 ---
 
+## Corporate Finance — Channels (PENDING CREATION)
+
+Section name in Slack: **Corporate Finance**
+
+> **Action required:** Create these channels in Slack, then update the links below.
+
+| Channel | Link | Content |
+|---------|------|---------|
+| `#cf-updates` | — | Announcements, new lesson drops |
+| `#cf-investment` | — | Steps 1.1–3.1 (FCF, APV, International NPV) |
+| `#cf-cost-of-capital` | — | Steps 4.1–5.1 (WACC, CAPM, Capital Structure) |
+| `#cf-ma-valuation` | — | Steps 6.1–7.1 (Valuation, M&A, EMH) |
+| `#cf-risk` | — | Steps 8.1–9.1 (Interest Rate Risk, Currency Risk) |
+| `#cf-dividends` | — | Step 10.1 (Dividend Policy) |
+
+---
+
 ## Global Channels
 
 | Channel | Purpose |

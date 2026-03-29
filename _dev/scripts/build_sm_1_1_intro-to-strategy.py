@@ -33,9 +33,8 @@ pdfmetrics.registerFontFamily("Calibri", normal="Calibri", bold="Calibri-Bold", 
 #  COLOURS
 # ─────────────────────────────────────────────
 C_DARK      = colors.HexColor("#0F1F35")   # slate-navy cover
-C_GRID      = colors.HexColor("#162840")   # cover grid lines
-C_RED       = colors.HexColor("#DC2626")   # cardinal red accent
-C_RED_DK    = colors.HexColor("#991B1B")   # dark red
+C_GOLD      = colors.HexColor("#C9920A")   # warm gold accent
+C_GOLD_DK   = colors.HexColor("#92660A")   # dark gold
 C_INK       = colors.HexColor("#111827")   # primary text
 C_STEEL     = colors.HexColor("#6B7280")   # secondary text
 C_MIST      = colors.HexColor("#9CA3AF")   # meta / captions
@@ -70,7 +69,7 @@ def make_styles():
     return {
         # Cover
         "cover_eyebrow": ParagraphStyle("cover_eyebrow",
-            fontName="Calibri-Bold", fontSize=7.5, textColor=C_RED,
+            fontName="Calibri-Bold", fontSize=7.5, textColor=C_GOLD,
             leading=11, spaceAfter=12, alignment=TA_LEFT),
         "cover_title": ParagraphStyle("cover_title",
             fontName="Georgia-Bold", fontSize=30, textColor=C_WHITE,
@@ -81,7 +80,7 @@ def make_styles():
 
         # Body
         "eyebrow": ParagraphStyle("eyebrow",
-            fontName="Calibri-Bold", fontSize=7, textColor=C_RED,
+            fontName="Calibri-Bold", fontSize=7, textColor=C_GOLD,
             leading=10, spaceAfter=3, spaceBefore=18, alignment=TA_LEFT),
         "h2": ParagraphStyle("h2",
             fontName="Georgia-Bold", fontSize=15, textColor=C_INK,
@@ -148,15 +147,8 @@ def cover_bg(canvas, doc):
     canvas.saveState()
     canvas.setFillColor(C_DARK)
     canvas.rect(0, 0, W, H, fill=1, stroke=0)
-    # Subtle grid lines
-    canvas.setStrokeColor(C_GRID)
-    canvas.setLineWidth(0.5)
-    for i in range(1, 6):
-        canvas.line(0, H * i / 6, W, H * i / 6)
-    for i in range(1, 4):
-        canvas.line(W * i / 4, 0, W * i / 4, H)
     # Cardinal red left strip
-    canvas.setFillColor(C_RED)
+    canvas.setFillColor(C_GOLD)
     canvas.rect(0, 0, 5, H, fill=1, stroke=0)
     # Ghost step number
     canvas.setFont("Georgia-Bold", 160)
@@ -197,7 +189,7 @@ def section(eyebrow_text, heading_text):
 
 def callout(text, style="note"):
     styles_map = {
-        "note":  (BG_NOTE,  C_RED,      ST["note_text"]),
+        "note":  (BG_NOTE,  C_GOLD,      ST["note_text"]),
         "info":  (BG_INFO,  C_INFO_TXT, ST["info_text"]),
         "warn":  (BG_WARN,  C_WARN_TXT, ST["warn_text"]),
     }
@@ -223,7 +215,7 @@ def channel_button():
     )
     t = Table([[label], [body]], colWidths=[CONTENT_W])
     t.setStyle(TableStyle([
-        ("BACKGROUND",    (0,0), (-1,-1), C_RED),
+        ("BACKGROUND",    (0,0), (-1,-1), C_GOLD),
         ("TOPPADDING",    (0,0), (-1,-1), 12),
         ("BOTTOMPADDING", (0,0), (-1,-1), 14),
         ("LEFTPADDING",   (0,0), (-1,-1), 14),
@@ -258,7 +250,7 @@ def build():
     # ── COVER ────────────────────────────────
     story.append(Paragraph("STRATEGIC MANAGEMENT  ·  STEP 1.1", ST["cover_eyebrow"]))
     story.append(Spacer(1, 10))
-    story.append(Paragraph("Introduction to\nCorporate Strategy", ST["cover_title"]))
+    story.append(Paragraph("Introduction to<br/>Corporate Strategy", ST["cover_title"]))
     story.append(Spacer(1, 16))
     story.append(Paragraph("What strategy is, why it matters, and the frameworks\nyour exam will test you on.", ST["cover_sub"]))
     story.append(NextPageTemplate("body"))

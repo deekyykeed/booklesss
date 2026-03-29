@@ -52,7 +52,9 @@
       "Bash(cp \"C:/Users/deeky/OneDrive/Desktop/Booklesss/taste-skill-main/taste-skill-main/skills/output-skill/SKILL.md\" \"C:/Users/deeky/OneDrive/Desktop/Booklesss/.claude/skills/output-enforcement/SKILL.md\")",
       "Bash(BASE=\"C:/Users/deeky/OneDrive/Desktop/Booklesss/courses/Treasury Management/content/lesson-01-treasury-foundations\")",
       "Bash(__NEW_LINE_f168b369118106d5__ mkdir:*)",
-      "Bash(mv \"$BASE/3 Questions Your TM Exam Will Ask - Booklesss.pdf\" \"$BASE/lead-magnets/\")"
+      "Bash(mv \"$BASE/3 Questions Your TM Exam Will Ask - Booklesss.pdf\" \"$BASE/lead-magnets/\")",
+      "Bash(wc -l '/c/Users/deeky/OneDrive/Desktop/Booklesss/_dev/scripts/build_'*.py)",
+      "Bash(git -C \"c:/Users/deeky/OneDrive/Desktop/Booklesss\" status)"
     ]
   }
 }

@@ -1,6 +1,6 @@
 # BBF4302 Treasury Management — Course Status
 
-**Last updated:** 2026-03-22
+**Last updated:** 2026-03-24
 
 ---
 
@@ -13,7 +13,7 @@
 | Slack section | Treasury Management |
 | Updates channel | `#tm-updates` → https://bookless10.slack.com/archives/C0AN40BMZFW |
 | Total steps planned | 10 |
-| PDFs generated | 2 |
+| PDFs generated | 4 |
 | Steps posted to Slack | 0 |
 
 ---
@@ -25,7 +25,7 @@
 | 1.1 | Introduction to Treasury Management | `_source/06_Introduction` PPTX | ✅ | — | `#tm-operations` |
 | 2.1 | Working Capital & Liquidity Management | `_source/07` PPTX 1 | ✅ | — | `#tm-working-capital` |
 | 2.2 | Inventory Management, EOQ & Creditor Mgmt | `_source/07` PPTX 2 | ✅ | — | `#tm-working-capital` |
-| 2.3 | Cash Management & Cash Flow Forecasting | `_source/07` PPTX 3 + `_source/08` | — | — | `#tm-working-capital` |
+| 2.3 | Cash Management & Cash Flow Forecasting | `_source/07` PPTX 3 + `_source/08` | ✅ | draft | `#tm-working-capital` |
 | 3.1 | Interest Rate Risk Management | `_source/09` PPTX | — | — | `#tm-risk` |
 | 3.2 | Foreign Exchange Risk Management | `_source/10` PPTX | — | — | `#tm-risk` |
 | 4.1 | Debt Management | `_source/11` PPTX | — | — | `#tm-investment` |
@@ -33,7 +33,7 @@
 | 4.3 | Clearing & Settlement Systems | `_source/13` PPTX | — | — | `#tm-operations` |
 | 4.4 | Treasury Management Systems | `_source/14` PPTX | — | — | `#tm-operations` |
 
-**Next to write:** Step 2.3 — Cash Management & Cash Flow Forecasting
+**Next to write:** Step 3.1 — Interest Rate Risk Management
 
 ---
 
@@ -61,6 +61,8 @@
 |------|----------|
 | 1.1 | `content/lesson-01-treasury-foundations/Step 1.1 - Introduction to Treasury Management.pdf` |
 | 2.1 | `content/lesson-02-working-capital-management/Step 2.1 - Working Capital & Liquidity Management.pdf` |
+| 2.2 | `content/lesson-02-working-capital-management/Step 2.2 - Inventory Management, EOQ & Creditor Management.pdf` |
+| 2.3 | `content/lesson-02-working-capital-management/Step 2.3 - Cash Management & Cash Flow Forecasting.pdf` |
 
 ---
 
@@ -70,6 +72,7 @@
 |------|--------|
 | 1.1 | `_dev/scripts/build_lesson_1_1_tm.py` |
 | 2.1 | `_dev/scripts/build_tm_2_1_working-capital.py` |
+| 2.3 | `_dev/scripts/build_tm_2_3_cash-management.py` |
 
 ---
 
