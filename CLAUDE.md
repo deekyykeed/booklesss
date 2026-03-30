@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Booklesss** is a Slack-based edtech platform delivering branded PDF study materials for Zambian university finance/business courses. The core pipeline: source material (PPTX/PDF) → Python ReportLab script → PDF → posted to Slack channels. No web framework, no database — just Python scripts and structured content.
 
-**Active courses:** Strategic Management, Treasury Management (BBF4302), Corporate Finance (BAC4301)
+**Active courses:** Strategic Management, Treasury Management (BBF4302), Corporate Finance (BAC4301 — Slack channels not yet created, do not write CF PDFs until channels exist)
 **Platform:** Slack workspace `bookless10.slack.com` | Website: `booklesss.framer.ai`
 **Founding rate deadline:** April 18, 2026 — mention in any marketing content
 
@@ -20,6 +20,11 @@ python3 _dev/scripts/build_[course]_[step]_[slug].py
 **Transcribe a video lecture:**
 ```bash
 python3 _dev/scripts/transcribe.py "path/to/video.mp4"
+```
+
+**Bulk-transcribe a folder of videos:**
+```bash
+python3 _dev/scripts/transcribe_bulk.py "path/to/folder/"
 ```
 
 No build system, no tests, no linter. Scripts are self-contained.

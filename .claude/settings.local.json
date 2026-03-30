@@ -54,7 +54,8 @@
       "Bash(__NEW_LINE_f168b369118106d5__ mkdir:*)",
       "Bash(mv \"$BASE/3 Questions Your TM Exam Will Ask - Booklesss.pdf\" \"$BASE/lead-magnets/\")",
       "Bash(wc -l '/c/Users/deeky/OneDrive/Desktop/Booklesss/_dev/scripts/build_'*.py)",
-      "Bash(git -C \"c:/Users/deeky/OneDrive/Desktop/Booklesss\" status)"
+      "Bash(git -C \"c:/Users/deeky/OneDrive/Desktop/Booklesss\" status)",
+      "Bash(claude install:*)"
     ]
   }
 }
