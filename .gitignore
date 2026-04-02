@@ -1,0 +1,9 @@
+# Video files (too large for git)
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.m4v
+Unza fom Titsa/
+_dev/transcribe-test/

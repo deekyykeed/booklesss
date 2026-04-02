@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Booklesss** is a Slack-based edtech platform delivering branded PDF study materials for Zambian university finance/business courses. The core pipeline: source material (PPTX/PDF) → Python ReportLab script → PDF → posted to Slack channels. No web framework, no database — just Python scripts and structured content.
 
-**Active courses:** Strategic Management, Treasury Management (BBF4302), Corporate Finance (BAC4301 — Slack channels not yet created, do not write CF PDFs until channels exist)
+**Active courses:** Strategic Management, Treasury Management (BBF4302), Corporate Finance (BAC4301 — all 10 PDFs written, but Slack channels not yet created; do not post CF content until channels exist)
 **Platform:** Slack workspace `bookless10.slack.com` | Website: `booklesss.framer.ai`
 **Founding rate deadline:** April 18, 2026 — mention in any marketing content
 
@@ -32,10 +32,10 @@ No build system, no tests, no linter. Scripts are self-contained.
 ## Architecture
 
 ### Content Pipeline
-Each lesson step gets one Python script in `_dev/scripts/` (naming: `build_[course]_[step]_[slug].py`). The script is both the content and the build tool — all text is written directly into the script, which outputs a PDF to `courses/[Course]/content/[lesson-folder]/`. There are no intermediate markdown files.
+Each lesson step gets one Python script in `_dev/scripts/` (naming: `build_[course]_[step]_[slug].py`). The script is both the content and the build tool — all text is written directly into the script, which outputs a PDF to `courses/[Course]/content/[lesson-folder]/`. There are no intermediate markdown files. Exception: TM Step 1.1 uses the legacy name `build_lesson_1_1_tm.py`.
 
 Scripts are ~700 lines and follow a fixed structure:
-1. Font registration (Windows: `C:\Windows\Fonts\`, Linux fallback: Liberation Sans)
+1. Font registration — scripts use Linux paths (`/usr/share/fonts/truetype/dejavu` for DejaVuSerif, `/usr/share/fonts/truetype/liberation` for LiberationSans). These fonts must be installed on the build machine.
 2. Color palette constants (per-course)
 3. Page geometry (A4, 2.2cm side margins)
 4. ReportLab `ParagraphStyle` definitions
@@ -77,7 +77,10 @@ Three custom skills in `.claude/skills/`:
 |------|---------|
 | `operations/workspace.md` | Slack workspace config, channel names, invite links |
 | `courses/[Course]/_course.md` | Step status tracker for each course |
-| `operations/daily-checklist.md` | Operational cadence |
+| `operations/daily-checklist.md` | Operational cadence and content status tracker |
+| `operations/leads.md` | WhatsApp lead tracking |
+| `operations/revenue-log.md` | Student conversions and revenue |
+| `operations/groups.md` | WhatsApp group marketing stats |
 | `Finances/pricing-strategy.md` | Founding rate, deadlines, cost structure |
 
 ## Writing Style Rules (Enforced in All Content)
