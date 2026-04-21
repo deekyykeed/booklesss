@@ -60,7 +60,9 @@ CONTENT_W   = W - 2 * MX
 CHANNEL_URL  = "https://bookless10.slack.com/archives/C0AN0T2HGR0"
 CHANNEL_NAME = "sm-foundations"
 
-OUT_PATH = r"C:\Users\deeky\OneDrive\Desktop\Booklesss\courses\Strategic Management\content\lesson-01-introduction-to-strategy\Step 1.1 - Introduction to Corporate Strategy.pdf"
+OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..",
+           "courses", "Strategic Management", "01-foundations", "01-intro-to-strategy")
+OUT_PATH = os.path.join(OUT_DIR, "Step 1.1 - Introduction to Corporate Strategy.pdf")
 
 # ─────────────────────────────────────────────
 #  STYLES

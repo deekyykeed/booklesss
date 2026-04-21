@@ -41,7 +41,7 @@
 
 ## Source Material
 
-All source files are in `BAC4301 - Corporate Finance/_source/`:
+All source files are in `_source/`:
 
 | Folder | Files | Covers |
 |--------|-------|--------|
@@ -59,16 +59,16 @@ All source files are in `BAC4301 - Corporate Finance/_source/`:
 
 | Step | PDF Path |
 |------|----------|
-| 1.1 | `BAC4301 - Corporate Finance/content/lesson-01-investment-fundamentals/Step 1.1 - Investment Fundamentals.pdf` |
-| 2.1 | `BAC4301 - Corporate Finance/content/lesson-02-advanced-investment-appraisal/Step 2.1 - Advanced Investment Appraisal.pdf` |
-| 3.1 | `BAC4301 - Corporate Finance/content/lesson-03-international-projects/Step 3.1 - International Project Appraisal.pdf` |
-| 4.1 | `BAC4301 - Corporate Finance/content/lesson-04-cost-of-capital-foundations/Step 4.1 - Cost of Capital Foundations.pdf` |
-| 5.1 | `BAC4301 - Corporate Finance/content/lesson-05-capital-structure-decisions/Step 5.1 - Capital Structure Decisions.pdf` |
-| 6.1 | `BAC4301 - Corporate Finance/content/lesson-06-company-valuation/Step 6.1 - Company Valuation.pdf` |
-| 7.1 | `BAC4301 - Corporate Finance/content/lesson-07-mergers-acquisitions/Step 7.1 - Mergers & Acquisitions.pdf` |
-| 8.1 | `BAC4301 - Corporate Finance/content/lesson-08-interest-rate-risk/Step 8.1 - Interest Rate Risk Management.pdf` |
-| 9.1 | `BAC4301 - Corporate Finance/content/lesson-09-currency-risk-management/Step 9.1 - Currency Risk Management.pdf` |
-| 10.1 | `BAC4301 - Corporate Finance/content/lesson-10-dividend-policy/Step 10.1 - Dividend Policy.pdf` |
+| 1.1 | `01-investment/01-investment-fundamentals/Step 1.1 - Investment Fundamentals.pdf` |
+| 2.1 | `01-investment/02-advanced-investment/Step 2.1 - Advanced Investment Appraisal.pdf` |
+| 3.1 | `01-investment/03-international-projects/Step 3.1 - International Project Appraisal.pdf` |
+| 4.1 | `02-cost-of-capital/04-cost-of-capital-foundations/Step 4.1 - Cost of Capital Foundations.pdf` |
+| 5.1 | `02-cost-of-capital/05-capital-structure/Step 5.1 - Capital Structure Decisions.pdf` |
+| 6.1 | `03-ma-valuation/06-company-valuation/Step 6.1 - Company Valuation.pdf` |
+| 7.1 | `03-ma-valuation/07-mergers-acquisitions/Step 7.1 - Mergers & Acquisitions.pdf` |
+| 8.1 | `04-risk/08-interest-rate-risk/Step 8.1 - Interest Rate Risk Management.pdf` |
+| 9.1 | `04-risk/09-currency-risk/Step 9.1 - Currency Risk Management.pdf` |
+| 10.1 | `05-dividends/10-dividend-policy/Step 10.1 - Dividend Policy.pdf` |
 
 ---
 

@@ -59,16 +59,16 @@
 
 | Step | PDF Path |
 |------|----------|
-| 1.1 | `content/lesson-01-treasury-foundations/Step 1.1 - Introduction to Treasury Management.pdf` |
-| 2.1 | `content/lesson-02-working-capital-management/Step 2.1 - Working Capital & Liquidity Management.pdf` |
-| 2.2 | `content/lesson-02-working-capital-management/Step 2.2 - Inventory Management, EOQ & Creditor Management.pdf` |
-| 2.3 | `content/lesson-02-working-capital-management/Step 2.3 - Cash Management & Cash Flow Forecasting.pdf` |
-| 3.1 | `content/lesson-03-interest-rate-risk/Step 3.1 - Interest Rate Risk Management.pdf` |
-| 3.2 | `content/lesson-03-interest-rate-risk/Step 3.2 - Foreign Exchange Risk Management.pdf` |
-| 4.1 | `content/lesson-04-debt-investment-management/Step 4.1 - Debt Management.pdf` |
-| 4.2 | `content/lesson-04-debt-investment-management/Step 4.2 - Investment Management.pdf` |
-| 4.3 | `content/lesson-05-clearing-settlement/Step 4.3 - Clearing & Settlement Systems.pdf` |
-| 4.4 | `content/lesson-05-clearing-settlement/Step 4.4 - Treasury Management Systems.pdf` |
+| 1.1 | `01-operations/01-treasury-foundations/Step 1.1 - Introduction to Treasury Management.pdf` |
+| 2.1 | `02-working-capital/02-working-capital-management/Step 2.1 - Working Capital & Liquidity Management.pdf` |
+| 2.2 | `02-working-capital/02-working-capital-management/Step 2.2 - Inventory Management, EOQ & Creditor Management.pdf` |
+| 2.3 | `02-working-capital/02-working-capital-management/Step 2.3 - Cash Management & Cash Flow Forecasting.pdf` |
+| 3.1 | `03-risk/03-interest-rate-risk/Step 3.1 - Interest Rate Risk Management.pdf` |
+| 3.2 | `03-risk/03-interest-rate-risk/Step 3.2 - Foreign Exchange Risk Management.pdf` |
+| 4.1 | `04-investment/04-investment-management/Step 4.1 - Debt Management.pdf` |
+| 4.2 | `04-investment/04-investment-management/Step 4.2 - Investment Management.pdf` |
+| 4.3 | `01-operations/05-clearing-settlement/Step 5.1 - Clearing & Settlement Systems.pdf` |
+| 4.4 | `01-operations/05-clearing-settlement/Step 5.2 - Treasury Management Systems.pdf` |
 
 ---
 

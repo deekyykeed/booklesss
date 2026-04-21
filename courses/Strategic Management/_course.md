@@ -54,12 +54,12 @@ All source PDFs are in `_source/` directly (no subfolders):
 
 | Step | PDF Path |
 |------|----------|
-| 1.1 | `content/lesson-01-introduction-to-strategy/Step 1.1 - Introduction to Corporate Strategy.pdf` |
-| 2.1 | `content/lesson-02-mission-and-vision/Step 2.1 - Vision, Mission & Objectives.pdf` |
-| 3.1 | `content/lesson-03-external-environment/Step 3.1 - The External Environment.pdf` |
-| 4.1 | `content/lesson-04-internal-environment/Step 4.1 - The Internal Environment.pdf` |
-| 5.1 | `content/lesson-05-strategy-implementation/Step 5.1 - Strategy Implementation.pdf` |
-| 6.1 | `content/lesson-06-competitive-strategy/Step 6.1 - Competitive Strategy.pdf` |
+| 1.1 | `01-foundations/01-intro-to-strategy/Step 1.1 - Introduction to Corporate Strategy.pdf` |
+| 2.1 | `01-foundations/02-mission-and-vision/Step 2.1 - Vision, Mission & Objectives.pdf` |
+| 3.1 | `02-environment/03-external-environment/Step 3.1 - The External Environment.pdf` |
+| 4.1 | `02-environment/04-internal-environment/Step 4.1 - The Internal Environment.pdf` |
+| 5.1 | `03-strategy/05-strategy-implementation/Step 5.1 - Strategy Implementation.pdf` |
+| 6.1 | `03-strategy/06-competitive-strategy/Step 6.1 - Competitive Strategy.pdf` |
 
 ---
 

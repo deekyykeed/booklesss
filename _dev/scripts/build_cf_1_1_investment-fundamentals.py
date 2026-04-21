@@ -66,8 +66,8 @@ CONTENT_W   = W - 2 * MX
 CHANNEL_NAME = "cf-investment"
 INVITE_URL   = "https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8OFwcZTqTbPpC2Dg0q__Cg"
 
-CF_BASE = "/sessions/brave-funny-mayer/mnt/Booklesss/courses/Corporate Finance/BAC4301 - Corporate Finance"
-OUT_DIR  = os.path.join(CF_BASE, "content", "lesson-01-investment-fundamentals")
+OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..",
+           "courses", "Corporate Finance", "01-investment", "01-investment-fundamentals")
 OUT_PATH = os.path.join(OUT_DIR, "Step 1.1 - Investment Fundamentals.pdf")
 
 # ─────────────────────────────────────────────

@@ -61,8 +61,7 @@ CHANNEL_NAME = "cf-risk"
 INVITE_URL   = "https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8OFwcZTqTbPpC2Dg0q__Cg"
 
 OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..",
-           "courses", "Corporate Finance", "content",
-           "lesson-08-interest-rate-risk")
+           "courses", "Corporate Finance", "04-risk", "08-interest-rate-risk")
 OUT_PATH = os.path.join(OUT_DIR, "Step 8.1 - Interest Rate Risk Management.pdf")
 
 # ─────────────────────────────────────────────

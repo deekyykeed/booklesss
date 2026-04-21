@@ -65,7 +65,9 @@ CONTENT_W   = W - 2 * MX
 CHANNEL_URL  = "https://bookless10.slack.com/archives/C0ANULGE6SU"
 CHANNEL_NAME = "tm-operations"
 
-OUT_PATH = r"C:\Users\deeky\OneDrive\Desktop\Booklesss\courses\Treasury Management\content\lesson-01-treasury-foundations\Step 1.1 - Introduction to Treasury Management.pdf"
+OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..",
+           "courses", "Treasury Management", "01-operations", "01-treasury-foundations")
+OUT_PATH = os.path.join(OUT_DIR, "Step 1.1 - Introduction to Treasury Management.pdf")
 
 # ─────────────────────────────────────────────
 #  STYLES

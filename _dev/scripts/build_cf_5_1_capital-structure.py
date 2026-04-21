@@ -63,8 +63,7 @@ CHANNEL_NAME = "cf-cost-of-capital"
 INVITE_URL   = "https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8OFwcZTqTbPpC2Dg0q__Cg"
 
 OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..",
-           "courses", "Corporate Finance", "BAC4301 - Corporate Finance",
-           "lesson-05-capital-structure-decisions")
+           "courses", "Corporate Finance", "02-cost-of-capital", "05-capital-structure")
 OUT_PATH = os.path.join(OUT_DIR, "Step 5.1 - Capital Structure Decisions.pdf")
 
 # ─────────────────────────────────────────────

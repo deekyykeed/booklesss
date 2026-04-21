@@ -67,8 +67,7 @@ CHANNEL_NAME = "sm-environment"
 INVITE_URL   = "https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8OFwcZTqTbPpC2Dg0q__Cg"
 
 OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..",
-           "courses", "Strategic Management", "content",
-           "lesson-03-external-environment")
+           "courses", "Strategic Management", "02-environment", "03-external-environment")
 OUT_PATH = os.path.join(OUT_DIR, "Step 3.1 - The External Environment.pdf")
 
 # ─────────────────────────────────────────────

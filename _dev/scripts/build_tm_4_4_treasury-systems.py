@@ -67,8 +67,7 @@ CHANNEL_NAME = "tm-operations"
 INVITE_URL   = "https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8OFwcZTqTbPpC2Dg0q__Cg"
 
 OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..",
-           "courses", "Treasury Management", "content",
-           "lesson-05-clearing-settlement")
+           "courses", "Treasury Management", "01-operations", "05-clearing-settlement")
 OUT_PATH = os.path.join(OUT_DIR, "Step 4.4 - Treasury Management Systems.pdf")
 
 # ─────────────────────────────────────────────
