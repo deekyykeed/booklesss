@@ -22,6 +22,7 @@ Keep this open. Work top-to-bottom. Every item you skip today is a conversion yo
 - [ ] Did anyone DM you on WhatsApp today? → Log in `operations/leads.md`
 - [ ] Did any lead magnet reader join Slack? → Update `marketing/groups.md` → Joins column
 - [ ] Did any free trial member upgrade? → Update student count, note in `operations/revenue-log.md`
+- [ ] **CF signups:** Check Tally inbox (tally.so/r/81Jejr) for new CF form submissions → send personalised WhatsApp DM referencing their stated struggle within 24h → if they haven't joined Slack within 48h, nudge with invite link again
 
 ---
 

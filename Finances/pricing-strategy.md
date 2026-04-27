@@ -1,6 +1,6 @@
 # Booklesss — Pricing Strategy
 
-**Last updated:** 2026-03-20
+**Last updated:** 2026-04-27
 
 ---
 
@@ -10,9 +10,12 @@
 |------|-------|-------------|
 | **Founding Member** | K550/month | Anyone who joins before April 18, 2026 — locked in for life |
 | **Standard** | K800/month | All new students after April 18 |
+| **CF Launch Rate** | K500/month | CF students who join during the free-trial launch window (first 30 signups, April 2026) — locked in for life |
 | **Custom** | Negotiated | Students needing extra 1-on-1 tutoring or a custom study plan |
 
 **The founding rate is the entire marketing hook.** K550 locked in for life is a real, concrete benefit with a hard deadline (April 18). Use it in every WhatsApp post, every lead magnet, every conversation.
+
+**CF Launch Rate rationale:** CF channels weren't open during the April 18 founding window, so K500 locked-for-life is the legitimate CF equivalent. Gives 30%+ margin on Pro annual billing even if ZMW slips to 28/$1. Cap at 30 students to maintain scarcity.
 
 ---
 
@@ -20,11 +23,16 @@
 
 | Cost | Amount | Notes |
 |------|--------|-------|
-| Slack Business+ | $15/user/month | = K375/user at ZMW 25/$1 |
+| Slack Business+ monthly | $15/user/month | = K375/user at ZMW 25/$1 — most expensive option |
+| Slack Business+ annual | $12.50/user/month | = K313/user at ZMW 25/$1 — 17% cheaper, pay upfront |
+| **Slack Pro monthly** | **$8.75/user/month** | **= K219/user — recommended until 3+ paying students** |
+| Slack Pro annual | $7.25/user/month | = K181/user — switch to this once 3+ confirmed paying students |
 | Gamma free tier | K0 | 400 AI credits/month — sufficient for now |
 | Google Sheets | K0 | Points tracking |
 | Domain / Framer site | K0 | booklesss.framer.ai already live |
-| **Total per paying student** | **K375** | Variable cost only |
+| **Total per paying student (Pro monthly)** | **K219** | Variable cost only |
+
+> **Plan note (April 2026):** Slack Pro trial expires **May 19, 2026**. Business+ has no load-bearing features for Booklesss at current scale — SSO, compliance exports, 99.99% SLA are all enterprise plumbing. Move to Pro monthly after May 19, switch to Pro annual when 3+ paying students confirmed. Re-evaluate Business+ at 30+ students only. Saves ~K194/student/month vs Business+ monthly.
 
 ---
 
