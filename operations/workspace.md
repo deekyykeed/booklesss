@@ -11,8 +11,8 @@ Update this file whenever any link or setting changes.
 |-------|-------|
 | Workspace name | Bookless 1.0 |
 | Workspace URL | bookless10.slack.com |
-| Trial type | Slack Pro (30-day free trial) |
-| Trial expires | April 18, 2026 |
+| Trial type | Slack Pro (free trial) |
+| Trial expires | June 10, 2026 |
 | Invite link | https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8OFwcZTqTbPpC2Dg0q__Cg (never expires) |
 
 > **Note on the invite link:** The link contains the workspace slug (`bookless10`).

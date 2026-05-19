@@ -1,23 +1,56 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-05-17
+**Last updated:** 2026-05-19
 
 ---
 
 ## Next Session
 
-- [ ] Fix page meta titles — /about-us still says "Prodo | About", homepage says "Prodo"
-- [ ] Edit /career page — fully unedited Prodo template
-- [ ] Edit /legals page — fully unedited Prodo template  
-- [ ] Check "Trusted by the world's most efficient students" on homepage logos section
-- [ ] Publish all Framer changes to booklesss.framer.ai
-- [ ] Add photo/image to Deeky Mvula team card (currently using Prodo stock photo)
-- [ ] Create CF Slack channels, then post CF content
+- [ ] Create CF Slack channels (`#cf-updates`, `#cf-investment`, `#cf-cost-of-capital`, `#cf-ma-valuation`, `#cf-risk`, `#cf-dividends`) → update `operations/workspace.md` with channel IDs
 - [ ] Drop WhatsApp message in CF group once channels are live
+- [ ] Fix page meta titles manually in Framer page settings (SEO tab): /blogs still "Prodo | Blogs", /about-us "Prodo | About", homepage "Prodo"
+- [ ] Add photo to Deeky Mvula team card (currently using Prodo stock photo)
+- [ ] Check "Trusted by the world's most efficient students" logos section on homepage
+- [ ] Edit /legals page — still fully unedited Prodo template
+- [ ] Update "Lesson PDFs" checkbox in Tally form features (block `53d9440e`) if Canvas becomes confirmed delivery format
+- [ ] Monitor Tally form (tally.so/r/81Jejr) for submissions daily — WhatsApp DM within 24h
 
 ---
 
 ## Session Log
+
+### Session 2026-05-19
+**Done:**
+- Tally form (tally.so/r/81Jejr) overhauled — generalised from CF-only to all Booklesss courses:
+  - Landing page stripped to short intro (removed scarcity hook + "What you get" bullet list)
+  - Removed role/community question and all 9 conditional follow-up blocks
+  - Added multi-select CHECKBOXES course picker (TM, SM, CF, Other) with "Which Booklesss courses are you joining?"
+  - Hardest topic question generalised (no longer CF-specific)
+  - File upload reframed as "source content" contribution
+  - Submit text updated (removed #cf-investment channel reference)
+  - Final: 38 blocks, published
+- Homepage buttons: all "free" CTAs updated to "Free until 10 June →"; "See the courses" → "See pricing →"; How it Works Step 3 → "Your notes are waiting."
+- Homepage metrics: 70% → "Of students reduced stress before exams."; 1.2k → "1.2k+" with "People already in the workspace."
+- Pricing page comparison table fully rebuilt: Starter/Pro/Enterprise → Notes/Community/Custom; System Architecture → Course Access; Intelligence Layer → Support & Extras; all 16 feature rows replaced with real Booklesss features
+- Career page: hero text updated + all 4 CMS job listings replaced (Community Manager, Finance Content Writer, Marketing Lead, Subject Matter Expert) — Zambia-based, negotiable pay
+- Changelog "evolution of Prodo" → "evolution of Booklesss"; Blogs section description updated
+- All Framer changes published to booklesss.framer.ai
+
+**What Worked:**
+- design-bridge `cms_addItems` is the correct tool for Careers CMS — Framer MCP `upsertCMSItem` throws type validation errors on careers collection fields
+- Phone/tablet breakpoints in Framer inherit desktop node values automatically — no separate phone node updates needed (phone breakpoint is self-closing)
+- Saving large Framer `getNodeXml` output to tool-results file, then Python regex parsing it locally — much faster than re-fetching for node ID lookups
+- Tally `configure_blocks` with `change_type` op successfully converts MULTIPLE_CHOICE → CHECKBOXES on all option blocks at once
+- Running all independent Framer `updateXmlForNode` calls in a single parallel batch (21 nodes at once) — all succeeded
+
+**Dead Ends (do not retry):**
+- Framer MCP `upsertCMSItem` for Careers CMS collection — throws `invalid type on $input[1][0].fieldData["0"]`. Use design-bridge `cms_addItems` instead.
+- Framer plugin disconnects frequently mid-session — do not retry more than once; ask user to reopen the MCP plugin if second attempt also fails
+- `getNodeXml` on homepage page node (augiA20Il) — still times out on first call sometimes; retry once, it usually works second time
+
+**Next:** Carried to Next Session list above.
+
+---
 
 ### Session 2026-05-17
 **Done:**
@@ -65,3 +98,4 @@
 ## Staged Notes
 
 _(empty)_
+
