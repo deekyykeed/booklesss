@@ -51,7 +51,7 @@ Each course has a distinct color system — do not mix them:
 |--------|----------|--------|--------------|
 | Strategic Management | `#0F1F35` slate-navy | `#DC2626` cardinal red | Georgia Bold |
 | Treasury Management | `#0B1D3A` deep navy | `#10B981` emerald | Georgia Bold |
-| Corporate Finance | `#1A1200` deep espresso | `#C9A020` gold | Arial Black |
+| Corporate Finance | `#FFFEF2` cream (website) | `#2FB99A` jade | Parastoo (serif) |
 
 ### PDF Content Structure (All Lessons)
 Every PDF follows this sequence: cover → 4–7 content sections → 2 embedded discussion questions → Key Terms table → Learning Outcomes → Community closer. Section headers always use an eyebrow tag (7pt bold ALL CAPS, accent color) above the H2. Body text is 10.5pt, leading 17pt.

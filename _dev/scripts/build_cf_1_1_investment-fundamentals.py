@@ -1,55 +1,65 @@
 """
 Booklesss — Step 1.1: Investment Fundamentals
 Course: BAC4301 Corporate Finance
-Palette: espresso cover (#1A1200), gold accent (#C9A020)
+Palette: Forest & Jade — forest cover (#0F2A1E), jade accent (#2FB99A)
 """
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.units import cm
 from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.enums import TA_LEFT
+from reportlab.lib.enums import TA_LEFT, TA_RIGHT, TA_CENTER
 from reportlab.platypus import (
     BaseDocTemplate, PageTemplate, Frame, Paragraph, Spacer,
-    Table, TableStyle, KeepTogether, HRFlowable, PageBreak, NextPageTemplate
+    Table, TableStyle, KeepTogether, HRFlowable, PageBreak, NextPageTemplate, Flowable
 )
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib.utils import ImageReader
 import os, sys
 
 # ── FONTS ──────────────────────────────────────────────────────────────────
-if sys.platform == "win32":
-    F = r"C:\Windows\Fonts"
-    if os.path.exists(os.path.join(F, "Aptos.ttf")):
-        pdfmetrics.registerFont(TTFont("Body",        F + r"\Aptos.ttf"))
-        pdfmetrics.registerFont(TTFont("Body-Bold",   F + r"\Aptos-Bold.ttf"))
-        pdfmetrics.registerFont(TTFont("Body-Italic", F + r"\Aptos-Italic.ttf"))
-    else:
-        pdfmetrics.registerFont(TTFont("Body",        F + r"\calibri.ttf"))
-        pdfmetrics.registerFont(TTFont("Body-Bold",   F + r"\calibrib.ttf"))
-        pdfmetrics.registerFont(TTFont("Body-Italic", F + r"\calibrii.ttf"))
-    pdfmetrics.registerFontFamily("Body", normal="Body", bold="Body-Bold", italic="Body-Italic")
-    pdfmetrics.registerFont(TTFont("Display-Bold", F + r"\ariblk.ttf"))
-else:
-    FL = "/usr/share/fonts/truetype/liberation"
-    FD = "/usr/share/fonts/truetype/dejavu"
-    pdfmetrics.registerFont(TTFont("Body",        FL + "/LiberationSans-Regular.ttf"))
-    pdfmetrics.registerFont(TTFont("Body-Bold",   FL + "/LiberationSans-Bold.ttf"))
-    pdfmetrics.registerFont(TTFont("Body-Italic", FL + "/LiberationSans-Italic.ttf"))
-    pdfmetrics.registerFontFamily("Body", normal="Body", bold="Body-Bold", italic="Body-Italic")
-    pdfmetrics.registerFont(TTFont("Display-Bold", FD + "/DejaVuSans-Bold.ttf"))
+# Booklesss CF type system: Aptos for body, Parkinsans for display/titles.
+# Both vendored in _dev/fonts/ so the build is self-contained on any machine.
+FONT_DIR = os.path.join(os.path.dirname(__file__), "..", "fonts")
 
-# ── COLOURS — CF PALETTE ───────────────────────────────────────────────────
-C_COVER    = colors.HexColor("#1A1200")   # deep espresso
-C_GOLD     = colors.HexColor("#C9A020")   # accent gold
-C_GOLD_DK  = colors.HexColor("#7A5C00")   # dark gold (text on light bg)
-C_GHOST    = colors.HexColor("#2A1E00")   # ghost step number on cover
-C_INK      = colors.HexColor("#18181B")   # body text
-C_STEEL    = colors.HexColor("#71717A")   # secondary labels
-C_MIST     = colors.HexColor("#94A3B8")   # meta / caption
-C_RULE     = colors.HexColor("#E4E4E7")   # table dividers
+def _reg(name, filename):
+    pdfmetrics.registerFont(TTFont(name, os.path.join(FONT_DIR, filename)))
+
+_reg("Body",             "Aptos.ttf")
+_reg("Body-Bold",        "Aptos-Bold.ttf")
+_reg("Body-Italic",      "Aptos-Italic.ttf")
+_reg("Body-BoldItalic",  "Aptos-Bold-Italic.ttf")
+pdfmetrics.registerFontFamily("Body", normal="Body", bold="Body-Bold",
+                              italic="Body-Italic", boldItalic="Body-BoldItalic")
+_reg("Display-Bold",     "parkinsans-v3-latin-700.ttf")
+_reg("Title",            "Parastoo.ttf")        # serif title (website hero font)
+_reg("Title-Bold",       "Parastoo-Bold.ttf")
+pdfmetrics.registerFontFamily("Title", normal="Title", bold="Title-Bold",
+                              italic="Title", boldItalic="Title-Bold")
+
+# ── BRAND ASSETS ───────────────────────────────────────────────────────────
+BRAND_DIR  = os.path.join(os.path.dirname(__file__), "..", "brand")
+LOGO_WHITE = os.path.join(BRAND_DIR, "booklesss-logo-white.png")  # for dark surfaces
+LOGO_BLACK = os.path.join(BRAND_DIR, "booklesss-logo-black.png")  # for cream pages
+GRAIN      = os.path.join(BRAND_DIR, "grain.png")
+_logo_white = ImageReader(LOGO_WHITE) if os.path.exists(LOGO_WHITE) else None
+_logo_black = ImageReader(LOGO_BLACK) if os.path.exists(LOGO_BLACK) else None
+_grain      = ImageReader(GRAIN)      if os.path.exists(GRAIN)      else None
+
+# ── COLOURS — Booklesss brand (website: cream + editorial serif) ────────────
+C_COVER      = colors.HexColor("#FFFEF2")   # cream cover (website bg)
+C_PAGE       = colors.HexColor("#FFFEF2")   # cream page background
+TITLE_DARK   = colors.HexColor("#121212")   # cover title  (--Logo_Dark)
+HEADING_DARK = colors.HexColor("#3D3D3D")   # headings     (--Text_Dark_Used_on_H1_only)
+C_JADE     = colors.HexColor("#2FB99A")   # jade accent (interior)
+C_JADE_DK  = colors.HexColor("#0E5E52")   # deep jade (text / links on light bg)
+C_INK      = colors.HexColor("#16201A")   # body text
+C_STEEL    = colors.HexColor("#5F6B65")   # secondary labels
+C_MIST     = colors.HexColor("#6E6A5E")   # warm grey (cover eyebrow / sub / meta)
+C_RULE     = colors.HexColor("#E0DACB")   # warm rule / table dividers
 C_WHITE    = colors.white
-BG_FORMULA = colors.HexColor("#F5F0E8")   # cream formula box
-BG_CALLOUT = colors.HexColor("#FEF9E7")   # gold-tinted callout
+BG_FORMULA = colors.HexColor("#E9F0EA")   # pale jade panel (formula / calc)
+BG_CALLOUT = colors.HexColor("#E7F3ED")   # soft jade callout / fact box
 
 # ── PAGE GEOMETRY ──────────────────────────────────────────────────────────
 W, H      = A4
@@ -60,26 +70,29 @@ CONTENT_W = W - 2 * MX
 INVITE_URL = "https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8OFwcZTqTbPpC2Dg0q__Cg"
 
 OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..",
-           "courses", "Corporate Finance", "01-investment", "01-investment-fundamentals")
+           "courses", "Corporate Finance", "01-investment")
 OUT_PATH = os.path.join(OUT_DIR, "Step 1.1 - Investment Fundamentals.pdf")
 
 # ── STYLES ─────────────────────────────────────────────────────────────────
 def make_styles():
     return {
         "cover_step": ParagraphStyle("cover_step",
-            fontName="Body-Bold", fontSize=8, textColor=C_GOLD,
-            leading=12, spaceAfter=8, alignment=TA_LEFT),
+            fontName="Body-Bold", fontSize=9, textColor=HEADING_DARK,
+            leading=13, spaceAfter=0, alignment=TA_CENTER),
         "cover_title": ParagraphStyle("cover_title",
-            fontName="Display-Bold", fontSize=32, textColor=C_WHITE,
-            leading=38, spaceAfter=10, alignment=TA_LEFT),
+            fontName="Title-Bold", fontSize=42, textColor=TITLE_DARK,
+            leading=46, spaceAfter=0, alignment=TA_CENTER),
         "cover_sub": ParagraphStyle("cover_sub",
-            fontName="Body", fontSize=10, textColor=C_MIST,
-            leading=15, spaceAfter=4, alignment=TA_LEFT),
+            fontName="Body", fontSize=11.5, textColor=C_MIST,
+            leading=17, spaceAfter=4, alignment=TA_CENTER),
+        "cover_meta": ParagraphStyle("cover_meta",
+            fontName="Body", fontSize=9, textColor=C_MIST,
+            leading=14, spaceAfter=2, alignment=TA_CENTER),
         "eyebrow": ParagraphStyle("eyebrow",
-            fontName="Body-Bold", fontSize=7, textColor=C_GOLD,
+            fontName="Body-Bold", fontSize=7, textColor=C_JADE,
             leading=10, spaceAfter=3, spaceBefore=18, alignment=TA_LEFT),
         "h2": ParagraphStyle("h2",
-            fontName="Body-Bold", fontSize=15, textColor=C_INK,
+            fontName="Title-Bold", fontSize=17, textColor=HEADING_DARK,
             leading=20, spaceAfter=8, alignment=TA_LEFT),
         "h3": ParagraphStyle("h3",
             fontName="Body-Bold", fontSize=11, textColor=C_STEEL,
@@ -91,11 +104,14 @@ def make_styles():
             fontName="Body", fontSize=10.5, textColor=C_INK,
             leading=17, spaceAfter=4, leftIndent=14, alignment=TA_LEFT),
         "fact": ParagraphStyle("fact",
-            fontName="Body-Bold", fontSize=10, textColor=C_GOLD_DK,
+            fontName="Body-Bold", fontSize=10, textColor=C_JADE_DK,
             leading=16, spaceAfter=6, leftIndent=0, alignment=TA_LEFT),
         "formula": ParagraphStyle("formula",
-            fontName="Body-Bold", fontSize=10, textColor=C_GOLD_DK,
+            fontName="Body-Bold", fontSize=10, textColor=C_JADE_DK,
             leading=16, alignment=TA_LEFT),
+        "formula_r": ParagraphStyle("formula_r",
+            fontName="Body-Bold", fontSize=10, textColor=C_JADE_DK,
+            leading=16, alignment=TA_RIGHT),
         "th": ParagraphStyle("th",
             fontName="Body-Bold", fontSize=9, textColor=C_INK,
             leading=13, alignment=TA_LEFT),
@@ -115,35 +131,61 @@ def make_styles():
             fontName="Body", fontSize=9.5, textColor=C_STEEL,
             leading=15, spaceAfter=5, alignment=TA_LEFT),
         "community_link": ParagraphStyle("community_link",
-            fontName="Body-Bold", fontSize=9.5, textColor=C_GOLD_DK,
+            fontName="Body-Bold", fontSize=9.5, textColor=C_JADE_DK,
             leading=15, alignment=TA_LEFT),
     }
 
 ST = make_styles()
 
 # ── CANVAS CALLBACKS ───────────────────────────────────────────────────────
-def cover_bg(canvas, doc):
-    canvas.saveState()
+def _paint_paper(canvas):
+    """Cream fill + subtle grain — the Booklesss paper, on every page."""
     canvas.setFillColor(C_COVER)
     canvas.rect(0, 0, W, H, fill=1, stroke=0)
-    canvas.setFillColor(C_GOLD)
-    canvas.rect(0, 0, 5, H, fill=1, stroke=0)
-    canvas.setFont("Display-Bold", 120)
-    canvas.setFillColor(C_GHOST)
-    canvas.drawRightString(W - MX, MY + 20, "1.1")
+    if _grain is not None:
+        canvas.drawImage(_grain, 0, 0, width=W, height=H, mask="auto")
+
+def cover_bg(canvas, doc):
+    canvas.saveState()
+    _paint_paper(canvas)
+    # top brand row: black logo (left) + module (right) + warm hairline
+    top_y = H - MY + 6
+    if _logo_black is not None:
+        iw, ih = _logo_black.getSize()
+        lh = 15
+        canvas.drawImage(_logo_black, MX, top_y - 5, width=lh * iw / ih, height=lh,
+                         preserveAspectRatio=True, mask="auto")
+    else:
+        canvas.setFont("Body-Bold", 8.5)
+        canvas.setFillColor(HEADING_DARK)
+        canvas.drawString(MX, top_y, "BOOKLESSS")
+    canvas.setFont("Body", 8.5)
+    canvas.setFillColor(C_MIST)
+    canvas.drawRightString(W - MX, top_y, "BAC4301 · CORPORATE FINANCE")
+    canvas.setStrokeColor(C_RULE)
+    canvas.setLineWidth(0.8)
+    canvas.line(MX, top_y - 6, W - MX, top_y - 6)
+    canvas.restoreState()
+
+def page_bg(canvas, doc):
+    canvas.saveState()
+    _paint_paper(canvas)
     canvas.restoreState()
 
 def body_page(canvas, doc):
     canvas.saveState()
     pn = doc.page
-    canvas.setStrokeColor(C_GOLD)
-    canvas.setLineWidth(0.5)
+    canvas.setStrokeColor(C_JADE)
+    canvas.setLineWidth(0.6)
     canvas.line(MX, H - MY + 4, W - MX, H - MY + 4)
     canvas.setFont("Body", 7.5)
     canvas.setFillColor(C_STEEL)
     canvas.drawString(MX, H - MY + 7, "1.1 — Investment Fundamentals")
-    canvas.drawRightString(W - MX, H - MY + 7, "v1 · May 2026")
+    canvas.drawRightString(W - MX, H - MY + 7, "v2 · May 2026")
+    canvas.setStrokeColor(C_RULE)
+    canvas.setLineWidth(0.6)
     canvas.line(MX, MY - 4, W - MX, MY - 4)
+    canvas.setFillColor(C_STEEL)
     canvas.drawString(MX, MY - 14, "Booklesss | booklesss.framer.ai")
     canvas.drawCentredString(W / 2, MY - 14, "BAC4301 — Corporate Finance")
     canvas.drawRightString(W - MX, MY - 14, f"Page {pn}")
@@ -151,7 +193,7 @@ def body_page(canvas, doc):
 
 # ── HELPERS ────────────────────────────────────────────────────────────────
 def hairline():
-    return HRFlowable(width="100%", thickness=0.5, color=C_GOLD,
+    return HRFlowable(width="100%", thickness=0.5, color=C_JADE,
                       spaceAfter=10, spaceBefore=4)
 
 def section(eyebrow, heading):
@@ -172,11 +214,11 @@ def h3(text):
     return Paragraph(text, ST["h3"])
 
 def fact(text):
-    p = Paragraph(f"► {text}", ST["fact"])
+    p = Paragraph(text, ST["fact"])
     t = Table([[p]], colWidths=[CONTENT_W])
     t.setStyle(TableStyle([
         ('BACKGROUND',    (0,0), (-1,-1), BG_CALLOUT),
-        ('LINEBEFORE',    (0,0), (-1,-1), 2.5, C_GOLD),
+        ('LINEBEFORE',    (0,0), (-1,-1), 2.5, C_JADE),
         ('TOPPADDING',    (0,0), (-1,-1), 8),
         ('BOTTOMPADDING', (0,0), (-1,-1), 8),
         ('LEFTPADDING',   (0,0), (-1,-1), 10),
@@ -196,7 +238,42 @@ def formula_box(lines):
     outer = Table([[inner]], colWidths=[CONTENT_W])
     outer.setStyle(TableStyle([
         ('BACKGROUND',    (0,0), (-1,-1), BG_FORMULA),
-        ('LINEBEFORE',    (0,0), (-1,-1), 2.5, C_GOLD),
+        ('LINEBEFORE',    (0,0), (-1,-1), 2.5, C_JADE),
+        ('TOPPADDING',    (0,0), (-1,-1), 10),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+        ('LEFTPADDING',   (0,0), (-1,-1), 12),
+        ('RIGHTPADDING',  (0,0), (-1,-1), 10),
+    ]))
+    return KeepTogether([outer, Spacer(1, 10)])
+
+def calc_table(rows, title=None):
+    """Right-aligned financial waterfall: rows are (label, value) or
+    (label, value, rule_above=True) to draw a gold subtotal rule above the row."""
+    data, rule_rows, r = [], [], 0
+    if title:
+        data.append([Paragraph(f"<b>{title}</b>", ST["formula"]), Paragraph("", ST["formula_r"])])
+        r += 1
+    for row in rows:
+        label, val = row[0], row[1]
+        if len(row) > 2 and row[2]:
+            rule_rows.append(r)
+        data.append([Paragraph(label, ST["formula"]), Paragraph(val, ST["formula_r"])])
+        r += 1
+    inner = Table(data, colWidths=[CONTENT_W - 26 - 70, 70])
+    ts = [
+        ('TOPPADDING',    (0,0), (-1,-1), 2),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 2),
+        ('LEFTPADDING',   (0,0), (-1,-1), 0),
+        ('RIGHTPADDING',  (0,0), (-1,-1), 0),
+    ]
+    for rr in rule_rows:
+        ts.append(('LINEABOVE',  (0,rr), (-1,rr), 0.6, C_JADE))
+        ts.append(('TOPPADDING', (0,rr), (-1,rr), 6))
+    inner.setStyle(TableStyle(ts))
+    outer = Table([[inner]], colWidths=[CONTENT_W])
+    outer.setStyle(TableStyle([
+        ('BACKGROUND',    (0,0), (-1,-1), BG_FORMULA),
+        ('LINEBEFORE',    (0,0), (-1,-1), 2.5, C_JADE),
         ('TOPPADDING',    (0,0), (-1,-1), 10),
         ('BOTTOMPADDING', (0,0), (-1,-1), 10),
         ('LEFTPADDING',   (0,0), (-1,-1), 12),
@@ -205,13 +282,13 @@ def formula_box(lines):
     return KeepTogether([outer, Spacer(1, 10)])
 
 def callout(text):
-    p = Paragraph(text, ParagraphStyle("cbt", fontName="Body", fontSize=10,
-                  textColor=C_GOLD_DK, leading=16, alignment=TA_LEFT))
+    p = Paragraph(text.replace("\n", "<br/>"), ParagraphStyle("cbt", fontName="Body", fontSize=10,
+                  textColor=C_JADE_DK, leading=16, alignment=TA_LEFT))
     t = Table([[p]], colWidths=[CONTENT_W])
     t.setStyle(TableStyle([
         ('BACKGROUND',    (0,0), (-1,-1), BG_CALLOUT),
-        ('LINEBEFORE',    (0,0), (-1,-1), 2, C_GOLD),
-        ('LINEBELOW',     (0,0), (-1,-1), 0.5, C_GOLD),
+        ('LINEBEFORE',    (0,0), (-1,-1), 2, C_JADE),
+        ('LINEBELOW',     (0,0), (-1,-1), 0.5, C_JADE),
         ('TOPPADDING',    (0,0), (-1,-1), 9),
         ('BOTTOMPADDING', (0,0), (-1,-1), 9),
         ('LEFTPADDING',   (0,0), (-1,-1), 10),
@@ -224,7 +301,7 @@ def discussion_q(text):
     t = Table([[p]], colWidths=[CONTENT_W])
     t.setStyle(TableStyle([
         ('BACKGROUND',    (0,0), (-1,-1), BG_CALLOUT),
-        ('LINEBEFORE',    (0,0), (-1,-1), 2.5, C_GOLD),
+        ('LINEBEFORE',    (0,0), (-1,-1), 2.5, C_JADE),
         ('TOPPADDING',    (0,0), (-1,-1), 10),
         ('BOTTOMPADDING', (0,0), (-1,-1), 10),
         ('LEFTPADDING',   (0,0), (-1,-1), 12),
@@ -244,8 +321,8 @@ def table_std(data, col_widths):
         ('LEFTPADDING',   (0,0), (-1,-1), 8),
         ('RIGHTPADDING',  (0,0), (-1,-1), 8),
         ('LINEBELOW',     (0,0), (-1,-1), 0.5, C_RULE),
-        ('BACKGROUND',    (0,0), (-1, 0), colors.HexColor("#FAF6EC")),
-        ('LINEBELOW',     (0,0), (-1, 0), 1, C_GOLD),
+        ('BACKGROUND',    (0,0), (-1, 0), BG_FORMULA),
+        ('LINEBELOW',     (0,0), (-1, 0), 1, C_JADE),
     ]))
     return KeepTogether([Spacer(1, 6), t, Spacer(1, 10)])
 
@@ -266,6 +343,43 @@ def community_closer():
             ST["community_link"]),
     ]
 
+# ── TRIPLE-DIAMOND MOTIF (vector ◇◆◇) ──────────────────────────────────────
+class TripleDiamond(Flowable):
+    """Centred ◇◆◇ — outlined, solid (larger), outlined. The Booklesss mark."""
+    def __init__(self, center_size=15, side_size=10, gap=13,
+                 color=None, stroke_width=1.3):
+        super().__init__()
+        self.cs, self.ss, self.gap = center_size, side_size, gap
+        self.color = color or HEADING_DARK
+        self.sw = stroke_width
+        self._h = center_size
+        self._w = center_size + 2 * side_size + 2 * gap
+
+    def wrap(self, aw, ah):
+        self._aw = aw
+        return aw, self._h
+
+    def _diamond(self, cx, cy, half, fill):
+        p = self.canv.beginPath()
+        p.moveTo(cx, cy + half); p.lineTo(cx + half, cy)
+        p.lineTo(cx, cy - half); p.lineTo(cx - half, cy); p.close()
+        self.canv.drawPath(p, stroke=1, fill=1 if fill else 0)
+
+    def draw(self):
+        c = self.canv
+        c.saveState()
+        c.setStrokeColor(self.color); c.setFillColor(self.color)
+        c.setLineWidth(self.sw)
+        cy = self._h / 2.0
+        mid = getattr(self, "_aw", self._w) / 2.0
+        hs, hc = self.ss / 2.0, self.cs / 2.0
+        step = hc + self.gap + hs
+        self._diamond(mid - step, cy, hs, fill=False)
+        self._diamond(mid,        cy, hc, fill=True)
+        self._diamond(mid + step, cy, hs, fill=False)
+        c.restoreState()
+
+
 # ── BUILD ──────────────────────────────────────────────────────────────────
 def build():
     os.makedirs(OUT_DIR, exist_ok=True)
@@ -276,29 +390,66 @@ def build():
 
     cover_tpl = PageTemplate(id="cover",
         frames=[Frame(MX, MY, CONTENT_W, H - 2*MY)],
-        onPageEnd=cover_bg, pagesize=A4)
+        onPage=cover_bg, pagesize=A4)
     body_tpl = PageTemplate(id="body",
         frames=[Frame(MX, MY + 5, CONTENT_W, H - 2*MY - 15)],
-        onPageEnd=body_page, pagesize=A4)
+        onPage=page_bg, onPageEnd=body_page, pagesize=A4)
     doc.addPageTemplates([cover_tpl, body_tpl])
 
     story = []
 
     # ── COVER ──────────────────────────────────────────────────────────────
-    story.append(Spacer(1, 65))
-    story.append(Paragraph("STEP 1.1", ST["cover_step"]))
-    story.append(Paragraph("Investment\nFundamentals", ST["cover_title"]))
+    story.append(Spacer(1, 120))
+    story.append(TripleDiamond(color=HEADING_DARK))
+    story.append(Spacer(1, 26))
+    story.append(Paragraph("STEP 1.1 · INVESTMENT", ST["cover_step"]))
     story.append(Spacer(1, 12))
+    story.append(Paragraph("Investment Fundamentals", ST["cover_title"]))
+    story.append(Spacer(1, 18))
     story.append(Paragraph(
-        "Free cash flows, NPV, IRR, and MIRR — the tools that tell you whether a project "
-        "is worth doing before you commit a single kwacha.",
+        "Free cash flows, NPV, IRR, and MIRR — the tools that tell you whether a "
+        "project is worth your money before you commit a single kwacha.",
         ST["cover_sub"]))
-    story.append(Spacer(1, 240))
-    story.append(Paragraph("BAC4301 Corporate Finance", ST["cover_sub"]))
-    story.append(Spacer(1, 4))
-    story.append(Paragraph("Booklesss · booklesss.framer.ai", ST["cover_sub"]))
+    story.append(Spacer(1, 210))
+    story.append(Paragraph("BAC4301 · Corporate Finance", ST["cover_meta"]))
+    story.append(Spacer(1, 3))
+    story.append(Paragraph("Booklesss · booklesss.framer.ai", ST["cover_meta"]))
     story.append(NextPageTemplate("body"))
     story.append(PageBreak())
+
+    # ── ORIENTATION: FOUNDER FRAMING + FULL COURSE SKELETON ────────────────
+    story += section("START HERE", "You're Running the Money for Your Own Company")
+    story.append(body(
+        "Read this the way a founder reads it. You are not studying some distant corporation — "
+        "you are the person who decides where your company's cash goes. Every tool in this step "
+        "answers a question you will actually face: <i>is this worth my money, and can I prove it "
+        "before I commit a single kwacha?</i>"
+    ))
+    story.append(body(
+        "Here is the whole of Corporate Finance — all ten steps — laid out before you start. "
+        "You don't learn it in disconnected chunks. You hold the full map from day one, then fill "
+        "in the depth. By Step 10.1 you are not discovering new territory; you are completing a "
+        "picture you have had in your head since today."
+    ))
+    for step, desc in [
+        ("Step 1.1", "Investment Fundamentals — FCF, NPV, IRR, MIRR  ← you are here"),
+        ("Step 2.1", "Advanced Investment Appraisal — APV and capital rationing"),
+        ("Step 3.1", "International Project Appraisal — cross-border NPV and FX risk"),
+        ("Step 4.1", "Cost of Capital — WACC and CAPM (where the discount rate comes from)"),
+        ("Step 5.1", "Capital Structure — debt vs equity, Modigliani-Miller"),
+        ("Step 6.1", "Company Valuation — DCF, multiples, asset-based methods"),
+        ("Step 7.1", "Mergers and Acquisitions — valuing targets, deal structures, EMH"),
+        ("Step 8.1", "Interest Rate Risk — FRAs, swaps, hedging"),
+        ("Step 9.1", "Currency Risk — forwards, options, transaction exposure"),
+        ("Step 10.1", "Dividend Policy — payout theories and signalling"),
+    ]:
+        story.append(Paragraph(f"<b>{step}</b>  —  {desc}", ST["arc"]))
+    story.append(Spacer(1, 8))
+    story.append(fact(
+        "Everything that follows is built on this step. NPV, free cash flow, and discounting "
+        "reappear in every step after it — master them here and the rest of the course is depth, not new ground."
+    ))
+    story.append(Spacer(1, 6))
 
     # ── SECTION 1: FREE CASH FLOW ──────────────────────────────────────────
     story += section("CONCEPT 01", "Free Cash Flow — What Your Company Actually Earns")
@@ -320,36 +471,29 @@ def build():
         "on paper but no cash left when the charge was recorded (it left when you bought the asset). "
         "Deduct tax paid, then subtract the cash the business needs to invest to stay operational."
     ))
-    story.append(formula_box([
-        "FCF to the Firm:",
-        "",
-        "  Net operating profit (PBIT)                    X",
-        "  + Depreciation (non-cash, add back)            X",
-        "  − Taxation                                    (X)",
-        "  ─────────────────────────────────────────────────",
-        "  Operating cash flows                            X",
-        "  − Replacement of non-current assets (RAI)     (X)",
-        "  − Incremental non-current assets (IAI)         (X)",
-        "  − Incremental working capital (IWCI)           (X)",
-        "  ─────────────────────────────────────────────────",
-        "  Free cash flow to the firm                      X",
-    ]))
+    story.append(calc_table([
+        ("Net operating profit (PBIT)", "X"),
+        ("+ Depreciation (non-cash, add back)", "X"),
+        ("− Taxation", "(X)"),
+        ("Operating cash flows", "X", True),
+        ("− Replacement of non-current assets (RAI)", "(X)"),
+        ("− Incremental non-current assets (IAI)", "(X)"),
+        ("− Incremental working capital (IWCI)", "(X)"),
+        ("Free cash flow to the firm", "X", True),
+    ], title="FCF to the Firm"))
 
     story.append(h3("FCF to Equity"))
     story.append(body(
         "Once you have FCF to the firm, debt holders take their share first. "
         "What remains belongs to shareholders."
     ))
-    story.append(formula_box([
-        "FCF to Equity:",
-        "",
-        "  Free cash flow to the firm     X",
-        "  − Debt interest paid          (X)",
-        "  − Loan repayments             (X)",
-        "  + New debt raised              X",
-        "  ─────────────────────────────────",
-        "  Free cash flow to equity       X",
-    ]))
+    story.append(calc_table([
+        ("Free cash flow to the firm", "X"),
+        ("− Debt interest paid", "(X)"),
+        ("− Loan repayments", "(X)"),
+        ("+ New debt raised", "X"),
+        ("Free cash flow to equity", "X", True),
+    ], title="FCF to Equity"))
 
     story.append(h3("Worked Example — Zambeef Processing Division"))
     story.append(body(
@@ -675,30 +819,17 @@ def build():
         story.append(Paragraph(f"{i}.  {outcome}", ST["outcome"]))
 
     story.append(Spacer(1, 16))
-    story.append(h3("The Course at a Glance — What This Step Unlocks"))
+    story.append(h3("Where You Go Next"))
     story.append(body(
-        "You now have the core toolkit. Every step that follows builds on NPV, FCF, and discounting. "
-        "Here is the full arc of BAC4301:"
+        "You came in with the full map of the course (look back at the first page). You now own the "
+        "first piece of it — the toolkit every other step leans on. <b>Step 2.1 — Advanced Investment "
+        "Appraisal</b> takes the same NPV machinery and handles the harder cases: projects financed "
+        "partly by debt (APV), and what you do when you can't fund every good project at once "
+        "(capital rationing)."
     ))
-    for step, desc in [
-        ("Step 1.1", "Investment Fundamentals — FCF, NPV, IRR, MIRR  ← you are here"),
-        ("Step 2.1", "Advanced Investment Appraisal — APV and capital rationing"),
-        ("Step 3.1", "International Project Appraisal — cross-border NPV and FX risk"),
-        ("Step 4.1", "Cost of Capital — WACC and CAPM (where the discount rate comes from)"),
-        ("Step 5.1", "Capital Structure — debt vs equity, Modigliani-Miller"),
-        ("Step 6.1", "Company Valuation — DCF, multiples, asset-based methods"),
-        ("Step 7.1", "Mergers and Acquisitions — valuing targets, deal structures, EMH"),
-        ("Step 8.1", "Interest Rate Risk — FRAs, swaps, hedging"),
-        ("Step 9.1", "Currency Risk — forwards, options, transaction exposure"),
-        ("Step 10.1", "Dividend Policy — payout theories and signalling"),
-    ]:
-        story.append(Paragraph(f"<b>{step}</b>  —  {desc}", ST["arc"]))
-
-    story.append(Spacer(1, 8))
     story.append(body(
-        "By the end of Step 10.1, you will have seen every major decision a finance director makes — "
-        "from choosing projects to structuring the company to returning cash to shareholders. "
-        "This step is the foundation of all of it."
+        "Nothing in Step 2.1 replaces what you learned here — it extends it. That is the whole idea: "
+        "you are not starting over each step, you are deepening one picture you already hold."
     ))
 
     # ── COMMUNITY CLOSER ───────────────────────────────────────────────────

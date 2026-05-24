@@ -1,6 +1,6 @@
 # BAC4301 Corporate Finance — Course Status
 
-**Last updated:** 2026-03-31
+**Last updated:** 2026-05-23
 
 ---
 
@@ -13,29 +13,67 @@
 | Slack section | Corporate Finance |
 | Updates channel | `#cf-updates` — create channel first |
 | Total steps planned | 10 |
-| PDFs generated | 10 |
+| PDFs at v2 standard | 1 (Step 1.1) |
 | Steps posted to Slack | 0 |
 
-> **Action required:** Corporate Finance Slack channels not yet created. Create them in Slack, then update `operations/workspace.md` with the channel links, then begin posting.
+> **Action required (content):** Steps 2.1–10.1 were cleared in the folder
+> restructure. Their build scripts still exist but point to the old nested
+> folders, old fonts, and old layout. Each must be rebuilt to the **v2 standard**
+> (see below) and output to the new flat folder before posting.
+>
+> **Action required (Slack):** Corporate Finance channels not yet created. Create
+> them in Slack, then update `operations/workspace.md` with the channel links.
+
+---
+
+## Folder Structure (NEW — flat)
+
+Each topic folder holds its step PDFs **directly** — no per-step subfolders.
+
+```
+courses/Corporate Finance/
+  01-investment/        ← Steps 1.1, 2.1, 3.1
+  02-cost-of-capital/   ← Steps 4.1, 5.1
+  03-ma-valuation/      ← Steps 6.1, 7.1
+  04-risk/              ← Steps 8.1, 9.1
+  05-dividends/         ← Step 10.1
+  _source/              ← raw lecture material (unchanged)
+  _course.md
+```
+
+---
+
+## v2 Standard (defined 2026-05-23, Step 1.1)
+
+The Booklesss CF lesson standard, set on the Step 1.1 rebuild:
+
+- **Type:** Aptos for body, **Parastoo** (serif) for the cover title and section headings — matching the website hero. Vendored in `_dev/fonts/` so the build is self-contained.
+- **Founder framing:** written as though the student owns the company — Booklesss as a consultant to their ambitions, not a notes service.
+- **Skeleton up front:** the full 10-step course map appears on page 2 ("START HERE"), so students hold the whole picture from day one and build depth, not chunks. The closer points only to the *next* step.
+- **FACT sentence:** every concept ends with a single gold-box sentence stated as fact, closing the loop so nothing leaks from memory.
+- **Calc layout:** financial waterfalls use `calc_table()` (right-aligned amounts, jade subtotal rules); pure equations use `formula_box()`.
+- **Palette — website match:** cream `#FFFEF2` paper (cover + every page) · near-black `#121212` cover title · `#3D3D3D` headings · jade `#2FB99A` / deep jade `#0E5E52` interior accents · warm grey `#6E6A5E` cover meta · pale-jade panels `#E9F0EA` / `#E7F3ED`. Subtle film grain (`_dev/brand/grain.png`) on every page.
+- **Cover:** cream paper + grain, **black logo** top-left, centred **◇◆◇ triple-diamond** motif (vector `TripleDiamond`), **Parastoo** title (#121212, 42pt ≈ 56px, line-height 1.1), centred eyebrow + subtitle. Light/editorial — no dark slab to open on. Backgrounds drawn via `onPage`.
+- **Brand assets:** logos + grain in `_dev/brand/`; raw drop zone at top-level `Booklesss Bucket/`.
 
 ---
 
 ## Step Status
 
-| Step | Title | Source | PDF | Posted | Channel |
-|------|-------|--------|-----|--------|---------|
+| Step | Title | Source | PDF (v2) | Posted | Channel |
+|------|-------|--------|----------|--------|---------|
 | 1.1 | Investment Fundamentals (FCF, NPV) | `01_Investment_Appraisal/Lectures` Parts 1&2 | ✅ | — | `#cf-investment` |
-| 2.1 | Advanced Investment Appraisal (APV, MIRR) | `01_Investment_Appraisal/Lectures` APV + Capital Rationing | ✅ | — | `#cf-investment` |
-| 3.1 | International Project Appraisal | `01_Investment_Appraisal/Lectures` International NPV | ✅ | — | `#cf-investment` |
-| 4.1 | Cost of Capital Foundations (WACC, CAPM) | `02_Cost_of_Capital` Session 1 + Session 2 | ✅ | — | `#cf-cost-of-capital` |
-| 5.1 | Capital Structure Decisions | `02_Cost_of_Capital` Capital Structure + Session 2 | ✅ | — | `#cf-cost-of-capital` |
-| 6.1 | Company Valuation | `03_Mergers_and_Acquisitions` Target Valuation + Bonds | ✅ | — | `#cf-ma-valuation` |
-| 7.1 | Mergers & Acquisitions | `03_Mergers_and_Acquisitions` M&A + EMH | ✅ | — | `#cf-ma-valuation` |
-| 8.1 | Interest Rate Risk Management | `04_Interest_Rate_and_Currency_Risk` IR Risk | ✅ | — | `#cf-risk` |
-| 9.1 | Currency Risk Management | `04_Interest_Rate_and_Currency_Risk` Currency + Hedging | ✅ | — | `#cf-risk` |
-| 10.1 | Dividend Policy | `05_Dividend_Policy` | ✅ | — | `#cf-dividends` |
+| 2.1 | Advanced Investment Appraisal (APV, MIRR) | `01_Investment_Appraisal/Lectures` APV + Capital Rationing | ⟳ rebuild | — | `#cf-investment` |
+| 3.1 | International Project Appraisal | `01_Investment_Appraisal/Lectures` International NPV | ⟳ rebuild | — | `#cf-investment` |
+| 4.1 | Cost of Capital Foundations (WACC, CAPM) | `02_Cost_of_Capital` Session 1 + Session 2 | ⟳ rebuild | — | `#cf-cost-of-capital` |
+| 5.1 | Capital Structure Decisions | `02_Cost_of_Capital` Capital Structure + Session 2 | ⟳ rebuild | — | `#cf-cost-of-capital` |
+| 6.1 | Company Valuation | `03_Mergers_and_Acquisitions` Target Valuation + Bonds | ⟳ rebuild | — | `#cf-ma-valuation` |
+| 7.1 | Mergers & Acquisitions | `03_Mergers_and_Acquisitions` M&A + EMH | ⟳ rebuild | — | `#cf-ma-valuation` |
+| 8.1 | Interest Rate Risk Management | `04_Interest_Rate_and_Currency_Risk` IR Risk | ⟳ rebuild | — | `#cf-risk` |
+| 9.1 | Currency Risk Management | `04_Interest_Rate_and_Currency_Risk` Currency + Hedging | ⟳ rebuild | — | `#cf-risk` |
+| 10.1 | Dividend Policy | `05_Dividend_Policy` | ⟳ rebuild | — | `#cf-dividends` |
 
-**All steps written. Create Slack channels to begin posting.**
+**Legend:** ✅ built to v2 standard · ⟳ script exists, needs rebuild to v2 + flat path
 
 ---
 
@@ -55,37 +93,37 @@ All source files are in `_source/`:
 
 ---
 
-## PDF File Locations
+## PDF File Locations (flat)
 
 | Step | PDF Path |
 |------|----------|
-| 1.1 | `01-investment/01-investment-fundamentals/Step 1.1 - Investment Fundamentals.pdf` |
-| 2.1 | `01-investment/02-advanced-investment/Step 2.1 - Advanced Investment Appraisal.pdf` |
-| 3.1 | `01-investment/03-international-projects/Step 3.1 - International Project Appraisal.pdf` |
-| 4.1 | `02-cost-of-capital/04-cost-of-capital-foundations/Step 4.1 - Cost of Capital Foundations.pdf` |
-| 5.1 | `02-cost-of-capital/05-capital-structure/Step 5.1 - Capital Structure Decisions.pdf` |
-| 6.1 | `03-ma-valuation/06-company-valuation/Step 6.1 - Company Valuation.pdf` |
-| 7.1 | `03-ma-valuation/07-mergers-acquisitions/Step 7.1 - Mergers & Acquisitions.pdf` |
-| 8.1 | `04-risk/08-interest-rate-risk/Step 8.1 - Interest Rate Risk Management.pdf` |
-| 9.1 | `04-risk/09-currency-risk/Step 9.1 - Currency Risk Management.pdf` |
-| 10.1 | `05-dividends/10-dividend-policy/Step 10.1 - Dividend Policy.pdf` |
+| 1.1 | `01-investment/Step 1.1 - Investment Fundamentals.pdf` |
+| 2.1 | `01-investment/Step 2.1 - Advanced Investment Appraisal.pdf` |
+| 3.1 | `01-investment/Step 3.1 - International Project Appraisal.pdf` |
+| 4.1 | `02-cost-of-capital/Step 4.1 - Cost of Capital Foundations.pdf` |
+| 5.1 | `02-cost-of-capital/Step 5.1 - Capital Structure Decisions.pdf` |
+| 6.1 | `03-ma-valuation/Step 6.1 - Company Valuation.pdf` |
+| 7.1 | `03-ma-valuation/Step 7.1 - Mergers & Acquisitions.pdf` |
+| 8.1 | `04-risk/Step 8.1 - Interest Rate Risk Management.pdf` |
+| 9.1 | `04-risk/Step 9.1 - Currency Risk Management.pdf` |
+| 10.1 | `05-dividends/Step 10.1 - Dividend Policy.pdf` |
 
 ---
 
 ## Build Scripts
 
-| Step | Script |
-|------|--------|
-| 1.1 | `_dev/scripts/build_cf_1_1_investment-fundamentals.py` |
-| 2.1 | `_dev/scripts/build_cf_2_1_advanced-investment.py` |
-| 3.1 | `_dev/scripts/build_cf_3_1_international-projects.py` |
-| 4.1 | `_dev/scripts/build_cf_4_1_cost-of-capital.py` |
-| 5.1 | `_dev/scripts/build_cf_5_1_capital-structure.py` |
-| 6.1 | `_dev/scripts/build_cf_6_1_company-valuation.py` |
-| 7.1 | `_dev/scripts/build_cf_7_1_mergers-acquisitions.py` |
-| 8.1 | `_dev/scripts/build_cf_8_1_interest-rate-risk.py` |
-| 9.1 | `_dev/scripts/build_cf_9_1_currency-risk.py` |
-| 10.1 | `_dev/scripts/build_cf_10_1_dividend-policy.py` |
+| Step | Script | v2? |
+|------|--------|-----|
+| 1.1 | `_dev/scripts/build_cf_1_1_investment-fundamentals.py` | ✅ |
+| 2.1 | `_dev/scripts/build_cf_2_1_advanced-investment.py` | ⟳ |
+| 3.1 | `_dev/scripts/build_cf_3_1_international-projects.py` | ⟳ |
+| 4.1 | `_dev/scripts/build_cf_4_1_cost-of-capital.py` | ⟳ |
+| 5.1 | `_dev/scripts/build_cf_5_1_capital-structure.py` | ⟳ |
+| 6.1 | `_dev/scripts/build_cf_6_1_company-valuation.py` | ⟳ |
+| 7.1 | `_dev/scripts/build_cf_7_1_mergers-acquisitions.py` | ⟳ |
+| 8.1 | `_dev/scripts/build_cf_8_1_interest-rate-risk.py` | ⟳ |
+| 9.1 | `_dev/scripts/build_cf_9_1_currency-risk.py` | ⟳ |
+| 10.1 | `_dev/scripts/build_cf_10_1_dividend-policy.py` | ⟳ |
 
 ---
 

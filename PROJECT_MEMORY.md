@@ -1,11 +1,16 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-05-19
+**Last updated:** 2026-05-24
 
 ---
 
 ## Next Session
 
+- [ ] Extract a shared brand module (`booklesss_brand.py`) and roll the v2 website-brand standard across CF Steps 2.1–10.1 (rebuild each: cream + grain + ◇◆◇ + Parastoo serif, flat path). Their scripts still use the old espresso/gold + Linux fonts.
+- [ ] Decide whether the cream / Parastoo / ◇◆◇ brand also replaces the SM and TM covers, or stays CF-only
+- [ ] When the Framer / Design Bridge plugin is online, pull exact Booklesss tokens (colours, text styles, fonts) and reconcile — confirm whether jade is a real brand accent or go monochrome like the site
+- [ ] Optional: add the black ◇ mark to the body-page footer
+- [ ] (If pursuing imagery) build `_dev/scripts/brand_image.py` using Nano Banana `gemini-2.5-flash-image` for image edit/regen — needs `GEMINI_API_KEY`
 - [ ] Create CF Slack channels (`#cf-updates`, `#cf-investment`, `#cf-cost-of-capital`, `#cf-ma-valuation`, `#cf-risk`, `#cf-dividends`) → update `operations/workspace.md` with channel IDs
 - [ ] Drop WhatsApp message in CF group once channels are live
 - [ ] Fix page meta titles manually in Framer page settings (SEO tab): /blogs still "Prodo | Blogs", /about-us "Prodo | About", homepage "Prodo"
@@ -18,6 +23,35 @@
 ---
 
 ## Session Log
+
+### Session 2026-05-24
+**Done:**
+- Flattened CF folder structure — removed the 10 nested per-step subfolders; each topic folder (`01-investment`, etc.) now holds step PDFs directly. Deleted old `00_START HERE` docx and all 10 old PDFs.
+- Rebuilt CF **Step 1.1** through three brand iterations, landing on a website-matched standard:
+  1. Aptos body + Parkinsans titles vendored in `_dev/fonts/`; founder framing + full course skeleton on page 2 ("START HERE"); FACT boxes; `calc_table()` for FCF waterfalls. Fixed cover bug (bg painted over title) and `\n`→`<br/>`.
+  2. Recoloured Forest & Jade (dropped gold).
+  3. **Final pivot — match booklesss.framer.ai:** cream `#FFFEF2` paper + film grain every page, **black logo** top-left, centred **◇◆◇** vector motif (`TripleDiamond`), **Parastoo** serif title (#121212 / 42pt / 1.1) + serif headings (#3D3D3D / 1.2), jade kept as interior accent. Light/editorial — no dark cover.
+- Brand assets: moved logos from Partnr Bucket → `_dev/brand/` (black + generated white wordmark + diamond mark); generated `grain.png`; created top-level `Booklesss Bucket/` drop zone.
+- Researched Nano Banana (Gemini image API) — confirmed image-input editing (edit/compose/style-transfer); user chose `gemini-2.5-flash-image`.
+- Created a demo Slack canvas in `#all-booklesss-20` (note: connected workspace is `booklesss20.slack.com`, paid plan — differs from `bookless10` in workspace.md).
+
+**What Worked:**
+- Rendering PDF pages to PNG with PyMuPDF (`fitz`) at 120–130 dpi to visually QA each iteration — caught the blank cover, glyph tofu, and waterfall misalignment that code review wouldn't.
+- Right-aligned 2-col `calc_table()` for financial waterfalls — space-padded ASCII collapses in proportional Aptos.
+- Glyph audit: Aptos renders ¹²³⁵, √, →, ×, − fine; only ► (U+25BA) tofus.
+- Parastoo serif: rastikerdar GitHub release v2.0.1 zip → use the `web/` variants (Latin-inclusive; `-WOL` strips Latin).
+- White-from-black logo: white fill + original alpha (PIL) preserves antialiased edges.
+- Conversion: 56px (Framer) = 42pt (PDF); px × 0.75 = pt.
+
+**Dead Ends (do not retry):**
+- ReportLab full-page background in an `onPageEnd` callback paints OVER the flowables — must use `onPage`.
+- `\n` does not line-break inside a ReportLab Paragraph — use `<br/>`.
+- Design Bridge / Framer plugin was OFFLINE all session — couldn't pull live tokens; built from the CSS specs the user supplied. (Consistent with prior sessions: plugin disconnects often.)
+- Supabase MCP has no storage-bucket access; Google Drive search found no logo — "the bucket" was a desktop folder (`partnr/Partnr Bucket`), not cloud.
+
+**Next:** Carried to Next Session list above.
+
+---
 
 ### Session 2026-05-19
 **Done:**
