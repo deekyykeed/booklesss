@@ -10,6 +10,7 @@
 - [ ] Decide whether the cream / Parastoo / ◇◆◇ brand also replaces the SM and TM covers, or stays CF-only
 - [ ] When the Framer / Design Bridge plugin is online, pull exact Booklesss tokens (colours, text styles, fonts) and reconcile — confirm whether jade is a real brand accent or go monochrome like the site
 - [ ] Optional: add the black ◇ mark to the body-page footer
+- [ ] Export a higher-res Booklesss diamond mark (current `booklesss-mark-black.png` is only 34×34px) for crisper motif/logo at large sizes
 - [ ] (If pursuing imagery) build `_dev/scripts/brand_image.py` using Nano Banana `gemini-2.5-flash-image` for image edit/regen — needs `GEMINI_API_KEY`
 - [ ] Create CF Slack channels (`#cf-updates`, `#cf-investment`, `#cf-cost-of-capital`, `#cf-ma-valuation`, `#cf-risk`, `#cf-dividends`) → update `operations/workspace.md` with channel IDs
 - [ ] Drop WhatsApp message in CF group once channels are live
@@ -30,7 +31,8 @@
 - Rebuilt CF **Step 1.1** through three brand iterations, landing on a website-matched standard:
   1. Aptos body + Parkinsans titles vendored in `_dev/fonts/`; founder framing + full course skeleton on page 2 ("START HERE"); FACT boxes; `calc_table()` for FCF waterfalls. Fixed cover bug (bg painted over title) and `\n`→`<br/>`.
   2. Recoloured Forest & Jade (dropped gold).
-  3. **Final pivot — match booklesss.framer.ai:** cream `#FFFEF2` paper + film grain every page, **black logo** top-left, centred **◇◆◇** vector motif (`TripleDiamond`), **Parastoo** serif title (#121212 / 42pt / 1.1) + serif headings (#3D3D3D / 1.2), jade kept as interior accent. Light/editorial — no dark cover.
+  3. **Final pivot — match booklesss.framer.ai:** cream paper + film grain every page, **black logo** top-left, centred **◇◆◇** motif, **Parastoo** serif title (#121212 / 42pt / 1.1) + serif headings (#3D3D3D / 1.2), jade kept as interior accent. Light/editorial — no dark cover.
+  4. **Cover refined:** cover bg `#FFFDE8` (body pages stay `#FFFEF2`) via `_paint_paper(bg)`; grain regenerated coarser (~3px); ◇◆◇ rebuilt as `LogoTriple` — three copies of the **real** `booklesss-mark-black.png` at exact website dims (centre 24px, sides 18px, gap 11px → ×0.75 to pt), side marks at 0.3 opacity.
 - Brand assets: moved logos from Partnr Bucket → `_dev/brand/` (black + generated white wordmark + diamond mark); generated `grain.png`; created top-level `Booklesss Bucket/` drop zone.
 - Researched Nano Banana (Gemini image API) — confirmed image-input editing (edit/compose/style-transfer); user chose `gemini-2.5-flash-image`.
 - Created a demo Slack canvas in `#all-booklesss-20` (note: connected workspace is `booklesss20.slack.com`, paid plan — differs from `bookless10` in workspace.md).
