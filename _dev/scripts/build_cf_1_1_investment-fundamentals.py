@@ -41,14 +41,16 @@ pdfmetrics.registerFontFamily("Title", normal="Title", bold="Title-Bold",
 BRAND_DIR  = os.path.join(os.path.dirname(__file__), "..", "brand")
 LOGO_WHITE = os.path.join(BRAND_DIR, "booklesss-logo-white.png")  # for dark surfaces
 LOGO_BLACK = os.path.join(BRAND_DIR, "booklesss-logo-black.png")  # for cream pages
+MARK_BLACK = os.path.join(BRAND_DIR, "booklesss-mark-black.png")  # diamond glyph
 GRAIN      = os.path.join(BRAND_DIR, "grain.png")
 _logo_white = ImageReader(LOGO_WHITE) if os.path.exists(LOGO_WHITE) else None
 _logo_black = ImageReader(LOGO_BLACK) if os.path.exists(LOGO_BLACK) else None
+_mark_black = ImageReader(MARK_BLACK) if os.path.exists(MARK_BLACK) else None
 _grain      = ImageReader(GRAIN)      if os.path.exists(GRAIN)      else None
 
 # ── COLOURS — Booklesss brand (website: cream + editorial serif) ────────────
-C_COVER      = colors.HexColor("#FFFEF2")   # cream cover (website bg)
-C_PAGE       = colors.HexColor("#FFFEF2")   # cream page background
+C_COVER      = colors.HexColor("#FFFDE8")   # warm cream — cover (first page) only
+C_PAGE       = colors.HexColor("#FFFEF2")   # cream — body pages (website bg)
 TITLE_DARK   = colors.HexColor("#121212")   # cover title  (--Logo_Dark)
 HEADING_DARK = colors.HexColor("#3D3D3D")   # headings     (--Text_Dark_Used_on_H1_only)
 C_JADE     = colors.HexColor("#2FB99A")   # jade accent (interior)
@@ -138,16 +140,16 @@ def make_styles():
 ST = make_styles()
 
 # ── CANVAS CALLBACKS ───────────────────────────────────────────────────────
-def _paint_paper(canvas):
-    """Cream fill + subtle grain — the Booklesss paper, on every page."""
-    canvas.setFillColor(C_COVER)
+def _paint_paper(canvas, bg):
+    """Paper fill + subtle grain — the Booklesss surface."""
+    canvas.setFillColor(bg)
     canvas.rect(0, 0, W, H, fill=1, stroke=0)
     if _grain is not None:
         canvas.drawImage(_grain, 0, 0, width=W, height=H, mask="auto")
 
 def cover_bg(canvas, doc):
     canvas.saveState()
-    _paint_paper(canvas)
+    _paint_paper(canvas, C_COVER)
     # top brand row: black logo (left) + module (right) + warm hairline
     top_y = H - MY + 6
     if _logo_black is not None:
@@ -169,7 +171,7 @@ def cover_bg(canvas, doc):
 
 def page_bg(canvas, doc):
     canvas.saveState()
-    _paint_paper(canvas)
+    _paint_paper(canvas, C_PAGE)
     canvas.restoreState()
 
 def body_page(canvas, doc):
@@ -343,7 +345,38 @@ def community_closer():
             ST["community_link"]),
     ]
 
-# ── TRIPLE-DIAMOND MOTIF (vector ◇◆◇) ──────────────────────────────────────
+# ── TRIPLE-MARK MOTIF — three copies of the real Booklesss diamond ─────────
+class LogoTriple(Flowable):
+    """Centred trio of the actual logo mark: large centre, two lighter sides."""
+    # Website spec: outer 18px, centre 24px, gap 11px → ×0.75 (56px=42pt) → pt
+    def __init__(self, img, center=18, side=13.5, gap=8.25, side_alpha=0.3):
+        super().__init__()
+        self.img = img
+        self.center, self.side, self.gap = center, side, gap
+        self.side_alpha = side_alpha
+        self._h = center
+
+    def wrap(self, aw, ah):
+        self._aw = aw
+        return aw, self._h
+
+    def _draw_mark(self, x_center, size):
+        self.canv.drawImage(self.img, x_center - size / 2.0, self._h / 2.0 - size / 2.0,
+                            width=size, height=size, mask="auto", preserveAspectRatio=True)
+
+    def draw(self):
+        c = self.canv
+        mid = getattr(self, "_aw", self._h) / 2.0
+        step = self.center / 2.0 + self.gap + self.side / 2.0
+        c.saveState()
+        c.setFillAlpha(self.side_alpha)      # lighter side marks, like the website
+        self._draw_mark(mid - step, self.side)
+        self._draw_mark(mid + step, self.side)
+        c.restoreState()
+        self._draw_mark(mid, self.center)    # solid centre mark
+
+
+# ── TRIPLE-DIAMOND MOTIF (vector ◇◆◇ — fallback if no mark asset) ───────────
 class TripleDiamond(Flowable):
     """Centred ◇◆◇ — outlined, solid (larger), outlined. The Booklesss mark."""
     def __init__(self, center_size=15, side_size=10, gap=13,
@@ -400,7 +433,8 @@ def build():
 
     # ── COVER ──────────────────────────────────────────────────────────────
     story.append(Spacer(1, 120))
-    story.append(TripleDiamond(color=HEADING_DARK))
+    story.append(LogoTriple(_mark_black) if _mark_black is not None
+                 else TripleDiamond(color=HEADING_DARK))
     story.append(Spacer(1, 26))
     story.append(Paragraph("STEP 1.1 · INVESTMENT", ST["cover_step"]))
     story.append(Spacer(1, 12))
