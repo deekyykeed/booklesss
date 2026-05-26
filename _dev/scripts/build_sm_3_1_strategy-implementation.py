@@ -1,5 +1,5 @@
 """
-Booklesss Lesson PDF — Step 5.1: Strategy Implementation
+Booklesss Lesson PDF — Step 3.1: Strategy Implementation
 Course: Strategic Management
 Style: Slate-navy cover, white body, gold accent, DejaVuSerif display, LiberationSans body.
 """
@@ -68,7 +68,7 @@ INVITE_URL   = "https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8
 
 OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..",
            "courses", "Strategic Management", "03-strategy", "05-strategy-implementation")
-OUT_PATH = os.path.join(OUT_DIR, "Step 5.1 - Strategy Implementation.pdf")
+OUT_PATH = os.path.join(OUT_DIR, "Step 3.1 - Strategy Implementation.pdf")
 
 # ─────────────────────────────────────────────
 #  STYLES
@@ -167,7 +167,7 @@ def body_page(canvas, doc):
     canvas.line(MX, H - MY + 4, W - MX, H - MY + 4)
     canvas.setFont("Body", 7.5)
     canvas.setFillColor(C_STEEL)
-    canvas.drawString(MX, H - MY + 7, "5.1 — Strategy Implementation")
+    canvas.drawString(MX, H - MY + 7, "3.1 — Strategy Implementation")
     canvas.drawRightString(W - MX, H - MY + 7, "v1 · March 2026")
     canvas.line(MX, MY - 4, W - MX, MY - 4)
     canvas.setFont("Body", 7.5)
@@ -302,7 +302,7 @@ def build():
     story.append(Paragraph("Strategy\nImplementation", ST["cover_title"]))
     story.append(Spacer(1, 8))
     story.append(Paragraph(
-        "Step 5.1 · From strategy to action: Chandler's thesis, the 7-S Framework, Balanced Scorecard, change management, KPIs, and why 70% of strategies fail",
+        "Step 3.1 · From strategy to action: Chandler's thesis, the 7-S Framework, Balanced Scorecard, change management, KPIs, and why 70% of strategies fail",
         ST["cover_sub"]))
     story.append(Spacer(1, 14))
     story.append(Paragraph("Booklesss · booklesss.framer.ai",
@@ -314,8 +314,8 @@ def build():
     # ── SECTION 1: FOUNDATIONS ────────────────────────────────────────
     story += section("CONTEXT", "Where We Are in the Strategic Process")
     story.append(body(
-        "By Step 5.1, you have completed the entire strategic analysis journey. You've identified your vision and mission (Step 2.1), "
-        "mapped the external environment (Step 3.1), and assessed your internal capabilities (Step 4.1). "
+        "By Step 3.1, you have completed the entire strategic analysis journey. You've identified your vision and mission (Step 1.2), "
+        "mapped the external environment (Step 2.1), and assessed your internal capabilities (Step 2.2). "
         "Now comes the hardest part: <b>turning that strategy into action</b>."
     ))
     story.append(Spacer(1, 8))
@@ -620,11 +620,11 @@ def build():
     # ── SECTION 11: LINKS BACK TO PREVIOUS STEPS ────────────────────────────────────────
     story += section("INTEGRATION", "Linking Back to the Entire Strategic Process")
     story.append(body(
-        "Step 5.1 does not stand alone. Everything you've learned in Steps 1–4 now affects how you implement strategy:"
+        "Step 3.1 does not stand alone. Everything you've learned in Lessons 1 and 2 now affects how you implement strategy:"
     ))
     story.append(Spacer(1, 8))
 
-    story.append(h3("From Step 3.1 (External Environment)"))
+    story.append(h3("From Step 2.1 (External Environment)"))
     story.append(body(
         "Your external analysis identified market opportunities, competitive threats, and industry dynamics. "
         "These shape what implementation is possible. A stable environment allows planned, sequential change. "
@@ -632,7 +632,7 @@ def build():
     ))
     story.append(Spacer(1, 10))
 
-    story.append(h3("From Step 4.1 (Internal Capabilities)"))
+    story.append(h3("From Step 2.2 (Internal Capabilities)"))
     story.append(body(
         "Your internal analysis identified what you're good at and what you must fix. Implementation strategy must be realistic about capabilities. "
         "Don't implement a digital transformation if your IT staff can't deliver it. Don't pursue a differentiation strategy if you can't afford the R&D. "
@@ -640,7 +640,7 @@ def build():
     ))
     story.append(Spacer(1, 10))
 
-    story.append(h3("From Step 2.1 (Mission & Vision)"))
+    story.append(h3("From Step 1.2 (Mission & Vision)"))
     story.append(body(
         "Your mission and vision set the destination. Implementation is the journey. Every structural decision, resource allocation, and change initiative "
         "should move the organisation closer to that vision."
@@ -701,7 +701,7 @@ def build():
         story.append(Paragraph(f"{i}.   {outcome}", ST["outcome"]))
 
     story.append(Spacer(1, 8))
-    story.append(Paragraph("Next: 6.1 — Competitive Strategy (Final Step)",
+    story.append(Paragraph("Next: 3.2 — Competitive Strategy (Final Step)",
                             ST["next_step"]))
 
     # ── COMMUNITY CLOSER ─────────────────────────────────────────

@@ -1,5 +1,5 @@
 """
-Booklesss Lesson PDF — Step 4.4: Treasury Management Systems
+Booklesss Lesson PDF — Step 5.2: Treasury Management Systems
 Course: BBF4302 Treasury Management
 Style: Deep navy cover, white body, emerald accent, DejaVuSerif display, LiberationSans body.
 """
@@ -68,7 +68,7 @@ INVITE_URL   = "https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8
 
 OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..",
            "courses", "Treasury Management", "01-operations", "05-clearing-settlement")
-OUT_PATH = os.path.join(OUT_DIR, "Step 4.4 - Treasury Management Systems.pdf")
+OUT_PATH = os.path.join(OUT_DIR, "Step 5.2 - Treasury Management Systems.pdf")
 
 # ─────────────────────────────────────────────
 #  STYLES
@@ -159,7 +159,7 @@ def cover_bg(canvas, doc):
     canvas.rect(0, 0, 5, H, fill=1, stroke=0)
     canvas.setFont("Georgia-Bold", 140)
     canvas.setFillColor(colors.HexColor("#0F2847"))
-    canvas.drawRightString(W - MX, MY + 40, "4.4")
+    canvas.drawRightString(W - MX, MY + 40, "5.2")
     canvas.restoreState()
 
 def body_page(canvas, doc):
@@ -170,7 +170,7 @@ def body_page(canvas, doc):
     canvas.line(MX, H - MY + 4, W - MX, H - MY + 4)
     canvas.setFont("Body", 7.5)
     canvas.setFillColor(C_STEEL)
-    canvas.drawString(MX, H - MY + 7, "4.4 — Treasury Management Systems")
+    canvas.drawString(MX, H - MY + 7, "5.2 — Treasury Management Systems")
     canvas.drawRightString(W - MX, H - MY + 7, "v1 · March 2026")
     canvas.line(MX, MY - 4, W - MX, MY - 4)
     canvas.setFont("Body", 7.5)
@@ -243,7 +243,7 @@ def community_closer():
         Spacer(1, 20),
         HRFlowable(width="100%", thickness=0.5, color=C_RULE, spaceAfter=14),
         Paragraph(
-            "You've just completed the Treasury Management course. Step 4.4 is the capstone — it brings together everything you've learned across ten steps, "
+            "You've just completed the Treasury Management course. Step 5.2 is the capstone — it brings together everything you've learned across ten steps, "
             "from Working Capital all the way to systems and operations. "
             "The channel for this topic is <b>#tm-operations</b> — that's where treasury professionals in the Booklesss group are sharpening these skills together.",
             ST["community"]),
@@ -311,7 +311,7 @@ def build():
     story.append(Paragraph("Treasury Management\nSystems", ST["cover_title"]))
     story.append(Spacer(1, 8))
     story.append(Paragraph(
-        "Step 4.4 · TMS architecture, deal capture, position management, risk analytics, bank connectivity, implementation, ROI, and integration of all treasury functions",
+        "Step 5.2 · TMS architecture, deal capture, position management, risk analytics, bank connectivity, implementation, ROI, and integration of all treasury functions",
         ST["cover_sub"]))
     story.append(Spacer(1, 14))
     story.append(Paragraph("Booklesss · booklesss.framer.ai",
@@ -657,7 +657,7 @@ def build():
     story.append(h3("Step 3.2: FX Risk"))
     story.append(body(
         "The TMS aggregates all FX exposures (from operations, investments, and financing). It calculates net long/short positions by currency. "
-        "When treasury executes FX forwards, money market hedges, or options (3.2), the TMS records these, marks them to market, and reconciles them through CLS or SWIFT settlement (Step 4.3)."
+        "When treasury executes FX forwards, money market hedges, or options (3.2), the TMS records these, marks them to market, and reconciles them through CLS or SWIFT settlement (Step 5.1)."
     ))
     story.append(Spacer(1, 6))
 
@@ -669,7 +669,7 @@ def build():
     ))
     story.append(Spacer(1, 6))
 
-    story.append(h3("Step 4.3: Clearing & Settlement Systems"))
+    story.append(h3("Step 5.1: Clearing & Settlement Systems"))
     story.append(body(
         "The TMS interfaces with SWIFT and bank APIs to initiate payments and receive settlement instructions. "
         "It tracks every trade from deal date through settlement, knows which trades have cleared and which are pending. "

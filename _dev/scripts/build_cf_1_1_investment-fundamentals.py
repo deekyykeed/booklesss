@@ -92,13 +92,16 @@ def make_styles():
             leading=14, spaceAfter=2, alignment=TA_CENTER),
         "eyebrow": ParagraphStyle("eyebrow",
             fontName="Body-Bold", fontSize=7, textColor=C_JADE,
-            leading=10, spaceAfter=3, spaceBefore=18, alignment=TA_LEFT),
+            leading=10, spaceAfter=3, spaceBefore=18, alignment=TA_LEFT,
+            keepWithNext=1),
         "h2": ParagraphStyle("h2",
             fontName="Title-Bold", fontSize=17, textColor=HEADING_DARK,
-            leading=20, spaceAfter=8, alignment=TA_LEFT),
+            leading=20, spaceAfter=8, alignment=TA_LEFT,
+            keepWithNext=1),
         "h3": ParagraphStyle("h3",
             fontName="Body-Bold", fontSize=11, textColor=C_STEEL,
-            leading=15, spaceAfter=5, spaceBefore=10, alignment=TA_LEFT),
+            leading=15, spaceAfter=5, spaceBefore=10, alignment=TA_LEFT,
+            keepWithNext=1),
         "body": ParagraphStyle("body",
             fontName="Body", fontSize=10.5, textColor=C_INK,
             leading=17, spaceAfter=6, alignment=TA_LEFT),
@@ -195,8 +198,10 @@ def body_page(canvas, doc):
 
 # ── HELPERS ────────────────────────────────────────────────────────────────
 def hairline():
-    return HRFlowable(width="100%", thickness=0.5, color=C_JADE,
-                      spaceAfter=10, spaceBefore=4)
+    hr = HRFlowable(width="100%", thickness=0.5, color=C_JADE,
+                    spaceAfter=10, spaceBefore=4)
+    hr.keepWithNext = 1   # keep the rule with the H2 above and first line below
+    return hr
 
 def section(eyebrow, heading):
     return [
@@ -442,7 +447,7 @@ def build():
     story.append(Spacer(1, 18))
     story.append(Paragraph(
         "Free cash flows, NPV, IRR, and MIRR — the tools that tell you whether a "
-        "project is worth your money before you commit a single kwacha.",
+        "project is worth your money before you commit a single coin.",
         ST["cover_sub"]))
     story.append(Spacer(1, 210))
     story.append(Paragraph("BAC4301 · Corporate Finance", ST["cover_meta"]))
@@ -457,25 +462,25 @@ def build():
         "Read this the way a founder reads it. You are not studying some distant corporation — "
         "you are the person who decides where your company's cash goes. Every tool in this step "
         "answers a question you will actually face: <i>is this worth my money, and can I prove it "
-        "before I commit a single kwacha?</i>"
+        "before I commit a single coin?</i>"
     ))
     story.append(body(
         "Here is the whole of Corporate Finance — all ten steps — laid out before you start. "
         "You don't learn it in disconnected chunks. You hold the full map from day one, then fill "
-        "in the depth. By Step 10.1 you are not discovering new territory; you are completing a "
+        "in the depth. By Step 5.1 you are not discovering new territory; you are completing a "
         "picture you have had in your head since today."
     ))
     for step, desc in [
         ("Step 1.1", "Investment Fundamentals — FCF, NPV, IRR, MIRR  ← you are here"),
-        ("Step 2.1", "Advanced Investment Appraisal — APV and capital rationing"),
-        ("Step 3.1", "International Project Appraisal — cross-border NPV and FX risk"),
-        ("Step 4.1", "Cost of Capital — WACC and CAPM (where the discount rate comes from)"),
-        ("Step 5.1", "Capital Structure — debt vs equity, Modigliani-Miller"),
-        ("Step 6.1", "Company Valuation — DCF, multiples, asset-based methods"),
-        ("Step 7.1", "Mergers and Acquisitions — valuing targets, deal structures, EMH"),
-        ("Step 8.1", "Interest Rate Risk — FRAs, swaps, hedging"),
-        ("Step 9.1", "Currency Risk — forwards, options, transaction exposure"),
-        ("Step 10.1", "Dividend Policy — payout theories and signalling"),
+        ("Step 1.2", "Advanced Investment Appraisal — APV and capital rationing"),
+        ("Step 1.3", "International Project Appraisal — cross-border NPV and FX risk"),
+        ("Step 2.1", "Cost of Capital — WACC and CAPM (where the discount rate comes from)"),
+        ("Step 2.2", "Capital Structure — debt vs equity, Modigliani-Miller"),
+        ("Step 3.1", "Company Valuation — DCF, multiples, asset-based methods"),
+        ("Step 3.2", "Mergers and Acquisitions — valuing targets, deal structures, EMH"),
+        ("Step 4.1", "Interest Rate Risk — FRAs, swaps, hedging"),
+        ("Step 4.2", "Currency Risk — forwards, options, transaction exposure"),
+        ("Step 5.1", "Dividend Policy — payout theories and signalling"),
     ]:
         story.append(Paragraph(f"<b>{step}</b>  —  {desc}", ST["arc"]))
     story.append(Spacer(1, 8))
@@ -493,17 +498,27 @@ def build():
         "depreciation, accruals, and timing. Cash is what lands in your account."
     ))
     story.append(body(
-        "Free cash flow (FCF) is the cash left after your company has covered its operating costs, paid tax, "
-        "and reinvested what it needs to keep running and growing. It belongs to everyone who put capital in — "
-        "both debt holders and shareholders. Think of it as the true earnings of the business."
+        "Free cash flow (FCF) is the cash left after your company has covered its operating costs — salaries, "
+        "rent, fuel, raw materials, the day-to-day running of the business — paid tax, and reinvested what it "
+        "needs to keep running and growing. It belongs to everyone who put capital in — both debt holders and "
+        "shareholders. Think of it as the true earnings of the business."
     ))
     story.append(Spacer(1, 6))
 
     story.append(h3("FCF to the Firm"))
     story.append(body(
-        "Start with operating profit before interest and tax (PBIT). Add back depreciation — it reduced profit "
-        "on paper but no cash left when the charge was recorded (it left when you bought the asset). "
-        "Deduct tax paid, then subtract the cash the business needs to invest to stay operational."
+        "FCF to the firm is the total cash the business generates for <i>everyone</i> who funded it, before "
+        "any of them are paid. Two groups put money into a company: debt holders (the bank and other lenders) "
+        "and equity holders (the shareholders who own it). They are not the same — lenders are owed a fixed "
+        "amount and get paid first, owners take whatever is left. FCF to the firm is the pool both have a claim "
+        "on. That's why it starts before interest is deducted: interest is the lenders' share, and at this "
+        "stage you haven't split the pool yet."
+    ))
+    story.append(body(
+        "Start with operating profit before interest and tax (PBIT) — the operating costs above are already "
+        "taken out at this point. Add back depreciation — it reduced profit on paper but no cash left when the "
+        "charge was recorded (it left when you bought the asset). Deduct tax paid, then subtract the cash the "
+        "business needs to invest to stay operational."
     ))
     story.append(calc_table([
         ("Net operating profit (PBIT)", "X"),
@@ -830,7 +845,7 @@ def build():
         ["Internal Rate of Return (IRR)", "The discount rate at which NPV = 0; the project's break-even rate"],
         ["Modified IRR (MIRR)", "IRR recalculated using a realistic reinvestment rate, giving a more accurate return figure"],
         ["Reinvestment Rate", "The rate at which interim cash flows are actually expected to be reinvested; used in MIRR"],
-        ["Cost of Capital", "The required return used as the discount rate; derived from WACC/CAPM in Step 4.1"],
+        ["Cost of Capital", "The required return used as the discount rate; derived from WACC/CAPM in Step 2.1"],
         ["Nominal Rate", "The stated rate, including inflation"],
         ["Real Rate", "The rate adjusted for inflation"],
         ["Fisher Equation", "(1 + nominal) = (1 + real) × (1 + inflation) — links the three rates"],
@@ -856,13 +871,13 @@ def build():
     story.append(h3("Where You Go Next"))
     story.append(body(
         "You came in with the full map of the course (look back at the first page). You now own the "
-        "first piece of it — the toolkit every other step leans on. <b>Step 2.1 — Advanced Investment "
+        "first piece of it — the toolkit every other step leans on. <b>Step 1.2 — Advanced Investment "
         "Appraisal</b> takes the same NPV machinery and handles the harder cases: projects financed "
         "partly by debt (APV), and what you do when you can't fund every good project at once "
         "(capital rationing)."
     ))
     story.append(body(
-        "Nothing in Step 2.1 replaces what you learned here — it extends it. That is the whole idea: "
+        "Nothing in Step 1.2 replaces what you learned here — it extends it. That is the whole idea: "
         "you are not starting over each step, you are deepening one picture you already hold."
     ))
 

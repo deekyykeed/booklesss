@@ -1,454 +1,349 @@
 ---
 name: booklesss-pdf
 description: >
-  Generates branded Booklesss PDF documents — lesson notes and lead magnets.
-  Use this skill whenever the user wants to create, generate, or export a PDF
-  for Booklesss. Trigger on: "write the PDF", "generate the lesson PDF",
-  "create a lead magnet", "make the PDF for lesson X", "export to PDF",
-  "marketing PDF", "WhatsApp doc". Two document types: lesson (full lesson
-  notes as a polished study document) and lead-magnet (3–4 page teaser for
-  WhatsApp marketing with CTA). Every PDF gets the Booklesss footer, amber
-  accent, cross-references to related docs, and a unique tracking link slot.
-  Always generate by running the Python script via Bash — do not use a library
-  that requires a GUI. Save lesson PDFs inside the lesson folder:
-  courses/[Course]/content/[lesson-folder]/
-  Save lead magnets inside a lead-magnets/ subfolder within that lesson:
-  courses/[Course]/content/[lesson-folder]/lead-magnets/
-  A single step can have multiple magnets — each gets its own file there.
+  The Booklesss PDF design system — produces any branded PDF in the house style
+  (cream paper, jade accent, Parastoo serif titles, per-page header/footer).
+  Use this skill whenever the user wants to create, generate, or export any
+  Booklesss PDF. Triggers: "write the PDF", "generate the lesson PDF", "create a
+  lead magnet", "make an invoice", "send a quote", "build a receipt", "one-pager",
+  "marketing PDF", "WhatsApp doc", "export to PDF". The skill is a shared brand
+  foundation (fonts, palette, page geometry, reusable flowables, the page-break
+  rule, writing style) plus a set of document profiles that sit on top of it —
+  lesson notes, lead magnets, and business documents (quotes / invoices /
+  proposals / receipts). Any new document type uses the same foundation with its
+  own structure. Always generate by running a Python/ReportLab script via Bash —
+  never a GUI library.
 ---
 
 # booklesss-pdf
 
-Generate a branded Booklesss PDF document.
+The shared design system for **every** Booklesss PDF. Think of it in two layers:
+
+1. **Foundation** — the brand: fonts, palette, page geometry, reusable
+   components, header/footer, the page-break rule, writing style. Identical
+   across every document.
+2. **Document profile** — the structure for a specific output: a lesson, a lead
+   magnet, an invoice, a quote, a one-pager. Profiles pick from the foundation;
+   they never redefine the brand.
+
+> Building a kind of document not listed here (statement, certificate, etc.)?
+> Use the foundation as-is and add a new profile. Don't fork the brand.
+
+**Reference implementations**
+- Lesson (most complete): [`_dev/scripts/build_cf_1_1_investment-fundamentals.py`](../../../_dev/scripts/build_cf_1_1_investment-fundamentals.py)
+
+When this doc and a reference script disagree, the script wins — update this doc.
 
 ---
 
-## Per-course visual identity
+# Layer 1 — Foundation (every PDF)
 
-Each course has a distinct palette, font pairing, and personality. Never mix styles across courses. When generating a PDF, check which course it belongs to and apply the correct system below.
+## Fonts — vendored, self-contained
 
----
-
-### Treasury Management — BBF4302
-
-| Element | Value |
-|---------|-------|
-| Cover bg | `#0B1D3A` deep navy |
-| Accent | `#10B981` emerald |
-| Grid lines (cover/CTA) | `#132646` navy-toned |
-| Display font | Georgia Bold / Display-Bold (serif — gravitas) |
-| Body font | Aptos / Body (fallback: Liberation Sans on Linux) |
-| Callout note bg | `#ECFDF5` emerald-50 |
-| Result/highlight | `#065F46` dark emerald |
-| **Feel** | Premium treasury report. Serious money. |
-
-Reference script: `_dev/scripts/build_tm_lead_magnet_v4.py`
-
----
-
-### Corporate Finance — BAC4301
-
-| Element | Value |
-|---------|-------|
-| Cover bg | `#1A1200` deep espresso |
-| Accent | `#C9A020` gold |
-| Display font | Arial Black (bold modern corporate) |
-| Body font | Calibri |
-| Callout note bg | `#FEF9E7` gold-tinted cream |
-| Result/highlight | `#7A5C00` dark gold |
-| **Feel** | Investment banking. Deal analysis. IBD aesthetic. |
-
----
-
-### Strategic Management
-
-| Element | Value |
-|---------|-------|
-| Cover bg | `#0F1F35` slate-navy |
-| Accent | `#DC2626` cardinal red |
-| Display font | Georgia Bold (editorial authority) |
-| Body font | Calibri |
-| Callout note bg | `#FEF2F2` red-tinted cream |
-| Result/highlight | `#991B1B` dark red |
-| **Feel** | Management consulting. Direction and urgency. |
-
----
-
-**Rule:** body pages are always white `#FFFFFF` regardless of course. Only cover and CTA pages use the dark cover bg. The accent colour runs through eyebrow tags, hairlines, left-bar boxes, and result lines — never the body text.
-
----
-
-## Two document types
-
-### lesson
-A full study notes PDF based on the lesson .md file. 8–10 pages. Given to paying students inside Slack. Not for public distribution.
-
-### lead-magnet
-A 3–4 page teaser PDF for WhatsApp marketing. Gives real value but leaves the student wanting more. Has a strong CTA (join Booklesss, founding member rate, deadline). Use unique tracking links per group.
-
----
-
-## Brand standards (never deviate)
-
-| Element | Value |
-|---------|-------|
-| Background | `#F5F0E8` cream |
-| Navy | `#1B2A4A` — cover + strong emphasis ONLY |
-| Amber | `#C17E3A` — single accent, used sparingly |
-| Teal | `#0E6B6B` — secondary accent |
-| Primary text | `#18181B` — zinc-950, never pure black |
-| Secondary text | `#71717A` — steel, for subheadings + labels |
-| Tertiary / meta | `#94A3B8` — muted slate, for metadata + captions |
-| Cover title font | **Arial Black** (`ariblk.ttf`) |
-| Section heading font | **Calibri Bold** (`calibrib.ttf`) |
-| Body / all other text | **Calibri** (all weights) |
-| Page size | A4 |
-| Margins | 2cm sides, 1.8cm top/bottom |
-
----
-
-## Design taste standard (applied to every PDF)
-
-These principles are extracted from the taste/minimalist/high-end design skills and translated for print. Apply them every time a PDF is generated.
-
-### Typography hierarchy
-
-Every section heading must be preceded by an **eyebrow tag** — a small label in amber ALL CAPS that tells the reader where they are before the heading lands.
-
-```
-CONCEPT 01                    ← 7pt Calibri Bold, #C17E3A, ALL CAPS, spacious
-The Cash Conversion Cycle     ← 16pt Calibri Bold, #18181B, tight leading
-```
-
-Full hierarchy (size, weight, color):
-| Level | Size | Weight | Color | Use |
-|-------|------|--------|-------|-----|
-| Eyebrow tag | 7pt | Bold | `#C17E3A` | Before every H2 |
-| H2 (section) | 16pt | Bold | `#18181B` | Section title |
-| H3 (sub-section) | 12pt | Bold | `#71717A` | Sub-heading |
-| Body | 10.5pt | Regular | `#18181B` | All body text |
-| Caption / meta | 8pt | Regular | `#94A3B8` | Footnotes, labels, metadata |
-
-Leading (line height): 1.65× for body (= 17.3pt at 10.5pt). Never cramped.
-
-### Color discipline
-- Max ONE accent color per element — amber for headings/rules, teal for secondary callouts, navy for cover only
-- Body text is always `#18181B` — never pure navy, never pure black
-- Secondary labels and subheadings in `#71717A` (steel), not ink-black
-- Saturate nothing above 80%
-
-### Callout box backgrounds (muted pastels — not heavy fills)
-Replace heavy navy/teal background boxes with light, editorial pastel backgrounds:
-
-| Type | Background | Border | Text |
-|------|-----------|--------|------|
-| Warning / Caution | `#FBF3DB` pale yellow | 0.5pt `#956400` | `#956400` |
-| Info / Note | `#E1F3FE` pale blue | 0.5pt `#1F6C9F` | `#1F6C9F` |
-| Success / Formula | `#EDF3EC` pale green | 0.5pt `#346538` | `#346538` |
-| Worked example | `#F5F0E8` cream + amber left bar | 2pt amber left only | `#18181B` |
-| CTA / Deadline | `#1B2A4A` navy | none | `#FFFFFF` |
-
-### Rules and dividers
-- Section dividers: **0.5pt amber hairline** — not 2–3pt thick bars
-- Table borders: **0.5pt** `rgba(0,0,0,0.12)` — barely visible, structural only
-- No thick decorative bars filling the full page width
-
-### Spacing
-- Before each section (eyebrow + heading block): 18pt spacer
-- After heading before body: 8pt spacer
-- Between body paragraphs: 6pt spacer
-- Inside callout boxes: 10pt padding all sides
-- Tables: internal cell padding 6pt top/bottom, 8pt left/right
-
-### Layout principles
-- **Left-aligned throughout** — no centered body text
-- **Asymmetric hierarchy** — vary element widths (full-width body, inset formula boxes, narrow callouts)
-- **Breathe** — generous whitespace between sections. If a page looks packed, add a spacer
-- **Cards only for elevation** — only use bordered boxes when they serve a purpose (formulas, worked examples, CTAs). Not decorative
-
-### Anti-slop rules (forbidden patterns)
-- No navy background on body content pages (only cover + CTA page)
-- No centered headings unless on the cover
-- No thick horizontal rules as decoration
-- No "Elevate", "Seamless", "Unleash", "Game-changer" in any copy
-- No pure black (`#000000`) anywhere
-- No round fake numbers — use real calculated values
-- Body text color is NEVER the same as the accent color
-
-### Footer — on every page, every document
-```
-Left:  Booklesss | booklesss.framer.ai
-Right: Page N
-Centre: [course code] — [lesson title]
-```
-A 1pt amber line above the footer text on every page.
-
-### Header — on every page except the cover
-```
-Left:  [document title short form]
-Right: [date or version e.g. v1 · March 2026]
-A 1pt amber line below.
-```
-
----
-
-## Font registration — Aptos preferred (always include all three families)
-
-**Preferred body font: Aptos** (Microsoft's modern default, replaces Calibri).
-Scripts must detect the OS and register the correct fonts automatically.
+Fonts live in `_dev/fonts/` and are committed, so the build runs identically on
+any machine. **Never hardcode Windows or Linux system-font paths.**
 
 ```python
-import sys, os
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
+FONT_DIR = os.path.join(os.path.dirname(__file__), "..", "fonts")
 
-if sys.platform == "win32":
-    F = r"C:\Windows\Fonts"
-    # Body: Aptos (preferred). Falls back to Calibri if Aptos not present.
-    _aptos = os.path.join(F, "Aptos.ttf")
-    if os.path.exists(_aptos):
-        pdfmetrics.registerFont(TTFont("Body",        F + r"\Aptos.ttf"))
-        pdfmetrics.registerFont(TTFont("Body-Bold",   F + r"\Aptos-Bold.ttf"))
-        pdfmetrics.registerFont(TTFont("Body-Italic", F + r"\Aptos-Italic.ttf"))
-    else:
-        pdfmetrics.registerFont(TTFont("Body",        F + r"\calibri.ttf"))
-        pdfmetrics.registerFont(TTFont("Body-Bold",   F + r"\calibrib.ttf"))
-        pdfmetrics.registerFont(TTFont("Body-Italic", F + r"\calibrii.ttf"))
-    pdfmetrics.registerFontFamily("Body", normal="Body", bold="Body-Bold", italic="Body-Italic")
-    # Display (TM/SM): Georgia serif
-    pdfmetrics.registerFont(TTFont("Display",        F + r"\georgia.ttf"))
-    pdfmetrics.registerFont(TTFont("Display-Bold",   F + r"\georgiab.ttf"))
-    pdfmetrics.registerFont(TTFont("Display-Italic", F + r"\georgiai.ttf"))
-    pdfmetrics.registerFontFamily("Display", normal="Display", bold="Display-Bold", italic="Display-Italic")
-else:
-    # Linux (Cowork/VM) fallbacks
-    FD = "/usr/share/fonts/truetype/dejavu"
-    FL = "/usr/share/fonts/truetype/liberation"
-    pdfmetrics.registerFont(TTFont("Body",        FL + "/LiberationSans-Regular.ttf"))
-    pdfmetrics.registerFont(TTFont("Body-Bold",   FL + "/LiberationSans-Bold.ttf"))
-    pdfmetrics.registerFont(TTFont("Body-Italic", FL + "/LiberationSans-Italic.ttf"))
-    pdfmetrics.registerFontFamily("Body", normal="Body", bold="Body-Bold", italic="Body-Italic")
-    pdfmetrics.registerFont(TTFont("Display",        FD + "/DejaVuSerif.ttf"))
-    pdfmetrics.registerFont(TTFont("Display-Bold",   FD + "/DejaVuSerif-Bold.ttf"))
-    pdfmetrics.registerFont(TTFont("Display-Italic", FD + "/DejaVuSerif-Italic.ttf"))
-    pdfmetrics.registerFontFamily("Display", normal="Display", bold="Display-Bold", italic="Display-Italic")
+def _reg(name, filename):
+    pdfmetrics.registerFont(TTFont(name, os.path.join(FONT_DIR, filename)))
+
+_reg("Body",            "Aptos.ttf")
+_reg("Body-Bold",       "Aptos-Bold.ttf")
+_reg("Body-Italic",     "Aptos-Italic.ttf")
+_reg("Body-BoldItalic", "Aptos-Bold-Italic.ttf")
+pdfmetrics.registerFontFamily("Body", normal="Body", bold="Body-Bold",
+                              italic="Body-Italic", boldItalic="Body-BoldItalic")
+_reg("Display-Bold",    "parkinsans-v3-latin-700.ttf")  # geometric sans, sparing use
+_reg("Title",           "Parastoo.ttf")                 # serif title (website hero font)
+_reg("Title-Bold",      "Parastoo-Bold.ttf")
+pdfmetrics.registerFontFamily("Title", normal="Title", bold="Title-Bold",
+                              italic="Title", boldItalic="Title-Bold")
 ```
 
-**In all styles and scripts:** use `"Body"` / `"Body-Bold"` / `"Body-Italic"` as font names — never hardcode `"Calibri"` or `"Trebuchet"`. Use `"Display-Bold"` for section headings. This makes every script portable between Windows (Aptos) and Linux (Liberation Sans).
+| Role | Font | Used for |
+|------|------|----------|
+| `Title` / `Title-Bold` | Parastoo (serif) | Document title, H2 headings |
+| `Body` family | Aptos | Body text, bullets, tables, captions, line items |
+| `Display-Bold` | Parkinsans | Reserve / optional display use |
 
----
+## Brand assets
 
-## Cross-reference block (every document)
+In `_dev/brand/`, loaded via `ImageReader` (guard each with `os.path.exists`):
 
-Every document — lesson or lead magnet — ends with a cross-reference box pointing to related content. This creates an interconnected web: every PDF the student reads leads them to the next one.
+| File | Use |
+|------|-----|
+| `booklesss-logo-black.png` | Logo on cream / light surfaces (header) |
+| `booklesss-logo-white.png` | Logo on dark surfaces |
+| `booklesss-mark-black.png` | Diamond glyph — the `LogoTriple` motif (light bg) |
+| `booklesss-mark-white.png` | Diamond glyph for dark bg |
+| `grain.png` | Subtle paper grain drawn over the page fill |
 
-**Format:**
+If the mark asset is missing, fall back to the vector `TripleDiamond` flowable.
+
+## Palette
+
+The house brand is warm cream paper with a single jade accent. This is the
+default for every document.
+
+```python
+C_COVER      = colors.HexColor("#FFFDE8")  # warm cream — cover / first page
+C_PAGE       = colors.HexColor("#FFFEF2")  # cream — interior pages (website bg)
+TITLE_DARK   = colors.HexColor("#121212")  # title
+HEADING_DARK = colors.HexColor("#3D3D3D")  # H2 / H3 headings
+C_JADE       = colors.HexColor("#2FB99A")  # jade accent (eyebrows, rules, bars)
+C_JADE_DK    = colors.HexColor("#0E5E52")  # deep jade — links, emphasised figures
+C_INK        = colors.HexColor("#16201A")  # body text
+C_STEEL      = colors.HexColor("#5F6B65")  # secondary labels
+C_MIST       = colors.HexColor("#6E6A5E")  # eyebrow / sub / meta
+C_RULE       = colors.HexColor("#E0DACB")  # warm rule / table dividers
+BG_FORMULA   = colors.HexColor("#E9F0EA")  # pale jade panel (totals / calc blocks)
+BG_CALLOUT   = colors.HexColor("#E7F3ED")  # soft jade callout / note box
 ```
-┌─────────────────────────────────────────────────────┐
-│  Also in this series                                │
-│  → 1.2 Working Capital & Liquidity Management       │
-│  → 1.3 Inventory Management, EOQ & Creditor Mgmt   │
-│  Full course available at booklesss20.slack.com     │
-└─────────────────────────────────────────────────────┘
+
+**Rules that hold for every document:**
+- Accent (jade) runs through eyebrows, hairlines, left-bar boxes, totals, and
+  links — **never the body text.** Body is always `C_INK`.
+- One accent only. No second decorative colour.
+- Cream + grain is the default surface. **Exception:** a business document meant
+  to be printed or scanned in bulk (an invoice posted to a client) may use a
+  plain white body for legibility — keep the jade accent and the logo so it still
+  reads as Booklesss.
+
+### Course accents (lesson PDFs only)
+
+Lesson notes for the other two courses keep their own cover/accent identity:
+
+| Course | Cover bg | Accent | Display |
+|--------|----------|--------|---------|
+| Corporate Finance | `#FFFDE8` cream | `#2FB99A` jade | Parastoo serif *(reference brand)* |
+| Treasury Management | `#0B1D3A` deep navy | `#10B981` emerald | Georgia Bold *(older system)* |
+| Strategic Management | `#0F1F35` slate-navy | `#DC2626` cardinal red | Georgia Bold *(older system)* |
+
+Non-lesson documents (invoices, quotes, one-pagers) always use the cream + jade
+house brand, not a course accent.
+
+## Page geometry
+
+```python
+W, H      = A4
+MX        = 2.2 * cm          # side margins
+MY        = 2.0 * cm          # top / bottom margins
+CONTENT_W = W - 2 * MX
 ```
 
-**Rules:**
-- List the 2–3 most relevant neighbouring steps
-- Always end with `Full course available at booklesss20.slack.com`
-- In lead magnets: the cross-reference doubles as a secondary CTA — "there's more"
-- Before generating, check `operations/daily-checklist.md` (Content Status Tracker) to know which steps exist so you can link real titles
+Two page templates on one `BaseDocTemplate`:
+- `cover` — frame fills the page; `onPage=cover_bg`.
+- `body` — frame inset for header/footer; `onPage=page_bg`, `onPageEnd=body_page`.
 
----
+Switch from cover to body with `NextPageTemplate("body")` then `PageBreak()`.
+A short one-page document (a single-page invoice) can run on the body template
+alone — no separate cover.
 
-## Deadline awareness
+## Type scale (ParagraphStyle)
 
-**Current founding member deadline: April 18, 2026.**
-Check `finance/pricing-strategy.md` for the current deadline before generating any lead magnet.
+| Style | Font | Size | Leading | Notes |
+|-------|------|------|---------|-------|
+| `cover_title` | Title-Bold | 42 | 46 | centred |
+| `cover_step` | Body-Bold | 9 | 13 | centred, `HEADING_DARK` |
+| `cover_sub` | Body | 11.5 | 17 | centred, `C_MIST` |
+| `eyebrow` | Body-Bold | 7 | 10 | `C_JADE`, ALL CAPS, `keepWithNext=1` |
+| `h2` | Title-Bold | 17 | 20 | `HEADING_DARK`, `keepWithNext=1` |
+| `h3` | Body-Bold | 11 | 15 | `C_STEEL`, `keepWithNext=1` |
+| `body` | Body | 10.5 | 17 | `C_INK` |
+| `bullet` | Body | 10.5 | 17 | `leftIndent=14` |
+| `fact` | Body-Bold | 10 | 16 | `C_JADE_DK` (key fact / total box) |
+| `formula` / `formula_r` | Body-Bold | 10 | 16 | `C_JADE_DK`, L / R aligned |
+| `th` / `td` | Body-Bold / Body | 9 | 13 | table header / cell |
+| `discuss_q` | Body-Italic | 10 | 16 | lesson discussion question |
+| `outcome` | Body | 10 | 16 | numbered list |
+| `community` / `community_link` | Body / Body-Bold | 9.5 | 15 | lesson closer |
 
-Every lead magnet must mention the deadline in **at least two places**:
-1. On the cover (small but visible — below the subtitle)
-2. On the content pages — an amber-bordered nudge box before the CTA page
-3. Prominently on the CTA page itself
+Body leading is ~1.6×. Never cramp it.
 
-If the deadline has passed, remove founding rate language and use standard rate (K800/month).
+## ⚠️ Page-break rule (required, every document)
 
----
+Headers must never be orphaned at the foot of a page, separated from the content
+they introduce. Enforced with `keepWithNext`:
 
-## Tracking links (lead magnets only)
+1. `eyebrow`, `h2`, `h3` styles set **`keepWithNext=1`**.
+2. The `hairline()` flowable sets **`hr.keepWithNext = 1`** after construction.
 
-The CTA in every lead magnet has a slot for a unique tracking URL.
-When generating, ask: "Which WhatsApp group is this for? I'll add a unique tracking link."
-Format: `https://bit.ly/booklesss-[group-slug]`
-Log each link in `marketing/groups.md`.
+This chains eyebrow → H2 → rule → first paragraph so the block stays together
+across a page break. Any new heading-like style must also set `keepWithNext=1`.
 
----
+```python
+def hairline():
+    hr = HRFlowable(width="100%", thickness=0.5, color=C_JADE,
+                    spaceAfter=10, spaceBefore=4)
+    hr.keepWithNext = 1   # keep the rule with the H2 above and first line below
+    return hr
+```
 
-## Humanizer pass (required for lead magnets)
+Use `KeepTogether([...])` for any block that must not split internally — boxes,
+totals, worked examples, a line-item group. Every helper box below already does.
 
-All lead magnet body copy must be humanized before the PDF is generated:
-- Run every body paragraph through `/humanizer` mentally or explicitly
-- Watch for: em dashes, "it's worth noting", "furthermore", rule-of-three, passive voice stacking
-- Tone: direct, student-to-student. Like a classmate who studied harder than you sharing their notes
-- No corporate language. No filler. Every sentence earns its place.
+## Reusable components
 
-Lesson PDFs are less strict — they're internal study docs — but still avoid obvious AI patterns in explanatory text.
+All defined in the reference script. Build a document by appending these to
+`story[]`. They are document-type-agnostic — a `calc_table` works just as well
+for an FCF waterfall as for an invoice total.
 
----
+| Helper | Returns | Purpose |
+|--------|---------|---------|
+| `section(eyebrow, heading)` | list | Spacer + eyebrow tag + H2 + hairline. Opens a block. |
+| `body(text)` | Paragraph | Body paragraph. HTML markup ok (`<b>`, `<i>`, `<link>`). |
+| `bullet(text)` | Paragraph | Indented `•` bullet. |
+| `h3(text)` | Paragraph | Sub-heading. |
+| `hairline()` | HRFlowable | 0.5pt jade rule, `keepWithNext`. |
+| `fact(text)` | KeepTogether | Jade-tinted left-bar box — a takeaway, total, or key figure. |
+| `callout(text)` | KeepTogether | Jade callout box; `\n` → `<br/>`. Notes, terms, payment details. |
+| `formula_box(lines)` | KeepTogether | Pale-jade panel, left bar; one line per item. |
+| `calc_table(rows, title=None)` | KeepTogether | Right-aligned money column. Rows `(label, value)` or `(label, value, True)` for a jade rule above (subtotal / total). |
+| `table_std(data, col_widths)` | KeepTogether | Standard table; row 0 is the header (jade underline). Line items, key terms, anything tabular. |
+| `discussion_q(text)` | KeepTogether | Italic question box *(lesson profile)*. |
+| `community_closer()` | list | Slack invite closer *(lesson profile)*. |
 
-## File naming
+### Cover motif flowables
+- `LogoTriple(img)` — centred trio of the real diamond mark. Use when the mark
+  asset loads.
+- `TripleDiamond()` — vector `◇◆◇` fallback.
 
-PDF filenames are the public face of the document. WhatsApp and Slack display the filename as the document title — it must read like a real title, not a code.
+### Canvas callbacks (per page)
+- `cover_bg` — cream fill + grain, top brand row: logo (left), document/course
+  label (right), warm hairline under.
+- `page_bg` — cream fill + grain for interior pages.
+- `body_page` — jade rule under a running header (title left, version/date right)
+  and a warm rule above the footer (`Booklesss | booklesss.framer.ai` / label /
+  `Page N`).
 
-**Rule: always use a human-readable title. No slugs, no underscores, no version numbers in the filename.**
+## Writing style (every document)
+
+- Plain English. Direct, peer-to-peer. No textbook or chatbot voice.
+- ZMW currency and Zambian companies in examples (Zanaco, Zambeef, ZESCO, First
+  Quantum, Mutengo).
+- **Banned words:** tapestry, nuance, multifaceted, robust, delve, foster,
+  Furthermore, It's worth noting, landscape, journey, empower, leverage (verb),
+  game-changer, seamless, holistic, synergy.
+- One em dash per document maximum. No forced rule-of-three. No emoji in body.
+- Real calculated values — no round fake numbers. The humanizer is built in;
+  don't run a separate pass.
+
+## File naming & locations
+
+Filenames are the public title (Slack/WhatsApp/email show them). Human-readable,
+title case, ` - ` separator, no slugs, no underscores, no version numbers, no
+course codes in the name.
 
 | Type | Format | Example |
 |------|--------|---------|
-| Lesson PDF | `Step [X.Y] - [Full Title].pdf` | `Step 1.1 - Introduction to Treasury Management.pdf` |
-| Lead magnet | `[Hook Title] - Booklesss.pdf` | `3 Questions Your TM Exam Will Ask - Booklesss.pdf` |
+| Lesson | `Step [X.Y] - [Full Title].pdf` | `Step 1.1 - Investment Fundamentals.pdf` |
+| Lead magnet | `[Hook Title] - Booklesss.pdf` | `3 Questions Your CF Exam Will Ask - Booklesss.pdf` |
+| Invoice | `Invoice [No] - [Client].pdf` | `Invoice 0042 - Zanaco.pdf` |
+| Quote | `Quote [No] - [Client].pdf` | `Quote 0042 - Zanaco.pdf` |
 
-- Use ` - ` (space hyphen space) as separator
-- Title case for all words
-- No underscores, no version numbers, no course codes in the filename
-- Lead magnets always end with ` - Booklesss` so the brand shows in previews
-- Lesson PDFs include the step number so students can find them in order
+Build scripts: `_dev/scripts/build_[...].py`.
+Lessons output to `courses/[Course]/[lesson-folder]/`.
+Business documents output to `operations/` (or wherever the user specifies).
 
----
+## How to generate (every document)
 
-## Before generating — required inputs
+1. Copy the reference script (or the closest profile) and rename it.
+2. Keep the foundation intact: fonts, palette, geometry, header/footer,
+   `keepWithNext` rule.
+3. Apply the document profile's structure (below).
+4. Write content directly into `build()` as `story[]` appends — no markdown
+   intermediates.
+5. Run via Bash and confirm the output path:
 
-Before writing the Python script, confirm:
-
-1. **Document type** — lesson or lead magnet?
-2. **Slack channel link** — where students discuss this lesson.
-   (e.g. `https://bookless10.slack.com/channels/tm-working-capital`)
-   If not provided, ask: "What's the Slack channel link for this lesson?"
-   This is **not optional** — the channel button must appear in every lesson PDF.
-
----
-
-## Lead magnet cover — top-aligned (critical for WhatsApp preview)
-
-WhatsApp shows only the top ~20% of page 1 as the preview thumbnail. The title must appear in that zone or the preview is blank.
-
-**Rule: lead magnet cover frames always use `topPadding=MY + 30`, never `H * 0.25` or any large fraction.**
-
-```python
-cover_frame = Frame(0, 0, W, H,
-                    leftPadding=MX + 10, rightPadding=MX,
-                    topPadding=MY + 30,   # ← keeps title in WhatsApp preview
-                    bottomPadding=MY + 50)
+```bash
+python3 _dev/scripts/build_[...].py
 ```
 
-This applies to lead magnets only. Lesson PDF covers are internal — preview position doesn't matter.
+Open the PDF and check: headers not orphaned at page feet, boxes/tables not split
+awkwardly, totals aligned.
 
 ---
 
-## Slack channel button (lesson PDFs only)
+# Layer 2 — Document profiles
 
-Every lesson PDF must include a prominent, clickable channel button — **not a footer link**. Place it at the end of the document, just before or replacing the cross-reference block.
+## Profile: Lesson notes
 
-### Button design spec
+Full study document given to paying students inside Slack.
 
+1. **Cover** — `LogoTriple` motif, `STEP X.Y · TOPIC` eyebrow, Parastoo title,
+   one-sentence subtitle, course meta. Then `NextPageTemplate("body")` + break.
+2. **Orientation** — a "Start here" section framing the reader + the full course
+   map, so they hold the whole picture from page one.
+3. **4–7 content sections** — each `section("CONCEPT 0X", "Title")`, then body,
+   `h3` parts, `formula_box` / `calc_table` / `table_std`, closing `fact()`.
+4. **Two discussion questions** — `discussion_q(...)`, embedded mid-content. Real
+   questions, no "discuss below", no CTA dressed as a question.
+5. **Key Terms** — `section("REFERENCE", "Key Terms")` + two-column `table_std`.
+6. **Learning Outcomes** — `section("OUTCOMES", ...)` + numbered `outcome` lines.
+7. **Where you go next** — short pointer to the following step.
+8. **Community closer** — `community_closer()`.
+
+**Community CTA (lesson only, never hard-sell):** two discussion questions
+mid-content; a two-paragraph closer naming the topic's Slack channel (e.g.
+`#cf-investment`) with the permanent invite link as anchor text ("join the group
+here"):
 ```
-┌──────────────────────────────────────────────────────────┐
-│  JOIN THE DISCUSSION                                      │
-│  Ask questions, share answers → #tm-working-capital       │
-│  [full channel URL as clickable link]                     │
-└──────────────────────────────────────────────────────────┘
+https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8OFwcZTqTbPpC2Dg0q__Cg
 ```
+Workspace is `bookless10.slack.com`. (CF Slack channels are not yet created — do
+not post CF content until they exist.)
 
-- Background: course accent color (e.g. `#10B981` emerald for TM)
-- Text: `#FFFFFF` white
-- Eyebrow: `JOIN THE DISCUSSION` — 7pt bold ALL CAPS
-- Body: `Ask questions, share your answers →` then channel name in bold
-- The entire box is a clickable hyperlink to the channel URL
-- Width: full text frame width
-- Padding: 12pt all sides
+## Profile: Lead magnet
 
-### ReportLab implementation
+3–4 page teaser for WhatsApp marketing. Save in
+`courses/[Course]/[lesson-folder]/lead-magnets/`.
 
-```python
-from reportlab.platypus import Table, TableStyle
-from reportlab.lib import colors
+- 2–3 genuinely useful concepts, ZMW + Zambian companies. Tease, don't give the
+  whole lesson.
+- **WhatsApp preview:** the title must sit in the top ~20% of page 1 — the cover
+  frame uses a small top padding (`topPadding = MY + 30`), not a large fraction of
+  page height, or the preview thumbnail is blank.
+- **Founding rate deadline: April 18, 2026.** Mention in at least two places
+  (cover + a nudge box before the CTA). Check `Finances/pricing-strategy.md` for
+  the current deadline/rate; if it has passed, drop founding language.
 
-def channel_button(channel_url, channel_name, accent_hex):
-    accent = HexColor(accent_hex)
-    label = Paragraph(
-        'JOIN THE DISCUSSION',
-        ParagraphStyle('btn_eyebrow', fontName='Calibri-Bold',
-                       fontSize=7, textColor=colors.white, spaceAfter=4)
-    )
-    body = Paragraph(
-        f'<link href="{channel_url}">Ask questions, share your answers — <u><b>open #{channel_name} in Slack</b></u></link>',
-        ParagraphStyle('btn_body', fontName='Calibri', fontSize=10,
-                       textColor=colors.white, leading=15)
-    )
-    t = Table([[label], [body]], colWidths=[CONTENT_WIDTH])
-    t.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,-1), accent),
-        ('TOPPADDING',    (0,0), (-1,-1), 12),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 12),
-        ('LEFTPADDING',   (0,0), (-1,-1), 14),
-        ('RIGHTPADDING',  (0,0), (-1,-1), 14),
-    ]))
-    return t
-```
+## Profile: Business document (quote / invoice / proposal / receipt)
 
----
+Same foundation, no lesson furniture (no discussion questions, no community
+closer, no course accent). Build from the foundation components:
 
-## How to generate
+- **Header block** — logo (`booklesss-logo-black.png`), document type + number,
+  issue date, and (for invoices) due date. The `cover_bg` brand row already gives
+  you logo-left / label-right; reuse it or place a `table_std` header row.
+- **From / To** — two short blocks: Booklesss details and the client's, as plain
+  `body` paragraphs or a two-column `table_std`.
+- **Line items** — `table_std` with columns like
+  `["Description", "Qty", "Unit (ZMW)", "Amount (ZMW)"]`. Right-align money.
+- **Totals** — `calc_table` with `(label, value, True)` on the subtotal/total
+  rows to draw the jade rule. Subtotal → tax/VAT → **Total** in `fact()` weight.
+- **Payment details / notes** — `callout(...)`: bank details, payment terms,
+  thank-you line. One block, jade left bar.
+- **Footer** — the standard `body_page` footer carries
+  `Booklesss | booklesss.framer.ai` and page number; that's enough.
 
-1. Confirm channel link and document type (see Required inputs above)
-2. Read the source .md file (lesson type) or draft content from scratch (lead magnet)
-3. Humanize all body copy before writing the script
-4. Write a Python script using ReportLab — include channel button for lesson type
-5. Run via Bash: `python3 [script_path]`
-6. Confirm the output path to the user
-7. Update the cross-references in related documents if any new steps were added
+A single-page invoice can skip the cover template and run on `body` alone. Use
+plain white body fill instead of cream if the client will print it.
 
-### Python stack
-```python
-from reportlab.lib.pagesizes import A4
-from reportlab.lib import colors
-from reportlab.lib.units import cm
-from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_JUSTIFY
-from reportlab.platypus import (
-    BaseDocTemplate, PageTemplate, Frame, Paragraph, Spacer,
-    Table, TableStyle, KeepTogether, HRFlowable, PageBreak, NextPageTemplate
-)
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-import os
-```
+When the user asks for a quote or invoice, confirm the inputs you don't have:
+client name, line items + amounts, invoice/quote number, dates, and payment
+details. Don't invent figures.
 
 ---
 
-## Lesson PDF structure
+## WhatsApp caption (lesson & lead magnet only)
 
-1. **Cover** — course code, lesson title in ArialBlack, Booklesss branding, amber strip
-2. **One section per `##` heading** — SegoeUIBlack section title, body in Calibri, formulas in teal box, tables as needed
-3. **Key Terms** — two-column amber-bordered table
-4. **Learning Outcomes** — numbered list
-5. **See Also** — cross-reference box with links to related steps
-6. **Back strip** — navy bar, website URL, founding member CTA (check deadline)
+After generating a lesson or lead-magnet PDF, output a ready-to-paste caption.
+One sentence, 15 words max, no emoji, no exclamation marks, no pricing.
 
----
+**Formula:** `[Subject] [topic] — [what's inside in plain terms]. Free.`
+**Example:** `Investment notes — free cash flow, NPV, IRR, and MIRR with worked examples. Free.`
 
-## Lead Magnet PDF structure
-
-1. **Cover (navy)** — ArialBlack title, "FREE GUIDE" tag, subtitle, founding rate + deadline nudge in amber text
-2. **Content pages (cream)** — 2–3 real, useful concepts. Each: SegoeUIBlack heading, amber rule, explanation, worked ZMW example in amber box
-3. **Deadline nudge box** — amber-bordered, before the final page break: "These X concepts are from Step Y of Z. Full course inside Booklesss. K550/month, closes [date]."
-4. **CTA page (teal)** — SegoeUIBlack headline, what's inside bullet list, founding offer box (amber), Slack link, bit.ly tracking link
-
----
-
-## Writing rules (lead magnets)
-
-- Hook title: specific + exam-focused. "3 Treasury Management Concepts That Will Show Up in Your Exam" beats "Introduction to Treasury Management"
-- Worked examples: always ZMW, always Zambian companies (Zambeef, Zanaco, ZESCO, First Quantum, Mutengo)
-- Tone: direct, confident, peer-to-peer. Like a classmate who knows this cold.
-- CTA copy must include: K550 founding rate, the exact deadline date, what they get (all lessons + quizzes + leaderboard)
-- Never give away the full lesson — tease 2–3 concepts, leave the rest for inside Booklesss
-- Deadline in at least 2 places: cover + deadline nudge box
+- No course codes. Use the subject name. End with "Free." Output in a plain code
+  block. (Business documents get no caption.)

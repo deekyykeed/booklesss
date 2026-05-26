@@ -83,8 +83,8 @@ See full detail: `courses/Treasury Management/_course.md`
 | 3.2 | Foreign Exchange Risk Management | — | — | — |
 | 4.1 | Debt Management | — | — | — |
 | 4.2 | Investment Management | — | — | — |
-| 4.3 | Clearing & Settlement Systems | ✅ | — | — |
-| 4.4 | Treasury Management Systems | ✅ | — | — |
+| 5.1 | Clearing & Settlement Systems | ✅ | — | — |
+| 5.2 | Treasury Management Systems | ✅ | — | — |
 
 **Next to post:** Step 3.1 → `#tm-risk` (last posted: 2.3 on 2026-03-24, 7 days ago)
 
@@ -97,15 +97,15 @@ See full detail: `courses/Corporate Finance/_course.md`
 | Step | Title | PDF | WhatsApp Posted | Slack Posted |
 |------|-------|:---:|:---:|:---:|
 | 1.1 | Investment Fundamentals | ✅ | — | — |
-| 2.1 | Advanced Investment Appraisal | ✅ | — | — |
-| 3.1 | International Project Appraisal | ✅ | — | — |
-| 4.1 | Cost of Capital Foundations | ✅ | — | — |
-| 5.1 | Capital Structure Decisions | ✅ | — | — |
-| 6.1 | Company Valuation | ✅ | — | — |
-| 7.1 | Mergers & Acquisitions | ✅ | — | — |
-| 8.1 | Interest Rate Risk Management | ✅ | — | — |
-| 9.1 | Currency Risk Management | ✅ | — | — |
-| 10.1 | Dividend Policy | ✅ | — | — |
+| 1.2 | Advanced Investment Appraisal | ✅ | — | — |
+| 1.3 | International Project Appraisal | ✅ | — | — |
+| 2.1 | Cost of Capital Foundations | ✅ | — | — |
+| 2.2 | Capital Structure Decisions | ✅ | — | — |
+| 3.1 | Company Valuation | ✅ | — | — |
+| 3.2 | Mergers & Acquisitions | ✅ | — | — |
+| 4.1 | Interest Rate Risk Management | ✅ | — | — |
+| 4.2 | Currency Risk Management | ✅ | — | — |
+| 5.1 | Dividend Policy | ✅ | — | — |
 
 ### Strategic Management
 
@@ -114,13 +114,13 @@ See full detail: `courses/Strategic Management/_course.md`
 | Step | Title | PDF | WhatsApp Posted | Slack Posted |
 |------|-------|:---:|:---:|:---:|
 | 1.1 | Introduction to Corporate Strategy | ✅ | — | — |
-| 2.1 | Vision, Mission & Objectives | ✅ | — | — |
-| 3.1 | External Environment | ✅ | — | — |
-| 4.1 | Internal Environment | ✅ | — | ✅ 2026-03-24 |
-| 5.1 | Strategy Implementation | ✅ | — | — |
-| 6.1 | Competitive Strategy | ✅ | — | — |
+| 1.2 | Vision, Mission & Objectives | ✅ | — | — |
+| 2.1 | External Environment | ✅ | — | — |
+| 2.2 | Internal Environment | ✅ | — | ✅ 2026-03-24 |
+| 3.1 | Strategy Implementation | ✅ | — | — |
+| 3.2 | Competitive Strategy | ✅ | — | — |
 
-**Next to post:** Step 5.1 → `#sm-strategy` (last posted: 4.1 on 2026-03-24, 7 days ago)
+**Next to post:** Step 3.1 → `#sm-strategy` (last posted: 2.2 on 2026-03-24, 7 days ago)
 
 ---
 

@@ -46,10 +46,10 @@ Section name in Slack: **Treasury Management**
 | Channel | Link | Content |
 |---------|------|---------|
 | `#tm-updates` | https://bookless10.slack.com/archives/C0AN40BMZFW | Announcements, new lesson drops |
-| `#tm-operations` | https://bookless10.slack.com/archives/C0ANULGE6SU | Lesson 1 (Foundations), Lesson 10 (Systems & Clearing) |
-| `#tm-working-capital` | https://bookless10.slack.com/archives/C0AN3UPFG2G | Lessons 2–6 (Working Capital, Liquidity, Cash, Forecasting) |
-| `#tm-risk` | https://bookless10.slack.com/archives/C0ANUKH3L64 | Lessons 7–8 (Interest Rate Risk, FX Risk) |
-| `#tm-investment` | https://bookless10.slack.com/archives/C0AMJUKGNLX | Lesson 9 (Debt & Investment Management) |
+| `#tm-operations` | https://bookless10.slack.com/archives/C0ANULGE6SU | Lesson 1 (Foundations) + Lesson 5 (Systems & Clearing) — steps 1.1, 5.1, 5.2 |
+| `#tm-working-capital` | https://bookless10.slack.com/archives/C0AN3UPFG2G | Lesson 2 (Working Capital, Liquidity, Inventory, Cash) — steps 2.1–2.3 |
+| `#tm-risk` | https://bookless10.slack.com/archives/C0ANUKH3L64 | Lesson 3 (Interest Rate Risk, FX Risk) — steps 3.1–3.2 |
+| `#tm-investment` | https://bookless10.slack.com/archives/C0AMJUKGNLX | Lesson 4 (Debt & Investment Management) — steps 4.1–4.2 |
 
 ---
 
@@ -75,11 +75,11 @@ Section name in Slack: **Corporate Finance**
 | Channel | Link | Content |
 |---------|------|---------|
 | `#cf-updates` | — | Announcements, new lesson drops |
-| `#cf-investment` | — | Steps 1.1–3.1 (FCF, APV, International NPV) |
-| `#cf-cost-of-capital` | — | Steps 4.1–5.1 (WACC, CAPM, Capital Structure) |
-| `#cf-ma-valuation` | — | Steps 6.1–7.1 (Valuation, M&A, EMH) |
-| `#cf-risk` | — | Steps 8.1–9.1 (Interest Rate Risk, Currency Risk) |
-| `#cf-dividends` | — | Step 10.1 (Dividend Policy) |
+| `#cf-investment` | — | Steps 1.1–1.3 (FCF, APV, International NPV) |
+| `#cf-cost-of-capital` | — | Steps 2.1–2.2 (WACC, CAPM, Capital Structure) |
+| `#cf-ma-valuation` | — | Steps 3.1–3.2 (Valuation, M&A, EMH) |
+| `#cf-risk` | — | Steps 4.1–4.2 (Interest Rate Risk, Currency Risk) |
+| `#cf-dividends` | — | Step 5.1 (Dividend Policy) |
 
 ---
 

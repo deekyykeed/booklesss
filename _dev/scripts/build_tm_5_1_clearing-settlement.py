@@ -1,5 +1,5 @@
 """
-Booklesss Lesson PDF — Step 4.3: Clearing & Settlement Systems
+Booklesss Lesson PDF — Step 5.1: Clearing & Settlement Systems
 Course: BBF4302 Treasury Management
 Style: Deep navy cover, white body, emerald accent, DejaVuSerif display, LiberationSans body.
 """
@@ -68,7 +68,7 @@ INVITE_URL   = "https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8
 
 OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..",
            "courses", "Treasury Management", "01-operations", "05-clearing-settlement")
-OUT_PATH = os.path.join(OUT_DIR, "Step 4.3 - Clearing & Settlement Systems.pdf")
+OUT_PATH = os.path.join(OUT_DIR, "Step 5.1 - Clearing & Settlement Systems.pdf")
 
 # ─────────────────────────────────────────────
 #  STYLES
@@ -159,7 +159,7 @@ def cover_bg(canvas, doc):
     canvas.rect(0, 0, 5, H, fill=1, stroke=0)
     canvas.setFont("Georgia-Bold", 140)
     canvas.setFillColor(colors.HexColor("#0F2847"))
-    canvas.drawRightString(W - MX, MY + 40, "4.3")
+    canvas.drawRightString(W - MX, MY + 40, "5.1")
     canvas.restoreState()
 
 def body_page(canvas, doc):
@@ -170,7 +170,7 @@ def body_page(canvas, doc):
     canvas.line(MX, H - MY + 4, W - MX, H - MY + 4)
     canvas.setFont("Body", 7.5)
     canvas.setFillColor(C_STEEL)
-    canvas.drawString(MX, H - MY + 7, "4.3 — Clearing & Settlement Systems")
+    canvas.drawString(MX, H - MY + 7, "5.1 — Clearing & Settlement Systems")
     canvas.drawRightString(W - MX, H - MY + 7, "v1 · March 2026")
     canvas.line(MX, MY - 4, W - MX, MY - 4)
     canvas.setFont("Body", 7.5)
@@ -306,7 +306,7 @@ def build():
     story.append(Paragraph("Clearing & Settlement\nSystems", ST["cover_title"]))
     story.append(Spacer(1, 8))
     story.append(Paragraph(
-        "Step 4.3 · Settlement risk, gross vs net settlement, RTGS systems, CLS Bank, SWIFT, securities settlement, Zambia's payment systems",
+        "Step 5.1 · Settlement risk, gross vs net settlement, RTGS systems, CLS Bank, SWIFT, securities settlement, Zambia's payment systems",
         ST["cover_sub"]))
     story.append(Spacer(1, 14))
     story.append(Paragraph("Booklesss · booklesss.framer.ai",
@@ -617,7 +617,7 @@ def build():
     ))
     story.append(Spacer(1, 6))
     story.append(body(
-        "When Step 4.4 (Treasury Systems) integrates all these steps, the TMS must track not just deals, "
+        "When Step 5.2 (Treasury Systems) integrates all these steps, the TMS must track not just deals, "
         "but settlement status — which trades have cleared, which are awaiting settlement, which have failed."
     ))
     story.append(Spacer(1, 10))
@@ -677,7 +677,7 @@ def build():
         story.append(Paragraph(f"{i}.   {outcome}", ST["outcome"]))
 
     story.append(Spacer(1, 8))
-    story.append(Paragraph("Next: 4.4 — Treasury Management Systems",
+    story.append(Paragraph("Next: 5.2 — Treasury Management Systems",
                             ST["next_step"]))
 
     # ── COMMUNITY CLOSER ────────────────────────────────────────

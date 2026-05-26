@@ -1,5 +1,5 @@
 """
-Booklesss Lesson PDF — Step 3.1: The External Environment
+Booklesss Lesson PDF — Step 2.1: The External Environment
 Course: Strategic Management
 Style: Slate-navy cover, white body, gold accent, DejaVuSerif display, LiberationSans body.
 """
@@ -68,7 +68,7 @@ INVITE_URL   = "https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8
 
 OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..",
            "courses", "Strategic Management", "02-environment", "03-external-environment")
-OUT_PATH = os.path.join(OUT_DIR, "Step 3.1 - The External Environment.pdf")
+OUT_PATH = os.path.join(OUT_DIR, "Step 2.1 - The External Environment.pdf")
 
 # ─────────────────────────────────────────────
 #  STYLES
@@ -164,7 +164,7 @@ def body_page(canvas, doc):
     canvas.line(MX, H - MY + 4, W - MX, H - MY + 4)
     canvas.setFont("Body", 7.5)
     canvas.setFillColor(C_STEEL)
-    canvas.drawString(MX, H - MY + 7, "3.1 — The External Environment")
+    canvas.drawString(MX, H - MY + 7, "2.1 — The External Environment")
     canvas.drawRightString(W - MX, H - MY + 7, "v1 · March 2026")
     canvas.line(MX, MY - 4, W - MX, MY - 4)
     canvas.setFont("Body", 7.5)
@@ -299,7 +299,7 @@ def build():
     story.append(Paragraph("The External\nEnvironment", ST["cover_title"]))
     story.append(Spacer(1, 8))
     story.append(Paragraph(
-        "Step 3.1 · PESTEL analysis, Porter's Five Forces, and SWOT as tools for reading the environment",
+        "Step 2.1 · PESTEL analysis, Porter's Five Forces, and SWOT as tools for reading the environment",
         ST["cover_sub"]))
     story.append(Spacer(1, 14))
     story.append(Paragraph("Booklesss · booklesss.framer.ai",
@@ -526,7 +526,7 @@ def build():
         story.append(Paragraph(f"{i}.   {outcome}", ST["outcome"]))
 
     story.append(Spacer(1, 8))
-    story.append(Paragraph("Next: 4.1 — Internal Environment (SWOT, Value Chain & VRIO Framework)",
+    story.append(Paragraph("Next: 2.2 — Internal Environment (SWOT, Value Chain & VRIO Framework)",
                             ST["next_step"]))
 
     # ── COMMUNITY CLOSER ─────────────────────────────────────────

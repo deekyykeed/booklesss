@@ -1,5 +1,5 @@
 """
-Booklesss Lesson PDF — Step 6.1: Competitive Strategy
+Booklesss Lesson PDF — Step 3.2: Competitive Strategy
 Course: Strategic Management (FINAL STEP)
 Style: Slate-navy cover, white body, gold accent, DejaVuSerif display, LiberationSans body.
 """
@@ -68,7 +68,7 @@ INVITE_URL   = "https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8
 
 OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..",
            "courses", "Strategic Management", "03-strategy", "06-competitive-strategy")
-OUT_PATH = os.path.join(OUT_DIR, "Step 6.1 - Competitive Strategy.pdf")
+OUT_PATH = os.path.join(OUT_DIR, "Step 3.2 - Competitive Strategy.pdf")
 
 # ─────────────────────────────────────────────
 #  STYLES
@@ -167,7 +167,7 @@ def body_page(canvas, doc):
     canvas.line(MX, H - MY + 4, W - MX, H - MY + 4)
     canvas.setFont("Body", 7.5)
     canvas.setFillColor(C_STEEL)
-    canvas.drawString(MX, H - MY + 7, "6.1 — Competitive Strategy")
+    canvas.drawString(MX, H - MY + 7, "3.2 — Competitive Strategy")
     canvas.drawRightString(W - MX, H - MY + 7, "v1 · March 2026")
     canvas.line(MX, MY - 4, W - MX, MY - 4)
     canvas.setFont("Body", 7.5)
@@ -306,7 +306,7 @@ def build():
     story.append(Paragraph("Competitive\nStrategy", ST["cover_title"]))
     story.append(Spacer(1, 8))
     story.append(Paragraph(
-        "Step 6.1 · Porter's generic strategies, competitive positioning, VRIO and competitive advantage, industry lifecycle, Blue Ocean, and the full strategic management process",
+        "Step 3.2 · Porter's generic strategies, competitive positioning, VRIO and competitive advantage, industry lifecycle, Blue Ocean, and the full strategic management process",
         ST["cover_sub"]))
     story.append(Spacer(1, 14))
     story.append(Paragraph("Booklesss · booklesss.framer.ai",
@@ -318,8 +318,8 @@ def build():
     # ── SECTION 1: FOUNDATIONS ────────────────────────────────────────
     story += section("CONTEXT", "Competitive Strategy: The Final Piece")
     story.append(body(
-        "You have now learned how to analyse the external environment (Step 3.1) and assess internal capabilities (Step 4.1). "
-        "You know how to implement strategy (Step 5.1). Now comes the question every strategist must answer: "
+        "You have now learned how to analyse the external environment (Step 2.1) and assess internal capabilities (Step 2.2). "
+        "You know how to implement strategy (Step 3.1). Now comes the question every strategist must answer: "
         "<b>How will you compete differently and better than rivals?</b>"
     ))
     story.append(Spacer(1, 8))
@@ -463,9 +463,9 @@ def build():
     story.append(Spacer(1, 12))
 
     # ── SECTION 6: VRIO AND COMPETITIVE ADVANTAGE ────────────────────────────────────────
-    story += section("SUSTAINABILITY", "Linking VRIO (Step 4.1) to Competitive Advantage")
+    story += section("SUSTAINABILITY", "Linking VRIO (Step 2.2) to Competitive Advantage")
     story.append(body(
-        "Remember the VRIO framework from Step 4.1? It determines whether your competitive strategy is sustainable. "
+        "Remember the VRIO framework from Step 2.2? It determines whether your competitive strategy is sustainable. "
         "If your differentiation is based on a resource that <b>any competitor can copy</b>, your advantage is temporary. "
         "If it's based on a VRIN (Valuable, Rare, Inimitable, organised) resource, your competitive position is defensible."
     ))
@@ -564,35 +564,35 @@ def build():
     ))
     story.append(Spacer(1, 10))
 
-    story.append(h3("Step 2.1: Direction — Vision, Mission, Objectives"))
+    story.append(h3("Step 1.2: Direction — Vision, Mission, Objectives"))
     story.append(body(
         "You defined your destination (vision), purpose (mission), and measurable targets (SMART objectives). "
         "This is the <b>why</b> and <b>what</b>. Everything downstream must point back here."
     ))
     story.append(Spacer(1, 10))
 
-    story.append(h3("Step 3.1: External Analysis — Opportunities and Threats"))
+    story.append(h3("Step 2.1: External Analysis — Opportunities and Threats"))
     story.append(body(
         "You mapped the external environment: <b>PESTEL</b> factors, <b>Porter's Five Forces</b>, competitors, industry structure, lifecycle stage. "
         "This revealed: What's possible? What threats must we navigate? Where are the opportunities?"
     ))
     story.append(Spacer(1, 10))
 
-    story.append(h3("Step 4.1: Internal Analysis — Strengths and Weaknesses"))
+    story.append(h3("Step 2.2: Internal Analysis — Strengths and Weaknesses"))
     story.append(body(
         "You assessed internal capabilities using <b>VRIO</b>: What are we genuinely good at? "
         "What's our competitive position? Where can we build advantage? This revealed: <b>What can we realistically achieve?</b>"
     ))
     story.append(Spacer(1, 10))
 
-    story.append(h3("Step 5.1: Implementation — Turning Strategy into Action"))
+    story.append(h3("Step 3.1: Implementation — Turning Strategy into Action"))
     story.append(body(
         "You learned how to <b>execute</b>: Align structure to strategy, measure using Balanced Scorecard, "
         "manage change, allocate resources, and hold people accountable. This answered: <b>How do we actually do it?</b>"
     ))
     story.append(Spacer(1, 10))
 
-    story.append(h3("Step 6.1: Competitive Strategy — How We'll Win"))
+    story.append(h3("Step 3.2: Competitive Strategy — How We'll Win"))
     story.append(body(
         "You chose your competitive position: Will we compete on cost? Differentiation? Focus? "
         "Is our advantage sustainable (VRIN)? This answers the ultimate question: <b>How will we beat rivals?</b>"
@@ -602,8 +602,8 @@ def build():
     story.append(callout(
         "<b>The Full Picture:</b> Vision → External Analysis → Internal Analysis → Competitive Strategy → Implementation. "
         "Strategy is not a plan you write once. It's a continuous cycle of analysis, positioning, execution, and adaptation. "
-        "When external conditions change (Step 3.1 insights shift), you must reassess competitive positioning (Step 6.1) "
-        "and potentially reset implementation (Step 5.1). Strategic management is iterative.",
+        "When external conditions change (Step 2.1 insights shift), you must reassess competitive positioning (Step 3.2) "
+        "and potentially reset implementation (Step 3.1). Strategic management is iterative.",
         "warn"))
     story.append(Spacer(1, 12))
 
@@ -650,8 +650,8 @@ def build():
     outcomes = [
         "Identify and articulate the three generic strategies and explain when each is appropriate",
         "Diagnose why a firm pursuing multiple strategies simultaneously is vulnerable to being 'stuck in the middle'",
-        "Apply Porter's Five Forces (Step 3.1) to explain which generic strategy is most viable in a given industry",
-        "Link VRIO resources (Step 4.1) to competitive positioning and assess whether an advantage is sustainable",
+        "Apply Porter's Five Forces (Step 2.1) to explain which generic strategy is most viable in a given industry",
+        "Link VRIO resources (Step 2.2) to competitive positioning and assess whether an advantage is sustainable",
         "Map a company's competitive strategy onto the Strategic Clock and explain its position relative to rivals",
         "Apply the ERRC grid to identify Blue Ocean opportunities in a mature industry",
         "Analyse competitive dynamics (first-mover vs fast-follower, game theory, co-opetition) and recommend strategic responses",
