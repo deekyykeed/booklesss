@@ -6,13 +6,13 @@ description: >
   Use this skill whenever the user wants to create, generate, or export any
   Booklesss PDF. Triggers: "write the PDF", "generate the lesson PDF", "create a
   lead magnet", "make an invoice", "send a quote", "build a receipt", "one-pager",
-  "marketing PDF", "WhatsApp doc", "export to PDF". The skill is a shared brand
+  "marketing PDF", "export to PDF". The skill is a shared brand
   foundation (fonts, palette, page geometry, reusable flowables, the page-break
   rule, writing style) plus a set of document profiles that sit on top of it —
   lesson notes, lead magnets, and business documents (quotes / invoices /
   proposals / receipts). Any new document type uses the same foundation with its
   own structure. Always generate by running a Python/ReportLab script via Bash —
-  never a GUI library.
+  never a GUI library. PDFs carry no marketing links or external URLs in the body.
 ---
 
 # booklesss-pdf
@@ -203,7 +203,7 @@ for an FCF waterfall as for an invoice total.
 | `calc_table(rows, title=None)` | KeepTogether | Right-aligned money column. Rows `(label, value)` or `(label, value, True)` for a jade rule above (subtotal / total). |
 | `table_std(data, col_widths)` | KeepTogether | Standard table; row 0 is the header (jade underline). Line items, key terms, anything tabular. |
 | `discussion_q(text)` | KeepTogether | Italic question box *(lesson profile)*. |
-| `community_closer()` | list | Slack invite closer *(lesson profile)*. |
+| `community_closer()` | list | Slack channel closer, no link *(lesson profile)*. |
 
 ### Cover motif flowables
 - `LogoTriple(img)` — centred trio of the real diamond mark. Use when the mark
@@ -232,7 +232,7 @@ for an FCF waterfall as for an invoice total.
 
 ## File naming & locations
 
-Filenames are the public title (Slack/WhatsApp/email show them). Human-readable,
+Filenames are the public title (Slack and email show them). Human-readable,
 title case, ` - ` separator, no slugs, no underscores, no version numbers, no
 course codes in the name.
 
@@ -274,8 +274,9 @@ Full study document given to paying students inside Slack.
 
 1. **Cover** — `LogoTriple` motif, `STEP X.Y · TOPIC` eyebrow, Parastoo title,
    one-sentence subtitle, course meta. Then `NextPageTemplate("body")` + break.
-2. **Orientation** — a "Start here" section framing the reader + the full course
-   map, so they hold the whole picture from page one.
+2. **Orientation** — a "Start here" section framing the reader's perspective for
+   this step (one or two short paragraphs). **Do not list the full course skeleton
+   here** — no 10-step map. Point to the next step at the end, not the whole arc.
 3. **4–7 content sections** — each `section("CONCEPT 0X", "Title")`, then body,
    `h3` parts, `formula_box` / `calc_table` / `table_std`, closing `fact()`.
 4. **Two discussion questions** — `discussion_q(...)`, embedded mid-content. Real
@@ -287,24 +288,20 @@ Full study document given to paying students inside Slack.
 
 **Community CTA (lesson only, never hard-sell):** two discussion questions
 mid-content; a two-paragraph closer naming the topic's Slack channel (e.g.
-`#cf-investment`) with the permanent invite link as anchor text ("join the group
-here"):
-```
-https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8OFwcZTqTbPpC2Dg0q__Cg
-```
-Workspace is `bookless10.slack.com`. (CF Slack channels are not yet created — do
-not post CF content until they exist.)
+`#cf-investment`) and pointing the reader there. Name the channel in plain text —
+**no invite links or external URLs in the body.** Workspace is `bookless10.slack.com`.
+(CF Slack channels are not yet created — do not post CF content until they exist.)
 
 ## Profile: Lead magnet
 
-3–4 page teaser for WhatsApp marketing. Save in
+3–4 page teaser used as a free marketing handout. Save in
 `courses/[Course]/[lesson-folder]/lead-magnets/`.
 
 - 2–3 genuinely useful concepts, ZMW + Zambian companies. Tease, don't give the
   whole lesson.
-- **WhatsApp preview:** the title must sit in the top ~20% of page 1 — the cover
+- **First-page preview:** the title must sit in the top ~20% of page 1 — the cover
   frame uses a small top padding (`topPadding = MY + 30`), not a large fraction of
-  page height, or the preview thumbnail is blank.
+  page height, or a generated thumbnail comes out blank.
 - **Founding rate deadline: April 18, 2026.** Mention in at least two places
   (cover + a nudge box before the CTA). Check `Finances/pricing-strategy.md` for
   the current deadline/rate; if it has passed, drop founding language.
@@ -334,16 +331,3 @@ plain white body fill instead of cream if the client will print it.
 When the user asks for a quote or invoice, confirm the inputs you don't have:
 client name, line items + amounts, invoice/quote number, dates, and payment
 details. Don't invent figures.
-
----
-
-## WhatsApp caption (lesson & lead magnet only)
-
-After generating a lesson or lead-magnet PDF, output a ready-to-paste caption.
-One sentence, 15 words max, no emoji, no exclamation marks, no pricing.
-
-**Formula:** `[Subject] [topic] — [what's inside in plain terms]. Free.`
-**Example:** `Investment notes — free cash flow, NPV, IRR, and MIRR with worked examples. Free.`
-
-- No course codes. Use the subject name. End with "Free." Output in a plain code
-  block. (Business documents get no caption.)

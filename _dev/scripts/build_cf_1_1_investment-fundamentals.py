@@ -456,7 +456,7 @@ def build():
     story.append(NextPageTemplate("body"))
     story.append(PageBreak())
 
-    # ── ORIENTATION: FOUNDER FRAMING + FULL COURSE SKELETON ────────────────
+    # ── ORIENTATION: FOUNDER FRAMING ───────────────────────────────────────
     story += section("START HERE", "You're Running the Money for Your Own Company")
     story.append(body(
         "Read this the way a founder reads it. You are not studying some distant corporation — "
@@ -465,25 +465,12 @@ def build():
         "before I commit a single coin?</i>"
     ))
     story.append(body(
-        "Here is the whole of Corporate Finance — all ten steps — laid out before you start. "
-        "You don't learn it in disconnected chunks. You hold the full map from day one, then fill "
-        "in the depth. By Step 5.1 you are not discovering new territory; you are completing a "
-        "picture you have had in your head since today."
+        "This is the first step in Lesson 1 — Investment Appraisal. You'll value projects "
+        "the way a finance team actually values them: in cash, discounted to today, with a clear "
+        "rule for when to say yes and when to walk away. Everything in Lesson 2 onwards leans on "
+        "the machinery you build here, so it's worth slowing down."
     ))
-    for step, desc in [
-        ("Step 1.1", "Investment Fundamentals — FCF, NPV, IRR, MIRR  ← you are here"),
-        ("Step 1.2", "Advanced Investment Appraisal — APV and capital rationing"),
-        ("Step 1.3", "International Project Appraisal — cross-border NPV and FX risk"),
-        ("Step 2.1", "Cost of Capital — WACC and CAPM (where the discount rate comes from)"),
-        ("Step 2.2", "Capital Structure — debt vs equity, Modigliani-Miller"),
-        ("Step 3.1", "Company Valuation — DCF, multiples, asset-based methods"),
-        ("Step 3.2", "Mergers and Acquisitions — valuing targets, deal structures, EMH"),
-        ("Step 4.1", "Interest Rate Risk — FRAs, swaps, hedging"),
-        ("Step 4.2", "Currency Risk — forwards, options, transaction exposure"),
-        ("Step 5.1", "Dividend Policy — payout theories and signalling"),
-    ]:
-        story.append(Paragraph(f"<b>{step}</b>  —  {desc}", ST["arc"]))
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 4))
     story.append(fact(
         "Everything that follows is built on this step. NPV, free cash flow, and discounting "
         "reappear in every step after it — master them here and the rest of the course is depth, not new ground."

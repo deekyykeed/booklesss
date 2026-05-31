@@ -1,12 +1,14 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-05-24
+**Last updated:** 2026-05-31
 
 ---
 
 ## Next Session
 
-- [ ] Extract a shared brand module (`booklesss_brand.py`) and roll the v2 website-brand standard across CF Steps 2.1–10.1 (rebuild each: cream + grain + ◇◆◇ + Parastoo serif, flat path). Their scripts still use the old espresso/gold + Linux fonts.
+- [ ] Strip the Slack invite link from CF **Step 1.1**'s `community_closer()` to match the new "no marketing links in PDF body" rule. 1.2 already has no link; 1.1 still does — flagged in chat but not actioned.
+- [ ] Roll the v2 standard + no-course-skeleton rule across the remaining CF steps: **1.3, 2.1, 2.2, 3.1, 3.2, 4.1, 4.2, 5.1**. Their scripts still use the old crimson/navy palette and Linux font paths; need cream + jade + vendored Aptos/Parastoo + flat output path + the new orientation framing (no 10-step map).
+- [ ] Extract a shared brand module (`booklesss_brand.py`) so the next 8 CF rebuilds aren't ~600 lines of copy-pasted foundation each.
 - [ ] Decide whether the cream / Parastoo / ◇◆◇ brand also replaces the SM and TM covers, or stays CF-only
 - [ ] When the Framer / Design Bridge plugin is online, pull exact Booklesss tokens (colours, text styles, fonts) and reconcile — confirm whether jade is a real brand accent or go monochrome like the site
 - [ ] Optional: add the black ◇ mark to the body-page footer
@@ -24,6 +26,28 @@
 ---
 
 ## Session Log
+
+### Session 2026-05-31
+**Done:**
+- Rebuilt CF **Step 1.2 — Advanced Investment Appraisal** to v2 (cream + jade + Parastoo + vendored fonts + flat path). Content scope: APV, issue costs/grossing up, capital rationing (single-period PI + multi-period LP). Numbers grounded in the ZCAS APV + Capital Rationing source PDFs — Mutengo Mills APV worked example lands cleanly on 224 − 237 + 309 = ZMW 296k; Kabwe Holdings LP picks Projects 1+2 for NPV 19,000. Skipped re-teaching MIRR (1.1 already covers it; 1.1's handoff text doesn't promise MIRR for 1.2). Output: `01-investment/Step 1.2 - Advanced Investment Appraisal.pdf` (11 pages).
+- Stripped WhatsApp marketing + invite-link CTA from the `booklesss-pdf` skill spec. Removed: the WhatsApp caption section, the "WhatsApp doc" trigger, the lead-magnet WhatsApp framing, and the `https://join.slack.com/...` URL + "join the group here" anchor instruction. Added a foundation rule: *PDFs carry no marketing links or external URLs in the body.* Step 1.2's `community_closer()` ships without a link to match.
+- **New rule from user (saved to feedback memory):** lesson PDFs must NOT list the full 10-step course skeleton on every step. Removed the for-loop + intro paragraph from Step 1.1 and Step 1.2 build scripts, updated the lesson profile in `SKILL.md` and the v2 standard in `_course.md` to drop the "Skeleton up front" rule, rebuilt both PDFs (1.1: 13 → 12 pages, 1.2: 11 pages). Memory: `feedback_no-course-skeleton.md`.
+- Updated `_course.md`: 1.2 marked ✅ v2; PDFs-at-v2-standard count 1 → 2.
+- Drafted a 105-word TikTok voiceover script for the first Booklesss social push (text-only deliverable, not committed). Focus on the "lecturer reads the slide → you copy → you fail" pattern, then the founder pivot. Two alt hooks for A/B testing included in chat.
+
+**What Worked:**
+- Grounding the APV worked example in the ZCAS source lecture (Noble plc → Mutengo Mills recast) — the textbook numbers are self-consistent and exam-aligned (base-case NPV 224, PVITS 309 on a declining-balance loan, net-of-tax debt issue cost 237). Saved having to invent figures.
+- Reusing 1.1's 10% discount factors (0.909 / 0.826 / 0.751 / 0.683) inside 1.2's base-case NPV table — makes the continuity from 1.1 visually obvious without spelling it out.
+- pypdf for quick page-count sanity checks after each build (no PDF render tool on this Windows shell — see Dead Ends).
+- Auto-memory `feedback_*` files capture sharp user pushback ("stop listing the whole course again and again") so the rule survives into future sessions even after the SKILL doc evolves.
+
+**Dead Ends (do not retry):**
+- `pdftoppm` is NOT installed on this Windows machine — the previous session's PyMuPDF/`fitz` render-to-PNG QA workflow won't run here without installing PyMuPDF. Trying `Read` on a PDF for visual QA fails. Next session: either install PyMuPDF, or just open PDFs in a viewer for visual checks.
+- Initial 1.2 description in `_course.md` said "(APV, MIRR)" — misleading because 1.1 already taught MIRR in full. Corrected to "(APV, capital rationing)" to match what 1.2 actually delivers. Don't trust the parenthetical titles in `_course.md` blindly; verify against the actual source folder contents.
+
+**Next:** Carried to Next Session list above.
+
+---
 
 ### Session 2026-05-24
 **Done:**

@@ -14,7 +14,7 @@
 | Updates channel | `#cf-updates` — create channel first |
 | Lessons | 5 |
 | Total steps planned | 10 |
-| PDFs at v2 standard | 1 (Step 1.1) |
+| PDFs at v2 standard | 2 (Steps 1.1, 1.2) |
 | Steps posted to Slack | 0 |
 
 > **Action required (content):** Steps 1.2–5.1 were cleared in the folder
@@ -69,7 +69,7 @@ The Booklesss CF lesson standard, set on the Step 1.1 rebuild:
 
 - **Type:** Aptos for body, **Parastoo** (serif) for the cover title and section headings — matching the website hero. Vendored in `_dev/fonts/` so the build is self-contained.
 - **Founder framing:** written as though the student owns the company — Booklesss as a consultant to their ambitions, not a notes service.
-- **Skeleton up front:** the full 10-step course map appears on page 2 ("START HERE"), so students hold the whole picture from day one and build depth, not chunks. The closer points only to the *next* step.
+- **No course skeleton in lesson PDFs:** the "START HERE" page frames the reader's perspective for *this* step only. Do not list the full 10-step course map inside the lesson — repeating it on every step is noise. The closer points only to the *next* step.
 - **FACT sentence:** every concept ends with a single gold-box sentence stated as fact, closing the loop so nothing leaks from memory.
 - **Calc layout:** financial waterfalls use `calc_table()` (right-aligned amounts, jade subtotal rules); pure equations use `formula_box()`.
 - **Palette — website match:** cream `#FFFEF2` paper (cover + every page) · near-black `#121212` cover title · `#3D3D3D` headings · jade `#2FB99A` / deep jade `#0E5E52` interior accents · warm grey `#6E6A5E` cover meta · pale-jade panels `#E9F0EA` / `#E7F3ED`. Subtle film grain (`_dev/brand/grain.png`) on every page.
@@ -83,7 +83,7 @@ The Booklesss CF lesson standard, set on the Step 1.1 rebuild:
 | Step | Title | Source | PDF (v2) | Posted | Channel |
 |------|-------|--------|----------|--------|---------|
 | 1.1 | Investment Fundamentals (FCF, NPV) | `01_Investment_Appraisal/Lectures` Parts 1&2 | ✅ | — | `#cf-investment` |
-| 1.2 | Advanced Investment Appraisal (APV, MIRR) | `01_Investment_Appraisal/Lectures` APV + Capital Rationing | ⟳ rebuild | — | `#cf-investment` |
+| 1.2 | Advanced Investment Appraisal (APV, capital rationing) | `01_Investment_Appraisal/Lectures` APV + Capital Rationing | ✅ | — | `#cf-investment` |
 | 1.3 | International Project Appraisal | `01_Investment_Appraisal/Lectures` International NPV | ⟳ rebuild | — | `#cf-investment` |
 | 2.1 | Cost of Capital Foundations (WACC, CAPM) | `02_Cost_of_Capital` Session 1 + Session 2 | ⟳ rebuild | — | `#cf-cost-of-capital` |
 | 2.2 | Capital Structure Decisions | `02_Cost_of_Capital` Capital Structure + Session 2 | ⟳ rebuild | — | `#cf-cost-of-capital` |
@@ -135,7 +135,7 @@ All source files are in `_source/`:
 | Step | Script | v2? |
 |------|--------|-----|
 | 1.1 | `_dev/scripts/build_cf_1_1_investment-fundamentals.py` | ✅ |
-| 1.2 | `_dev/scripts/build_cf_1_2_advanced-investment.py` | ⟳ |
+| 1.2 | `_dev/scripts/build_cf_1_2_advanced-investment.py` | ✅ |
 | 1.3 | `_dev/scripts/build_cf_1_3_international-projects.py` | ⟳ |
 | 2.1 | `_dev/scripts/build_cf_2_1_cost-of-capital.py` | ⟳ |
 | 2.2 | `_dev/scripts/build_cf_2_2_capital-structure.py` | ⟳ |
