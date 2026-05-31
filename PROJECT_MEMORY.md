@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-05-31
+**Last updated:** 2026-05-31 (session 2)
 
 ---
 
@@ -26,6 +26,25 @@
 ---
 
 ## Session Log
+
+### Session 2026-05-31 (session 2)
+**Done:**
+- Designed 6 hiring roles for Booklesss growth and scale, with fully worked incentive structures for each.
+- Produced `operations/Roles for Growth - Booklesss.pdf` — a branded internal planning doc (cream + jade, Parastoo, business profile). Build script: `_dev/scripts/build_ops_growth_roles.py`.
+- Roles: Campus Representative (referral tail), Community Host (MAU bonus), Course Author (step fee + 8% royalty), Operations & Collections Lead (5% above threshold), Growth Lead (dual payment: trial + conversion), Curriculum Strategist (12% royalty, 12-month vest).
+- Key design principle: everyone has economic skin in the game; costs stay variable until K10,000/month revenue; hire milestone-gated, not time-gated.
+- Curriculum Strategist is the designated "future-thinking" role — 12-month royalty vest forces them to only greenlight courses with durable demand.
+
+**What Worked:**
+- Reusing the business document profile from the booklesss-pdf foundation exactly as specified — no lesson furniture, no community closer, no course accent. Kept the full helper set (formula_box, callout, fact, table_std) which all work just as well for internal docs as for course notes.
+- Milestone-gating as the hiring sequence principle — avoids over-hiring before bottlenecks exist.
+
+**Dead Ends (do not retry):**
+- None.
+
+**Next:** No new items added. Existing Next Session list stands.
+
+---
 
 ### Session 2026-05-31
 **Done:**
