@@ -201,7 +201,7 @@ for an FCF waterfall as for an invoice total.
 | `callout(text)` | KeepTogether | Jade callout box; `\n` → `<br/>`. Notes, terms, payment details. |
 | `formula_box(lines)` | KeepTogether | Pale-jade panel, left bar; one line per item. |
 | `calc_table(rows, title=None)` | KeepTogether | Right-aligned money column. Rows `(label, value)` or `(label, value, True)` for a jade rule above (subtotal / total). |
-| `table_std(data, col_widths)` | KeepTogether | Standard table; row 0 is the header (jade underline). Line items, key terms, anything tabular. |
+| `table_std(data, col_widths)` | KeepTogether | Standard table; row 0 is the header (jade underline). Line items, key terms, anything tabular. **`col_widths` must sum to `CONTENT_W` exactly — never leave unused width.** |
 | `discussion_q(text)` | KeepTogether | Italic question box *(lesson profile)*. |
 | `community_closer()` | list | Slack channel closer, no link *(lesson profile)*. |
 
@@ -263,6 +263,18 @@ python3 _dev/scripts/build_[...].py
 
 Open the PDF and check: headers not orphaned at page feet, boxes/tables not split
 awkwardly, totals aligned.
+
+**Table column-width rule (enforced on every PDF):**
+- `col_widths` must always sum to exactly `CONTENT_W` — tables must span the full
+  text area, no narrower.
+- Header text must never wrap. At 9pt Body-Bold Aptos, budget ~5.5pt per character
+  plus 16pt cell padding (8px each side). Minimum column width =
+  `ceil(header_chars × 5.5) + 16`, rounded up to the nearest 5pt.
+  Quick reference: "Priority" (8 chars) → min 60pt; "Variable" (8 chars) → min 60pt;
+  "Description" (11 chars) → min 76pt; "Role" (4 chars) → fine at any reasonable width.
+- When distributing widths, set all fixed columns first, then assign the remainder to
+  the widest data column using `CONTENT_W - sum(fixed_cols)`. Never hardcode all
+  four widths independently and hope they add up.
 
 ---
 

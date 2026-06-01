@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Booklesss — Revenue Dashboard</title>
+<style>
+@font-face {
+  font-family: 'Parastoo';
+  src: url('../_dev/fonts/Parastoo.ttf') format('truetype');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Parastoo';
+  src: url('../_dev/fonts/Parastoo-Bold.ttf') format('truetype');
+  font-weight: 700;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Parastoo', Georgia, serif;
+  background: #FFFEF2;
+  color: #16201A;
+  padding: 40px 28px 64px;
+}
+
+.container { max-width: 920px; margin: 0 auto; }
+
+/* ── HEADER ── */
+header {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding-bottom: 14px;
+  margin-bottom: 40px;
+  border-bottom: 1.5px solid #2FB99A;
+}
+.brand {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #2FB99A;
+}
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #16201A;
+}
+
+/* ── SECTION ── */
+.section { margin-bottom: 40px; }
+.eyebrow {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #2FB99A;
+  margin-bottom: 3px;
+}
+.section-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #3D3D3D;
+  margin-bottom: 14px;
+}
+.section-rule {
+  width: 100%;
+  height: 0.5px;
+  background: #2FB99A;
+  margin-bottom: 18px;
+}
+
+/* ── RATE CONTROL ── */
+.rate-card {
+  background: #E7F3ED;
+  border-left: 3px solid #2FB99A;
+  border-radius: 4px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+.rate-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.rate-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #16201A;
+  white-space: nowrap;
+  min-width: 180px;
+}
+input[type="range"] {
+  flex: 1;
+  min-width: 120px;
+  accent-color: #2FB99A;
+  cursor: pointer;
+  height: 4px;
+}
+.rate-number-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+input[type="number"].rate-num {
+  width: 64px;
+  font-family: 'Parastoo', Georgia, serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: #0E5E52;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid #2FB99A;
+  text-align: center;
+  outline: none;
+  -moz-appearance: textfield;
+}
+input[type="number"].rate-num::-webkit-inner-spin-button,
+input[type="number"].rate-num::-webkit-outer-spin-button { -webkit-appearance: none; }
+.rate-pct { font-size: 20px; font-weight: 700; color: #0E5E52; }
+.rate-note { margin-top: 10px; font-size: 11px; color: #5F6B65; }
+
+/* ── METRIC CARDS ── */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.metric-card {
+  background: #fff;
+  border: 1px solid #E0DACB;
+  border-radius: 6px;
+  padding: 14px 16px;
+}
+.metric-card.jade {
+  background: #E7F3ED;
+  border-left: 3px solid #2FB99A;
+}
+.metric-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #5F6B65;
+  margin-bottom: 6px;
+}
+.metric-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: #16201A;
+  line-height: 1;
+}
+.metric-sub { font-size: 10px; color: #5F6B65; margin-top: 4px; }
+
+/* ── TABLE ── */
+.table-wrap {
+  background: #fff;
+  border: 1px solid #E0DACB;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead tr { background: #E9F0EA; border-bottom: 1.5px solid #2FB99A; }
+thead th {
+  padding: 9px 12px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #3D3D3D;
+}
+tbody tr { border-bottom: 0.5px solid #E0DACB; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #FFFDE8; }
+tbody td { padding: 9px 12px; }
+.pos { color: #0E5E52; font-weight: 700; }
+.neg { color: #b03030; font-weight: 700; }
+.be-row td { background: #FFFDE8; }
+.phase-sep td {
+  background: #E9F0EA;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #2FB99A;
+  padding: 6px 12px;
+}
+
+
+.callout {
+  background: #E7F3ED;
+  border-left: 2px solid #2FB99A;
+  border-bottom: 0.5px solid #2FB99A;
+  border-radius: 4px;
+  padding: 14px 18px;
+  font-size: 13px;
+  color: #0E5E52;
+  line-height: 1.7;
+}
+.callout b { font-weight: 700; }
+
+/* ── GROWTH SIMULATOR ── */
+.insight-box {
+  background: #E7F3ED;
+  border-left: 3px solid #2FB99A;
+  border-radius: 4px;
+  padding: 12px 16px;
+  font-size: 12px;
+  color: #0E5E52;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+.insight-box.warn { background: #fff3f0; border-color: #b03030; color: #7a1f1f; }
+input[type="number"].cell-input {
+  width: 38px;
+  font-family: 'Parastoo', Georgia, serif;
+  font-size: 12px;
+  font-weight: 700;
+  border: none;
+  border-bottom: 1.5px solid #E0DACB;
+  background: transparent;
+  text-align: center;
+  outline: none;
+  padding: 2px 0;
+  -moz-appearance: textfield;
+}
+input[type="number"].cell-input::-webkit-inner-spin-button,
+input[type="number"].cell-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+input[type="number"].cell-input:focus { border-bottom-color: #2FB99A; }
+.cell-count { font-size: 9px; color: #9E9E9E; line-height: 1; }
+.cell-input.ci-churn   { color: #b03030; }
+.cell-input.ci-fill    { color: #2FB99A; }
+.cell-input.ci-upgrade { color: #0E5E52; }
+.cell-input.ci-new     { color: #9B6F1A; }
+td.rate-cell { padding: 6px 8px !important; }
+td.delta-pos { color: #0E5E52; font-weight: 700; }
+td.delta-neg { color: #b03030; font-weight: 700; }
+td.delta-zero { color: #9E9E9E; }
+.reset-btn {
+  margin-top: 10px;
+  font-family: 'Parastoo', Georgia, serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #5F6B65;
+  background: none;
+  border: 1px solid #E0DACB;
+  border-radius: 4px;
+  padding: 5px 12px;
+  cursor: pointer;
+}
+.reset-btn:hover { border-color: #2FB99A; color: #2FB99A; }
+.rate-legend {
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.legend-item { font-size: 11px; color: #5F6B65; display: flex; align-items: center; gap: 5px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+/* ── FOOTER ── */
+.footer {
+  margin-top: 48px;
+  padding-top: 14px;
+  border-top: 1px solid #E0DACB;
+  font-size: 10px;
+  color: #5F6B65;
+  display: flex;
+  justify-content: space-between;
+}
+
+@media (max-width: 640px) {
+  .metrics-grid { grid-template-columns: 1fr 1fr; }
+  .team-grid { grid-template-columns: 1fr 1fr; }
+  .weekly-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <span class="brand">Booklesss</span>
+    <span class="page-title">Revenue Dashboard</span>
+  </header>
+
+  <!-- ── ACQUISITION ── -->
+  <div class="section">
+    <div class="eyebrow">Acquisition</div>
+    <div class="section-title">Campaign Model</div>
+    <div class="section-rule"></div>
+
+    <div class="callout" style="font-size:12px;line-height:1.7;margin-bottom:20px;">
+      Campaign fixed at <b>10% conversion</b> · K10,000 budget · K20/flyer · K50 commission per signup · effective cost per member acquired: K250
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">Flyers</div>
+        <div class="metric-value" id="m-flyers">400</div>
+        <div class="metric-sub">distributed</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Full Members</div>
+        <div class="metric-value" id="m-members">40</div>
+        <div class="metric-sub">acquired</div>
+      </div>
+      <div class="metric-card jade">
+        <div class="metric-label">Monthly Markup</div>
+        <div class="metric-value" id="m-markup">K2,040</div>
+        <div class="metric-sub">before any guests</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Guest Slots</div>
+        <div class="metric-value" id="m-slots">200</div>
+        <div class="metric-sub">unlocked (×5)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PHASE THRESHOLDS (compact) ── -->
+  <div class="section">
+    <div class="eyebrow">Overhead</div>
+    <div class="section-title">Phase Thresholds</div>
+    <div class="section-rule"></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;" id="phase-grid">
+      <div class="metric-card">
+        <div class="metric-label">Phase 1+2</div>
+        <div class="metric-value" style="font-size:18px;">K1,430</div>
+        <div class="metric-sub" id="be-2">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Phase 3 — Founder Claude $100</div>
+        <div class="metric-value" style="font-size:18px;">K2,936</div>
+        <div class="metric-sub" id="be-3">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Phase 4 — Manager Claude $100</div>
+        <div class="metric-value" style="font-size:18px;">K4,442</div>
+        <div class="metric-sub" id="be-4">—</div>
+      </div>
+      <div class="metric-card jade">
+        <div class="metric-label">Current markup</div>
+        <div class="metric-value" style="font-size:18px;" id="be-markup">—</div>
+        <div class="metric-sub">members × K51</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PLATFORM ECONOMICS ── -->
+  <div class="section">
+    <div class="eyebrow">Platform Economics</div>
+    <div class="section-title">Net by Guest Count</div>
+    <div class="section-rule"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Guests</th>
+            <th>Guest Revenue</th>
+            <th>Founders 30%</th>
+            <th>Markup</th>
+            <th>Overhead</th>
+            <th>Net</th>
+          </tr>
+        </thead>
+        <tbody id="profit-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── GROWTH SIMULATOR ── -->
+  <div class="section">
+    <div class="eyebrow">Growth Simulation</div>
+    <div class="section-title">Month-by-Month Projection</div>
+    <div class="section-rule"></div>
+
+    <div class="callout" style="margin-bottom:14px;font-size:12px;line-height:1.7;">
+      Each month has its own rates — edit any cell directly. Defaults follow typical early-stage benchmarks: churn starts low (students just joined), fill rate starts high at launch, both settle by month 4–6.
+    </div>
+
+    <div id="sim-insight" class="insight-box"></div>
+
+    <div class="callout" style="margin-bottom:14px;font-size:12px;line-height:1.7;">
+      All conversion rates fixed at <b>10%</b> — churn, guest fill, guest upgrade, and organic new members. Starting from <b id="sim-start-members">40</b> members · <b id="sim-start-slots">200</b> guest slots.
+    </div>
+
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;padding:12px 16px;background:#E7F3ED;border-left:3px solid #2FB99A;border-radius:4px;">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:700;color:#0E5E52;">
+        <input type="checkbox" id="acqToggle" checked onchange="runSim()" style="width:16px;height:16px;accent-color:#2FB99A;cursor:pointer;">
+        Reinvest into acquisition each month
+      </label>
+      <span style="font-size:11px;color:#5F6B65;flex:1;">50% of founders 30% + 10% of team share (Manager + Sourcers) → flyer campaign · K250 per member at 10% conversion · shown in Acq. K column</span>
+      <span style="font-size:11px;font-weight:700;color:#0E5E52;" id="acq-total"></span>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Mo.</th>
+            <th>Members</th>
+            <th>Guests</th>
+            <th>Acq. K</th>
+            <th>Change</th>
+            <th>Overall</th>
+            <th>Milestone</th>
+          </tr>
+        </thead>
+        <tbody id="sim-body"></tbody>
+      </table>
+    </div>
+
+
+    <div style="margin-top:14px;padding:12px 14px;background:#FFFDE8;border-radius:4px;font-size:11px;color:#5F6B65;line-height:1.7;">
+      <b>12-month summary:</b> Started with <b id="sum-start">—</b> members →
+      ended with <b id="sum-end">—</b> members ·
+      Total guest revenue: <b id="sum-revenue">—</b> ·
+      Total platform net: <b id="sum-net">—</b>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>Booklesss Revenue Dashboard — internal reference</span>
+    <span>10% conversion is the conservative baseline · Actual vs. model tracked monthly</span>
+  </div>
+
+</div>
+
+<script>
+  const BUDGET = 10000;
+  const FLYER_COST = 20;
+  const COMMISSION = 50;
+  const MARKUP_PER = 51;
+  const PRICE = 195;
+  const OVERHEADS = [1054, 1430, 2936, 4442];
+  const PLAT_RATE = PRICE * 0.95 * 0.30; // 55.575 per guest
+
+  function fmt(n, decimals) {
+    if (decimals) return 'K' + n.toFixed(decimals);
+    return 'K' + Math.round(n).toLocaleString();
+  }
+
+  function calcCampaign(rate) {
+    const r = rate / 100;
+    const cpf = FLYER_COST + r * COMMISSION;
+    const flyers = Math.floor(BUDGET / cpf);
+    const members = Math.floor(flyers * r);
+    const markup = members * MARKUP_PER;
+    const slots = members * 5;
+    return { flyers, members, markup, slots, cpf };
+  }
+
+  function breakEven(overhead, markup) {
+    if (markup >= overhead) return 0;
+    return Math.ceil((overhead - markup) / PLAT_RATE);
+  }
+
+  function getOverhead(guests, markup) {
+    const be3 = breakEven(OVERHEADS[2], markup);
+    const be4 = breakEven(OVERHEADS[3], markup);
+    if (guests >= be4 && be4 > 0) return OVERHEADS[3];
+    if (guests >= be3 && be3 > 0) return OVERHEADS[2];
+    return OVERHEADS[1];
+  }
+
+  function update() {
+    const { flyers, members, markup, slots } = calcCampaign(10);
+
+    document.getElementById('m-flyers').textContent  = flyers.toLocaleString();
+    document.getElementById('m-members').textContent = members.toLocaleString();
+    document.getElementById('m-markup').textContent  = fmt(markup);
+    document.getElementById('m-slots').textContent   = slots.toLocaleString();
+
+    // Phase thresholds — compact cards
+    document.getElementById('be-markup').textContent = fmt(markup);
+    [2, 3, 4].forEach(i => {
+      const b = breakEven(OVERHEADS[i - 1], markup);
+      const el = document.getElementById(`be-${i}`);
+      el.textContent = b === 0 ? 'Profitable from launch ✓' : `Break-even at ${b} guests`;
+      el.style.color = b === 0 ? '#0E5E52' : '#5F6B65';
+    });
+
+    // Profitability table
+    const bes = OVERHEADS.map(oh => breakEven(oh, markup));
+    const be3 = bes[2];
+    const be4 = bes[3];
+    const maxG = Math.min(slots, 500);
+
+    let checkpoints = [0, 10, 20, 30];
+    if (be3 > 0)  checkpoints.push(be3);
+    checkpoints.push(50);
+    if (be4 > 0)  checkpoints.push(be4);
+    checkpoints.push(100, Math.min(maxG, 200));
+    if (maxG > 200) checkpoints.push(maxG);
+    checkpoints = [...new Set(checkpoints)].filter(g => g <= maxG).sort((a,b) => a-b);
+
+    let lastPhase = null;
+    let tbody = '';
+    checkpoints.forEach(g => {
+      const oh      = getOverhead(g, markup);
+      const phase   = oh === OVERHEADS[3] ? '4' : oh === OVERHEADS[2] ? '3' : '1+2';
+      const gross   = g * PRICE;
+      const plat30  = Math.round(g * PLAT_RATE);
+      const net     = plat30 + markup - oh;
+      const netStr  = net >= 0 ? `+${fmt(net)}` : `−${fmt(Math.abs(net))}`;
+      const netCls  = net >= 0 ? 'pos' : 'neg';
+      const isBe    = (g === be3 && be3 > 0) || (g === be4 && be4 > 0);
+      const rowCls  = isBe ? ' class="be-row"' : '';
+      const label   = g === maxG ? `${g} max` : `${g}${isBe ? ' ✓' : ''}`;
+
+      if (phase !== lastPhase) {
+        const phaseNames = { '1+2': 'Phases 1 & 2 — overhead K1,430', '3': 'Phase 3 — overhead K2,936', '4': 'Phase 4 — overhead K4,442' };
+        tbody += `<tr class="phase-sep"><td colspan="6">${phaseNames[phase]}</td></tr>`;
+        lastPhase = phase;
+      }
+
+      tbody += `<tr${rowCls}>
+        <td>${label}</td>
+        <td>${fmt(gross)}</td>
+        <td>${fmt(plat30)}</td>
+        <td>${fmt(markup)}</td>
+        <td>K${oh.toLocaleString()}</td>
+        <td class="${netCls}">${netStr}</td>
+      </tr>`;
+    });
+    document.getElementById('profit-body').innerHTML = tbody;
+
+    runSim();
+  }
+
+
+  function buildSimTable() {
+    const tbody = document.getElementById('sim-body');
+    tbody.innerHTML = '';
+    for (let mo = 1; mo <= 12; mo++) {
+      const tr = document.createElement('tr');
+      tr.id = `sr-${mo}`;
+      tr.innerHTML = `
+        <td style="color:#5F6B65;font-weight:700;">${mo}</td>
+        <td id="s-m-${mo}">—</td>
+        <td id="s-g-${mo}">—</td>
+        <td id="s-aq-${mo}" style="font-size:11px;color:#9B6F1A;font-weight:700;">—</td>
+        <td id="s-d-${mo}">—</td>
+        <td id="s-og-${mo}" style="font-size:11px;">—</td>
+        <td id="s-ms-${mo}" style="font-size:10px;font-weight:700;white-space:nowrap;">—</td>`;
+      tbody.appendChild(tr);
+    }
+  }
+
+  function runSim() {
+    const { members: M0, markup } = calcCampaign(10);
+
+    document.getElementById('sim-start-members').textContent = M0;
+    document.getElementById('sim-start-slots').textContent   = M0 * 5;
+
+    const be3 = breakEven(OVERHEADS[2], markup);
+    const be4 = breakEven(OVERHEADS[3], markup);
+    const doAcq = document.getElementById('acqToggle').checked;
+    let phase3Hit = false, phase4Hit = false, maxHit = false;
+
+    // All rates fixed at 10%
+    const R = 0.10;
+    const COST_PER_MEMBER = 250; // K20 flyer + K50 commission at 10% conversion
+
+    let M = M0;
+    let totalRevenue = 0;
+    let totalNet = 0;
+    let totalAcqMembers = 0;
+
+    for (let mo = 1; mo <= 12; mo++) {
+      const slots      = M * 5;
+      const guests     = slots * R;
+      const upgraded   = guests * R;
+      const newMembers = M * R;
+      const churned    = M * R;
+      const M_prev     = M;
+      M = Math.max(0, M + upgraded + newMembers - churned);
+
+      // Acquisition budget: 50% of founders 30% + 10% of team share (70% of distributable)
+      const distributable  = guests * PRICE * 0.95;
+      const foundersHalf   = distributable * 0.30 * 0.50;   // 50% of founders 30%
+      const teamTen        = distributable * 0.70 * 0.10;   // 10% of team share
+      const acqBudget      = foundersHalf + teamTen;
+      let acqMembers = 0;
+      if (doAcq && acqBudget > 0) {
+        acqMembers = acqBudget / COST_PER_MEMBER;
+        M += acqMembers;
+        totalAcqMembers += acqMembers;
+      }
+
+      const gRevenue = guests * PRICE;
+      const plat30   = guests * PLAT_RATE;
+      const oh       = plat30 + markup >= OVERHEADS[3] ? OVERHEADS[3]
+                     : plat30 + markup >= OVERHEADS[2] ? OVERHEADS[2]
+                     : OVERHEADS[1];
+      const net      = plat30 + markup - oh;
+      totalRevenue  += gRevenue;
+      totalNet      += net;
+
+      const delta    = M - M_prev;
+      const deltaStr = delta >= 0.5 ? `+${Math.round(delta)}` : delta <= -0.5 ? `${Math.round(delta)}` : '≈0';
+      const deltaCls = delta > 0.4 ? 'delta-pos' : delta < -0.4 ? 'delta-neg' : 'delta-zero';
+      const gLabel   = Math.round(guests);
+
+      // Overall growth % (vs M0)
+      const ogPct = M0 > 0 ? ((M - M0) / M0 * 100) : 0;
+      const ogStr = ogPct >= 0 ? `+${Math.round(ogPct)}%` : `${Math.round(ogPct)}%`;
+      const ogCls = ogPct > 0 ? 'delta-pos' : ogPct < 0 ? 'delta-neg' : 'delta-zero';
+
+      // Milestone detection (first time guest count crosses each threshold)
+      let milestone = '', milestoneCls = '';
+      const gRound = Math.round(guests);
+      if (!maxHit && gRound >= M0 * 5) {
+        maxHit = true; milestone = 'Max capacity'; milestoneCls = '#0E5E52';
+      } else if (!phase4Hit && be4 > 0 && gRound >= be4) {
+        phase4Hit = true; milestone = 'Phase 4 ✓'; milestoneCls = '#0E5E52';
+      } else if (!phase3Hit && be3 > 0 && gRound >= be3) {
+        phase3Hit = true; milestone = 'Phase 3 ✓'; milestoneCls = '#2FB99A';
+      }
+      if (doAcq && acqMembers >= 0.5) {
+        milestone = (milestone ? milestone + ' · ' : '') + `+${Math.round(acqMembers)} acq.`;
+        if (!milestoneCls) milestoneCls = '#9B6F1A';
+      }
+      const row = document.getElementById(`sr-${mo}`);
+      row.style.background = milestone ? '#E7F3ED' : '';
+
+      document.getElementById(`s-m-${mo}`).textContent = Math.round(M);
+      document.getElementById(`s-g-${mo}`).textContent = gLabel;
+      document.getElementById(`s-aq-${mo}`).textContent = doAcq && acqBudget > 0 ? fmt(acqBudget) : '—';
+      document.getElementById(`s-d-${mo}`).className   = deltaCls;
+      document.getElementById(`s-d-${mo}`).textContent = deltaStr;
+      const ogEl = document.getElementById(`s-og-${mo}`);
+      ogEl.className   = ogCls;
+      ogEl.textContent = ogStr;
+      const msEl = document.getElementById(`s-ms-${mo}`);
+      msEl.textContent  = milestone || '—';
+      msEl.style.color  = milestoneCls;
+    }
+
+    // Insight — net direction across 12 months
+    const insight = document.getElementById('sim-insight');
+    const netGrowth = M - M0;
+    const pct = Math.round((netGrowth / M0) * 100);
+    const pctStr = pct >= 0 ? `+${pct}%` : `${pct}%`;
+    if (M > M0 * 1.05) {
+      insight.className = 'insight-box';
+      insight.innerHTML = `<b>Growing (${pctStr}).</b> After 12 months: ${Math.round(M)} members (started ${Math.round(M0)}). New signups + upgrades outpace churn. At 10% new discovery rate, every month you add ~${Math.round(M0 * 0.10)} members organically on top of guest upgrades.`;
+    } else if (M < M0 * 0.85) {
+      insight.className = 'insight-box warn';
+      insight.innerHTML = `<b>Declining (${pctStr}).</b> After 12 months: ${Math.round(M)} members (started ${Math.round(M0)}). Churn is winning. Raise the New% rate — even 5% organic discovery per month reverses the trend — or push churn below 5%.`;
+    } else {
+      insight.className = 'insight-box';
+      insight.innerHTML = `<b>Holding steady (${pctStr}).</b> After 12 months: ${Math.round(M)} members (started ${Math.round(M0)}). Roughly balanced. Nudge New% up by 2–3 points or reduce churn in months 4–6 to tip into growth.`;
+    }
+
+    // Acquisition label
+    const acqEl = document.getElementById('acq-total');
+    acqEl.textContent = doAcq && totalAcqMembers >= 0.5
+      ? `+${Math.round(totalAcqMembers)} members from reinvestment over 12 months` : '';
+
+    // Summary
+    document.getElementById('sum-start').textContent   = Math.round(M0);
+    document.getElementById('sum-end').textContent     = Math.round(M);
+    document.getElementById('sum-revenue').textContent = fmt(totalRevenue);
+    const totalNetStr = totalNet >= 0 ? `+${fmt(totalNet)}` : `−${fmt(Math.abs(totalNet))}`;
+    document.getElementById('sum-net').textContent = totalNetStr;
+  }
+
+  buildSimTable();
+  update();
+</script>
+</body>
+</html>

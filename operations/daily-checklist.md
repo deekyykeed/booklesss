@@ -21,8 +21,8 @@ Keep this open. Work top-to-bottom. Every item you skip today is a conversion yo
 ### Evening — Growth
 - [ ] Did anyone DM you on WhatsApp today? → Log in `operations/leads.md`
 - [ ] Did any lead magnet reader join Slack? → Update `marketing/groups.md` → Joins column
-- [ ] Did any free trial member upgrade? → Update student count, note in `operations/revenue-log.md`
-- [ ] **CF signups:** Check Tally inbox (tally.so/r/81Jejr) for new CF form submissions → send personalised WhatsApp DM referencing their stated struggle within 24h → if they haven't joined Slack within 48h, nudge with invite link again
+- [ ] Did any guest upgrade to full member? → Update student count, note in `operations/revenue-log.md`
+- [ ] Check Tally inbox (tally.so/r/81Jejr) for new form submissions → send personalised WhatsApp DM within 24h → if they haven't joined Slack within 48h, nudge with invite link again
 
 ---
 
@@ -58,8 +58,8 @@ Keep this open. Work top-to-bottom. Every item you skip today is a conversion yo
 - [ ] WhatsApp post template still converting? If CTR <5% → test a new hook
 
 ### Numbers
-- [ ] How many active students on Slack right now?
-- [ ] How many free trial → paid conversions this week?
+- [ ] How many full members on Slack right now?
+- [ ] How many guests upgraded to full member this week?
 - [ ] Revenue this month vs last month
 - [ ] Slack cost this month (Business+ billing page) — still in margin?
 
@@ -134,27 +134,19 @@ See full detail: `courses/Strategic Management/_course.md`
 
 ---
 
-## Key Deadlines
-
-| Date | Event | Action Needed |
-|------|-------|---------------|
-| **April 18, 2026** | Slack Pro trial ends — founding rate deadline | Announce to all WhatsApp groups by April 15 |
-| **April 18, 2026** | Founding member rate (K550) closes | Update website + lead magnet CTA after this date |
-| Ongoing | Business+ billing starts after trial | Ensure ≥1 paid student to cover Slack cost |
-
----
-
 ## Key Numbers to Know
 
 | Metric | Value |
 |--------|-------|
-| Slack Business+ cost | $15/user/month = K375/user (at ZMW 25/$1) |
-| Founding rate | K550/month (locked for life before April 12) |
-| Standard rate | K800/month |
-| Break-even (K550, covering only your seat) | 1 student |
-| 30% margin (K550) | ~30 students |
-| 30% margin (K800) | ~3 students |
-| Lead magnet | `marketing/lead-magnets/tm-lead-magnet_v1.pdf` |
+| Slack Business+ cost | $15/user/month = K282/user (at K18.82/$) |
+| Full member rate | K390/month (all course channels) |
+| Guest rate | K195/month (1 month, one course channel, then upgrade) |
+| Full member platform markup | K51/member (K390 − K339 Slack seat) |
+| Break-even (markup only, 0 guests) | 3 full members covers overhead Phase 1 |
+| Campaign budget | K10,000 |
+| Flyer cost | K20/flyer |
+| Referral commission | K50/signup (paid from campaign budget) |
+| Expected signups (10% conversion) | ~40 members from 400 flyers |
 
 ---
 
