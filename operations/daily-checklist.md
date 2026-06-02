@@ -144,9 +144,9 @@ See full detail: `courses/Strategic Management/_course.md`
 | Full member platform markup | K51/member (K390 − K339 Slack seat) |
 | Break-even (markup only, 0 guests) | 3 full members covers overhead Phase 1 |
 | Campaign budget | K10,000 |
-| Flyer cost | K20/flyer |
+| Flyer cost | K10/flyer |
 | Referral commission | K50/signup (paid from campaign budget) |
-| Expected signups (10% conversion) | ~40 members from 400 flyers |
+| Expected signups (10% conversion) | ~100 members from 1,000 flyers |
 
 ---
 

@@ -410,7 +410,7 @@ def build():
         ["6", "Curriculum Strategist",
          "You have 3+ active courses and the roadmap needs a dedicated owner"],
     ]
-    story.append(table_std(seq_data, [40, 130, CONTENT_W - 170]))
+    story.append(table_std(seq_data, [58, 125, CONTENT_W - 183]))
 
     # ── SECTION 3: ROLE 01 ────────────────────────────────────────────────
     story += section("ROLE 01", "Campus Representative")
