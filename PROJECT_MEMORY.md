@@ -1,11 +1,12 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-05-31 (session 2)
+**Last updated:** 2026-06-03
 
 ---
 
 ## Next Session
 
+- [ ] Revenue model is still being stress-tested — review numbers before treating as final. Key areas to verify: Phase 4 overhead timing, FM churn assumptions, guest ramp rate.
 - [ ] Strip the Slack invite link from CF **Step 1.1**'s `community_closer()` to match the new "no marketing links in PDF body" rule. 1.2 already has no link; 1.1 still does — flagged in chat but not actioned.
 - [ ] Roll the v2 standard + no-course-skeleton rule across the remaining CF steps: **1.3, 2.1, 2.2, 3.1, 3.2, 4.1, 4.2, 5.1**. Their scripts still use the old crimson/navy palette and Linux font paths; need cream + jade + vendored Aptos/Parastoo + flat output path + the new orientation framing (no 10-step map).
 - [ ] Extract a shared brand module (`booklesss_brand.py`) so the next 8 CF rebuilds aren't ~600 lines of copy-pasted foundation each.
@@ -26,6 +27,28 @@
 ---
 
 ## Session Log
+
+### Session 2026-06-03
+**Done:**
+- Revenue model (`build_ops_revenue_model.py` + `operations/Revenue Model - Booklesss.pdf`) revised through multiple iterations:
+  - Revenue split locked at **20% marketing / 60% team / 20% platform (founders)**
+  - Manager + Sourcers columns collapsed into single **Team 60%** column across all tables (Table A, weekly payout table, 12-month forecast)
+  - **Founders column** added to 12-month forecast = Platform 20% of guest revenue (guests × K37.05) — explicitly personal founder income, extracted from the business
+  - **Net column** = Marketing 20% + FM markup − overhead — stays in business, reinvests into campaign
+  - Clarified that "Platform = Booklesss = founders" — Platform 20% is the founders' personal take, not a reinvestment line
+  - Per-founder income at Month 12: K5,520 total ÷ 3 = K1,840/month each
+- Explained each column in the forecast to the user
+
+**What Worked:**
+- Replacing the old "Platform" gross column (which confusingly included markup) with a "Founders" column showing only Platform 20% — made the personal-vs-reinvestment split immediately legible
+- Noting that Platform 20% = Marketing 20% numerically (both K37.05/guest) avoids the need for a separate Mktg column while keeping Net clean
+
+**Dead Ends (do not retry):**
+- Showing "Platform gross" (FM markup + Platform 20%) as a column — user found it confusing because K3,366 appeared in Month 1 with zero guests. Always separate markup (overhead coverage) from the founders' personal guest revenue share.
+
+**Next:** Revenue model still stress-testing — see Next Session list.
+
+---
 
 ### Session 2026-05-31 (session 2)
 **Done:**

@@ -391,11 +391,15 @@ def build():
         "Slack Business+ — one paid member seat unlocks five free single-channel guest slots."
     ))
     story.append(body(
-        "Full members pay once and access every course channel. Guests pay per course they "
-        "enroll in. Most students take four courses simultaneously, so each unique guest "
-        "student generates revenue across four channels at once — the same 200-slot pool "
-        "produces roughly K39,000 in guest revenue whether it holds 200 single-course students "
-        "or 50 four-course students."
+        "Each course is structured across roughly four content channels plus shared support "
+        "channels — announcements, general, and Q&amp;A. Full members get access to everything: "
+        "all course channels, all support channels, every course running on the platform. "
+        "Guests are single-channel — they access one content channel at a time and are excluded "
+        "from support channels. When a guest finishes a topic, they submit a request to be "
+        "moved to the next channel. Students who want simultaneous access to all channels "
+        "upgrade to K390 full members, which adds K51 markup per seat rather than guest revenue. "
+        "The 330-slot guest pool is filled by single-course students at K195 each, producing "
+        "up to K64,350/month per course at full capacity."
     ))
     story.append(body(
         "This document is the financial reference model. Actual performance is tracked "
@@ -410,39 +414,47 @@ def build():
         ["Full member", "K390/month", "Paid seat",
          "All channels", "K51 markup (seat costs K339)"],
         ["Guest", "K195/month", "Single-channel guest",
-         "One course channel", "K195 — no Slack cost"],
+         "One channel at a time — sequential progression, no support channels", "K195 — no Slack cost"],
     ]
     story.append(table_std(pricing_data,
-        [65, 70, 90, 80, CONTENT_W - 305]))
+        [65, 70, 90, 140, CONTENT_W - 365]))
     story.append(body(
         "Exchange rate: K18.82 per USD. Guest rate is half the full member rate. "
         "Guests stay at K195 for one month, then upgrade to K390 or leave. "
         "The K51 markup (K390 − K339 seat cost) is platform revenue only — "
-        "it does not enter the 70/30 course split."
+        "it does not enter the guest revenue split."
+    ))
+    story.append(callout(
+        "Guest channel model:\n"
+        "Each course runs across roughly 4 content channels plus shared support channels "
+        "(announcements, general, Q&A). Guests access one content channel at a time and are "
+        "excluded from support channels. When a guest completes a topic, they submit a request "
+        "to be moved to the next channel — the admin reassigns them within their existing guest slot. "
+        "Full members get immediate access to all channels across all courses."
     ))
     story.append(fact(
-        "40 full members from the launch campaign × K51 = K2,040/month fixed markup income "
-        "before a single guest joins. K2,040 exceeds both Phase 1 (K1,054) and Phase 2 "
-        "(K1,430) overhead — the platform is profitable from day 1 with zero guests."
+        "66 full members from the launch campaign × K51 = K3,366/month fixed markup income "
+        "before a single guest joins. K3,366 exceeds Phases 1 (K1,054), 2 (K1,430), and 3 "
+        "(K2,936) overhead — the platform is profitable through Phase 3 from day 1 with zero guests."
     ))
 
     # ── SECTION 3 — CAMPAIGN MATH ─────────────────────────────────────────
     story += section("ACQUISITION", "Campaign Math")
     story.append(body(
         "The campaign targets full paying members. A K10,000 budget covers both flyer printing "
-        "at K20 per flyer and a K50 commission paid to the campus distributor for each student "
-        "who signs up and pays. At a 10% conversion rate that yields 40 full members. "
-        "Their 40 seats unlock 200 single-channel guest slots across the workspace."
+        "at K10 per flyer and a K50 commission paid to the campus distributor for each student "
+        "who signs up and pays. At a 10% conversion rate that yields 66 full members. "
+        "Their 66 seats unlock 330 single-channel guest slots across the workspace."
     ))
     story.append(formula_box([
-        "Cost per flyer: K20 print + (10% × K50 commission) = K25 total per flyer",
-        "K10,000 ÷ K25 = 400 flyers distributed",
-        "400 × 10% conversion = 40 full members",
-        "40 members × 5 guest slots = 200 guest slots unlocked",
+        "Cost per flyer: K10 print + (10% × K50 commission) = K15 total per flyer",
+        "K10,000 ÷ K15 = 666 flyers distributed",
+        "666 × 10% conversion = 66 full members",
+        "66 members × 5 guest slots = 330 guest slots unlocked",
         "",
-        "Multi-course scenario: students taking 4 courses use 4 slots each",
-        "200 slots ÷ 4 = 50 unique guest students at full utilisation",
-        "Revenue: 50 × K195 × 4 courses = K39,000  vs.  200 × K195 = K39,000  (identical)",
+        "Guest slots = single-course students only (1 slot = 1 student in 1 channel)",
+        "330 guests × K195 = K64,350/month guest revenue ceiling per course",
+        "Multi-course students upgrade to K390 full member — adds K51 markup, no slot used",
     ]))
     story.append(body(
         "Recruiting 50 students who each take multiple courses is far easier than "
@@ -454,40 +466,44 @@ def build():
     story += section("REVENUE STRUCTURE", "How Money Flows")
     story.append(body(
         "Guest revenue moves through two stages. First, 5% comes off the top as team welfare — "
-        "covering data, meals, and transport for the course team. This scales automatically "
-        "as the course grows: the team eats better as guest numbers rise. "
-        "The remaining 95% splits 70/30 between the course team and the platform."
+        "covering data, meals, and transport for the course team. The remaining 95% "
+        "splits three ways: 20% goes directly into the marketing campaign fund, "
+        "60% goes to the course team, and 20% goes to the platform. "
+        "Every rand that flows through the campaign fund buys flyers at K15 effective cost "
+        "and converts to new full members at 10% — the team is funding their own growth."
     ))
     story.append(formula_box([
         "Guest revenue",
-        "  − 5% team welfare  (data, meals, transport)",
+        "  − 5% welfare  (data, meals, transport)",
         "  = distributable revenue",
-        "      → Course team 70%:   Manager 42%  +  Sourcers 28%",
-        "      → Platform 30%",
+        "      → Marketing fund  20%  → campaign (K37.05 per student)",
+        "      → Course team     60%",
+        "      → Platform        20%",
         "",
-        "Platform total  =  Platform 30% of distributable  +  K2,040 full member markup",
+        "Platform total  =  Platform 20% of distributable  +  K3,366 full member markup",
         "Platform net    =  Platform total  −  Overhead",
+        "Campaign total  =  Platform net  +  Marketing fund  (all reinvested)",
     ]))
     story.append(body(
-        "The course team's 70% is never touched by overhead. The platform bears all fixed "
-        "costs from its 30% share plus the markup. The team earns from the first guest — "
+        "The course team's 60% is never touched by overhead. The platform bears all fixed "
+        "costs from its 20% share plus the markup. The team earns from the first guest — "
         "and the platform is already profitable before the first guest ever joins."
     ))
 
     # ── SECTION 5 — OVERHEAD ──────────────────────────────────────────────
     story += section("OVERHEAD", "Cost Phases")
     story.append(body(
-        "Overhead is structured in four phases. With K2,040/month in markup from 40 full "
-        "members, Phases 1 and 2 are both active from launch — the markup alone covers them. "
-        "Phases 3 and 4 unlock as guest revenue builds past the break-even thresholds. "
+        "Overhead is structured in four phases. With K3,366/month in markup from 66 full "
+        "members, Phases 1, 2, and 3 are all active from launch — the markup alone covers them. "
+        "Only Phase 4 requires guest revenue to unlock, and break-even is 30 guests. "
         "All manager costs are platform overhead, never deducted from the team's share."
     ))
     overhead_data = [
         ["Phase", "Trigger", "New cost", "Overhead"],
         ["1 — Launch",     "Course opens",   "Founder Slack K339 + Founder Claude K376 + Manager Slack K339", "K1,054"],
         ["2 — Activate",   "Launch (day 1)", "+ Manager Claude $20 (K376) — markup covers it immediately",     "K1,430"],
-        ["3 — Scale",      "17 guests",      "+ Founder Claude upgrade to $100 (+K1,506)",                     "K2,936"],
-        ["4 — Full build", "44 guests",      "+ Manager Claude upgrade to $100 (+K1,506)",                     "K4,442"],
+        ["3 — Scale",      "Launch (day 1)", "+ Founder Claude upgrade to $100 (+K1,506) — markup covers it immediately", "K2,936"],
+        ["4 — Full build", "30 guests",      "+ Manager Claude upgrade to $100 (+K1,506)",                     "K4,442"],
     ]
     story.append(table_std(overhead_data,
         [70, 72, CONTENT_W - 70 - 72 - 65, 65]))
@@ -495,127 +511,204 @@ def build():
     # ── SECTION 6 — PROFITABILITY TABLES ─────────────────────────────────
     story += section("PROFITABILITY", "Full Model by Guest Count")
     story.append(body(
-        "Table A shows what the course team earns at each guest count. "
-        "Table B shows what the platform earns, including the K2,040/month fixed markup "
-        "from 40 full members. Phases 1 and 2 are profitable at zero guests. "
-        "Phase 3 break-even is at 17 guests; Phase 4 at 44 guests. "
+        "Table A shows what the course team earns at each guest count (60% of distributable). "
+        "Table B shows what the platform earns, "
+        "including the K3,366/month fixed markup from 66 full members. "
+        "Phases 1, 2, and 3 are profitable at zero guests. "
+        "Phase 4 breaks even at 30 guests. "
         "✓ marks the first row where each phase covers its overhead."
     ))
 
     # TABLE A — Team Earnings
     story.append(h3("Table A — Team Earnings (per course, per month)"))
-    cw_a = [55, 62, 73, 82, CONTENT_W - 272]
-    hdr_a = ["Guests", "Revenue", "Welfare 5%", "Manager 42%", "Sourcers 28%"]
+    cw_a = [55, 70, 73, CONTENT_W - 198]
+    hdr_a = ["Guests", "Revenue", "Welfare 5%", "Team 60%"]
 
-    story.append(phase_marker("Phases 1 & 2 — overhead K1,430  |  both active from launch"))
+    story.append(phase_marker("Phases 1, 2 & 3 — overhead K2,936  |  all active from launch"))
     story.append(table_std([
         hdr_a,
-        ["0 ✓",  "K0",      "K0",    "K0",      "K0"],
-        ["10",   "K1,950",  "K98",   "K778",    "K519"],
-        ["20",   "K3,900",  "K195",  "K1,556",  "K1,037"],
-        ["30",   "K5,850",  "K293",  "K2,334",  "K1,556"],
+        ["0 ✓",  "K0",      "K0",    "K0"],
+        ["10",   "K1,950",  "K98",   "K1,112"],
+        ["20",   "K3,900",  "K195",  "K2,223"],
+        ["30",   "K5,850",  "K293",  "K3,335"],
     ], cw_a))
 
-    story.append(phase_marker("Phase 3 — overhead K2,936  |  upgrade founder Claude at 17 guests"))
+    story.append(phase_marker("Phase 4 — overhead K4,442  |  upgrade manager Claude at 30 guests"))
     story.append(table_std([
         hdr_a,
-        ["17 ✓", "K3,315",  "K166",  "K1,323",  "K882"],
-        ["50",   "K9,750",  "K488",  "K3,891",  "K2,594"],
-    ], cw_a))
-
-    story.append(phase_marker("Phase 4 — overhead K4,442  |  upgrade manager Claude at 44 guests"))
-    story.append(table_std([
-        hdr_a,
-        ["44 ✓",    "K8,580",  "K429",   "K3,423",  "K2,282"],
-        ["100",     "K19,500", "K975",   "K7,781",  "K5,187"],
-        ["200 max", "K39,000", "K1,950", "K15,561", "K10,374"],
+        ["30 ✓",    "K5,850",  "K293",   "K3,335"],
+        ["50",      "K9,750",  "K488",   "K5,557"],
+        ["100",     "K19,500", "K975",   "K11,115"],
+        ["330 max", "K64,350", "K3,218", "K36,680"],
     ], cw_a))
 
     # TABLE B — Platform Economics
     story.append(h3("Table B — Platform Economics (per course, per month)"))
     cw_b = [55, 70, 62, 70, CONTENT_W - 257]
-    hdr_b = ["Guests", "Plat. 30%", "Markup", "Overhead", "Net"]
+    hdr_b = ["Guests", "Plat. 20%", "Markup", "Overhead", "Net"]
 
-    story.append(phase_marker("Phases 1 & 2 — overhead K1,430  |  profitable at 0 guests"))
+    story.append(phase_marker("Phases 1, 2 & 3 — overhead K2,936  |  profitable at 0 guests"))
     story.append(table_std([
         hdr_b,
-        ["0 ✓",  "K0",      "K2,040", "K1,430", "+K610"],
-        ["10",   "K556",    "K2,040", "K1,430", "+K1,166"],
-        ["20",   "K1,112",  "K2,040", "K1,430", "+K1,722"],
-        ["30",   "K1,667",  "K2,040", "K1,430", "+K2,277"],
+        ["0 ✓",  "K0",      "K3,366", "K2,936", "+K430"],
+        ["10",   "K371",    "K3,366", "K2,936", "+K801"],
+        ["20",   "K741",    "K3,366", "K2,936", "+K1,171"],
+        ["30",   "K1,112",  "K3,366", "K2,936", "+K1,542"],
     ], cw_b))
 
-    story.append(phase_marker("Phase 3 — overhead K2,936  |  break-even at 17 guests"))
+    story.append(phase_marker("Phase 4 — overhead K4,442  |  break-even at 30 guests"))
     story.append(table_std([
         hdr_b,
-        ["17 ✓", "K945",    "K2,040", "K2,936", "+K49"],
-        ["50",   "K2,779",  "K2,040", "K2,936", "+K1,883"],
-    ], cw_b))
-
-    story.append(phase_marker("Phase 4 — overhead K4,442  |  break-even at 44 guests"))
-    story.append(table_std([
-        hdr_b,
-        ["44 ✓",    "K2,445",  "K2,040", "K4,442", "+K43"],
-        ["100",     "K5,558",  "K2,040", "K4,442", "+K3,156"],
-        ["200 max", "K11,115", "K2,040", "K4,442", "+K8,713"],
+        ["30 ✓",    "K1,112",  "K3,366", "K4,442", "+K36"],
+        ["50",      "K1,853",  "K3,366", "K4,442", "+K777"],
+        ["100",     "K3,705",  "K3,366", "K4,442", "+K2,629"],
+        ["330 max", "K12,227", "K3,366", "K4,442", "+K11,151"],
     ], cw_b))
 
     story.append(Paragraph(
-        "✓ = phase break-even. Net = Plat. 30% + Markup − Overhead. "
-        "Plat. 30% = guests × K195 × 95% × 30% = guests × K55.58.",
+        "✓ = phase break-even. Net = Plat. 20% + Markup − Overhead. "
+        "Plat. 20% = guests × K195 × 95% × 20% = guests × K37.05. "
+        "Team 60% = guests × K185.25 × 60% = guests × K111.15. "
+        "Marketing 20% (guests × K37.05) flows directly to campaign — not shown here.",
         ST["note"]))
 
     # ── SECTION 7 — MILESTONES ────────────────────────────────────────────
     story += section("MILESTONES", "Decision Points")
     story.append(body(
         "Each milestone marks a threshold where the platform activates the next level of "
-        "tooling. With K2,040 in monthly markup, Phases 1 and 2 are both active from launch. "
-        "Only Phases 3 and 4 require guest revenue to unlock."
+        "tooling. With K3,366 in monthly markup, Phases 1, 2, and 3 are all active from launch. "
+        "Only Phase 4 requires guest revenue to unlock, at 30 guests."
     ))
     milestones_data = [
         ["Guests", "Trigger", "Action"],
-        ["0 (launch)", "Campaign complete — 40 full members",
-         "Open course. Activate manager Claude $20 immediately — markup covers Phase 2 from day 1"],
-        ["17", "Phase 3 break-even",
-         "Upgrade founder Claude to $100 (K1,882/month). Net goes from +K1,883 to +K49 then builds"],
-        ["44", "Phase 4 break-even",
-         "Upgrade manager Claude to $100 (K1,882/month). Net goes from +K3,156 to +K43 then builds"],
-        ["200", "All slots filled",
-         "K8,713 net, team earning K27,885 — open waitlist for next course"],
+        ["0 (launch)", "Campaign complete — 66 full members",
+         "Open course. Activate all tooling through Phase 3 immediately — K3,366 markup covers Phases 1, 2, and 3 from day 1"],
+        ["30", "Phase 4 break-even",
+         "Upgrade manager Claude to $100 (K1,882/month). Net goes from +K1,542 to +K36 then builds"],
+        ["330", "All slots filled",
+         "K11,151 net, team earning K39,898 — open waitlist for next course"],
     ]
     story.append(table_std(milestones_data,
         [55, 145, CONTENT_W - 200]))
+
+    # ── SECTION 7b — REINVESTMENT LOOP ───────────────────────────────────
+    story += section("GROWTH ENGINE", "The Reinvestment Loop")
+    story.append(body(
+        "Platform net income goes straight back into the flyer campaign — no extraction, "
+        "no holding. Every month, the full net is converted to flyers at K15 effective cost "
+        "(K10 print + K5 commission reserve). At a steady 10% conversion rate, the loop "
+        "compounds automatically."
+    ))
+    story.append(formula_box([
+        "K150 net income  →  10 flyers  →  1 new full member  →  K51/month markup (permanent)",
+        "",
+        "Payback period:  K150 ÷ K51  =  under 3 months — then pure compounding",
+        "",
+        "Each month's net becomes next month's campaign budget.",
+        "More members → higher markup → larger campaign → more members.",
+    ]))
+    story.append(body(
+        "At launch the net surplus is K430/month — small, but it funds 28 flyers and adds "
+        "roughly 3 new members. Those 3 members add K153/month in markup, lifting the next "
+        "month's net to K583. The month after: K583 buys 38 flyers, adds 4 more members, "
+        "net rises to K787. The campaign never stops — it just gets bigger each cycle."
+    ))
+    reinvest_data = [
+        ["Month", "Net into campaign", "Flyers", "New members", "Cumul. members", "Markup/month"],
+        ["Launch",  "K10,000 (seed)",  "666",  "66",  "66",  "K3,366"],
+        ["1",  "K430",   "28",   "3",   "69",  "K3,519"],
+        ["2",  "K583",   "38",   "4",   "73",  "K3,723"],
+        ["3",  "K787",   "52",   "5",   "78",  "K3,978"],
+        ["6",  "K1,858", "123",  "12",  "106", "K5,406"],
+    ]
+    story.append(table_std(reinvest_data,
+        [40, 95, 48, 72, 105, CONTENT_W - 360]))
+
+    # ── 12-MONTH CONSERVATIVE NPV FORECAST ───────────────────────────────
+    story.append(h3("12-Month NPV Forecast — Conservative Assumptions"))
+    story.append(body(
+        "This forecast is deliberately built to underestimate profit and overestimate risk. "
+        "If the platform performs to these numbers, it is already doing well. "
+        "Real performance is expected to exceed them."
+    ))
+    story.append(body(
+        "Discount rate: 25% p.a. (BOZ policy rate 13.25% plus a conservative 12% risk premium). "
+        "Full member monthly churn: 7% — above the academic-subscription norm, below the "
+        "general edtech benchmark of 8–15% (loyalty.cx). Guest monthly churn: 10%. "
+        "Guest upgrade rate: 2%/month. New guests recruited by course team: 5 in Month 1, "
+        "growing by 3 per month — a deliberately slow ramp. "
+        "Flyer conversion held at 10%. All net income reinvested into campaign each month."
+    ))
+    conservative_data = [
+        ["Mth", "FM", "Guests", "Team 60%", "Founders", "Net", "PV Net", "Cumul. NPV"],
+        ["1",  "66",  "0",   "K0",       "K0",      "K430",    "K422",    "K422"],
+        ["2",  "64",  "5",   "K555",     "K185",    "K513",    "K494",    "K916"],
+        ["3",  "63",  "13",  "K1,445",   "K482",    "K759",    "K718",    "K1,634"],
+        ["4",  "64",  "23",  "K2,557",   "K852",    "K1,180",  "K1,095",  "K2,729"],
+        ["5",  "68",  "35",  "K3,890",   "K1,297",  "K323",    "K294",    "K3,023"],
+        ["6",  "78",  "47",  "K5,224",   "K1,741",  "K1,277",  "K1,142",  "K4,165"],
+        ["7",  "85",  "61",  "K6,780",   "K2,260",  "K2,153",  "K1,890",  "K6,055"],
+        ["8",  "100", "77",  "K8,558",   "K2,853",  "K3,511",  "K3,026",  "K9,081"],
+        ["9",  "124", "93",  "K10,337",  "K3,446",  "K5,328",  "K4,507",  "K13,588"],
+        ["10", "159", "111", "K12,338",  "K4,113",  "K7,780",  "K6,460",  "K20,048"],
+        ["11", "208", "130", "K14,450",  "K4,817",  "K10,983", "K8,951",  "K28,999"],
+        ["12", "275", "149", "K16,562",  "K5,520",  "K15,103", "K12,082", "K41,081"],
+    ]
+    story.append(table_std(conservative_data,
+        [28, 32, 44, 62, 56, 52, 54, CONTENT_W - 328]))
+    story.append(Paragraph(
+        "FM = full members at start of month. Team 60% = guests x K185.25 x 60%. "
+        "Founders = Platform 20% of distributable (guests x K37.05) — extracted as personal income. "
+        "Net = Marketing 20% + FM markup − overhead — stays in business, reinvests into campaign. "
+        "Overhead K2,936 until 30 guests (Phase 4 triggers), then K4,442. "
+        "Month 5 dips to K323 at Phase 4 trigger — never negative. "
+        "Per founder: divide Founders column by 3. "
+        "PV at 25% p.a. — DF = 1/(1.25)^(n/12). "
+        "12m undiscounted net: K49,340. NPV: K41,081.",
+        ST["note"]))
+    story.append(callout(
+        "Conservative 12-month NPV at 25% p.a.: K41,081\n"
+        "Undiscounted net over 12 months: K49,340\n"
+        "Month 12: 275 FM, 149 guests, K15,103 net/month\n"
+        "Always net positive — floor K323 in Month 5 (Phase 4 trigger).\n"
+        "Higher churn, slower growth, 25% discount — real performance should exceed this floor."
+    ))
+    story.append(fact(
+        "The campaign is never a one-time spend. It is a permanent engine: "
+        "net income in → flyers out → members in → more net → repeat. "
+        "The K10,000 seed starts the loop. After that, the platform funds its own growth."
+    ))
 
     # ── SECTION 8 — ROLLOUT ───────────────────────────────────────────────
     story += section("ROLLOUT", "Course Launch Sequence")
     story.append(body(
         "No course opens without at least one confirmed guest commitment — this confirms "
-        "real demand before hiring a manager. The threshold is low because the K2,040 markup "
-        "already covers all overhead through Phase 2 from launch."
+        "real demand before hiring a manager. The threshold is low because the K3,366 markup "
+        "already covers all overhead through Phase 3 from launch, including all four courses."
     ))
     rollout_data = [
         ["Course", "Min. guests", "Why"],
         ["Course 1", "1 committed",
-         "K2,040 markup > K1,054 overhead — profitable immediately"],
+         "K3,366 markup > K1,054 overhead — profitable immediately"],
         ["Course 2", "1 committed",
-         "K2,040 > K1,393 (adds K339 manager seat) — still covered by markup"],
+         "K3,366 > K1,393 (adds K339 manager seat) — still covered by markup"],
         ["Course 3", "1 committed",
-         "K2,040 > K1,732 (adds another K339) — still covered"],
+         "K3,366 > K1,732 (adds another K339) — still covered"],
         ["Course 4", "1 committed",
-         "K2,040 vs K2,071 (adds third K339) — K31 gap, covered by 1 guest"],
+         "K3,366 > K2,071 (adds third K339) — covered by markup, no guests required"],
     ]
     story.append(table_std(rollout_data,
         [60, 90, CONTENT_W - 150]))
     story.append(callout(
         "Rollout sequence:\n"
-        "Campaign → 40 full members (200 guest slots unlocked)\n"
+        "Campaign → 66 full members (330 guest slots unlocked)\n"
         "→ Waitlist opens for Course 1\n"
         "→ 1 guest committed → Course 1 launches, manager hired\n"
         "→ Waitlist opens for Course 2\n"
         "→ 1 guest committed → Course 2 launches, manager hired\n"
         "→ Repeat for Courses 3 and 4\n"
         "\n"
-        "At four courses running with 50 four-course students: K39,000/month total guest revenue."
+        "At four courses running at full capacity: K64,350/month guest revenue per course."
     ))
 
     # ── SECTION 9 — TEAM STRUCTURE ───────────────────────────────────────
@@ -627,11 +720,11 @@ def build():
         "and are matched before launch. No person crosses courses."
     ))
     story.append(formula_box([
-        "Manager:   42% of distributable guest revenue",
-        "Sourcers:  28% of distributable guest revenue  (split among the sourcing team)",
-        "Welfare:    5% of gross guest revenue  (data, meals, transport — off the top)",
+        "Course team:      60% of distributable guest revenue  (Manager 36% + Sourcers 24%)",
+        "Marketing fund:   20% of distributable guest revenue  → campaign",
+        "Welfare:           5% of gross guest revenue  (data, meals, transport — off the top)",
         "",
-        "At 200 guests max:  Manager K15,561  +  Sourcers K10,374  +  Welfare K1,950  =  K27,885 to team",
+        "At 330 guests max:  Course team K36,680  +  Welfare K3,218  =  K39,898 to team",
     ]))
     story.append(body(
         "Welfare is not a fixed amount — it grows with the course. "
@@ -641,8 +734,8 @@ def build():
     ))
     story.append(fact(
         "All platform overhead — founder Slack, founder Claude, manager Slack seat, "
-        "manager Claude — is borne by the platform from its 30% share and the full member "
-        "markup. The course team's 70% is never reduced by overhead at any stage."
+        "manager Claude — is borne by the platform from its 20% share and the full member "
+        "markup. The course team's 60% is never reduced by overhead at any stage."
     ))
 
     # ── SECTION 10 — WEEKLY PAYOUTS ──────────────────────────────────────
@@ -654,11 +747,11 @@ def build():
     ))
     story.append(formula_box([
         "Per student payment received:",
-        "  K195 × 5%  = K9.75  welfare (retained for team data/meals/transport pool)",
+        "  K195 × 5%  = K9.75    welfare (team data/meals/transport pool)",
         "  K195 × 95% = K185.25  distributable",
-        "    → Manager  42% = K77.81",
-        "    → Sourcers 28% = K51.87  (divided among sourcing team)",
-        "    → Platform 30% = K55.58  (retained by platform)",
+        "    → Marketing  20% = K37.05   (straight to campaign fund)",
+        "    → Course team 60% = K111.15  (Manager + Sourcers)",
+        "    → Platform   20% = K37.05   (retained by platform)",
     ]))
     story.append(h3("Weekly Payout by Batch Size"))
     story.append(body(
@@ -667,15 +760,15 @@ def build():
         "Pay what came in that week. Do not hold."
     ))
     payout_data = [
-        ["Guests paid", "Gross", "Welfare", "Manager", "Sourcers", "Platform share"],
-        ["1",   "K195",    "K9.75",  "K77.81",   "K51.87",   "K55.58"],
-        ["5",   "K975",    "K48.75", "K389.03",  "K259.35",  "K277.88"],
-        ["10",  "K1,950",  "K97.50", "K778.05",  "K518.70",  "K555.75"],
-        ["20",  "K3,900",  "K195",   "K1,556.10","K1,037.40","K1,111.50"],
-        ["50",  "K9,750",  "K487.50","K3,890.25","K2,593.50","K2,778.75"],
+        ["Guests paid", "Gross", "Welfare", "Marketing", "Team 60%", "Platform"],
+        ["1",   "K195",   "K9.75",   "K37.05",    "K111.15",   "K37.05"],
+        ["5",   "K975",   "K48.75",  "K185.25",   "K555.75",   "K185.25"],
+        ["10",  "K1,950", "K97.50",  "K370.50",   "K1,111.50", "K370.50"],
+        ["20",  "K3,900", "K195.00", "K741.00",   "K2,223.00", "K741.00"],
+        ["50",  "K9,750", "K487.50", "K1,852.50", "K5,557.50", "K1,852.50"],
     ]
     story.append(table_std(payout_data,
-        [70, 55, 55, 72, 72, CONTENT_W - 324]))
+        [60, 50, 54, 66, 72, CONTENT_W - 302]))
     story.append(body(
         "Full member markup (K2,040/month) goes entirely to the platform and is not "
         "distributed weekly to the team. Transfer it to the platform account once per month "
@@ -685,7 +778,7 @@ def build():
         "How to run it each Friday:\n"
         "1. Open your payment log (WhatsApp thread or spreadsheet)\n"
         "2. Sum all guest payments received Monday–Friday\n"
-        "3. Apply the formula: Gross × 95% × 42% → Manager, × 28% → Sourcers\n"
+        "3. Apply the formula: Gross × 95% × 60% → Course team\n"
         "4. Transfer via Airtel/MTN Mobile Money — same day\n"
         "5. Log: 'Week ending [date] — [N] payments — Manager K[X] sent ✓'\n"
         "\n"
