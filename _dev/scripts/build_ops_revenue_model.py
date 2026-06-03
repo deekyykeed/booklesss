@@ -669,6 +669,20 @@ def build():
         "Always net positive — floor K6,100 in Month 2.\n"
         "Higher churn, slower growth, 25% discount — real performance should exceed this floor."
     ))
+    story.append(formula_box([
+        "HOW MUCH BOOKLESSS GROWS — 12 months at K500 / K250 pricing",
+        "",
+        "Full members:          66  →  275          +317%",
+        "Monthly net income:    K6,184  →  K46,911   +658%",
+        "Course team income:    K0      →  K21,233/month",
+        "Each founder's share:  K0      →  K2,359/month  (Founders column ÷ 3)",
+        "",
+        "Year 1 cumulative net retained in business:  K200,035",
+        "Year 1 NPV (25% discount rate):              K169,768",
+        "",
+        "These are the conservative numbers — 7% member churn, slow guest ramp,",
+        "10% flyer conversion. Real growth should be faster.",
+    ]))
     story.append(fact(
         "The campaign is never a one-time spend. It is a permanent engine: "
         "net income in → flyers out → members in → more net → repeat. "
@@ -679,8 +693,8 @@ def build():
     story += section("ROLLOUT", "Course Launch Sequence")
     story.append(body(
         "No course opens without at least one confirmed guest commitment — this confirms "
-        "real demand before hiring a manager. The threshold is low because the K3,366 markup "
-        "already covers all overhead through Phase 3 from launch, including all four courses."
+        "real demand before hiring a manager. The threshold is low because the K10,626 markup "
+        "already covers all overhead through Phase 4 from launch, including all four courses."
     ))
     rollout_data = [
         ["Course", "Min. guests", "Why"],
