@@ -10,7 +10,7 @@
 |------|-------|-----------------|---------------|
 | **Free Trial** | K0 (1 month) | Single-channel guest | One course channel, free trial of Booklesss — no card required |
 | **Notes** | K250/month | Single-channel guest | One course channel — lesson PDFs, discussion, past papers |
-| **Community** | K800/month | Full paid member | All course channels, full Slack workspace, quizzes, everything |
+| **Community** | K500/month | Full paid member | All course channels, full Slack workspace, quizzes, everything |
 | **Custom** | Negotiated | Full paid member | Personalized 1-on-1 tutoring, dedicated support, custom study plan |
 
 **The funnel:** Free trial (1 month, one channel) → stay at K250 (one course, ongoing) → upgrade to K800 (full access) → Custom for students who need more.
@@ -23,9 +23,9 @@ Everyone starts with the free trial. No card, no commitment.
 
 **K250 students cost you nothing on Slack.** Single-channel guests are free on Slack Pro — up to **5 guests per paid member**. So K250/month is 100% margin.
 
-**K800 students are the only Slack cost.** Each full member is a paid Slack seat (~K219/mo on Pro monthly, K181/mo on Pro annual). Margin at K800: 73% monthly, 77% annual.
+**K500 students are the only Slack cost.** Each full member is a paid Slack seat (K339/mo on Business+). Margin at K500: 32%.
 
-**The guest ratio scales with paying members.** If you have 5 K800 students, you can host up to 25 K250 students at zero extra Slack cost.
+**The guest ratio scales with paying members.** If you have 5 K500 students, you can host up to 25 K250 students at zero extra Slack cost.
 
 ---
 
@@ -54,22 +54,22 @@ Everyone starts with the free trial. No card, no commitment.
 
 *Constrained by guest ratio: need 1 paid K500 member per 5 K250 guests.*
 
-### K800/month (Community tier — full member)
+### K500/month (Community tier — full member)
 
-| Students | Revenue | Slack Cost (Pro monthly) | Net Profit | Margin |
-|----------|---------|--------------------------|------------|--------|
-| 1 | K800 | K219 | K581 | 73% |
-| 5 | K4,000 | K1,095 | K2,905 | 73% |
-| 10 | K8,000 | K2,190 | K5,810 | 73% |
-| 20 | K16,000 | K4,380 | K11,620 | 73% |
+| Students | Revenue | Slack Cost (Business+) | Net Profit | Margin |
+|----------|---------|------------------------|------------|--------|
+| 1 | K500 | K339 | K161 | 32% |
+| 5 | K2,500 | K1,695 | K805 | 32% |
+| 10 | K5,000 | K3,390 | K1,610 | 32% |
+| 20 | K10,000 | K6,780 | K3,220 | 32% |
 
 ### Mixed cohort example (5 full + 25 notes)
 
 | | Revenue | Slack Cost | Net Profit |
 |---|---------|------------|------------|
-| 5 × K800 | K4,000 | K1,095 | — |
+| 5 × K500 | K2,500 | K1,695 | — |
 | 25 × K250 | K6,250 | K0 | — |
-| **Total** | **K10,250** | **K1,095** | **K9,155 (89%)** |
+| **Total** | **K8,750** | **K1,695** | **K7,055 (81%)** |
 
 ---
 
@@ -106,10 +106,10 @@ Single-channel guests during free trial count against the guest ratio but cost n
 
 | Milestone | What it takes | Monthly Revenue |
 |-----------|---------------|-----------------|
-| Cover Slack (your seat) | 1 K800 student | K800 |
-| K1,000 net/month | ~3 K800 + 5 K250 | K3,650 |
-| K3,000 net/month | ~6 K800 + 20 K250 | K9,800 |
-| K5,000 net/month | ~10 K800 + 30 K250 | K15,500 |
+| Cover Slack (your seat) | 1 K500 student | K500 |
+| K1,000 net/month | ~2 K500 + 3 K250 | K1,750 |
+| K3,000 net/month | ~8 K500 + 8 K250 | K6,000 |
+| K5,000 net/month | ~12 K500 + 12 K250 | K9,000 |
 
 ---
 

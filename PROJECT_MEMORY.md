@@ -6,7 +6,8 @@
 
 ## Next Session
 
-- [ ] Revenue model is still being stress-tested — review numbers before treating as final. Key areas to verify: Phase 4 overhead timing, FM churn assumptions, guest ramp rate.
+- [ ] Draft outreach messages to potential collaborators — user raised this at end of session but it wasn't actioned. Need to know who the people are and what help is being asked for.
+- [ ] Update Booklesss website pricing page manually in Framer: Community tier K800 → K500 (user confirmed they will do this themselves).
 - [ ] Strip the Slack invite link from CF **Step 1.1**'s `community_closer()` to match the new "no marketing links in PDF body" rule. 1.2 already has no link; 1.1 still does — flagged in chat but not actioned.
 - [ ] Roll the v2 standard + no-course-skeleton rule across the remaining CF steps: **1.3, 2.1, 2.2, 3.1, 3.2, 4.1, 4.2, 5.1**. Their scripts still use the old crimson/navy palette and Linux font paths; need cream + jade + vendored Aptos/Parastoo + flat output path + the new orientation framing (no 10-step map).
 - [ ] Extract a shared brand module (`booklesss_brand.py`) so the next 8 CF rebuilds aren't ~600 lines of copy-pasted foundation each.
@@ -27,6 +28,29 @@
 ---
 
 ## Session Log
+
+### Session 2026-06-03 (2)
+**Done:**
+- Repriced Booklesss subscription tiers: **Full member K500/month**, **Guest K250/month**.
+  - Formula: Full member = Slack Business+ seat (K339) + K161 markup. Guest = K161 markup only (no Slack cost). Both tiers yield the same per-seat profit of ~K161.
+- Updated `Finances/pricing-strategy.md`: Community tier K800 → K500, unit economics tables, mixed cohort example, revenue targets.
+- Updated `operations/dashboard.html`: `PRICE=250`, `MARKUP_PER=161` (dashboard recalculates automatically).
+- Updated `_dev/scripts/build_ops_revenue_model.py` throughout — all 10 sections: pricing table, campaign math, overhead narrative (Phase 4 now active from day 1 since K10,626 markup > K4,442), profitability tables (Table A + B), milestones, reinvestment loop, NPV forecast, weekly payout table.
+  - 12-month NPV: K41,081 → **K169,768**. Undiscounted net: K49,340 → **K200,035**.
+  - Phase 4 "break-even at 30 guests" milestone removed — markup alone covers it from launch.
+- Rebuilt `operations/Revenue Model - Booklesss.pdf`.
+- Updated memory file `project_revenue_model.md` with new prices and NPV figures.
+
+**What Worked:**
+- The equal-profit-per-seat logic (guest price = markup only) is a clean, elegant framing — made the pricing decision fast and defensible.
+- Updating just two JS constants (`PRICE`, `MARKUP_PER`) in the dashboard HTML means all derived calculations in the browser recalculate automatically — no other dashboard edits needed.
+
+**Dead Ends (do not retry):**
+- None.
+
+**Next:** Outreach messages not drafted — user raised potential collaborators at end of session but session ended. Pick up next time.
+
+---
 
 ### Session 2026-06-03
 **Done:**

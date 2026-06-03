@@ -1,6 +1,6 @@
 # Strategic Management — Course Status
 
-**Last updated:** 2026-05-26
+**Last updated:** 2026-06-03
 
 ---
 
@@ -41,8 +41,8 @@ lesson always restarts at `.1`.
 
 | Step | Title | Source | PDF | Posted | Channel |
 |------|-------|--------|-----|--------|---------|
-| 1.1 | Introduction to Corporate Strategy | `_source/1. Introduction to Corporate Strategy.pdf` | ✅ | — | `#sm-foundations` |
-| 1.2 | Vision, Mission & Objectives | `_source/2. Mission and Vision.pdf` | ✅ | — | `#sm-foundations` |
+| 1.1 | Introduction to Corporate Strategy | `_source/1. Introduction to Corporate Strategy.pdf` | ✅ v2 | — | `#sm-foundations` |
+| 1.2 | Vision, Mission & Objectives | `_source/2. Mission and Vision.pdf` | ✅ v2 | — | `#sm-foundations` |
 | 2.1 | External Environment (PESTEL, Porter's Five Forces) | `_source/3. External Environment.pdf` | ✅ | — | `#sm-environment` |
 | 2.2 | Internal Environment (SWOT, Value Chain, VRIO) | `_source/4. Corporate Internal Environment.pdf` | ✅ | ✅ 2026-03-24 | `#sm-environment` |
 | 3.1 | Strategy Implementation | `_source/5. Strategic Management Module.pdf` + `_source/6.` | ✅ | — | `#sm-strategy` |
@@ -78,8 +78,8 @@ All source PDFs are in `_source/` directly (no subfolders):
 
 | Step | PDF Path |
 |------|----------|
-| 1.1 | `01-foundations/01-intro-to-strategy/Step 1.1 - Introduction to Corporate Strategy.pdf` |
-| 1.2 | `01-foundations/02-mission-and-vision/Step 1.2 - Vision, Mission & Objectives.pdf` |
+| 1.1 | `01-foundations/Step 1.1 - Introduction to Corporate Strategy.pdf` |
+| 1.2 | `01-foundations/Step 1.2 - Vision, Mission & Objectives.pdf` |
 | 2.1 | `02-environment/03-external-environment/Step 2.1 - The External Environment.pdf` |
 | 2.2 | `02-environment/04-internal-environment/Step 2.2 - The Internal Environment.pdf` |
 | 3.1 | `03-strategy/05-strategy-implementation/Step 3.1 - Strategy Implementation.pdf` |
@@ -98,9 +98,10 @@ All source PDFs are in `_source/` directly (no subfolders):
 | 3.1 | `_dev/scripts/build_sm_3_1_strategy-implementation.py` |
 | 3.2 | `_dev/scripts/build_sm_3_2_competitive-strategy.py` |
 
-> Scripts use Linux fonts (DejaVu/Liberation) and build on the Linux box. Internal
-> step labels and cross-references were renumbered to the new scheme on 2026-05-26;
-> rebuild on Linux to regenerate the PDFs (the on-disk PDFs were renamed in place).
+> **Lesson 1 complete at v2 standard (2026-06-03):** cream paper, cardinal red accent,
+> Parastoo/Aptos vendored fonts, CF-style structure (orientation framing, 5 sections,
+> 2 Zambian discussion questions, learning outcomes). Both build on Windows.
+> Steps 2.1–3.2 still use old Linux fonts — need v2 rebuild.
 
 ---
 

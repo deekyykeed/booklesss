@@ -1,464 +1,539 @@
 """
-Booklesss Lesson PDF — Step 1.1: Introduction to Corporate Strategy
+Booklesss — Step 1.1: Introduction to Corporate Strategy
 Course: Strategic Management
-Style: Slate-navy cover, white body, cardinal red accent, Georgia serif display, Calibri body.
+Style: Cream paper · cardinal red accent · Parastoo serif titles · Aptos body
 """
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
-from reportlab.lib.units import cm, mm
+from reportlab.lib.units import cm
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_LEFT, TA_CENTER
 from reportlab.platypus import (
     BaseDocTemplate, PageTemplate, Frame, Paragraph, Spacer,
-    Table, TableStyle, KeepTogether, HRFlowable, PageBreak, NextPageTemplate
+    Table, TableStyle, KeepTogether, HRFlowable, PageBreak, NextPageTemplate, Flowable
 )
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib.utils import ImageReader
+import os
 
-# ─────────────────────────────────────────────
-#  FONTS
-# ─────────────────────────────────────────────
-F = r"C:\Windows\Fonts"
-pdfmetrics.registerFont(TTFont("Georgia",        F + r"\georgia.ttf"))
-pdfmetrics.registerFont(TTFont("Georgia-Bold",   F + r"\georgiab.ttf"))
-pdfmetrics.registerFont(TTFont("Georgia-Italic", F + r"\georgiai.ttf"))
-pdfmetrics.registerFontFamily("Georgia", normal="Georgia", bold="Georgia-Bold", italic="Georgia-Italic")
+# ── FONTS ──────────────────────────────────────────────────────────────────
+FONT_DIR = os.path.join(os.path.dirname(__file__), "..", "fonts")
 
-pdfmetrics.registerFont(TTFont("Calibri",        F + r"\calibri.ttf"))
-pdfmetrics.registerFont(TTFont("Calibri-Bold",   F + r"\calibrib.ttf"))
-pdfmetrics.registerFont(TTFont("Calibri-Italic", F + r"\calibrii.ttf"))
-pdfmetrics.registerFontFamily("Calibri", normal="Calibri", bold="Calibri-Bold", italic="Calibri-Italic")
+def _reg(name, filename):
+    pdfmetrics.registerFont(TTFont(name, os.path.join(FONT_DIR, filename)))
 
-# ─────────────────────────────────────────────
-#  COLOURS
-# ─────────────────────────────────────────────
-C_DARK      = colors.HexColor("#0F1F35")   # slate-navy cover
-C_GOLD      = colors.HexColor("#C9920A")   # warm gold accent
-C_GOLD_DK   = colors.HexColor("#92660A")   # dark gold
-C_INK       = colors.HexColor("#111827")   # primary text
-C_STEEL     = colors.HexColor("#6B7280")   # secondary text
-C_MIST      = colors.HexColor("#9CA3AF")   # meta / captions
-C_RULE      = colors.HexColor("#E5E7EB")   # light dividers
-C_AMBER     = colors.HexColor("#C17E3A")   # amber hairlines (global brand)
-C_WHITE     = colors.white
+_reg("Body",            "Aptos.ttf")
+_reg("Body-Bold",       "Aptos-Bold.ttf")
+_reg("Body-Italic",     "Aptos-Italic.ttf")
+_reg("Body-BoldItalic", "Aptos-Bold-Italic.ttf")
+pdfmetrics.registerFontFamily("Body", normal="Body", bold="Body-Bold",
+                              italic="Body-Italic", boldItalic="Body-BoldItalic")
+_reg("Display-Bold",    "parkinsans-v3-latin-700.ttf")
+_reg("Title",           "Parastoo.ttf")
+_reg("Title-Bold",      "Parastoo-Bold.ttf")
+pdfmetrics.registerFontFamily("Title", normal="Title", bold="Title-Bold",
+                              italic="Title", boldItalic="Title-Bold")
 
-BG_WARN     = colors.HexColor("#FEF3C7")
-C_WARN_TXT  = colors.HexColor("#92400E")
-BG_INFO     = colors.HexColor("#EFF6FF")
-C_INFO_TXT  = colors.HexColor("#1D4ED8")
-BG_NOTE     = colors.HexColor("#FEF2F2")
-C_NOTE_TXT  = colors.HexColor("#991B1B")
+# ── BRAND ASSETS ───────────────────────────────────────────────────────────
+BRAND_DIR   = os.path.join(os.path.dirname(__file__), "..", "brand")
+LOGO_BLACK  = os.path.join(BRAND_DIR, "booklesss-logo-black.png")
+MARK_BLACK  = os.path.join(BRAND_DIR, "booklesss-mark-black.png")
+GRAIN       = os.path.join(BRAND_DIR, "grain.png")
+_logo_black = ImageReader(LOGO_BLACK) if os.path.exists(LOGO_BLACK) else None
+_mark_black = ImageReader(MARK_BLACK) if os.path.exists(MARK_BLACK) else None
+_grain      = ImageReader(GRAIN)      if os.path.exists(GRAIN)      else None
 
-# ─────────────────────────────────────────────
-#  PAGE GEOMETRY
-# ─────────────────────────────────────────────
-W, H        = A4
-MX          = 2.2 * cm
-MY          = 2.0 * cm
-CONTENT_W   = W - 2 * MX
+# ── COLOURS ─────────────────────────────────────────────────────────────────
+C_COVER      = colors.HexColor("#FFFDE8")
+C_PAGE       = colors.HexColor("#FFFEF2")
+TITLE_DARK   = colors.HexColor("#121212")
+HEADING_DARK = colors.HexColor("#3D3D3D")
+C_RED        = colors.HexColor("#DC2626")
+C_RED_DK     = colors.HexColor("#991B1B")
+C_INK        = colors.HexColor("#1A1A16")
+C_STEEL      = colors.HexColor("#5F6B65")
+C_MIST       = colors.HexColor("#6E6A5E")
+C_RULE       = colors.HexColor("#E0DACB")
+BG_FORMULA   = colors.HexColor("#FFF0F0")
+BG_CALLOUT   = colors.HexColor("#FEF2F2")
 
-CHANNEL_URL  = "https://bookless10.slack.com/archives/C0AN0T2HGR0"
-CHANNEL_NAME = "sm-foundations"
+# ── PAGE GEOMETRY ──────────────────────────────────────────────────────────
+W, H      = A4
+MX        = 2.2 * cm
+MY        = 2.0 * cm
+CONTENT_W = W - 2 * MX
 
 OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..",
-           "courses", "Strategic Management", "01-foundations", "01-intro-to-strategy")
+           "courses", "Strategic Management", "01-foundations")
 OUT_PATH = os.path.join(OUT_DIR, "Step 1.1 - Introduction to Corporate Strategy.pdf")
 
-# ─────────────────────────────────────────────
-#  STYLES
-# ─────────────────────────────────────────────
+# ── STYLES ─────────────────────────────────────────────────────────────────
 def make_styles():
     return {
-        # Cover
-        "cover_eyebrow": ParagraphStyle("cover_eyebrow",
-            fontName="Calibri-Bold", fontSize=7.5, textColor=C_GOLD,
-            leading=11, spaceAfter=12, alignment=TA_LEFT),
+        "cover_step": ParagraphStyle("cover_step",
+            fontName="Body-Bold", fontSize=9, textColor=HEADING_DARK,
+            leading=13, spaceAfter=0, alignment=TA_CENTER),
         "cover_title": ParagraphStyle("cover_title",
-            fontName="Georgia-Bold", fontSize=30, textColor=C_WHITE,
-            leading=36, spaceAfter=12, alignment=TA_LEFT),
+            fontName="Title-Bold", fontSize=42, textColor=TITLE_DARK,
+            leading=46, spaceAfter=0, alignment=TA_CENTER),
         "cover_sub": ParagraphStyle("cover_sub",
-            fontName="Calibri", fontSize=10.5, textColor=C_MIST,
-            leading=16, spaceAfter=0, alignment=TA_LEFT),
-
-        # Body
+            fontName="Body", fontSize=11.5, textColor=C_MIST,
+            leading=17, spaceAfter=4, alignment=TA_CENTER),
+        "cover_meta": ParagraphStyle("cover_meta",
+            fontName="Body", fontSize=9, textColor=C_MIST,
+            leading=14, spaceAfter=2, alignment=TA_CENTER),
         "eyebrow": ParagraphStyle("eyebrow",
-            fontName="Calibri-Bold", fontSize=7, textColor=C_GOLD,
-            leading=10, spaceAfter=3, spaceBefore=18, alignment=TA_LEFT),
+            fontName="Body-Bold", fontSize=7, textColor=C_RED,
+            leading=10, spaceAfter=3, spaceBefore=18, alignment=TA_LEFT,
+            keepWithNext=1),
         "h2": ParagraphStyle("h2",
-            fontName="Georgia-Bold", fontSize=15, textColor=C_INK,
-            leading=19, spaceAfter=8, alignment=TA_LEFT),
+            fontName="Title-Bold", fontSize=17, textColor=HEADING_DARK,
+            leading=20, spaceAfter=8, alignment=TA_LEFT,
+            keepWithNext=1),
         "h3": ParagraphStyle("h3",
-            fontName="Calibri-Bold", fontSize=11, textColor=C_STEEL,
-            leading=15, spaceAfter=5, spaceBefore=10, alignment=TA_LEFT),
+            fontName="Body-Bold", fontSize=11, textColor=C_STEEL,
+            leading=15, spaceAfter=5, spaceBefore=10, alignment=TA_LEFT,
+            keepWithNext=1),
         "body": ParagraphStyle("body",
-            fontName="Calibri", fontSize=10.5, textColor=C_INK,
+            fontName="Body", fontSize=10.5, textColor=C_INK,
             leading=17, spaceAfter=6, alignment=TA_LEFT),
         "bullet": ParagraphStyle("bullet",
-            fontName="Calibri", fontSize=10.5, textColor=C_INK,
-            leading=17, spaceAfter=4, leftIndent=14, bulletIndent=0,
-            alignment=TA_LEFT),
-        "caption": ParagraphStyle("caption",
-            fontName="Calibri-Italic", fontSize=8, textColor=C_MIST,
-            leading=12, spaceAfter=4, alignment=TA_LEFT),
-
-        # Callout types
-        "warn_text": ParagraphStyle("warn_text",
-            fontName="Calibri", fontSize=9.5, textColor=C_WARN_TXT,
-            leading=15, alignment=TA_LEFT),
-        "info_text": ParagraphStyle("info_text",
-            fontName="Calibri", fontSize=9.5, textColor=C_INFO_TXT,
-            leading=15, alignment=TA_LEFT),
-        "note_text": ParagraphStyle("note_text",
-            fontName="Calibri", fontSize=9.5, textColor=C_NOTE_TXT,
-            leading=15, alignment=TA_LEFT),
-
-        # Table cells
+            fontName="Body", fontSize=10.5, textColor=C_INK,
+            leading=17, spaceAfter=4, leftIndent=14, alignment=TA_LEFT),
+        "fact": ParagraphStyle("fact",
+            fontName="Body-Bold", fontSize=10, textColor=C_RED_DK,
+            leading=16, spaceAfter=6, alignment=TA_LEFT),
         "th": ParagraphStyle("th",
-            fontName="Calibri-Bold", fontSize=9, textColor=C_INK,
+            fontName="Body-Bold", fontSize=9, textColor=C_INK,
             leading=13, alignment=TA_LEFT),
         "td": ParagraphStyle("td",
-            fontName="Calibri", fontSize=9, textColor=C_INK,
+            fontName="Body", fontSize=9, textColor=C_INK,
             leading=13, alignment=TA_LEFT),
-
-        # Outcomes
+        "discuss_q": ParagraphStyle("discuss_q",
+            fontName="Body-Italic", fontSize=10, textColor=C_INK,
+            leading=16, spaceAfter=4, alignment=TA_LEFT),
         "outcome": ParagraphStyle("outcome",
-            fontName="Calibri", fontSize=10.5, textColor=C_INK,
+            fontName="Body", fontSize=10, textColor=C_INK,
             leading=16, spaceAfter=5, leftIndent=14, alignment=TA_LEFT),
-        "next_step": ParagraphStyle("next_step",
-            fontName="Calibri-Bold", fontSize=9.5, textColor=C_STEEL,
-            leading=14, spaceBefore=14, alignment=TA_LEFT),
-
-        # Channel button
-        "btn_eyebrow": ParagraphStyle("btn_eyebrow",
-            fontName="Calibri-Bold", fontSize=7, textColor=C_WHITE,
-            leading=10, spaceAfter=5, alignment=TA_LEFT),
-        "btn_body": ParagraphStyle("btn_body",
-            fontName="Calibri-Bold", fontSize=10.5, textColor=C_WHITE,
-            leading=16, alignment=TA_LEFT),
-        "btn_sub": ParagraphStyle("btn_sub",
-            fontName="Calibri", fontSize=9, textColor=colors.HexColor("#FCA5A5"),
-            leading=14, alignment=TA_LEFT),
+        "community": ParagraphStyle("community",
+            fontName="Body", fontSize=9.5, textColor=C_STEEL,
+            leading=15, spaceAfter=5, alignment=TA_LEFT),
+        "community_end": ParagraphStyle("community_end",
+            fontName="Body-Bold", fontSize=9.5, textColor=C_RED_DK,
+            leading=15, alignment=TA_LEFT),
     }
 
 ST = make_styles()
 
-# ─────────────────────────────────────────────
-#  CANVAS CALLBACKS
-# ─────────────────────────────────────────────
+# ── CANVAS CALLBACKS ───────────────────────────────────────────────────────
+def _paint_paper(canvas, bg):
+    canvas.setFillColor(bg)
+    canvas.rect(0, 0, W, H, fill=1, stroke=0)
+    if _grain is not None:
+        canvas.drawImage(_grain, 0, 0, width=W, height=H, mask="auto")
+
 def cover_bg(canvas, doc):
     canvas.saveState()
-    canvas.setFillColor(C_DARK)
-    canvas.rect(0, 0, W, H, fill=1, stroke=0)
-    # Cardinal red left strip
-    canvas.setFillColor(C_GOLD)
-    canvas.rect(0, 0, 5, H, fill=1, stroke=0)
-    # Ghost step number
-    canvas.setFont("Georgia-Bold", 160)
-    canvas.setFillColor(colors.HexColor("#182F4A"))
-    canvas.drawRightString(W - MX, MY + 40, "1.1")
+    _paint_paper(canvas, C_COVER)
+    top_y = H - MY + 6
+    if _logo_black is not None:
+        iw, ih = _logo_black.getSize()
+        lh = 15
+        canvas.drawImage(_logo_black, MX, top_y - 5,
+                         width=lh * iw / ih, height=lh,
+                         preserveAspectRatio=True, mask="auto")
+    else:
+        canvas.setFont("Body-Bold", 8.5)
+        canvas.setFillColor(HEADING_DARK)
+        canvas.drawString(MX, top_y, "BOOKLESSS")
+    canvas.setFont("Body", 8.5)
+    canvas.setFillColor(C_MIST)
+    canvas.drawRightString(W - MX, top_y, "STRATEGIC MANAGEMENT")
+    canvas.setStrokeColor(C_RULE)
+    canvas.setLineWidth(0.8)
+    canvas.line(MX, top_y - 6, W - MX, top_y - 6)
+    canvas.restoreState()
+
+def page_bg(canvas, doc):
+    canvas.saveState()
+    _paint_paper(canvas, C_PAGE)
     canvas.restoreState()
 
 def body_page(canvas, doc):
     canvas.saveState()
-    page_num = doc.page
-    canvas.setStrokeColor(C_AMBER)
-    canvas.setLineWidth(0.5)
+    pn = doc.page
+    canvas.setStrokeColor(C_RED)
+    canvas.setLineWidth(0.6)
     canvas.line(MX, H - MY + 4, W - MX, H - MY + 4)
-    canvas.setFont("Calibri", 7.5)
+    canvas.setFont("Body", 7.5)
     canvas.setFillColor(C_STEEL)
     canvas.drawString(MX, H - MY + 7, "1.1 — Introduction to Corporate Strategy")
-    canvas.drawRightString(W - MX, H - MY + 7, "v1 · March 2026")
+    canvas.drawRightString(W - MX, H - MY + 7, "v2 · June 2026")
+    canvas.setStrokeColor(C_RULE)
+    canvas.setLineWidth(0.6)
     canvas.line(MX, MY - 4, W - MX, MY - 4)
-    canvas.setFont("Calibri", 7.5)
+    canvas.setFillColor(C_STEEL)
     canvas.drawString(MX, MY - 14, "Booklesss | booklesss.framer.ai")
     canvas.drawCentredString(W / 2, MY - 14, "Strategic Management")
-    canvas.drawRightString(W - MX, MY - 14, f"Page {page_num}")
+    canvas.drawRightString(W - MX, MY - 14, f"Page {pn}")
     canvas.restoreState()
 
-# ─────────────────────────────────────────────
-#  HELPERS
-# ─────────────────────────────────────────────
+# ── HELPERS ────────────────────────────────────────────────────────────────
 def hairline():
-    return HRFlowable(width="100%", thickness=0.5, color=C_AMBER, spaceAfter=10, spaceBefore=4)
+    hr = HRFlowable(width="100%", thickness=0.5, color=C_RED,
+                    spaceAfter=10, spaceBefore=4)
+    hr.keepWithNext = 1
+    return hr
 
-def section(eyebrow_text, heading_text):
+def section(eyebrow, heading):
     return [
         Spacer(1, 4),
-        Paragraph(eyebrow_text, ST["eyebrow"]),
-        Paragraph(heading_text, ST["h2"]),
+        Paragraph(eyebrow.upper(), ST["eyebrow"]),
+        Paragraph(heading, ST["h2"]),
         hairline(),
     ]
 
-def callout(text, style="note"):
-    styles_map = {
-        "note":  (BG_NOTE,  C_GOLD,      ST["note_text"]),
-        "info":  (BG_INFO,  C_INFO_TXT, ST["info_text"]),
-        "warn":  (BG_WARN,  C_WARN_TXT, ST["warn_text"]),
-    }
-    bg, border_c, txt_style = styles_map[style]
-    p = Paragraph(text, txt_style)
-    t = Table([[p]], colWidths=[CONTENT_W - 12])
+def body(text):
+    return Paragraph(text, ST["body"])
+
+def bullet(text):
+    return Paragraph(f"• {text}", ST["bullet"])
+
+def h3(text):
+    return Paragraph(text, ST["h3"])
+
+def fact(text):
+    p = Paragraph(text, ST["fact"])
+    t = Table([[p]], colWidths=[CONTENT_W])
     t.setStyle(TableStyle([
-        ("BACKGROUND",    (0,0), (-1,-1), bg),
-        ("BOX",           (0,0), (-1,-1), 0.5, border_c),
+        ("BACKGROUND",    (0,0), (-1,-1), BG_CALLOUT),
+        ("LINEBEFORE",    (0,0), (-1,-1), 2.5, C_RED),
         ("TOPPADDING",    (0,0), (-1,-1), 8),
         ("BOTTOMPADDING", (0,0), (-1,-1), 8),
         ("LEFTPADDING",   (0,0), (-1,-1), 10),
         ("RIGHTPADDING",  (0,0), (-1,-1), 10),
     ]))
-    return KeepTogether([Spacer(1, 6), t, Spacer(1, 6)])
+    return KeepTogether([t, Spacer(1, 10)])
 
-def channel_button():
-    label = Paragraph("JOIN THE DISCUSSION", ST["btn_eyebrow"])
-    body  = Paragraph(
-        f'<link href="{CHANNEL_URL}">Ask questions, share your answers — '
-        f'<u><b>open #{CHANNEL_NAME} in Slack</b></u></link>',
-        ST["btn_body"]
-    )
-    t = Table([[label], [body]], colWidths=[CONTENT_W])
+def callout(text):
+    p = Paragraph(text.replace("\n", "<br/>"),
+                  ParagraphStyle("cbt", fontName="Body", fontSize=10,
+                                 textColor=C_RED_DK, leading=16, alignment=TA_LEFT))
+    t = Table([[p]], colWidths=[CONTENT_W])
     t.setStyle(TableStyle([
-        ("BACKGROUND",    (0,0), (-1,-1), C_GOLD),
-        ("TOPPADDING",    (0,0), (-1,-1), 12),
-        ("BOTTOMPADDING", (0,0), (-1,-1), 14),
-        ("LEFTPADDING",   (0,0), (-1,-1), 14),
-        ("RIGHTPADDING",  (0,0), (-1,-1), 14),
+        ("BACKGROUND",    (0,0), (-1,-1), BG_CALLOUT),
+        ("LINEBEFORE",    (0,0), (-1,-1), 2, C_RED),
+        ("LINEBELOW",     (0,0), (-1,-1), 0.5, C_RED),
+        ("TOPPADDING",    (0,0), (-1,-1), 9),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 9),
+        ("LEFTPADDING",   (0,0), (-1,-1), 10),
+        ("RIGHTPADDING",  (0,0), (-1,-1), 10),
     ]))
-    return KeepTogether([Spacer(1, 20), t])
+    return KeepTogether([t, Spacer(1, 8)])
 
-# ─────────────────────────────────────────────
-#  DOCUMENT BUILD
-# ─────────────────────────────────────────────
+def discussion_q(text):
+    p = Paragraph(text, ST["discuss_q"])
+    t = Table([[p]], colWidths=[CONTENT_W])
+    t.setStyle(TableStyle([
+        ("BACKGROUND",    (0,0), (-1,-1), BG_CALLOUT),
+        ("LINEBEFORE",    (0,0), (-1,-1), 2.5, C_RED),
+        ("TOPPADDING",    (0,0), (-1,-1), 10),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 10),
+        ("LEFTPADDING",   (0,0), (-1,-1), 12),
+        ("RIGHTPADDING",  (0,0), (-1,-1), 12),
+    ]))
+    return KeepTogether([Spacer(1, 6), t, Spacer(1, 10)])
+
+def table_std(data, col_widths):
+    rows = []
+    for i, row in enumerate(data):
+        styled = [Paragraph(str(c), ST["th"] if i == 0 else ST["td"]) for c in row]
+        rows.append(styled)
+    t = Table(rows, colWidths=col_widths)
+    t.setStyle(TableStyle([
+        ("TOPPADDING",    (0,0), (-1,-1), 6),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 6),
+        ("LEFTPADDING",   (0,0), (-1,-1), 8),
+        ("RIGHTPADDING",  (0,0), (-1,-1), 8),
+        ("LINEBELOW",     (0,0), (-1,-1), 0.5, C_RULE),
+        ("BACKGROUND",    (0,0), (-1, 0), BG_FORMULA),
+        ("LINEBELOW",     (0,0), (-1, 0), 1,   C_RED),
+        ("VALIGN",        (0,0), (-1,-1), "TOP"),
+    ]))
+    return KeepTogether([Spacer(1, 6), t, Spacer(1, 10)])
+
+def community_closer():
+    return [
+        Spacer(1, 20),
+        HRFlowable(width="100%", thickness=0.5, color=C_RULE, spaceAfter=14),
+        Paragraph(
+            "This is Step 1.1 in the Strategic Management series inside the Booklesss "
+            "study group on Slack. The channel is <b>#sm-foundations</b> — that's where "
+            "students are working through these frameworks, sharing past exam questions, "
+            "and testing each other on the concepts that come up every year.",
+            ST["community"]),
+        Spacer(1, 6),
+        Paragraph(
+            "Already in the workspace? You know where to find it. "
+            "If not, ask whoever shared this with you for the invite.",
+            ST["community_end"]),
+    ]
+
+# ── TRIPLE-MARK MOTIF ──────────────────────────────────────────────────────
+class LogoTriple(Flowable):
+    def __init__(self, img, center=18, side=13.5, gap=8.25, side_alpha=0.3):
+        super().__init__()
+        self.img = img
+        self.center, self.side, self.gap = center, side, gap
+        self.side_alpha = side_alpha
+        self._h = center
+
+    def wrap(self, aw, ah):
+        self._aw = aw
+        return aw, self._h
+
+    def _draw_mark(self, x_center, size):
+        self.canv.drawImage(self.img, x_center - size / 2.0, self._h / 2.0 - size / 2.0,
+                            width=size, height=size, mask="auto", preserveAspectRatio=True)
+
+    def draw(self):
+        c = self.canv
+        mid = getattr(self, "_aw", self._h) / 2.0
+        step = self.center / 2.0 + self.gap + self.side / 2.0
+        c.saveState()
+        c.setFillAlpha(self.side_alpha)
+        self._draw_mark(mid - step, self.side)
+        self._draw_mark(mid + step, self.side)
+        c.restoreState()
+        self._draw_mark(mid, self.center)
+
+
+class TripleDiamond(Flowable):
+    def __init__(self, center_size=15, side_size=10, gap=13,
+                 color=None, stroke_width=1.3):
+        super().__init__()
+        self.cs, self.ss, self.gap = center_size, side_size, gap
+        self.color = color or HEADING_DARK
+        self.sw = stroke_width
+        self._h = center_size
+
+    def wrap(self, aw, ah):
+        self._aw = aw
+        return aw, self._h
+
+    def _diamond(self, cx, cy, half, fill):
+        p = self.canv.beginPath()
+        p.moveTo(cx, cy + half); p.lineTo(cx + half, cy)
+        p.lineTo(cx, cy - half); p.lineTo(cx - half, cy); p.close()
+        self.canv.drawPath(p, stroke=1, fill=1 if fill else 0)
+
+    def draw(self):
+        c = self.canv
+        c.saveState()
+        c.setStrokeColor(self.color); c.setFillColor(self.color)
+        c.setLineWidth(self.sw)
+        cy = self._h / 2.0
+        mid = getattr(self, "_aw", self.cs) / 2.0
+        hs, hc = self.ss / 2.0, self.cs / 2.0
+        step = hc + self.gap + hs
+        self._diamond(mid - step, cy, hs, fill=False)
+        self._diamond(mid,        cy, hc, fill=True)
+        self._diamond(mid + step, cy, hs, fill=False)
+        c.restoreState()
+
+
+# ── BUILD ──────────────────────────────────────────────────────────────────
 def build():
-    os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
+    os.makedirs(OUT_DIR, exist_ok=True)
 
     doc = BaseDocTemplate(OUT_PATH, pagesize=A4,
-                          leftMargin=MX, rightMargin=MX,
-                          topMargin=MY + 20, bottomMargin=MY + 20)
+                          topMargin=MY, bottomMargin=MY,
+                          leftMargin=MX, rightMargin=MX)
 
-    cover_frame = Frame(0, 0, W, H,
-                        leftPadding=MX + 10, rightPadding=MX,
-                        topPadding=MY + 30, bottomPadding=MY + 50)
-    body_frame  = Frame(MX, MY + 18, CONTENT_W, H - MY * 2 - 36,
-                        leftPadding=0, rightPadding=0,
-                        topPadding=0, bottomPadding=0)
-
-    doc.addPageTemplates([
-        PageTemplate(id="cover", frames=[cover_frame], onPage=cover_bg),
-        PageTemplate(id="body",  frames=[body_frame],  onPage=body_page),
-    ])
+    cover_tpl = PageTemplate(id="cover",
+        frames=[Frame(MX, MY, CONTENT_W, H - 2*MY)],
+        onPage=cover_bg, pagesize=A4)
+    body_tpl = PageTemplate(id="body",
+        frames=[Frame(MX, MY + 5, CONTENT_W, H - 2*MY - 15)],
+        onPage=page_bg, onPageEnd=body_page, pagesize=A4)
+    doc.addPageTemplates([cover_tpl, body_tpl])
 
     story = []
 
-    # ── COVER ────────────────────────────────
-    story.append(Paragraph("STRATEGIC MANAGEMENT  ·  STEP 1.1", ST["cover_eyebrow"]))
-    story.append(Spacer(1, 10))
+    # ── COVER ──────────────────────────────────────────────────────────────
+    story.append(Spacer(1, 115))
+    story.append(LogoTriple(_mark_black) if _mark_black is not None
+                 else TripleDiamond(color=HEADING_DARK))
+    story.append(Spacer(1, 26))
+    story.append(Paragraph("STEP 1.1 · FOUNDATIONS", ST["cover_step"]))
+    story.append(Spacer(1, 12))
     story.append(Paragraph("Introduction to<br/>Corporate Strategy", ST["cover_title"]))
-    story.append(Spacer(1, 16))
-    story.append(Paragraph("What strategy is, why it matters, and the frameworks\nyour exam will test you on.", ST["cover_sub"]))
+    story.append(Spacer(1, 18))
+    story.append(Paragraph(
+        "What strategy is, the levels it operates at, and the frameworks "
+        "your exam will test you on.",
+        ST["cover_sub"]))
+    story.append(Spacer(1, 160))
+    story.append(Paragraph("Strategic Management", ST["cover_meta"]))
+    story.append(Spacer(1, 3))
+    story.append(Paragraph("Booklesss · booklesss.framer.ai", ST["cover_meta"]))
     story.append(NextPageTemplate("body"))
     story.append(PageBreak())
 
-    # ── SECTION 1: WHAT IS CORPORATE STRATEGY ─
+    # ── SECTION 1 ──────────────────────────────────────────────────────────
     story += section("CONCEPT 01", "What Is Corporate Strategy?")
-    story.append(Paragraph(
-        "Strategy is the overall plan a company adopts to reach its long-term goals and create value "
-        "for its stakeholders. It sets direction for the entire organisation — guiding every business "
-        "unit, every budget, every hire. It is typically developed by top executives and approved by the board.",
-        ST["body"]))
-    story.append(Spacer(1, 6))
-    story.append(Paragraph(
-        "Mary Coulter defines strategic management as a series of steps in which organisational members "
-        "analyse the current situation, decide on strategies, put those strategies into action, and evaluate, "
-        "modify or change strategies as needed.",
-        ST["body"]))
+    story.append(body(
+        "Strategy is the direction and scope of an organisation over the long-term, "
+        "achieving advantage through its configuration of resources and competencies "
+        "<i>(Johnson, Scholes and Whittington)</i>. It is not operations — strategy sets "
+        "where the business is going; operations execute that direction day to day."
+    ))
+    story.append(fact(
+        "Strategy answers three questions: Where are we now? Where do we want to go? "
+        "How do we get there? Every framework in this course maps onto one of these three."
+    ))
+
+    # ── SECTION 2 ──────────────────────────────────────────────────────────
+    story += section("CONCEPT 02", "The Three Levels of Strategy")
+    story.append(body(
+        "Strategy operates at three levels. Identifying which level a decision belongs to "
+        "is a core exam skill — case questions frequently ask you to classify and explain."
+    ))
+    story.append(table_std([
+        ["Level", "Focus", "Example (Zambeef)"],
+        ["Corporate",
+         "Which industries and markets to compete in. Portfolio decisions. Capital allocation across units.",
+         "Zambeef expands cold-chain operations into East Africa alongside its Zambian business."],
+        ["Business (Competitive)",
+         "How to compete within a specific market. Which customers to serve. How to beat rivals.",
+         "Zambeef retail competes on freshness and convenience rather than undercutting market stalls on price."],
+        ["Functional / Operational",
+         "Day-to-day implementation through HR, marketing, finance, and operations.",
+         "Zambeef marketing allocates ZMW 80,000 to a loyalty scheme for repeat customers."],
+    ], [CONTENT_W * 0.20, CONTENT_W * 0.42, CONTENT_W * 0.38]))
+
     story.append(callout(
-        "Strategy answers three questions: Where are we now? Where do we want to go? How do we get there?",
-        "note"))
+        "Corporate = 'what businesses should we be in?'\n"
+        "Business = 'how do we compete in this business?'\n"
+        "Functional = 'how do we execute that strategy day to day?'\n"
+        "Classify the level before analysing the decision — that's what the question is testing."
+    ))
 
-    # ── SECTION 2: MINTZBERG'S FIVE Ps ────────
-    story += section("CONCEPT 02", "Mintzberg's Five Ps of Strategy")
-    story.append(Paragraph(
-        "Henry Mintzberg argued that strategy is not a one-off decision. It is a pattern in a stream of "
-        "decisions made over time. He identified five ways to think about what strategy actually is:",
-        ST["body"]))
-    story.append(Spacer(1, 8))
+    story.append(discussion_q(
+        "<i>ZESCO announces it will expand into solar energy generation for rural communities. "
+        "Identify which level of strategy this represents and justify your answer. "
+        "Then name two decisions that must follow at the business level and two at the functional level "
+        "to make the corporate decision viable.</i>"
+    ))
 
-    ps_data = [
-        [Paragraph("P", ST["th"]), Paragraph("Perspective", ST["th"]), Paragraph("What it means", ST["th"])],
-        [Paragraph("Plan", ST["td"]),
-         Paragraph("Deliberate", ST["td"]),
-         Paragraph("Strategy as a conscious, systematic process — analyse, choose, implement.", ST["td"])],
-        [Paragraph("Play", ST["td"]),
-         Paragraph("Competitive", ST["td"]),
-         Paragraph("Strategy as a move in a game — outmanoeuvring rivals with offensive or defensive actions.", ST["td"])],
-        [Paragraph("Pattern", ST["td"]),
-         Paragraph("Emergent", ST["td"]),
-         Paragraph("Strategy as a pattern that emerges from consistent actions over time, whether planned or not.", ST["td"])],
-        [Paragraph("Position", ST["td"]),
-         Paragraph("Environmental", ST["td"]),
-         Paragraph("Strategy as the place a firm occupies in its market — how it responds to external forces.", ST["td"])],
-        [Paragraph("Perspectives", ST["td"]),
-         Paragraph("Cultural", ST["td"]),
-         Paragraph("Strategy as the organisation's personality — its ingrained way of seeing and doing things.", ST["td"])],
-    ]
-    ps_table = Table(ps_data, colWidths=[CONTENT_W * 0.13, CONTENT_W * 0.2, CONTENT_W * 0.67])
-    ps_table.setStyle(TableStyle([
-        ("BACKGROUND",    (0,0), (-1,0), colors.HexColor("#F3F4F6")),
-        ("LINEBELOW",     (0,0), (-1,-1), 0.5, C_RULE),
-        ("TOPPADDING",    (0,0), (-1,-1), 6),
-        ("BOTTOMPADDING", (0,0), (-1,-1), 6),
-        ("LEFTPADDING",   (0,0), (-1,-1), 8),
-        ("RIGHTPADDING",  (0,0), (-1,-1), 8),
-        ("VALIGN",        (0,0), (-1,-1), "TOP"),
-    ]))
-    story.append(ps_table)
+    # ── SECTION 3 ──────────────────────────────────────────────────────────
+    story += section("CONCEPT 03", "Mintzberg's Five Ps of Strategy")
+    story.append(body(
+        "Mintzberg argued strategy is not always deliberate. He identified five forms it takes:"
+    ))
+    story.append(table_std([
+        ["P", "What it means"],
+        ["Plan",        "A conscious, top-down process — analyse, choose, implement. The formal written strategy."],
+        ["Ploy",        "A tactical manoeuvre against a specific rival. Not the long-run position — just the move."],
+        ["Pattern",     "Consistent behaviour that emerges over time, planned or not. Strategy as what you repeatedly do."],
+        ["Position",    "How the firm places itself relative to competitors and the external environment."],
+        ["Perspective", "The organisation's ingrained worldview — its shared assumptions about how to compete."],
+    ], [CONTENT_W * 0.14, CONTENT_W * 0.86]))
 
-    # ── SECTION 3: KEY COMPONENTS ─────────────
-    story += section("CONCEPT 03", "Key Components of Corporate Strategy")
-    story.append(Paragraph(
-        "Corporate strategy is not just a mission statement. It has five concrete components that shape "
-        "every major decision a company makes:",
-        ST["body"]))
-    story.append(Spacer(1, 8))
-
-    comp_data = [
-        [Paragraph("Component", ST["th"]), Paragraph("What it decides", ST["th"])],
-        [Paragraph("Scope", ST["td"]),
-         Paragraph("Which industries, markets, and geographies the company will operate in.", ST["td"])],
-        [Paragraph("Resource Allocation", ST["td"]),
-         Paragraph("How capital, talent, and technology are distributed across business units.", ST["td"])],
-        [Paragraph("Synergy", ST["td"]),
-         Paragraph("How different parts of the organisation work together to create more value than they would alone.", ST["td"])],
-        [Paragraph("Growth Strategy", ST["td"]),
-         Paragraph("Decisions on mergers, acquisitions, partnerships, and organic growth.", ST["td"])],
-        [Paragraph("Portfolio Management", ST["td"]),
-         Paragraph("Balancing high-risk, high-reward ventures against stable, cash-generating businesses.", ST["td"])],
-    ]
-    comp_table = Table(comp_data, colWidths=[CONTENT_W * 0.28, CONTENT_W * 0.72])
-    comp_table.setStyle(TableStyle([
-        ("BACKGROUND",    (0,0), (-1,0), colors.HexColor("#F3F4F6")),
-        ("LINEBELOW",     (0,0), (-1,-1), 0.5, C_RULE),
-        ("TOPPADDING",    (0,0), (-1,-1), 6),
-        ("BOTTOMPADDING", (0,0), (-1,-1), 6),
-        ("LEFTPADDING",   (0,0), (-1,-1), 8),
-        ("RIGHTPADDING",  (0,0), (-1,-1), 8),
-        ("VALIGN",        (0,0), (-1,-1), "TOP"),
-    ]))
-    story.append(comp_table)
-
-    # ── SECTION 4: COMPETITIVE ADVANTAGE ──────
-    story += section("CONCEPT 04", "Strategy and Competitive Advantage")
-    story.append(Paragraph(
-        "Strategy only works if it produces a competitive advantage — something that makes customers "
-        "prefer you over rivals. There are two ways to get there:",
-        ST["body"]))
-    story.append(Spacer(1, 6))
-    story.append(Paragraph(
-        "<b>More effectively</b> — deliver products or services that customers value more highly than alternatives.",
-        ST["bullet"]))
-    story.append(Paragraph(
-        "<b>More efficiently</b> — deliver the same products or services at a lower cost.",
-        ST["bullet"]))
-    story.append(Spacer(1, 6))
-    story.append(Paragraph(
-        "A competitive advantage is <i>sustainable</i> when it gives buyers lasting reasons to prefer your "
-        "firm. One-off advantages get copied. Sustainable ones are built into the organisation — through "
-        "brand, cost structure, technology, or relationships that rivals cannot easily replicate.",
-        ST["body"]))
     story.append(callout(
-        "A company is likely to succeed when its actions set it apart from rivals and stake out a market "
-        "position that is not crowded with strong competitors.",
-        "note"))
+        "Plan vs. Pattern is the most tested pair. Plan is deliberate and top-down. "
+        "Pattern is emergent — it shows up in consistent decisions over time whether or not "
+        "anyone planned it. A company can have an emergent pattern that contradicts its written plan."
+    ))
 
-    # ── SECTION 5: THE FIVE STRATEGIC APPROACHES ─
-    story += section("CONCEPT 05", "The Five Strategic Approaches")
-    story.append(Paragraph(
-        "Porter identified five approaches firms use to build competitive advantage. Each targets a "
-        "different combination of cost, differentiation, and market scope:",
-        ST["body"]))
-    story.append(Spacer(1, 8))
+    # ── SECTION 4 ──────────────────────────────────────────────────────────
+    story += section("CONCEPT 04", "The Strategic Management Process")
+    story.append(body(
+        "Strategic management is a cycle of four stages. "
+        "Know each by name — 'describe the process' is a standard long-answer question."
+    ))
+    story.append(table_std([
+        ["Stage", "What happens"],
+        ["1. Environmental Analysis",
+         "Scan external threats and opportunities; audit internal resources and capabilities. "
+         "Tools: PESTEL, Porter's Five Forces (Step 2.1), SWOT, VRIO (Step 2.2)."],
+        ["2. Strategy Formulation",
+         "Set mission and objectives; generate strategic options; choose direction. "
+         "Tools: Ansoff, BCG, Generic Strategies (Steps 3.1, 3.2)."],
+        ["3. Strategy Implementation",
+         "Convert chosen strategy into structures, budgets, processes, and people."],
+        ["4. Evaluation and Control",
+         "Monitor performance against targets; feed findings back into the next planning cycle."],
+    ], [CONTENT_W * 0.27, CONTENT_W * 0.73]))
 
-    approaches_data = [
-        [Paragraph("Approach", ST["th"]), Paragraph("How it works", ST["th"]), Paragraph("Who it targets", ST["th"])],
-        [Paragraph("Low-Cost Provider", ST["td"]),
-         Paragraph("Lowest prices in the industry through operational efficiency and economies of scale.", ST["td"]),
-         Paragraph("Broad market — price-sensitive buyers.", ST["td"])],
-        [Paragraph("Focused Low-Cost", ST["td"]),
-         Paragraph("Lowest prices within a specific niche rather than the whole market.", ST["td"]),
-         Paragraph("A defined segment — e.g. budget travellers on short routes.", ST["td"])],
-        [Paragraph("Broad Differentiation", ST["td"]),
-         Paragraph("Unique products through innovation, design, quality, or brand image. Premium pricing.", ST["td"]),
-         Paragraph("Wide audience willing to pay more for something distinct.", ST["td"])],
-        [Paragraph("Focused Differentiation", ST["td"]),
-         Paragraph("Unique features tailored tightly to a narrow customer group.", ST["td"]),
-         Paragraph("Niche — e.g. luxury brands targeting high-income segments.", ST["td"])],
-        [Paragraph("Best-Cost Provider", ST["td"]),
-         Paragraph("Good quality at a competitive price. Blends efficiency with selective differentiation.", ST["td"]),
-         Paragraph("Buyers seeking the sweet spot between quality and affordability.", ST["td"])],
-    ]
-    approaches_table = Table(approaches_data,
-                             colWidths=[CONTENT_W * 0.26, CONTENT_W * 0.44, CONTENT_W * 0.30])
-    approaches_table.setStyle(TableStyle([
-        ("BACKGROUND",    (0,0), (-1,0), colors.HexColor("#F3F4F6")),
-        ("LINEBELOW",     (0,0), (-1,-1), 0.5, C_RULE),
-        ("TOPPADDING",    (0,0), (-1,-1), 6),
-        ("BOTTOMPADDING", (0,0), (-1,-1), 6),
-        ("LEFTPADDING",   (0,0), (-1,-1), 8),
-        ("RIGHTPADDING",  (0,0), (-1,-1), 8),
-        ("VALIGN",        (0,0), (-1,-1), "TOP"),
-    ]))
-    story.append(approaches_table)
+    # ── SECTION 5 ──────────────────────────────────────────────────────────
+    story += section("CONCEPT 05", "Competitive Advantage and Generic Strategies")
+    story.append(body(
+        "A competitive advantage is an attribute that allows a firm to outperform rivals — "
+        "through lower cost or higher perceived value. It is <b>sustainable</b> when rivals "
+        "cannot easily replicate it. Porter mapped five specific approaches:"
+    ))
+    story.append(table_std([
+        ["Strategy", "How it competes", "Scope"],
+        ["Low-Cost Provider",       "Lowest industry cost base. Compete on price.",                       "Broad"],
+        ["Focused Low-Cost",        "Lowest cost within one specific niche.",                              "Narrow"],
+        ["Broad Differentiation",   "Distinctive product — quality, brand, innovation. Premium price.",   "Broad"],
+        ["Focused Differentiation", "Unique features for a narrow customer group. Premium price.",        "Narrow"],
+        ["Best-Cost Provider",      "Good quality at a competitive price — middle ground.",               "Value buyers"],
+    ], [CONTENT_W * 0.28, CONTENT_W * 0.56, CONTENT_W * 0.16]))
+
     story.append(callout(
-        "Exam tip: know all five by name and be ready to identify which approach a company is using "
-        "from a case description. The difference between broad and focused is market scope, not quality.",
-        "info"))
+        "Scope — broad vs. narrow — is independent of cost vs. differentiation. "
+        "When reading a case: identify the scope first, then identify the source of advantage. "
+        "Mixing these up is the most common error in generic strategy questions."
+    ))
 
-    # ── KEY TERMS ─────────────────────────────
+    story.append(discussion_q(
+        "<i>Zanaco operates branches across Zambia including rural areas that run at a loss. "
+        "The bank treats this as part of its identity rather than a profitability question. "
+        "Using Porter's five generic strategies, identify which strategy Zanaco follows and "
+        "explain your reasoning. Then identify one specific threat from a mobile money competitor "
+        "and name the stage of the strategic management process where Zanaco should address it.</i>"
+    ))
+
+    # ── KEY TERMS ──────────────────────────────────────────────────────────
     story += section("REFERENCE", "Key Terms")
-    terms = [
-        ("Corporate Strategy",    "The overall plan an organisation adopts to achieve long-term goals and create value."),
-        ("Competitive Advantage", "An attribute that lets a firm outperform rivals — through lower cost or higher perceived value."),
-        ("Sustainable Advantage", "A competitive edge that persists over time because rivals cannot easily copy it."),
-        ("Mintzberg's Five Ps",   "Plan, Play, Pattern, Position, Perspectives — five lenses for understanding what strategy is."),
-        ("Strategic Management",  "The ongoing process of analysing, deciding, implementing, and evaluating strategy."),
-        ("Scope",                 "The range of industries, markets, and geographies a company chooses to compete in."),
-        ("Portfolio Management",  "Balancing the mix of business units or products across different risk and return profiles."),
-        ("Best-Cost Provider",    "A strategic approach combining efficiency (low cost) with selective differentiation."),
-    ]
-    terms_data = [[Paragraph("Term", ST["th"]), Paragraph("Definition", ST["th"])]] + \
-                 [[Paragraph(t, ST["td"]), Paragraph(d, ST["td"])] for t, d in terms]
-    terms_table = Table(terms_data, colWidths=[CONTENT_W * 0.30, CONTENT_W * 0.70])
-    terms_table.setStyle(TableStyle([
-        ("BACKGROUND",    (0,0), (-1,0), colors.HexColor("#F3F4F6")),
-        ("LINEBELOW",     (0,0), (-1,-1), 0.5, C_RULE),
-        ("TOPPADDING",    (0,0), (-1,-1), 6),
-        ("BOTTOMPADDING", (0,0), (-1,-1), 6),
-        ("LEFTPADDING",   (0,0), (-1,-1), 8),
-        ("RIGHTPADDING",  (0,0), (-1,-1), 8),
-        ("VALIGN",        (0,0), (-1,-1), "TOP"),
-    ]))
-    story.append(terms_table)
+    story.append(table_std([
+        ["Term", "Definition"],
+        ["Strategy",                  "Direction and scope of an organisation over the long-term, achieving advantage through resource configuration"],
+        ["Corporate Level",           "Decisions about which industries and markets to compete in; portfolio allocation across business units"],
+        ["Business Level",            "How to compete within a specific business unit or market"],
+        ["Functional Level",          "Day-to-day implementation of strategy through operational functions"],
+        ["Mintzberg's Five Ps",       "Plan, Ploy, Pattern, Position, Perspective — five ways strategy forms in organisations"],
+        ["Emergent Strategy",         "A pattern in decisions that arises over time without a deliberate plan (Mintzberg's Pattern)"],
+        ["Competitive Advantage",     "An attribute enabling a firm to outperform rivals through lower cost or higher value"],
+        ["Porter's Generic Strategies", "Five approaches: low-cost provider, focused low-cost, broad differentiation, focused differentiation, best-cost provider"],
+    ], [CONTENT_W * 0.38, CONTENT_W * 0.62]))
 
-    # ── LEARNING OUTCOMES ─────────────────────
-    story += section("OUTCOMES", "What You Should Now Be Able To Do")
-    outcomes = [
-        "Define corporate strategy and explain its purpose in an organisation.",
-        "Apply Mintzberg's Five Ps to describe how strategy forms in practice.",
-        "Identify the three core strategic questions and explain what each addresses.",
-        "List and explain the five key components of corporate strategy.",
-        "Distinguish between the five strategic approaches and identify which a firm is using.",
-        "Explain the difference between competitive advantage and sustainable competitive advantage.",
-    ]
-    for i, o in enumerate(outcomes, 1):
-        story.append(Paragraph(f"{i}.  {o}", ST["outcome"]))
+    # ── LEARNING OUTCOMES ──────────────────────────────────────────────────
+    story += section("OUTCOMES", "What You Should Now Be Able to Do")
+    for i, outcome in enumerate([
+        "Define strategy using Johnson, Scholes and Whittington's definition and state the three strategic questions it answers",
+        "Classify any strategic decision as corporate, business, or functional level and justify the classification",
+        "Name and define all five of Mintzberg's Ps and distinguish deliberate (Plan) from emergent (Pattern) strategy",
+        "Describe the four stages of the strategic management process in sequence",
+        "Identify which of Porter's five generic strategies a firm is using from a case description, separating scope from source of advantage",
+    ], 1):
+        story.append(Paragraph(f"{i}.  {outcome}", ST["outcome"]))
+
     story.append(Spacer(1, 10))
-    story.append(Paragraph("Next: Step 1.2 — Mission, Vision and Organisational Values", ST["next_step"]))
+    story.append(Paragraph(
+        "Next: Step 1.2 — Vision, Mission & Objectives",
+        ParagraphStyle("nxt", fontName="Body-Bold", fontSize=9,
+                       textColor=C_STEEL, leading=14, spaceBefore=6)))
 
-    # ── CHANNEL BUTTON ────────────────────────
-    story.append(channel_button())
+    # ── COMMUNITY CLOSER ───────────────────────────────────────────────────
+    story += community_closer()
 
     doc.build(story)
-    print(f"PDF saved: {OUT_PATH}")
+    print(f"\nPDF saved to:\n  {os.path.abspath(OUT_PATH)}\n")
 
-import os
-build()
+
+if __name__ == "__main__":
+    build()
