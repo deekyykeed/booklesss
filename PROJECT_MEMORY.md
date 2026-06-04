@@ -1,33 +1,56 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-06-03
+**Last updated:** 2026-06-04
 
 ---
 
 ## Next Session
 
-- [ ] Draft outreach messages to potential collaborators — user raised this at end of session but it wasn't actioned. Need to know who the people are and what help is being asked for.
-- [ ] Update Booklesss website pricing page manually in Framer: Community tier K800 → K500 (user confirmed they will do this themselves).
-- [ ] Strip the Slack invite link from CF **Step 1.1**'s `community_closer()` to match the new "no marketing links in PDF body" rule. 1.2 already has no link; 1.1 still does — flagged in chat but not actioned.
-- [ ] Roll the v2 standard + no-course-skeleton rule across the remaining CF steps: **1.3, 2.1, 2.2, 3.1, 3.2, 4.1, 4.2, 5.1**. Their scripts still use the old crimson/navy palette and Linux font paths; need cream + jade + vendored Aptos/Parastoo + flat output path + the new orientation framing (no 10-step map).
-- [ ] Extract a shared brand module (`booklesss_brand.py`) so the next 8 CF rebuilds aren't ~600 lines of copy-pasted foundation each.
-- [ ] Decide whether the cream / Parastoo / ◇◆◇ brand also replaces the SM and TM covers, or stays CF-only
-- [ ] When the Framer / Design Bridge plugin is online, pull exact Booklesss tokens (colours, text styles, fonts) and reconcile — confirm whether jade is a real brand accent or go monochrome like the site
-- [ ] Optional: add the black ◇ mark to the body-page footer
-- [ ] Export a higher-res Booklesss diamond mark (current `booklesss-mark-black.png` is only 34×34px) for crisper motif/logo at large sizes
-- [ ] (If pursuing imagery) build `_dev/scripts/brand_image.py` using Nano Banana `gemini-2.5-flash-image` for image edit/regen — needs `GEMINI_API_KEY`
-- [ ] Create CF Slack channels (`#cf-updates`, `#cf-investment`, `#cf-cost-of-capital`, `#cf-ma-valuation`, `#cf-risk`, `#cf-dividends`) → update `operations/workspace.md` with channel IDs
-- [ ] Drop WhatsApp message in CF group once channels are live
-- [ ] Fix page meta titles manually in Framer page settings (SEO tab): /blogs still "Prodo | Blogs", /about-us "Prodo | About", homepage "Prodo"
-- [ ] Add photo to Deeky Mvula team card (currently using Prodo stock photo)
-- [ ] Check "Trusted by the world's most efficient students" logos section on homepage
-- [ ] Edit /legals page — still fully unedited Prodo template
-- [ ] Update "Lesson PDFs" checkbox in Tally form features (block `53d9440e`) if Canvas becomes confirmed delivery format
-- [ ] Monitor Tally form (tally.so/r/81Jejr) for submissions daily — WhatsApp DM within 24h
+- [ ] Re-upload SM Step 1.1 and Step 1.2 to Slack (both rebuilt this session with ADDED VALUE box + new footer + content changes) — get new file links, update workspace.md
+- [ ] Remove `STEP_LINKS` / `step_ref()` from SM 1.1 and 1.2 build scripts — approach abandoned (see dead end below). Keep references as plain text.
+- [ ] Rebuild SM steps 2.1–3.2 to v2 standard (cream paper + cardinal red + Parastoo/Aptos + flat output path + ADDED VALUE box pattern + no community closer)
+- [ ] Strip the Slack invite link from CF **Step 1.1**'s `community_closer()` — still there, not actioned
+- [ ] Roll the v2 standard across remaining CF steps: **1.3, 2.1, 2.2, 3.1, 3.2, 4.1, 4.2, 5.1**
+- [ ] Extract a shared brand module (`booklesss_brand.py`) so CF rebuilds aren't ~600 lines of copy-paste each
+- [ ] Create CF Slack channels (`#cf-updates`, `#cf-investment`, etc.) → update workspace.md
+- [ ] Draft outreach messages to potential collaborators — raised end of previous session, not actioned
+- [ ] Update Booklesss website pricing page manually in Framer: Community tier K800 → K500
+- [ ] When Framer / Design Bridge plugin is online, pull exact Booklesss tokens and reconcile
+- [ ] Export higher-res Booklesss diamond mark (current is only 34×34px)
+- [ ] Fix page meta titles in Framer (SEO tab): /blogs, /about-us, homepage still say "Prodo"
+- [ ] Add photo to Deeky Mvula team card
+- [ ] Edit /legals page — still unedited Prodo template
+- [ ] Monitor Tally form (tally.so/r/81Jejr) for submissions daily
 
 ---
 
 ## Session Log
+
+### Session 2026-06-04
+**Done:**
+- SM Step 1.1 and Step 1.2 fully rewritten to v2 standard using step-skill: cream paper, cardinal red accent, Parastoo/Aptos vendored fonts, flat output path to `01-foundations/`.
+- Community closer removed from both steps — replaced with natural content hints pointing to the next step. Pattern locked into step-skill: no labelled CTA, no "students", no "Next:". Content creates pull.
+- `booklesss-pdf` skill renamed to `step-skill`. All references updated across CLAUDE.md, booklesss-write, design-system skill.
+- `resources_box(items)` helper added to both SM scripts and step-skill — cover ADDED VALUE panel with red border, Booklesss diamond mark bullet, clickable links.
+- SM Step 1.1 ADDED VALUE box: Audio overview (NLM) + Video overview (NLM).
+- SM Step 1.2 ADDED VALUE box: Audio overview (NLM).
+- Footer `booklesss.framer.ai` made clickable on every body page via `canvas.linkURL()` annotation. Pattern documented in step-skill.
+- `STEP_LINKS` dict + `step_ref()` helper added to both SM scripts — then abandoned (see dead end). Registry of known Slack file links added to `operations/workspace.md`. Memory file `project_slack_file_links.md` created.
+- SM 1.1 and 1.2 Slack file links logged: 1.1 = `F0B818T8M4N`, 1.2 = `F0B81C99WSJ`.
+- step-skill course identity table updated: SM now shows cream paper + cardinal red + Parastoo (v2), not old slate-navy system.
+- CLAUDE.md updated: new CTA pattern, clickable step refs pattern, ADDED VALUE box pattern.
+
+**What Worked:**
+- `canvas.linkURL(url, rect)` for clickable canvas-drawn text — the only way to add links to footer/header text drawn directly on the canvas (not via Paragraph markup).
+- `resources_box()` with `<img src="...">` inline in Paragraph for the diamond mark bullet — renders the actual brand mark inside the link text without needing a separate column.
+- Removing community_closer entirely and letting the content create pull — user confirmed this is the right approach. One body paragraph at a natural transition point (e.g. after the process table) hints at the next step without labelling it.
+
+**Dead Ends (do not retry):**
+- **Slack file cross-reference links in PDFs** — Slack generates a new, unpredictable file ID on every upload. There is no way to pre-construct URLs. Embedding them in PDFs creates a permanent maintenance loop: rebuild → re-upload → new ID → all embedded links stale. Do not pursue this pattern. ADDED VALUE box links work only because NotebookLM URLs are external and permanent.
+
+**Next:** Carried to Next Session list above.
+
+---
 
 ### Session 2026-06-03 (2)
 **Done:**

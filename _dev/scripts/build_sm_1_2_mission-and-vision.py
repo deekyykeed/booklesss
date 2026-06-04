@@ -64,6 +64,26 @@ MX        = 2.2 * cm
 MY        = 2.0 * cm
 CONTENT_W = W - 2 * MX
 
+# Slack file links — fill in as each step is uploaded to the workspace
+STEP_LINKS = {
+    "1.1": "https://booklesss20.slack.com/files/U0B2W0BJGUT/F0B818T8M4N/step_1.1_-_introduction_to_corporate_strategy.pdf",
+    "2.1": None,
+    "2.2": None,
+    "3.1": None,
+    "3.2": None,
+}
+
+def step_ref(n):
+    url = STEP_LINKS.get(n)
+    if url:
+        return f'<link href="{url}"><u>Step {n}</u></link>'
+    return f"Step {n}"
+
+NLM_STEP_1_2_A = (
+    "https://notebooklm.google.com/notebook/5c062470-ef08-4026-a07f-423a65d52af3"
+    "/artifact/43265c94-230e-4591-a4a0-ed0ce2f8e0cc"
+)
+
 OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..",
            "courses", "Strategic Management", "01-foundations")
 OUT_PATH = os.path.join(OUT_DIR, "Step 1.2 - Vision, Mission & Objectives.pdf")
@@ -174,7 +194,10 @@ def body_page(canvas, doc):
     canvas.setLineWidth(0.6)
     canvas.line(MX, MY - 4, W - MX, MY - 4)
     canvas.setFillColor(C_STEEL)
-    canvas.drawString(MX, MY - 14, "Booklesss | booklesss.framer.ai")
+    _footer_left = "Booklesss | booklesss.framer.ai"
+    canvas.drawString(MX, MY - 14, _footer_left)
+    _tw = canvas.stringWidth(_footer_left, "Body", 7.5)
+    canvas.linkURL("https://booklesss.framer.ai", (MX, MY - 16, MX + _tw, MY - 8))
     canvas.drawCentredString(W / 2, MY - 14, "Strategic Management")
     canvas.drawRightString(W - MX, MY - 14, f"Page {pn}")
     canvas.restoreState()
@@ -262,6 +285,30 @@ def table_std(data, col_widths):
         ("VALIGN",        (0,0), (-1,-1), "TOP"),
     ]))
     return KeepTogether([Spacer(1, 6), t, Spacer(1, 10)])
+
+def resources_box(items):
+    """Cover resource panel. items = list of (label, url) tuples."""
+    s_hd = ParagraphStyle("res_hd", fontName="Body-Bold", fontSize=7,
+                           textColor=C_RED, leading=10, alignment=TA_LEFT)
+    s_lnk = ParagraphStyle("res_lnk", fontName="Body-Bold", fontSize=9,
+                            textColor=C_RED_DK, leading=15, alignment=TA_LEFT)
+    rows = [[Paragraph("ADDED VALUE", s_hd)]]
+    _blt = (f'<img src="{MARK_BLACK}" width="8" height="8" valign="middle"/>'
+            if os.path.exists(MARK_BLACK) else "▸")
+    for label, url in items:
+        rows.append([Paragraph(f'<link href="{url}">{_blt}  <u>{label}</u></link>', s_lnk)])
+    t = Table(rows, colWidths=[CONTENT_W])
+    t.setStyle(TableStyle([
+        ("BACKGROUND",    (0, 0), (-1,-1), BG_CALLOUT),
+        ("BOX",           (0, 0), (-1,-1), 0.8, C_RED),
+        ("TOPPADDING",    (0, 0), (-1,-1), 5),
+        ("BOTTOMPADDING", (0, 0), (-1,-1), 5),
+        ("LEFTPADDING",   (0, 0), (-1,-1), 12),
+        ("RIGHTPADDING",  (0, 0), (-1,-1), 12),
+        ("TOPPADDING",    (0, 0), (-1, 0), 10),
+        ("BOTTOMPADDING", (0,-1), (-1,-1), 10),
+    ]))
+    return KeepTogether([t, Spacer(1, 6)])
 
 def community_closer():
     return [
@@ -374,10 +421,14 @@ def build():
         "Where the company is going, why it exists today, "
         "and how you measure whether it is getting there.",
         ST["cover_sub"]))
-    story.append(Spacer(1, 160))
+    story.append(Spacer(1, 110))
     story.append(Paragraph("Strategic Management", ST["cover_meta"]))
     story.append(Spacer(1, 3))
     story.append(Paragraph("Booklesss · booklesss.framer.ai", ST["cover_meta"]))
+    story.append(Spacer(1, 14))
+    story.append(resources_box([
+        ("Audio overview", NLM_STEP_1_2_A),
+    ]))
     story.append(NextPageTemplate("body"))
     story.append(PageBreak())
 
@@ -518,13 +569,18 @@ def build():
     ))
 
     story.append(discussion_q(
-        "<i>First Quantum Minerals consistently meets annual financial targets — "
+        "First Quantum Minerals consistently meets annual financial targets — "
         "copper volume, revenue, and cost per tonne all on track. "
         "But it repeatedly misses strategic objectives on community investment, "
         "local supplier development, and environmental rehabilitation. "
         "Management says: 'the financials prove we are executing well.' "
         "Using the theory from this step, explain what is actually happening "
-        "and where this company is likely to be in ten years if the pattern continues.</i>"
+        "and where this company is likely to be in ten years if the pattern continues."
+    ))
+    story.append(body(
+        "Whether those objectives are the right ones — whether the targets the organisation "
+        "is chasing match the world it is actually competing in — is a separate question. "
+        "That's what environmental analysis examines."
     ))
 
     # ── KEY TERMS ──────────────────────────────────────────────────────────
@@ -551,15 +607,6 @@ def build():
         "Explain stretch objectives, strategic intent, and the purpose of the Balanced Scorecard",
     ], 1):
         story.append(Paragraph(f"{i}.  {outcome}", ST["outcome"]))
-
-    story.append(Spacer(1, 10))
-    story.append(Paragraph(
-        "Next: Step 2.1 — The External Environment (PESTEL and Porter's Five Forces)",
-        ParagraphStyle("nxt", fontName="Body-Bold", fontSize=9,
-                       textColor=C_STEEL, leading=14, spaceBefore=6)))
-
-    # ── COMMUNITY CLOSER ───────────────────────────────────────────────────
-    story += community_closer()
 
     doc.build(story)
     print(f"\nPDF saved to:\n  {os.path.abspath(OUT_PATH)}\n")

@@ -6,7 +6,7 @@ description: >
   component for Booklesss. Combines agency-tier layout principles, minimalist
   editorial style, and anti-slop bias correction. Triggers on: "build the
   website", "design the landing page", "create a component", "make the UI for",
-  or any frontend/web task. Not for PDF generation — use booklesss-pdf for that.
+  or any frontend/web task. Not for PDF generation — use step-skill for that.
 ---
 
 # Booklesss Design System

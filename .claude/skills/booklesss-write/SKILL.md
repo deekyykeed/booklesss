@@ -49,7 +49,7 @@ If the channel link is missing, ask:
 ```
 1. Read source files from courses/[Course]/_source/
 2. Plan the step content (sections, examples, tables, callouts)
-3. Invoke booklesss-pdf skill — write the Python script directly
+3. Invoke step-skill skill — write the Python script directly
 4. Run: python3 _dev/scripts/build_[course]_[step].py
 5. Confirm PDF output path to user
 ```
@@ -125,8 +125,8 @@ Two short paragraphs after Learning Outcomes. No button. No all-caps. No pricing
 - No labels in running text: never write "Title:", "Body:", "Key point:" inline.
 - ZMW examples use Zambian companies: Zanaco, Zambeef, ZESCO, First Quantum, Mutengo.
 - Formulas always get a worked example with step-by-step calculations.
-- Every section has an eyebrow tag (see booklesss-pdf skill for spec).
-- Invoke booklesss-pdf skill for all PDF generation — that skill owns the design.
+- Every section has an eyebrow tag (see step-skill skill for spec).
+- Invoke step-skill skill for all PDF generation — that skill owns the design.
 
 ---
 

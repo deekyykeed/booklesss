@@ -1,8 +1,8 @@
 ---
-name: booklesss-pdf
+name: step-skill
 description: >
   The Booklesss PDF design system — produces any branded PDF in the house style
-  (cream paper, jade accent, Parastoo serif titles, per-page header/footer).
+  (cream paper, course accent, Parastoo serif titles, per-page header/footer).
   Use this skill whenever the user wants to create, generate, or export any
   Booklesss PDF. Triggers: "write the PDF", "generate the lesson PDF", "create a
   lead magnet", "make an invoice", "send a quote", "build a receipt", "one-pager",
@@ -15,7 +15,7 @@ description: >
   never a GUI library. PDFs carry no marketing links or external URLs in the body.
 ---
 
-# booklesss-pdf
+# step-skill
 
 The shared design system for **every** Booklesss PDF. Think of it in two layers:
 
@@ -119,7 +119,7 @@ Lesson notes for the other two courses keep their own cover/accent identity:
 |--------|----------|--------|---------|
 | Corporate Finance | `#FFFDE8` cream | `#2FB99A` jade | Parastoo serif *(reference brand)* |
 | Treasury Management | `#0B1D3A` deep navy | `#10B981` emerald | Georgia Bold *(older system)* |
-| Strategic Management | `#0F1F35` slate-navy | `#DC2626` cardinal red | Georgia Bold *(older system)* |
+| Strategic Management | `#FFFDE8` cream | `#DC2626` cardinal red | Parastoo serif *(v2 — matches CF structure)* |
 
 Non-lesson documents (invoices, quotes, one-pagers) always use the cream + jade
 house brand, not a course accent.
@@ -203,7 +203,7 @@ for an FCF waterfall as for an invoice total.
 | `calc_table(rows, title=None)` | KeepTogether | Right-aligned money column. Rows `(label, value)` or `(label, value, True)` for a jade rule above (subtotal / total). |
 | `table_std(data, col_widths)` | KeepTogether | Standard table; row 0 is the header (jade underline). Line items, key terms, anything tabular. **`col_widths` must sum to `CONTENT_W` exactly — never leave unused width.** |
 | `discussion_q(text)` | KeepTogether | Italic question box *(lesson profile)*. |
-| `community_closer()` | list | Slack channel closer, no link *(lesson profile)*. |
+| `resources_box(items)` | KeepTogether | Cover resource panel. `items` = list of `(label, url)` tuples. Red-bordered box labelled **ADDED VALUE**, with the Booklesss diamond mark as the bullet and a clickable underlined label per item. Add to cover when a step has companion resources (NotebookLM audio, past papers, etc.). Falls back to `▸` if the mark asset is missing. |
 
 ### Cover motif flowables
 - `LogoTriple(img)` — centred trio of the real diamond mark. Use when the mark
@@ -214,9 +214,15 @@ for an FCF waterfall as for an invoice total.
 - `cover_bg` — cream fill + grain, top brand row: logo (left), document/course
   label (right), warm hairline under.
 - `page_bg` — cream fill + grain for interior pages.
-- `body_page` — jade rule under a running header (title left, version/date right)
-  and a warm rule above the footer (`Booklesss | booklesss.framer.ai` / label /
-  `Page N`).
+- `body_page` — course-accent rule under a running header (title left, version/date right)
+  and a warm rule above the footer (`Booklesss | booklesss.framer.ai` / label / `Page N`).
+  The footer URL must be clickable — use `canvas.linkURL` over the drawn text:
+  ```python
+  _footer_left = "Booklesss | booklesss.framer.ai"
+  canvas.drawString(MX, MY - 14, _footer_left)
+  _tw = canvas.stringWidth(_footer_left, "Body", 7.5)
+  canvas.linkURL("https://booklesss.framer.ai", (MX, MY - 16, MX + _tw, MY - 8))
+  ```
 
 ## Writing style (every document)
 
@@ -288,21 +294,45 @@ Full study document given to paying students inside Slack.
    one-sentence subtitle, course meta. Then `NextPageTemplate("body")` + break.
 2. **Orientation** — a "Start here" section framing the reader's perspective for
    this step (one or two short paragraphs). **Do not list the full course skeleton
-   here** — no 10-step map. Point to the next step at the end, not the whole arc.
+   here** — no 10-step map.
 3. **4–7 content sections** — each `section("CONCEPT 0X", "Title")`, then body,
    `h3` parts, `formula_box` / `calc_table` / `table_std`, closing `fact()`.
 4. **Two discussion questions** — `discussion_q(...)`, embedded mid-content. Real
    questions, no "discuss below", no CTA dressed as a question.
 5. **Key Terms** — `section("REFERENCE", "Key Terms")` + two-column `table_std`.
 6. **Learning Outcomes** — `section("OUTCOMES", ...)` + numbered `outcome` lines.
-7. **Where you go next** — short pointer to the following step.
-8. **Community closer** — `community_closer()`.
 
-**Community CTA (lesson only, never hard-sell):** two discussion questions
-mid-content; a two-paragraph closer naming the topic's Slack channel (e.g.
-`#cf-investment`) and pointing the reader there. Name the channel in plain text —
-**no invite links or external URLs in the body.** Workspace is `bookless10.slack.com`.
+**No explicit CTA or community closer section.** The reader already has the PDF —
+they're in the workspace. Don't pitch the platform, don't label a "what's next" block.
+Instead, guide naturally through the content:
+- Weave a hint toward the next step into the body at the point where it's
+  genuinely relevant (e.g. after the stage that the next step covers in depth).
+  Write it as a continuation of the idea, not a signpost.
+- No "students", no "Next:", no labelled pointers.
+- One or two touches is enough — the content should make the reader want to continue,
+  not tell them to.
+
+No workspace invite links in the body. Workspace is `bookless10.slack.com`.
 (CF Slack channels are not yet created — do not post CF content until they exist.)
+
+**Clickable step cross-references:** When the content mentions another step (e.g. "Step 2.1"),
+make it a clickable link to that step's Slack file URL. Use a `STEP_LINKS` dict at the top of
+the script and a `step_ref()` helper — renders as a link when the URL is known, plain text when not:
+
+```python
+STEP_LINKS = {
+    "1.2": "https://booklesss20.slack.com/files/...",
+    "2.1": None,  # fill in when uploaded
+}
+
+def step_ref(n):
+    url = STEP_LINKS.get(n)
+    if url:
+        return f'<link href="{url}"><u>Step {n}</u></link>'
+    return f"Step {n}"
+```
+
+Slack file links for all uploaded steps are tracked in `operations/workspace.md`.
 
 ## Profile: Lead magnet
 

@@ -83,6 +83,39 @@ Section name in Slack: **Corporate Finance**
 
 ---
 
+## Slack File Links — PDFs uploaded to workspace
+
+When a step PDF is uploaded to Slack, paste its file link here and into the
+`STEP_LINKS` dict at the top of that step's build script. This makes in-content
+step references clickable directly to the file in Slack.
+
+File link format: `https://booklesss20.slack.com/files/{USER_ID}/{FILE_ID}/{filename}.pdf`
+
+### Strategic Management
+
+| Step | Title | Slack File Link |
+|------|-------|----------------|
+| 1.1 | Introduction to Corporate Strategy | https://booklesss20.slack.com/files/U0B2W0BJGUT/F0B818T8M4N/step_1.1_-_introduction_to_corporate_strategy.pdf |
+| 1.2 | Vision, Mission & Objectives | https://booklesss20.slack.com/files/U0B2W0BJGUT/F0B81C99WSJ/step_1.2_-_vision__mission___objectives.pdf |
+| 2.1 | The External Environment | — |
+| 2.2 | The Internal Environment | — |
+| 3.1 | Strategy Implementation | — |
+| 3.2 | Competitive Strategy | — |
+
+### Treasury Management
+
+| Step | Title | Slack File Link |
+|------|-------|----------------|
+| (add as uploaded) | | |
+
+### Corporate Finance
+
+| Step | Title | Slack File Link |
+|------|-------|----------------|
+| (add as uploaded) | | |
+
+---
+
 ## Global Channels
 
 | Channel | Purpose |

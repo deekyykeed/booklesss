@@ -57,7 +57,13 @@ Each course has a distinct color system — do not mix them:
 Every PDF follows this sequence: cover → 4–7 content sections → 2 embedded discussion questions → Key Terms table → Learning Outcomes → Community closer. Section headers always use an eyebrow tag (7pt bold ALL CAPS, accent color) above the H2. Body text is 10.5pt, leading 17pt.
 
 ### Community CTA Pattern
-Never hard CTAs. Two discussion questions mid-content (italic, light green left-bar callout box). Community closer at the end: 2 soft paragraphs naming the Slack channel, with the permanent invite link `https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8OFwcZTqTbPpC2Dg0q__Cg` as anchor text ("join the group here").
+No hard CTAs, no community closer section. Two discussion questions embedded mid-content. Guide the reader toward the next step by weaving a natural hint into the body at the point where it's relevant — never a labelled "Next:" pointer.
+
+### Clickable Step Cross-References
+When a step's content references another step (e.g. "Step 2.1"), link it to that step's Slack file URL. Each build script holds a `STEP_LINKS` dict and a `step_ref()` helper — see `step-skill` for the pattern. Known Slack file links are tracked in `operations/workspace.md`.
+
+### Cover ADDED VALUE Box
+Each step cover has a red-bordered "ADDED VALUE" panel listing companion resources as clickable links (NotebookLM audio overviews, linked steps, etc.). Uses the `resources_box([(label, url), ...])` helper defined in each script.
 
 ### Lead Magnets
 3–4 page PDF teasers for WhatsApp marketing. Saved in `courses/[Course]/content/[lesson-folder]/lead-magnets/`. File name format: `[Hook Title] - Booklesss.pdf`. Use Zambian companies (Zanaco, Zambeef, ZESCO, First Quantum) and ZMW currency in examples. Include founding rate deadline in 2+ places.
@@ -65,7 +71,7 @@ Never hard CTAs. Two discussion questions mid-content (italic, light green left-
 ### Skills (Claude Code Extensions)
 Three custom skills in `.claude/skills/`:
 - **`booklesss-write`** — Full content pipeline: reads source → writes script → runs it. Always invoke this for writing new lesson steps, not the pdf skill directly.
-- **`booklesss-pdf`** — PDF generation details (colors, typography, callout specs). Used by booklesss-write.
+- **`step-skill`** — PDF design system (colors, typography, callout specs, lesson profile). Used by booklesss-write.
 - **`design-system`** — Web/UI only (Framer, landing pages). Not for PDF work.
 
 ### Transcription

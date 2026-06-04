@@ -1,13 +1,13 @@
 """
 Booklesss — Step 1.1: Introduction to Corporate Strategy
 Course: Strategic Management
-Style: Cream paper · cardinal red accent · Parastoo serif titles · Aptos body
+Palette: Cream paper · cardinal red accent (#DC2626) · Parastoo serif titles
 """
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.units import cm
 from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.enums import TA_LEFT, TA_CENTER
+from reportlab.lib.enums import TA_LEFT, TA_RIGHT, TA_CENTER
 from reportlab.platypus import (
     BaseDocTemplate, PageTemplate, Frame, Paragraph, Spacer,
     Table, TableStyle, KeepTogether, HRFlowable, PageBreak, NextPageTemplate, Flowable
@@ -36,33 +36,57 @@ pdfmetrics.registerFontFamily("Title", normal="Title", bold="Title-Bold",
                               italic="Title", boldItalic="Title-Bold")
 
 # ── BRAND ASSETS ───────────────────────────────────────────────────────────
-BRAND_DIR   = os.path.join(os.path.dirname(__file__), "..", "brand")
-LOGO_BLACK  = os.path.join(BRAND_DIR, "booklesss-logo-black.png")
-MARK_BLACK  = os.path.join(BRAND_DIR, "booklesss-mark-black.png")
-GRAIN       = os.path.join(BRAND_DIR, "grain.png")
+BRAND_DIR  = os.path.join(os.path.dirname(__file__), "..", "brand")
+LOGO_BLACK = os.path.join(BRAND_DIR, "booklesss-logo-black.png")
+MARK_BLACK = os.path.join(BRAND_DIR, "booklesss-mark-black.png")
+GRAIN      = os.path.join(BRAND_DIR, "grain.png")
 _logo_black = ImageReader(LOGO_BLACK) if os.path.exists(LOGO_BLACK) else None
 _mark_black = ImageReader(MARK_BLACK) if os.path.exists(MARK_BLACK) else None
 _grain      = ImageReader(GRAIN)      if os.path.exists(GRAIN)      else None
 
-# ── COLOURS ─────────────────────────────────────────────────────────────────
-C_COVER      = colors.HexColor("#FFFDE8")
-C_PAGE       = colors.HexColor("#FFFEF2")
+# ── COLOURS — SM: cream paper + cardinal red accent ─────────────────────────
+C_COVER      = colors.HexColor("#FFFDE8")   # warm cream — cover page
+C_PAGE       = colors.HexColor("#FFFEF2")   # cream — body pages
 TITLE_DARK   = colors.HexColor("#121212")
 HEADING_DARK = colors.HexColor("#3D3D3D")
-C_RED        = colors.HexColor("#DC2626")
-C_RED_DK     = colors.HexColor("#991B1B")
-C_INK        = colors.HexColor("#1A1A16")
-C_STEEL      = colors.HexColor("#5F6B65")
-C_MIST       = colors.HexColor("#6E6A5E")
-C_RULE       = colors.HexColor("#E0DACB")
-BG_FORMULA   = colors.HexColor("#FFF0F0")
-BG_CALLOUT   = colors.HexColor("#FEF2F2")
+C_RED        = colors.HexColor("#DC2626")   # cardinal red — SM accent
+C_RED_DK     = colors.HexColor("#991B1B")   # deep red — text on light bg
+C_INK        = colors.HexColor("#16201A")   # body text
+C_STEEL      = colors.HexColor("#5F6B65")   # secondary labels
+C_MIST       = colors.HexColor("#6E6A5E")   # eyebrow / sub / meta
+C_RULE       = colors.HexColor("#E0DACB")   # warm rule / table dividers
+BG_FORMULA   = colors.HexColor("#FFF0F0")   # pale red panel (callout / fact)
+BG_CALLOUT   = colors.HexColor("#FEF2F2")   # soft red callout box
 
 # ── PAGE GEOMETRY ──────────────────────────────────────────────────────────
 W, H      = A4
 MX        = 2.2 * cm
 MY        = 2.0 * cm
 CONTENT_W = W - 2 * MX
+
+NLM_STEP_1_1_A = (
+    "https://notebooklm.google.com/notebook/8f3349b6-3792-49d2-af92-26a8c08710ca"
+    "/artifact/f2bd06b2-a7b7-4a55-99a8-459008081e99"
+)
+NLM_STEP_1_1_B = (
+    "https://notebooklm.google.com/notebook/8f3349b6-3792-49d2-af92-26a8c08710ca"
+    "/artifact/e00c1e2b-6219-4f32-bae6-ed7b31e19634"
+)
+
+# Slack file links — fill in as each step is uploaded to the workspace
+STEP_LINKS = {
+    "1.2": "https://booklesss20.slack.com/files/U0B2W0BJGUT/F0B81C99WSJ/step_1.2_-_vision__mission___objectives.pdf",
+    "2.1": None,
+    "2.2": None,
+    "3.1": None,
+    "3.2": None,
+}
+
+def step_ref(n):
+    url = STEP_LINKS.get(n)
+    if url:
+        return f'<link href="{url}"><u>Step {n}</u></link>'
+    return f"Step {n}"
 
 OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..",
            "courses", "Strategic Management", "01-foundations")
@@ -104,6 +128,12 @@ def make_styles():
         "fact": ParagraphStyle("fact",
             fontName="Body-Bold", fontSize=10, textColor=C_RED_DK,
             leading=16, spaceAfter=6, alignment=TA_LEFT),
+        "formula": ParagraphStyle("formula",
+            fontName="Body-Bold", fontSize=10, textColor=C_RED_DK,
+            leading=16, alignment=TA_LEFT),
+        "formula_r": ParagraphStyle("formula_r",
+            fontName="Body-Bold", fontSize=10, textColor=C_RED_DK,
+            leading=16, alignment=TA_RIGHT),
         "th": ParagraphStyle("th",
             fontName="Body-Bold", fontSize=9, textColor=C_INK,
             leading=13, alignment=TA_LEFT),
@@ -119,7 +149,7 @@ def make_styles():
         "community": ParagraphStyle("community",
             fontName="Body", fontSize=9.5, textColor=C_STEEL,
             leading=15, spaceAfter=5, alignment=TA_LEFT),
-        "community_end": ParagraphStyle("community_end",
+        "community_link": ParagraphStyle("community_link",
             fontName="Body-Bold", fontSize=9.5, textColor=C_RED_DK,
             leading=15, alignment=TA_LEFT),
     }
@@ -174,7 +204,10 @@ def body_page(canvas, doc):
     canvas.setLineWidth(0.6)
     canvas.line(MX, MY - 4, W - MX, MY - 4)
     canvas.setFillColor(C_STEEL)
-    canvas.drawString(MX, MY - 14, "Booklesss | booklesss.framer.ai")
+    _footer_left = "Booklesss | booklesss.framer.ai"
+    canvas.drawString(MX, MY - 14, _footer_left)
+    _tw = canvas.stringWidth(_footer_left, "Body", 7.5)
+    canvas.linkURL("https://booklesss.framer.ai", (MX, MY - 16, MX + _tw, MY - 8))
     canvas.drawCentredString(W / 2, MY - 14, "Strategic Management")
     canvas.drawRightString(W - MX, MY - 14, f"Page {pn}")
     canvas.restoreState()
@@ -215,6 +248,26 @@ def fact(text):
         ("RIGHTPADDING",  (0,0), (-1,-1), 10),
     ]))
     return KeepTogether([t, Spacer(1, 10)])
+
+def formula_box(lines):
+    items = [[Paragraph(ln, ST["formula"])] for ln in lines]
+    inner = Table(items, colWidths=[CONTENT_W - 26])
+    inner.setStyle(TableStyle([
+        ("TOPPADDING",    (0,0), (-1,-1), 2),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 2),
+        ("LEFTPADDING",   (0,0), (-1,-1), 0),
+        ("RIGHTPADDING",  (0,0), (-1,-1), 0),
+    ]))
+    outer = Table([[inner]], colWidths=[CONTENT_W])
+    outer.setStyle(TableStyle([
+        ("BACKGROUND",    (0,0), (-1,-1), BG_FORMULA),
+        ("LINEBEFORE",    (0,0), (-1,-1), 2.5, C_RED),
+        ("TOPPADDING",    (0,0), (-1,-1), 10),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 10),
+        ("LEFTPADDING",   (0,0), (-1,-1), 12),
+        ("RIGHTPADDING",  (0,0), (-1,-1), 10),
+    ]))
+    return KeepTogether([outer, Spacer(1, 10)])
 
 def callout(text):
     p = Paragraph(text.replace("\n", "<br/>"),
@@ -263,21 +316,42 @@ def table_std(data, col_widths):
     ]))
     return KeepTogether([Spacer(1, 6), t, Spacer(1, 10)])
 
+def resources_box(items):
+    """Cover resource panel. items = list of (label, url) tuples."""
+    s_hd = ParagraphStyle("res_hd", fontName="Body-Bold", fontSize=7,
+                           textColor=C_RED, leading=10, alignment=TA_LEFT)
+    s_lnk = ParagraphStyle("res_lnk", fontName="Body-Bold", fontSize=9,
+                            textColor=C_RED_DK, leading=15, alignment=TA_LEFT)
+    rows = [[Paragraph("ADDED VALUE", s_hd)]]
+    _blt = (f'<img src="{MARK_BLACK}" width="8" height="8" valign="middle"/>'
+            if os.path.exists(MARK_BLACK) else "▸")
+    for label, url in items:
+        rows.append([Paragraph(f'<link href="{url}">{_blt}  <u>{label}</u></link>', s_lnk)])
+    t = Table(rows, colWidths=[CONTENT_W])
+    t.setStyle(TableStyle([
+        ("BACKGROUND",    (0, 0), (-1,-1), BG_CALLOUT),
+        ("BOX",           (0, 0), (-1,-1), 0.8, C_RED),
+        ("TOPPADDING",    (0, 0), (-1,-1), 5),
+        ("BOTTOMPADDING", (0, 0), (-1,-1), 5),
+        ("LEFTPADDING",   (0, 0), (-1,-1), 12),
+        ("RIGHTPADDING",  (0, 0), (-1,-1), 12),
+        ("TOPPADDING",    (0, 0), (-1, 0), 10),
+        ("BOTTOMPADDING", (0,-1), (-1,-1), 10),
+    ]))
+    return KeepTogether([t, Spacer(1, 6)])
+
 def community_closer():
     return [
         Spacer(1, 20),
         HRFlowable(width="100%", thickness=0.5, color=C_RULE, spaceAfter=14),
         Paragraph(
-            "This is Step 1.1 in the Strategic Management series inside the Booklesss "
-            "study group on Slack. The channel is <b>#sm-foundations</b> — that's where "
-            "students are working through these frameworks, sharing past exam questions, "
-            "and testing each other on the concepts that come up every year.",
+            "Take the ZESCO or Zanaco question to <b>#sm-foundations</b> — past exam questions "
+            "on strategy and competitive advantage are going up there too.",
             ST["community"]),
         Spacer(1, 6),
         Paragraph(
-            "Already in the workspace? You know where to find it. "
-            "If not, ask whoever shared this with you for the invite.",
-            ST["community_end"]),
+            "Step 1.2 is Vision, Mission & Objectives.",
+            ST["community_link"]),
     ]
 
 # ── TRIPLE-MARK MOTIF ──────────────────────────────────────────────────────
@@ -362,7 +436,7 @@ def build():
     story = []
 
     # ── COVER ──────────────────────────────────────────────────────────────
-    story.append(Spacer(1, 115))
+    story.append(Spacer(1, 120))
     story.append(LogoTriple(_mark_black) if _mark_black is not None
                  else TripleDiamond(color=HEADING_DARK))
     story.append(Spacer(1, 26))
@@ -374,10 +448,15 @@ def build():
         "What strategy is, the levels it operates at, and the frameworks "
         "your exam will test you on.",
         ST["cover_sub"]))
-    story.append(Spacer(1, 160))
+    story.append(Spacer(1, 110))
     story.append(Paragraph("Strategic Management", ST["cover_meta"]))
     story.append(Spacer(1, 3))
     story.append(Paragraph("Booklesss · booklesss.framer.ai", ST["cover_meta"]))
+    story.append(Spacer(1, 14))
+    story.append(resources_box([
+        ("Audio overview", NLM_STEP_1_1_A),
+        ("Video overview", NLM_STEP_1_1_B),
+    ]))
     story.append(NextPageTemplate("body"))
     story.append(PageBreak())
 
@@ -421,10 +500,10 @@ def build():
     ))
 
     story.append(discussion_q(
-        "<i>ZESCO announces it will expand into solar energy generation for rural communities. "
+        "ZESCO announces it will expand into solar energy generation for rural communities. "
         "Identify which level of strategy this represents and justify your answer. "
         "Then name two decisions that must follow at the business level and two at the functional level "
-        "to make the corporate decision viable.</i>"
+        "to make the corporate decision viable."
     ))
 
     # ── SECTION 3 ──────────────────────────────────────────────────────────
@@ -456,16 +535,21 @@ def build():
     story.append(table_std([
         ["Stage", "What happens"],
         ["1. Environmental Analysis",
-         "Scan external threats and opportunities; audit internal resources and capabilities. "
-         "Tools: PESTEL, Porter's Five Forces (Step 2.1), SWOT, VRIO (Step 2.2)."],
+         f"Scan external threats and opportunities; audit internal resources and capabilities. "
+         f"Tools: PESTEL, Porter's Five Forces ({step_ref('2.1')}), SWOT, VRIO ({step_ref('2.2')})."],
         ["2. Strategy Formulation",
-         "Set mission and objectives; generate strategic options; choose direction. "
-         "Tools: Ansoff, BCG, Generic Strategies (Steps 3.1, 3.2)."],
+         f"Set mission and objectives; generate strategic options; choose direction. "
+         f"Tools: Ansoff, BCG, Generic Strategies ({step_ref('3.1')}, {step_ref('3.2')})."],
         ["3. Strategy Implementation",
          "Convert chosen strategy into structures, budgets, processes, and people."],
         ["4. Evaluation and Control",
          "Monitor performance against targets; feed findings back into the next planning cycle."],
     ], [CONTENT_W * 0.27, CONTENT_W * 0.73]))
+    story.append(body(
+        "Formulation begins with purpose — what is this organisation for and what is it "
+        "trying to achieve? Get that wrong and every option you evaluate will be measured "
+        "against the wrong target. Mission, vision, and objectives are the starting point."
+    ))
 
     # ── SECTION 5 ──────────────────────────────────────────────────────────
     story += section("CONCEPT 05", "Competitive Advantage and Generic Strategies")
@@ -490,25 +574,33 @@ def build():
     ))
 
     story.append(discussion_q(
-        "<i>Zanaco operates branches across Zambia including rural areas that run at a loss. "
+        "Zanaco operates branches across Zambia including rural areas that run at a loss. "
         "The bank treats this as part of its identity rather than a profitability question. "
         "Using Porter's five generic strategies, identify which strategy Zanaco follows and "
         "explain your reasoning. Then identify one specific threat from a mobile money competitor "
-        "and name the stage of the strategic management process where Zanaco should address it.</i>"
+        "and name the stage of the strategic management process where Zanaco should address it."
     ))
 
     # ── KEY TERMS ──────────────────────────────────────────────────────────
     story += section("REFERENCE", "Key Terms")
     story.append(table_std([
         ["Term", "Definition"],
-        ["Strategy",                  "Direction and scope of an organisation over the long-term, achieving advantage through resource configuration"],
-        ["Corporate Level",           "Decisions about which industries and markets to compete in; portfolio allocation across business units"],
-        ["Business Level",            "How to compete within a specific business unit or market"],
-        ["Functional Level",          "Day-to-day implementation of strategy through operational functions"],
-        ["Mintzberg's Five Ps",       "Plan, Ploy, Pattern, Position, Perspective — five ways strategy forms in organisations"],
-        ["Emergent Strategy",         "A pattern in decisions that arises over time without a deliberate plan (Mintzberg's Pattern)"],
-        ["Competitive Advantage",     "An attribute enabling a firm to outperform rivals through lower cost or higher value"],
-        ["Porter's Generic Strategies", "Five approaches: low-cost provider, focused low-cost, broad differentiation, focused differentiation, best-cost provider"],
+        ["Strategy",
+         "Direction and scope of an organisation over the long-term, achieving advantage through resource configuration"],
+        ["Corporate Level",
+         "Decisions about which industries and markets to compete in; portfolio allocation across business units"],
+        ["Business Level",
+         "How to compete within a specific business unit or market"],
+        ["Functional Level",
+         "Day-to-day implementation of strategy through operational functions"],
+        ["Mintzberg's Five Ps",
+         "Plan, Ploy, Pattern, Position, Perspective — five ways strategy forms in organisations"],
+        ["Emergent Strategy",
+         "A pattern in decisions that arises over time without a deliberate plan (Mintzberg's Pattern)"],
+        ["Competitive Advantage",
+         "An attribute enabling a firm to outperform rivals through lower cost or higher value"],
+        ["Porter's Generic Strategies",
+         "Five approaches: low-cost provider, focused low-cost, broad differentiation, focused differentiation, best-cost provider"],
     ], [CONTENT_W * 0.38, CONTENT_W * 0.62]))
 
     # ── LEARNING OUTCOMES ──────────────────────────────────────────────────
@@ -521,15 +613,6 @@ def build():
         "Identify which of Porter's five generic strategies a firm is using from a case description, separating scope from source of advantage",
     ], 1):
         story.append(Paragraph(f"{i}.  {outcome}", ST["outcome"]))
-
-    story.append(Spacer(1, 10))
-    story.append(Paragraph(
-        "Next: Step 1.2 — Vision, Mission & Objectives",
-        ParagraphStyle("nxt", fontName="Body-Bold", fontSize=9,
-                       textColor=C_STEEL, leading=14, spaceBefore=6)))
-
-    # ── COMMUNITY CLOSER ───────────────────────────────────────────────────
-    story += community_closer()
 
     doc.build(story)
     print(f"\nPDF saved to:\n  {os.path.abspath(OUT_PATH)}\n")
