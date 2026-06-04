@@ -1,14 +1,17 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-06-05
+**Last updated:** 2026-06-06
 
 ---
 
 ## Next Session
 
-- [ ] Re-upload SM Step 1.2 to Slack (video overview link added to ADDED VALUE box this session) — get new file link, update workspace.md
+- [ ] Add NLM audio + video links to Steps 3.1, 3.2, 3.3 ADDED VALUE boxes (NLMs not yet created)
+- [ ] Re-upload SM 2.1 and 2.2 to Slack — PDFs moved to flat paths this session, old Slack uploads are stale
+- [ ] Post Lesson 1 to Slack: Step 1.1 → #sm-foundations, Step 1.2 → #sm-foundations
+- [ ] Re-upload SM Step 1.2 to Slack (video overview link added to ADDED VALUE box session 2026-06-05) — get new file link, update workspace.md
 - [ ] Remove `STEP_LINKS` / `step_ref()` from SM 1.1 and 1.2 build scripts — approach abandoned (see dead end below). Keep references as plain text.
-- [ ] Rebuild SM steps 2.1–3.2 to v2 standard (cream paper + cardinal red + Parastoo/Aptos + flat output path + ADDED VALUE box pattern + no community closer)
+- [ ] ~~Rebuild SM steps 2.1–3.2 to v2 standard~~ ✅ DONE 2026-06-06
 - [ ] Strip the Slack invite link from CF **Step 1.1**'s `community_closer()` — still there, not actioned
 - [ ] Roll the v2 standard across remaining CF steps: **1.3, 2.1, 2.2, 3.1, 3.2, 4.1, 4.2, 5.1**
 - [ ] Extract a shared brand module (`booklesss_brand.py`) so CF rebuilds aren't ~600 lines of copy-paste each
@@ -25,6 +28,33 @@
 ---
 
 ## Session Log
+
+### Session 2026-06-06
+**Done:**
+- SM Lesson 3 written from scratch: 3 steps, all v2 (cream/cardinal red/Parastoo/Aptos).
+  - Step 3.1 — Corporate Strategy: levels of strategy, growth paths (concentration/integration/diversification), BCG Matrix. Zambeef/FQM examples.
+  - Step 3.2 — Competitive Strategy: Porter's Generic Strategies, cost leadership/differentiation mechanics, offensive and defensive competitive moves.
+  - Step 3.3 — Strategy Implementation: McKinsey 7-S, Balanced Scorecard, Kotter 8-step, org structures, strategic control types.
+- Course restructured: Lesson 3 expanded from 2 → 3 steps. Total SM course: **8 steps** (was 6).
+- All PDFs moved to flat folder paths (`02-environment/`, `03-strategy/`) — old per-step subfolders deleted.
+- `_course.md` updated to reflect 8 steps, all v2, NLM links pending for 3.1–3.3.
+
+**What Worked:**
+- Reading v1 script content before rebuilding — avoided losing good content, carried forward Zambian examples and table structures that were already well-formed.
+- Source extraction via pypdf → `_dev/tmp_*.txt` to scope lesson content before writing — confirmed Lesson 3 needed 3 steps, not 2.
+- PyMuPDF (`fitz`) for visual QA: `page.get_pixmap(matrix=fitz.Matrix(1.8,1.8))` renders at good quality without poppler. Works on this Windows machine.
+- Comparing against the working 2.1 script to diagnose the blank pages bug — seeing `onPage=page_bg` in 2.1 immediately identified the swapped order in the new scripts.
+
+**Bugs caught and fixed:**
+1. **BLANK BODY PAGES — onPage/onPageEnd order swapped.** All new scripts had `onPage=body_page, onPageEnd=page_bg`. The `page_bg` function fills the whole page with cream colour. Called as `onPageEnd` it fires AFTER all flowable content has been drawn, painting cream over every character. All body pages appeared blank. Fix: `onPage=page_bg, onPageEnd=body_page` — background draws first, content on top, header/footer drawn last. **This rule existed in the 2026-05-24 dead end but was not applied to the new scripts.** It will happen again if new scripts are ever written from scratch rather than copied from a working v2 template.
+2. **Kotter table first column too narrow.** `0.6*cm` was used for the step-name column ("1. Establish urgency" etc.). Fix: `3.2*cm`. Rule: size the first column for its longest data cell, not just the number.
+
+**Dead Ends (do not retry):**
+- None new this session.
+
+**Next:** See Next Session list above.
+
+---
 
 ### Session 2026-06-05
 **Done:**
