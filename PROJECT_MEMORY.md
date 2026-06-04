@@ -1,12 +1,12 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-06-04
+**Last updated:** 2026-06-05
 
 ---
 
 ## Next Session
 
-- [ ] Re-upload SM Step 1.1 and Step 1.2 to Slack (both rebuilt this session with ADDED VALUE box + new footer + content changes) — get new file links, update workspace.md
+- [ ] Re-upload SM Step 1.2 to Slack (video overview link added to ADDED VALUE box this session) — get new file link, update workspace.md
 - [ ] Remove `STEP_LINKS` / `step_ref()` from SM 1.1 and 1.2 build scripts — approach abandoned (see dead end below). Keep references as plain text.
 - [ ] Rebuild SM steps 2.1–3.2 to v2 standard (cream paper + cardinal red + Parastoo/Aptos + flat output path + ADDED VALUE box pattern + no community closer)
 - [ ] Strip the Slack invite link from CF **Step 1.1**'s `community_closer()` — still there, not actioned
@@ -25,6 +25,21 @@
 ---
 
 ## Session Log
+
+### Session 2026-06-05
+**Done:**
+- Added NotebookLM video overview link to SM Step 1.2 ADDED VALUE box. Both audio and video overview links now present on the cover. Constant `VID_STEP_1_2` added to `build_sm_1_2_mission-and-vision.py`. PDF rebuilt.
+- NLM video URL saved to memory file `project_slack_file_links.md`.
+
+**What Worked:**
+- None.
+
+**Dead Ends (do not retry):**
+- None.
+
+**Next:** Re-upload updated SM 1.2 PDF to Slack → get new file link → update workspace.md.
+
+---
 
 ### Session 2026-06-04
 **Done:**

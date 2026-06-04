@@ -84,6 +84,11 @@ NLM_STEP_1_2_A = (
     "/artifact/43265c94-230e-4591-a4a0-ed0ce2f8e0cc"
 )
 
+VID_STEP_1_2 = (
+    "https://notebooklm.google.com/notebook/5c062470-ef08-4026-a07f-423a65d52af3"
+    "/artifact/0d1e69bd-dff0-47b3-926d-2dea8fd89b98"
+)
+
 OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..",
            "courses", "Strategic Management", "01-foundations")
 OUT_PATH = os.path.join(OUT_DIR, "Step 1.2 - Vision, Mission & Objectives.pdf")
@@ -428,6 +433,7 @@ def build():
     story.append(Spacer(1, 14))
     story.append(resources_box([
         ("Audio overview", NLM_STEP_1_2_A),
+        ("Video overview", VID_STEP_1_2),
     ]))
     story.append(NextPageTemplate("body"))
     story.append(PageBreak())
