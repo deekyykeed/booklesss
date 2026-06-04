@@ -1,6 +1,6 @@
 # Strategic Management — Course Status
 
-**Last updated:** 2026-06-03
+**Last updated:** 2026-06-06
 
 ---
 
@@ -13,8 +13,8 @@
 | Slack section | Strategic Management |
 | Updates channel | `#sm-updates` → https://bookless10.slack.com/archives/C0AN0T23YKC |
 | Lessons | 3 |
-| Total steps planned | 6 |
-| PDFs generated | 6 |
+| Total steps | 8 |
+| PDFs generated | 8 |
 | Steps posted to Slack | 1 |
 
 ---
@@ -29,11 +29,7 @@ lesson always restarts at `.1`.
 |--------|-------|--------|-------|
 | 1 | Foundations | `01-foundations/` | 1.1, 1.2 |
 | 2 | Environment | `02-environment/` | 2.1, 2.2 |
-| 3 | Strategy | `03-strategy/` | 3.1, 3.2 |
-
-> Note: the per-step subfolders still carry their old continuous numeric prefixes
-> (`01-`…`06-`). These are just folder slugs and don't drive the scheme — the
-> authoritative number is the `Step X.Y` in the PDF filename and tracker.
+| 3 | Strategy | `03-strategy/` | 3.1, 3.2, 3.3 |
 
 ---
 
@@ -43,17 +39,19 @@ lesson always restarts at `.1`.
 |------|-------|--------|-----|--------|---------|
 | 1.1 | Introduction to Corporate Strategy | `_source/1. Introduction to Corporate Strategy.pdf` | ✅ v2 | — | `#sm-foundations` |
 | 1.2 | Vision, Mission & Objectives | `_source/2. Mission and Vision.pdf` | ✅ v2 | — | `#sm-foundations` |
-| 2.1 | External Environment (PESTEL, Porter's Five Forces) | `_source/3. External Environment.pdf` | ✅ | — | `#sm-environment` |
-| 2.2 | Internal Environment (SWOT, Value Chain, VRIO) | `_source/4. Corporate Internal Environment.pdf` | ✅ | ✅ 2026-03-24 | `#sm-environment` |
-| 3.1 | Strategy Implementation | `_source/5. Strategic Management Module.pdf` + `_source/6.` | ✅ | — | `#sm-strategy` |
-| 3.2 | Competitive Strategy (Porter's Generic Strategies) | `_source/8. Competitive Strategy.pdf` | ✅ | — | `#sm-strategy` |
+| 2.1 | The External Environment (PESTEL, Porter's Five Forces) | `_source/3. External Environment.pdf` | ✅ v2 | — | `#sm-environment` |
+| 2.2 | The Internal Environment (SWOT, Value Chain, VRIO) | `_source/4. Corporate Internal Environment.pdf` | ✅ v2 | ✅ 2026-03-24 | `#sm-environment` |
+| 3.1 | Corporate Strategy (levels, growth, diversification, BCG) | `_source/5. Strategic Management Module.pdf` Units 2–3, 8 | ✅ v2 | — | `#sm-strategy` |
+| 3.2 | Competitive Strategy (Porter's Generic, offensive/defensive) | `_source/5.` Unit 9 + `_source/8. Competitive Strategy.pdf` | ✅ v2 | — | `#sm-strategy` |
+| 3.3 | Strategy Implementation (7-S, Balanced Scorecard, change mgmt) | `_source/5.` Unit 10 + `_source/6. Strategic Management.pdf` | ✅ v2 | — | `#sm-strategy` |
 
 > **Note on the posted step:** the step now numbered **2.2** (Internal Environment)
 > was posted to Slack on 2026-03-24 under its old number **4.1**. The PDF in the
-> channel still shows "Step 4.1". Repost the renamed PDF when convenient so the
-> channel matches the new scheme.
+> channel still shows "Step 4.1". Repost the renamed PDF when convenient.
 
-**All steps written. Next: begin posting from Step 1.1 → #sm-foundations**
+> **Lesson 3 restructured (2026-06-06):** old v1 scripts (3.1 strategy-implementation,
+> 3.2 competitive-strategy) superseded by three new v2 scripts (3.1 corporate-strategy,
+> 3.2 competitive-strategy, 3.3 strategy-implementation). NLM audio/video links pending.
 
 ---
 
@@ -67,10 +65,10 @@ All source PDFs are in `_source/` directly (no subfolders):
 | `2. Mission and Vision.pdf` | Step 1.2 |
 | `3. External Environment.pdf` | Step 2.1 |
 | `4. Corporate Internal Environment.pdf` | Step 2.2 |
-| `5. Strategic Management Module.pdf` | Step 3.1 (main) |
-| `6. Strategic Management.pdf` | Step 3.1 (supplement) |
+| `5. Strategic Management Module.pdf` | Steps 3.1, 3.2, 3.3 (main) |
+| `6. Strategic Management.pdf` | Step 3.3 (supplement) |
 | `7. Strategic Management Book.pdf` | All steps — reference |
-| `8. Competitive Strategy.pdf` | Step 3.2 |
+| `8. Competitive Strategy.pdf` | Step 3.2 (Porter) |
 
 ---
 
@@ -80,10 +78,11 @@ All source PDFs are in `_source/` directly (no subfolders):
 |------|----------|
 | 1.1 | `01-foundations/Step 1.1 - Introduction to Corporate Strategy.pdf` |
 | 1.2 | `01-foundations/Step 1.2 - Vision, Mission & Objectives.pdf` |
-| 2.1 | `02-environment/03-external-environment/Step 2.1 - The External Environment.pdf` |
-| 2.2 | `02-environment/04-internal-environment/Step 2.2 - The Internal Environment.pdf` |
-| 3.1 | `03-strategy/05-strategy-implementation/Step 3.1 - Strategy Implementation.pdf` |
-| 3.2 | `03-strategy/06-competitive-strategy/Step 3.2 - Competitive Strategy.pdf` |
+| 2.1 | `02-environment/Step 2.1 - The External Environment.pdf` |
+| 2.2 | `02-environment/Step 2.2 - The Internal Environment.pdf` |
+| 3.1 | `03-strategy/Step 3.1 - Corporate Strategy.pdf` |
+| 3.2 | `03-strategy/Step 3.2 - Competitive Strategy.pdf` |
+| 3.3 | `03-strategy/Step 3.3 - Strategy Implementation.pdf` |
 
 ---
 
@@ -95,13 +94,12 @@ All source PDFs are in `_source/` directly (no subfolders):
 | 1.2 | `_dev/scripts/build_sm_1_2_mission-and-vision.py` |
 | 2.1 | `_dev/scripts/build_sm_2_1_external-environment.py` |
 | 2.2 | `_dev/scripts/build_sm_2_2_internal-environment.py` |
-| 3.1 | `_dev/scripts/build_sm_3_1_strategy-implementation.py` |
+| 3.1 | `_dev/scripts/build_sm_3_1_corporate-strategy.py` |
 | 3.2 | `_dev/scripts/build_sm_3_2_competitive-strategy.py` |
+| 3.3 | `_dev/scripts/build_sm_3_3_strategy-implementation.py` |
 
-> **Lesson 1 complete at v2 standard (2026-06-03):** cream paper, cardinal red accent,
-> Parastoo/Aptos vendored fonts, CF-style structure (orientation framing, 5 sections,
-> 2 Zambian discussion questions, learning outcomes). Both build on Windows.
-> Steps 2.1–3.2 still use old Linux fonts — need v2 rebuild.
+> **All steps v2 (cream paper, cardinal red, Parastoo/Aptos, Windows-native fonts).**
+> Steps 3.1–3.3 NLM audio/video links are empty — add when NotebookLMs are created.
 
 ---
 
@@ -111,4 +109,4 @@ All source PDFs are in `_source/` directly (no subfolders):
 |---------|-------|
 | `#sm-foundations` | 1.1, 1.2 |
 | `#sm-environment` | 2.1, 2.2 |
-| `#sm-strategy` | 3.1, 3.2 |
+| `#sm-strategy` | 3.1, 3.2, 3.3 |

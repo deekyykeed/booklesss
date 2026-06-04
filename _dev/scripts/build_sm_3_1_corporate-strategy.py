@@ -1,5 +1,5 @@
 """
-Booklesss — Step 3.2: Competitive Strategy
+Booklesss — Step 3.1: Corporate Strategy
 Course: Strategic Management
 Style: Cream paper · cardinal red accent · Parastoo serif titles · Aptos body
 """
@@ -64,12 +64,13 @@ MX        = 2.2 * cm
 MY        = 2.0 * cm
 CONTENT_W = W - 2 * MX
 
-NLM_STEP_3_2_A = ""
-VID_STEP_3_2   = ""
+# NLM links — to be filled when available
+NLM_STEP_3_1_A = ""
+VID_STEP_3_1   = ""
 
 OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..",
            "courses", "Strategic Management", "03-strategy")
-OUT_PATH = os.path.join(OUT_DIR, "Step 3.2 - Competitive Strategy.pdf")
+OUT_PATH = os.path.join(OUT_DIR, "Step 3.1 - Corporate Strategy.pdf")
 
 # ── STYLES ─────────────────────────────────────────────────────────────────
 def make_styles():
@@ -165,7 +166,7 @@ def body_page(canvas, doc):
     canvas.line(MX, H - MY + 4, W - MX, H - MY + 4)
     canvas.setFont("Body", 7.5)
     canvas.setFillColor(C_STEEL)
-    canvas.drawString(MX, H - MY + 7, "3.2 — Competitive Strategy")
+    canvas.drawString(MX, H - MY + 7, "3.1 — Corporate Strategy")
     canvas.drawRightString(W - MX, H - MY + 7, "v2 · June 2026")
     canvas.setStrokeColor(C_RULE)
     canvas.setLineWidth(0.6)
@@ -252,7 +253,7 @@ def resources_box(items):
                             textColor=C_RED_DK, leading=15, alignment=TA_LEFT)
     rows = [[Paragraph("ADDED VALUE", s_hd)]]
     _blt = (f'<img src="{MARK_BLACK}" width="8" height="8" valign="middle"/>'
-            if os.path.exists(MARK_BLACK) else ">")
+            if os.path.exists(MARK_BLACK) else "▸")
     for label, url in items:
         rows.append([Paragraph(f'<link href="{url}">{_blt}  <u>{label}</u></link>', s_lnk)])
     t = Table(rows, colWidths=[CONTENT_W])
@@ -378,12 +379,12 @@ def build():
     else:
         story.append(TripleDiamond())
     story.append(Spacer(1, 20))
-    story.append(Paragraph("STEP 3.2", ST["cover_step"]))
+    story.append(Paragraph("STEP 3.1", ST["cover_step"]))
     story.append(Spacer(1, 6))
-    story.append(Paragraph("Competitive<br/>Strategy", ST["cover_title"]))
+    story.append(Paragraph("Corporate<br/>Strategy", ST["cover_title"]))
     story.append(Spacer(1, 14))
     story.append(Paragraph(
-        "Porter's Generic Strategies · Offensive &amp; defensive moves · Blue Ocean",
+        "Levels of strategy · Growth &amp; diversification · BCG Matrix",
         ST["cover_sub"]))
 
     story.append(Spacer(1, 110))
@@ -393,10 +394,10 @@ def build():
     story.append(Spacer(1, 14))
 
     nlm_items = []
-    if NLM_STEP_3_2_A:
-        nlm_items.append(("Audio overview", NLM_STEP_3_2_A))
-    if VID_STEP_3_2:
-        nlm_items.append(("Video overview", VID_STEP_3_2))
+    if NLM_STEP_3_1_A:
+        nlm_items.append(("Audio overview", NLM_STEP_3_1_A))
+    if VID_STEP_3_1:
+        nlm_items.append(("Video overview", VID_STEP_3_1))
     if nlm_items:
         story.append(resources_box(nlm_items))
 
@@ -404,192 +405,237 @@ def build():
     story.append(NextPageTemplate("Body"))
     story.append(PageBreak())
 
-    # ── SECTION 1: ORIENTATION ─────────────────────────────────────────────
-    story += section("ORIENTATION", "From Portfolio to Battlefield")
+    # ── SECTION 1: ORIENTATION ──────────────────────────────────────────────
+    story += section("ORIENTATION", "Where Strategy-Making Happens")
     story.append(body(
-        "Step 3.1 answered the corporate question: <i>Which businesses should we be in?</i> "
-        "This step answers the business-level question: <i>How do we compete and win in the business we have chosen?</i> "
-        "The difference matters. A wrong corporate decision wastes years; a wrong competitive decision wastes resources "
-        "and market position that are hard to recover."
+        "In Lessons 1 and 2 you built the analytical foundation: you know what strategy is (Step 1.1), "
+        "what the organisation stands for (Step 1.2), what external forces are at work (Step 2.1), "
+        "and what the organisation is genuinely capable of (Step 2.2). Now the work shifts from analysis to choice."
     ))
     story.append(Spacer(1, 8))
     story.append(body(
-        "Michael Porter's core argument is that sustainable competitive advantage comes from choosing a clear position — "
-        "and that the worst strategic error is trying to be everything to everyone. "
-        "He calls this being 'stuck in the middle': neither cost-competitive nor meaningfully differentiated. "
-        "Stuck-in-the-middle firms earn below-average returns across every industry."
+        "Strategic choices happen at three distinct levels. Each level answers a different question, "
+        "involves different decision-makers, and operates on a different time horizon. "
+        "Getting the levels confused is one of the most common strategy mistakes — "
+        "corporate leadership meddling in operational decisions, or business units making portfolio choices "
+        "that should sit with the board."
     ))
     story.append(Spacer(1, 10))
 
-    # ── SECTION 2: PORTER'S GENERIC STRATEGIES ─────────────────────────────
-    story += section("COMPETITIVE POSITION", "Porter's Three Generic Strategies")
-    story.append(body(
-        "Porter identifies three viable strategic positions. Two dimensions define the space: "
-        "the <b>source of advantage</b> (lower cost vs unique value) and the <b>competitive scope</b> "
-        "(broad market vs narrow segment). These combine into three strategies."
-    ))
-    story.append(Spacer(1, 10))
-
-    gen_data = [
-        ["Strategy", "Source of advantage", "Scope", "How to win", "Core risk"],
-        ["Cost Leadership", "Lower cost than rivals", "Broad market", "Produce and deliver at lower cost than anyone else — pass some savings to customers, keep rest as margin.", "Technology change erodes your cost advantage overnight. Rivals copy your efficiencies."],
-        ["Differentiation", "Unique value customers prize", "Broad market", "Offer something competitors cannot easily replicate — brand, technology, service, design. Charge a premium.", "Premium narrows as competitors imitate. Customer preferences shift away from your differentiator."],
-        ["Cost Focus", "Lower cost within a segment", "Narrow segment", "Be the low-cost provider for a specific customer group, geography, or product niche.", "Segment may shrink or lose attractiveness. Broad cost leaders may attack the segment."],
-        ["Differentiation Focus", "Unique value within a segment", "Narrow segment", "Serve a specific segment so well that broader competitors cannot match you in that niche.", "Broad differentiators may narrow their focus. Segment needs may drift toward mainstream."],
+    levels_data = [
+        ["Level", "Who decides", "Core question", "Time horizon"],
+        ["Corporate", "Board / Group CEO", "Which businesses should we be in? How do we allocate capital across them?", "5–10 years"],
+        ["Business", "Divisional MD / BU head", "How do we compete and win within our chosen market?", "2–5 years"],
+        ["Functional", "Functional heads (CFO, CMO, COO…)", "How does each function support the business strategy?", "1–2 years"],
     ]
-    cw_strat = CONTENT_W / 5
-    story.append(table_std(gen_data,
-        [2.2*cm, 2.5*cm, 1.8*cm, CONTENT_W - 9.5*cm, 3*cm]))
+    story.append(table_std(levels_data,
+        [2.2*cm, 2.8*cm, CONTENT_W - 7.5*cm, 2.5*cm]))
+    story.append(Spacer(1, 4))
+
+    story.append(body(
+        "This step is about <b>corporate-level strategy</b> — the top of the hierarchy. "
+        "It is the most consequential and the hardest to reverse. Entering a new industry or acquiring "
+        "a business takes years to undo if it turns out to be wrong. That is why the analytical work "
+        "of Lessons 1 and 2 must come first."
+    ))
+    story.append(Spacer(1, 10))
+
+    # ── SECTION 2: CORPORATE STRATEGIES ──────────────────────────────────────
+    story += section("STRATEGIC CHOICE", "The Four Corporate-Level Strategy Directions")
+    story.append(body(
+        "At the corporate level, the fundamental question is: <i>What direction should this organisation move in?</i> "
+        "There are four broad directions, and every corporate-level decision fits into one of them."
+    ))
+    story.append(Spacer(1, 8))
+
+    corp_data = [
+        ["Direction", "What it means", "When to choose it"],
+        ["Growth", "Expand — into new products, markets, or businesses. Increase revenue and competitive scope.", "When the environment offers real opportunity and the firm has the capability and capital to capture it."],
+        ["Stability", "Maintain the current position. Protect what works without significant new investment.", "When the market is mature, the firm is performing well, and disruption carries more risk than growth."],
+        ["Retrenchment", "Pull back — cut costs, exit underperforming businesses, refocus on core strengths.", "When performance is declining, resources are stretched, or parts of the portfolio are destroying value."],
+        ["Combination", "Apply different directions to different business units simultaneously.", "When the portfolio is diverse — some units merit growth investment, others stability or exit."],
+    ]
+    story.append(table_std(corp_data,
+        [2.4*cm, CONTENT_W * 0.42, CONTENT_W - 2.4*cm - CONTENT_W * 0.42]))
     story.append(Spacer(1, 6))
 
-    story.append(h3("Cost Leadership in Zambia"))
     story.append(body(
-        "Shoprite and Pick n Pay compete on cost leadership in Zambian retail — scale buying, "
-        "efficient logistics, no-frills store formats. A local chain that tries to match their prices "
-        "without their scale is on a losing path. The correct response for a smaller retailer is "
-        "not to compete on cost but to differentiate or focus."
+        "Most large Zambian organisations are combination strategists without labelling it: "
+        "Zambeef invests aggressively in cold-chain capacity (growth) while running its retail outlets "
+        "as mature steady earners (stability). First Quantum Minerals expands into new minerals and geographies "
+        "while exiting mines that no longer cover their cost of capital (retrenchment)."
     ))
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 12))
 
-    story.append(h3("Differentiation in Zambia"))
+    # ── SECTION 3: GROWTH PATHS ──────────────────────────────────────────────
+    story += section("GROWTH STRATEGIES", "How Organisations Expand: Four Paths")
     story.append(body(
-        "Zanaco's business banking offering differentiates through local relationships, Zambia-specific products, "
-        "and access to government contracting networks — areas where an international bank cannot easily match. "
-        "Zambeef differentiates on vertical integration (farm-to-shelf traceability) and cold-chain reliability, "
-        "which smaller competitors cannot afford to replicate."
-    ))
-    story.append(Spacer(1, 8))
-
-    story.append(callout(
-        "Stuck in the Middle: A Zambian supermarket that tries to match Shoprite's prices AND offer "
-        "premium imported goods AND compete on convenient locations simultaneously will be worse than "
-        "Shoprite at cost, worse than specialty retailers at range, and worse at everything else. "
-        "Pick one position and make it defensible."
+        "When an organisation chooses growth, it still needs to decide <i>how</i> to grow. "
+        "The four main growth paths carry very different risk profiles and capability requirements."
     ))
     story.append(Spacer(1, 10))
 
-    # ── SECTION 3: ACHIEVING COST LEADERSHIP ───────────────────────────────
-    story += section("EXECUTION", "Achieving and Defending Each Position")
-    story.append(h3("How to Achieve Cost Leadership"))
+    story.append(h3("1. Concentrated Growth (Intensification)"))
     story.append(body(
-        "Cost leadership is not just about cutting prices — it is about structural cost advantages "
-        "built into how the business operates."
+        "Focus resources on profitable growth within the <b>existing product in the existing market</b>. "
+        "The logic is simple: if the current market is not fully captured, why look elsewhere? "
+        "Zambia's mobile-money market used concentrated growth for years — MTN, Airtel, and Zamtel "
+        "competed intensely for the same customer base before market saturation pushed them toward new segments."
     ))
-    story.append(Spacer(1, 4))
-    story.append(bullet("Scale: higher volume spreads fixed costs over more units (Zambia's telecom operators)"))
-    story.append(bullet("Experience curve: cumulative production lowers unit costs over time"))
-    story.append(bullet("Process design: standardised, efficient workflows reduce labour and waste"))
-    story.append(bullet("Supply chain: preferred supplier contracts, bulk purchasing, backward integration"))
-    story.append(bullet("Technology: automation of routine tasks, digital delivery instead of physical"))
     story.append(Spacer(1, 8))
 
-    story.append(h3("How to Achieve Differentiation"))
+    story.append(h3("2. Market and Product Development"))
     story.append(body(
-        "Differentiation must be perceived as valuable by customers AND hard for competitors to copy. "
-        "Differences that customers don't notice or don't care about are irrelevant."
+        "<b>Market development</b> takes an existing product into a new market (e.g., Zambian Breweries "
+        "expanding distribution into rural areas or neighbouring countries). "
+        "<b>Product development</b> launches new products for existing customers "
+        "(e.g., a bank launching insurance and pension products to its existing account holders). "
+        "Both are lower-risk than full diversification because the firm leverages something it already knows well."
+    ))
+    story.append(Spacer(1, 8))
+
+    story.append(h3("3. Vertical Integration"))
+    story.append(body(
+        "Expand along the supply chain — either <b>backward</b> (toward suppliers) or <b>forward</b> (toward customers)."
     ))
     story.append(Spacer(1, 4))
-    story.append(bullet("Brand: built over years, impossible to copy quickly (MTN's brand in Zambia)"))
-    story.append(bullet("Proprietary technology or process: unique capability not available to rivals"))
-    story.append(bullet("Customer relationships: deep loyalty and switching costs"))
-    story.append(bullet("Quality signals: certifications, awards, reputation built over time"))
-    story.append(bullet("Integration depth: like Zambeef's farm-to-retail chain, creating end-to-end control"))
+    story.append(bullet(
+        "<b>Backward integration:</b> A flour miller that acquires wheat farms controls its own input costs. "
+        "Zambeef's ownership of its own feedlots, abattoirs, and processing plants is backward integration — "
+        "controlling every stage from animal to packaged product."
+    ))
+    story.append(bullet(
+        "<b>Forward integration:</b> A manufacturer that opens its own retail outlets (instead of selling through distributors) "
+        "is integrating forward. The advantage is margin capture and direct customer relationships; "
+        "the risk is that running retail requires very different capabilities than manufacturing."
+    ))
+    story.append(Spacer(1, 8))
+
+    story.append(h3("4. Horizontal Integration"))
+    story.append(body(
+        "Acquire or merge with a <b>competitor at the same stage</b> of the value chain. "
+        "The goal is scale, market share, and elimination of a rival. "
+        "Stanbic Bank's acquisition of CFC Bank in Zambia is horizontal integration — "
+        "same industry, same customer base, merged to achieve scale. "
+        "The risk is that mergers are expensive to execute, and cultural clashes frequently destroy the value they were meant to create."
+    ))
+    story.append(Spacer(1, 12))
+
+    # ── SECTION 4: DIVERSIFICATION ────────────────────────────────────────────
+    story += section("DIVERSIFICATION", "Moving Beyond the Core Business")
+    story.append(body(
+        "Diversification means entering a business that is genuinely new to the firm — "
+        "different products, different markets, different competitive dynamics. "
+        "It is the highest-risk growth path, and the evidence from decades of research is humbling: "
+        "most diversification moves destroy shareholder value. Yet done well, diversification can "
+        "reduce risk by spreading income across businesses and create value when real synergies exist."
+    ))
     story.append(Spacer(1, 10))
 
-    # ── SECTION 4: OFFENSIVE STRATEGIES ────────────────────────────────────
-    story += section("COMPETITIVE MOVES", "Offensive Strategies: Going on the Attack")
+    story.append(h3("Related Diversification (Concentric)"))
     story.append(body(
-        "Once a firm has a competitive position, the question becomes: how do you strengthen it? "
-        "Offensive strategies are deliberate moves to improve competitive position, gain market share, "
-        "or neutralise a rival's advantage. "
-        "They are not random — each has a specific objective and a specific counter-risk."
+        "Enter businesses that share technology, customers, distribution channels, or brand with the core business. "
+        "The test is whether real synergies exist — not just the word 'synergy,' but specific cost savings or "
+        "revenue enhancements that would not exist if the businesses were separate. "
+        "A Zambian bank entering asset management, insurance, or stockbroking is related diversification: "
+        "same customers, complementary products, shared compliance infrastructure."
     ))
     story.append(Spacer(1, 8))
 
-    off_data = [
-        ["Offensive move", "What it involves", "When to use it"],
-        ["Attack competitor strengths", "Match or exceed rivals in their area of advantage — out-invest, out-innovate, undercut on price.", "When you have resources to sustain the fight and the long-term prize justifies the cost."],
-        ["Attack competitor weaknesses", "Target gaps: underserved segments, slow distribution, weak customer service. Strike where rivals are thin.", "When rivals are overextended or have neglected specific customer segments or regions."],
-        ["End-run (blue ocean)", "Bypass existing competition entirely by creating a new market space where rivals don't yet compete.", "When existing markets are saturated and there is a genuinely underserved need you can address."],
-        ["Guerrilla offensives", "Small, targeted strikes — price promotions in specific regions, aggressive local marketing — to disrupt rather than defeat.", "When the firm lacks the scale for a direct assault but can inflict damage selectively and cheaply."],
-        ["Pre-emptive strikes", "Lock up resources, talent, or partnerships before rivals can. First-mover advantage in a new segment.", "When a new opportunity is emerging and being first creates durable lock-in."],
-    ]
-    story.append(table_std(off_data,
-        [3*cm, CONTENT_W * 0.42, CONTENT_W - 3*cm - CONTENT_W * 0.42]))
-    story.append(Spacer(1, 6))
+    story.append(h3("Unrelated Diversification (Conglomerate)"))
+    story.append(body(
+        "Enter businesses with no strategic connection to the core. The only rationale is financial — "
+        "the acquirer believes it can manage the business better than current owners, "
+        "or that cash flows from different industries reduce overall risk. "
+        "Unrelated diversification is notoriously hard to execute: managing a mining company and a supermarket chain "
+        "requires completely different capabilities. Most large conglomerates eventually break up "
+        "because the parts are worth more separately than together."
+    ))
+    story.append(Spacer(1, 8))
 
     story.append(fact(
-        "First-mover advantages in Zambia: M-Pesa (now Airtel Money predecessor) entered mobile money "
-        "early and built a customer base that later entrants struggled to displace. "
-        "Network effects made it self-reinforcing — the more users, the more useful. "
-        "Late entrants had to spend heavily on incentives just to reach parity."
+        "The three tests for any diversification: (1) Industry attractiveness — is the target industry "
+        "genuinely attractive, or are you buying into a declining sector? (2) Cost of entry — will you pay "
+        "so much to acquire that future profits can never justify the price? (3) Better-off test — "
+        "will the combined entity be better off than the businesses operating independently?"
     ))
+    story.append(Spacer(1, 8))
 
     story.append(discussion_q(
-        "Discussion Question 1: Think about an industry in Zambia where the competitive dynamics have "
-        "shifted in the past five years — banking, telecom, retail, or fast food. "
-        "What offensive moves triggered those shifts? Which companies responded well, and which were caught out? "
-        "What does this tell you about the importance of monitoring rivals?"
+        "Discussion Question 1: Zambeef operates beef, chicken, fish, retail (Zambeef shops), and cold-chain logistics. "
+        "Is this related or unrelated diversification? What synergies exist? "
+        "Which parts of the portfolio do you think pass the three diversification tests — "
+        "and which might not?"
     ))
 
-    # ── SECTION 5: DEFENSIVE STRATEGIES ────────────────────────────────────
-    story += section("PROTECTING POSITION", "Defensive Strategies: Holding Your Ground")
+    # ── SECTION 5: BCG MATRIX ─────────────────────────────────────────────────
+    story += section("PORTFOLIO ANALYSIS", "The BCG Matrix: Allocating Capital Across the Portfolio")
     story.append(body(
-        "Competitive advantage is never permanent. Rivals attack, technology shifts, regulations change, "
-        "and consumer preferences evolve. Defensive strategy is about making your position harder to attack "
-        "and responding to threats before they erode your standing."
+        "When an organisation runs multiple businesses or product lines, it needs a way to decide "
+        "where to invest, where to harvest, and where to exit. "
+        "The BCG Growth-Share Matrix (developed by Boston Consulting Group) is the most widely used tool for this. "
+        "It maps every business unit on two dimensions: <b>market growth rate</b> and <b>relative market share</b>."
     ))
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 10))
 
-    story.append(h3("Raising Barriers to Attack"))
-    story.append(bullet("Switching costs: make it expensive or inconvenient for customers to leave (loyalty programmes, data lock-in, long contracts)"))
-    story.append(bullet("Broaden the product range: fill gaps that rivals could exploit for entry"))
-    story.append(bullet("Exclusive supplier or distribution agreements: deny rivals access to key inputs or channels"))
-    story.append(bullet("Signal strength: communicate convincingly that you will defend your position vigorously — deters opportunistic entry"))
-    story.append(Spacer(1, 8))
+    bcg_data = [
+        ["Quadrant", "Market growth", "Relative market share", "Strategic logic", "Cash flow"],
+        ["Stars", "High", "High", "Invest heavily to maintain position. Stars will become Cash Cows as the market matures.", "Roughly neutral — generates cash but also consumes it to fund growth"],
+        ["Cash Cows", "Low", "High", "Milk the profits. The market has matured but you still lead it. Don't over-invest; extract cash to fund Stars and Question Marks.", "Strong positive — the engine of the portfolio"],
+        ["Question Marks", "High", "Low", "Decide quickly: invest to become a Star, or exit before the market matures and you're stuck as a Dog.", "Negative — growing market demands investment but low share means limited return"],
+        ["Dogs", "Low", "Low", "Exit or reposition. Low-growth, low-share businesses consume management attention and rarely justify their cost of capital.", "Neutral to negative — often better to divest"],
+    ]
+    story.append(table_std(bcg_data,
+        [2.2*cm, 1.8*cm, 2.2*cm, CONTENT_W - 8.7*cm, 2.5*cm]))
+    story.append(Spacer(1, 6))
 
-    story.append(h3("Responding to an Attack"))
+    story.append(h3("BCG Applied: Zambian Breweries Portfolio"))
     story.append(body(
-        "The correct response depends on the nature of the attack. "
-        "If a rival is attacking your core customer segment with lower prices, the question is not "
-        "'match the price' but 'why are customers defecting, and can we fix that without destroying margin?' "
-        "A targeted response (price match only in the attacked segment, not market-wide) is cheaper and "
-        "sends a signal without collapsing your entire pricing structure."
+        "Zambian Breweries (part of AB InBev) operates a range of products. "
+        "Applying a rough BCG lens: <b>Mosi Lager</b> (the dominant mass-market beer, high share in a mature market) "
+        "is a classic <b>Cash Cow</b> — the company's earnings engine. "
+        "<b>Eagle Lager</b> and <b>Rhino Lager</b> (affordable sorghum-based beers targeting lower-income consumers) "
+        "sit somewhere between Cash Cow and Star depending on growth trends in that segment. "
+        "Premium imported brands that Zambian Breweries distributes (lower share, emerging premium market) "
+        "are <b>Question Marks</b> — the company must decide whether to invest seriously in premium positioning "
+        "or leave that segment to independents."
     ))
     story.append(Spacer(1, 8))
 
     story.append(callout(
-        "Defensive principle: the goal is not to respond to every attack but to make your position "
-        "structurally unattractive to attack. If rivals know you will defend aggressively and have the "
-        "resources to do so, they will often look elsewhere. The best defence is building genuine advantages "
-        "that competitors cannot easily replicate."
+        "BCG limitation: The matrix assumes that market share drives profitability (via experience curve effects) "
+        "and that high-growth markets are always worth entering. Neither is universally true. "
+        "Use BCG as a starting framework, not a formula — the three diversification tests still apply."
     ))
-    story.append(Spacer(1, 10))
+    story.append(Spacer(1, 8))
 
     story.append(discussion_q(
-        "Discussion Question 2: You are the Strategy Director of a mid-sized Zambian bank. "
-        "A new digital-only competitor has launched with zero-fee accounts and instant mobile onboarding. "
-        "Your bank currently leads on branch network and business banking relationships. "
-        "What competitive strategy do you adopt — and what specific defensive or offensive moves do you make "
-        "in the next 12 months?"
+        "Discussion Question 2: Pick a Zambian organisation with multiple products or business units "
+        "(Zambeef, Zanaco, MTN Zambia, ZESCO, or any other). Map its major units onto the BCG Matrix. "
+        "Based on your analysis: where should capital be allocated, where should it be harvested, "
+        "and is there anything that should be exited?"
     ))
 
     # ── KEY TERMS ────────────────────────────────────────────────────────────
     story += section("REFERENCE", "Key Terms")
     terms = [
         ["Term", "Definition"],
-        ["Competitive strategy", "The approach a business takes to compete and win within its chosen market"],
-        ["Cost leadership", "Competing by being the lowest-cost producer in the industry while maintaining acceptable quality"],
-        ["Differentiation", "Competing by offering unique value that customers prize and are willing to pay a premium for"],
-        ["Focus strategy", "Competing by dominating a narrow market segment with either cost or differentiation advantage"],
-        ["Stuck in the middle", "The losing position of firms that pursue neither cost leadership nor meaningful differentiation"],
-        ["Competitive scope", "The breadth of the market a firm targets — broad (whole industry) or narrow (specific segment)"],
-        ["Offensive strategy", "Deliberate moves to strengthen competitive position, gain share, or erode a rival's advantage"],
-        ["Defensive strategy", "Actions taken to protect competitive position from attack and make it structurally unattractive for rivals"],
-        ["First-mover advantage", "Benefits gained by entering a market before competitors — brand, customer lock-in, standard-setting"],
-        ["Switching costs", "The cost (financial, operational, psychological) of moving from one supplier to another — a key defensive barrier"],
-        ["Experience curve", "The systematic decline in unit costs as cumulative production increases, due to learning and efficiency gains"],
-        ["Competitive dynamics", "The ongoing cycle of offensive moves, defensive responses, and counter-moves between rivals"],
+        ["Corporate strategy", "The top-level decisions about which businesses an organisation is in and how capital is allocated across them"],
+        ["Business strategy", "How a single business unit competes and wins within its chosen market"],
+        ["Functional strategy", "How individual functions (finance, marketing, operations) support the business strategy"],
+        ["Growth strategy", "A corporate direction that seeks to expand revenue, scope, or market position"],
+        ["Stability strategy", "Maintaining the current position without significant new investment or expansion"],
+        ["Retrenchment strategy", "Pulling back — reducing scope, cutting costs, or exiting underperforming businesses"],
+        ["Concentrated growth", "Growing by deepening penetration of the existing product in the existing market"],
+        ["Vertical integration", "Expanding along the supply chain — backward toward suppliers or forward toward customers"],
+        ["Horizontal integration", "Acquiring or merging with a competitor at the same stage of the value chain"],
+        ["Related diversification", "Entering new businesses that share technology, customers, or channels with the core"],
+        ["Unrelated diversification", "Entering businesses with no strategic connection to the core — pure financial rationale"],
+        ["BCG Matrix", "A portfolio tool that maps business units by market growth rate and relative market share"],
+        ["Cash Cow", "High-share, low-growth unit — generates cash but needs minimal reinvestment"],
+        ["Star", "High-share, high-growth unit — invest to maintain; will become Cash Cow as market matures"],
+        ["Question Mark", "Low-share, high-growth unit — invest to win or exit before the market matures"],
+        ["Dog", "Low-share, low-growth unit — exit or reposition; rarely worth continued investment"],
     ]
     story.append(table_std(terms, [3.5*cm, CONTENT_W - 3.5*cm]))
     story.append(Spacer(1, 12))
@@ -597,11 +643,11 @@ def build():
     # ── LEARNING OUTCOMES ────────────────────────────────────────────────────
     story += section("OUTCOMES", "What You Should Now Be Able To Do")
     outcomes = [
-        "Explain Porter's three generic strategies and the logic behind each",
-        "Identify firms stuck in the middle and explain why that position underperforms",
-        "Describe how to build and defend cost leadership and differentiation positions",
-        "Distinguish between offensive strategic moves and know when each is appropriate",
-        "Design a defensive response to a competitive attack while protecting core margins",
+        "Explain the three levels of strategy and identify which decisions belong at each level",
+        "Describe the four corporate strategy directions and the conditions that favour each",
+        "Distinguish between the four growth paths — concentration, integration, market development, and diversification",
+        "Apply the three diversification tests to evaluate whether a new business makes strategic sense",
+        "Use the BCG Matrix to analyse a multi-business portfolio and make capital allocation recommendations",
     ]
     for o in outcomes:
         story.append(Paragraph(f"• {o}", ST["outcome"]))

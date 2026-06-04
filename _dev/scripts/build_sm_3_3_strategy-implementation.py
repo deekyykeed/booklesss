@@ -1,5 +1,5 @@
 """
-Booklesss — Step 3.2: Competitive Strategy
+Booklesss — Step 3.3: Strategy Implementation
 Course: Strategic Management
 Style: Cream paper · cardinal red accent · Parastoo serif titles · Aptos body
 """
@@ -64,12 +64,12 @@ MX        = 2.2 * cm
 MY        = 2.0 * cm
 CONTENT_W = W - 2 * MX
 
-NLM_STEP_3_2_A = ""
-VID_STEP_3_2   = ""
+NLM_STEP_3_3_A = ""
+VID_STEP_3_3   = ""
 
 OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..",
            "courses", "Strategic Management", "03-strategy")
-OUT_PATH = os.path.join(OUT_DIR, "Step 3.2 - Competitive Strategy.pdf")
+OUT_PATH = os.path.join(OUT_DIR, "Step 3.3 - Strategy Implementation.pdf")
 
 # ── STYLES ─────────────────────────────────────────────────────────────────
 def make_styles():
@@ -165,7 +165,7 @@ def body_page(canvas, doc):
     canvas.line(MX, H - MY + 4, W - MX, H - MY + 4)
     canvas.setFont("Body", 7.5)
     canvas.setFillColor(C_STEEL)
-    canvas.drawString(MX, H - MY + 7, "3.2 — Competitive Strategy")
+    canvas.drawString(MX, H - MY + 7, "3.3 — Strategy Implementation")
     canvas.drawRightString(W - MX, H - MY + 7, "v2 · June 2026")
     canvas.setStrokeColor(C_RULE)
     canvas.setLineWidth(0.6)
@@ -378,12 +378,12 @@ def build():
     else:
         story.append(TripleDiamond())
     story.append(Spacer(1, 20))
-    story.append(Paragraph("STEP 3.2", ST["cover_step"]))
+    story.append(Paragraph("STEP 3.3", ST["cover_step"]))
     story.append(Spacer(1, 6))
-    story.append(Paragraph("Competitive<br/>Strategy", ST["cover_title"]))
+    story.append(Paragraph("Strategy<br/>Implementation", ST["cover_title"]))
     story.append(Spacer(1, 14))
     story.append(Paragraph(
-        "Porter's Generic Strategies · Offensive &amp; defensive moves · Blue Ocean",
+        "McKinsey 7-S · Balanced Scorecard · Change management",
         ST["cover_sub"]))
 
     story.append(Spacer(1, 110))
@@ -393,10 +393,10 @@ def build():
     story.append(Spacer(1, 14))
 
     nlm_items = []
-    if NLM_STEP_3_2_A:
-        nlm_items.append(("Audio overview", NLM_STEP_3_2_A))
-    if VID_STEP_3_2:
-        nlm_items.append(("Video overview", VID_STEP_3_2))
+    if NLM_STEP_3_3_A:
+        nlm_items.append(("Audio overview", NLM_STEP_3_3_A))
+    if VID_STEP_3_3:
+        nlm_items.append(("Video overview", VID_STEP_3_3))
     if nlm_items:
         story.append(resources_box(nlm_items))
 
@@ -405,191 +405,220 @@ def build():
     story.append(PageBreak())
 
     # ── SECTION 1: ORIENTATION ─────────────────────────────────────────────
-    story += section("ORIENTATION", "From Portfolio to Battlefield")
+    story += section("ORIENTATION", "The Execution Problem")
     story.append(body(
-        "Step 3.1 answered the corporate question: <i>Which businesses should we be in?</i> "
-        "This step answers the business-level question: <i>How do we compete and win in the business we have chosen?</i> "
-        "The difference matters. A wrong corporate decision wastes years; a wrong competitive decision wastes resources "
-        "and market position that are hard to recover."
+        "You have completed the analytical and strategic choice phases: you understand the environment (Steps 2.1–2.2), "
+        "you have made portfolio decisions (Step 3.1), and you have chosen a competitive position (Step 3.2). "
+        "None of that matters until it is translated into action."
     ))
     story.append(Spacer(1, 8))
     story.append(body(
-        "Michael Porter's core argument is that sustainable competitive advantage comes from choosing a clear position — "
-        "and that the worst strategic error is trying to be everything to everyone. "
-        "He calls this being 'stuck in the middle': neither cost-competitive nor meaningfully differentiated. "
-        "Stuck-in-the-middle firms earn below-average returns across every industry."
+        "McKinsey research shows that fewer than one in three strategically important initiatives "
+        "is executed as planned. The root causes are almost never the strategy itself — "
+        "they are execution failures: misaligned structures, wrong metrics, change resistance, "
+        "and resources not matching priorities. This step is about preventing those failures."
     ))
     story.append(Spacer(1, 10))
-
-    # ── SECTION 2: PORTER'S GENERIC STRATEGIES ─────────────────────────────
-    story += section("COMPETITIVE POSITION", "Porter's Three Generic Strategies")
-    story.append(body(
-        "Porter identifies three viable strategic positions. Two dimensions define the space: "
-        "the <b>source of advantage</b> (lower cost vs unique value) and the <b>competitive scope</b> "
-        "(broad market vs narrow segment). These combine into three strategies."
-    ))
-    story.append(Spacer(1, 10))
-
-    gen_data = [
-        ["Strategy", "Source of advantage", "Scope", "How to win", "Core risk"],
-        ["Cost Leadership", "Lower cost than rivals", "Broad market", "Produce and deliver at lower cost than anyone else — pass some savings to customers, keep rest as margin.", "Technology change erodes your cost advantage overnight. Rivals copy your efficiencies."],
-        ["Differentiation", "Unique value customers prize", "Broad market", "Offer something competitors cannot easily replicate — brand, technology, service, design. Charge a premium.", "Premium narrows as competitors imitate. Customer preferences shift away from your differentiator."],
-        ["Cost Focus", "Lower cost within a segment", "Narrow segment", "Be the low-cost provider for a specific customer group, geography, or product niche.", "Segment may shrink or lose attractiveness. Broad cost leaders may attack the segment."],
-        ["Differentiation Focus", "Unique value within a segment", "Narrow segment", "Serve a specific segment so well that broader competitors cannot match you in that niche.", "Broad differentiators may narrow their focus. Segment needs may drift toward mainstream."],
-    ]
-    cw_strat = CONTENT_W / 5
-    story.append(table_std(gen_data,
-        [2.2*cm, 2.5*cm, 1.8*cm, CONTENT_W - 9.5*cm, 3*cm]))
-    story.append(Spacer(1, 6))
-
-    story.append(h3("Cost Leadership in Zambia"))
-    story.append(body(
-        "Shoprite and Pick n Pay compete on cost leadership in Zambian retail — scale buying, "
-        "efficient logistics, no-frills store formats. A local chain that tries to match their prices "
-        "without their scale is on a losing path. The correct response for a smaller retailer is "
-        "not to compete on cost but to differentiate or focus."
-    ))
-    story.append(Spacer(1, 8))
-
-    story.append(h3("Differentiation in Zambia"))
-    story.append(body(
-        "Zanaco's business banking offering differentiates through local relationships, Zambia-specific products, "
-        "and access to government contracting networks — areas where an international bank cannot easily match. "
-        "Zambeef differentiates on vertical integration (farm-to-shelf traceability) and cold-chain reliability, "
-        "which smaller competitors cannot afford to replicate."
-    ))
-    story.append(Spacer(1, 8))
 
     story.append(callout(
-        "Stuck in the Middle: A Zambian supermarket that tries to match Shoprite's prices AND offer "
-        "premium imported goods AND compete on convenient locations simultaneously will be worse than "
-        "Shoprite at cost, worse than specialty retailers at range, and worse at everything else. "
-        "Pick one position and make it defensible."
+        "Strategic control: implementation is not a one-off event. It requires ongoing monitoring, "
+        "comparison against targets, and willingness to adapt when the plan meets reality. "
+        "Strategy without control drifts. Control without strategy optimises for the wrong outcomes."
     ))
     story.append(Spacer(1, 10))
 
-    # ── SECTION 3: ACHIEVING COST LEADERSHIP ───────────────────────────────
-    story += section("EXECUTION", "Achieving and Defending Each Position")
-    story.append(h3("How to Achieve Cost Leadership"))
+    # ── SECTION 2: McKINSEY 7-S ────────────────────────────────────────────
+    story += section("ALIGNMENT", "The McKinsey 7-S Framework")
     story.append(body(
-        "Cost leadership is not just about cutting prices — it is about structural cost advantages "
-        "built into how the business operates."
+        "The McKinsey 7-S Framework identifies seven internal elements that must point in the same direction "
+        "for strategy to succeed. If even one is misaligned, execution suffers. "
+        "The framework is useful precisely because it forces attention to the full system — "
+        "not just structure and budget, but culture, leadership style, and shared values."
     ))
-    story.append(Spacer(1, 4))
-    story.append(bullet("Scale: higher volume spreads fixed costs over more units (Zambia's telecom operators)"))
-    story.append(bullet("Experience curve: cumulative production lowers unit costs over time"))
-    story.append(bullet("Process design: standardised, efficient workflows reduce labour and waste"))
-    story.append(bullet("Supply chain: preferred supplier contracts, bulk purchasing, backward integration"))
-    story.append(bullet("Technology: automation of routine tasks, digital delivery instead of physical"))
-    story.append(Spacer(1, 8))
-
-    story.append(h3("How to Achieve Differentiation"))
-    story.append(body(
-        "Differentiation must be perceived as valuable by customers AND hard for competitors to copy. "
-        "Differences that customers don't notice or don't care about are irrelevant."
-    ))
-    story.append(Spacer(1, 4))
-    story.append(bullet("Brand: built over years, impossible to copy quickly (MTN's brand in Zambia)"))
-    story.append(bullet("Proprietary technology or process: unique capability not available to rivals"))
-    story.append(bullet("Customer relationships: deep loyalty and switching costs"))
-    story.append(bullet("Quality signals: certifications, awards, reputation built over time"))
-    story.append(bullet("Integration depth: like Zambeef's farm-to-retail chain, creating end-to-end control"))
     story.append(Spacer(1, 10))
 
-    # ── SECTION 4: OFFENSIVE STRATEGIES ────────────────────────────────────
-    story += section("COMPETITIVE MOVES", "Offensive Strategies: Going on the Attack")
-    story.append(body(
-        "Once a firm has a competitive position, the question becomes: how do you strengthen it? "
-        "Offensive strategies are deliberate moves to improve competitive position, gain market share, "
-        "or neutralise a rival's advantage. "
-        "They are not random — each has a specific objective and a specific counter-risk."
-    ))
-    story.append(Spacer(1, 8))
-
-    off_data = [
-        ["Offensive move", "What it involves", "When to use it"],
-        ["Attack competitor strengths", "Match or exceed rivals in their area of advantage — out-invest, out-innovate, undercut on price.", "When you have resources to sustain the fight and the long-term prize justifies the cost."],
-        ["Attack competitor weaknesses", "Target gaps: underserved segments, slow distribution, weak customer service. Strike where rivals are thin.", "When rivals are overextended or have neglected specific customer segments or regions."],
-        ["End-run (blue ocean)", "Bypass existing competition entirely by creating a new market space where rivals don't yet compete.", "When existing markets are saturated and there is a genuinely underserved need you can address."],
-        ["Guerrilla offensives", "Small, targeted strikes — price promotions in specific regions, aggressive local marketing — to disrupt rather than defeat.", "When the firm lacks the scale for a direct assault but can inflict damage selectively and cheaply."],
-        ["Pre-emptive strikes", "Lock up resources, talent, or partnerships before rivals can. First-mover advantage in a new segment.", "When a new opportunity is emerging and being first creates durable lock-in."],
+    seven_s_data = [
+        ["Element", "What it means", "Key question"],
+        ["Strategy", "The direction and choices the organisation is pursuing", "Is the strategy clear, specific, and understood at every level?"],
+        ["Structure", "How authority, accountability, and decision-making are organised", "Does the structure enable strategy or create barriers to execution?"],
+        ["Systems", "Processes, budgets, information flows, and measurement", "Do systems measure and reward behaviours the strategy requires?"],
+        ["Style", "Leadership approach and cultural tone from the top", "Does leadership model the behaviour the strategy asks for?"],
+        ["Staff", "People — hiring, development, talent pipeline", "Do we have the right people in the roles the strategy depends on?"],
+        ["Skills", "Distinctive capabilities and organisational competencies", "What capabilities does the strategy require, and where are the gaps?"],
+        ["Shared Values", "Core purpose and culture — the centre of the model", "Do people believe in what the organisation stands for?"],
     ]
-    story.append(table_std(off_data,
-        [3*cm, CONTENT_W * 0.42, CONTENT_W - 3*cm - CONTENT_W * 0.42]))
+    story.append(table_std(seven_s_data,
+        [2.2*cm, CONTENT_W * 0.38, CONTENT_W - 2.2*cm - CONTENT_W * 0.38]))
+    story.append(Spacer(1, 6))
+
+    story.append(body(
+        "<b>Zambian example:</b> A Zambian bank pursues a digital-first strategy to reach unbanked customers via mobile. "
+        "Strategy is clear. But the branch structure remains hierarchical with decisions made centrally in Lusaka (Structure misaligned). "
+        "Technology hiring is constrained by grade-band pay structures designed for branch roles (Staff misaligned). "
+        "Performance bonuses still reward in-branch transactions, not mobile onboarding (Systems misaligned). "
+        "This strategy will fail — not because the idea is wrong, but because six of the seven elements are pulling against it."
+    ))
+    story.append(Spacer(1, 12))
+
+    # ── SECTION 3: BALANCED SCORECARD ──────────────────────────────────────
+    story += section("MEASUREMENT", "The Balanced Scorecard")
+    story.append(body(
+        "Strategy is a hypothesis: <i>if we do X, then Y will result.</i> "
+        "The Balanced Scorecard translates that hypothesis into measurable targets across four perspectives, "
+        "making it possible to monitor whether the strategy is actually working — "
+        "and to intervene before financial results deteriorate."
+    ))
+    story.append(Spacer(1, 8))
+
+    bsc_data = [
+        ["Perspective", "Strategic question", "What to measure"],
+        ["Financial", "Is the strategy delivering financial returns?", "Revenue growth, profit margin, cash flow, ROI on strategic initiatives"],
+        ["Customer", "Are target customers satisfied and loyal?", "Customer satisfaction score, retention rate, market share in target segment"],
+        ["Internal Process", "Are we executing critical processes efficiently?", "Process cycle time, quality defect rate, speed of key workflows"],
+        ["Learning & Growth", "Are we building the capabilities the strategy requires?", "Employee capability index, training hours, rate of innovation"],
+    ]
+    story.append(table_std(bsc_data,
+        [2.4*cm, CONTENT_W * 0.38, CONTENT_W - 2.4*cm - CONTENT_W * 0.38]))
+    story.append(Spacer(1, 6))
+
+    story.append(body(
+        "The power of the Balanced Scorecard is the <b>cause-and-effect chain</b>: "
+        "invest in Learning &amp; Growth (train people) → improve Internal Processes (serve faster, with fewer errors) "
+        "→ improve Customer outcomes (higher satisfaction, lower churn) → improve Financial results. "
+        "Without this chain, a company can hit its financial targets by destroying the capabilities "
+        "that will generate next year's results."
+    ))
+    story.append(Spacer(1, 8))
+
+    story.append(h3("Balanced Scorecard in a Zambian Context"))
+    story.append(body(
+        "A Zambian telecommunications company pursuing customer retention might measure: "
+        "<b>Financial</b> — ZMW revenue per subscriber and churn cost avoided; "
+        "<b>Customer</b> — Net Promoter Score and complaint resolution rate; "
+        "<b>Internal Process</b> — time-to-resolve a service fault; "
+        "<b>Learning &amp; Growth</b> — percentage of frontline staff trained on new systems. "
+        "These four numbers, reviewed monthly, tell a more complete strategic story than revenue alone."
+    ))
+    story.append(Spacer(1, 12))
+
+    # ── SECTION 4: CHANGE MANAGEMENT ───────────────────────────────────────
+    story += section("PEOPLE", "Change Management: The Human Side of Strategy")
+    story.append(body(
+        "Strategy is not just about systems and structure — it is fundamentally about people "
+        "changing their behaviour. If the organisation has worked one way for years, "
+        "a new strategy requires breaking old patterns and building new ones. "
+        "This is where most implementation efforts fail: people resist change, "
+        "especially when they don't understand why it is necessary."
+    ))
+    story.append(Spacer(1, 10))
+
+    story.append(h3("Kotter's 8-Step Model"))
+    story.append(body(
+        "John Kotter's research identifies the sequence that separates successful transformations from failures:"
+    ))
+    story.append(Spacer(1, 6))
+
+    kotter_data = [
+        ["Step", "Action required", "Cost of skipping"],
+        ["1. Establish urgency", "Make a clear, compelling case for why change is necessary now", "Inertia wins — people wait for someone else to move first"],
+        ["2. Build a coalition", "Recruit powerful sponsors who believe in the change", "Isolated advocates cannot overcome systemic scepticism"],
+        ["3. Form a vision", "Articulate a clear picture of what success looks like", "People don't know the destination and default to the past"],
+        ["4. Communicate constantly", "Repeat the vision through every channel available", "Message gets lost — employees hear what they want to hear"],
+        ["5. Remove barriers", "Give people permission and resources to act on the vision", "Bureaucracy blocks change before it starts"],
+        ["6. Create early wins", "Identify and celebrate quick, visible victories", "Momentum dies; sceptics say 'I told you so'"],
+        ["7. Build on wins", "Keep pressure on; avoid declaring victory prematurely", "Old habits resurface the moment leadership attention moves on"],
+        ["8. Anchor the change", "Embed new behaviour in culture, systems, and hiring", "Change is fragile and reverts under pressure"],
+    ]
+    story.append(table_std(kotter_data,
+        [3.2*cm, CONTENT_W * 0.40, CONTENT_W - 3.2*cm - CONTENT_W * 0.40]))
     story.append(Spacer(1, 6))
 
     story.append(fact(
-        "First-mover advantages in Zambia: M-Pesa (now Airtel Money predecessor) entered mobile money "
-        "early and built a customer base that later entrants struggled to displace. "
-        "Network effects made it self-reinforcing — the more users, the more useful. "
-        "Late entrants had to spend heavily on incentives just to reach parity."
+        "Budget and time estimates for strategy implementation should include 30–40% effort on "
+        "change management. If you are not investing in getting people to change behaviour, "
+        "the strategy has no chance of landing."
     ))
 
     story.append(discussion_q(
-        "Discussion Question 1: Think about an industry in Zambia where the competitive dynamics have "
-        "shifted in the past five years — banking, telecom, retail, or fast food. "
-        "What offensive moves triggered those shifts? Which companies responded well, and which were caught out? "
-        "What does this tell you about the importance of monitoring rivals?"
+        "Discussion Question 1: A large Zambian parastatal (ZESCO, Zambia Railways, or similar) "
+        "has just appointed a new CEO with a mandate to transform the organisation. "
+        "Using the McKinsey 7-S framework, identify the three elements most likely to resist change "
+        "and explain why. What would Kotter's model say should happen in the first 90 days?"
     ))
 
-    # ── SECTION 5: DEFENSIVE STRATEGIES ────────────────────────────────────
-    story += section("PROTECTING POSITION", "Defensive Strategies: Holding Your Ground")
+    # ── SECTION 5: ORG STRUCTURES ──────────────────────────────────────────
+    story += section("DESIGN", "Structure Follows Strategy")
     story.append(body(
-        "Competitive advantage is never permanent. Rivals attack, technology shifts, regulations change, "
-        "and consumer preferences evolve. Defensive strategy is about making your position harder to attack "
-        "and responding to threats before they erode your standing."
+        "Chandler's principle — that structure should follow strategy — sounds obvious but is violated constantly. "
+        "Organisations redesign their strategy and then try to execute it with structures built for a different purpose. "
+        "The result is friction: decisions made in the wrong place, accountability diffused, coordination failures. "
+        "Choosing the right structure is not an HR exercise — it is a strategic decision."
     ))
     story.append(Spacer(1, 8))
 
-    story.append(h3("Raising Barriers to Attack"))
-    story.append(bullet("Switching costs: make it expensive or inconvenient for customers to leave (loyalty programmes, data lock-in, long contracts)"))
-    story.append(bullet("Broaden the product range: fill gaps that rivals could exploit for entry"))
-    story.append(bullet("Exclusive supplier or distribution agreements: deny rivals access to key inputs or channels"))
-    story.append(bullet("Signal strength: communicate convincingly that you will defend your position vigorously — deters opportunistic entry"))
-    story.append(Spacer(1, 8))
+    struct_data = [
+        ["Structure", "How it works", "Best-fit strategy", "Key risk"],
+        ["Functional", "Grouped by function: Finance, Sales, Operations, HR", "Cost leadership, operational efficiency, stability", "Silos create coordination failures across functions"],
+        ["Divisional", "Grouped by product, geography, or customer segment", "Growth, diversification, multi-market strategy", "Duplication of functions increases cost"],
+        ["Matrix", "Dual reporting — both functional and divisional lines", "Innovation, customisation, complex projects", "Conflict over authority; confusion about decisions"],
+        ["Network", "Loosely coupled units, heavy outsourcing, partnerships", "Agility, specialisation, platform strategies", "Loss of control; consistency and quality risks"],
+    ]
+    story.append(table_std(struct_data,
+        [2*cm, 2.6*cm, CONTENT_W - 7.6*cm, 3*cm]))
+    story.append(Spacer(1, 6))
 
-    story.append(h3("Responding to an Attack"))
     story.append(body(
-        "The correct response depends on the nature of the attack. "
-        "If a rival is attacking your core customer segment with lower prices, the question is not "
-        "'match the price' but 'why are customers defecting, and can we fix that without destroying margin?' "
-        "A targeted response (price match only in the attacked segment, not market-wide) is cheaper and "
-        "sends a signal without collapsing your entire pricing structure."
-    ))
-    story.append(Spacer(1, 8))
-
-    story.append(callout(
-        "Defensive principle: the goal is not to respond to every attack but to make your position "
-        "structurally unattractive to attack. If rivals know you will defend aggressively and have the "
-        "resources to do so, they will often look elsewhere. The best defence is building genuine advantages "
-        "that competitors cannot easily replicate."
+        "A Zambian fintech startup pursuing cost leadership in digital payments suits a functional structure — "
+        "centralised technology development, lean operations, minimum overhead. "
+        "A pharmaceutical company with multiple product categories suits divisional structure "
+        "so each category can pursue its own market approach. "
+        "The first sign that structure and strategy are misaligned: decisions keep escalating to levels "
+        "that shouldn't need to make them."
     ))
     story.append(Spacer(1, 10))
 
+    # ── SECTION 6: CONTROL ─────────────────────────────────────────────────
+    story += section("CONTROL", "Strategic Control: Monitoring and Adapting")
+    story.append(body(
+        "Strategy implementation is not a project with a completion date — it is an ongoing process "
+        "of monitoring, comparing actuals to targets, diagnosing gaps, and adapting. "
+        "Strategic control is distinct from operational control: operational control asks "
+        "'are we executing efficiently?' — strategic control asks 'is the strategy itself still valid?'"
+    ))
+    story.append(Spacer(1, 8))
+
+    story.append(h3("Types of Strategic Control"))
+    story.append(bullet("<b>Premise control:</b> Monitor the assumptions behind the strategy. If the PESTEL factors that justified the strategy change materially, the strategy may need revision."))
+    story.append(bullet("<b>Implementation control:</b> Track whether milestones are being hit and whether resources are being deployed as planned."))
+    story.append(bullet("<b>Strategic surveillance:</b> Broad monitoring of the competitive environment for unexpected developments."))
+    story.append(bullet("<b>Special alert control:</b> Pre-defined response protocols for sudden crises — a competitor acquisition, a regulatory change, a supply disruption."))
+    story.append(Spacer(1, 10))
+
     story.append(discussion_q(
-        "Discussion Question 2: You are the Strategy Director of a mid-sized Zambian bank. "
-        "A new digital-only competitor has launched with zero-fee accounts and instant mobile onboarding. "
-        "Your bank currently leads on branch network and business banking relationships. "
-        "What competitive strategy do you adopt — and what specific defensive or offensive moves do you make "
-        "in the next 12 months?"
+        "Discussion Question 2: You are a senior manager at First Quantum Minerals' Kansanshi copper mine "
+        "during a period of falling global copper prices. "
+        "The corporate strategy set two years ago assumed a copper price of USD 8,500 per tonne. "
+        "The current price is USD 6,200. "
+        "Walk through the four types of strategic control: what specific actions does each type require? "
+        "At what price level would you trigger a fundamental strategy review — and what would that review examine?"
     ))
 
     # ── KEY TERMS ────────────────────────────────────────────────────────────
     story += section("REFERENCE", "Key Terms")
     terms = [
         ["Term", "Definition"],
-        ["Competitive strategy", "The approach a business takes to compete and win within its chosen market"],
-        ["Cost leadership", "Competing by being the lowest-cost producer in the industry while maintaining acceptable quality"],
-        ["Differentiation", "Competing by offering unique value that customers prize and are willing to pay a premium for"],
-        ["Focus strategy", "Competing by dominating a narrow market segment with either cost or differentiation advantage"],
-        ["Stuck in the middle", "The losing position of firms that pursue neither cost leadership nor meaningful differentiation"],
-        ["Competitive scope", "The breadth of the market a firm targets — broad (whole industry) or narrow (specific segment)"],
-        ["Offensive strategy", "Deliberate moves to strengthen competitive position, gain share, or erode a rival's advantage"],
-        ["Defensive strategy", "Actions taken to protect competitive position from attack and make it structurally unattractive for rivals"],
-        ["First-mover advantage", "Benefits gained by entering a market before competitors — brand, customer lock-in, standard-setting"],
-        ["Switching costs", "The cost (financial, operational, psychological) of moving from one supplier to another — a key defensive barrier"],
-        ["Experience curve", "The systematic decline in unit costs as cumulative production increases, due to learning and efficiency gains"],
-        ["Competitive dynamics", "The ongoing cycle of offensive moves, defensive responses, and counter-moves between rivals"],
+        ["Strategy implementation", "The process of translating strategic choices into action through structure, systems, people, and resources"],
+        ["McKinsey 7-S", "A framework identifying seven elements that must align for strategy to succeed: Strategy, Structure, Systems, Style, Staff, Skills, Shared Values"],
+        ["Balanced Scorecard", "A measurement system that tracks performance across four perspectives: Financial, Customer, Internal Process, and Learning & Growth"],
+        ["Change management", "The structured approach to transitioning people, teams, and organisations from a current state to a desired future state"],
+        ["Kotter's 8-Step Model", "A change management sequence: urgency, coalition, vision, communication, empowerment, early wins, consolidation, anchoring"],
+        ["Strategic control", "Ongoing monitoring of whether the strategy is being implemented correctly and whether its underlying assumptions remain valid"],
+        ["Premise control", "Monitoring the environmental assumptions that justified the strategy — if assumptions change, the strategy may need revision"],
+        ["Functional structure", "Organisation grouped by function (finance, marketing, operations) — suited to cost leadership and efficiency strategies"],
+        ["Divisional structure", "Organisation grouped by product, geography, or customer segment — suited to diversification and multi-market strategies"],
+        ["Structure follows strategy", "Chandler's principle: organisational structure should be designed to enable execution of the chosen strategy, not the other way around"],
+        ["Leading indicator", "A metric that predicts future performance (e.g., training completion predicts future process quality)"],
+        ["Lagging indicator", "A metric that reflects past performance (e.g., profit margin reflects decisions made months earlier)"],
     ]
     story.append(table_std(terms, [3.5*cm, CONTENT_W - 3.5*cm]))
     story.append(Spacer(1, 12))
@@ -597,11 +626,11 @@ def build():
     # ── LEARNING OUTCOMES ────────────────────────────────────────────────────
     story += section("OUTCOMES", "What You Should Now Be Able To Do")
     outcomes = [
-        "Explain Porter's three generic strategies and the logic behind each",
-        "Identify firms stuck in the middle and explain why that position underperforms",
-        "Describe how to build and defend cost leadership and differentiation positions",
-        "Distinguish between offensive strategic moves and know when each is appropriate",
-        "Design a defensive response to a competitive attack while protecting core margins",
+        "Apply the McKinsey 7-S framework to diagnose alignment gaps in an organisation's strategy implementation",
+        "Build a Balanced Scorecard with relevant KPIs across all four perspectives for a given strategic objective",
+        "Describe Kotter's 8-step change model and explain the cost of skipping any step",
+        "Match organisational structures to strategic contexts and identify misalignment when it occurs",
+        "Distinguish between operational control and strategic control and apply the four types of strategic control",
     ]
     for o in outcomes:
         story.append(Paragraph(f"• {o}", ST["outcome"]))
