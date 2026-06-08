@@ -26,6 +26,7 @@
 - [ ] Monitor Tally form (tally.so/r/81Jejr) for submissions daily
 - [ ] ⚠️ Path references in older Next Session items are now stale after the restructure: `operations/` → `Operations/`, `Finances/pricing-strategy.md` → `Operations/pricing-strategy.md`, `_dev/scripts/build_*.py` → each lesson's `sources/` folder (or `Operations/` for ops scripts). Re-resolve before acting on any of them.
 - [ ] Verify each relocated `build_*.py` still resolves `_ROOT` correctly from its new `Schools/.../sources/` depth (CLAUDE.md says 5 levels up) before next rebuild — folder depth changed in the move.
+- [ ] (Optional) GitHub repo URL is now lowercase `github.com/deekyykeed/booklesss.git` — remote still uses the old `Booklesss.git` and works via redirect. Update with `git remote set-url origin` if the redirect ever stops.
 
 ---
 
@@ -39,13 +40,16 @@
   - `Finances/` and `marketing/` folded into `Operations/` (pricing-strategy.md, positioning.md, monthly-tracker.md, dashboard.html, workspace.md, leads.md, revenue-log.md, groups.md, daily-checklist.md, product-notes.md, both ops build scripts + Revenue Model PDF).
   - New top-level `Demand/` and `Brand/`; old `Booklesss Bucket/` drop zone and `booklesss-pdf.plugin` deleted; `_dev/mcp-design-bridge.json` added.
   - `.claude/CLAUDE.md` rewritten to document the new School/Course/lesson anatomy and `_pipeline/` promotion flow.
+- **Push unblocked:** the restructure commit tried to upload 1.9 GB of NEW blobs (the UNZA raw material entered the repo for the first time). GitHub kept resetting the connection (`curl 55`). Diagnosed it as 1.6 GB of third-party textbooks + scanned HSS past papers under `Schools/UNZA/_pipeline/` and `…/_textbooks/`, incl. **4 files over GitHub's 100 MB hard limit** (Ahuja 380 MB, HSS 2017-18 Part2 219 MB, IB Diploma textbook 178 MB, HSS Part3 154 MB). Added `Schools/UNZA/_pipeline/` and `_textbooks/` to `.gitignore`, `git rm -r --cached` both, amended the commit. Push dropped 1919 MB → **33.7 MB** and succeeded (`fff5c47..5c0b5e9`). Raw files remain on disk + OneDrive, just untracked.
 
 **What Worked:**
 - Verifying content survived the move before staging (`find Schools -name '*.pdf' | wc -l` = 472, `build_*.py` = 30) rather than trusting `git add -A` blind — confirmed no data loss across a large delete+re-add diff.
 - Diagnosing the git remote confusion by comparing HEAD against both `origin/main` and `origin/master`: local `main` *tracks* the stale `origin/master` (17 behind), but `origin/main` (the repo default, `origin/HEAD`) is fully synced with HEAD. The "ahead by 17" warning is the tracking ref, not real drift. Push target is `origin/main`.
+- To find what's bloating a push: `git rev-list --objects origin/main..HEAD | git cat-file --batch-check='%(objectsize) %(objecttype) %(rest)'` then sort by size. Pinpointed the 1.6 GB instantly.
 
 **Dead Ends (do not retry):**
 - Don't trust the "ahead of origin/master by 17 commits" status line as a sync problem — `origin/master` is an abandoned branch; the live branch is `origin/main`. Always verify against `origin/main` (= `origin/HEAD`).
+- **Do NOT add `Schools/UNZA/_pipeline/` or any `_textbooks/` folder back to git, and never `git add` raw textbooks / scanned past papers.** They contain files >100 MB that GitHub rejects outright, and the bulk (1.6 GB) resets the push connection. Raising `http.postBuffer` / forcing HTTP/1.1 does NOT help — GitHub won't accept >100 MB files regardless. Keep raw `_pipeline` material local only.
 
 **Next:** Re-resolve stale path references in older Next Session items (see flagged item); verify relocated build scripts' `_ROOT` depth.
 
