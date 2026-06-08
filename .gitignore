@@ -8,3 +8,8 @@
 Unza fom Titsa/
 _dev/transcribe-test/
 _dev/tmp/
+
+# Raw UNZA staging material and third-party textbooks — too large for GitHub
+# (incl. files over the 100MB limit). Kept locally + in OneDrive, not in git.
+Schools/UNZA/_pipeline/
+_textbooks/

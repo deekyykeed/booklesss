@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-06-06
+**Last updated:** 2026-06-08
 
 ---
 
@@ -24,10 +24,32 @@
 - [ ] Add photo to Deeky Mvula team card
 - [ ] Edit /legals page — still unedited Prodo template
 - [ ] Monitor Tally form (tally.so/r/81Jejr) for submissions daily
+- [ ] ⚠️ Path references in older Next Session items are now stale after the restructure: `operations/` → `Operations/`, `Finances/pricing-strategy.md` → `Operations/pricing-strategy.md`, `_dev/scripts/build_*.py` → each lesson's `sources/` folder (or `Operations/` for ops scripts). Re-resolve before acting on any of them.
+- [ ] Verify each relocated `build_*.py` still resolves `_ROOT` correctly from its new `Schools/.../sources/` depth (CLAUDE.md says 5 levels up) before next rebuild — folder depth changed in the move.
 
 ---
 
 ## Session Log
+
+### Session 2026-06-08
+**Done:**
+- Committed the full repository restructure (work done outside a session wrap; landed it this wrap):
+  - `courses/` (CF, SM, TM) → `Schools/ZCAS/<Course>/`; UNZA content under `Schools/UNZA/` with `_pipeline/` for the 13 raw courses. 472 PDFs + 30 `build_*.py` verified intact under `Schools/`.
+  - `_dev/scripts/build_*.py` removed from the flat scripts folder — build scripts now live in each lesson's `sources/`; `transcribe.py` / `transcribe_bulk.py` moved to `_dev/` directly.
+  - `Finances/` and `marketing/` folded into `Operations/` (pricing-strategy.md, positioning.md, monthly-tracker.md, dashboard.html, workspace.md, leads.md, revenue-log.md, groups.md, daily-checklist.md, product-notes.md, both ops build scripts + Revenue Model PDF).
+  - New top-level `Demand/` and `Brand/`; old `Booklesss Bucket/` drop zone and `booklesss-pdf.plugin` deleted; `_dev/mcp-design-bridge.json` added.
+  - `.claude/CLAUDE.md` rewritten to document the new School/Course/lesson anatomy and `_pipeline/` promotion flow.
+
+**What Worked:**
+- Verifying content survived the move before staging (`find Schools -name '*.pdf' | wc -l` = 472, `build_*.py` = 30) rather than trusting `git add -A` blind — confirmed no data loss across a large delete+re-add diff.
+- Diagnosing the git remote confusion by comparing HEAD against both `origin/main` and `origin/master`: local `main` *tracks* the stale `origin/master` (17 behind), but `origin/main` (the repo default, `origin/HEAD`) is fully synced with HEAD. The "ahead by 17" warning is the tracking ref, not real drift. Push target is `origin/main`.
+
+**Dead Ends (do not retry):**
+- Don't trust the "ahead of origin/master by 17 commits" status line as a sync problem — `origin/master` is an abandoned branch; the live branch is `origin/main`. Always verify against `origin/main` (= `origin/HEAD`).
+
+**Next:** Re-resolve stale path references in older Next Session items (see flagged item); verify relocated build scripts' `_ROOT` depth.
+
+---
 
 ### Session 2026-06-06
 **Done:**

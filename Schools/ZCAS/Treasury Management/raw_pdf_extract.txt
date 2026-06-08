@@ -1,0 +1,183 @@
+======== Module 01: Introduction to Treasury Management ========
+Source: 1_Treasury Management - an introduction.pptx
+
+--- Slide 1 ---
+BBF4302
+TREASURY MANAGEMENT
+
+--- Slide 2 ---
+WELCOME TO THE COURSE
+
+--- Slide 3 ---
+Course outline
+Introduction to Treasury
+Working capital/liquidity management
+Management of Interest rate risk
+Managing foreign currency risk
+Debt Management
+Investment Management
+Clearing and settlement systems
+Treasury management systems
+
+--- Slide 4 ---
+Unit outline
+Introduction to treasury
+Treasury functions and roles
+Treasury controls
+Treasury centralisation
+
+--- Slide 5 ---
+Introduction to Treasury
+Treasury department is the financial center of an organization
+Key role is safeguarding and stewardship of organization's financial assets and management of liabilities
+Treasury staff perform critically daily liquidity management tasks that help ensure the availability of adequate cash resources needed to sustain organization's ongoing operational activities
+
+--- Slide 6 ---
+Introduction to Treasury
+Responsible for implementing various financial decisions made by management and board
+Has important role in risk reduction and mitigation
+Structure varies according to factors such as size, nature of business and complexity of organizational structure
+
+--- Slide 7 ---
+Key Decisions of the Finance Function
+Grouped into three key decisions areas to provide and manage resources:
+Investment decision
+How resources available are committed to projects
+Investment in working capital e.g. stocks and debtors
+Internal and external investment and disinvestment
+
+--- Slide 8 ---
+Key Decisions of the Finance Function
+b) Financing decision
+Acquiring optimum finance to meet financial objectives and effective management of fixed and working capital
+Finance manager needs good knowledge of sources and cost of funds
+Needs to ensure entity has good sound capital structure
+Understand difference between profit and cash
+Risk and hedging
+
+--- Slide 9 ---
+Key Decisions of the Finance Function
+c) Dividend policy
+How much and how frequently cash can be paid out of profits
+Has two elements; amount to be paid out and amount to be retained to support growth i.e retained earnings.
+Level and growth of dividends determines companies market value
+
+--- Slide 10 ---
+Main Functions
+Cash forecasting- compiles information from all subsidiaries into short and long term cash forecasts
+Working capital management - treasurer should be aware of working capital levels and trends
+Cash management - treasurer must ensure that sufficient cash is available for operational needs
+
+--- Slide 11 ---
+Main Functions
+4. Investment management - treasury staff is responsible for the proper investment of excess cash
+5. Risk management - arising from changes in interest rates, exchange rates etc
+6. Management advice- advices management on market conditions
+
+--- Slide 12 ---
+Main Functions
+7. Credit rating agency relations- liaises with credit agency's review team when company issues marketable debt
+8. Bank relationships- treasurer is the link with bank representatives concerning company's financial condition, fee structure etc
+9. Fund raising- treasury maintains relationships with investment community for fund raising purposes
+
+--- Slide 13 ---
+Main Functions
+10. Credit granting- granting of credit to customers is within the responsibilities of treasury
+11. Other activities- such as M&A, maintaining insurance on behalf of the company etc
+
+--- Slide 14 ---
+Key Tasks of Treasury
+Strategic- matters concerning capital structure of business and distribution/retention policies, capital raising, assessment of likely returns, dividend decisions etc.
+Tactical- management of cash investments and decision as to hedging of currency or interest risk
+Operational- e.g. transmission of cash, placing of surplus cash, dealing with banks etc
+
+--- Slide 15 ---
+Cost or Profit Centre
+Treasury operations can be set up as a cost or profit center
+Cost center is common approach, as treasury is regarded as a support function to the organization and is not expected to make a profit
+Disadvantage is that management may focus on cost of treasury operations and not the value provided by function
+
+--- Slide 16 ---
+Cost or Profit Centre
+This may lead to difficulties obtaining appropriate budget and staff
+Profit center approach applies to organisations that heavily involved in global finance, trade, or risk management or companies that are financial service providers
+Such have extensive dealings in money, capital, FX, interest rate, or commodities market
+
+--- Slide 17 ---
+Cost or Profit Centre
+These require buying/selling/holding of securities or use of derivatives and other hedging instruments to increase earnings and/or reduce losses
+Rationale for profit center is to generate income from either trading operations or from hedging and/or speculative activities
+
+--- Slide 18 ---
+Cost or Profit Centre
+Advantages of profit centre
+Individual business units charged a market rate for the service provided, making operating costs more realistic
+Treasurer motivated to provide services as effectively as possible to ensure that profit is made at market rate
+
+--- Slide 19 ---
+Cost or Profit Centre
+Disadvantage of profit centre
+Profit concept is temptation to speculate e.g. swapping funds from currencies expected to depreciate into those expected to appreciate (i.e. shorting)
+Management time unduly spent on arguments with business units over charges for services
+Additional admin costs may be excessive
+
+--- Slide 20 ---
+Treasury Controls
+Given large sums of cash involved in many treasury transactions it is important to set controls that ensure transactions are appropriate (RE: Nick Leeson and Barings Bank)
+Segregation
+Duties must be segregated among treasury staff, i.e. between front office and back office
+E.g. trading activities must be separated from confirmation activities
+
+--- Slide 21 ---
+Treasury Controls
+2. Delegation of authority
+Treasury staff require a sufficient level of autonomy
+Delegation ensures that decision-making and power is in the right hands
+3. Limits
+Treasurer should impose limit controls on a variety of transactions
+Limits can prohibit or severely restrict treasury staff from investing in certain types of financial instruments that present an unduly high risk of capital loss
+
+--- Slide 22 ---
+Treasury Controls
+4. Approvals
+Senior level treasury manager should approve all trades, another person should reconcile and account for all transactions
+5. Internal audits should be scheduled in order to match actual transactions against company policies and procedures
+6. Automation / STP (Straight-Through Processing)
+
+--- Slide 23 ---
+Treasury Centralization
+A company that operates geographically dispersed sales offices with limited personnel may centralize its treasury functions at the HQ
+MNC may centralize all treasury operations in one country
+Centralized treasury offers the following advantages:
+
+--- Slide 24 ---
+Treasury Centralization
+Stronger controls
+Economies of scale
+Lower operating costs
+Tax advantages for MNCs
+Centralized treasury grants less autonomy to field office personnel or subsidiaries
+
+--- Slide 25 ---
+Treasury Centralization
+A company with autonomous subsidiaries and/or multiple operational entities may operate with a decentralized treasury structure
+They will use guidelines and/or policies established by the company headquarters
+Local subsidiary personnel can offer the advantages of possessing familiarity with local business and banking practice
+
+--- Slide 26 ---
+Treasury Centralization
+Local staff have intimate knowledge of languages, customs, and cultures
+Decentralized structure may result in duplication of effort and resources across units
+
+--- Slide 27 ---
+Treasury Centralization
+Some large MNCs operate regional treasury centers that combine aspects of centralized and decentralized systems
+i.e. while each region is centralized, overall treasury operations are decentralized to regional centers
+
+--- Slide 28-29 ---
+Treasury Centralization (Hybrid)
+The advent of enterprise-wide accounting and information systems combined with the growth of automated treasury management systems has resulted in the introduction of hybrid centralized treasury systems with decentralized or distributed input and output
+Local personnel enter local information into a common treasury management system; centralized treasury staff manages overall operations
+
+
+======== [Module 02 onwards — to be added] ========
