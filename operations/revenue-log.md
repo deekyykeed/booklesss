@@ -11,8 +11,8 @@ Update when a student pays or cancels. One row per transaction.
 ---
 
 ## Rate types
-- **Founding** — K550/month, locked pre-April 12 2026
-- **Standard** — K800/month
+- **Notes** — K250/month (single-channel guest, one course)
+- **Community** — K500/month (full workspace, all courses)
 - **Custom** — negotiated rate (tutoring tier)
 
 ---
