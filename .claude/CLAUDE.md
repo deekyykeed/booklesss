@@ -121,9 +121,9 @@ Each step cover has an accent-bordered "ADDED VALUE" panel listing companion res
 3–4 page PDF teasers for WhatsApp marketing. File name format: `[Hook Title] - Booklesss.pdf`. Use Zambian companies (Zanaco, Zambeef, ZESCO, First Quantum) and ZMW currency in examples. Include founding rate deadline in 2+ places.
 
 ### Skills (Claude Code Extensions)
-Three custom skills in `.claude/skills/`:
-- **`booklesss-write`** — Full content pipeline: reads source → writes script → runs it. Always invoke this for writing new lesson steps, not the pdf skill directly.
-- **`step-skill`** — PDF design system (colors, typography, callout specs, lesson profile). Used by booklesss-write.
+Three custom skills in `.claude/skills/`, one per phase of the pipeline:
+- **`lesson-skill`** — PLAN. Course architecture: takes a course's raw source, groups topics into lessons by mental frame (lesson = one Slack channel = noise isolation), sets steps-per-lesson by source depth, and emits `_course.md`, the folder scaffold, the channel map, and the course outline PDF. Runs before any writing.
+- **`step-skill`** — WRITE + DESIGN. The PDF design system (colors, typography, callout specs) *and* the lesson-writing process (source → ReportLab script → PDF). Invoke for all PDF content — lesson steps, lead magnets, business documents. (Absorbed the former `booklesss-write` skill.)
 - **`design-system`** — Web/UI only (Framer, landing pages). Not for PDF work.
 
 ### Transcription

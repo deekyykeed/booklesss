@@ -1,16 +1,14 @@
-# Lesson 1 — Introduction to Business Administration
+# Lesson 1 — Foundations
 
-**Course:** BBA 1110 — Business Administration · UNZA
-**Steps:** 1.1
+**Course:** BBA 1110 — Principles of Business Administration · UNZA
 **Channel:** `#bba-foundations`
+**Frame:** one mental frame = this channel (keeps discussion isolated from other lessons)
 
 ## Steps
-
 | Step | Title | PDF | Posted |
 |------|-------|-----|--------|
-| 1.1 | Introduction to Business Administration | ✅ | — |
+| 1.1 | Introduction to Business Administration | ✅ steps/Step 1.1 - Introduction to Business Administration.pdf | — |
+| 1.2 | Design & Structure of Organisations | — | — |
 
 ## Sources
-
-- `Lesson 1 — Introduction to Business Administration/ABE-IntroTo Business.pdf`
-- `BBA 1110 NOTES.pdf (shared ref)`
+Step 1.1: `Lesson 1 — Introduction.../ABE-IntroTo Business.pdf`. Step 1.2: general notes (no dedicated lecture).

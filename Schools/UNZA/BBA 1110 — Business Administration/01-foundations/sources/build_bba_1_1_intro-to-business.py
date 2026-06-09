@@ -38,11 +38,12 @@ pdfmetrics.registerFontFamily("Title", normal="Title", bold="Title-Bold",
 
 # ── BRAND ASSETS ───────────────────────────────────────────────────────────
 BRAND_DIR  = os.path.join(_ROOT, "_dev", "brand")
-LOGO_BLACK = os.path.join(BRAND_DIR, "booklesss-logo-black.png")
-MARK_BLACK = os.path.join(BRAND_DIR, "booklesss-mark-black.png")
+# dark charcoal cover → use the WHITE brand assets
+LOGO_WHITE = os.path.join(BRAND_DIR, "booklesss-logo-white.png")
+MARK_WHITE = os.path.join(BRAND_DIR, "booklesss-mark-white.png")
 GRAIN      = os.path.join(BRAND_DIR, "grain.png")
-_logo_black = ImageReader(LOGO_BLACK) if os.path.exists(LOGO_BLACK) else None
-_mark_black = ImageReader(MARK_BLACK) if os.path.exists(MARK_BLACK) else None
+_logo_white = ImageReader(LOGO_WHITE) if os.path.exists(LOGO_WHITE) else None
+_mark_white = ImageReader(MARK_WHITE) if os.path.exists(MARK_WHITE) else None
 _grain      = ImageReader(GRAIN)      if os.path.exists(GRAIN)      else None
 
 # ── COLOURS — BBA: dark charcoal cover + amber gold accent ─────────────────
@@ -153,10 +154,10 @@ def cover_bg(canvas, doc):
     _paint_paper(canvas, C_COVER)
     top_y = H - MY + 6
     # Logo (white or black — use black mark; on dark bg it renders as-is)
-    if _logo_black is not None:
-        iw, ih = _logo_black.getSize()
+    if _logo_white is not None:
+        iw, ih = _logo_white.getSize()
         lh = 15
-        canvas.drawImage(_logo_black, MX, top_y - 5,
+        canvas.drawImage(_logo_white, MX, top_y - 5,
                          width=lh * iw / ih, height=lh,
                          preserveAspectRatio=True, mask="auto")
     else:
@@ -289,8 +290,8 @@ def resources_box(items):
     s_lnk = ParagraphStyle("res_lnk", fontName="Body-Bold", fontSize=9,
                             textColor=C_COVER_META, leading=15, alignment=TA_LEFT)
     rows = [[Paragraph("ADDED VALUE", s_hd)]]
-    _blt = (f'<img src="{MARK_BLACK}" width="8" height="8" valign="middle"/>'
-            if os.path.exists(MARK_BLACK) else "▸")
+    _blt = (f'<img src="{MARK_WHITE}" width="8" height="8" valign="middle"/>'
+            if os.path.exists(MARK_WHITE) else "▸")
     for label, url in items:
         if url and url != "#":
             rows.append([Paragraph(
@@ -309,6 +310,35 @@ def resources_box(items):
         ("BOTTOMPADDING", (0,-1), (-1,-1), 10),
     ]))
     return KeepTogether([t, Spacer(1, 6)])
+
+
+class LogoTriple(Flowable):
+    """Centred trio of the real Booklesss mark PNG (centre solid, sides faded)."""
+    def __init__(self, img, center=18, side=13.5, gap=8.25, side_alpha=0.3):
+        super().__init__()
+        self.img = img
+        self.center, self.side, self.gap = center, side, gap
+        self.side_alpha = side_alpha
+        self._h = center
+
+    def wrap(self, aw, ah):
+        self._aw = aw
+        return aw, self._h
+
+    def _draw_mark(self, x_center, size):
+        self.canv.drawImage(self.img, x_center - size / 2.0, self._h / 2.0 - size / 2.0,
+                            width=size, height=size, mask="auto", preserveAspectRatio=True)
+
+    def draw(self):
+        c = self.canv
+        mid = getattr(self, "_aw", self._h) / 2.0
+        step = self.center / 2.0 + self.gap + self.side / 2.0
+        c.saveState()
+        c.setFillAlpha(self.side_alpha)
+        self._draw_mark(mid - step, self.side)
+        self._draw_mark(mid + step, self.side)
+        c.restoreState()
+        self._draw_mark(mid, self.center)
 
 
 class TripleDiamond(Flowable):
@@ -365,7 +395,8 @@ def build():
 
     # ── COVER ──────────────────────────────────────────────────────────────
     story.append(Spacer(1, 120))
-    story.append(TripleDiamond(color=C_AMBER))
+    story.append(LogoTriple(_mark_white) if _mark_white is not None
+                 else TripleDiamond(color=C_AMBER))
     story.append(Spacer(1, 26))
     story.append(Paragraph("STEP 1.1 · FOUNDATIONS", ST["cover_step"]))
     story.append(Spacer(1, 12))

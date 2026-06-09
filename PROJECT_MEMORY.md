@@ -1,10 +1,14 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-06-08
+**Last updated:** 2026-06-09
 
 ---
 
 ## Next Session
+
+**BBA 1110 — structure locked, ready to build:**
+- [ ] Write the 8 remaining BBA steps with **step-skill**: 1.2 Design & Structure, 2.1 Environment, 3.1 Management Functions, 4.1 Production, 5.1 Marketing, 6.1 Finance, 7.1 HR, 8.1 Change. (1.1 built; structure + outline locked. ⚠️ In Foundations skip `BBA-Lecture 1.pdf` — it's BBA 2421 maths, the wrong file. 1.2/6.1/8.1 have no dedicated lecture → use the general notes.)
+- [ ] Create the 8 BBA Slack channels + `#bba-updates` (folder slugs = channel slugs) → update `Operations/workspace.md` before posting any BBA content.
 
 - [ ] Add NLM audio + video links to Steps 3.1, 3.2, 3.3 ADDED VALUE boxes (NLMs not yet created)
 - [ ] Re-upload SM 2.1 and 2.2 to Slack — PDFs moved to flat paths this session, old Slack uploads are stale
@@ -25,12 +29,34 @@
 - [ ] Edit /legals page — still unedited Prodo template
 - [ ] Monitor Tally form (tally.so/r/81Jejr) for submissions daily
 - [ ] ⚠️ Path references in older Next Session items are now stale after the restructure: `operations/` → `Operations/`, `Finances/pricing-strategy.md` → `Operations/pricing-strategy.md`, `_dev/scripts/build_*.py` → each lesson's `sources/` folder (or `Operations/` for ops scripts). Re-resolve before acting on any of them.
-- [ ] Verify each relocated `build_*.py` still resolves `_ROOT` correctly from its new `Schools/.../sources/` depth (CLAUDE.md says 5 levels up) before next rebuild — folder depth changed in the move.
+- [x] ✅ Verified relocated build scripts resolve `_ROOT` correctly — BBA Step 1.1 rebuilt cleanly after the restructure (2026-06-09).
 - [ ] (Optional) GitHub repo URL is now lowercase `github.com/deekyykeed/booklesss.git` — remote still uses the old `Booklesss.git` and works via redirect. Update with `git remote set-url origin` if the redirect ever stops.
 
 ---
 
 ## Session Log
+
+### Session 2026-06-09
+**Done:**
+- **New skill `lesson-skill`** (PLAN phase, before step-skill): course architecture — a lesson = a grouping of *conceptually similar steps* = one Slack channel (noise isolation). No min/max on lessons; step count is content-driven, never a target; folder slug = channel slug. Doctrine saved to memory `project_lesson-channel-structure`.
+- **Removed `booklesss-write` skill** — its pipeline now lives in step-skill. Updated CLAUDE.md skills section to three: `lesson-skill` (PLAN), `step-skill` (WRITE+DESIGN), `design-system` (WEB).
+- **Restructured BBA 1110**: 9 topic-folders → **8 lessons by mental frame**. Merged Design & Structure into Foundations; collapsed Management to one step; renamed folders to channel slugs (`01-foundations`, `02-environment`, `03-management`, `04-production`, `05-marketing`, `06-finance`, `07-human-resources`, `08-change`). Now **8 lessons / 9 steps / 8 channels**. Rewrote `_course.md`; regenerated 8 `lesson.md`.
+- **Built the BBA course outline PDF** (new doc type on the step-skill foundation, BBA charcoal/amber identity): cover + about + lessons-by-lesson table; 3 tight pages.
+- **Fixed brand assets in BBA scripts** (outline + Step 1.1): real white wordmark + white mark trio via `LogoTriple` (was vector amber diamonds + an invisible black logo on the dark cover). Copied SM's pattern, swapped to white assets. Rebuilt both PDFs.
+- Deep check passed: 8 folders consistent, sources present (1.2/6.1/8.1 lean on general notes), pipeline rebuilds clean (Step 1.1 rc 0).
+
+**What Worked:**
+- Copying SM's `LogoTriple` + brand-asset block verbatim and swapping black→white assets for the dark BBA cover — real mark/logo render correctly, vector kept as fallback. QA'd with a PyMuPDF cover render (`Matrix(1.8)`).
+- PowerShell `Get-ChildItem -like "BBA 1110*"` to resolve the em-dash course path by wildcard — dodges the encoding issues that break literal-path commands.
+- PowerShell `Remove-Item -Recurse -Force` removed a OneDrive empty-placeholder folder that Python `shutil.rmtree` could not.
+
+**Dead Ends (do not retry):**
+- Python `shutil.rmtree` fails on OneDrive empty/placeholder folders (`WinError 5 Access denied`) — use PowerShell `Remove-Item -Recurse -Force` instead.
+- Briefly over-encoded a "minimise steps / default to one step" rule into the doctrine — the user corrected it: step count is content-driven and not the point. A lesson is just a grouping of conceptually similar steps; don't treat step count as a target or split/merge to hit a number.
+
+**Next:** Write the 8 remaining BBA steps; create the 8 BBA channels.
+
+---
 
 ### Session 2026-06-08
 **Done:**
