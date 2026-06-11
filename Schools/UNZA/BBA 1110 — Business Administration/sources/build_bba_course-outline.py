@@ -17,8 +17,8 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.utils import ImageReader
 import os
-# script sits at the course root: Schools/UNZA/BBA 1110.../  → 3 levels up to project root
-_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+# script sits in course-level sources/: Schools/UNZA/BBA 1110.../sources/  → 4 levels up to project root
+_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
 
 # ── FONTS ──────────────────────────────────────────────────────────────────
 FONT_DIR = os.path.join(_ROOT, "_dev", "fonts")
@@ -70,7 +70,7 @@ MX        = 2.2 * cm
 MY        = 2.0 * cm
 CONTENT_W = W - 2 * MX
 
-OUT_PATH = os.path.join(os.path.dirname(__file__),
+OUT_PATH = os.path.join(os.path.dirname(__file__), "..",
                         "Course Outline - Business Administration.pdf")
 
 # ── STYLES ─────────────────────────────────────────────────────────────────

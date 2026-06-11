@@ -3,6 +3,14 @@
 Live configuration for the Booklesss Slack workspace and all public-facing links.
 Update this file whenever any link or setting changes.
 
+> ## ⚠️ UNRESOLVED — three workspaces exist (as of 2026-06-11)
+>
+> 1. **bookless10.slack.com** ("Bookless 1.0") — what this file documents. Holds all TM + SM course channels and is where the public invite link points. **Its Slack Pro trial expired June 10, 2026** — single-channel guest seats (the Notes-tier mechanic) need a paid plan.
+> 2. **booklesss20.slack.com** — paid plan; SM Step 1.1/1.2 PDFs were uploaded here (see file-links table below). Different workspace from the invite link.
+> 3. **"Booklesss"** — created 2026-06-04, currently connected to Claude tooling. Only `#all-booklesss` + `#social`, one member, no course channels.
+>
+> **Action: pick ONE workspace, recreate/move the course channels there, replace the invite link in all marketing and PDF scripts, then rewrite this warning out of this file.**
+
 ---
 
 ## Slack Workspace
@@ -12,7 +20,7 @@ Update this file whenever any link or setting changes.
 | Workspace name | Bookless 1.0 |
 | Workspace URL | bookless10.slack.com |
 | Trial type | Slack Pro (free trial) |
-| Trial expires | June 10, 2026 |
+| Trial expires | June 10, 2026 — **EXPIRED** |
 | Invite link | https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8OFwcZTqTbPpC2Dg0q__Cg (never expires) |
 
 > **Note on the invite link:** The link contains the workspace slug (`bookless10`).
@@ -34,7 +42,7 @@ Update this file whenever any link or setting changes.
 ## Use this link in
 
 - All lead magnet PDFs (CTA page)
-- WhatsApp post templates (marketing/groups.md)
+- WhatsApp post templates (`Operations/groups.md`)
 - Any social or email mention
 
 ---
@@ -85,9 +93,10 @@ Section name in Slack: **Corporate Finance**
 
 ## Slack File Links — PDFs uploaded to workspace
 
-When a step PDF is uploaded to Slack, paste its file link here and into the
-`STEP_LINKS` dict at the top of that step's build script. This makes in-content
-step references clickable directly to the file in Slack.
+Historical record of uploads. **Do NOT embed these links inside PDFs** — the
+`STEP_LINKS` / `step_ref()` pattern was abandoned (Slack regenerates file IDs on
+every upload; see PROJECT_MEMORY dead end, 2026-06-04). Note these uploads went
+to `booklesss20.slack.com`, not the invite-link workspace.
 
 File link format: `https://booklesss20.slack.com/files/{USER_ID}/{FILE_ID}/{filename}.pdf`
 

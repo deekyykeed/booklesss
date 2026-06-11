@@ -56,11 +56,14 @@ Create each link at bit.ly before posting. Name them clearly so the dashboard is
 
 | Version | File | Target Course | Status |
 |---------|------|--------------|--------|
-| v1 | `tm-lead-magnet_v1.pdf` | BBF4302 Treasury Management | Draft |
+| v1 | `tm-lead-magnet_v1.pdf` | BBF4302 Treasury Management | **Planned — file does not exist yet.** Build with step-skill before the first drop. |
 
 ---
 
 ## Post Templates
+
+> ⚠️ Templates A–C link to the **bookless10** Slack invite — verify against the
+> workspace decision in `Operations/workspace.md` before sending anything.
 
 Framework applied: Give First → One CTA → everything else inside the PDF.
 Score each message before sending: Give First / Micro Commitment / Social Proof / Authority / Rapport / Scarcity / Shared Identity. Aim 5+/7.
@@ -109,7 +112,7 @@ Full series inside: https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6
 
 ---
 
-### Template D — Urgency drop (use April 14–17 only)
+### Template D — Urgency drop (EXPIRED — was for April 14–17, 2026; do not send. Rewrite around the next real deadline.)
 
 ```
 Free Treasury Management guide — dropping this before the founding rate closes on the 18th.
