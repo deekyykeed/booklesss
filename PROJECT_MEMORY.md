@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-06-11
+**Last updated:** 2026-06-11 (session 2)
 
 ---
 
@@ -36,6 +36,20 @@
 ---
 
 ## Session Log
+
+### Session 2026-06-11 (session 2)
+**Done:**
+- **Video cue cards** (`Demand/build_video_cues_intro.py` + `Video_Cues_01_What_Is_Booklesss.pdf`): companion to the full script. Same 7 scenes, same brand (cream/grain/Parastoo), each scene on its own page. Format: scene number + title, anchor phrase in a bordered box (the one line to land), then 3–5 bullet prompts in 17pt Parastoo to riff around. Went through three rounds: detailed bullets → too prescriptive → stripped to 2-3 broad territories → too bare → landed at 4-5 specific-but-not-scripted prompts.
+
+**What Worked:**
+- None non-obvious.
+
+**Dead Ends (do not retry):**
+- Too few prompts (2-3 broad territories) leaves the speaker feeling unsupported — aim for 4-5 specific reminders that name the point without writing the sentence.
+
+**Next:** Film the 7 scenes using one or both documents.
+
+---
 
 ### Session 2026-06-11
 **Done:**
