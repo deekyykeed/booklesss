@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-06-11 (session 2)
+**Last updated:** 2026-06-11 (session 3)
 
 ---
 
@@ -36,6 +36,20 @@
 ---
 
 ## Session Log
+
+### Session 2026-06-11 (session 3)
+**Done:**
+- **Short video script** (`Demand/build_video_script_short.py` + `Video_Script_01_Short.pdf`): ~200 words, ~1.5 minutes. Three scenes (THE PROBLEM / WHAT BOOKLESSS IS / WHERE TO FIND IT). Same brand as the full script — 17pt Parastoo, cream/grain, scene labels, PageBreak between scenes. Closing promise rewritten twice: first attempt was about relieving the notes problem (too product-focused); final version is community-based — "you'll be in a space with people working through the exact same material as you. You won't be sitting with this on your own anymore."
+
+**What Worked:**
+- None non-obvious.
+
+**Dead Ends (do not retry):**
+- Closing promise framed around "you won't have to read the same thing over and over" — user redirected to a community-based promise instead. The payoff should be about *where they're going* (into a community) not *what they're escaping* (bad notes).
+
+**Next:** Film the short version; see Next Session list.
+
+---
 
 ### Session 2026-06-11 (session 2)
 **Done:**
