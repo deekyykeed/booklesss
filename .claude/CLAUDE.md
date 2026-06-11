@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Booklesss** is a Slack-based edtech platform delivering branded PDF study materials for Zambian university finance/business courses. The core pipeline: source material (PPTX/PDF) → Python ReportLab script → PDF → posted to Slack channels. No web framework, no database — just Python scripts and structured content.
 
 **Active courses:** Strategic Management (ZCAS), Treasury Management BBF4302 (ZCAS), Corporate Finance BAC4301 (ZCAS — channels not yet created; do not post until channels exist), BBA 1110 (UNZA)
-**Platform:** Slack workspace `bookless10.slack.com` | Website: `booklesss.framer.ai`
+**Platform:** Slack — **workspace situation unresolved** (three workspaces exist; the public invite link points to `bookless10`, whose Pro trial has expired, but SM PDFs were uploaded to `booklesss20` — see the warning at the top of `Operations/workspace.md`). Confirm the target workspace with the owner before posting content or writing the invite link into anything. | Website: `booklesss.framer.ai`
 **Founding rate deadline:** April 18, 2026 — **this date has passed.** Do not reference it in new marketing content; ask the owner what offer replaces it.
 
 ## Commands
