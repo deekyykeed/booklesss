@@ -90,7 +90,9 @@
 
 Each step's build script lives in its lesson's `sources/` folder
 (`build_bba_[step]_[slug].py`). Course outline:
-`build_bba_course-outline.py` (course root) → `Course Outline - Business Administration.pdf`.
+`sources/build_bba_course-outline.py` → `Course Outline - Business Administration.pdf` (course root).
+Course-wide material also in `sources/`: `general-notes/` (master copies of the shared
+notes) and `official-outlines/` (the two raw UNZA outline PDFs).
 
 | Step | Script | Status |
 |------|--------|--------|

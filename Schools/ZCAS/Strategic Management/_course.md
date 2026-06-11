@@ -37,13 +37,13 @@ lesson always restarts at `.1`.
 
 | Step | Title | Source | PDF | Posted | Channel |
 |------|-------|--------|-----|--------|---------|
-| 1.1 | Introduction to Corporate Strategy | `_source/1. Introduction to Corporate Strategy.pdf` | ✅ v2 | — | `#sm-foundations` |
-| 1.2 | Vision, Mission & Objectives | `_source/2. Mission and Vision.pdf` | ✅ v2 | — | `#sm-foundations` |
-| 2.1 | The External Environment (PESTEL, Porter's Five Forces) | `_source/3. External Environment.pdf` | ✅ v2 | — | `#sm-environment` |
-| 2.2 | The Internal Environment (SWOT, Value Chain, VRIO) | `_source/4. Corporate Internal Environment.pdf` | ✅ v2 | ✅ 2026-03-24 | `#sm-environment` |
-| 3.1 | Corporate Strategy (levels, growth, diversification, BCG) | `_source/5. Strategic Management Module.pdf` Units 2–3, 8 | ✅ v2 | — | `#sm-strategy` |
-| 3.2 | Competitive Strategy (Porter's Generic, offensive/defensive) | `_source/5.` Unit 9 + `_source/8. Competitive Strategy.pdf` | ✅ v2 | — | `#sm-strategy` |
-| 3.3 | Strategy Implementation (7-S, Balanced Scorecard, change mgmt) | `_source/5.` Unit 10 + `_source/6. Strategic Management.pdf` | ✅ v2 | — | `#sm-strategy` |
+| 1.1 | Introduction to Corporate Strategy | `sources/1. Introduction to Corporate Strategy.pdf` | ✅ v2 | — | `#sm-foundations` |
+| 1.2 | Vision, Mission & Objectives | `sources/2. Mission and Vision.pdf` | ✅ v2 | — | `#sm-foundations` |
+| 2.1 | The External Environment (PESTEL, Porter's Five Forces) | `sources/3. External Environment.pdf` | ✅ v2 | — | `#sm-environment` |
+| 2.2 | The Internal Environment (SWOT, Value Chain, VRIO) | `sources/4. Corporate Internal Environment.pdf` | ✅ v2 | ✅ 2026-03-24 | `#sm-environment` |
+| 3.1 | Corporate Strategy (levels, growth, diversification, BCG) | `sources/5. Strategic Management Module.pdf` Units 2–3, 8 | ✅ v2 | — | `#sm-strategy` |
+| 3.2 | Competitive Strategy (Porter's Generic, offensive/defensive) | `sources/5.` Unit 9 + `sources/8. Competitive Strategy.pdf` | ✅ v2 | — | `#sm-strategy` |
+| 3.3 | Strategy Implementation (7-S, Balanced Scorecard, change mgmt) | `sources/5.` Unit 10 + `sources/6. Strategic Management.pdf` | ✅ v2 | — | `#sm-strategy` |
 
 > **Note on the posted step:** the step now numbered **2.2** (Internal Environment)
 > was posted to Slack on 2026-03-24 under its old number **4.1**. The PDF in the
@@ -57,7 +57,7 @@ lesson always restarts at `.1`.
 
 ## Source Material
 
-All source PDFs are in `_source/` directly (no subfolders):
+Source PDFs are copied into each lesson's `sources/` folder (lesson = unit of truth). The full set:
 
 | File | Covers |
 |------|--------|
@@ -76,27 +76,30 @@ All source PDFs are in `_source/` directly (no subfolders):
 
 | Step | PDF Path |
 |------|----------|
-| 1.1 | `01-foundations/Step 1.1 - Introduction to Corporate Strategy.pdf` |
-| 1.2 | `01-foundations/Step 1.2 - Vision, Mission & Objectives.pdf` |
-| 2.1 | `02-environment/Step 2.1 - The External Environment.pdf` |
-| 2.2 | `02-environment/Step 2.2 - The Internal Environment.pdf` |
-| 3.1 | `03-strategy/Step 3.1 - Corporate Strategy.pdf` |
-| 3.2 | `03-strategy/Step 3.2 - Competitive Strategy.pdf` |
-| 3.3 | `03-strategy/Step 3.3 - Strategy Implementation.pdf` |
+| 1.1 | `01-foundations/steps/Step 1.1 - Introduction to Corporate Strategy.pdf` |
+| 1.2 | `01-foundations/steps/Step 1.2 - Vision, Mission & Objectives.pdf` |
+| 2.1 | `02-environment/steps/Step 2.1 - The External Environment.pdf` |
+| 2.2 | `02-environment/steps/Step 2.2 - The Internal Environment.pdf` |
+| 3.1 | `03-strategy/steps/Step 3.1 - Corporate Strategy.pdf` |
+| 3.2 | `03-strategy/steps/Step 3.2 - Competitive Strategy.pdf` |
+| 3.3 | `03-strategy/steps/Step 3.3 - Strategy Implementation.pdf` |
 
 ---
 
 ## Build Scripts
 
+Each script lives in its lesson's `sources/` folder and outputs to the sibling `steps/`.
+Course-wide: `sources/build_sm_study-pill.py` → `Strategic Management - Study Pill.pdf` (course root).
+
 | Step | Script |
 |------|--------|
-| 1.1 | `_dev/scripts/build_sm_1_1_intro-to-strategy.py` |
-| 1.2 | `_dev/scripts/build_sm_1_2_mission-and-vision.py` |
-| 2.1 | `_dev/scripts/build_sm_2_1_external-environment.py` |
-| 2.2 | `_dev/scripts/build_sm_2_2_internal-environment.py` |
-| 3.1 | `_dev/scripts/build_sm_3_1_corporate-strategy.py` |
-| 3.2 | `_dev/scripts/build_sm_3_2_competitive-strategy.py` |
-| 3.3 | `_dev/scripts/build_sm_3_3_strategy-implementation.py` |
+| 1.1 | `01-foundations/sources/build_sm_1_1_intro-to-strategy.py` |
+| 1.2 | `01-foundations/sources/build_sm_1_2_mission-and-vision.py` |
+| 2.1 | `02-environment/sources/build_sm_2_1_external-environment.py` |
+| 2.2 | `02-environment/sources/build_sm_2_2_internal-environment.py` |
+| 3.1 | `03-strategy/sources/build_sm_3_1_corporate-strategy.py` |
+| 3.2 | `03-strategy/sources/build_sm_3_2_competitive-strategy.py` |
+| 3.3 | `03-strategy/sources/build_sm_3_3_strategy-implementation.py` |
 
 > **All steps v2 (cream paper, cardinal red, Parastoo/Aptos, Windows-native fonts).**
 > Steps 3.1–3.3 NLM audio/video links are empty — add when NotebookLMs are created.

@@ -8,13 +8,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Active courses:** Strategic Management (ZCAS), Treasury Management BBF4302 (ZCAS), Corporate Finance BAC4301 (ZCAS — channels not yet created; do not post until channels exist), BBA 1110 (UNZA)
 **Platform:** Slack workspace `bookless10.slack.com` | Website: `booklesss.framer.ai`
-**Founding rate deadline:** April 18, 2026 — mention in any marketing content
+**Founding rate deadline:** April 18, 2026 — **this date has passed.** Do not reference it in new marketing content; ask the owner what offer replaces it.
 
 ## Commands
 
 **Generate a PDF:**
 ```bash
-python3 "schools/[School]/[Course]/[lesson]/sources/build_[course]_[step]_[slug].py"
+python3 "Schools/[School]/[Course]/[lesson]/sources/build_[course]_[step]_[slug].py"
 ```
 
 **Transcribe a video lecture:**
@@ -33,6 +33,8 @@ No build system, no tests, no linter. Scripts are self-contained.
 
 ```
 Booklesss/
+├── README.md                          ← owner's map: status, money model, action queue
+├── PROJECT_MEMORY.md                  ← session log, next-session list, dead ends
 ├── Schools/
 │   ├── ZCAS/                          ← Zambia Centre for Accountancy Studies
 │   │   ├── Strategic Management/
@@ -41,19 +43,17 @@ Booklesss/
 │   │   └── _pipeline/                 ← future ZCAS courses (currently empty)
 │   └── UNZA/                          ← University of Zambia
 │       ├── BBA 1110 — Business Administration/
-│       └── _pipeline/                 ← 13 raw UNZA courses not yet in Booklesss
+│       └── _pipeline/                 ← 13 raw UNZA courses (LOCAL ONLY — gitignored)
 │
 ├── _dev/
 │   ├── brand/                         ← logo, mark, grain.png
 │   ├── fonts/                         ← Parastoo, Aptos, Parkinsans
-│   └── tmp/                           ← scratch previews and text extracts
+│   └── tmp/                           ← scratch previews and text extracts (gitignored)
 │
 ├── Operations/                        ← workspace.md, leads, revenue, checklist,
 │                                        pricing-strategy.md, positioning.md
-├── Demand/                            ← demand-side: marketing, leads, outreach
-├── Brand/                             ← web/marketing assets (hero images etc.)
-├── PROJECT_MEMORY.md
-└── Thoughts.txt
+├── Demand/                            ← demand-side: marketing flyers, video scripts
+└── Brand/                             ← raw asset drop zone (logos, hero images)
 ```
 
 ### Active Course Anatomy
@@ -61,22 +61,27 @@ Booklesss/
 Each active course has this structure — every lesson is self-contained:
 
 ```
-Strategic Management/
-├── 01-foundations/
+[Course]/
+├── _course.md          ← course status tracker (the single source of truth)
+├── 01-[slug]/          ← one lesson = one Slack channel; folder slug = channel slug
 │   ├── steps/          ← built PDFs (Step 1.1.pdf, Step 1.2.pdf)
-│   ├── sources/        ← source files used to write those steps
+│   ├── sources/        ← source files + build scripts for those steps
 │   └── lesson.md       ← step status + note of any external sources
-├── 02-environment/
-├── 03-strategy/
-├── past-papers/
-└── _course.md
+├── 02-[slug]/ …
+├── sources/            ← course-wide sources & build scripts (outlines, study pills)
+├── assignments/        ← current-semester assignment briefs
+└── past-papers/        ← past exam papers (only TM has these so far)
 ```
+
+Course-level extras (`sources/`, `assignments/`, `past-papers/`) exist only where a course has that material. Course-wide output PDFs (course outline, study pill) sit at the course root.
 
 If a source (e.g. a textbook) feeds multiple lessons it is copied into each. The lesson folder is the unit of truth — everything needed to understand or rebuild its steps lives inside it. External dependencies are noted in `lesson.md`.
 
 ### Pipeline Courses
 
-`schools/UNZA/_pipeline/` holds 13 UNZA courses (DEM 1110, ECN 1115, ECN 1215, GMS 1035, HRM 1015, IRS 1035, MATH 1110, PAM 1025, POL 1015, PSY, SOC 1110, DEV 1150, ECN 2115) plus a `_video-archive/` of lecture videos. These are raw source material — not yet in Booklesss. When a course is moved into Booklesss it gets the full lesson structure and is promoted from `_pipeline/` to an active folder in the school.
+`Schools/UNZA/_pipeline/` holds 13 UNZA courses (DEM 1110, ECN 1115, ECN 1215, GMS 1035, HRM 1015, IRS 1035, MATH 1110, PAM 1025, POL 1015, PSY, SOC 1110, DEV 1150, ECN 2115) plus a `_video-archive/` of lecture videos. These are raw source material — not yet in Booklesss. When a course is moved into Booklesss it gets the full lesson structure and is promoted from `_pipeline/` to an active folder in the school.
+
+**`_pipeline/` and `_textbooks/` are gitignored and exist only on the owner's machine + OneDrive** — they contain files over GitHub's 100 MB limit. Never add them to git. In a fresh clone these folders are absent; that is expected.
 
 ## Architecture
 
@@ -111,14 +116,14 @@ Every PDF follows this sequence: cover → 4–7 content sections → 2 embedded
 ### Community CTA Pattern
 No hard CTAs. Two discussion questions embedded mid-content. Guide the reader toward the next step by weaving a natural hint into the body at the point where it's relevant — never a labelled "Next:" pointer.
 
-### Clickable Step Cross-References
-When a step's content references another step (e.g. "Step 2.1"), link it to that step's Slack file URL. Each build script holds a `STEP_LINKS` dict and a `step_ref()` helper. Known Slack file links are tracked in `operations/workspace.md`.
+### Step Cross-References
+When a step's content references another step (e.g. "Step 2.1"), keep the reference as **plain text** — do not link it to a Slack file URL. Slack assigns a new unpredictable file ID on every upload, so embedded file links go stale immediately (see PROJECT_MEMORY dead end, 2026-06-04). Older scripts may still carry a `STEP_LINKS` dict and `step_ref()` helper — remove them when touching those scripts. External permanent links (NotebookLM) are fine.
 
 ### Cover ADDED VALUE Box
 Each step cover has an accent-bordered "ADDED VALUE" panel listing companion resources as clickable links (NotebookLM audio overviews, linked steps, etc.). Uses the `resources_box([(label, url), ...])` helper defined in each script.
 
 ### Lead Magnets
-3–4 page PDF teasers for WhatsApp marketing. File name format: `[Hook Title] - Booklesss.pdf`. Use Zambian companies (Zanaco, Zambeef, ZESCO, First Quantum) and ZMW currency in examples. Include founding rate deadline in 2+ places.
+3–4 page PDF teasers for WhatsApp marketing. File name format: `[Hook Title] - Booklesss.pdf`. Use Zambian companies (Zanaco, Zambeef, ZESCO, First Quantum) and ZMW currency in examples. Check `Operations/pricing-strategy.md` for the current offer before writing any pricing or deadline into a lead magnet.
 
 ### Skills (Claude Code Extensions)
 Three custom skills in `.claude/skills/`, one per phase of the pipeline:
@@ -127,20 +132,21 @@ Three custom skills in `.claude/skills/`, one per phase of the pipeline:
 - **`design-system`** — Web/UI only (Framer, landing pages). Not for PDF work.
 
 ### Transcription
-`_dev/transcribe.py` uses OpenAI Whisper (`small.en` model). Outputs `[video-name]_transcript.md` alongside the source video. Skips files already transcribed. Source video collection is in `schools/UNZA/_pipeline/_video-archive/` (ECO 155 macroeconomics, MIT 14.01SC microeconomics).
+`_dev/transcribe.py` uses OpenAI Whisper (`small.en` model). Outputs `[video-name]_transcript.md` alongside the source video. Skips files already transcribed. Source video collection is in `Schools/UNZA/_pipeline/_video-archive/` (ECO 155 macroeconomics, MIT 14.01SC microeconomics).
 
 ## Key Reference Files
 
 | File | Purpose |
 |------|---------|
-| `operations/workspace.md` | Slack workspace config, channel names, invite links |
-| `schools/[School]/[Course]/_course.md` | Step status tracker for each course |
-| `schools/[School]/[Course]/[lesson]/lesson.md` | Per-lesson step status and source notes |
-| `operations/daily-checklist.md` | Operational cadence and content status tracker |
-| `operations/leads.md` | WhatsApp lead tracking |
-| `operations/revenue-log.md` | Student conversions and revenue |
-| `operations/groups.md` | WhatsApp group marketing stats |
-| `operations/pricing-strategy.md` | Founding rate, deadlines, cost structure |
+| `README.md` | Owner's map: business state, money model, action queue |
+| `Operations/workspace.md` | Slack workspace config, channel names, invite links |
+| `Schools/[School]/[Course]/_course.md` | Step status tracker for each course |
+| `Schools/[School]/[Course]/[lesson]/lesson.md` | Per-lesson step status and source notes |
+| `Operations/daily-checklist.md` | Operational cadence and content status tracker |
+| `Operations/leads.md` | WhatsApp lead tracking |
+| `Operations/revenue-log.md` | Student conversions and revenue |
+| `Operations/groups.md` | WhatsApp group marketing stats |
+| `Operations/pricing-strategy.md` | Pricing tiers, unit economics, cost structure |
 
 ## Writing Style Rules (Enforced in All Content)
 

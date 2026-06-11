@@ -171,7 +171,7 @@ A one-piece overview of the whole course. **It renders through step-skill** (sam
 foundation: fonts, palette, page geometry, helpers) using the course's own visual
 identity — a course-specific document looks like its course, not the cream house
 brand. Reference implementation:
-`Schools/UNZA/BBA 1110 — Business Administration/build_bba_course-outline.py`.
+`Schools/UNZA/BBA 1110 — Business Administration/sources/build_bba_course-outline.py`.
 
 Structure:
 1. **Cover** — TripleDiamond, `COURSE OUTLINE` eyebrow, Parastoo title, one-line

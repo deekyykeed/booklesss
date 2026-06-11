@@ -1,10 +1,17 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-06-11 (session 3)
+**Last updated:** 2026-06-11 (session 4)
 
 ---
 
 ## Next Session
+
+**⚠️ Funnel integrity (from the 2026-06-11 audit — fix before any marketing push):**
+- [ ] **Consolidate Slack to ONE workspace.** Three exist: `bookless10` (invite link + all TM/SM channels, Pro trial EXPIRED 2026-06-10), `booklesss20` (paid, where SM PDFs were uploaded), and a new empty "Booklesss" ws (created 2026-06-04, currently tool-connected). Decide, move channels, update `Operations/workspace.md`, replace the invite link everywhere.
+- [ ] Framer: remove expired "Free until 10 June →" CTAs; pricing page Community K800 → K500; homepage FAQ K800 → K500; indexed meta description says "free 7-day trial" (should be 1 month); "Prodo" meta titles; /legals page.
+- [ ] Tally form 81Jejr: add a Free Trial option to the plan question (the advertised entry product is currently unselectable); delete the orphaned annual page (K4,680 = old K390×12) and its dead jump rule; dedupe the two "Which school" questions; clear the 2 founder test submissions.
+- [ ] Strip the `bookless10` invite link from the ~19 CF/TM build scripts' closer text (PDFs must be rebuilt before circulating).
+- [ ] Decide the post-founding-rate offer (April 18 deadline passed; Template D in groups.md retired).
 
 **BBA 1110 — structure locked, ready to build:**
 - [ ] Write the 8 remaining BBA steps with **step-skill**: 1.2 Design & Structure, 2.1 Environment, 3.1 Management Functions, 4.1 Production, 5.1 Marketing, 6.1 Finance, 7.1 HR, 8.1 Change. (1.1 built; structure + outline locked. ⚠️ In Foundations skip `BBA-Lecture 1.pdf` — it's BBA 2421 maths, the wrong file. 1.2/6.1/8.1 have no dedicated lecture → use the general notes.)
@@ -29,13 +36,34 @@
 - [ ] Edit /legals page — still unedited Prodo template
 - [ ] Film the 7 scenes from `Demand/Video_Script_01_What_Is_Booklesss.pdf` and combine in edit
 - [ ] Monitor Tally form (tally.so/r/81Jejr) for submissions daily
-- [ ] ⚠️ Path references in older Next Session items are now stale after the restructure: `operations/` → `Operations/`, `Finances/pricing-strategy.md` → `Operations/pricing-strategy.md`, `_dev/scripts/build_*.py` → each lesson's `sources/` folder (or `Operations/` for ops scripts). Re-resolve before acting on any of them.
+- [x] ✅ Stale path references resolved repo-wide (2026-06-11 session 4): `operations/` renamed to `Operations/` on disk; all `_dev/scripts/`, `_source/`, `courses/`, `Finances/`, `marketing/` references updated in `_course.md` files, skills, and Operations docs.
 - [x] ✅ Verified relocated build scripts resolve `_ROOT` correctly — BBA Step 1.1 rebuilt cleanly after the restructure (2026-06-09).
 - [ ] (Optional) GitHub repo URL is now lowercase `github.com/deekyykeed/booklesss.git` — remote still uses the old `Booklesss.git` and works via redirect. Update with `git remote set-url origin` if the redirect ever stops.
 
 ---
 
 ## Session Log
+
+### Session 2026-06-11 (session 4)
+**Done:**
+- **Workspace reorganization** (full repo):
+  - `operations/` → `Operations/` (matches the documented structure; was lowercase on disk).
+  - Course-level folders standardized: TM `02_ASSIGNMENT/` → `assignments/`; CF `00_Course_Administration/` → `assignments/`; BBA `build_bba_course-outline.py` + `_course-outline/` + `_general-notes/` → course-level `sources/` (`official-outlines/`, `general-notes/`). BBA outline script `_ROOT`/`OUT_PATH` adjusted and verified by rebuild (output still lands at course root).
+  - Deleted: `Thoughts.txt` (all three ideas already captured in `Operations/product-notes.md`), stale v1 `build_sm_3_1_strategy-implementation.py` (superseded by v2 3.1/3.3 scripts), TM `raw_pdf_extract.txt` scratch file.
+  - `generate_assignment.js` output path de-hardcoded (was `C:\Users\deeky\...\02_ASSIGNMENT\`) → `__dirname`-relative.
+- **New root `README.md`** — owner's map: where everything lives, verified product state (TM 10/10, SM 7/7, CF 2/10 v2, BBA 1/9), money model summary, red-flag list, ordered action queue.
+- **Doc truth pass:** daily-checklist rewritten (old K390/K195 prices, dead `/write-module-notes`-era commands, stale step tables, `courses/`+`marketing/` paths all fixed); `_course.md` ×4 Build Scripts/Source/PDF-location sections now point at real paths; pricing-strategy K800 remnant → K500; monthly-tracker K375 → real seat costs; workspace.md now carries the three-workspace warning; groups.md Template D marked expired and lead magnet marked as not-yet-built; CLAUDE.md tree/anatomy/key-files updated, STEP_LINKS section replaced with the plain-text rule, founding-deadline line marked passed; step-skill + lesson-skill SKILL.md stale paths fixed (incl. retiring the STEP_LINKS pattern from step-skill).
+- **Funnel audit** (website + Tally + Slack entry) run via subagent; findings written into README red flags and Next Session list. Headlines: 3 Slack workspaces, bookless10 Pro trial expired 6/10, website still shows K800 + expired June-10 free offer, Tally form has no free-trial option and 0 genuine submissions from 90 views, ~19 PDF scripts embed the bookless10 invite link.
+
+**What Worked:**
+- Auditing the live funnel (Tally API insights/submissions, Slack MCP member/channel inspection, Google index) in a background agent while reorganizing files in the main session.
+
+**Dead Ends (do not retry):**
+- `booklesss.framer.ai` returns HTTP 403 to all non-browser fetchers (WebFetch, curl with browser headers) — to inspect the live site, use the Framer MCP plugin or a real browser; don't burn time on fetch retries. (Also means WhatsApp/social link previews may be degraded — verify by sending a test message.)
+
+**Next:** Funnel integrity items at the top of Next Session.
+
+---
 
 ### Session 2026-06-11 (session 3)
 **Done:**

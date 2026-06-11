@@ -391,7 +391,7 @@ const doc = new Document({
 
 Packer.toBuffer(doc).then((buffer) => {
   fs.writeFileSync(
-    'C:\\Users\\deeky\\OneDrive\\Desktop\\Booklesss\\Treasury Management\\02_ASSIGNMENT\\ZML_Treasury_Management_Assignment.docx',
+    require('path').join(__dirname, 'ZML_Treasury_Management_Assignment.docx'),
     buffer
   );
   console.log('Done!');

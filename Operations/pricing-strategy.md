@@ -13,7 +13,7 @@
 | **Community** | K500/month | Full paid member | All course channels, full Slack workspace, quizzes, everything |
 | **Custom** | Negotiated | Full paid member | Personalized 1-on-1 tutoring, dedicated support, custom study plan |
 
-**The funnel:** Free trial (1 month, one channel) → stay at K250 (one course, ongoing) → upgrade to K800 (full access) → Custom for students who need more.
+**The funnel:** Free trial (1 month, one channel) → stay at K250 (one course, ongoing) → upgrade to K500 (full access) → Custom for students who need more.
 
 Everyone starts with the free trial. No card, no commitment.
 
@@ -88,7 +88,7 @@ Single-channel guests during free trial count against the guest ratio but cost n
 - **5 single-channel guests per paid active member** (Slack Pro rule)
 - You (admin) count as 1 paid member — so baseline capacity is 5 free/K250 guests from day one
 - Each K500 student you add unlocks 5 more guest slots
-- Track this in `operations/workspace.md` — don't exceed the ratio or Slack will block new guests
+- Track this in `Operations/workspace.md` — don't exceed the ratio or Slack will block new guests
 
 ---
 
@@ -115,4 +115,4 @@ Single-channel guests during free trial count against the guest ratio but cost n
 
 ## What to track monthly
 
-See `finance/monthly-tracker.md`
+See `Operations/monthly-tracker.md`

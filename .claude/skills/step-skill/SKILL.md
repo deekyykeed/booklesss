@@ -30,7 +30,7 @@ The shared design system for **every** Booklesss PDF. Think of it in two layers:
 > Use the foundation as-is and add a new profile. Don't fork the brand.
 
 **Reference implementations**
-- Lesson (most complete): [`_dev/scripts/build_cf_1_1_investment-fundamentals.py`](../../../_dev/scripts/build_cf_1_1_investment-fundamentals.py)
+- Lesson (most complete): [`Schools/ZCAS/Corporate Finance/01-investment/sources/build_cf_1_1_investment-fundamentals.py`](../../../Schools/ZCAS/Corporate%20Finance/01-investment/sources/build_cf_1_1_investment-fundamentals.py)
 
 When this doc and a reference script disagree, the script wins — update this doc.
 
@@ -249,9 +249,10 @@ course codes in the name.
 | Invoice | `Invoice [No] - [Client].pdf` | `Invoice 0042 - Zanaco.pdf` |
 | Quote | `Quote [No] - [Client].pdf` | `Quote 0042 - Zanaco.pdf` |
 
-Build scripts: `_dev/scripts/build_[...].py`.
-Lessons output to `courses/[Course]/[lesson-folder]/`.
-Business documents output to `operations/` (or wherever the user specifies).
+Build scripts live next to their content: lesson scripts in the lesson's
+`sources/` folder (`Schools/[School]/[Course]/[lesson]/sources/build_[...].py`),
+outputting to the sibling `steps/`; ops scripts in `Operations/`; marketing
+scripts in `Demand/`.
 
 ## How to generate (every document)
 
@@ -264,7 +265,7 @@ Business documents output to `operations/` (or wherever the user specifies).
 5. Run via Bash and confirm the output path:
 
 ```bash
-python3 _dev/scripts/build_[...].py
+python3 "Schools/[School]/[Course]/[lesson]/sources/build_[...].py"
 ```
 
 Open the PDF and check: headers not orphaned at page feet, boxes/tables not split
@@ -315,38 +316,26 @@ Instead, guide naturally through the content:
 No workspace invite links in the body. Workspace is `bookless10.slack.com`.
 (CF Slack channels are not yet created — do not post CF content until they exist.)
 
-**Clickable step cross-references:** When the content mentions another step (e.g. "Step 2.1"),
-make it a clickable link to that step's Slack file URL. Use a `STEP_LINKS` dict at the top of
-the script and a `step_ref()` helper — renders as a link when the URL is known, plain text when not:
-
-```python
-STEP_LINKS = {
-    "1.2": "https://booklesss20.slack.com/files/...",
-    "2.1": None,  # fill in when uploaded
-}
-
-def step_ref(n):
-    url = STEP_LINKS.get(n)
-    if url:
-        return f'<link href="{url}"><u>Step {n}</u></link>'
-    return f"Step {n}"
-```
-
-Slack file links for all uploaded steps are tracked in `operations/workspace.md`.
+**Step cross-references are plain text.** When the content mentions another step
+(e.g. "Step 2.1"), write it as plain text — never as a link to a Slack file URL.
+Slack regenerates file IDs on every upload, so embedded links go stale immediately
+(PROJECT_MEMORY dead end, 2026-06-04). If an older script carries a `STEP_LINKS`
+dict and `step_ref()` helper, remove them when touching that script. Permanent
+external links (NotebookLM overviews in the ADDED VALUE box) are fine.
 
 ## Profile: Lead magnet
 
-3–4 page teaser used as a free marketing handout. Save in
-`courses/[Course]/[lesson-folder]/lead-magnets/`.
+3–4 page teaser used as a free marketing handout. Save in `Demand/` alongside the
+other marketing assets (script + output PDF together).
 
 - 2–3 genuinely useful concepts, ZMW + Zambian companies. Tease, don't give the
   whole lesson.
 - **First-page preview:** the title must sit in the top ~20% of page 1 — the cover
   frame uses a small top padding (`topPadding = MY + 30`), not a large fraction of
   page height, or a generated thumbnail comes out blank.
-- **Founding rate deadline: April 18, 2026.** Mention in at least two places
-  (cover + a nudge box before the CTA). Check `Finances/pricing-strategy.md` for
-  the current deadline/rate; if it has passed, drop founding language.
+- **Offer/deadline:** check `Operations/pricing-strategy.md` for the current
+  rate and any live deadline before writing one in. The founding rate deadline
+  (April 18, 2026) has passed — do not use founding language.
 
 ## Profile: Business document (quote / invoice / proposal / receipt)
 
