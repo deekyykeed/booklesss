@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-06-09
+**Last updated:** 2026-06-11
 
 ---
 
@@ -27,6 +27,7 @@
 - [ ] Fix page meta titles in Framer (SEO tab): /blogs, /about-us, homepage still say "Prodo"
 - [ ] Add photo to Deeky Mvula team card
 - [ ] Edit /legals page — still unedited Prodo template
+- [ ] Film the 7 scenes from `Demand/Video_Script_01_What_Is_Booklesss.pdf` and combine in edit
 - [ ] Monitor Tally form (tally.so/r/81Jejr) for submissions daily
 - [ ] ⚠️ Path references in older Next Session items are now stale after the restructure: `operations/` → `Operations/`, `Finances/pricing-strategy.md` → `Operations/pricing-strategy.md`, `_dev/scripts/build_*.py` → each lesson's `sources/` folder (or `Operations/` for ops scripts). Re-resolve before acting on any of them.
 - [x] ✅ Verified relocated build scripts resolve `_ROOT` correctly — BBA Step 1.1 rebuilt cleanly after the restructure (2026-06-09).
@@ -35,6 +36,33 @@
 ---
 
 ## Session Log
+
+### Session 2026-06-11
+**Done:**
+- **Banknote money-drop flyer** (`Demand/build_money_flyer.py` + `Booklesss_Money_Flyer.pdf`): two-page PDF at banknote dimensions (156mm × 78mm). Page 1 = ZMW 500 note image (people pick it up). Page 2 = cream/grain marketing side — apology hook ("Sorry. Not real money. But these notes are free."), big transparent rounded QR code pointing to booklesss.framer.ai, black logo, no amber, no pricing, no Slack mention. Grain fixed via ImageReader + `mask="auto"` drawn twice at 1.6× — no `setFillAlpha`.
+- **Tally form study plan page** (tally.so/r/81Jejr): added new page 7 ("Study Plan") with free-text goal question and weekly commitment multiple choice (1–2 / 3–4 / 5–7 days). Updated jump logic so Notes and Let's talk paths both route through it. Published.
+- **Video intro script** (`Demand/build_video_script_intro.py` + `Video_Script_01_What_Is_Booklesss.pdf`): full A4 branded PDF, 17pt Parastoo speaking text, split into 7 scenes with PageBreak between each for filming reference. Went through many rounds of revision:
+  - Personal founder angle throughout — not a pitch, an eye-level story
+  - Hook: "You know that thing where you sit down with your notes, read the same paragraph three or four times, and still only kind of get it?" → "The problem is not you. It's the notes." → "Those notes are probably older than you. They are not set up for you to read once and understand."
+  - Scene 2: honest failed launch ("tried it, didn't go anywhere"), back with simpler approach, reason = found a way with less friction where students can actually understand what's going on
+  - Scene 3: notes are better researched, pulled from trusted current sources, easy to follow on the first read, everything connects
+  - Community / WhatsApp contrast, accountability, points, closing = "Jump onto Google and look for Booklesss. Three s's."
+- **Brand assumptions** saved to memory (`project_brand_assumptions.md`): the problem is OLD notes (not rushed lecturers), Booklesss does original research not slide cleanup, one-line positioning: "Old notes. New understanding."
+
+**What Worked:**
+- Starting the script hook with the viewer's felt experience ("you know that thing where…") before any founder mention — creates recognition before trust
+- "Those notes are probably older than you" — short, punchy, hard to forget; more powerful than a longer explanation
+- Honest failed launch admission ("tried it, didn't go anywhere") builds more trust than enthusiasm
+- `I felt I was learning better` (not "I was learning better") — softer, more honest, easier to say
+- PageBreak between each SECTION in the story list → each scene on its own page, labeled SCENE N — makes it a functional filming script not just a read document
+- Grain fix: ImageReader preload + `drawImage(mask="auto")` drawn twice at 1.6× scale, NO `setFillAlpha` — matches the SM lesson script pattern exactly
+
+**Dead Ends (do not retry):**
+- `setFillAlpha()` before `drawImage` does not control PNG transparency in ReportLab — it affects vector fills only. For grain/texture PNGs, use `mask="auto"` and rely on the PNG's own alpha channel.
+
+**Next:** Film the 7 scenes; see Next Session list.
+
+---
 
 ### Session 2026-06-09
 **Done:**
@@ -344,4 +372,5 @@
 ## Staged Notes
 
 _(empty)_
+
 
