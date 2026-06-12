@@ -44,6 +44,20 @@
 
 ## Session Log
 
+### Session 2026-06-12
+**Done:**
+- **Direct pitch video script** (`Demand/build_video_script_direct.py` + `Video_Script_02_Direct.pdf`): ~170 words, ~1.5 minutes. New angle — "imagine a place where..." — talks directly to the viewer about disorganized university material, no founder story. Three scenes: THE PICTURE (imagine vs. reality), WHAT BOOKLESSS IS (organized notes + community), WHERE TO FIND IT (CTA + community promise). Closing: "You won't be on your own with this anymore."
+
+**What Worked:**
+- None non-obvious.
+
+**Dead Ends (do not retry):**
+- Closing promise framed around escaping bad notes (product angle) — user redirected to community arrival angle both sessions. Always frame the end promise as *where they're going* (into a community) not *what they're leaving behind*.
+
+**Next:** Film using one of the four scripts in `Demand/` — see Next Session list.
+
+---
+
 ### Session 2026-06-11 (session 4)
 **Done:**
 - **Workspace reorganization** (full repo):
