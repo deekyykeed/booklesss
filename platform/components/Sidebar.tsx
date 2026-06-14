@@ -135,7 +135,7 @@ export default function Sidebar({ courses, userName }: SidebarProps) {
         {courses.length === 0 && (
           <div style={{ padding: '16px', color: 'rgba(255,255,255,0.35)', fontSize: 12 }}>
             No courses yet —{' '}
-            <Link href="/library" style={{ color: '#DC2626', textDecoration: 'none' }}>
+            <Link href="/library" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'underline' }}>
               browse library
             </Link>
           </div>
@@ -146,7 +146,7 @@ export default function Sidebar({ courses, userName }: SidebarProps) {
       <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', gap: 10 }}>
         <div
           style={{
-            width: 30, height: 30, borderRadius: '50%', background: '#DC2626',
+            width: 30, height: 30, borderRadius: '50%', background: '#1a2e48',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: 12, fontWeight: 700, color: '#fff', flexShrink: 0, position: 'relative',
           }}
@@ -208,25 +208,34 @@ function ChevronIcon({ open }: { open: boolean }) {
 
 function HomeIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <path d="M2 6.5L8 2l6 4.5V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6.5z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M6 15V9h4v6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14" width="16" height="16">
+      <g>
+        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M13.5 6.94c0.001 -0.1388 -0.027 -0.27628 -0.0821 -0.40368 -0.0551 -0.1274 -0.1361 -0.24194 -0.2379 -0.33632L7.00002 0.5 0.820023 6.2c-0.101775 0.09438 -0.182787 0.20892 -0.23788 0.33632S0.499084 6.8012 0.500023 6.94v5.56c0 0.2652 0.105357 0.5196 0.292893 0.7071s0.441894 0.2929 0.707104 0.2929H12.5c0.2652 0 0.5196 -0.1054 0.7071 -0.2929 0.1876 -0.1875 0.2929 -0.4419 0.2929 -0.7071V6.94Z" strokeWidth="1" />
+        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M7 13.5v-4" strokeWidth="1" />
+      </g>
     </svg>
   )
 }
 
 function LibraryIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <path d="M2 3h3v10H2zM6.5 3h3v10h-3zM11 3h3v10h-3z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14" width="16" height="16">
+      <g>
+        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M7 13.5V8.25c0 -0.33152 0.1317 -0.64946 0.36612 -0.88388C7.60054 7.1317 7.91848 7 8.25 7v0c0.33152 0 0.64946 0.1317 0.88388 0.36612 0.23442 0.23442 0.36612 0.55236 0.36612 0.88388V11h2c0.5304 0 1.0391 0.2107 1.4142 0.5858S13.5 12.4696 13.5 13v0.5" strokeWidth="1" />
+        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M6.25739 3.09514C5.01089 1.72345 3.33822 0.812215 1.50977 0.508751 1.38536 0.491132 1.25862 0.500185 1.13798 0.53531 1.01733 0.570434 0.905541 0.630826 0.810029 0.712473 0.712804 0.795633 0.634748 0.898868 0.581232 1.01508c-0.053517 0.1162 -0.081224 0.24263 -0.081216 0.37056v7.13029c-0.001328 0.21897 0.078501 0.43068 0.224081 0.59425 0.145581 0.16357 0.346593 0.26742 0.564233 0.2915 1.42811 0.1937 2.77106 0.75882 3.89996 1.62762" strokeWidth="1" />
+        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M6.25781 5.8584V3.09521" strokeWidth="1" />
+        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M11.2264 9.40168c0.2176 -0.02408 0.4186 -0.12793 0.5642 -0.2915s0.2254 -0.37528 0.2241 -0.59425V1.38564c0 -0.12793 -0.0277 -0.25436 -0.0812 -0.37056 -0.0535 -0.116212 -0.1316 -0.219447 -0.2288 -0.302607 -0.0955 -0.081647 -0.2073 -0.142039 -0.328 -0.177163 -0.1206 -0.035125 -0.2473 -0.044178 -0.3718 -0.026559C9.1765 0.812215 7.50383 1.72345 6.25732 3.09514" strokeWidth="1" />
+      </g>
     </svg>
   )
 }
 
 function SavedIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <path d="M3 2h10a1 1 0 0 1 1 1v10.5l-6-3-6 3V3a1 1 0 0 1 1-1z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14" width="16" height="16">
+      <g>
+        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="m11 13.5 -4 -4 -4 4v-12c0 -0.26522 0.10536 -0.51957 0.29289 -0.707107C3.48043 0.605357 3.73478 0.5 4 0.5h6c0.2652 0 0.5196 0.105357 0.7071 0.292893C10.8946 0.98043 11 1.23478 11 1.5v12Z" strokeWidth="1" />
+      </g>
     </svg>
   )
 }
