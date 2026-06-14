@@ -1,5 +1,4 @@
-import { redirect } from 'next/navigation'
-
+// Root redirect is handled by middleware.ts
 export default function Root() {
-  redirect('/courses/strategic-management/03-competitive-strategy')
+  return null
 }
