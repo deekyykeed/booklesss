@@ -44,10 +44,10 @@ export default function LoginPage() {
   const inputStyle: React.CSSProperties = {
     width: '100%',
     padding: '10px 14px',
-    background: 'rgba(255,255,255,0.08)',
-    border: '1px solid rgba(255,255,255,0.15)',
+    background: '#fff',
+    border: '1px solid #e5e7eb',
     borderRadius: 8,
-    color: '#fff',
+    color: '#1a1a1a',
     fontSize: 14,
     outline: 'none',
     boxSizing: 'border-box',
@@ -55,7 +55,7 @@ export default function LoginPage() {
 
   const labelStyle: React.CSSProperties = {
     display: 'block',
-    color: 'rgba(255,255,255,0.6)',
+    color: '#6b7280',
     fontSize: 12,
     fontWeight: 600,
     marginBottom: 6,
@@ -86,6 +86,7 @@ export default function LoginPage() {
               overflow: 'hidden',
               position: 'relative',
               flexShrink: 0,
+              border: '1px solid rgba(0,0,0,0.06)',
             }}
           >
             <div
@@ -103,19 +104,19 @@ export default function LoginPage() {
               fontFamily: 'var(--font-parastoo)',
               fontWeight: 700,
               fontSize: 22,
-              color: '#fff',
+              color: '#0F1F35',
             }}
           >
             Booklesss
           </span>
         </div>
-        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, margin: 0 }}>
+        <p style={{ color: '#9ca3af', fontSize: 13, margin: 0 }}>
           Smarter notes for Zambian university students
         </p>
       </div>
 
       {/* Mode toggle */}
-      <div style={{ display: 'flex', background: 'rgba(255,255,255,0.06)', borderRadius: 8, padding: 3, marginBottom: 24 }}>
+      <div style={{ display: 'flex', background: '#e5e7eb', borderRadius: 8, padding: 3, marginBottom: 24 }}>
         {(['signin', 'signup'] as const).map((m) => (
           <button
             key={m}
@@ -124,8 +125,8 @@ export default function LoginPage() {
             style={{
               flex: 1, padding: '7px 0', border: 'none', borderRadius: 6,
               fontSize: 13, fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s',
-              background: mode === m ? '#fff' : 'transparent',
-              color: mode === m ? '#0F1F35' : 'rgba(255,255,255,0.45)',
+              background: mode === m ? '#0F1F35' : 'transparent',
+              color: mode === m ? '#fff' : '#9ca3af',
             }}
           >
             {m === 'signin' ? 'Sign in' : 'Create account'}
@@ -162,10 +163,10 @@ export default function LoginPage() {
         </div>
 
         {error && (
-          <p style={{ color: '#fca5a5', fontSize: 13, margin: 0 }}>{error}</p>
+          <p style={{ color: '#dc2626', fontSize: 13, margin: 0 }}>{error}</p>
         )}
         {message && (
-          <p style={{ color: '#6ee7b7', fontSize: 13, margin: 0 }}>{message}</p>
+          <p style={{ color: '#059669', fontSize: 13, margin: 0 }}>{message}</p>
         )}
 
         <button
@@ -173,7 +174,7 @@ export default function LoginPage() {
           disabled={loading}
           style={{
             padding: '11px',
-            background: loading ? '#1a2e48' : '#0F1F35',
+            background: loading ? '#374151' : '#0F1F35',
             color: '#fff',
             border: 'none',
             borderRadius: 8,

@@ -75,6 +75,25 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           borderRadius: 0,
         }}
       >
+        {/* Top nav container */}
+        <div
+          style={{
+            width: '100%',
+            height: 'min-content',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            overflow: 'visible',
+            padding: 0,
+            gap: 16,
+            position: 'relative',
+            borderRadius: 0,
+          }}
+        >
+          {/* navbar items go here */}
+        </div>
+
         <main style={{ flex: 1, width: '100%', overflowY: 'auto', minHeight: 0 }}>
           {children}
         </main>
