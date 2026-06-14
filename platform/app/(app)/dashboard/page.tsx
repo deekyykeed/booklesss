@@ -89,7 +89,7 @@ export default async function DashboardPage() {
             style={{
               display: 'inline-block',
               padding: '9px 20px',
-              background: '#DC2626',
+              background: '#0F1F35',
               color: '#fff',
               borderRadius: 8,
               fontSize: 13,

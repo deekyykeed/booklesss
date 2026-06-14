@@ -51,11 +51,14 @@ export default function Sidebar({ courses, userName }: SidebarProps) {
         <Link href="/dashboard" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
           <div
             style={{
-              width: 28, height: 28, background: '#DC2626', borderRadius: 6,
+              width: 28, height: 28, background: '#FFFEF2', borderRadius: 6,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontFamily: 'var(--font-parastoo)', fontWeight: 700, fontSize: 14, color: '#fff', flexShrink: 0,
+              overflow: 'hidden', position: 'relative', flexShrink: 0,
             }}
-          >B</div>
+          >
+            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/grain.png)', backgroundSize: '120px', opacity: 0.5 }} />
+            <img src="/booklesss-mark-black.png" alt="B" style={{ width: 16, height: 16, objectFit: 'contain', position: 'relative', zIndex: 1 }} />
+          </div>
           <span style={{ color: '#fff', fontWeight: 700, fontSize: 15, letterSpacing: '-0.01em' }}>
             Booklesss
           </span>
