@@ -1,3 +1,5 @@
-// This file conflicts with app/page.tsx (both map to '/').
-// Next.js will error at build time if both exist.
-// Delete one — keep app/page.tsx and delete this file.
+import { redirect } from 'next/navigation'
+
+export default function AppRoot() {
+  redirect('/courses/strategic-management/03-competitive-strategy')
+}
