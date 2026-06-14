@@ -3,6 +3,10 @@
     "design-bridge": {
       "type": "http",
       "url": "https://framer-mcp-relay.orange-lamp-studio.workers.dev/mcp?userId=6fcfab85c6e7aca57a953fc4e4e975bf738b6f28fcb0c11bcb92eeb7d9831e39"
+    },
+    "supabase": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=rdzlubpcsxbcqwhnvycx"
     }
   }
 }

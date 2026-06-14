@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Booklesss — Step 3.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Parastoo';src:url('_dev/fonts/Parastoo.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Parastoo';src:url('_dev/fonts/Parastoo-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'Aptos';src:url('_dev/fonts/Aptos.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Aptos';src:url('_dev/fonts/Aptos-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'Aptos';src:url('_dev/fonts/Aptos-Italic.ttf') format('truetype');font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:'Aptos';src:url('_dev/fonts/Aptos-Bold-Italic.ttf') format('truetype');font-weight:700;font-style:italic;font-display:swap}
+@font-face{font-family:'Parkinsans';src:url('_dev/fonts/parkinsans-v3-latin-700.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sb:transparent;
+  --sb-text:#374151;
+  --sb-muted:#9CA3AF;
+  --sb-hover:rgba(0,0,0,.05);
+  --sb-active:rgba(0,0,0,.08);
+  --corner-shape-fallback:1;
+  --red:#DC2626;
+  --emerald:#10B981;
+  --amber:#F59E0B;
+  --bg:#F5F5F5;
+  --panel:#F3F4F6;
+  --text:#111827;
+  --sub:#6B7280;
+  --muted:#9CA3AF;
+  --border:#E5E7EB;
+  --f:'Aptos',system-ui,sans-serif;
+  --f-display:'Parastoo',system-ui,sans-serif;
+  --f-accent:'Parkinsans',system-ui,sans-serif;
+}
+@supports (corner-shape: superellipse){
+  :root{--one-if-corner-shape-supported:1}
+}
+html,body{height:100%;font-family:var(--f);-webkit-font-smoothing:antialiased;background:#F5F5F5}
+.app{display:flex;height:100vh;overflow:hidden;padding:8px 8px 8px 0}
+
+/* ── SIDEBAR SEARCH ──────────────────────── */
+.sb-search{
+  box-sizing:border-box;
+  width:100%;
+  display:flex;
+  flex-direction:row;
+  justify-content:flex-start;
+  align-items:center;
+  align-content:center;
+  flex-wrap:nowrap;
+  gap:10px;
+  padding:10px;
+  corner-shape:superellipse(1.5);
+  border-radius:calc(16px * var(--one-if-corner-shape-supported, var(--corner-shape-fallback, 1)));
+  border:2px solid #e6e6e6;
+  background-color:#ffffff;
+  box-shadow:
+    0px .602px .602px -1.25px rgba(0,0,0,.18),
+    0px 2.289px 2.289px -2.5px rgba(0,0,0,.16),
+    0px 10px 10px -3.75px rgba(0,0,0,.06);
+  cursor:text;
+  overflow:visible;
+  flex-shrink:0;
+}
+.sb-search-icon{
+  width:16px;height:16px;flex-shrink:0;
+  color:#52555d;
+}
+.sb-search-icon svg{width:16px;height:16px;stroke:#52555d;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.sb-search input{
+  flex:1;border:none;outline:none;background:transparent;
+  font-family:'Poppins','Poppins Placeholder',sans-serif;
+  font-size:14px;color:#111827;font-weight:400;line-height:1.2;
+  min-width:0;
+}
+.sb-search input::placeholder{color:#52555d;font-weight:400}
+
+/* ── SIDEBAR ─────────────────────────────── */
+.sidebar{
+  box-sizing:border-box;
+  width:260px;flex-shrink:0;
+  display:flex;flex-direction:column;
+  justify-content:flex-start;
+  align-items:center;
+  align-content:center;
+  flex-wrap:nowrap;
+  gap:20px;
+  padding:16px;
+  overflow:hidden;
+  background:transparent;
+}
+.sb-top{
+  width:100%;
+  padding:6px 2px 2px;
+  display:flex;align-items:center;
+}
+.sb-brand{
+  display:flex;align-items:center;gap:9px;cursor:pointer;
+}
+.sb-mark{
+  width:30px;height:30px;border-radius:8px;
+  background:var(--red);
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:800;color:#fff;letter-spacing:-1px;
+  flex-shrink:0;
+}
+.sb-name{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.3px;}
+.sb-name span{opacity:.5;font-size:12px;font-weight:400;margin-left:3px}
+.sb-srch{
+  width:30px;height:30px;border-radius:7px;
+  background:rgba(0,0,0,.06);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:background .15s;flex-shrink:0;
+}
+.sb-srch:hover{background:rgba(0,0,0,.1)}
+.sb-srch svg{width:16px;height:16px;stroke:#6B7280;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+
+.sb-scroll{flex:1;overflow-y:auto;width:100%}
+.sb-scroll::-webkit-scrollbar{width:3px}
+.sb-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,.1)}
+
+.sb-nav{padding:10px 0 4px}
+.nav-it{
+  display:flex;align-items:center;gap:10px;
+  padding:6px 18px;
+  color:var(--sb-text);cursor:pointer;
+  font-size:13.5px;font-weight:500;
+  transition:background .1s;position:relative;
+}
+.nav-it:hover{background:var(--sb-hover)}
+.nav-it svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;opacity:.7}
+.nb{
+  margin-left:auto;
+  background:var(--red);color:#fff;
+  font-size:10px;font-weight:700;
+  padding:1px 6px;border-radius:20px;min-width:18px;text-align:center;
+}
+.nb-ghost{
+  margin-left:auto;
+  font-size:12px;color:var(--sb-muted);
+}
+
+.sb-sec{padding:18px 18px 5px;border-top:1px solid rgba(0,0,0,.06)}
+.sb-sec-h{font-size:10px;font-weight:700;color:var(--sb-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+
+.cg{margin-bottom:1px}
+.cg-head{
+  display:flex;align-items:center;gap:8px;
+  padding:5px 18px;cursor:pointer;
+  color:var(--sb-text);font-size:13px;font-weight:600;
+  transition:background .1s;
+}
+.cg-head:hover{background:var(--sb-hover)}
+.cg-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.cg-chev{
+  margin-left:auto;
+  width:14px;height:14px;stroke:#9CA3AF;fill:none;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+  transition:transform .2s ease;
+}
+.cg.collapsed .cg-chev{transform:rotate(-90deg)}
+.cg-channels{overflow:hidden;max-height:200px;transition:max-height .25s ease}
+.cg.collapsed .cg-channels{max-height:0}
+.ch-it{
+  display:flex;align-items:center;gap:7px;
+  padding:4px 18px 4px 32px;
+  color:var(--sb-muted);cursor:pointer;
+  font-size:13px;font-weight:400;transition:all .1s;
+}
+.ch-it:hover{background:var(--sb-hover);color:var(--text)}
+.ch-it.active{background:var(--sb-active);color:var(--text);font-weight:600}
+.ch-hash{opacity:.45;font-size:12px}
+
+.sb-foot{
+  width:100%;
+  padding:12px 4px;
+  border-top:1px solid rgba(0,0,0,.08);
+  display:flex;align-items:center;gap:10px;cursor:pointer;
+  transition:background .1s;
+}
+.sb-foot:hover{background:var(--sb-hover)}
+.u-av{
+  width:32px;height:32px;border-radius:9px;
+  background:linear-gradient(135deg,#1D4ED8,#7C3AED);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:#fff;flex-shrink:0;position:relative;
+}
+.u-dot{position:absolute;bottom:-1px;right:-1px;width:9px;height:9px;border-radius:50%;background:#22C55E;border:2px solid var(--bg)}
+.u-name{font-size:13.5px;font-weight:600;color:var(--text)}
+.u-role{font-size:11px;color:var(--sb-muted)}
+
+/* ── SIDEBAR SECTIONS ────────────────────── */
+.sb-scroll{flex:1;overflow-y:auto;width:100%;display:flex;flex-direction:column}
+.sb-scroll::-webkit-scrollbar{width:3px}
+.sb-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,.1)}
+.sb-nav{padding:0;display:flex;flex-direction:column;gap:1px}
+.nav-it{
+  display:flex;align-items:center;gap:10px;
+  padding:7px 4px;width:100%;border-radius:7px;
+  color:#374151;font-size:14px;font-weight:600;
+  cursor:pointer;transition:background .1s;
+}
+.nav-it:hover{background:rgba(0,0,0,.05)}
+.nav-it svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;opacity:.7}
+.nb{background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:20px;min-width:18px;text-align:center;margin-left:auto}
+.nb-ghost{margin-left:auto;font-size:12px;color:var(--sb-muted)}
+
+.sb-section{display:flex;align-items:center;justify-content:space-between;padding:16px 4px 6px;width:100%}
+.sb-sec-label{font-size:11px;font-weight:600;color:#9CA3AF;letter-spacing:.02em}
+.sb-sec-acts{display:flex;align-items:center;gap:2px}
+.sb-sec-btn{width:22px;height:22px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#9CA3AF;border-radius:5px;transition:background .1s,color .1s}
+.sb-sec-btn:hover{background:rgba(0,0,0,.06);color:#374151}
+.sb-sec-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+
+.course-chip{
+  width:100%;display:flex;align-items:center;gap:8px;
+  padding:8px 10px;
+  background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.09);
+  border-radius:9px;cursor:pointer;transition:background .1s;
+}
+.course-chip:hover{background:rgba(0,0,0,.07)}
+.course-chip svg{width:14px;height:14px;stroke:#52555d;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.course-chip-name{flex:1;font-size:13px;font-weight:700;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.course-chip-arr{flex-shrink:0;font-size:11px;color:#9CA3AF;font-weight:500}
+
+.lesson-it{
+  width:100%;display:flex;align-items:center;gap:8px;
+  padding:5px 4px 5px 12px;border-radius:6px;cursor:pointer;
+  transition:background .1s;
+}
+.lesson-it:hover{background:rgba(0,0,0,.04)}
+.lesson-it.active{background:rgba(0,0,0,.06)}
+.lesson-it svg{width:13px;height:13px;stroke:#9CA3AF;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.lesson-it-name{flex:1;font-size:12.5px;color:#4B5563;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lesson-it.active .lesson-it-name{font-weight:600;color:#111827}
+.lesson-it-check{flex-shrink:0;font-size:12px;color:#9CA3AF;font-weight:500}
+.lesson-it.done .lesson-it-check{color:#374151}
+
+.sb-spacer{flex:1}
+
+/* ── MAIN LESSON READER ───────────────────── */
+.main{
+  flex:1;display:flex;flex-direction:column;
+  background:#ffffff;
+  border-radius:14px;
+  border:1px solid #e5e7eb;
+  box-shadow:0 1px 4px rgba(0,0,0,.05);
+  overflow:hidden;min-width:0;
+}
+
+.main-head{
+  height:52px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 16px;gap:8px;flex-shrink:0;
+}
+.mh-left{display:flex;align-items:center;gap:4px;flex:1;overflow:hidden}
+.mh-title{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-left:4px}
+.hd-btn{
+  width:30px;height:30px;border-radius:7px;border:none;
+  background:transparent;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--muted);transition:background .1s,color .1s;flex-shrink:0;
+}
+.hd-btn:hover{background:#F3F4F6;color:var(--text)}
+.hd-btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.mark-complete{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 14px;border-radius:8px;border:none;cursor:pointer;
+  background:transparent;
+  font-size:13px;font-weight:500;color:var(--sub);
+  transition:background .15s,color .15s;flex-shrink:0;
+}
+.mark-complete:hover{background:#F3F4F6;color:var(--text)}
+.mark-complete.done-state{background:#dcfce7;color:#16a34a;border:1px solid #bbf7d0}
+.mark-complete.done-state:hover{background:#bbf7d0;color:#15803d}
+.mark-complete svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.step-pill{
+  font-size:10.5px;font-weight:700;
+  background:#FEE2E2;color:var(--red);
+  padding:2px 8px;border-radius:20px;letter-spacing:.02em;
+}
+
+/* Progress bar */
+.progress-bar{height:3px;background:var(--border);flex-shrink:0}
+.progress-fill{height:100%;width:34%;background:linear-gradient(90deg,var(--red),#EF4444);border-radius:0 2px 2px 0;transition:width .3s}
+
+/* Lesson content */
+.lesson-wrap{flex:1;overflow-y:auto;padding:0}
+.lesson-wrap::-webkit-scrollbar{width:4px}
+.lesson-wrap::-webkit-scrollbar-thumb{background:#E5E7EB;border-radius:2px}
+
+.lesson{max-width:680px;margin:0 auto;padding:36px 40px 60px}
+
+/* Step header */
+.step-header{margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid var(--border)}
+.step-eyebrow{
+  display:flex;align-items:center;gap:8px;margin-bottom:10px;
+}
+.eyebrow-tag{
+  font-family:var(--f);font-size:9px;font-weight:700;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--red);
+}
+.eyebrow-dot{width:3px;height:3px;border-radius:50%;background:var(--border)}
+.eyebrow-meta{font-size:12px;color:var(--muted)}
+.step-title{font-family:var(--f-display);font-size:28px;font-weight:700;color:var(--text);letter-spacing:-.5px;line-height:1.2;margin-bottom:12px}
+.step-intro{font-size:15px;color:var(--sub);line-height:1.65;font-style:italic}
+.step-meta-row{display:flex;align-items:center;gap:14px;margin-top:16px;flex-wrap:wrap}
+.meta-chip{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
+.meta-chip svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* Section structure */
+.content-section{margin-bottom:32px}
+.section-eyebrow{
+  display:flex;align-items:center;gap:8px;margin-bottom:6px;
+}
+.s-tag{font-family:var(--f);font-size:9px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--red)}
+.s-line{flex:1;height:1px;background:var(--border)}
+.section-h{font-family:var(--f-display);font-size:19px;font-weight:700;color:var(--text);margin-bottom:12px;letter-spacing:-.2px;line-height:1.3}
+.body{font-family:var(--f);font-size:14px;line-height:1.619;color:#374151}
+.body + .body{margin-top:12px}
+strong{font-weight:700;color:var(--text)}
+
+/* Callout */
+.callout{
+  background:#FFF7F7;border:1px solid #FECACA;
+  border-left:3px solid var(--red);
+  border-radius:0 8px 8px 0;
+  padding:14px 16px;margin:18px 0;
+}
+.callout-label{
+  font-size:10.5px;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--red);margin-bottom:6px;
+  display:flex;align-items:center;gap:6px;
+}
+.callout-label svg{width:13px;height:13px;stroke:var(--red);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.callout-text{font-size:13.5px;color:#1F2937;line-height:1.6;font-weight:500}
+
+/* Five Forces grid */
+.forces-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+.force-card{
+  background:#F9FAFB;border:1px solid var(--border);
+  border-radius:10px;padding:14px;
+  transition:border-color .15s;cursor:default;
+}
+.force-card:hover{border-color:#D1D5DB}
+.force-card.center{grid-column:1/-1;background:#FEF2F2;border-color:#FECACA}
+.force-num{font-size:10px;font-weight:800;color:var(--red);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.force-name{font-family:var(--f-display);font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.force-desc{font-size:12px;color:var(--sub);line-height:1.5}
+.force-eg{font-size:11.5px;color:var(--muted);margin-top:6px;font-style:italic}
+
+/* Discussion questions */
+.dq-block{
+  background:#F8FAFF;border:1px solid #DBEAFE;
+  border-radius:10px;padding:18px 20px;margin:24px 0;
+}
+.dq-label{
+  font-size:10.5px;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;color:#1D4ED8;margin-bottom:12px;
+  display:flex;align-items:center;gap:6px;
+}
+.dq-label svg{width:14px;height:14px;stroke:#1D4ED8;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.dq{display:flex;gap:10px;margin-bottom:10px}
+.dq:last-child{margin-bottom:0}
+.dq-n{
+  width:22px;height:22px;border-radius:6px;
+  background:#1D4ED8;color:#fff;
+  font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;
+}
+.dq-text{font-size:13.5px;color:#1E3A8A;line-height:1.6;font-weight:500}
+
+/* Key terms table */
+.kt-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+.kt-table th{
+  text-align:left;padding:8px 12px;
+  background:#F9FAFB;border-bottom:2px solid var(--border);
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--sub);
+}
+.kt-table td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;color:#374151;line-height:1.5}
+.kt-table tr:last-child td{border-bottom:none}
+.kt-term{font-weight:600;color:var(--text)}
+
+/* ── RIGHT PANEL ──────────────────────────── */
+.rpanel{
+  width:304px;flex-shrink:0;
+  background:var(--panel);
+  border-left:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.p-tabs{display:flex;border-bottom:1px solid var(--border);background:#fff;flex-shrink:0}
+.p-tab{
+  flex:1;padding:13px 6px;text-align:center;
+  font-size:12.5px;font-weight:500;color:var(--muted);
+  cursor:pointer;border-bottom:2px solid transparent;
+  transition:all .15s;font-family:var(--f);
+}
+.p-tab:hover{color:var(--text)}
+.p-tab.active{color:var(--red);border-bottom-color:var(--red);font-weight:700}
+.p-body{flex:1;overflow-y:auto;padding:16px}
+.p-body::-webkit-scrollbar{width:3px}
+.p-body::-webkit-scrollbar-thumb{background:#D1D5DB;border-radius:2px}
+.pane{display:none}
+.pane.active{display:block}
+
+/* Community panel content */
+.p-sec{margin-bottom:22px}
+.p-sec-h{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px}
+
+.info-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)}
+.info-row:last-child{border-bottom:none}
+.info-k{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--sub)}
+.info-k svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;opacity:.6}
+.info-v{font-size:12.5px;font-weight:600;color:var(--text)}
+.status-pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:#DCFCE7;color:#15803D}
+.s-dot{width:6px;height:6px;border-radius:50%;background:#22C55E}
+
+/* Discussion feed in community tab */
+.disc-msg{display:flex;gap:9px;padding:10px 0;border-bottom:1px solid var(--border)}
+.disc-msg:last-child{border-bottom:none}
+.d-av{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:#fff;flex-shrink:0;margin-top:2px}
+.d-body{}
+.d-name{font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px}
+.d-text{font-size:12px;color:#4B5563;line-height:1.55}
+.d-rxns{display:flex;gap:5px;margin-top:5px}
+.rxn{display:flex;align-items:center;gap:3px;padding:2px 7px;background:#fff;border:1px solid var(--border);border-radius:20px;font-size:11px;cursor:pointer}
+.rxn-c{font-size:10px;font-weight:600;color:var(--sub)}
+.rxn:hover{background:#EFF6FF;border-color:#BFDBFE}
+
+/* Step links */
+.step-link{display:flex;align-items:center;gap:10px;padding:9px 11px;background:#fff;border:1px solid var(--border);border-radius:9px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.step-link:hover{border-color:var(--red);box-shadow:0 0 0 2px rgba(220,38,38,.07)}
+.step-num{width:28px;height:28px;border-radius:7px;background:#FEE2E2;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--red);flex-shrink:0}
+.step-inf{flex:1;min-width:0}
+.step-t{font-size:12.5px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.step-s{font-size:11px;color:var(--sub)}
+.step-arr{width:14px;height:14px;stroke:var(--muted);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+/* Members */
+.mem{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--border)}
+.mem:last-child{border-bottom:none}
+.mem-av{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.mem-n{font-size:12.5px;font-weight:600;color:var(--text)}
+.mem-r{font-size:11px;color:var(--sub)}
+.mem-tags{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end}
+.tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px}
+.ty{background:#EFF6FF;color:#1D4ED8}
+.tz{background:#F0FDF4;color:#15803D}
+.tu{background:#FEF3C7;color:#92400E}
+.ta{background:#FEE2E2;color:#991B1B}
+
+/* Heatmap */
+.heatmap{display:grid;grid-template-columns:repeat(16,1fr);gap:3px;margin-top:8px}
+.hc{aspect-ratio:1;border-radius:2px;background:#E5E7EB}
+.hc.l1{background:#BBF7D0}
+.hc.l2{background:#4ADE80}
+.hc.l3{background:#16A34A}
+.hc.l4{background:#14532D}
+
+/* ── TERM TOOLTIP ── */
+.term-tooltip{
+  position:fixed;z-index:9999;
+  width:296px;
+  background:#fff;
+  border-radius:12px;
+  box-shadow:0 12px 40px rgba(0,0,0,.18),0 2px 8px rgba(0,0,0,.08);
+  border-top:3px solid var(--red);
+  padding:14px 16px 12px;
+  opacity:1;
+  transition:opacity .12s ease,transform .12s ease;
+  pointer-events:auto;
+}
+.term-tooltip.hidden{
+  opacity:0;pointer-events:none;transform:translateY(5px);
+}
+.term-tooltip.below{transform:translateY(0)}
+.term-tooltip.below.hidden{transform:translateY(-5px)}
+.tt-arrow{
+  position:absolute;
+  width:14px;height:7px;
+  bottom:-7px;left:50%;
+  transform:translateX(-50%);
+  overflow:visible;
+}
+.tt-arrow::before{
+  content:'';position:absolute;
+  width:0;height:0;
+  border-left:7px solid transparent;
+  border-right:7px solid transparent;
+  border-top:7px solid #fff;
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.12));
+}
+.term-tooltip.below .tt-arrow{
+  bottom:auto;top:-7px;
+  transform:translateX(-50%) rotate(180deg);
+}
+.tt-eyebrow{
+  font-size:9.5px;font-weight:800;
+  text-transform:uppercase;letter-spacing:.1em;
+  color:var(--red);margin-bottom:5px;
+  display:flex;align-items:center;gap:5px;
+}
+.tt-eyebrow svg{width:11px;height:11px;stroke:var(--red);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tt-term{font-family:var(--f-display);font-size:15px;font-weight:700;color:var(--text);margin-bottom:7px;letter-spacing:-.2px;line-height:1.2}
+.tt-def{font-family:var(--f);font-size:12.5px;color:#4B5563;line-height:1.62}
+.tt-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:10px;padding-top:9px;
+  border-top:1px solid var(--border);
+}
+.tt-source{font-size:10.5px;color:var(--muted)}
+.tt-actions{display:flex;align-items:center;gap:6px}
+.tt-close{
+  width:22px;height:22px;border-radius:5px;border:none;
+  background:#F3F4F6;cursor:pointer;
+  font-size:10px;color:var(--muted);
+  display:flex;align-items:center;justify-content:center;
+  transition:background .1s;font-family:var(--f);
+}
+.tt-close:hover{background:#E5E7EB;color:var(--text)}
+.tt-hint{
+  position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
+  background:rgba(15,31,53,.88);color:rgba(255,255,255,.85);
+  font-size:11.5px;font-family:var(--f);
+  padding:7px 14px;border-radius:20px;
+  pointer-events:none;z-index:8888;
+  opacity:1;transition:opacity .3s;
+  display:flex;align-items:center;gap:7px;
+}
+.tt-hint.fade{opacity:0}
+.tt-hint svg{width:13px;height:13px;stroke:rgba(255,255,255,.7);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* File items */
+.file-it{display:flex;align-items:center;gap:10px;padding:10px;background:#fff;border:1px solid var(--border);border-radius:9px;margin-bottom:8px;cursor:pointer;transition:border-color .15s}
+.file-it:hover{border-color:#9CA3AF}
+.file-ic{width:30px;height:36px;background:linear-gradient(150deg,#FEE2E2,#FCA5A5);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:800;color:var(--red);flex-shrink:0}
+.file-n{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:2px}
+.file-m{font-size:11px;color:var(--sub)}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ── SIDEBAR ── -->
+<div class="sidebar">
+
+  <!-- Search — functional input -->
+  <div class="sb-search">
+    <div class="sb-search-icon">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M17.5 17.5L22 22"/></svg>
+    </div>
+    <input type="text" placeholder="Search" oninput="doSearch(this.value)" autocomplete="off" spellcheck="false" />
+  </div>
+
+  <div class="sb-scroll">
+
+    <!-- Top nav -->
+    <div class="sb-nav" id="sb-nav">
+      <div class="nav-it" data-label="Dashboard">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-it" data-label="Library">
+        <svg viewBox="0 0 24 24"><path d="M4 19V6a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v13"/><path d="M4 19a2 2 0 0 0 2 2h13a1 1 0 0 0 1-1v-1"/><path d="M9 10h6M9 14h4"/></svg>
+        Library
+      </div>
+      <div class="nav-it" data-label="Notifications">
+        <svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        Notifications <span class="nb">8</span>
+      </div>
+    </div>
+
+    <!-- Current Course -->
+    <div class="sb-section">
+      <span class="sb-sec-label">Current Course</span>
+      <div class="sb-sec-acts">
+        <button class="sb-sec-btn" title="Filter">
+          <svg viewBox="0 0 24 24"><path d="M3 6h18M7 12h10M11 18h2"/></svg>
+        </button>
+        <button class="sb-sec-btn" title="Add">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="course-chip" id="sb-lessons">
+      <svg viewBox="0 0 24 24"><path d="M3 7c0-1.1.9-2 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/><path d="M16 3v4M8 3v4"/></svg>
+      <span class="course-chip-name">Strategic Management</span>
+      <span class="course-chip-arr">▾</span>
+    </div>
+
+    <div class="lesson-it done" data-label="Foundations" onclick="setLesson(this)">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span class="lesson-it-name">01 · Foundations</span>
+      <span class="lesson-it-check">✓</span>
+    </div>
+    <div class="lesson-it done" data-label="Environment" onclick="setLesson(this)">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span class="lesson-it-name">02 · Environment</span>
+      <span class="lesson-it-check">✓</span>
+    </div>
+    <div class="lesson-it active" data-label="Competitive Strategy" onclick="setLesson(this)">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span class="lesson-it-name">03 · Competitive Strategy</span>
+      <span class="lesson-it-check"></span>
+    </div>
+
+    <!-- Push saved courses to bottom -->
+    <div class="sb-spacer"></div>
+
+    <!-- Saved Courses -->
+    <div class="sb-section">
+      <span class="sb-sec-label">Saved Courses</span>
+      <div class="sb-sec-acts">
+        <button class="sb-sec-btn" title="Filter">
+          <svg viewBox="0 0 24 24"><path d="M3 6h18M7 12h10M11 18h2"/></svg>
+        </button>
+        <button class="sb-sec-btn" title="Add">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="course-chip" data-label="Treasury Management">
+      <svg viewBox="0 0 24 24"><path d="M3 7c0-1.1.9-2 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/><path d="M16 3v4M8 3v4"/></svg>
+      <span class="course-chip-name">Treasury Management</span>
+      <span class="course-chip-arr">›</span>
+    </div>
+    <div class="course-chip" data-label="BBA 1110">
+      <svg viewBox="0 0 24 24"><path d="M3 7c0-1.1.9-2 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/><path d="M16 3v4M8 3v4"/></svg>
+      <span class="course-chip-name">BBA 1110 — UNZA</span>
+      <span class="course-chip-arr">›</span>
+    </div>
+
+  </div><!-- /sb-scroll -->
+
+  <div class="sb-foot">
+    <div class="u-av">DM<div class="u-dot"></div></div>
+    <div style="flex:1;min-width:0">
+      <div class="u-name">Deeky M.</div>
+      <div class="u-role">Admin · ZCAS</div>
+    </div>
+    <svg style="width:16px;height:16px;stroke:#9CA3AF;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+
+</div>
+
+<!-- ── MAIN LESSON READER ── -->
+<div class="main">
+  <div class="main-head">
+    <div class="mh-left">
+      <button class="hd-btn" title="Toggle sidebar">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+      </button>
+      <button class="hd-btn" title="Back">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <button class="hd-btn" title="Forward">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+      <span class="mh-title">03 · Competitive Strategy</span>
+    </div>
+    <button class="mark-complete" onclick="this.classList.toggle('done-state')">
+      Mark as Complete
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </button>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill"></div></div>
+
+  <div class="lesson-wrap">
+    <div class="lesson">
+
+      <!-- Step header -->
+      <div class="step-header">
+        <div class="step-eyebrow">
+          <span class="eyebrow-tag">Competitive Analysis</span>
+          <span class="eyebrow-dot"></span>
+          <span class="eyebrow-meta">Step 3.1 of 2 in Lesson 3</span>
+        </div>
+        <h1 class="step-title">Competitive Strategy</h1>
+        <p class="step-intro">How organisations position themselves within an industry to achieve superior, sustainable performance — and why most strategies fail within three years of implementation.</p>
+        <div class="step-meta-row">
+          <span class="meta-chip">
+            <!-- Hugeicons: clock-02 -->
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8V12L14.5 14.5"/></svg>
+            12 min read
+          </span>
+          <span class="meta-chip">
+            <!-- Hugeicons: book-open-02 -->
+            <svg viewBox="0 0 24 24"><path d="M2 6C2 6 3.5 5 6 5C8.5 5 10 6 12 6C14 6 15.5 5 18 5C20.5 5 22 6 22 6V20C22 20 20.5 19 18 19C15.5 19 14 20 12 20C10 20 8.5 19 6 19C3.5 19 2 20 2 20V6Z"/><path d="M12 6V20"/></svg>
+            Porter · Generic Strategies
+          </span>
+          <span class="meta-chip">
+            <!-- Hugeicons: location-04 -->
+            <svg viewBox="0 0 24 24"><path d="M34%25 complete" style="display:none"/>
+            <circle cx="12" cy="11" r="3"/><path d="M12 2C7.58172 2 4 5.58172 4 10C4 15.5228 12 22 12 22C12 22 20 15.5228 20 10C20 5.58172 16.4183 2 12 2Z"/></svg>
+            Zambia context
+          </span>
+        </div>
+      </div>
+
+      <!-- Section 1 -->
+      <div class="content-section">
+        <div class="section-eyebrow">
+          <span class="s-tag">What is competitive strategy</span>
+          <span class="s-line"></span>
+        </div>
+        <h2 class="section-h">Positioning for Superior Performance</h2>
+        <p class="body">
+          Competitive strategy answers one question: how does an organisation win? Not win temporarily — but outperform rivals consistently over time. Michael Porter, in <em>Competitive Strategy</em> (1980), argued that superior performance stems from two sources: doing the same things as competitors but more efficiently (<strong>cost leadership</strong>), or doing different things that buyers value more (<strong>differentiation</strong>).
+        </p>
+        <p class="body" style="margin-top:12px">
+          The common trap is being stuck in the middle — attempting both simultaneously without committing fully to either. A firm that is neither the cheapest nor genuinely differentiated earns below-average returns because it offers customers no compelling reason to choose it over alternatives.
+        </p>
+
+        <div class="callout">
+          <div class="callout-label">
+            <!-- Hugeicons: alert-02 -->
+            <svg viewBox="0 0 24 24"><path d="M5.32171 9.6829C7.73539 5.41196 8.94222 3.27648 10.5983 2.72678C11.5093 2.42437 12.4907 2.42437 13.4017 2.72678C15.0578 3.27648 16.2646 5.41196 18.6783 9.6829C21.092 13.9538 22.2988 16.0893 21.9368 17.8293C21.7376 18.7866 21.2469 19.6548 20.535 20.3097C19.241 21.5 16.8274 21.5 12 21.5C7.17265 21.5 4.75897 21.5 3.46496 20.3097C2.75308 19.6548 2.26239 18.7866 2.06322 17.8293C1.70119 16.0893 2.90803 13.9538 5.32171 9.6829Z"/><path d="M12 8V13"/><path d="M12 16.0195V16"/></svg>
+            Key Concept
+          </div>
+          <div class="callout-text">Porter's three generic strategies: (1) Cost Leadership — lowest cost producer in the industry; (2) Differentiation — unique attributes buyers are willing to pay a premium for; (3) Focus — targeting a narrow segment with either cost or differentiation. Each requires distinct organisational capabilities and trade-offs.</div>
+        </div>
+      </div>
+
+      <!-- Section 2: Five Forces -->
+      <div class="content-section">
+        <div class="section-eyebrow">
+          <span class="s-tag">Industry Structure</span>
+          <span class="s-line"></span>
+        </div>
+        <h2 class="section-h">Porter's Five Forces: Reading the Profit Potential of an Industry</h2>
+        <p class="body">
+          Before choosing a strategy, you need to understand the industry you are competing in. Porter's Five Forces framework reveals why some industries are structurally more profitable than others — and where to position to capture the most value.
+        </p>
+
+        <div class="forces-grid">
+          <div class="force-card center">
+            <div class="force-num">Central Force</div>
+            <div class="force-name">Competitive Rivalry</div>
+            <div class="force-desc">Intensity of competition between existing firms. High rivalry compresses margins for everyone.</div>
+            <div class="force-eg">Example: Mobile money in Zambia — MTN, Airtel, and Zamtel compete aggressively on pricing, making differentiation critical for survival.</div>
+          </div>
+          <div class="force-card">
+            <div class="force-num">Force 1</div>
+            <div class="force-name">Threat of New Entrants</div>
+            <div class="force-desc">How easily new competitors can enter and erode existing players' returns.</div>
+            <div class="force-eg">E.g. Banking sector: ZRA licensing and capital requirements act as barriers protecting Zanaco and Stanbic.</div>
+          </div>
+          <div class="force-card">
+            <div class="force-num">Force 2</div>
+            <div class="force-name">Supplier Power</div>
+            <div class="force-desc">Suppliers' ability to charge higher prices or reduce quality.</div>
+            <div class="force-eg">E.g. Zambeef's meat processing depends on cattle farmers — concentrated supply increases supplier leverage.</div>
+          </div>
+          <div class="force-card">
+            <div class="force-num">Force 3</div>
+            <div class="force-name">Buyer Power</div>
+            <div class="force-desc">Buyers' ability to push prices down or demand better quality.</div>
+            <div class="force-eg">E.g. ZESCO sells power to industrial clients with few alternatives — buyer power is relatively low.</div>
+          </div>
+          <div class="force-card">
+            <div class="force-num">Force 4</div>
+            <div class="force-name">Threat of Substitutes</div>
+            <div class="force-desc">Alternative products that fulfil the same function, limiting how much a firm can charge.</div>
+            <div class="force-eg">E.g. Solar home systems as a substitute for grid electricity — a growing threat to ZESCO's residential revenue.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3 -->
+      <div class="content-section">
+        <div class="section-eyebrow">
+          <span class="s-tag">Application</span>
+          <span class="s-line"></span>
+        </div>
+        <h2 class="section-h">First Quantum Minerals: A Case in Cost Leadership</h2>
+        <p class="body">
+          First Quantum Minerals' Kansanshi and Sentinel copper mines operate in a commodity industry where price is set globally — no individual producer controls it. The only durable advantage available is <strong>lower cost per tonne of copper produced</strong> than rivals. First Quantum achieves this through operational scale, proprietary smelting technology at the Kansanshi smelter, and vertical integration that reduces reliance on external processing.
+        </p>
+        <p class="body" style="margin-top:12px">
+          This is textbook cost leadership: invest in efficiency, maintain scale, and let low cost become the competitive moat. The risk is that technological disruption or a sustained commodity price collapse eliminates the margin buffer that cost leadership provides.
+        </p>
+      </div>
+
+      <!-- Discussion Questions -->
+      <div class="dq-block">
+        <div class="dq-label">
+          <!-- Hugeicons: message-question-square -->
+          <svg viewBox="0 0 24 24"><path d="M7 8.5C7 5.46243 9.23858 3 12 3C14.7614 3 17 5.46243 17 8.5C17 11.3453 15.0887 13.7083 12.5 14.28V15"/><path d="M12 18.5V19"/><path d="M2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12Z"/></svg>
+          Discussion
+        </div>
+        <div class="dq">
+          <div class="dq-n">1</div>
+          <div class="dq-text">Zambeef operates across meat processing, retail, and cold storage. Using Porter's generic strategies framework, identify which strategy Zambeef is pursuing. What evidence from its operations supports your choice, and what risks does this create?</div>
+        </div>
+        <div class="dq">
+          <div class="dq-n">2</div>
+          <div class="dq-text">Assess the threat of new entrants in Zambia's commercial banking sector using Porter's Five Forces. Which barriers to entry are structural (industry-driven) and which are regulatory? What does this mean for Zanaco's long-term competitive position?</div>
+        </div>
+      </div>
+
+      <!-- Key Terms -->
+      <div class="content-section">
+        <div class="section-eyebrow">
+          <span class="s-tag">Key Terms</span>
+          <span class="s-line"></span>
+        </div>
+        <table class="kt-table">
+          <thead>
+            <tr><th>Term</th><th>Definition</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="kt-term">Cost Leadership</td><td>A strategy to become the lowest-cost producer in the industry, enabling competitive pricing or superior margins at market price.</td></tr>
+            <tr><td class="kt-term">Differentiation</td><td>Creating products or services perceived as unique industry-wide, for which buyers are willing to pay a premium.</td></tr>
+            <tr><td class="kt-term">Competitive Advantage</td><td>A condition that enables a firm to generate more value than rivals and sustain above-average returns over time.</td></tr>
+            <tr><td class="kt-term">Five Forces</td><td>Porter's framework for analysing industry structure via rivalry, entry threat, substitutes, supplier power, and buyer power.</td></tr>
+            <tr><td class="kt-term">Stuck in the Middle</td><td>Porter's term for firms that neither achieve cost leadership nor meaningful differentiation — resulting in below-average profitability.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── RIGHT PANEL ── -->
+<div class="rpanel">
+  <div class="p-tabs">
+    <div class="p-tab active" onclick="switchTab('info',this)">Info</div>
+    <div class="p-tab" onclick="switchTab('community',this)">Community</div>
+    <div class="p-tab" onclick="switchTab('files',this)">Files</div>
+    <div class="p-tab" onclick="switchTab('members',this)">Members</div>
+  </div>
+  <div class="p-body">
+
+    <!-- INFO -->
+    <div class="pane active" id="pane-info">
+      <div class="p-sec">
+        <div class="p-sec-h">Step info</div>
+        <div class="info-row">
+          <div class="info-k">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Author
+          </div>
+          <div class="info-v">Deeky M.</div>
+        </div>
+        <div class="info-row">
+          <div class="info-k">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Published
+          </div>
+          <div class="info-v">Jun 10, 2026</div>
+        </div>
+        <div class="info-row">
+          <div class="info-k">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Read time
+          </div>
+          <div class="info-v">~12 min</div>
+        </div>
+        <div class="info-row">
+          <div class="info-k">
+            <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Status
+          </div>
+          <div class="info-v"><span class="status-pill"><span class="s-dot"></span>Active</span></div>
+        </div>
+        <div class="info-row">
+          <div class="info-k">
+            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Your progress
+          </div>
+          <div class="info-v" style="color:#F59E0B">34%</div>
+        </div>
+      </div>
+
+      <div class="p-sec">
+        <div class="p-sec-h">Linked steps</div>
+        <div class="step-link">
+          <div class="step-num">3.1</div>
+          <div class="step-inf">
+            <div class="step-t">Competitive Strategy</div>
+            <div class="step-s">Current · Strategic Management</div>
+          </div>
+          <svg class="step-arr" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="step-link">
+          <div class="step-num">3.2</div>
+          <div class="step-inf">
+            <div class="step-t">Strategy Execution</div>
+            <div class="step-s">Coming Jun 15 · Strategic Management</div>
+          </div>
+          <svg class="step-arr" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+
+      <div class="p-sec">
+        <div class="p-sec-h">Channel activity</div>
+        <div class="heatmap" id="heatmap"></div>
+      </div>
+    </div>
+
+    <!-- COMMUNITY -->
+    <div class="pane" id="pane-community">
+      <div class="p-sec">
+        <div class="p-sec-h">Discussion · 5 messages</div>
+        <div class="disc-msg">
+          <div class="d-av" style="background:linear-gradient(135deg,#6366F1,#8B5CF6)">CM</div>
+          <div class="d-body">
+            <div class="d-name">Chanda M. <span style="font-size:10.5px;font-weight:400;color:var(--muted)">9:14 AM</span></div>
+            <div class="d-text">Porter's Five Forces clicked for me after the Zambeef example. The supplier power analysis is 🔥</div>
+            <div class="d-rxns"><span class="rxn">🙌 <span class="rxn-c">4</span></span><span class="rxn">💡 <span class="rxn-c">2</span></span></div>
+          </div>
+        </div>
+        <div class="disc-msg">
+          <div class="d-av" style="background:linear-gradient(135deg,#0891B2,#06B6D4)">MK</div>
+          <div class="d-body">
+            <div class="d-name">Mwila K. <span style="font-size:10.5px;font-weight:400;color:var(--muted)">9:31 AM</span></div>
+            <div class="d-text">Anyone know if Step 3.2 drops today? The ZESCO rivalry section left me with more questions.</div>
+          </div>
+        </div>
+        <div class="disc-msg">
+          <div class="d-av" style="background:linear-gradient(135deg,#D97706,#F59E0B)">BN</div>
+          <div class="d-body">
+            <div class="d-name">Bupe N. <span style="font-size:10.5px;font-weight:400;color:var(--muted)">9:47 AM</span></div>
+            <div class="d-text">For the First Quantum question — do we use generic strategies or positioning school?</div>
+            <div class="d-rxns"><span class="rxn">👀 <span class="rxn-c">3</span></span></div>
+          </div>
+        </div>
+        <div class="disc-msg">
+          <div class="d-av" style="background:linear-gradient(135deg,#1D4ED8,#7C3AED)">DM</div>
+          <div class="d-body">
+            <div class="d-name">Deeky M. <span style="font-size:10.5px;font-weight:400;color:var(--muted);font-weight:700">10:02 AM</span></div>
+            <div class="d-text">Both work — but lean positioning school. Map the cost/differentiation trade-off first. Step 3.2 drops tomorrow.</div>
+            <div class="d-rxns"><span class="rxn">✅ <span class="rxn-c">5</span></span><span class="rxn">🙏 <span class="rxn-c">2</span></span></div>
+          </div>
+        </div>
+        <div class="disc-msg">
+          <div class="d-av" style="background:linear-gradient(135deg,#059669,#10B981)">TC</div>
+          <div class="d-body">
+            <div class="d-name">Temwa C. <span style="font-size:10.5px;font-weight:400;color:var(--muted)">11:18 AM</span></div>
+            <div class="d-text">The NotebookLM audio for this step hits different on a minibus 😅🎧</div>
+            <div class="d-rxns"><span class="rxn">😂 <span class="rxn-c">6</span></span><span class="rxn">🎧 <span class="rxn-c">4</span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILES -->
+    <div class="pane" id="pane-files">
+      <div class="file-it">
+        <div class="file-ic">PDF</div>
+        <div><div class="file-n">Step 3.1 — Competitive Strategy.pdf</div><div class="file-m">2.4 MB · Jun 10, 2026</div></div>
+      </div>
+      <div class="file-it">
+        <div class="file-ic">PDF</div>
+        <div><div class="file-n">Step 3.2 — Strategy Execution.pdf</div><div class="file-m">Coming Jun 15, 2026</div></div>
+      </div>
+    </div>
+
+    <!-- MEMBERS -->
+    <div class="pane" id="pane-members">
+      <div style="font-size:12px;color:var(--sub);margin-bottom:10px">9 members in this channel</div>
+      <div class="mem"><div class="mem-av" style="background:linear-gradient(135deg,#1D4ED8,#7C3AED)">DM</div><div><div class="mem-n">Deeky M.</div><div class="mem-r">Admin</div></div><div class="mem-tags"><span class="tag ta">Admin</span></div></div>
+      <div class="mem"><div class="mem-av" style="background:linear-gradient(135deg,#6366F1,#8B5CF6)">CM</div><div><div class="mem-n">Chanda M.</div><div class="mem-r">Finance</div></div><div class="mem-tags"><span class="tag ty">Year 3</span><span class="tag tz">ZCAS</span></div></div>
+      <div class="mem"><div class="mem-av" style="background:linear-gradient(135deg,#0891B2,#06B6D4)">MK</div><div><div class="mem-n">Mwila K.</div><div class="mem-r">Accounting</div></div><div class="mem-tags"><span class="tag ty">Year 4</span><span class="tag tz">ZCAS</span></div></div>
+      <div class="mem"><div class="mem-av" style="background:linear-gradient(135deg,#D97706,#F59E0B)">BN</div><div><div class="mem-n">Bupe N.</div><div class="mem-r">Finance</div></div><div class="mem-tags"><span class="tag ty">Year 3</span><span class="tag tz">ZCAS</span></div></div>
+      <div class="mem"><div class="mem-av" style="background:linear-gradient(135deg,#059669,#10B981)">TC</div><div><div class="mem-n">Temwa C.</div><div class="mem-r">Business Admin</div></div><div class="mem-tags"><span class="tag ty">Year 3</span><span class="tag tu">UNZA</span></div></div>
+      <div class="mem"><div class="mem-av" style="background:linear-gradient(135deg,#7C3AED,#A855F7)">KM</div><div><div class="mem-n">Kabwe M.</div><div class="mem-r">Finance</div></div><div class="mem-tags"><span class="tag ty">Year 4</span><span class="tag tz">ZCAS</span></div></div>
+      <div class="mem"><div class="mem-av" style="background:linear-gradient(135deg,#BE185D,#EC4899)">LS</div><div><div class="mem-n">Lombe S.</div><div class="mem-r">Management</div></div><div class="mem-tags"><span class="tag ty">Year 3</span><span class="tag tz">ZCAS</span></div></div>
+    </div>
+
+  </div>
+</div>
+
+</div>
+
+<!-- TERM TOOLTIP -->
+<div class="term-tooltip hidden" id="term-tooltip">
+  <div class="tt-arrow" id="tt-arrow"></div>
+  <div class="tt-eyebrow">
+    <svg viewBox="0 0 24 24"><path d="M4 7C4 6.06812 4 5.60218 4.15224 5.23463C4.35523 4.74458 4.74458 4.35523 5.23463 4.15224C5.60218 4 6.06812 4 7 4H17C17.9319 4 18.3978 4 18.7654 4.15224C19.2554 4.35523 19.6448 4.74458 19.8478 5.23463C20 5.60218 20 6.06812 20 7V14C20 14.9319 20 15.3978 19.8478 15.7654C19.6448 16.2554 19.2554 16.6448 18.7654 16.8478C18.3978 17 17.9319 17 17 17H13L9 21V17H7C6.06812 17 5.60218 17 5.23463 16.8478C4.74458 16.6448 4.35523 16.2554 4.15224 15.7654C4 15.3978 4 14.9319 4 14V7Z"/></svg>
+    Key Term
+  </div>
+  <div class="tt-term" id="tt-term"></div>
+  <div class="tt-def" id="tt-def"></div>
+  <div class="tt-footer">
+    <span class="tt-source" id="tt-source"></span>
+    <div class="tt-actions">
+      <button class="tt-close" onclick="hideTooltip()">✕</button>
+    </div>
+  </div>
+</div>
+
+<!-- HINT TOAST -->
+<div class="tt-hint" id="tt-hint">
+  <svg viewBox="0 0 24 24"><path d="M9 12H15M12 9V15"/><circle cx="12" cy="12" r="10"/></svg>
+  Double-click any word or highlight a phrase to look it up
+</div>
+
+<script>
+function switchTab(name,el){
+  document.querySelectorAll('.p-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pane-'+name).classList.add('active');
+}
+function toggleCG(id){
+  document.getElementById(id).classList.toggle('collapsed');
+}
+function setChannel(el){
+  document.querySelectorAll('.ch-it').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+}
+(function(){
+  const h=document.getElementById('heatmap');
+  const lvls=['','l1','l2','l3','l4'];
+  for(let i=0;i<80;i++){
+    const c=document.createElement('div');
+    c.className='hc';
+    const r=Math.random(),rec=i/80;
+    if(r>0.55){const lv=rec>0.65?Math.min(4,Math.ceil(r*4)):Math.ceil(r*2);if(lv>0)c.classList.add(lvls[lv]);}
+    h.appendChild(c);
+  }
+})();
+
+/* ── GLOSSARY ── */
+const GLOSSARY = {
+  'cost leadership': { term:'Cost Leadership', def:'A strategy where a firm becomes the lowest-cost producer in its industry. Enables competitive pricing or superior margins at market price. First Quantum Minerals pursues this through operational scale and proprietary smelting technology at Kansanshi.', course:'Strategic Management · Step 3.1' },
+  'differentiation': { term:'Differentiation', def:'Creating products or services perceived as unique industry-wide, for which buyers are willing to pay a premium. Works by reducing price sensitivity through perceived uniqueness — brand, quality, features, or service.', course:'Strategic Management · Step 3.1' },
+  'competitive advantage': { term:'Competitive Advantage', def:'A condition enabling a firm to generate more value than rivals and sustain above-average returns over time. Can stem from cost position, differentiated offering, or a narrow focus applied to a specific segment.', course:'Strategic Management · Step 3.1' },
+  'five forces': { term:"Porter's Five Forces", def:'A framework analysing industry profit potential through five structural forces: competitive rivalry, threat of new entrants, threat of substitutes, supplier power, and buyer power. Determines why some industries are structurally more profitable than others.', course:'Strategic Management · Step 3.1' },
+  "porter's five forces": { term:"Porter's Five Forces", def:'A framework analysing industry profit potential through five structural forces: competitive rivalry, threat of new entrants, threat of substitutes, supplier power, and buyer power.', course:'Strategic Management · Step 3.1' },
+  'porter': { term:"Porter's Framework", def:"Michael Porter's body of work covers industry analysis (Five Forces) and competitive positioning (Generic Strategies). Central to strategic management — how industries are structured and how firms achieve sustainable advantage.", course:'Strategic Management · Step 3.1' },
+  'stuck in the middle': { term:'Stuck in the Middle', def:"Porter's term for firms pursuing neither cost leadership nor meaningful differentiation. Results in below-average profitability because the firm offers customers no compelling reason to choose it over rivals who commit fully to one strategy.", course:'Strategic Management · Step 3.1' },
+  'supplier power': { term:'Supplier Power', def:"One of Porter's Five Forces. Suppliers' ability to charge higher prices or reduce quality, eroding industry profitability. Power is high when suppliers are concentrated, inputs are unique, or switching costs are high.", course:'Strategic Management · Step 3.1' },
+  'buyer power': { term:'Buyer Power', def:"One of Porter's Five Forces. Buyers' ability to push prices down or demand better terms. High when buyers purchase in large volumes, products are standardised, or switching costs are low.", course:'Strategic Management · Step 3.1' },
+  'competitive rivalry': { term:'Competitive Rivalry', def:'The intensity of competition among existing firms in an industry. High rivalry compresses margins for all players. Driven by number of competitors, industry growth rate, product similarity, and switching costs.', course:'Strategic Management · Step 3.1' },
+  'rivalry': { term:'Competitive Rivalry', def:'The intensity of competition among existing firms. High rivalry compresses margins. In mobile money (MTN, Airtel, Zamtel in Zambia) aggressive pricing competition makes differentiation critical for survival.', course:'Strategic Management · Step 3.1' },
+  'generic strategies': { term:'Generic Strategies', def:"Porter's three fundamental competitive strategies: Cost Leadership (lowest cost in industry), Differentiation (unique attributes buyers pay premium for), and Focus (serving a narrow segment with either cost or differentiation). Each requires distinct organisational capabilities.", course:'Strategic Management · Step 3.1' },
+  'cost': { term:'Cost Position', def:'A firm\'s cost structure relative to competitors. Achieving lower costs than rivals (cost leadership) is one of two fundamental sources of competitive advantage identified by Porter. Requires investment in scale, efficiency, and process innovation.', course:'Strategic Management · Step 3.1' },
+  'zambeef': { term:'Zambeef Products Plc', def:"Zambia's largest integrated cold chain food company, operating across meat processing, retail, and agriculture. Listed on the Lusaka Stock Exchange (LuSE). Featured as a case study for supplier power analysis — cattle farmer concentration increases input leverage.", course:'Strategic Management · Step 3.1' },
+  'zesco': { term:'ZESCO Limited', def:"Zambia's state-owned power utility responsible for electricity generation, transmission, and distribution. Featured in competitive rivalry and buyer power analysis. Growing threat from solar home systems represents a substitute product risk to residential revenue.", course:'Strategic Management · Step 3.1' },
+  'first quantum': { term:'First Quantum Minerals', def:"Canadian mining company operating Kansanshi (world's largest copper-gold mine) and Sentinel copper mines in Zambia. Pursues cost leadership through operational scale, vertical integration, and proprietary smelting technology. Contributes ~3% of Zambia's GDP.", course:'Strategic Management · Step 3.1' },
+  'first quantum minerals': { term:'First Quantum Minerals', def:"Canadian mining company operating Kansanshi and Sentinel copper mines in Zambia. Pursues cost leadership through operational scale, vertical integration, and proprietary smelting technology.", course:'Strategic Management · Step 3.1' },
+  'zanaco': { term:'Zanaco (ZNCB)', def:"Zambia National Commercial Bank — one of Zambia's oldest commercial banks, majority-owned by Rabobank. Featured in barriers to entry analysis. ZRA licensing and capital requirements protect established players like Zanaco from new entrants.", course:'Strategic Management · Step 3.1' },
+  'kansanshi': { term:'Kansanshi Mine', def:"World's largest copper-gold mine located in Solwezi, North-Western Province, Zambia. Operated by First Quantum Minerals. The on-site Kansanshi smelter processes concentrate domestically, reducing reliance on external smelters and lowering cost per tonne.", course:'Strategic Management · Step 3.1' },
+  'positioning': { term:'Positioning School', def:'A strategic management school of thought (Porter, 1980) arguing that strategy is about choosing a defensible competitive position within an industry structure. Contrasts with the resource-based view which focuses on internal capabilities.', course:'Strategic Management · Step 3.1' },
+  'profit': { term:'Profitability', def:'In Porter\'s framework, a firm\'s ability to sustain above-average returns is determined by both its industry structure (Five Forces) and its competitive position within that industry (Generic Strategies). Industry attractiveness × position = sustainable profit.', course:'Strategic Management · Step 3.1' },
+  'substitute': { term:'Threat of Substitutes', def:"One of Porter's Five Forces. Alternative products fulfilling the same customer need, limiting how much a firm can charge. Example: solar home systems substituting for ZESCO grid electricity in Zambia's residential market.", course:'Strategic Management · Step 3.1' },
+  'substitutes': { term:'Threat of Substitutes', def:"Alternative products fulfilling the same customer need — a ceiling on pricing power. The more attractive the substitute (lower cost, better performance), the more it constrains industry profitability.", course:'Strategic Management · Step 3.1' },
+  'barriers to entry': { term:'Barriers to Entry', def:'Structural or regulatory conditions that make it difficult for new competitors to enter an industry. Examples: capital requirements, licensing (banking), brand loyalty, economies of scale, proprietary technology. High barriers protect incumbents.', course:'Strategic Management · Step 3.1' },
+  'margins': { term:'Industry Margins', def:'The profit remaining after subtracting costs from revenue. Porter argues that industry structure (via Five Forces) determines the average profitability available to firms. Strategy choices then determine whether a firm captures above or below that average.', course:'Strategic Management · Step 3.1' },
+};
+
+function lookupTerm(text) {
+  const clean = text.trim().toLowerCase().replace(/[^a-z0-9'\s]/g, '').trim();
+  if (clean.length < 3) return null;
+  if (GLOSSARY[clean]) return GLOSSARY[clean];
+  // Partial: selected text contains a key
+  for (const key of Object.keys(GLOSSARY)) {
+    if (clean === key) return GLOSSARY[key];
+  }
+  for (const key of Object.keys(GLOSSARY)) {
+    if (clean.includes(key) && key.length >= 4) return GLOSSARY[key];
+  }
+  for (const key of Object.keys(GLOSSARY)) {
+    if (key.includes(clean) && clean.length >= 4) return GLOSSARY[key];
+  }
+  return null;
+}
+
+const tooltip   = document.getElementById('term-tooltip');
+const ttTermEl  = document.getElementById('tt-term');
+const ttDefEl   = document.getElementById('tt-def');
+const ttSrcEl   = document.getElementById('tt-source');
+const ttArrowEl = document.getElementById('tt-arrow');
+
+function showTooltip(result, rect) {
+  ttTermEl.textContent = result.term;
+  ttDefEl.textContent  = result.def;
+  ttSrcEl.textContent  = result.course;
+
+  tooltip.classList.remove('hidden','below');
+  tooltip.style.visibility = 'hidden';
+  tooltip.style.display    = 'block';
+
+  const TW = 296;
+  const TH = tooltip.offsetHeight;
+  const VW = window.innerWidth;
+  const VH = window.innerHeight;
+
+  let left = rect.left + rect.width / 2 - TW / 2;
+  left = Math.max(12, Math.min(VW - TW - 12, left));
+
+  const above = rect.top - 14;
+  const below = VH - rect.bottom - 14;
+  let top;
+  if (above >= TH || above >= below) {
+    top = rect.top + window.scrollY - TH - 10;
+  } else {
+    top = rect.bottom + window.scrollY + 10;
+    tooltip.classList.add('below');
+  }
+
+  tooltip.style.left = left + 'px';
+  tooltip.style.top  = top  + 'px';
+
+  // Arrow
+  const cx = rect.left + rect.width / 2;
+  const ao = Math.max(20, Math.min(TW - 20, cx - left));
+  ttArrowEl.style.left      = ao + 'px';
+  ttArrowEl.style.transform = 'translateX(-50%)';
+
+  tooltip.style.visibility = '';
+  tooltip.classList.remove('hidden');
+}
+
+function hideTooltip() {
+  tooltip.classList.add('hidden');
+}
+
+// Selection-based
+document.addEventListener('mouseup', function(e) {
+  if (tooltip.contains(e.target)) return;
+  setTimeout(function() {
+    const sel  = window.getSelection();
+    const text = sel ? sel.toString() : '';
+    if (text.trim().length < 3) return;
+    const lessonWrap = document.querySelector('.lesson-wrap');
+    if (!lessonWrap) return;
+    const anchor = sel.anchorNode;
+    if (!anchor || !lessonWrap.contains(anchor)) { hideTooltip(); return; }
+    const result = lookupTerm(text);
+    if (!result) { hideTooltip(); return; }
+    const range = sel.getRangeAt(0);
+    const rect  = range.getBoundingClientRect();
+    showTooltip(result, rect);
+  }, 20);
+});
+
+// Double-click word
+document.querySelector('.lesson-wrap').addEventListener('dblclick', function(e) {
+  setTimeout(function() {
+    const sel  = window.getSelection();
+    const text = sel ? sel.toString() : '';
+    if (!text.trim()) return;
+    const result = lookupTerm(text);
+    if (!result) { hideTooltip(); return; }
+    const range = sel.getRangeAt(0);
+    const rect  = range.getBoundingClientRect();
+    showTooltip(result, rect);
+  }, 20);
+});
+
+// Dismiss
+document.addEventListener('mousedown', function(e) {
+  if (!tooltip.contains(e.target)) hideTooltip();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') hideTooltip();
+});
+
+/* ── SEARCH ── */
+function doSearch(q) {
+  const query = q.trim().toLowerCase();
+  document.querySelectorAll('.nav-it, .lesson-it, .course-chip').forEach(function(el) {
+    const label = (el.dataset.label || '').toLowerCase();
+    el.style.display = (!query || label.includes(query)) ? '' : 'none';
+  });
+  // Always show sections — hide sb-section labels only if nothing below is visible
+  document.querySelectorAll('.sb-section').forEach(function(sec) {
+    let sib = sec.nextElementSibling;
+    let anyVisible = false;
+    while (sib && !sib.classList.contains('sb-section') && !sib.classList.contains('sb-spacer')) {
+      if (sib.style.display !== 'none') anyVisible = true;
+      sib = sib.nextElementSibling;
+    }
+    sec.style.display = anyVisible || !query ? '' : 'none';
+  });
+}
+
+/* ── LESSON NAV ── */
+function setLesson(el) {
+  document.querySelectorAll('.lesson-it').forEach(function(it) {
+    it.classList.remove('active');
+  });
+  el.classList.add('active');
+  const name = el.querySelector('.lesson-it-name');
+  const title = document.querySelector('.mh-title');
+  if (name && title) title.textContent = name.textContent;
+  // Reset mark-complete button
+  const mc = document.querySelector('.mark-complete');
+  if (mc) mc.classList.remove('done-state');
+}
+
+// Hint toast — fade after 5s
+setTimeout(function() {
+  const hint = document.getElementById('tt-hint');
+  if (hint) hint.classList.add('fade');
+  setTimeout(function() { if(hint) hint.style.display='none'; }, 400);
+}, 5000);
+</script>
+</body>
+</html>
