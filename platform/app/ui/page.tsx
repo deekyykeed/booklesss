@@ -240,7 +240,10 @@ export default function UIPage() {
           borderBottom: '1px solid rgba(255,255,255,0.08)',
         }}
       >
-        <span style={{ fontFamily: 'var(--font-parastoo)', fontSize: 20, fontWeight: 700, color: '#DC2626' }}>B</span>
+        <div style={{ width: 28, height: 28, background: '#FFFEF2', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative', flexShrink: 0 }}>
+          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/grain.png)', backgroundSize: '120px', opacity: 0.5 }} />
+          <img src="/booklesss-mark-black.png" alt="B" style={{ width: 16, height: 16, objectFit: 'contain', position: 'relative', zIndex: 1 }} />
+        </div>
         <span style={{ fontFamily: 'var(--font-parastoo)', fontSize: 16, fontWeight: 700, color: '#fff' }}>Booklesss</span>
         <span style={{ marginLeft: 8, fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#4b6080', background: '#1a2e48', padding: '2px 8px', borderRadius: 4 }}>
           UI Kit

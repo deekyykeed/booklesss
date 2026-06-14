@@ -63,18 +63,25 @@ export default function LoginPage() {
             style={{
               width: 36,
               height: 36,
-              background: '#DC2626',
+              background: '#FFFEF2',
               borderRadius: 8,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontFamily: 'var(--font-parastoo)',
-              fontWeight: 700,
-              fontSize: 18,
-              color: '#fff',
+              overflow: 'hidden',
+              position: 'relative',
+              flexShrink: 0,
             }}
           >
-            B
+            <div
+              style={{
+                position: 'absolute', inset: 0,
+                backgroundImage: 'url(/grain.png)',
+                backgroundSize: '120px',
+                opacity: 0.5,
+              }}
+            />
+            <img src="/booklesss-mark-black.png" alt="B" style={{ width: 22, height: 22, objectFit: 'contain', position: 'relative', zIndex: 1 }} />
           </div>
           <span
             style={{
@@ -129,7 +136,7 @@ export default function LoginPage() {
           disabled={loading}
           style={{
             padding: '11px',
-            background: loading ? '#991b1b' : '#DC2626',
+            background: loading ? '#1a2e48' : '#0F1F35',
             color: '#fff',
             border: 'none',
             borderRadius: 8,
