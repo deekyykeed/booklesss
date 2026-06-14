@@ -5,24 +5,39 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
+  const [mode, setMode] = useState<'signin' | 'signup'>('signin')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [message, setMessage] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
+    setMessage(null)
     setLoading(true)
     const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) {
-      setError(error.message)
+
+    if (mode === 'signup') {
+      const { error } = await supabase.auth.signUp({ email, password })
+      if (error) {
+        setError(error.message)
+      } else {
+        setMessage('Account created — check your email to confirm, then sign in.')
+        setMode('signin')
+      }
       setLoading(false)
     } else {
-      router.push('/dashboard')
-      router.refresh()
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) {
+        setError(error.message)
+        setLoading(false)
+      } else {
+        router.push('/dashboard')
+        router.refresh()
+      }
     }
   }
 
@@ -99,6 +114,25 @@ export default function LoginPage() {
         </p>
       </div>
 
+      {/* Mode toggle */}
+      <div style={{ display: 'flex', background: 'rgba(255,255,255,0.06)', borderRadius: 8, padding: 3, marginBottom: 24 }}>
+        {(['signin', 'signup'] as const).map((m) => (
+          <button
+            key={m}
+            type="button"
+            onClick={() => { setMode(m); setError(null); setMessage(null) }}
+            style={{
+              flex: 1, padding: '7px 0', border: 'none', borderRadius: 6,
+              fontSize: 13, fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s',
+              background: mode === m ? '#fff' : 'transparent',
+              color: mode === m ? '#0F1F35' : 'rgba(255,255,255,0.45)',
+            }}
+          >
+            {m === 'signin' ? 'Sign in' : 'Create account'}
+          </button>
+        ))}
+      </div>
+
       {/* Form */}
       <form
         onSubmit={handleSubmit}
@@ -130,6 +164,9 @@ export default function LoginPage() {
         {error && (
           <p style={{ color: '#fca5a5', fontSize: 13, margin: 0 }}>{error}</p>
         )}
+        {message && (
+          <p style={{ color: '#6ee7b7', fontSize: 13, margin: 0 }}>{message}</p>
+        )}
 
         <button
           type="submit"
@@ -147,7 +184,7 @@ export default function LoginPage() {
             transition: 'background 0.15s',
           }}
         >
-          {loading ? 'Signing in…' : 'Sign in'}
+          {loading ? '…' : mode === 'signin' ? 'Sign in' : 'Create account'}
         </button>
       </form>
     </div>
