@@ -3,9 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import LessonContent, { LessonStep } from '@/components/LessonContent'
 import CommunityPanel from '@/components/CommunityPanel'
 import BookmarkButton from '@/components/BookmarkButton'
-import type { PageProps } from '@/.next/types/app/layout'
-
-export default async function LessonPage(props: PageProps<'/courses/[courseSlug]/[lessonSlug]'>) {
+export default async function LessonPage(props: { params: Promise<{ courseSlug: string; lessonSlug: string }> }) {
   const { courseSlug, lessonSlug } = await props.params
   const supabase = await createClient()
 
