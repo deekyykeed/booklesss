@@ -59,7 +59,7 @@ export default async function SavedPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {(bookmarks ?? []).map((bookmark, i) => {
             type Step = { id: string; slug: string; title: string; lessons: { slug: string; courses: { name: string; slug: string; accent_color: string } | null } | null }
-            const step = (Array.isArray(bookmark.steps) ? bookmark.steps[0] : bookmark.steps) as Step | null
+            const step = (Array.isArray(bookmark.steps) ? bookmark.steps[0] : bookmark.steps) as unknown as Step | null
             if (!step) return null
             const lesson = Array.isArray(step.lessons) ? step.lessons[0] : step.lessons
             const course = lesson ? (Array.isArray(lesson.courses) ? lesson.courses[0] : lesson.courses) : null
