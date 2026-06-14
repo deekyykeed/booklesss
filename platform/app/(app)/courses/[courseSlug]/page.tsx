@@ -1,9 +1,7 @@
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import type { PageProps } from '@/.next/types/app/layout'
-
-export default async function CourseOverviewPage(props: PageProps<'/courses/[courseSlug]'>) {
+export default async function CourseOverviewPage(props: { params: Promise<{ courseSlug: string }> }) {
   const { courseSlug } = await props.params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
