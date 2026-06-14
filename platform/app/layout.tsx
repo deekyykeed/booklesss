@@ -1,6 +1,14 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
+import { Poppins } from 'next/font/google'
 import './globals.css'
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-poppins',
+  display: 'swap',
+})
 
 const aptos = localFont({
   src: [
@@ -38,7 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${aptos.variable} ${parastoo.variable} ${parkinsans.variable}`}
+      className={`${aptos.variable} ${parastoo.variable} ${parkinsans.variable} ${poppins.variable}`}
     >
       <body>{children}</body>
     </html>

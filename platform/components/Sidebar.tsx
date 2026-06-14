@@ -51,7 +51,7 @@ export default function Sidebar({ courses, userName }: SidebarProps) {
       }}
     >
       {/* Workspace header */}
-      <div style={{ padding: '18px 16px 10px', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
+      <div style={{ padding: '20px 16px 12px', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
         <Link href="/dashboard" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
           <div
             style={{
@@ -70,18 +70,71 @@ export default function Sidebar({ courses, userName }: SidebarProps) {
         </Link>
       </div>
 
-      {/* Nav items */}
-      <nav style={{ flex: 1, overflowY: 'auto', padding: '8px 0' }}>
-        <NavLink href="/dashboard" icon={<HomeIcon />} label="Dashboard" active={pathname === '/dashboard'} />
-        <NavLink href="/library" icon={<LibraryIcon />} label="Library" active={pathname === '/library'} />
-        <NavLink href="/saved" icon={<SavedIcon />} label="Saved Items" active={pathname === '/saved'} />
+      {/* Nav section — flex col, gap 16px, matches Framer spec */}
+      <div
+        style={{
+          flex: 1,
+          overflowY: 'auto',
+          padding: '16px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 16,
+        }}
+      >
+        {/* Search bar */}
+        <div
+          style={{
+            boxSizing: 'border-box',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            padding: '10px',
+            background: '#ffffff',
+            overflow: 'visible',
+            gap: 10,
+            borderRadius: 16,
+            border: '2px solid #e6e6e6',
+          }}
+        >
+          <SearchIcon />
+          <span
+            style={{
+              flex: 1,
+              width: '1px',
+              fontFamily: 'var(--font-poppins), sans-serif',
+              fontWeight: 400,
+              color: '#52555d',
+              fontSize: 14,
+              letterSpacing: 0,
+              lineHeight: 1.2,
+            }}
+          >
+            Search
+          </span>
+          <LayoutPanelIcon />
+        </div>
 
+        {/* Primary nav items */}
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <NavItem href="/dashboard" label="Dashboard" active={pathname === '/dashboard'}
+            iconActive={<GridFillIcon />} iconInactive={<GridLineIcon />} />
+          <NavItem href="/library" label="Library" active={pathname === '/library'}
+            iconActive={<BookFillIcon />} iconInactive={<BookLineIcon />} />
+          <NavItem href="/saved" label="Saved" active={pathname === '/saved'}
+            iconActive={<BookmarkFillIcon />} iconInactive={<BookmarkLineIcon />} />
+        </div>
+
+        {/* My Courses */}
         {courses.length > 0 && (
-          <>
+          <div style={{ width: '100%' }}>
             <div
               style={{
-                padding: '16px 16px 4px', fontSize: 11, fontWeight: 700,
-                letterSpacing: '0.06em', color: 'rgba(0,0,0,0.35)', textTransform: 'uppercase',
+                padding: '4px 6px 6px', fontSize: 10, fontWeight: 700,
+                letterSpacing: '0.07em', color: 'rgba(0,0,0,0.3)', textTransform: 'uppercase',
+                fontFamily: 'var(--font-poppins), sans-serif',
               }}
             >
               My Courses
@@ -95,22 +148,22 @@ export default function Sidebar({ courses, userName }: SidebarProps) {
                     onClick={() => toggle(course.slug)}
                     style={{
                       width: '100%', display: 'flex', alignItems: 'center', gap: 8,
-                      padding: '5px 16px', background: 'none', border: 'none',
-                      cursor: 'pointer', textAlign: 'left',
+                      padding: '6px 8px', background: 'none', border: 'none',
+                      cursor: 'pointer', textAlign: 'left', borderRadius: 8,
                     }}
                   >
                     <ChevronIcon open={isOpen} />
                     <span style={{ width: 8, height: 8, borderRadius: '50%', background: course.accentColor, flexShrink: 0 }} />
-                    <span style={{ color: 'rgba(0,0,0,0.75)', fontSize: 13.5, fontWeight: 500, flex: 1 }}>
+                    <span style={{ color: 'rgba(0,0,0,0.7)', fontSize: 13, fontWeight: 500, flex: 1, fontFamily: 'var(--font-poppins), sans-serif' }}>
                       {course.name}
                     </span>
-                    <span style={{ fontSize: 10, color: 'rgba(0,0,0,0.3)', fontWeight: 600, letterSpacing: '0.04em' }}>
+                    <span style={{ fontSize: 9, color: 'rgba(0,0,0,0.28)', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                       {course.school}
                     </span>
                   </button>
 
                   {isOpen && (
-                    <div>
+                    <div style={{ paddingLeft: 22 }}>
                       {course.lessons.map((lesson) => {
                         const href = `/courses/${course.slug}/${lesson.slug}`
                         const active = pathname === href
@@ -119,10 +172,11 @@ export default function Sidebar({ courses, userName }: SidebarProps) {
                             key={lesson.slug}
                             href={href}
                             style={{
-                              display: 'block', padding: '4px 16px 4px 40px', fontSize: 13,
-                              color: active ? '#0F1F35' : 'rgba(0,0,0,0.5)',
+                              display: 'block', padding: '4px 10px', fontSize: 12,
+                              color: active ? '#0F1F35' : 'rgba(0,0,0,0.45)',
                               background: active ? 'rgba(0,0,0,0.06)' : 'transparent',
-                              textDecoration: 'none', borderRadius: 4, margin: '1px 8px',
+                              textDecoration: 'none', borderRadius: 6, margin: '1px 0',
+                              fontFamily: 'var(--font-poppins), sans-serif',
                             }}
                           >
                             # {lesson.title}
@@ -134,112 +188,170 @@ export default function Sidebar({ courses, userName }: SidebarProps) {
                 </div>
               )
             })}
-          </>
+          </div>
         )}
 
         {courses.length === 0 && (
-          <div style={{ padding: '16px', color: 'rgba(0,0,0,0.35)', fontSize: 12 }}>
+          <div style={{ width: '100%', color: 'rgba(0,0,0,0.3)', fontSize: 12, fontFamily: 'var(--font-poppins), sans-serif' }}>
             No courses yet —{' '}
             <Link href="/library" style={{ color: '#0F1F35', textDecoration: 'underline' }}>
               browse library
             </Link>
           </div>
         )}
-      </nav>
+      </div>
 
       {/* User footer */}
       <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', gap: 10 }}>
         <div
           style={{
-            width: 30, height: 30, borderRadius: '50%', background: '#e5e7eb',
+            width: 32, height: 32, borderRadius: '50%', background: '#e5e7eb',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 12, fontWeight: 700, color: '#374151', flexShrink: 0, position: 'relative',
+            fontSize: 13, fontWeight: 700, color: '#374151', flexShrink: 0, position: 'relative',
+            fontFamily: 'var(--font-poppins), sans-serif',
           }}
         >
           {initial}
           <span style={{ position: 'absolute', bottom: 1, right: 1, width: 8, height: 8, borderRadius: '50%', background: '#22c55e', border: '1.5px solid #f5f5f5' }} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ color: '#1a1a1a', fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <div style={{ color: '#1a1a1a', fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontFamily: 'var(--font-poppins), sans-serif' }}>
             {userName}
           </div>
-          <div style={{ color: 'rgba(0,0,0,0.4)', fontSize: 11 }}>Student</div>
+          <div style={{ color: 'rgba(0,0,0,0.35)', fontSize: 11, fontFamily: 'var(--font-poppins), sans-serif' }}>Student</div>
         </div>
       </div>
     </aside>
   )
 }
 
-function NavLink({ href, icon, label, active }: { href: string; icon: React.ReactNode; label: string; active: boolean }) {
+function NavItem({ href, label, active, iconActive, iconInactive }: {
+  href: string; label: string; active: boolean;
+  iconActive: React.ReactNode; iconInactive: React.ReactNode
+}) {
   return (
-    <Link
-      href={href}
-      style={{
-        display: 'flex', alignItems: 'center', gap: 8, padding: '5px 16px',
-        textDecoration: 'none', borderRadius: 4, margin: '1px 8px',
-        background: active ? 'rgba(0,0,0,0.06)' : 'transparent',
-      }}
-    >
-      <span style={{ color: active ? '#0F1F35' : 'rgba(0,0,0,0.4)', flexShrink: 0 }}>{icon}</span>
-      <span style={{ color: active ? '#0F1F35' : 'rgba(0,0,0,0.6)', fontSize: 13.5, fontWeight: active ? 600 : 400 }}>{label}</span>
+    <Link href={href} style={{ textDecoration: 'none', display: 'block', width: '100%' }}>
+      <div
+        style={{
+          display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 14,
+          padding: '12px 14px', borderRadius: 14, width: '100%', boxSizing: 'border-box',
+          background: active ? 'rgba(0,0,0,0.07)' : 'transparent',
+          transition: 'background 0.12s ease',
+        }}
+      >
+        <span style={{ flexShrink: 0, display: 'flex', alignItems: 'center' }}>
+          {active ? iconActive : iconInactive}
+        </span>
+        <span
+          style={{
+            fontFamily: 'var(--font-poppins), sans-serif',
+            fontSize: 18,
+            fontWeight: active ? 600 : 400,
+            color: active ? '#1a1a1a' : '#52555d',
+            lineHeight: 1.2,
+          }}
+        >
+          {label}
+        </span>
+      </div>
     </Link>
   )
 }
 
 function ChevronIcon({ open }: { open: boolean }) {
   return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 12 12"
-      fill="none"
-      style={{
-        transform: open ? 'rotate(90deg)' : 'rotate(0)',
-        transition: 'transform 0.15s ease',
-        color: 'rgba(0,0,0,0.3)',
-        flexShrink: 0,
-      }}
-    >
-      <path
-        d="M4 2.5l4 3.5-4 3.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <svg width="11" height="11" viewBox="0 0 12 12" fill="none"
+      style={{ transform: open ? 'rotate(90deg)' : 'rotate(0)', transition: 'transform 0.15s ease', color: 'rgba(0,0,0,0.3)', flexShrink: 0 }}>
+      <path d="M4 2.5l4 3.5-4 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
 
-function HomeIcon() {
+/* ── MingCute icons via Streamline ── */
+
+function SearchIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14" width="16" height="16">
-      <g>
-        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M13.5 6.94c0.001 -0.1388 -0.027 -0.27628 -0.0821 -0.40368 -0.0551 -0.1274 -0.1361 -0.24194 -0.2379 -0.33632L7.00002 0.5 0.820023 6.2c-0.101775 0.09438 -0.182787 0.20892 -0.23788 0.33632S0.499084 6.8012 0.500023 6.94v5.56c0 0.2652 0.105357 0.5196 0.292893 0.7071s0.441894 0.2929 0.707104 0.2929H12.5c0.2652 0 0.5196 -0.1054 0.7071 -0.2929 0.1876 -0.1875 0.2929 -0.4419 0.2929 -0.7071V6.94Z" strokeWidth="1" />
-        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M7 13.5v-4" strokeWidth="1" />
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" style={{ flexShrink: 0 }}>
+      <g fill="none" fillRule="evenodd">
+        <path d="M24 0v24H0V0h24Z" />
+        <path fill="#52555d" d="M10.5 2a8.5 8.5 0 1 0 5.262 15.176l3.652 3.652a1 1 0 0 0 1.414-1.414l-3.652-3.652A8.5 8.5 0 0 0 10.5 2ZM4 10.5a6.5 6.5 0 1 1 13 0 6.5 6.5 0 0 1-13 0Z" />
       </g>
     </svg>
   )
 }
 
-function LibraryIcon() {
+function LayoutPanelIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14" width="16" height="16">
-      <g>
-        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M7 13.5V8.25c0 -0.33152 0.1317 -0.64946 0.36612 -0.88388C7.60054 7.1317 7.91848 7 8.25 7v0c0.33152 0 0.64946 0.1317 0.88388 0.36612 0.23442 0.23442 0.36612 0.55236 0.36612 0.88388V11h2c0.5304 0 1.0391 0.2107 1.4142 0.5858S13.5 12.4696 13.5 13v0.5" strokeWidth="1" />
-        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M6.25739 3.09514C5.01089 1.72345 3.33822 0.812215 1.50977 0.508751 1.38536 0.491132 1.25862 0.500185 1.13798 0.53531 1.01733 0.570434 0.905541 0.630826 0.810029 0.712473 0.712804 0.795633 0.634748 0.898868 0.581232 1.01508c-0.053517 0.1162 -0.081224 0.24263 -0.081216 0.37056v7.13029c-0.001328 0.21897 0.078501 0.43068 0.224081 0.59425 0.145581 0.16357 0.346593 0.26742 0.564233 0.2915 1.42811 0.1937 2.77106 0.75882 3.89996 1.62762" strokeWidth="1" />
-        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M6.25781 5.8584V3.09521" strokeWidth="1" />
-        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M11.2264 9.40168c0.2176 -0.02408 0.4186 -0.12793 0.5642 -0.2915s0.2254 -0.37528 0.2241 -0.59425V1.38564c0 -0.12793 -0.0277 -0.25436 -0.0812 -0.37056 -0.0535 -0.116212 -0.1316 -0.219447 -0.2288 -0.302607 -0.0955 -0.081647 -0.2073 -0.142039 -0.328 -0.177163 -0.1206 -0.035125 -0.2473 -0.044178 -0.3718 -0.026559C9.1765 0.812215 7.50383 1.72345 6.25732 3.09514" strokeWidth="1" />
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" style={{ flexShrink: 0 }}>
+      <g fill="none" fillRule="nonzero">
+        <path d="M24 0v24H0V0h24Z" />
+        <path fill="#52555d" d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14ZM8 5H5v14h3V5Zm11 0h-9v14h9V5Zm-4.793 4.172 2.121 2.12a1 1 0 0 1 0 1.415l-2.12 2.121a1 1 0 1 1-1.415-1.414L14.207 12l-1.414-1.414a1 1 0 0 1 1.414-1.414Z" />
       </g>
     </svg>
   )
 }
 
-function SavedIcon() {
+function GridFillIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14" width="16" height="16">
-      <g>
-        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="m11 13.5 -4 -4 -4 4v-12c0 -0.26522 0.10536 -0.51957 0.29289 -0.707107C3.48043 0.605357 3.73478 0.5 4 0.5h6c0.2652 0 0.5196 0.105357 0.7071 0.292893C10.8946 0.98043 11 1.23478 11 1.5v12Z" strokeWidth="1" />
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+      <g fill="none" fillRule="evenodd">
+        <path d="M24 0v24H0V0h24Z" />
+        <path fill="#1a1a1a" d="M19 11a2 2 0 0 1 1.995 1.85L21 13v6a2 2 0 0 1-1.85 1.995L19 21h-4a2 2 0 0 1-1.995-1.85L13 19v-6a2 2 0 0 1 1.85-1.995L15 11h4ZM9 15a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h4ZM9 3a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4Zm10 0a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4Z" />
+      </g>
+    </svg>
+  )
+}
+
+function GridLineIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+      <g fill="none" fillRule="evenodd">
+        <path d="M24 0v24H0V0h24Z" />
+        <path fill="#52555d" d="M19 11a2 2 0 0 1 1.995 1.85L21 13v6a2 2 0 0 1-1.85 1.995L19 21h-4a2 2 0 0 1-1.995-1.85L13 19v-6a2 2 0 0 1 1.85-1.995L15 11h4ZM9 15a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h4Zm10-2h-4v6h4v-6ZM9 17H5v2h4v-2ZM9 3a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4Zm0 2H5v6h4V5Zm10-2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4Zm0 2h-4v2h4V5Z" />
+      </g>
+    </svg>
+  )
+}
+
+function BookFillIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+      <g fill="none" fillRule="evenodd">
+        <path d="M24 0v24H0V0h24Z" />
+        <path fill="#1a1a1a" d="M4 5a3 3 0 0 1 3-3h11a2 2 0 0 1 2 2v12.99c0 .168-.038.322-.113.472l-.545 1.09a1 1 0 0 0 0 .895l.543 1.088A1 1 0 0 1 19 22H7a3 3 0 0 1-3-3V5Zm3 13h10.408a3 3 0 0 0 0 2H7a1 1 0 1 1 0-2Zm3-11a1 1 0 0 0 0 2h4a1 1 0 1 0 0-2h-4Z" />
+      </g>
+    </svg>
+  )
+}
+
+function BookLineIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+      <g fill="none" fillRule="nonzero">
+        <path d="M24 0v24H0V0h24Z" />
+        <path fill="#52555d" d="M18 2a2 2 0 0 1 2 2v12.99c0 .168-.038.322-.113.472l-.545 1.09a1 1 0 0 0 0 .895l.543 1.088A1 1 0 0 1 19 22H7a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3h11Zm-.592 16H7a1 1 0 0 0-.117 1.993L7 20h10.408a3.001 3.001 0 0 1-.068-1.782l.068-.218ZM18 4H7a1 1 0 0 0-.993.883L6 5v11.17c.25-.088.516-.144.791-.163L7 16h11V4Zm-4 3a1 1 0 0 1 .117 1.993L14 9h-4a1 1 0 0 1-.117-1.993L10 7h4Z" />
+      </g>
+    </svg>
+  )
+}
+
+function BookmarkFillIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+      <g fill="none" fillRule="nonzero">
+        <path d="M24 0v24H0V0h24Z" />
+        <path fill="#1a1a1a" d="M4 5a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v16.028c0 1.22-1.38 1.93-2.372 1.221L12 18.229l-5.628 4.02c-.993.71-2.372 0-2.372-1.22V5Z" />
+      </g>
+    </svg>
+  )
+}
+
+function BookmarkLineIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+      <g fill="none" fillRule="evenodd">
+        <path d="M24 0v24H0V0h24Z" />
+        <path fill="#52555d" d="M4 5a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v16.028c0 1.22-1.38 1.93-2.372 1.221L12 18.229l-5.628 4.02c-.993.71-2.372 0-2.372-1.22V5Zm3-1a1 1 0 0 0-1 1v15.057l5.128-3.663a1.5 1.5 0 0 1 1.744 0L18 20.057V5a1 1 0 0 0-1-1H7Z" />
       </g>
     </svg>
   )
