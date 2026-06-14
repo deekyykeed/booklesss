@@ -38,11 +38,47 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const displayName = profile?.display_name ?? user.email?.split('@')[0] ?? 'Student'
 
   return (
-    <div className="flex h-full overflow-hidden" style={{ background: '#F5F5F5' }}>
+    <div
+      style={{
+        width: 1200,
+        height: 'min-content',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        backgroundColor: '#f5f5f5',
+        overflow: 'hidden',
+        padding: 0,
+        gap: 0,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        borderRadius: 0,
+      }}
+    >
       <Sidebar courses={sidebarCourses} userName={displayName} />
-      <main className="flex-1 min-w-0 overflow-y-auto">
-        {children}
-      </main>
+      {/* Main column — holds top navbar + page content */}
+      <div
+        style={{
+          width: '100%',
+          flex: 1,
+          height: '1px',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          alignItems: 'flex-start',
+          overflow: 'visible',
+          padding: 0,
+          gap: 20,
+          position: 'relative',
+          borderRadius: 0,
+        }}
+      >
+        <main style={{ flex: 1, width: '100%', overflowY: 'auto', minHeight: 0 }}>
+          {children}
+        </main>
+      </div>
     </div>
   )
 }

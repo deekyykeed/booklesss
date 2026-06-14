@@ -38,9 +38,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${aptos.variable} ${parastoo.variable} ${parkinsans.variable} h-full`}
+      className={`${aptos.variable} ${parastoo.variable} ${parkinsans.variable}`}
     >
-      <body className="h-full">{children}</body>
+      <body>{children}</body>
     </html>
   )
 }

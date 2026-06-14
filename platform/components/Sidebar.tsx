@@ -42,8 +42,11 @@ export default function Sidebar({ courses, userName }: SidebarProps) {
         background: '#0F1F35',
         display: 'flex',
         flexDirection: 'column',
-        height: '100%',
+        height: '100vh',
+        minHeight: '100vh',
         overflow: 'hidden',
+        position: 'sticky',
+        top: 0,
       }}
     >
       {/* Workspace header */}
