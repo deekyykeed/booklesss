@@ -44,6 +44,7 @@ export interface Section {
   eyebrow: string
   heading: string
   body: string
+  callout?: { label: string; body: string }
 }
 
 export interface KeyTerm {

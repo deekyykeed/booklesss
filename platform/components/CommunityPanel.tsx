@@ -4,6 +4,20 @@ import { useState } from 'react'
 
 type Tab = 'info' | 'community' | 'files' | 'members'
 
+interface PanelStep {
+  slug: string
+  title: string
+  stepNumber: string
+}
+
+interface CommunityPanelProps {
+  lessonTitle: string
+  courseName: string
+  school: string
+  accentColor: string
+  steps: PanelStep[]
+}
+
 const MEMBERS = [
   { initials: 'CM', name: 'Chanda M.', year: 'Year 3', school: 'ZCAS' },
   { initials: 'MK', name: 'Mwila K.', year: 'Year 4', school: 'ZCAS' },
@@ -13,7 +27,7 @@ const MEMBERS = [
 
 const HEAT_DATA = Array.from({ length: 35 }, () => Math.floor(Math.random() * 4))
 
-export default function CommunityPanel() {
+export default function CommunityPanel({ lessonTitle, courseName, school, accentColor, steps }: CommunityPanelProps) {
   const [tab, setTab] = useState<Tab>('info')
 
   return (
@@ -44,7 +58,7 @@ export default function CommunityPanel() {
             marginBottom: 12,
           }}
         >
-          03 · Competitive Strategy
+          {lessonTitle}
         </div>
 
         {/* Tabs */}
@@ -64,7 +78,7 @@ export default function CommunityPanel() {
                 background: 'none',
                 cursor: 'pointer',
                 color: tab === t ? '#0F1F35' : '#9ca3af',
-                borderBottom: tab === t ? '2px solid #DC2626' : '2px solid transparent',
+                borderBottom: tab === t ? `2px solid ${accentColor}` : '2px solid transparent',
                 transition: 'color 0.15s',
               }}
             >
@@ -76,7 +90,7 @@ export default function CommunityPanel() {
 
       {/* Content */}
       <div style={{ flex: 1, overflowY: 'auto', padding: 16 }}>
-        {tab === 'info' && <InfoTab />}
+        {tab === 'info' && <InfoTab courseName={courseName} school={school} accentColor={accentColor} steps={steps} />}
         {tab === 'community' && <CommunityTab />}
         {tab === 'files' && <FilesTab />}
         {tab === 'members' && <MembersTab />}
@@ -85,14 +99,14 @@ export default function CommunityPanel() {
   )
 }
 
-function InfoTab() {
+function InfoTab({ courseName, school, accentColor, steps }: { courseName: string; school: string; accentColor: string; steps: PanelStep[] }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       <div>
         <SectionLabel>Channel</SectionLabel>
         <MetaRow label="Created by" value="Deeky M." />
-        <MetaRow label="Course" value="Strategic Management" />
-        <MetaRow label="School" value="ZCAS" />
+        <MetaRow label="Course" value={courseName} />
+        <MetaRow label="School" value={school} />
         <MetaRow
           label="Status"
           value={
@@ -113,11 +127,14 @@ function InfoTab() {
         />
       </div>
 
-      <div>
-        <SectionLabel>Linked Steps</SectionLabel>
-        <StepLink label="Step 3.1 · Competitive Strategy" />
-        <StepLink label="Step 3.2 · Porter's Five Forces" />
-      </div>
+      {steps.length > 0 && (
+        <div>
+          <SectionLabel>Linked Steps</SectionLabel>
+          {steps.map((s) => (
+            <StepLink key={s.slug} label={`Step ${s.stepNumber} · ${s.title}`} accentColor={accentColor} />
+          ))}
+        </div>
+      )}
 
       <div>
         <SectionLabel>Activity (last 5 weeks)</SectionLabel>
@@ -302,7 +319,7 @@ function MetaRow({
   )
 }
 
-function StepLink({ label }: { label: string }) {
+function StepLink({ label, accentColor }: { label: string; accentColor: string }) {
   return (
     <div
       style={{
@@ -317,7 +334,7 @@ function StepLink({ label }: { label: string }) {
         style={{
           width: 3,
           height: 16,
-          background: '#DC2626',
+          background: accentColor,
           borderRadius: 2,
           flexShrink: 0,
         }}
