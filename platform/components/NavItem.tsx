@@ -19,7 +19,7 @@ export default function NavItem({ href, label, active, iconActive, iconInactive 
           flexDirection: 'row',
           alignItems: 'center',
           gap: 8,
-          padding: '8px',
+          padding: '8px 10px',
           borderRadius: 16,
           width: '100%',
           boxSizing: 'border-box',
@@ -34,7 +34,7 @@ export default function NavItem({ href, label, active, iconActive, iconInactive 
         {active ? iconActive : iconInactive}
         <span
           style={{
-            fontFamily: '"Poppins", sans-serif',
+            fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif',
             fontSize: 14,
             fontWeight: 500,
             fontStyle: 'normal',

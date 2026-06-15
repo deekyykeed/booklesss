@@ -3,13 +3,12 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { Search01Icon, PanelRightIcon } from '@hugeicons/core-free-icons'
 import NavItem from './NavItem'
 import {
   HomeGradient, HomeRemix,
   LibraryGradient, LibraryRemix,
   BookmarkGradient, BookmarkRemix,
+  SearchRemix,
 } from './icons/streamline'
 
 interface SidebarLesson {
@@ -79,39 +78,45 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
           gap: 16,
         }}
       >
-        {/* Search bar */}
+        {/* Header: brand + search */}
         <div
           style={{
-            boxSizing: 'border-box',
             width: '100%',
             display: 'flex',
             flexDirection: 'row',
-            justifyContent: 'flex-start',
+            justifyContent: 'center',
             alignItems: 'center',
-            padding: '10px',
-            background: '#ffffff',
-            overflow: 'visible',
             gap: 10,
-            borderRadius: 16,
-            border: '2px solid #e6e6e6',
           }}
         >
-          <HugeiconsIcon icon={Search01Icon} size={20} color="#52555d" strokeWidth={1.75} style={{ flexShrink: 0 }} />
           <span
             style={{
               flex: 1,
-              width: '1px',
-              fontFamily: 'var(--font-poppins), sans-serif',
-              fontWeight: 400,
-              color: '#52555d',
-              fontSize: 14,
+              fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif',
+              fontWeight: 700,
+              fontSize: 18,
+              color: '#000000',
               letterSpacing: 0,
-              lineHeight: 1.2,
+              lineHeight: '20px',
             }}
           >
-            Search
+            Booklesss
           </span>
-          <HugeiconsIcon icon={PanelRightIcon} size={20} color="#52555d" strokeWidth={1.75} style={{ flexShrink: 0 }} />
+          <button
+            style={{
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+            aria-label="Search"
+          >
+            <SearchRemix size={20} />
+          </button>
         </div>
 
         {/* Primary nav items */}
