@@ -1,22 +1,15 @@
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { getUser, getProfile, getEnrollments } from '@/lib/supabase/queries'
 import AppShell from '@/components/AppShell'
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getUser()
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('display_name, university')
-    .eq('id', user.id)
-    .single()
-
-  const { data: enrollmentRows } = await supabase
-    .from('enrollments')
-    .select('courses(id, slug, name, school, accent_color, lessons(slug, title, order_index))')
-    .eq('user_id', user.id)
+  const [profile, enrollmentRows] = await Promise.all([
+    getProfile(user.id),
+    getEnrollments(user.id),
+  ])
 
   type RawLesson = { slug: string; title: string; order_index: number }
   type RawCourse = { id: string; slug: string; name: string; school: string; accent_color: string; lessons: RawLesson[] }

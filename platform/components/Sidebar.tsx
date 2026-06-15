@@ -7,7 +7,7 @@ import NavItem from './NavItem'
 import {
   HomeGradient, HomeRemix,
   LibraryGradient, LibraryRemix,
-  BookmarkGradient, BookmarkRemix,
+  BellGradient, BellRemix,
   SearchRemix,
 } from './icons/streamline'
 
@@ -123,7 +123,7 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 4 }}>
           <NavItem href="/dashboard" label="Dashboard" active={pathname === '/dashboard'} iconActive={<HomeGradient />} iconInactive={<HomeRemix />} />
           <NavItem href="/library" label="Library" active={pathname === '/library'} iconActive={<LibraryGradient />} iconInactive={<LibraryRemix />} />
-          <NavItem href="/saved" label="Saved" active={pathname === '/saved'} iconActive={<BookmarkGradient />} iconInactive={<BookmarkRemix />} />
+          <NavItem href="/notifications" label="Notifications" active={pathname === '/notifications'} iconActive={<BellGradient />} iconInactive={<BellRemix />} />
         </div>
 
         {/* My Courses */}
