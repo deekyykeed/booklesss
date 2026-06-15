@@ -3,6 +3,14 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { HugeiconsIcon } from '@hugeicons/react'
+import {
+  Home06Icon,
+  LibraryIcon,
+  BookmarkIcon,
+  Search01Icon,
+  PanelRightIcon,
+} from '@hugeicons/core-free-icons'
 
 interface SidebarLesson {
   slug: string
@@ -88,7 +96,7 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
             border: '2px solid #e6e6e6',
           }}
         >
-          <SearchIcon />
+          <HugeiconsIcon icon={Search01Icon} size={20} color="#52555d" strokeWidth={1.75} style={{ flexShrink: 0 }} />
           <span
             style={{
               flex: 1,
@@ -103,17 +111,14 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
           >
             Search
           </span>
-          <LayoutPanelIcon />
+          <HugeiconsIcon icon={PanelRightIcon} size={20} color="#52555d" strokeWidth={1.75} style={{ flexShrink: 0 }} />
         </div>
 
         {/* Primary nav items */}
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <NavItem href="/dashboard" label="Dashboard" active={pathname === '/dashboard'}
-            iconActive={<GridFillIcon />} iconInactive={<GridLineIcon />} />
-          <NavItem href="/library" label="Library" active={pathname === '/library'}
-            iconActive={<BookFillIcon />} iconInactive={<BookLineIcon />} />
-          <NavItem href="/saved" label="Saved" active={pathname === '/saved'}
-            iconActive={<BookmarkFillIcon />} iconInactive={<BookmarkLineIcon />} />
+          <NavItem href="/dashboard" label="Dashboard" active={pathname === '/dashboard'} icon={Home06Icon} />
+          <NavItem href="/library" label="Library" active={pathname === '/library'} icon={LibraryIcon} />
+          <NavItem href="/saved" label="Saved" active={pathname === '/saved'} icon={BookmarkIcon} />
         </div>
 
         {/* My Courses */}
@@ -214,9 +219,11 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
   )
 }
 
-function NavItem({ href, label, active, iconActive, iconInactive }: {
-  href: string; label: string; active: boolean;
-  iconActive: React.ReactNode; iconInactive: React.ReactNode
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function NavItem({ href, label, active, icon }: {
+  href: string; label: string; active: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  icon: any
 }) {
   return (
     <Link href={href} style={{ textDecoration: 'none', display: 'block', width: '100%' }}>
@@ -228,13 +235,17 @@ function NavItem({ href, label, active, iconActive, iconInactive }: {
           transition: 'background 0.12s ease',
         }}
       >
-        <span style={{ flexShrink: 0, display: 'flex', alignItems: 'center' }}>
-          {active ? iconActive : iconInactive}
-        </span>
+        <HugeiconsIcon
+          icon={icon}
+          size={20}
+          color={active ? '#1a1a1a' : '#52555d'}
+          strokeWidth={active ? 2 : 1.75}
+          style={{ flexShrink: 0 }}
+        />
         <span
           style={{
             fontFamily: 'var(--font-poppins), sans-serif',
-            fontSize: 18,
+            fontSize: 16,
             fontWeight: active ? 600 : 400,
             color: active ? '#1a1a1a' : '#52555d',
             lineHeight: 1.2,
@@ -252,96 +263,6 @@ function ChevronIcon({ open }: { open: boolean }) {
     <svg width="11" height="11" viewBox="0 0 12 12" fill="none"
       style={{ transform: open ? 'rotate(90deg)' : 'rotate(0)', transition: 'transform 0.15s ease', color: 'rgba(0,0,0,0.3)', flexShrink: 0 }}>
       <path d="M4 2.5l4 3.5-4 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-/* ── MingCute icons via Streamline ── */
-
-function SearchIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" style={{ flexShrink: 0 }}>
-      <g fill="none" fillRule="evenodd">
-        <path d="M24 0v24H0V0h24Z" />
-        <path fill="#52555d" d="M10.5 2a8.5 8.5 0 1 0 5.262 15.176l3.652 3.652a1 1 0 0 0 1.414-1.414l-3.652-3.652A8.5 8.5 0 0 0 10.5 2ZM4 10.5a6.5 6.5 0 1 1 13 0 6.5 6.5 0 0 1-13 0Z" />
-      </g>
-    </svg>
-  )
-}
-
-function LayoutPanelIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" style={{ flexShrink: 0 }}>
-      <g fill="none" fillRule="nonzero">
-        <path d="M24 0v24H0V0h24Z" />
-        <path fill="#52555d" d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14ZM8 5H5v14h3V5Zm11 0h-9v14h9V5Zm-4.793 4.172 2.121 2.12a1 1 0 0 1 0 1.415l-2.12 2.121a1 1 0 1 1-1.415-1.414L14.207 12l-1.414-1.414a1 1 0 0 1 1.414-1.414Z" />
-      </g>
-    </svg>
-  )
-}
-
-function GridFillIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-      <g fill="none" fillRule="evenodd">
-        <path d="M24 0v24H0V0h24Z" />
-        <path fill="#1a1a1a" d="M19 11a2 2 0 0 1 1.995 1.85L21 13v6a2 2 0 0 1-1.85 1.995L19 21h-4a2 2 0 0 1-1.995-1.85L13 19v-6a2 2 0 0 1 1.85-1.995L15 11h4ZM9 15a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h4ZM9 3a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4Zm10 0a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4Z" />
-      </g>
-    </svg>
-  )
-}
-
-function GridLineIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-      <g fill="none" fillRule="evenodd">
-        <path d="M24 0v24H0V0h24Z" />
-        <path fill="#52555d" d="M19 11a2 2 0 0 1 1.995 1.85L21 13v6a2 2 0 0 1-1.85 1.995L19 21h-4a2 2 0 0 1-1.995-1.85L13 19v-6a2 2 0 0 1 1.85-1.995L15 11h4ZM9 15a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h4Zm10-2h-4v6h4v-6ZM9 17H5v2h4v-2ZM9 3a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4Zm0 2H5v6h4V5Zm10-2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4Zm0 2h-4v2h4V5Z" />
-      </g>
-    </svg>
-  )
-}
-
-function BookFillIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-      <g fill="none" fillRule="evenodd">
-        <path d="M24 0v24H0V0h24Z" />
-        <path fill="#1a1a1a" d="M4 5a3 3 0 0 1 3-3h11a2 2 0 0 1 2 2v12.99c0 .168-.038.322-.113.472l-.545 1.09a1 1 0 0 0 0 .895l.543 1.088A1 1 0 0 1 19 22H7a3 3 0 0 1-3-3V5Zm3 13h10.408a3 3 0 0 0 0 2H7a1 1 0 1 1 0-2Zm3-11a1 1 0 0 0 0 2h4a1 1 0 1 0 0-2h-4Z" />
-      </g>
-    </svg>
-  )
-}
-
-function BookLineIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-      <g fill="none" fillRule="nonzero">
-        <path d="M24 0v24H0V0h24Z" />
-        <path fill="#52555d" d="M18 2a2 2 0 0 1 2 2v12.99c0 .168-.038.322-.113.472l-.545 1.09a1 1 0 0 0 0 .895l.543 1.088A1 1 0 0 1 19 22H7a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3h11Zm-.592 16H7a1 1 0 0 0-.117 1.993L7 20h10.408a3.001 3.001 0 0 1-.068-1.782l.068-.218ZM18 4H7a1 1 0 0 0-.993.883L6 5v11.17c.25-.088.516-.144.791-.163L7 16h11V4Zm-4 3a1 1 0 0 1 .117 1.993L14 9h-4a1 1 0 0 1-.117-1.993L10 7h4Z" />
-      </g>
-    </svg>
-  )
-}
-
-function BookmarkFillIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-      <g fill="none" fillRule="nonzero">
-        <path d="M24 0v24H0V0h24Z" />
-        <path fill="#1a1a1a" d="M4 5a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v16.028c0 1.22-1.38 1.93-2.372 1.221L12 18.229l-5.628 4.02c-.993.71-2.372 0-2.372-1.22V5Z" />
-      </g>
-    </svg>
-  )
-}
-
-function BookmarkLineIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-      <g fill="none" fillRule="evenodd">
-        <path d="M24 0v24H0V0h24Z" />
-        <path fill="#52555d" d="M4 5a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v16.028c0 1.22-1.38 1.93-2.372 1.221L12 18.229l-5.628 4.02c-.993.71-2.372 0-2.372-1.22V5Zm3-1a1 1 0 0 0-1 1v15.057l5.128-3.663a1.5 1.5 0 0 1 1.744 0L18 20.057V5a1 1 0 0 0-1-1H7Z" />
-      </g>
     </svg>
   )
 }
