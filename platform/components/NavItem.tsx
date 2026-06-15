@@ -1,18 +1,16 @@
 'use client'
 
 import Link from 'next/link'
-import { HugeiconsIcon } from '@hugeicons/react'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface NavItemProps {
   href: string
   label: string
   active: boolean
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  icon: any
+  iconActive: React.ReactNode
+  iconInactive: React.ReactNode
 }
 
-export default function NavItem({ href, label, active, icon }: NavItemProps) {
+export default function NavItem({ href, label, active, iconActive, iconInactive }: NavItemProps) {
   return (
     <Link href={href} style={{ textDecoration: 'none', display: 'block', width: '100%' }}>
       <div
@@ -33,13 +31,7 @@ export default function NavItem({ href, label, active, icon }: NavItemProps) {
           transition: 'background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease',
         }}
       >
-        <HugeiconsIcon
-          icon={icon}
-          size={16}
-          color={active ? '#000000' : '#52555d'}
-          strokeWidth={active ? 2 : 1.75}
-          style={{ flexShrink: 0 }}
-        />
+        {active ? iconActive : iconInactive}
         <span
           style={{
             fontFamily: '"Poppins", sans-serif',

@@ -4,14 +4,13 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  Home06Icon,
-  LibraryIcon,
-  BookmarkIcon,
-  Search01Icon,
-  PanelRightIcon,
-} from '@hugeicons/core-free-icons'
+import { Search01Icon, PanelRightIcon } from '@hugeicons/core-free-icons'
 import NavItem from './NavItem'
+import {
+  HomeGradient, HomeRemix,
+  LibraryGradient, LibraryRemix,
+  BookmarkGradient, BookmarkRemix,
+} from './icons/streamline'
 
 interface SidebarLesson {
   slug: string
@@ -117,9 +116,9 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
 
         {/* Primary nav items */}
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <NavItem href="/dashboard" label="Dashboard" active={pathname === '/dashboard'} icon={Home06Icon} />
-          <NavItem href="/library" label="Library" active={pathname === '/library'} icon={LibraryIcon} />
-          <NavItem href="/saved" label="Saved" active={pathname === '/saved'} icon={BookmarkIcon} />
+          <NavItem href="/dashboard" label="Dashboard" active={pathname === '/dashboard'} iconActive={<HomeGradient />} iconInactive={<HomeRemix />} />
+          <NavItem href="/library" label="Library" active={pathname === '/library'} iconActive={<LibraryGradient />} iconInactive={<LibraryRemix />} />
+          <NavItem href="/saved" label="Saved" active={pathname === '/saved'} iconActive={<BookmarkGradient />} iconInactive={<BookmarkRemix />} />
         </div>
 
         {/* My Courses */}
