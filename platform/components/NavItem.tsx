@@ -25,7 +25,7 @@ export default function NavItem({ href, label, active, icon }: NavItemProps) {
           borderRadius: 16,
           width: '100%',
           boxSizing: 'border-box',
-          background: active ? '#e6e6e6' : 'transparent',
+          background: active ? '#f8f8f6' : 'transparent',
           border: active ? '2px solid #d9d9d9' : '2px solid transparent',
           boxShadow: active
             ? '0px 0.6px 0.6px -1.25px rgba(0,0,0,0.18), 0px 2.29px 2.29px -2.5px rgba(0,0,0,0.16), 0px 10px 10px -3.75px rgba(0,0,0,0.06)'
@@ -35,8 +35,8 @@ export default function NavItem({ href, label, active, icon }: NavItemProps) {
       >
         <HugeiconsIcon
           icon={icon}
-          size={20}
-          color={active ? '#16a34a' : '#52555d'}
+          size={16}
+          color={active ? '#000000' : '#52555d'}
           strokeWidth={active ? 2 : 1.75}
           style={{ flexShrink: 0 }}
         />
