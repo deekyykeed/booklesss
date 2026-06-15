@@ -1,10 +1,17 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-06-11 (session 4)
+**Last updated:** 2026-06-15 (session 6)
 
 ---
 
 ## Next Session
+
+**Platform — build the top nav bar (spec coming layer by layer from Framer):**
+- [ ] Fill the `{/* navbar items go here */}` placeholder in `(app)/layout.tsx` — user is providing Framer CSS specs one layer at a time; top nav container is scaffolded but empty.
+- [ ] Verify 1200px `position: absolute` shell looks correct on screen at `booklesss.vercel.app` — user hasn't confirmed the layout visually yet.
+- [ ] Add `avatar_url TEXT` column to `profiles` table via Supabase MCP migration → build upload UI (Supabase Storage `avatars` bucket, store URL in `profiles.avatar_url`).
+- [ ] Seed `steps.content` JSONB for SM Step 3.1 so the lesson reader pulls real data instead of hardcode.
+- [ ] Enroll a test account in a course via `/library` so the sidebar courses section populates in the app.
 
 **⚠️ Funnel integrity (from the 2026-06-11 audit — fix before any marketing push):**
 - [ ] **Consolidate Slack to ONE workspace.** Three exist: `bookless10` (invite link + all TM/SM channels, Pro trial EXPIRED 2026-06-10), `booklesss20` (paid, where SM PDFs were uploaded), and a new empty "Booklesss" ws (created 2026-06-04, currently tool-connected). Decide, move channels, update `Operations/workspace.md`, replace the invite link everywhere.
@@ -43,6 +50,62 @@
 ---
 
 ## Session Log
+
+### Session 2026-06-15
+**Done:**
+- **App shell rebuilt to Framer spec** (`platform/app/(app)/layout.tsx`): 1200px wide, `position: absolute`, `height: min-content`, `flex-direction: row`, `background: #f5f5f5`, `overflow: hidden`. Main column (`flex: 1`, `height: 1px min-height: 100vh`, `flex col gap: 20px`) scaffolded inside. Top nav container (`flex col gap: 16px`, `align-items: center`) placeholder added — awaiting nav content.
+- **Light theme throughout** (`platform/app/(auth)/layout.tsx`): removed `#0F1F35` from auth layout background → `#f5f5f5`. Login page fully rewritten to light theme: white inputs, `#1a1a1a` text, `#6b7280` labels, `#e5e7eb` mode toggle, navy CTA button on light background. The dark bg was a mistake in the auth layout; fixed.
+- **Sidebar completely redesigned** (`platform/components/Sidebar.tsx`): transparent background (sits on `#f5f5f5`), `border-right: 1px solid rgba(0,0,0,0.07)`. Search bar: white card, `border: 2px solid #e6e6e6`, `border-radius: 16px`, `padding: 10px`, 20×20 search icon. Nav items: Poppins 18px, `font-weight: 600` active / `400` inactive, `rgba(0,0,0,0.07)` pill for active, `#52555d` inactive. Icons: MingCute Fill for active, MingCute Line for inactive (Grid2, Book2, Bookmark) — all inlined as React SVG from Streamline MCP.
+- **Poppins added** via `next/font/google` as `--font-poppins` CSS variable in root layout.
+- `globals.css` cleaned: removed `height: 100%` from html/body, body gets `position: relative; min-height: 100%; background: #f5f5f5`.
+- Commits: 12865d5, 72a0f12, 0f5d3bf, b8f79f7, 4a95cc7. Deployed to `booklesss.vercel.app`.
+
+**What Worked:**
+- Streamline MCP for MingCute icons: `find_sets_by_name('mingcute')` → `search_assets` with `setSlug` → `download_asset` → fetch SVG via curl → inline as React component. Free access to full MingCute Line (`mingcute-line`, fam_7pp6huEoDcLYccqT) and Fill (`mingcute-fill`, fam_sjI9ztQ3v26OijTh) sets.
+- `height: 1px` CSS trick on the main column flex child — with parent `height: min-content`, setting `height: 1px; min-height: 100vh` makes the column fill the viewport without collapsing; needed because `height: 100%` collapses when parent is `min-content`.
+- `position: sticky; top: 0; height: 100vh` on the sidebar — keeps it pinned while the main column scrolls, despite parent `height: min-content`.
+
+**Dead Ends (do not retry):**
+- Old Vercel preview URLs (e.g. `booklesss-ddc01dcqj-...`) are frozen at the commit they were built from — no amount of re-pushing updates them. Always test on `booklesss.vercel.app` (the alias that always points to latest production). Explain this to the user if they report fixes not taking effect.
+- `sidebar height: 100%` collapses when the shell parent is `height: min-content` — always use `height: 100vh` or explicit `min-height: 100vh` on the sidebar instead.
+
+**Next:** Carried to Next Session list above.
+
+---
+
+### Session 2026-06-14
+**Done:**
+- **Demo HTML (`booklesss-app-demo.html`) — JS completed:**
+  - `doSearch(q)` — filters `.nav-it`, `.lesson-it`, `.course-chip` by `data-label` (case-insensitive); hides section headers when all children hidden; restores everything on clear.
+  - `setLesson(el)` — moves `active` class, syncs toolbar title text, resets Mark as Complete button.
+  - `.mark-complete.done-state` CSS — green bg (`#dcfce7`), green text, green border; deepens on hover.
+- **Supabase — fully connected:**
+  - Old project `vcupsxnvqnanmnktxgrs` was in a separate Supabase org invisible to the MCP. Recreated as `rdzlubpcsxbcqwhnvycx` inside the Partnr org so MCP can see both.
+  - Schema applied via MCP: `courses`, `lessons`, `steps`, `glossary`, `profiles`, `enrollments`. RLS + public-read policies. 4 courses seeded.
+  - SM lessons seeded: 01-foundations, 02-environment, 03-competitive-strategy, 04-strategy-execution. Steps 3.1 + 3.2 seeded under lesson 03.
+  - `platform/.env.local` written with real URL + anon key.
+  - `.mcp.json` updated: project-scoped Supabase MCP server pointing at `rdzlubpcsxbcqwhnvycx`.
+- **Platform pushed to GitHub for first time:** `platform/` committed (45 files, 12,114 insertions) alongside demo HTML, Demand PDFs, and `.mcp.json`. Fonts, build scripts, schema all live on `main`.
+- **Vercel project `booklesss` created** (`prj_xPEAL2AEan8RkjLAs96bVZN3ANQu`, team `team_rGqTyimJFbe9Ig7yde4dsUts`). Root directory set to `platform/` in Build & Deployment settings.
+- **Build error diagnosed:** `platform/app/(app)/page.tsx` was a comment-only file — TypeScript rejects it as "not a module." Fixed with a proper `redirect()` default export. Push interrupted; fix is on disk but not yet pushed.
+- **Credentials saved to memory** (`project_supabase_credentials.md`): Supabase project ID, URL, anon key, DB password, and Vercel recovery codes all stored.
+
+**What Worked:**
+- Moving the Booklesss Supabase project into the same org as Partnr — the MCP token is org-scoped, not account-scoped. Once both projects were in the same org, `list_projects` returned both and `apply_migration` worked directly.
+- Vercel application preset must be **Next.js** (not "Other") for correct build detection when root dir is `platform/`. Expo Go is a separate app on its own — same Supabase backend, never touches Vercel.
+
+**Dead Ends (do not retry):**
+- Supabase MCP `apply_migration` with double-quoted string literals (`"Porter's Five Forces"`) — PostgreSQL treats double quotes as identifiers, not string literals. Always use single quotes (`'Porter''s Five Forces'`).
+- PowerShell `&&` as command chainer — not valid in Windows PowerShell 5.1. Use `;` for unconditional chaining or `if ($?) { }` for conditional.
+
+**Next:**
+- [ ] **Push the TypeScript fix** — `platform/app/(app)/page.tsx` now has a proper redirect export; need to `git add` + `git commit` + `git push` before next Vercel deploy.
+- [ ] **Add env vars to Vercel project** — `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY` must be set in Project Settings → Environment Variables before any deploy will connect to Supabase.
+- [ ] **Verify Vercel build passes** — after env vars + TypeScript fix, trigger a redeploy and confirm green.
+- [ ] Replace hardcoded lesson data in `platform/app/(app)/courses/[courseSlug]/[lessonSlug]/page.tsx` with real Supabase queries.
+- [ ] Delete `platform/app/(app)/page.tsx` from the repo (or confirm Next.js 16 handles the duplicate `/` route gracefully with route groups).
+
+---
 
 ### Session 2026-06-12
 **Done:**
