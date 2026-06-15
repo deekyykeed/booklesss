@@ -246,7 +246,7 @@ function NavItem({ href, label, active, icon }: {
           style={{
             fontFamily: 'var(--font-poppins), sans-serif',
             fontSize: 16,
-            fontWeight: active ? 600 : 400,
+            fontWeight: 500,
             color: active ? '#16a34a' : '#52555d',
             lineHeight: 1.2,
           }}
