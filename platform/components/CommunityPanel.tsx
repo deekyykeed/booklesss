@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 
 type Tab = 'info' | 'community' | 'files' | 'members'
 
@@ -8,6 +9,8 @@ interface PanelStep {
   slug: string
   title: string
   stepNumber: string
+  href: string
+  active?: boolean
 }
 
 interface CommunityPanelProps {
@@ -131,7 +134,13 @@ function InfoTab({ courseName, school, accentColor, steps }: { courseName: strin
         <div>
           <SectionLabel>Linked Steps</SectionLabel>
           {steps.map((s) => (
-            <StepLink key={s.slug} label={`Step ${s.stepNumber} · ${s.title}`} accentColor={accentColor} />
+            <StepLink
+              key={s.slug}
+              label={`Step ${s.stepNumber} · ${s.title}`}
+              accentColor={accentColor}
+              href={s.href}
+              active={s.active}
+            />
           ))}
         </div>
       )}
@@ -319,28 +328,26 @@ function MetaRow({
   )
 }
 
-function StepLink({ label, accentColor }: { label: string; accentColor: string }) {
+function StepLink({ label, accentColor, href, active }: { label: string; accentColor: string; href: string; active?: boolean }) {
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 8,
-        padding: '6px 0',
-        cursor: 'pointer',
-      }}
+    <Link
+      href={href}
+      style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8, padding: '6px 0' }}
     >
       <div
         style={{
           width: 3,
           height: 16,
-          background: accentColor,
+          background: active ? accentColor : '#e5e7eb',
           borderRadius: 2,
           flexShrink: 0,
+          transition: 'background 0.15s',
         }}
       />
-      <span style={{ fontSize: 12, color: '#111', fontWeight: 500 }}>{label}</span>
-    </div>
+      <span style={{ fontSize: 12, color: active ? '#111' : '#6b7280', fontWeight: active ? 700 : 500 }}>
+        {label}
+      </span>
+    </Link>
   )
 }
 
