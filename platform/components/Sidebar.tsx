@@ -21,9 +21,10 @@ interface SidebarCourse {
 interface SidebarProps {
   courses: SidebarCourse[]
   userName: string
+  onClose?: () => void
 }
 
-export default function Sidebar({ courses, userName }: SidebarProps) {
+export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
   const pathname = usePathname()
   const [expanded, setExpanded] = useState<Record<string, boolean>>(
     Object.fromEntries(courses.map((c, i) => [c.slug, i === 0]))
@@ -39,38 +40,26 @@ export default function Sidebar({ courses, userName }: SidebarProps) {
       style={{
         width: 272,
         minWidth: 272,
-        background: 'transparent',
+        background: '#f8f8f6',
         display: 'flex',
         flexDirection: 'column',
         height: '100vh',
-        minHeight: '100vh',
         overflow: 'hidden',
-        position: 'sticky',
-        top: 0,
         borderRight: '1px solid rgba(0,0,0,0.07)',
       }}
     >
-      {/* Workspace header */}
-      <div style={{ padding: '20px 16px 12px', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
-        <Link href="/dashboard" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div
-            style={{
-              width: 28, height: 28, background: '#FFFEF2', borderRadius: 6,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              overflow: 'hidden', position: 'relative', flexShrink: 0,
-              border: '1px solid rgba(0,0,0,0.06)',
-            }}
-          >
-            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/grain.png)', backgroundSize: '120px', opacity: 0.5 }} />
-            <img src="/booklesss-mark-black.png" alt="B" style={{ width: 16, height: 16, objectFit: 'contain', position: 'relative', zIndex: 1 }} />
-          </div>
-          <span style={{ color: '#0F1F35', fontWeight: 700, fontSize: 15, letterSpacing: '-0.01em' }}>
-            Booklesss
-          </span>
-        </Link>
-      </div>
+      {/* Mobile close button */}
+      {onClose && (
+        <div className="sidebar-close-row">
+          <button onClick={onClose} className="sidebar-close-btn" aria-label="Close menu">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M2 2l12 12M14 2L2 14" stroke="#0F1F35" strokeWidth="1.75" strokeLinecap="round" />
+            </svg>
+          </button>
+        </div>
+      )}
 
-      {/* Nav section — flex col, gap 16px, matches Framer spec */}
+      {/* Nav section */}
       <div
         style={{
           flex: 1,

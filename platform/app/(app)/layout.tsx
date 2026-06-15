@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import Sidebar from '@/components/Sidebar'
+import AppShell from '@/components/AppShell'
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -38,66 +38,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const displayName = profile?.display_name ?? user.email?.split('@')[0] ?? 'Student'
 
   return (
-    <div
-      style={{
-        width: 1200,
-        height: 'min-content',
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-        backgroundColor: '#f5f5f5',
-        overflow: 'hidden',
-        padding: 0,
-        gap: 0,
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        borderRadius: 0,
-      }}
-    >
-      <Sidebar courses={sidebarCourses} userName={displayName} />
-      {/* Main column — holds top navbar + page content */}
-      <div
-        style={{
-          width: '100%',
-          flex: 1,
-          height: '1px',
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-start',
-          alignItems: 'flex-start',
-          overflow: 'visible',
-          padding: 0,
-          gap: 20,
-          position: 'relative',
-          borderRadius: 0,
-        }}
-      >
-        {/* Top nav container */}
-        <div
-          style={{
-            width: '100%',
-            height: 'min-content',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            overflow: 'visible',
-            padding: 0,
-            gap: 16,
-            position: 'relative',
-            borderRadius: 0,
-          }}
-        >
-          {/* navbar items go here */}
-        </div>
-
-        <main style={{ flex: 1, width: '100%', overflowY: 'auto', minHeight: 0 }}>
-          {children}
-        </main>
-      </div>
-    </div>
+    <AppShell courses={sidebarCourses} userName={displayName}>
+      <main style={{ flex: 1, width: '100%', height: '100%', overflowY: 'auto', minHeight: 0 }}>
+        {children}
+      </main>
+    </AppShell>
   )
 }
