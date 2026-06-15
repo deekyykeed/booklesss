@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Sidebar from './Sidebar'
+import IconRail from './IconRail'
 
 interface SidebarLesson { slug: string; title: string; order_index: number }
 interface SidebarCourse {
@@ -41,6 +42,9 @@ export default function AppShell({
           style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.25)', zIndex: 98, backdropFilter: 'blur(1px)' }}
         />
       )}
+
+      {/* ── Icon rail ── */}
+      <IconRail />
 
       {/* ── Sidebar ── */}
       <div className={`sidebar-wrapper${open ? ' sidebar-open' : ''}`}>

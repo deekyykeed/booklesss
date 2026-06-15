@@ -52,7 +52,8 @@ export default async function DashboardPage() {
   const totalSaved = savedCount ?? 0
   const heroCourse = enrolledCourses[0] ?? null
 
-  const displayName = profile?.display_name ?? user.email?.split('@')[0] ?? 'Student'
+  const rawName = profile?.display_name ?? user.email?.split('@')[0] ?? 'Student'
+  const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1)
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
   const todayStr = new Date().toLocaleDateString('en-US', {
@@ -92,10 +93,12 @@ export default async function DashboardPage() {
       {enrolledCourses.length > 0 ? (
         <>
           {/* ── Stats chips ── */}
-          <div style={{ display: 'flex', gap: 8, marginBottom: 36, flexWrap: 'wrap' }}>
-            <Chip>{enrolledCourses.length} Course{enrolledCourses.length !== 1 ? 's' : ''}</Chip>
-            {totalSaved > 0 && <Chip>{totalSaved} Saved</Chip>}
-          </div>
+          {totalSaved > 0 && (
+            <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
+              <Chip>{enrolledCourses.length} Course{enrolledCourses.length !== 1 ? 's' : ''}</Chip>
+              <Chip>{totalSaved} Saved</Chip>
+            </div>
+          )}
 
           {/* ── Continue Learning hero ── */}
           {heroCourse && (
@@ -153,6 +156,45 @@ export default async function DashboardPage() {
                   </div>
                 </div>
               </Link>
+            </section>
+          )}
+
+          {/* ── Lessons list ── */}
+          {heroCourse && heroCourse.lessons.length > 0 && (
+            <section style={{ marginBottom: 40 }}>
+              <Label>Lessons</Label>
+              <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {heroCourse.lessons.map((lesson, i) => (
+                  <Link
+                    key={lesson.id}
+                    href={`/courses/${heroCourse.slug}/${lesson.slug}`}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <div style={{
+                      display: 'flex', alignItems: 'center', gap: 14,
+                      padding: '12px 16px',
+                      background: '#fff', border: '1px solid #e5e7eb',
+                      borderRadius: 10,
+                      transition: 'border-color 0.15s',
+                    }}>
+                      <div style={{
+                        width: 26, height: 26, borderRadius: '50%',
+                        background: heroCourse.accent_color + '20',
+                        color: heroCourse.accent_color,
+                        fontSize: 11, fontWeight: 700,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        flexShrink: 0,
+                      }}>
+                        {i + 1}
+                      </div>
+                      <div style={{ fontSize: 14, fontWeight: 500, color: '#1a1a1a', flex: 1 }}>
+                        {lesson.title}
+                      </div>
+                      <span style={{ color: '#d1d5db', fontSize: 14 }}>→</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
             </section>
           )}
 
@@ -310,8 +352,8 @@ export default async function DashboardPage() {
 function Label({ children }: { children: React.ReactNode }) {
   return (
     <div style={{
-      fontSize: 11, fontWeight: 700, letterSpacing: '0.07em',
-      textTransform: 'uppercase', color: '#9ca3af',
+      fontSize: 11, fontWeight: 700, letterSpacing: '0.08em',
+      textTransform: 'uppercase', color: '#6b7280',
     }}>
       {children}
     </div>
