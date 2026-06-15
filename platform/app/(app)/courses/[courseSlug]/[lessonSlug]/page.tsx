@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import LessonContent, { LessonStep } from '@/components/LessonContent'
@@ -84,10 +85,108 @@ export default async function LessonPage(props: {
     active: s.slug === selectedStep.slug,
   }))
 
+  const currentIndex = allSteps.findIndex((s) => s.slug === selectedStep.slug)
+  const prevStep = currentIndex > 0 ? allSteps[currentIndex - 1] : null
+  const nextStep = currentIndex < allSteps.length - 1 ? allSteps[currentIndex + 1] : null
+
   return (
     <div style={{ display: 'flex', height: '100%', overflow: 'hidden' }}>
       <div style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
         <LessonContent step={step} />
+
+        {/* Step navigation */}
+        <div
+          style={{
+            maxWidth: 720,
+            margin: '0 auto',
+            padding: '0 48px 72px',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              borderTop: '1px solid #e5e7eb',
+              paddingTop: 24,
+              gap: 12,
+            }}
+          >
+            {prevStep ? (
+              <Link
+                href={`/courses/${courseSlug}/${lessonSlug}?step=${prevStep.slug}`}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  padding: '12px 16px',
+                  background: '#fff',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: 8,
+                  textDecoration: 'none',
+                  flex: 1,
+                  maxWidth: 280,
+                }}
+              >
+                <span style={{ fontSize: 10, fontWeight: 700, color: '#9ca3af', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 4 }}>
+                  ← Previous
+                </span>
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#0F1F35', lineHeight: 1.3 }}>
+                  {prevStep.title}
+                </span>
+              </Link>
+            ) : (
+              <div style={{ flex: 1 }} />
+            )}
+
+            {nextStep ? (
+              <Link
+                href={`/courses/${courseSlug}/${lessonSlug}?step=${nextStep.slug}`}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-end',
+                  padding: '12px 16px',
+                  background: course.accent_color,
+                  borderRadius: 8,
+                  textDecoration: 'none',
+                  flex: 1,
+                  maxWidth: 280,
+                }}
+              >
+                <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 4 }}>
+                  Next →
+                </span>
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#fff', lineHeight: 1.3, textAlign: 'right' }}>
+                  {nextStep.title}
+                </span>
+              </Link>
+            ) : (
+              <Link
+                href={`/courses/${courseSlug}`}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-end',
+                  padding: '12px 16px',
+                  background: '#0F1F35',
+                  borderRadius: 8,
+                  textDecoration: 'none',
+                  flex: 1,
+                  maxWidth: 280,
+                }}
+              >
+                <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 4 }}>
+                  Done ✓
+                </span>
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#fff', lineHeight: 1.3 }}>
+                  Back to {course.name}
+                </span>
+              </Link>
+            )}
+          </div>
+        </div>
+
         <div style={{ position: 'fixed', bottom: 28, right: 340, zIndex: 50 }}>
           <BookmarkButton stepId={selectedStep.id} userId={user.id} initialBookmarked={isBookmarked} accentColor={course.accent_color} />
         </div>
