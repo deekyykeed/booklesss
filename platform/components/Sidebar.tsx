@@ -231,14 +231,14 @@ function NavItem({ href, label, active, icon }: {
         style={{
           display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 14,
           padding: '12px 14px', borderRadius: 14, width: '100%', boxSizing: 'border-box',
-          background: active ? 'rgba(0,0,0,0.07)' : 'transparent',
+          background: active ? 'rgba(22,163,74,0.09)' : 'transparent',
           transition: 'background 0.12s ease',
         }}
       >
         <HugeiconsIcon
           icon={icon}
           size={20}
-          color={active ? '#1a1a1a' : '#52555d'}
+          color={active ? '#16a34a' : '#52555d'}
           strokeWidth={active ? 2 : 1.75}
           style={{ flexShrink: 0 }}
         />
@@ -247,7 +247,7 @@ function NavItem({ href, label, active, icon }: {
             fontFamily: 'var(--font-poppins), sans-serif',
             fontSize: 16,
             fontWeight: active ? 600 : 400,
-            color: active ? '#1a1a1a' : '#52555d',
+            color: active ? '#16a34a' : '#52555d',
             lineHeight: 1.2,
           }}
         >
