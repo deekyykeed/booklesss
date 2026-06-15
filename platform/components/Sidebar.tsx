@@ -229,10 +229,14 @@ function NavItem({ href, label, active, icon }: {
     <Link href={href} style={{ textDecoration: 'none', display: 'block', width: '100%' }}>
       <div
         style={{
-          display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 14,
-          padding: '12px 14px', borderRadius: 14, width: '100%', boxSizing: 'border-box',
-          background: active ? 'rgba(22,163,74,0.09)' : 'transparent',
-          transition: 'background 0.12s ease',
+          display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 8,
+          padding: '8px', borderRadius: 16, width: '100%', boxSizing: 'border-box',
+          background: active ? '#e6e6e6' : 'transparent',
+          border: active ? '2px solid #d9d9d9' : '2px solid transparent',
+          boxShadow: active
+            ? '0px 0.6px 0.6px -1.25px rgba(0,0,0,0.18), 0px 2.29px 2.29px -2.5px rgba(0,0,0,0.16), 0px 10px 10px -3.75px rgba(0,0,0,0.06)'
+            : 'none',
+          transition: 'background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease',
         }}
       >
         <HugeiconsIcon
