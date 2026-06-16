@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Sidebar from './Sidebar'
+import { SidebarMinimalisticLinear } from './icons/solar'
 
 interface SidebarLesson { slug: string; title: string; order_index: number }
 interface SidebarCourse {
@@ -26,10 +27,8 @@ export default function AppShell({
     }}>
       {/* Mobile top bar */}
       <div className="mobile-topbar">
-        <button onClick={() => setOpen(true)} className="hamburger-btn" aria-label="Open menu">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path d="M2.5 5h15M2.5 10h15M2.5 15h15" stroke="#0F1F35" strokeWidth="1.75" strokeLinecap="round" />
-          </svg>
+        <button onClick={() => setOpen(true)} className="hamburger-btn" aria-label="Open menu" style={{ color: '#0F1F35' }}>
+          <SidebarMinimalisticLinear size={20} />
         </button>
         <span style={{
           fontWeight: 700, fontSize: 15, color: '#0F1F35',
