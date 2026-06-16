@@ -116,7 +116,7 @@
 .squircle-btn {
   corner-shape: superellipse(1.5);
   border-radius: calc(12px * var(--one-if-corner-shape-supported, var(--corner-shape-fallback, 1)));
-  background: linear-gradient(135deg, #efeeeb 0%, rgb(232, 231, 227) 100%);
+  background: transparent;
   overflow: clip;
   border: none;
   cursor: pointer;
@@ -128,6 +128,28 @@
   flex-wrap: nowrap;
   padding: 8px;
   gap: 10px;
+  transition: background 0.12s ease;
+}
+
+.squircle-btn:hover,
+.squircle-btn:active {
+  background: linear-gradient(135deg, #efeeeb 0%, rgb(232, 231, 227) 100%);
+}
+
+/* ── Nav item hover / active gradient ── */
+.nav-item {
+  border-radius: 8px;
+  background: transparent;
+  transition: background 0.12s ease, border-radius 0.12s ease;
+}
+
+.nav-item:hover {
+  background: linear-gradient(135deg, #efeeeb 0%, rgb(232, 231, 227) 100%);
+}
+
+.nav-item.nav-item-active {
+  border-radius: 12px;
+  background: linear-gradient(135deg, #efeeeb 0%, rgb(232, 231, 227) 100%);
 }
 
 /* ── Skeleton loading ── */

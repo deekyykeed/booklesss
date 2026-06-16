@@ -1,14 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
-  HomeLinear, HomeBold,
-  BookLinear, BookBold,
-  FolderFilesLinear, FolderFilesBold,
-  LetterLinear, LetterBold,
-  CalendarLinear, CalendarBold,
+  WidgetAddLinear, WidgetAddDuotone,
+  BookLinear, BookDuotone,
+  FolderFilesLinear, FolderFilesDuotone,
+  LetterLinear, LetterDuotone,
+  CalendarLinear, CalendarDuotone,
   NotesLinear,
   MagniferLinear,
 } from './icons/solar'
@@ -16,38 +16,38 @@ import {
 const PRIMARY_NAV = [
   {
     href: '/dashboard',
-    label: 'Home',
+    label: 'Dashboard',
     exact: true,
-    Inactive: () => <HomeLinear size={20} />,
-    Active: () => <HomeBold size={20} />,
+    Inactive: () => <WidgetAddLinear size={20} />,
+    Active: () => <WidgetAddDuotone size={20} />,
   },
   {
     href: '/library',
     label: 'Library',
     exact: false,
     Inactive: () => <BookLinear size={20} />,
-    Active: () => <BookBold size={20} />,
+    Active: () => <BookDuotone size={20} />,
   },
   {
     href: '/saved',
     label: 'Files',
     exact: false,
     Inactive: () => <FolderFilesLinear size={20} />,
-    Active: () => <FolderFilesBold size={20} />,
+    Active: () => <FolderFilesDuotone size={20} />,
   },
   {
     href: '/notifications',
     label: 'Inbox',
     exact: false,
     Inactive: () => <LetterLinear size={20} />,
-    Active: () => <LetterBold size={20} />,
+    Active: () => <LetterDuotone size={20} />,
   },
   {
     href: '/calendar',
     label: 'Calendar',
     exact: false,
     Inactive: () => <CalendarLinear size={20} />,
-    Active: () => <CalendarBold size={20} />,
+    Active: () => <CalendarDuotone size={20} />,
   },
 ]
 
@@ -82,17 +82,29 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
 
   const initial = userName.charAt(0).toUpperCase()
 
+  const touchStartX = useRef(0)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+  }
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current
+    if (deltaX < -50 && onClose) onClose()
+  }
+
   return (
-    <aside style={{
-      width: 288,
-      minWidth: 288,
-      background: 'rgb(255, 255, 255)',
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100vh',
-      overflow: 'hidden',
-      borderRight: '1px solid rgba(0,0,0,0.07)',
-    }}>
+    <aside
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      style={{
+        width: 288,
+        minWidth: 288,
+        background: 'rgb(255, 255, 255)',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100vh',
+        overflow: 'hidden',
+        borderRight: '1px solid rgba(0,0,0,0.07)',
+      }}>
       {onClose && (
         <div className="sidebar-close-row">
           <button onClick={onClose} className="sidebar-close-btn" aria-label="Close menu">
@@ -150,16 +162,13 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
             const active = exact ? pathname === href : pathname.startsWith(href)
             return (
               <Link key={href} href={href} style={{ textDecoration: 'none', display: 'block' }}>
-                <div style={{
+                <div className={active ? 'nav-item nav-item-active' : 'nav-item'} style={{
                   display: 'flex',
                   flexDirection: 'row',
                   alignItems: 'center',
                   gap: '10px',
                   padding: '8px',
-                  borderRadius: active ? '12px' : '8px',
-                  background: active ? 'rgba(0,0,0,0.06)' : 'transparent',
                   overflow: 'clip',
-                  transition: 'background 0.12s ease',
                 }}>
                   {/* opacity: 0.7 on inactive, no opacity on active — matches Framer */}
                   <span style={{
