@@ -9,7 +9,6 @@ import {
   FolderFilesLinear, FolderFilesDuotone,
   LetterLinear, LetterDuotone,
   CalendarLinear, CalendarDuotone,
-  NotesLinear,
   MagniferLinear,
   SidebarMinimalisticLinear,
 } from './icons/solar'
@@ -144,14 +143,10 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
             <MagniferLinear size={20} />
           </button>
 
-          <button className="squircle-btn" style={{ color: '#0a0a0a' }} aria-label="New note">
-            <NotesLinear size={20} />
-          </button>
-
           <button
-            className="squircle-btn sidebar-toggle-btn"
+            className="squircle-btn"
             style={{ color: '#0a0a0a' }}
-            aria-label="Close sidebar"
+            aria-label="Toggle sidebar"
             onClick={onClose}
           >
             <SidebarMinimalisticLinear size={20} />
