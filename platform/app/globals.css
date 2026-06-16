@@ -49,10 +49,6 @@
 }
 
 @media (max-width: 640px) {
-  .icon-rail {
-    display: none;
-  }
-
   .mobile-topbar {
     display: flex;
     align-items: center;
@@ -82,7 +78,7 @@
   .sidebar-wrapper {
     position: fixed;
     top: 0;
-    left: -272px;
+    left: -288px;
     bottom: 0;
     z-index: 100;
     transition: left 0.22s cubic-bezier(0.4, 0, 0.2, 1);

@@ -21,6 +21,15 @@ type BookmarkStep = {
 }
 type RawBookmark = { saved_at: string; steps: BookmarkStep | BookmarkStep[] | null }
 
+function isDark(hex: string): boolean {
+  const h = hex.replace('#', '')
+  if (h.length !== 6) return true
+  const r = parseInt(h.slice(0, 2), 16)
+  const g = parseInt(h.slice(2, 4), 16)
+  const b = parseInt(h.slice(4, 6), 16)
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 < 0.5
+}
+
 export default async function DashboardPage() {
   const user = await getUser()
   if (!user) redirect('/login')
@@ -61,95 +70,87 @@ export default async function DashboardPage() {
   })
 
   return (
-    <div style={{ padding: '36px 48px', maxWidth: 960, boxSizing: 'border-box' }}>
+    <div style={{ padding: '40px 52px', maxWidth: 880, boxSizing: 'border-box' }}>
 
       {/* ── Greeting ── */}
-      <div style={{
-        display: 'flex', justifyContent: 'space-between',
-        alignItems: 'flex-start', marginBottom: 28,
-      }}>
-        <div>
-          <h1 style={{
-            fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif',
-            fontSize: 30, fontWeight: 700, color: '#0a0a0a',
-            margin: '0 0 6px', letterSpacing: '-0.02em', lineHeight: 1.2,
-          }}>
-            {greeting}, {displayName}.
-          </h1>
-          <p style={{ color: '#6b7280', fontSize: 14, margin: 0 }}>
-            {enrolledCourses.length > 0
-              ? `You${'’'}re in ${enrolledCourses.length} course${enrolledCourses.length !== 1 ? 's' : ''}.`
-              : 'Browse the library to enrol in your first course.'}
-          </p>
-        </div>
-        <span style={{
-          fontSize: 13, color: '#9ca3af', flexShrink: 0,
-          marginLeft: 24, paddingTop: 4, whiteSpace: 'nowrap',
+      <div style={{ marginBottom: 36 }}>
+        <p style={{
+          margin: '0 0 8px', fontSize: 11, fontWeight: 600,
+          color: '#b0b0b0', letterSpacing: '0.07em', textTransform: 'uppercase',
+          fontFamily: 'var(--font-poppins), sans-serif',
         }}>
           {todayStr}
-        </span>
+        </p>
+        <h1 style={{
+          fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif',
+          fontSize: 32, fontWeight: 700, color: '#0a0a0a',
+          margin: '0 0 14px', letterSpacing: '-0.025em', lineHeight: 1.15,
+        }}>
+          {greeting}, {displayName}.
+        </h1>
+        {enrolledCourses.length > 0 ? (
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <Chip>{enrolledCourses.length} Course{enrolledCourses.length !== 1 ? 's' : ''}</Chip>
+            {totalSaved > 0 && <Chip>{totalSaved} Saved</Chip>}
+          </div>
+        ) : (
+          <p style={{ color: '#9ca3af', fontSize: 14, margin: 0 }}>
+            Browse the library to enrol in your first course.
+          </p>
+        )}
       </div>
 
       {enrolledCourses.length > 0 ? (
         <>
-          {/* ── Stats chips ── */}
-          {totalSaved > 0 && (
-            <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
-              <Chip>{enrolledCourses.length} Course{enrolledCourses.length !== 1 ? 's' : ''}</Chip>
-              <Chip>{totalSaved} Saved</Chip>
-            </div>
-          )}
-
           {/* ── Continue Learning hero ── */}
           {heroCourse && (
-            <section style={{ marginBottom: 40 }}>
-              <Label>Continue Learning</Label>
+            <section style={{ marginBottom: 36 }}>
+              <SectionLabel>Continue Learning</SectionLabel>
               <Link
                 href={`/courses/${heroCourse.slug}`}
-                style={{ textDecoration: 'none', display: 'block', marginTop: 10 }}
+                style={{ textDecoration: 'none', display: 'block', marginTop: 12 }}
               >
                 <div style={{
-                  background: '#fff',
-                  border: '1px solid #e5e7eb',
-                  borderRadius: 16,
+                  borderRadius: 20,
                   overflow: 'hidden',
-                  display: 'flex',
-                  alignItems: 'stretch',
-                  boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+                  background: heroCourse.cover_color,
+                  boxShadow: '0 4px 32px rgba(0,0,0,0.13)',
                 }}>
-                  <div style={{ width: 5, background: heroCourse.accent_color, flexShrink: 0 }} />
-                  <div style={{
-                    flex: 1, padding: '24px 28px',
-                    display: 'flex', alignItems: 'center',
-                    justifyContent: 'space-between', gap: 24,
-                  }}>
-                    <div style={{ minWidth: 0 }}>
-                      <div style={{
-                        fontSize: 10, fontWeight: 700, letterSpacing: '0.08em',
-                        color: heroCourse.accent_color, textTransform: 'uppercase', marginBottom: 6,
-                      }}>
-                        {heroCourse.school}
-                      </div>
-                      <div style={{
-                        fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif',
-                        fontSize: 22, fontWeight: 700, color: '#0a0a0a',
-                        marginBottom: 8, lineHeight: 1.2, letterSpacing: '-0.01em',
-                      }}>
-                        {heroCourse.name}
-                      </div>
-                      <div style={{ fontSize: 13, color: '#9ca3af' }}>
-                        {heroCourse.lessons.length} lesson{heroCourse.lessons.length !== 1 ? 's' : ''}
-                        {heroCourse.lessons[0] && (
-                          <> · Start with <em style={{ fontStyle: 'normal', color: '#6b7280' }}>{heroCourse.lessons[0].title}</em></>
-                        )}
-                      </div>
+                  <div style={{ padding: '32px 36px 36px' }}>
+                    <div style={{
+                      fontSize: 10, fontWeight: 700, letterSpacing: '0.1em',
+                      color: heroCourse.accent_color, textTransform: 'uppercase', marginBottom: 10,
+                      fontFamily: 'var(--font-poppins), sans-serif',
+                    }}>
+                      {heroCourse.school}
                     </div>
                     <div style={{
+                      fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif',
+                      fontSize: 28, fontWeight: 700, lineHeight: 1.15,
+                      letterSpacing: '-0.02em', marginBottom: 8,
+                      color: isDark(heroCourse.cover_color) ? '#ffffff' : '#0a0a0a',
+                    }}>
+                      {heroCourse.name}
+                    </div>
+                    <div style={{
+                      fontSize: 13, marginBottom: 28,
+                      color: isDark(heroCourse.cover_color)
+                        ? 'rgba(255,255,255,0.5)'
+                        : 'rgba(0,0,0,0.45)',
+                      fontFamily: 'var(--font-poppins), sans-serif',
+                    }}>
+                      {heroCourse.lessons.length} lesson{heroCourse.lessons.length !== 1 ? 's' : ''}
+                      {heroCourse.lessons[0] && (
+                        <> · Start with <em style={{ fontStyle: 'normal', opacity: 0.85 }}>{heroCourse.lessons[0].title}</em></>
+                      )}
+                    </div>
+                    <div style={{
+                      display: 'inline-flex', alignItems: 'center',
                       padding: '11px 24px',
                       background: heroCourse.accent_color,
                       color: '#fff', borderRadius: 12,
-                      fontSize: 14, fontWeight: 600, flexShrink: 0,
-                      whiteSpace: 'nowrap',
+                      fontSize: 14, fontWeight: 600,
+                      fontFamily: 'var(--font-poppins), sans-serif',
                     }}>
                       Open Course →
                     </div>
@@ -159,11 +160,11 @@ export default async function DashboardPage() {
             </section>
           )}
 
-          {/* ── Lessons list ── */}
+          {/* ── Lessons ── */}
           {heroCourse && heroCourse.lessons.length > 0 && (
-            <section style={{ marginBottom: 40 }}>
-              <Label>Lessons</Label>
-              <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <section style={{ marginBottom: 36 }}>
+              <SectionLabel>Lessons</SectionLabel>
+              <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 4 }}>
                 {heroCourse.lessons.map((lesson, i) => (
                   <Link
                     key={lesson.id}
@@ -172,25 +173,28 @@ export default async function DashboardPage() {
                   >
                     <div style={{
                       display: 'flex', alignItems: 'center', gap: 14,
-                      padding: '12px 16px',
-                      background: '#fff', border: '1px solid #e5e7eb',
-                      borderRadius: 10,
-                      transition: 'border-color 0.15s',
+                      padding: '13px 18px',
+                      background: '#fff',
+                      border: '1px solid #efefef',
+                      borderRadius: 12,
                     }}>
                       <div style={{
-                        width: 26, height: 26, borderRadius: '50%',
-                        background: heroCourse.accent_color + '20',
+                        width: 28, height: 28, borderRadius: '50%',
+                        background: heroCourse.accent_color + '18',
                         color: heroCourse.accent_color,
                         fontSize: 11, fontWeight: 700,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        flexShrink: 0,
+                        flexShrink: 0, fontFamily: 'var(--font-poppins), sans-serif',
                       }}>
                         {i + 1}
                       </div>
-                      <div style={{ fontSize: 14, fontWeight: 500, color: '#1a1a1a', flex: 1 }}>
+                      <div style={{
+                        fontSize: 14, fontWeight: 500, color: '#1a1a1a', flex: 1,
+                        fontFamily: 'var(--font-poppins), sans-serif',
+                      }}>
                         {lesson.title}
                       </div>
-                      <span style={{ color: '#d1d5db', fontSize: 14 }}>→</span>
+                      <span style={{ color: heroCourse.accent_color, fontSize: 15, fontWeight: 500 }}>→</span>
                     </div>
                   </Link>
                 ))}
@@ -198,49 +202,43 @@ export default async function DashboardPage() {
             </section>
           )}
 
-          {/* ── My Courses grid ── */}
+          {/* ── Also enrolled ── */}
           {enrolledCourses.length > 1 && (
-            <section style={{ marginBottom: 40 }}>
-              <Label>My Courses</Label>
+            <section style={{ marginBottom: 36 }}>
+              <SectionLabel>Also Enrolled</SectionLabel>
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-                gap: 14, marginTop: 10,
+                gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))',
+                gap: 12, marginTop: 12,
               }}>
-                {enrolledCourses.map((course) => (
-                  <Link
-                    key={course.id}
-                    href={`/courses/${course.slug}`}
-                    style={{ textDecoration: 'none' }}
-                  >
+                {enrolledCourses.slice(1).map((course) => (
+                  <Link key={course.id} href={`/courses/${course.slug}`} style={{ textDecoration: 'none' }}>
                     <div style={{
-                      background: '#fff', border: '1px solid #e5e7eb',
-                      borderRadius: 14, overflow: 'hidden',
+                      background: '#fff', border: '1px solid #efefef',
+                      borderRadius: 16, overflow: 'hidden',
                       boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
-                      height: '100%',
                     }}>
-                      <div style={{ height: 5, background: course.accent_color }} />
-                      <div style={{ padding: '16px 18px 18px' }}>
+                      <div style={{ height: 4, background: course.accent_color }} />
+                      <div style={{ padding: '16px 18px 20px' }}>
                         <div style={{
-                          fontSize: 10, fontWeight: 700, letterSpacing: '0.07em',
+                          fontSize: 9, fontWeight: 700, letterSpacing: '0.07em',
                           color: course.accent_color, textTransform: 'uppercase', marginBottom: 4,
+                          fontFamily: 'var(--font-poppins), sans-serif',
                         }}>
                           {course.school}
                         </div>
                         <div style={{
                           fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif',
                           fontWeight: 700, fontSize: 15, color: '#0a0a0a',
-                          marginBottom: 6, lineHeight: 1.3, letterSpacing: '-0.01em',
+                          marginBottom: 14, lineHeight: 1.3, letterSpacing: '-0.01em',
                         }}>
                           {course.name}
                         </div>
-                        <div style={{ fontSize: 12, color: '#9ca3af', marginBottom: 16 }}>
-                          {course.lessons.length} lesson{course.lessons.length !== 1 ? 's' : ''}
-                        </div>
                         <div style={{
-                          display: 'inline-block', padding: '7px 16px',
+                          display: 'inline-flex', padding: '7px 14px',
                           background: course.accent_color, color: '#fff',
                           borderRadius: 8, fontSize: 12, fontWeight: 600,
+                          fontFamily: 'var(--font-poppins), sans-serif',
                         }}>
                           Continue →
                         </div>
@@ -257,16 +255,17 @@ export default async function DashboardPage() {
             <section>
               <div style={{
                 display: 'flex', justifyContent: 'space-between',
-                alignItems: 'baseline', marginBottom: 10,
+                alignItems: 'baseline', marginBottom: 12,
               }}>
-                <Label>Recently Saved</Label>
+                <SectionLabel>Recently Saved</SectionLabel>
                 <Link href="/saved" style={{
-                  fontSize: 12, color: '#6b7280', textDecoration: 'none', fontWeight: 500,
+                  fontSize: 12, color: '#9ca3af', textDecoration: 'none',
+                  fontWeight: 500, fontFamily: 'var(--font-poppins), sans-serif',
                 }}>
                   View all →
                 </Link>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {bookmarks.map((bookmark, i) => {
                   const step = Array.isArray(bookmark.steps) ? bookmark.steps[0] : bookmark.steps
                   if (!step) return null
@@ -282,31 +281,36 @@ export default async function DashboardPage() {
                   return (
                     <Link key={i} href={href} style={{ textDecoration: 'none' }}>
                       <div style={{
-                        background: '#fff', border: '1px solid #e5e7eb',
-                        borderRadius: 10, padding: '12px 16px',
+                        background: '#fff',
+                        border: '1px solid #efefef',
+                        borderLeft: `3px solid ${course.accent_color}`,
+                        borderRadius: 10,
+                        padding: '12px 16px',
                         display: 'flex', alignItems: 'center', gap: 12,
-                        borderLeft: `4px solid ${course.accent_color}`,
                       }}>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{
-                            fontSize: 10, fontWeight: 700, letterSpacing: '0.06em',
+                            fontSize: 9, fontWeight: 700, letterSpacing: '0.06em',
                             color: course.accent_color, textTransform: 'uppercase', marginBottom: 2,
+                            fontFamily: 'var(--font-poppins), sans-serif',
                           }}>
                             {course.name}
                           </div>
                           <div style={{
-                            fontSize: 13, fontWeight: 600, color: '#1a1a1a',
+                            fontSize: 13, fontWeight: 500, color: '#1a1a1a',
                             whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                            fontFamily: 'var(--font-poppins), sans-serif',
                           }}>
                             {step.title}
                           </div>
                         </div>
-                        <div style={{ fontSize: 11, color: '#9ca3af', whiteSpace: 'nowrap', flexShrink: 0 }}>
+                        <div style={{
+                          fontSize: 11, color: '#b0b0b0', whiteSpace: 'nowrap', flexShrink: 0,
+                          fontFamily: 'var(--font-poppins), sans-serif',
+                        }}>
                           {savedDate}
                         </div>
-                        <span style={{ color: course.accent_color, fontWeight: 700, fontSize: 14, flexShrink: 0 }}>
-                          →
-                        </span>
+                        <span style={{ color: course.accent_color, fontWeight: 600, fontSize: 14, flexShrink: 0 }}>→</span>
                       </div>
                     </Link>
                   )
@@ -316,30 +320,29 @@ export default async function DashboardPage() {
           )}
         </>
       ) : (
-        /* ── Empty state ── */
         <div style={{
-          background: '#fff', border: '1px solid #e5e7eb',
-          borderRadius: 16, padding: '56px 40px',
-          textAlign: 'center', maxWidth: 500,
+          background: '#fff', border: '1px solid #efefef',
+          borderRadius: 20, padding: '64px 48px',
+          textAlign: 'center', maxWidth: 480,
         }}>
-          <div style={{ fontSize: 36, marginBottom: 14 }}>📚</div>
+          <div style={{ fontSize: 40, marginBottom: 16 }}>📚</div>
           <div style={{
             fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif',
-            fontSize: 18, fontWeight: 700, color: '#0a0a0a', marginBottom: 8,
+            fontSize: 22, fontWeight: 700, color: '#0a0a0a', marginBottom: 10,
           }}>
             Find your first course
           </div>
           <p style={{
-            color: '#6b7280', fontSize: 14,
-            margin: '0 0 24px', lineHeight: 1.6,
+            color: '#9ca3af', fontSize: 14, margin: '0 0 28px', lineHeight: 1.6,
+            fontFamily: 'var(--font-poppins), sans-serif',
           }}>
             Booklesss has study notes for ZCAS and UNZA. Browse the library and enrol to get started.
           </p>
           <Link href="/library" style={{
-            display: 'inline-block', padding: '10px 24px',
+            display: 'inline-block', padding: '12px 28px',
             background: '#0a0a0a', color: '#fff',
-            borderRadius: 10, fontSize: 14, fontWeight: 600,
-            textDecoration: 'none',
+            borderRadius: 12, fontSize: 14, fontWeight: 600,
+            textDecoration: 'none', fontFamily: 'var(--font-poppins), sans-serif',
           }}>
             Browse Library
           </Link>
@@ -349,11 +352,12 @@ export default async function DashboardPage() {
   )
 }
 
-function Label({ children }: { children: React.ReactNode }) {
+function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <div style={{
       fontSize: 11, fontWeight: 700, letterSpacing: '0.08em',
-      textTransform: 'uppercase', color: '#6b7280',
+      textTransform: 'uppercase', color: 'rgba(0,0,0,0.28)',
+      fontFamily: 'var(--font-poppins), sans-serif',
     }}>
       {children}
     </div>
@@ -364,12 +368,13 @@ function Chip({ children }: { children: React.ReactNode }) {
   return (
     <div style={{
       display: 'inline-flex', alignItems: 'center',
-      padding: '5px 12px',
+      padding: '5px 14px',
       background: '#fff',
       border: '1px solid #e5e7eb',
       borderRadius: 20,
-      fontSize: 12, fontWeight: 500, color: '#374151',
+      fontSize: 13, fontWeight: 500, color: '#374151',
       boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
+      fontFamily: 'var(--font-poppins), sans-serif',
     }}>
       {children}
     </div>
