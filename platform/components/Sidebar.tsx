@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import {
   WidgetAddLinear, WidgetAddDuotone,
   WinRarLinear, WinRarDuotone,
@@ -73,6 +73,7 @@ interface SidebarProps {
 
 export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
   const pathname = usePathname()
+  const router = useRouter()
   const [expanded, setExpanded] = useState<Record<string, boolean>>(
     Object.fromEntries(courses.map((c, i) => [c.slug, i === 0]))
   )
@@ -81,6 +82,10 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
     setExpanded((prev) => ({ ...prev, [slug]: !prev[slug] }))
 
   const initial = userName.charAt(0).toUpperCase()
+
+  useEffect(() => {
+    PRIMARY_NAV.forEach(({ href }) => router.prefetch(href))
+  }, [router])
 
   const touchStartX = useRef(0)
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -176,6 +181,8 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
                     display: 'flex',
                     opacity: active ? 1 : 0.7,
                     color: '#0a0a0a',
+                    filter: 'drop-shadow(0px 1px 1px rgba(0,0,0,0.25))',
+                    WebkitFilter: 'drop-shadow(0px 1px 1px rgba(0,0,0,0.25))',
                   }}>
                     {active ? <Active /> : <Inactive />}
                   </span>
