@@ -1,15 +1,32 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, unstable_cache } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createStaticClient } from '@supabase/supabase-js'
+
+const getAllCourses = unstable_cache(
+  async () => {
+    const supabase = createStaticClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    )
+    const { data } = await supabase
+      .from('courses')
+      .select('id, slug, name, school, accent_color, cover_color')
+      .order('name')
+    return data ?? []
+  },
+  ['all-courses'],
+  { revalidate: 3600, tags: ['courses'] }
+)
 
 export default async function LibraryPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [{ data: allCourses }, { data: enrollmentRows }] = await Promise.all([
-    supabase.from('courses').select('id, slug, name, school, accent_color, cover_color').order('name'),
+  const [allCourses, { data: enrollmentRows }] = await Promise.all([
+    getAllCourses(),
     supabase.from('enrollments').select('course_id').eq('user_id', user.id),
   ])
 
