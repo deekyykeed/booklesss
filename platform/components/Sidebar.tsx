@@ -11,6 +11,7 @@ import {
   CalendarLinear, CalendarDuotone,
   NotesLinear,
   MagniferLinear,
+  SidebarMinimalisticLinear,
 } from './icons/solar'
 
 const PRIMARY_NAV = [
@@ -110,15 +111,6 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
         overflow: 'hidden',
         borderRight: '1px solid rgba(0,0,0,0.07)',
       }}>
-      {onClose && (
-        <div className="sidebar-close-row">
-          <button onClick={onClose} className="sidebar-close-btn" aria-label="Close menu">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M2 2l12 12M14 2L2 14" stroke="#0F1F35" strokeWidth="1.75" strokeLinecap="round" />
-            </svg>
-          </button>
-        </div>
-      )}
 
       {/* Scrollable nav area — gap: 22px, padding: 14px matches Framer */}
       <div style={{
@@ -154,6 +146,15 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
 
           <button className="squircle-btn" style={{ color: '#0a0a0a' }} aria-label="New note">
             <NotesLinear size={20} />
+          </button>
+
+          <button
+            className="squircle-btn sidebar-toggle-btn"
+            style={{ color: '#0a0a0a' }}
+            aria-label="Close sidebar"
+            onClick={onClose}
+          >
+            <SidebarMinimalisticLinear size={20} />
           </button>
         </div>
 
