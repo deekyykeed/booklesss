@@ -161,7 +161,7 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
           {PRIMARY_NAV.map(({ href, label, exact, Inactive, Active }) => {
             const active = exact ? pathname === href : pathname.startsWith(href)
             return (
-              <Link key={href} href={href} style={{ textDecoration: 'none', display: 'block' }}>
+              <Link key={href} href={href} onClick={onClose} style={{ textDecoration: 'none', display: 'block' }}>
                 <div className={active ? 'nav-item nav-item-active' : 'nav-item'} style={{
                   display: 'flex',
                   flexDirection: 'row',
@@ -245,6 +245,7 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
                           <Link
                             key={lesson.slug}
                             href={href}
+                            onClick={onClose}
                             style={{
                               display: 'block', padding: '4px 10px', fontSize: 12,
                               color: active ? '#0F1F35' : 'rgba(0,0,0,0.45)',
@@ -271,7 +272,7 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
             fontFamily: 'var(--font-poppins), sans-serif', padding: '0 8px',
           }}>
             No courses yet —{' '}
-            <Link href="/library" style={{ color: '#0F1F35', textDecoration: 'underline' }}>
+            <Link href="/library" onClick={onClose} style={{ color: '#0F1F35', textDecoration: 'underline' }}>
               browse library
             </Link>
           </div>
