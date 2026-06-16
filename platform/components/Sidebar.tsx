@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   WidgetAddLinear, WidgetAddDuotone,
-  BookLinear, BookDuotone,
+  WinRarLinear, WinRarDuotone,
   FolderFilesLinear, FolderFilesDuotone,
   LetterLinear, LetterDuotone,
   CalendarLinear, CalendarDuotone,
@@ -25,8 +25,8 @@ const PRIMARY_NAV = [
     href: '/library',
     label: 'Library',
     exact: false,
-    Inactive: () => <BookLinear size={20} />,
-    Active: () => <BookDuotone size={20} />,
+    Inactive: () => <WinRarLinear size={20} />,
+    Active: () => <WinRarDuotone size={20} />,
   },
   {
     href: '/saved',
