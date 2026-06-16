@@ -8,8 +8,10 @@ import {
   BookLinear, BookBold,
   FolderFilesLinear, FolderFilesBold,
   LetterLinear, LetterBold,
+  CalendarLinear, CalendarBold,
+  NotesLinear,
+  MagniferLinear,
 } from './icons/solar'
-import { SearchRemix } from './icons/streamline'
 
 const PRIMARY_NAV = [
   {
@@ -39,6 +41,13 @@ const PRIMARY_NAV = [
     exact: false,
     Inactive: () => <LetterLinear size={20} />,
     Active: () => <LetterBold size={20} />,
+  },
+  {
+    href: '/calendar',
+    label: 'Calendar',
+    exact: false,
+    Inactive: () => <CalendarLinear size={20} />,
+    Active: () => <CalendarBold size={20} />,
   },
 ]
 
@@ -77,7 +86,7 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
     <aside style={{
       width: 288,
       minWidth: 288,
-      background: '#ffffff',
+      background: 'rgb(255, 255, 255)',
       display: 'flex',
       flexDirection: 'column',
       height: '100vh',
@@ -94,6 +103,7 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
         </div>
       )}
 
+      {/* Scrollable nav area — gap: 22px, padding: 14px matches Framer */}
       <div style={{
         flex: 1,
         overflowY: 'auto',
@@ -103,8 +113,13 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
         gap: '22px',
       }}>
 
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+        {/* Header row — gap: 8px, horizontal, center-aligned */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: '8px',
+        }}>
           <span style={{
             flex: 1,
             fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif',
@@ -115,37 +130,52 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
           }}>
             Booklesss
           </span>
-          <button style={{
-            background: 'none', border: 'none', padding: '8px',
-            cursor: 'pointer', display: 'flex', alignItems: 'center',
-            borderRadius: '10px', color: '#0a0a0a',
-          }} aria-label="Search">
-            <SearchRemix size={18} />
+
+          <button className="squircle-btn" style={{ color: '#0a0a0a' }} aria-label="Search">
+            <MagniferLinear size={20} />
+          </button>
+
+          <button className="squircle-btn" style={{ color: '#0a0a0a' }} aria-label="New note">
+            <NotesLinear size={20} />
           </button>
         </div>
 
-        {/* Primary nav */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+        {/* Nav items — gap: 2px between items, vertical stack */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '2px',
+        }}>
           {PRIMARY_NAV.map(({ href, label, exact, Inactive, Active }) => {
             const active = exact ? pathname === href : pathname.startsWith(href)
             return (
               <Link key={href} href={href} style={{ textDecoration: 'none', display: 'block' }}>
                 <div style={{
-                  display: 'flex', alignItems: 'center', gap: '10px',
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: '10px',
                   padding: '8px',
                   borderRadius: active ? '12px' : '8px',
                   background: active ? 'rgba(0,0,0,0.06)' : 'transparent',
+                  overflow: 'clip',
                   transition: 'background 0.12s ease',
-                  color: active ? '#0a0a0a' : 'rgba(0,0,0,0.45)',
                 }}>
-                  <span style={{ flexShrink: 0, opacity: active ? 1 : 0.7, display: 'flex' }}>
+                  {/* opacity: 0.7 on inactive, no opacity on active — matches Framer */}
+                  <span style={{
+                    flexShrink: 0,
+                    display: 'flex',
+                    opacity: active ? 1 : 0.7,
+                    color: '#0a0a0a',
+                  }}>
                     {active ? <Active /> : <Inactive />}
                   </span>
+                  {/* font: Poppins-regular (400) for both states — matches Framer */}
                   <span style={{
                     flex: 1,
                     fontFamily: 'var(--font-poppins), sans-serif',
                     fontSize: 14,
-                    fontWeight: active ? 500 : 400,
+                    fontWeight: 400,
                     color: active ? '#000000' : 'rgba(0,0,0,0.6)',
                   }}>
                     {label}
@@ -156,7 +186,7 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
           })}
         </div>
 
-        {/* My Courses */}
+        {/* My Courses accordion */}
         {courses.length > 0 && (
           <div>
             <div style={{
@@ -185,7 +215,7 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
                       background: course.accentColor, flexShrink: 0,
                     }} />
                     <span style={{
-                      color: 'rgba(0,0,0,0.7)', fontSize: 13, fontWeight: 500,
+                      color: 'rgba(0,0,0,0.7)', fontSize: 13, fontWeight: 400,
                       flex: 1, fontFamily: 'var(--font-poppins), sans-serif',
                     }}>
                       {course.name}

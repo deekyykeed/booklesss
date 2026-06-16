@@ -112,6 +112,24 @@
   }
 }
 
+/* ── Squircle / superellipse button ── */
+.squircle-btn {
+  corner-shape: superellipse(1.5);
+  border-radius: calc(12px * var(--one-if-corner-shape-supported, var(--corner-shape-fallback, 1)));
+  background: linear-gradient(135deg, #efeeeb 0%, rgb(232, 231, 227) 100%);
+  overflow: clip;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  flex-wrap: nowrap;
+  padding: 8px;
+  gap: 10px;
+}
+
 /* ── Skeleton loading ── */
 @keyframes skeleton-pulse {
   0%, 100% { opacity: 1; }
