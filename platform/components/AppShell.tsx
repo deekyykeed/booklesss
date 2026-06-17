@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Sidebar from './Sidebar'
+import SearchOverlay from './SearchOverlay'
 import { SidebarMinimalisticLinear } from './icons/solar'
 
 interface SidebarLesson { slug: string; title: string; order_index: number }
@@ -19,6 +20,19 @@ export default function AppShell({
   children: React.ReactNode
 }) {
   const [open, setOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+
+  // Cmd/Ctrl+K to open search
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setSearchOpen(true)
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [])
 
   return (
     <div style={{
@@ -53,13 +67,21 @@ export default function AppShell({
 
       {/* Sidebar */}
       <div className={`sidebar-wrapper${open ? ' sidebar-open' : ''}`}>
-        <Sidebar courses={courses} userName={userName} onClose={() => setOpen(false)} />
+        <Sidebar
+          courses={courses}
+          userName={userName}
+          onClose={() => setOpen(false)}
+          onSearchOpen={() => setSearchOpen(true)}
+        />
       </div>
 
       {/* Main content */}
       <div className="main-content">
         {children}
       </div>
+
+      {/* Search overlay */}
+      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
     </div>
   )
 }

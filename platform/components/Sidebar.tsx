@@ -69,9 +69,10 @@ interface SidebarProps {
   courses: SidebarCourse[]
   userName: string
   onClose?: () => void
+  onSearchOpen?: () => void
 }
 
-export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
+export default function Sidebar({ courses, userName, onClose, onSearchOpen }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const [expanded, setExpanded] = useState<Record<string, boolean>>(
@@ -139,7 +140,7 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
             Booklesss
           </span>
 
-          <button className="squircle-btn" style={{ color: '#0a0a0a' }} aria-label="Search">
+          <button className="squircle-btn" style={{ color: '#0a0a0a' }} aria-label="Search" onClick={onSearchOpen}>
             <MagniferLinear size={20} />
           </button>
 
@@ -282,37 +283,44 @@ export default function Sidebar({ courses, userName, onClose }: SidebarProps) {
         )}
       </div>
 
-      {/* User footer */}
-      <div style={{
-        padding: '12px 16px',
-        borderTop: '1px solid rgba(0,0,0,0.06)',
-        display: 'flex', alignItems: 'center', gap: 10,
-      }}>
+      {/* User footer — links to /profile */}
+      <Link href="/profile" onClick={onClose} style={{ textDecoration: 'none' }}>
         <div style={{
-          width: 32, height: 32, borderRadius: '50%', background: '#e5e7eb',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 13, fontWeight: 700, color: '#374151', flexShrink: 0,
-          position: 'relative', fontFamily: 'var(--font-poppins), sans-serif',
-        }}>
-          {initial}
-          <span style={{
-            position: 'absolute', bottom: 1, right: 1, width: 8, height: 8,
-            borderRadius: '50%', background: '#22c55e', border: '1.5px solid #fff',
-          }} />
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
+          padding: '12px 16px',
+          borderTop: '1px solid rgba(0,0,0,0.06)',
+          display: 'flex', alignItems: 'center', gap: 10,
+          cursor: 'pointer',
+          transition: 'background 0.12s ease',
+        }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(0,0,0,0.03)' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent' }}
+        >
           <div style={{
-            color: '#1a1a1a', fontSize: 13, fontWeight: 600,
-            whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-            fontFamily: 'var(--font-poppins), sans-serif',
+            width: 32, height: 32, borderRadius: '50%', background: '#e5e7eb',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 13, fontWeight: 700, color: '#374151', flexShrink: 0,
+            position: 'relative', fontFamily: 'var(--font-poppins), sans-serif',
           }}>
-            {userName}
+            {initial}
+            <span style={{
+              position: 'absolute', bottom: 1, right: 1, width: 8, height: 8,
+              borderRadius: '50%', background: '#22c55e', border: '1.5px solid #fff',
+            }} />
           </div>
-          <div style={{ color: 'rgba(0,0,0,0.35)', fontSize: 11, fontFamily: 'var(--font-poppins), sans-serif' }}>
-            Student
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{
+              color: '#1a1a1a', fontSize: 13, fontWeight: 600,
+              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+              fontFamily: 'var(--font-poppins), sans-serif',
+            }}>
+              {userName}
+            </div>
+            <div style={{ color: 'rgba(0,0,0,0.35)', fontSize: 11, fontFamily: 'var(--font-poppins), sans-serif' }}>
+              Student · Settings
+            </div>
           </div>
         </div>
-      </div>
+      </Link>
     </aside>
   )
 }
