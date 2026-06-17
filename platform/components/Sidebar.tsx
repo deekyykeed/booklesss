@@ -4,11 +4,9 @@ import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
-  WidgetAddLinear, WidgetAddDuotone,
-  WinRarLinear, WinRarDuotone,
-  FolderFilesLinear, FolderFilesDuotone,
-  LetterLinear, LetterDuotone,
-  CalendarLinear, CalendarDuotone,
+  HomeLinear, HomeBold,
+  BookLinear, BookBold,
+  BookmarkLinear, BookmarkBold,
   MagniferLinear,
   SidebarMinimalisticLinear,
 } from './icons/solar'
@@ -16,38 +14,24 @@ import {
 const PRIMARY_NAV = [
   {
     href: '/dashboard',
-    label: 'Dashboard',
+    label: 'Home',
     exact: true,
-    Inactive: () => <WidgetAddLinear size={20} />,
-    Active: () => <WidgetAddDuotone size={20} />,
+    Inactive: () => <HomeLinear size={20} />,
+    Active: () => <HomeBold size={20} />,
   },
   {
     href: '/library',
     label: 'Library',
     exact: false,
-    Inactive: () => <WinRarLinear size={20} />,
-    Active: () => <WinRarDuotone size={20} />,
+    Inactive: () => <BookLinear size={20} />,
+    Active: () => <BookBold size={20} />,
   },
   {
     href: '/saved',
-    label: 'Files',
+    label: 'Saved',
     exact: false,
-    Inactive: () => <FolderFilesLinear size={20} />,
-    Active: () => <FolderFilesDuotone size={20} />,
-  },
-  {
-    href: '/notifications',
-    label: 'Inbox',
-    exact: false,
-    Inactive: () => <LetterLinear size={20} />,
-    Active: () => <LetterDuotone size={20} />,
-  },
-  {
-    href: '/calendar',
-    label: 'Calendar',
-    exact: false,
-    Inactive: () => <CalendarLinear size={20} />,
-    Active: () => <CalendarDuotone size={20} />,
+    Inactive: () => <BookmarkLinear size={20} />,
+    Active: () => <BookmarkBold size={20} />,
   },
 ]
 
