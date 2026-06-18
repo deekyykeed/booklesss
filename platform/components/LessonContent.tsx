@@ -9,6 +9,7 @@ export interface LessonStep {
   course: string
   school: string
   accentColor: string
+  coverColor: string
   sections: ContentSection[]
   discussionQuestions: string[]
   keyTerms: { term: string; definition: string }[]
@@ -30,7 +31,7 @@ export default function LessonContent({ step }: { step: LessonStep }) {
       {/* Cover band */}
       <div
         style={{
-          background: '#0F1F35',
+          background: step.coverColor,
           padding: '40px 48px 36px',
           borderBottom: `4px solid ${step.accentColor}`,
         }}

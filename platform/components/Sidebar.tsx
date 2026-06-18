@@ -7,8 +7,7 @@ import {
   WidgetAddLinear, WidgetAddDuotone,
   WinRarLinear, WinRarDuotone,
   FolderFilesLinear, FolderFilesDuotone,
-  LetterLinear, LetterDuotone,
-  CalendarLinear, CalendarDuotone,
+  NotesLinear, NotesBold,
   MagniferLinear,
   SidebarMinimalisticLinear,
 } from './icons/solar'
@@ -30,24 +29,17 @@ const PRIMARY_NAV = [
   },
   {
     href: '/saved',
-    label: 'Files',
+    label: 'Saved',
     exact: false,
     Inactive: () => <FolderFilesLinear size={20} />,
     Active: () => <FolderFilesDuotone size={20} />,
   },
   {
-    href: '/notifications',
-    label: 'Inbox',
+    href: '/exams',
+    label: 'Exams',
     exact: false,
-    Inactive: () => <LetterLinear size={20} />,
-    Active: () => <LetterDuotone size={20} />,
-  },
-  {
-    href: '/calendar',
-    label: 'Calendar',
-    exact: false,
-    Inactive: () => <CalendarLinear size={20} />,
-    Active: () => <CalendarDuotone size={20} />,
+    Inactive: () => <NotesLinear size={20} />,
+    Active: () => <NotesBold size={20} />,
   },
 ]
 
