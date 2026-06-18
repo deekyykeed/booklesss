@@ -159,7 +159,6 @@ export default async function ExamsPage() {
                     background: '#fff',
                     border: '1px solid #e5e7eb',
                     borderRadius: 8,
-                    borderLeft: `4px solid ${group.accentColor}`,
                   }}
                 >
                   <div style={{ flex: 1 }}>

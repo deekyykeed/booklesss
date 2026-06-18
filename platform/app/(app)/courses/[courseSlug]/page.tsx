@@ -149,7 +149,6 @@ export default async function CourseOverviewPage(props: { params: Promise<{ cour
                       display: 'flex',
                       alignItems: 'center',
                       gap: 12,
-                      borderLeft: `4px solid ${course.accent_color}`,
                     }}
                   >
                     <div style={{ flex: 1 }}>

@@ -150,19 +150,20 @@ export default async function DashboardPage() {
                   if (!lesson || !bCourse) return null
                   return (
                     <Link key={i} href={`/courses/${bCourse.slug}/${lesson.slug}`} style={{ textDecoration: 'none' }}>
-                      <div style={{ background: '#fff', border: '1px solid #efefef', borderLeft: `3px solid ${bCourse.accent_color}`, borderRadius: 10, padding: '11px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <div style={{ background: '#fff', border: '1px solid #efefef', borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+                        <div style={{ width: 8, height: 8, borderRadius: '50%', background: bCourse.accent_color, flexShrink: 0 }} />
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.06em', color: bCourse.accent_color, textTransform: 'uppercase', marginBottom: 2, fontFamily: 'var(--font-poppins), sans-serif' }}>
+                          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', color: '#b8b8b8', textTransform: 'uppercase', marginBottom: 2, fontFamily: 'var(--font-poppins), sans-serif' }}>
                             {bCourse.name}
                           </div>
                           <div style={{ fontSize: 13, fontWeight: 500, color: '#1a1a1a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontFamily: 'var(--font-poppins), sans-serif' }}>
                             {step.title}
                           </div>
                         </div>
-                        <div style={{ fontSize: 11, color: '#b0b0b0', whiteSpace: 'nowrap', flexShrink: 0, fontFamily: 'var(--font-poppins), sans-serif' }}>
+                        <div style={{ fontSize: 11, color: '#c0c0c0', whiteSpace: 'nowrap', flexShrink: 0, fontFamily: 'var(--font-poppins), sans-serif' }}>
                           {new Date(bookmark.saved_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
                         </div>
-                        <span style={{ color: bCourse.accent_color, fontWeight: 600, fontSize: 14, flexShrink: 0 }}>→</span>
+                        <span style={{ color: '#c0c0c0', fontWeight: 500, fontSize: 13, flexShrink: 0 }}>→</span>
                       </div>
                     </Link>
                   )
@@ -190,20 +191,25 @@ export default async function DashboardPage() {
   )
 }
 
-function StatCard({ value, sub, label, accent }: { value: string; sub: string; label: string; accent?: boolean }) {
-  void label
+function StatCard({ value, sub, label }: { value: string; sub: string; label: string; accent?: boolean }) {
   return (
     <div style={{
       background: '#fff',
-      border: `1px solid ${accent ? 'rgba(15,31,53,0.12)' : '#e5e7eb'}`,
-      borderRadius: 12,
-      padding: '16px 20px',
-      boxShadow: accent ? '0 2px 8px rgba(15,31,53,0.07)' : '0 1px 3px rgba(0,0,0,0.04)',
+      border: '1px solid #efefef',
+      borderRadius: 16,
+      padding: '20px 22px',
+      boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 6,
     }}>
-      <div style={{ fontSize: 28, fontWeight: 700, color: '#0a0a0a', letterSpacing: '-0.03em', marginBottom: 2, fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif', lineHeight: 1 }}>
+      <div style={{ fontSize: 10, fontWeight: 700, color: '#b8b8b8', letterSpacing: '0.08em', textTransform: 'uppercase', fontFamily: 'var(--font-poppins), sans-serif' }}>
+        {label}
+      </div>
+      <div style={{ fontSize: 30, fontWeight: 700, color: '#0a0a0a', letterSpacing: '-0.04em', lineHeight: 1, fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif' }}>
         {value}
       </div>
-      <div style={{ fontSize: 11, color: '#b0b0b0', fontFamily: 'var(--font-poppins), sans-serif', lineHeight: 1.4 }}>
+      <div style={{ fontSize: 11, color: '#c0c0c0', fontFamily: 'var(--font-poppins), sans-serif' }}>
         {sub}
       </div>
     </div>
@@ -216,86 +222,88 @@ function CourseCard({ course, completed, total, pct, nextStep, nextLesson, href 
   lastActivity: string | null
 }) {
   const dark = isDark(course.cover_color)
-  const textColor   = dark ? '#ffffff' : '#0a0a0a'
-  const subtextColor = dark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.4)'
+  const textColor    = dark ? '#ffffff' : '#0a0a0a'
+  const subtextColor = dark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.4)'
+  const barBg        = dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)'
   const cta = completed === 0 ? 'Start Here' : pct === 100 ? 'Review Course' : 'Continue'
 
   return (
-    <div style={{ border: '1px solid #e5e7eb', borderRadius: 16, overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+    <div style={{ borderRadius: 18, overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 2px 12px rgba(0,0,0,0.08)', border: '1px solid rgba(0,0,0,0.06)' }}>
 
-      {/* Course color header */}
-      <div style={{ background: course.cover_color, padding: '22px 24px 22px' }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10, marginBottom: 18 }}>
-          <div style={{ fontFamily: 'var(--font-parastoo)', fontWeight: 700, fontSize: 15, color: textColor, lineHeight: 1.25, flex: 1 }}>
-            {course.name}
+      {/* Color header */}
+      <div style={{ background: course.cover_color, padding: '24px 24px 20px' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8, marginBottom: total > 0 ? 20 : 0 }}>
+          <div>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: course.accent_color, marginBottom: 5, fontFamily: 'var(--font-poppins)' }}>
+              {course.school}
+            </div>
+            <div style={{ fontFamily: 'var(--font-parastoo)', fontWeight: 700, fontSize: 16, color: textColor, lineHeight: 1.2 }}>
+              {course.name}
+            </div>
           </div>
-          <span style={{
-            fontSize: 9, fontWeight: 700, color: course.accent_color,
-            background: dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.07)',
-            padding: '3px 8px', borderRadius: 5, letterSpacing: '0.07em',
-            textTransform: 'uppercase', flexShrink: 0,
+          <div style={{
+            width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+            background: dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            {course.school}
-          </span>
+            <span style={{ fontSize: 16 }}>📘</span>
+          </div>
         </div>
 
-        {total > 0 ? (
-          <>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 7 }}>
-              <span style={{ fontSize: 12, color: subtextColor, fontFamily: 'var(--font-poppins)' }}>
-                {completed} of {total} steps
+        {total > 0 && (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
+              <span style={{ fontSize: 11, color: subtextColor, fontFamily: 'var(--font-poppins)' }}>
+                {completed} / {total} steps
               </span>
-              <span style={{ fontSize: 13, fontWeight: 700, color: textColor, fontFamily: 'var(--font-poppins)' }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: textColor, fontFamily: 'var(--font-poppins)' }}>
                 {pct}%
               </span>
             </div>
-            <div style={{ background: dark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)', borderRadius: 3, height: 5 }}>
-              <div style={{ width: `${pct}%`, height: '100%', background: course.accent_color, borderRadius: 3 }} />
+            <div style={{ background: barBg, borderRadius: 4, height: 4 }}>
+              <div style={{ width: `${pct}%`, height: '100%', background: course.accent_color, borderRadius: 4, transition: 'width 0.4s ease' }} />
             </div>
-          </>
-        ) : (
-          <div style={{ fontSize: 12, color: subtextColor, fontFamily: 'var(--font-poppins)' }}>No content yet</div>
+          </div>
         )}
       </div>
 
       {/* White body */}
-      <div style={{ background: '#fff', padding: '18px 24px 20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ background: '#fff', padding: '18px 24px 22px', flex: 1, display: 'flex', flexDirection: 'column' }}>
         {pct === 100 ? (
           <div style={{ flex: 1, marginBottom: 18 }}>
-            <div style={{ fontSize: 14, fontWeight: 600, color: '#16a34a', marginBottom: 3 }}>
-              ✓ All steps complete
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 4 }}>
+              <span style={{ width: 18, height: 18, borderRadius: '50%', background: '#dcfce7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10 }}>✓</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: '#16a34a', fontFamily: 'var(--font-poppins)' }}>Course complete</span>
             </div>
-            <div style={{ fontSize: 12, color: '#9ca3af', fontFamily: 'var(--font-poppins)' }}>
+            <div style={{ fontSize: 12, color: '#b0b0b0', fontFamily: 'var(--font-poppins)', paddingLeft: 25 }}>
               Review any step to keep it sharp
             </div>
           </div>
         ) : nextStep ? (
           <div style={{ flex: 1, marginBottom: 18 }}>
-            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: '#9ca3af', marginBottom: 7, fontFamily: 'var(--font-poppins)' }}>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: '#c0c0c0', marginBottom: 8, fontFamily: 'var(--font-poppins)' }}>
               {completed === 0 ? 'Start with' : 'Next up'}
             </div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: '#0F1F35', marginBottom: 3, lineHeight: 1.3 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: '#0F1F35', marginBottom: 3, lineHeight: 1.35, fontFamily: 'var(--font-poppins)' }}>
               {nextStep.title}
             </div>
             {nextLesson && (
-              <div style={{ fontSize: 12, color: '#9ca3af', fontFamily: 'var(--font-poppins)' }}>
+              <div style={{ fontSize: 11, color: '#b8b8b8', fontFamily: 'var(--font-poppins)' }}>
                 {nextLesson.title}
               </div>
             )}
           </div>
         ) : (
           <div style={{ flex: 1, marginBottom: 18 }}>
-            <div style={{ fontSize: 13, color: '#9ca3af', fontFamily: 'var(--font-poppins)' }}>
-              No steps available yet
-            </div>
+            <div style={{ fontSize: 13, color: '#b0b0b0', fontFamily: 'var(--font-poppins)' }}>No content yet</div>
           </div>
         )}
 
         <Link href={href} style={{
           display: 'inline-flex', alignItems: 'center', gap: 6,
-          padding: '9px 18px', background: course.accent_color, color: '#fff',
-          borderRadius: 8, fontSize: 13, fontWeight: 600, textDecoration: 'none',
-          alignSelf: 'flex-start', fontFamily: 'var(--font-poppins)',
+          padding: '10px 20px', background: '#0a0a0a', color: '#fff',
+          borderRadius: 10, fontSize: 12, fontWeight: 600, textDecoration: 'none',
+          alignSelf: 'flex-start', fontFamily: 'var(--font-poppins)', letterSpacing: '0.01em',
         }}>
           {cta} →
         </Link>
