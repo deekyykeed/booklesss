@@ -89,7 +89,7 @@ export default function SearchOverlay({ open, onClose }: SearchOverlayProps) {
       }
 
       for (const s of steps ?? []) {
-        const lesson = (Array.isArray(s.lessons) ? s.lessons[0] : s.lessons) as {
+        const lesson = (Array.isArray(s.lessons) ? s.lessons[0] : s.lessons) as unknown as {
           slug: string; courses: { slug: string; name: string; accent_color: string } | null
         } | null
         if (!lesson) continue
