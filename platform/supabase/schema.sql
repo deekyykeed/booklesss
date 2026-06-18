@@ -73,14 +73,33 @@ insert into courses (slug, name, school, cover_color, accent_color) values
   ('bba-1110',             'BBA 1110',             'UNZA', '#1C2526', '#F59E0B')
 on conflict (slug) do nothing;
 
+create table if not exists exams (
+  id         uuid primary key default gen_random_uuid(),
+  course_id  uuid references courses(id) on delete cascade,
+  title      text not null,
+  year       integer not null,
+  session    text not null,
+  pdf_url    text,
+  created_at timestamptz default now()
+);
+
+create table if not exists step_completions (
+  user_id      uuid not null references profiles(id) on delete cascade,
+  step_id      uuid not null references steps(id) on delete cascade,
+  completed_at timestamptz default now(),
+  primary key (user_id, step_id)
+);
+
 -- ── RLS: enable for all tables ──────────────────────────────
-alter table courses     enable row level security;
-alter table lessons     enable row level security;
-alter table steps       enable row level security;
-alter table glossary    enable row level security;
-alter table profiles    enable row level security;
-alter table enrollments enable row level security;
-alter table bookmarks   enable row level security;
+alter table courses          enable row level security;
+alter table lessons          enable row level security;
+alter table steps            enable row level security;
+alter table glossary         enable row level security;
+alter table profiles         enable row level security;
+alter table enrollments      enable row level security;
+alter table bookmarks        enable row level security;
+alter table exams            enable row level security;
+alter table step_completions enable row level security;
 
 -- Public read access for course content
 create policy "public read courses"  on courses  for select using (true);
@@ -98,4 +117,11 @@ create policy "enrollments: own rows" on enrollments
 
 -- Bookmarks: own rows only
 create policy "bookmarks: own rows" on bookmarks
+  for all using (auth.uid() = user_id);
+
+-- Exams: public read
+create policy "public read exams" on exams for select using (true);
+
+-- Step completions: own rows only
+create policy "step_completions: own rows" on step_completions
   for all using (auth.uid() = user_id);

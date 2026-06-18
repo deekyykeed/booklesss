@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import LessonContent, { LessonStep } from '@/components/LessonContent'
 import CommunityPanel from '@/components/CommunityPanel'
 import BookmarkButton from '@/components/BookmarkButton'
+import MarkCompleteButton from '@/components/MarkCompleteButton'
 export default async function LessonPage(props: {
   params: Promise<{ courseSlug: string; lessonSlug: string }>
   searchParams: Promise<{ step?: string }>
@@ -45,15 +46,14 @@ export default async function LessonPage(props: {
 
   if (!selectedStep) notFound()
 
-  // Check if user has bookmarked this step
-  const { data: bookmark } = await supabase
-    .from('bookmarks')
-    .select('step_id')
-    .eq('user_id', user.id)
-    .eq('step_id', selectedStep.id)
-    .single()
+  // Check if user has bookmarked or completed this step
+  const [{ data: bookmark }, { data: completion }] = await Promise.all([
+    supabase.from('bookmarks').select('step_id').eq('user_id', user.id).eq('step_id', selectedStep.id).single(),
+    supabase.from('step_completions').select('step_id').eq('user_id', user.id).eq('step_id', selectedStep.id).single(),
+  ])
 
   const isBookmarked = !!bookmark
+  const isCompleted = !!completion
 
   type RawContent = {
     sections?: { eyebrow: string; heading: string; body: string; callout?: { label: string; body: string } }[]
@@ -188,12 +188,13 @@ export default async function LessonPage(props: {
           </div>
         </div>
 
-        <div style={{ position: 'fixed', bottom: 28, right: 340, zIndex: 50 }}>
+        <div style={{ position: 'fixed', bottom: 28, right: 304, zIndex: 50, display: 'flex', gap: 8 }}>
+          <MarkCompleteButton stepId={selectedStep.id} userId={user.id} initialCompleted={isCompleted} accentColor={course.accent_color} />
           <BookmarkButton stepId={selectedStep.id} userId={user.id} initialBookmarked={isBookmarked} accentColor={course.accent_color} />
         </div>
       </div>
       <CommunityPanel
-        lessonTitle={`${String(lesson.order_index).padStart(2, '0')} · ${lesson.title}`}
+        lessonTitle={lesson.title}
         courseName={course.name}
         school={course.school}
         accentColor={course.accent_color}
