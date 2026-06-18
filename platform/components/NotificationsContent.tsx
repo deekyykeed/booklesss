@@ -50,7 +50,7 @@ export default function NotificationsContent({ userId }: { userId: string }) {
       const activity: ActivityItem[] = []
 
       for (const b of bookmarks ?? []) {
-        const step = (Array.isArray(b.steps) ? b.steps[0] : b.steps) as {
+        const step = (Array.isArray(b.steps) ? b.steps[0] : b.steps) as unknown as {
           id: string; title: string; slug: string
           lessons: { slug: string; courses: { name: string; slug: string; accent_color: string } | null } | null
         } | null
