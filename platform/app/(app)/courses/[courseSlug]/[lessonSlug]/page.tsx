@@ -17,7 +17,7 @@ export default async function LessonPage(props: {
 
   const { data: course } = await supabase
     .from('courses')
-    .select('id, name, school, accent_color')
+    .select('id, name, school, accent_color, cover_color')
     .eq('slug', courseSlug)
     .single()
 
@@ -71,6 +71,7 @@ export default async function LessonPage(props: {
     course: course.name,
     school: course.school,
     accentColor: course.accent_color,
+    coverColor: course.cover_color,
     sections: raw.sections ?? [],
     discussionQuestions: raw.discussionQuestions ?? [],
     keyTerms: raw.keyTerms ?? [],

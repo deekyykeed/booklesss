@@ -58,6 +58,13 @@ create table if not exists enrollments (
   primary key (user_id, course_id)
 );
 
+create table if not exists bookmarks (
+  user_id   uuid not null references profiles(id) on delete cascade,
+  step_id   uuid not null references steps(id) on delete cascade,
+  saved_at  timestamptz default now(),
+  primary key (user_id, step_id)
+);
+
 -- ── Seed courses ────────────────────────────────────────────
 insert into courses (slug, name, school, cover_color, accent_color) values
   ('strategic-management', 'Strategic Management', 'ZCAS', '#0F1F35', '#DC2626'),
@@ -73,6 +80,7 @@ alter table steps       enable row level security;
 alter table glossary    enable row level security;
 alter table profiles    enable row level security;
 alter table enrollments enable row level security;
+alter table bookmarks   enable row level security;
 
 -- Public read access for course content
 create policy "public read courses"  on courses  for select using (true);
@@ -86,4 +94,8 @@ create policy "profiles: own row" on profiles
 
 -- Enrollments: own rows only
 create policy "enrollments: own rows" on enrollments
+  for all using (auth.uid() = user_id);
+
+-- Bookmarks: own rows only
+create policy "bookmarks: own rows" on bookmarks
   for all using (auth.uid() = user_id);
