@@ -34,9 +34,13 @@
   display: none;
 }
 
+.desktop-navbar {
+  display: flex;
+}
+
 .sidebar-wrapper {
   flex-shrink: 0;
-  height: 100vh;
+  height: 100%;
 }
 
 .main-content {
@@ -49,6 +53,10 @@
 }
 
 @media (max-width: 640px) {
+  .desktop-navbar {
+    display: none;
+  }
+
   .mobile-topbar {
     display: flex;
     align-items: center;
@@ -83,6 +91,13 @@
     z-index: 100;
     transition: left 0.22s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: none;
+  }
+
+  /* Always show full sidebar on mobile — ignore desktop collapsed state */
+  .sidebar-wrapper aside {
+    width: 288px !important;
+    min-width: 288px !important;
+    transition: none !important;
   }
 
   .sidebar-wrapper.sidebar-open {

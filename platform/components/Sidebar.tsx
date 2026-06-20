@@ -9,7 +9,6 @@ import {
   FolderFilesLinear, FolderFilesDuotone,
   LetterLinear, LetterDuotone,
   CalendarLinear, CalendarDuotone,
-  MagniferLinear,
   SidebarMinimalisticLinear,
 } from './icons/solar'
 
@@ -70,9 +69,18 @@ interface SidebarProps {
   userName: string
   onClose?: () => void
   onSearchOpen?: () => void
+  collapsed?: boolean
+  onToggleCollapse?: () => void
 }
 
-export default function Sidebar({ courses, userName, onClose, onSearchOpen }: SidebarProps) {
+export default function Sidebar({
+  courses,
+  userName,
+  onClose,
+  onSearchOpen,
+  collapsed = false,
+  onToggleCollapse,
+}: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const [expanded, setExpanded] = useState<Record<string, boolean>>(
@@ -97,230 +105,302 @@ export default function Sidebar({ courses, userName, onClose, onSearchOpen }: Si
     if (deltaX < -50 && onClose) onClose()
   }
 
+  const handleToggle = () => {
+    if (typeof window !== 'undefined' && window.innerWidth < 640) {
+      onClose?.()
+    } else {
+      onToggleCollapse?.()
+    }
+  }
+
+  // From Framer nodes: expanded = 208px, collapsed = 48px
+  const sidebarWidth = collapsed ? 48 : 208
+
   return (
     <aside
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       style={{
-        width: 288,
-        minWidth: 288,
-        background: 'rgb(255, 255, 255)',
+        width: sidebarWidth,
+        minWidth: sidebarWidth,
+        // Framer node: fill: "rgb(252, 252, 252)"
+        background: 'rgb(252, 252, 252)',
         display: 'flex',
         flexDirection: 'column',
-        height: '100vh',
+        height: '100%',
         overflow: 'hidden',
-        borderRight: '1px solid rgba(0,0,0,0.07)',
+        // Framer node: borderRight: "0.67px", borderColor: "rgb(223,223,223)"
+        borderRight: '0.67px solid rgb(223, 223, 223)',
+        transition: 'width 0.2s cubic-bezier(0.4,0,0.2,1), min-width 0.2s cubic-bezier(0.4,0,0.2,1)',
       }}>
 
-      {/* Scrollable nav area — gap: 22px, padding: 14px matches Framer */}
+      {/* Framer node: padding: "8px", gap: "2px" */}
       <div style={{
         flex: 1,
-        overflowY: 'auto',
-        padding: '14px',
+        overflowY: collapsed ? 'hidden' : 'auto',
+        overflowX: 'hidden',
+        padding: '8px',
         display: 'flex',
         flexDirection: 'column',
-        gap: '22px',
+        // Framer: stackDistribution: "space-between" → we use a spacer below
+        justifyContent: 'space-between',
       }}>
 
-        {/* Header row — gap: 8px, horizontal, center-aligned */}
-        <div style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: '8px',
-        }}>
-          <span style={{
-            flex: 1,
-            fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif',
-            fontWeight: 700,
-            fontSize: 18,
-            color: '#000000',
-            lineHeight: '20px',
-          }}>
-            Booklesss
-          </span>
+        {/* Top: nav items */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
 
-          <button className="squircle-btn" style={{ color: '#0a0a0a' }} aria-label="Search" onClick={onSearchOpen}>
-            <MagniferLinear size={20} />
-          </button>
+          {/* Booklesss wordmark — only when expanded */}
+          {!collapsed && (
+            <div style={{
+              padding: '6px 8px 10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}>
+              <span style={{
+                fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif',
+                fontWeight: 700,
+                fontSize: 15,
+                color: 'rgb(23, 23, 23)',
+                letterSpacing: '-0.01em',
+              }}>
+                Booklesss
+              </span>
+            </div>
+          )}
 
-          <button
-            className="squircle-btn"
-            style={{ color: '#0a0a0a' }}
-            aria-label="Toggle sidebar"
-            onClick={onClose}
-          >
-            <SidebarMinimalisticLinear size={20} />
-          </button>
-        </div>
-
-        {/* Nav items — gap: 2px between items, vertical stack */}
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '2px',
-        }}>
+          {/* Nav items — Framer: padding "6px 8px", gap "8px", radius "6px", squircle "50%" */}
           {PRIMARY_NAV.map(({ href, label, exact, Inactive, Active }) => {
             const active = exact ? pathname === href : pathname.startsWith(href)
             return (
-              <Link key={href} href={href} onClick={onClose} style={{ textDecoration: 'none', display: 'block' }}>
-                <div className={active ? 'nav-item nav-item-active' : 'nav-item'} style={{
+              <Link
+                key={href}
+                href={href}
+                onClick={onClose}
+                title={collapsed ? label : undefined}
+                style={{ textDecoration: 'none', display: 'block' }}
+              >
+                <div style={{
                   display: 'flex',
                   flexDirection: 'row',
                   alignItems: 'center',
-                  gap: '10px',
-                  padding: '8px',
-                  overflow: 'clip',
-                }}>
-                  {/* opacity: 0.7 on inactive, no opacity on active — matches Framer */}
+                  justifyContent: collapsed ? 'center' : 'flex-start',
+                  gap: '8px',
+                  // Framer expanded: padding "6px 8px"; collapsed: "6px" all sides (32px square)
+                  padding: collapsed ? '6px' : '6px 8px',
+                  overflow: 'hidden',
+                  borderRadius: '6px',
+                  // Framer: active fill "rgb(237, 237, 237)", inactive no fill
+                  background: active ? 'rgb(237, 237, 237)' : 'transparent',
+                  transition: 'background 0.12s ease',
+                  width: collapsed ? 32 : '100%',
+                  height: 32,
+                  boxSizing: 'border-box',
+                }}
+                  onMouseEnter={e => {
+                    if (!active) (e.currentTarget as HTMLElement).style.background = 'rgb(237, 237, 237)'
+                  }}
+                  onMouseLeave={e => {
+                    if (!active) (e.currentTarget as HTMLElement).style.background = 'transparent'
+                  }}
+                >
                   <span style={{
                     flexShrink: 0,
                     display: 'flex',
-                    opacity: active ? 1 : 0.7,
-                    color: '#0a0a0a',
-                    filter: 'drop-shadow(0px 1px 1px rgba(0,0,0,0.25))',
-                    WebkitFilter: 'drop-shadow(0px 1px 1px rgba(0,0,0,0.25))',
+                    // Framer: icon has drop-shadow
+                    color: active ? 'rgb(23, 23, 23)' : 'rgb(112, 112, 112)',
+                    filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.25))',
+                    WebkitFilter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.25))',
                   }}>
                     {active ? <Active /> : <Inactive />}
                   </span>
-                  {/* font: Poppins-regular (400) for both states — matches Framer */}
-                  <span style={{
-                    flex: 1,
-                    fontFamily: 'var(--font-poppins), sans-serif',
-                    fontSize: 14,
-                    fontWeight: 400,
-                    color: active ? '#000000' : 'rgba(0,0,0,0.6)',
-                  }}>
-                    {label}
-                  </span>
+                  {!collapsed && (
+                    // Framer: active fontWeight 500 rgb(23,23,23), inactive 400 rgb(112,112,112)
+                    <span style={{
+                      flex: 1,
+                      fontFamily: 'var(--font-poppins), "Inter", sans-serif',
+                      fontSize: 14,
+                      fontWeight: active ? 500 : 400,
+                      lineHeight: '20px',
+                      color: active ? 'rgb(23, 23, 23)' : 'rgb(112, 112, 112)',
+                      whiteSpace: 'nowrap',
+                    }}>
+                      {label}
+                    </span>
+                  )}
                 </div>
               </Link>
             )
           })}
+
+          {/* My Courses accordion — only when expanded */}
+          {!collapsed && courses.length > 0 && (
+            <div style={{ marginTop: '16px' }}>
+              <div style={{
+                padding: '4px 8px 6px',
+                fontSize: 10, fontWeight: 700, letterSpacing: '0.07em',
+                color: 'rgba(0,0,0,0.28)', textTransform: 'uppercase',
+                fontFamily: 'var(--font-poppins), sans-serif',
+              }}>
+                My Courses
+              </div>
+              {courses.map((course) => {
+                const isOpen = expanded[course.slug]
+                return (
+                  <div key={course.slug}>
+                    <button
+                      onClick={() => toggle(course.slug)}
+                      style={{
+                        width: '100%', display: 'flex', alignItems: 'center', gap: 8,
+                        padding: '6px 8px', background: 'none', border: 'none',
+                        cursor: 'pointer', textAlign: 'left', borderRadius: 6,
+                        height: 32,
+                      }}
+                    >
+                      <ChevronIcon open={isOpen} />
+                      <span style={{
+                        width: 8, height: 8, borderRadius: '50%',
+                        background: course.accentColor, flexShrink: 0,
+                      }} />
+                      <span style={{
+                        color: 'rgb(112, 112, 112)', fontSize: 13, fontWeight: 400,
+                        flex: 1, fontFamily: 'var(--font-poppins), sans-serif',
+                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                      }}>
+                        {course.name}
+                      </span>
+                      <span style={{
+                        fontSize: 9, color: 'rgba(0,0,0,0.28)', fontWeight: 600,
+                        letterSpacing: '0.05em', textTransform: 'uppercase', flexShrink: 0,
+                      }}>
+                        {course.school}
+                      </span>
+                    </button>
+                    {isOpen && (
+                      <div style={{ paddingLeft: 22 }}>
+                        {course.lessons.map((lesson) => {
+                          const href = `/courses/${course.slug}/${lesson.slug}`
+                          const active = pathname === href
+                          return (
+                            <Link
+                              key={lesson.slug}
+                              href={href}
+                              onClick={onClose}
+                              style={{
+                                display: 'block', padding: '4px 10px', fontSize: 12,
+                                color: active ? 'rgb(23, 23, 23)' : 'rgba(0,0,0,0.45)',
+                                background: active ? 'rgb(237, 237, 237)' : 'transparent',
+                                textDecoration: 'none', borderRadius: 6, margin: '1px 0',
+                                fontFamily: 'var(--font-poppins), sans-serif',
+                              }}
+                            >
+                              # {lesson.title}
+                            </Link>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          )}
+
+          {!collapsed && courses.length === 0 && (
+            <div style={{
+              color: 'rgba(0,0,0,0.3)', fontSize: 12,
+              fontFamily: 'var(--font-poppins), sans-serif', padding: '0 8px', marginTop: 8,
+            }}>
+              No courses yet —{' '}
+              <Link href="/library" onClick={onClose} style={{ color: 'rgb(23, 23, 23)', textDecoration: 'underline' }}>
+                browse library
+              </Link>
+            </div>
+          )}
         </div>
 
-        {/* My Courses accordion */}
-        {courses.length > 0 && (
-          <div>
-            <div style={{
-              padding: '4px 8px 6px',
-              fontSize: 10, fontWeight: 700, letterSpacing: '0.07em',
-              color: 'rgba(0,0,0,0.28)', textTransform: 'uppercase',
-              fontFamily: 'var(--font-poppins), sans-serif',
-            }}>
-              My Courses
-            </div>
-            {courses.map((course) => {
-              const isOpen = expanded[course.slug]
-              return (
-                <div key={course.slug}>
-                  <button
-                    onClick={() => toggle(course.slug)}
-                    style={{
-                      width: '100%', display: 'flex', alignItems: 'center', gap: 8,
-                      padding: '6px 8px', background: 'none', border: 'none',
-                      cursor: 'pointer', textAlign: 'left', borderRadius: 8,
-                    }}
-                  >
-                    <ChevronIcon open={isOpen} />
-                    <span style={{
-                      width: 8, height: 8, borderRadius: '50%',
-                      background: course.accentColor, flexShrink: 0,
-                    }} />
-                    <span style={{
-                      color: 'rgba(0,0,0,0.7)', fontSize: 13, fontWeight: 400,
-                      flex: 1, fontFamily: 'var(--font-poppins), sans-serif',
-                    }}>
-                      {course.name}
-                    </span>
-                    <span style={{
-                      fontSize: 9, color: 'rgba(0,0,0,0.28)', fontWeight: 600,
-                      letterSpacing: '0.05em', textTransform: 'uppercase',
-                    }}>
-                      {course.school}
-                    </span>
-                  </button>
-                  {isOpen && (
-                    <div style={{ paddingLeft: 22 }}>
-                      {course.lessons.map((lesson) => {
-                        const href = `/courses/${course.slug}/${lesson.slug}`
-                        const active = pathname === href
-                        return (
-                          <Link
-                            key={lesson.slug}
-                            href={href}
-                            onClick={onClose}
-                            style={{
-                              display: 'block', padding: '4px 10px', fontSize: 12,
-                              color: active ? '#0F1F35' : 'rgba(0,0,0,0.45)',
-                              background: active ? 'rgba(0,0,0,0.06)' : 'transparent',
-                              textDecoration: 'none', borderRadius: 6, margin: '1px 0',
-                              fontFamily: 'var(--font-poppins), sans-serif',
-                            }}
-                          >
-                            # {lesson.title}
-                          </Link>
-                        )
-                      })}
-                    </div>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        )}
+        {/* Bottom section — user avatar + toggle */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
 
-        {courses.length === 0 && (
-          <div style={{
-            color: 'rgba(0,0,0,0.3)', fontSize: 12,
-            fontFamily: 'var(--font-poppins), sans-serif', padding: '0 8px',
-          }}>
-            No courses yet —{' '}
-            <Link href="/library" onClick={onClose} style={{ color: '#0F1F35', textDecoration: 'underline' }}>
-              browse library
-            </Link>
-          </div>
-        )}
+          {/* User footer */}
+          <Link
+            href="/profile"
+            onClick={onClose}
+            title={collapsed ? userName : undefined}
+            style={{ textDecoration: 'none' }}
+          >
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: collapsed ? 'center' : 'flex-start',
+              gap: '8px',
+              padding: collapsed ? '6px' : '6px 8px',
+              borderRadius: 6,
+              width: collapsed ? 32 : '100%',
+              height: 32,
+              boxSizing: 'border-box',
+              background: 'transparent',
+              transition: 'background 0.12s ease',
+              cursor: 'pointer',
+            }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgb(237, 237, 237)' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent' }}
+            >
+              <div style={{
+                width: 20, height: 20, borderRadius: '50%', background: '#e5e7eb',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 10, fontWeight: 700, color: '#374151', flexShrink: 0,
+                position: 'relative', fontFamily: 'var(--font-poppins), sans-serif',
+              }}>
+                {initial}
+                <span style={{
+                  position: 'absolute', bottom: 0, right: 0, width: 6, height: 6,
+                  borderRadius: '50%', background: '#22c55e', border: '1.5px solid rgb(252, 252, 252)',
+                }} />
+              </div>
+              {!collapsed && (
+                <span style={{
+                  flex: 1,
+                  fontFamily: 'var(--font-poppins), sans-serif',
+                  fontSize: 14,
+                  fontWeight: 400,
+                  color: 'rgb(112, 112, 112)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}>
+                  {userName}
+                </span>
+              )}
+            </div>
+          </Link>
+
+          {/* Toggle button at bottom — matches Framer bottom toggle icon */}
+          <button
+            onClick={handleToggle}
+            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 32,
+              height: 32,
+              padding: '6px',
+              borderRadius: 6,
+              border: 'none',
+              background: 'transparent',
+              cursor: 'pointer',
+              color: 'rgb(112, 112, 112)',
+              transition: 'background 0.12s ease',
+              filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.25))',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgb(237, 237, 237)' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent' }}
+          >
+            <SidebarMinimalisticLinear size={20} />
+          </button>
+        </div>
       </div>
-
-      {/* User footer — links to /profile */}
-      <Link href="/profile" onClick={onClose} style={{ textDecoration: 'none' }}>
-        <div style={{
-          padding: '12px 16px',
-          borderTop: '1px solid rgba(0,0,0,0.06)',
-          display: 'flex', alignItems: 'center', gap: 10,
-          cursor: 'pointer',
-          transition: 'background 0.12s ease',
-        }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(0,0,0,0.03)' }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent' }}
-        >
-          <div style={{
-            width: 32, height: 32, borderRadius: '50%', background: '#e5e7eb',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 13, fontWeight: 700, color: '#374151', flexShrink: 0,
-            position: 'relative', fontFamily: 'var(--font-poppins), sans-serif',
-          }}>
-            {initial}
-            <span style={{
-              position: 'absolute', bottom: 1, right: 1, width: 8, height: 8,
-              borderRadius: '50%', background: '#22c55e', border: '1.5px solid #fff',
-            }} />
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{
-              color: '#1a1a1a', fontSize: 13, fontWeight: 600,
-              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-              fontFamily: 'var(--font-poppins), sans-serif',
-            }}>
-              {userName}
-            </div>
-            <div style={{ color: 'rgba(0,0,0,0.35)', fontSize: 11, fontFamily: 'var(--font-poppins), sans-serif' }}>
-              Student · Settings
-            </div>
-          </div>
-        </div>
-      </Link>
     </aside>
   )
 }
