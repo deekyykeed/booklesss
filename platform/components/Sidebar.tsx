@@ -4,50 +4,22 @@ import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
-  WidgetAddLinear, WidgetAddDuotone,
-  WinRarLinear, WinRarDuotone,
-  FolderFilesLinear, FolderFilesDuotone,
-  LetterLinear, LetterDuotone,
-  CalendarLinear, CalendarDuotone,
+  CaseMinimalisticLinear,
+  UsersGroupTwoRoundedLinear,
+  WidgetAddLinear,
+  CourseUpLinear,
+  WalletLinear,
+  SettingsLinear,
   SidebarMinimalisticLinear,
 } from './icons/solar'
 
 const PRIMARY_NAV = [
-  {
-    href: '/dashboard',
-    label: 'Dashboard',
-    exact: true,
-    Inactive: () => <WidgetAddLinear size={20} />,
-    Active: () => <WidgetAddDuotone size={20} />,
-  },
-  {
-    href: '/library',
-    label: 'Library',
-    exact: false,
-    Inactive: () => <WinRarLinear size={20} />,
-    Active: () => <WinRarDuotone size={20} />,
-  },
-  {
-    href: '/saved',
-    label: 'Files',
-    exact: false,
-    Inactive: () => <FolderFilesLinear size={20} />,
-    Active: () => <FolderFilesDuotone size={20} />,
-  },
-  {
-    href: '/notifications',
-    label: 'Inbox',
-    exact: false,
-    Inactive: () => <LetterLinear size={20} />,
-    Active: () => <LetterDuotone size={20} />,
-  },
-  {
-    href: '/calendar',
-    label: 'Calendar',
-    exact: false,
-    Inactive: () => <CalendarLinear size={20} />,
-    Active: () => <CalendarDuotone size={20} />,
-  },
+  { href: '/dashboard', label: 'Courses', exact: true, Icon: () => <CaseMinimalisticLinear size={20} /> },
+  { href: '/community', label: 'Community', exact: false, Icon: () => <UsersGroupTwoRoundedLinear size={20} /> },
+  { href: '/library', label: 'Library', exact: false, Icon: () => <WidgetAddLinear size={20} /> },
+  { href: '/progress', label: 'Progress', exact: false, Icon: () => <CourseUpLinear size={20} /> },
+  { href: '/billing', label: 'Billing', exact: false, Icon: () => <WalletLinear size={20} /> },
+  { href: '/settings', label: 'Settings', exact: false, Icon: () => <SettingsLinear size={20} /> },
 ]
 
 interface SidebarLesson {
@@ -169,8 +141,8 @@ export default function Sidebar({
             </div>
           )}
 
-          {/* Nav items — Framer: padding "6px 8px", gap "8px", radius "6px", squircle "50%" */}
-          {PRIMARY_NAV.map(({ href, label, exact, Inactive, Active }) => {
+          {/* Nav items */}
+          {PRIMARY_NAV.map(({ href, label, exact, Icon }) => {
             const active = exact ? pathname === href : pathname.startsWith(href)
             return (
               <Link
@@ -186,11 +158,9 @@ export default function Sidebar({
                   alignItems: 'center',
                   justifyContent: collapsed ? 'center' : 'flex-start',
                   gap: '8px',
-                  // Framer expanded: padding "6px 8px"; collapsed: "6px" all sides (32px square)
                   padding: collapsed ? '6px' : '6px 8px',
                   overflow: 'hidden',
                   borderRadius: '6px',
-                  // Framer: active fill "rgb(237, 237, 237)", inactive no fill
                   background: active ? 'rgb(237, 237, 237)' : 'transparent',
                   transition: 'background 0.12s ease',
                   width: collapsed ? 32 : '100%',
@@ -207,15 +177,12 @@ export default function Sidebar({
                   <span style={{
                     flexShrink: 0,
                     display: 'flex',
-                    // Framer: icon has drop-shadow
                     color: active ? 'rgb(23, 23, 23)' : 'rgb(112, 112, 112)',
-                    filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.25))',
-                    WebkitFilter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.25))',
+                    boxShadow: '0px 1px 2px 0px rgba(0,0,0,0.25)',
                   }}>
-                    {active ? <Active /> : <Inactive />}
+                    <Icon />
                   </span>
                   {!collapsed && (
-                    // Framer: active fontWeight 500 rgb(23,23,23), inactive 400 rgb(112,112,112)
                     <span style={{
                       flex: 1,
                       fontFamily: 'var(--font-poppins), "Inter", sans-serif',
