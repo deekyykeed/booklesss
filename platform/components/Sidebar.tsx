@@ -178,7 +178,7 @@ export default function Sidebar({
                     flexShrink: 0,
                     display: 'flex',
                     color: active ? 'rgb(23, 23, 23)' : 'rgb(112, 112, 112)',
-                    boxShadow: '0px 1px 2px 0px rgba(0,0,0,0.25)',
+                    filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.25))',
                   }}>
                     <Icon />
                   </span>
