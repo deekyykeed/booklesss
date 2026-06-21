@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { MagnifyingGlassLinear, BellLinear } from './icons/solar'
+import { MagnifyingGlassLinear, BellLinear, UserLinear } from './icons/solar'
 
 interface NavbarProps {
   userName: string
@@ -110,71 +110,100 @@ export default function Navbar({ userName, onSearchOpen }: NavbarProps) {
         </div>
       </div>
 
-      {/* Right: search + bell + avatar */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        {/* Search Input — pill, white bg, 3-layer shadow, exact Framer specs */}
-        <button
-          onClick={onSearchOpen}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 10,
-            height: 32, padding: '0 10px',
-            minWidth: 150,
+      {/* Right: Action Group — Framer: horizontal stack, gap 15px */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
+
+        {/* Feedback Text — Inter 12px, weight 400, lineHeight 16px, rgb(82,82,82) */}
+        <span style={{
+          fontFamily: 'Inter, var(--font-poppins), sans-serif',
+          fontSize: 12, fontWeight: 400, lineHeight: '16px',
+          color: 'rgb(82, 82, 82)', userSelect: 'none', whiteSpace: 'nowrap',
+        }}>Feedback</span>
+
+        {/* Search Bar Group — Framer: horizontal stack, gap 8px */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+
+          {/* Search Input — Framer: 150×32px, pill, white fill, 3-layer shadow */}
+          <button
+            onClick={onSearchOpen}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 10,
+              height: 32, padding: '0 8px',
+              width: 150, minWidth: 150,
+              background: 'rgb(255, 255, 255)',
+              border: '0.67px solid rgb(212, 212, 212)',
+              borderRadius: 9999,
+              boxShadow: '0px 0.6021873017743928px 0.6021873017743928px -1.25px rgba(0,0,0,0.18), 0px 2.288533303243457px 2.288533303243457px -2.5px rgba(0,0,0,0.16), 0px 10px 10px -3.75px rgba(0,0,0,0.06)',
+              cursor: 'pointer', outline: 'none', overflow: 'hidden',
+              fontFamily: 'Inter, var(--font-poppins), sans-serif',
+            }}
+          >
+            <span style={{ display: 'flex', flexShrink: 0, color: 'rgb(178, 178, 178)' }}>
+              <MagnifyingGlassLinear size={16} />
+            </span>
+            {/* Placeholder Text — Inter 12px, rgb(178,178,178) */}
+            <span style={{
+              flex: 1, textAlign: 'left',
+              fontFamily: 'Inter, var(--font-poppins), sans-serif',
+              fontSize: 12, fontWeight: 400, lineHeight: '16px',
+              color: 'rgb(178, 178, 178)',
+            }}>Search...</span>
+            {/* ⌘K badge — Inter 11px, letterSpacing -0.275px, width 28px, rgb(112,112,112) */}
+            <span style={{
+              width: 28, flexShrink: 0, textAlign: 'center',
+              fontFamily: 'Inter, var(--font-poppins), sans-serif',
+              fontSize: 11, fontWeight: 400, lineHeight: '11px',
+              letterSpacing: '-0.275px',
+              color: 'rgb(112, 112, 112)',
+            }}>Ctrl K</span>
+          </button>
+
+          {/* Notification Button — Framer: 32×32px, pill, white fill */}
+          <button style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            width: 32, height: 32, flexShrink: 0,
             background: 'rgb(255, 255, 255)',
             border: '0.67px solid rgb(212, 212, 212)',
             borderRadius: 9999,
-            boxShadow: '0px 0.6px 0.6px -1.25px rgba(0,0,0,0.18), 0px 2.29px 2.29px -2.5px rgba(0,0,0,0.16), 0px 10px 10px -3.75px rgba(0,0,0,0.06)',
-            cursor: 'pointer',
-            color: 'rgb(178, 178, 178)', fontSize: 12,
-            fontFamily: 'var(--font-poppins), Inter, sans-serif',
-            fontWeight: 400,
-            outline: 'none',
-            letterSpacing: 0,
-            lineHeight: '16px',
-          }}
-        >
-          <span style={{ display: 'flex', flexShrink: 0 }}>
-            <MagnifyingGlassLinear size={16} />
-          </span>
-          <span style={{ flex: 1, textAlign: 'left', color: 'rgb(178, 178, 178)' }}>Search...</span>
-          <span style={{
-            width: 28, fontSize: 11,
-            color: 'rgb(178, 178, 178)',
-            letterSpacing: '-0.025em',
-            flexShrink: 0,
-          }}>⌘K</span>
-        </button>
-
-        {/* Notification Button */}
-        <button style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          width: 32, height: 32,
-          background: 'rgb(255, 255, 255)',
-          border: '0.67px solid rgb(212, 212, 212)',
-          borderRadius: 9999,
-          boxShadow: '0px 0.6px 0.6px -1.25px rgba(0,0,0,0.18), 0px 2.29px 2.29px -2.5px rgba(0,0,0,0.16), 0px 10px 10px -3.75px rgba(0,0,0,0.06)',
-          cursor: 'pointer',
-          color: 'rgb(112, 112, 112)', outline: 'none',
-          flexShrink: 0,
-        }}>
-          <BellLinear size={15} />
-        </button>
-
-        {/* Avatar */}
-        <Link href="/profile" style={{ textDecoration: 'none', flexShrink: 0 }}>
-          <div style={{
-            width: 32, height: 32, borderRadius: '50%',
-            background: 'rgb(237, 237, 237)',
-            border: '0.67px solid rgba(0, 0, 0, 0.1)',
-            boxShadow: '0px 0.6px 0.6px -1.25px rgba(0,0,0,0.18), 0px 2.29px 2.29px -2.5px rgba(0,0,0,0.16), 0px 10px 10px -3.75px rgba(0,0,0,0.06)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 12, fontWeight: 600,
-            color: 'rgb(23, 23, 23)',
-            fontFamily: 'var(--font-poppins), Inter, sans-serif',
-            cursor: 'pointer',
+            boxShadow: '0px 0.6021873017743928px 0.6021873017743928px -1.25px rgba(0,0,0,0.18), 0px 2.288533303243457px 2.288533303243457px -2.5px rgba(0,0,0,0.16), 0px 10px 10px -3.75px rgba(0,0,0,0.06)',
+            cursor: 'pointer', outline: 'none', overflow: 'hidden',
+            color: 'rgb(112, 112, 112)',
           }}>
-            {initial}
-          </div>
-        </Link>
+            <BellLinear size={16} />
+          </button>
+
+          {/* Profile Button — Framer: 32×32px, pill, white fill, person icon */}
+          <button style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            width: 32, height: 32, flexShrink: 0,
+            background: 'rgb(255, 255, 255)',
+            border: '0.67px solid rgb(212, 212, 212)',
+            borderRadius: 9999,
+            boxShadow: '0px 0.6021873017743928px 0.6021873017743928px -1.25px rgba(0,0,0,0.18), 0px 2.288533303243457px 2.288533303243457px -2.5px rgba(0,0,0,0.16), 0px 10px 10px -3.75px rgba(0,0,0,0.06)',
+            cursor: 'pointer', outline: 'none', overflow: 'hidden',
+            color: 'rgb(112, 112, 112)',
+          }}>
+            <UserLinear size={16} />
+          </button>
+
+          {/* Avatar Image — Framer: 32×32px, pill, border rgba(0,0,0,0.1), initials */}
+          <Link href="/profile" style={{ textDecoration: 'none', flexShrink: 0 }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: 9999,
+              background: 'rgb(237, 237, 237)',
+              border: '0.67px solid rgba(0, 0, 0, 0.1)',
+              boxShadow: '0px 0.6021873017743928px 0.6021873017743928px -1.25px rgba(0,0,0,0.18), 0px 2.288533303243457px 2.288533303243457px -2.5px rgba(0,0,0,0.16), 0px 10px 10px -3.75px rgba(0,0,0,0.06)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              overflow: 'hidden',
+              fontFamily: 'Inter, var(--font-poppins), sans-serif',
+              fontSize: 12, fontWeight: 600, color: 'rgb(23, 23, 23)',
+              cursor: 'pointer',
+            }}>
+              {initial}
+            </div>
+          </Link>
+
+        </div>
       </div>
     </header>
   )

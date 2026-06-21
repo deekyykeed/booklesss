@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
@@ -22,22 +22,7 @@ const PRIMARY_NAV = [
   { href: '/settings', label: 'Settings', exact: false, Icon: () => <SettingsLinear size={20} /> },
 ]
 
-interface SidebarLesson {
-  slug: string
-  title: string
-  order_index: number
-}
-
-interface SidebarCourse {
-  slug: string
-  name: string
-  school: string
-  accentColor: string
-  lessons: SidebarLesson[]
-}
-
 interface SidebarProps {
-  courses: SidebarCourse[]
   userName: string
   onClose?: () => void
   onSearchOpen?: () => void
@@ -46,7 +31,6 @@ interface SidebarProps {
 }
 
 export default function Sidebar({
-  courses,
   userName,
   onClose,
   onSearchOpen,
@@ -55,12 +39,6 @@ export default function Sidebar({
 }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
-  const [expanded, setExpanded] = useState<Record<string, boolean>>(
-    Object.fromEntries(courses.map((c, i) => [c.slug, i === 0]))
-  )
-
-  const toggle = (slug: string) =>
-    setExpanded((prev) => ({ ...prev, [slug]: !prev[slug] }))
 
   const initial = userName.charAt(0).toUpperCase()
 
@@ -179,90 +157,6 @@ export default function Sidebar({
             )
           })}
 
-          {/* My Courses accordion — only when expanded */}
-          {!collapsed && courses.length > 0 && (
-            <div style={{ marginTop: '16px' }}>
-              <div style={{
-                padding: '4px 8px 6px',
-                fontSize: 10, fontWeight: 700, letterSpacing: '0.07em',
-                color: 'rgba(0,0,0,0.28)', textTransform: 'uppercase',
-                fontFamily: 'var(--font-poppins), sans-serif',
-              }}>
-                My Courses
-              </div>
-              {courses.map((course) => {
-                const isOpen = expanded[course.slug]
-                return (
-                  <div key={course.slug}>
-                    <button
-                      onClick={() => toggle(course.slug)}
-                      style={{
-                        width: '100%', display: 'flex', alignItems: 'center', gap: 8,
-                        padding: '6px 8px', background: 'none', border: 'none',
-                        cursor: 'pointer', textAlign: 'left', borderRadius: 6,
-                        height: 32,
-                      }}
-                    >
-                      <ChevronIcon open={isOpen} />
-                      <span style={{
-                        width: 8, height: 8, borderRadius: '50%',
-                        background: course.accentColor, flexShrink: 0,
-                      }} />
-                      <span style={{
-                        color: 'rgb(112, 112, 112)', fontSize: 13, fontWeight: 400,
-                        flex: 1, fontFamily: 'var(--font-poppins), sans-serif',
-                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-                      }}>
-                        {course.name}
-                      </span>
-                      <span style={{
-                        fontSize: 9, color: 'rgba(0,0,0,0.28)', fontWeight: 600,
-                        letterSpacing: '0.05em', textTransform: 'uppercase', flexShrink: 0,
-                      }}>
-                        {course.school}
-                      </span>
-                    </button>
-                    {isOpen && (
-                      <div style={{ paddingLeft: 22 }}>
-                        {course.lessons.map((lesson) => {
-                          const href = `/courses/${course.slug}/${lesson.slug}`
-                          const active = pathname === href
-                          return (
-                            <Link
-                              key={lesson.slug}
-                              href={href}
-                              onClick={onClose}
-                              style={{
-                                display: 'block', padding: '4px 10px', fontSize: 12,
-                                color: active ? 'rgb(23, 23, 23)' : 'rgba(0,0,0,0.45)',
-                                background: active ? 'rgb(237, 237, 237)' : 'transparent',
-                                textDecoration: 'none', borderRadius: 6, margin: '1px 0',
-                                fontFamily: 'var(--font-poppins), sans-serif',
-                              }}
-                            >
-                              # {lesson.title}
-                            </Link>
-                          )
-                        })}
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-          )}
-
-          {!collapsed && courses.length === 0 && (
-            <div style={{
-              color: 'rgba(0,0,0,0.3)', fontSize: 12,
-              fontFamily: 'var(--font-poppins), sans-serif', padding: '0 8px', marginTop: 8,
-            }}>
-              No courses yet —{' '}
-              <Link href="/library" onClick={onClose} style={{ color: 'rgb(23, 23, 23)', textDecoration: 'underline' }}>
-                browse library
-              </Link>
-            </div>
-          )}
         </div>
 
         {/* Bottom section — user avatar + toggle */}
@@ -350,18 +244,3 @@ export default function Sidebar({
   )
 }
 
-function ChevronIcon({ open }: { open: boolean }) {
-  return (
-    <svg
-      width="11" height="11" viewBox="0 0 12 12" fill="none"
-      style={{
-        transform: open ? 'rotate(90deg)' : 'rotate(0)',
-        transition: 'transform 0.15s ease',
-        color: 'rgba(0,0,0,0.3)',
-        flexShrink: 0,
-      }}
-    >
-      <path d="M4 2.5l4 3.5-4 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}

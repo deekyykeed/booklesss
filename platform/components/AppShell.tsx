@@ -6,17 +6,10 @@ import Navbar from './Navbar'
 import SearchOverlay from './SearchOverlay'
 import { SidebarMinimalisticLinear } from './icons/solar'
 
-interface SidebarLesson { slug: string; title: string; order_index: number }
-interface SidebarCourse {
-  slug: string; name: string; school: string; accentColor: string; lessons: SidebarLesson[]
-}
-
 export default function AppShell({
-  courses,
   userName,
   children,
 }: {
-  courses: SidebarCourse[]
   userName: string
   children: React.ReactNode
 }) {
@@ -91,7 +84,6 @@ export default function AppShell({
         {/* Sidebar */}
         <div className={`sidebar-wrapper${open ? ' sidebar-open' : ''}`}>
           <Sidebar
-            courses={courses}
             userName={userName}
             onClose={() => setOpen(false)}
             onSearchOpen={() => setSearchOpen(true)}
