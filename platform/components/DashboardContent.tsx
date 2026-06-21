@@ -43,7 +43,7 @@ export default function DashboardContent({ userId, email }: { userId: string; em
       ] = await Promise.all([
         supabase.from('profiles').select('display_name').eq('id', userId).single(),
         supabase.from('enrollments').select('courses(id, slug, name, school, accent_color, cover_color, lessons(id, slug, title, order_index))').eq('user_id', userId),
-        supabase.from('bookmarks').select('saved_at, steps(id, slug, title, lessons(slug, courses(name, slug, accent_color)))').eq('user_id', userId).order('saved_at', { ascending: false }).limit(3),
+        supabase.from('bookmarks').select('saved_at, steps(id, slug, title, lessons(slug, courses(name, slug, accent_color)))').eq('user_id', userId).order('saved_at', { ascending: false }).limit(4),
         supabase.from('bookmarks').select('*', { count: 'exact', head: true }).eq('user_id', userId),
       ])
 
@@ -72,174 +72,425 @@ export default function DashboardContent({ userId, email }: { userId: string; em
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
   const todayStr = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
 
-  if (loading || !data) {
-    return (
-      <div style={{ padding: '40px 52px', maxWidth: 880 }}>
-        <div style={{ marginBottom: 28 }}>
-          <div className="skeleton" style={{ width: 120, height: 11, marginBottom: 12 }} />
-          <div className="skeleton" style={{ width: 300, height: 36, marginBottom: 14 }} />
-          <div className="skeleton" style={{ width: 90, height: 28, borderRadius: 20 }} />
-        </div>
-        <div className="skeleton" style={{ width: 120, height: 11, marginBottom: 12 }} />
-        <div className="skeleton" style={{ width: '100%', height: 200, borderRadius: 20, marginBottom: 36 }} />
-        <div className="skeleton" style={{ width: 120, height: 11, marginBottom: 12 }} />
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          {[1, 2, 3].map(i => <div key={i} className="skeleton" style={{ height: 56, borderRadius: 12 }} />)}
-        </div>
-      </div>
-    )
-  }
+  if (loading || !data) return <DashboardSkeleton />
 
   const { displayName, enrolledCourses, bookmarks, totalSaved } = data
-  const heroCourse = enrolledCourses[0] ?? null
+  const initial = displayName.charAt(0).toUpperCase()
+  const totalLessons = enrolledCourses.reduce((sum, c) => sum + (c.lessons?.length ?? 0), 0)
 
   return (
-    <div style={{ padding: '40px 52px', maxWidth: 880, boxSizing: 'border-box' }}>
-      <div style={{ marginBottom: 36 }}>
-        <p style={{ margin: '0 0 8px', fontSize: 11, fontWeight: 600, color: '#b0b0b0', letterSpacing: '0.07em', textTransform: 'uppercase', fontFamily: 'var(--font-poppins), sans-serif' }}>
-          {todayStr}
-        </p>
-        <h1 style={{ fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif', fontSize: 32, fontWeight: 700, color: '#0a0a0a', margin: '0 0 14px', letterSpacing: '-0.025em', lineHeight: 1.15 }}>
-          {greeting}, {displayName}.
-        </h1>
-        {enrolledCourses.length > 0 ? (
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            <Chip>{enrolledCourses.length} Course{enrolledCourses.length !== 1 ? 's' : ''}</Chip>
-            {totalSaved > 0 && <Chip>{totalSaved} Saved</Chip>}
+    <div style={{ display: 'flex', height: '100%', overflow: 'hidden' }}>
+
+      {/* ── Left: main content ── */}
+      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '28px 24px 40px', minWidth: 0 }}>
+
+        {/* Welcome header */}
+        <div style={{ marginBottom: 28 }}>
+          <p style={{
+            margin: '0 0 6px',
+            fontFamily: 'Inter, var(--font-poppins), sans-serif',
+            fontSize: 11, fontWeight: 600, letterSpacing: '0.08em',
+            textTransform: 'uppercase', color: 'rgb(163, 163, 163)',
+          }}>
+            {todayStr}
+          </p>
+          <h1 style={{
+            margin: '0 0 20px',
+            fontFamily: 'Inter, var(--font-poppins), sans-serif',
+            fontSize: 24, fontWeight: 700, color: 'rgb(23, 23, 23)',
+            letterSpacing: '-0.02em', lineHeight: 1.2,
+          }}>
+            {greeting}, {displayName}.
+          </h1>
+        </div>
+
+        {/* Stats row: Profile + 2 gradient metric cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 10, marginBottom: 10 }}>
+
+          {/* Profile card */}
+          <div style={{
+            background: '#fff',
+            border: '0.67px solid rgb(223, 223, 223)',
+            borderRadius: 14,
+            padding: '16px 12px 14px',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+          }}>
+            <div style={{
+              width: 44, height: 44, borderRadius: '50%',
+              background: 'rgb(237, 237, 237)',
+              border: '2.5px solid rgb(212, 212, 212)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 20, fontWeight: 700, color: 'rgb(23, 23, 23)',
+              fontFamily: 'Inter, sans-serif', marginBottom: 4,
+            }}>
+              {initial}
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 14, fontWeight: 600, color: 'rgb(23, 23, 23)', lineHeight: 1.3 }}>
+                {displayName}
+              </div>
+              <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 11, color: 'rgb(163, 163, 163)', marginTop: 2 }}>
+                Student
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 16, marginTop: 4 }}>
+              <StatPill icon="📚" value={enrolledCourses.length} label="courses" />
+              <StatPill icon="🔖" value={totalSaved} label="saved" />
+            </div>
           </div>
-        ) : (
-          <p style={{ color: '#9ca3af', fontSize: 14, margin: 0 }}>Browse the library to enrol in your first course.</p>
+
+          {/* Gradient card 1: Courses */}
+          <div style={{
+            background: 'linear-gradient(135deg, #ff9a6c 0%, #ff6b6b 50%, #ee4444 100%)',
+            borderRadius: 14, padding: '16px 14px 14px',
+            display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+            minHeight: 140,
+          }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: 8,
+              background: 'rgba(255,255,255,0.25)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 16,
+            }}>
+              📖
+            </div>
+            <div>
+              <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 36, fontWeight: 700, color: '#fff', lineHeight: 1, letterSpacing: '-0.02em' }}>
+                {enrolledCourses.length}
+              </div>
+              <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 12, color: 'rgba(255,255,255,0.8)', marginTop: 4 }}>
+                Active Course{enrolledCourses.length !== 1 ? 's' : ''}
+              </div>
+            </div>
+          </div>
+
+          {/* Gradient card 2: Lessons */}
+          <div style={{
+            background: 'linear-gradient(135deg, #43e8d8 0%, #2dd4bf 40%, #3b82f6 100%)',
+            borderRadius: 14, padding: '16px 14px 14px',
+            display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+            minHeight: 140,
+          }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: 8,
+              background: 'rgba(255,255,255,0.25)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 16,
+            }}>
+              ✓
+            </div>
+            <div>
+              <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 36, fontWeight: 700, color: '#fff', lineHeight: 1, letterSpacing: '-0.02em' }}>
+                {totalLessons}
+              </div>
+              <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 12, color: 'rgba(255,255,255,0.8)', marginTop: 4 }}>
+                Total Lessons
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Slack banner — "trackers connected" equivalent */}
+        <div style={{
+          background: '#fff',
+          border: '0.67px solid rgb(223, 223, 223)',
+          borderRadius: 16, padding: '14px 20px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          marginBottom: 24,
+        }}>
+          <div>
+            <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 14, fontWeight: 600, color: 'rgb(23, 23, 23)' }}>
+              Study channels connected
+            </div>
+            <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 12, color: 'rgb(163, 163, 163)', marginTop: 2 }}>
+              {enrolledCourses.length > 0 ? `${enrolledCourses.length} active course${enrolledCourses.length !== 1 ? 's' : ''} on Slack` : 'No channels yet'}
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            {enrolledCourses.slice(0, 3).map((c, i) => (
+              <div key={c.id} style={{
+                width: 32, height: 32, borderRadius: 8,
+                background: c.accent_color,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 11, fontWeight: 700,
+                color: isDark(c.accent_color) ? '#fff' : '#000',
+                fontFamily: 'Inter, sans-serif',
+              }}>
+                {c.name.charAt(0)}
+              </div>
+            ))}
+            {enrolledCourses.length === 0 && (
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgb(237,237,237)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16 }}>
+                💬
+              </div>
+            )}
+            <div style={{ fontSize: 18, color: 'rgb(163,163,163)', marginLeft: 2 }}>···</div>
+          </div>
+        </div>
+
+        {/* Continue Learning */}
+        {enrolledCourses.length > 0 && (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+              <span style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 16, fontWeight: 600, color: 'rgb(23, 23, 23)' }}>
+                Continue Learning
+              </span>
+              <Link href="/library" style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 12, color: 'rgb(163,163,163)', textDecoration: 'none' }}>
+                Browse library →
+              </Link>
+            </div>
+
+            {enrolledCourses.map((course) => (
+              <div key={course.id} style={{ marginBottom: 8 }}>
+                <Link href={`/courses/${course.slug}`} style={{ textDecoration: 'none' }}>
+                  <div style={{
+                    background: '#fff',
+                    border: '0.67px solid rgb(223, 223, 223)',
+                    borderRadius: 12, padding: '14px 16px',
+                    display: 'flex', alignItems: 'center', gap: 14,
+                    transition: 'border-color 0.12s',
+                  }}
+                    onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgb(190,190,190)')}
+                    onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgb(223,223,223)')}
+                  >
+                    <div style={{
+                      width: 36, height: 36, borderRadius: 8, flexShrink: 0,
+                      background: course.accent_color,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 13, fontWeight: 700,
+                      color: isDark(course.accent_color) ? '#fff' : '#000',
+                      fontFamily: 'Inter, sans-serif',
+                    }}>
+                      {course.name.charAt(0)}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 13, fontWeight: 600, color: 'rgb(23, 23, 23)', marginBottom: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {course.name}
+                      </div>
+                      <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 11, color: 'rgb(163, 163, 163)' }}>
+                        {course.school} · {course.lessons.length} lesson{course.lessons.length !== 1 ? 's' : ''}
+                      </div>
+                    </div>
+                    <span style={{ color: 'rgb(163,163,163)', fontSize: 14, flexShrink: 0 }}>→</span>
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {enrolledCourses.length === 0 && (
+          <div style={{
+            background: '#fff', border: '0.67px solid rgb(223,223,223)',
+            borderRadius: 16, padding: '48px 36px', textAlign: 'center',
+          }}>
+            <div style={{ fontSize: 36, marginBottom: 12 }}>📚</div>
+            <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 16, fontWeight: 600, color: 'rgb(23,23,23)', marginBottom: 8 }}>
+              Find your first course
+            </div>
+            <p style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 13, color: 'rgb(163,163,163)', margin: '0 0 20px', lineHeight: 1.6 }}>
+              Study notes for ZCAS and UNZA courses. Browse the library and enrol to get started.
+            </p>
+            <Link href="/library" style={{
+              display: 'inline-block', padding: '10px 24px',
+              background: 'rgb(23,23,23)', color: '#fff', borderRadius: 10,
+              fontSize: 13, fontWeight: 600, textDecoration: 'none',
+              fontFamily: 'Inter, var(--font-poppins), sans-serif',
+            }}>
+              Browse Library
+            </Link>
+          </div>
         )}
       </div>
 
-      {enrolledCourses.length > 0 ? (
-        <>
-          {heroCourse && (
-            <section style={{ marginBottom: 36 }}>
-              <SectionLabel>Continue Learning</SectionLabel>
-              <Link href={`/courses/${heroCourse.slug}`} style={{ textDecoration: 'none', display: 'block', marginTop: 12 }}>
-                <div style={{ borderRadius: 20, overflow: 'hidden', background: heroCourse.cover_color, boxShadow: '0 4px 32px rgba(0,0,0,0.13)' }}>
-                  <div style={{ padding: '32px 36px 36px' }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: heroCourse.accent_color, textTransform: 'uppercase', marginBottom: 10, fontFamily: 'var(--font-poppins), sans-serif' }}>
-                      {heroCourse.school}
+      {/* ── Right panel ── */}
+      <div style={{
+        width: 240, flexShrink: 0,
+        borderLeft: '0.67px solid rgb(223, 223, 223)',
+        overflowY: 'auto',
+        padding: '32px 24px 40px',
+        background: 'rgb(252, 252, 252)',
+      }}>
+
+        {/* Enrolled Courses */}
+        <div style={{ marginBottom: 32 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <span style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 15, fontWeight: 600, color: 'rgb(23, 23, 23)' }}>
+              My Courses
+            </span>
+            <span style={{ fontSize: 16 }}>📖</span>
+          </div>
+
+          {enrolledCourses.length === 0 ? (
+            <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 13, color: 'rgb(163,163,163)', padding: '8px 0' }}>
+              No courses yet
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              {enrolledCourses.map((course, i) => (
+                <div key={course.id}>
+                  <Link href={`/courses/${course.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
+                    <div style={{
+                      padding: '12px 0',
+                      display: 'flex', alignItems: 'flex-start', gap: 12,
+                    }}
+                      onMouseEnter={e => (e.currentTarget.style.opacity = '0.7')}
+                      onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+                    >
+                      <div style={{ paddingTop: 2 }}>
+                        <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 11, fontWeight: 500, color: 'rgb(163,163,163)', marginBottom: 2 }}>
+                          {course.school}
+                        </div>
+                        <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 13, fontWeight: 600, color: 'rgb(23,23,23)', lineHeight: 1.3, marginBottom: 2 }}>
+                          {course.name}
+                        </div>
+                        <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 11, color: 'rgb(163,163,163)' }}>
+                          {course.lessons.length} lesson{course.lessons.length !== 1 ? 's' : ''}
+                        </div>
+                      </div>
+                      <span style={{ marginLeft: 'auto', color: 'rgb(163,163,163)', fontSize: 13, flexShrink: 0, paddingTop: 2 }}>↗</span>
                     </div>
-                    <div style={{ fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif', fontSize: 28, fontWeight: 700, lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 8, color: isDark(heroCourse.cover_color) ? '#ffffff' : '#0a0a0a' }}>
-                      {heroCourse.name}
-                    </div>
-                    <div style={{ fontSize: 13, marginBottom: 28, color: isDark(heroCourse.cover_color) ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.45)', fontFamily: 'var(--font-poppins), sans-serif' }}>
-                      {heroCourse.lessons.length} lesson{heroCourse.lessons.length !== 1 ? 's' : ''}
-                      {heroCourse.lessons[0] && <> · Start with <em style={{ fontStyle: 'normal', opacity: 0.85 }}>{heroCourse.lessons[0].title}</em></>}
-                    </div>
-                    <div style={{ display: 'inline-flex', alignItems: 'center', padding: '11px 24px', background: heroCourse.accent_color, color: '#fff', borderRadius: 12, fontSize: 14, fontWeight: 600, fontFamily: 'var(--font-poppins), sans-serif' }}>
-                      Open Course →
-                    </div>
-                  </div>
+                  </Link>
+                  {i < enrolledCourses.length - 1 && (
+                    <div style={{ height: '0.67px', background: 'rgb(223,223,223)' }} />
+                  )}
                 </div>
-              </Link>
-            </section>
+              ))}
+            </div>
           )}
 
-          {heroCourse && heroCourse.lessons.length > 0 && (
-            <section style={{ marginBottom: 36 }}>
-              <SectionLabel>Lessons</SectionLabel>
-              <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 4 }}>
-                {heroCourse.lessons.map((lesson, i) => (
-                  <Link key={lesson.id} href={`/courses/${heroCourse.slug}/${lesson.slug}`} style={{ textDecoration: 'none' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '13px 18px', background: '#fff', border: '1px solid #efefef', borderRadius: 12 }}>
-                      <div style={{ width: 28, height: 28, borderRadius: '50%', background: heroCourse.accent_color + '18', color: heroCourse.accent_color, fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontFamily: 'var(--font-poppins), sans-serif' }}>
-                        {i + 1}
-                      </div>
-                      <div style={{ fontSize: 14, fontWeight: 500, color: '#1a1a1a', flex: 1, fontFamily: 'var(--font-poppins), sans-serif' }}>
-                        {lesson.title}
-                      </div>
-                      <span style={{ color: heroCourse.accent_color, fontSize: 15, fontWeight: 500 }}>→</span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {enrolledCourses.length > 1 && (
-            <section style={{ marginBottom: 36 }}>
-              <SectionLabel>Also Enrolled</SectionLabel>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: 12, marginTop: 12 }}>
-                {enrolledCourses.slice(1).map(course => (
-                  <Link key={course.id} href={`/courses/${course.slug}`} style={{ textDecoration: 'none' }}>
-                    <div style={{ background: '#fff', border: '1px solid #efefef', borderRadius: 16, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
-                      <div style={{ height: 4, background: course.accent_color }} />
-                      <div style={{ padding: '16px 18px 20px' }}>
-                        <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.07em', color: course.accent_color, textTransform: 'uppercase', marginBottom: 4, fontFamily: 'var(--font-poppins), sans-serif' }}>{course.school}</div>
-                        <div style={{ fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif', fontWeight: 700, fontSize: 15, color: '#0a0a0a', marginBottom: 14, lineHeight: 1.3, letterSpacing: '-0.01em' }}>{course.name}</div>
-                        <div style={{ display: 'inline-flex', padding: '7px 14px', background: course.accent_color, color: '#fff', borderRadius: 8, fontSize: 12, fontWeight: 600, fontFamily: 'var(--font-poppins), sans-serif' }}>Continue →</div>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {bookmarks.length > 0 && (
-            <section>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 12 }}>
-                <SectionLabel>Recently Saved</SectionLabel>
-                <Link href="/saved" style={{ fontSize: 12, color: '#9ca3af', textDecoration: 'none', fontWeight: 500, fontFamily: 'var(--font-poppins), sans-serif' }}>View all →</Link>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                {bookmarks.map((bookmark, i) => {
-                  const step = Array.isArray(bookmark.steps) ? (bookmark.steps as BookmarkStep[])[0] : bookmark.steps
-                  if (!step) return null
-                  const lesson = Array.isArray(step.lessons) ? step.lessons[0] : step.lessons
-                  const course = lesson ? (Array.isArray(lesson.courses) ? lesson.courses[0] : lesson.courses) : null
-                  if (!lesson || !course) return null
-                  return (
-                    <Link key={i} href={`/courses/${course.slug}/${lesson.slug}`} style={{ textDecoration: 'none' }}>
-                      <div style={{ background: '#fff', border: '1px solid #efefef', borderLeft: `3px solid ${course.accent_color}`, borderRadius: 10, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.06em', color: course.accent_color, textTransform: 'uppercase', marginBottom: 2, fontFamily: 'var(--font-poppins), sans-serif' }}>{course.name}</div>
-                          <div style={{ fontSize: 13, fontWeight: 500, color: '#1a1a1a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontFamily: 'var(--font-poppins), sans-serif' }}>{step.title}</div>
-                        </div>
-                        <div style={{ fontSize: 11, color: '#b0b0b0', whiteSpace: 'nowrap', flexShrink: 0, fontFamily: 'var(--font-poppins), sans-serif' }}>
-                          {new Date(bookmark.saved_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
-                        </div>
-                        <span style={{ color: course.accent_color, fontWeight: 600, fontSize: 14, flexShrink: 0 }}>→</span>
-                      </div>
-                    </Link>
-                  )
-                })}
-              </div>
-            </section>
-          )}
-        </>
-      ) : (
-        <div style={{ background: '#fff', border: '1px solid #efefef', borderRadius: 20, padding: '64px 48px', textAlign: 'center', maxWidth: 480 }}>
-          <div style={{ fontSize: 40, marginBottom: 16 }}>📚</div>
-          <div style={{ fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif', fontSize: 22, fontWeight: 700, color: '#0a0a0a', marginBottom: 10 }}>Find your first course</div>
-          <p style={{ color: '#9ca3af', fontSize: 14, margin: '0 0 28px', lineHeight: 1.6, fontFamily: 'var(--font-poppins), sans-serif' }}>
-            Booklesss has study notes for ZCAS and UNZA. Browse the library and enrol to get started.
-          </p>
-          <Link href="/library" style={{ display: 'inline-block', padding: '12px 28px', background: '#0a0a0a', color: '#fff', borderRadius: 12, fontSize: 14, fontWeight: 600, textDecoration: 'none', fontFamily: 'var(--font-poppins), sans-serif' }}>
-            Browse Library
+          <Link href="/library" style={{
+            display: 'flex', alignItems: 'center', gap: 4, marginTop: 8,
+            fontFamily: 'Inter, var(--font-poppins), sans-serif',
+            fontSize: 12, color: 'rgb(112,112,112)', textDecoration: 'none', fontWeight: 500,
+          }}>
+            See all courses <span style={{ fontSize: 13 }}>›</span>
           </Link>
         </div>
-      )}
+
+        {/* Course Progress — "Developed areas" equivalent */}
+        {enrolledCourses.length > 0 && (
+          <div>
+            <div style={{ marginBottom: 14 }}>
+              <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 15, fontWeight: 600, color: 'rgb(23,23,23)', marginBottom: 2 }}>
+                Course Lessons
+              </div>
+              <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 11, color: 'rgb(163,163,163)' }}>
+                Lessons per course
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              {enrolledCourses.map((course) => {
+                const max = Math.max(...enrolledCourses.map(c => c.lessons.length), 1)
+                const pct = Math.round((course.lessons.length / max) * 100)
+                return (
+                  <div key={course.id}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                      <span style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 13, fontWeight: 500, color: 'rgb(23,23,23)' }}>
+                        {course.name.length > 22 ? course.name.slice(0, 20) + '…' : course.name}
+                      </span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 12, fontWeight: 600, color: 'rgb(82,82,82)' }}>
+                          {course.lessons.length}
+                        </span>
+                        <div style={{
+                          width: 20, height: 20, borderRadius: '50%',
+                          background: course.accent_color,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: 9,
+                        }}>
+                          {pct >= 50 ? '↑' : '↓'}
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{ height: 6, background: 'rgb(237,237,237)', borderRadius: 99, overflow: 'hidden' }}>
+                      <div style={{
+                        height: '100%', width: `${pct}%`,
+                        background: course.accent_color,
+                        borderRadius: 99,
+                        transition: 'width 0.6s ease',
+                      }} />
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Recently Saved */}
+        {bookmarks.length > 0 && (
+          <div style={{ marginTop: 32 }}>
+            <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 15, fontWeight: 600, color: 'rgb(23,23,23)', marginBottom: 14 }}>
+              Recently Saved
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {bookmarks.slice(0, 3).map((bookmark, i) => {
+                const step = Array.isArray(bookmark.steps) ? (bookmark.steps as BookmarkStep[])[0] : bookmark.steps
+                if (!step) return null
+                const lesson = Array.isArray(step.lessons) ? step.lessons[0] : step.lessons
+                const course = lesson ? (Array.isArray(lesson.courses) ? lesson.courses[0] : lesson.courses) : null
+                if (!lesson || !course) return null
+                return (
+                  <Link key={i} href={`/courses/${course.slug}/${lesson.slug}`} style={{ textDecoration: 'none' }}>
+                    <div style={{
+                      padding: '10px 12px',
+                      background: '#fff',
+                      border: '0.67px solid rgb(223,223,223)',
+                      borderLeft: `3px solid ${course.accent_color}`,
+                      borderRadius: 8,
+                    }}>
+                      <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 10, fontWeight: 600, letterSpacing: '0.05em', color: course.accent_color, textTransform: 'uppercase', marginBottom: 3 }}>
+                        {course.name}
+                      </div>
+                      <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 12, fontWeight: 500, color: 'rgb(23,23,23)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {step.title}
+                      </div>
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
+function StatPill({ icon, value, label }: { icon: string; value: number; label: string }) {
   return (
-    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(0,0,0,0.28)', fontFamily: 'var(--font-poppins), sans-serif' }}>
-      {children}
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+      <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 12, fontWeight: 700, color: 'rgb(23,23,23)', display: 'flex', alignItems: 'center', gap: 3 }}>
+        <span style={{ fontSize: 11 }}>{icon}</span>
+        {value}
+      </div>
+      <div style={{ fontFamily: 'Inter, var(--font-poppins), sans-serif', fontSize: 10, color: 'rgb(163,163,163)' }}>
+        {label}
+      </div>
     </div>
   )
 }
 
-function Chip({ children }: { children: React.ReactNode }) {
+function DashboardSkeleton() {
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', padding: '5px 14px', background: '#fff', border: '1px solid #e5e7eb', borderRadius: 20, fontSize: 13, fontWeight: 500, color: '#374151', boxShadow: '0 1px 2px rgba(0,0,0,0.04)', fontFamily: 'var(--font-poppins), sans-serif' }}>
-      {children}
+    <div style={{ display: 'flex', height: '100%', overflow: 'hidden' }}>
+      <div style={{ flex: 1, padding: '32px 32px 40px' }}>
+        <div className="skeleton" style={{ width: 160, height: 10, marginBottom: 10 }} />
+        <div className="skeleton" style={{ width: 280, height: 32, marginBottom: 28 }} />
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginBottom: 12 }}>
+          {[1, 2, 3].map(i => <div key={i} className="skeleton" style={{ height: 148, borderRadius: 16 }} />)}
+        </div>
+        <div className="skeleton" style={{ height: 56, borderRadius: 16, marginBottom: 24 }} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {[1, 2].map(i => <div key={i} className="skeleton" style={{ height: 64, borderRadius: 12 }} />)}
+        </div>
+      </div>
+      <div style={{ width: 288, borderLeft: '0.67px solid rgb(223,223,223)', padding: '32px 24px' }}>
+        <div className="skeleton" style={{ width: 100, height: 16, marginBottom: 20 }} />
+        {[1, 2, 3].map(i => <div key={i} className="skeleton" style={{ height: 52, borderRadius: 8, marginBottom: 8 }} />)}
+      </div>
     </div>
   )
 }
