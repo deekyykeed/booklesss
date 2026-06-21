@@ -3,7 +3,6 @@ import type { CSSProperties } from 'react'
 
 const iconStyle: CSSProperties = {
   flexShrink: 0,
-  filter: 'drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.25))',
   overflow: 'hidden',
 }
 
