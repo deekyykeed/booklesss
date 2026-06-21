@@ -10,77 +10,166 @@ interface NavbarProps {
 export default function Navbar({ userName, onSearchOpen }: NavbarProps) {
   const initial = userName.charAt(0).toUpperCase()
   return (
-    <header className="desktop-navbar" style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      height: '48px',
-      padding: '0 16px',
-      background: '#111111',
-      borderBottom: '1px solid rgba(255,255,255,0.08)',
-      flexShrink: 0,
-    }}>
-      {/* Wordmark */}
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <span style={{
-          fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif',
-          fontWeight: 700,
-          fontSize: '15px',
-          color: 'rgba(255,255,255,0.9)',
-          letterSpacing: '-0.01em',
-        }}>
-          Booklesss
-        </span>
+    <header
+      className="desktop-navbar"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '7px 16px',
+        background: 'rgb(252, 252, 252)',
+        borderBottom: '0.67px solid rgb(223, 223, 223)',
+        flexShrink: 0,
+        gap: 10,
+      }}
+    >
+      {/* Left: Logo Group — exact Framer structure */}
+      {/* Logo Group: gap 12px between diamond and Icon Group */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+
+        {/* Diamond — 18×18px black rotated square, white inner, black center */}
+        <div style={{ width: 18, height: 18, flexShrink: 0, overflow: 'visible' }}>
+          <div style={{
+            width: 18, height: 18,
+            background: 'rgb(0, 0, 0)',
+            transform: 'rotate(45deg)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <div style={{
+              width: '60%', height: '60%',
+              background: 'rgb(255, 255, 255)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <div style={{ width: '60%', height: '60%', background: 'rgb(0, 0, 0)' }} />
+            </div>
+          </div>
+        </div>
+
+        {/* Icon Group: gap 8px — Slash + Layers + Partnership Group */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+
+          {/* Icon 1: Slash (16×16px, strokeWidth 2) */}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+            <path stroke="rgb(0,0,0)" strokeWidth="2" strokeLinecap="round" d="M17 5 7 19"/>
+          </svg>
+
+          {/* Icon 2: Layers Minimalistic (14×14px, strokeWidth 1.5) */}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+            <path stroke="rgb(0,0,0)" strokeWidth="1.5" d="M4.979 9.685C2.993 8.891 2 8.494 2 8s.993-.89 2.979-1.685l2.808-1.123C9.773 4.397 10.767 4 12 4s2.227.397 4.213 1.192l2.808 1.123C21.007 7.109 22 7.506 22 8s-.993.89-2.979 1.685l-2.808 1.123C14.227 11.603 13.233 12 12 12s-2.227-.397-4.213-1.191z"/>
+            <path stroke="rgb(0,0,0)" strokeLinecap="round" strokeWidth="1.5" d="M22 12s-.993.89-2.979 1.685l-2.808 1.123C14.227 15.604 13.233 16 12 16s-2.227-.397-4.213-1.191L4.98 13.685C2.993 12.891 2 12 2 12m20 4s-.993.89-2.979 1.685l-2.808 1.123C14.227 19.604 13.233 20 12 20s-2.227-.397-4.213-1.191L4.98 17.685C2.993 16.891 2 16 2 16"/>
+          </svg>
+
+          {/* Partnership Group: gap 6px — name + FREE tag + selector icon */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+
+            {/* Partner Text: Inter 14px, weight 400, rgb(23,23,23), lineHeight 20px */}
+            <span style={{
+              fontFamily: 'var(--font-poppins), Inter, sans-serif',
+              fontSize: 14,
+              fontWeight: 400,
+              lineHeight: '20px',
+              color: 'rgb(23, 23, 23)',
+              userSelect: 'none',
+            }}>Booklesss</span>
+
+            {/* Feature Tag: white fill, border 0.67px rgb(212,212,212), 3-layer shadow, padding 3px 5.5px, pill */}
+            <div style={{
+              border: '0.67px solid rgb(212, 212, 212)',
+              boxShadow: '0px 0.6px 0.6px -1.25px rgba(0,0,0,0.18), 0px 2.29px 2.29px -2.5px rgba(0,0,0,0.16), 0px 10px 10px -3.75px rgba(0,0,0,0.06)',
+              background: 'rgb(255, 255, 255)',
+              padding: '3px 5.5px',
+              borderRadius: 9999,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              {/* Feature Text: Inter 9px, weight 500, letterSpacing 0.63px, uppercase, rgb(82,82,82) */}
+              <span style={{
+                fontFamily: 'var(--font-poppins), Inter, sans-serif',
+                fontSize: 9,
+                fontWeight: 500,
+                letterSpacing: '0.63px',
+                lineHeight: '1em',
+                textTransform: 'uppercase',
+                color: 'rgb(82, 82, 82)',
+                userSelect: 'none',
+              }}>Free</span>
+            </div>
+
+            {/* Feature Icon Group: 28×34px container with selector icon */}
+            <div style={{
+              width: 28, height: 34,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              borderRadius: 6, flexShrink: 0,
+            }}>
+              {/* Selector Vertical Line (up/down arrows, 14×14px) */}
+              <svg width="14" height="14" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill="rgb(0,0,0)" d="m4.907 6.093.593.592.593-.592a.458.458 0 0 1 .648.648l-.917.916a.46.46 0 0 1-.648 0l-.917-.916a.458.458 0 1 1 .648-.648m0-1.186.593-.592.593.592a.458.458 0 0 0 .648-.648l-.917-.916a.46.46 0 0 0-.648 0l-.917.916a.458.458 0 0 0 .648.648"/>
+              </svg>
+            </div>
+
+          </div>
+        </div>
       </div>
 
-      {/* Right: Search + Bell + Avatar */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+      {/* Right: search + bell + avatar */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+        {/* Search Input — pill, white bg, 3-layer shadow, exact Framer specs */}
         <button
           onClick={onSearchOpen}
           style={{
-            display: 'flex', alignItems: 'center', gap: '8px',
-            height: '32px', padding: '0 10px',
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: '6px', cursor: 'pointer',
-            color: '#707070', fontSize: '12px',
+            display: 'flex', alignItems: 'center', gap: 10,
+            height: 32, padding: '0 10px',
+            minWidth: 150,
+            background: 'rgb(255, 255, 255)',
+            border: '0.67px solid rgb(212, 212, 212)',
+            borderRadius: 9999,
+            boxShadow: '0px 0.6px 0.6px -1.25px rgba(0,0,0,0.18), 0px 2.29px 2.29px -2.5px rgba(0,0,0,0.16), 0px 10px 10px -3.75px rgba(0,0,0,0.06)',
+            cursor: 'pointer',
+            color: 'rgb(178, 178, 178)', fontSize: 12,
             fontFamily: 'var(--font-poppins), Inter, sans-serif',
+            fontWeight: 400,
             outline: 'none',
+            letterSpacing: 0,
+            lineHeight: '16px',
           }}
         >
-          <MagnifyingGlassLinear size={14} />
-          <span>Search...</span>
+          <span style={{ display: 'flex', flexShrink: 0 }}>
+            <MagnifyingGlassLinear size={16} />
+          </span>
+          <span style={{ flex: 1, textAlign: 'left', color: 'rgb(178, 178, 178)' }}>Search...</span>
           <span style={{
-            padding: '2px 5px',
-            background: 'rgba(255,255,255,0.07)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: '4px',
-            fontSize: '10px',
-            color: 'rgba(255,255,255,0.35)',
-            letterSpacing: '0.02em',
+            width: 28, fontSize: 11,
+            color: 'rgb(178, 178, 178)',
+            letterSpacing: '-0.025em',
+            flexShrink: 0,
           }}>⌘K</span>
         </button>
 
+        {/* Notification Button */}
         <button style={{
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          width: '32px', height: '32px',
-          background: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          borderRadius: '6px', cursor: 'pointer',
-          color: '#707070', outline: 'none',
+          width: 32, height: 32,
+          background: 'rgb(255, 255, 255)',
+          border: '0.67px solid rgb(212, 212, 212)',
+          borderRadius: 9999,
+          boxShadow: '0px 0.6px 0.6px -1.25px rgba(0,0,0,0.18), 0px 2.29px 2.29px -2.5px rgba(0,0,0,0.16), 0px 10px 10px -3.75px rgba(0,0,0,0.06)',
+          cursor: 'pointer',
+          color: 'rgb(112, 112, 112)', outline: 'none',
+          flexShrink: 0,
         }}>
-          <BellLinear size={16} />
+          <BellLinear size={15} />
         </button>
 
-        <Link href="/profile" style={{ textDecoration: 'none' }}>
+        {/* Avatar */}
+        <Link href="/profile" style={{ textDecoration: 'none', flexShrink: 0 }}>
           <div style={{
-            width: '28px', height: '28px', borderRadius: '50%',
-            background: 'rgba(255,255,255,0.12)',
-            border: '1px solid rgba(255,255,255,0.15)',
+            width: 32, height: 32, borderRadius: '50%',
+            background: 'rgb(237, 237, 237)',
+            border: '0.67px solid rgba(0, 0, 0, 0.1)',
+            boxShadow: '0px 0.6px 0.6px -1.25px rgba(0,0,0,0.18), 0px 2.29px 2.29px -2.5px rgba(0,0,0,0.16), 0px 10px 10px -3.75px rgba(0,0,0,0.06)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '11px', fontWeight: 700,
-            color: 'rgba(255,255,255,0.75)',
-            fontFamily: 'var(--font-poppins), sans-serif',
+            fontSize: 12, fontWeight: 600,
+            color: 'rgb(23, 23, 23)',
+            fontFamily: 'var(--font-poppins), Inter, sans-serif',
             cursor: 'pointer',
           }}>
             {initial}

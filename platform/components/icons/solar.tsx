@@ -370,6 +370,27 @@ export function MagnifyingGlassLinear({ size = 20 }: { size?: number }) {
   )
 }
 
+export function FiltersLinear({ size = 20 }: { size?: number }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width={size} height={size}>
+      <path d="M18 8c0 3.3137-2.6863 6-6 6-3.31371 0-6-2.6863-6-6 0-3.31371 2.68629-6 6-6 3.3137 0 6 2.68629 6 6Z" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="M6.5 10.189c-2.58784.666-4.5 3.0152-4.5 5.8109 0 3.3137 2.68629 6 6 6 3.3137 0 6-2.6863 6-6 0-.7547-.1393-1.4768-.3937-2.1421" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="M12 20.4722c1.0615.95 2.4633 1.5277 4 1.5277 3.3137 0 6-2.6863 6-6 0-2.7957-1.9122-5.1449-4.5-5.8109" stroke="currentColor" strokeWidth="1.5"/>
+    </svg>
+  )
+}
+
+export function ShareCircleLinear({ size = 20 }: { size?: number }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width={size} height={size}>
+      <path d="M12 9c-1.6569 0-3-1.34315-3-3s1.3431-3 3-3 3 1.34315 3 3-1.3431 3-3 3Z" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="M5.5 21c-1.65685 0-3-1.3431-3-3s1.34315-3 3-3 3 1.3431 3 3-1.34315 3-3 3Z" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="M18.5 21c-1.6569 0-3-1.3431-3-3s1.3431-3 3-3 3 1.3431 3 3-1.3431 3-3 3Z" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="M20 13c0-2.3894-1.0475-4.53411-2.7084-6M4 13c0-2.3894 1.04752-4.53411 2.70838-6M10 20.748c.6392.1645 1.3094.252 2 .252.6906 0 1.3608-.0875 2-.252" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5"/>
+    </svg>
+  )
+}
+
 export function CalendarDuotone({ size = 20 }: { size?: number }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width={size} height={size}>

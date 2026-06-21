@@ -60,17 +60,17 @@ export default function AppShell({
       {/* Below navbar: sidebar + main */}
       <div style={{
         display: 'flex', flex: 1,
-        overflow: 'hidden', backgroundColor: '#f8f8f6', position: 'relative',
+        overflow: 'hidden', backgroundColor: 'rgb(252, 252, 252)', position: 'relative',
       }}>
         {/* Mobile top bar */}
         <div className="mobile-topbar">
-          <button onClick={() => setOpen(true)} className="hamburger-btn" aria-label="Open menu" style={{ color: '#0F1F35' }}>
+          <button onClick={() => setOpen(true)} className="hamburger-btn" aria-label="Open menu" style={{ color: 'rgb(112, 112, 112)' }}>
             <SidebarMinimalisticLinear size={20} />
           </button>
           <span style={{
-            fontWeight: 700, fontSize: 15, color: '#0F1F35',
+            fontWeight: 600, fontSize: 14, color: 'rgb(23, 23, 23)',
             letterSpacing: '-0.01em',
-            fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif',
+            fontFamily: 'var(--font-poppins), Inter, sans-serif',
           }}>
             Booklesss
           </span>

@@ -5,8 +5,8 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
   CaseMinimalisticLinear,
-  UsersGroupTwoRoundedLinear,
-  WidgetAddLinear,
+  FiltersLinear,
+  ShareCircleLinear,
   CourseUpLinear,
   WalletLinear,
   SettingsLinear,
@@ -14,10 +14,10 @@ import {
 } from './icons/solar'
 
 const PRIMARY_NAV = [
-  { href: '/dashboard', label: 'Courses', exact: true, Icon: () => <CaseMinimalisticLinear size={20} /> },
-  { href: '/community', label: 'Community', exact: false, Icon: () => <UsersGroupTwoRoundedLinear size={20} /> },
-  { href: '/library', label: 'Library', exact: false, Icon: () => <WidgetAddLinear size={20} /> },
-  { href: '/progress', label: 'Progress', exact: false, Icon: () => <CourseUpLinear size={20} /> },
+  { href: '/dashboard', label: 'Projects', exact: true, Icon: () => <CaseMinimalisticLinear size={20} /> },
+  { href: '/community', label: 'Team', exact: false, Icon: () => <FiltersLinear size={20} /> },
+  { href: '/library', label: 'Integrations', exact: false, Icon: () => <ShareCircleLinear size={20} /> },
+  { href: '/progress', label: 'Usage', exact: false, Icon: () => <CourseUpLinear size={20} /> },
   { href: '/billing', label: 'Billing', exact: false, Icon: () => <WalletLinear size={20} /> },
   { href: '/settings', label: 'Settings', exact: false, Icon: () => <SettingsLinear size={20} /> },
 ]
@@ -121,26 +121,6 @@ export default function Sidebar({
         {/* Top: nav items */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
 
-          {/* Booklesss wordmark — only when expanded */}
-          {!collapsed && (
-            <div style={{
-              padding: '6px 8px 10px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
-              <span style={{
-                fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif',
-                fontWeight: 700,
-                fontSize: 15,
-                color: 'rgb(23, 23, 23)',
-                letterSpacing: '-0.01em',
-              }}>
-                Booklesss
-              </span>
-            </div>
-          )}
-
           {/* Nav items */}
           {PRIMARY_NAV.map(({ href, label, exact, Icon }) => {
             const active = exact ? pathname === href : pathname.startsWith(href)
@@ -178,7 +158,6 @@ export default function Sidebar({
                     flexShrink: 0,
                     display: 'flex',
                     color: active ? 'rgb(23, 23, 23)' : 'rgb(112, 112, 112)',
-                    filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.25))',
                   }}>
                     <Icon />
                   </span>
@@ -359,7 +338,6 @@ export default function Sidebar({
               cursor: 'pointer',
               color: 'rgb(112, 112, 112)',
               transition: 'background 0.12s ease',
-              filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.25))',
             }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgb(237, 237, 237)' }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent' }}

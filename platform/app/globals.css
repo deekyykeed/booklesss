@@ -5,7 +5,7 @@
   --font-display: var(--font-parastoo);
   --font-accent: var(--font-parkinsans);
 
-  --color-app-bg: #f8f8f6;
+  --color-app-bg: #fcfcfc;
 
   --color-sm-navy: #0F1F35;
   --color-sm-red: #DC2626;
@@ -62,9 +62,9 @@
     align-items: center;
     gap: 10px;
     padding: 0 16px;
-    height: 52px;
-    background: #f8f8f6;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+    height: 44px;
+    background: rgb(252, 252, 252);
+    border-bottom: 0.67px solid rgb(223, 223, 223);
     position: fixed;
     top: 0;
     left: 0;
@@ -123,7 +123,7 @@
   }
 
   .main-content {
-    padding-top: 52px;
+    padding-top: 44px;
   }
 }
 
@@ -188,7 +188,7 @@ html, body {
 }
 
 body {
-  background: #f8f8f6;
+  background: #fcfcfc;
   font-family: var(--font-aptos), system-ui, sans-serif;
   color: #1a1a1a;
   font-size: 14px;
