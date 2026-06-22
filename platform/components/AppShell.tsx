@@ -44,30 +44,18 @@ export default function AppShell({
   return (
     <div style={{
       display: 'flex', flexDirection: 'column',
-      width: '100%', height: '100vh', overflowY: 'auto', overflowX: 'hidden',
+      width: '100%', height: '100vh', overflow: 'hidden',
     }}>
-      {/* Framer navbar — always visible at all screen sizes */}
+      {/* Framer navbar — sticky, always visible at all screen sizes */}
       <Navbar userName={userName} onSearchOpen={() => setSearchOpen(true)} onMenuOpen={() => setOpen(true)} />
 
       {/* Below navbar: sidebar + main */}
       <div style={{
-        display: 'flex', flex: 1,
-        overflow: 'hidden', backgroundColor: 'rgb(252, 252, 252)', position: 'relative',
+        display: 'flex', flex: 1, overflow: 'hidden',
+        backgroundColor: 'rgb(252, 252, 252)',
       }}>
-        {/* Mobile sidebar overlay */}
-        {open && (
-          <div
-            onClick={() => setOpen(false)}
-            style={{
-              position: 'fixed', inset: 0,
-              background: 'rgba(0,0,0,0.25)', zIndex: 98,
-              backdropFilter: 'blur(1px)',
-            }}
-          />
-        )}
-
-        {/* Sidebar */}
-        <div className={`sidebar-wrapper${open ? ' sidebar-open' : ''}`}>
+        {/* Desktop sidebar — hidden on mobile via CSS */}
+        <div className="sidebar-desktop">
           <Sidebar
             userName={userName}
             onClose={() => setOpen(false)}
@@ -82,6 +70,34 @@ export default function AppShell({
           {children}
         </div>
       </div>
+
+      {/* Mobile sidebar — fixed overlay covering full screen including navbar */}
+      {open && (
+        <>
+          <div
+            onClick={() => setOpen(false)}
+            style={{
+              position: 'fixed', inset: 0,
+              background: 'rgba(0,0,0,0.25)', zIndex: 998,
+              backdropFilter: 'blur(1px)',
+            }}
+          />
+          <div style={{
+            position: 'fixed', top: 0, left: 0, bottom: 0,
+            width: 288, zIndex: 999,
+            overflowY: 'auto',
+            boxShadow: '4px 0 24px rgba(0,0,0,0.12)',
+          }}>
+            <Sidebar
+              userName={userName}
+              onClose={() => setOpen(false)}
+              onSearchOpen={() => setSearchOpen(true)}
+              collapsed={false}
+              onToggleCollapse={toggleCollapse}
+            />
+          </div>
+        </>
+      )}
 
       {/* Search overlay */}
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />

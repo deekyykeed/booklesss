@@ -26,11 +26,7 @@
 
 /* ── Responsive app shell ── */
 
-.sidebar-close-row {
-  display: none;
-}
-
-.sidebar-wrapper {
+.sidebar-desktop {
   flex-shrink: 0;
   height: 100%;
 }
@@ -50,43 +46,9 @@
     display: flex !important;
   }
 
-  .sidebar-wrapper {
-    position: fixed;
-    top: 0;
-    left: -288px;
-    bottom: 0;
-    z-index: 100;
-    transition: left 0.22s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: none;
-  }
-
-  /* Always show full sidebar on mobile — ignore desktop collapsed state */
-  .sidebar-wrapper aside {
-    width: 288px !important;
-    min-width: 288px !important;
-    transition: none !important;
-  }
-
-  .sidebar-wrapper.sidebar-open {
-    left: 0;
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
-  }
-
-  .sidebar-close-row {
-    display: flex;
-    justify-content: flex-end;
-    padding: 14px 14px 0;
-  }
-
-  .sidebar-close-btn {
-    background: none;
-    border: none;
-    padding: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    border-radius: 6px;
-    color: rgba(0, 0, 0, 0.5);
+  /* Hide desktop sidebar on mobile — mobile sidebar renders as fixed overlay */
+  .sidebar-desktop {
+    display: none;
   }
 }
 
