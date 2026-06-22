@@ -45,7 +45,7 @@ export default function AppShell({
   return (
     <div style={{
       display: 'flex', flexDirection: 'column',
-      width: '100%', height: '100vh', overflow: 'hidden',
+      width: '100%', height: '100vh', overflowY: 'auto', overflowX: 'hidden',
     }}>
       {/* Desktop top navbar */}
       <Navbar userName={userName} onSearchOpen={() => setSearchOpen(true)} />

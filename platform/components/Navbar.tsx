@@ -21,6 +21,10 @@ export default function Navbar({ userName, onSearchOpen }: NavbarProps) {
         borderBottom: '0.67px solid rgb(223, 223, 223)',
         flexShrink: 0,
         gap: 10,
+        position: 'sticky',
+        top: 0,
+        zIndex: 40,
+        width: '100%',
       }}
     >
       {/* Left: Logo Group — exact Framer structure */}
