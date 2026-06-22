@@ -131,6 +131,23 @@ Three custom skills in `.claude/skills/`, one per phase of the pipeline:
 - **`step-skill`** — WRITE + DESIGN. The PDF design system (colors, typography, callout specs) *and* the lesson-writing process (source → ReportLab script → PDF). Invoke for all PDF content — lesson steps, lead magnets, business documents. (Absorbed the former `booklesss-write` skill.)
 - **`design-system`** — Web/UI only (Framer, landing pages). Not for PDF work.
 
+### Platform Icons (Next.js)
+
+All icons in `platform/` come from the **Streamline Solar Linear** free set via the Streamline MCP (`mcp__b0437a7b-*`). They live in `platform/components/icons/solar.tsx` as inline SVG React components.
+
+**Workflow to add a new icon:**
+1. Find the icon on [streamlinehq.com](https://streamlinehq.com) — filter to **Solar Linear**, **Free** only. The URL contains the icon hash, e.g. `?icon=ico_6QOPYGi2HVDmaEW4`.
+2. Copy the hash from the URL (`ico_…` part).
+3. Download via Streamline MCP:
+   ```
+   mcp__b0437a7b__download_asset: format=svg, iconHash=ico_…, size=24, strokeWidth=1.5, responsive=true
+   ```
+4. `curl` the returned `downloadUrl` to get the SVG source.
+5. Add a new `export function XxxLinear` to `solar.tsx` — replace all `stroke="#000000"` and `fill="#000000"` with `currentColor`.
+6. Import and use in the component.
+
+**Never** hardcode Framer CDN URLs for icons — always source from Streamline and inline the SVG so icons respond to `color` CSS.
+
 ### Transcription
 `_dev/transcribe.py` uses OpenAI Whisper (`small.en` model). Outputs `[video-name]_transcript.md` alongside the source video. Skips files already transcribed. Source video collection is in `Schools/UNZA/_pipeline/_video-archive/` (ECO 155 macroeconomics, MIT 14.01SC microeconomics).
 
