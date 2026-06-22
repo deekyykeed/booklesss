@@ -23,7 +23,7 @@ export default function Navbar({ userName, onSearchOpen, onMenuOpen }: NavbarPro
         gap: 10,
         position: 'sticky',
         top: 0,
-        zIndex: 40,
+        zIndex: 50,
         width: '100%',
       }}
     >

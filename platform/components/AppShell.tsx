@@ -65,20 +65,20 @@ export default function AppShell({
         </div>
       </div>
 
-      {/* Mobile sidebar — fixed overlay covering full screen including navbar */}
+      {/* Mobile sidebar — slides in below the top navbar */}
       {open && (
         <>
           <div
             onClick={() => setOpen(false)}
             style={{
-              position: 'fixed', inset: 0,
-              background: 'rgba(0,0,0,0.25)', zIndex: 998,
+              position: 'fixed', top: 49, left: 0, right: 0, bottom: 0,
+              background: 'rgba(0,0,0,0.25)', zIndex: 45,
               backdropFilter: 'blur(1px)',
             }}
           />
           <div style={{
-            position: 'fixed', top: 0, left: 0, bottom: 0,
-            width: 288, zIndex: 999,
+            position: 'fixed', top: 49, left: 0, bottom: 0,
+            width: 288, zIndex: 46,
             overflowY: 'auto',
             boxShadow: '4px 0 24px rgba(0,0,0,0.12)',
           }}>
