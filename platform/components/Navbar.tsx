@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { MagnifyingGlassLinear, QuestionCircleLinear, UserLinear } from './icons/solar'
+import { MagnifyingGlassLinear, QuestionCircleLinear, LightbulbMinimalisticLinear } from './icons/solar'
 
 interface NavbarProps {
   userName: string
@@ -183,7 +183,7 @@ export default function Navbar({ userName, onSearchOpen }: NavbarProps) {
             cursor: 'pointer', outline: 'none', overflow: 'hidden',
             color: 'rgb(112, 112, 112)',
           }}>
-            <UserLinear size={16} />
+            <LightbulbMinimalisticLinear size={16} />
           </button>
 
           {/* Avatar Image — Framer: 32×32px, pill, border rgba(0,0,0,0.1), initials */}

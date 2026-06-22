@@ -390,6 +390,15 @@ export function ShareCircleLinear({ size = 20 }: { size?: number }) {
   )
 }
 
+export function LightbulbMinimalisticLinear({ size = 20 }: { size?: number }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width={size} height={size}>
+      <path d="M10 19.5h4M10.6667 22h2.6666" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5"/>
+      <path d="m7.41058 13.6805 1.10405 1.0391C8.82437 15.0112 9 15.4177 9 15.843 9 16.482 9.518 17 10.157 17h3.686c0.639 0 1.157 -0.518 1.157 -1.157 0 -0.4253 0.1756 -0.8318 0.4854 -1.1234l1.104 -1.0391c1.5412 -1.4618 2.4018 -3.3821 2.4105 -5.37857L19 8.21807C19 4.8069 15.866 2 12 2 8.13401 2 5 4.8069 5 8.21807l0.00007 0.08386c0.00868 1.99647 0.86932 3.91677 2.41051 5.37857Z" stroke="currentColor" strokeWidth="1.5"/>
+    </svg>
+  )
+}
+
 export function QuestionCircleLinear({ size = 20 }: { size?: number }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width={size} height={size}>
