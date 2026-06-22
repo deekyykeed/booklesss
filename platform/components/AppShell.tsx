@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import SearchOverlay from './SearchOverlay'
-import { SidebarMinimalisticLinear } from './icons/solar'
 
 export default function AppShell({
   userName,
@@ -47,29 +46,15 @@ export default function AppShell({
       display: 'flex', flexDirection: 'column',
       width: '100%', height: '100vh', overflowY: 'auto', overflowX: 'hidden',
     }}>
-      {/* Desktop top navbar */}
-      <Navbar userName={userName} onSearchOpen={() => setSearchOpen(true)} />
+      {/* Framer navbar — always visible at all screen sizes */}
+      <Navbar userName={userName} onSearchOpen={() => setSearchOpen(true)} onMenuOpen={() => setOpen(true)} />
 
       {/* Below navbar: sidebar + main */}
       <div style={{
         display: 'flex', flex: 1,
         overflow: 'hidden', backgroundColor: 'rgb(252, 252, 252)', position: 'relative',
       }}>
-        {/* Mobile top bar */}
-        <div className="mobile-topbar">
-          <button onClick={() => setOpen(true)} className="hamburger-btn" aria-label="Open menu" style={{ color: 'rgb(112, 112, 112)' }}>
-            <SidebarMinimalisticLinear size={20} />
-          </button>
-          <span style={{
-            fontWeight: 600, fontSize: 14, color: 'rgb(23, 23, 23)',
-            letterSpacing: '-0.01em',
-            fontFamily: 'var(--font-poppins), Inter, sans-serif',
-          }}>
-            Booklesss
-          </span>
-        </div>
-
-        {/* Mobile overlay */}
+        {/* Mobile sidebar overlay */}
         {open && (
           <div
             onClick={() => setOpen(false)}

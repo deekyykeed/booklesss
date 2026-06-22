@@ -1,17 +1,17 @@
 'use client'
 import Link from 'next/link'
-import { MagnifyingGlassLinear, QuestionCircleLinear, LightbulbMinimalisticLinear } from './icons/solar'
+import { MagnifyingGlassLinear, QuestionCircleLinear, LightbulbMinimalisticLinear, SidebarMinimalisticLinear } from './icons/solar'
 
 interface NavbarProps {
   userName: string
   onSearchOpen?: () => void
+  onMenuOpen?: () => void
 }
 
-export default function Navbar({ userName, onSearchOpen }: NavbarProps) {
+export default function Navbar({ userName, onSearchOpen, onMenuOpen }: NavbarProps) {
   const initial = userName.charAt(0).toUpperCase()
   return (
     <header
-      className="desktop-navbar"
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -30,6 +30,22 @@ export default function Navbar({ userName, onSearchOpen }: NavbarProps) {
       {/* Left: Logo Group — exact Framer structure */}
       {/* Logo Group: gap 12px between diamond and Icon Group */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+
+        {/* Hamburger — mobile only, opens sidebar */}
+        <button
+          onClick={onMenuOpen}
+          className="navbar-hamburger"
+          aria-label="Open menu"
+          style={{
+            display: 'none', // shown via CSS on mobile
+            alignItems: 'center', justifyContent: 'center',
+            width: 32, height: 32, padding: 6,
+            background: 'none', border: 'none', cursor: 'pointer',
+            color: 'rgb(112, 112, 112)', borderRadius: 6, flexShrink: 0,
+          }}
+        >
+          <SidebarMinimalisticLinear size={20} />
+        </button>
 
         {/* Diamond — 18×18px black rotated square, white inner, black center */}
         <div style={{ width: 18, height: 18, flexShrink: 0, overflow: 'visible' }}>
