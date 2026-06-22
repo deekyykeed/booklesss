@@ -12,6 +12,7 @@ export default function Navbar({ userName, onSearchOpen, onMenuOpen }: NavbarPro
   const initial = userName.charAt(0).toUpperCase()
   return (
     <header
+      className="top-navbar"
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -21,10 +22,6 @@ export default function Navbar({ userName, onSearchOpen, onMenuOpen }: NavbarPro
         borderBottom: '0.67px solid rgb(223, 223, 223)',
         flexShrink: 0,
         gap: 10,
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-        width: '100%',
       }}
     >
       {/* Left: Logo Group — exact Framer structure */}

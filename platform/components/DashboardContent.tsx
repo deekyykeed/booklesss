@@ -79,10 +79,10 @@ export default function DashboardContent({ userId, email }: { userId: string; em
   const totalLessons = enrolledCourses.reduce((sum, c) => sum + (c.lessons?.length ?? 0), 0)
 
   return (
-    <div style={{ display: 'flex', height: '100%', overflow: 'hidden' }}>
+    <div className="dashboard-layout">
 
       {/* ── Left: main content ── */}
-      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '28px 24px 40px', minWidth: 0 }}>
+      <div className="dashboard-main">
 
         {/* Welcome header */}
         <div style={{ marginBottom: 28 }}>
@@ -304,13 +304,7 @@ export default function DashboardContent({ userId, email }: { userId: string; em
       </div>
 
       {/* ── Right panel ── */}
-      <div style={{
-        width: 240, flexShrink: 0,
-        borderLeft: '0.67px solid rgb(223, 223, 223)',
-        overflowY: 'auto',
-        padding: '32px 24px 40px',
-        background: 'rgb(252, 252, 252)',
-      }}>
+      <div className="dashboard-right-panel">
 
         {/* Enrolled Courses */}
         <div style={{ marginBottom: 32 }}>
