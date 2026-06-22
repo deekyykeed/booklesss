@@ -42,18 +42,12 @@ export default function AppShell({
   }, [])
 
   return (
-    <div style={{
-      display: 'flex', flexDirection: 'column',
-      width: '100%', height: '100vh', overflow: 'hidden',
-    }}>
+    <div className="app-shell">
       {/* Framer navbar — sticky, always visible at all screen sizes */}
       <Navbar userName={userName} onSearchOpen={() => setSearchOpen(true)} onMenuOpen={() => setOpen(true)} />
 
       {/* Below navbar: sidebar + main */}
-      <div style={{
-        display: 'flex', flex: 1, overflow: 'hidden',
-        backgroundColor: 'rgb(252, 252, 252)',
-      }}>
+      <div className="content-row">
         {/* Desktop sidebar — hidden on mobile via CSS */}
         <div className="sidebar-desktop">
           <Sidebar
