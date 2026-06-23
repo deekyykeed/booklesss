@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-06-23 (session 7)
+**Last updated:** 2026-06-23 (session 8)
 
 ---
 
@@ -50,6 +50,26 @@
 ---
 
 ## Session Log
+
+### Session 2026-06-23 (session 8 — CV polish)
+**Done:**
+- **Bullet alignment fixed** — switched from `firstLineIndent` (unreliable in table cells) to ReportLab's native `bulletText="•"` on `Paragraph()` with `bulletIndent=0, leftIndent=12` in the style. All wrapped bullet lines now align correctly with the text start, not the bullet character.
+- **Role title polished** — "Finance & Commercial Operations" → `"FINANCE & COMMERCIAL OPERATIONS"`, style updated to `Body-Bold`, 9pt, `C_LABEL` (warm dark grey), `charSpace=1.2` for tracked all-caps feel. Sits bottom-aligned with the name.
+- **Skill reframed** — "Python — PDF automation, data workflows" → "AI-augmented research, content & product operations" (positions as business/consulting/AI person, not a developer).
+- **Booklesss bullet reframed** — stripped Python/script reference; rewritten as "Designed the full product pipeline using AI tools — course research to branded, publication-ready study documents — cutting production time per step significantly."
+- **LinkedIn CV advice researched** — key findings: single-column beats multi-column for ATS; professional summary (3 sentences) near top strongly recommended; achievement bullets and company descriptions already done well. Biggest gap: no professional summary yet.
+
+**What Worked:**
+- `Paragraph(text, style, bulletText="•")` with `bulletIndent=0, leftIndent=12` in the style — this is the correct ReportLab pattern for hanging bullet indents inside table cells. `firstLineIndent` negative values do NOT work reliably when flowables are in a table cell list.
+
+**Dead Ends (do not retry):**
+- `leftIndent=N, firstLineIndent=-N` does not produce reliable hanging indents when Paragraphs are rendered inside ReportLab table cells. Always use `bulletText` + `bulletIndent` for this pattern.
+
+**Next:**
+- [ ] Consider adding a 3-sentence professional summary to the CV (LinkedIn's top recommendation — recruiters spend ~7 seconds)
+- [ ] Consider a plain single-column text version of the CV for ATS/online applications (LinkedIn warns multi-column hurts ATS parsing)
+
+---
 
 ### Session 2026-06-23
 **Done:**

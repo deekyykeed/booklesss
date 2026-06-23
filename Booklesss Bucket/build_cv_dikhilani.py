@@ -69,8 +69,8 @@ ST = {
         fontName="Title-Bold", fontSize=34, textColor=C_INK,
         leading=38),
     "role": ParagraphStyle("role",
-        fontName="Body", fontSize=10.5, textColor=C_DIM,
-        leading=15, alignment=TA_RIGHT),
+        fontName="Body-Bold", fontSize=9, textColor=C_LABEL,
+        leading=13, alignment=TA_RIGHT, charSpace=1.2),
     "label": ParagraphStyle("label",
         fontName="Body-Bold", fontSize=7.5, textColor=C_LABEL,
         leading=11),
@@ -85,7 +85,8 @@ ST = {
         leading=14, spaceAfter=5),
     "bullet": ParagraphStyle("bullet",
         fontName="Body", fontSize=9.5, textColor=C_INK,
-        leading=15, spaceAfter=2, leftIndent=10),
+        leading=15, spaceAfter=2, leftIndent=12, bulletIndent=0,
+        bulletFontName="Body", bulletFontSize=9.5),
     "edu_degree": ParagraphStyle("edu_degree",
         fontName="Body-Bold", fontSize=10.5, textColor=C_INK,
         leading=15, spaceAfter=1),
@@ -97,7 +98,8 @@ ST = {
         leading=13),
     "skill": ParagraphStyle("skill",
         fontName="Body", fontSize=9.5, textColor=C_INK,
-        leading=15, spaceAfter=2, leftIndent=10),
+        leading=15, spaceAfter=2, leftIndent=12, bulletIndent=0,
+        bulletFontName="Body", bulletFontSize=9.5),
 }
 
 # ── HELPERS ───────────────────────────────────────────────────────────────────
@@ -122,7 +124,7 @@ def section_row(lbl, content):
     return tbl
 
 def b(text):
-    return Paragraph(f"•  {text}", ST["bullet"])
+    return Paragraph(text, ST["bullet"], bulletText="•")
 
 # ── BUILD ─────────────────────────────────────────────────────────────────────
 def build():
@@ -138,7 +140,7 @@ def build():
     # ── NAME + ROLE ───────────────────────────────────────────────────────────
     hdr = Table(
         [[Paragraph("Dikhilani Mvula", ST["name"]),
-          Paragraph("Finance &amp; Commercial Operations", ST["role"])]],
+          Paragraph("FINANCE &amp; COMMERCIAL OPERATIONS", ST["role"])]],
         colWidths=[CONTENT_W * 0.58, CONTENT_W * 0.42],
         hAlign="LEFT",
     )
@@ -192,8 +194,8 @@ def build():
         Paragraph("Booklesss · Zambia  (edtech startup)", ST["company"]),
         b("Building a Slack-based study platform delivering branded finance lecture notes "
           "for ZCAS and UNZA students across 4 active courses"),
-        b("Designed and automated the full content production pipeline in Python — "
-          "source material to publication-ready PDF in a single script per step"),
+        b("Designed the full product pipeline using AI tools — course research to branded, "
+          "publication-ready study documents — cutting production time per step significantly"),
         b("Modelled unit economics, pricing tiers, and reinvestment strategy; "
           "managing student acquisition through direct WhatsApp outreach"),
     ]
@@ -222,7 +224,7 @@ def build():
         "Financial reporting &amp; ZRA compliance (Smart Invoice portal)",
         "Multi-currency account management (USD, ZAR, ZMW)",
         "International procurement &amp; supplier management",
-        "Python — PDF automation, data workflows",
+        "AI-augmented research, content &amp; product operations",
     ]
     skills_r = [
         "Tender preparation &amp; portal submission (mining sector)",
@@ -232,8 +234,8 @@ def build():
     ]
     half = TEXT_W / 2
     sk_tbl = Table(
-        [[Paragraph(f"•  {l}", ST["skill"]),
-          Paragraph(f"•  {r}", ST["skill"])]
+        [[Paragraph(l, ST["skill"], bulletText="•"),
+          Paragraph(r, ST["skill"], bulletText="•")]
          for l, r in zip(skills_l, skills_r)],
         colWidths=[half, half],
         hAlign="LEFT",
