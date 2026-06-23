@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-06-15 (session 6)
+**Last updated:** 2026-06-23 (session 7)
 
 ---
 
@@ -50,6 +50,25 @@
 ---
 
 ## Session Log
+
+### Session 2026-06-23
+**Done:**
+- **Styled CV built** (`Booklesss Bucket/build_cv_dikhilani.py` → `Dikhilani_Mvula_CV_2026_Booklesss.pdf`): A4 PDF using full Booklesss brand — cream `#FFFEF2` background, grain texture overlay, Parastoo-Bold for the name, Aptos for all body text. Two-column layout: narrow warm-grey section labels left, content right. Warm hairlines (`#E0DACB`) between sections. No colour accent — clean near-black + cream + grey only.
+- **CV content rewritten**: bullet points sharpened (active verbs, tighter phrasing — "Originate and deliver" not "Prepare and issue", "Lead formal tender submissions" not "Submit"). Company names now in italic dim grey; job titles in bold ink.
+- **Booklesss added as experience**: "Founder | 2025 – Present · Booklesss · Zambia (edtech startup)" — 3 bullets covering platform-building, Python PDF automation pipeline, and unit economics modelling. Bumps the CV from 2 roles to 3, adds entrepreneurship and technical depth.
+- **Skills updated**: added "Python — PDF automation, data workflows" and "Business & unit economics modelling" to the two-column skills grid (4 skills per column, up from 3).
+
+**What Worked:**
+- `section_row()` helper using a 2-column `Table` with `LABEL_W=3.5cm` / `TEXT_W` — list of flowables in the content cell renders correctly in ReportLab 3.x. Verified pattern works for both single Paragraph and list-of-Paragraph content.
+- `page_bg` as `onPage` only (no `onPageEnd`) is sufficient for pure background pages with no running header/footer — simpler than the lesson-step pattern.
+- Unicode print characters (✓, etc.) fail on Windows cp1252 terminal — use plain ASCII in `print()` calls in any script run from PowerShell.
+
+**Dead Ends (do not retry):**
+- Unicode `✓` in `print()` raises `UnicodeEncodeError` on Windows cp1252. The PDF itself was built fine — the error is print-only. Always use `print("Done: " + path)` or similar ASCII in build scripts.
+
+**Next:** No new items — one-off CV session.
+
+---
 
 ### Session 2026-06-15
 **Done:**
