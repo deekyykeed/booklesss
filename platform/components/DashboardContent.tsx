@@ -7,7 +7,9 @@ import { cacheGet, cacheSet } from '@/lib/client-cache'
 import {
   CaseMinimalisticLinear,
   FolderFilesLinear,
+  ShareCircleLinear,
   CourseUpLinear,
+  SettingsLinear,
 } from './icons/solar'
 
 type Lesson = { id: string; slug: string; title: string; order_index: number }
@@ -23,28 +25,9 @@ type Course = {
 
 const SHADOW = '0px 0.6021873017743928px 0.6021873017743928px -1.25px rgba(0,0,0,0.18), 0px 2.288533303243457px 2.288533303243457px -2.5px rgba(0,0,0,0.16), 0px 10px 10px -3.75px rgba(0,0,0,0.06)'
 const SHADOW_HOVER = '0px 1px 2px -1px rgba(0,0,0,0.22), 0px 4px 8px -2.5px rgba(0,0,0,0.14), 0px 18px 22px -3.75px rgba(0,0,0,0.08)'
-const BORDER = '1px solid rgb(218, 218, 217)'
 
-function getGreeting() {
-  const h = new Date().getHours()
-  if (h < 12) return 'Good morning'
-  if (h < 17) return 'Good afternoon'
-  return 'Good evening'
-}
-
-function formatDate() {
-  return new Date().toLocaleDateString('en-GB', {
-    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
-  })
-}
-
-function getFirstName(email: string) {
-  const raw = email.split('@')[0].replace(/[._-]/g, ' ').trim().split(' ')[0]
-  return raw.charAt(0).toUpperCase() + raw.slice(1)
-}
-
-export default function DashboardContent({ userId, email }: { userId: string; email: string }) {
-  const cacheKey = `dashboard-v5-${userId}`
+export default function DashboardContent({ userId }: { userId: string; email: string }) {
+  const cacheKey = `dashboard-v4-${userId}`
   const [courses, setCourses] = useState<Course[] | null>(() => cacheGet<Course[]>(cacheKey))
   const [loading, setLoading] = useState(!courses)
 
@@ -75,17 +58,23 @@ export default function DashboardContent({ userId, email }: { userId: string; em
   if (loading || !courses) return <Skeleton />
 
   const totalLessons = courses.reduce((sum, c) => sum + c.lessons.length, 0)
-  const uniqueSchools = new Set(courses.map(c => c.school)).size
-  const firstName = getFirstName(email)
 
   return (
+    /*
+      Framer node FYfK_675p — Main Content
+        fill: rgb(252,252,252)
+        padding: 32px 32px 48px 32px
+        gap: 28px
+        overflow: auto / overflowX: hidden
+        stackDirection: vertical  stackAlignment: start
+    */
     <div style={{
       background: 'rgb(252, 252, 252)',
       padding: '32px 32px 48px',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'flex-start',
-      gap: 32,
+      gap: 28,
       overflowY: 'auto',
       overflowX: 'hidden',
       height: '100%',
@@ -93,237 +82,311 @@ export default function DashboardContent({ userId, email }: { userId: string; em
       boxSizing: 'border-box',
     }}>
 
-      {/* ── Welcome ───────────────────────────────────────── */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
-        width: '100%',
-        gap: 16,
+      {/*
+        Heading — Framer node OTxfqkcBL
+          fontName: Familjen Grotesk  fontWeight: 500  fontSize: 24px
+          letterSpacing: -0.6px  lineHeight: 1.2em  textColor: rgb(23,23,23)
+          tag: h1
+      */}
+      <h1 style={{
+        margin: 0,
+        fontFamily: 'var(--font-familjen), "Familjen Grotesk", Inter, sans-serif',
+        fontWeight: 500,
+        fontSize: 24,
+        letterSpacing: '-0.6px',
+        lineHeight: '1.2em',
+        color: 'rgb(23, 23, 23)',
+        userSelect: 'none',
       }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          <h1 style={{
-            margin: 0,
-            fontFamily: 'var(--font-familjen), "Familjen Grotesk", Inter, sans-serif',
-            fontWeight: 500,
-            fontSize: 24,
-            letterSpacing: '-0.6px',
-            lineHeight: '1.2em',
-            color: 'rgb(23, 23, 23)',
-            userSelect: 'none',
-          }}>
-            {getGreeting()}, {firstName}
-          </h1>
-          <p style={{
-            margin: 0,
-            fontFamily: 'Inter, sans-serif',
-            fontWeight: 400,
-            fontSize: 13,
-            lineHeight: '1em',
-            color: 'rgb(155, 153, 147)',
-            userSelect: 'none',
-          }}>
-            {courses.length === 0
-              ? 'Browse the library and enrol in your first course.'
-              : `Enrolled in ${courses.length} course${courses.length !== 1 ? 's' : ''} across ${uniqueSchools} school${uniqueSchools !== 1 ? 's' : ''}.`}
-          </p>
-        </div>
-        <span style={{
-          fontFamily: 'Inter, sans-serif',
-          fontSize: 12,
-          lineHeight: '1em',
-          color: 'rgb(185, 183, 177)',
-          userSelect: 'none',
-          whiteSpace: 'nowrap',
-          flexShrink: 0,
-          paddingTop: 5,
-        }}>
-          {formatDate()}
-        </span>
-      </div>
+        My Courses
+      </h1>
 
-      {/* ── Stats ─────────────────────────────────────────── */}
+      {/*
+        Stats row — Framer node tjBCpf0pk
+          stackDirection: horizontal  stackDistribution: space-between  stackAlignment: center  gap: 10
+          width: 1fr  height: auto
+      */}
       <div style={{
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'stretch',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         gap: 10,
         width: '100%',
         flexWrap: 'wrap',
       }}>
-        <StatCard
-          value={courses.length}
-          label={courses.length === 1 ? 'course' : 'courses'}
-          icon={<CourseUpLinear size={16} />}
-        />
-        <StatCard
-          value={totalLessons}
-          label={totalLessons === 1 ? 'lesson' : 'lessons'}
-          icon={<FolderFilesLinear size={16} />}
-        />
-        <StatCard
-          value={uniqueSchools}
-          label={uniqueSchools === 1 ? 'school' : 'schools'}
-          icon={<CaseMinimalisticLinear size={16} />}
-        />
-        <ProgressCard />
-      </div>
 
-      {/* ── Your Courses ──────────────────────────────────── */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 14, width: '100%' }}>
-        <div style={{
+        {/*
+          Stat card 1 — Framer node u1qe4a_Dj
+            135×112px  radius 24px  squircle 50%  padding 12px  gap 12px
+            stackDistribution: space-between  stackAlignment: start
+            Children: [hidden label] [number row: big-num + unit] [icon 20×20]
+        */}
+        <div className="course-card" style={{
+          border: '1px solid rgb(218, 218, 217)',
+          boxShadow: SHADOW,
+          background: 'rgb(255, 255, 255)',
+          width: 135,
+          height: 112,
+          padding: 12,
           display: 'flex',
-          alignItems: 'center',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
           justifyContent: 'space-between',
+          flexShrink: 0,
         }}>
-          <span style={{
-            fontFamily: 'var(--font-familjen), "Familjen Grotesk", Inter, sans-serif',
-            fontWeight: 500,
-            fontSize: 14,
-            letterSpacing: '-0.2px',
-            lineHeight: '1em',
-            color: 'rgb(112, 110, 105)',
-            userSelect: 'none',
-          }}>
-            Your Courses
+          {/* hidden label — occupies space so number row is pushed down (Framer: visible:false) */}
+          <span style={{ visibility: 'hidden', fontFamily: 'Inter', fontSize: 14, lineHeight: '20px', userSelect: 'none' }}>
+            Your courses
           </span>
-          <Link href="/library" style={{ textDecoration: 'none' }}>
+          {/* number row — stackDistribution:center, stackAlignment:end, gap:2 */}
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: 2, width: '100%', overflow: 'clip' }}>
             <span style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: 12,
-              color: 'rgb(155, 153, 147)',
+              fontFamily: 'var(--font-familjen), "Familjen Grotesk", Inter, sans-serif',
+              fontWeight: 500,
+              fontSize: 24,
+              letterSpacing: '-0.6px',
+              lineHeight: '1.2em',
+              color: 'rgb(23, 23, 23)',
               userSelect: 'none',
-              transition: 'color 0.1s ease',
             }}>
-              Browse Library →
+              {courses.length}
             </span>
-          </Link>
+            <span style={{
+              fontFamily: '"Satoshi", var(--font-poppins), Inter, sans-serif',
+              fontWeight: 400,
+              fontSize: 14,
+              lineHeight: '20px',
+              color: 'rgb(112, 112, 112)',
+              userSelect: 'none',
+              flex: 1,
+            }}>
+              enrolled
+            </span>
+          </div>
+          {/* icon 20×20 */}
+          <div style={{ width: 20, height: 20, color: 'rgb(112, 112, 112)', flexShrink: 0 }}>
+            <CourseUpLinear size={20} />
+          </div>
         </div>
 
-        {courses.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-            gap: 16,
-            width: '100%',
-          }}>
-            {courses.map(course => <CourseCard key={course.id} course={course} />)}
-          </div>
-        )}
-      </div>
-
-    </div>
-  )
-}
-
-// ── Stat card ─────────────────────────────────────────────────────────────────
-function StatCard({ value, label, icon }: { value: number; label: string; icon: React.ReactNode }) {
-  return (
-    <div className="course-card" style={{
-      border: BORDER,
-      boxShadow: SHADOW,
-      background: 'rgb(255, 255, 255)',
-      width: 118,
-      height: 94,
-      padding: '13px 14px',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-      justifyContent: 'space-between',
-      flexShrink: 0,
-    }}>
-      <div style={{ color: 'rgb(200, 198, 192)' }}>{icon}</div>
-      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: 4 }}>
-        <span style={{
-          fontFamily: 'var(--font-familjen), "Familjen Grotesk", sans-serif',
-          fontWeight: 500,
-          fontSize: 22,
-          letterSpacing: '-0.5px',
-          lineHeight: '1em',
-          color: 'rgb(23, 23, 23)',
-          userSelect: 'none',
-        }}>
-          {value}
-        </span>
-        <span style={{
-          fontFamily: 'Inter, sans-serif',
-          fontSize: 12,
-          lineHeight: '1.1em',
-          paddingBottom: 1,
-          color: 'rgb(155, 153, 147)',
-          userSelect: 'none',
-        }}>
-          {label}
-        </span>
-      </div>
-    </div>
-  )
-}
-
-// ── Progress card ─────────────────────────────────────────────────────────────
-function ProgressCard() {
-  return (
-    <div className="course-card" style={{
-      border: BORDER,
-      boxShadow: SHADOW,
-      background: 'rgb(255, 255, 255)',
-      flex: 1,
-      minWidth: 160,
-      height: 94,
-      padding: '13px 14px',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-      justifyContent: 'space-between',
-    }}>
-      <span style={{
-        fontFamily: 'Inter, sans-serif',
-        fontSize: 12,
-        lineHeight: '1em',
-        color: 'rgb(155, 153, 147)',
-        userSelect: 'none',
-      }}>
-        Progress
-      </span>
-      <div style={{ width: '100%' }}>
-        <span style={{
-          display: 'block',
-          fontFamily: 'Inter, sans-serif',
-          fontSize: 11,
-          color: 'rgb(200, 198, 192)',
-          userSelect: 'none',
-          marginBottom: 7,
-        }}>
-          Tracking coming soon
-        </span>
+        {/*
+          Stat card 2 — Framer node JilpGec4A
+            135×112px  radius 24px  squircle 50%  padding 12px  gap 12px
+            stackDistribution: space-between
+            Children: [label (visible)] [icon 20×20]
+        */}
         <div className="course-card" style={{
-          background: 'rgb(243, 243, 241)',
-          height: 5,
-          width: '100%',
-        }} />
+          border: '1px solid rgb(218, 218, 217)',
+          boxShadow: SHADOW,
+          background: 'rgb(255, 255, 255)',
+          width: 135,
+          height: 112,
+          padding: 12,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          flexShrink: 0,
+        }}>
+          <span style={{
+            fontFamily: 'Inter, sans-serif',
+            fontWeight: 400,
+            fontSize: 14,
+            lineHeight: '20px',
+            color: 'rgb(112, 112, 112)',
+            width: 111,
+            userSelect: 'none',
+          }}>
+            Study Community
+          </span>
+          <div style={{ width: 20, height: 20, color: 'rgb(112, 112, 112)', flexShrink: 0 }}>
+            <ShareCircleLinear size={20} />
+          </div>
+        </div>
+
+        {/*
+          Stat card 3 — Framer node r6ukpCtEA
+            200×112px  radius 24px  squircle 50%  padding 12px  gap 12px
+            stackDistribution: space-between
+            Children: [label (visible)] [progress bar]
+            Progress bar outer (W0B5ydwhJ): fill rgb(245,245,245), border, shadow, padding 2px, radius 24px, squircle 50%
+            Progress bar inner (UzLfs3tWy): fill rgb(255,255,255), border, shadow, width 56%, height 24px, radius 24px, squircle 50%
+        */}
+        <div className="course-card" style={{
+          border: '1px solid rgb(218, 218, 217)',
+          boxShadow: SHADOW,
+          background: 'rgb(255, 255, 255)',
+          width: 200,
+          height: 112,
+          padding: 12,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          flexShrink: 0,
+        }}>
+          <span style={{
+            fontFamily: 'Inter, sans-serif',
+            fontWeight: 400,
+            fontSize: 14,
+            lineHeight: '20px',
+            color: 'rgb(112, 112, 112)',
+            width: 111,
+            userSelect: 'none',
+          }}>
+            Course progress
+          </span>
+          {/* outer track */}
+          <div className="course-card" style={{
+            border: '1px solid rgb(218, 218, 217)',
+            boxShadow: SHADOW,
+            background: 'rgb(245, 245, 245)',
+            padding: 2,
+            width: '100%',
+            boxSizing: 'border-box',
+          }}>
+            {/* inner fill bar — 0% placeholder until completion tracking added */}
+            {totalLessons > 0 && (
+              <div className="course-card" style={{
+                border: '1px solid rgb(218, 218, 217)',
+                boxShadow: SHADOW,
+                background: 'rgb(255, 255, 255)',
+                width: `${Math.min(100, Math.round((courses.length / Math.max(1, totalLessons)) * 100 * 5))}%`,
+                height: 24,
+                minWidth: 28,
+              }} />
+            )}
+          </div>
+        </div>
+
+        {/*
+          Stat card 4 — Framer node SwBhtyrfH
+            135×112px  radius 24px  squircle 50%  padding 12px  gap 12px
+            stackDistribution: space-between
+            Children: [hidden label] [number row] [icon 20×20]
+        */}
+        <div className="course-card" style={{
+          border: '1px solid rgb(218, 218, 217)',
+          boxShadow: SHADOW,
+          background: 'rgb(255, 255, 255)',
+          width: 135,
+          height: 112,
+          padding: 12,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          flexShrink: 0,
+        }}>
+          <span style={{ visibility: 'hidden', fontFamily: 'Inter', fontSize: 14, lineHeight: '20px', userSelect: 'none' }}>
+            Available
+          </span>
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: 2, width: '100%', overflow: 'clip' }}>
+            <span style={{
+              fontFamily: 'var(--font-familjen), "Familjen Grotesk", Inter, sans-serif',
+              fontWeight: 500,
+              fontSize: 24,
+              letterSpacing: '-0.6px',
+              lineHeight: '1.2em',
+              color: 'rgb(23, 23, 23)',
+              userSelect: 'none',
+            }}>
+              {totalLessons}
+            </span>
+            <span style={{
+              fontFamily: '"Satoshi", var(--font-poppins), Inter, sans-serif',
+              fontWeight: 400,
+              fontSize: 14,
+              lineHeight: '20px',
+              color: 'rgb(112, 112, 112)',
+              userSelect: 'none',
+              flex: 1,
+            }}>
+              lessons
+            </span>
+          </div>
+          <div style={{ width: 20, height: 20, color: 'rgb(112, 112, 112)', flexShrink: 0 }}>
+            <CaseMinimalisticLinear size={20} />
+          </div>
+        </div>
+
+        {/*
+          Stat card 5 — Framer node q2MbG3KL_
+            135×112px  radius 24px  squircle 50%  padding 12px  gap 12px
+            stackDistribution: space-between
+            Children: [label (visible)] [icon 20×20]
+        */}
+        <Link href="/settings" style={{ textDecoration: 'none', display: 'block', flexShrink: 0 }}>
+          <div className="course-card" style={{
+            border: '1px solid rgb(218, 218, 217)',
+            boxShadow: SHADOW,
+            background: 'rgb(255, 255, 255)',
+            width: 135,
+            height: 112,
+            padding: 12,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+          }}>
+            <span style={{
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 400,
+              fontSize: 14,
+              lineHeight: '20px',
+              color: 'rgb(112, 112, 112)',
+              width: 111,
+              userSelect: 'none',
+            }}>
+              Account settings
+            </span>
+            <div style={{ width: 20, height: 20, color: 'rgb(112, 112, 112)', flexShrink: 0 }}>
+              <SettingsLinear size={20} />
+            </div>
+          </div>
+        </Link>
+
       </div>
+
+      {/* Course cards — BEYvcSwb8 style grid */}
+      {courses.length === 0 ? (
+        <EmptyState />
+      ) : (
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(314px, 1fr))',
+          gap: '24px',
+          width: '100%',
+        }}>
+          {courses.map(course => <CourseCard key={course.id} course={course} />)}
+        </div>
+      )}
+
     </div>
   )
 }
 
-// ── Course card ───────────────────────────────────────────────────────────────
+// ── Course card — Framer node BEYvcSwb8 ──────────────────────────────────────
 function CourseCard({ course }: { course: Course }) {
-  const accent = course.accent_color || 'rgb(112, 110, 105)'
-
   return (
     <Link href={`/courses/${course.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
+      {/*
+        border: 1px solid rgb(218,218,217)
+        radius: 24px  squircle: 50%  overflow: clip
+        fill: rgb(255,255,255)
+        stackDirection: vertical  stackAlignment: start  gap: 0px
+      */}
       <div
         className="course-card"
         style={{
           background: 'rgb(255, 255, 255)',
-          border: BORDER,
+          border: '1px solid rgb(218, 218, 217)',
           boxShadow: SHADOW,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-start',
+          gap: 0,
           transition: 'box-shadow 0.15s ease, border-color 0.15s ease',
         }}
         onMouseEnter={e => {
@@ -337,67 +400,100 @@ function CourseCard({ course }: { course: Course }) {
           el.style.borderColor = 'rgb(218, 218, 217)'
         }}
       >
-        {/* Accent top bar */}
-        <div style={{ height: 3, width: '100%', background: accent, borderRadius: '24px 24px 0 0', flexShrink: 0 }} />
-
-        {/* Header */}
+        {/*
+          Header — node yFtBZZaE2
+            fill: linear-gradient(135deg, rgb(252,252,252) 0%, rgb(243,243,243) 100%)
+            padding: 16px
+            stackDirection: horizontal  stackDistribution: start  stackAlignment: center  gap: 10
+            overflow: clip  width: 1fr
+        */}
         <div style={{
-          background: 'linear-gradient(160deg, rgb(252, 252, 252) 0%, rgb(246, 246, 244) 100%)',
-          padding: '13px 16px',
+          background: 'linear-gradient(135deg, rgb(252, 252, 252) 0%, rgb(243, 243, 243) 100%)',
+          padding: '16px',
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'space-between',
+          justifyContent: 'flex-start',
+          gap: 10,
+          overflow: 'clip',
           width: '100%',
           boxSizing: 'border-box',
         }}>
-          <div style={{ color: accent }}>
+          {/* Folder icon — Solar Linear, 20×20, dark */}
+          <div style={{ width: 20, height: 20, color: 'rgb(23, 23, 23)', flexShrink: 0 }}>
             <FolderFilesLinear size={20} />
           </div>
-          <span style={{
-            fontFamily: 'Inter, sans-serif',
-            fontSize: 10,
-            fontWeight: 500,
-            letterSpacing: '0.5px',
-            textTransform: 'uppercase',
-            color: 'rgb(155, 153, 147)',
-            background: 'rgb(240, 239, 236)',
-            padding: '2px 8px',
-            borderRadius: 99,
-            userSelect: 'none',
-            lineHeight: '16px',
-          }}>
-            {course.school}
-          </span>
         </div>
 
-        {/* Body */}
+        {/*
+          Body — node SvaBGGjZZ
+            borderTop: 1px solid rgb(218,218,217)
+            fill: rgb(255,255,255)
+            padding: 16px  gap: 16px
+            stackDirection: vertical  stackAlignment: start  width: 396px
+        */}
         <div style={{
-          borderTop: BORDER,
-          padding: '13px 16px 16px',
+          borderTop: '1px solid rgb(218, 218, 217)',
+          background: 'rgb(255, 255, 255)',
+          padding: '16px',
           display: 'flex',
           flexDirection: 'column',
-          gap: 6,
+          alignItems: 'flex-start',
+          gap: 16,
           width: '100%',
           boxSizing: 'border-box',
         }}>
+          {/*
+            Title — node AjX1qtiEA
+              Instrument Sans  600  16px  lineHeight 1em  rgb(11,11,11)
+          */}
           <div style={{
             fontFamily: 'var(--font-instrument), "Instrument Sans", Inter, sans-serif',
             fontWeight: 600,
-            fontSize: 15,
-            lineHeight: '1.35em',
+            fontSize: 16,
+            lineHeight: '1em',
+            letterSpacing: '0em',
             color: 'rgb(11, 11, 11)',
             userSelect: 'none',
+            width: '100%',
           }}>
             {course.name}
           </div>
+
+          {/*
+            Description — node OKzShibIK
+              Satoshi  500  14px  20px leading  textTruncation:2  rgb(82,81,78)
+          */}
+          <div style={{
+            fontFamily: '"Satoshi", var(--font-poppins), Inter, sans-serif',
+            fontWeight: 500,
+            fontSize: 14,
+            lineHeight: '20px',
+            letterSpacing: '0em',
+            color: 'rgb(82, 81, 78)',
+            userSelect: 'none',
+            width: '100%',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}>
+            {course.school}
+          </div>
+
+          {/*
+            Date line — node xd8LnRKG_
+              Inter  400  13px  16px leading  rgb(137,135,129)
+          */}
           <div style={{
             fontFamily: 'Inter, sans-serif',
             fontWeight: 400,
-            fontSize: 12,
-            lineHeight: '1em',
-            color: 'rgb(185, 183, 177)',
+            fontSize: 13,
+            lineHeight: '16px',
+            letterSpacing: '0em',
+            color: 'rgb(137, 135, 129)',
             userSelect: 'none',
+            width: '100%',
           }}>
             {course.lessons.length} lesson{course.lessons.length !== 1 ? 's' : ''}
           </div>
@@ -410,60 +506,65 @@ function CourseCard({ course }: { course: Course }) {
 // ── Empty state ───────────────────────────────────────────────────────────────
 function EmptyState() {
   return (
-    <div className="course-card" style={{
-      border: BORDER,
-      boxShadow: SHADOW,
-      background: 'rgb(255, 255, 255)',
-      padding: '24px',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-      gap: 12,
-      maxWidth: 380,
-    }}>
-      <div style={{ color: 'rgb(200, 198, 192)' }}>
-        <FolderFilesLinear size={20} />
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-        <span style={{
-          fontFamily: 'var(--font-familjen), "Familjen Grotesk", Inter, sans-serif',
+    <div style={{ paddingTop: 8 }}>
+      {/*
+        MOm84wI6g style — radius 12px (no squircle), padding 16px, gap 16px
+          border: 1px solid rgb(218,218,217)  fill: rgb(255,255,255)
+          Instrument Sans 500 14px title  Inter 400 14px desc  Inter 400 13px sub
+      */}
+      <div style={{
+        border: '1px solid rgb(218, 218, 217)',
+        boxShadow: SHADOW,
+        background: 'rgb(255, 255, 255)',
+        borderRadius: 12,
+        padding: 16,
+        gap: 16,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        width: 396,
+        maxWidth: '100%',
+        boxSizing: 'border-box',
+      }}>
+        <div style={{ width: 20, height: 20, color: 'rgb(112, 112, 112)' }}>
+          <CaseMinimalisticLinear size={20} />
+        </div>
+        <div style={{
+          fontFamily: 'var(--font-instrument), "Instrument Sans", Inter, sans-serif',
           fontWeight: 500,
-          fontSize: 15,
-          letterSpacing: '-0.3px',
+          fontSize: 14,
           lineHeight: '1em',
-          color: 'rgb(23, 23, 23)',
+          color: 'rgb(11, 11, 11)',
           userSelect: 'none',
         }}>
           No courses yet
-        </span>
-        <span style={{
-          fontFamily: 'Inter, sans-serif',
-          fontSize: 13,
-          lineHeight: '1.5em',
-          color: 'rgb(155, 153, 147)',
-          userSelect: 'none',
-        }}>
-          Find a course in the library and enrol to get started.
-        </span>
-      </div>
-      <Link href="/library" style={{ textDecoration: 'none' }}>
+        </div>
         <div style={{
           fontFamily: 'Inter, sans-serif',
-          fontSize: 12,
-          fontWeight: 500,
-          lineHeight: '1em',
-          color: 'rgb(82, 82, 82)',
-          background: 'rgb(243, 243, 241)',
-          border: BORDER,
-          borderRadius: 99,
-          padding: '7px 14px',
-          userSelect: 'none',
-          display: 'inline-block',
-          cursor: 'pointer',
+          fontWeight: 400,
+          fontSize: 14,
+          lineHeight: '20px',
+          color: 'rgb(82, 81, 78)',
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+          width: '100%',
         }}>
-          Browse Library →
+          Browse the library to find and enrol in your first course.
         </div>
-      </Link>
+        <Link href="/library" style={{ textDecoration: 'none' }}>
+          <span style={{
+            fontFamily: 'Inter, sans-serif',
+            fontWeight: 400,
+            fontSize: 13,
+            lineHeight: '16px',
+            color: 'rgb(137, 135, 129)',
+          }}>
+            Browse Library →
+          </span>
+        </Link>
+      </div>
     </div>
   )
 }
@@ -471,26 +572,21 @@ function EmptyState() {
 // ── Skeleton ──────────────────────────────────────────────────────────────────
 function Skeleton() {
   return (
-    <div style={{ padding: '32px 32px 48px', display: 'flex', flexDirection: 'column', gap: 32 }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <div className="skeleton" style={{ width: 220, height: 29, borderRadius: 6 }} />
-        <div className="skeleton" style={{ width: 260, height: 13, borderRadius: 4, opacity: 0.6 }} />
-      </div>
+    <div style={{ padding: '32px 32px 48px', display: 'flex', flexDirection: 'column', gap: 28 }}>
+      {/* heading */}
+      <div className="skeleton" style={{ width: 140, height: 29, borderRadius: 6 }} />
+      {/* stats row */}
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-        {[118, 118, 118].map((w, i) => (
-          <div key={i} className="course-card skeleton" style={{ width: w, height: 94, border: BORDER }} />
+        {[135, 135, 200, 135, 135].map((w, i) => (
+          <div key={i} className="course-card skeleton" style={{ width: w, height: 112, border: '1px solid rgb(218,218,217)' }} />
         ))}
-        <div className="course-card skeleton" style={{ flex: 1, minWidth: 160, height: 94, border: BORDER }} />
       </div>
-      <div>
-        <div className="skeleton" style={{ width: 90, height: 14, borderRadius: 4 }} />
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
-        {[1, 2].map(i => (
-          <div key={i} className="course-card" style={{ border: BORDER, overflow: 'hidden' }}>
-            <div className="skeleton" style={{ height: 3, borderRadius: 0 }} />
-            <div className="skeleton" style={{ height: 48, borderRadius: 0 }} />
-            <div className="skeleton" style={{ height: 84, borderRadius: 0, marginTop: 1, opacity: 0.45 }} />
+      {/* card grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 396px))', gap: 16 }}>
+        {[1, 2, 3].map(i => (
+          <div key={i} className="course-card" style={{ border: '1px solid rgb(218,218,217)' }}>
+            <div className="skeleton" style={{ height: 52, borderRadius: 0 }} />
+            <div className="skeleton" style={{ height: 100, borderRadius: 0, marginTop: 1, opacity: 0.5 }} />
           </div>
         ))}
       </div>
