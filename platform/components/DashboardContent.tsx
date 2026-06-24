@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import { cacheGet, cacheSet } from '@/lib/client-cache'
 import {
   CaseMinimalisticLinear,
+  FolderFilesLinear,
   ShareCircleLinear,
   CourseUpLinear,
   SettingsLinear,
@@ -418,18 +419,10 @@ function CourseCard({ course }: { course: Course }) {
           width: '100%',
           boxSizing: 'border-box',
         }}>
-          {/*
-            Icon — node nsKkH8QPV
-              20×20  boxShadow: 0px 1px 2px 0px rgba(0,0,0,0.25)
-              no radius/squircle (plain rect image node in Framer)
-          */}
-          <div style={{
-            width: 20,
-            height: 20,
-            background: course.accent_color,
-            boxShadow: '0px 1px 2px 0px rgba(0,0,0,0.25)',
-            flexShrink: 0,
-          }} />
+          {/* Folder icon — Solar Linear, 20×20, dark */}
+          <div style={{ width: 20, height: 20, color: 'rgb(23, 23, 23)', flexShrink: 0 }}>
+            <FolderFilesLinear size={20} />
+          </div>
         </div>
 
         {/*
