@@ -137,8 +137,18 @@
     display: flex !important;
   }
 
+  /* Tighten left group to 2px — Framer phone: Logo Group gap 2px */
+  .navbar-left-group {
+    gap: 2px;
+  }
+
   /* Hide logo diamond on phone */
   .navbar-logo {
+    display: none;
+  }
+
+  /* Hide slash + layers separator icons on phone — Framer: visible:false */
+  .navbar-icon-separator {
     display: none;
   }
 

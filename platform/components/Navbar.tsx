@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { MagnifyingGlassLinear, QuestionCircleLinear, LightbulbMinimalisticLinear, SidebarMinimalisticLinear } from './icons/solar'
+import { MagnifyingGlassLinear, QuestionCircleLinear, UserLinear, SidebarMinimalisticLinear } from './icons/solar'
 
 interface NavbarProps {
   userName: string
@@ -23,11 +23,11 @@ export default function Navbar({ userName, onSearchOpen, onMenuOpen }: NavbarPro
         gap: 10,
       }}
     >
-      {/* Left: Logo Group — exact Framer structure */}
-      {/* Logo Group: gap 12px between diamond and Icon Group */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      {/* Left: Logo Group — Framer: gap 12px desktop, 2px phone */}
+      <div className="navbar-left-group" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
 
         {/* Hamburger — mobile only, opens sidebar */}
+        {/* Framer phone: padding 8px, pill radius, no border, 16×16 icon */}
         <button
           onClick={onMenuOpen}
           className="navbar-hamburger"
@@ -35,12 +35,12 @@ export default function Navbar({ userName, onSearchOpen, onMenuOpen }: NavbarPro
           style={{
             display: 'none', // shown via CSS on mobile
             alignItems: 'center', justifyContent: 'center',
-            width: 32, height: 32, padding: 6,
+            padding: 8,
             background: 'none', border: 'none', cursor: 'pointer',
-            color: 'rgb(112, 112, 112)', borderRadius: 6, flexShrink: 0,
+            color: 'rgb(112, 112, 112)', borderRadius: 9999, flexShrink: 0,
           }}
         >
-          <SidebarMinimalisticLinear size={20} />
+          <SidebarMinimalisticLinear size={16} />
         </button>
 
         {/* Diamond — 18×18px black rotated square, white inner, black center */}
@@ -64,13 +64,13 @@ export default function Navbar({ userName, onSearchOpen, onMenuOpen }: NavbarPro
         {/* Icon Group: gap 8px — Slash + Layers + Partnership Group */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
 
-          {/* Icon 1: Slash (16×16px, strokeWidth 2) */}
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+          {/* Icon 1: Slash — hidden on phone (Framer: visible:false on phone) */}
+          <svg className="navbar-icon-separator" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
             <path stroke="rgb(0,0,0)" strokeWidth="2" strokeLinecap="round" d="M17 5 7 19"/>
           </svg>
 
-          {/* Icon 2: Layers Minimalistic (14×14px, strokeWidth 1.5) */}
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+          {/* Icon 2: Layers Minimalistic — hidden on phone (Framer: visible:false on phone) */}
+          <svg className="navbar-icon-separator" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
             <path stroke="rgb(0,0,0)" strokeWidth="1.5" d="M4.979 9.685C2.993 8.891 2 8.494 2 8s.993-.89 2.979-1.685l2.808-1.123C9.773 4.397 10.767 4 12 4s2.227.397 4.213 1.192l2.808 1.123C21.007 7.109 22 7.506 22 8s-.993.89-2.979 1.685l-2.808 1.123C14.227 11.603 13.233 12 12 12s-2.227-.397-4.213-1.191z"/>
             <path stroke="rgb(0,0,0)" strokeLinecap="round" strokeWidth="1.5" d="M22 12s-.993.89-2.979 1.685l-2.808 1.123C14.227 15.604 13.233 16 12 16s-2.227-.397-4.213-1.191L4.98 13.685C2.993 12.891 2 12 2 12m20 4s-.993.89-2.979 1.685l-2.808 1.123C14.227 19.604 13.233 20 12 20s-2.227-.397-4.213-1.191L4.98 17.685C2.993 16.891 2 16 2 16"/>
           </svg>
@@ -188,7 +188,7 @@ export default function Navbar({ userName, onSearchOpen, onMenuOpen }: NavbarPro
             <QuestionCircleLinear size={16} />
           </button>
 
-          {/* Profile Button — Framer: 32×32px, pill, white fill, person icon */}
+          {/* Profile Button — Framer: pill, white fill, UserLinear icon */}
           <button style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             width: 32, height: 32, flexShrink: 0,
@@ -199,7 +199,7 @@ export default function Navbar({ userName, onSearchOpen, onMenuOpen }: NavbarPro
             cursor: 'pointer', outline: 'none', overflow: 'hidden',
             color: 'rgb(112, 112, 112)',
           }}>
-            <LightbulbMinimalisticLinear size={16} />
+            <UserLinear size={16} />
           </button>
 
           {/* Avatar Image — Framer: 32×32px, pill, border rgba(0,0,0,0.1), initials */}

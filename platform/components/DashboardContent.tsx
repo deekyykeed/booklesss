@@ -355,8 +355,8 @@ export default function DashboardContent({ userId }: { userId: string; email: st
       ) : (
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 396px))',
-          gap: 16,
+          gridTemplateColumns: 'repeat(auto-fill, minmax(314px, 1fr))',
+          gap: '24px',
           width: '100%',
         }}>
           {courses.map(course => <CourseCard key={course.id} course={course} />)}
