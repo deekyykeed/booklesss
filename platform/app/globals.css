@@ -31,6 +31,19 @@
   top: 0;
   z-index: 50;
   width: 100%;
+  padding: 7px 16px;
+}
+
+/* Elements that hide on phone (≤809px) — visible by default */
+.navbar-logo {}
+.navbar-feedback {}
+.navbar-search-text {}
+.navbar-notification {}
+
+/* Search button: expanded on desktop, icon-only on phone */
+.navbar-search-btn {
+  min-width: 150px;
+  padding: 0 8px;
 }
 
 /* ── Responsive app shell ── */
@@ -89,14 +102,15 @@
   background: rgb(252, 252, 252);
 }
 
-/* ── Mobile ── */
+/* ── Mobile (matches Framer Phone breakpoint: ≤809px) ── */
 
-@media (max-width: 640px) {
+@media (max-width: 809px) {
   /* Navbar: fixed so it stays at top while page scrolls */
   .top-navbar {
     position: fixed;
     left: 0;
     right: 0;
+    padding: 7px;
   }
 
   /* Push content below the fixed navbar */
@@ -121,6 +135,32 @@
   /* Show hamburger */
   .navbar-hamburger {
     display: flex !important;
+  }
+
+  /* Hide logo diamond on phone */
+  .navbar-logo {
+    display: none;
+  }
+
+  /* Hide feedback text on phone */
+  .navbar-feedback {
+    display: none;
+  }
+
+  /* Hide search label + shortcut — icon only */
+  .navbar-search-text {
+    display: none;
+  }
+
+  /* Hide notification button on phone */
+  .navbar-notification {
+    display: none;
+  }
+
+  /* Search button: icon-only (no min-width) */
+  .navbar-search-btn {
+    min-width: unset;
+    padding: 8px;
   }
 
   /* Hide desktop sidebar — mobile sidebar renders as fixed overlay */

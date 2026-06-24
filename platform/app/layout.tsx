@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
-import { Poppins, Familjen_Grotesk } from 'next/font/google'
+import { Poppins, Familjen_Grotesk, Instrument_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
@@ -8,6 +8,13 @@ const poppins = Poppins({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   variable: '--font-poppins',
+  display: 'swap',
+})
+
+const instrumentSans = Instrument_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-instrument',
   display: 'swap',
 })
 
@@ -54,7 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${aptos.variable} ${parastoo.variable} ${parkinsans.variable} ${poppins.variable} ${familjenGrotesk.variable}`}
+      className={`${aptos.variable} ${parastoo.variable} ${parkinsans.variable} ${poppins.variable} ${familjenGrotesk.variable} ${instrumentSans.variable}`}
     >
       <body>{children}<Analytics /></body>
     </html>

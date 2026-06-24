@@ -17,7 +17,6 @@ export default function Navbar({ userName, onSearchOpen, onMenuOpen }: NavbarPro
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '7px 16px',
         background: 'rgb(252, 252, 252)',
         borderBottom: '0.67px solid rgb(223, 223, 223)',
         flexShrink: 0,
@@ -45,7 +44,7 @@ export default function Navbar({ userName, onSearchOpen, onMenuOpen }: NavbarPro
         </button>
 
         {/* Diamond — 18×18px black rotated square, white inner, black center */}
-        <div style={{ width: 18, height: 18, flexShrink: 0, overflow: 'visible' }}>
+        <div className="navbar-logo" style={{ width: 18, height: 18, flexShrink: 0, overflow: 'visible' }}>
           <div style={{
             width: 18, height: 18,
             background: 'rgb(0, 0, 0)',
@@ -131,7 +130,7 @@ export default function Navbar({ userName, onSearchOpen, onMenuOpen }: NavbarPro
       <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
 
         {/* Feedback Text — Inter 12px, weight 400, lineHeight 16px, rgb(82,82,82) */}
-        <span style={{
+        <span className="navbar-feedback" style={{
           fontFamily: 'Inter, var(--font-poppins), sans-serif',
           fontSize: 12, fontWeight: 400, lineHeight: '16px',
           color: 'rgb(82, 82, 82)', userSelect: 'none', whiteSpace: 'nowrap',
@@ -140,13 +139,13 @@ export default function Navbar({ userName, onSearchOpen, onMenuOpen }: NavbarPro
         {/* Search Bar Group — Framer: horizontal stack, gap 8px */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
 
-          {/* Search Input — Framer: 150×32px, pill, white fill, 3-layer shadow */}
+          {/* Search Input — Framer: 150px min-width desktop, icon-only on phone */}
           <button
             onClick={onSearchOpen}
+            className="navbar-search-btn"
             style={{
               display: 'flex', alignItems: 'center', gap: 10,
-              height: 32, padding: '0 8px',
-              width: 150, minWidth: 150,
+              height: 32, padding: '8px',
               background: 'rgb(255, 255, 255)',
               border: '0.67px solid rgb(212, 212, 212)',
               borderRadius: 9999,
@@ -159,14 +158,14 @@ export default function Navbar({ userName, onSearchOpen, onMenuOpen }: NavbarPro
               <MagnifyingGlassLinear size={16} />
             </span>
             {/* Placeholder Text — Inter 12px, rgb(178,178,178) */}
-            <span style={{
+            <span className="navbar-search-text" style={{
               flex: 1, textAlign: 'left',
               fontFamily: 'Inter, var(--font-poppins), sans-serif',
               fontSize: 12, fontWeight: 400, lineHeight: '16px',
               color: 'rgb(178, 178, 178)',
             }}>Search...</span>
             {/* ⌘K badge — Inter 11px, letterSpacing -0.275px, width 28px, rgb(112,112,112) */}
-            <span style={{
+            <span className="navbar-search-text" style={{
               width: 28, flexShrink: 0, textAlign: 'center',
               fontFamily: 'Inter, var(--font-poppins), sans-serif',
               fontSize: 11, fontWeight: 400, lineHeight: '11px',
@@ -176,7 +175,7 @@ export default function Navbar({ userName, onSearchOpen, onMenuOpen }: NavbarPro
           </button>
 
           {/* Notification Button — Framer: 32×32px, pill, white fill */}
-          <button style={{
+          <button className="navbar-notification" style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             width: 32, height: 32, flexShrink: 0,
             background: 'rgb(255, 255, 255)',
