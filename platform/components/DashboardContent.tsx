@@ -103,14 +103,14 @@ export default function DashboardContent({ userId }: { userId: string; email: st
 
       {/*
         Stats row — Framer node tjBCpf0pk
-          stackDirection: horizontal  stackDistribution: start  stackAlignment: center  gap: 10
+          stackDirection: horizontal  stackDistribution: space-between  stackAlignment: center  gap: 10
           width: 1fr  height: auto
       */}
       <div style={{
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
         gap: 10,
         width: '100%',
         flexWrap: 'wrap',
