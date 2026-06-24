@@ -186,6 +186,13 @@
   }
 }
 
+/* ── Course card — squircle (Framer: radius 24px, squircle 50%) ── */
+.course-card {
+  border-radius: 24px;
+  corner-shape: superellipse(2);
+  overflow: clip;
+}
+
 /* ── Squircle / superellipse button ── */
 .squircle-btn {
   corner-shape: superellipse(1.5);

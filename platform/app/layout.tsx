@@ -63,6 +63,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={`${aptos.variable} ${parastoo.variable} ${parkinsans.variable} ${poppins.variable} ${familjenGrotesk.variable} ${instrumentSans.variable}`}
     >
+      <head>
+        <link rel="preconnect" href="https://api.fontshare.com" />
+        <link href="https://api.fontshare.com/v2/css?f[]=satoshi@500&display=swap" rel="stylesheet" />
+      </head>
       <body>{children}<Analytics /></body>
     </html>
   )
