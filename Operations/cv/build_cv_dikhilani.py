@@ -16,7 +16,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.utils import ImageReader
 import os
 
-_ROOT     = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+_ROOT     = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 FONT_DIR  = os.path.join(_ROOT, "_dev", "fonts")
 BRAND_DIR = os.path.join(_ROOT, "_dev", "brand")
 GRAIN     = os.path.join(BRAND_DIR, "grain.png")
@@ -49,7 +49,7 @@ C_RULE  = colors.HexColor("#E0DACB")   # warm hairline
 # ── PAGE GEOMETRY ─────────────────────────────────────────────────────────────
 W, H      = A4
 MX        = 2.2 * cm
-MY        = 2.0 * cm
+MY        = 1.6 * cm
 CONTENT_W = W - 2 * MX
 LABEL_W   = 3.5 * cm
 TEXT_W    = CONTENT_W - LABEL_W
@@ -69,37 +69,40 @@ ST = {
         fontName="Title-Bold", fontSize=34, textColor=C_INK,
         leading=38),
     "role": ParagraphStyle("role",
-        fontName="Body-Bold", fontSize=9, textColor=C_LABEL,
-        leading=13, alignment=TA_RIGHT, charSpace=1.2),
+        fontName="Body-Bold", fontSize=9.5, textColor=C_LABEL,
+        leading=14, alignment=TA_RIGHT, charSpace=1.2),
     "label": ParagraphStyle("label",
-        fontName="Body-Bold", fontSize=7.5, textColor=C_LABEL,
-        leading=11),
+        fontName="Body-Bold", fontSize=8, textColor=C_LABEL,
+        leading=12),
     "contact": ParagraphStyle("contact",
-        fontName="Body", fontSize=9.5, textColor=C_DIM,
-        leading=14),
+        fontName="Body", fontSize=10.5, textColor=C_DIM,
+        leading=15.5),
     "job_title": ParagraphStyle("job_title",
-        fontName="Body-Bold", fontSize=10.5, textColor=C_INK,
-        leading=15, spaceAfter=1),
+        fontName="Body-Bold", fontSize=11.5, textColor=C_INK,
+        leading=16.5, spaceAfter=1),
     "company": ParagraphStyle("company",
-        fontName="Body-Italic", fontSize=9.5, textColor=C_DIM,
-        leading=14, spaceAfter=5),
+        fontName="Body-Italic", fontSize=10.5, textColor=C_DIM,
+        leading=15.5, spaceAfter=5),
     "bullet": ParagraphStyle("bullet",
-        fontName="Body", fontSize=9.5, textColor=C_INK,
-        leading=15, spaceAfter=2, leftIndent=12, bulletIndent=0,
-        bulletFontName="Body", bulletFontSize=9.5),
+        fontName="Body", fontSize=10.5, textColor=C_INK,
+        leading=15.5, spaceAfter=1, leftIndent=13, bulletIndent=0,
+        bulletFontName="Body", bulletFontSize=10.5),
     "edu_degree": ParagraphStyle("edu_degree",
-        fontName="Body-Bold", fontSize=10.5, textColor=C_INK,
-        leading=15, spaceAfter=1),
+        fontName="Body-Bold", fontSize=11.5, textColor=C_INK,
+        leading=16.5, spaceAfter=1),
     "edu_meta": ParagraphStyle("edu_meta",
-        fontName="Body-Italic", fontSize=9.5, textColor=C_DIM,
-        leading=14, spaceAfter=4),
+        fontName="Body-Italic", fontSize=10.5, textColor=C_DIM,
+        leading=15.5, spaceAfter=4),
     "edu_modules": ParagraphStyle("edu_modules",
-        fontName="Body", fontSize=9, textColor=C_DIM,
-        leading=13),
+        fontName="Body", fontSize=9.5, textColor=colors.HexColor("#6A6560"),
+        leading=14),
     "skill": ParagraphStyle("skill",
-        fontName="Body", fontSize=9.5, textColor=C_INK,
-        leading=15, spaceAfter=2, leftIndent=12, bulletIndent=0,
-        bulletFontName="Body", bulletFontSize=9.5),
+        fontName="Body", fontSize=10.5, textColor=C_INK,
+        leading=15.5, spaceAfter=2, leftIndent=13, bulletIndent=0,
+        bulletFontName="Body", bulletFontSize=10.5),
+    "summary": ParagraphStyle("summary",
+        fontName="Body", fontSize=10.5, textColor=C_INK,
+        leading=16.5),
 }
 
 # ── HELPERS ───────────────────────────────────────────────────────────────────
@@ -152,7 +155,7 @@ def build():
         ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
     ]))
     story.append(hdr)
-    story.append(rule(before=10, after=14, thick=0.8))
+    story.append(rule(before=8, after=10, thick=0.8))
 
     # ── CONTACT ───────────────────────────────────────────────────────────────
     story.append(section_row(
@@ -162,45 +165,62 @@ def build():
             ST["contact"]
         )
     ))
-    story.append(rule(before=12, after=14))
+    story.append(rule(before=8, after=10))
+
+    # ── PROFESSIONAL SUMMARY ──────────────────────────────────────────────────
+    story.append(section_row(
+        "profile",
+        Paragraph(
+            "Finance and commercial operations professional with hands-on experience "
+            "across mining procurement, financial reporting, and international supply chain management. "
+            "Built track record across Zambia's copper mining sector — managing multi-currency accounts, "
+            "leading formal tender submissions, and operating full AP/AR workflows at First Quantum Minerals. "
+            "Also the founder of Booklesss, a Zambian edtech startup, where AI tools are applied "
+            "to product development and business modelling.",
+            ST["summary"]
+        )
+    ))
+    story.append(rule(before=8, after=10))
 
     # ── PROFESSIONAL EXPERIENCE ───────────────────────────────────────────────
-    exp = [
+    story.append(section_row("professional experience", [
         Paragraph("Finance Manager  |  Jan 2026 – Present", ST["job_title"]),
         Paragraph("Khadzika Enterprises Limited · Kitwe, Zambia", ST["company"]),
-        b("Originate and deliver commercial quotations for industrial equipment, tools, and "
-          "consumables to mining clients — BIA Group, Mopani Copper Mines, KCM, and CEC"),
-        b("Manage international supply chains across USA and South Africa: PO issuance, "
-          "supplier negotiation, and inbound freight coordination"),
-        b("Lead formal tender submissions to major mining companies — full BOQ preparation "
-          "and statutory compliance documentation"),
-        b("Operate ZRA Smart Invoice portal: compliant tax invoicing and multi-currency "
-          "statements of account in USD and ZMW"),
-        b("Oversee international freight clearance, customs documentation, and clearing agent liaison"),
-        b("Drive market sourcing across 50+ supplier contacts per task for specialised industrial products"),
-        b("Build client pipeline through prospect identification, direct outreach, and quotation follow-up"),
-        Spacer(1, 10),
+        b("Lead commercial operations for a mining-focused procurement business — managing client "
+          "accounts and driving sales pipeline across Mopani Copper Mines, BIA Group, KCM, and CEC"),
+        b("Own international procurement across USA and South Africa: supplier selection, "
+          "PO issuance, price negotiation, and inbound freight coordination"),
+        b("Prepare and submit formal tenders to major mining operators — full BOQ build, "
+          "compliance documentation, and deadline-driven portal submission"),
+        b("Source specialist industrial products across a network of 50+ suppliers per requirement, "
+          "balancing technical specification, cost, and lead time"),
+        b("Manage ZRA-compliant multi-currency invoicing and accounts receivable "
+          "across an active client portfolio in USD and ZMW"),
+    ]))
+    story.append(Spacer(1, 8))
+    story.append(section_row("", [
         Paragraph("Finance Intern  |  2024 – 2025  (12 months)", ST["job_title"]),
         Paragraph("Kansanshi Mining Plc (First Quantum Minerals) · Solwezi, Zambia",
                   ST["company"]),
-        b("Completed structured rotation across AP, AR, financial reporting, and budgeting "
-          "at one of Zambia's largest copper mining operations"),
-        b("Processed and routed high-volume supplier and contractor invoices through formal "
-          "approval workflows, gaining deep exposure to mining procurement cycles"),
-        b("Supported month-end reconciliations and contributed to financial reporting "
-          "under formal close procedures"),
-        Spacer(1, 10),
+        b("Rotated across AP, AR, financial reporting, and budgeting at one of "
+          "Zambia's largest copper mining operations"),
+        b("Processed high-volume supplier and contractor invoices through multi-level "
+          "approval workflows in a large-scale mining procurement environment"),
+        b("Delivered month-end close responsibilities including account reconciliations "
+          "and financial reporting submissions under formal close procedures"),
+    ]))
+    story.append(Spacer(1, 8))
+    story.append(section_row("", [
         Paragraph("Founder  |  2025 – Present", ST["job_title"]),
         Paragraph("Booklesss · Zambia  (edtech startup)", ST["company"]),
-        b("Building a Slack-based study platform delivering branded finance lecture notes "
-          "for ZCAS and UNZA students across 4 active courses"),
-        b("Designed the full product pipeline using AI tools — course research to branded, "
-          "publication-ready study documents — cutting production time per step significantly"),
-        b("Modelled unit economics, pricing tiers, and reinvestment strategy; "
-          "managing student acquisition through direct WhatsApp outreach"),
-    ]
-    story.append(section_row("professional experience", exp))
-    story.append(rule(before=12, after=14))
+        b("Founded and operate a subscription-based edtech platform serving Zambian university "
+          "students — 4 active courses across multiple institutions, direct-to-student acquisition"),
+        b("Built the full content production system using AI tools, cutting time from raw lecture "
+          "source to publication-ready branded PDF to under a day per lesson step"),
+        b("Designed pricing architecture, unit economics model, and reinvestment strategy from scratch; "
+          "manage all student acquisition through direct WhatsApp outreach"),
+    ]))
+    story.append(rule(before=8, after=10))
 
     # ── EDUCATION ─────────────────────────────────────────────────────────────
     edu = [
@@ -208,29 +228,36 @@ def build():
         Paragraph("ZCAS University · Lusaka, Zambia · Graduated 2026",
                   ST["edu_meta"]),
         Paragraph(
-            "Financial Accounting · Financial Management · Corporate Finance · "
-            "Advanced Taxation · Financial Reporting · Auditing &amp; Assurance · "
-            "Financial Modelling &amp; Forecasting · International Trade &amp; Finance · "
-            "Investment &amp; Portfolio Management · Management Accounting · "
-            "Business &amp; Corporate Law",
+            "<font color='#121212'><b>Corporate Finance</b></font> · <font color='#121212'><b>Financial Management</b></font> · <font color='#121212'><b>Financial Reporting</b></font> · "
+            "Financial Modelling &amp; Forecasting · Advanced Taxation · Financial Accounting · "
+            "Management Accounting · Advanced Management Accounting · Treasury Management · "
+            "International Trade &amp; Finance · Investment &amp; Portfolio Management · "
+            "Auditing &amp; Assurance Services · Credit Analysis &amp; Lending · "
+            "Financial Products &amp; Services · Monetary &amp; Financial Systems · "
+            "Regulation of Financial Services · Business &amp; Corporate Law · "
+            "Strategic Management · Managing Strategic Risk · Innovation &amp; Entrepreneurship · "
+            "Taxation · Cost Accounting · Principles of Accounting · Business Information Systems · "
+            "Dissertation · Research Methods · Introduction to Financial Markets · "
+            "Introduction to Quantitative Methods · Introduction to Economics · "
+            "Introduction to Management · Principles of Marketing · Academic Writing",
             ST["edu_modules"]
         ),
     ]
     story.append(section_row("education", edu))
-    story.append(rule(before=12, after=14))
+    story.append(rule(before=8, after=10))
 
     # ── SKILLS ────────────────────────────────────────────────────────────────
     skills_l = [
-        "Financial reporting &amp; ZRA compliance (Smart Invoice portal)",
-        "Multi-currency account management (USD, ZAR, ZMW)",
-        "International procurement &amp; supplier management",
-        "AI-augmented research, content &amp; product operations",
+        "Financial Analysis &amp; Reporting",
+        "International Procurement &amp; Supply Chain Management",
+        "Commercial Operations &amp; Business Development",
+        "AI Tools &amp; Workflow Automation",
     ]
     skills_r = [
-        "Tender preparation &amp; portal submission (mining sector)",
-        "Microsoft Office — Excel (financial modelling), Word",
-        "Business correspondence &amp; client relationship management",
-        "Business &amp; unit economics modelling",
+        "Financial Modelling &amp; Unit Economics",
+        "Multi-Currency Account Management",
+        "Tax Compliance &amp; Regulatory Reporting",
+        "Stakeholder &amp; Client Relationship Management",
     ]
     half = TEXT_W / 2
     sk_tbl = Table(

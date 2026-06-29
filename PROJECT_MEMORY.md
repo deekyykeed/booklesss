@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-06-23 (session 8)
+**Last updated:** 2026-06-29 (session 9)
 
 ---
 
@@ -50,6 +50,21 @@
 ---
 
 ## Session Log
+
+### Session 2026-06-29 (session 9 — catch-up commit)
+**Done:**
+- **CV files relocated:** `Booklesss Bucket/build_cv_dikhilani.py` + both CV PDFs moved to `Operations/cv/` — better home for ongoing CV iterations.
+- **Dissertation folder added:** `Dissertation/` contains branded dissertation PDF build scripts (`build_dissertation.py`, `build_dissertation_v2.py`) and `Mvula_Dissertation_Final.docx` (dated 2026-06-16). Side project using Booklesss build tooling; appears complete.
+
+**What Worked:**
+- None.
+
+**Dead Ends (do not retry):**
+- None.
+
+**Next:** No new items — catch-up commit session only.
+
+---
 
 ### Session 2026-06-23 (session 8 — CV polish)
 **Done:**
