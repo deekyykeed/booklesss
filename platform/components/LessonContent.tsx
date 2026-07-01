@@ -73,6 +73,10 @@ export default function LessonContent({ step }: { step: LessonStep }) {
           position: 'relative',
         }}
       >
+        {step.sections.length === 0 ? (
+          <ComingSoon accentColor={step.accentColor} />
+        ) : (
+        <>
         {step.sections.map((section, i) => (
           <div key={i} style={{ marginBottom: 36 }}>
             {/* Eyebrow */}
@@ -329,10 +333,43 @@ export default function LessonContent({ step }: { step: LessonStep }) {
             ))}
           </ul>
         </div>
+        </>
+        )}
 
         {/* TermTooltip overlay — positioned relative to this container */}
-        <TermTooltip containerRef={contentRef} />
+        <TermTooltip containerRef={contentRef} keyTerms={step.keyTerms} accentColor={step.accentColor} />
       </div>
+    </div>
+  )
+}
+
+function ComingSoon({ accentColor }: { accentColor: string }) {
+  return (
+    <div
+      style={{
+        border: `1px dashed ${accentColor}`,
+        borderRadius: 10,
+        padding: '32px 28px',
+        textAlign: 'center',
+        marginBottom: 36,
+      }}
+    >
+      <div
+        style={{
+          fontSize: 9,
+          fontWeight: 700,
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+          color: accentColor,
+          marginBottom: 8,
+          fontFamily: 'var(--font-parastoo)',
+        }}
+      >
+        Coming Soon
+      </div>
+      <p style={{ fontSize: 13.5, color: '#6b7280', margin: 0, lineHeight: 1.6 }}>
+        This step is being written — check back soon.
+      </p>
     </div>
   )
 }
