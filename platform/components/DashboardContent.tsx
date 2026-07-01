@@ -12,7 +12,8 @@ import {
   SettingsLinear,
 } from './icons/solar'
 
-type Lesson = { id: string; slug: string; title: string; order_index: number }
+type Step = { id: string }
+type Lesson = { id: string; slug: string; title: string; order_index: number; steps?: Step[] }
 type Course = {
   id: string
   slug: string
@@ -27,18 +28,29 @@ const SHADOW = '0px 0.6021873017743928px 0.6021873017743928px -1.25px rgba(0,0,0
 const SHADOW_HOVER = '0px 1px 2px -1px rgba(0,0,0,0.22), 0px 4px 8px -2.5px rgba(0,0,0,0.14), 0px 18px 22px -3.75px rgba(0,0,0,0.08)'
 
 export default function DashboardContent({ userId }: { userId: string; email: string }) {
-  const cacheKey = `dashboard-v4-${userId}`
+  const cacheKey = `dashboard-v5-${userId}`
   const [courses, setCourses] = useState<Course[] | null>(() => cacheGet<Course[]>(cacheKey))
+  const [completedCount, setCompletedCount] = useState<number>(() => cacheGet<number>(`${cacheKey}-completed`) ?? 0)
   const [loading, setLoading] = useState(!courses)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (courses) return
     const supabase = createClient()
     async function load() {
-      const { data: enrollmentRows } = await supabase
-        .from('enrollments')
-        .select('courses(id, slug, name, school, accent_color, cover_color, lessons(id, slug, title, order_index))')
-        .eq('user_id', userId)
+      const [{ data: enrollmentRows, error: fetchError }, { data: completionRows }] = await Promise.all([
+        supabase
+          .from('enrollments')
+          .select('courses(id, slug, name, school, accent_color, cover_color, lessons(id, slug, title, order_index, steps(id)))')
+          .eq('user_id', userId),
+        supabase.from('step_completions').select('step_id').eq('user_id', userId),
+      ])
+
+      if (fetchError) {
+        setError('Could not load your courses — check your connection and refresh.')
+        setLoading(false)
+        return
+      }
 
       const enrolled: Course[] = ((enrollmentRows ?? []) as { courses: Course | Course[] | null }[])
         .map(r => (Array.isArray(r.courses) ? r.courses[0] : r.courses))
@@ -48,16 +60,33 @@ export default function DashboardContent({ userId }: { userId: string; email: st
         c.lessons = [...(c.lessons ?? [])].sort((a, b) => a.order_index - b.order_index)
       })
 
+      const enrolledStepIds = new Set(
+        enrolled.flatMap(c => c.lessons.flatMap(l => (l.steps ?? []).map(s => s.id)))
+      )
+      const completed = (completionRows ?? []).filter((c: { step_id: string }) => enrolledStepIds.has(c.step_id)).length
+
       cacheSet(cacheKey, enrolled)
+      cacheSet(`${cacheKey}-completed`, completed)
       setCourses(enrolled)
+      setCompletedCount(completed)
       setLoading(false)
     }
     load()
   }, [userId])
 
+  if (error) {
+    return (
+      <div style={{ padding: '32px 32px 48px' }}>
+        <p style={{ fontSize: 14, color: '#dc2626', fontFamily: 'var(--font-poppins), sans-serif' }}>{error}</p>
+      </div>
+    )
+  }
+
   if (loading || !courses) return <Skeleton />
 
   const totalLessons = courses.reduce((sum, c) => sum + c.lessons.length, 0)
+  const totalSteps = courses.reduce((sum, c) => sum + c.lessons.reduce((s, l) => s + (l.steps?.length ?? 0), 0), 0)
+  const progressPct = totalSteps > 0 ? Math.round((completedCount / totalSteps) * 100) : 0
 
   return (
     /*
@@ -246,15 +275,15 @@ export default function DashboardContent({ userId }: { userId: string; email: st
             width: '100%',
             boxSizing: 'border-box',
           }}>
-            {/* inner fill bar — 0% placeholder until completion tracking added */}
-            {totalLessons > 0 && (
+            {/* inner fill bar — real completed/total step count from step_completions */}
+            {totalSteps > 0 && (
               <div className="course-card" style={{
                 border: '1px solid rgb(218, 218, 217)',
                 boxShadow: SHADOW,
                 background: 'rgb(255, 255, 255)',
-                width: `${Math.min(100, Math.round((courses.length / Math.max(1, totalLessons)) * 100 * 5))}%`,
+                width: `${Math.max(progressPct > 0 ? 8 : 0, progressPct)}%`,
                 height: 24,
-                minWidth: 28,
+                minWidth: progressPct > 0 ? 28 : 0,
               }} />
             )}
           </div>
@@ -317,7 +346,7 @@ export default function DashboardContent({ userId }: { userId: string; email: st
             stackDistribution: space-between
             Children: [label (visible)] [icon 20×20]
         */}
-        <Link href="/settings" style={{ textDecoration: 'none', display: 'block', flexShrink: 0 }}>
+        <Link href="/profile" style={{ textDecoration: 'none', display: 'block', flexShrink: 0 }}>
           <div className="course-card" style={{
             border: '1px solid rgb(218, 218, 217)',
             boxShadow: SHADOW,

@@ -28,23 +28,34 @@ export default function ProfileContent({
   const [university, setUniversity] = useState(initialUniversity)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
   async function handleSave() {
     setSaving(true)
+    setError(null)
     const supabase = createClient()
-    await supabase
+    const { error } = await supabase
       .from('profiles')
       .upsert({ id: userId, display_name: displayName.trim(), university })
     setSaving(false)
+    if (error) {
+      setError('Could not save your changes — try again.')
+      return
+    }
     setSaved(true)
     setTimeout(() => setSaved(false), 2500)
     router.refresh()
   }
 
   async function handleSignOut() {
+    setError(null)
     const supabase = createClient()
-    await supabase.auth.signOut()
+    const { error } = await supabase.auth.signOut()
+    if (error) {
+      setError('Could not sign out — try again.')
+      return
+    }
     router.push('/login')
   }
 
@@ -161,6 +172,12 @@ export default function ProfileContent({
           </p>
         </div>
       </div>
+
+      {error && (
+        <p style={{ fontSize: 12.5, color: '#dc2626', margin: '0 0 12px', fontFamily: 'var(--font-poppins), sans-serif' }}>
+          {error}
+        </p>
+      )}
 
       {/* Actions */}
       <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>

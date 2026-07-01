@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { cacheInvalidate } from '@/lib/client-cache'
 
 interface BookmarkButtonProps {
   stepId: string
@@ -24,6 +25,7 @@ export default function BookmarkButton({ stepId, userId, initialBookmarked, acce
       await supabase.from('bookmarks').insert({ user_id: userId, step_id: stepId })
       setBookmarked(true)
     }
+    cacheInvalidate(`saved-${userId}`)
     setLoading(false)
   }
 

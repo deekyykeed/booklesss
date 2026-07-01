@@ -1,17 +1,27 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { Suspense, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
-  const [mode, setMode] = useState<'signin' | 'signup'>('signin')
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
+  )
+}
+
+function LoginForm() {
+  const [mode, setMode] = useState<'signin' | 'signup' | 'forgot'>('signin')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const confirmationFailed = searchParams.get('error') === 'confirmation_failed'
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -21,12 +31,26 @@ export default function LoginPage() {
     const supabase = createClient()
 
     if (mode === 'signup') {
-      const { error } = await supabase.auth.signUp({ email, password })
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+      })
       if (error) {
         setError(error.message)
       } else {
         setMessage('Account created — check your email to confirm, then sign in.')
         setMode('signin')
+      }
+      setLoading(false)
+    } else if (mode === 'forgot') {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
+      })
+      if (error) {
+        setError(error.message)
+      } else {
+        setMessage('Check your email for a password reset link.')
       }
       setLoading(false)
     } else {
@@ -116,23 +140,42 @@ export default function LoginPage() {
       </div>
 
       {/* Mode toggle */}
-      <div style={{ display: 'flex', background: '#e5e7eb', borderRadius: 8, padding: 3, marginBottom: 24 }}>
-        {(['signin', 'signup'] as const).map((m) => (
-          <button
-            key={m}
-            type="button"
-            onClick={() => { setMode(m); setError(null); setMessage(null) }}
-            style={{
-              flex: 1, padding: '7px 0', border: 'none', borderRadius: 6,
-              fontSize: 13, fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s',
-              background: mode === m ? '#0F1F35' : 'transparent',
-              color: mode === m ? '#fff' : '#9ca3af',
-            }}
-          >
-            {m === 'signin' ? 'Sign in' : 'Create account'}
-          </button>
-        ))}
-      </div>
+      {mode !== 'forgot' && (
+        <div style={{ display: 'flex', background: '#e5e7eb', borderRadius: 8, padding: 3, marginBottom: 24 }}>
+          {(['signin', 'signup'] as const).map((m) => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => { setMode(m); setError(null); setMessage(null) }}
+              style={{
+                flex: 1, padding: '7px 0', border: 'none', borderRadius: 6,
+                fontSize: 13, fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s',
+                background: mode === m ? '#0F1F35' : 'transparent',
+                color: mode === m ? '#fff' : '#9ca3af',
+              }}
+            >
+              {m === 'signin' ? 'Sign in' : 'Create account'}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {mode === 'forgot' && (
+        <div style={{ marginBottom: 24, textAlign: 'center' }}>
+          <h2 style={{ fontFamily: 'var(--font-parastoo)', fontWeight: 700, fontSize: 17, color: '#0F1F35', margin: '0 0 4px' }}>
+            Reset your password
+          </h2>
+          <p style={{ color: '#9ca3af', fontSize: 13, margin: 0 }}>
+            Enter your email and we&apos;ll send you a reset link.
+          </p>
+        </div>
+      )}
+
+      {confirmationFailed && (
+        <p style={{ color: '#dc2626', fontSize: 13, margin: '0 0 14px', textAlign: 'center' }}>
+          That confirmation link is invalid or expired — try signing up again.
+        </p>
+      )}
 
       {/* Form */}
       <form
@@ -150,17 +193,33 @@ export default function LoginPage() {
             style={inputStyle}
           />
         </div>
-        <div>
-          <label style={labelStyle}>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            placeholder="••••••••"
-            style={inputStyle}
-          />
-        </div>
+        {mode !== 'forgot' && (
+          <div>
+            <label style={labelStyle}>Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="••••••••"
+              style={inputStyle}
+            />
+          </div>
+        )}
+
+        {mode === 'signin' && (
+          <button
+            type="button"
+            onClick={() => { setMode('forgot'); setError(null); setMessage(null) }}
+            style={{
+              alignSelf: 'flex-end', background: 'none', border: 'none',
+              color: '#6b7280', fontSize: 12, cursor: 'pointer', padding: 0,
+              textDecoration: 'underline',
+            }}
+          >
+            Forgot password?
+          </button>
+        )}
 
         {error && (
           <p style={{ color: '#dc2626', fontSize: 13, margin: 0 }}>{error}</p>
@@ -185,8 +244,21 @@ export default function LoginPage() {
             transition: 'background 0.15s',
           }}
         >
-          {loading ? '…' : mode === 'signin' ? 'Sign in' : 'Create account'}
+          {loading ? '…' : mode === 'signin' ? 'Sign in' : mode === 'signup' ? 'Create account' : 'Send reset link'}
         </button>
+
+        {mode === 'forgot' && (
+          <button
+            type="button"
+            onClick={() => { setMode('signin'); setError(null); setMessage(null) }}
+            style={{
+              background: 'none', border: 'none', color: '#6b7280', fontSize: 12,
+              cursor: 'pointer', padding: 0, textAlign: 'center',
+            }}
+          >
+            ← Back to sign in
+          </button>
+        )}
       </form>
     </div>
   )
