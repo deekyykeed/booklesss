@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import LessonContent, { LessonStep } from '@/components/LessonContent'
 import CommunityPanel from '@/components/CommunityPanel'
 import BookmarkButton from '@/components/BookmarkButton'
+import CompleteButton from '@/components/CompleteButton'
 export default async function LessonPage(props: {
   params: Promise<{ courseSlug: string; lessonSlug: string }>
   searchParams: Promise<{ step?: string }>
@@ -54,6 +55,16 @@ export default async function LessonPage(props: {
     .single()
 
   const isBookmarked = !!bookmark
+
+  // Check if user has marked this step complete
+  const { data: completion } = await supabase
+    .from('step_completions')
+    .select('step_id')
+    .eq('user_id', user.id)
+    .eq('step_id', selectedStep.id)
+    .single()
+
+  const isCompleted = !!completion
 
   type RawContent = {
     sections?: { eyebrow: string; heading: string; body: string; callout?: { label: string; body: string } }[]
@@ -187,12 +198,16 @@ export default async function LessonPage(props: {
           </div>
         </div>
 
-        <div style={{ position: 'fixed', bottom: 28, right: 340, zIndex: 50 }}>
+        <div style={{ position: 'fixed', bottom: 28, right: 340, zIndex: 50, display: 'flex', gap: 10 }}>
+          <CompleteButton stepId={selectedStep.id} userId={user.id} initialCompleted={isCompleted} accentColor={course.accent_color} />
           <BookmarkButton stepId={selectedStep.id} userId={user.id} initialBookmarked={isBookmarked} accentColor={course.accent_color} />
         </div>
       </div>
       <CommunityPanel
         lessonTitle={`${String(lesson.order_index).padStart(2, '0')} · ${lesson.title}`}
+        courseId={course.id}
+        lessonId={lesson.id}
+        userId={user.id}
         courseName={course.name}
         school={course.school}
         accentColor={course.accent_color}

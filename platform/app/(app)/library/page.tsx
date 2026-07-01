@@ -1,8 +1,9 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { revalidatePath, unstable_cache } from 'next/cache'
+import { unstable_cache } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createStaticClient } from '@supabase/supabase-js'
+import EnrollButton from '@/components/EnrollButton'
 
 const getAllCourses = unstable_cache(
   async () => {
@@ -31,17 +32,6 @@ export default async function LibraryPage() {
   ])
 
   const enrolledIds = new Set((enrollmentRows ?? []).map((e: { course_id: string }) => e.course_id))
-
-  async function enroll(formData: FormData) {
-    'use server'
-    const courseId = formData.get('courseId') as string
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
-    await supabase.from('enrollments').insert({ user_id: user.id, course_id: courseId })
-    revalidatePath('/library')
-    revalidatePath('/dashboard')
-  }
 
   return (
     <div style={{ padding: '40px 48px', maxWidth: 900 }}>
@@ -131,24 +121,7 @@ export default async function LibraryPage() {
                     Continue →
                   </Link>
                 ) : (
-                  <form action={enroll}>
-                    <input type="hidden" name="courseId" value={course.id} />
-                    <button
-                      type="submit"
-                      style={{
-                        padding: '6px 14px',
-                        background: 'transparent',
-                        color: course.accent_color,
-                        border: `1.5px solid ${course.accent_color}`,
-                        borderRadius: 6,
-                        fontSize: 12,
-                        fontWeight: 700,
-                        cursor: 'pointer',
-                      }}
-                    >
-                      + Enrol
-                    </button>
-                  </form>
+                  <EnrollButton courseId={course.id} userId={user.id} accentColor={course.accent_color} />
                 )}
               </div>
             </div>
