@@ -4,22 +4,20 @@ import { useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
-  CaseMinimalisticLinear,
-  FiltersLinear,
-  ShareCircleLinear,
-  CourseUpLinear,
-  WalletLinear,
-  SettingsLinear,
+  HomeLinear,
+  BookLinear,
+  CalendarLinear,
+  BookmarkLinear,
+  BellLinear,
   SidebarMinimalisticLinear,
 } from './icons/solar'
 
 const PRIMARY_NAV = [
-  { href: '/dashboard', label: 'Projects', exact: true, Icon: () => <CaseMinimalisticLinear size={20} /> },
-  { href: '/community', label: 'Team', exact: false, Icon: () => <FiltersLinear size={20} /> },
-  { href: '/library', label: 'Integrations', exact: false, Icon: () => <ShareCircleLinear size={20} /> },
-  { href: '/progress', label: 'Usage', exact: false, Icon: () => <CourseUpLinear size={20} /> },
-  { href: '/billing', label: 'Billing', exact: false, Icon: () => <WalletLinear size={20} /> },
-  { href: '/settings', label: 'Settings', exact: false, Icon: () => <SettingsLinear size={20} /> },
+  { href: '/dashboard', label: 'Dashboard', exact: true, Icon: () => <HomeLinear size={20} /> },
+  { href: '/library', label: 'Library', exact: false, Icon: () => <BookLinear size={20} /> },
+  { href: '/calendar', label: 'Calendar', exact: false, Icon: () => <CalendarLinear size={20} /> },
+  { href: '/saved', label: 'Saved', exact: false, Icon: () => <BookmarkLinear size={20} /> },
+  { href: '/notifications', label: 'Notifications', exact: false, Icon: () => <BellLinear size={20} /> },
 ]
 
 interface SidebarProps {
