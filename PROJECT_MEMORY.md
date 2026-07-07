@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-06-29 (session 9)
+**Last updated:** 2026-07-07 (session 10)
 
 ---
 
@@ -50,6 +50,27 @@
 ---
 
 ## Session Log
+
+### Session 2026-07-07 (session 10)
+**Done:**
+- **Color sweep — workspace-wide:** Stripped jade (`#2FB99A`, `#0E5E52`), emerald (`#10B981`), BBA amber (`#F59E0B`), TM amber (`#C17E3A`), jade panel tints (`#E9F0EA`, `#E7F3ED`) from 35+ Python scripts across `Demand/`, `Operations/`, `Schools/`. All replaced with `#121212` ink or `#F5F0E8` warm cream. Updated `step-skill/SKILL.md` and `CLAUDE.md` — no future script will use banned colors. Navy cover backgrounds (`#0F1F35` SM, `#0B1D3A` TM) left intentionally — white text on those covers would break if bulk-replaced. Fix per-script when each SM/TM step is next rebuilt.
+- **Social ad built:** `Demand/build_social_ad.py` → `Demand/Booklesss_Social_Ad.pdf`. 9:16 (108mm × 192mm) Stories/Reels format. Cream + black only, Parastoo-Bold headline, grain overlay, logo + URL.
+- **BooklessMark component:** `platform/components/BooklessMark.tsx` — pure CSS three-diamond brand mark. No image asset. Accepts `size`, `ink`, `cream` props. Outer black diamond (square rotated 45°) → middle cream diamond → inner black diamond.
+- **Carousel system:** `Demand/carousels/` folder structure created. `_template/build_carousel_NN.py` as a reusable base. `01-notes-older-than-you/build_carousel_01.py` (6 slides, rebuilt with proper vertical centering). Layout: `_vcenter()` measures block height and places it at optical centre (bias 0.42) in the live zone. Type: 40pt Parastoo-Bold big text, 28pt Parastoo body, 7pt tracked-caps labels.
+
+**What Worked:**
+- `_vcenter(block_h)` pattern: estimate total block height using `_h_label() + _h_big(lines) + _h_body(lines)` mirroring the draw functions, then place via `LIVE_TOP - max(spare, 0) * 0.42`. Gives proper optical centering on any slide regardless of content mix. Much better than a fixed CT constant.
+- `canvas.beginText()` → `t.setCharSpace(n)` → `c.drawText(t)` is the only ReportLab way to set letter-spacing. `canvas.setCharSpace()` does not exist and raises AttributeError.
+
+**Dead Ends (do not retry):**
+- Bulk-replacing navy hex codes (`#0F1F35`, `#0B1D3A`) in SM/TM lesson scripts is unsafe — those scripts render white text on the dark bg. Replacing the bg alone makes all text invisible. Must be fixed per-script when each lesson step is next rebuilt.
+
+**Next:**
+- [ ] Review `Demand/carousels/01-notes-older-than-you/Carousel_01.pdf` — confirm spacing looks right; adjust leading/font sizes if needed
+- [ ] SM lesson scripts (`build_sm_*.py`, 7 files): fix navy cover bg → cream when each step is next rebuilt (cannot bulk-replace without also fixing white text)
+- [ ] TM lesson scripts: same navy cover fix, same rule
+
+---
 
 ### Session 2026-06-29 (session 9 — catch-up commit)
 **Done:**

@@ -3,7 +3,6 @@
 Booklesss carousel 01 — Your notes are older than you.
 9:16 (108mm × 192mm). One page = one slide.
 Run: python3 build_carousel_01.py
-Output: Carousel_01.pdf (in this folder)
 """
 
 from pathlib import Path
@@ -14,42 +13,59 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
 HERE  = Path(__file__).resolve().parent
-ROOT  = HERE.parent.parent.parent      # → Booklesss/
+ROOT  = HERE.parent.parent.parent
 BRAND = ROOT / "_dev" / "brand"
 FONTS = ROOT / "_dev" / "fonts"
 OUT   = HERE / "Carousel_01.pdf"
 
-TOTAL = 6   # ← update if you add/remove slides
+TOTAL = 6
 
-# ── Fonts ─────────────────────────────────────────────────────────────────────
 pdfmetrics.registerFont(TTFont("Parastoo-Bold", FONTS / "Parastoo-Bold.ttf"))
 pdfmetrics.registerFont(TTFont("Parastoo",      FONTS / "Parastoo.ttf"))
 pdfmetrics.registerFont(TTFont("Aptos-Bold",    FONTS / "Aptos-Bold.ttf"))
 pdfmetrics.registerFont(TTFont("Aptos",         FONTS / "Aptos.ttf"))
 
-# ── Palette ───────────────────────────────────────────────────────────────────
-BG   = (1.0,        253/255, 232/255)    # #FFFDE8 cream
-INK  = (0x12/255,  0x12/255, 0x12/255)  # #121212
-MID  = (0x3D/255,  0x3D/255, 0x3D/255)  # #3D3D3D
-SOFT = (0x5F/255,  0x6B/255, 0x65/255)  # #5F6B65
-RULE = (0xC8/255,  0xC2/255, 0xB5/255)
+BG   = (1.0,       253/255, 232/255)
+INK  = (0x12/255, 0x12/255, 0x12/255)
+MID  = (0x3D/255, 0x3D/255, 0x3D/255)
+SOFT = (0x5F/255, 0x6B/255, 0x65/255)
+RULE = (0xC8/255, 0xC2/255, 0xB5/255)
 
-# ── Geometry ──────────────────────────────────────────────────────────────────
 W, H  = 108 * mm, 192 * mm
 PAD   = 10 * mm
-CT    = H - 34 * mm    # content top (below header rule)
-CB    = 18 * mm        # content bottom (above footer rule)
+TINY  =  7          # label / footer size (pt)
+BIG   = 40          # punchy headline (pt)
+BODY  = 28          # explanatory text (pt)
+LD_BIG  = BIG  * 1.45   # ~58 pt  — room between headline lines
+LD_BODY = BODY * 1.55   # ~43 pt  — room between body lines
 
-# ── Type sizes (points) ───────────────────────────────────────────────────────
-BIG   = 36             # hook / punchy lines
-BODY  = 26             # explanatory text
-TINY  = 7              # labels, footer
-
-LD_BIG  = BIG  * 1.42  # ~51pt leading
-LD_BODY = BODY * 1.50  # ~39pt leading
+# Live zone: between the header rule and the footer rule
+LIVE_TOP = H - 20 * mm   # ~547 pt from bottom  (20 mm from top)
+LIVE_BOT = 16 * mm        # ~45 pt from bottom
 
 
-# ── Shared helpers ────────────────────────────────────────────────────────────
+# ── Height estimators (keep in sync with draw functions) ──────────────────────
+
+def _h_label():
+    """Height consumed by a label + its gap below."""
+    return TINY * 1.4 + 8 * mm
+
+def _h_big(lines):
+    return len(lines) * LD_BIG
+
+def _h_body(lines):
+    return sum(LD_BODY * (0.5 if l == "" else 1.0) for l in lines)
+
+
+def _vcenter(block_h):
+    """Y for the top of a content block, placed at optical centre (bias 0.42)."""
+    live_h = LIVE_TOP - LIVE_BOT
+    spare  = live_h - block_h
+    # If content is taller than live zone, pin to top; otherwise bias upward.
+    return LIVE_TOP - max(spare, 0) * 0.42
+
+
+# ── Shared draw helpers ───────────────────────────────────────────────────────
 
 def _bg(c, grain):
     c.setFillColorRGB(*BG)
@@ -63,70 +79,53 @@ def _bg(c, grain):
 
 def _chrome(c, logo, n):
     """Header (logo + counter + rule) and footer (URL + rule) on every slide."""
-    LH, LW = 5 * mm, 5 * mm * 4.6
+    LH = 5 * mm
+    LW = LH * 4.6
     if logo:
         c.drawImage(logo, PAD, H - PAD - LH,
                     width=LW, height=LH, mask="auto", preserveAspectRatio=True)
-
-    # Slide counter — top right
-    label = f"{n} / {TOTAL}"
-    tw = c.stringWidth(label, "Aptos-Bold", TINY)
-    t  = c.beginText(W - PAD - tw, H - PAD - LH + 0.5 * mm)
-    t.setFont("Aptos-Bold", TINY)
-    t.setFillColorRGB(*SOFT)
-    t.setCharSpace(0.8)
-    t.textLine(label)
-    c.drawText(t)
-
-    # Header rule
-    hr = H - PAD - LH - 3 * mm
-    c.setStrokeColorRGB(*RULE)
-    c.setLineWidth(0.4)
-    c.line(PAD, hr, W - PAD, hr)
-
-    # Footer rule + URL
-    c.line(PAD, CB - 2 * mm, W - PAD, CB - 2 * mm)
-    c.setFillColorRGB(*SOFT)
-    c.setFont("Aptos", TINY)
+    lbl = f"{n} / {TOTAL}"
+    tw  = c.stringWidth(lbl, "Aptos-Bold", TINY)
+    t   = c.beginText(W - PAD - tw, H - PAD - LH + 0.5 * mm)
+    t.setFont("Aptos-Bold", TINY); t.setFillColorRGB(*SOFT); t.setCharSpace(0.8)
+    t.textLine(lbl); c.drawText(t)
+    # header rule
+    c.setStrokeColorRGB(*RULE); c.setLineWidth(0.4)
+    c.line(PAD, H - PAD - LH - 3 * mm, W - PAD, H - PAD - LH - 3 * mm)
+    # footer rule + URL
+    c.line(PAD, LIVE_BOT - 2 * mm, W - PAD, LIVE_BOT - 2 * mm)
+    c.setFillColorRGB(*SOFT); c.setFont("Aptos", TINY)
     c.drawString(PAD, PAD + 2 * mm, "booklesss.framer.ai")
 
 
 def _label(c, text, y):
-    """Tracked-caps eyebrow. Returns y after the label + gap."""
+    """7 pt tracked-caps eyebrow. Returns y below the label + gap."""
     t = c.beginText(PAD, y)
-    t.setFont("Aptos-Bold", TINY)
-    t.setFillColorRGB(*SOFT)
-    t.setCharSpace(1.8)
-    t.textLine(text.upper())
-    c.drawText(t)
-    return y - TINY * 1.4 - 5 * mm
+    t.setFont("Aptos-Bold", TINY); t.setFillColorRGB(*SOFT); t.setCharSpace(1.8)
+    t.textLine(text.upper()); c.drawText(t)
+    return y - TINY * 1.4 - 8 * mm
 
 
 def _big(c, lines, y):
-    """36pt Parastoo-Bold. Returns y below the last line."""
-    c.setFont("Parastoo-Bold", BIG)
-    c.setFillColorRGB(*INK)
+    """40 pt Parastoo-Bold. Returns y below the last line."""
+    c.setFont("Parastoo-Bold", BIG); c.setFillColorRGB(*INK)
     for line in lines:
-        c.drawString(PAD, y, line)
-        y -= LD_BIG
+        c.drawString(PAD, y, line); y -= LD_BIG
     return y
 
 
 def _body(c, lines, y):
-    """26pt Parastoo regular. Returns y below the last line.
-    Pass '' for a half-line blank gap."""
-    c.setFont("Parastoo", BODY)
-    c.setFillColorRGB(*MID)
+    """28 pt Parastoo. Pass '' for a half-line gap. Returns y below last line."""
+    c.setFont("Parastoo", BODY); c.setFillColorRGB(*MID)
     for line in lines:
         if line == "":
             y -= LD_BODY * 0.5
         else:
-            c.drawString(PAD, y, line)
-            y -= LD_BODY
+            c.drawString(PAD, y, line); y -= LD_BODY
     return y
 
 
-# ── Build ─────────────────────────────────────────────────────────────────────
+# ── Slides ────────────────────────────────────────────────────────────────────
 
 def build():
     grain = ImageReader(str(BRAND / "grain.png"))                if (BRAND / "grain.png").exists()                else None
@@ -134,75 +133,72 @@ def build():
 
     c = rl_canvas.Canvas(str(OUT), pagesize=(W, H))
 
-    # ── 1 of 6 — Hook ────────────────────────────────────────────────────────
+    # ── 1 / 6 — Hook ─────────────────────────────────────────────────────────
+    bl = ["Your notes", "are probably", "older than", "you."]
     _bg(c, grain); _chrome(c, logo, 1)
-    y = CT
+    y = _vcenter(_h_label() + _h_big(bl))
     y = _label(c, "ZCAS  ·  UNZA", y)
-    _big(c, [
-        "Your notes",
-        "are probably",
-        "older than",
-        "you.",
-    ], y)
+    _big(c, bl, y)
     c.showPage()
 
-    # ── 2 of 6 — The problem ─────────────────────────────────────────────────
+    # ── 2 / 6 — The problem ──────────────────────────────────────────────────
+    bl = ["Old slides.", "Old files.", "All of it."]
     _bg(c, grain); _chrome(c, logo, 2)
-    y = CT
+    y = _vcenter(_h_label() + _h_big(bl))
     y = _label(c, "THE PROBLEM", y)
-    _big(c, [
-        "Old slides.",
-        "Scattered files.",
-        "Nothing connects.",
-    ], y)
+    _big(c, bl, y)
     c.showPage()
 
-    # ── 3 of 6 — What it costs ───────────────────────────────────────────────
-    _bg(c, grain); _chrome(c, logo, 3)
-    y = CT
-    y = _label(c, "WHAT THAT COSTS", y)
-    _body(c, [
-        "Every semester you patch it",
-        "together from five different",
-        "sources.",
+    # ── 3 / 6 — What it costs ────────────────────────────────────────────────
+    bo = [
+        "Every semester,",
+        "you patch it",
+        "from five files.",
         "",
-        "You still walk into the exam",
-        "unsure.",
-    ], y)
+        "Walk in unsure.",
+    ]
+    _bg(c, grain); _chrome(c, logo, 3)
+    y = _vcenter(_h_label() + _h_body(bo))
+    y = _label(c, "WHAT THAT COSTS", y)
+    _body(c, bo, y)
     c.showPage()
 
-    # ── 4 of 6 — The fix ─────────────────────────────────────────────────────
+    # ── 4 / 6 — The fix ──────────────────────────────────────────────────────
+    bl = ["Rebuilt.", "From scratch."]
+    bo = ["Every topic.", "Written to click", "on the first read."]
+    gap = 6 * mm
     _bg(c, grain); _chrome(c, logo, 4)
-    y = CT
+    y = _vcenter(_h_label() + _h_big(bl) + gap + _h_body(bo))
     y = _label(c, "THE FIX", y)
-    y = _big(c, ["Rebuilt.", "From scratch."], y)
-    y -= 5 * mm
-    _body(c, [
-        "Every topic. Written to make",
-        "sense on the first read.",
-        "Not lifted from old slides.",
-    ], y)
+    y = _big(c, bl, y)
+    y -= gap
+    _body(c, bo, y)
     c.showPage()
 
-    # ── 5 of 6 — Community ───────────────────────────────────────────────────
+    # ── 5 / 6 — Community ────────────────────────────────────────────────────
+    bo = [
+        "Small channels.",
+        "One topic each.",
+        "",
+        "Students where",
+        "you are.",
+    ]
     _bg(c, grain); _chrome(c, logo, 5)
-    y = CT
+    y = _vcenter(_h_label() + _h_body(bo))
     y = _label(c, "YOU'RE NOT ALONE", y)
-    _body(c, [
-        "Small Slack channels.",
-        "One topic at a time.",
-        "Students at the same point",
-        "in the work as you.",
-    ], y)
+    _body(c, bo, y)
     c.showPage()
 
-    # ── 6 of 6 — CTA ─────────────────────────────────────────────────────────
+    # ── 6 / 6 — CTA ──────────────────────────────────────────────────────────
+    bl = ["booklesss", ".framer.ai"]
+    bo = ["ZCAS · UNZA", "students."]
+    gap = 6 * mm
     _bg(c, grain); _chrome(c, logo, 6)
-    y = CT
+    y = _vcenter(_h_label() + _h_big(bl) + gap + _h_body(bo))
     y = _label(c, "START HERE", y)
-    y = _big(c, ["booklesss", ".framer.ai"], y)
-    y -= 5 * mm
-    _body(c, ["ZCAS and UNZA students."], y)
+    y = _big(c, bl, y)
+    y -= gap
+    _body(c, bo, y)
     c.showPage()
 
     c.save()
