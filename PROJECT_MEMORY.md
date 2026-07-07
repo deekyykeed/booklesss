@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-07-07 (session 10)
+**Last updated:** 2026-07-07 (session 11)
 
 ---
 
@@ -13,9 +13,15 @@
 - [ ] Seed `steps.content` JSONB for SM Step 3.1 so the lesson reader pulls real data instead of hardcode.
 - [ ] Enroll a test account in a course via `/library` so the sidebar courses section populates in the app.
 
+**⚠️ Pricing just changed a lot (2026-07-07 session 11) — read before touching any customer-facing pricing:**
+- [ ] Full member price is now **K1,425/month** (Guest/Notes tier stays K250). This replaced K500 → K600 → K1,200 → K1,425 across one conversation as real costs got corrected (real Slack Business+ rate, then Gamma added as a second required per-member seat). Sanity-check this price against what the market will actually pay before advertising — it's a ~3x jump from the K500 figure baked into the website and older docs. See `Operations/Revenue Model - Booklesss.pdf` (rebuilt, single source of truth) for the full reasoning.
+- [ ] `Operations/pricing-strategy.md`, `monthly-tracker.md`, `daily-checklist.md` still show the OLD numbers (K339 Slack cost, K500/K800 prices) — not yet updated to match the Revenue Model. Update or retire these in favor of the Revenue Model PDF.
+- [ ] Actually subscribe to Gamma Pro (or confirm the account) — the model now assumes this is a real recurring cost, not the free tier.
+- [ ] Tutor/Tutor Assistant compensation roles were discussed (67/33 revenue split off negotiated Custom-tier rate, minus Slack+Gamma seat cost) but never written into `Operations/sources/build_ops_growth_roles.py` — paused in favor of finishing the revenue model first.
+
 **⚠️ Funnel integrity (from the 2026-06-11 audit — fix before any marketing push):**
 - [ ] **Consolidate Slack to ONE workspace.** Three exist: `bookless10` (invite link + all TM/SM channels, Pro trial EXPIRED 2026-06-10), `booklesss20` (paid, where SM PDFs were uploaded), and a new empty "Booklesss" ws (created 2026-06-04, currently tool-connected). Decide, move channels, update `Operations/workspace.md`, replace the invite link everywhere.
-- [ ] Framer: remove expired "Free until 10 June →" CTAs; pricing page Community K800 → K500; homepage FAQ K800 → K500; indexed meta description says "free 7-day trial" (should be 1 month); "Prodo" meta titles; /legals page.
+- [ ] Framer: remove expired "Free until 10 June →" CTAs; pricing page Community K800 → **K1,425** (was planned as K500, now superseded); homepage FAQ same update; indexed meta description says "free 7-day trial" (should be 1 month); "Prodo" meta titles; /legals page.
 - [ ] Tally form 81Jejr: add a Free Trial option to the plan question (the advertised entry product is currently unselectable); delete the orphaned annual page (K4,680 = old K390×12) and its dead jump rule; dedupe the two "Which school" questions; clear the 2 founder test submissions.
 - [ ] Strip the `bookless10` invite link from the ~19 CF/TM build scripts' closer text (PDFs must be rebuilt before circulating).
 - [ ] Decide the post-founding-rate offer (April 18 deadline passed; Template D in groups.md retired).
@@ -35,7 +41,7 @@
 - [ ] Extract a shared brand module (`booklesss_brand.py`) so CF rebuilds aren't ~600 lines of copy-paste each
 - [ ] Create CF Slack channels (`#cf-updates`, `#cf-investment`, etc.) → update workspace.md
 - [ ] Draft outreach messages to potential collaborators — raised end of previous session, not actioned
-- [ ] Update Booklesss website pricing page manually in Framer: Community tier K800 → K500
+- [ ] Update Booklesss website pricing page manually in Framer: Community tier K800 → **K1,425** (superseded from K500 — see 2026-07-07 pricing note above)
 - [ ] When Framer / Design Bridge plugin is online, pull exact Booklesss tokens and reconcile
 - [ ] Export higher-res Booklesss diamond mark (current is only 34×34px)
 - [ ] Fix page meta titles in Framer (SEO tab): /blogs, /about-us, homepage still say "Prodo"
@@ -50,6 +56,31 @@
 ---
 
 ## Session Log
+
+### Session 2026-07-07 (session 11 — revenue model & pricing overhaul)
+**Done:**
+- **Confirmed real Slack Business+ price** via Slack's own pricing page: $18/user/month on monthly billing — the model had been assuming $13.56 (K339 at old rates), which was simply wrong at any exchange rate checked.
+- **Confirmed real Gamma pricing** via screenshots of gamma.app/pricing (monthly-billing tab specifically, after an initial mix-up with annual pricing): Pro $25/seat/month, Ultra $100/seat/month.
+- **Locked FX rate at 22.10** (ZMW/USD) for all pricing going forward, replacing the old 25 and 27 figures that were inconsistently used across docs.
+- **Gamma is now a core per-member cost alongside Slack** — Booklesss is moving lesson notes off PDF onto Gamma (PDFs remain for lead magnets/business docs only). Every full member now carries both a Slack Business+ seat and a Gamma Pro seat.
+- **Full member price revised twice in sequence**: K500 → K600 (Slack-only correction, 33% margin) → K1,425 (Gamma added, same ~33% margin target against the combined K950 seat cost). Guest/Notes tier stays K250 (no Slack or Gamma cost).
+- **Rewrote `Operations/sources/build_ops_revenue_model.py` end to end**: pricing table, overhead phases (added a 5th phase for the founder's Gamma Pro→Ultra upgrade), Table A/B profitability, milestones, reinvestment loop (flagged as an uncapped illustration, not a forecast), 12-month conservative NPV forecast (NPV: K169,768 → K503,808), and rollout thresholds. Rebuilt `Operations/Revenue Model - Booklesss.pdf` (12 pages) and spot-verified rendered numbers via pypdf extraction.
+- **Fixed a broken font/brand/output path bug** in `build_ops_revenue_model.py` (one extra `..` in FONT_DIR/BRAND_DIR/OUT_DIR, left over from the file's move into `sources/` during the session-10 reorg) that was silently blocking the PDF from rebuilding at all.
+- Discussed a Tutor + Tutor Assistant compensation model (67/33 revenue split off the negotiated Custom tier price, net of the K950 Slack+Gamma seat cost) but did not write it into `build_ops_growth_roles.py` — paused to finish the revenue model first.
+- Workspace cleanup carried over from session start: moved several loose build scripts into per-folder `sources/` subfolders (Demand, Dissertation, Operations, CV), removed superseded output files.
+
+**What Worked:**
+- Running every pricing calculation in Python (not by hand) before writing a single number into the PDF script — caught rounding/half-cent issues (e.g. $25×22.10=552.5) and let every cascading table be verified against a single source of truth before editing.
+- Reverse-engineering the hidden 12-month NPV formula by testing candidate formulas against the OLD table's known output (`Net = Guests×47.50 + FM×markup − overhead` reproduced the original figures exactly) before trusting it to recompute the NEW numbers — this confirmed the FM/Guest churn trajectory is demographic (price-independent) and only the dollar drivers needed correcting.
+- Fetching the live Slack and Gamma pricing pages directly (WebFetch on the official pricing URL) instead of trusting search-result summaries, which disagreed with each other and with the actual page.
+
+**Dead Ends (do not retry):**
+- Trusted the user's first Gamma pricing screenshot at face value ($18 Pro / $90 Ultra) and built a full pass of the model around it — it was the **annual** billing tab, not monthly. Had to redo the entire cascade when corrected. Always check which billing toggle (monthly/annual) is active in a pricing screenshot before using its numbers.
+- This session ran concurrently with another Claude session (session 10, color-palette sweep) in the same OneDrive-synced working directory — no dedicated git worktree separated them. Both sessions' edits to `build_ops_revenue_model.py` ended up bundled into the other session's commit (`dea8652`) since they shared one working tree; verified via diff that no content was lost, but this is a real race-condition risk. If running parallel sessions on this repo again, use separate git worktrees.
+
+**Next:** Carried to Next Session list above (pricing rollout, tutor role write-up, stale pricing docs).
+
+---
 
 ### Session 2026-07-07 (session 10)
 **Done:**
