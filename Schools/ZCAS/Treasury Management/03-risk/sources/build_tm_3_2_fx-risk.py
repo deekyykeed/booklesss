@@ -1,4 +1,4 @@
-"""
+﻿"""
 Booklesss Lesson PDF — Step 3.2: Foreign Exchange Risk Management
 Course: BBF4302 Treasury Management
 Style: Deep navy cover, white body, emerald accent, DejaVuSerif display, LiberationSans body.
@@ -37,13 +37,13 @@ pdfmetrics.registerFontFamily("Body", normal="Body", bold="Body-Bold", italic="B
 # ─────────────────────────────────────────────
 C_DARK      = colors.HexColor("#0B1D3A")
 C_GRID      = colors.HexColor("#132646")
-C_GREEN     = colors.HexColor("#10B981")
+C_GREEN     = colors.HexColor("#121212")
 C_GREEN_DK  = colors.HexColor("#065F46")
 C_INK       = colors.HexColor("#111827")
 C_STEEL     = colors.HexColor("#6B7280")
 C_MIST      = colors.HexColor("#9CA3AF")
 C_RULE      = colors.HexColor("#E5E7EB")
-C_AMBER     = colors.HexColor("#C17E3A")
+C_INK     = colors.HexColor("#121212")
 C_WHITE     = colors.white
 
 BG_WARN     = colors.HexColor("#FEF3C7")
@@ -85,7 +85,7 @@ def make_styles():
             fontName="Body", fontSize=10, textColor=C_MIST,
             leading=15, spaceAfter=0, alignment=TA_LEFT),
         "eyebrow": ParagraphStyle("eyebrow",
-            fontName="Body-Bold", fontSize=7, textColor=C_AMBER,
+            fontName="Body-Bold", fontSize=7, textColor=C_INK,
             leading=10, spaceAfter=3, spaceBefore=18, alignment=TA_LEFT),
         "h2": ParagraphStyle("h2",
             fontName="Georgia-Bold", fontSize=15, textColor=C_INK,
@@ -168,7 +168,7 @@ def cover_bg(canvas, doc):
 def body_page(canvas, doc):
     canvas.saveState()
     page_num = doc.page
-    canvas.setStrokeColor(C_AMBER)
+    canvas.setStrokeColor(C_INK)
     canvas.setLineWidth(0.5)
     canvas.line(MX, H - MY + 4, W - MX, H - MY + 4)
     canvas.setFont("Body", 7.5)
@@ -186,7 +186,7 @@ def body_page(canvas, doc):
 #  HELPERS
 # ─────────────────────────────────────────────
 def hairline():
-    return HRFlowable(width="100%", thickness=0.5, color=C_AMBER, spaceAfter=10, spaceBefore=4)
+    return HRFlowable(width="100%", thickness=0.5, color=C_INK, spaceAfter=10, spaceBefore=4)
 
 def section(eyebrow_text, heading_text):
     return [
@@ -295,7 +295,7 @@ def table_std(data, col_widths):
         ('RIGHTPADDING',  (0,0), (-1,-1), 8),
         ('LINEBELOW',     (0,0), (-1,-1), 0.5, C_RULE),
         ('BACKGROUND',    (0,0), (-1, 0), colors.HexColor("#F9FAFB")),
-        ('LINEBELOW',     (0,0), (-1, 0), 1,   C_AMBER),
+        ('LINEBELOW',     (0,0), (-1, 0), 1,   C_INK),
     ]))
     return t
 
@@ -668,3 +668,5 @@ def build():
 
 if __name__ == "__main__":
     build()
+
+

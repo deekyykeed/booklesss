@@ -101,14 +101,14 @@ Scripts are ~700 lines and follow a fixed structure:
 8. `if __name__ == "__main__": build()`
 
 ### Course Visual Identity
-Each course has a distinct color system — do not mix them:
+All courses: cream `#FFFDE8` cover, black type (`#121212`), warm rule `#E0DACB`, Parastoo-Bold display. No navy, no green, no amber.
 
 | Course | School | Cover BG | Accent | Display Font |
 |--------|--------|----------|--------|--------------|
-| Strategic Management | ZCAS | `#0F1F35` slate-navy | `#DC2626` cardinal red | Parastoo-Bold |
-| Treasury Management | ZCAS | `#0B1D3A` deep navy | `#10B981` emerald | Parastoo-Bold |
-| Corporate Finance | ZCAS | `#FFFEF2` cream | `#2FB99A` jade | Parastoo-Bold |
-| Business Administration | UNZA | `#1C2526` dark slate-charcoal | `#F59E0B` amber gold | Parastoo-Bold |
+| Strategic Management | ZCAS | `#FFFDE8` cream | `#DC2626` cardinal red (eyebrows only) | Parastoo-Bold |
+| Treasury Management | ZCAS | `#FFFDE8` cream | none — cream + black | Parastoo-Bold |
+| Corporate Finance | ZCAS | `#FFFDE8` cream | none — cream + black | Parastoo-Bold |
+| Business Administration | UNZA | `#FFFDE8` cream | none — cream + black | Parastoo-Bold |
 
 ### PDF Content Structure (All Lessons)
 Every PDF follows this sequence: cover → 4–7 content sections → 2 embedded discussion questions → Key Terms table → Learning Outcomes → Community closer. Section headers always use an eyebrow tag (7pt bold ALL CAPS, accent color) above the H2. Body text is 10.5pt, leading 17pt.

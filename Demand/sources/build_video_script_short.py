@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
-Booklesss â€” Video Script #02: Try Booklesss
-Direct pitch to the viewer. "Imagine if..." angle.
-~1.5 minutes.
+Booklesss — Video Script #01 SHORT: What is Booklesss?
+~1.5 minutes. Three scenes, one continuous flow.
 """
 
 from pathlib import Path
@@ -16,12 +15,12 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
 HERE  = Path(__file__).resolve().parent
-ROOT  = HERE.parent
+ROOT  = HERE.parent.parent
 BRAND = ROOT / "_dev" / "brand"
 FONTS = ROOT / "_dev" / "fonts"
 GRAIN = BRAND / "grain.png"
 LOGO  = BRAND / "booklesss-logo-black.png"
-OUT   = HERE  / "Video_Script_02_Direct.pdf"
+OUT   = HERE.parent  / "Video_Script_01_Short.pdf"
 
 _grain = ImageReader(str(GRAIN)) if GRAIN.exists() else None
 _logo  = ImageReader(str(LOGO))  if LOGO.exists()  else None
@@ -31,12 +30,13 @@ pdfmetrics.registerFont(TTFont("Parastoo-Bold", FONTS / "Parastoo-Bold.ttf"))
 pdfmetrics.registerFont(TTFont("Aptos",         FONTS / "Aptos.ttf"))
 pdfmetrics.registerFont(TTFont("Aptos-Bold",    FONTS / "Aptos-Bold.ttf"))
 
-DARK  = colors.HexColor("#1C2526")
+DARK  = colors.HexColor("#121212")
 MID   = colors.HexColor("#6B7280")
 CREAM = colors.HexColor("#FFFEF2")
 
 PW, PH = A4
 MARGIN = 24 * mm
+CW     = PW - 2 * MARGIN
 
 
 def page_bg(canvas, doc):
@@ -57,7 +57,7 @@ def page_bg(canvas, doc):
         canvas.drawImage(_logo, MARGIN, PH - 13 * mm, width=lw, height=lh, mask="auto")
     canvas.setFillColor(MID)
     canvas.setFont("Aptos", 7)
-    canvas.drawRightString(PW - MARGIN, PH - 10 * mm, "VIDEO 02 â€” DIRECT")
+    canvas.drawRightString(PW - MARGIN, PH - 10 * mm, "VIDEO 01 — SHORT")
     canvas.setStrokeColor(DARK)
     canvas.setLineWidth(0.5)
     canvas.line(MARGIN, 13 * mm, PW - MARGIN, 13 * mm)
@@ -70,37 +70,42 @@ def page_bg(canvas, doc):
 
 SECTIONS = [
     (
-        "THE PICTURE",
+        "THE PROBLEM",
         [
-            "Imagine if everything you needed for your course "
-            "was actually organized. "
-            "Not scattered across slides that don't connect. "
-            "Properly structured, properly written, "
-            "easy to follow from start to finish.",
+            "You know that thing where you sit down with your notes, "
+            "read the same paragraph a few times, "
+            "and still only kind of get it? "
+            "And somewhere in the back of your head "
+            "you're thinking — maybe I'm just not good at this.",
 
-            "That's not how most university material works. "
-            "And I think you know that. "
-            "The notes are all over the place. "
-            "Things don't connect to each other. "
-            "You're left figuring out what matters on your own.",
+            "The problem is not you. It's the notes.",
+
+            "Those notes are probably older than you. "
+            "They were never set up for you to read once and understand — "
+            "you have to loop through them just to get the basic idea.",
         ]
     ),
     (
         "WHAT BOOKLESSS IS",
         [
-            "Booklesss is the organized version "
-            "of what you're already trying to study. "
-            "Notes that are researched and written properly. "
-            "Each topic connects to the next. "
-            "By the time you get to your exam, "
-            "it all makes sense as one thing â€” "
-            "not just pieces you memorized.",
+            "I felt the same thing in school. "
+            "So I started making my own notes instead — "
+            "going online, reading from different places, "
+            "putting it together in a way that actually made sense. "
+            "And I felt like I was learning better.",
 
-            "And you're not doing it alone. "
-            "There's a community of students "
-            "working through the exact same material â€” "
-            "small channels, the right people, "
-            "exactly where you are in the work.",
+            "That's what Booklesss is. "
+            "Notes that are properly researched, "
+            "easy to follow on the first read, "
+            "where everything connects. "
+            "And you're joining a community of students "
+            "working through the same material — "
+            "not a WhatsApp group, "
+            "just small focused channels "
+            "where asking a question actually feels comfortable.",
+
+            "I tried launching this before and it didn't go anywhere. "
+            "I'm back now because I found a way to do it properly.",
         ]
     ),
     (
@@ -110,7 +115,11 @@ SECTIONS = [
             "Three s's. "
             "B-O-O-K-L-E-S-S-S.",
 
-            "You won't be on your own with this anymore.",
+            "And when you get there and sign up — "
+            "you'll be in a space with people "
+            "who are working through the exact same material as you. "
+            "Same course, same questions, same point in the work. "
+            "You won't be sitting with this on your own anymore.",
         ]
     ),
 ]
@@ -141,14 +150,16 @@ def build():
         leading=11,
         textColor=DARK,
         spaceAfter=2 * mm,
+        borderPad=0,
     )
 
     story = []
-    for i, (title, lines) in enumerate(SECTIONS):
+
+    for i, (section_title, lines) in enumerate(SECTIONS):
         if i > 0:
             story.append(PageBreak())
         story.append(Spacer(1, 6 * mm))
-        story.append(Paragraph(f"SCENE {i + 1}  â€”  {title}", label))
+        story.append(Paragraph(f"SCENE {i + 1}  —  {section_title}", label))
         story.append(Spacer(1, 2 * mm))
         for line in lines:
             story.append(Paragraph(line, speak))
@@ -159,3 +170,4 @@ def build():
 
 if __name__ == "__main__":
     build()
+

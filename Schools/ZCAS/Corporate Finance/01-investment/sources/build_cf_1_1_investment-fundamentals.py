@@ -1,7 +1,7 @@
-"""
+﻿"""
 Booklesss — Step 1.1: Investment Fundamentals
 Course: BAC4301 Corporate Finance
-Palette: Forest & Jade — forest cover (#0F2A1E), jade accent (#2FB99A)
+Palette: Forest & Jade — forest cover (#0F2A1E), jade accent (#121212)
 """
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
@@ -53,15 +53,15 @@ C_COVER      = colors.HexColor("#FFFDE8")   # warm cream — cover (first page) 
 C_PAGE       = colors.HexColor("#FFFEF2")   # cream — body pages (website bg)
 TITLE_DARK   = colors.HexColor("#121212")   # cover title  (--Logo_Dark)
 HEADING_DARK = colors.HexColor("#3D3D3D")   # headings     (--Text_Dark_Used_on_H1_only)
-C_JADE     = colors.HexColor("#2FB99A")   # jade accent (interior)
-C_JADE_DK  = colors.HexColor("#0E5E52")   # deep jade (text / links on light bg)
+C_INK     = colors.HexColor("#121212")   # jade accent (interior)
+C_INK  = colors.HexColor("#3D3D3D")   # deep jade (text / links on light bg)
 C_INK      = colors.HexColor("#16201A")   # body text
 C_STEEL    = colors.HexColor("#5F6B65")   # secondary labels
 C_MIST     = colors.HexColor("#6E6A5E")   # warm grey (cover eyebrow / sub / meta)
 C_RULE     = colors.HexColor("#E0DACB")   # warm rule / table dividers
 C_WHITE    = colors.white
-BG_FORMULA = colors.HexColor("#E9F0EA")   # pale jade panel (formula / calc)
-BG_CALLOUT = colors.HexColor("#E7F3ED")   # soft jade callout / fact box
+BG_FORMULA = colors.HexColor("#F5F0E8")   # pale jade panel (formula / calc)
+BG_CALLOUT = colors.HexColor("#F5F0E8")   # soft jade callout / fact box
 
 # ── PAGE GEOMETRY ──────────────────────────────────────────────────────────
 W, H      = A4
@@ -90,7 +90,7 @@ def make_styles():
             fontName="Body", fontSize=9, textColor=C_MIST,
             leading=14, spaceAfter=2, alignment=TA_CENTER),
         "eyebrow": ParagraphStyle("eyebrow",
-            fontName="Body-Bold", fontSize=7, textColor=C_JADE,
+            fontName="Body-Bold", fontSize=7, textColor=C_INK,
             leading=10, spaceAfter=3, spaceBefore=18, alignment=TA_LEFT,
             keepWithNext=1),
         "h2": ParagraphStyle("h2",
@@ -108,13 +108,13 @@ def make_styles():
             fontName="Body", fontSize=10.5, textColor=C_INK,
             leading=17, spaceAfter=4, leftIndent=14, alignment=TA_LEFT),
         "fact": ParagraphStyle("fact",
-            fontName="Body-Bold", fontSize=10, textColor=C_JADE_DK,
+            fontName="Body-Bold", fontSize=10, textColor=C_INK,
             leading=16, spaceAfter=6, leftIndent=0, alignment=TA_LEFT),
         "formula": ParagraphStyle("formula",
-            fontName="Body-Bold", fontSize=10, textColor=C_JADE_DK,
+            fontName="Body-Bold", fontSize=10, textColor=C_INK,
             leading=16, alignment=TA_LEFT),
         "formula_r": ParagraphStyle("formula_r",
-            fontName="Body-Bold", fontSize=10, textColor=C_JADE_DK,
+            fontName="Body-Bold", fontSize=10, textColor=C_INK,
             leading=16, alignment=TA_RIGHT),
         "th": ParagraphStyle("th",
             fontName="Body-Bold", fontSize=9, textColor=C_INK,
@@ -135,7 +135,7 @@ def make_styles():
             fontName="Body", fontSize=9.5, textColor=C_STEEL,
             leading=15, spaceAfter=5, alignment=TA_LEFT),
         "community_link": ParagraphStyle("community_link",
-            fontName="Body-Bold", fontSize=9.5, textColor=C_JADE_DK,
+            fontName="Body-Bold", fontSize=9.5, textColor=C_INK,
             leading=15, alignment=TA_LEFT),
     }
 
@@ -179,7 +179,7 @@ def page_bg(canvas, doc):
 def body_page(canvas, doc):
     canvas.saveState()
     pn = doc.page
-    canvas.setStrokeColor(C_JADE)
+    canvas.setStrokeColor(C_INK)
     canvas.setLineWidth(0.6)
     canvas.line(MX, H - MY + 4, W - MX, H - MY + 4)
     canvas.setFont("Body", 7.5)
@@ -197,7 +197,7 @@ def body_page(canvas, doc):
 
 # ── HELPERS ────────────────────────────────────────────────────────────────
 def hairline():
-    hr = HRFlowable(width="100%", thickness=0.5, color=C_JADE,
+    hr = HRFlowable(width="100%", thickness=0.5, color=C_INK,
                     spaceAfter=10, spaceBefore=4)
     hr.keepWithNext = 1   # keep the rule with the H2 above and first line below
     return hr
@@ -224,7 +224,7 @@ def fact(text):
     t = Table([[p]], colWidths=[CONTENT_W])
     t.setStyle(TableStyle([
         ('BACKGROUND',    (0,0), (-1,-1), BG_CALLOUT),
-        ('LINEBEFORE',    (0,0), (-1,-1), 2.5, C_JADE),
+        ('LINEBEFORE',    (0,0), (-1,-1), 2.5, C_INK),
         ('TOPPADDING',    (0,0), (-1,-1), 8),
         ('BOTTOMPADDING', (0,0), (-1,-1), 8),
         ('LEFTPADDING',   (0,0), (-1,-1), 10),
@@ -244,7 +244,7 @@ def formula_box(lines):
     outer = Table([[inner]], colWidths=[CONTENT_W])
     outer.setStyle(TableStyle([
         ('BACKGROUND',    (0,0), (-1,-1), BG_FORMULA),
-        ('LINEBEFORE',    (0,0), (-1,-1), 2.5, C_JADE),
+        ('LINEBEFORE',    (0,0), (-1,-1), 2.5, C_INK),
         ('TOPPADDING',    (0,0), (-1,-1), 10),
         ('BOTTOMPADDING', (0,0), (-1,-1), 10),
         ('LEFTPADDING',   (0,0), (-1,-1), 12),
@@ -273,13 +273,13 @@ def calc_table(rows, title=None):
         ('RIGHTPADDING',  (0,0), (-1,-1), 0),
     ]
     for rr in rule_rows:
-        ts.append(('LINEABOVE',  (0,rr), (-1,rr), 0.6, C_JADE))
+        ts.append(('LINEABOVE',  (0,rr), (-1,rr), 0.6, C_INK))
         ts.append(('TOPPADDING', (0,rr), (-1,rr), 6))
     inner.setStyle(TableStyle(ts))
     outer = Table([[inner]], colWidths=[CONTENT_W])
     outer.setStyle(TableStyle([
         ('BACKGROUND',    (0,0), (-1,-1), BG_FORMULA),
-        ('LINEBEFORE',    (0,0), (-1,-1), 2.5, C_JADE),
+        ('LINEBEFORE',    (0,0), (-1,-1), 2.5, C_INK),
         ('TOPPADDING',    (0,0), (-1,-1), 10),
         ('BOTTOMPADDING', (0,0), (-1,-1), 10),
         ('LEFTPADDING',   (0,0), (-1,-1), 12),
@@ -289,12 +289,12 @@ def calc_table(rows, title=None):
 
 def callout(text):
     p = Paragraph(text.replace("\n", "<br/>"), ParagraphStyle("cbt", fontName="Body", fontSize=10,
-                  textColor=C_JADE_DK, leading=16, alignment=TA_LEFT))
+                  textColor=C_INK, leading=16, alignment=TA_LEFT))
     t = Table([[p]], colWidths=[CONTENT_W])
     t.setStyle(TableStyle([
         ('BACKGROUND',    (0,0), (-1,-1), BG_CALLOUT),
-        ('LINEBEFORE',    (0,0), (-1,-1), 2, C_JADE),
-        ('LINEBELOW',     (0,0), (-1,-1), 0.5, C_JADE),
+        ('LINEBEFORE',    (0,0), (-1,-1), 2, C_INK),
+        ('LINEBELOW',     (0,0), (-1,-1), 0.5, C_INK),
         ('TOPPADDING',    (0,0), (-1,-1), 9),
         ('BOTTOMPADDING', (0,0), (-1,-1), 9),
         ('LEFTPADDING',   (0,0), (-1,-1), 10),
@@ -307,7 +307,7 @@ def discussion_q(text):
     t = Table([[p]], colWidths=[CONTENT_W])
     t.setStyle(TableStyle([
         ('BACKGROUND',    (0,0), (-1,-1), BG_CALLOUT),
-        ('LINEBEFORE',    (0,0), (-1,-1), 2.5, C_JADE),
+        ('LINEBEFORE',    (0,0), (-1,-1), 2.5, C_INK),
         ('TOPPADDING',    (0,0), (-1,-1), 10),
         ('BOTTOMPADDING', (0,0), (-1,-1), 10),
         ('LEFTPADDING',   (0,0), (-1,-1), 12),
@@ -328,7 +328,7 @@ def table_std(data, col_widths):
         ('RIGHTPADDING',  (0,0), (-1,-1), 8),
         ('LINEBELOW',     (0,0), (-1,-1), 0.5, C_RULE),
         ('BACKGROUND',    (0,0), (-1, 0), BG_FORMULA),
-        ('LINEBELOW',     (0,0), (-1, 0), 1, C_JADE),
+        ('LINEBELOW',     (0,0), (-1, 0), 1, C_INK),
     ]))
     return KeepTogether([Spacer(1, 6), t, Spacer(1, 10)])
 
@@ -876,3 +876,4 @@ def build():
 
 if __name__ == "__main__":
     build()
+

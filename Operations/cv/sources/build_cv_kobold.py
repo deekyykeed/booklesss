@@ -1,5 +1,5 @@
 """
-Dikhilani Mvula — Curriculum Vitae 2026
+Dikhilani Mvula — CV tailored for KoBold Metals Software Engineer role
 Brand treatment: cream + grain, Parastoo-Bold (name) + Aptos (body)
 """
 from reportlab.lib.pagesizes import A4
@@ -16,12 +16,12 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.utils import ImageReader
 import os
 
-_ROOT     = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+_ROOT     = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 FONT_DIR  = os.path.join(_ROOT, "_dev", "fonts")
 BRAND_DIR = os.path.join(_ROOT, "_dev", "brand")
 GRAIN     = os.path.join(BRAND_DIR, "grain.png")
-OUT_PATH  = os.path.join(os.path.dirname(__file__),
-                         "Dikhilani_Mvula_CV_2026_Booklesss.pdf")
+_KHADZIKA = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "Khadzika"))
+OUT_PATH  = os.path.join(_KHADZIKA, "_Admin", "CV", "Dikhilani_Mvula_CV_KoBold.pdf")
 
 # ── FONTS ─────────────────────────────────────────────────────────────────────
 def _reg(name, fn):
@@ -131,6 +131,7 @@ def b(text):
 
 # ── BUILD ─────────────────────────────────────────────────────────────────────
 def build():
+    os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
     frame = Frame(MX, MY, CONTENT_W, H - 2 * MY,
                   leftPadding=0, rightPadding=0, topPadding=0, bottomPadding=0)
     doc = BaseDocTemplate(OUT_PATH, pagesize=A4,
@@ -143,7 +144,7 @@ def build():
     # ── NAME + ROLE ───────────────────────────────────────────────────────────
     hdr = Table(
         [[Paragraph("Dikhilani Mvula", ST["name"]),
-          Paragraph("FINANCE &amp; COMMERCIAL OPERATIONS", ST["role"])]],
+          Paragraph("SOFTWARE ENGINEER", ST["role"])]],
         colWidths=[CONTENT_W * 0.58, CONTENT_W * 0.42],
         hAlign="LEFT",
     )
@@ -171,54 +172,67 @@ def build():
     story.append(section_row(
         "profile",
         Paragraph(
-            "Finance and commercial operations professional with hands-on experience "
-            "across mining procurement, financial reporting, and international supply chain management. "
-            "Built track record across Zambia's copper mining sector — managing multi-currency accounts, "
-            "leading formal tender submissions, and operating full AP/AR workflows at First Quantum Minerals. "
-            "Also the founder of Booklesss, a Zambian edtech startup, where AI tools are applied "
-            "to product development and business modelling.",
+            "Python developer who builds production data systems from scratch and has worked inside a major copper mining operation. "
+            "Spent 12 months embedded at Kansanshi Mining Plc (First Quantum Minerals) — one of Zambia's largest copper operations — "
+            "processing financial data across procurement, AP/AR, and reporting workflows, and developing direct insight into "
+            "where manual processes limit how the organisation makes decisions. "
+            "Subsequently founded Booklesss and built a structured ingest pipeline end-to-end: "
+            "raw unstructured source material in, AI-assisted transformation, automated structured output — "
+            "designed, operated, and iterated on alone, applying LLMs at the processing layer for NLP on inconsistently formatted inputs. "
+            "The combination is rare: hands-on Python pipeline engineering and ground-level exposure to how a major copper mine actually handles data. "
+            "Most engineers build systems for mining without ever having worked inside one.",
             ST["summary"]
         )
     ))
     story.append(rule(before=8, after=10))
 
     # ── PROFESSIONAL EXPERIENCE ───────────────────────────────────────────────
-    story.append(section_row("professional experience", [
-        Paragraph("Finance Manager  |  Jan 2026 – Present", ST["job_title"]),
-        Paragraph("Khadzika Enterprises Limited · Kitwe, Zambia", ST["company"]),
-        b("Lead commercial operations for a mining-focused procurement business — managing client "
-          "accounts and driving sales pipeline across Mopani Copper Mines, BIA Group, KCM, and CEC"),
-        b("Own international procurement across USA and South Africa: supplier selection, "
-          "PO issuance, price negotiation, and inbound freight coordination"),
-        b("Prepare and submit formal tenders to major mining operators — full BOQ build, "
-          "compliance documentation, and deadline-driven portal submission"),
-        b("Source specialist industrial products across a network of 50+ suppliers per requirement, "
-          "balancing technical specification, cost, and lead time"),
-        b("Manage ZRA-compliant multi-currency invoicing and accounts receivable "
-          "across an active client portfolio in USD and ZMW"),
+    story.append(section_row("experience", [
+        Paragraph("Founder &amp; Technical Lead  |  2025 – Present", ST["job_title"]),
+        Paragraph("Booklesss · Zambia  (edtech startup)", ST["company"]),
+        b("Designed and built a Python-based content production pipeline end-to-end — "
+          "source ingest, AI-assisted processing, and automated PDF generation via ReportLab — "
+          "reducing time from raw lecture material to publication-ready output to under one day per lesson"),
+        b("Architected the full data system: folder structure, build scripts, asset resolution, "
+          "and output routing — all scripts are self-contained and reproducible from source"),
+        b("Integrated AI language models directly into the content workflow using the Claude API — "
+          "applying prompt engineering and structured outputs to transform unstructured lecture "
+          "material into structured, formatted documents at scale"),
+        b("Owned the full product lifecycle: problem definition, system design, implementation, "
+          "iteration on user feedback, and ongoing operations — solo, with no engineering team"),
+        b("Built unit economics model and pricing architecture using financial modelling; "
+          "manage four active courses across two Zambian universities"),
     ]))
     story.append(Spacer(1, 8))
     story.append(section_row("", [
         Paragraph("Finance Intern  |  2024 – 2025  (12 months)", ST["job_title"]),
         Paragraph("Kansanshi Mining Plc (First Quantum Minerals) · Solwezi, Zambia",
                   ST["company"]),
-        b("Rotated across AP, AR, financial reporting, and budgeting at one of "
-          "Zambia's largest copper mining operations"),
-        b("Processed high-volume supplier and contractor invoices through multi-level "
-          "approval workflows in a large-scale mining procurement environment"),
-        b("Delivered month-end close responsibilities including account reconciliations "
-          "and financial reporting submissions under formal close procedures"),
+        b("Embedded inside one of Zambia's largest copper mining operations — "
+          "processed high-volume financial data across AP, AR, budgeting, and reporting workflows "
+          "in an enterprise mining systems environment"),
+        b("Worked directly with procurement data at scale: supplier invoices, contractor records, "
+          "and multi-level approval pipelines across a complex operational structure"),
+        b("Delivered month-end close responsibilities under formal reporting procedures — "
+          "gained direct exposure to how financial data flows through a large mining organisation "
+          "and where manual processes create bottlenecks"),
+        b("Built direct insight into where mining data systems break down: which information flows reliably "
+          "through the organisation and which requires manual intervention — a perspective rarely available "
+          "to engineers who have not worked inside a major mining operation"),
     ]))
     story.append(Spacer(1, 8))
     story.append(section_row("", [
-        Paragraph("Founder  |  2025 – Present", ST["job_title"]),
-        Paragraph("Booklesss · Zambia  (edtech startup)", ST["company"]),
-        b("Founded and operate a subscription-based edtech platform serving Zambian university "
-          "students — 4 active courses across multiple institutions, direct-to-student acquisition"),
-        b("Built the full content production system using AI tools, cutting time from raw lecture "
-          "source to publication-ready branded PDF to under a day per lesson step"),
-        b("Designed pricing architecture, unit economics model, and reinvestment strategy from scratch; "
-          "manage all student acquisition through direct WhatsApp outreach"),
+        Paragraph("Finance Manager  |  Jan 2026 – Present", ST["job_title"]),
+        Paragraph("Khadzika Enterprises Limited · Kitwe, Zambia", ST["company"]),
+        b("Manage commercial operations for a mining-focused procurement business — "
+          "clients include Mopani Copper Mines, BIA Group, KCM, and CEC"),
+        b("Coordinate international supply chains across USA and South Africa: "
+          "supplier sourcing, specification matching, and inbound freight"),
+        b("Own financial data end-to-end: multi-currency invoicing, accounts receivable, "
+          "and ZRA-compliant reporting in both USD and ZMW"),
+        b("Built and maintain the internal Python tooling that runs the business: automated PDF generation "
+          "for quotations, delivery notes, and financial documents — pipeline engineering applied "
+          "to live commercial operations"),
     ]))
     story.append(rule(before=8, after=10))
 
@@ -228,18 +242,15 @@ def build():
         Paragraph("ZCAS University · Lusaka, Zambia · Graduated 2026",
                   ST["edu_meta"]),
         Paragraph(
-            "<font color='#121212'><b>Corporate Finance</b></font> · <font color='#121212'><b>Financial Management</b></font> · <font color='#121212'><b>Financial Reporting</b></font> · "
-            "Financial Modelling &amp; Forecasting · Advanced Taxation · Financial Accounting · "
-            "Management Accounting · Advanced Management Accounting · Treasury Management · "
-            "International Trade &amp; Finance · Investment &amp; Portfolio Management · "
-            "Auditing &amp; Assurance Services · Credit Analysis &amp; Lending · "
-            "Financial Products &amp; Services · Monetary &amp; Financial Systems · "
-            "Regulation of Financial Services · Business &amp; Corporate Law · "
-            "Strategic Management · Managing Strategic Risk · Innovation &amp; Entrepreneurship · "
-            "Taxation · Cost Accounting · Principles of Accounting · Business Information Systems · "
-            "Dissertation · Research Methods · Introduction to Financial Markets · "
-            "Introduction to Quantitative Methods · Introduction to Economics · "
-            "Introduction to Management · Principles of Marketing · Academic Writing",
+            "<font color='#121212'><b>Business Information Systems</b></font> · "
+            "<font color='#121212'><b>Research Methods</b></font> · "
+            "<font color='#121212'><b>Dissertation</b></font> · "
+            "Financial Modelling &amp; Forecasting · Corporate Finance · "
+            "Treasury Management · Investment &amp; Portfolio Management · "
+            "Financial Management · Financial Reporting · Strategic Management · "
+            "International Trade &amp; Finance · Introduction to Quantitative Methods · "
+            "Introduction to Economics · Innovation &amp; Entrepreneurship · "
+            "Introduction to Management",
             ST["edu_modules"]
         ),
     ]
@@ -248,16 +259,16 @@ def build():
 
     # ── SKILLS ────────────────────────────────────────────────────────────────
     skills_l = [
-        "Financial Analysis &amp; Reporting",
-        "International Procurement &amp; Supply Chain Management",
-        "Commercial Operations &amp; Business Development",
-        "AI Tools &amp; Workflow Automation",
+        "Python (scripting, data pipelines, automation)",
+        "AI/LLM Integration &amp; Prompt Engineering",
+        "Data Pipeline Design &amp; Ingest Workflows",
+        "Mining Sector Domain Knowledge (Zambia)",
     ]
     skills_r = [
-        "Financial Modelling &amp; Unit Economics",
-        "Multi-Currency Account Management",
-        "Tax Compliance &amp; Regulatory Reporting",
-        "Stakeholder &amp; Client Relationship Management",
+        "System Design &amp; End-to-End Ownership",
+        "Financial Data Analysis &amp; Modelling",
+        "Technical Communication with Domain Experts",
+        "International Supply Chain &amp; Procurement",
     ]
     half = TEXT_W / 2
     sk_tbl = Table(

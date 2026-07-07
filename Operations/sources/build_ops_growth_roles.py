@@ -1,7 +1,7 @@
 """
-Booklesss — Roles for Growth
+Booklesss � Roles for Growth
 Internal planning document: hiring sequence and incentive design
-Palette: house brand — cream + jade
+Palette: house brand � cream + jade
 """
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
@@ -17,8 +17,8 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.utils import ImageReader
 import os
 
-# ── FONTS ──────────────────────────────────────────────────────────────────
-FONT_DIR = os.path.join(os.path.dirname(__file__), "..", "fonts")
+# -- FONTS ------------------------------------------------------------------
+FONT_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "..", "_dev", "fonts")
 
 def _reg(name, filename):
     pdfmetrics.registerFont(TTFont(name, os.path.join(FONT_DIR, filename)))
@@ -35,8 +35,8 @@ _reg("Title-Bold",       "Parastoo-Bold.ttf")
 pdfmetrics.registerFontFamily("Title", normal="Title", bold="Title-Bold",
                               italic="Title", boldItalic="Title-Bold")
 
-# ── BRAND ASSETS ───────────────────────────────────────────────────────────
-BRAND_DIR   = os.path.join(os.path.dirname(__file__), "..", "brand")
+# -- BRAND ASSETS -----------------------------------------------------------
+BRAND_DIR   = os.path.join(os.path.dirname(__file__), "..", "..", "brand")
 LOGO_BLACK  = os.path.join(BRAND_DIR, "booklesss-logo-black.png")
 MARK_BLACK  = os.path.join(BRAND_DIR, "booklesss-mark-black.png")
 GRAIN       = os.path.join(BRAND_DIR, "grain.png")
@@ -44,30 +44,30 @@ _logo_black = ImageReader(LOGO_BLACK) if os.path.exists(LOGO_BLACK) else None
 _mark_black = ImageReader(MARK_BLACK) if os.path.exists(MARK_BLACK) else None
 _grain      = ImageReader(GRAIN)      if os.path.exists(GRAIN)      else None
 
-# ── PALETTE ────────────────────────────────────────────────────────────────
+# -- PALETTE ----------------------------------------------------------------
 C_COVER      = colors.HexColor("#FFFDE8")
 C_PAGE       = colors.HexColor("#FFFEF2")
 TITLE_DARK   = colors.HexColor("#121212")
 HEADING_DARK = colors.HexColor("#3D3D3D")
-C_JADE       = colors.HexColor("#2FB99A")
-C_JADE_DK    = colors.HexColor("#0E5E52")
+C_INK       = colors.HexColor("#121212")
+C_INK    = colors.HexColor("#3D3D3D")
 C_INK        = colors.HexColor("#16201A")
 C_STEEL      = colors.HexColor("#5F6B65")
 C_MIST       = colors.HexColor("#6E6A5E")
 C_RULE       = colors.HexColor("#E0DACB")
-BG_FORMULA   = colors.HexColor("#E9F0EA")
-BG_CALLOUT   = colors.HexColor("#E7F3ED")
+BG_FORMULA   = colors.HexColor("#F5F0E8")
+BG_CALLOUT   = colors.HexColor("#F5F0E8")
 
-# ── PAGE GEOMETRY ──────────────────────────────────────────────────────────
+# -- PAGE GEOMETRY ----------------------------------------------------------
 W, H      = A4
 MX        = 2.2 * cm
 MY        = 2.0 * cm
 CONTENT_W = W - 2 * MX
 
-OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..", "operations")
+OUT_DIR  = os.path.join(os.path.dirname(__file__), "..", "..", "..", "operations")
 OUT_PATH = os.path.join(OUT_DIR, "Roles for Growth - Booklesss.pdf")
 
-# ── STYLES ─────────────────────────────────────────────────────────────────
+# -- STYLES -----------------------------------------------------------------
 def make_styles():
     return {
         "cover_step": ParagraphStyle("cover_step",
@@ -83,7 +83,7 @@ def make_styles():
             fontName="Body", fontSize=9, textColor=C_MIST,
             leading=14, spaceAfter=2, alignment=TA_CENTER),
         "eyebrow": ParagraphStyle("eyebrow",
-            fontName="Body-Bold", fontSize=7, textColor=C_JADE,
+            fontName="Body-Bold", fontSize=7, textColor=C_INK,
             leading=10, spaceAfter=3, spaceBefore=18, alignment=TA_LEFT,
             keepWithNext=1),
         "h2": ParagraphStyle("h2",
@@ -101,13 +101,13 @@ def make_styles():
             fontName="Body", fontSize=10.5, textColor=C_INK,
             leading=17, spaceAfter=4, leftIndent=14, alignment=TA_LEFT),
         "fact": ParagraphStyle("fact",
-            fontName="Body-Bold", fontSize=10, textColor=C_JADE_DK,
+            fontName="Body-Bold", fontSize=10, textColor=C_INK,
             leading=16, spaceAfter=6, leftIndent=0, alignment=TA_LEFT),
         "formula": ParagraphStyle("formula",
-            fontName="Body-Bold", fontSize=10, textColor=C_JADE_DK,
+            fontName="Body-Bold", fontSize=10, textColor=C_INK,
             leading=16, alignment=TA_LEFT),
         "formula_r": ParagraphStyle("formula_r",
-            fontName="Body-Bold", fontSize=10, textColor=C_JADE_DK,
+            fontName="Body-Bold", fontSize=10, textColor=C_INK,
             leading=16, alignment=TA_RIGHT),
         "th": ParagraphStyle("th",
             fontName="Body-Bold", fontSize=9, textColor=C_INK,
@@ -122,7 +122,7 @@ def make_styles():
 
 ST = make_styles()
 
-# ── CANVAS CALLBACKS ───────────────────────────────────────────────────────
+# -- CANVAS CALLBACKS -------------------------------------------------------
 def _paint_paper(canvas, bg):
     canvas.setFillColor(bg)
     canvas.rect(0, 0, W, H, fill=1, stroke=0)
@@ -158,13 +158,13 @@ def page_bg(canvas, doc):
 def body_page(canvas, doc):
     canvas.saveState()
     pn = doc.page
-    canvas.setStrokeColor(C_JADE)
+    canvas.setStrokeColor(C_INK)
     canvas.setLineWidth(0.6)
     canvas.line(MX, H - MY + 4, W - MX, H - MY + 4)
     canvas.setFont("Body", 7.5)
     canvas.setFillColor(C_STEEL)
     canvas.drawString(MX, H - MY + 7, "Roles for Growth")
-    canvas.drawRightString(W - MX, H - MY + 7, "May 2026 — Internal")
+    canvas.drawRightString(W - MX, H - MY + 7, "May 2026 � Internal")
     canvas.setStrokeColor(C_RULE)
     canvas.setLineWidth(0.6)
     canvas.line(MX, MY - 4, W - MX, MY - 4)
@@ -174,9 +174,9 @@ def body_page(canvas, doc):
     canvas.drawRightString(W - MX, MY - 14, f"Page {pn}")
     canvas.restoreState()
 
-# ── HELPERS ────────────────────────────────────────────────────────────────
+# -- HELPERS ----------------------------------------------------------------
 def hairline():
-    hr = HRFlowable(width="100%", thickness=0.5, color=C_JADE,
+    hr = HRFlowable(width="100%", thickness=0.5, color=C_INK,
                     spaceAfter=10, spaceBefore=4)
     hr.keepWithNext = 1
     return hr
@@ -193,7 +193,7 @@ def body(text):
     return Paragraph(text, ST["body"])
 
 def bullet(text):
-    return Paragraph(f"• {text}", ST["bullet"])
+    return Paragraph(f"� {text}", ST["bullet"])
 
 def h3(text):
     return Paragraph(text, ST["h3"])
@@ -203,7 +203,7 @@ def fact(text):
     t = Table([[p]], colWidths=[CONTENT_W])
     t.setStyle(TableStyle([
         ('BACKGROUND',    (0,0), (-1,-1), BG_CALLOUT),
-        ('LINEBEFORE',    (0,0), (-1,-1), 2.5, C_JADE),
+        ('LINEBEFORE',    (0,0), (-1,-1), 2.5, C_INK),
         ('TOPPADDING',    (0,0), (-1,-1), 8),
         ('BOTTOMPADDING', (0,0), (-1,-1), 8),
         ('LEFTPADDING',   (0,0), (-1,-1), 10),
@@ -213,12 +213,12 @@ def fact(text):
 
 def callout(text):
     p = Paragraph(text.replace("\n", "<br/>"), ParagraphStyle("cbt", fontName="Body",
-                  fontSize=10, textColor=C_JADE_DK, leading=16, alignment=TA_LEFT))
+                  fontSize=10, textColor=C_INK, leading=16, alignment=TA_LEFT))
     t = Table([[p]], colWidths=[CONTENT_W])
     t.setStyle(TableStyle([
         ('BACKGROUND',    (0,0), (-1,-1), BG_CALLOUT),
-        ('LINEBEFORE',    (0,0), (-1,-1), 2, C_JADE),
-        ('LINEBELOW',     (0,0), (-1,-1), 0.5, C_JADE),
+        ('LINEBEFORE',    (0,0), (-1,-1), 2, C_INK),
+        ('LINEBELOW',     (0,0), (-1,-1), 0.5, C_INK),
         ('TOPPADDING',    (0,0), (-1,-1), 9),
         ('BOTTOMPADDING', (0,0), (-1,-1), 9),
         ('LEFTPADDING',   (0,0), (-1,-1), 10),
@@ -238,7 +238,7 @@ def formula_box(lines):
     outer = Table([[inner]], colWidths=[CONTENT_W])
     outer.setStyle(TableStyle([
         ('BACKGROUND',    (0,0), (-1,-1), BG_FORMULA),
-        ('LINEBEFORE',    (0,0), (-1,-1), 2.5, C_JADE),
+        ('LINEBEFORE',    (0,0), (-1,-1), 2.5, C_INK),
         ('TOPPADDING',    (0,0), (-1,-1), 10),
         ('BOTTOMPADDING', (0,0), (-1,-1), 10),
         ('LEFTPADDING',   (0,0), (-1,-1), 12),
@@ -259,11 +259,11 @@ def table_std(data, col_widths):
         ('RIGHTPADDING',  (0,0), (-1,-1), 8),
         ('LINEBELOW',     (0,0), (-1,-1), 0.5, C_RULE),
         ('BACKGROUND',    (0,0), (-1, 0), BG_FORMULA),
-        ('LINEBELOW',     (0,0), (-1, 0), 1, C_JADE),
+        ('LINEBELOW',     (0,0), (-1, 0), 1, C_INK),
     ]))
     return KeepTogether([Spacer(1, 6), t, Spacer(1, 10)])
 
-# ── COVER MOTIF ────────────────────────────────────────────────────────────
+# -- COVER MOTIF ------------------------------------------------------------
 class LogoTriple(Flowable):
     def __init__(self, img, center=18, side=13.5, gap=8.25, side_alpha=0.3):
         super().__init__()
@@ -329,7 +329,7 @@ class TripleDiamond(Flowable):
         c.restoreState()
 
 
-# ── BUILD ──────────────────────────────────────────────────────────────────
+# -- BUILD ------------------------------------------------------------------
 def build():
     doc = BaseDocTemplate(
         OUT_PATH,
@@ -352,12 +352,12 @@ def build():
     motif = LogoTriple(_mark_black) if _mark_black else TripleDiamond()
     story = []
 
-    # ── COVER ─────────────────────────────────────────────────────────────
+    # -- COVER -------------------------------------------------------------
     story += [
         Spacer(1, 60),
         motif,
         Spacer(1, 32),
-        Paragraph("BOOKLESSS — INTERNAL", ST["cover_step"]),
+        Paragraph("BOOKLESSS � INTERNAL", ST["cover_step"]),
         Spacer(1, 8),
         Paragraph("Roles for Growth", ST["cover_title"]),
         Spacer(1, 14),
@@ -370,11 +370,11 @@ def build():
         PageBreak(),
     ]
 
-    # ── SECTION 1: PHILOSOPHY ─────────────────────────────────────────────
+    # -- SECTION 1: PHILOSOPHY ---------------------------------------------
     story += section("THE APPROACH", "Hiring Philosophy")
     story.append(body(
         "Every person who works on this platform should have a direct financial reason to make "
-        "it succeed. No flat salaries at this stage — every role is structured around commission, "
+        "it succeed. No flat salaries at this stage � every role is structured around commission, "
         "revenue share, or royalties. This keeps costs variable while the platform is growing and "
         "means the people doing the work are running the same calculation you are: "
         "more students, better retention, stronger content."
@@ -385,15 +385,15 @@ def build():
         "doesn't earn, nobody earns."
     ))
     story.append(fact(
-        "Hire milestone-gated, not time-gated. The question is not 'when do we hire?' — "
+        "Hire milestone-gated, not time-gated. The question is not 'when do we hire?' � "
         "it is 'what revenue level unlocks each role?'"
     ))
 
-    # ── SECTION 2: HIRING SEQUENCE ────────────────────────────────────────
+    # -- SECTION 2: HIRING SEQUENCE ----------------------------------------
     story += section("SEQUENCE", "When to Hire Each Role")
     story.append(body(
         "The six roles below are ordered by priority. Each one addresses a specific bottleneck "
-        "in the platform. Don't hire ahead of the bottleneck — the role won't have enough to do."
+        "in the platform. Don't hire ahead of the bottleneck � the role won't have enough to do."
     ))
     seq_data = [
         ["Priority", "Role", "Unlocks when..."],
@@ -412,10 +412,10 @@ def build():
     ]
     story.append(table_std(seq_data, [58, 125, CONTENT_W - 183]))
 
-    # ── SECTION 3: ROLE 01 ────────────────────────────────────────────────
+    # -- SECTION 3: ROLE 01 ------------------------------------------------
     story += section("ROLE 01", "Campus Representative")
     story.append(body(
-        "Campus Reps are students at target universities — UNZA, CBU, Mulungushi — "
+        "Campus Reps are students at target universities � UNZA, CBU, Mulungushi � "
         "who recruit their classmates. They know the courses, they know the pain points, "
         "and they have the peer trust that a flyer or a WhatsApp message from a stranger "
         "doesn't. First target: one Rep at UNZA, one at CBU."
@@ -432,19 +432,19 @@ def build():
         "K100 per referred student who completes their first paid month",
         "K50 / month per active referred student while they remain subscribed",
         "",
-        "Example: 10 active referrals  →  K500 / month ongoing",
+        "Example: 10 active referrals  ?  K500 / month ongoing",
     ]))
     story.append(callout(
         "The ongoing K50 tail is the key design choice. A Rep who sends low-quality leads "
-        "— students who try once and leave — earns less than one who sends students who stay. "
+        "� students who try once and leave � earns less than one who sends students who stay. "
         "They stop earning the moment a referral churns."
     ))
 
-    # ── SECTION 4: ROLE 02 ────────────────────────────────────────────────
+    # -- SECTION 4: ROLE 02 ------------------------------------------------
     story += section("ROLE 02", "Community Host")
     story.append(body(
         "The Community Host owns the Slack channels for one course. Their job is to make "
-        "the community feel alive — starting discussions, answering questions, welcoming "
+        "the community feel alive � starting discussions, answering questions, welcoming "
         "new members, and running a weekly prompt tied to the current lesson. "
         "First hire: one Host for Treasury Management, the most active course."
     ))
@@ -460,19 +460,19 @@ def build():
         "K300 / month base",
         "K30 per monthly active user (MAU) in their channels above 10",
         "",
-        "Example: 25 MAU  →  K300 + (15 × K30) = K750 / month",
+        "Example: 25 MAU  ?  K300 + (15 � K30) = K750 / month",
     ]))
     story.append(callout(
         "The MAU bonus means the Host earns more only if students stay engaged. "
-        "Their job is retention, not just posting — the compensation is designed to "
+        "Their job is retention, not just posting � the compensation is designed to "
         "make that obvious."
     ))
 
-    # ── SECTION 5: ROLE 03 ────────────────────────────────────────────────
+    # -- SECTION 5: ROLE 03 ------------------------------------------------
     story += section("ROLE 03", "Course Author")
     story.append(body(
         "Course Authors write the lesson steps for a single course. They are subject matter "
-        "experts — typically graduates or final-year students who scored well in that paper. "
+        "experts � typically graduates or final-year students who scored well in that paper. "
         "They own the accuracy of the content and update it when syllabi change. "
         "First hire: one Author for a 4th course, most likely Financial Accounting "
         "or Business Finance."
@@ -488,15 +488,15 @@ def build():
         "K500 per lesson step delivered and approved  (10 steps = K5,000 on completion)",
         "8% monthly royalty on revenue from students enrolled in their course",
         "",
-        "Example: 20 students × K250 / month = K5,000 course revenue  →  K400 royalty / month",
+        "Example: 20 students � K250 / month = K5,000 course revenue  ?  K400 royalty / month",
     ]))
     story.append(callout(
         "The royalty means an Author earns more if students stay subscribed. They are "
-        "incentivised to write content that helps students pass — not just content that "
+        "incentivised to write content that helps students pass � not just content that "
         "looks polished on delivery day. Bad content drives churn, and churn cuts their royalty."
     ))
 
-    # ── SECTION 6: ROLE 04 ────────────────────────────────────────────────
+    # -- SECTION 6: ROLE 04 ------------------------------------------------
     story += section("ROLE 04", "Operations & Collections Lead")
     story.append(body(
         "This role handles the financial plumbing: tracking MoMo payments, managing the "
@@ -516,13 +516,13 @@ def build():
         "K200 flat per month while total collected revenue is under K3,000",
         "5% of all revenue collected above K3,000 / month",
         "",
-        "Example: K8,000 collected  →  K200 + (5% × K5,000) = K450 / month",
+        "Example: K8,000 collected  ?  K200 + (5% � K5,000) = K450 / month",
     ]))
 
-    # ── SECTION 7: ROLE 05 ────────────────────────────────────────────────
+    # -- SECTION 7: ROLE 05 ------------------------------------------------
     story += section("ROLE 05", "Growth Lead")
     story.append(body(
-        "The Growth Lead runs the WhatsApp marketing operation — distributing lead magnets, "
+        "The Growth Lead runs the WhatsApp marketing operation � distributing lead magnets, "
         "managing group conversations, and moving prospects from first contact to free trial "
         "sign-up. Part-time initially, with a clear path to full-time once the funnel is "
         "converting consistently."
@@ -539,16 +539,16 @@ def build():
         "K150 per free trial activation they drive",
         "K300 bonus per trial that converts to a paid plan within 30 days",
         "",
-        "Example: 10 trials, 4 convert  →  (10 × K150) + (4 × K300) = K2,700 / month",
+        "Example: 10 trials, 4 convert  ?  (10 � K150) + (4 � K300) = K2,700 / month",
     ]))
     story.append(callout(
-        "Two payments — one for the trial, one for the conversion — separate volume from "
+        "Two payments � one for the trial, one for the conversion � separate volume from "
         "quality. A Growth Lead who floods the funnel with unqualified contacts earns the "
         "K150 once and nothing more. One who sends serious students earns K450 per head."
     ))
 
-    # ── SECTION 8: ROLE 06 — THE FUTURE-THINKING ROLE ─────────────────────
-    story += section("ROLE 06 — THE FUTURE-THINKING ROLE", "Curriculum Strategist")
+    # -- SECTION 8: ROLE 06 � THE FUTURE-THINKING ROLE ---------------------
+    story += section("ROLE 06 � THE FUTURE-THINKING ROLE", "Curriculum Strategist")
     story.append(body(
         "The Curriculum Strategist decides which courses Booklesss adds next. They research "
         "syllabi at UNZA, CBU, and Mulungushi, talk to students and lecturers, commission "
@@ -557,7 +557,7 @@ def build():
     ))
     story.append(h3("What they own"))
     story += [
-        bullet("Identify and vet the next 2–3 courses to build, ranked by student demand"),
+        bullet("Identify and vet the next 2�3 courses to build, ranked by student demand"),
         bullet("Commission Course Authors and hold them to the content standard"),
         bullet("Monitor university exam calendars and adjust the roadmap accordingly"),
         bullet("Decide when to retire or update courses as syllabi change"),
@@ -569,7 +569,7 @@ def build():
         "Vesting: 1% per month over 12 months from the course launch date",
         "If a course is killed before 12 months: vesting stops, accrued royalties are paid",
         "",
-        "Example: course at K4,000 / month in month 8  →  8% vested  →  K320 / month",
+        "Example: course at K4,000 / month in month 8  ?  8% vested  ?  K320 / month",
     ]))
     story.append(callout(
         "Why the 12-month vest creates the right thinking:\n"
@@ -577,7 +577,7 @@ def build():
         "demand. Before saying yes to a new course, they have to ask: Will UNZA still offer "
         "this in two years? Does this paper have three exam sittings per year or just one? "
         "Is the student population large enough to generate meaningful revenue? These are "
-        "questions that only matter if you are thinking 12 months out — which is exactly the "
+        "questions that only matter if you are thinking 12 months out � which is exactly the "
         "point. The royalty vest means they stay engaged through the full launch arc. They "
         "collect nothing if the course dies in month three."
     ))
@@ -587,30 +587,30 @@ def build():
         "pattern is clear enough to hand off with confidence."
     ))
 
-    # ── SECTION 9: SUMMARY TABLE ──────────────────────────────────────────
+    # -- SECTION 9: SUMMARY TABLE ------------------------------------------
     story += section("REFERENCE", "Compensation at a Glance")
     comp_data = [
         ["Role", "Base", "Variable", "Variable trigger"],
-        ["Campus Representative", "—",         "K100 + K50/mo per referral",    "Per paid student referred"],
+        ["Campus Representative", "�",         "K100 + K50/mo per referral",    "Per paid student referred"],
         ["Community Host",        "K300/mo",    "K30 per MAU above 10",          "Monthly active users"],
         ["Course Author",         "K500/step",  "8% royalty on course rev.",     "Students enrolled in course"],
         ["Ops & Collections",     "K200/mo *",  "5% above K3,000",               "Revenue collected"],
-        ["Growth Lead",           "—",          "K150/trial + K300 on convert",  "Trials driven and converted"],
-        ["Curriculum Strategist", "—",          "12% royalty, 12-mo vest",       "Revenue from greenlights"],
+        ["Growth Lead",           "�",          "K150/trial + K300 on convert",  "Trials driven and converted"],
+        ["Curriculum Strategist", "�",          "12% royalty, 12-mo vest",       "Revenue from greenlights"],
     ]
     story.append(table_std(comp_data, [105, 58, 130, CONTENT_W - 105 - 58 - 130]))
     story.append(Paragraph(
         "* Ops base applies only while monthly collected revenue is under K3,000.",
         ST["note"]))
 
-    # ── SECTION 10: CLOSING ───────────────────────────────────────────────
+    # -- SECTION 10: CLOSING -----------------------------------------------
     story += section("CLOSING", "Hire From Your Students First")
     story.append(body(
         "Every one of these roles can be filled by someone already inside the Booklesss "
         "community. A student who scored a distinction in Treasury Management is a stronger "
         "candidate for Course Author than a graduate who has never used the platform. "
         "A student who refers three classmates before you even ask is your first Campus Rep. "
-        "Watch who shows up, helps others, and cares about the outcomes — then give them "
+        "Watch who shows up, helps others, and cares about the outcomes � then give them "
         "the title and the economics to match."
     ))
     story.append(body(
@@ -624,3 +624,5 @@ def build():
 
 if __name__ == "__main__":
     build()
+
+

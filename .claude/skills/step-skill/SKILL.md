@@ -84,45 +84,32 @@ If the mark asset is missing, fall back to the vector `TripleDiamond` flowable.
 
 ## Palette
 
-The house brand is warm cream paper with a single jade accent. This is the
-default for every document.
+The house brand is cream paper and black type. No colour accents.
 
 ```python
 C_COVER      = colors.HexColor("#FFFDE8")  # warm cream — cover / first page
 C_PAGE       = colors.HexColor("#FFFEF2")  # cream — interior pages (website bg)
 TITLE_DARK   = colors.HexColor("#121212")  # title
 HEADING_DARK = colors.HexColor("#3D3D3D")  # H2 / H3 headings
-C_JADE       = colors.HexColor("#2FB99A")  # jade accent (eyebrows, rules, bars)
-C_JADE_DK    = colors.HexColor("#0E5E52")  # deep jade — links, emphasised figures
 C_INK        = colors.HexColor("#16201A")  # body text
 C_STEEL      = colors.HexColor("#5F6B65")  # secondary labels
 C_MIST       = colors.HexColor("#6E6A5E")  # eyebrow / sub / meta
 C_RULE       = colors.HexColor("#E0DACB")  # warm rule / table dividers
-BG_FORMULA   = colors.HexColor("#E9F0EA")  # pale jade panel (totals / calc blocks)
-BG_CALLOUT   = colors.HexColor("#E7F3ED")  # soft jade callout / note box
+BG_PANEL     = colors.HexColor("#F5F0E8")  # pale warm panel (totals / calc blocks)
+BG_CALLOUT   = colors.HexColor("#F5F0E8")  # warm callout / note box
 ```
 
 **Rules that hold for every document:**
-- Accent (jade) runs through eyebrows, hairlines, left-bar boxes, totals, and
-  links — **never the body text.** Body is always `C_INK`.
-- One accent only. No second decorative colour.
-- Cream + grain is the default surface. **Exception:** a business document meant
-  to be printed or scanned in bulk (an invoice posted to a client) may use a
-  plain white body for legibility — keep the jade accent and the logo so it still
-  reads as Booklesss.
+- No colour accents. Eyebrows, hairlines, rules, and left-bar boxes all use
+  `C_RULE` (warm grey) or `TITLE_DARK` (near-black). Body is always `C_INK`.
+- Cream + grain is the default surface. A business document meant to be printed
+  in bulk may use plain white for legibility — keep the logo and black type.
 
-### Course accents (lesson PDFs only)
+### Course distinction (lesson PDFs only)
 
-Lesson notes for the other two courses keep their own cover/accent identity:
-
-| Course | Cover bg | Accent | Display |
-|--------|----------|--------|---------|
-| Corporate Finance | `#FFFDE8` cream | `#2FB99A` jade | Parastoo serif *(reference brand)* |
-| Treasury Management | `#0B1D3A` deep navy | `#10B981` emerald | Georgia Bold *(older system)* |
-| Strategic Management | `#FFFDE8` cream | `#DC2626` cardinal red | Parastoo serif *(v2 — matches CF structure)* |
-
-Non-lesson documents (invoices, quotes, one-pagers) always use the cream + jade
-house brand, not a course accent.
+All courses use cream `#FFFDE8` cover. Strategic Management uses cardinal red
+`#DC2626` for section eyebrows only — every other course is cream + black
+throughout. No navy, no green, no amber anywhere.
 
 ## Page geometry
 

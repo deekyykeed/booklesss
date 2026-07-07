@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Booklesss â€” Video Script #01: What is Booklesss?
+Booklesss — Video Script #01: What is Booklesss?
 Simple talking-to-a-friend script. Big text, no structure labels.
 """
 
@@ -15,12 +15,12 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
 HERE  = Path(__file__).resolve().parent
-ROOT  = HERE.parent
+ROOT  = HERE.parent.parent
 BRAND = ROOT / "_dev" / "brand"
 FONTS = ROOT / "_dev" / "fonts"
 GRAIN = BRAND / "grain.png"
 LOGO  = BRAND / "booklesss-logo-black.png"
-OUT   = HERE  / "Video_Script_01_What_Is_Booklesss.pdf"
+OUT   = HERE.parent  / "Video_Script_01_What_Is_Booklesss.pdf"
 
 _grain = ImageReader(str(GRAIN)) if GRAIN.exists() else None
 _logo  = ImageReader(str(LOGO))  if LOGO.exists()  else None
@@ -30,7 +30,7 @@ pdfmetrics.registerFont(TTFont("Parastoo-Bold", FONTS / "Parastoo-Bold.ttf"))
 pdfmetrics.registerFont(TTFont("Aptos",         FONTS / "Aptos.ttf"))
 pdfmetrics.registerFont(TTFont("Aptos-Bold",    FONTS / "Aptos-Bold.ttf"))
 
-DARK  = colors.HexColor("#1C2526")
+DARK  = colors.HexColor("#121212")
 MID   = colors.HexColor("#6B7280")
 CREAM = colors.HexColor("#FFFEF2")
 
@@ -64,7 +64,7 @@ def page_bg(canvas, doc):
     # "VIDEO 01" top right
     canvas.setFillColor(MID)
     canvas.setFont("Aptos", 7)
-    canvas.drawRightString(PW - MARGIN, PH - 10 * mm, "VIDEO 01 â€” INTRO")
+    canvas.drawRightString(PW - MARGIN, PH - 10 * mm, "VIDEO 01 — INTRO")
 
     # Bottom rule + page
     canvas.setStrokeColor(DARK)
@@ -86,7 +86,7 @@ SECTIONS = [
             "read the same paragraph three or four times, "
             "and still only kind of get it? "
             "And somewhere in the back of your head "
-            "you're thinking â€” maybe I'm just not good at this.",
+            "you're thinking — maybe I'm just not good at this.",
 
             "The problem is not you. It's the notes.",
 
@@ -107,7 +107,7 @@ SECTIONS = [
             "and pretty much stopped going back to the old ones. "
             "I'd go online, look things up, "
             "read around the topic from different places. "
-            "And I felt I was learning better â€” "
+            "And I felt I was learning better — "
             "because the notes I was writing for myself, "
             "and the way they were structured, "
             "were actually more engaging "
@@ -119,7 +119,7 @@ SECTIONS = [
             "and it didn't really go anywhere. "
             "But the reason I'm bringing it back is "
             "because I found a way to do it. "
-            "A way that doesn't have too much friction â€” "
+            "A way that doesn't have too much friction — "
             "where a student can come in "
             "and actually understand what's going on. "
             "And it's achieving what it's supposed to achieve. "
@@ -130,7 +130,7 @@ SECTIONS = [
         "WHAT WE ACTUALLY DO",
         [
             "The notes on Booklesss are better researched. "
-            "We pull from multiple trusted sources online â€” "
+            "We pull from multiple trusted sources online — "
             "things that are current and actually well written. "
             "And they're put together in a way that's easy to follow "
             "on the first read.",
@@ -146,12 +146,12 @@ SECTIONS = [
         ]
     ),
     (
-        "THE COMMUNITY â€” AND WHY NOT WHATSAPP",
+        "THE COMMUNITY — AND WHY NOT WHATSAPP",
         [
             "But the part I care about just as much as the notes "
             "is the community side.",
 
-            "And I'll say this now â€” it's nothing like a WhatsApp group.",
+            "And I'll say this now — it's nothing like a WhatsApp group.",
 
             "Most study groups end up on WhatsApp because everyone's already there. "
             "I get that. "
@@ -159,7 +159,7 @@ SECTIONS = [
             "you know what happens. "
             "Everything goes into one place. "
             "The assignment, the memes, "
-            "the stuff that has nothing to do with anything â€” "
+            "the stuff that has nothing to do with anything — "
             "it all becomes noise. You just tune out.",
 
             "WhatsApp has Communities now, fair enough. "
@@ -176,12 +176,12 @@ SECTIONS = [
             "feels uncomfortable. "
             "You hold back. You might just not ask. "
             "But in a small channel of maybe fifteen people "
-            "who are all on the same chapter â€” you just ask. "
+            "who are all on the same chapter — you just ask. "
             "That's a completely different thing.",
 
             "That's how Booklesss is set up. "
             "Each lesson has its own channel. "
-            "You're not talking to the whole course â€” "
+            "You're not talking to the whole course — "
             "you're in the right room, with the right people, "
             "at the right point in the material. "
             "And there's someone in each of those spaces "
@@ -199,12 +199,12 @@ SECTIONS = [
             "You just don't have the right people around you "
             "to actually keep going.",
 
-            "When you join Booklesss, you set your own goals â€” "
+            "When you join Booklesss, you set your own goals — "
             "how much you're putting in, what you want to get through, "
             "how many days a week you're committing to. "
             "And the community holds you to that. "
             "There's something about being around people "
-            "who are showing up and who expect you to as well â€” "
+            "who are showing up and who expect you to as well — "
             "it actually changes how you study.",
         ]
     ),
@@ -213,7 +213,7 @@ SECTIONS = [
         [
             "One more thing. "
             "If you're a full member, it's possible "
-            "to get your money back â€” or pay a lot less "
+            "to get your money back — or pay a lot less "
             "than what you signed up for. "
             "You earn points for showing up, for taking part, "
             "for hitting the goals you set. "
@@ -266,7 +266,7 @@ def build():
         if i > 0:
             story.append(PageBreak())
         story.append(Spacer(1, 6 * mm))
-        story.append(Paragraph(f"SCENE {i + 1}  â€”  {section_title}", label))
+        story.append(Paragraph(f"SCENE {i + 1}  —  {section_title}", label))
         story.append(Spacer(1, 2 * mm))
         for line in lines:
             story.append(Paragraph(line, speak))
@@ -277,3 +277,4 @@ def build():
 
 if __name__ == "__main__":
     build()
+

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Booklesss â€” Duncan Pitch Sheet
+Booklesss — Duncan Pitch Sheet
 Reference sheet for the call. One page.
 """
 
@@ -18,12 +18,12 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
 HERE  = Path(__file__).resolve().parent
-ROOT  = HERE.parent
+ROOT  = HERE.parent.parent
 BRAND = ROOT / "_dev" / "brand"
 FONTS = ROOT / "_dev" / "fonts"
 GRAIN = BRAND / "grain.png"
 LOGO  = BRAND / "booklesss-logo-black.png"
-OUT   = HERE  / "Duncan_Pitch.pdf"
+OUT   = HERE.parent  / "Duncan_Pitch.pdf"
 
 _grain = ImageReader(str(GRAIN)) if GRAIN.exists() else None
 _logo  = ImageReader(str(LOGO))  if LOGO.exists()  else None
@@ -37,8 +37,8 @@ _reg("Body-Bold",  "Aptos-Bold.ttf")
 _reg("Title-Bold", "Parastoo-Bold.ttf")
 
 C_CREAM = colors.HexColor("#FFFEF2")
-C_DARK  = colors.HexColor("#1C2526")
-C_GOLD  = colors.HexColor("#F59E0B")
+C_DARK  = colors.HexColor("#121212")
+C_INK  = colors.HexColor("#121212")
 C_STEEL = colors.HexColor("#5F6B65")
 
 W, H      = A4
@@ -80,7 +80,7 @@ def page_bg(canvas, doc):
 def s_eyebrow(text):
     return Paragraph(text, ParagraphStyle(
         "eb", fontName="Body-Bold", fontSize=7, leading=10,
-        textColor=C_GOLD, spaceBefore=12, spaceAfter=2, keepWithNext=1
+        textColor=C_INK, spaceBefore=12, spaceAfter=2, keepWithNext=1
     ))
 
 def s_heading(text):
@@ -90,7 +90,7 @@ def s_heading(text):
     ))
 
 def s_hairline():
-    hr = HRFlowable(width="100%", thickness=0.5, color=C_GOLD,
+    hr = HRFlowable(width="100%", thickness=0.5, color=C_INK,
                     spaceAfter=7, spaceBefore=3)
     hr.keepWithNext = 1
     return hr
@@ -102,7 +102,7 @@ def s_body(text):
     ))
 
 def s_bullet(text):
-    return Paragraph(f"â€¢ {text}", ParagraphStyle(
+    return Paragraph(f"• {text}", ParagraphStyle(
         "bl", fontName="Body", fontSize=10.5, leading=17,
         textColor=C_DARK, leftIndent=14, spaceAfter=2
     ))
@@ -125,7 +125,7 @@ SECTIONS = [
         "In one sentence",
         [
             s_body(
-                "Properly written course notes, broken into steps, delivered through Slack â€” "
+                "Properly written course notes, broken into steps, delivered through Slack — "
                 "so each topic connects to the next and students actually understand the material, not just memorize it."
             ),
         ]
@@ -134,7 +134,7 @@ SECTIONS = [
         "WHAT THE ROLE ACTUALLY IS",
         "Subject knowledge. Nothing else.",
         [
-            s_bullet("Shape the lesson content â€” what goes in, in what order"),
+            s_bullet("Shape the lesson content — what goes in, in what order"),
             s_bullet("Flag what the exam actually focuses on"),
             s_bullet("Review drafts to make sure nothing is wrong or missing"),
             s_body("No coding. No design. Just the course knowledge he already has."),
@@ -144,7 +144,7 @@ SECTIONS = [
         "WHAT HE GETS",
         "Early position, not a favour",
         [
-            s_bullet("Income share as students join â€” not a flat tutoring rate"),
+            s_bullet("Income share as students join — not a flat tutoring rate"),
             s_bullet("His knowledge builds into something permanent instead of resetting every semester"),
             s_bullet("First person in on a course that is being built right now"),
         ]
@@ -170,7 +170,7 @@ def build():
 
     story = [Spacer(1, 3*mm)]
 
-    story.append(Paragraph("Duncan â€” Why Booklesss", ParagraphStyle(
+    story.append(Paragraph("Duncan — Why Booklesss", ParagraphStyle(
         "title", fontName="Title-Bold", fontSize=26, leading=30,
         textColor=C_DARK, spaceAfter=2
     )))
@@ -179,7 +179,7 @@ def build():
         textColor=C_STEEL, spaceAfter=10
     )))
     story.append(HRFlowable(
-        width="100%", thickness=2, color=C_GOLD,
+        width="100%", thickness=2, color=C_INK,
         spaceAfter=6, spaceBefore=0
     ))
 
@@ -193,3 +193,4 @@ def build():
 
 if __name__ == "__main__":
     build()
+

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Booklesss â€” Team Pitch Framework
+Booklesss — Team Pitch Framework
 General reference for pitching to any potential collaborator.
 """
 
@@ -18,12 +18,12 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
 HERE  = Path(__file__).resolve().parent
-ROOT  = HERE.parent
+ROOT  = HERE.parent.parent
 BRAND = ROOT / "_dev" / "brand"
 FONTS = ROOT / "_dev" / "fonts"
 GRAIN = BRAND / "grain.png"
 LOGO  = BRAND / "booklesss-logo-black.png"
-OUT   = HERE  / "Team_Pitch_Framework.pdf"
+OUT   = HERE.parent  / "Team_Pitch_Framework.pdf"
 
 _grain = ImageReader(str(GRAIN)) if GRAIN.exists() else None
 _logo  = ImageReader(str(LOGO))  if LOGO.exists()  else None
@@ -37,8 +37,8 @@ _reg("Body-Bold",  "Aptos-Bold.ttf")
 _reg("Title-Bold", "Parastoo-Bold.ttf")
 
 C_CREAM = colors.HexColor("#FFFEF2")
-C_DARK  = colors.HexColor("#1C2526")
-C_JADE  = colors.HexColor("#2FB99A")
+C_DARK  = colors.HexColor("#121212")
+C_INK  = colors.HexColor("#121212")
 C_STEEL = colors.HexColor("#5F6B65")
 C_MIST  = colors.HexColor("#6E6A5E")
 C_RULE  = colors.HexColor("#E0DACB")
@@ -67,7 +67,7 @@ def page_bg(canvas, doc):
         canvas.drawImage(_logo, MX, H - 13*mm, width=lw, height=lh, mask="auto")
     canvas.setFillColor(C_STEEL)
     canvas.setFont("Body-Bold", 7)
-    canvas.drawRightString(W - MX, H - 10*mm, "TEAM PITCH â€” FRAMEWORK")
+    canvas.drawRightString(W - MX, H - 10*mm, "TEAM PITCH — FRAMEWORK")
     canvas.setStrokeColor(C_RULE)
     canvas.setLineWidth(0.5)
     canvas.line(MX, 13*mm, W - MX, 13*mm)
@@ -81,7 +81,7 @@ def page_bg(canvas, doc):
 def eb(text):
     return Paragraph(text, ParagraphStyle(
         "eb", fontName="Body-Bold", fontSize=7, leading=10,
-        textColor=C_JADE, spaceBefore=14, spaceAfter=2, keepWithNext=1
+        textColor=C_INK, spaceBefore=14, spaceAfter=2, keepWithNext=1
     ))
 
 def hd(text):
@@ -91,7 +91,7 @@ def hd(text):
     ))
 
 def hl():
-    hr = HRFlowable(width="100%", thickness=0.5, color=C_JADE,
+    hr = HRFlowable(width="100%", thickness=0.5, color=C_INK,
                     spaceAfter=7, spaceBefore=3)
     hr.keepWithNext = 1
     return hr
@@ -103,7 +103,7 @@ def bd(text):
     ))
 
 def bl(text):
-    return Paragraph(f"â€¢ {text}", ParagraphStyle(
+    return Paragraph(f"• {text}", ParagraphStyle(
         "bl", fontName="Body", fontSize=10.5, leading=17,
         textColor=C_DARK, leftIndent=14, spaceAfter=2
     ))
@@ -141,17 +141,17 @@ def build():
         )
     ))
     story.append(HRFlowable(
-        width="100%", thickness=2, color=C_JADE,
+        width="100%", thickness=2, color=C_INK,
         spaceAfter=8, spaceBefore=0
     ))
 
-    # SECTION 1 â€” Open on them
+    # SECTION 1 — Open on them
     story.append(KeepTogether([
-        eb("STEP 1 â€” OPEN ON THEM"),
+        eb("STEP 1 — OPEN ON THEM"),
         hd("Acknowledge what they're already doing"),
         hl(),
         bd(
-            "Start with what they're already good at â€” tutoring, making content, "
+            "Start with what they're already good at — tutoring, making content, "
             "knowing a subject, helping students. Don't pitch Booklesss first. "
             "The opening line should make them feel like this conversation is about them, not you."
         ),
@@ -160,16 +160,16 @@ def build():
             "<i>\"You're already doing X. You already know this course / this space. "
             "I want to talk about doing that in a way that reaches more people.\"</i>"
         ),
-        note("Swap X for whatever is true about that person. Tutor, content maker, student rep â€” adapt it."),
+        note("Swap X for whatever is true about that person. Tutor, content maker, student rep — adapt it."),
     ]))
 
-    # SECTION 2 â€” What Booklesss is
+    # SECTION 2 — What Booklesss is
     story.append(KeepTogether([
-        eb("STEP 2 â€” THE PITCH"),
-        hd("What Booklesss is â€” in under 30 seconds"),
+        eb("STEP 2 — THE PITCH"),
+        hd("What Booklesss is — in under 30 seconds"),
         hl(),
         bd(
-            "Booklesss is organized course material â€” properly written notes, "
+            "Booklesss is organized course material — properly written notes, "
             "step by step, delivered through Slack. Each topic connects to the next. "
             "Students work through it together in small channels."
         ),
@@ -178,43 +178,43 @@ def build():
             "Students spend more time hunting for material than actually studying it."
         ),
         label("PROOF IT'S REAL"),
-        bl("Website is live â€” booklesss.framer.ai"),
+        bl("Website is live — booklesss.framer.ai"),
         bl("Courses running: Strategic Management and Treasury Management (ZCAS)"),
-        bl("Material is built and posted â€” this is not an idea, it's already going"),
+        bl("Material is built and posted — this is not an idea, it's already going"),
     ]))
 
-    # SECTION 3 â€” Role
+    # SECTION 3 — Role
     story.append(KeepTogether([
-        eb("STEP 3 â€” THE ROLE"),
+        eb("STEP 3 — THE ROLE"),
         hd("What you actually need from them"),
         hl(),
         bd(
-            "Be specific about the role â€” vague invitations don't land. "
+            "Be specific about the role — vague invitations don't land. "
             "People say yes to a clear thing, not to \"being part of something.\""
         ),
         label("COMMON ROLE TYPES"),
-        bl("<b>Subject expert / content partner</b> â€” knows the course, reviews and shapes the lessons"),
-        bl("<b>Course tutor</b> â€” runs Q&A sessions or office hours inside the Slack community"),
-        bl("<b>Demand / outreach</b> â€” gets the word out on campus, WhatsApp groups, student circles"),
-        note("Pick one role per person. Don't offer everything â€” it reads as unclear."),
+        bl("<b>Subject expert / content partner</b> — knows the course, reviews and shapes the lessons"),
+        bl("<b>Course tutor</b> — runs Q&A sessions or office hours inside the Slack community"),
+        bl("<b>Demand / outreach</b> — gets the word out on campus, WhatsApp groups, student circles"),
+        note("Pick one role per person. Don't offer everything — it reads as unclear."),
     ]))
 
-    # SECTION 4 â€” What they get
+    # SECTION 4 — What they get
     story.append(KeepTogether([
-        eb("STEP 4 â€” THE UPSIDE"),
+        eb("STEP 4 — THE UPSIDE"),
         hd("What they get out of it"),
         hl(),
-        bd("Be honest. This is early. Don't oversell â€” it damages trust immediately."),
-        bl("Income share as the student base grows â€” not a flat fee that resets"),
+        bd("Be honest. This is early. Don't oversell — it damages trust immediately."),
+        bl("Income share as the student base grows — not a flat fee that resets"),
         bl("Early position means they own a piece of what gets built, not a role that can be replaced later"),
-        bl("Their work turns into a product that keeps running â€” not session-by-session"),
+        bl("Their work turns into a product that keeps running — not session-by-session"),
         note("If they push for exact numbers, give the model: X students at Y per month, their share is Z%. "
              "Real numbers, not promises."),
     ]))
 
-    # SECTION 5 â€” The ask
+    # SECTION 5 — The ask
     story.append(KeepTogether([
-        eb("STEP 5 â€” THE ASK"),
+        eb("STEP 5 — THE ASK"),
         hd("One thing. Low commitment. See if it works."),
         hl(),
         bd(
@@ -230,7 +230,7 @@ def build():
         ),
     ]))
 
-    # SECTION 6 â€” Hard questions
+    # SECTION 6 — Hard questions
     story.append(PageBreak())
     story.append(Spacer(1, 4*mm))
     story.append(KeepTogether([
@@ -251,7 +251,7 @@ def build():
             "\"How much time does this take?\"",
             "Be specific. Content review is a few hours per step. "
             "Tutoring is one session per week if they want it. "
-            "Don't say \"not much\" â€” give an actual number they can plan around."
+            "Don't say \"not much\" — give an actual number they can plan around."
         ),
         (
             "\"Is this just your idea or is it actually running?\"",
@@ -266,7 +266,7 @@ def build():
         ),
         (
             "\"Why me specifically?\"",
-            "This is the most important one. Have a real answer â€” "
+            "This is the most important one. Have a real answer — "
             "not \"because you're good at studying\" but because of something specific "
             "they do that the platform needs right now. That's what makes them say yes."
         ),
@@ -284,3 +284,4 @@ def build():
 
 if __name__ == "__main__":
     build()
+

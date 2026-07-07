@@ -15,31 +15,31 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
 HERE   = Path(__file__).resolve().parent
-ROOT   = HERE.parent
+ROOT   = HERE.parent.parent
 BRAND  = ROOT / "_dev" / "brand"
 FONTS  = ROOT / "_dev" / "fonts"
 GRAIN  = BRAND / "grain.png"
 LOGO_B = BRAND / "booklesss-logo-black.png"
 NOTE   = HERE  / "Zambia_BOZ_500_kwacha_2024.00.00_B176a_PNL_AA_3347547_r.jpg"
 QR_TMP = HERE  / "_qr_temp.png"
-OUT    = HERE  / "Booklesss_Money_Flyer.pdf"
+OUT    = HERE.parent  / "Booklesss_Money_Flyer.pdf"
 
 _grain  = ImageReader(str(GRAIN))  if GRAIN.exists()  else None
 _logo_b = ImageReader(str(LOGO_B)) if LOGO_B.exists() else None
 
-# ── Register fonts ────────────────────────────────────────────────────────────
+# -- Register fonts ------------------------------------------------------------
 pdfmetrics.registerFont(TTFont("Parastoo",      FONTS / "Parastoo.ttf"))
 pdfmetrics.registerFont(TTFont("Parastoo-Bold", FONTS / "Parastoo-Bold.ttf"))
 
-# ── Palette: cream paper + dark ink only, no amber ────────────────────────────
-DARK  = (0x1C/255, 0x25/255, 0x26/255)   # #1C2526 dark slate
+# -- Palette: cream paper + dark ink only, no amber ----------------------------
+DARK  = (0x1C/255, 0x25/255, 0x26/255)   # #121212 dark slate
 MID   = (0x4A/255, 0x55/255, 0x68/255)   # muted grey for secondary text
 CREAM = (1.0,      254/255, 242/255)      # #FFFEF2
 
-# ── Geometry ──────────────────────────────────────────────────────────────────
+# -- Geometry ------------------------------------------------------------------
 W          = 156 * mm
 H          =  78 * mm
-LEFT_SPLIT = 0.52       # left panel gets slightly less — QR is the hero
+LEFT_SPLIT = 0.52       # left panel gets slightly less � QR is the hero
 MARGIN_L   = 8 * mm
 
 
@@ -80,7 +80,7 @@ def _qr_image():
                 back_color=(255, 254, 242),
             ).convert("RGBA")
 
-        # Transparent background — cream/grain will show through
+        # Transparent background � cream/grain will show through
         pixels = img.load()
         for y in range(img.height):
             for x in range(img.width):
@@ -100,17 +100,17 @@ def _qr_image():
 def build():
     c = rl_canvas.Canvas(str(OUT), pagesize=(W, H))
 
-    # ── PAGE 1: banknote ──────────────────────────────────────────────────────
+    # -- PAGE 1: banknote ------------------------------------------------------
     c.drawImage(str(NOTE), 0, 0, width=W, height=H, preserveAspectRatio=False)
     c.showPage()
 
-    # ── PAGE 2: Booklesss flyer ───────────────────────────────────────────────
+    # -- PAGE 2: Booklesss flyer -----------------------------------------------
 
     # Cream background
     c.setFillColorRGB(*CREAM)
     c.rect(0, 0, W, H, stroke=0, fill=1)
 
-    # Grain overlay — draw at full opacity, PNG alpha carries the texture
+    # Grain overlay � draw at full opacity, PNG alpha carries the texture
     if _grain is not None:
         # 1.6x scale makes the grain pattern visually larger; draw twice for opacity
         gw, gh = W * 1.6, H * 1.6
@@ -118,7 +118,7 @@ def build():
         c.drawImage(_grain, ox, oy, width=gw, height=gh, mask="auto")
         c.drawImage(_grain, ox, oy, width=gw, height=gh, mask="auto")
 
-    # ── LEFT PANEL ────────────────────────────────────────────────────────────
+    # -- LEFT PANEL ------------------------------------------------------------
     X     = MARGIN_L
     LEND  = W * LEFT_SPLIT
 
@@ -135,7 +135,7 @@ def build():
     c.setLineWidth(0.25)
     c.line(LEND, 5 * mm, LEND, H - 5 * mm)
 
-    # Apology hook — the moment they flip it
+    # Apology hook � the moment they flip it
     c.setFillColorRGB(*DARK)
     c.setFont("Parastoo-Bold", 9.5)
     c.drawString(X, H - 10 * mm - 12 * mm, "Sorry.")
@@ -149,7 +149,7 @@ def build():
     c.drawString(X, VY,            "But these notes")
     c.drawString(X, VY - 6 * mm,   "are free.")
 
-    # Short explainer — 1 line only
+    # Short explainer � 1 line only
     c.setFillColorRGB(*MID)
     c.setFont("Parastoo", 5.5)
     EXY = VY - 6 * mm - 7 * mm
@@ -160,7 +160,7 @@ def build():
     c.setFont("Parastoo-Bold", 5.8)
     c.drawString(X, 4 * mm, "booklesss.framer.ai")
 
-    # ── RIGHT PANEL: big QR ───────────────────────────────────────────────────
+    # -- RIGHT PANEL: big QR ---------------------------------------------------
     QR_PAD  = 5 * mm
     QR_SIZE = H - 2 * QR_PAD
     RX      = LEND + 2 * mm
@@ -191,3 +191,4 @@ def build():
 
 if __name__ == "__main__":
     build()
+

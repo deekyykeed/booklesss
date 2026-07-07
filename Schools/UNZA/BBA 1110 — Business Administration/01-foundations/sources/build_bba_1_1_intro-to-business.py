@@ -1,7 +1,7 @@
-"""
+﻿"""
 Booklesss — Step 1.1: Introduction to Business Administration
 Course: BBA 1110 — Principles of Business Administration
-Palette: Dark slate-charcoal cover · amber gold accent (#F59E0B) · Parastoo serif titles
+Palette: Dark slate-charcoal cover · amber gold accent (#121212) · Parastoo serif titles
 """
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
@@ -51,8 +51,8 @@ C_COVER      = colors.HexColor("#1C2526")   # dark slate-charcoal — cover
 C_PAGE       = colors.HexColor("#FAFAF8")   # clean near-white — body pages
 TITLE_DARK   = colors.HexColor("#FAFAF8")   # near-white — cover title
 HEADING_DARK = colors.HexColor("#1C2526")   # near-black — body headings (matches cover)
-C_AMBER      = colors.HexColor("#F59E0B")   # amber gold — BBA accent
-C_AMBER_DK   = colors.HexColor("#92400E")   # dark amber — body accent text
+C_INK      = colors.HexColor("#121212")   # amber gold — BBA accent
+C_INK_DK   = colors.HexColor("#92400E")   # dark amber — body accent text
 C_INK        = colors.HexColor("#1A1A1A")   # near-black body text
 C_STEEL      = colors.HexColor("#4B5563")   # grey-600 secondary labels
 C_MIST       = colors.HexColor("#6B7280")   # grey-500 meta / eyebrow on body
@@ -88,7 +88,7 @@ OUT_PATH = os.path.join(OUT_DIR, "Step 1.1 - Introduction to Business Administra
 def make_styles():
     return {
         "cover_step": ParagraphStyle("cover_step",
-            fontName="Body-Bold", fontSize=9, textColor=C_AMBER,
+            fontName="Body-Bold", fontSize=9, textColor=C_INK,
             leading=13, spaceAfter=0, alignment=TA_CENTER),
         "cover_title": ParagraphStyle("cover_title",
             fontName="Title-Bold", fontSize=40, textColor=TITLE_DARK,
@@ -100,7 +100,7 @@ def make_styles():
             fontName="Body", fontSize=9, textColor=C_COVER_META,
             leading=14, spaceAfter=2, alignment=TA_CENTER),
         "eyebrow": ParagraphStyle("eyebrow",
-            fontName="Body-Bold", fontSize=7, textColor=C_AMBER,
+            fontName="Body-Bold", fontSize=7, textColor=C_INK,
             leading=10, spaceAfter=3, spaceBefore=18, alignment=TA_LEFT,
             keepWithNext=1),
         "h2": ParagraphStyle("h2",
@@ -118,7 +118,7 @@ def make_styles():
             fontName="Body", fontSize=10.5, textColor=C_INK,
             leading=17, spaceAfter=4, leftIndent=14, alignment=TA_LEFT),
         "fact": ParagraphStyle("fact",
-            fontName="Body-Bold", fontSize=10, textColor=C_AMBER_DK,
+            fontName="Body-Bold", fontSize=10, textColor=C_INK_DK,
             leading=16, spaceAfter=6, alignment=TA_LEFT),
         "th": ParagraphStyle("th",
             fontName="Body-Bold", fontSize=9, textColor=C_INK,
@@ -136,7 +136,7 @@ def make_styles():
             fontName="Body", fontSize=9.5, textColor=C_STEEL,
             leading=15, spaceAfter=5, alignment=TA_LEFT),
         "community_link": ParagraphStyle("community_link",
-            fontName="Body-Bold", fontSize=9.5, textColor=C_AMBER_DK,
+            fontName="Body-Bold", fontSize=9.5, textColor=C_INK_DK,
             leading=15, alignment=TA_LEFT),
     }
 
@@ -162,12 +162,12 @@ def cover_bg(canvas, doc):
                          preserveAspectRatio=True, mask="auto")
     else:
         canvas.setFont("Body-Bold", 8.5)
-        canvas.setFillColor(C_AMBER)
+        canvas.setFillColor(C_INK)
         canvas.drawString(MX, top_y, "BOOKLESSS")
     canvas.setFont("Body", 8.5)
     canvas.setFillColor(C_COVER_META)
     canvas.drawRightString(W - MX, top_y, "BUSINESS ADMINISTRATION")
-    canvas.setStrokeColor(C_AMBER)
+    canvas.setStrokeColor(C_INK)
     canvas.setLineWidth(0.8)
     canvas.line(MX, top_y - 6, W - MX, top_y - 6)
     canvas.restoreState()
@@ -180,7 +180,7 @@ def page_bg(canvas, doc):
 def body_page(canvas, doc):
     canvas.saveState()
     pn = doc.page
-    canvas.setStrokeColor(C_AMBER)
+    canvas.setStrokeColor(C_INK)
     canvas.setLineWidth(0.6)
     canvas.line(MX, H - MY + 4, W - MX, H - MY + 4)
     canvas.setFont("Body", 7.5)
@@ -201,7 +201,7 @@ def body_page(canvas, doc):
 
 # ── HELPERS ────────────────────────────────────────────────────────────────
 def hairline():
-    hr = HRFlowable(width="100%", thickness=0.5, color=C_AMBER,
+    hr = HRFlowable(width="100%", thickness=0.5, color=C_INK,
                     spaceAfter=10, spaceBefore=4)
     hr.keepWithNext = 1
     return hr
@@ -228,7 +228,7 @@ def fact(text):
     t = Table([[p]], colWidths=[CONTENT_W])
     t.setStyle(TableStyle([
         ("BACKGROUND",    (0,0), (-1,-1), BG_CALLOUT),
-        ("LINEBEFORE",    (0,0), (-1,-1), 2.5, C_AMBER),
+        ("LINEBEFORE",    (0,0), (-1,-1), 2.5, C_INK),
         ("TOPPADDING",    (0,0), (-1,-1), 8),
         ("BOTTOMPADDING", (0,0), (-1,-1), 8),
         ("LEFTPADDING",   (0,0), (-1,-1), 10),
@@ -239,12 +239,12 @@ def fact(text):
 def callout(text):
     p = Paragraph(text.replace("\n", "<br/>"),
                   ParagraphStyle("cbt", fontName="Body", fontSize=10,
-                                 textColor=C_AMBER_DK, leading=16, alignment=TA_LEFT))
+                                 textColor=C_INK_DK, leading=16, alignment=TA_LEFT))
     t = Table([[p]], colWidths=[CONTENT_W])
     t.setStyle(TableStyle([
         ("BACKGROUND",    (0,0), (-1,-1), BG_CALLOUT),
-        ("LINEBEFORE",    (0,0), (-1,-1), 2, C_AMBER),
-        ("LINEBELOW",     (0,0), (-1,-1), 0.5, C_AMBER),
+        ("LINEBEFORE",    (0,0), (-1,-1), 2, C_INK),
+        ("LINEBELOW",     (0,0), (-1,-1), 0.5, C_INK),
         ("TOPPADDING",    (0,0), (-1,-1), 9),
         ("BOTTOMPADDING", (0,0), (-1,-1), 9),
         ("LEFTPADDING",   (0,0), (-1,-1), 10),
@@ -257,7 +257,7 @@ def discussion_q(text):
     t = Table([[p]], colWidths=[CONTENT_W])
     t.setStyle(TableStyle([
         ("BACKGROUND",    (0,0), (-1,-1), BG_CALLOUT),
-        ("LINEBEFORE",    (0,0), (-1,-1), 2.5, C_AMBER),
+        ("LINEBEFORE",    (0,0), (-1,-1), 2.5, C_INK),
         ("TOPPADDING",    (0,0), (-1,-1), 10),
         ("BOTTOMPADDING", (0,0), (-1,-1), 10),
         ("LEFTPADDING",   (0,0), (-1,-1), 12),
@@ -278,7 +278,7 @@ def table_std(data, col_widths):
         ("RIGHTPADDING",  (0,0), (-1,-1), 8),
         ("LINEBELOW",     (0,0), (-1,-1), 0.5, C_RULE),
         ("BACKGROUND",    (0,0), (-1, 0), BG_FORMULA),
-        ("LINEBELOW",     (0,0), (-1, 0), 1,   C_AMBER),
+        ("LINEBELOW",     (0,0), (-1, 0), 1,   C_INK),
         ("VALIGN",        (0,0), (-1,-1), "TOP"),
     ]))
     return KeepTogether([Spacer(1, 6), t, Spacer(1, 10)])
@@ -286,7 +286,7 @@ def table_std(data, col_widths):
 def resources_box(items):
     """Cover resource panel. items = list of (label, url) tuples."""
     s_hd = ParagraphStyle("res_hd", fontName="Body-Bold", fontSize=7,
-                           textColor=C_AMBER, leading=10, alignment=TA_LEFT)
+                           textColor=C_INK, leading=10, alignment=TA_LEFT)
     s_lnk = ParagraphStyle("res_lnk", fontName="Body-Bold", fontSize=9,
                             textColor=C_COVER_META, leading=15, alignment=TA_LEFT)
     rows = [[Paragraph("ADDED VALUE", s_hd)]]
@@ -301,7 +301,7 @@ def resources_box(items):
     t = Table(rows, colWidths=[CONTENT_W])
     t.setStyle(TableStyle([
         ("BACKGROUND",    (0, 0), (-1,-1), colors.HexColor("#243436")),
-        ("BOX",           (0, 0), (-1,-1), 0.8, C_AMBER),
+        ("BOX",           (0, 0), (-1,-1), 0.8, C_INK),
         ("TOPPADDING",    (0, 0), (-1,-1), 5),
         ("BOTTOMPADDING", (0, 0), (-1,-1), 5),
         ("LEFTPADDING",   (0, 0), (-1,-1), 12),
@@ -346,7 +346,7 @@ class TripleDiamond(Flowable):
                  color=None, stroke_width=1.3):
         super().__init__()
         self.cs, self.ss, self.gap = center_size, side_size, gap
-        self.color = color or C_AMBER
+        self.color = color or C_INK
         self.sw = stroke_width
         self._h = center_size
 
@@ -396,7 +396,7 @@ def build():
     # ── COVER ──────────────────────────────────────────────────────────────
     story.append(Spacer(1, 120))
     story.append(LogoTriple(_mark_white) if _mark_white is not None
-                 else TripleDiamond(color=C_AMBER))
+                 else TripleDiamond(color=C_INK))
     story.append(Spacer(1, 26))
     story.append(Paragraph("STEP 1.1 · FOUNDATIONS", ST["cover_step"]))
     story.append(Spacer(1, 12))
@@ -654,3 +654,5 @@ def build():
 
 if __name__ == "__main__":
     build()
+
+
