@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-07-07 (session 11)
+**Last updated:** 2026-07-08 (session 12)
 
 ---
 
@@ -13,11 +13,10 @@
 - [ ] Seed `steps.content` JSONB for SM Step 3.1 so the lesson reader pulls real data instead of hardcode.
 - [ ] Enroll a test account in a course via `/library` so the sidebar courses section populates in the app.
 
-**⚠️ Pricing just changed a lot (2026-07-07 session 11) — read before touching any customer-facing pricing:**
-- [ ] Full member price is now **K1,425/month** (Guest/Notes tier stays K250). This replaced K500 → K600 → K1,200 → K1,425 across one conversation as real costs got corrected (real Slack Business+ rate, then Gamma added as a second required per-member seat). Sanity-check this price against what the market will actually pay before advertising — it's a ~3x jump from the K500 figure baked into the website and older docs. See `Operations/Revenue Model - Booklesss.pdf` (rebuilt, single source of truth) for the full reasoning.
-- [ ] `Operations/pricing-strategy.md`, `monthly-tracker.md`, `daily-checklist.md` still show the OLD numbers (K339 Slack cost, K500/K800 prices) — not yet updated to match the Revenue Model. Update or retire these in favor of the Revenue Model PDF.
-- [ ] Actually subscribe to Gamma Pro (or confirm the account) — the model now assumes this is a real recurring cost, not the free tier.
-- [ ] Tutor/Tutor Assistant compensation roles were discussed (67/33 revenue split off negotiated Custom-tier rate, minus Slack+Gamma seat cost) but never written into `Operations/sources/build_ops_growth_roles.py` — paused in favor of finishing the revenue model first.
+**⚠️ Pricing corrected again (session 12, 2026-07-08) — Gamma pulled back OUT of per-member price:**
+- [ ] Full member price is now **K600/month**, Guest is **K360/month** (60% of full member). This reverts session 11's K1,425 (Gamma folded in as a mandatory per-member seat) — user's reaction to that PDF was "its mad, way too much." Gamma goes back to being a founder/team overhead line item (Overhead Phase 1/5), not a per-member cost. See [[feedback_gamma_not_in_base_price]] memory and `Operations/Revenue Model - Booklesss.pdf` (rebuilt) for the full reasoning. **This was already correct on disk (uncommitted) going into session 12 — just needed committing and this note updated to match.**
+- [ ] `Operations/pricing-strategy.md`, `monthly-tracker.md`, `daily-checklist.md` still show OLDER numbers (K339 Slack cost, K500/K800, or the superseded K1,425/K250) — not yet updated to match the Revenue Model. Update or retire these in favor of the Revenue Model PDF.
+- [ ] Tutor/Tutor Assistant compensation roles were discussed (67/33 revenue split off negotiated Custom-tier rate, minus Slack seat cost — recalculate now that Gamma is out of the per-member cost) but never written into `Operations/sources/build_ops_growth_roles.py` — paused in favor of finishing the revenue model first.
 
 **⚠️ Funnel integrity (from the 2026-06-11 audit — fix before any marketing push):**
 - [ ] **Consolidate Slack to ONE workspace.** Three exist: `bookless10` (invite link + all TM/SM channels, Pro trial EXPIRED 2026-06-10), `booklesss20` (paid, where SM PDFs were uploaded), and a new empty "Booklesss" ws (created 2026-06-04, currently tool-connected). Decide, move channels, update `Operations/workspace.md`, replace the invite link everywhere.
@@ -56,6 +55,25 @@
 ---
 
 ## Session Log
+
+### Session 2026-07-08 (session 12 — Linear MCP wired up)
+**Done:**
+- **Diagnosed and fixed the `linear-server` MCP not appearing in sessions**: it was configured in `~/.claude.json` only under the project key `C:/Users/deeky/OneDrive/Desktop/Booklesss` (capital C); sessions whose cwd resolves lowercase (`c:/...`) land on a separate, empty project entry in the same file. Copied the config to both casings.
+- **Verified `linear-server` points at the correct Booklesss Linear workspace** (team "Booklesss", id `3e290b53-b6cc-4f93-8ad4-03c0fc04a4c1`) — first via raw JSON-RPC to `mcp.linear.app/mcp` using the stored OAuth token (bypassing the session's stale tool list), then again with the actual `mcp__linear-server__*` tools once a fresh session picked them up.
+- **Full read/write/attachment test**: created issue BOO-5 via `save_issue`, attached a generated PDF via the 3-step upload flow (`prepare_attachment_upload` → signed PUT → `create_attachment_from_upload`), then canceled the issue during wrap (no `delete_issue` tool exists on this MCP — canceling is the closest to cleanup available).
+- **Pinned the Linear config in `CLAUDE.md`** (new "Project Tracking (Linear)" section): explicitly states `linear-server` is this project's Linear connection, and `mcp__claude_ai_Linear__*` (a separate connector authorized to the unrelated Khadzika workspace) must never be used here. Exists specifically so the global `wrap-session` skill's generic "is Linear configured?" check resolves to the right workspace.
+- **Committed session 11's leftover uncommitted revenue-model correction** (was sitting dirty on disk since before this session): full member K1,425→K600, guest K250→K360, Gamma moved back out of per-member pricing into founder/team overhead. This matches `feedback_gamma_not_in_base_price` (user's reaction to the K1,425 PDF: "its mad, way too much") — session 11's log and the Next Session pricing note hadn't been updated to reflect the reversal, so updated both here.
+
+**What Worked:**
+- Verifying an MCP OAuth connection by calling the MCP endpoint directly over raw JSON-RPC (`POST` to the server URL with `Authorization: Bearer <accessToken>` pulled from `~/.claude/.credentials.json`) — confirms the connection and workspace without needing a fresh session with the tools loaded. Useful pattern any time an MCP server's tool-list visibility is in doubt.
+- Checking `~/.claude.json`'s `projects` keys for a capital/lowercase drive-letter split whenever a configured MCP server's tools mysteriously don't appear — this was the actual root cause, not the OAuth/config itself.
+
+**Dead Ends (do not retry):**
+- None this session.
+
+**Next:** See updated pricing note above (K600/K360 now committed and correct — no further action needed there beyond updating the older strategy docs). `linear-server` is live and verified — future sessions can use `mcp__linear-server__*` directly for Booklesss issue tracking.
+
+---
 
 ### Session 2026-07-07 (session 11 — revenue model & pricing overhaul)
 **Done:**

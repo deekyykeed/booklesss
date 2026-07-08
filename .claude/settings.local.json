@@ -59,5 +59,9 @@
       "mcp__15dec2d6-6ad0-45ad-b9c4-3105b39a3884__list_workspaces",
       "mcp__claude_ai_Supabase__apply_migration"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "design-bridge",
+    "supabase"
+  ]
 }
