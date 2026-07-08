@@ -33,39 +33,16 @@ RULE = (0xC8/255, 0xC2/255, 0xB5/255)
 
 W, H  = 108 * mm, 192 * mm
 PAD   = 10 * mm
-TINY  =  7          # label / footer size (pt)
-BIG   = 40          # punchy headline (pt)
-BODY  = 28          # explanatory text (pt)
-LD_BIG  = BIG  * 1.45   # ~58 pt  — room between headline lines
-LD_BODY = BODY * 1.55   # ~43 pt  — room between body lines
+LIVE_W = W - 2 * PAD
+TINY  =  7
+BIG   = 40
+BODY  = 28
 
-# Live zone: between the header rule and the footer rule
-LIVE_TOP = H - 20 * mm   # ~547 pt from bottom  (20 mm from top)
-LIVE_BOT = 16 * mm        # ~45 pt from bottom
+LIVE_TOP = H - 20 * mm
+LIVE_BOT = 16 * mm
 
 
-# ── Height estimators (keep in sync with draw functions) ──────────────────────
-
-def _h_label():
-    """Height consumed by a label + its gap below."""
-    return TINY * 1.4 + 8 * mm
-
-def _h_big(lines):
-    return len(lines) * LD_BIG
-
-def _h_body(lines):
-    return sum(LD_BODY * (0.5 if l == "" else 1.0) for l in lines)
-
-
-def _vcenter(block_h):
-    """Y for the top of a content block, placed at optical centre (bias 0.42)."""
-    live_h = LIVE_TOP - LIVE_BOT
-    spare  = live_h - block_h
-    # If content is taller than live zone, pin to top; otherwise bias upward.
-    return LIVE_TOP - max(spare, 0) * 0.42
-
-
-# ── Shared draw helpers ───────────────────────────────────────────────────────
+# ── Draw helpers (shared with _template — keep in sync) ───────────────────────
 
 def _bg(c, grain):
     c.setFillColorRGB(*BG)
@@ -76,11 +53,8 @@ def _bg(c, grain):
         c.drawImage(grain, ox, oy, width=gw, height=gh, mask="auto")
         c.drawImage(grain, ox, oy, width=gw, height=gh, mask="auto")
 
-
 def _chrome(c, logo, n):
-    """Header (logo + counter + rule) and footer (URL + rule) on every slide."""
-    LH = 5 * mm
-    LW = LH * 4.6
+    LH = 5 * mm; LW = LH * 4.6
     if logo:
         c.drawImage(logo, PAD, H - PAD - LH,
                     width=LW, height=LH, mask="auto", preserveAspectRatio=True)
@@ -89,40 +63,72 @@ def _chrome(c, logo, n):
     t   = c.beginText(W - PAD - tw, H - PAD - LH + 0.5 * mm)
     t.setFont("Aptos-Bold", TINY); t.setFillColorRGB(*SOFT); t.setCharSpace(0.8)
     t.textLine(lbl); c.drawText(t)
-    # header rule
     c.setStrokeColorRGB(*RULE); c.setLineWidth(0.4)
     c.line(PAD, H - PAD - LH - 3 * mm, W - PAD, H - PAD - LH - 3 * mm)
-    # footer rule + URL
     c.line(PAD, LIVE_BOT - 2 * mm, W - PAD, LIVE_BOT - 2 * mm)
     c.setFillColorRGB(*SOFT); c.setFont("Aptos", TINY)
     c.drawString(PAD, PAD + 2 * mm, "booklesss.framer.ai")
 
-
 def _label(c, text, y):
-    """7 pt tracked-caps eyebrow. Returns y below the label + gap."""
     t = c.beginText(PAD, y)
     t.setFont("Aptos-Bold", TINY); t.setFillColorRGB(*SOFT); t.setCharSpace(1.8)
     t.textLine(text.upper()); c.drawText(t)
     return y - TINY * 1.4 - 8 * mm
 
-
-def _big(c, lines, y):
-    """40 pt Parastoo-Bold. Returns y below the last line."""
-    c.setFont("Parastoo-Bold", BIG); c.setFillColorRGB(*INK)
+def _big(c, lines, y, size):
+    ld = size * 1.45
+    c.setFont("Parastoo-Bold", size); c.setFillColorRGB(*INK)
     for line in lines:
-        c.drawString(PAD, y, line); y -= LD_BIG
+        c.drawString(PAD, y, line); y -= ld
     return y
 
-
-def _body(c, lines, y):
-    """28 pt Parastoo. Pass '' for a half-line gap. Returns y below last line."""
-    c.setFont("Parastoo", BODY); c.setFillColorRGB(*MID)
+def _body(c, lines, y, size):
+    ld = size * 1.55
+    c.setFont("Parastoo", size); c.setFillColorRGB(*MID)
     for line in lines:
-        if line == "":
-            y -= LD_BODY * 0.5
-        else:
-            c.drawString(PAD, y, line); y -= LD_BODY
+        if line == "": y -= ld * 0.5
+        else: c.drawString(PAD, y, line); y -= ld
     return y
+
+def _fit(lines, font, size):
+    """Largest size ≤ `size` at which every line fits the column."""
+    if not lines:
+        return size
+    maxw = max(pdfmetrics.stringWidth(l, font, size) for l in lines if l)
+    return size if maxw <= LIVE_W else size * LIVE_W / maxw
+
+
+def slide(c, grain, logo, n, label, big=None, body=None, gap=6 * mm):
+    """Draw one slide: eyebrow label + optional big block + optional body block,
+    optically centred in the live zone. Content never runs past the column."""
+    big, body = big or [], body or []
+    big_size  = _fit(big,  "Parastoo-Bold", BIG)
+    body_size = _fit(body, "Parastoo",      BODY)
+    ld_big, ld_body = big_size * 1.45, body_size * 1.55
+
+    # Visual height: label cap-top → last baseline → descender. Mirrors the
+    # draw calls below; trailing leading after the last line is NOT height.
+    h = TINY * 0.7 + TINY * 1.4 + 8 * mm          # label cap + gap to first baseline
+    if big:
+        h += (len(big) - 1) * ld_big
+    if body:
+        if big:
+            h += ld_big + gap
+        h += sum(ld_body * (0.5 if l == "" else 1.0) for l in body) - ld_body
+    h += (body_size if body else big_size) * 0.25  # descender below last baseline
+
+    spare = (LIVE_TOP - LIVE_BOT) - h
+    top   = LIVE_TOP - max(spare, 0) * 0.45        # optical centre, slightly high
+
+    _bg(c, grain); _chrome(c, logo, n)
+    y = _label(c, label, top - TINY * 0.7)
+    if big:
+        y = _big(c, big, y, big_size)
+        if body:
+            y -= gap
+    if body:
+        _body(c, body, y, body_size)
+    c.showPage()
 
 
 # ── Slides ────────────────────────────────────────────────────────────────────
@@ -133,73 +139,39 @@ def build():
 
     c = rl_canvas.Canvas(str(OUT), pagesize=(W, H))
 
-    # ── 1 / 6 — Hook ─────────────────────────────────────────────────────────
-    bl = ["Your notes", "are probably", "older than", "you."]
-    _bg(c, grain); _chrome(c, logo, 1)
-    y = _vcenter(_h_label() + _h_big(bl))
-    y = _label(c, "ZCAS  ·  UNZA", y)
-    _big(c, bl, y)
-    c.showPage()
+    # 1 / 6 — Hook
+    slide(c, grain, logo, 1, "ZCAS  ·  UNZA",
+          big=["Your notes", "are probably", "older than", "you."])
 
-    # ── 2 / 6 — The problem ──────────────────────────────────────────────────
-    bl = ["Old slides.", "Old files.", "All of it."]
-    _bg(c, grain); _chrome(c, logo, 2)
-    y = _vcenter(_h_label() + _h_big(bl))
-    y = _label(c, "THE PROBLEM", y)
-    _big(c, bl, y)
-    c.showPage()
+    # 2 / 6 — The problem
+    slide(c, grain, logo, 2, "THE PROBLEM",
+          big=["Old slides.", "Old files.", "All of it."])
 
-    # ── 3 / 6 — What it costs ────────────────────────────────────────────────
-    bo = [
-        "Every semester,",
-        "you patch it",
-        "from five files.",
-        "",
-        "Walk in unsure.",
-    ]
-    _bg(c, grain); _chrome(c, logo, 3)
-    y = _vcenter(_h_label() + _h_body(bo))
-    y = _label(c, "WHAT THAT COSTS", y)
-    _body(c, bo, y)
-    c.showPage()
+    # 3 / 6 — What it costs
+    slide(c, grain, logo, 3, "WHAT THAT COSTS",
+          body=["Every semester,",
+                "you patch it",
+                "from five files.",
+                "",
+                "Walk in unsure."])
 
-    # ── 4 / 6 — The fix ──────────────────────────────────────────────────────
-    bl = ["Rebuilt.", "From scratch."]
-    bo = ["Every topic.", "Written to click", "on the first read."]
-    gap = 6 * mm
-    _bg(c, grain); _chrome(c, logo, 4)
-    y = _vcenter(_h_label() + _h_big(bl) + gap + _h_body(bo))
-    y = _label(c, "THE FIX", y)
-    y = _big(c, bl, y)
-    y -= gap
-    _body(c, bo, y)
-    c.showPage()
+    # 4 / 6 — The fix
+    slide(c, grain, logo, 4, "THE FIX",
+          big=["Rebuilt from", "scratch."],
+          body=["Every topic.", "Written to click", "on the first read."])
 
-    # ── 5 / 6 — Community ────────────────────────────────────────────────────
-    bo = [
-        "Small channels.",
-        "One topic each.",
-        "",
-        "Students where",
-        "you are.",
-    ]
-    _bg(c, grain); _chrome(c, logo, 5)
-    y = _vcenter(_h_label() + _h_body(bo))
-    y = _label(c, "YOU'RE NOT ALONE", y)
-    _body(c, bo, y)
-    c.showPage()
+    # 5 / 6 — Community
+    slide(c, grain, logo, 5, "YOU'RE NOT ALONE",
+          body=["Small channels.",
+                "One topic each.",
+                "",
+                "Students where",
+                "you are."])
 
-    # ── 6 / 6 — CTA ──────────────────────────────────────────────────────────
-    bl = ["booklesss", ".framer.ai"]
-    bo = ["ZCAS · UNZA", "students."]
-    gap = 6 * mm
-    _bg(c, grain); _chrome(c, logo, 6)
-    y = _vcenter(_h_label() + _h_big(bl) + gap + _h_body(bo))
-    y = _label(c, "START HERE", y)
-    y = _big(c, bl, y)
-    y -= gap
-    _body(c, bo, y)
-    c.showPage()
+    # 6 / 6 — CTA
+    slide(c, grain, logo, 6, "START HERE",
+          big=["booklesss", ".framer.ai"],
+          body=["ZCAS · UNZA", "students."])
 
     c.save()
     print(f"Built: {OUT}  ({TOTAL} slides)")
