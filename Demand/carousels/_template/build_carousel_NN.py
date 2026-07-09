@@ -12,18 +12,19 @@ BOOKLESSS CAROUSEL TEMPLATE
 One slide = one slide() call:
   slide(c, grain, logo, n, "LABEL", big=[...], body=[...])
 
-Type scale:
-  big  — 40 pt Parastoo-Bold  — punchy 2–4 word lines (hook, reveal, CTA)
-  body — 28 pt Parastoo       — short explanation, 3–6 lines max
-  label — 7 pt Aptos-Bold tracked — eyebrow above every block
+Type system — two clearly separated voices per slide:
+  big  — 44 pt Parastoo-Bold, leading 1.15 — the statement. Tight block,
+         poster energy. EVERY slide leads with one. 1–4 lines.
+  body — 18 pt Parastoo, leading 1.45 — the supporting line. Small on
+         purpose; it explains, it never competes. 1–4 lines, optional.
+  label — 7 pt Aptos-Bold tracked caps — eyebrow above the block.
 
 Line length guide:
-  big  — keep lines under 13 chars
-  body — keep lines under 18 chars
-  Pass '' in a body list for a half-line gap.
+  big  — a line renders at 44 pt if it fits; the whole block shrinks to the
+         widest line otherwise. Keep every line ≤ 11 chars-ish so slides stay
+         in the 41–44 pt band. Never let one long line drag a block small.
+  body — keep lines under 28 chars. Pass '' for a half-line gap.
 
-Lines that run long are auto-shrunk to fit the column, but that breaks the
-type scale across slides — treat the shrink as a safety net, not a licence.
 Content is optically centred in the live zone; no manual y positions.
 """
 
@@ -54,12 +55,14 @@ MID  = (0x3D/255, 0x3D/255, 0x3D/255)
 SOFT = (0x5F/255, 0x6B/255, 0x65/255)
 RULE = (0xC8/255, 0xC2/255, 0xB5/255)
 
-W, H  = 108 * mm, 192 * mm
-PAD   = 10 * mm
+W, H   = 108 * mm, 192 * mm
+PAD    = 10 * mm
 LIVE_W = W - 2 * PAD
-TINY  =  7
-BIG   = 40
-BODY  = 28
+TINY   =  7
+BIG    = 44          # display statement
+BODY   = 18          # supporting line — small on purpose
+K_BIG  = 1.15        # display leading factor: tight, block reads as one unit
+K_BODY = 1.45        # body leading factor
 
 LIVE_TOP = H - 20 * mm
 LIVE_BOT = 16 * mm
@@ -96,17 +99,16 @@ def _label(c, text, y):
     t = c.beginText(PAD, y)
     t.setFont("Aptos-Bold", TINY); t.setFillColorRGB(*SOFT); t.setCharSpace(1.8)
     t.textLine(text.upper()); c.drawText(t)
-    return y - TINY * 1.4 - 8 * mm
 
 def _big(c, lines, y, size):
-    ld = size * 1.45
+    ld = size * K_BIG
     c.setFont("Parastoo-Bold", size); c.setFillColorRGB(*INK)
     for line in lines:
         c.drawString(PAD, y, line); y -= ld
     return y
 
 def _body(c, lines, y, size):
-    ld = size * 1.55
+    ld = size * K_BODY
     c.setFont("Parastoo", size); c.setFillColorRGB(*MID)
     for line in lines:
         if line == "": y -= ld * 0.5
@@ -121,17 +123,21 @@ def _fit(lines, font, size):
     return size if maxw <= LIVE_W else size * LIVE_W / maxw
 
 
-def slide(c, grain, logo, n, label, big=None, body=None, gap=6 * mm):
-    """Draw one slide: eyebrow label + optional big block + optional body block,
+def slide(c, grain, logo, n, label, big=None, body=None, gap=8 * mm):
+    """Draw one slide: eyebrow label + big statement + optional supporting body,
     optically centred in the live zone. Content never runs past the column."""
     big, body = big or [], body or []
     big_size  = _fit(big,  "Parastoo-Bold", BIG)
     body_size = _fit(body, "Parastoo",      BODY)
-    ld_big, ld_body = big_size * 1.45, body_size * 1.55
+    ld_big, ld_body = big_size * K_BIG, body_size * K_BODY
+
+    # Gap from label baseline to the first baseline must clear the display
+    # ascenders (Parastoo caps reach ~0.72 em above the baseline).
+    first_gap = (big_size if big else body_size) * 0.72 + 12
 
     # Visual height: label cap-top → last baseline → descender. Mirrors the
     # draw calls below; trailing leading after the last line is NOT height.
-    h = TINY * 0.7 + TINY * 1.4 + 8 * mm          # label cap + gap to first baseline
+    h = TINY * 0.7 + first_gap                     # label cap + gap to first baseline
     if big:
         h += (len(big) - 1) * ld_big
     if body:
@@ -141,10 +147,11 @@ def slide(c, grain, logo, n, label, big=None, body=None, gap=6 * mm):
     h += (body_size if body else big_size) * 0.25  # descender below last baseline
 
     spare = (LIVE_TOP - LIVE_BOT) - h
-    top   = LIVE_TOP - max(spare, 0) * 0.45        # optical centre, slightly high
+    top   = LIVE_TOP - max(spare, 0) * 0.44        # optical centre, slightly high
 
     _bg(c, grain); _chrome(c, logo, n)
-    y = _label(c, label, top - TINY * 0.7)
+    _label(c, label, top - TINY * 0.7)
+    y = top - TINY * 0.7 - first_gap
     if big:
         y = _big(c, big, y, big_size)
         if body:
@@ -162,21 +169,19 @@ def build():
 
     c = rl_canvas.Canvas(str(OUT), pagesize=(W, H))
 
-    # 1 / N — HOOK: 2–4 big lines, max 13 chars each
+    # 1 / N — HOOK: big statement only
     slide(c, grain, logo, 1, "LABEL HERE",
-          big=["Short punchy", "hook here."])
+          big=["Short", "punchy", "hook."])
 
-    # 2 / N — BODY: max 18 chars per line, '' = half-line gap
+    # 2 / N — POINT: big statement + small supporting line
     slide(c, grain, logo, 2, "LABEL HERE",
-          body=["Short explanation",
-                "line by line.",
-                "",
-                "After the gap."])
+          big=["The point,", "stated big."],
+          body=["One or two quiet lines that", "explain it. Max 28 chars each."])
 
     # 3 / N — CTA (always last)
     slide(c, grain, logo, 3, "START HERE",
           big=["booklesss", ".framer.ai"],
-          body=["ZCAS · UNZA", "students."])
+          body=["ZCAS · UNZA students."])
 
     c.save()
     print(f"Built: {OUT}  ({TOTAL} slides)")
