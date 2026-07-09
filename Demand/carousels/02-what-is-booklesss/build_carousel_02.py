@@ -1,30 +1,8 @@
 #!/usr/bin/env python3
 """
-BOOKLESSS CAROUSEL TEMPLATE
-────────────────────────────
-1. Copy this entire _template/ folder
-2. Rename the copy → NN-your-slug/  (e.g. 02-what-booklesss-is/)
-3. Rename this file → build_carousel_NN.py
-4. Update OUT_NAME and TOTAL below
-5. Edit the slide() calls inside build()
-6. python3 build_carousel_NN.py
-
-One slide = one slide() call:
-  slide(c, grain, logo, n, "LABEL", big=[...], body=[...])
-
-Type scale:
-  big  — 40 pt Parastoo-Bold  — punchy 2–4 word lines (hook, reveal, CTA)
-  body — 28 pt Parastoo       — short explanation, 3–6 lines max
-  label — 7 pt Aptos-Bold tracked — eyebrow above every block
-
-Line length guide:
-  big  — keep lines under 13 chars
-  body — keep lines under 18 chars
-  Pass '' in a body list for a half-line gap.
-
-Lines that run long are auto-shrunk to fit the column, but that breaks the
-type scale across slides — treat the shrink as a safety net, not a licence.
-Content is optically centred in the live zone; no manual y positions.
+Booklesss carousel 02 — What is Booklesss?
+9:16 (108mm × 192mm). One page = one slide.
+Run: python3 build_carousel_02.py
 """
 
 from pathlib import Path
@@ -38,10 +16,9 @@ HERE  = Path(__file__).resolve().parent
 ROOT  = HERE.parent.parent.parent
 BRAND = ROOT / "_dev" / "brand"
 FONTS = ROOT / "_dev" / "fonts"
+OUT   = HERE / "Carousel_02.pdf"
 
-OUT_NAME = "Carousel_NN.pdf"   # ← CHANGE THIS (e.g. "Carousel_02.pdf")
-TOTAL    = 3                    # ← CHANGE THIS (number of slides)
-OUT      = HERE / OUT_NAME
+TOTAL = 6
 
 pdfmetrics.registerFont(TTFont("Parastoo-Bold", FONTS / "Parastoo-Bold.ttf"))
 pdfmetrics.registerFont(TTFont("Parastoo",      FONTS / "Parastoo.ttf"))
@@ -65,7 +42,7 @@ LIVE_TOP = H - 20 * mm
 LIVE_BOT = 16 * mm
 
 
-# ── Draw helpers (do not edit) ────────────────────────────────────────────────
+# ── Draw helpers (shared with _template — keep in sync) ───────────────────────
 
 def _bg(c, grain):
     c.setFillColorRGB(*BG)
@@ -154,7 +131,7 @@ def slide(c, grain, logo, n, label, big=None, body=None, gap=6 * mm):
     c.showPage()
 
 
-# ── SLIDES — edit below this line ─────────────────────────────────────────────
+# ── Slides ────────────────────────────────────────────────────────────────────
 
 def build():
     grain = ImageReader(str(BRAND / "grain.png"))                if (BRAND / "grain.png").exists()                else None
@@ -162,19 +139,41 @@ def build():
 
     c = rl_canvas.Canvas(str(OUT), pagesize=(W, H))
 
-    # 1 / N — HOOK: 2–4 big lines, max 13 chars each
-    slide(c, grain, logo, 1, "LABEL HERE",
-          big=["Short punchy", "hook here."])
+    # 1 / 6 — Hook
+    slide(c, grain, logo, 1, "ZCAS  ·  UNZA",
+          big=["What is", "Booklesss?"])
 
-    # 2 / N — BODY: max 18 chars per line, '' = half-line gap
-    slide(c, grain, logo, 2, "LABEL HERE",
-          body=["Short explanation",
-                "line by line.",
+    # 2 / 6 — The short version
+    slide(c, grain, logo, 2, "THE SHORT VERSION",
+          big=["A workspace", "for your", "course."])
+
+    # 3 / 6 — One place
+    slide(c, grain, logo, 3, "ONE PLACE",
+          body=["Everything you",
+                "need to keep up,",
+                "in one place,",
                 "",
-                "After the gap."])
+                "ready when",
+                "you are."])
 
-    # 3 / N — CTA (always last)
-    slide(c, grain, logo, 3, "START HERE",
+    # 4 / 6 — What's inside
+    slide(c, grain, logo, 4, "WHAT'S INSIDE",
+          body=["Every topic,",
+                "rebuilt as short,",
+                "readable steps.",
+                "",
+                "Dropped weekly."])
+
+    # 5 / 6 — Courses
+    slide(c, grain, logo, 5, "COURSES",
+          body=["Three courses",
+                "live now.",
+                "",
+                "More on",
+                "the way."])
+
+    # 6 / 6 — CTA
+    slide(c, grain, logo, 6, "START HERE",
           big=["booklesss", ".framer.ai"],
           body=["ZCAS · UNZA", "students."])
 
