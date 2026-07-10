@@ -1,0 +1,829 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Step 2.1 · Working Capital &amp; Liquidity Management — Booklesss</title>
+<style>
+  :root {
+    --canvas: #F9FAFB;
+    --surface: #FFFFFF;
+    --ink: #18181B;
+    --steel: #71717A;
+    --meta: #94A3B8;
+    --border: rgba(226, 232, 240, 0.55);
+    --amber: #C17E3A;
+    --amber-soft: rgba(193, 126, 58, 0.08);
+    --amber-line: rgba(193, 126, 58, 0.35);
+    --navy: #1B2A4A;
+    --shadow: 0 20px 40px -15px rgba(24, 24, 27, 0.05);
+    --tip-bg: #1B1B1F;
+    --tip-ink: #F4F4F5;
+    --tip-steel: #A1A1AA;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --canvas: #121215;
+      --surface: #1A1A1E;
+      --ink: #F2F2F3;
+      --steel: #A1A1AA;
+      --meta: #6E6E78;
+      --border: rgba(255, 255, 255, 0.09);
+      --amber: #D69455;
+      --amber-soft: rgba(214, 148, 85, 0.10);
+      --amber-line: rgba(214, 148, 85, 0.40);
+      --navy: #8FA6CE;
+      --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.35);
+      --tip-bg: #26262B;
+      --tip-ink: #F4F4F5;
+      --tip-steel: #A1A1AA;
+    }
+  }
+  :root[data-theme="light"] {
+    --canvas: #F9FAFB;
+    --surface: #FFFFFF;
+    --ink: #18181B;
+    --steel: #71717A;
+    --meta: #94A3B8;
+    --border: rgba(226, 232, 240, 0.55);
+    --amber: #C17E3A;
+    --amber-soft: rgba(193, 126, 58, 0.08);
+    --amber-line: rgba(193, 126, 58, 0.35);
+    --navy: #1B2A4A;
+    --shadow: 0 20px 40px -15px rgba(24, 24, 27, 0.05);
+    --tip-bg: #1B1B1F;
+    --tip-ink: #F4F4F5;
+    --tip-steel: #A1A1AA;
+  }
+  :root[data-theme="dark"] {
+    --canvas: #121215;
+    --surface: #1A1A1E;
+    --ink: #F2F2F3;
+    --steel: #A1A1AA;
+    --meta: #6E6E78;
+    --border: rgba(255, 255, 255, 0.09);
+    --amber: #D69455;
+    --amber-soft: rgba(214, 148, 85, 0.10);
+    --amber-line: rgba(214, 148, 85, 0.40);
+    --navy: #8FA6CE;
+    --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.35);
+    --tip-bg: #26262B;
+    --tip-ink: #F4F4F5;
+    --tip-steel: #A1A1AA;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: "Geist", "Satoshi", "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 1.0625rem;
+    line-height: 1.68;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection { background: var(--amber-soft); color: var(--ink); }
+  .content ::selection { background: rgba(193, 126, 58, 0.22); }
+
+  /* ── Progress bar ─────────────────────────────── */
+  .progress {
+    position: fixed; top: 0; left: 0; height: 2px; width: 0%;
+    background: var(--amber); z-index: 40;
+  }
+
+  /* ── Shell ────────────────────────────────────── */
+  .shell {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: clamp(1rem, 4vw, 2.5rem) clamp(1.1rem, 5vw, 2rem) 6rem;
+  }
+
+  /* ── Top bar ──────────────────────────────────── */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; padding: 0.4rem 0 1.8rem;
+  }
+  .wordmark {
+    font-weight: 800; letter-spacing: -0.02em; font-size: 1rem;
+    color: var(--ink); text-decoration: none;
+  }
+  .wordmark span { color: var(--amber); }
+  .coursechip {
+    font-family: "Geist Mono", "JetBrains Mono", ui-monospace, monospace;
+    font-size: 0.6875rem; letter-spacing: 0.06em;
+    color: var(--steel);
+    border: 1px solid var(--border); border-radius: 999px;
+    padding: 0.3rem 0.75rem; white-space: nowrap;
+  }
+
+  /* ── Header ───────────────────────────────────── */
+  header.step { padding: 1.5rem 0 0.5rem; }
+  .eyebrow {
+    display: block;
+    font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 0.9rem;
+  }
+  h1 {
+    font-size: clamp(2rem, 5.5vw, 3rem);
+    font-weight: 800; letter-spacing: -0.025em; line-height: 1.08;
+    margin: 0 0 1rem; text-wrap: balance;
+  }
+  .standfirst {
+    font-size: 1.125rem; color: var(--steel); line-height: 1.6;
+    margin: 0 0 1.6rem; max-width: 36rem;
+  }
+  .metarow {
+    display: flex; flex-wrap: wrap; gap: 0.5rem 1.4rem;
+    font-family: "Geist Mono", "JetBrains Mono", ui-monospace, monospace;
+    font-size: 0.75rem; color: var(--meta);
+    padding-bottom: 1.8rem; border-bottom: 1px solid var(--border);
+  }
+
+  /* ── Highlight hint pill ──────────────────────── */
+  .hint {
+    display: flex; align-items: flex-start; gap: 0.7rem;
+    margin: 1.6rem 0 0;
+    background: var(--amber-soft);
+    border: 1px solid var(--amber-line);
+    border-radius: 1rem;
+    padding: 0.85rem 1rem;
+    font-size: 0.875rem; color: var(--ink); line-height: 1.5;
+  }
+  .hint svg { flex: none; margin-top: 0.15rem; color: var(--amber); }
+  .hint b { font-weight: 700; }
+
+  /* ── Sections ─────────────────────────────────── */
+  section { padding: 2.6rem 0 0.4rem; }
+  h2 {
+    font-size: clamp(1.35rem, 3vw, 1.65rem);
+    font-weight: 750; letter-spacing: -0.02em; line-height: 1.2;
+    margin: 0 0 1rem; text-wrap: balance;
+  }
+  h3 {
+    font-size: 1.0625rem; font-weight: 700; letter-spacing: -0.01em;
+    margin: 1.8rem 0 0.5rem;
+  }
+  p { margin: 0 0 1rem; max-width: 65ch; }
+  section + section { border-top: 1px solid var(--border); margin-top: 2.2rem; }
+
+  /* ── Inline source chip ───────────────────────── */
+  .src {
+    display: inline-flex; align-items: center; gap: 0.32rem;
+    vertical-align: baseline;
+    transform: translateY(0.1em);
+    margin: 0 0.1rem;
+    padding: 0.05rem 0.55rem 0.05rem 0.3rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.01em;
+    line-height: 1.5;
+    color: var(--steel);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: border-color 200ms cubic-bezier(0.16,1,0.3,1),
+                color 200ms cubic-bezier(0.16,1,0.3,1),
+                transform 200ms cubic-bezier(0.16,1,0.3,1);
+  }
+  .src:hover, .src:focus-visible { border-color: var(--amber-line); color: var(--ink); transform: translateY(-1px); }
+  .src:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+  .src .ico {
+    position: relative; width: 15px; height: 15px; flex: none;
+    border-radius: 4px; overflow: hidden;
+  }
+  .src .ico .mono {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8.5px; font-weight: 800; color: #fff;
+    font-family: "Geist Mono", ui-monospace, monospace;
+  }
+  .src .ico img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    display: block; object-fit: cover;
+  }
+
+  /* ── Formula box ──────────────────────────────── */
+  .formula-wrap {
+    background: rgba(24,24,27,0.035);
+    border: 1px solid var(--border);
+    border-radius: 1.25rem;
+    padding: 0.375rem;
+    margin: 1.2rem 0 1.4rem;
+  }
+  :root[data-theme="dark"] .formula-wrap { background: rgba(255,255,255,0.03); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .formula-wrap { background: rgba(255,255,255,0.03); } }
+  .formula {
+    background: var(--surface);
+    border-radius: 0.9rem;
+    box-shadow: var(--shadow);
+    padding: 1.1rem 1.25rem;
+    overflow-x: auto;
+  }
+  .formula pre {
+    margin: 0;
+    font-family: "Geist Mono", "JetBrains Mono", ui-monospace, monospace;
+    font-size: 0.8125rem; line-height: 1.8;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .formula .op { color: var(--amber); }
+
+  /* ── Callouts ─────────────────────────────────── */
+  .callout {
+    border-left: 2px solid var(--amber);
+    background: var(--amber-soft);
+    border-radius: 0 0.9rem 0.9rem 0;
+    padding: 0.9rem 1.15rem;
+    margin: 1.3rem 0 1.4rem;
+    font-size: 0.9375rem; line-height: 1.6;
+    max-width: 62ch;
+  }
+  .callout .tag {
+    display: block; font-size: 0.625rem; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--amber); margin-bottom: 0.35rem;
+  }
+
+  /* ── Discussion question ──────────────────────── */
+  .discuss {
+    margin: 1.8rem 0;
+    border: 1px dashed var(--amber-line);
+    border-radius: 1.1rem;
+    padding: 1.05rem 1.25rem;
+    max-width: 62ch;
+  }
+  .discuss .tag {
+    display: block; font-size: 0.625rem; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--amber); margin-bottom: 0.4rem;
+  }
+  .discuss p { margin: 0; font-size: 0.9688rem; }
+
+  /* ── Tables ───────────────────────────────────── */
+  .tbl-wrap { overflow-x: auto; margin: 1.1rem 0 1.4rem; border: 1px solid var(--border); border-radius: 1rem; background: var(--surface); box-shadow: var(--shadow); }
+  table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 0.875rem; line-height: 1.5; }
+  th {
+    text-align: left; font-size: 0.6563rem; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--steel);
+    padding: 0.75rem 1rem 0.6rem; border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  td { padding: 0.7rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { font-weight: 650; white-space: nowrap; }
+  td.num { font-family: "Geist Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; font-size: 0.8125rem; white-space: nowrap; }
+
+  ul.tick { list-style: none; padding: 0; margin: 0.4rem 0 1.2rem; max-width: 62ch; }
+  ul.tick li { position: relative; padding: 0.22rem 0 0.22rem 1.4rem; }
+  ul.tick li::before {
+    content: ""; position: absolute; left: 0.15rem; top: 0.85em;
+    width: 0.45rem; height: 0.45rem; border-radius: 2px;
+    background: var(--amber); opacity: 0.75;
+  }
+
+  ol.outcomes { padding-left: 1.3rem; margin: 0.4rem 0 1rem; max-width: 62ch; }
+  ol.outcomes li { padding: 0.3rem 0; }
+  ol.outcomes li::marker { color: var(--amber); font-weight: 700; }
+
+  /* ── Sources list ─────────────────────────────── */
+  .sources-list { list-style: none; padding: 0; margin: 0.6rem 0 0; display: grid; gap: 0.5rem; }
+  .sources-list li a {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border); border-radius: 0.9rem;
+    background: var(--surface);
+    text-decoration: none; color: var(--ink);
+    font-size: 0.9063rem;
+    transition: border-color 200ms cubic-bezier(0.16,1,0.3,1), transform 200ms cubic-bezier(0.16,1,0.3,1);
+  }
+  .sources-list li a:hover { border-color: var(--amber-line); transform: translateY(-1px); }
+  .sources-list .ico { position: relative; width: 22px; height: 22px; flex: none; border-radius: 6px; overflow: hidden; }
+  .sources-list .ico .mono {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; color: #fff;
+    font-family: "Geist Mono", ui-monospace, monospace;
+  }
+  .sources-list .ico img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .sources-list .dom {
+    margin-left: auto;
+    font-family: "Geist Mono", ui-monospace, monospace;
+    font-size: 0.6875rem; color: var(--meta); white-space: nowrap;
+  }
+
+  /* ── Community closer ─────────────────────────── */
+  .closer {
+    margin-top: 3rem;
+    border-top: 1px solid var(--border);
+    padding-top: 2.2rem;
+    color: var(--steel); font-size: 0.9375rem;
+  }
+  .closer .next {
+    font-family: "Geist Mono", ui-monospace, monospace;
+    font-size: 0.75rem; color: var(--meta); margin-top: 1.2rem;
+  }
+
+  /* ── Selection tooltip ────────────────────────── */
+  .tip {
+    position: fixed; z-index: 60;
+    width: min(20.5rem, calc(100vw - 1.5rem));
+    background: var(--tip-bg); color: var(--tip-ink);
+    border-radius: 1rem;
+    box-shadow: 0 24px 48px -12px rgba(0,0,0,0.35);
+    padding: 0.85rem 1rem 0.95rem;
+    opacity: 0; transform: translateY(6px) scale(0.98);
+    pointer-events: none;
+    transition: opacity 220ms cubic-bezier(0.16,1,0.3,1),
+                transform 220ms cubic-bezier(0.16,1,0.3,1);
+  }
+  .tip.show { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+  .tip .tip-head {
+    display: flex; align-items: center; gap: 0.45rem;
+    font-size: 0.625rem; font-weight: 700; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--amber);
+    margin-bottom: 0.5rem;
+  }
+  .tip .tip-head .dot {
+    width: 6px; height: 6px; border-radius: 999px; background: var(--amber);
+    animation: pulse 1.6s cubic-bezier(0.16,1,0.3,1) infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
+  .tip .tip-term {
+    font-weight: 750; font-size: 0.9375rem; letter-spacing: -0.01em;
+    margin: 0 0 0.35rem; line-height: 1.3;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .tip .tip-body { font-size: 0.8438rem; line-height: 1.55; color: var(--tip-steel); margin: 0; }
+  .tip .tip-body b { color: var(--tip-ink); font-weight: 650; }
+  .tip .tip-shimmer { display: grid; gap: 0.45rem; margin: 0.55rem 0 0.6rem; }
+  .tip .tip-shimmer span {
+    height: 0.55rem; border-radius: 999px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.07) 25%, rgba(255,255,255,0.16) 50%, rgba(255,255,255,0.07) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s linear infinite;
+  }
+  .tip .tip-shimmer span:nth-child(2) { width: 82%; }
+  .tip .tip-shimmer span:nth-child(3) { width: 58%; }
+  @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+  .tip .tip-foot {
+    margin-top: 0.6rem; padding-top: 0.55rem;
+    border-top: 1px solid rgba(255,255,255,0.09);
+    display: flex; align-items: center; justify-content: space-between; gap: 0.6rem;
+    font-size: 0.6563rem; color: var(--tip-steel);
+    font-family: "Geist Mono", ui-monospace, monospace;
+  }
+  .tip .tip-foot .badge {
+    border: 1px solid rgba(255,255,255,0.14); border-radius: 999px;
+    padding: 0.12rem 0.5rem; white-space: nowrap;
+  }
+  .tip::after {
+    content: ""; position: absolute; width: 12px; height: 12px;
+    background: var(--tip-bg); transform: rotate(45deg);
+    border-radius: 2px;
+    left: var(--arrow-x, 50%); margin-left: -6px;
+  }
+  .tip[data-place="above"]::after { bottom: -5px; }
+  .tip[data-place="below"]::after { top: -5px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tip, .src, .sources-list li a { transition: none; }
+    .tip .tip-head .dot, .tip .tip-shimmer span { animation: none; }
+  }
+
+  @media (max-width: 480px) {
+    body { font-size: 1rem; }
+    .metarow { gap: 0.4rem 1rem; }
+    table { min-width: 480px; }
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<div class="shell">
+
+  <div class="topbar">
+    <a class="wordmark" href="https://booklesss.framer.ai" target="_blank" rel="noopener">Booklesss<span>.</span></a>
+    <span class="coursechip">BBF4302 · ZCAS</span>
+  </div>
+
+  <header class="step">
+    <span class="eyebrow">Treasury Management · Lesson 2 · Step 2.1</span>
+    <h1>Working Capital &amp; Liquidity Management</h1>
+    <p class="standfirst">The cash cycle, working capital policy, debtor management, and factoring — the machinery that keeps a business solvent between the day it pays for inputs and the day customers pay it back.</p>
+    <div class="metarow">
+      <span>~12 min read</span>
+      <span>5 sections</span>
+      <span>2 worked examples</span>
+      <span>Interactive definitions</span>
+    </div>
+    <div class="hint">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>
+      <div><b>Try it:</b> double-tap any word, or highlight a phrase, and Booklesss will explain it in place. Key terms come from this step; everything else shows the AI explanation preview.</div>
+    </div>
+  </header>
+
+  <div class="content" id="content">
+
+    <section>
+      <span class="eyebrow">Foundations</span>
+      <h2>What is Working Capital?</h2>
+      <p>Working capital is current assets minus current liabilities. That&rsquo;s the technical definition <a class="src" href="https://www.investopedia.com/terms/w/workingcapital.asp" target="_blank" rel="noopener" data-dom="investopedia.com" data-mono="I" data-color="#0E5F4C"><span class="ico"></span>Investopedia</a>. In practice, it&rsquo;s the pool of cash and near-cash resources a business has available to keep running day-to-day.</p>
+      <p>If current assets exceed current liabilities, the company has a surplus — usually sitting in bank deposits or short-term investments. If liabilities exceed assets, there&rsquo;s a deficit, and the company is typically running on an overdraft or short-term loan.</p>
+      <p>Treasury&rsquo;s job is to manage this pool as efficiently as possible. Too little working capital and the business can&rsquo;t pay its suppliers. Too much and money sits idle earning nothing when it could be in productive assets.</p>
+      <div class="callout">
+        <span class="tag">Worth remembering</span>
+        Even a profitable business can fail without adequate working capital. Cash is king — not profit. A company can be profitable on paper and still collapse if it can&rsquo;t meet its near-term obligations.
+      </div>
+    </section>
+
+    <section>
+      <span class="eyebrow">Strategy</span>
+      <h2>Working Capital Policy</h2>
+      <p>Every company makes two decisions that together define its working capital policy <a class="src" href="https://www.accaglobal.com/gb/en/student/exam-support-resources/fundamentals-exams-study-resources/f9/technical-articles.html" target="_blank" rel="noopener" data-dom="accaglobal.com" data-mono="A" data-color="#C22032"><span class="ico"></span>ACCA</a>.</p>
+
+      <h3>1. The Investment Decision — how much to hold</h3>
+      <p>Companies must hold minimum levels of cash and inventory to keep operations running. The question is: how much safety stock on top of that minimum?</p>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Policy</th><th>What it means</th><th>Return</th><th>Risk</th></tr></thead>
+        <tbody>
+          <tr><td>Aggressive</td><td>Minimal safety stock. Lean inventory, tight cash buffers.</td><td>Higher — less idle capital</td><td>Higher — can&rsquo;t respond to demand spikes</td></tr>
+          <tr><td>Conservative</td><td>Large safety stocks. Generous cash buffers.</td><td>Lower — more capital tied up</td><td>Lower — rarely caught short</td></tr>
+          <tr><td>Moderate</td><td>Balanced approach between the two extremes.</td><td>Middle ground</td><td>Middle ground</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>2. The Financing Decision — how to fund it</h3>
+      <p>This is about the mix of short-term vs long-term debt used to finance the asset base.</p>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Policy</th><th>How it works</th><th>Return</th><th>Risk</th></tr></thead>
+        <tbody>
+          <tr><td>Aggressive</td><td>Part of the permanent asset base funded by short-term debt.</td><td>Highest — short-term debt costs less</td><td>Highest — must be rolled over</td></tr>
+          <tr><td>Conservative</td><td>Permanent assets funded by long-term debt only.</td><td>Lowest</td><td>Lowest</td></tr>
+          <tr><td>Maturity matching</td><td>Match funding maturity to asset life.</td><td>Middle</td><td>Middle</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout">
+        <span class="tag">Exam tip</span>
+        In both decisions, aggressive = higher return AND higher risk. Conservative = lower return AND lower risk. Always state both sides when the exam asks you to evaluate a policy.
+      </div>
+    </section>
+
+    <section>
+      <span class="eyebrow">Measurement</span>
+      <h2>The Cash Conversion Cycle</h2>
+      <p>The operating cycle is the time between paying cash for inputs and receiving cash from sales. The cash conversion cycle (CCC) measures this precisely <a class="src" href="https://corporatefinanceinstitute.com/resources/accounting/cash-conversion-cycle/" target="_blank" rel="noopener" data-dom="corporatefinanceinstitute.com" data-mono="C" data-color="#1B2A4A"><span class="ico"></span>CFI</a>:</p>
+      <div class="formula-wrap"><div class="formula"><pre>CCC  <span class="op">=</span>  Days Inventory  <span class="op">+</span>  Days Receivables  <span class="op">&minus;</span>  Days Payables
+
+Days Inventory    <span class="op">=</span>  (Inventory &divide; Cost of Goods Sold)  <span class="op">&times;</span>  365
+Days Receivables  <span class="op">=</span>  (Accounts Receivable &divide; Revenue)   <span class="op">&times;</span>  365
+Days Payables     <span class="op">=</span>  (Accounts Payable &divide; COGS)         <span class="op">&times;</span>  365</pre></div></div>
+      <p>The longer the CCC, the more working capital the business needs to fund. A company with a 90-day CCC has to finance 90 days of operations before cash comes in <a class="src" href="https://www.investopedia.com/terms/c/cashconversioncycle.asp" target="_blank" rel="noopener" data-dom="investopedia.com" data-mono="I" data-color="#0E5F4C"><span class="ico"></span>Investopedia</a>.</p>
+
+      <h3>Worked Example — Zanaco Distributors Ltd</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Item</th><th>Value (ZMW)</th></tr></thead>
+        <tbody>
+          <tr><td>Inventory</td><td class="num">K2,600,000</td></tr>
+          <tr><td>Accounts Receivable</td><td class="num">K1,700,000</td></tr>
+          <tr><td>Accounts Payable</td><td class="num">K1,600,000</td></tr>
+          <tr><td>Annual Revenue</td><td class="num">K15,000,000</td></tr>
+          <tr><td>Cost of Goods Sold</td><td class="num">K9,200,000</td></tr>
+        </tbody>
+      </table></div>
+      <div class="formula-wrap"><div class="formula"><pre>Step 1:  Days Inventory    <span class="op">=</span> (K2,600,000 &divide; K9,200,000)  <span class="op">&times;</span> 365 <span class="op">=</span> 103.15 days
+Step 2:  Days Receivables  <span class="op">=</span> (K1,700,000 &divide; K15,000,000) <span class="op">&times;</span> 365 <span class="op">=</span>  41.37 days
+Step 3:  Days Payables     <span class="op">=</span> (K1,600,000 &divide; K9,200,000)  <span class="op">&times;</span> 365 <span class="op">=</span>  63.48 days
+
+CCC  <span class="op">=</span>  103.15 <span class="op">+</span> 41.37 <span class="op">&minus;</span> 63.48  <span class="op">=</span>  81.04 days
+Cash Turnover  <span class="op">=</span>  365 &divide; 81.04  <span class="op">=</span>  4.5 times per year</pre></div></div>
+      <p>Zanaco Distributors takes just over 81 days from paying for goods to collecting cash. Cash turns over 4.5 times a year. Shortening any component — collecting faster, turning inventory quicker, paying suppliers later — directly reduces funding requirements.</p>
+
+      <div class="discuss">
+        <span class="tag">Discuss in the channel</span>
+        <p>Something worth sitting with: if Zanaco ran this same calculation next year and the CCC jumped from 81 days to 120 days — what&rsquo;s the most likely cause, and which number would you look at first to diagnose it?</p>
+      </div>
+
+      <h3>Steps to Shorten the CCC</h3>
+      <ul class="tick">
+        <li>Collect debts faster — reduce debtor days through tighter credit terms or discounts</li>
+        <li>Turn inventory faster — reduce stock holding periods and production time</li>
+        <li>Reduce raw material inventory — order more frequently in smaller quantities</li>
+        <li>Negotiate longer supplier credit — extend payable days without damaging relationships</li>
+      </ul>
+    </section>
+
+    <section>
+      <span class="eyebrow">Debtors</span>
+      <h2>Debtor Management &amp; Credit Control</h2>
+      <p>Extending credit to customers ties up cash. The goal is to find the level of credit and discount terms that maximises profit — not just minimises days outstanding.</p>
+
+      <h3>Assessing a Customer&rsquo;s Creditworthiness</h3>
+      <ul class="tick">
+        <li>Bank references — Zambian banks provide references on their customers</li>
+        <li>Trade references — existing suppliers can confirm payment history</li>
+        <li>Published accounts — annual reports indicate general financial health</li>
+        <li>Credit Reference Bureau — Zambia&rsquo;s credit registry holds borrowing data across banks</li>
+        <li>Own sales records — for existing customers, the sales ledger shows payment patterns</li>
+      </ul>
+
+      <h3>Cash Discounts — Cost to the Buyer</h3>
+      <p>Credit terms like &lsquo;2/10 net 30&rsquo; mean: take a 2% discount if you pay within 10 days, or pay the full amount by day 30. The buyer has to decide whether the discount is worth it.</p>
+      <div class="formula-wrap"><div class="formula"><pre>Annual cost of NOT taking the discount:
+
+Cost  <span class="op">=</span>  [D &divide; (100 &minus; D)]  <span class="op">&times;</span>  [365 &divide; (N &minus; T)]
+
+Where:  D = discount %,  N = net period,  T = discount period</pre></div></div>
+
+      <h3>Worked Example — 2/10 net 30</h3>
+      <p>A buyer is offered terms 2/10 net 30. Short-term borrowing rate is 8%. Should they take the discount?</p>
+      <div class="formula-wrap"><div class="formula"><pre>Cost  <span class="op">=</span>  [2 &divide; (100 &minus; 2)]  <span class="op">&times;</span>  [365 &divide; (30 &minus; 10)]
+      <span class="op">=</span>  0.0204  <span class="op">&times;</span>  18.25
+      <span class="op">=</span>  37.23% per annum
+
+Borrowing cost: 8% p.a.
+Decision: borrow at 8% and take the discount — forgoing it costs 37.23%.</pre></div></div>
+      <div class="callout">
+        <span class="tag">Decision rule</span>
+        Always compare the annual cost of forgoing the discount against the cost of short-term borrowing. If borrowing is cheaper, take the discount. 37.23% vs 8% makes this a straightforward call.
+      </div>
+    </section>
+
+    <section>
+      <span class="eyebrow">Outsourcing</span>
+      <h2>Factoring vs Invoice Discounting</h2>
+      <p>Rather than managing receivables in-house, companies can outsource them. Two options: factoring and invoice discounting <a class="src" href="https://www.investopedia.com/terms/f/factor.asp" target="_blank" rel="noopener" data-dom="investopedia.com" data-mono="I" data-color="#0E5F4C"><span class="ico"></span>Investopedia</a>.</p>
+
+      <h3>Factoring</h3>
+      <p>A factoring company takes on your sales ledger. It advances a percentage of invoice value immediately (typically 80&ndash;85%), then pays the remainder — less its fees — when the customer settles. Full-service factors also assess customer credit and chase overdue accounts.</p>
+      <p>Non-recourse factoring means the factor absorbs credit risk. Recourse factoring means the risk stays with you.</p>
+
+      <h3>Worked Example — Mutengo Plc</h3>
+      <p>Mutengo Plc imports commodities sold to reliable customers. Monthly invoices: K300,000. Average credit period: 2.5 months.</p>
+      <ul class="tick">
+        <li>Service fee: 2.5% of total invoices</li>
+        <li>Advance: 85% of invoiced amounts at 13% p.a. interest</li>
+        <li>Admin cost savings: K95,000 per year avoided</li>
+      </ul>
+      <div class="formula-wrap"><div class="formula"><pre>Annual sales:  K300,000 <span class="op">&times;</span> 12  <span class="op">=</span>  K3,600,000
+
+Factoring fee:  2.5% <span class="op">&times;</span> K3,600,000                    <span class="op">=</span>  K90,000
+Interest:  (2.5/12) <span class="op">&times;</span> K3,600,000 <span class="op">&times;</span> 85% <span class="op">&times;</span> 13%       <span class="op">=</span>  K82,875
+Total factoring cost:                                  K172,875
+Less: admin cost savings:                            <span class="op">&minus;</span> K95,000
+Net cost of factoring:                                 K77,875
+
+Alternative — bank overdraft on K637,500 at 12.5%   <span class="op">=</span>  K79,688
+Factoring saving:                                     ~K1,800</pre></div></div>
+      <p>Factoring saves Mutengo about K1,800 per year versus the overdraft — and eliminates the burden of running the sales ledger. For a company that doesn&rsquo;t want credit management as a core function, the numbers make sense.</p>
+
+      <h3>Invoice Discounting</h3>
+      <p>Invoice discounting provides the same finance without handing over your sales ledger. Customers don&rsquo;t know a third party is involved. It&rsquo;s cheaper than factoring and keeps the customer relationship entirely in your hands.</p>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th></th><th>Factoring</th><th>Invoice Discounting</th></tr></thead>
+        <tbody>
+          <tr><td>Sales ledger</td><td>Factor manages it</td><td>Company manages it</td></tr>
+          <tr><td>Customer awareness</td><td>Customers know</td><td>Customers don&rsquo;t know</td></tr>
+          <tr><td>Cost</td><td>Higher</td><td>Lower</td></tr>
+          <tr><td>Best for</td><td>Full outsourcing</td><td>Finance only</td></tr>
+          <tr><td>Credit risk (non-recourse)</td><td>Factor absorbs</td><td>Company retains</td></tr>
+        </tbody>
+      </table></div>
+
+      <div class="discuss">
+        <span class="tag">Discuss in the channel</span>
+        <p>One that exam questions like to test: under what circumstances would you recommend factoring over invoice discounting even if factoring costs more? Think about what else the company gains beyond the finance itself.</p>
+      </div>
+    </section>
+
+    <section>
+      <span class="eyebrow">Outcomes</span>
+      <h2>What You Should Now Be Able To Do</h2>
+      <ol class="outcomes">
+        <li>Define working capital and explain why a profitable business can still fail without adequate liquidity</li>
+        <li>Distinguish between aggressive, conservative, and moderate working capital policies for both investment and financing decisions</li>
+        <li>Calculate the cash conversion cycle and identify which components to target to shorten it</li>
+        <li>Assess whether a buyer should take a trade discount using the annual cost formula</li>
+        <li>Explain how factoring works and calculate the net cost of a factoring arrangement</li>
+        <li>Compare factoring and invoice discounting and explain when each is more appropriate</li>
+      </ol>
+    </section>
+
+    <section>
+      <span class="eyebrow">Sources</span>
+      <h2>Where This Step Draws From</h2>
+      <p>Inline citations above link to the exact pages. Full list:</p>
+      <ul class="sources-list">
+        <li><a href="https://www.investopedia.com/terms/w/workingcapital.asp" target="_blank" rel="noopener" data-dom="investopedia.com" data-mono="I" data-color="#0E5F4C"><span class="ico"></span>Working Capital — Definition &amp; Formula<span class="dom">investopedia.com</span></a></li>
+        <li><a href="https://www.investopedia.com/terms/c/cashconversioncycle.asp" target="_blank" rel="noopener" data-dom="investopedia.com" data-mono="I" data-color="#0E5F4C"><span class="ico"></span>Cash Conversion Cycle (CCC)<span class="dom">investopedia.com</span></a></li>
+        <li><a href="https://corporatefinanceinstitute.com/resources/accounting/cash-conversion-cycle/" target="_blank" rel="noopener" data-dom="corporatefinanceinstitute.com" data-mono="C" data-color="#1B2A4A"><span class="ico"></span>Cash Conversion Cycle — CFI Resources<span class="dom">corporatefinanceinstitute.com</span></a></li>
+        <li><a href="https://www.accaglobal.com/gb/en/student/exam-support-resources/fundamentals-exams-study-resources/f9/technical-articles.html" target="_blank" rel="noopener" data-dom="accaglobal.com" data-mono="A" data-color="#C22032"><span class="ico"></span>ACCA FM Technical Articles — Working Capital<span class="dom">accaglobal.com</span></a></li>
+        <li><a href="https://www.investopedia.com/terms/f/factor.asp" target="_blank" rel="noopener" data-dom="investopedia.com" data-mono="I" data-color="#0E5F4C"><span class="ico"></span>Factoring — How It Works<span class="dom">investopedia.com</span></a></li>
+      </ul>
+    </section>
+
+    <div class="closer">
+      <p>That question about factoring vs invoice discounting is exactly the kind of thing the channel is for — drop your take and see how others reasoned it. When you&rsquo;re comfortable with the cash cycle, the inventory side of it is where the real savings hide.</p>
+      <p class="next">NEXT: 2.2 — INVENTORY MANAGEMENT, EOQ &amp; CREDITOR MANAGEMENT</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="tip" id="tip" data-place="above" role="tooltip" aria-live="polite"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ── Source favicons ──
+     Brand-styled inline marks render immediately and everywhere.
+     On top of them we try the site's real favicon (Google service, then
+     DuckDuckGo). Sandboxed viewers block external images, so the inline
+     mark stays; opened directly or hosted, the live favicon takes over. */
+  var BRAND = {
+    "investopedia.com":
+      "<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>" +
+      "<rect width='24' height='24' rx='5' fill='#121212'/>" +
+      "<text x='12' y='17.8' font-family='Georgia,Times New Roman,serif' font-size='16' font-weight='700' fill='#FFFFFF' text-anchor='middle'>I</text></svg>",
+    "corporatefinanceinstitute.com":
+      "<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>" +
+      "<rect width='24' height='24' rx='5' fill='#04323F'/>" +
+      "<text x='12' y='15.6' font-family='Arial,sans-serif' font-size='8' font-weight='800' fill='#86BC25' text-anchor='middle'>CFI</text></svg>",
+    "accaglobal.com":
+      "<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>" +
+      "<rect width='24' height='24' rx='5' fill='#C4122F'/>" +
+      "<text x='12' y='17.4' font-family='Arial,sans-serif' font-size='14' font-weight='800' fill='#FFFFFF' text-anchor='middle'>a</text></svg>"
+  };
+  document.querySelectorAll("[data-dom] .ico").forEach(function (ico) {
+    var a = ico.closest("[data-dom]");
+    var dom = a.dataset.dom;
+    if (BRAND[dom]) {
+      ico.innerHTML = BRAND[dom];
+      ico.firstChild.style.cssText = "position:absolute;inset:0;width:100%;height:100%";
+    } else {
+      var mono = document.createElement("span");
+      mono.className = "mono";
+      mono.textContent = a.dataset.mono || dom.charAt(0).toUpperCase();
+      mono.style.background = a.dataset.color || "#71717A";
+      ico.appendChild(mono);
+    }
+    var urls = [
+      "https://www.google.com/s2/favicons?domain=" + dom + "&sz=64",
+      "https://icons.duckduckgo.com/ip3/" + dom + ".ico"
+    ];
+    var attempt = 0;
+    var img = new Image();
+    img.alt = "";
+    img.referrerPolicy = "no-referrer";
+    img.onload = function () { ico.appendChild(img); };
+    img.onerror = function () { if (++attempt < urls.length) img.src = urls[attempt]; };
+    img.src = urls[attempt];
+  });
+
+  /* ── Reading progress ── */
+  var bar = document.getElementById("progress");
+  function paint() {
+    var doc = document.documentElement;
+    var max = doc.scrollHeight - doc.clientHeight;
+    bar.style.width = (max > 0 ? (doc.scrollTop / max) * 100 : 0) + "%";
+  }
+  document.addEventListener("scroll", function () { requestAnimationFrame(paint); }, { passive: true });
+  paint();
+
+  /* ── Glossary: this step's key terms ── */
+  var GLOSSARY = {
+    "working capital": "Current assets minus current liabilities — the short-term funding available to run operations day-to-day.",
+    "cash conversion cycle": "Days inventory + days receivables − days payables: the time from cash going out to cash coming back in.",
+    "ccc": "The cash conversion cycle — days inventory + days receivables − days payables. The longer it is, the more working capital the business must fund.",
+    "operating cycle": "The time between paying cash for inputs and receiving cash from sales.",
+    "days inventory": "(Inventory ÷ COGS) × 365 — the average number of days inventory is held before being sold.",
+    "days receivables": "(Receivables ÷ Revenue) × 365 — the average number of days it takes to collect payment from customers.",
+    "days payables": "(Payables ÷ COGS) × 365 — the average number of days taken to pay suppliers.",
+    "aggressive": "In working capital policy: minimal safety stocks and/or short-term financing — higher return, higher risk.",
+    "conservative": "In working capital policy: large safety stocks and long-term financing — lower return, lower risk.",
+    "maturity matching": "Financing policy that matches the maturity of funding to the life of the asset it funds.",
+    "factoring": "Outsourcing the sales ledger to a finance company that advances cash against invoices (typically 80–85% up front).",
+    "invoice discounting": "Finance advanced against invoices while the company keeps running its own sales ledger — customers never know.",
+    "non-recourse": "The factor absorbs credit risk — if the customer doesn't pay, the factor covers it.",
+    "recourse": "Credit risk stays with the seller — if the customer defaults, the company repays the factor's advance.",
+    "trade discount": "A reduction offered for early payment, e.g. 2/10 net 30: 2% off if paid within 10 days, full amount by day 30.",
+    "2/10 net 30": "Credit terms: take a 2% discount if you pay within 10 days, or pay in full by day 30.",
+    "overdraft": "A short-term bank facility letting the account go negative up to a limit — flexible but usually expensive.",
+    "liquidity": "How quickly assets can be turned into cash to meet obligations as they fall due.",
+    "safety stock": "Inventory held above the operating minimum as a buffer against demand spikes or supply delays.",
+    "sales ledger": "The record of all credit sales and customer balances — who owes what, and for how long.",
+    "creditworthiness": "A customer's ability and track record of paying debts — assessed via bank/trade references, accounts, and credit bureau data.",
+    "cogs": "Cost of goods sold — the direct cost of producing or buying what the company sells.",
+    "current assets": "Assets expected to convert to cash within a year: inventory, receivables, cash and near-cash.",
+    "current liabilities": "Obligations due within a year: payables, overdrafts, short-term loans.",
+    "receivables": "Money owed to the business by customers who bought on credit.",
+    "payables": "Money the business owes its suppliers for purchases made on credit.",
+    "cash turnover": "365 ÷ CCC — how many times per year the cash cycle completes."
+  };
+  var KEYS = Object.keys(GLOSSARY).sort(function (a, b) { return b.length - a.length; });
+
+  function lookup(text) {
+    var q = text.toLowerCase().replace(/[’']/g, "'").replace(/\s+/g, " ").trim()
+                .replace(/^[^a-z0-9]+|[^a-z0-9%\/]+$/g, "");
+    if (!q) return null;
+    if (GLOSSARY[q]) return { term: q, def: GLOSSARY[q] };
+    var singular = q.replace(/s$/, "");
+    if (GLOSSARY[singular]) return { term: singular, def: GLOSSARY[singular] };
+    for (var i = 0; i < KEYS.length; i++) {
+      if (q.length <= 60 && q.indexOf(KEYS[i]) !== -1) return { term: KEYS[i], def: GLOSSARY[KEYS[i]] };
+    }
+    return null;
+  }
+
+  /* ── Selection tooltip ── */
+  var tip = document.getElementById("tip");
+  var content = document.getElementById("content");
+  var hideTimer = null;
+
+  function esc(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function hideTip() {
+    tip.classList.remove("show");
+  }
+
+  function renderTip(text) {
+    var hit = lookup(text);
+    var shown = text.length > 48 ? text.slice(0, 48).trim() + "…" : text;
+    var head, body, foot;
+    if (hit) {
+      head = "Key term · this step";
+      body = "<p class=\"tip-body\">" + esc(hit.def) + "</p>";
+      foot = "<span>Booklesss definitions</span><span class=\"badge\">AI explain · soon</span>";
+    } else {
+      head = "Booklesss AI · preview";
+      body = "<div class=\"tip-shimmer\"><span></span><span></span><span></span></div>" +
+             "<p class=\"tip-body\">Placeholder — this is where <b>Booklesss AI</b> will explain your highlighted text in plain language, with a ZMW example.</p>";
+      foot = "<span>Coming to every step</span><span class=\"badge\">preview</span>";
+    }
+    tip.innerHTML =
+      "<div class=\"tip-head\"><span class=\"dot\"></span>" + head + "</div>" +
+      "<div class=\"tip-term\">“" + esc(shown) + "”</div>" + body +
+      "<div class=\"tip-foot\">" + foot + "</div>";
+  }
+
+  function placeTip(rect) {
+    var vw = window.innerWidth, margin = 12;
+    tip.style.visibility = "hidden";
+    tip.classList.add("show");
+    var th = tip.offsetHeight, tw = tip.offsetWidth;
+    var cx = rect.left + rect.width / 2;
+    var left = Math.min(Math.max(margin, cx - tw / 2), vw - tw - margin);
+    var top, place;
+    if (rect.top - th - 14 > margin) { top = rect.top - th - 12; place = "above"; }
+    else { top = Math.min(rect.bottom + 12, window.innerHeight - th - margin); place = "below"; }
+    tip.style.left = left + "px";
+    tip.style.top = top + "px";
+    tip.dataset.place = place;
+    var ax = Math.min(Math.max(18, cx - left), tw - 18);
+    tip.style.setProperty("--arrow-x", ax + "px");
+    tip.style.visibility = "";
+  }
+
+  function onSelect() {
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(function () {
+      var sel = window.getSelection();
+      if (!sel || sel.isCollapsed || sel.rangeCount === 0) { hideTip(); return; }
+      var text = sel.toString().trim();
+      if (text.length < 2 || text.length > 300) { hideTip(); return; }
+      var range = sel.getRangeAt(0);
+      var node = range.commonAncestorContainer;
+      var el = node.nodeType === 1 ? node : node.parentElement;
+      if (!content.contains(el)) { hideTip(); return; }
+      var rect = range.getBoundingClientRect();
+      if (rect.width === 0 && rect.height === 0) { hideTip(); return; }
+      renderTip(text);
+      placeTip(rect);
+    }, 60);
+  }
+
+  document.addEventListener("pointerup", onSelect);
+  document.addEventListener("dblclick", onSelect);
+  document.addEventListener("keyup", function (e) {
+    if (e.shiftKey || e.key === "Shift") onSelect();
+  });
+  document.addEventListener("selectionchange", function () {
+    var sel = window.getSelection();
+    if (!sel || sel.isCollapsed) hideTip();
+  });
+  document.addEventListener("scroll", hideTip, { passive: true });
+  window.addEventListener("resize", hideTip);
+})();
+</script>
+
+</body>
+</html>
