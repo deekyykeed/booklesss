@@ -6,12 +6,12 @@
   .bk-orb {
     position: fixed; right: clamp(1rem, 3vw, 1.75rem); bottom: clamp(1rem, 3vw, 1.75rem);
     z-index: 55; display: flex; align-items: center; gap: 0.6rem;
-    font-family: "Familjen Grotesk", "Aptos", system-ui, sans-serif;
+    font-family: "Satoshi", "Onest", system-ui, sans-serif;
   }
   .bk-orb-label {
     order: -1;
-    background: #FFFFFF; color: #18181B;
-    border: 1px solid rgba(226,232,240,0.9);
+    background: #f0efeb; color: #18181B;
+    border: 1px solid #e8e8e8;
     border-radius: 999px;
     padding: 0.5rem 0.85rem; font-size: 0.8125rem; font-weight: 600;
     white-space: nowrap; box-shadow: 0 10px 24px -12px rgba(24,24,27,0.28);
@@ -23,20 +23,20 @@
   .bk-orb[data-state="active"] .bk-orb-label { opacity: 1; transform: none; }
   .bk-orb-label .soon {
     margin-left: 0.45rem; font-size: 0.625rem; font-weight: 700;
-    letter-spacing: 0.08em; text-transform: uppercase; color: #C17E3A;
+    letter-spacing: 0.08em; text-transform: uppercase; color: #c5613f;
   }
   .bk-orb[data-state="active"] .bk-orb-label .soon { display: none; }
   .bk-orb-btn {
     position: relative; width: 60px; height: 60px; flex: none;
     border: none; cursor: pointer; padding: 0; border-radius: 50%;
-    background: #C17E3A; color: #FFFFFF;
-    box-shadow: 0 14px 30px -10px rgba(193,126,58,0.6);
+    background: #c5613f; color: #FFFFFF;
+    box-shadow: 0 14px 30px -10px rgba(197,97,63,0.55);
     display: flex; align-items: center; justify-content: center;
     transition: transform 260ms cubic-bezier(0.16,1,0.3,1), background 260ms cubic-bezier(0.16,1,0.3,1);
   }
   .bk-orb-btn:hover { transform: translateY(-2px); }
   .bk-orb-btn:active { transform: scale(0.96); }
-  .bk-orb-btn:focus-visible { outline: 2px solid #C17E3A; outline-offset: 3px; }
+  .bk-orb-btn:focus-visible { outline: 2px solid #c5613f; outline-offset: 3px; }
   .bk-orb-ic { width: 26px; height: 26px; position: relative; z-index: 2; }
   .bk-orb[data-state="active"] .bk-orb-btn {
     background: #18181B;
@@ -47,7 +47,7 @@
   .bk-orb-rings { position: absolute; inset: 0; pointer-events: none; }
   .bk-orb-rings span {
     position: absolute; inset: 0; border-radius: 50%;
-    border: 2px solid #C17E3A; opacity: 0;
+    border: 2px solid #c5613f; opacity: 0;
   }
   .bk-orb[data-state="active"] .bk-orb-rings span { animation: bk-ring 2.2s cubic-bezier(0.16,1,0.3,1) infinite; }
   .bk-orb[data-state="active"] .bk-orb-rings span:nth-child(2) { animation-delay: 0.73s; }
