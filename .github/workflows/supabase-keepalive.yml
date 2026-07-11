@@ -1,0 +1,17 @@
+# Keeps the free-tier Supabase project from pausing after 7 days idle.
+# Static step pages never depend on Supabase, but logins and progress
+# saves do — this weekly ping keeps auth warm for free.
+name: Supabase keepalive
+
+on:
+  schedule:
+    - cron: '0 6 * * 1,4' # Mondays and Thursdays 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping step-feedback API (touches Supabase auth + DB)
+        run: |
+          curl -sS --max-time 30 "https://booklesss.vercel.app/api/step-feedback?step=keepalive" || true

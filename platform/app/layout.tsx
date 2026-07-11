@@ -1,29 +1,7 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
-import { Poppins, Familjen_Grotesk, Instrument_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
-
-const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-poppins',
-  display: 'swap',
-})
-
-const instrumentSans = Instrument_Sans({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  variable: '--font-instrument',
-  display: 'swap',
-})
-
-const familjenGrotesk = Familjen_Grotesk({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-familjen',
-  display: 'swap',
-})
 
 const aptos = localFont({
   src: [
@@ -45,13 +23,6 @@ const parastoo = localFont({
   display: 'swap',
 })
 
-const parkinsans = localFont({
-  src: '../public/fonts/parkinsans-v3-latin-700.ttf',
-  weight: '700',
-  variable: '--font-parkinsans',
-  display: 'swap',
-})
-
 export const metadata: Metadata = {
   title: 'Booklesss',
   description: 'Smarter notes for Zambian university students.',
@@ -59,14 +30,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${aptos.variable} ${parastoo.variable} ${parkinsans.variable} ${poppins.variable} ${familjenGrotesk.variable} ${instrumentSans.variable}`}
-    >
-      <head>
-        <link rel="preconnect" href="https://api.fontshare.com" />
-        <link href="https://api.fontshare.com/v2/css?f[]=satoshi@500&display=swap" rel="stylesheet" />
-      </head>
+    <html lang="en" className={`${aptos.variable} ${parastoo.variable}`}>
       <body>{children}<Analytics /></body>
     </html>
   )
