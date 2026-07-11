@@ -17,62 +17,14 @@
     --amber-line: rgba(193, 126, 58, 0.35);
     --navy: #1B2A4A;
     --shadow: 0 20px 40px -15px rgba(24, 24, 27, 0.05);
-    --tip-bg: #1B1B1F;
-    --tip-ink: #F4F4F5;
-    --tip-steel: #A1A1AA;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --canvas: #121215;
-      --surface: #1A1A1E;
-      --ink: #F2F2F3;
-      --steel: #A1A1AA;
-      --meta: #6E6E78;
-      --border: rgba(255, 255, 255, 0.09);
-      --amber: #D69455;
-      --amber-soft: rgba(214, 148, 85, 0.10);
-      --amber-line: rgba(214, 148, 85, 0.40);
-      --navy: #8FA6CE;
-      --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.35);
-      --tip-bg: #26262B;
-      --tip-ink: #F4F4F5;
-      --tip-steel: #A1A1AA;
-    }
-  }
-  :root[data-theme="light"] {
-    --canvas: #F9FAFB;
-    --surface: #FFFFFF;
-    --ink: #18181B;
-    --steel: #71717A;
-    --meta: #94A3B8;
-    --border: rgba(226, 232, 240, 0.55);
-    --amber: #C17E3A;
-    --amber-soft: rgba(193, 126, 58, 0.08);
-    --amber-line: rgba(193, 126, 58, 0.35);
-    --navy: #1B2A4A;
-    --shadow: 0 20px 40px -15px rgba(24, 24, 27, 0.05);
-    --tip-bg: #1B1B1F;
-    --tip-ink: #F4F4F5;
-    --tip-steel: #A1A1AA;
-  }
-  :root[data-theme="dark"] {
-    --canvas: #121215;
-    --surface: #1A1A1E;
-    --ink: #F2F2F3;
-    --steel: #A1A1AA;
-    --meta: #6E6E78;
-    --border: rgba(255, 255, 255, 0.09);
-    --amber: #D69455;
-    --amber-soft: rgba(214, 148, 85, 0.10);
-    --amber-line: rgba(214, 148, 85, 0.40);
-    --navy: #8FA6CE;
-    --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.35);
-    --tip-bg: #26262B;
-    --tip-ink: #F4F4F5;
-    --tip-steel: #A1A1AA;
+    --tip-bg: #FFFFFF;
+    --tip-ink: #18181B;
+    --tip-steel: #71717A;
   }
 
   * { box-sizing: border-box; }
+
+  .ic { width: 1em; height: 1em; flex: none; display: inline-block; vertical-align: -0.14em; }
 
   html, body { margin: 0; padding: 0; }
 
@@ -139,11 +91,13 @@
     margin: 0 0 1.6rem; max-width: 36rem;
   }
   .metarow {
-    display: flex; flex-wrap: wrap; gap: 0.5rem 1.4rem;
+    display: flex; flex-wrap: wrap; gap: 0.5rem 1.3rem;
     font-family: "Geist Mono", "JetBrains Mono", ui-monospace, monospace;
     font-size: 0.75rem; color: var(--meta);
     padding-bottom: 1.8rem; border-bottom: 1px solid var(--border);
   }
+  .metarow span { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .metarow .ic { font-size: 1.25em; color: var(--steel); }
 
   /* ── Highlight hint pill ──────────────────────── */
   .hint {
@@ -216,8 +170,6 @@
     padding: 0.375rem;
     margin: 1.2rem 0 1.4rem;
   }
-  :root[data-theme="dark"] .formula-wrap { background: rgba(255,255,255,0.03); }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .formula-wrap { background: rgba(255,255,255,0.03); } }
   .formula {
     background: var(--surface);
     border-radius: 0.9rem;
@@ -244,8 +196,12 @@
     font-size: 0.9375rem; line-height: 1.6;
     max-width: 62ch;
   }
+  .callout .tag, .discuss .tag {
+    align-items: center; gap: 0.45rem;
+  }
+  .callout .tag .ic, .discuss .tag .ic { font-size: 1.7em; margin-top: -0.15em; }
   .callout .tag {
-    display: block; font-size: 0.625rem; font-weight: 700;
+    display: flex; font-size: 0.625rem; font-weight: 700;
     letter-spacing: 0.16em; text-transform: uppercase;
     color: var(--amber); margin-bottom: 0.35rem;
   }
@@ -259,7 +215,7 @@
     max-width: 62ch;
   }
   .discuss .tag {
-    display: block; font-size: 0.625rem; font-weight: 700;
+    display: flex; font-size: 0.625rem; font-weight: 700;
     letter-spacing: 0.16em; text-transform: uppercase;
     color: var(--amber); margin-bottom: 0.4rem;
   }
@@ -288,9 +244,9 @@
     background: var(--amber); opacity: 0.75;
   }
 
-  ol.outcomes { padding-left: 1.3rem; margin: 0.4rem 0 1rem; max-width: 62ch; }
-  ol.outcomes li { padding: 0.3rem 0; }
-  ol.outcomes li::marker { color: var(--amber); font-weight: 700; }
+  ul.outcomes { list-style: none; padding: 0; margin: 0.4rem 0 1rem; max-width: 62ch; }
+  ul.outcomes li { display: flex; gap: 0.6rem; padding: 0.3rem 0; align-items: flex-start; }
+  ul.outcomes li .ic { color: var(--amber); font-size: 1.1em; margin-top: 0.22em; }
 
   /* ── Sources list ─────────────────────────────── */
   .sources-list { list-style: none; padding: 0; margin: 0.6rem 0 0; display: grid; gap: 0.5rem; }
@@ -311,11 +267,8 @@
     font-family: "Geist Mono", ui-monospace, monospace;
   }
   .sources-list .ico img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .sources-list .dom {
-    margin-left: auto;
-    font-family: "Geist Mono", ui-monospace, monospace;
-    font-size: 0.6875rem; color: var(--meta); white-space: nowrap;
-  }
+  .sources-list .open-ic { margin-left: auto; color: var(--meta); font-size: 1.1em; }
+  .sources-list li a:hover .open-ic { color: var(--amber); }
 
   /* ── Community closer ─────────────────────────── */
   .closer {
@@ -334,8 +287,9 @@
     position: fixed; z-index: 60;
     width: min(20.5rem, calc(100vw - 1.5rem));
     background: var(--tip-bg); color: var(--tip-ink);
+    border: 1px solid var(--border);
     border-radius: 1rem;
-    box-shadow: 0 24px 48px -12px rgba(0,0,0,0.35);
+    box-shadow: 0 24px 48px -12px rgba(24, 24, 27, 0.18);
     padding: 0.85rem 1rem 0.95rem;
     opacity: 0; transform: translateY(6px) scale(0.98);
     pointer-events: none;
@@ -345,15 +299,13 @@
   .tip.show { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
   .tip .tip-head {
     display: flex; align-items: center; gap: 0.45rem;
+  }
+  .tip .tip-head .ic { font-size: 1.6em; margin-top: -0.1em; }
+  .tip .tip-head {
     font-size: 0.625rem; font-weight: 700; letter-spacing: 0.16em;
     text-transform: uppercase; color: var(--amber);
     margin-bottom: 0.5rem;
   }
-  .tip .tip-head .dot {
-    width: 6px; height: 6px; border-radius: 999px; background: var(--amber);
-    animation: pulse 1.6s cubic-bezier(0.16,1,0.3,1) infinite;
-  }
-  @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
   .tip .tip-term {
     font-weight: 750; font-size: 0.9375rem; letter-spacing: -0.01em;
     margin: 0 0 0.35rem; line-height: 1.3;
@@ -364,7 +316,7 @@
   .tip .tip-shimmer { display: grid; gap: 0.45rem; margin: 0.55rem 0 0.6rem; }
   .tip .tip-shimmer span {
     height: 0.55rem; border-radius: 999px;
-    background: linear-gradient(90deg, rgba(255,255,255,0.07) 25%, rgba(255,255,255,0.16) 50%, rgba(255,255,255,0.07) 75%);
+    background: linear-gradient(90deg, rgba(24,24,27,0.06) 25%, rgba(24,24,27,0.14) 50%, rgba(24,24,27,0.06) 75%);
     background-size: 200% 100%;
     animation: shimmer 1.4s linear infinite;
   }
@@ -373,13 +325,13 @@
   @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
   .tip .tip-foot {
     margin-top: 0.6rem; padding-top: 0.55rem;
-    border-top: 1px solid rgba(255,255,255,0.09);
+    border-top: 1px solid rgba(24,24,27,0.08);
     display: flex; align-items: center; justify-content: space-between; gap: 0.6rem;
     font-size: 0.6563rem; color: var(--tip-steel);
     font-family: "Geist Mono", ui-monospace, monospace;
   }
   .tip .tip-foot .badge {
-    border: 1px solid rgba(255,255,255,0.14); border-radius: 999px;
+    border: 1px solid rgba(24,24,27,0.15); border-radius: 999px;
     padding: 0.12rem 0.5rem; white-space: nowrap;
   }
   .tip::after {
@@ -388,12 +340,12 @@
     border-radius: 2px;
     left: var(--arrow-x, 50%); margin-left: -6px;
   }
-  .tip[data-place="above"]::after { bottom: -5px; }
-  .tip[data-place="below"]::after { top: -5px; }
+  .tip[data-place="above"]::after { bottom: -6.5px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .tip[data-place="below"]::after { top: -6.5px; border-left: 1px solid var(--border); border-top: 1px solid var(--border); }
 
   @media (prefers-reduced-motion: reduce) {
     .tip, .src, .sources-list li a { transition: none; }
-    .tip .tip-head .dot, .tip .tip-shimmer span { animation: none; }
+    .tip .tip-shimmer span { animation: none; }
   }
 
   @media (max-width: 480px) {
@@ -405,6 +357,8 @@
 </head>
 <body>
 <div class="progress" id="progress"></div>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true"><symbol id="ic-clock" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l2.5 2.5"/></g></symbol><symbol id="ic-doc" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 10c0-3.771 0-5.657 1.172-6.828S7.229 2 11 2h2c3.771 0 5.657 0 6.828 1.172S21 6.229 21 10v4c0 3.771 0 5.657-1.172 6.828S16.771 22 13 22h-2c-3.771 0-5.657 0-6.828-1.172S3 17.771 3 14z"/><path stroke-linecap="round" d="M8 12h8M8 8h8m-8 8h5"/></g></symbol><symbol id="ic-calc" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.464 20.536C4.93 22 7.286 22 12 22s7.071 0 8.535-1.465C22 19.072 22 16.714 22 12s0-7.071-1.465-8.536C19.072 2 16.714 2 12 2S4.929 2 3.464 3.464C2 4.93 2 7.286 2 12s0 7.071 1.464 8.535Z"/><path stroke-linecap="round" d="M18 8.5h-4m4 6h-4m4 3h-4m-4-9H8m0 0H6m2 0v-2m0 2v2m1.5 4L8 16m0 0l-1.5 1.5M8 16l-1.5-1.5M8 16l1.5 1.5"/></g></symbol><symbol id="ic-cursor" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m14.859 16.5l-2.461-2.461l-.752.751c-.77.77-1.154 1.154-1.568 1.064c-.413-.091-.602-.602-.978-1.623l-1.255-3.406c-.75-2.037-1.125-3.055-.6-3.58s1.543-.15 3.58.6L14.231 9.1c1.021.376 1.532.565 1.623.978s-.294.798-1.064 1.568l-.751.752l2.46 2.461c.256.255.383.382.442.524a.77.77 0 0 1 0 .593c-.059.142-.186.27-.441.524c-.255.255-.382.382-.524.441a.77.77 0 0 1-.593 0c-.142-.059-.27-.186-.524-.441"/><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464C22 4.93 22 7.286 22 12s0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/></g></symbol><symbol id="ic-bulb" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.5 19.5h-5m5 0c0-.713 0-1.07.038-1.307c.123-.763.144-.812.631-1.412c.151-.186.711-.688 1.832-1.692A7.5 7.5 0 1 0 7 15.09c1.12 1.004 1.68 1.505 1.832 1.692c.487.6.508.649.63 1.412c.039.237.039.593.039 1.307m5 0c0 .935 0 1.402-.201 1.75a1.5 1.5 0 0 1-.549.549c-.349.2-.816.2-1.751.2s-1.402 0-1.75-.201a1.5 1.5 0 0 1-.549-.549c-.201-.348-.201-.815-.201-1.75"/><path stroke-linecap="round" d="M12 17v-2m1.732-1a2 2 0 0 1-3.464 0"/></g></symbol><symbol id="ic-medal" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 8V6c0-1.886 0-2.828-.586-3.414S14.886 2 13 2h-2c-1.886 0-2.828 0-3.414.586S7 4.114 7 6v2"/><path d="M10.564 5.783a3 3 0 0 1 2.872 0l4.794 2.614a3 3 0 0 1 1.564 2.634v4.938a3 3 0 0 1-1.564 2.634l-4.794 2.614a3 3 0 0 1-2.872 0l-4.795-2.614a3 3 0 0 1-1.563-2.634V11.03a3 3 0 0 1 1.563-2.634z"/><path d="M11.146 11.523c.38-.682.57-1.023.854-1.023s.474.341.854 1.023l.098.176c.108.194.162.29.246.355c.085.063.19.087.4.135l.19.043c.738.167 1.107.25 1.195.533c.088.282-.164.576-.667 1.164l-.13.152c-.143.168-.215.251-.247.355s-.021.214 0 .438l.02.203c.076.784.114 1.177-.115 1.351c-.23.175-.576.016-1.267-.302l-.178-.083c-.197-.09-.295-.135-.399-.135s-.202.045-.399.135l-.178.083c-.691.318-1.037.477-1.267.302c-.23-.174-.191-.567-.115-1.351l.02-.203c.021-.224.032-.335 0-.438c-.032-.104-.104-.187-.247-.355l-.13-.152c-.503-.588-.755-.882-.667-1.164c.088-.283.457-.366 1.195-.533l.19-.043c.21-.048.315-.072.4-.135c.084-.064.138-.161.246-.355z"/></g></symbol><symbol id="ic-check" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="m8.5 12.5l2 2l5-5"/></g></symbol><symbol id="ic-chat" viewBox="0 0 24 24" fill="none"><g fill="none"><path fill="currentColor" d="m13.087 21.388l.645.382zm.542-.916l-.646-.382zm-3.258 0l-.645.382zm.542.916l.646-.382zm-8.532-5.475l.693-.287zm5.409 3.078l-.013.75zm-2.703-.372l-.287.693zm16.532-2.706l.693.287zm-5.409 3.078l-.012-.75zm2.703-.372l.287.693zm.7-15.882l-.392.64zm1.65 1.65l.64-.391zM4.388 2.738l-.392-.64zm-1.651 1.65l-.64-.391zM9.403 19.21l.377-.649zm4.33 2.56l.541-.916l-1.29-.764l-.543.916zm-4.007-.916l.542.916l1.29-.764l-.541-.916zm2.715.152a.52.52 0 0 1-.882 0l-1.291.764c.773 1.307 2.69 1.307 3.464 0zM10.5 2.75h3v-1.5h-3zm10.75 7.75v1h1.5v-1zm-18.5 1v-1h-1.5v1zm-1.5 0c0 1.155 0 2.058.05 2.787c.05.735.153 1.347.388 1.913l1.386-.574c-.147-.352-.233-.782-.278-1.441c-.046-.666-.046-1.51-.046-2.685zm6.553 6.742c-1.256-.022-1.914-.102-2.43-.316L4.8 19.313c.805.334 1.721.408 2.977.43zM1.688 16.2A5.75 5.75 0 0 0 4.8 19.312l.574-1.386a4.25 4.25 0 0 1-2.3-2.3zm19.562-4.7c0 1.175 0 2.019-.046 2.685c-.045.659-.131 1.089-.277 1.441l1.385.574c.235-.566.338-1.178.389-1.913c.05-.729.049-1.632.049-2.787zm-5.027 8.241c1.256-.021 2.172-.095 2.977-.429l-.574-1.386c-.515.214-1.173.294-2.428.316zm4.704-4.115a4.25 4.25 0 0 1-2.3 2.3l.573 1.386a5.75 5.75 0 0 0 3.112-3.112zM13.5 2.75c1.651 0 2.837 0 3.762.089c.914.087 1.495.253 1.959.537l.783-1.279c-.739-.452-1.577-.654-2.6-.752c-1.012-.096-2.282-.095-3.904-.095zm9.25 7.75c0-1.622 0-2.891-.096-3.904c-.097-1.023-.299-1.862-.751-2.6l-1.28.783c.285.464.451 1.045.538 1.96c.088.924.089 2.11.089 3.761zm-3.53-7.124a4.25 4.25 0 0 1 1.404 1.403l1.279-.783a5.75 5.75 0 0 0-1.899-1.899zM10.5 1.25c-1.622 0-2.891 0-3.904.095c-1.023.098-1.862.3-2.6.752l.783 1.28c.464-.285 1.045-.451 1.96-.538c.924-.088 2.11-.089 3.761-.089zM2.75 10.5c0-1.651 0-2.837.089-3.762c.087-.914.253-1.495.537-1.959l-1.279-.783c-.452.738-.654 1.577-.752 2.6C1.25 7.61 1.25 8.878 1.25 10.5zm1.246-8.403a5.75 5.75 0 0 0-1.899 1.899l1.28.783a4.25 4.25 0 0 1 1.402-1.403zm7.02 17.993c-.202-.343-.38-.646-.554-.884a2.2 2.2 0 0 0-.682-.645l-.754 1.297c.047.028.112.078.224.232c.121.166.258.396.476.764zm-3.24-.349c.44.008.718.014.93.037c.198.022.275.054.32.08l.754-1.297a2.2 2.2 0 0 0-.909-.274c-.298-.033-.657-.038-1.069-.045zm6.498 1.113c.218-.367.355-.598.476-.764c.112-.154.177-.204.224-.232l-.754-1.297c-.29.17-.5.395-.682.645c-.173.238-.352.54-.555.884zm1.924-2.612c-.412.007-.771.012-1.069.045c-.311.035-.616.104-.909.274l.754 1.297c.045-.026.122-.058.32-.08c.212-.023.49-.03.93-.037z"/><path stroke="currentColor" stroke-linecap="round" stroke-width="1.5" d="M8 9h8m-8 3.5h5.5"/></g></symbol><symbol id="ic-book" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 8c0-2.828 0-4.243.879-5.121C5.757 2 7.172 2 10 2h4c2.828 0 4.243 0 5.121.879C20 3.757 20 5.172 20 8v8c0 2.828 0 4.243-.879 5.121C18.243 22 16.828 22 14 22h-4c-2.828 0-4.243 0-5.121-.879C4 20.243 4 18.828 4 16z"/><path d="M19.898 16h-12c-.93 0-1.395 0-1.777.102A3 3 0 0 0 4 18.224"/><path stroke-linecap="round" d="M8 7h8m-8 3.5h5m0 5.5v3.53c0 .276 0 .414-.095.47s-.224-.006-.484-.13l-1.242-.59c-.088-.04-.132-.062-.179-.062s-.091.021-.179.063l-1.242.59c-.26.123-.39.185-.484.129C9 19.944 9 19.806 9 19.53v-3.08"/></g></symbol><symbol id="ic-stars" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor"><path stroke-width="1.5" d="M10.08 7.897C11.157 5.966 11.695 5 12.5 5s1.343.966 2.42 2.897l.278.5c.306.549.46.823.698 1.004s.535.248 1.13.383l.54.122c2.091.473 3.137.71 3.385 1.51c.249.8-.464 1.633-1.89 3.3l-.368.43c-.405.474-.607.711-.699 1.004c-.09.293-.06.609.001 1.24l.056.576c.216 2.224.323 3.336-.328 3.83s-1.63.044-3.587-.857l-.507-.234c-.556-.256-.834-.384-1.129-.384s-.573.128-1.13.384l-.506.234c-1.957.9-2.936 1.352-3.587.857c-.651-.494-.543-1.606-.328-3.83l.056-.575c.061-.632.092-.948 0-1.24c-.09-.294-.293-.53-.698-1.004l-.369-.432c-1.425-1.666-2.138-2.5-1.89-3.3c.25-.8 1.295-1.036 3.386-1.509l.54-.122c.595-.135.892-.202 1.13-.383c.239-.18.392-.455.698-1.004z"/><path stroke-linejoin="round" d="M4.99 2s.288 1.458.92 2.085C6.54 4.712 8 4.99 8 4.99s-1.458.288-2.085.92C5.288 6.54 5.01 8 5.01 8s-.288-1.458-.92-2.085C3.46 5.288 2 5.01 2 5.01s1.458-.288 2.085-.92C4.712 3.46 4.99 2 4.99 2Z"/><path stroke-linecap="round" stroke-width="1.5" d="M18 5h2m-1 1V4"/></g></symbol><symbol id="ic-open" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m9 15l6-6m0 0h-4.5M15 9v4.5"/><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464C22 4.93 22 7.286 22 12s0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/></g></symbol></svg>
 
 <div class="shell">
 
@@ -418,13 +372,13 @@
     <h1>Working Capital &amp; Liquidity Management</h1>
     <p class="standfirst">The cash cycle, working capital policy, debtor management, and factoring — the machinery that keeps a business solvent between the day it pays for inputs and the day customers pay it back.</p>
     <div class="metarow">
-      <span>~12 min read</span>
-      <span>5 sections</span>
-      <span>2 worked examples</span>
-      <span>Interactive definitions</span>
+      <span><svg class="ic" aria-hidden="true"><use href="#ic-clock"/></svg>~12 min</span>
+      <span><svg class="ic" aria-hidden="true"><use href="#ic-doc"/></svg>5 sections</span>
+      <span><svg class="ic" aria-hidden="true"><use href="#ic-calc"/></svg>2 worked examples</span>
+      <span><svg class="ic" aria-hidden="true"><use href="#ic-cursor"/></svg>Tap to define</span>
     </div>
     <div class="hint">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>
+      <svg class="ic" style="font-size:1.35rem" aria-hidden="true"><use href="#ic-cursor"/></svg>
       <div><b>Try it:</b> double-tap any word, or highlight a phrase, and Booklesss will explain it in place. Key terms come from this step; everything else shows the AI explanation preview.</div>
     </div>
   </header>
@@ -438,7 +392,7 @@
       <p>If current assets exceed current liabilities, the company has a surplus — usually sitting in bank deposits or short-term investments. If liabilities exceed assets, there&rsquo;s a deficit, and the company is typically running on an overdraft or short-term loan.</p>
       <p>Treasury&rsquo;s job is to manage this pool as efficiently as possible. Too little working capital and the business can&rsquo;t pay its suppliers. Too much and money sits idle earning nothing when it could be in productive assets.</p>
       <div class="callout">
-        <span class="tag">Worth remembering</span>
+        <span class="tag"><svg class="ic" aria-hidden="true"><use href="#ic-bulb"/></svg>Worth remembering</span>
         Even a profitable business can fail without adequate working capital. Cash is king — not profit. A company can be profitable on paper and still collapse if it can&rsquo;t meet its near-term obligations.
       </div>
     </section>
@@ -470,7 +424,7 @@
         </tbody>
       </table></div>
       <div class="callout">
-        <span class="tag">Exam tip</span>
+        <span class="tag"><svg class="ic" aria-hidden="true"><use href="#ic-medal"/></svg>Exam tip</span>
         In both decisions, aggressive = higher return AND higher risk. Conservative = lower return AND lower risk. Always state both sides when the exam asks you to evaluate a policy.
       </div>
     </section>
@@ -506,7 +460,7 @@ Cash Turnover  <span class="op">=</span>  365 &divide; 81.04  <span class="op">=
       <p>Zanaco Distributors takes just over 81 days from paying for goods to collecting cash. Cash turns over 4.5 times a year. Shortening any component — collecting faster, turning inventory quicker, paying suppliers later — directly reduces funding requirements.</p>
 
       <div class="discuss">
-        <span class="tag">Discuss in the channel</span>
+        <span class="tag"><svg class="ic" aria-hidden="true"><use href="#ic-chat"/></svg>Discuss in the channel</span>
         <p>Something worth sitting with: if Zanaco ran this same calculation next year and the CCC jumped from 81 days to 120 days — what&rsquo;s the most likely cause, and which number would you look at first to diagnose it?</p>
       </div>
 
@@ -550,7 +504,7 @@ Where:  D = discount %,  N = net period,  T = discount period</pre></div></div>
 Borrowing cost: 8% p.a.
 Decision: borrow at 8% and take the discount — forgoing it costs 37.23%.</pre></div></div>
       <div class="callout">
-        <span class="tag">Decision rule</span>
+        <span class="tag"><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg>Decision rule</span>
         Always compare the annual cost of forgoing the discount against the cost of short-term borrowing. If borrowing is cheaper, take the discount. 37.23% vs 8% makes this a straightforward call.
       </div>
     </section>
@@ -597,7 +551,7 @@ Factoring saving:                                     ~K1,800</pre></div></div>
       </table></div>
 
       <div class="discuss">
-        <span class="tag">Discuss in the channel</span>
+        <span class="tag"><svg class="ic" aria-hidden="true"><use href="#ic-chat"/></svg>Discuss in the channel</span>
         <p>One that exam questions like to test: under what circumstances would you recommend factoring over invoice discounting even if factoring costs more? Think about what else the company gains beyond the finance itself.</p>
       </div>
     </section>
@@ -605,14 +559,14 @@ Factoring saving:                                     ~K1,800</pre></div></div>
     <section>
       <span class="eyebrow">Outcomes</span>
       <h2>What You Should Now Be Able To Do</h2>
-      <ol class="outcomes">
-        <li>Define working capital and explain why a profitable business can still fail without adequate liquidity</li>
-        <li>Distinguish between aggressive, conservative, and moderate working capital policies for both investment and financing decisions</li>
-        <li>Calculate the cash conversion cycle and identify which components to target to shorten it</li>
-        <li>Assess whether a buyer should take a trade discount using the annual cost formula</li>
-        <li>Explain how factoring works and calculate the net cost of a factoring arrangement</li>
-        <li>Compare factoring and invoice discounting and explain when each is more appropriate</li>
-      </ol>
+      <ul class="outcomes">
+        <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Define working capital and explain why a profitable business can still fail without adequate liquidity</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Distinguish between aggressive, conservative, and moderate working capital policies for both investment and financing decisions</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Calculate the cash conversion cycle and identify which components to target to shorten it</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Assess whether a buyer should take a trade discount using the annual cost formula</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Explain how factoring works and calculate the net cost of a factoring arrangement</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Compare factoring and invoice discounting and explain when each is more appropriate</span></li>
+      </ul>
     </section>
 
     <section>
@@ -620,11 +574,11 @@ Factoring saving:                                     ~K1,800</pre></div></div>
       <h2>Where This Step Draws From</h2>
       <p>Inline citations above link to the exact pages. Full list:</p>
       <ul class="sources-list">
-        <li><a href="https://www.investopedia.com/terms/w/workingcapital.asp" target="_blank" rel="noopener" data-dom="investopedia.com" data-mono="I" data-color="#0E5F4C"><span class="ico"></span>Working Capital — Definition &amp; Formula<span class="dom">investopedia.com</span></a></li>
-        <li><a href="https://www.investopedia.com/terms/c/cashconversioncycle.asp" target="_blank" rel="noopener" data-dom="investopedia.com" data-mono="I" data-color="#0E5F4C"><span class="ico"></span>Cash Conversion Cycle (CCC)<span class="dom">investopedia.com</span></a></li>
-        <li><a href="https://corporatefinanceinstitute.com/resources/accounting/cash-conversion-cycle/" target="_blank" rel="noopener" data-dom="corporatefinanceinstitute.com" data-mono="C" data-color="#1B2A4A"><span class="ico"></span>Cash Conversion Cycle — CFI Resources<span class="dom">corporatefinanceinstitute.com</span></a></li>
-        <li><a href="https://www.accaglobal.com/gb/en/student/exam-support-resources/fundamentals-exams-study-resources/f9/technical-articles.html" target="_blank" rel="noopener" data-dom="accaglobal.com" data-mono="A" data-color="#C22032"><span class="ico"></span>ACCA FM Technical Articles — Working Capital<span class="dom">accaglobal.com</span></a></li>
-        <li><a href="https://www.investopedia.com/terms/f/factor.asp" target="_blank" rel="noopener" data-dom="investopedia.com" data-mono="I" data-color="#0E5F4C"><span class="ico"></span>Factoring — How It Works<span class="dom">investopedia.com</span></a></li>
+        <li><a href="https://www.investopedia.com/terms/w/workingcapital.asp" target="_blank" rel="noopener" data-dom="investopedia.com" data-mono="I" data-color="#0E5F4C"><span class="ico"></span>Working Capital — Definition &amp; Formula<svg class="ic open-ic" aria-hidden="true"><use href="#ic-open"/></svg></a></li>
+        <li><a href="https://www.investopedia.com/terms/c/cashconversioncycle.asp" target="_blank" rel="noopener" data-dom="investopedia.com" data-mono="I" data-color="#0E5F4C"><span class="ico"></span>Cash Conversion Cycle (CCC)<svg class="ic open-ic" aria-hidden="true"><use href="#ic-open"/></svg></a></li>
+        <li><a href="https://corporatefinanceinstitute.com/resources/accounting/cash-conversion-cycle/" target="_blank" rel="noopener" data-dom="corporatefinanceinstitute.com" data-mono="C" data-color="#1B2A4A"><span class="ico"></span>Cash Conversion Cycle — CFI Resources<svg class="ic open-ic" aria-hidden="true"><use href="#ic-open"/></svg></a></li>
+        <li><a href="https://www.accaglobal.com/gb/en/student/exam-support-resources/fundamentals-exams-study-resources/f9/technical-articles.html" target="_blank" rel="noopener" data-dom="accaglobal.com" data-mono="A" data-color="#C22032"><span class="ico"></span>ACCA FM Technical Articles — Working Capital<svg class="ic open-ic" aria-hidden="true"><use href="#ic-open"/></svg></a></li>
+        <li><a href="https://www.investopedia.com/terms/f/factor.asp" target="_blank" rel="noopener" data-dom="investopedia.com" data-mono="I" data-color="#0E5F4C"><span class="ico"></span>Factoring — How It Works<svg class="ic open-ic" aria-hidden="true"><use href="#ic-open"/></svg></a></li>
       </ul>
     </section>
 
@@ -745,6 +699,8 @@ Factoring saving:                                     ~K1,800</pre></div></div>
   /* ── Selection tooltip ── */
   var tip = document.getElementById("tip");
   var hideTimer = null;
+  var ICON_BOOK = '<svg class="ic" aria-hidden="true"><use href="#ic-book"/></svg>';
+  var ICON_STARS = '<svg class="ic" aria-hidden="true"><use href="#ic-stars"/></svg>';
 
   function esc(s) {
     return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -759,17 +715,17 @@ Factoring saving:                                     ~K1,800</pre></div></div>
     var shown = text.length > 48 ? text.slice(0, 48).trim() + "…" : text;
     var head, body, foot;
     if (hit) {
-      head = "Key term · this step";
+      head = ICON_BOOK + "Key term · this step";
       body = "<p class=\"tip-body\">" + esc(hit.def) + "</p>";
       foot = "<span>Booklesss definitions</span><span class=\"badge\">AI explain · soon</span>";
     } else {
-      head = "Booklesss AI · preview";
+      head = ICON_STARS + "Booklesss AI · preview";
       body = "<div class=\"tip-shimmer\"><span></span><span></span><span></span></div>" +
              "<p class=\"tip-body\">Placeholder — this is where <b>Booklesss AI</b> will explain your highlighted text in plain language, with a ZMW example.</p>";
       foot = "<span>Coming to every step</span><span class=\"badge\">preview</span>";
     }
     tip.innerHTML =
-      "<div class=\"tip-head\"><span class=\"dot\"></span>" + head + "</div>" +
+      "<div class=\"tip-head\">" + head + "</div>" +
       "<div class=\"tip-term\">“" + esc(shown) + "”</div>" + body +
       "<div class=\"tip-foot\">" + foot + "</div>";
   }
