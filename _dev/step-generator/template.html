@@ -93,22 +93,27 @@
   .content ::selection { background: rgba(197, 97, 63, 0.20); }
 
   /* ── Progress bar ─────────────────────────────── */
-  /* Table of contents minimap — Notion-style dashes, right edge */
+  /* Table of contents minimap — Notion-style dashes, flush to the edge.
+     Dash length = heading level (bigger title, longer line); the state
+     only lightens/darkens, it never changes size. */
   .toc {
-    position: fixed; top: clamp(76px, 15vh, 128px); right: 6px;
-    z-index: 45; display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 4px;
+    position: fixed; top: clamp(76px, 15vh, 128px); right: 0;
+    z-index: 45; display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 4px 0;
   }
   .toc a {
     display: flex; align-items: center; justify-content: flex-end; gap: 8px;
     text-decoration: none; cursor: pointer;
   }
   .toc .dash {
-    display: block; height: 3px; width: 16px; border-radius: 2px;
-    background: rgba(24, 24, 27, 0.20); flex: none;
-    transition: background 220ms cubic-bezier(0.16,1,0.3,1), width 220ms cubic-bezier(0.16,1,0.3,1);
+    display: block; height: 3px; border-radius: 3px 0 0 3px;
+    background: rgba(24, 24, 27, 0.18); flex: none;
+    transition: background 220ms cubic-bezier(0.16,1,0.3,1);
   }
+  .toc a[data-lvl="1"] .dash { width: 28px; }
+  .toc a[data-lvl="2"] .dash { width: 19px; }
+  .toc a[data-lvl="3"] .dash { width: 11px; }
   .toc a.read .dash { background: rgba(24, 24, 27, 0.42); }
-  .toc a.active .dash { background: var(--ink); width: 24px; }
+  .toc a.active .dash { background: var(--ink); }
   .toc .lbl {
     font-family: "Satoshi", "Onest", system-ui, sans-serif;
     font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
@@ -123,9 +128,10 @@
   .toc a.active .lbl { color: var(--ink); border-color: var(--amber-line); }
   @media (prefers-reduced-motion: reduce) { .toc .dash, .toc .lbl { transition: none; } }
   @media (max-width: 640px) {
-    .toc { top: clamp(64px, 12vh, 96px); right: 3px; gap: 5px; }
-    .toc .dash { width: 12px; }
-    .toc a.active .dash { width: 18px; }
+    .toc { top: clamp(64px, 12vh, 96px); gap: 5px; }
+    .toc a[data-lvl="1"] .dash { width: 22px; }
+    .toc a[data-lvl="2"] .dash { width: 15px; }
+    .toc a[data-lvl="3"] .dash { width: 9px; }
     .toc .lbl { display: none; }
   }
 
@@ -656,35 +662,42 @@
     img.src = urls[attempt];
   });
 
-  /* ── Table of contents minimap (Notion-style dashes) ── */
+  /* ── Table of contents minimap (Notion-style dashes) ──
+     One dash per heading. Dash length tracks heading level: the page title
+     (h1) is longest, section titles (h2) mid, subheadings (h3) shortest.
+     Dashes only lighten/darken as the reader moves — they never resize. */
   (function () {
     var toc = document.getElementById("toc");
     var contentEl = document.getElementById("content");
     if (!toc || !contentEl) return;
-    var sections = [].slice.call(contentEl.querySelectorAll("section"));
-    if (sections.length < 2) return;
-    var items = sections.map(function (sec, idx) {
-      var eb = sec.querySelector(".eyebrow");
-      var h2 = sec.querySelector("h2");
-      var label = (eb && eb.textContent.trim()) ||
-                  (h2 && h2.textContent.trim()) || ("Section " + (idx + 1));
-      if (!sec.id) sec.id = "sec-" + idx;
+    var h1 = document.querySelector("header.step h1");
+    var heads = [];
+    if (h1) heads.push({ el: h1, lvl: 1 });
+    [].slice.call(contentEl.querySelectorAll("h2, h3")).forEach(function (h) {
+      var sec = h.closest("section");
+      if (sec && sec.querySelector("#wrapup")) return; // skip the wrap-up card
+      heads.push({ el: h, lvl: h.tagName === "H3" ? 3 : 2 });
+    });
+    if (heads.length < 2) return;
+    var items = heads.map(function (h, idx) {
+      if (!h.el.id) h.el.id = "h-" + idx;
       var a = document.createElement("a");
-      a.href = "#" + sec.id;
+      a.href = "#" + h.el.id;
+      a.setAttribute("data-lvl", String(h.lvl));
       a.innerHTML = '<span class="lbl"></span><span class="dash"></span>';
-      a.querySelector(".lbl").textContent = label;
+      a.querySelector(".lbl").textContent = h.el.textContent.trim();
       a.addEventListener("click", function (e) {
         e.preventDefault();
-        sec.scrollIntoView({ behavior: "smooth", block: "start" });
+        h.el.scrollIntoView({ behavior: "smooth", block: "start" });
       });
       toc.appendChild(a);
-      return { sec: sec, a: a };
+      return { el: h.el, a: a };
     });
     function updateToc() {
       var line = window.scrollY + window.innerHeight * 0.3;
       var current = 0;
       for (var i = 0; i < items.length; i++) {
-        if (items[i].sec.getBoundingClientRect().top + window.scrollY <= line) current = i;
+        if (items[i].el.getBoundingClientRect().top + window.scrollY <= line) current = i;
       }
       items.forEach(function (it, i) {
         it.a.classList.toggle("active", i === current);
