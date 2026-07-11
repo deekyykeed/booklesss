@@ -12,13 +12,20 @@ any html/text value. IDs must exist in STEP["sources"].
 import html as _html
 import re
 
-SRC_TOKEN = re.compile(r"\{src:([a-z0-9_]+):([^:}]+)(?::([^}]+))?\}")
+# {src:ID:URL} or, for a custom chip label, {src:ID:URL||Label}.
+# URL runs to the closing brace (URLs contain colons/slashes), so the label
+# uses a "||" separator rather than a colon.
+SRC_TOKEN = re.compile(r"\{src:([a-z0-9_]+):([^}]+)\}")
 
 
 def expand_sources(text, sources):
-    """Expand {src:ID:URL[:Label]} tokens into source chip markup."""
+    """Expand {src:ID:URL} / {src:ID:URL||Label} tokens into source chips."""
     def repl(m):
-        sid, url, label = m.group(1), m.group(2), m.group(3)
+        sid, rest = m.group(1), m.group(2)
+        if "||" in rest:
+            url, label = rest.split("||", 1)
+        else:
+            url, label = rest, None
         s = sources[sid]
         return (
             f'<a class="src" href="{url}" target="_blank" rel="noopener" '
