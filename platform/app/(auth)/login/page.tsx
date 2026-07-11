@@ -59,8 +59,14 @@ function LoginForm() {
         setError(error.message)
         setLoading(false)
       } else {
-        router.push('/dashboard')
-        router.refresh()
+        const next = searchParams.get('next')
+        if (next && next.startsWith('/') && !next.startsWith('//')) {
+          // may point at a static file (e.g. /steps/*.html), so navigate fully
+          window.location.assign(next)
+        } else {
+          router.push('/dashboard')
+          router.refresh()
+        }
       }
     }
   }
