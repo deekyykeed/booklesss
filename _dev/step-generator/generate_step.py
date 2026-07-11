@@ -68,15 +68,18 @@ def render(step):
         '      <span><svg class="ic" aria-hidden="true"><use href="#ic-cursor"/></svg>Tap to define</span>'
     )
 
-    voice = ""
     if step.get("voice_agent_id"):
+        # Real ElevenLabs Agents widget once a public agent id is supplied.
         voice = (
-            "\n<!-- Booklesss voice tutor (ElevenLabs Agents demo) -->\n"
+            "\n<!-- Booklesss voice tutor (ElevenLabs Agents) -->\n"
             f'<elevenlabs-convai agent-id="{step["voice_agent_id"]}" '
             f'dynamic-variables=\'{{"step_slug": "{step["slug"]}", "step_title": "{step["page_title"]}"}}\'>'
             "</elevenlabs-convai>\n"
             '<script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>\n'
         )
+    else:
+        # Placeholder orb (idle/active demo) until a real agent is wired.
+        voice = "\n" + (HERE / "voice_placeholder.html").read_text()
 
     out = tpl
     replacements = {

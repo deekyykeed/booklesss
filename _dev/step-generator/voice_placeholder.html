@@ -1,0 +1,99 @@
+<!-- Booklesss voice tutor — placeholder orb (ElevenLabs agent slot, not yet live).
+     Fixed bottom-right. Idle = amber standby; Active = listening (green dot,
+     expanding rings, breathing). Click toggles the demo state. Replaced by the
+     real <elevenlabs-convai> widget once a step's voice_agent_id is set. -->
+<style>
+  .bk-orb {
+    position: fixed; right: clamp(1rem, 3vw, 1.75rem); bottom: clamp(1rem, 3vw, 1.75rem);
+    z-index: 55; display: flex; align-items: center; gap: 0.6rem;
+    font-family: "Familjen Grotesk", "Aptos", system-ui, sans-serif;
+  }
+  .bk-orb-label {
+    order: -1;
+    background: #FFFFFF; color: #18181B;
+    border: 1px solid rgba(226,232,240,0.9);
+    border-radius: 999px;
+    padding: 0.5rem 0.85rem; font-size: 0.8125rem; font-weight: 600;
+    white-space: nowrap; box-shadow: 0 10px 24px -12px rgba(24,24,27,0.28);
+    opacity: 0; transform: translateX(8px);
+    transition: opacity 240ms cubic-bezier(0.16,1,0.3,1), transform 240ms cubic-bezier(0.16,1,0.3,1);
+    pointer-events: none;
+  }
+  .bk-orb:hover .bk-orb-label,
+  .bk-orb[data-state="active"] .bk-orb-label { opacity: 1; transform: none; }
+  .bk-orb-label .soon {
+    margin-left: 0.45rem; font-size: 0.625rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; color: #C17E3A;
+  }
+  .bk-orb[data-state="active"] .bk-orb-label .soon { display: none; }
+  .bk-orb-btn {
+    position: relative; width: 60px; height: 60px; flex: none;
+    border: none; cursor: pointer; padding: 0; border-radius: 50%;
+    background: #C17E3A; color: #FFFFFF;
+    box-shadow: 0 14px 30px -10px rgba(193,126,58,0.6);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 260ms cubic-bezier(0.16,1,0.3,1), background 260ms cubic-bezier(0.16,1,0.3,1);
+  }
+  .bk-orb-btn:hover { transform: translateY(-2px); }
+  .bk-orb-btn:active { transform: scale(0.96); }
+  .bk-orb-btn:focus-visible { outline: 2px solid #C17E3A; outline-offset: 3px; }
+  .bk-orb-ic { width: 26px; height: 26px; position: relative; z-index: 2; }
+  .bk-orb[data-state="active"] .bk-orb-btn {
+    background: #18181B;
+    animation: bk-breathe 2.4s ease-in-out infinite;
+  }
+  @keyframes bk-breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+
+  .bk-orb-rings { position: absolute; inset: 0; pointer-events: none; }
+  .bk-orb-rings span {
+    position: absolute; inset: 0; border-radius: 50%;
+    border: 2px solid #C17E3A; opacity: 0;
+  }
+  .bk-orb[data-state="active"] .bk-orb-rings span { animation: bk-ring 2.2s cubic-bezier(0.16,1,0.3,1) infinite; }
+  .bk-orb[data-state="active"] .bk-orb-rings span:nth-child(2) { animation-delay: 0.73s; }
+  .bk-orb[data-state="active"] .bk-orb-rings span:nth-child(3) { animation-delay: 1.46s; }
+  @keyframes bk-ring { 0% { opacity: 0.5; transform: scale(1); } 100% { opacity: 0; transform: scale(2.1); } }
+
+  .bk-orb-status {
+    position: absolute; top: 2px; right: 2px; width: 13px; height: 13px;
+    border-radius: 50%; background: #94A3B8; border: 2.5px solid #FFFFFF; z-index: 3;
+    transition: background 240ms;
+  }
+  .bk-orb[data-state="active"] .bk-orb-status { background: #16A34A; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bk-orb-btn, .bk-orb-label { transition: none; }
+    .bk-orb[data-state="active"] .bk-orb-btn { animation: none; }
+    .bk-orb[data-state="active"] .bk-orb-rings span { animation: none; opacity: 0; }
+  }
+  @media (max-width: 480px) {
+    .bk-orb-btn { width: 54px; height: 54px; }
+    .bk-orb-ic { width: 23px; height: 23px; }
+  }
+</style>
+<div class="bk-orb" id="bk-orb" data-state="idle">
+  <span class="bk-orb-label"><span class="bk-orb-txt">Talk to Booklesss</span><span class="soon">soon</span></span>
+  <button class="bk-orb-btn" type="button" aria-pressed="false" aria-label="Talk to Booklesss — voice tutor coming soon">
+    <span class="bk-orb-rings" aria-hidden="true"><span></span><span></span><span></span></span>
+    <span class="bk-orb-status" aria-hidden="true"></span>
+    <svg class="bk-orb-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 15.5a3.5 3.5 0 0 0 3.5-3.5V6a3.5 3.5 0 1 0-7 0v6a3.5 3.5 0 0 0 3.5 3.5Z" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M19 12a7 7 0 0 1-14 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M12 19v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+  </button>
+</div>
+<script>
+(function () {
+  var orb = document.getElementById("bk-orb");
+  if (!orb) return;
+  var btn = orb.querySelector(".bk-orb-btn");
+  var txt = orb.querySelector(".bk-orb-txt");
+  btn.addEventListener("click", function () {
+    var active = orb.getAttribute("data-state") === "active";
+    orb.setAttribute("data-state", active ? "idle" : "active");
+    btn.setAttribute("aria-pressed", String(!active));
+    txt.textContent = active ? "Talk to Booklesss" : "Listening…";
+  });
+})();
+</script>
