@@ -30,12 +30,11 @@ Update this file whenever any link or setting changes.
 | Field | Value |
 |-------|-------|
 | Marketing site | booklesss.framer.ai |
-| Step pages | booklesss.vercel.app/steps/… (login required — students create a free account on first visit) |
-| Step index | booklesss.vercel.app/steps (signed-in) |
+| Step pages | booklesss.vercel.app/steps/… (public unlisted links — Slack membership is the gate; the login layer is dormant until a live Supabase project is wired) |
+| Step index | booklesss.vercel.app/steps |
 
 Posting pattern per step: hook line + 2–3 takeaways + **web step link** + PDF
-attached as the offline copy. The step link survives login — students land back
-on the step after signing in.
+attached as the offline copy.
 
 ---
 
