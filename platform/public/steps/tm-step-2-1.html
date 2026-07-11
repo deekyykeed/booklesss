@@ -51,10 +51,11 @@
 
   .ic { width: 1em; height: 1em; flex: none; display: inline-block; vertical-align: -0.14em; }
 
-  /* Squircle corners where supported; border-radius is the fallback */
+  /* Squircle cards — same convention as the dashboard (superellipse(2),
+     radius 24px); border-radius is the fallback in older browsers */
   .hint, .formula-wrap, .formula, .tbl-wrap, .callout, .discuss, .lab, .tip,
   .sources-list li a {
-    corner-shape: squircle;
+    corner-shape: superellipse(2);
   }
 
   html, body { margin: 0; padding: 0; }
@@ -136,7 +137,7 @@
     margin: 1.6rem 0 0;
     background: var(--amber-soft);
     border: 1px solid var(--amber-line);
-    border-radius: 1.25rem;
+    border-radius: 24px;
     padding: 0.85rem 1rem;
     font-size: 0.875rem; color: var(--ink); line-height: 1.5;
   }
@@ -197,13 +198,13 @@
   .formula-wrap {
     background: rgba(24,24,27,0.035);
     border: 1px solid var(--border);
-    border-radius: 1.25rem;
+    border-radius: 24px;
     padding: 0.375rem;
     margin: 1.2rem 0 1.4rem;
   }
   .formula {
     background: var(--surface);
-    border-radius: 0.9rem;
+    border-radius: calc(24px - 0.375rem);
     box-shadow: var(--shadow);
     padding: 1.1rem 1.25rem;
     overflow-x: auto;
@@ -241,7 +242,7 @@
   .discuss {
     margin: 1.8rem 0;
     border: 1px dashed var(--amber-line);
-    border-radius: 1.35rem;
+    border-radius: 24px;
     padding: 1.05rem 1.25rem;
     max-width: 62ch;
   }
@@ -253,7 +254,7 @@
   .discuss p { margin: 0; font-size: 0.9688rem; }
 
   /* ── Tables ───────────────────────────────────── */
-  .tbl-wrap { overflow-x: auto; margin: 1.1rem 0 1.4rem; border: 1px solid var(--border); border-radius: 1.25rem; background: var(--surface); box-shadow: var(--shadow); }
+  .tbl-wrap { overflow-x: auto; margin: 1.1rem 0 1.4rem; border: 1px solid var(--border); border-radius: 24px; background: var(--surface); box-shadow: var(--shadow); }
   table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 0.875rem; line-height: 1.5; }
   th {
     text-align: left; font-size: 0.6563rem; font-weight: 700;
@@ -305,7 +306,7 @@
   /* ── Interactive calculator ───────────────────── */
   .lab {
     border: 1px solid var(--amber-line);
-    border-radius: 1.25rem;
+    border-radius: 24px;
     background: var(--surface);
     box-shadow: var(--shadow);
     padding: 1.25rem 1.4rem 1.4rem;
@@ -370,7 +371,7 @@
     width: min(20.5rem, calc(100vw - 1.5rem));
     background: var(--tip-bg); color: var(--tip-ink);
     border: 1px solid var(--border);
-    border-radius: 1.25rem;
+    border-radius: 20px;
     box-shadow: 0 24px 48px -12px rgba(24, 24, 27, 0.18);
     padding: 0.85rem 1rem 0.95rem;
     opacity: 0; transform: translateY(6px) scale(0.98);
