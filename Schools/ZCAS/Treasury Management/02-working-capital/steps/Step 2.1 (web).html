@@ -51,6 +51,12 @@
 
   .ic { width: 1em; height: 1em; flex: none; display: inline-block; vertical-align: -0.14em; }
 
+  /* Squircle corners where supported; border-radius is the fallback */
+  .hint, .formula-wrap, .formula, .tbl-wrap, .callout, .discuss, .lab, .tip,
+  .sources-list li a {
+    corner-shape: squircle;
+  }
+
   html, body { margin: 0; padding: 0; }
 
   body {
@@ -130,7 +136,7 @@
     margin: 1.6rem 0 0;
     background: var(--amber-soft);
     border: 1px solid var(--amber-line);
-    border-radius: 1rem;
+    border-radius: 1.25rem;
     padding: 0.85rem 1rem;
     font-size: 0.875rem; color: var(--ink); line-height: 1.5;
   }
@@ -174,7 +180,7 @@
   .src:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
   .src .ico {
     position: relative; width: 15px; height: 15px; flex: none;
-    border-radius: 4px; overflow: hidden;
+    border-radius: 50%; overflow: hidden;
   }
   .src .ico .mono {
     position: absolute; inset: 0;
@@ -235,7 +241,7 @@
   .discuss {
     margin: 1.8rem 0;
     border: 1px dashed var(--amber-line);
-    border-radius: 1.1rem;
+    border-radius: 1.35rem;
     padding: 1.05rem 1.25rem;
     max-width: 62ch;
   }
@@ -247,7 +253,7 @@
   .discuss p { margin: 0; font-size: 0.9688rem; }
 
   /* ── Tables ───────────────────────────────────── */
-  .tbl-wrap { overflow-x: auto; margin: 1.1rem 0 1.4rem; border: 1px solid var(--border); border-radius: 1rem; background: var(--surface); box-shadow: var(--shadow); }
+  .tbl-wrap { overflow-x: auto; margin: 1.1rem 0 1.4rem; border: 1px solid var(--border); border-radius: 1.25rem; background: var(--surface); box-shadow: var(--shadow); }
   table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 0.875rem; line-height: 1.5; }
   th {
     text-align: left; font-size: 0.6563rem; font-weight: 700;
@@ -278,14 +284,14 @@
   .sources-list li a {
     display: flex; align-items: center; gap: 0.75rem;
     padding: 0.75rem 1rem;
-    border: 1px solid var(--border); border-radius: 0.9rem;
+    border: 1px solid var(--border); border-radius: 1.1rem;
     background: var(--surface);
     text-decoration: none; color: var(--ink);
     font-size: 0.9063rem;
     transition: border-color 200ms cubic-bezier(0.16,1,0.3,1), transform 200ms cubic-bezier(0.16,1,0.3,1);
   }
   .sources-list li a:hover { border-color: var(--amber-line); transform: translateY(-1px); }
-  .sources-list .ico { position: relative; width: 22px; height: 22px; flex: none; border-radius: 6px; overflow: hidden; }
+  .sources-list .ico { position: relative; width: 22px; height: 22px; flex: none; border-radius: 50%; overflow: hidden; }
   .sources-list .ico .mono {
     position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
     font-size: 11px; font-weight: 800; color: #fff;
@@ -364,7 +370,7 @@
     width: min(20.5rem, calc(100vw - 1.5rem));
     background: var(--tip-bg); color: var(--tip-ink);
     border: 1px solid var(--border);
-    border-radius: 1rem;
+    border-radius: 1.25rem;
     box-shadow: 0 24px 48px -12px rgba(24, 24, 27, 0.18);
     padding: 0.85rem 1rem 0.95rem;
     opacity: 0; transform: translateY(6px) scale(0.98);
@@ -715,15 +721,15 @@ Factoring saving:                                     ~K1,800</pre></div></div>
   var BRAND = {
     "investopedia.com":
       "<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>" +
-      "<rect width='24' height='24' rx='5' fill='#121212'/>" +
+      "<circle cx='12' cy='12' r='12' fill='#121212'/>" +
       "<text x='12' y='17.8' font-family='Georgia,Times New Roman,serif' font-size='16' font-weight='700' fill='#FFFFFF' text-anchor='middle'>I</text></svg>",
     "corporatefinanceinstitute.com":
       "<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>" +
-      "<rect width='24' height='24' rx='5' fill='#04323F'/>" +
-      "<text x='12' y='15.6' font-family='Arial,sans-serif' font-size='8' font-weight='800' fill='#86BC25' text-anchor='middle'>CFI</text></svg>",
+      "<circle cx='12' cy='12' r='12' fill='#04323F'/>" +
+      "<text x='12' y='15.6' font-family='Arial,sans-serif' font-size='7.5' font-weight='800' fill='#86BC25' text-anchor='middle'>CFI</text></svg>",
     "accaglobal.com":
       "<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>" +
-      "<rect width='24' height='24' rx='5' fill='#C4122F'/>" +
+      "<circle cx='12' cy='12' r='12' fill='#C4122F'/>" +
       "<text x='12' y='17.4' font-family='Arial,sans-serif' font-size='14' font-weight='800' fill='#FFFFFF' text-anchor='middle'>a</text></svg>"
   };
   document.querySelectorAll("[data-dom] .ico").forEach(function (ico) {
