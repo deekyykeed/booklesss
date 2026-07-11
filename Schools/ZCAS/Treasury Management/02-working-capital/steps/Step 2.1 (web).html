@@ -744,7 +744,6 @@ Factoring saving:                                     ~K1,800</pre></div></div>
 
   /* ── Selection tooltip ── */
   var tip = document.getElementById("tip");
-  var content = document.getElementById("content");
   var hideTimer = null;
 
   function esc(s) {
@@ -793,22 +792,25 @@ Factoring saving:                                     ~K1,800</pre></div></div>
     tip.style.visibility = "";
   }
 
+  /* Any non-empty selection, anywhere on the page, shows the overlay —
+     glossary hit or not. This is the anchor point for AI explanations. */
+  function showFromSelection() {
+    var sel = window.getSelection();
+    if (!sel || sel.isCollapsed || sel.rangeCount === 0) { hideTip(); return; }
+    var text = sel.toString().trim();
+    if (!text) { hideTip(); return; }
+    var node = sel.getRangeAt(0).commonAncestorContainer;
+    var el = node.nodeType === 1 ? node : node.parentElement;
+    if (el && tip.contains(el)) return;
+    var rect = sel.getRangeAt(0).getBoundingClientRect();
+    if (!rect || (rect.width === 0 && rect.height === 0)) { hideTip(); return; }
+    renderTip(text);
+    placeTip(rect);
+  }
+
   function onSelect() {
     clearTimeout(hideTimer);
-    hideTimer = setTimeout(function () {
-      var sel = window.getSelection();
-      if (!sel || sel.isCollapsed || sel.rangeCount === 0) { hideTip(); return; }
-      var text = sel.toString().trim();
-      if (text.length < 2 || text.length > 300) { hideTip(); return; }
-      var range = sel.getRangeAt(0);
-      var node = range.commonAncestorContainer;
-      var el = node.nodeType === 1 ? node : node.parentElement;
-      if (!content.contains(el)) { hideTip(); return; }
-      var rect = range.getBoundingClientRect();
-      if (rect.width === 0 && rect.height === 0) { hideTip(); return; }
-      renderTip(text);
-      placeTip(rect);
-    }, 60);
+    hideTimer = setTimeout(showFromSelection, 120);
   }
 
   document.addEventListener("pointerup", onSelect);
@@ -816,11 +818,10 @@ Factoring saving:                                     ~K1,800</pre></div></div>
   document.addEventListener("keyup", function (e) {
     if (e.shiftKey || e.key === "Shift") onSelect();
   });
-  document.addEventListener("selectionchange", function () {
-    var sel = window.getSelection();
-    if (!sel || sel.isCollapsed) hideTip();
-  });
-  document.addEventListener("scroll", hideTip, { passive: true });
+  /* selectionchange covers mobile long-press and drag-to-extend, where
+     pointerup fires before the selection settles */
+  document.addEventListener("selectionchange", onSelect);
+  document.addEventListener("scroll", onSelect, { passive: true });
   window.addEventListener("resize", hideTip);
 })();
 </script>
