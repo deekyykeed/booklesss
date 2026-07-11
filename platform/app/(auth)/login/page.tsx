@@ -34,7 +34,11 @@ function LoginForm() {
       const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(
+            (() => { const n = searchParams.get('next'); return n && n.startsWith('/') && !n.startsWith('//') ? n : '/steps' })()
+          )}`,
+        },
       })
       if (error) {
         setError(error.message)
@@ -64,7 +68,7 @@ function LoginForm() {
           // may point at a static file (e.g. /steps/*.html), so navigate fully
           window.location.assign(next)
         } else {
-          router.push('/dashboard')
+          router.push('/steps')
           router.refresh()
         }
       }

@@ -3,13 +3,11 @@
 Live configuration for the Booklesss Slack workspace and all public-facing links.
 Update this file whenever any link or setting changes.
 
-> ## ⚠️ UNRESOLVED — three workspaces exist (as of 2026-06-11)
->
-> 1. **bookless10.slack.com** ("Bookless 1.0") — what this file documents. Holds all TM + SM course channels and is where the public invite link points. **Its Slack Pro trial expired June 10, 2026** — single-channel guest seats (the Notes-tier mechanic) need a paid plan.
-> 2. **booklesss20.slack.com** — paid plan; SM Step 1.1/1.2 PDFs were uploaded here (see file-links table below). Different workspace from the invite link.
-> 3. **"Booklesss"** — created 2026-06-04, currently connected to Claude tooling. Only `#all-booklesss` + `#social`, one member, no course channels.
->
-> **Action: pick ONE workspace, recreate/move the course channels there, replace the invite link in all marketing and PDF scripts, then rewrite this warning out of this file.**
+> **Decision (2026-07-12): booklesss20.slack.com is the single home.** It's the
+> workspace already on a paid plan. The 9 TM/SM course channels must be recreated
+> there and every public link repointed. The other two workspaces are retired:
+> bookless10 (Pro trial expired 2026-06-10; old invite link is DEAD — do not use)
+> and "Booklesss" (the near-empty workspace connected to Claude tooling).
 
 ---
 
@@ -17,68 +15,65 @@ Update this file whenever any link or setting changes.
 
 | Field | Value |
 |-------|-------|
-| Workspace name | Bookless 1.0 |
-| Workspace URL | bookless10.slack.com |
-| Trial type | Slack Pro (free trial) |
-| Trial expires | June 10, 2026 — **EXPIRED** |
-| Invite link | https://join.slack.com/t/bookless10/shared_invite/zt-3t42wx6yq-8OFwcZTqTbPpC2Dg0q__Cg (never expires) |
+| Workspace name | Booklesss 2.0 |
+| Workspace URL | booklesss20.slack.com |
+| Plan | Paid |
+| Invite link | **TODO — generate from booklesss20 (Invite people → copy invite link) and paste here before any marketing goes out** |
 
-> **Note on the invite link:** The link contains the workspace slug (`bookless10`).
-> If you rename the workspace in Slack, the slug may change and this link will break.
-> Slack lets you change the display name freely — but changing the URL/slug is a separate
-> setting and will invalidate all existing invite links.
-> **Recommendation:** Don't change the workspace URL/slug. Change the display name only if needed.
+> **Note on invite links:** the link contains the workspace slug. Don't change
+> the workspace URL/slug — it invalidates every shared invite link.
 
 ---
 
-## Website
+## Web platform (steps)
 
 | Field | Value |
 |-------|-------|
-| Site | booklesss.framer.ai |
+| Marketing site | booklesss.framer.ai |
+| Step pages | booklesss.vercel.app/steps/… (login required — students create a free account on first visit) |
+| Step index | booklesss.vercel.app/steps (signed-in) |
+
+Posting pattern per step: hook line + 2–3 takeaways + **web step link** + PDF
+attached as the offline copy. The step link survives login — students land back
+on the step after signing in.
 
 ---
 
-## Use this link in
+## Use the invite link in
 
 - All lead magnet PDFs (CTA page)
 - WhatsApp post templates (`Operations/groups.md`)
+- The Framer site CTA
 - Any social or email mention
 
 ---
 
-## Treasury Management — Channels (LIVE)
+## Treasury Management — Channels (RECREATE on booklesss20)
 
 Section name in Slack: **Treasury Management**
 
 | Channel | Link | Content |
 |---------|------|---------|
-| `#tm-updates` | https://bookless10.slack.com/archives/C0AN40BMZFW | Announcements, new lesson drops |
-| `#tm-operations` | https://bookless10.slack.com/archives/C0ANULGE6SU | Lesson 1 (Foundations) + Lesson 5 (Systems & Clearing) — steps 1.1, 5.1, 5.2 |
-| `#tm-working-capital` | https://bookless10.slack.com/archives/C0AN3UPFG2G | Lesson 2 (Working Capital, Liquidity, Inventory, Cash) — steps 2.1–2.3 |
-| `#tm-risk` | https://bookless10.slack.com/archives/C0ANUKH3L64 | Lesson 3 (Interest Rate Risk, FX Risk) — steps 3.1–3.2 |
-| `#tm-investment` | https://bookless10.slack.com/archives/C0AMJUKGNLX | Lesson 4 (Debt & Investment Management) — steps 4.1–4.2 |
+| `#tm-updates` | TODO | Announcements, new lesson drops |
+| `#tm-operations` | TODO | Lesson 1 (Foundations) + Lesson 5 (Systems & Clearing) — steps 1.1, 5.1, 5.2 |
+| `#tm-working-capital` | TODO | Lesson 2 (Working Capital, Liquidity, Inventory, Cash) — steps 2.1–2.3 |
+| `#tm-risk` | TODO | Lesson 3 (Interest Rate Risk, FX Risk) — steps 3.1–3.2 |
+| `#tm-investment` | TODO | Lesson 4 (Debt & Investment Management) — steps 4.1–4.2 |
 
----
-
-## Strategic Management — Channels (LIVE)
+## Strategic Management — Channels (RECREATE on booklesss20)
 
 Section name in Slack: **Strategic Management**
 
 | Channel | Link | Content |
 |---------|------|---------|
-| `#sm-updates` | https://bookless10.slack.com/archives/C0AN0T23YKC | Announcements, new lesson drops |
-| `#sm-foundations` | https://bookless10.slack.com/archives/C0AN0T2HGR0 | Lessons 1–2 (Intro to Strategy, Mission & Vision) |
-| `#sm-environment` | https://bookless10.slack.com/archives/C0AMKDVAE95 | Lessons 3–4 (External & Internal Environment) |
-| `#sm-strategy` | https://bookless10.slack.com/archives/C0ANV5S89EU | Lessons 5–6 (Implementation & Competitive Strategy) |
-
----
+| `#sm-updates` | TODO | Announcements, new lesson drops |
+| `#sm-foundations` | TODO | Lessons 1–2 (Intro to Strategy, Mission & Vision) |
+| `#sm-environment` | TODO | Lessons 3–4 (External & Internal Environment) |
+| `#sm-strategy` | TODO | Lessons 5–6 (Implementation & Competitive Strategy) |
 
 ## Corporate Finance — Channels (PENDING CREATION)
 
 Section name in Slack: **Corporate Finance**
-
-> **Action required:** Create these channels in Slack, then update the links below.
 
 | Channel | Link | Content |
 |---------|------|---------|
@@ -95,8 +90,7 @@ Section name in Slack: **Corporate Finance**
 
 Historical record of uploads. **Do NOT embed these links inside PDFs** — the
 `STEP_LINKS` / `step_ref()` pattern was abandoned (Slack regenerates file IDs on
-every upload; see PROJECT_MEMORY dead end, 2026-06-04). Note these uploads went
-to `booklesss20.slack.com`, not the invite-link workspace.
+every upload; see PROJECT_MEMORY dead end, 2026-06-04).
 
 File link format: `https://booklesss20.slack.com/files/{USER_ID}/{FILE_ID}/{filename}.pdf`
 
@@ -129,5 +123,14 @@ File link format: `https://booklesss20.slack.com/files/{USER_ID}/{FILE_ID}/{file
 
 | Channel | Purpose |
 |---------|---------|
-| `#all-bookless-10` | General community chat |
+| `#all-booklesss` | General community chat |
 | `#social` | Off-topic, student life |
+
+---
+
+## Retired workspaces (do not post, do not share links)
+
+| Workspace | Status |
+|-----------|--------|
+| bookless10.slack.com | Pro trial expired 2026-06-10. Held the original TM/SM channels. Old invite link `https://join.slack.com/t/bookless10/…` is retired — purge it from every doc/script/site. |
+| "Booklesss" (Claude-connected) | Near-empty; keep only for tooling until migrated. |

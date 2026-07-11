@@ -136,8 +136,8 @@ Source of truth: `Operations/pricing-strategy.md`.
 
 | Metric | Value |
 |--------|-------|
-| Notes tier (single-channel guest) | **K250/month** — guest seats are free on a paid Slack plan |
-| Community tier (full member) | **K500/month** |
+| Notes tier (single-channel guest) | **K360/month** — guest seats are free on a paid Slack plan |
+| Community tier (full member) | **K600/month** |
 | Slack seat cost | ≈K219/user/mo (Pro monthly) · K339 (Business+) |
 | Guest ratio | ~5 single-channel guests per paid member |
 | Free trial | 1 month, one course channel, no card |
