@@ -34,7 +34,7 @@ export default function StepsIndex() {
 
       {courses.map((course) => (
         <section key={course} style={{ marginBottom: 36 }}>
-          <h2 style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#C17E3A', margin: '0 0 12px' }}>
+          <h2 style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#c5613f', margin: '0 0 12px' }}>
             {course}
           </h2>
           <div style={{ display: 'grid', gap: 10 }}>
@@ -44,8 +44,8 @@ export default function StepsIndex() {
                 href={`/steps/${s.slug}.html`}
                 style={{
                   display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 16,
-                  padding: '14px 18px', background: '#fff',
-                  border: '1px solid rgba(226,232,240,0.7)', borderRadius: 16,
+                  padding: '14px 18px', background: '#f0efeb',
+                  border: '1px solid #e8e8e8', borderRadius: 16,
                   textDecoration: 'none', color: '#121212',
                 }}
               >
