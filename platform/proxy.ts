@@ -5,12 +5,14 @@ import { NextResponse, type NextRequest } from 'next/server'
 // Supabase schema stay in place, dormant — to re-enable the gate, restore the
 // session check + redirect here (see git history) and point the Supabase env
 // vars at a live project.
-
-const MARKETING_URL = 'https://booklesss.framer.ai'
+//
+// The bare domain lands on the steps index (the app). Marketing lives on its
+// own domain (booklesss.framer.ai) — swap the target below to point the root
+// back there if that's ever wanted again.
 
 export function proxy(request: NextRequest) {
   if (request.nextUrl.pathname === '/') {
-    return NextResponse.redirect(new URL(MARKETING_URL))
+    return NextResponse.redirect(new URL('/steps', request.url))
   }
   return NextResponse.next({ request })
 }
