@@ -8,8 +8,21 @@ function safeNext(value: string | null): string | null {
 }
 
 export async function proxy(request: NextRequest) {
-  const { supabaseResponse, user } = await updateSession(request)
   const { pathname, search } = request.nextUrl
+
+  // Supabase only powers logins and progress saves — a dead, paused, or
+  // misconfigured project must never take the static content down. If the
+  // auth check itself fails, fail open and serve the request.
+  let supabaseResponse: NextResponse
+  let user: unknown = null
+  try {
+    ;({ supabaseResponse, user } = await updateSession(request))
+  } catch {
+    if (pathname === '/') {
+      return NextResponse.redirect(new URL(MARKETING_URL))
+    }
+    return NextResponse.next({ request })
+  }
 
   if (pathname === '/') {
     return NextResponse.redirect(
