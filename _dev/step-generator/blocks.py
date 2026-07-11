@@ -137,7 +137,8 @@ def build_sources_section(sources_list, sources):
     items = "\n".join(
         f'        <li><a href="{e["href"]}" target="_blank" rel="noopener" '
         f'data-dom="{sources[e["src"]]["domain"]}" data-mono="{sources[e["src"]]["mono"]}" '
-        f'data-color="{sources[e["src"]]["color"]}"><span class="ico"></span>{e["label"]}'
+        f'data-color="{sources[e["src"]]["color"]}"><span class="ico"></span>'
+        f'<span class="src-title">{e["label"]}</span>'
         '<svg class="ic open-ic" aria-hidden="true"><use href="#ic-open"/></svg></a></li>'
         for e in sources_list
     )
