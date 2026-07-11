@@ -13,7 +13,9 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
-  if (!pathname.startsWith('/login') && !user) {
+  // API routes return 401 JSON instead of redirecting — static step pages
+  // read that to decide when to send the student to /login themselves.
+  if (!pathname.startsWith('/login') && !pathname.startsWith('/api/') && !user) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 

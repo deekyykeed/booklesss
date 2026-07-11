@@ -164,7 +164,7 @@
     vertical-align: baseline;
     transform: translateY(0.1em);
     margin: 0 0.1rem;
-    padding: 0.05rem 0.55rem 0.05rem 0.3rem;
+    padding: 3px 0.6rem 3px 3px;
     border: 1px solid var(--border);
     border-radius: 999px;
     background: var(--surface);
@@ -180,13 +180,13 @@
   .src:hover, .src:focus-visible { border-color: var(--amber-line); color: var(--ink); transform: translateY(-1px); }
   .src:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
   .src .ico {
-    position: relative; width: 15px; height: 15px; flex: none;
+    position: relative; width: 17px; height: 17px; flex: none;
     border-radius: 50%; overflow: hidden;
   }
   .src .ico .mono {
     position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center;
-    font-size: 8.5px; font-weight: 800; color: #fff;
+    font-size: 9.5px; font-weight: 800; color: #fff;
     font-family: "Geist Mono", ui-monospace, monospace;
   }
   .src .ico img {
@@ -353,6 +353,52 @@
     .lab-bar { grid-template-columns: 6.5rem 1fr 4rem; }
   }
 
+  /* ── Wrap-up: rating + complete ───────────────── */
+  .wrapup-card {
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    corner-shape: superellipse(2);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    padding: 1.4rem 1.5rem 1.5rem;
+    margin: 1.4rem 0 0.4rem;
+    display: grid; gap: 1.1rem;
+    max-width: 34rem;
+  }
+  .wrapup-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .wrapup-label { font-family: "Familjen Grotesk", "Aptos", system-ui, sans-serif; font-weight: 600; font-size: 0.9375rem; }
+  .stars { display: flex; gap: 0.15rem; }
+  .star {
+    appearance: none; background: none; border: none; cursor: pointer;
+    padding: 0.25rem; margin: 0; color: var(--meta); line-height: 0;
+    border-radius: 10px; corner-shape: superellipse(1.5);
+    transition: transform 200ms cubic-bezier(0.16,1,0.3,1), color 200ms cubic-bezier(0.16,1,0.3,1);
+  }
+  .star .ic { font-size: 1.6rem; }
+  .star:hover { transform: translateY(-2px) scale(1.08); color: var(--amber); }
+  .star:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+  .star .fill { display: none; }
+  .star.on { color: var(--amber); }
+  .star.on .fill { display: inline-block; }
+  .star.on .line { display: none; }
+  .complete-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    appearance: none; border: 1px solid var(--amber);
+    background: var(--amber); color: #FFFFFF;
+    font-family: "Familjen Grotesk", "Aptos", system-ui, sans-serif;
+    font-weight: 600; font-size: 0.9375rem; letter-spacing: 0.01em;
+    padding: 0.7rem 1.3rem;
+    border-radius: 14px; corner-shape: superellipse(1.5);
+    cursor: pointer;
+    transition: transform 200ms cubic-bezier(0.16,1,0.3,1), background 200ms cubic-bezier(0.16,1,0.3,1);
+  }
+  .complete-btn:hover { transform: translateY(-1px); }
+  .complete-btn:active { transform: scale(0.98); }
+  .complete-btn:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+  .complete-btn .ic { font-size: 1.3em; }
+  .complete-btn.done { background: var(--surface); color: var(--amber); }
+  .wrapup-status { font-size: 0.8125rem; color: var(--steel); margin: 0; min-height: 1.2em; }
+
   /* ── Community closer ─────────────────────────── */
   .closer {
     margin-top: 3rem;
@@ -442,8 +488,15 @@
   }
 
   @media (min-width: 1100px) {
-    body { font-size: 1.125rem; }
-    .shell { max-width: 47rem; }
+    body { font-size: 1.1875rem; }
+    .shell { max-width: 50rem; }
+    h1 { font-size: 3.4rem; }
+    h2 { font-size: 1.85rem; }
+    h3 { font-size: 1.1875rem; }
+    .standfirst { font-size: 1.3rem; max-width: 40rem; }
+    .metarow { font-size: 0.8125rem; }
+    .formula pre { font-size: 0.875rem; }
+    table { font-size: 0.9375rem; }
   }
 
   @media (max-width: 480px) {
@@ -456,7 +509,7 @@
 <body>
 <div class="progress" id="progress"></div>
 
-<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true"><symbol id="ic-clock" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l2.5 2.5"/></g></symbol><symbol id="ic-doc" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 10c0-3.771 0-5.657 1.172-6.828S7.229 2 11 2h2c3.771 0 5.657 0 6.828 1.172S21 6.229 21 10v4c0 3.771 0 5.657-1.172 6.828S16.771 22 13 22h-2c-3.771 0-5.657 0-6.828-1.172S3 17.771 3 14z"/><path stroke-linecap="round" d="M8 12h8M8 8h8m-8 8h5"/></g></symbol><symbol id="ic-calc" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.464 20.536C4.93 22 7.286 22 12 22s7.071 0 8.535-1.465C22 19.072 22 16.714 22 12s0-7.071-1.465-8.536C19.072 2 16.714 2 12 2S4.929 2 3.464 3.464C2 4.93 2 7.286 2 12s0 7.071 1.464 8.535Z"/><path stroke-linecap="round" d="M18 8.5h-4m4 6h-4m4 3h-4m-4-9H8m0 0H6m2 0v-2m0 2v2m1.5 4L8 16m0 0l-1.5 1.5M8 16l-1.5-1.5M8 16l1.5 1.5"/></g></symbol><symbol id="ic-cursor" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m14.859 16.5l-2.461-2.461l-.752.751c-.77.77-1.154 1.154-1.568 1.064c-.413-.091-.602-.602-.978-1.623l-1.255-3.406c-.75-2.037-1.125-3.055-.6-3.58s1.543-.15 3.58.6L14.231 9.1c1.021.376 1.532.565 1.623.978s-.294.798-1.064 1.568l-.751.752l2.46 2.461c.256.255.383.382.442.524a.77.77 0 0 1 0 .593c-.059.142-.186.27-.441.524c-.255.255-.382.382-.524.441a.77.77 0 0 1-.593 0c-.142-.059-.27-.186-.524-.441"/><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464C22 4.93 22 7.286 22 12s0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/></g></symbol><symbol id="ic-bulb" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.5 19.5h-5m5 0c0-.713 0-1.07.038-1.307c.123-.763.144-.812.631-1.412c.151-.186.711-.688 1.832-1.692A7.5 7.5 0 1 0 7 15.09c1.12 1.004 1.68 1.505 1.832 1.692c.487.6.508.649.63 1.412c.039.237.039.593.039 1.307m5 0c0 .935 0 1.402-.201 1.75a1.5 1.5 0 0 1-.549.549c-.349.2-.816.2-1.751.2s-1.402 0-1.75-.201a1.5 1.5 0 0 1-.549-.549c-.201-.348-.201-.815-.201-1.75"/><path stroke-linecap="round" d="M12 17v-2m1.732-1a2 2 0 0 1-3.464 0"/></g></symbol><symbol id="ic-medal" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 8V6c0-1.886 0-2.828-.586-3.414S14.886 2 13 2h-2c-1.886 0-2.828 0-3.414.586S7 4.114 7 6v2"/><path d="M10.564 5.783a3 3 0 0 1 2.872 0l4.794 2.614a3 3 0 0 1 1.564 2.634v4.938a3 3 0 0 1-1.564 2.634l-4.794 2.614a3 3 0 0 1-2.872 0l-4.795-2.614a3 3 0 0 1-1.563-2.634V11.03a3 3 0 0 1 1.563-2.634z"/><path d="M11.146 11.523c.38-.682.57-1.023.854-1.023s.474.341.854 1.023l.098.176c.108.194.162.29.246.355c.085.063.19.087.4.135l.19.043c.738.167 1.107.25 1.195.533c.088.282-.164.576-.667 1.164l-.13.152c-.143.168-.215.251-.247.355s-.021.214 0 .438l.02.203c.076.784.114 1.177-.115 1.351c-.23.175-.576.016-1.267-.302l-.178-.083c-.197-.09-.295-.135-.399-.135s-.202.045-.399.135l-.178.083c-.691.318-1.037.477-1.267.302c-.23-.174-.191-.567-.115-1.351l.02-.203c.021-.224.032-.335 0-.438c-.032-.104-.104-.187-.247-.355l-.13-.152c-.503-.588-.755-.882-.667-1.164c.088-.283.457-.366 1.195-.533l.19-.043c.21-.048.315-.072.4-.135c.084-.064.138-.161.246-.355z"/></g></symbol><symbol id="ic-check" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="m8.5 12.5l2 2l5-5"/></g></symbol><symbol id="ic-chat" viewBox="0 0 24 24" fill="none"><g fill="none"><path fill="currentColor" d="m13.087 21.388l.645.382zm.542-.916l-.646-.382zm-3.258 0l-.645.382zm.542.916l.646-.382zm-8.532-5.475l.693-.287zm5.409 3.078l-.013.75zm-2.703-.372l-.287.693zm16.532-2.706l.693.287zm-5.409 3.078l-.012-.75zm2.703-.372l.287.693zm.7-15.882l-.392.64zm1.65 1.65l.64-.391zM4.388 2.738l-.392-.64zm-1.651 1.65l-.64-.391zM9.403 19.21l.377-.649zm4.33 2.56l.541-.916l-1.29-.764l-.543.916zm-4.007-.916l.542.916l1.29-.764l-.541-.916zm2.715.152a.52.52 0 0 1-.882 0l-1.291.764c.773 1.307 2.69 1.307 3.464 0zM10.5 2.75h3v-1.5h-3zm10.75 7.75v1h1.5v-1zm-18.5 1v-1h-1.5v1zm-1.5 0c0 1.155 0 2.058.05 2.787c.05.735.153 1.347.388 1.913l1.386-.574c-.147-.352-.233-.782-.278-1.441c-.046-.666-.046-1.51-.046-2.685zm6.553 6.742c-1.256-.022-1.914-.102-2.43-.316L4.8 19.313c.805.334 1.721.408 2.977.43zM1.688 16.2A5.75 5.75 0 0 0 4.8 19.312l.574-1.386a4.25 4.25 0 0 1-2.3-2.3zm19.562-4.7c0 1.175 0 2.019-.046 2.685c-.045.659-.131 1.089-.277 1.441l1.385.574c.235-.566.338-1.178.389-1.913c.05-.729.049-1.632.049-2.787zm-5.027 8.241c1.256-.021 2.172-.095 2.977-.429l-.574-1.386c-.515.214-1.173.294-2.428.316zm4.704-4.115a4.25 4.25 0 0 1-2.3 2.3l.573 1.386a5.75 5.75 0 0 0 3.112-3.112zM13.5 2.75c1.651 0 2.837 0 3.762.089c.914.087 1.495.253 1.959.537l.783-1.279c-.739-.452-1.577-.654-2.6-.752c-1.012-.096-2.282-.095-3.904-.095zm9.25 7.75c0-1.622 0-2.891-.096-3.904c-.097-1.023-.299-1.862-.751-2.6l-1.28.783c.285.464.451 1.045.538 1.96c.088.924.089 2.11.089 3.761zm-3.53-7.124a4.25 4.25 0 0 1 1.404 1.403l1.279-.783a5.75 5.75 0 0 0-1.899-1.899zM10.5 1.25c-1.622 0-2.891 0-3.904.095c-1.023.098-1.862.3-2.6.752l.783 1.28c.464-.285 1.045-.451 1.96-.538c.924-.088 2.11-.089 3.761-.089zM2.75 10.5c0-1.651 0-2.837.089-3.762c.087-.914.253-1.495.537-1.959l-1.279-.783c-.452.738-.654 1.577-.752 2.6C1.25 7.61 1.25 8.878 1.25 10.5zm1.246-8.403a5.75 5.75 0 0 0-1.899 1.899l1.28.783a4.25 4.25 0 0 1 1.402-1.403zm7.02 17.993c-.202-.343-.38-.646-.554-.884a2.2 2.2 0 0 0-.682-.645l-.754 1.297c.047.028.112.078.224.232c.121.166.258.396.476.764zm-3.24-.349c.44.008.718.014.93.037c.198.022.275.054.32.08l.754-1.297a2.2 2.2 0 0 0-.909-.274c-.298-.033-.657-.038-1.069-.045zm6.498 1.113c.218-.367.355-.598.476-.764c.112-.154.177-.204.224-.232l-.754-1.297c-.29.17-.5.395-.682.645c-.173.238-.352.54-.555.884zm1.924-2.612c-.412.007-.771.012-1.069.045c-.311.035-.616.104-.909.274l.754 1.297c.045-.026.122-.058.32-.08c.212-.023.49-.03.93-.037z"/><path stroke="currentColor" stroke-linecap="round" stroke-width="1.5" d="M8 9h8m-8 3.5h5.5"/></g></symbol><symbol id="ic-book" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 8c0-2.828 0-4.243.879-5.121C5.757 2 7.172 2 10 2h4c2.828 0 4.243 0 5.121.879C20 3.757 20 5.172 20 8v8c0 2.828 0 4.243-.879 5.121C18.243 22 16.828 22 14 22h-4c-2.828 0-4.243 0-5.121-.879C4 20.243 4 18.828 4 16z"/><path d="M19.898 16h-12c-.93 0-1.395 0-1.777.102A3 3 0 0 0 4 18.224"/><path stroke-linecap="round" d="M8 7h8m-8 3.5h5m0 5.5v3.53c0 .276 0 .414-.095.47s-.224-.006-.484-.13l-1.242-.59c-.088-.04-.132-.062-.179-.062s-.091.021-.179.063l-1.242.59c-.26.123-.39.185-.484.129C9 19.944 9 19.806 9 19.53v-3.08"/></g></symbol><symbol id="ic-stars" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor"><path stroke-width="1.5" d="M10.08 7.897C11.157 5.966 11.695 5 12.5 5s1.343.966 2.42 2.897l.278.5c.306.549.46.823.698 1.004s.535.248 1.13.383l.54.122c2.091.473 3.137.71 3.385 1.51c.249.8-.464 1.633-1.89 3.3l-.368.43c-.405.474-.607.711-.699 1.004c-.09.293-.06.609.001 1.24l.056.576c.216 2.224.323 3.336-.328 3.83s-1.63.044-3.587-.857l-.507-.234c-.556-.256-.834-.384-1.129-.384s-.573.128-1.13.384l-.506.234c-1.957.9-2.936 1.352-3.587.857c-.651-.494-.543-1.606-.328-3.83l.056-.575c.061-.632.092-.948 0-1.24c-.09-.294-.293-.53-.698-1.004l-.369-.432c-1.425-1.666-2.138-2.5-1.89-3.3c.25-.8 1.295-1.036 3.386-1.509l.54-.122c.595-.135.892-.202 1.13-.383c.239-.18.392-.455.698-1.004z"/><path stroke-linejoin="round" d="M4.99 2s.288 1.458.92 2.085C6.54 4.712 8 4.99 8 4.99s-1.458.288-2.085.92C5.288 6.54 5.01 8 5.01 8s-.288-1.458-.92-2.085C3.46 5.288 2 5.01 2 5.01s1.458-.288 2.085-.92C4.712 3.46 4.99 2 4.99 2Z"/><path stroke-linecap="round" stroke-width="1.5" d="M18 5h2m-1 1V4"/></g></symbol><symbol id="ic-open" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m9 15l6-6m0 0h-4.5M15 9v4.5"/><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464C22 4.93 22 7.286 22 12s0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/></g></symbol></svg>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true"><symbol id="ic-clock" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l2.5 2.5"/></g></symbol><symbol id="ic-doc" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 10c0-3.771 0-5.657 1.172-6.828S7.229 2 11 2h2c3.771 0 5.657 0 6.828 1.172S21 6.229 21 10v4c0 3.771 0 5.657-1.172 6.828S16.771 22 13 22h-2c-3.771 0-5.657 0-6.828-1.172S3 17.771 3 14z"/><path stroke-linecap="round" d="M8 12h8M8 8h8m-8 8h5"/></g></symbol><symbol id="ic-calc" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.464 20.536C4.93 22 7.286 22 12 22s7.071 0 8.535-1.465C22 19.072 22 16.714 22 12s0-7.071-1.465-8.536C19.072 2 16.714 2 12 2S4.929 2 3.464 3.464C2 4.93 2 7.286 2 12s0 7.071 1.464 8.535Z"/><path stroke-linecap="round" d="M18 8.5h-4m4 6h-4m4 3h-4m-4-9H8m0 0H6m2 0v-2m0 2v2m1.5 4L8 16m0 0l-1.5 1.5M8 16l-1.5-1.5M8 16l1.5 1.5"/></g></symbol><symbol id="ic-cursor" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m14.859 16.5l-2.461-2.461l-.752.751c-.77.77-1.154 1.154-1.568 1.064c-.413-.091-.602-.602-.978-1.623l-1.255-3.406c-.75-2.037-1.125-3.055-.6-3.58s1.543-.15 3.58.6L14.231 9.1c1.021.376 1.532.565 1.623.978s-.294.798-1.064 1.568l-.751.752l2.46 2.461c.256.255.383.382.442.524a.77.77 0 0 1 0 .593c-.059.142-.186.27-.441.524c-.255.255-.382.382-.524.441a.77.77 0 0 1-.593 0c-.142-.059-.27-.186-.524-.441"/><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464C22 4.93 22 7.286 22 12s0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/></g></symbol><symbol id="ic-bulb" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.5 19.5h-5m5 0c0-.713 0-1.07.038-1.307c.123-.763.144-.812.631-1.412c.151-.186.711-.688 1.832-1.692A7.5 7.5 0 1 0 7 15.09c1.12 1.004 1.68 1.505 1.832 1.692c.487.6.508.649.63 1.412c.039.237.039.593.039 1.307m5 0c0 .935 0 1.402-.201 1.75a1.5 1.5 0 0 1-.549.549c-.349.2-.816.2-1.751.2s-1.402 0-1.75-.201a1.5 1.5 0 0 1-.549-.549c-.201-.348-.201-.815-.201-1.75"/><path stroke-linecap="round" d="M12 17v-2m1.732-1a2 2 0 0 1-3.464 0"/></g></symbol><symbol id="ic-medal" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 8V6c0-1.886 0-2.828-.586-3.414S14.886 2 13 2h-2c-1.886 0-2.828 0-3.414.586S7 4.114 7 6v2"/><path d="M10.564 5.783a3 3 0 0 1 2.872 0l4.794 2.614a3 3 0 0 1 1.564 2.634v4.938a3 3 0 0 1-1.564 2.634l-4.794 2.614a3 3 0 0 1-2.872 0l-4.795-2.614a3 3 0 0 1-1.563-2.634V11.03a3 3 0 0 1 1.563-2.634z"/><path d="M11.146 11.523c.38-.682.57-1.023.854-1.023s.474.341.854 1.023l.098.176c.108.194.162.29.246.355c.085.063.19.087.4.135l.19.043c.738.167 1.107.25 1.195.533c.088.282-.164.576-.667 1.164l-.13.152c-.143.168-.215.251-.247.355s-.021.214 0 .438l.02.203c.076.784.114 1.177-.115 1.351c-.23.175-.576.016-1.267-.302l-.178-.083c-.197-.09-.295-.135-.399-.135s-.202.045-.399.135l-.178.083c-.691.318-1.037.477-1.267.302c-.23-.174-.191-.567-.115-1.351l.02-.203c.021-.224.032-.335 0-.438c-.032-.104-.104-.187-.247-.355l-.13-.152c-.503-.588-.755-.882-.667-1.164c.088-.283.457-.366 1.195-.533l.19-.043c.21-.048.315-.072.4-.135c.084-.064.138-.161.246-.355z"/></g></symbol><symbol id="ic-check" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="m8.5 12.5l2 2l5-5"/></g></symbol><symbol id="ic-chat" viewBox="0 0 24 24" fill="none"><g fill="none"><path fill="currentColor" d="m13.087 21.388l.645.382zm.542-.916l-.646-.382zm-3.258 0l-.645.382zm.542.916l.646-.382zm-8.532-5.475l.693-.287zm5.409 3.078l-.013.75zm-2.703-.372l-.287.693zm16.532-2.706l.693.287zm-5.409 3.078l-.012-.75zm2.703-.372l.287.693zm.7-15.882l-.392.64zm1.65 1.65l.64-.391zM4.388 2.738l-.392-.64zm-1.651 1.65l-.64-.391zM9.403 19.21l.377-.649zm4.33 2.56l.541-.916l-1.29-.764l-.543.916zm-4.007-.916l.542.916l1.29-.764l-.541-.916zm2.715.152a.52.52 0 0 1-.882 0l-1.291.764c.773 1.307 2.69 1.307 3.464 0zM10.5 2.75h3v-1.5h-3zm10.75 7.75v1h1.5v-1zm-18.5 1v-1h-1.5v1zm-1.5 0c0 1.155 0 2.058.05 2.787c.05.735.153 1.347.388 1.913l1.386-.574c-.147-.352-.233-.782-.278-1.441c-.046-.666-.046-1.51-.046-2.685zm6.553 6.742c-1.256-.022-1.914-.102-2.43-.316L4.8 19.313c.805.334 1.721.408 2.977.43zM1.688 16.2A5.75 5.75 0 0 0 4.8 19.312l.574-1.386a4.25 4.25 0 0 1-2.3-2.3zm19.562-4.7c0 1.175 0 2.019-.046 2.685c-.045.659-.131 1.089-.277 1.441l1.385.574c.235-.566.338-1.178.389-1.913c.05-.729.049-1.632.049-2.787zm-5.027 8.241c1.256-.021 2.172-.095 2.977-.429l-.574-1.386c-.515.214-1.173.294-2.428.316zm4.704-4.115a4.25 4.25 0 0 1-2.3 2.3l.573 1.386a5.75 5.75 0 0 0 3.112-3.112zM13.5 2.75c1.651 0 2.837 0 3.762.089c.914.087 1.495.253 1.959.537l.783-1.279c-.739-.452-1.577-.654-2.6-.752c-1.012-.096-2.282-.095-3.904-.095zm9.25 7.75c0-1.622 0-2.891-.096-3.904c-.097-1.023-.299-1.862-.751-2.6l-1.28.783c.285.464.451 1.045.538 1.96c.088.924.089 2.11.089 3.761zm-3.53-7.124a4.25 4.25 0 0 1 1.404 1.403l1.279-.783a5.75 5.75 0 0 0-1.899-1.899zM10.5 1.25c-1.622 0-2.891 0-3.904.095c-1.023.098-1.862.3-2.6.752l.783 1.28c.464-.285 1.045-.451 1.96-.538c.924-.088 2.11-.089 3.761-.089zM2.75 10.5c0-1.651 0-2.837.089-3.762c.087-.914.253-1.495.537-1.959l-1.279-.783c-.452.738-.654 1.577-.752 2.6C1.25 7.61 1.25 8.878 1.25 10.5zm1.246-8.403a5.75 5.75 0 0 0-1.899 1.899l1.28.783a4.25 4.25 0 0 1 1.402-1.403zm7.02 17.993c-.202-.343-.38-.646-.554-.884a2.2 2.2 0 0 0-.682-.645l-.754 1.297c.047.028.112.078.224.232c.121.166.258.396.476.764zm-3.24-.349c.44.008.718.014.93.037c.198.022.275.054.32.08l.754-1.297a2.2 2.2 0 0 0-.909-.274c-.298-.033-.657-.038-1.069-.045zm6.498 1.113c.218-.367.355-.598.476-.764c.112-.154.177-.204.224-.232l-.754-1.297c-.29.17-.5.395-.682.645c-.173.238-.352.54-.555.884zm1.924-2.612c-.412.007-.771.012-1.069.045c-.311.035-.616.104-.909.274l.754 1.297c.045-.026.122-.058.32-.08c.212-.023.49-.03.93-.037z"/><path stroke="currentColor" stroke-linecap="round" stroke-width="1.5" d="M8 9h8m-8 3.5h5.5"/></g></symbol><symbol id="ic-book" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 8c0-2.828 0-4.243.879-5.121C5.757 2 7.172 2 10 2h4c2.828 0 4.243 0 5.121.879C20 3.757 20 5.172 20 8v8c0 2.828 0 4.243-.879 5.121C18.243 22 16.828 22 14 22h-4c-2.828 0-4.243 0-5.121-.879C4 20.243 4 18.828 4 16z"/><path d="M19.898 16h-12c-.93 0-1.395 0-1.777.102A3 3 0 0 0 4 18.224"/><path stroke-linecap="round" d="M8 7h8m-8 3.5h5m0 5.5v3.53c0 .276 0 .414-.095.47s-.224-.006-.484-.13l-1.242-.59c-.088-.04-.132-.062-.179-.062s-.091.021-.179.063l-1.242.59c-.26.123-.39.185-.484.129C9 19.944 9 19.806 9 19.53v-3.08"/></g></symbol><symbol id="ic-stars" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor"><path stroke-width="1.5" d="M10.08 7.897C11.157 5.966 11.695 5 12.5 5s1.343.966 2.42 2.897l.278.5c.306.549.46.823.698 1.004s.535.248 1.13.383l.54.122c2.091.473 3.137.71 3.385 1.51c.249.8-.464 1.633-1.89 3.3l-.368.43c-.405.474-.607.711-.699 1.004c-.09.293-.06.609.001 1.24l.056.576c.216 2.224.323 3.336-.328 3.83s-1.63.044-3.587-.857l-.507-.234c-.556-.256-.834-.384-1.129-.384s-.573.128-1.13.384l-.506.234c-1.957.9-2.936 1.352-3.587.857c-.651-.494-.543-1.606-.328-3.83l.056-.575c.061-.632.092-.948 0-1.24c-.09-.294-.293-.53-.698-1.004l-.369-.432c-1.425-1.666-2.138-2.5-1.89-3.3c.25-.8 1.295-1.036 3.386-1.509l.54-.122c.595-.135.892-.202 1.13-.383c.239-.18.392-.455.698-1.004z"/><path stroke-linejoin="round" d="M4.99 2s.288 1.458.92 2.085C6.54 4.712 8 4.99 8 4.99s-1.458.288-2.085.92C5.288 6.54 5.01 8 5.01 8s-.288-1.458-.92-2.085C3.46 5.288 2 5.01 2 5.01s1.458-.288 2.085-.92C4.712 3.46 4.99 2 4.99 2Z"/><path stroke-linecap="round" stroke-width="1.5" d="M18 5h2m-1 1V4"/></g></symbol><symbol id="ic-star" viewBox="0 0 24 24" fill="none"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M9.153 5.408C10.42 3.136 11.053 2 12 2s1.58 1.136 2.847 3.408l.328.588c.36.646.54.969.82 1.182s.63.292 1.33.45l.636.144c2.46.557 3.689.835 3.982 1.776c.292.94-.546 1.921-2.223 3.882l-.434.507c-.476.557-.715.836-.822 1.18c-.107.345-.071.717.001 1.46l.066.677c.253 2.617.38 3.925-.386 4.506s-1.918.051-4.22-1.009l-.597-.274c-.654-.302-.981-.452-1.328-.452s-.674.15-1.328.452l-.596.274c-2.303 1.06-3.455 1.59-4.22 1.01c-.767-.582-.64-1.89-.387-4.507l.066-.676c.072-.744.108-1.116 0-1.46c-.106-.345-.345-.624-.821-1.18l-.434-.508c-1.677-1.96-2.515-2.941-2.223-3.882S3.58 8.328 6.04 7.772l.636-.144c.699-.158 1.048-.237 1.329-.45s.46-.536.82-1.182z"/></symbol><symbol id="ic-star-fill" viewBox="0 0 24 24" fill="none"><path fill="currentColor" d="M9.153 5.408C10.42 3.136 11.053 2 12 2s1.58 1.136 2.847 3.408l.328.588c.36.646.54.969.82 1.182s.63.292 1.33.45l.636.144c2.46.557 3.689.835 3.982 1.776c.292.94-.546 1.921-2.223 3.882l-.434.507c-.476.557-.715.836-.822 1.18c-.107.345-.071.717.001 1.46l.066.677c.253 2.617.38 3.925-.386 4.506s-1.918.051-4.22-1.009l-.597-.274c-.654-.302-.981-.452-1.328-.452s-.674.15-1.328.452l-.596.274c-2.303 1.06-3.455 1.59-4.22 1.01c-.767-.582-.64-1.89-.387-4.507l.066-.676c.072-.744.108-1.116 0-1.46c-.106-.345-.345-.624-.821-1.18l-.434-.508c-1.677-1.96-2.515-2.941-2.223-3.882S3.58 8.328 6.04 7.772l.636-.144c.699-.158 1.048-.237 1.329-.45s.46-.536.82-1.182z"/></symbol><symbol id="ic-open" viewBox="0 0 24 24" fill="none"><g fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m9 15l6-6m0 0h-4.5M15 9v4.5"/><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464C22 4.93 22 7.286 22 12s0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/></g></symbol></svg>
 
 <div class="shell">
 
@@ -700,6 +753,27 @@ Factoring saving:                                     ~K1,800</pre></div></div>
       </ul>
     </section>
 
+    <section>
+      <span class="eyebrow">Wrap up</span>
+      <h2>Done with this step?</h2>
+      <div class="wrapup-card" id="wrapup">
+        <div class="wrapup-row">
+          <span class="wrapup-label">Rate this step</span>
+          <div class="stars" id="stars" role="radiogroup" aria-label="Rate this step from 1 to 5 stars">
+            <button class="star" data-v="1" aria-label="1 star"><svg class="ic line" aria-hidden="true"><use href="#ic-star"/></svg><svg class="ic fill" aria-hidden="true"><use href="#ic-star-fill"/></svg></button>
+            <button class="star" data-v="2" aria-label="2 stars"><svg class="ic line" aria-hidden="true"><use href="#ic-star"/></svg><svg class="ic fill" aria-hidden="true"><use href="#ic-star-fill"/></svg></button>
+            <button class="star" data-v="3" aria-label="3 stars"><svg class="ic line" aria-hidden="true"><use href="#ic-star"/></svg><svg class="ic fill" aria-hidden="true"><use href="#ic-star-fill"/></svg></button>
+            <button class="star" data-v="4" aria-label="4 stars"><svg class="ic line" aria-hidden="true"><use href="#ic-star"/></svg><svg class="ic fill" aria-hidden="true"><use href="#ic-star-fill"/></svg></button>
+            <button class="star" data-v="5" aria-label="5 stars"><svg class="ic line" aria-hidden="true"><use href="#ic-star"/></svg><svg class="ic fill" aria-hidden="true"><use href="#ic-star-fill"/></svg></button>
+          </div>
+        </div>
+        <div class="wrapup-row">
+          <button class="complete-btn" id="btn-complete"><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span id="btn-complete-label">Mark step as complete</span></button>
+        </div>
+        <p class="wrapup-status" id="wrapup-status"></p>
+      </div>
+    </section>
+
     <div class="closer">
       <p>That question about factoring vs invoice discounting is exactly the kind of thing the channel is for — drop your take and see how others reasoned it. When you&rsquo;re comfortable with the cash cycle, the inventory side of it is where the real savings hide.</p>
       <p class="next">NEXT: 2.2 — INVENTORY MANAGEMENT, EOQ &amp; CREDITOR MANAGEMENT</p>
@@ -930,6 +1004,100 @@ Factoring saving:                                     ~K1,800</pre></div></div>
     }
     lab.addEventListener("input", calc);
     calc();
+  })();
+
+
+  /* ── Rate + complete (Supabase via same-origin API) ── */
+  (function () {
+    var wrap = document.getElementById("wrapup");
+    if (!wrap) return;
+    var STEP = "tm-2-1";
+    var API = "/api/step-feedback";
+    var LSKEY = "booklesss-feedback-" + STEP;
+    var stars = Array.prototype.slice.call(document.querySelectorAll("#stars .star"));
+    var btn = document.getElementById("btn-complete");
+    var btnLabel = document.getElementById("btn-complete-label");
+    var status = document.getElementById("wrapup-status");
+    var state = { rating: 0, completed: false };
+    var mode = "detecting"; /* "live" | "anon" | "preview" */
+
+    function paint() {
+      stars.forEach(function (s) {
+        s.classList.toggle("on", +s.dataset.v <= state.rating);
+        s.setAttribute("aria-pressed", +s.dataset.v <= state.rating ? "true" : "false");
+      });
+      btn.classList.toggle("done", state.completed);
+      btnLabel.textContent = state.completed ? "Completed \u2014 tap to undo" : "Mark step as complete";
+    }
+
+    function say(msg) { status.textContent = msg; }
+
+    function loginRedirect() {
+      var next = encodeURIComponent(location.pathname + location.search);
+      location.href = "/login?next=" + next;
+    }
+
+    function save() {
+      if (mode === "anon") { loginRedirect(); return; }
+      if (mode === "preview") {
+        try { localStorage.setItem(LSKEY, JSON.stringify(state)); } catch (e) {}
+        say("Saved on this device \u2014 sign in on the platform to sync to your account.");
+        return;
+      }
+      fetch(API, {
+        method: "POST", credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ step: STEP, rating: state.rating || null, completed: state.completed })
+      }).then(function (r) {
+        if (r.status === 401) { loginRedirect(); return; }
+        if (!r.ok) throw new Error();
+        say(state.completed ? "Saved to your account \u2014 step complete." : "Saved to your account.");
+      }).catch(function () {
+        say("Couldn\u2019t reach your account right now \u2014 your choice is kept on this device.");
+        try { localStorage.setItem(LSKEY, JSON.stringify(state)); } catch (e) {}
+      });
+    }
+
+    stars.forEach(function (s) {
+      s.addEventListener("click", function () {
+        var v = +s.dataset.v;
+        state.rating = (state.rating === v) ? 0 : v;
+        paint(); save();
+      });
+    });
+    btn.addEventListener("click", function () {
+      state.completed = !state.completed;
+      paint(); save();
+    });
+
+    /* detect: platform session > anonymous > static preview */
+    fetch(API + "?step=" + STEP, { credentials: "same-origin" })
+      .then(function (r) {
+        if (!r.ok) throw new Error();
+        var ct = r.headers.get("content-type") || "";
+        if (ct.indexOf("application/json") === -1) throw new Error();
+        return r.json();
+      })
+      .then(function (d) {
+        if (d.authenticated) {
+          mode = "live";
+          state.rating = d.rating || 0;
+          state.completed = !!d.completed;
+        } else {
+          mode = "anon";
+          say("Sign in to save your rating and progress.");
+        }
+        paint();
+      })
+      .catch(function () {
+        mode = "preview";
+        try {
+          var saved = JSON.parse(localStorage.getItem(LSKEY) || "null");
+          if (saved) { state.rating = saved.rating || 0; state.completed = !!saved.completed; }
+        } catch (e) {}
+        paint();
+      });
+    paint();
   })();
 
   /* ── Scroll-reveal ── */
