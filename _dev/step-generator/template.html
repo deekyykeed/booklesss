@@ -662,8 +662,8 @@
   });
 
   /* ── Table of contents minimap (Notion-style dashes) ──
-     One dash per heading, two lengths only: the page title and section
-     titles (h1/h2) get the long dash, subheadings (h3) get the short one.
+     Two title types only: the page title (h1) gets the long dash, section
+     titles (h2) get the short one. Subheadings (h3) are left out entirely.
      Dashes only lighten/darken as the reader moves — they never resize. */
   (function () {
     var toc = document.getElementById("toc");
@@ -672,10 +672,10 @@
     var h1 = document.querySelector("header.step h1");
     var heads = [];
     if (h1) heads.push({ el: h1, lvl: 1 });
-    [].slice.call(contentEl.querySelectorAll("h2, h3")).forEach(function (h) {
+    [].slice.call(contentEl.querySelectorAll("h2")).forEach(function (h) {
       var sec = h.closest("section");
       if (sec && sec.querySelector("#wrapup")) return; // skip the wrap-up card
-      heads.push({ el: h, lvl: h.tagName === "H3" ? 2 : 1 });
+      heads.push({ el: h, lvl: 2 });
     });
     if (heads.length < 2) return;
     var items = heads.map(function (h, idx) {
