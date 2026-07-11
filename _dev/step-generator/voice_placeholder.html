@@ -27,17 +27,17 @@
   }
   .bk-orb[data-state="active"] .bk-orb-label .soon { display: none; }
   .bk-orb-btn {
-    position: relative; width: 60px; height: 60px; flex: none;
-    border: none; cursor: pointer; padding: 0; border-radius: 50%;
+    position: relative; width: 40px; height: 40px; flex: none;
+    border: none; cursor: pointer; padding: 10px; border-radius: 50%;
     background: #c5613f; color: #FFFFFF;
-    box-shadow: 0 14px 30px -10px rgba(197,97,63,0.55);
+    box-shadow: 0 12px 26px -10px rgba(197,97,63,0.5);
     display: flex; align-items: center; justify-content: center;
     transition: transform 260ms cubic-bezier(0.16,1,0.3,1), background 260ms cubic-bezier(0.16,1,0.3,1);
   }
   .bk-orb-btn:hover { transform: translateY(-2px); }
   .bk-orb-btn:active { transform: scale(0.96); }
   .bk-orb-btn:focus-visible { outline: 2px solid #c5613f; outline-offset: 3px; }
-  .bk-orb-ic { width: 26px; height: 26px; position: relative; z-index: 2; }
+  .bk-orb-ic { width: 20px; height: 20px; position: relative; z-index: 2; }
   .bk-orb[data-state="active"] .bk-orb-btn {
     background: #18181B;
     animation: bk-breathe 2.4s ease-in-out infinite;
@@ -55,8 +55,8 @@
   @keyframes bk-ring { 0% { opacity: 0.5; transform: scale(1); } 100% { opacity: 0; transform: scale(2.1); } }
 
   .bk-orb-status {
-    position: absolute; top: 2px; right: 2px; width: 13px; height: 13px;
-    border-radius: 50%; background: #94A3B8; border: 2.5px solid #FFFFFF; z-index: 3;
+    position: absolute; top: 0; right: 0; width: 10px; height: 10px;
+    border-radius: 50%; background: #94A3B8; border: 2px solid #f9f9f7; z-index: 3;
     transition: background 240ms;
   }
   .bk-orb[data-state="active"] .bk-orb-status { background: #16A34A; }
@@ -65,10 +65,6 @@
     .bk-orb-btn, .bk-orb-label { transition: none; }
     .bk-orb[data-state="active"] .bk-orb-btn { animation: none; }
     .bk-orb[data-state="active"] .bk-orb-rings span { animation: none; opacity: 0; }
-  }
-  @media (max-width: 480px) {
-    .bk-orb-btn { width: 54px; height: 54px; }
-    .bk-orb-ic { width: 23px; height: 23px; }
   }
 </style>
 <div class="bk-orb" id="bk-orb" data-state="idle">
