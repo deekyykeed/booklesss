@@ -64,7 +64,7 @@ def render(step):
     meta_items = (
         f'      <span><svg class="ic" aria-hidden="true"><use href="#ic-clock"/></svg>~{meta["minutes"]} min</span>\n'
         f'      <span><svg class="ic" aria-hidden="true"><use href="#ic-doc"/></svg>{meta["sections"]} sections</span>\n'
-        f'      <span><svg class="ic" aria-hidden="true"><use href="#ic-calc"/></svg>{meta["examples"]} worked examples</span>\n'
+        f'      <span><svg class="ic" aria-hidden="true"><use href="#ic-calc"/></svg>{meta["examples"]} worked example{"s" if meta["examples"] != 1 else ""}</span>\n'
         '      <span><svg class="ic" aria-hidden="true"><use href="#ic-cursor"/></svg>Tap to define</span>'
     )
 
