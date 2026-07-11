@@ -6,6 +6,17 @@
 
 ## ⚠️ Architecture decision (session 13, 2026-07-12) — DO NOT RESURRECT THE DASHBOARD
 
+**Update (same session): login gate REMOVED.** The old Supabase project
+(`rdzlubpcsxbcqwhnvycx`) was deleted, which crashed every page via the auth
+middleware (ERR_CONNECTION_ABORTED, 352 errors). Owner chose to drop the gate:
+steps are now public unlisted links, Slack membership is the paywall. The
+middleware only redirects `/` to the Framer site; step pages save
+ratings/completions to localStorage when no account exists. Auth pages,
+/api/step-feedback, and schema.sql stay dormant — to re-enable: create a
+Supabase project, run schema.sql, set the Vercel env vars, and restore the
+session check in platform/proxy.ts (git history has it).
+
+
 The platform dashboard (library, calendar, notifications, saved, profile, lesson
 reader, community panel — the whole `app/(app)/` tree and its components) was
 **deliberately deleted**. Students never see a dashboard: the product motion is

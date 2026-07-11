@@ -943,16 +943,10 @@ This measures the average number of days you take to pay suppliers.</pre></div><
 
     function say(msg) { status.textContent = msg; }
 
-    function loginRedirect() {
-      var next = encodeURIComponent(location.pathname + location.search);
-      location.href = "/login?next=" + next;
-    }
-
     function save() {
-      if (mode === "anon") { loginRedirect(); return; }
-      if (mode === "preview") {
+      if (mode === "anon" || mode === "preview") {
         try { localStorage.setItem(LSKEY, JSON.stringify(state)); } catch (e) {}
-        say("Saved on this device \u2014 sign in on the platform to sync to your account.");
+        say("Saved on this device.");
         return;
       }
       fetch(API, {
@@ -960,7 +954,6 @@ This measures the average number of days you take to pay suppliers.</pre></div><
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ step: STEP, rating: state.rating || null, completed: state.completed })
       }).then(function (r) {
-        if (r.status === 401) { loginRedirect(); return; }
         if (!r.ok) throw new Error();
         say(state.completed ? "Saved to your account \u2014 step complete." : "Saved to your account.");
       }).catch(function () {
@@ -996,7 +989,10 @@ This measures the average number of days you take to pay suppliers.</pre></div><
           state.completed = !!d.completed;
         } else {
           mode = "anon";
-          say("Sign in to save your rating and progress.");
+          try {
+            var savedA = JSON.parse(localStorage.getItem(LSKEY) || "null");
+            if (savedA) { state.rating = savedA.rating || 0; state.completed = !!savedA.completed; }
+          } catch (e) {}
         }
         paint();
       })
