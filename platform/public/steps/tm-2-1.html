@@ -606,6 +606,65 @@ Days Receivables  <span class="op">=</span>  (Accounts Receivable &divide; Reven
 Days Payables     <span class="op">=</span>  (Accounts Payable &divide; COGS)         <span class="op">&times;</span>  365</pre></div></div>
       <p>The longer the CCC, the more working capital the business needs to fund. A company with a 90-day CCC has to finance 90 days of operations before cash comes in <a class="src" href="https://www.investopedia.com/terms/c/cashconversioncycle.asp" target="_blank" rel="noopener" data-dom="investopedia.com" data-mono="I" data-color="#0E5F4C"><span class="ico"></span>Investopedia</a>.</p>
 
+      <div class="ccc-viz" role="img" aria-label="The cash conversion cycle equals Days Inventory plus Days Receivables minus Days Payables, leaving the number of days a business's cash is tied up.">
+        <style>
+          .ccc-viz { margin: 1.5rem 0 1.7rem; }
+          .ccc-cap { font-family:"Satoshi","Onest",system-ui,sans-serif; font-size:0.6875rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--steel); margin:0 0 0.9rem; }
+          .ccc-flow { display:flex; align-items:stretch; gap:0.5rem; }
+          .ccc-node { flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; text-align:center; gap:0.45rem; padding:1.05rem 0.7rem; background:#ffffff; border:1px solid var(--border); border-radius:18px; box-shadow:var(--shadow); }
+          .ccc-ic { width:54px; height:54px; flex:none; }
+          .ccc-term { font-family:"Satoshi","Onest",system-ui,sans-serif; font-weight:650; font-size:0.85rem; color:var(--ink); line-height:1.2; }
+          .ccc-sub { font-size:0.72rem; line-height:1.3; color:var(--steel); }
+          .ccc-op { flex:0 0 auto; align-self:center; font-family:"Geist Mono","JetBrains Mono",ui-monospace,monospace; font-size:1.5rem; font-weight:700; color:var(--amber); }
+          .ccc-eq { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:0.4rem; margin-top:0.7rem; padding:0.7rem 1rem; background:var(--amber-soft); border:1px solid var(--amber-line); border-radius:14px; font-family:"Satoshi","Onest",system-ui,sans-serif; font-weight:600; font-size:0.875rem; color:var(--steel); text-align:center; }
+          .ccc-eq b { color:var(--ink); font-weight:700; }
+          .ccc-eq .eqs { color:var(--amber); font-weight:700; }
+          @media (max-width:560px) {
+            .ccc-flow { flex-direction:column; gap:0.35rem; }
+            .ccc-op { font-size:1.35rem; margin:0.05rem 0; }
+          }
+        </style>
+        <p class="ccc-cap">How the three drivers combine</p>
+        <div class="ccc-flow">
+          <div class="ccc-node">
+            <svg class="ccc-ic" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <path d="M32 8 56 20 32 32 8 20 Z" fill="#c5613f" fill-opacity="0.16"/>
+              <path d="M8 20 32 32 56 20 32 8 Z" stroke="#18181B" stroke-width="3" stroke-linejoin="round"/>
+              <path d="M8 20 V44 L32 56 V32" stroke="#18181B" stroke-width="3" stroke-linejoin="round"/>
+              <path d="M56 20 V44 L32 56" stroke="#18181B" stroke-width="3" stroke-linejoin="round"/>
+              <path d="M20 14 44 26" stroke="#c5613f" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+            <span class="ccc-term">Days Inventory</span>
+            <span class="ccc-sub">cash stuck in stock</span>
+          </div>
+          <span class="ccc-op" aria-hidden="true">+</span>
+          <div class="ccc-node">
+            <svg class="ccc-ic" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <rect x="15" y="8" width="34" height="48" rx="5" fill="#c5613f" fill-opacity="0.16" stroke="#18181B" stroke-width="3"/>
+              <path d="M23 20 H41" stroke="#18181B" stroke-width="3" stroke-linecap="round"/>
+              <path d="M23 28 H41" stroke="#18181B" stroke-width="3" stroke-linecap="round"/>
+              <path d="M23 36 H34" stroke="#18181B" stroke-width="3" stroke-linecap="round"/>
+              <path d="M23 45 H41" stroke="#c5613f" stroke-width="3.5" stroke-linecap="round"/>
+            </svg>
+            <span class="ccc-term">Days Receivables</span>
+            <span class="ccc-sub">waiting to be paid</span>
+          </div>
+          <span class="ccc-op" aria-hidden="true">&minus;</span>
+          <div class="ccc-node">
+            <svg class="ccc-ic" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <rect x="8" y="18" width="40" height="26" rx="5" fill="#c5613f" fill-opacity="0.16" stroke="#18181B" stroke-width="3"/>
+              <circle cx="26" cy="31" r="6" stroke="#18181B" stroke-width="3"/>
+              <path d="M14 24 h2.5 M37 38 h2.5" stroke="#18181B" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="47" cy="44" r="11" fill="#c5613f" stroke="#18181B" stroke-width="3"/>
+              <circle cx="47" cy="44" r="5.5" stroke="#ffffff" stroke-width="2.2"/>
+            </svg>
+            <span class="ccc-term">Days Payables</span>
+            <span class="ccc-sub">time before you pay</span>
+          </div>
+        </div>
+        <div class="ccc-eq"><span class="eqs">=</span>&nbsp;<b>Cash Conversion Cycle</b> — the days your cash is tied up</div>
+      </div>
+
       <h3>Worked Example — Zanaco Distributors Ltd</h3>
       <div class="tbl-wrap"><table>
         <thead><tr><th>Item</th><th>Value (ZMW)</th></tr></thead>
