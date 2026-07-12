@@ -43,8 +43,8 @@ body{margin:0;background:var(--bg);color:var(--ink);
 h1{font-family:"Parkinsans","Onest",sans-serif;font-weight:700;letter-spacing:-0.02em;
   font-size:clamp(1.8rem,5.4vw,2.7rem);line-height:1.02;margin:0 0 0.55rem;text-wrap:balance;}
 .stand{color:var(--steel);max-width:40ch;margin:0 0 1.5rem;font-size:0.98rem;line-height:1.55;}
-.scene{background:var(--card);border:1px solid var(--border);border-radius:26px;box-shadow:var(--shadow);
-  padding:0.4rem;overflow:hidden;}
+.scene{background:var(--card);border:1px solid var(--border);border-radius:28px;corner-shape:superellipse(2);
+  box-shadow:var(--shadow);padding:0.4rem;overflow:hidden;}
 .scene svg{display:block;width:100%;height:auto;}
 .cap{display:flex;flex-wrap:wrap;justify-content:center;gap:0.5rem 1.4rem;margin-top:1.1rem;}
 .cap span{display:inline-flex;align-items:center;gap:0.45rem;font-size:0.8rem;font-weight:600;color:var(--steel);}
@@ -65,10 +65,12 @@ h1{font-family:"Parkinsans","Onest",sans-serif;font-weight:700;letter-spacing:-0
       <path d="M20 402 Q410 366 800 402" fill="none" stroke="#18181B" stroke-width="2" opacity="0.16"/>
       <path d="M20 402 Q410 366 800 402 L800 480 L20 480 Z" fill="#18181B" opacity="0.03"/>
       <path d="M60 412 h120 M300 420 h150 M600 414 h150" stroke="#18181B" stroke-width="2" stroke-linecap="round" opacity="0.14"/>
-      <!-- flow line -->
-      <path d="M175 330 C260 250 330 250 405 292 S560 340 640 300 S710 250 700 200"
-            fill="none" stroke="#c5613f" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="1 10" opacity="0.55"/>
-      <g transform="translate(360 268) rotate(-18)"><path d="M-7 -6 L7 0 L-7 6 Z" fill="#c5613f"/></g><g transform="translate(612 306) rotate(20)"><path d="M-7 -6 L7 0 L-7 6 Z" fill="#c5613f"/></g><g transform="translate(701 214) rotate(-78)"><path d="M-7 -6 L7 0 L-7 6 Z" fill="#c5613f"/></g>
+      <!-- flow: stock -> shop -> cash -> growth, then a return arc closing the loop -->
+      <path d="M214 348 Q252 332 285 335" fill="none" stroke="#c5613f" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="1 9" opacity="0.5"/>
+      <path d="M516 352 Q552 372 586 359" fill="none" stroke="#c5613f" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="1 9" opacity="0.5"/>
+      <path d="M690 308 Q679 268 692 236" fill="none" stroke="#c5613f" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="1 9" opacity="0.5"/>
+      <path d="M648 100 Q400 10 154 282" fill="none" stroke="#c5613f" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 11" opacity="0.38"/>
+      <g transform="translate(288 335) rotate(3)"><path d="M-7 -6 L7 0 L-7 6 Z" fill="#c5613f"/></g><g transform="translate(589 358) rotate(-6)"><path d="M-7 -6 L7 0 L-7 6 Z" fill="#c5613f"/></g><g transform="translate(692 232) rotate(-84)"><path d="M-7 -6 L7 0 L-7 6 Z" fill="#c5613f"/></g><g transform="translate(156 284) rotate(122)"><path d="M-7 -6 L7 0 L-7 6 Z" fill="#c5613f"/></g>
       <path d="M141 120 L159 120 M150 111 L150 129" stroke="#c5613f" stroke-width="2.4" stroke-linecap="round" opacity="0.7"/><path d="M693 220 L707 220 M700 213 L700 227" stroke="#c5613f" stroke-width="2.4" stroke-linecap="round" opacity="0.6"/><path d="M534 90 L546 90 M540 84 L540 96" stroke="#c5613f" stroke-width="2.4" stroke-linecap="round" opacity="0.5"/><path d="M84 330 L96 330 M90 324 L90 336" stroke="#c5613f" stroke-width="2.4" stroke-linecap="round" opacity="0.45"/><circle cx="255" cy="150" r="4" fill="#c5613f" opacity="0.35"/><circle cx="560" cy="300" r="4" fill="#c5613f" opacity="0.3"/><circle cx="470" cy="110" r="3" fill="#c5613f" opacity="0.35"/><circle cx="680" cy="340" r="4" fill="#c5613f" opacity="0.3"/><circle cx="120" cy="220" r="3" fill="#c5613f" opacity="0.3"/>
       <!-- birds -->
       <path d="M120 100 q10 -8 20 0 q10 -8 20 0" fill="none" stroke="#18181B" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
