@@ -209,18 +209,18 @@
 
   /* ── Formula box ──────────────────────────────── */
   .formula-wrap {
-    background: rgba(24,24,27,0.035);
+    background: #ffffff;
     border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 0.375rem;
-    margin: 1.2rem 0 1.4rem;
-  }
-  .formula {
-    background: var(--surface);
-    border-radius: calc(24px - 0.375rem);
+    border-radius: 20px;
     box-shadow: var(--shadow);
-    padding: 1.1rem 1.25rem;
+    margin: 1.2rem 0 1.4rem;
     overflow-x: auto;
+    scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .formula-wrap::-webkit-scrollbar { display: none; }
+  .formula {
+    background: transparent;
+    padding: 1.1rem 1.25rem;
   }
   .formula pre {
     margin: 0;
@@ -267,17 +267,18 @@
   .discuss p { margin: 0; font-size: 0.9688rem; }
 
   /* ── Tables ───────────────────────────────────── */
-  .tbl-wrap { overflow-x: auto; margin: 1.1rem 0 1.4rem; border: 1px solid var(--border); border-radius: 20px; background: #ffffff; box-shadow: var(--shadow); -webkit-overflow-scrolling: touch; }
+  .tbl-wrap { overflow-x: auto; margin: 1.1rem 0 1.4rem; border: 1px solid var(--border); border-radius: 20px; background: #ffffff; box-shadow: var(--shadow); -webkit-overflow-scrolling: touch; scrollbar-width: none; -ms-overflow-style: none; }
+  .tbl-wrap::-webkit-scrollbar { display: none; }
   table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 0.9375rem; line-height: 1.55; color: var(--ink); }
   thead th {
     text-align: left; font-size: 0.6875rem; font-weight: 700;
     letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--ink); background: var(--amber-soft);
-    padding: 0.85rem 1.1rem; border-bottom: 1.5px solid var(--amber-line);
+    color: var(--ink); background: #f0efeb;
+    padding: 0.85rem 1.1rem; border-bottom: 1px solid var(--border);
     white-space: nowrap;
   }
   td { padding: 0.82rem 1.1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
-  tbody tr:nth-child(even) td { background: #f6f5f1; }
+  tbody tr:nth-child(even) td { background: #f9f9f7; }
   tbody tr:hover td { background: var(--amber-soft); }
   tr:last-child td { border-bottom: none; }
   td:first-child { font-weight: 650; white-space: nowrap; }
