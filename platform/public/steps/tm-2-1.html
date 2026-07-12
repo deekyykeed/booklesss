@@ -209,18 +209,18 @@
 
   /* ── Formula box ──────────────────────────────── */
   .formula-wrap {
-    background: rgba(24,24,27,0.035);
+    background: #ffffff;
     border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 0.375rem;
-    margin: 1.2rem 0 1.4rem;
-  }
-  .formula {
-    background: var(--surface);
-    border-radius: calc(24px - 0.375rem);
+    border-radius: 20px;
     box-shadow: var(--shadow);
-    padding: 1.1rem 1.25rem;
+    margin: 1.2rem 0 1.4rem;
     overflow-x: auto;
+    scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .formula-wrap::-webkit-scrollbar { display: none; }
+  .formula {
+    background: transparent;
+    padding: 1.1rem 1.25rem;
   }
   .formula pre {
     margin: 0;
