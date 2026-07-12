@@ -7,10 +7,22 @@ import { NextResponse, type NextRequest } from 'next/server'
 
 const STEP_SLUG = /^[a-z0-9-]{1,64}$/
 
+// Supabase is currently unconfigured (project deleted, feedback dormant).
+// Without this guard createClient() throws and every step page view 500s,
+// since the static pages call GET on load.
+const supabaseConfigured = Boolean(
+  process.env.NEXT_PUBLIC_SUPABASE_URL &&
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+)
+
 export async function GET(request: NextRequest) {
   const step = request.nextUrl.searchParams.get('step') ?? ''
   if (!STEP_SLUG.test(step)) {
     return NextResponse.json({ error: 'invalid step' }, { status: 400 })
+  }
+
+  if (!supabaseConfigured) {
+    return NextResponse.json({ authenticated: false })
   }
 
   const supabase = await createClient()
@@ -38,6 +50,10 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  if (!supabaseConfigured) {
+    return NextResponse.json({ error: 'feedback unavailable' }, { status: 503 })
+  }
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
