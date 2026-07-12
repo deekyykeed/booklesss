@@ -17,6 +17,23 @@ Supabase project, run schema.sql, set the Vercel env vars, and restore the
 session check in platform/proxy.ts (git history has it).
 
 
+## 🔓 Gotcha resolved (2026-07-12) — production 403 was Deployment Protection, not code
+
+Owner's phone got **"This site can't be reached" / ERR_CONNECTION_ABORTED** on
+`booklesss.vercel.app/steps/tm-2-1.html` while the page served a clean 200
+through Vercel's authenticated tunnel. Cause: **Vercel Deployment Protection**.
+The "Standard Protection" mode protects *"all except production **Custom
+Domains**"* — and we have no custom domain, so `booklesss.vercel.app` (a Vercel
+*system* domain) was gated too. Every student not logged into the owner's Vercel
+team was blocked. Tell-tale sign: a `?_vercel_share=…` link opens fine while the
+plain URL fails. Fix: Settings → Deployment Protection → turn **Require Log In
+OFF** (Hobby, no custom domain). Re-enable only after a real custom domain
+exists. Full write-up in `platform/AGENTS.md` → "Deployment (Vercel)".
+
+Also shipped this session (PR #34): security headers + CSP on every route
+(production-only CSP so the preview toolbar survives) and a fail-soft
+`/api/step-feedback` so missing Supabase env vars no longer 500 every page view.
+
 The platform dashboard (library, calendar, notifications, saved, profile, lesson
 reader, community panel — the whole `app/(app)/` tree and its components) was
 **deliberately deleted**. Students never see a dashboard: the product motion is
