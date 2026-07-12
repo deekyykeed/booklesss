@@ -3,11 +3,18 @@
 Live configuration for the Booklesss Slack workspace and all public-facing links.
 Update this file whenever any link or setting changes.
 
-> **Decision (2026-07-12): booklesss20.slack.com is the single home.** It's the
-> workspace already on a paid plan. The 9 TM/SM course channels must be recreated
-> there and every public link repointed. The other two workspaces are retired:
-> bookless10 (Pro trial expired 2026-06-10; old invite link is DEAD — do not use)
-> and "Booklesss" (the near-empty workspace connected to Claude tooling).
+> **⚠️ SUPERSEDED (2026-07-12, BOO-7 decision): do NOT rebuild the paid channel
+> structure on Slack.** The paid product is migrating OFF Slack onto the own
+> Next.js/Supabase platform — selling monthly access to Slack channels (and the
+> 5-guests-per-seat "Notes" tier) violates the Salesforce/Slack MSA §3.4
+> resale + usage-limit clauses. Slack's future role (free community layer vs.
+> WhatsApp) is parked. The "recreate the 9 TM/SM channels on booklesss20 and
+> repoint every link" plan below is on hold — the channel map is kept only as a
+> record of what exists today, not a build instruction. See Linear BOO-7 / BOO-38.
+>
+> _Prior decision (now on hold): booklesss20.slack.com was to be the single home
+> (the paid-plan workspace); bookless10 (Pro trial expired 2026-06-10, invite link
+> DEAD) and the near-empty "Booklesss" tooling workspace are retired regardless._
 
 ---
 

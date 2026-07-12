@@ -2,6 +2,16 @@
 
 **Last updated:** 2026-05-17
 
+> **⚠️ Model change (2026-07-12, BOO-7 decision): the Slack guest-ratio economics
+> below are being retired.** The paid product is moving OFF Slack onto the own
+> platform — "K360 single-channel guest = ~100% margin because Slack guests are
+> free" relied on reselling Slack access, which breaches the Slack/Salesforce MSA.
+> The tier PRICES (K360 Notes / K600 Community / Custom) still stand, but "what
+> they get" becomes **access to the gated platform**, not a Slack seat, and the
+> cost structure is platform hosting (~$0–45/mo), not per-seat Slack. Rework this
+> file when the paywall (Linear BOO-38) lands. Everything below the line is the
+> old Slack-based model, kept for reference only.
+
 ---
 
 ## Pricing Tiers

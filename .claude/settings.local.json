@@ -57,7 +57,26 @@
       "Bash(git -C \"c:/Users/deeky/OneDrive/Desktop/Booklesss\" status)",
       "Bash(claude install:*)",
       "mcp__15dec2d6-6ad0-45ad-b9c4-3105b39a3884__list_workspaces",
-      "mcp__claude_ai_Supabase__apply_migration"
+      "mcp__claude_ai_Supabase__apply_migration",
+      "Bash(git check-ignore *)",
+      "mcp__linear-server__list_issues",
+      "mcp__linear-server__get_issue",
+      "mcp__linear-server__list_comments",
+      "WebSearch",
+      "WebFetch(domain:slack.com)",
+      "WebFetch(domain:www.salesforce.com)",
+      "WebFetch(domain:thepostmillennial.com)",
+      "Bash(curl -sL -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\)\" \"https://www.salesforce.com/en-us/wp-content/uploads/sites/4/documents/legal/Agreements/policies/ExternalFacing_Services_Policy.pdf\" -o /tmp/aup.pdf)",
+      "Bash(echo \"EXIT:$?\")",
+      "Read(//tmp/**)",
+      "Bash(python3 -c \"import sys; d=open\\('/tmp/aup.pdf','rb'\\).read\\(\\); print\\('BYTES',len\\(d\\)\\); print\\(d[:200]\\)\")",
+      "WebFetch(domain:web.archive.org)",
+      "Read(//c/tmp/**)",
+      "Bash(python3 -c \"import pypdf; print\\('pypdf ok'\\)\")",
+      "Bash(python3 -c \"import PyPDF2; print\\('PyPDF2 ok'\\)\")",
+      "Bash(pdftotext -v)",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -sL -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\)\" \"https://www.salesforce.com/en-us/wp-content/uploads/sites/4/documents/legal/Salesforce_MSA.pdf\" -o msa.pdf)"
     ]
   },
   "enabledMcpjsonServers": [
