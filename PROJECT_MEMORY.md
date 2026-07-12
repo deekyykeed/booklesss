@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-07-12 (session 14)
+**Last updated:** 2026-07-12 (session 15)
 
 ---
 
@@ -62,6 +62,8 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
+**→ Linear is now the live backlog** (team Booklesss, `linear-server`). 32 open issues **BOO-6→BOO-37**: business-model audit (BOO-6→23, incl. the two Urgent Slack items) + Projects A/B/C platform/launch backlog (BOO-24→37). Start each session from Linear's Urgent/High list. The items below are the older doc-tracked carryovers not yet migrated into Linear.
+
 **Platform — build the top nav bar (spec coming layer by layer from Framer):**
 - [ ] Fill the `{/* navbar items go here */}` placeholder in `(app)/layout.tsx` — user is providing Framer CSS specs one layer at a time; top nav container is scaffolded but empty.
 - [ ] Verify 1200px `position: absolute` shell looks correct on screen at `booklesss.vercel.app` — user hasn't confirmed the layout visually yet.
@@ -76,7 +78,7 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 **⚠️ Funnel integrity (from the 2026-06-11 audit — fix before any marketing push):**
 - [ ] **Consolidate Slack to ONE workspace.** Three exist: `bookless10` (invite link + all TM/SM channels, Pro trial EXPIRED 2026-06-10), `booklesss20` (paid, where SM PDFs were uploaded), and a new empty "Booklesss" ws (created 2026-06-04, currently tool-connected). Decide, move channels, update `Operations/workspace.md`, replace the invite link everywhere.
-- [ ] Framer: remove expired "Free until 10 June →" CTAs; pricing page Community K800 → **K1,425** (was planned as K500, now superseded); homepage FAQ same update; indexed meta description says "free 7-day trial" (should be 1 month); "Prodo" meta titles; /legals page.
+- [ ] Framer: remove expired "Free until 10 June →" CTAs; pricing page Community K800 → **K600** (full member; guest/Notes tier K360 — K1,425 was a Gamma-in-price detour, reverted); homepage FAQ same update; indexed meta description says "free 7-day trial" (should be 1 month); "Prodo" meta titles; /legals page.
 - [ ] Tally form 81Jejr: add a Free Trial option to the plan question (the advertised entry product is currently unselectable); delete the orphaned annual page (K4,680 = old K390×12) and its dead jump rule; dedupe the two "Which school" questions; clear the 2 founder test submissions.
 - [ ] Strip the `bookless10` invite link from the ~19 CF/TM build scripts' closer text (PDFs must be rebuilt before circulating).
 - [ ] Decide the post-founding-rate offer (April 18 deadline passed; Template D in groups.md retired).
@@ -96,7 +98,7 @@ Slack channel post → login-gated web step link → read. The platform is now o
 - [ ] Extract a shared brand module (`booklesss_brand.py`) so CF rebuilds aren't ~600 lines of copy-paste each
 - [ ] Create CF Slack channels (`#cf-updates`, `#cf-investment`, etc.) → update workspace.md
 - [ ] Draft outreach messages to potential collaborators — raised end of previous session, not actioned
-- [ ] Update Booklesss website pricing page manually in Framer: Community tier K800 → **K1,425** (superseded from K500 — see 2026-07-07 pricing note above)
+- [ ] Update Booklesss website pricing page manually in Framer: Community tier K800 → **K600** (full member), Notes/guest → **K360** (the K1,425 figure was the Gamma-in-price version, since reverted — see 2026-07-08 pricing note above)
 - [ ] When Framer / Design Bridge plugin is online, pull exact Booklesss tokens and reconcile
 - [ ] Export higher-res Booklesss diamond mark (current is only 34×34px)
 - [ ] Fix page meta titles in Framer (SEO tab): /blogs, /about-us, homepage still say "Prodo"
@@ -111,6 +113,30 @@ Slack channel post → login-gated web step link → read. The platform is now o
 ---
 
 ## Session Log
+
+### Session 2026-07-12 (session 15 — guest pricing → 60%, full business-model audit, Linear populated)
+
+Local session. No repo code changed except doc/backlog cleanup — the pricing work
+was already committed in session 12; this session's output lives in Linear.
+
+**Done:**
+- **Guest price set to 60% of full member** (was the old "guest = markup only" K200 rule → now **K360** = 60% × K600). Full member stays K600. Rebuilt `Operations/Revenue Model - Booklesss.pdf` and recomputed every cascading figure (Table A/B, milestones, weekly payouts, 12-month NPV: now **K199,056** NPV / K235,285 undiscounted / Month-12 net K58,316 / floor K5,844 in Month 2). Guest-revenue ceiling per course rose to K118,800/mo. (This was committed 2026-07-08 in session 12's wrap — verified on disk this session, not re-committed.) Memory `project_revenue_model.md` updated to the 60% rule.
+- **Confirmed Slack ToS blocks the core mechanic.** Verified directly against Slack's Acceptable Use Policy + User ToS (not just a subagent summary): Slack prohibits "sublicensing, reselling, time sharing or similarly exploiting the Services." Charging students for workspace/guest access is the textbook prohibited case. The deepest clause lives in a Salesforce-hosted PDF that WebFetch couldn't open — the search-indexed AUP text + API/Integration terms all corroborate. **Implication: the paywall must move off Slack onto the `platform/` app; Slack becomes a free community layer.** Filed as BOO-7 (Urgent).
+- **Also found (Slack docs):** the 5-free-guests-per-paid-seat ratio is **workspace-wide, not per-course** — the revenue model assumes 330 slots *per course* (×4 = 1,320). If enforced workspace-wide, the real ceiling is 330 total. Filed as BOO-6 (Urgent) — verify before trusting any "4 courses at full capacity" figure.
+- **Ran a 4-agent business-model audit** (financial/tax, legal/compliance, growth/campaign, ops-resilience) with real web research. Filed **18 issues BOO-6→BOO-23**. Headline gaps beyond the two Slack ones: no ZRA Turnover Tax line (5% flat, cleared in month 1 — BOO-9), no PACRA/ZRA registration (BOO-8), no Data Protection Act registration/privacy policy (BOO-10), mobile-money levy unbudgeted in payouts (BOO-11), no late/partial/overpayment rule (BOO-12 — proposed: pro-rata the 5/20/60/20 split on amount actually received, pause channel progression on underpayment, overpay banks as credit unless flagged a tip), campaign conversion assumes flat 10% but social is 2-4% (BOO-15), no attribution for the K50 distributor commission once social runs in parallel (BOO-13).
+- **Filed the session-14 staged Linear backlog** (Projects A/B/C, 14 issues **BOO-24→BOO-37**) now that linear-server is reachable, and **deleted `Operations/linear-backlog.md`** (purpose served). B4/BOO-37 filed straight to Done (Deployment Protection, already resolved).
+- **FX note surfaced:** model uses K22.10/USD but a real trade was $100→K1,905 (~19.05), and live spot is even lower (~18.5, Kwacha appreciated ~24% YoY). Direction means the model may *understate* true USD tool cost if buying dollars — but current spot is *below* 22.10, so there's cushion. Fix logged in BOO-20: use the actual card-statement ZMW debit as cost basis, not a quoted rate.
+
+**What Worked:**
+- Verifying the Slack ToS claim against Slack's own AUP/ToS pages directly rather than trusting the earlier subagent's paraphrase — the subagent was right, but the primary-source check is what makes it safe to act on (and caught that the fullest clause is in an unreachable Salesforce PDF).
+- Four parallel audit subagents each given the *full* current model state inline (prices, splits, overhead, assumptions) so none wasted turns re-deriving it — they went straight to gap-finding + web research.
+
+**Dead Ends (do not retry):**
+- OneDrive file hydration makes `git status` briefly report tracked `platform/` files as "deleted," then clean on a re-stat. Don't panic-commit or restore on the first reading — re-run `git status --short` and let it settle before acting. (Same OneDrive-placeholder family as the session-9 `shutil.rmtree` WinError.)
+
+**Next:** Linear is now the live backlog (BOO-6→BOO-37). Headline Urgent items to act on: BOO-6 (confirm Slack guest ratio) and BOO-7 (move paywall off Slack). See Next Session list for the non-Linear carryovers (BBA steps, Framer pricing fixes, etc.).
+
+---
 
 ### Session 2026-07-12 (session 14 — production launch prep + container polish)
 
