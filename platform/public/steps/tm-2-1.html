@@ -285,7 +285,8 @@
   ul.tick li { position: relative; padding: 0.22rem 0 0.22rem 1.4rem; }
   ul.tick li::before {
     content: ""; position: absolute; left: 0.15rem; top: 0.85em;
-    width: 0.45rem; height: 0.45rem; border-radius: 2px;
+    width: 0.45rem; height: 0.45rem;
+    border-radius: 3px; corner-shape: superellipse(2);
     background: var(--amber); opacity: 0.75;
   }
 
