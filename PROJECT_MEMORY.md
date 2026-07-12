@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-07-12 (session 13)
+**Last updated:** 2026-07-12 (session 14)
 
 ---
 
@@ -111,6 +111,83 @@ Slack channel post → login-gated web step link → read. The platform is now o
 ---
 
 ## Session Log
+
+### Session 2026-07-12 (session 14 — production launch prep + container polish)
+
+Remote/cloud session. All work on branch `claude/course-html-text-tooltips-dmmgbr`,
+merged sequentially as PRs #30–#39.
+
+**Done:**
+- **TOC minimap — built, iterated, then removed.** Added a Notion-style
+  right-edge dash table-of-contents (level-sized dashes, flush to screen edge,
+  colour-only active state, two sizes, then h3s dropped). Owner decided it
+  "didn't work" and had it **removed entirely** (PR #33) — step pages are back
+  to a clean single reading column. Net: no TOC. Don't rebuild without a fresh
+  ask.
+- **Production hardening (PR #34).** `next.config.ts` now sends security headers
+  on every route incl. the static step pages: a CSP locked to `'self'` + the
+  Google/DuckDuckGo favicon services (**production-only**, `VERCEL_ENV`, so the
+  Vercel preview toolbar survives on previews), nosniff, SAMEORIGIN, strict
+  referrer, Permissions-Policy reserving `microphone=(self)` for the voice
+  tutor. `/api/step-feedback` now **fail-softs** when Supabase env vars are
+  absent (GET → `{authenticated:false}`, POST → 503) — previously it threw and
+  every step-page view 500'd.
+- **Deployment Protection 403 diagnosed + documented (PR #35).** Students got
+  "site can't be reached"/ERR_CONNECTION_ABORTED on `booklesss.vercel.app`
+  while the page served 200 through Vercel's authed tunnel. Cause: **Standard
+  Protection gates everything except production *custom* domains — and the site
+  runs on a `vercel.app` system domain, so production was gated too.** Fix:
+  Settings → Deployment Protection → **Require Log In OFF** (Hobby, no custom
+  domain). Owner did this; plain links now work. Full write-up in
+  `platform/AGENTS.md` → "Deployment (Vercel)". Tell: `?_vercel_share=` link
+  opens while the plain URL 403s.
+- **linear-server wired for cloud sessions (PR #36).** Added it to the repo's
+  `.mcp.json` (`https://mcp.linear.app/mcp`) so cloud sessions can reach the
+  **Booklesss** Linear after a one-time OAuth — previously it lived only in the
+  owner's local `~/.claude.json`. CLAUDE.md documents the per-session-type
+  setup. **Still needs authorizing** (see Next Session). NB from this session:
+  the cloud sandbox's egress proxy blocks `mcp.linear.app`/`api.linear.app`
+  outright, and the only Linear connected in cloud is the Khadzika-scoped one
+  (`mcp__Linear__*`) — never use it for Booklesss.
+- **Container/typography polish** (PRs #36–#39): squircled `ul.tick` bullet
+  markers; tables restyled for reading (neutral `#f0efeb` header band, white
+  body with `#f9f9f7` zebra rows, 15px text, hidden scrollbar, row hover);
+  formula boxes flattened from the nested beige frame to clean **white cards**
+  with the same soft `--shadow` as the tables. Consistent white-container
+  language across step pages now.
+- **Linear backlog staged** (`Operations/linear-backlog.md`, PR #37) — since
+  Booklesss Linear was unreachable, drafted a paste-ready backlog: Project A
+  (user tracking & personalized quizzes: localStorage completion → adaptive
+  quiz page → identity capture → Google Sheet beacon → later Supabase), Project
+  B (launch-readiness dashboard clicks), Project C (owner-side blockers). File
+  into the Booklesss team once linear-server is authorized.
+
+**Design decisions worth keeping:**
+- "How to track completed steps without a backend": localStorage is
+  same-origin-shared, so a static quiz page on `booklesss.vercel.app` can read
+  a step's `bk_completed` and adapt — no backend, no identity. Operator
+  visibility (who did what) is the part that needs a sink; recommended a Google
+  Apps Script → Sheet beacon over reviving Supabase. Full reasoning in the
+  linear-backlog Project A.
+
+**What Worked:**
+- Headless Chromium (`/opt/pw-browsers/chromium`) for visual QA — but
+  scroll-reveal leaves element screenshots blank; inject a reveal-override
+  stylesheet (`section,.reveal{opacity:1!important;transform:none!important}`)
+  before shooting. DOM `getComputedStyle` probes for authoritative checks.
+- `mcp__Vercel__web_fetch_vercel_url` (authenticated) to verify production/preview
+  pages past the 403 wall the sandbox curl hits.
+
+**Dead Ends (do not retry):**
+- The TOC dash minimap — built and refined across several PRs, owner rejected
+  the whole concept. Left as removed.
+
+**Next:** See Next Session list. Headline items: authorize `linear-server`
+(remote route is claude.ai → Connectors; open question is whether Booklesss
+Linear is the same login as Khadzika), file the staged backlog, and the
+dashboard-click launch items (Speed Insights, Fluid compute, bot WAF).
+
+---
 
 ### Session 2026-07-08 (session 12 — Linear MCP wired up)
 **Done:**
