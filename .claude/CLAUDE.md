@@ -146,6 +146,15 @@ All icons in `platform/` come from the **Streamline Solar Linear** free set via 
 5. Add a new `export function XxxLinear` to `solar.tsx` — replace all `stroke="#000000"` and `fill="#000000"` with `currentColor`.
 6. Import and use in the component.
 
+**Cloud sessions — the `curl` in step 4 fails.** The egress proxy blocks
+every Streamline host (`public-api`/`assets`/`cdn`.streamlinehq.com — org
+policy 403, same wall as Linear/Supabase), so the download URL can't be
+fetched. Use `mcp__…__get_icon_by_hash` instead: it returns the full SVG
+source **inline** in the response's `svg` field — no download host needed.
+Recolor by string-replacing its two default colors (`#020202` ink,
+`#0c6fff` accent) with the target colours. This is how TM 2.1's Cash
+Conversion Cycle diagram got its Freehand Duotone icons.
+
 **Never** hardcode Framer CDN URLs for icons — always source from Streamline and inline the SVG so icons respond to `color` CSS.
 
 ### Transcription

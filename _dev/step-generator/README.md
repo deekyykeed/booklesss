@@ -90,3 +90,52 @@ Copy the text out of the step's ReportLab `build_*.py` into blocks — it is
 transcription, not translation (`section()` → section dict, `body()` → `p`,
 `callout()` → `callout`, `table_std` → `table`, `formula_box` → `formula`).
 Budget 1–2 hours per step. Write the glossary and discussion prompts fresh.
+
+## Diagrams (responsive, icon-driven)
+
+Pattern used by TM 2.1's Cash Conversion Cycle diagram: a row of cards joined
+by operators, collapsing to a stack on mobile. Self-contained — a `raw` block
+(or raw markup inside `raw_sections`) carrying its own scoped `<style>` and
+inline SVG, so it ships with the page and needs no template change. Skeleton:
+
+```html
+<div class="ccc-viz" role="img" aria-label="Plain-language description of the whole diagram.">
+  <style>
+    .ccc-viz { margin: 1.5rem 0 1.7rem; }
+    .ccc-cap { font-family:"Satoshi","Onest",system-ui,sans-serif; font-size:0.6875rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--steel); margin:0 0 0.9rem; }
+    .ccc-flow { display:flex; align-items:stretch; gap:0.5rem; }
+    .ccc-node { flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; text-align:center; gap:0.45rem; padding:1.05rem 0.7rem; background:#ffffff; border:1px solid var(--border); border-radius:18px; box-shadow:var(--shadow); }
+    .ccc-ic { width:54px; height:54px; flex:none; }
+    .ccc-term { font-family:"Satoshi","Onest",system-ui,sans-serif; font-weight:650; font-size:0.85rem; color:var(--ink); line-height:1.2; }
+    .ccc-sub { font-size:0.72rem; line-height:1.3; color:var(--steel); }
+    .ccc-op { flex:0 0 auto; align-self:center; font-family:"Geist Mono",ui-monospace,monospace; font-size:1.5rem; font-weight:700; color:var(--amber); }
+    .ccc-eq { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:0.4rem; margin-top:0.7rem; padding:0.7rem 1rem; background:var(--amber-soft); border:1px solid var(--amber-line); border-radius:14px; font-family:"Satoshi","Onest",system-ui,sans-serif; font-weight:600; font-size:0.875rem; color:var(--steel); text-align:center; }
+    .ccc-eq b { color:var(--ink); font-weight:700; } .ccc-eq .eqs { color:var(--amber); font-weight:700; }
+    @media (max-width:560px) { .ccc-flow { flex-direction:column; gap:0.35rem; } .ccc-op { font-size:1.35rem; margin:0.05rem 0; } }
+  </style>
+  <p class="ccc-cap">Short caption</p>
+  <div class="ccc-flow">
+    <div class="ccc-node"><!-- inline SVG icon --><span class="ccc-term">Label</span><span class="ccc-sub">one-line gloss</span></div>
+    <span class="ccc-op" aria-hidden="true">+</span>
+    <div class="ccc-node">…</div>
+    <span class="ccc-op" aria-hidden="true">&minus;</span>
+    <div class="ccc-node">…</div>
+  </div>
+  <div class="ccc-eq"><span class="eqs">=</span>&nbsp;<b>Result</b> — what it means</div>
+</div>
+```
+
+Rules that keep it on-brand and responsive: cards are white with `var(--shadow)`
+(match tables/formula boxes); use palette tokens (`--ink`, `--steel`, `--amber`,
+`--amber-soft`, `--amber-line`, `--border`) not hex; keep upright `+` / `&minus;`
+operators (don't rotate — a rotated minus reads as a bar); always verify **zero
+horizontal overflow** on a 390px viewport before shipping.
+
+**Icons — freehand duotone from Streamline.** Find a free icon
+(`freehand-duotone-free` set; premium sets 403 on the free account), then pull
+its SVG with `get_icon_by_hash` — the response's `svg` field is the full source
+**inline** (the download-URL route is egress-blocked in cloud sessions). Drop
+the `<desc>`, string-replace the two default colours (`#020202` → `#18181B`
+ink, `#0c6fff` → `#c5613f` terracotta), and set the opening tag to
+`<svg class="ccc-ic" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">`.
+The width/height come from `.ccc-ic`, so the viewBox is all the SVG needs.
