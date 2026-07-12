@@ -91,6 +91,13 @@
 
   ::selection { background: var(--amber-soft); color: var(--ink); }
   .content ::selection { background: rgba(197, 97, 63, 0.20); }
+  /* Rainbow selection — active only while an explainable passage is
+     highlighted (html.rainbow-sel is toggled by the selection popover JS,
+     which also drives --selh through the hues via rAF). */
+  html.rainbow-sel .content ::selection {
+    color: hsl(var(--selh, 20) 85% 40%);
+    background: hsl(var(--selh, 20) 85% 52% / 0.14);
+  }
 
   /* ── Shell ────────────────────────────────────── */
   .shell {
@@ -338,10 +345,28 @@
   .lab-row label { font-size: 0.8125rem; font-weight: 700; color: var(--steel); }
   .lab-row output {
     font-family: "Geist Mono", ui-monospace, monospace;
-    font-size: 0.8125rem; font-variant-numeric: tabular-nums;
-    text-align: right; white-space: nowrap;
+    font-size: 0.8125rem; font-variant-numeric: tabular-nums; font-weight: 700;
+    text-align: right; white-space: nowrap; color: var(--amber);
   }
-  .lab input[type="range"] { width: 100%; accent-color: var(--amber); height: 1.2rem; }
+  /* Shared slider component (the "break-even lab" look): filled track +
+     white thumb with an accent ring. Fill is driven by the --fill custom
+     property, auto-wired for every .lab range input by the script below. */
+  .lab input[type="range"] {
+    -webkit-appearance: none; appearance: none; width: 100%; height: 6px; margin: 0.4rem 0;
+    border-radius: 999px; cursor: pointer; outline: none;
+    background: linear-gradient(var(--amber), var(--amber)) no-repeat, #e3e0d8;
+    background-size: var(--fill, 0%) 100%;
+  }
+  .lab input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+    background: #fff; border: 2px solid var(--amber); cursor: grab;
+    box-shadow: 0 3px 8px -2px rgba(197,97,63,0.5);
+  }
+  .lab input[type="range"]::-moz-range-thumb {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: #fff; border: 2px solid var(--amber); cursor: grab;
+  }
+  .lab input[type="range"]:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
   .lab-out { margin-top: 1.2rem; border-top: 1px solid var(--border); padding-top: 1.1rem; display: grid; gap: 0.55rem; }
   .lab-bar { display: grid; grid-template-columns: 8.5rem 1fr 4.5rem; gap: 0.9rem; align-items: center; font-size: 0.75rem; }
   .lab-bar .nm { color: var(--steel); font-weight: 700; }
@@ -767,6 +792,18 @@ This measures the average number of days you take to pay suppliers.</pre></div><
     img.src = urls[attempt];
   });
 
+  /* ── Slider fill: paint the filled track for every .lab range input ── */
+  function bkFill(inp) {
+    var min = parseFloat(inp.min) || 0, max = parseFloat(inp.max);
+    if (!isFinite(max) || max === min) return;
+    var pct = (parseFloat(inp.value) - min) / (max - min) * 100;
+    inp.style.setProperty("--fill", pct + "%");
+  }
+  [].forEach.call(document.querySelectorAll(".lab input[type='range']"), bkFill);
+  document.addEventListener("input", function (e) {
+    if (e.target && e.target.matches && e.target.matches(".lab input[type='range']")) bkFill(e.target);
+  });
+
 
   /* ── Glossary: this step's key terms ── */
   var GLOSSARY = {
@@ -818,6 +855,39 @@ This measures the average number of days you take to pay suppliers.</pre></div><
 
   function hideTip() {
     tip.classList.remove("show");
+    stopRainbow();
+  }
+
+  /* ── Rainbow selection: cycle --selh while a valid highlight is live ── */
+  var rbRAF = null, rbHue = 20;
+  var RB_REDUCE = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function startRainbow() {
+    document.documentElement.classList.add("rainbow-sel");
+    if (RB_REDUCE || rbRAF) return;
+    var tick = function () {
+      rbHue = (rbHue + 2.2) % 360;
+      document.documentElement.style.setProperty("--selh", rbHue.toFixed(1));
+      rbRAF = requestAnimationFrame(tick);
+    };
+    rbRAF = requestAnimationFrame(tick);
+  }
+  function stopRainbow() {
+    document.documentElement.classList.remove("rainbow-sel");
+    if (rbRAF) { cancelAnimationFrame(rbRAF); rbRAF = null; }
+  }
+
+  /* Only genuine reading text is explainable: paragraphs and bullet items
+     inside the content column. Headings, eyebrows, the header block, and
+     anything inside a container (callouts, discussion boxes, formulas,
+     tables, calculators, sources, outcomes, wrap-up) stays quiet. */
+  var EXPLAIN_BLOCK = ".callout, .discuss, .formula-wrap, .tbl-wrap, .lab, " +
+    ".wrapup-card, .sources-list, ul.outcomes, header.step, .topbar, .hint, .ccc-viz";
+  function explainable(el) {
+    if (!el || !el.closest) return false;
+    if (el.closest(EXPLAIN_BLOCK)) return false;
+    if (el.closest("h1, h2, h3, .eyebrow")) return false;
+    var host = el.closest("p, ul.tick li");
+    return !!(host && host.closest("#content"));
   }
 
   function renderTip(text) {
@@ -858,8 +928,9 @@ This measures the average number of days you take to pay suppliers.</pre></div><
     tip.style.visibility = "";
   }
 
-  /* Any non-empty selection, anywhere on the page, shows the overlay —
-     glossary hit or not. This is the anchor point for AI explanations. */
+  /* A selection shows the overlay only when it sits in explainable reading
+     text (see explainable() above) — glossary hit or not. This is the
+     anchor point for AI explanations. */
   function showFromSelection() {
     var sel = window.getSelection();
     if (!sel || sel.isCollapsed || sel.rangeCount === 0) { hideTip(); return; }
@@ -868,10 +939,12 @@ This measures the average number of days you take to pay suppliers.</pre></div><
     var node = sel.getRangeAt(0).commonAncestorContainer;
     var el = node.nodeType === 1 ? node : node.parentElement;
     if (el && tip.contains(el)) return;
+    if (!explainable(el)) { hideTip(); return; }
     var rect = sel.getRangeAt(0).getBoundingClientRect();
     if (!rect || (rect.width === 0 && rect.height === 0)) { hideTip(); return; }
     renderTip(text);
     placeTip(rect);
+    startRainbow();
   }
 
   function onSelect() {
@@ -885,7 +958,12 @@ This measures the average number of days you take to pay suppliers.</pre></div><
     if (e.shiftKey || e.key === "Shift") onSelect();
   });
   /* selectionchange covers mobile long-press and drag-to-extend, where
-     pointerup fires before the selection settles */
+     pointerup fires before the selection settles — and clears the popover
+     + rainbow the moment the selection collapses. */
+  document.addEventListener("selectionchange", function () {
+    var s = window.getSelection();
+    if (!s || s.isCollapsed) hideTip();
+  });
 
   /* ── Interactive EOQ lab ── */
   (function () {
