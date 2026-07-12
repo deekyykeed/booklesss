@@ -48,7 +48,7 @@ def js_object(value):
 
 
 def render(step):
-    tpl = TEMPLATE.read_text()
+    tpl = TEMPLATE.read_text(encoding="utf-8")
     sources = step.get("sources", {})
 
     if "raw_sections" in step:
@@ -79,7 +79,7 @@ def render(step):
         )
     else:
         # Placeholder orb (idle/active demo) until a real agent is wired.
-        voice = "\n" + (HERE / "voice_placeholder.html").read_text()
+        voice = "\n" + (HERE / "voice_placeholder.html").read_text(encoding="utf-8")
 
     out = tpl
     replacements = {
@@ -118,12 +118,12 @@ def manifest_entry(step):
 def update_manifest(entries):
     existing = []
     if MANIFEST.exists():
-        existing = json.loads(MANIFEST.read_text())
+        existing = json.loads(MANIFEST.read_text(encoding="utf-8"))
     merged = {e["slug"]: e for e in existing}
     for e in entries:
         merged[e["slug"]] = e
     ordered = sorted(merged.values(), key=lambda e: (e["course"], e["slug"]))
-    MANIFEST.write_text(json.dumps(ordered, ensure_ascii=False, indent=2) + "\n")
+    MANIFEST.write_text(json.dumps(ordered, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def content_files():
@@ -150,14 +150,14 @@ def main():
         html = render(step)
         out_path = OUT_DIR / f"{step['slug']}.html"
         if check:
-            current = out_path.read_text() if out_path.exists() else ""
+            current = out_path.read_text(encoding="utf-8") if out_path.exists() else ""
             if current == html:
                 print(f"OK  {step['slug']}: output matches {out_path.relative_to(ROOT)}")
             else:
                 print(f"DRIFT  {step['slug']}: generated output differs from {out_path.relative_to(ROOT)}")
                 sys.exit(1)
         else:
-            out_path.write_text(html)
+            out_path.write_text(html, encoding="utf-8")
             print(f"wrote {out_path.relative_to(ROOT)} ({len(html)} bytes)")
         entries.append(manifest_entry(step))
 

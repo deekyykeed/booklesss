@@ -42,9 +42,9 @@
     --canvas: #f9f9f7;
     --surface: #f0efeb;
     --ink: #18181B;
-    --steel: #71717A;
-    --meta: #94A3B8;
-    --border: #e8e8e8;
+    --steel: #6b6459;
+    --meta: #a89f8c;
+    --border: #e7e1d5;
     --amber: #c5613f;
     --amber-soft: rgba(197, 97, 63, 0.09);
     --amber-line: rgba(197, 97, 63, 0.40);
@@ -52,7 +52,7 @@
     --shadow: 0 20px 40px -15px rgba(24, 24, 27, 0.05);
     --tip-bg: #f0efeb;
     --tip-ink: #18181B;
-    --tip-steel: #71717A;
+    --tip-steel: #6b6459;
   }
 
   * { box-sizing: border-box; }
@@ -105,10 +105,12 @@
     gap: 1rem; padding: 0.4rem 0 1.8rem;
   }
   .wordmark {
+    display: inline-flex; align-items: center; gap: 0.5rem;
     font-weight: 700; letter-spacing: -0.02em; font-size: 1rem;
     color: var(--ink); text-decoration: none;
   }
-  .wordmark span { color: var(--amber); }
+  .wordmark .mark { width: 21px; height: 21px; flex: none; }
+  .wordmark .wm-name span { color: var(--amber); }
   .coursechip {
     font-family: "Geist Mono", "JetBrains Mono", ui-monospace, monospace;
     font-size: 0.6875rem; letter-spacing: 0.06em;
@@ -132,8 +134,8 @@
     margin: 0 0 1rem; text-wrap: balance;
   }
   .standfirst {
-    font-size: 1.125rem; color: var(--steel); line-height: 1.6;
-    margin: 0 0 1.6rem; max-width: 36rem;
+    font-size: 1.1875rem; color: var(--steel); line-height: 1.58;
+    margin: 0 0 1.6rem; max-width: 38rem;
   }
   .metarow {
     display: flex; flex-wrap: wrap; gap: 0.5rem 1.3rem;
@@ -158,48 +160,41 @@
   .hint b { font-weight: 700; }
 
   /* ── Sections ─────────────────────────────────── */
-  section { padding: 2.6rem 0 0.4rem; }
+  section { padding: 3rem 0 0.4rem; }
   h2 {
     font-size: clamp(1.35rem, 3vw, 1.7rem);
     font-weight: 700; letter-spacing: -0.02em; line-height: 1.2;
     margin: 0 0 1rem; text-wrap: balance;
   }
   h3 {
-    font-size: 1.0625rem; font-weight: 700; letter-spacing: -0.01em;
-    margin: 1.8rem 0 0.5rem;
+    font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em;
+    margin: 2rem 0 0.5rem;
   }
   p { margin: 0 0 1rem; max-width: 65ch; }
-  section + section { border-top: 1px solid var(--border); margin-top: 2.2rem; }
+  section + section { border-top: 1px solid var(--border); margin-top: 2.8rem; }
 
   /* ── Inline source chip ───────────────────────── */
+  /* Inline citation: a small superscript source marker — identifies the
+     source by colour + mono initial without breaking the reading line.
+     Full labels live in the Sources list at the foot of the step. */
   .src {
-    display: inline-flex; align-items: center; gap: 0.32rem;
-    vertical-align: baseline;
-    transform: translateY(0.1em);
-    margin: 0 0.1rem;
-    padding: 3px 0.6rem 3px 3px;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    background: var(--surface);
-    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.01em;
-    line-height: 1.5;
-    color: var(--steel);
-    text-decoration: none;
-    white-space: nowrap;
-    transition: border-color 200ms cubic-bezier(0.16,1,0.3,1),
-                color 200ms cubic-bezier(0.16,1,0.3,1),
-                transform 200ms cubic-bezier(0.16,1,0.3,1);
+    display: inline-block; position: relative; top: -7px;
+    margin: 0 0.06em 0 0.14em;
+    font-size: 0; line-height: 0;
+    text-decoration: none; white-space: nowrap;
+    transition: transform 200ms cubic-bezier(0.16,1,0.3,1);
   }
-  .src:hover, .src:focus-visible { border-color: var(--amber-line); color: var(--ink); transform: translateY(-1px); }
-  .src:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+  .src:hover, .src:focus-visible { transform: translateY(-1px); }
+  .src:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; border-radius: 50%; }
   .src .ico {
-    position: relative; width: 17px; height: 17px; flex: none;
-    border-radius: 50%; overflow: hidden;
+    position: relative; width: 14px; height: 14px; flex: none;
+    display: inline-block; border-radius: 50%; overflow: hidden;
+    box-shadow: 0 0 0 1.5px var(--canvas);
   }
   .src .ico .mono {
     position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center;
-    font-size: 9.5px; font-weight: 800; color: #fff;
+    font-size: 8px; font-weight: 800; color: #fff;
     font-family: "Geist Mono", ui-monospace, monospace;
   }
   .src .ico img {
@@ -509,9 +504,9 @@
     body { font-size: 1.1875rem; }
     .shell { max-width: 50rem; }
     h1 { font-size: 3.4rem; }
-    h2 { font-size: 1.85rem; }
-    h3 { font-size: 1.1875rem; }
-    .standfirst { font-size: 1.3rem; max-width: 40rem; }
+    h2 { font-size: 2rem; }
+    h3 { font-size: 1.28rem; }
+    .standfirst { font-size: 1.4rem; max-width: 42rem; }
     .metarow { font-size: 0.8125rem; }
     .formula pre { font-size: 0.875rem; }
     table { font-size: 0.9375rem; }
@@ -519,8 +514,8 @@
 
   @media (max-width: 480px) {
     body { font-size: 1.15rem; line-height: 1.66; }
-    .standfirst { font-size: 1.1875rem; }
-    h3 { font-size: 1.125rem; }
+    .standfirst { font-size: 1.25rem; }
+    h3 { font-size: 1.2rem; }
     .callout, .discuss p { font-size: 1.0625rem; }
     .metarow { gap: 0.4rem 1rem; }
     table { min-width: 480px; }
@@ -534,7 +529,7 @@
 <div class="shell">
 
   <div class="topbar">
-    <a class="wordmark" href="https://booklesss.framer.ai" target="_blank" rel="noopener">Booklesss<span>.</span></a>
+    <a class="wordmark" href="https://booklesss.framer.ai" target="_blank" rel="noopener"><svg class="mark" viewBox="-45 -45 303 303" fill="currentColor" aria-hidden="true"><g transform="rotate(45 106.5 106.5)"><path fill-rule="evenodd" d="M0 0H213V213H0Z M36 36H177V177H36Z"/><rect x="71" y="71" width="71" height="71"/></g></svg><span class="wm-name">Booklesss<span>.</span></span></a>
     <span class="coursechip">BBF4302 · ZCAS</span>
   </div>
 
