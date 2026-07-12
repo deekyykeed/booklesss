@@ -131,6 +131,13 @@ Rules that keep it on-brand and responsive: cards are white with `var(--shadow)`
 operators (don't rotate — a rotated minus reads as a bar); always verify **zero
 horizontal overflow** on a 390px viewport before shipping.
 
+**Interactive controls — the shared slider.** Any `<input type="range">`
+inside a `.lab` block automatically gets the house slider (filled terracotta
+track, white thumb with an accent ring, terracotta value) — the "break-even
+lab" look. The fill is driven by a `--fill` custom property the template
+auto-wires on load and on input, so a calculator's own JS never has to touch
+it; just emit `.lab-row` markup and the styling and fill come for free.
+
 **Icons — freehand duotone from Streamline.** Find a free icon
 (`freehand-duotone-free` set; premium sets 403 on the free account), then pull
 its SVG with `get_icon_by_hash` — the response's `svg` field is the full source

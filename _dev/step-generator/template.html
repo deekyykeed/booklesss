@@ -338,10 +338,28 @@
   .lab-row label { font-size: 0.8125rem; font-weight: 700; color: var(--steel); }
   .lab-row output {
     font-family: "Geist Mono", ui-monospace, monospace;
-    font-size: 0.8125rem; font-variant-numeric: tabular-nums;
-    text-align: right; white-space: nowrap;
+    font-size: 0.8125rem; font-variant-numeric: tabular-nums; font-weight: 700;
+    text-align: right; white-space: nowrap; color: var(--amber);
   }
-  .lab input[type="range"] { width: 100%; accent-color: var(--amber); height: 1.2rem; }
+  /* Shared slider component (the "break-even lab" look): filled track +
+     white thumb with an accent ring. Fill is driven by the --fill custom
+     property, auto-wired for every .lab range input by the script below. */
+  .lab input[type="range"] {
+    -webkit-appearance: none; appearance: none; width: 100%; height: 6px; margin: 0.4rem 0;
+    border-radius: 999px; cursor: pointer; outline: none;
+    background: linear-gradient(var(--amber), var(--amber)) no-repeat, #e3e0d8;
+    background-size: var(--fill, 0%) 100%;
+  }
+  .lab input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+    background: #fff; border: 2px solid var(--amber); cursor: grab;
+    box-shadow: 0 3px 8px -2px rgba(197,97,63,0.5);
+  }
+  .lab input[type="range"]::-moz-range-thumb {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: #fff; border: 2px solid var(--amber); cursor: grab;
+  }
+  .lab input[type="range"]:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
   .lab-out { margin-top: 1.2rem; border-top: 1px solid var(--border); padding-top: 1.1rem; display: grid; gap: 0.55rem; }
   .lab-bar { display: grid; grid-template-columns: 8.5rem 1fr 4.5rem; gap: 0.9rem; align-items: center; font-size: 0.75rem; }
   .lab-bar .nm { color: var(--steel); font-weight: 700; }
@@ -615,6 +633,18 @@
     img.onload = function () { ico.appendChild(img); };
     img.onerror = function () { if (++attempt < urls.length) img.src = urls[attempt]; };
     img.src = urls[attempt];
+  });
+
+  /* ── Slider fill: paint the filled track for every .lab range input ── */
+  function bkFill(inp) {
+    var min = parseFloat(inp.min) || 0, max = parseFloat(inp.max);
+    if (!isFinite(max) || max === min) return;
+    var pct = (parseFloat(inp.value) - min) / (max - min) * 100;
+    inp.style.setProperty("--fill", pct + "%");
+  }
+  [].forEach.call(document.querySelectorAll(".lab input[type='range']"), bkFill);
+  document.addEventListener("input", function (e) {
+    if (e.target && e.target.matches && e.target.matches(".lab input[type='range']")) bkFill(e.target);
   });
 
 
