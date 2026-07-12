@@ -91,6 +91,13 @@
 
   ::selection { background: var(--amber-soft); color: var(--ink); }
   .content ::selection { background: rgba(197, 97, 63, 0.20); }
+  /* Rainbow selection — active only while an explainable passage is
+     highlighted (html.rainbow-sel is toggled by the selection popover JS,
+     which also drives --selh through the hues via rAF). */
+  html.rainbow-sel .content ::selection {
+    color: hsl(var(--selh, 20) 85% 40%);
+    background: hsl(var(--selh, 20) 85% 52% / 0.14);
+  }
 
   /* ── Shell ────────────────────────────────────── */
   .shell {
@@ -677,6 +684,39 @@
 
   function hideTip() {
     tip.classList.remove("show");
+    stopRainbow();
+  }
+
+  /* ── Rainbow selection: cycle --selh while a valid highlight is live ── */
+  var rbRAF = null, rbHue = 20;
+  var RB_REDUCE = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function startRainbow() {
+    document.documentElement.classList.add("rainbow-sel");
+    if (RB_REDUCE || rbRAF) return;
+    var tick = function () {
+      rbHue = (rbHue + 2.2) % 360;
+      document.documentElement.style.setProperty("--selh", rbHue.toFixed(1));
+      rbRAF = requestAnimationFrame(tick);
+    };
+    rbRAF = requestAnimationFrame(tick);
+  }
+  function stopRainbow() {
+    document.documentElement.classList.remove("rainbow-sel");
+    if (rbRAF) { cancelAnimationFrame(rbRAF); rbRAF = null; }
+  }
+
+  /* Only genuine reading text is explainable: paragraphs and bullet items
+     inside the content column. Headings, eyebrows, the header block, and
+     anything inside a container (callouts, discussion boxes, formulas,
+     tables, calculators, sources, outcomes, wrap-up) stays quiet. */
+  var EXPLAIN_BLOCK = ".callout, .discuss, .formula-wrap, .tbl-wrap, .lab, " +
+    ".wrapup-card, .sources-list, ul.outcomes, header.step, .topbar, .hint, .ccc-viz";
+  function explainable(el) {
+    if (!el || !el.closest) return false;
+    if (el.closest(EXPLAIN_BLOCK)) return false;
+    if (el.closest("h1, h2, h3, .eyebrow")) return false;
+    var host = el.closest("p, ul.tick li");
+    return !!(host && host.closest("#content"));
   }
 
   function renderTip(text) {
@@ -717,8 +757,9 @@
     tip.style.visibility = "";
   }
 
-  /* Any non-empty selection, anywhere on the page, shows the overlay —
-     glossary hit or not. This is the anchor point for AI explanations. */
+  /* A selection shows the overlay only when it sits in explainable reading
+     text (see explainable() above) — glossary hit or not. This is the
+     anchor point for AI explanations. */
   function showFromSelection() {
     var sel = window.getSelection();
     if (!sel || sel.isCollapsed || sel.rangeCount === 0) { hideTip(); return; }
@@ -727,10 +768,12 @@
     var node = sel.getRangeAt(0).commonAncestorContainer;
     var el = node.nodeType === 1 ? node : node.parentElement;
     if (el && tip.contains(el)) return;
+    if (!explainable(el)) { hideTip(); return; }
     var rect = sel.getRangeAt(0).getBoundingClientRect();
     if (!rect || (rect.width === 0 && rect.height === 0)) { hideTip(); return; }
     renderTip(text);
     placeTip(rect);
+    startRainbow();
   }
 
   function onSelect() {
@@ -744,7 +787,12 @@
     if (e.shiftKey || e.key === "Shift") onSelect();
   });
   /* selectionchange covers mobile long-press and drag-to-extend, where
-     pointerup fires before the selection settles */
+     pointerup fires before the selection settles — and clears the popover
+     + rainbow the moment the selection collapses. */
+  document.addEventListener("selectionchange", function () {
+    var s = window.getSelection();
+    if (!s || s.isCollapsed) hideTip();
+  });
 
 {{CALCULATOR_JS}}  /* ── Rate + complete (Supabase via same-origin API) ── */
   (function () {
