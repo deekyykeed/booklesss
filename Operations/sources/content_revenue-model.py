@@ -15,26 +15,35 @@ Build:  python3 _dev/step-generator/generate_step.py "Operations/sources/content
 
 MODEL_LAB_HTML = """      <div class="lab" id="rm-lab">
         <style>
-          .rm-cap { display:block; font-family:"Satoshi","Onest",system-ui,sans-serif; font-size:0.6875rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--steel); margin:1.15rem 0 0.65rem; }
+          .rm-cap { display:block; font-family:"Satoshi","Onest",system-ui,sans-serif; font-size:0.6875rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--steel); margin:1.35rem 0 0.15rem; }
           .rm-cap.first { margin-top:0; }
+          .rm-sub { font-family:"Onest",system-ui,sans-serif; font-size:0.8rem; color:var(--steel); line-height:1.5; margin:0 0 0.7rem; }
+          .rm-lead { font-family:"Onest",system-ui,sans-serif; font-size:0.85rem; color:var(--steel); line-height:1.55; margin:0.55rem 0 0.2rem; }
+          .rm-capline { font-family:"Geist Mono",ui-monospace,monospace; font-size:0.74rem; line-height:1.4; color:var(--steel); margin:0.7rem 0 0.1rem; padding:0.6rem 0.75rem; background:var(--amber-soft); border:1px solid var(--amber-line); border-radius:12px; }
+          .rm-capline b { color:var(--ink); font-weight:700; }
           .rm-months .lab-bar { grid-template-columns:3.4rem 1fr 5.2rem; }
         </style>
         <span class="tag"><svg class="ic" aria-hidden="true"><use href="#ic-calc"/></svg>Move the levers &mdash; the business recalculates</span>
-        <span class="rm-cap first">Prices</span>
+        <p class="rm-lead">Read it top to bottom: set what each tier <b>charges</b>, how many students you <b>have</b>, and what the month <b>costs</b> you. The bars and the big number underneath update as you drag.</p>
+        <span class="rm-cap first">1 &middot; Prices &mdash; what each tier charges / month</span>
+        <p class="rm-sub">The monthly fee for each plan. These same two prices also drive the twelve-month funnel further down.</p>
         <div class="lab-grid">
           <div class="lab-row"><label for="rm-pn">Notes price / month</label><input type="range" id="rm-pn" min="100" max="1000" step="20" value="360"><output id="rm-pn-out"></output></div>
           <div class="lab-row"><label for="rm-pc">Community price / month</label><input type="range" id="rm-pc" min="200" max="1600" step="50" value="600"><output id="rm-pc-out"></output></div>
         </div>
-        <span class="rm-cap">Paying students</span>
+        <span class="rm-cap">2 &middot; Students you have today</span>
+        <p class="rm-sub">Set your full (Community) members first &mdash; each one lets you host up to <b>5</b> Notes students, and your own seat covers 5 more. So the Notes slider stops at that limit and can&rsquo;t be dragged past it.</p>
         <div class="lab-grid">
-          <div class="lab-row"><label for="rm-nn">On Notes</label><input type="range" id="rm-nn" min="0" max="100" step="1" value="10"><output id="rm-nn-out"></output></div>
-          <div class="lab-row"><label for="rm-nc">On Community</label><input type="range" id="rm-nc" min="0" max="50" step="1" value="4"><output id="rm-nc-out"></output></div>
+          <div class="lab-row"><label for="rm-nc">On Community (full members)</label><input type="range" id="rm-nc" min="0" max="50" step="1" value="4"><output id="rm-nc-out"></output></div>
+          <div class="lab-row"><label for="rm-nn">On Notes (single course)</label><input type="range" id="rm-nn" min="0" max="255" step="1" value="10"><output id="rm-nn-out"></output></div>
         </div>
-        <span class="rm-cap">Monthly costs</span>
+        <p class="rm-capline" id="rm-capline"></p>
+        <span class="rm-cap">3 &middot; What the month costs you</span>
+        <p class="rm-sub">Your fixed bills &mdash; they don&rsquo;t grow per student. Hosting is billed in US dollars, so the exchange rate turns it into kwacha. All three are <b>per month</b>.</p>
         <div class="lab-grid">
-          <div class="lab-row"><label for="rm-host">Platform hosting (USD)</label><input type="range" id="rm-host" min="0" max="100" step="5" value="20"><output id="rm-host-out"></output></div>
+          <div class="lab-row"><label for="rm-host">Hosting / month (USD)</label><input type="range" id="rm-host" min="0" max="100" step="5" value="20"><output id="rm-host-out"></output></div>
           <div class="lab-row"><label for="rm-fx">Exchange rate (K per $)</label><input type="range" id="rm-fx" min="20" max="35" step="0.5" value="25"><output id="rm-fx-out"></output></div>
-          <div class="lab-row"><label for="rm-mkt">Marketing spend</label><input type="range" id="rm-mkt" min="0" max="2000" step="50" value="300"><output id="rm-mkt-out"></output></div>
+          <div class="lab-row"><label for="rm-mkt">Marketing / month</label><input type="range" id="rm-mkt" min="0" max="2000" step="50" value="300"><output id="rm-mkt-out"></output></div>
         </div>
         <div class="lab-out">
           <div class="lab-bar"><span class="nm">Notes revenue</span><span class="tr"><span class="fl" id="rm-bar-n"></span></span><output id="rm-val-n"></output></div>
@@ -83,8 +92,18 @@ MODEL_LAB_JS = """  /* ── Revenue model: snapshot + funnel (shared inputs) �
     function fmtK(v) { return "K" + Math.round(v).toLocaleString(); }
     function calc() {
       var pn = +$("rm-pn").value, pc = +$("rm-pc").value;
-      var nn = +$("rm-nn").value, nc = +$("rm-nc").value;
+      var nc = +$("rm-nc").value;
       var host = +$("rm-host").value, fx = +$("rm-fx").value, mkt = +$("rm-mkt").value;
+
+      /* Slack guest ratio: 5 single-channel guests per paid member, and your
+         own seat is a paid member too, so Notes capacity = 5 x (Community + 1).
+         Hard cap: drive the Notes slider's max so its thumb can't pass the limit. */
+      var notes = $("rm-nn");
+      var cap = 5 * (nc + 1);
+      notes.max = cap;
+      if (+notes.value > cap) notes.value = cap;
+      var nn = +notes.value;
+      notes.style.setProperty("--fill", (cap ? nn / cap * 100 : 0) + "%");
 
       $("rm-pn-out").textContent = "K" + pn;
       $("rm-pc-out").textContent = "K" + pc;
@@ -93,6 +112,8 @@ MODEL_LAB_JS = """  /* ── Revenue model: snapshot + funnel (shared inputs) �
       $("rm-host-out").textContent = "$" + host;
       $("rm-fx-out").textContent = "K" + fx + "/$";
       $("rm-mkt-out").textContent = fmtK(mkt);
+      $("rm-capline").innerHTML = "Notes room: <b>5 &times; (" + nc + " Community + your seat) = "
+        + cap + "</b> &middot; " + (nn >= cap ? "at capacity" : "using " + nn);
 
       var revN = pn * nn, revC = pc * nc;
       var rev = revN + revC;
@@ -140,6 +161,11 @@ MODEL_LAB_JS = """  /* ── Revenue model: snapshot + funnel (shared inputs) �
       $("rm-mrr12").textContent = fmtK(mrr[11]);
       var students12 = Math.round(baseN + baseC);
       var net12 = mrr[11] - costs;
+      var notesCap12 = 5 * (Math.round(baseC) + 1);
+      var over = Math.round(baseN) > notesCap12
+        ? " \\u00b7 heads up: that projects " + Math.round(baseN) + " Notes but only room for "
+          + notesCap12 + " at " + Math.round(baseC) + " Community (5 per member) \\u2014 lift the Community share"
+        : "";
       var ss;
       if (newPaid === 0)  ss = "no conversions at these settings \\u2014 the base stays empty";
       else if (ch === 0)  ss = "no churn set \\u2014 the base compounds with no ceiling";
@@ -148,7 +174,7 @@ MODEL_LAB_JS = """  /* ── Revenue model: snapshot + funnel (shared inputs) �
       var hit3 = pass3 ? "passes K3,000 net in month " + pass3
                        : "K3,000 net not reached within 12 months";
       $("rm-fnote").textContent = students12 + " paying students by month 12 \\u00b7 "
-        + fmtK(net12) + " net/month \\u00b7 " + ss + " \\u00b7 " + hit3;
+        + fmtK(net12) + " net/month \\u00b7 " + ss + " \\u00b7 " + hit3 + over;
     }
     lab.addEventListener("input", calc);
     funnel.addEventListener("input", calc);
@@ -196,6 +222,7 @@ STEP = {
         {"eyebrow": "Price points", "title": "Monthly Snapshot — Price It, Fill It, Cost It", "blocks": [
             {"t": "p", "html": "This is the business frozen at one month. Set the two prices, decide how many students sit on each tier, and set the cost base &mdash; hosting is billed in dollars, so the exchange rate is a real lever here, not a footnote. The bars split revenue by tier against total costs, and the headline figure is what lands in your pocket."},
             {"t": "raw", "html": MODEL_LAB_HTML},
+            {"t": "callout", "tag": "The 5-per-member rule", "icon": "bulb", "html": "Notes students are hosted as free single-channel guests, and Slack allows 5 guests per paid member. Your own seat is a paid member, and every Community student is another &mdash; so the room for Notes is 5 &times; (Community + you). That is why the Notes slider stops where it does: to add more Notes students, add a Community member first. Set Community to 0 and you can still hold 5 Notes on your own seat; set it to 4 and the ceiling is 25."},
             {"t": "callout", "tag": "How to read it", "icon": "medal", "html": "Because the cost base is fixed, margin climbs with every student &mdash; there is no per-seat cost eating the next sale. That cuts both ways: net profit moves almost one-for-one with revenue, so a K60 price change across ten students is a K600 swing. Try Notes at K300 and K420 before touching anything else &mdash; price is the cheapest experiment you can run."},
         ]},
 
@@ -246,6 +273,9 @@ STEP = {
         "break-even": "The point where revenue covers the cost base — net profit of exactly zero.",
         "ceiling": "The steady-state size of the paying base at current trials, conversion, and churn.",
         "arpu": "Average revenue per user — total MRR divided by paying students; moves with the tier mix.",
+        "single-channel guest": "A free Slack guest with access to one channel — how Notes students are hosted. Slack allows 5 per paid member.",
+        "guest ratio": "Slack's rule: 5 free single-channel guests per paid member. Your seat plus each Community member sets how many Notes you can hold.",
+        "guest access": "Slack lets each paid member bring 5 free single-channel guests — the ceiling on Notes students in this model.",
     },
 
     "closer_html": "When a set of slider positions starts to look like the plan rather than the wish, write those numbers into Operations/pricing-strategy.md and hold the funnel to them &mdash; leads.md, groups.md, and revenue-log.md are where this model meets reality.",
