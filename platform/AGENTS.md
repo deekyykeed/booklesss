@@ -63,7 +63,19 @@ Diagnosis order that works from a cloud session:
 3. **If the server is READY + public, the problem is the client's network.**
    Have them switch Wi-Fi ↔ mobile data (roaming carriers abort HTTPS),
    disable battery saver, try incognito or another device.
-4. **Persistent cases:** Vercel support's official diagnostic —
+4. **The permanent fix is a custom domain.** Recurring aborts on
+   `*.vercel.app` from Zambian mobile carriers match a widely reported
+   pattern: some ISPs block or interfere with Vercel's shared
+   `.vercel.app` hostname and its `76.76.21.0/24` IP range, and the
+   community-documented cure is serving the site from a custom domain,
+   ideally on Cloudflare DNS (CNAME `cname.vercel-dns.com`), so traffic
+   never touches the blocked name/range. See Vercel community reports of
+   ISP-blocked ranges and the Cloudflare-DNS workaround. Buying
+   `booklesss.co.zm` (or a .com) kills this class of failure for every
+   student — and once it exists, Standard Protection can go back on (see
+   above). Device-level stopgap for one person: Android Private DNS →
+   `one.one.one.one`.
+5. **Persistent cases:** Vercel support's official diagnostic —
    `github.com/vercel-support/vercel-connect-debug`. Run it on the affected
    machine, not in a session (see #2). Windows PowerShell:
    `Invoke-RestMethod -Uri https://raw.githubusercontent.com/vercel-support/vercel-connect-debug/main/vercel-debug.ps1 | Invoke-Expression | tee vercel-debug.txt`
