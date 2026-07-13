@@ -569,7 +569,7 @@
     <span class="eyebrow">Booklesss HQ · Operations · Revenue Model</span>
     <h1>The Booklesss
 Revenue Model</h1>
-    <p class="standfirst">Every lever of the money machine on sliders &mdash; the two tier prices, paying students, the cost base, then the funnel projected twelve months out. Move a lever and watch what the business pays you.</p>
+    <p class="standfirst">Every lever of the money machine on sliders &mdash; the two tier prices, paying students, the flat cost base, then the forecast twelve months out. One course team, no free trials, a money-back guarantee instead. Move a lever and watch what the business pays you.</p>
     <div class="metarow">
       <span><svg class="ic" aria-hidden="true"><use href="#ic-clock"/></svg>~9 min</span>
       <span><svg class="ic" aria-hidden="true"><use href="#ic-doc"/></svg>6 sections</span>
@@ -587,35 +587,39 @@ Revenue Model</h1>
     <section>
       <span class="eyebrow">The machine</span>
       <h2>How Booklesss Makes Money</h2>
-      <p>Booklesss sells access to the gated study platform. Every student starts on a free trial &mdash; one month, one course, no card &mdash; and at day 25 gets a WhatsApp follow-up asking them to pick a paid tier. Two subscription tiers carry the model. A Custom tier sits on top for students who want 1-on-1 attention, but it is negotiated per student and has no set price yet &mdash; so it stays out of the sliders below and enters the books as logged revenue when it happens.</p>
+      <p>Booklesss sells access to the gated study platform. This model covers <b>one course team</b> &mdash; one course, one person writing and delivering its content &mdash; which is the whole business today; a second course would be a copy of this same arithmetic. Students pay from day one: there are <b>no free trials</b>. Instead, every plan carries a money-back guarantee &mdash; if it isn&rsquo;t working for them in the first week, they get a full refund. Two subscription tiers carry the model. A Custom tier sits on top for students who want 1-on-1 attention, but it is negotiated per student and has no set price yet &mdash; so it stays out of the sliders below and enters the books as logged revenue when it happens.</p>
       <div class="tbl-wrap"><table>
         <thead><tr><th>Tier</th><th>Default price</th><th>What they get</th></tr></thead>
         <tbody>
-          <tr><td>Free trial</td><td class="num">K0 (1 month)</td><td>One course, full step access &mdash; no card required</td></tr>
           <tr><td>Notes</td><td class="num">K360 / month</td><td>One course &mdash; steps, discussion, past papers</td></tr>
           <tr><td>Community</td><td class="num">K600 / month</td><td>Every course, quizzes, the whole platform</td></tr>
           <tr><td>Custom</td><td>Negotiated</td><td>1-on-1 tutoring, dedicated support, custom study plan</td></tr>
+          <tr><td>Money-back guarantee</td><td>&mdash;</td><td>Every paid plan: full refund in the first week if it isn&rsquo;t working</td></tr>
         </tbody>
       </table></div>
       <div class="callout">
+        <span class="tag"><svg class="ic" aria-hidden="true"><use href="#ic-bulb"/></svg>Why no free trial</span>
+        A free trial of the full plan costs a full-member seat &mdash; you would pay to let someone browse. The guarantee flips that: the student pays first, and the platform&rsquo;s only exposure is the occasional refund. Same promise to the student &mdash; try it risk-free &mdash; at a fraction of the cost, and every sign-up is a committed payer from day one.
+      </div>
+      <div class="callout">
         <span class="tag"><svg class="ic" aria-hidden="true"><use href="#ic-bulb"/></svg>Why there is no Slack bill in this model</span>
-        The old economics priced Community against a paid Slack seat (K339/month on Business+). The 2026-07-12 decision (Linear BOO-7) moved paid access off Slack and onto the platform &mdash; reselling Slack seats breached the Slack MSA. The cost base is now your platform tools &mdash; Framer, Claude, Vercel, Supabase, $185 a month for the founder &mdash; plus a $100 Claude seat for each content writer (the cost phases below). It never grows per student.
+        The old economics priced Community against a paid Slack seat (K339/month on Business+). The 2026-07-12 decision (Linear BOO-7) moved paid access off Slack and onto the platform &mdash; reselling Slack seats breached the Slack MSA. The cost base is now your platform tools &mdash; Framer, Claude, Vercel, Supabase &mdash; $185 a month flat, and it never grows per student.
       </div>
     </section>
 
     <section>
       <span class="eyebrow">Variables</span>
       <h2>The Levers You Can Pull</h2>
-      <p>A handful of numbers drive this model. Two prices and one headcount &mdash; your full members &mdash; set revenue, with Notes following at 5 seats per member; trials, conversion, and churn decide how the paying base grows over time. Costs step in phases with the writing team: the one cost input is how many writers hold a Claude seat.</p>
+      <p>A handful of numbers drive this model. Two prices and one headcount &mdash; your full members &mdash; set revenue, with Notes following at 5 seats per member; sign-ups, refunds, and churn decide how the paying base grows over time. The tools bill is a flat $185 a month &mdash; a fact, not a lever.</p>
       <div class="tbl-wrap"><table>
         <thead><tr><th>Lever</th><th>What it moves</th><th>Where it lives</th></tr></thead>
         <tbody>
           <tr><td>Tier prices</td><td>Revenue per student</td><td>Operations/pricing-strategy.md</td></tr>
           <tr><td>Full members (Community)</td><td>Revenue &mdash; and the Notes seats they fill</td><td>Operations/revenue-log.md</td></tr>
-          <tr><td>New trials / month</td><td>Top of the funnel</td><td>Operations/groups.md &amp; leads.md</td></tr>
-          <tr><td>Trial &rarr; paid conversion</td><td>How fast the base fills</td><td>Day-25 follow-ups in leads.md</td></tr>
+          <tr><td>New sign-ups / month</td><td>Top of the funnel &mdash; paid from day one</td><td>Operations/groups.md &amp; leads.md</td></tr>
+          <tr><td>Refund rate</td><td>Guarantee claims in the first week</td><td>Operations/revenue-log.md</td></tr>
           <tr><td>Monthly churn</td><td>The ceiling of the base</td><td>Cancellations in revenue-log.md</td></tr>
-          <tr><td>Writers on Claude (cost phases)</td><td>The tools bill: $185 + $100 per writer</td><td>The phase table below</td></tr>
+          <tr><td>Running cost (fixed)</td><td>A flat $185/month floor</td><td>Framer / Claude / Vercel / Supabase</td></tr>
         </tbody>
       </table></div>
     </section>
@@ -637,7 +641,7 @@ Revenue Model</h1>
         <span class="tag"><svg class="ic" aria-hidden="true"><use href="#ic-calc"/></svg>Move the levers &mdash; the business recalculates</span>
         <p class="rm-lead">Read it top to bottom: set what each tier <b>charges</b> and how many <b>full members</b> you have &mdash; Notes fills in at 5 seats per member, and running costs are fixed. The bars and the big number underneath update as you drag.</p>
         <span class="rm-cap first">1 &middot; Prices &mdash; what each tier charges / month</span>
-        <p class="rm-sub">The monthly fee for each plan. These same two prices also drive the twelve-month funnel further down.</p>
+        <p class="rm-sub">The monthly fee for each plan. These same two prices also drive the twelve-month forecast further down.</p>
         <div class="lab-grid">
           <div class="lab-row"><label for="rm-pn">Notes price / month</label><input type="range" id="rm-pn" min="100" max="1000" step="20" value="360"><output id="rm-pn-out"></output></div>
           <div class="lab-row"><label for="rm-pc">Community price / month</label><input type="range" id="rm-pc" min="200" max="1600" step="50" value="600"><output id="rm-pc-out"></output></div>
@@ -649,11 +653,7 @@ Revenue Model</h1>
         </div>
         <p class="rm-capline" id="rm-capline"></p>
         <span class="rm-cap">3 &middot; What the month costs you</span>
-        <p class="rm-sub">The founder&rsquo;s tools are fixed: Framer <b>$40</b>, Claude <b>$100</b>, Vercel <b>$20</b>, Supabase <b>$25</b> = <b>$185 / month</b>. But every person writing content needs their own Claude seat at <b>$100 / month</b> &mdash; so the bill climbs in phases as the writing team grows. Set how many writers hold a seat:</p>
-        <div class="lab-grid">
-          <div class="lab-row"><label for="rm-wr">Writers with a Claude seat</label><input type="range" id="rm-wr" min="0" max="4" step="1" value="0"><output id="rm-wr-out"></output></div>
-        </div>
-        <p class="rm-capline" id="rm-phline"></p>
+        <p class="rm-sub">One team, one course, one bill: Framer <b>$40</b>, Claude <b>$100</b>, Vercel <b>$20</b>, Supabase <b>$25</b> = <b>$185 / month</b> (&asymp;K4,625 at K25/$). The $100 Claude is the course writer&rsquo;s seat &mdash; there is exactly one person writing and delivering content, so that payment is in the bill either way. Nothing here to drag.</p>
         <div class="lab-out">
           <div class="lab-bar"><span class="nm">Notes revenue</span><span class="tr"><span class="fl" id="rm-bar-n"></span></span><output id="rm-val-n"></output></div>
           <div class="lab-bar"><span class="nm">Community revenue</span><span class="tr"><span class="fl" id="rm-bar-c"></span></span><output id="rm-val-c"></output></div>
@@ -664,39 +664,27 @@ Revenue Model</h1>
           </div>
         </div>
       </div>
-      <h3>The Cost Phases</h3>
-      <p>The bill doesn&rsquo;t creep &mdash; it steps. Each phase is one more person writing content with their own Claude seat. A new writer can start on Claude Pro at $20 during their tryout; the phase assumes the full $100 seat once their course is in real production, which is what the writers slider charges.</p>
-      <div class="tbl-wrap"><table>
-        <thead><tr><th>Phase</th><th>Team</th><th>Tools bill (USD)</th><th>In kwacha (K25/$)</th></tr></thead>
-        <tbody>
-          <tr><td>1 &mdash; Launch</td><td>Founder solo</td><td>$185</td><td class="num">K4,625</td></tr>
-          <tr><td>2 &mdash; First writer</td><td>Founder + 1 writer</td><td>$285</td><td class="num">K7,125</td></tr>
-          <tr><td>3 &mdash; Second writer</td><td>Founder + 2 writers</td><td>$385</td><td class="num">K9,625</td></tr>
-          <tr><td>4 &mdash; Third writer</td><td>Founder + 3 writers</td><td>$485</td><td class="num">K12,125</td></tr>
-          <tr><td>5 &mdash; Fourth writer</td><td>Founder + 4 writers</td><td>$585</td><td class="num">K14,625</td></tr>
-        </tbody>
-      </table></div>
       <div class="callout">
         <span class="tag"><svg class="ic" aria-hidden="true"><use href="#ic-bulb"/></svg>The 5-per-member rule</span>
         Notes students are hosted as free single-channel guests, and Slack allows 5 guests per paid member. Your own seat is a paid member, and every Community student is another &mdash; so the model assumes each full member fills 5 Notes seats: Notes = 5 &times; (Community + you). That is why there is no Notes slider &mdash; it follows from Community. At 0 Community you fill 5 Notes on your own seat; at 4 Community, 25.
       </div>
       <div class="callout">
         <span class="tag"><svg class="ic" aria-hidden="true"><use href="#ic-medal"/></svg>How to read it</span>
-        Costs never grow per student &mdash; margin climbs with every member, and the bill only steps up when you add a writer. That gives each phase a clear entry test: move up only when the founder&rsquo;s share at current revenue covers the next seat. The split lab below does that arithmetic for you and warns when it doesn&rsquo;t.
+        The bill is flat and costs never grow per student, so margin climbs with every member &mdash; there is no per-seat cost eating the next sale. Net profit moves almost one-for-one with revenue: a K60 price change across your students is a real swing, and each full member lifts revenue on both tiers at once.
       </div>
     </section>
 
     <section>
       <span class="eyebrow">Distribution</span>
       <h2>Who Gets Paid, and For What</h2>
-      <p>Every kwacha of monthly revenue is divided by fixed percentages &mdash; nobody is on a flat salary. That is deliberate: shares scale with the business, so raising a price or adding a member raises everyone&rsquo;s pay at the same time, and if the platform doesn&rsquo;t earn, nobody earns. The founder&rsquo;s share is the largest because it carries every fixed cost: the whole tools bill &mdash; $185 plus $100 for each writer&rsquo;s Claude seat &mdash; comes out of the 41%, never out of the team&rsquo;s. Everyone is paid monthly; the per-week figure next to each share is the same money seen week by week, not a separate payment.</p>
+      <p>Every kwacha of monthly revenue is divided by fixed percentages &mdash; nobody is on a flat salary. That is deliberate: shares scale with the business, so raising a price or adding a member raises everyone&rsquo;s pay at the same time, and if the platform doesn&rsquo;t earn, nobody earns. The founder&rsquo;s share is the largest because it carries every fixed cost: the whole $185 tools bill comes out of the 41%, never out of the team&rsquo;s. Everyone is paid monthly; the per-week figure next to each share is the same money seen week by week, not a separate payment.</p>
       <div class="tbl-wrap"><table>
         <thead><tr><th>Who</th><th>Share</th><th>What they&rsquo;re paid for</th></tr></thead>
         <tbody>
-          <tr><td>Founder &amp; platform</td><td>41%</td><td>Runs the platform, builds content, bears all tool costs &mdash; including every writer&rsquo;s Claude seat</td></tr>
-          <tr><td>Course Author</td><td>16%</td><td>Writes the lesson steps <b>and teaches the live classes</b> for their course &mdash; the bigger share pays for the classroom hours</td></tr>
+          <tr><td>Founder &amp; platform</td><td>41%</td><td>Runs the platform and bears the whole tools bill, including the writer&rsquo;s Claude</td></tr>
+          <tr><td>Course Author</td><td>16%</td><td>The one person who writes the lesson steps <b>and teaches the live classes</b> &mdash; the bigger share pays for the classroom hours</td></tr>
           <tr><td>Community Host</td><td>10%</td><td>Owns the course channels: daily activity, replies, weekly quiz, leaderboard</td></tr>
-          <tr><td>Growth Lead</td><td>8%</td><td>Drives free-trial sign-ups and converts them to paid within 30 days</td></tr>
+          <tr><td>Growth Lead</td><td>8%</td><td>Brings in paid sign-ups and owns the guarantee window &mdash; fewer refunds, more pay</td></tr>
           <tr><td>Campus Rep</td><td>7%</td><td>On-campus referrals at UNZA / CBU &mdash; flyers, WhatsApp groups, walk-up sign-ups</td></tr>
           <tr><td>Ops &amp; Collections Lead</td><td>5%</td><td>Tracks MoMo payments, keeps the revenue log, monthly financial summary</td></tr>
           <tr><td>Marketing fund</td><td>8%</td><td>Not a person &mdash; buys flyers, data bundles, and boosts; growth funds itself</td></tr>
@@ -736,19 +724,19 @@ Revenue Model</h1>
     <section>
       <span class="eyebrow">Growth</span>
       <h2>The Forecast — the Snapshot, Rolled Forward</h2>
-      <p>The snapshot says nothing about time. The forecast does &mdash; and it is not a separate model. Month 0 is exactly the snapshot above: your current full members, your prices, your costs. Each month after that, new trials arrive and a share convert to full members, a share of existing members cancels, and Notes refill to 5 seats per member &mdash; the same rule as the snapshot, applied twelve times.</p>
-      <div class="formula-wrap"><div class="formula"><pre>Members next month  <span class="op">=</span>  members &times; (1 &minus; churn)  <span class="op">+</span>  (trials &times; conversion)
+      <p>The snapshot says nothing about time. The forecast does &mdash; and it is not a separate model. Month 0 is exactly the snapshot above: your current full members, your prices, your costs. Each month after that, new members sign up and pay from day one, a small share claim the money-back guarantee, a share of existing members cancels, and Notes refill to 5 seats per member &mdash; the same rule as the snapshot, applied twelve times.</p>
+      <div class="formula-wrap"><div class="formula"><pre>Members next month  <span class="op">=</span>  members &times; (1 &minus; churn)  <span class="op">+</span>  sign-ups &times; (1 &minus; refund rate)
 Notes each month    <span class="op">=</span>  5 &times; (members + your seat)  &mdash; assumed full
 
-Ceiling:  members settle at  (trials &times; conversion) &divide; churn
-  At 12 trials, 25% conversion, 10% churn:  (12 &times; 0.25) &divide; 0.10  <span class="op">=</span>  30 members</pre></div></div>
-      <p>Only full members need forecasting &mdash; everything else follows from them. Change any slider up in the snapshot and month 0 down here moves with it; change trials, conversion, or churn and you watch the same business travel twelve months.</p>
+Ceiling:  members settle at  sign-ups &times; (1 &minus; refunds) &divide; churn
+  At 4 sign-ups, 5% refunds, 10% churn:  (4 &times; 0.95) &divide; 0.10  <span class="op">=</span>  38 members</pre></div></div>
+      <p>Only full members need forecasting &mdash; everything else follows from them. Change any slider up in the snapshot and month 0 down here moves with it; change sign-ups, refunds, or churn and you watch the same business travel twelve months.</p>
       <div class="lab" id="rm-funnel">
         <span class="tag"><svg class="ic" aria-hidden="true"><use href="#ic-calc"/></svg>The next twelve months &mdash; continues from the snapshot: your members, your prices, your costs</span>
         <p class="rm-lead" id="rm-fstart"></p>
         <div class="lab-grid">
-          <div class="lab-row"><label for="rm-tr">New free trials / month</label><input type="range" id="rm-tr" min="0" max="60" step="1" value="12"><output id="rm-tr-out"></output></div>
-          <div class="lab-row"><label for="rm-cv">Trial &rarr; full member</label><input type="range" id="rm-cv" min="0" max="80" step="5" value="25"><output id="rm-cv-out"></output></div>
+          <div class="lab-row"><label for="rm-tr">New member sign-ups / month</label><input type="range" id="rm-tr" min="0" max="30" step="1" value="4"><output id="rm-tr-out"></output></div>
+          <div class="lab-row"><label for="rm-cv">Refund rate (guarantee)</label><input type="range" id="rm-cv" min="0" max="30" step="1" value="5"><output id="rm-cv-out"></output></div>
           <div class="lab-row"><label for="rm-ch">Monthly churn</label><input type="range" id="rm-ch" min="0" max="30" step="1" value="10"><output id="rm-ch-out"></output></div>
         </div>
         <div class="lab-out rm-months">
@@ -772,7 +760,7 @@ Ceiling:  members settle at  (trials &times; conversion) &divide; churn
       </div>
       <div class="callout">
         <span class="tag"><svg class="ic" aria-hidden="true"><use href="#ic-bulb"/></svg>The lever hierarchy</span>
-        Doubling trials and halving churn produce the same ceiling &mdash; but halving churn is usually cheaper, because retention is posting cadence and quiz nights, while trials cost flyers, data bundles, and time in WhatsApp groups. Check the steady-state line before spending on reach: if the ceiling at current churn is 30 members, more marketing buys speed toward 30, not a bigger number.
+        Doubling sign-ups and halving churn produce the same ceiling &mdash; but halving churn is usually cheaper, because retention is posting cadence and quiz nights, while sign-ups cost flyers, data bundles, and time in WhatsApp groups. Refunds barely move the ceiling at single digits; if the refund rate climbs past 10%, the product has a promise problem, not a maths problem. Check the steady-state line before spending on reach.
       </div>
     </section>
 
@@ -780,15 +768,15 @@ Ceiling:  members settle at  (trials &times; conversion) &divide; churn
       <span class="eyebrow">Reading it</span>
       <h2>What the Model Keeps Telling You</h2>
       <ul class="tick">
-        <li>Costs step in phases, not per student: K4,625 solo, plus K2,500 for each writer&rsquo;s Claude seat. The entry test for every phase is the same &mdash; your 41% must cover the next seat before you add it.</li>
+        <li>The bill is a flat K4,625 a month and it includes the writer&rsquo;s Claude &mdash; two or three paying students clear it, and nothing about it grows as the base does.</li>
         <li>One full member is worth more than it looks: K600 from them, plus 5 Notes seats at K360 &mdash; up to K2,400 of Notes revenue riding on that single membership.</li>
-        <li>Steady state ignores launch spikes. Trials &times; conversion &divide; churn is the whole ceiling &mdash; a big first month just gets you there sooner.</li>
+        <li>Steady state ignores launch spikes. Sign-ups &times; (1 &minus; refunds) &divide; churn is the whole ceiling &mdash; a big first month just gets you there sooner.</li>
         <li>Every number traces back to one input: full members. The snapshot, the Notes count, the split, and the forecast all move when that slider does &mdash; so growing members is the whole game.</li>
         <li>Churn is the only lever where small numbers are violent: 5% versus 15% churn is a threefold difference in the ceiling.</li>
       </ul>
       <div class="callout">
         <span class="tag"><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg>Decision to make</span>
-        Find the slider settings you actually believe &mdash; honest conversion, honest churn, prices you can defend on WhatsApp &mdash; and read what they pay. If the answer disappoints, the model shows which lever is cheapest to move first. When a setting becomes the plan, write it into Operations/pricing-strategy.md and hold the monthly logs to it.
+        Find the slider settings you actually believe &mdash; honest sign-ups, honest refunds, honest churn, prices you can defend on WhatsApp &mdash; and read what they pay. If the answer disappoints, the model shows which lever is cheapest to move first. When a setting becomes the plan, write it into Operations/pricing-strategy.md and hold the monthly logs to it.
       </div>
     </section>
 
@@ -799,8 +787,8 @@ Ceiling:  members settle at  (trials &times; conversion) &divide; churn
         <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Price the two tiers and read net profit and margin at any headcount</span></li>
         <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Apply the Slack guest ratio: 5 Notes students per paid member, capped by your Community count</span></li>
         <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Read each role's monthly and weekly pay from the percentage split at any revenue level</span></li>
-        <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Name the cost phase the business is in and the entry test for the next writer's Claude seat</span></li>
-        <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Project the paying base and MRR twelve months out from trials, conversion, and churn</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Explain why the money-back guarantee replaced free trials, and what a refund actually costs</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Project the paying base and MRR twelve months out from sign-ups, refunds, and churn</span></li>
         <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Locate the steady-state ceiling and name which lever raises it fastest</span></li>
         <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Say in which month the business passes K1,000, K3,000, and K5,000 net at current settings</span></li>
       </ul>
@@ -891,20 +879,19 @@ Ceiling:  members settle at  (trials &times; conversion) &divide; churn
   "mrr": "Monthly recurring revenue — what all active subscriptions pay in one month, before costs.",
   "net profit": "Revenue minus total costs — what the business actually keeps in a month.",
   "margin": "Net profit as a share of revenue. High here because the cost base is fixed, not per-student.",
-  "cost base": "The monthly tools bill: $185 for the founder's stack plus $100 per writer's Claude seat. It steps in phases with the team, never per student.",
-  "phase": "A step in the cost ladder — each phase adds one content writer with their own Claude seat ($100/month). Phase 1 is the founder solo at $185.",
-  "claude seat": "A writer's own Claude subscription ($100/month) — required for anyone producing course content. Paid by the founder's share, not the writer's.",
+  "cost base": "The flat monthly tools bill: Framer, Claude, Vercel, Supabase — $185 (≈K4,625 at K25/$). The $100 Claude is the course writer's seat. Never grows per student.",
+  "claude seat": "The course writer's Claude subscription — $100/month, already inside the $185 bill. One team, one writer, one seat.",
   "churn": "The share of full members who cancel in a month. Sets the ceiling of the member base.",
-  "conversion": "The share of free trials that become full members after their free month.",
-  "conversion rate": "The share of free trials that become full members after their free month.",
-  "steady state": "Where the member base stops growing: new members per month equals members lost to churn. Equals trials × conversion ÷ churn; Notes follow at 5 per member.",
-  "funnel": "The path from stranger to payer: WhatsApp group → free trial → day-25 follow-up → paid tier.",
-  "top of the funnel": "New free trials arriving each month — fed by group posts, flyers, and status updates.",
+  "refund rate": "The share of new sign-ups who claim the money-back guarantee in their first week.",
+  "money-back guarantee": "The replacement for free trials: students pay from day one, and get a full refund in the first week if it isn't working. Costs only the occasional refund, never a free seat.",
+  "steady state": "Where the member base stops growing: new members per month equals members lost to churn. Equals sign-ups × (1 − refunds) ÷ churn; Notes follow at 5 per member.",
+  "funnel": "The path from stranger to payer: WhatsApp group → sign-up, paid from day one under the money-back guarantee.",
+  "top of the funnel": "New paid sign-ups arriving each month — fed by group posts, flyers, and status updates.",
   "tier": "A price level: Notes (one course), Community (everything), Custom (negotiated 1-on-1).",
   "exchange rate": "Kwacha per US dollar. Hosting is billed in dollars, so a weaker kwacha raises the cost base.",
   "cohort": "The students who converted in the same month — they churn together at the same rate.",
   "break-even": "The point where revenue covers the cost base — net profit of exactly zero.",
-  "ceiling": "The steady-state size of the paying base at current trials, conversion, and churn.",
+  "ceiling": "The steady-state size of the paying base at current sign-ups, refunds, and churn.",
   "arpu": "Average revenue per user — total MRR divided by paying students; moves with the tier mix.",
   "single-channel guest": "A free Slack guest with access to one channel — how Notes students are hosted. Slack allows 5 per paid member.",
   "marketing fund": "8% of revenue set aside each month to buy flyers, data bundles, and boosts — growth pays for itself.",
@@ -1073,16 +1060,10 @@ Ceiling:  members settle at  (trials &times; conversion) &divide; churn
 
       var revN = pn * nn, revC = pc * nc;
       var rev = revN + revC;
-      /* Cost phases: $185 founder tools + $100 Claude seat per content
-         writer, at K25/$. Phase = writers + 1, matching the phase table. */
-      var wr = +$("rm-wr").value;
-      var usd = 185 + wr * 100;
-      var costs = usd * 25;
-      $("rm-wr-out").textContent = wr;
-      var PHASES = ["1 \u2014 Launch (founder solo)", "2 \u2014 First writer", "3 \u2014 Second writer",
-                    "4 \u2014 Third writer", "5 \u2014 Fourth writer"];
-      $("rm-phline").innerHTML = "Phase <b>" + PHASES[wr] + "</b> \u00b7 $" + usd
-        + "/month = <b>" + fmtK(costs) + "</b>";
+      /* One team, one course, one bill: $185/mo (Framer 40 + Claude 100 +
+         Vercel 20 + Supabase 25) at K25/$. The $100 Claude is the course
+         writer's seat — exactly one person writes and delivers content. */
+      var costs = 185 * 25;
       var net = rev - costs;
       var MAX = Math.max(revN, revC, costs, 1) * 1.1;
       $("rm-bar-n").style.width = (revN / MAX * 100) + "%";
@@ -1102,10 +1083,10 @@ Ceiling:  members settle at  (trials &times; conversion) &divide; churn
       $("rm-note").textContent = margin + "% margin \u00b7 " + fmtK(costs) + " costs \u00b7 " + stone;
 
       /* revenue distribution — percentage shares of gross, so every share
-         scales with price. Founder's 41% bears the whole tools bill,
-         including each writer's Claude seat. Author gets 16% for writing
-         the course AND teaching its live classes. Weekly = monthly / 4.33
-         (paid monthly; the weekly figure is the same money seen per week). */
+         scales with price. Founder's 41% bears the whole $185 tools bill.
+         Author gets 16% for writing the course AND teaching its live
+         classes. Weekly = monthly / 4.33 (paid monthly; the weekly figure
+         is the same money seen per week). */
       var SPLITS = [["f", 41], ["a", 16], ["h", 10], ["g", 8], ["r", 7], ["o", 5], ["m", 8], ["w", 5]];
       var topShare = rev * 0.41;
       for (var s = 0; s < SPLITS.length; s++) {
@@ -1116,14 +1097,14 @@ Ceiling:  members settle at  (trials &times; conversion) &divide; churn
       var fNet = rev * 0.41 - costs;
       $("rm-sf-net").textContent = fmtK(fNet);
       $("rm-snote").textContent = "41% of " + fmtK(rev) + " = " + fmtK(rev * 0.41)
-        + ", minus " + fmtK(costs) + " tools (phase " + (wr + 1) + ") \u00b7 "
+        + ", minus " + fmtK(costs) + " tools \u00b7 "
         + (fNet >= 0 ? "the split pays everyone and still covers the bills"
-                     : "your share doesn\u2019t cover the tools yet \u2014 add full members before the next seat");
+                     : "your share doesn\u2019t cover the tools yet \u2014 add full members first");
 
       /* forecast — continues from the snapshot. Only full members are
-         simulated (trials x conversion in, churn out, starting from the
-         Community slider's value); Notes refill each month by the same
-         5-per-member rule, at the same prices, against the same costs. */
+         simulated: sign-ups pay from day one, a share claim the money-back
+         guarantee, churn removes existing members. Notes refill each month
+         by the same 5-per-member rule, at the same prices and costs. */
       var tr = +$("rm-tr").value, cv = +$("rm-cv").value / 100, ch = +$("rm-ch").value / 100;
       $("rm-tr-out").textContent = tr;
       $("rm-cv-out").textContent = Math.round(cv * 100) + "%";
@@ -1131,7 +1112,7 @@ Ceiling:  members settle at  (trials &times; conversion) &divide; churn
       $("rm-fstart").innerHTML = "Month 0 is the snapshot above: <b>" + nc + " full members</b> paying K"
         + pc + " and <b>" + nn + " Notes</b> at K" + pn + " \u2014 " + fmtK(rev) + " MRR.";
 
-      var newM = tr * cv;
+      var newM = tr * (1 - cv);
       var mem = nc, mrr = [], mems = [], m;
       for (m = 0; m < 12; m++) {
         mem = mem * (1 - ch) + newM;
@@ -1149,7 +1130,7 @@ Ceiling:  members settle at  (trials &times; conversion) &divide; churn
       var mem12 = Math.round(mems[11]), notes12 = 5 * (mem12 + 1);
       var founder12 = mrr[11] * 0.41 - costs;
       var ss;
-      if (newM === 0 && nc === 0) ss = "no conversions and no members \u2014 the base stays empty";
+      if (newM === 0 && nc === 0) ss = "no sign-ups and no members \u2014 the base stays empty";
       else if (ch === 0) ss = "no churn set \u2014 members compound with no ceiling";
       else {
         var memSS = newM / ch;
