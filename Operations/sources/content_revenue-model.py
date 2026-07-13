@@ -69,11 +69,11 @@ SPLIT_LAB_HTML = """      <div class="lab" id="rm-split">
       </div>"""
 
 FUNNEL_LAB_HTML = """      <div class="lab" id="rm-funnel">
-        <span class="tag"><svg class="ic" aria-hidden="true"><use href="#ic-calc"/></svg>The funnel, twelve months out &mdash; prices and costs carry over from the snapshot above</span>
+        <span class="tag"><svg class="ic" aria-hidden="true"><use href="#ic-calc"/></svg>The next twelve months &mdash; continues from the snapshot: your members, your prices, your costs</span>
+        <p class="rm-lead" id="rm-fstart"></p>
         <div class="lab-grid">
           <div class="lab-row"><label for="rm-tr">New free trials / month</label><input type="range" id="rm-tr" min="0" max="60" step="1" value="12"><output id="rm-tr-out"></output></div>
-          <div class="lab-row"><label for="rm-cv">Trial &rarr; paid conversion</label><input type="range" id="rm-cv" min="0" max="80" step="5" value="25"><output id="rm-cv-out"></output></div>
-          <div class="lab-row"><label for="rm-cs">Share choosing Community</label><input type="range" id="rm-cs" min="0" max="100" step="5" value="30"><output id="rm-cs-out"></output></div>
+          <div class="lab-row"><label for="rm-cv">Trial &rarr; full member</label><input type="range" id="rm-cv" min="0" max="80" step="5" value="25"><output id="rm-cv-out"></output></div>
           <div class="lab-row"><label for="rm-ch">Monthly churn</label><input type="range" id="rm-ch" min="0" max="30" step="1" value="10"><output id="rm-ch-out"></output></div>
         </div>
         <div class="lab-out rm-months">
@@ -154,20 +154,23 @@ MODEL_LAB_JS = """  /* ── Revenue model: snapshot + funnel (shared inputs) �
         + (fNet >= 0 ? "the split pays everyone and still covers the bills"
                      : "your share doesn\\u2019t cover the tools yet \\u2014 add full members before hiring");
 
-      /* funnel simulation — twelve months from a standing start */
-      var tr = +$("rm-tr").value, cv = +$("rm-cv").value / 100;
-      var cs = +$("rm-cs").value / 100, ch = +$("rm-ch").value / 100;
+      /* forecast — continues from the snapshot. Only full members are
+         simulated (trials x conversion in, churn out, starting from the
+         Community slider's value); Notes refill each month by the same
+         5-per-member rule, at the same prices, against the same costs. */
+      var tr = +$("rm-tr").value, cv = +$("rm-cv").value / 100, ch = +$("rm-ch").value / 100;
       $("rm-tr-out").textContent = tr;
       $("rm-cv-out").textContent = Math.round(cv * 100) + "%";
-      $("rm-cs-out").textContent = Math.round(cs * 100) + "%";
       $("rm-ch-out").textContent = Math.round(ch * 100) + "%";
+      $("rm-fstart").innerHTML = "Month 0 is the snapshot above: <b>" + nc + " full members</b> paying K"
+        + pc + " and <b>" + nn + " Notes</b> at K" + pn + " \\u2014 " + fmtK(rev) + " MRR.";
 
-      var newPaid = tr * cv, newC = newPaid * cs, newN = newPaid * (1 - cs);
-      var baseN = 0, baseC = 0, mrr = [], m;
+      var newM = tr * cv;
+      var mem = nc, mrr = [], mems = [], m;
       for (m = 0; m < 12; m++) {
-        baseN = baseN * (1 - ch) + newN;
-        baseC = baseC * (1 - ch) + newC;
-        mrr.push(baseN * pn + baseC * pc);
+        mem = mem * (1 - ch) + newM;
+        mems.push(mem);
+        mrr.push(mem * pc + 5 * (mem + 1) * pn);
       }
       var MMAX = Math.max.apply(null, mrr.concat([1])) * 1.1;
       var pass3 = 0;
@@ -177,22 +180,21 @@ MODEL_LAB_JS = """  /* ── Revenue model: snapshot + funnel (shared inputs) �
         if (!pass3 && mrr[m] - costs >= 3000) pass3 = m + 1;
       }
       $("rm-mrr12").textContent = fmtK(mrr[11]);
-      var students12 = Math.round(baseN + baseC);
-      var net12 = mrr[11] - costs;
-      var notesCap12 = 5 * (Math.round(baseC) + 1);
-      var over = Math.round(baseN) > notesCap12
-        ? " \\u00b7 heads up: that projects " + Math.round(baseN) + " Notes but only room for "
-          + notesCap12 + " at " + Math.round(baseC) + " Community (5 per member) \\u2014 lift the Community share"
-        : "";
+      var mem12 = Math.round(mems[11]), notes12 = 5 * (mem12 + 1);
+      var founder12 = mrr[11] * 0.45 - costs;
       var ss;
-      if (newPaid === 0)  ss = "no conversions at these settings \\u2014 the base stays empty";
-      else if (ch === 0)  ss = "no churn set \\u2014 the base compounds with no ceiling";
-      else ss = "steady state \\u2248 " + Math.round(newPaid / ch) + " students / "
-              + fmtK((newN / ch) * pn + (newC / ch) * pc) + " MRR";
+      if (newM === 0 && nc === 0) ss = "no conversions and no members \\u2014 the base stays empty";
+      else if (ch === 0) ss = "no churn set \\u2014 members compound with no ceiling";
+      else {
+        var memSS = newM / ch;
+        ss = "steady state \\u2248 " + Math.round(memSS) + " members + "
+           + Math.round(5 * (memSS + 1)) + " Notes / " + fmtK(memSS * pc + 5 * (memSS + 1) * pn) + " MRR";
+      }
       var hit3 = pass3 ? "passes K3,000 net in month " + pass3
                        : "K3,000 net not reached within 12 months";
-      $("rm-fnote").textContent = students12 + " paying students by month 12 \\u00b7 "
-        + fmtK(net12) + " net/month \\u00b7 " + ss + " \\u00b7 " + hit3 + over;
+      $("rm-fnote").textContent = "Month 12: " + mem12 + " members + " + notes12 + " Notes \\u00b7 "
+        + fmtK(mrr[11] - costs) + " net \\u00b7 your 45% keeps " + fmtK(founder12)
+        + " after tools \\u00b7 " + ss + " \\u00b7 " + hit3;
     }
     lab.addEventListener("input", calc);
     funnel.addEventListener("input", calc);
@@ -259,12 +261,12 @@ STEP = {
             {"t": "callout", "tag": "Roles are filled as revenue allows", "icon": "bulb", "html": "Until a role is hired, its share stays with the founder &mdash; you are the Author, Host, and Growth Lead today, so early on the founder&rsquo;s real take is most of the 100%. Hire in the order of the bottleneck (Rep &rarr; Host &rarr; Author, per Roles for Growth), and hand each share over only when the person takes over the duties. The percentages above replace the old per-unit commissions (K100 per referral, K300 host base) with shares that scale &mdash; revisit them at the first K10,000 month."},
         ]},
 
-        {"eyebrow": "Growth", "title": "The Funnel Over Twelve Months", "blocks": [
-            {"t": "p", "html": "The snapshot says nothing about time. The funnel does: every month some trials arrive, a share of them convert after their free month, and a share of the existing base cancels. The base a leaky bucket can hold is fixed by the flow in and the leak &mdash; not by how long you pour."},
-            {"t": "formula", "html": 'Steady state  <span class="op">=</span>  (trials &times; conversion) &divide; churn\n\nAt 12 trials, 25% conversion, 10% churn:\n  (12 &times; 0.25) &divide; 0.10  <span class="op">=</span>  30 paying students &mdash; the ceiling'},
-            {"t": "p", "html": "The lab below runs that arithmetic month by month from a standing start of zero students. It reads prices and costs from the snapshot above, so the two labs are one model &mdash; reprice Notes up there and month 12 changes down here."},
+        {"eyebrow": "Growth", "title": "The Forecast — the Snapshot, Rolled Forward", "blocks": [
+            {"t": "p", "html": "The snapshot says nothing about time. The forecast does &mdash; and it is not a separate model. Month 0 is exactly the snapshot above: your current full members, your prices, your costs. Each month after that, new trials arrive and a share convert to full members, a share of existing members cancels, and Notes refill to 5 seats per member &mdash; the same rule as the snapshot, applied twelve times."},
+            {"t": "formula", "html": 'Members next month  <span class="op">=</span>  members &times; (1 &minus; churn)  <span class="op">+</span>  (trials &times; conversion)\nNotes each month    <span class="op">=</span>  5 &times; (members + your seat)  &mdash; assumed full\n\nCeiling:  members settle at  (trials &times; conversion) &divide; churn\n  At 12 trials, 25% conversion, 10% churn:  (12 &times; 0.25) &divide; 0.10  <span class="op">=</span>  30 members'},
+            {"t": "p", "html": "Only full members need forecasting &mdash; everything else follows from them. Change any slider up in the snapshot and month 0 down here moves with it; change trials, conversion, or churn and you watch the same business travel twelve months."},
             {"t": "raw", "html": FUNNEL_LAB_HTML},
-            {"t": "callout", "tag": "The lever hierarchy", "icon": "bulb", "html": "Doubling trials and halving churn produce the same ceiling &mdash; but halving churn is usually cheaper, because retention is posting cadence and quiz nights, while trials cost flyers, data bundles, and time in WhatsApp groups. Check the steady-state line before spending on reach: if the ceiling at current churn is 30 students, more marketing buys speed toward 30, not a bigger number."},
+            {"t": "callout", "tag": "The lever hierarchy", "icon": "bulb", "html": "Doubling trials and halving churn produce the same ceiling &mdash; but halving churn is usually cheaper, because retention is posting cadence and quiz nights, while trials cost flyers, data bundles, and time in WhatsApp groups. Check the steady-state line before spending on reach: if the ceiling at current churn is 30 members, more marketing buys speed toward 30, not a bigger number."},
         ]},
 
         {"eyebrow": "Reading it", "title": "What the Model Keeps Telling You", "blocks": [
@@ -272,7 +274,7 @@ STEP = {
                 "The running cost is a flat ~K4,625 a month &mdash; your $185 of tools (Framer, Claude, Vercel, Supabase) at K25/$. It doesn&rsquo;t grow per student, so once revenue clears it, the rest is margin.",
                 "One full member is worth more than it looks: K600 from them, plus 5 Notes seats at K360 &mdash; up to K2,400 of Notes revenue riding on that single membership.",
                 "Steady state ignores launch spikes. Trials &times; conversion &divide; churn is the whole ceiling &mdash; a big first month just gets you there sooner.",
-                "Community does the heavy lifting per head; Notes does volume. The tier-mix slider often moves month-12 MRR more than either price does.",
+                "Every number traces back to one input: full members. The snapshot, the Notes count, the split, and the forecast all move when that slider does &mdash; so growing members is the whole game.",
                 "Churn is the only lever where small numbers are violent: 5% versus 15% churn is a threefold difference in the ceiling.",
             ]},
             {"t": "callout", "tag": "Decision to make", "icon": "check", "html": "Find the slider settings you actually believe &mdash; honest conversion, honest churn, prices you can defend on WhatsApp &mdash; and read what they pay. If the answer disappoints, the model shows which lever is cheapest to move first. When a setting becomes the plan, write it into Operations/pricing-strategy.md and hold the monthly logs to it."},
@@ -295,10 +297,10 @@ STEP = {
         "net profit": "Revenue minus total costs — what the business actually keeps in a month.",
         "margin": "Net profit as a share of revenue. High here because the cost base is fixed, not per-student.",
         "cost base": "The fixed monthly tools bill — Framer, Claude, Vercel, Supabase — about $185 (≈K4,625 at K25/$). Flat; it doesn't grow per student.",
-        "churn": "The share of paying students who cancel in a month. Sets the ceiling of the base.",
-        "conversion": "The share of free trials that become paying students after their free month.",
-        "conversion rate": "The share of free trials that become paying students after their free month.",
-        "steady state": "Where the base stops growing: new paid students per month equals students lost to churn. Equals trials × conversion ÷ churn.",
+        "churn": "The share of full members who cancel in a month. Sets the ceiling of the member base.",
+        "conversion": "The share of free trials that become full members after their free month.",
+        "conversion rate": "The share of free trials that become full members after their free month.",
+        "steady state": "Where the member base stops growing: new members per month equals members lost to churn. Equals trials × conversion ÷ churn; Notes follow at 5 per member.",
         "funnel": "The path from stranger to payer: WhatsApp group → free trial → day-25 follow-up → paid tier.",
         "top of the funnel": "New free trials arriving each month — fed by group posts, flyers, and status updates.",
         "tier": "A price level: Notes (one course), Community (everything), Custom (negotiated 1-on-1).",
