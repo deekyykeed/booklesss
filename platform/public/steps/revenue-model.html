@@ -479,7 +479,7 @@
      starts. */
   html.rainbow-sel .tip::before {
     content: ""; position: absolute; inset: 0;
-    border-radius: inherit; padding: 1px;
+    border-radius: inherit; corner-shape: superellipse(2); padding: 1px;
     background: conic-gradient(from calc(var(--selh, 20) * 1deg),
       hsl(0 60% 64%), hsl(50 58% 63%), hsl(120 48% 60%), hsl(190 58% 63%),
       hsl(255 50% 66%), hsl(315 52% 64%), hsl(360 60% 64%));
@@ -543,11 +543,19 @@
     -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
   }
   mark.tapsel {
-    background: var(--amber-soft); color: inherit;
-    border-radius: 4px; padding: 0 0.04em;
+    background: linear-gradient(90deg,
+      hsl(0 78% 56%), hsl(42 82% 52%), hsl(120 55% 44%), hsl(190 70% 47%),
+      hsl(255 62% 58%), hsl(320 68% 55%), hsl(0 78% 56%)) 0 0 / 220% 100%;
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+    box-shadow: inset 0 -0.5em 0 hsl(42 82% 55% / 0.13);
+    border-radius: 4px; corner-shape: superellipse(2);
     -webkit-box-decoration-break: clone; box-decoration-break: clone;
   }
-  html.rainbow-sel mark.tapsel { background: hsl(var(--selh, 20) 85% 52% / 0.16); }
+  @media (prefers-reduced-motion: no-preference) {
+    html.rainbow-sel mark.tapsel { animation: tapsel-hue 3.4s linear infinite; }
+  }
+  @keyframes tapsel-hue { to { background-position: 220% 0; } }
 
   @media (prefers-reduced-motion: no-preference) {
     .rv {
