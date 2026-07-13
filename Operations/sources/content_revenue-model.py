@@ -24,13 +24,11 @@ MODEL_LAB_HTML = """      <div class="lab" id="rm-lab">
         <div class="lab-grid">
           <div class="lab-row"><label for="rm-pn">Notes price / month</label><input type="range" id="rm-pn" min="100" max="1000" step="20" value="360"><output id="rm-pn-out"></output></div>
           <div class="lab-row"><label for="rm-pc">Community price / month</label><input type="range" id="rm-pc" min="200" max="1600" step="50" value="600"><output id="rm-pc-out"></output></div>
-          <div class="lab-row"><label for="rm-px">Custom rate / month</label><input type="range" id="rm-px" min="500" max="5000" step="100" value="1500"><output id="rm-px-out"></output></div>
         </div>
         <span class="rm-cap">Paying students</span>
         <div class="lab-grid">
           <div class="lab-row"><label for="rm-nn">On Notes</label><input type="range" id="rm-nn" min="0" max="100" step="1" value="10"><output id="rm-nn-out"></output></div>
           <div class="lab-row"><label for="rm-nc">On Community</label><input type="range" id="rm-nc" min="0" max="50" step="1" value="4"><output id="rm-nc-out"></output></div>
-          <div class="lab-row"><label for="rm-nx">On Custom</label><input type="range" id="rm-nx" min="0" max="10" step="1" value="0"><output id="rm-nx-out"></output></div>
         </div>
         <span class="rm-cap">Monthly costs</span>
         <div class="lab-grid">
@@ -41,7 +39,6 @@ MODEL_LAB_HTML = """      <div class="lab" id="rm-lab">
         <div class="lab-out">
           <div class="lab-bar"><span class="nm">Notes revenue</span><span class="tr"><span class="fl" id="rm-bar-n"></span></span><output id="rm-val-n"></output></div>
           <div class="lab-bar"><span class="nm">Community revenue</span><span class="tr"><span class="fl" id="rm-bar-c"></span></span><output id="rm-val-c"></output></div>
-          <div class="lab-bar"><span class="nm">Custom revenue</span><span class="tr"><span class="fl" id="rm-bar-x"></span></span><output id="rm-val-x"></output></div>
           <div class="lab-bar"><span class="nm">Total costs</span><span class="tr"><span class="fl pay" id="rm-bar-k"></span></span><output id="rm-val-k"></output></div>
           <div class="lab-total">
             <span class="big"><span id="rm-net"></span> <small>net / month</small></span>
@@ -85,32 +82,28 @@ MODEL_LAB_JS = """  /* ── Revenue model: snapshot + funnel (shared inputs) �
     if (!lab || !funnel) return;
     function fmtK(v) { return "K" + Math.round(v).toLocaleString(); }
     function calc() {
-      var pn = +$("rm-pn").value, pc = +$("rm-pc").value, px = +$("rm-px").value;
-      var nn = +$("rm-nn").value, nc = +$("rm-nc").value, nx = +$("rm-nx").value;
+      var pn = +$("rm-pn").value, pc = +$("rm-pc").value;
+      var nn = +$("rm-nn").value, nc = +$("rm-nc").value;
       var host = +$("rm-host").value, fx = +$("rm-fx").value, mkt = +$("rm-mkt").value;
 
       $("rm-pn-out").textContent = "K" + pn;
       $("rm-pc-out").textContent = "K" + pc;
-      $("rm-px-out").textContent = "K" + px.toLocaleString();
       $("rm-nn-out").textContent = nn;
       $("rm-nc-out").textContent = nc;
-      $("rm-nx-out").textContent = nx;
       $("rm-host-out").textContent = "$" + host;
       $("rm-fx-out").textContent = "K" + fx + "/$";
       $("rm-mkt-out").textContent = fmtK(mkt);
 
-      var revN = pn * nn, revC = pc * nc, revX = px * nx;
-      var rev = revN + revC + revX;
+      var revN = pn * nn, revC = pc * nc;
+      var rev = revN + revC;
       var costs = host * fx + mkt;
       var net = rev - costs;
-      var MAX = Math.max(revN, revC, revX, costs, 1) * 1.1;
+      var MAX = Math.max(revN, revC, costs, 1) * 1.1;
       $("rm-bar-n").style.width = (revN / MAX * 100) + "%";
       $("rm-bar-c").style.width = (revC / MAX * 100) + "%";
-      $("rm-bar-x").style.width = (revX / MAX * 100) + "%";
       $("rm-bar-k").style.width = (costs / MAX * 100) + "%";
       $("rm-val-n").textContent = fmtK(revN);
       $("rm-val-c").textContent = fmtK(revC);
-      $("rm-val-x").textContent = fmtK(revX);
       $("rm-val-k").textContent = fmtK(costs);
       $("rm-net").textContent = fmtK(net);
       var margin = rev > 0 ? Math.round(net / rev * 100) : 0;
@@ -170,14 +163,14 @@ STEP = {
     "course_chip": "INTERNAL · OPS",
     "eyebrow": "Booklesss HQ · Operations · Revenue Model",
     "title_html": "The Booklesss\nRevenue Model",
-    "standfirst_html": "Every lever of the money machine on sliders &mdash; tier prices, paying students, the cost base, then the funnel projected twelve months out. Move a lever and watch what the business pays you.",
+    "standfirst_html": "Every lever of the money machine on sliders &mdash; the two tier prices, paying students, the cost base, then the funnel projected twelve months out. Move a lever and watch what the business pays you.",
     "meta": {"minutes": 8, "sections": 5, "examples": 2},
 
     "sources": {},
 
     "sections": [
         {"eyebrow": "The machine", "title": "How Booklesss Makes Money", "blocks": [
-            {"t": "p", "html": "Booklesss sells access to the gated study platform. Every student starts on a free trial &mdash; one month, one course, no card &mdash; and at day 25 gets a WhatsApp follow-up asking them to pick a paid tier. Two subscription tiers carry the model; a negotiated tier sits on top for students who want 1-on-1 attention."},
+            {"t": "p", "html": "Booklesss sells access to the gated study platform. Every student starts on a free trial &mdash; one month, one course, no card &mdash; and at day 25 gets a WhatsApp follow-up asking them to pick a paid tier. Two subscription tiers carry the model. A Custom tier sits on top for students who want 1-on-1 attention, but it is negotiated per student and has no set price yet &mdash; so it stays out of the sliders below and enters the books as logged revenue when it happens."},
             {"t": "table", "head": ["Tier", "Default price", "What they get"], "rows": [
                 ["Free trial", "K0 (1 month)", "One course, full step access &mdash; no card required"],
                 ["Notes", "K360 / month", "One course &mdash; steps, discussion, past papers"],
@@ -188,7 +181,7 @@ STEP = {
         ]},
 
         {"eyebrow": "Variables", "title": "The Levers You Can Pull", "blocks": [
-            {"t": "p", "html": "Nine numbers decide what the business nets each month. Prices and headcount set revenue; hosting, the exchange rate, and marketing set cost; trials, conversion, and churn decide how the paying base grows &mdash; and where it stops growing. None of them acts alone, which is exactly why they belong on sliders side by side."},
+            {"t": "p", "html": "Eleven numbers drive this model. Two prices and two headcounts set revenue; hosting, the exchange rate, and marketing set cost; trials, conversion, the tier mix, and churn decide how the paying base grows &mdash; and where it stops growing. None of them acts alone, which is exactly why they belong on sliders side by side."},
             {"t": "table", "head": ["Lever", "What it moves", "Where it lives"], "rows": [
                 ["Tier prices", "Revenue per student", "Operations/pricing-strategy.md"],
                 ["Paying students per tier", "Revenue volume &amp; mix", "Operations/revenue-log.md"],
@@ -201,7 +194,7 @@ STEP = {
         ]},
 
         {"eyebrow": "Price points", "title": "Monthly Snapshot — Price It, Fill It, Cost It", "blocks": [
-            {"t": "p", "html": "This is the business frozen at one month. Set the three prices, decide how many students sit on each tier, and set the cost base &mdash; hosting is billed in dollars, so the exchange rate is a real lever here, not a footnote. The bars split revenue by tier against total costs, and the headline figure is what lands in your pocket."},
+            {"t": "p", "html": "This is the business frozen at one month. Set the two prices, decide how many students sit on each tier, and set the cost base &mdash; hosting is billed in dollars, so the exchange rate is a real lever here, not a footnote. The bars split revenue by tier against total costs, and the headline figure is what lands in your pocket."},
             {"t": "raw", "html": MODEL_LAB_HTML},
             {"t": "callout", "tag": "How to read it", "icon": "medal", "html": "Because the cost base is fixed, margin climbs with every student &mdash; there is no per-seat cost eating the next sale. That cuts both ways: net profit moves almost one-for-one with revenue, so a K60 price change across ten students is a K600 swing. Try Notes at K300 and K420 before touching anything else &mdash; price is the cheapest experiment you can run."},
         ]},

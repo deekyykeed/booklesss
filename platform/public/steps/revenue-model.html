@@ -562,7 +562,7 @@
     <span class="eyebrow">Booklesss HQ · Operations · Revenue Model</span>
     <h1>The Booklesss
 Revenue Model</h1>
-    <p class="standfirst">Every lever of the money machine on sliders &mdash; tier prices, paying students, the cost base, then the funnel projected twelve months out. Move a lever and watch what the business pays you.</p>
+    <p class="standfirst">Every lever of the money machine on sliders &mdash; the two tier prices, paying students, the cost base, then the funnel projected twelve months out. Move a lever and watch what the business pays you.</p>
     <div class="metarow">
       <span><svg class="ic" aria-hidden="true"><use href="#ic-clock"/></svg>~8 min</span>
       <span><svg class="ic" aria-hidden="true"><use href="#ic-doc"/></svg>5 sections</span>
@@ -580,7 +580,7 @@ Revenue Model</h1>
     <section>
       <span class="eyebrow">The machine</span>
       <h2>How Booklesss Makes Money</h2>
-      <p>Booklesss sells access to the gated study platform. Every student starts on a free trial &mdash; one month, one course, no card &mdash; and at day 25 gets a WhatsApp follow-up asking them to pick a paid tier. Two subscription tiers carry the model; a negotiated tier sits on top for students who want 1-on-1 attention.</p>
+      <p>Booklesss sells access to the gated study platform. Every student starts on a free trial &mdash; one month, one course, no card &mdash; and at day 25 gets a WhatsApp follow-up asking them to pick a paid tier. Two subscription tiers carry the model. A Custom tier sits on top for students who want 1-on-1 attention, but it is negotiated per student and has no set price yet &mdash; so it stays out of the sliders below and enters the books as logged revenue when it happens.</p>
       <div class="tbl-wrap"><table>
         <thead><tr><th>Tier</th><th>Default price</th><th>What they get</th></tr></thead>
         <tbody>
@@ -599,7 +599,7 @@ Revenue Model</h1>
     <section>
       <span class="eyebrow">Variables</span>
       <h2>The Levers You Can Pull</h2>
-      <p>Nine numbers decide what the business nets each month. Prices and headcount set revenue; hosting, the exchange rate, and marketing set cost; trials, conversion, and churn decide how the paying base grows &mdash; and where it stops growing. None of them acts alone, which is exactly why they belong on sliders side by side.</p>
+      <p>Eleven numbers drive this model. Two prices and two headcounts set revenue; hosting, the exchange rate, and marketing set cost; trials, conversion, the tier mix, and churn decide how the paying base grows &mdash; and where it stops growing. None of them acts alone, which is exactly why they belong on sliders side by side.</p>
       <div class="tbl-wrap"><table>
         <thead><tr><th>Lever</th><th>What it moves</th><th>Where it lives</th></tr></thead>
         <tbody>
@@ -617,7 +617,7 @@ Revenue Model</h1>
     <section>
       <span class="eyebrow">Price points</span>
       <h2>Monthly Snapshot — Price It, Fill It, Cost It</h2>
-      <p>This is the business frozen at one month. Set the three prices, decide how many students sit on each tier, and set the cost base &mdash; hosting is billed in dollars, so the exchange rate is a real lever here, not a footnote. The bars split revenue by tier against total costs, and the headline figure is what lands in your pocket.</p>
+      <p>This is the business frozen at one month. Set the two prices, decide how many students sit on each tier, and set the cost base &mdash; hosting is billed in dollars, so the exchange rate is a real lever here, not a footnote. The bars split revenue by tier against total costs, and the headline figure is what lands in your pocket.</p>
       <div class="lab" id="rm-lab">
         <style>
           .rm-cap { display:block; font-family:"Satoshi","Onest",system-ui,sans-serif; font-size:0.6875rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--steel); margin:1.15rem 0 0.65rem; }
@@ -629,13 +629,11 @@ Revenue Model</h1>
         <div class="lab-grid">
           <div class="lab-row"><label for="rm-pn">Notes price / month</label><input type="range" id="rm-pn" min="100" max="1000" step="20" value="360"><output id="rm-pn-out"></output></div>
           <div class="lab-row"><label for="rm-pc">Community price / month</label><input type="range" id="rm-pc" min="200" max="1600" step="50" value="600"><output id="rm-pc-out"></output></div>
-          <div class="lab-row"><label for="rm-px">Custom rate / month</label><input type="range" id="rm-px" min="500" max="5000" step="100" value="1500"><output id="rm-px-out"></output></div>
         </div>
         <span class="rm-cap">Paying students</span>
         <div class="lab-grid">
           <div class="lab-row"><label for="rm-nn">On Notes</label><input type="range" id="rm-nn" min="0" max="100" step="1" value="10"><output id="rm-nn-out"></output></div>
           <div class="lab-row"><label for="rm-nc">On Community</label><input type="range" id="rm-nc" min="0" max="50" step="1" value="4"><output id="rm-nc-out"></output></div>
-          <div class="lab-row"><label for="rm-nx">On Custom</label><input type="range" id="rm-nx" min="0" max="10" step="1" value="0"><output id="rm-nx-out"></output></div>
         </div>
         <span class="rm-cap">Monthly costs</span>
         <div class="lab-grid">
@@ -646,7 +644,6 @@ Revenue Model</h1>
         <div class="lab-out">
           <div class="lab-bar"><span class="nm">Notes revenue</span><span class="tr"><span class="fl" id="rm-bar-n"></span></span><output id="rm-val-n"></output></div>
           <div class="lab-bar"><span class="nm">Community revenue</span><span class="tr"><span class="fl" id="rm-bar-c"></span></span><output id="rm-val-c"></output></div>
-          <div class="lab-bar"><span class="nm">Custom revenue</span><span class="tr"><span class="fl" id="rm-bar-x"></span></span><output id="rm-val-x"></output></div>
           <div class="lab-bar"><span class="nm">Total costs</span><span class="tr"><span class="fl pay" id="rm-bar-k"></span></span><output id="rm-val-k"></output></div>
           <div class="lab-total">
             <span class="big"><span id="rm-net"></span> <small>net / month</small></span>
@@ -973,32 +970,28 @@ At 12 trials, 25% conversion, 10% churn:
     if (!lab || !funnel) return;
     function fmtK(v) { return "K" + Math.round(v).toLocaleString(); }
     function calc() {
-      var pn = +$("rm-pn").value, pc = +$("rm-pc").value, px = +$("rm-px").value;
-      var nn = +$("rm-nn").value, nc = +$("rm-nc").value, nx = +$("rm-nx").value;
+      var pn = +$("rm-pn").value, pc = +$("rm-pc").value;
+      var nn = +$("rm-nn").value, nc = +$("rm-nc").value;
       var host = +$("rm-host").value, fx = +$("rm-fx").value, mkt = +$("rm-mkt").value;
 
       $("rm-pn-out").textContent = "K" + pn;
       $("rm-pc-out").textContent = "K" + pc;
-      $("rm-px-out").textContent = "K" + px.toLocaleString();
       $("rm-nn-out").textContent = nn;
       $("rm-nc-out").textContent = nc;
-      $("rm-nx-out").textContent = nx;
       $("rm-host-out").textContent = "$" + host;
       $("rm-fx-out").textContent = "K" + fx + "/$";
       $("rm-mkt-out").textContent = fmtK(mkt);
 
-      var revN = pn * nn, revC = pc * nc, revX = px * nx;
-      var rev = revN + revC + revX;
+      var revN = pn * nn, revC = pc * nc;
+      var rev = revN + revC;
       var costs = host * fx + mkt;
       var net = rev - costs;
-      var MAX = Math.max(revN, revC, revX, costs, 1) * 1.1;
+      var MAX = Math.max(revN, revC, costs, 1) * 1.1;
       $("rm-bar-n").style.width = (revN / MAX * 100) + "%";
       $("rm-bar-c").style.width = (revC / MAX * 100) + "%";
-      $("rm-bar-x").style.width = (revX / MAX * 100) + "%";
       $("rm-bar-k").style.width = (costs / MAX * 100) + "%";
       $("rm-val-n").textContent = fmtK(revN);
       $("rm-val-c").textContent = fmtK(revC);
-      $("rm-val-x").textContent = fmtK(revX);
       $("rm-val-k").textContent = fmtK(costs);
       $("rm-net").textContent = fmtK(net);
       var margin = rev > 0 ? Math.round(net / rev * 100) : 0;
