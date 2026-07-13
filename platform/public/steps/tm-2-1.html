@@ -534,6 +534,21 @@
   .tip[data-place="above"]::after { bottom: -6.5px; border-right: 1px solid var(--tip-line, var(--border)); border-bottom: 1px solid var(--tip-line, var(--border)); }
   .tip[data-place="below"]::after { top: -6.5px; border-left: 1px solid var(--tip-line, var(--border)); border-top: 1px solid var(--tip-line, var(--border)); }
 
+  /* Tap-to-define (touch): the reading column can't be natively selected, so
+     Android's Copy/Share/Select-all menu and the Google chip never appear.
+     A tap defines the word; a press-and-hold defines the sentence. The tapped
+     run is wrapped in <mark class="tapsel"> so it still reads as a highlight —
+     rainbow via the same --selh, warm tint when motion is reduced. */
+  html.tap-define #content p, html.tap-define #content li {
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  mark.tapsel {
+    background: var(--amber-soft); color: inherit;
+    border-radius: 4px; padding: 0 0.04em;
+    -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  }
+  html.rainbow-sel mark.tapsel { background: hsl(var(--selh, 20) 85% 52% / 0.16); }
+
   @media (prefers-reduced-motion: no-preference) {
     .rv {
       opacity: 0; transform: translateY(16px);
@@ -594,7 +609,7 @@
     </div>
     <div class="hint">
       <svg class="ic" style="font-size:1.35rem" aria-hidden="true"><use href="#ic-cursor"/></svg>
-      <div><b>Try it:</b> double-tap any word, or highlight a phrase, and Booklesss will explain it in place. Key terms come from this step; everything else shows the AI explanation preview.</div>
+      <div><b>Try it:</b> tap any word &mdash; or press and hold for the whole sentence &mdash; and Booklesss explains it in place. On a computer, highlight the text instead. Key terms come from this step; everything else shows the AI explanation preview.</div>
     </div>
   </header>
 
@@ -1009,6 +1024,7 @@ Factoring saving:                                     ~K1,800</pre></div></div>
   function hideTip() {
     tip.classList.remove("show");
     stopRainbow();
+    clearMark();
   }
 
   /* ── Rainbow selection: cycle --selh while a valid highlight is live ── */
@@ -1101,6 +1117,7 @@ Factoring saving:                                     ~K1,800</pre></div></div>
   }
 
   function onSelect() {
+    if (document.documentElement.classList.contains("tap-define")) return;
     clearTimeout(hideTimer);
     hideTimer = setTimeout(showFromSelection, 120);
   }
@@ -1114,9 +1131,102 @@ Factoring saving:                                     ~K1,800</pre></div></div>
      pointerup fires before the selection settles — and clears the popover
      + rainbow the moment the selection collapses. */
   document.addEventListener("selectionchange", function () {
+    if (document.documentElement.classList.contains("tap-define")) return;
     var s = window.getSelection();
     if (!s || s.isCollapsed) hideTip();
   });
+
+  /* ── Tap-to-define (touch only): word on tap, sentence on press-hold ── */
+  var tapMark = null;
+  function clearMark() {
+    if (tapMark && tapMark.parentNode) {
+      var p = tapMark.parentNode;
+      while (tapMark.firstChild) p.insertBefore(tapMark.firstChild, tapMark);
+      p.removeChild(tapMark);
+      p.normalize();
+    }
+    tapMark = null;
+  }
+  function markRange(range) {
+    clearMark();
+    try {
+      var m = document.createElement("mark");
+      m.className = "tapsel";
+      range.surroundContents(m);
+      tapMark = m;
+      return m.getBoundingClientRect();
+    } catch (e) {
+      return range.getBoundingClientRect();
+    }
+  }
+  function caretFromPoint(x, y) {
+    if (document.caretRangeFromPoint) {
+      var r = document.caretRangeFromPoint(x, y);
+      return r ? { node: r.startContainer, offset: r.startOffset } : null;
+    }
+    if (document.caretPositionFromPoint) {
+      var p = document.caretPositionFromPoint(x, y);
+      return p ? { node: p.offsetNode, offset: p.offset } : null;
+    }
+    return null;
+  }
+  var WORD = /[\p{L}\p{N}'’‑-]/u;
+  function rangeAt(x, y, sentence) {
+    var pos = caretFromPoint(x, y);
+    if (!pos || pos.node.nodeType !== 3) return null;
+    var node = pos.node, t = node.textContent, off = pos.offset, a = off, b = off;
+    if (sentence) {
+      while (a > 0 && !/[.!?]/.test(t[a - 1])) a--;
+      while (b < t.length && !/[.!?]/.test(t[b])) b++;
+      if (b < t.length) b++;
+      while (a < b && /\s/.test(t[a])) a++;
+    } else {
+      if (a > 0 && !WORD.test(t[a] || "") && WORD.test(t[a - 1])) a--, b--;
+      while (a > 0 && WORD.test(t[a - 1])) a--;
+      while (b < t.length && WORD.test(t[b])) b++;
+    }
+    if (a >= b) return null;
+    var r = document.createRange();
+    r.setStart(node, a); r.setEnd(node, b);
+    return r;
+  }
+  function defineAt(x, y, sentence) {
+    var range = rangeAt(x, y, sentence);
+    if (!range) { hideTip(); return; }
+    var el = range.startContainer.parentElement;
+    if (!explainable(el)) { hideTip(); return; }
+    var text = range.toString().trim();
+    if (!text) { hideTip(); return; }
+    renderTip(text);
+    startRainbow();
+    var rect = markRange(range);
+    if (!rect || (rect.width === 0 && rect.height === 0)) { hideTip(); return; }
+    placeTip(rect);
+  }
+  if (window.matchMedia && matchMedia("(hover: none) and (pointer: coarse)").matches) {
+    document.documentElement.classList.add("tap-define");
+    var pressTimer = null, longPressed = false, dx = 0, dy = 0;
+    document.addEventListener("pointerdown", function (e) {
+      if (tip.contains(e.target)) return;
+      longPressed = false; dx = e.clientX; dy = e.clientY;
+      clearTimeout(pressTimer);
+      pressTimer = setTimeout(function () {
+        longPressed = true;
+        defineAt(dx, dy, true);
+      }, 430);
+    }, true);
+    document.addEventListener("pointermove", function (e) {
+      if (pressTimer && (Math.abs(e.clientX - dx) > 10 || Math.abs(e.clientY - dy) > 10)) {
+        clearTimeout(pressTimer); pressTimer = null;
+      }
+    }, true);
+    document.addEventListener("pointerup", function (e) {
+      clearTimeout(pressTimer); pressTimer = null;
+      if (longPressed) { longPressed = false; return; }
+      if (tip.contains(e.target)) return;
+      defineAt(e.clientX, e.clientY, false);
+    }, true);
+  }
 
   /* ── Interactive CCC calculator ── */
   (function () {
