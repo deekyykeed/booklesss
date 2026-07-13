@@ -34,6 +34,43 @@ and the content is study notes — nothing to protect. Re-enable Standard
 Protection only after a real custom domain is added (e.g. `booklesss.co.zm`);
 then it does the intended thing — previews gated, production public.
 
+### ERR_CONNECTION_ABORTED on a phone — diagnose before touching anything
+
+Seen 2026-07-13: the owner's phone showed "This site can't be reached /
+ERR_CONNECTION_ABORTED" on `booklesss.vercel.app` while the site was healthy
+and public. Chrome's wording ("may have moved permanently") is misleading —
+that error means the TCP/TLS connection was cut mid-request **on the client's
+side of the wire**, not that the server refused or the page is gone.
+Deployment Protection produces an HTTP **403 with a Vercel login page** (a
+page that loads); a connection *abort* is a different animal — carrier or
+device. The owner's screenshots showed the tells: roaming indicator ("R") and
+battery saver territory. It cleared on its own when network conditions changed.
+
+Diagnosis order that works from a cloud session:
+
+1. **Verify the server first, via the Vercel MCP** — `list_deployments`
+   (project `prj_toM064SqDde7cyNuqzsLMfCpYvxd`, team
+   `deekymvula-gmailcoms-projects`): latest `target: "production"` deployment
+   `state: "READY"` = the site is built and serving. Protection state is in
+   Settings → Deployment Protection (screenshots from the owner beat guessing).
+2. **Do NOT trust curl/WebFetch 403s from the cloud sandbox.** The session's
+   egress proxy blocks `*.vercel.app` outright — `curl` shows
+   `CONNECT tunnel failed, response 403`, and WebFetch reports plain "403
+   Forbidden". Those are the *sandbox's* proxy, not Vercel, and prove nothing
+   about public reachability. `curl -sS "$HTTPS_PROXY/__agentproxy/status"`
+   lists what the proxy recently rejected. The Vercel API/MCP is reachable —
+   it is the only trustworthy window on deploy health from inside a session.
+3. **If the server is READY + public, the problem is the client's network.**
+   Have them switch Wi-Fi ↔ mobile data (roaming carriers abort HTTPS),
+   disable battery saver, try incognito or another device.
+4. **Persistent cases:** Vercel support's official diagnostic —
+   `github.com/vercel-support/vercel-connect-debug`. Run it on the affected
+   machine, not in a session (see #2). Windows PowerShell:
+   `Invoke-RestMethod -Uri https://raw.githubusercontent.com/vercel-support/vercel-connect-debug/main/vercel-debug.ps1 | Invoke-Expression | tee vercel-debug.txt`
+   (Mac/Linux: same URL pattern with `vercel-debug.sh | bash`). Takes up to
+   15 min, writes `vercel-debug.txt` for a support case — or paste it into a
+   session for interpretation.
+
 `next.config.ts` sends security headers on every route (incl. the static step
 pages): a CSP locked to `'self'` + the Google/DuckDuckGo favicon services,
 `nosniff`, `SAMEORIGIN`, strict referrer policy, and a Permissions-Policy that
