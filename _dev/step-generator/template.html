@@ -525,6 +525,15 @@
   html.tap-define #content p, html.tap-define #content li {
     -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
   }
+  /* Belt-and-suspenders: kill native text selection on any touch device,
+     independent of the JS class, so a stray tap can't summon the OS
+     Copy/Define menu even if the class detection misses. */
+  @media (pointer: coarse) {
+    #content p, #content li {
+      -webkit-user-select: none !important; user-select: none !important;
+      -webkit-touch-callout: none;
+    }
+  }
   mark.tapsel {
     background: linear-gradient(90deg,
       hsl(0 78% 56%), hsl(42 82% 52%), hsl(120 55% 44%), hsl(190 70% 47%),
@@ -932,7 +941,9 @@
     if (!rect || (rect.width === 0 && rect.height === 0)) { hideTip(); return; }
     placeTip(rect);
   }
-  if (window.matchMedia && matchMedia("(hover: none) and (pointer: coarse)").matches) {
+  var IS_TOUCH = (navigator.maxTouchPoints > 0) || ("ontouchstart" in window) ||
+                 (window.matchMedia && matchMedia("(pointer: coarse)").matches);
+  if (IS_TOUCH) {
     document.documentElement.classList.add("tap-define");
     var pressTimer = null, longPressed = false, dx = 0, dy = 0;
     var singleTimer = null, lastX = 0, lastY = 0;
