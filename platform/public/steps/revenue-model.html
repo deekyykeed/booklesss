@@ -571,9 +571,9 @@
 Revenue Model</h1>
     <p class="standfirst">Every lever of the money machine on sliders &mdash; the two tier prices, paying students, the cost base, then the funnel projected twelve months out. Move a lever and watch what the business pays you.</p>
     <div class="metarow">
-      <span><svg class="ic" aria-hidden="true"><use href="#ic-clock"/></svg>~8 min</span>
-      <span><svg class="ic" aria-hidden="true"><use href="#ic-doc"/></svg>5 sections</span>
-      <span><svg class="ic" aria-hidden="true"><use href="#ic-calc"/></svg>2 worked examples</span>
+      <span><svg class="ic" aria-hidden="true"><use href="#ic-clock"/></svg>~9 min</span>
+      <span><svg class="ic" aria-hidden="true"><use href="#ic-doc"/></svg>6 sections</span>
+      <span><svg class="ic" aria-hidden="true"><use href="#ic-calc"/></svg>3 worked examples</span>
       <span><svg class="ic" aria-hidden="true"><use href="#ic-cursor"/></svg>Tap to define</span>
     </div>
     <div class="hint">
@@ -671,6 +671,46 @@ Revenue Model</h1>
     </section>
 
     <section>
+      <span class="eyebrow">Distribution</span>
+      <h2>Who Gets Paid, and For What</h2>
+      <p>Every kwacha of monthly revenue is divided by fixed percentages &mdash; nobody is on a flat salary. That is deliberate: shares scale with the business, so raising a price or adding a member raises everyone&rsquo;s pay at the same time, and if the platform doesn&rsquo;t earn, nobody earns. The founder&rsquo;s share is the largest because it carries every fixed cost: the full $185 tools bill comes out of the 45%, never out of the team&rsquo;s.</p>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Who</th><th>Share</th><th>What they&rsquo;re paid for</th></tr></thead>
+        <tbody>
+          <tr><td>Founder &amp; platform</td><td>45%</td><td>Runs the platform, builds content, bears all tool costs (Framer, Claude, Vercel, Supabase)</td></tr>
+          <tr><td>Course Author</td><td>12%</td><td>Writes and maintains the lesson steps for their course &mdash; paid more when students stay</td></tr>
+          <tr><td>Community Host</td><td>10%</td><td>Owns the course channels: daily activity, replies, weekly quiz, leaderboard</td></tr>
+          <tr><td>Growth Lead</td><td>8%</td><td>Drives free-trial sign-ups and converts them to paid within 30 days</td></tr>
+          <tr><td>Campus Rep</td><td>7%</td><td>On-campus referrals at UNZA / CBU &mdash; flyers, WhatsApp groups, walk-up sign-ups</td></tr>
+          <tr><td>Ops &amp; Collections Lead</td><td>5%</td><td>Tracks MoMo payments, keeps the revenue log, monthly financial summary</td></tr>
+          <tr><td>Marketing fund</td><td>8%</td><td>Not a person &mdash; buys flyers, data bundles, and boosts; growth funds itself</td></tr>
+          <tr><td>Team welfare</td><td>5%</td><td>Data, meals, and transport for whoever worked that month</td></tr>
+        </tbody>
+      </table></div>
+      <div class="lab" id="rm-split">
+        <span class="tag"><svg class="ic" aria-hidden="true"><use href="#ic-calc"/></svg>Where every kwacha goes &mdash; driven by the snapshot above</span>
+        <div class="lab-out" style="margin-top:0.4rem; border-top:none; padding-top:0.4rem;">
+          <div class="lab-bar"><span class="nm">Founder &amp; platform &middot; 45%</span><span class="tr"><span class="fl" id="rm-sb-f"></span></span><output id="rm-sv-f"></output></div>
+          <div class="lab-bar"><span class="nm">Course Author &middot; 12%</span><span class="tr"><span class="fl" id="rm-sb-a"></span></span><output id="rm-sv-a"></output></div>
+          <div class="lab-bar"><span class="nm">Community Host &middot; 10%</span><span class="tr"><span class="fl" id="rm-sb-h"></span></span><output id="rm-sv-h"></output></div>
+          <div class="lab-bar"><span class="nm">Growth Lead &middot; 8%</span><span class="tr"><span class="fl" id="rm-sb-g"></span></span><output id="rm-sv-g"></output></div>
+          <div class="lab-bar"><span class="nm">Campus Rep &middot; 7%</span><span class="tr"><span class="fl" id="rm-sb-r"></span></span><output id="rm-sv-r"></output></div>
+          <div class="lab-bar"><span class="nm">Ops Lead &middot; 5%</span><span class="tr"><span class="fl" id="rm-sb-o"></span></span><output id="rm-sv-o"></output></div>
+          <div class="lab-bar"><span class="nm">Marketing fund &middot; 8%</span><span class="tr"><span class="fl pay" id="rm-sb-m"></span></span><output id="rm-sv-m"></output></div>
+          <div class="lab-bar"><span class="nm">Team welfare &middot; 5%</span><span class="tr"><span class="fl pay" id="rm-sb-w"></span></span><output id="rm-sv-w"></output></div>
+          <div class="lab-total">
+            <span class="big"><span id="rm-sf-net"></span> <small>founder, after tools</small></span>
+            <span class="note" id="rm-snote"></span>
+          </div>
+        </div>
+      </div>
+      <div class="callout">
+        <span class="tag"><svg class="ic" aria-hidden="true"><use href="#ic-bulb"/></svg>Roles are filled as revenue allows</span>
+        Until a role is hired, its share stays with the founder &mdash; you are the Author, Host, and Growth Lead today, so early on the founder&rsquo;s real take is most of the 100%. Hire in the order of the bottleneck (Rep &rarr; Host &rarr; Author, per Roles for Growth), and hand each share over only when the person takes over the duties. The percentages above replace the old per-unit commissions (K100 per referral, K300 host base) with shares that scale &mdash; revisit them at the first K10,000 month.
+      </div>
+    </section>
+
+    <section>
       <span class="eyebrow">Growth</span>
       <h2>The Funnel Over Twelve Months</h2>
       <p>The snapshot says nothing about time. The funnel does: every month some trials arrive, a share of them convert after their free month, and a share of the existing base cancels. The base a leaky bucket can hold is fixed by the flow in and the leak &mdash; not by how long you pour.</p>
@@ -734,6 +774,7 @@ At 12 trials, 25% conversion, 10% churn:
       <ul class="outcomes">
         <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Price the two tiers and read net profit and margin at any headcount</span></li>
         <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Apply the Slack guest ratio: 5 Notes students per paid member, capped by your Community count</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Read each role's monthly pay from the percentage split at any revenue level</span></li>
         <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Project the paying base and MRR twelve months out from trials, conversion, and churn</span></li>
         <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Locate the steady-state ceiling and name which lever raises it fastest</span></li>
         <li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg><span>Say in which month the business passes K1,000, K3,000, and K5,000 net at current settings</span></li>
@@ -839,6 +880,9 @@ At 12 trials, 25% conversion, 10% churn:
   "ceiling": "The steady-state size of the paying base at current trials, conversion, and churn.",
   "arpu": "Average revenue per user — total MRR divided by paying students; moves with the tier mix.",
   "single-channel guest": "A free Slack guest with access to one channel — how Notes students are hosted. Slack allows 5 per paid member.",
+  "marketing fund": "8% of revenue set aside each month to buy flyers, data bundles, and boosts — growth pays for itself.",
+  "team welfare": "5% of revenue covering data, meals, and transport for whoever worked that month.",
+  "distribution": "How each month's revenue is divided: fixed percentage shares per role, so pay scales with the business.",
   "guest ratio": "Slack's rule: 5 free single-channel guests per paid member. Your seat plus each Community member sets how many Notes you can hold.",
   "guest access": "Slack lets each paid member bring 5 free single-channel guests — the ceiling on Notes students in this model."
 };
@@ -1020,6 +1064,22 @@ At 12 trials, 25% conversion, 10% churn:
       else if (net >= 1000) stone = "past K1,000 net \u2014 next stop K3,000";
       else                  stone = "covers the cost base \u2014 next stop K1,000 net";
       $("rm-note").textContent = margin + "% margin \u00b7 " + fmtK(costs) + " costs \u00b7 " + stone;
+
+      /* revenue distribution — percentage shares of gross, so every share
+         scales with price. Founder's 45% bears the full tools bill. */
+      var SPLITS = [["f", 45], ["a", 12], ["h", 10], ["g", 8], ["r", 7], ["o", 5], ["m", 8], ["w", 5]];
+      var topShare = rev * 0.45;
+      for (var s = 0; s < SPLITS.length; s++) {
+        var amt = rev * SPLITS[s][1] / 100;
+        $("rm-sb-" + SPLITS[s][0]).style.width = (topShare ? amt / (topShare * 1.1) * 100 : 0) + "%";
+        $("rm-sv-" + SPLITS[s][0]).textContent = fmtK(amt);
+      }
+      var fNet = rev * 0.45 - costs;
+      $("rm-sf-net").textContent = fmtK(fNet);
+      $("rm-snote").textContent = "45% of " + fmtK(rev) + " = " + fmtK(rev * 0.45)
+        + ", minus " + fmtK(costs) + " tools \u00b7 "
+        + (fNet >= 0 ? "the split pays everyone and still covers the bills"
+                     : "your share doesn\u2019t cover the tools yet \u2014 add full members before hiring");
 
       /* funnel simulation — twelve months from a standing start */
       var tr = +$("rm-tr").value, cv = +$("rm-cv").value / 100;
