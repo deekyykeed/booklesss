@@ -3,8 +3,8 @@
 Every lever of the money machine on sliders: tier prices, paying students,
 cost base, then the forecast (sign-ups, refunds, churn) projected twelve
 months out. Models one course team. No free trials — a money-back
-guarantee instead (owner decision 2026-07-13). Cost base is the flat $185
-tools stack (BOO-7: platform, not Slack seats).
+guarantee instead (owner decision 2026-07-13). Cost base is the flat $303
+tools stack incl. two Claude seats + Linear (BOO-7: platform, not Slack).
 
 Lives under Operations/ because it is a business document, not course
 content — generate_step.py --all only scans Schools/, so rebuild this one
@@ -38,7 +38,7 @@ MODEL_LAB_HTML = """      <div class="lab" id="rm-lab">
         </div>
         <p class="rm-capline" id="rm-capline"></p>
         <span class="rm-cap">3 &middot; What the month costs you</span>
-        <p class="rm-sub">One team, one course, one bill: Framer <b>$40</b>, Claude <b>$100</b>, Vercel <b>$20</b>, Supabase <b>$25</b> = <b>$185 / month</b> (&asymp;K4,625 at K25/$). The $100 Claude is the course writer&rsquo;s seat &mdash; there is exactly one person writing and delivering content, so that payment is in the bill either way. Nothing here to drag.</p>
+        <p class="rm-sub">One team, one course, one bill: Framer <b>$40</b>, your Claude <b>$100</b>, the writer&rsquo;s Claude <b>$100</b>, Vercel <b>$20</b>, Supabase <b>$25</b>, Linear <b>$18</b> = <b>$303 / month</b> (&asymp;K7,575 at K25/$). Two Claude seats because there are two people using it &mdash; you on the platform, and the one person writing and delivering content. Nothing here to drag.</p>
         <div class="lab-out">
           <div class="lab-bar"><span class="nm">Notes revenue</span><span class="tr"><span class="fl" id="rm-bar-n"></span></span><output id="rm-val-n"></output></div>
           <div class="lab-bar"><span class="nm">Community revenue</span><span class="tr"><span class="fl" id="rm-bar-c"></span></span><output id="rm-val-c"></output></div>
@@ -126,10 +126,11 @@ MODEL_LAB_JS = """  /* ── Revenue model: snapshot + funnel (shared inputs) �
 
       var revN = pn * nn, revC = pc * nc;
       var rev = revN + revC;
-      /* One team, one course, one bill: $185/mo (Framer 40 + Claude 100 +
-         Vercel 20 + Supabase 25) at K25/$. The $100 Claude is the course
-         writer's seat — exactly one person writes and delivers content. */
-      var costs = 185 * 25;
+      /* One team, one course, one bill: $303/mo (Framer 40 + founder
+         Claude 100 + writer Claude 100 + Vercel 20 + Supabase 25 +
+         Linear 18) at K25/$. Two Claude seats: the founder's and the one
+         content writer's. */
+      var costs = 303 * 25;
       var net = rev - costs;
       var MAX = Math.max(revN, revC, costs, 1) * 1.1;
       $("rm-bar-n").style.width = (revN / MAX * 100) + "%";
@@ -149,7 +150,7 @@ MODEL_LAB_JS = """  /* ── Revenue model: snapshot + funnel (shared inputs) �
       $("rm-note").textContent = margin + "% margin \\u00b7 " + fmtK(costs) + " costs \\u00b7 " + stone;
 
       /* revenue distribution — percentage shares of gross, so every share
-         scales with price. Founder's 41% bears the whole $185 tools bill.
+         scales with price. Founder's 41% bears the whole $303 tools bill.
          Author gets 16% for writing the course AND teaching its live
          classes. Weekly = monthly / 4.33 (paid monthly; the weekly figure
          is the same money seen per week). */
@@ -237,18 +238,18 @@ STEP = {
                 ["Money-back guarantee", "&mdash;", "Every paid plan: full refund in the first week if it isn&rsquo;t working"],
             ]},
             {"t": "callout", "tag": "Why no free trial", "icon": "bulb", "html": "A free trial of the full plan costs a full-member seat &mdash; you would pay to let someone browse. The guarantee flips that: the student pays first, and the platform&rsquo;s only exposure is the occasional refund. Same promise to the student &mdash; try it risk-free &mdash; at a fraction of the cost, and every sign-up is a committed payer from day one."},
-            {"t": "callout", "tag": "Why there is no Slack bill in this model", "icon": "bulb", "html": "The old economics priced Community against a paid Slack seat (K339/month on Business+). The 2026-07-12 decision (Linear BOO-7) moved paid access off Slack and onto the platform &mdash; reselling Slack seats breached the Slack MSA. The cost base is now your platform tools &mdash; Framer, Claude, Vercel, Supabase &mdash; $185 a month flat, and it never grows per student."},
+            {"t": "callout", "tag": "Why there is no Slack bill in this model", "icon": "bulb", "html": "The old economics priced Community against a paid Slack seat (K339/month on Business+). The 2026-07-12 decision (Linear BOO-7) moved paid access off Slack and onto the platform &mdash; reselling Slack seats breached the Slack MSA. The cost base is now your platform tools &mdash; Framer, two Claude seats (yours and the writer&rsquo;s), Vercel, Supabase, Linear &mdash; $303 a month flat, and it never grows per student."},
         ]},
 
         {"eyebrow": "Variables", "title": "The Levers You Can Pull", "blocks": [
-            {"t": "p", "html": "A handful of numbers drive this model. Two prices and one headcount &mdash; your full members &mdash; set revenue, with Notes following at 5 seats per member; sign-ups, refunds, and churn decide how the paying base grows over time. The tools bill is a flat $185 a month &mdash; a fact, not a lever."},
+            {"t": "p", "html": "A handful of numbers drive this model. Two prices and one headcount &mdash; your full members &mdash; set revenue, with Notes following at 5 seats per member; sign-ups, refunds, and churn decide how the paying base grows over time. The tools bill is a flat $303 a month &mdash; a fact, not a lever."},
             {"t": "table", "head": ["Lever", "What it moves", "Where it lives"], "rows": [
                 ["Tier prices", "Revenue per student", "Operations/pricing-strategy.md"],
                 ["Full members (Community)", "Revenue &mdash; and the Notes seats they fill", "Operations/revenue-log.md"],
                 ["New sign-ups / month", "Top of the funnel &mdash; paid from day one", "Operations/groups.md &amp; leads.md"],
                 ["Refund rate", "Guarantee claims in the first week", "Operations/revenue-log.md"],
                 ["Monthly churn", "The ceiling of the base", "Cancellations in revenue-log.md"],
-                ["Running cost (fixed)", "A flat $185/month floor", "Framer / Claude / Vercel / Supabase"],
+                ["Running cost (fixed)", "A flat $303/month floor", "Framer / 2&times; Claude / Vercel / Supabase / Linear"],
             ]},
         ]},
 
@@ -260,7 +261,7 @@ STEP = {
         ]},
 
         {"eyebrow": "Distribution", "title": "Who Gets Paid, and For What", "blocks": [
-            {"t": "p", "html": "Every kwacha of monthly revenue is divided by fixed percentages &mdash; nobody is on a flat salary. That is deliberate: shares scale with the business, so raising a price or adding a member raises everyone&rsquo;s pay at the same time, and if the platform doesn&rsquo;t earn, nobody earns. The founder&rsquo;s share is the largest because it carries every fixed cost: the whole $185 tools bill comes out of the 41%, never out of the team&rsquo;s. Everyone is paid monthly; the per-week figure next to each share is the same money seen week by week, not a separate payment."},
+            {"t": "p", "html": "Every kwacha of monthly revenue is divided by fixed percentages &mdash; nobody is on a flat salary. That is deliberate: shares scale with the business, so raising a price or adding a member raises everyone&rsquo;s pay at the same time, and if the platform doesn&rsquo;t earn, nobody earns. The founder&rsquo;s share is the largest because it carries every fixed cost: the whole $303 tools bill &mdash; including both Claude seats &mdash; comes out of the 41%, never out of the team&rsquo;s. Everyone is paid monthly; the per-week figure next to each share is the same money seen week by week, not a separate payment."},
             {"t": "table", "head": ["Who", "Share", "What they&rsquo;re paid for"], "rows": [
                 ["Founder &amp; platform", "41%", "Runs the platform and bears the whole tools bill, including the writer&rsquo;s Claude"],
                 ["Course Author", "16%", "The one person who writes the lesson steps <b>and teaches the live classes</b> &mdash; the bigger share pays for the classroom hours"],
@@ -285,7 +286,7 @@ STEP = {
 
         {"eyebrow": "Reading it", "title": "What the Model Keeps Telling You", "blocks": [
             {"t": "bullets", "items": [
-                "The bill is a flat K4,625 a month and it includes the writer&rsquo;s Claude &mdash; two or three paying students clear it, and nothing about it grows as the base does.",
+                "The bill is a flat K7,575 a month and it includes both Claude seats and Linear &mdash; a handful of paying students clear it, and nothing about it grows as the base does.",
                 "One full member is worth more than it looks: K600 from them, plus 5 Notes seats at K360 &mdash; up to K2,400 of Notes revenue riding on that single membership.",
                 "Steady state ignores launch spikes. Sign-ups &times; (1 &minus; refunds) &divide; churn is the whole ceiling &mdash; a big first month just gets you there sooner.",
                 "Every number traces back to one input: full members. The snapshot, the Notes count, the split, and the forecast all move when that slider does &mdash; so growing members is the whole game.",
@@ -311,8 +312,8 @@ STEP = {
         "mrr": "Monthly recurring revenue — what all active subscriptions pay in one month, before costs.",
         "net profit": "Revenue minus total costs — what the business actually keeps in a month.",
         "margin": "Net profit as a share of revenue. High here because the cost base is fixed, not per-student.",
-        "cost base": "The flat monthly tools bill: Framer, Claude, Vercel, Supabase — $185 (≈K4,625 at K25/$). The $100 Claude is the course writer's seat. Never grows per student.",
-        "claude seat": "The course writer's Claude subscription — $100/month, already inside the $185 bill. One team, one writer, one seat.",
+        "cost base": "The flat monthly tools bill: Framer, two Claude seats, Vercel, Supabase, Linear — $303 (≈K7,575 at K25/$). Never grows per student.",
+        "claude seat": "A Claude subscription at $100/month. The bill carries two: the founder's and the course writer's — different people, different seats.",
         "churn": "The share of full members who cancel in a month. Sets the ceiling of the member base.",
         "refund rate": "The share of new sign-ups who claim the money-back guarantee in their first week.",
         "money-back guarantee": "The replacement for free trials: students pay from day one, and get a full refund in the first week if it isn't working. Costs only the occasional refund, never a free seat.",
