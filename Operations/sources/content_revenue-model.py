@@ -24,22 +24,21 @@ MODEL_LAB_HTML = """      <div class="lab" id="rm-lab">
           .rm-months .lab-bar { grid-template-columns:3.4rem 1fr 5.2rem; }
         </style>
         <span class="tag"><svg class="ic" aria-hidden="true"><use href="#ic-calc"/></svg>Move the levers &mdash; the business recalculates</span>
-        <p class="rm-lead">Read it top to bottom: set what each tier <b>charges</b> and how many students you <b>have</b> &mdash; running costs are a small fixed figure. The bars and the big number underneath update as you drag.</p>
+        <p class="rm-lead">Read it top to bottom: set what each tier <b>charges</b> and how many <b>full members</b> you have &mdash; Notes fills in at 5 seats per member, and running costs are fixed. The bars and the big number underneath update as you drag.</p>
         <span class="rm-cap first">1 &middot; Prices &mdash; what each tier charges / month</span>
         <p class="rm-sub">The monthly fee for each plan. These same two prices also drive the twelve-month funnel further down.</p>
         <div class="lab-grid">
           <div class="lab-row"><label for="rm-pn">Notes price / month</label><input type="range" id="rm-pn" min="100" max="1000" step="20" value="360"><output id="rm-pn-out"></output></div>
           <div class="lab-row"><label for="rm-pc">Community price / month</label><input type="range" id="rm-pc" min="200" max="1600" step="50" value="600"><output id="rm-pc-out"></output></div>
         </div>
-        <span class="rm-cap">2 &middot; Students you have today</span>
-        <p class="rm-sub">Set your full (Community) members first &mdash; each one lets you host up to <b>5</b> Notes students, and your own seat covers 5 more. So the Notes slider stops at that limit and can&rsquo;t be dragged past it.</p>
+        <span class="rm-cap">2 &middot; How many full members</span>
+        <p class="rm-sub">You only set your full (Community) members. Each one fills <b>5</b> Notes seats and your own seat fills 5 more &mdash; the model assumes those seats are full, so Notes follows from Community with no separate slider.</p>
         <div class="lab-grid">
           <div class="lab-row"><label for="rm-nc">On Community (full members)</label><input type="range" id="rm-nc" min="0" max="50" step="1" value="4"><output id="rm-nc-out"></output></div>
-          <div class="lab-row"><label for="rm-nn">On Notes (single course)</label><input type="range" id="rm-nn" min="0" max="255" step="1" value="10"><output id="rm-nn-out"></output></div>
         </div>
         <p class="rm-capline" id="rm-capline"></p>
         <span class="rm-cap">3 &middot; What the month costs you</span>
-        <p class="rm-sub">Running costs are fixed and small &mdash; platform hosting, held at <b>~K500 / month</b> and taken straight off revenue below. It doesn&rsquo;t grow per student, so there&rsquo;s nothing to drag here. A marketing push, when you run one, comes off separately.</p>
+        <p class="rm-sub">Your fixed monthly tools, in US dollars: Framer <b>$40</b>, Claude <b>$100</b>, Vercel <b>$20</b>, Supabase <b>$25</b> = <b>$185 / month</b> (&asymp;K4,625 at K25/$). Taken straight off revenue below; it doesn&rsquo;t grow per student, so there&rsquo;s nothing to drag.</p>
         <div class="lab-out">
           <div class="lab-bar"><span class="nm">Notes revenue</span><span class="tr"><span class="fl" id="rm-bar-n"></span></span><output id="rm-val-n"></output></div>
           <div class="lab-bar"><span class="nm">Community revenue</span><span class="tr"><span class="fl" id="rm-bar-c"></span></span><output id="rm-val-c"></output></div>
@@ -89,26 +88,20 @@ MODEL_LAB_JS = """  /* ── Revenue model: snapshot + funnel (shared inputs) �
       var pn = +$("rm-pn").value, pc = +$("rm-pc").value;
       var nc = +$("rm-nc").value;
 
-      /* Slack guest ratio: 5 single-channel guests per paid member, and your
-         own seat is a paid member too, so Notes capacity = 5 x (Community + 1).
-         Hard cap: drive the Notes slider's max so its thumb can't pass the limit. */
-      var notes = $("rm-nn");
-      var cap = 5 * (nc + 1);
-      notes.max = cap;
-      if (+notes.value > cap) notes.value = cap;
-      var nn = +notes.value;
-      notes.style.setProperty("--fill", (cap ? nn / cap * 100 : 0) + "%");
+      /* Slack guest ratio: 5 free single-channel guests per paid member, and
+         your own seat is a paid member too. We assume every Notes seat is
+         filled, so Notes = 5 x (Community + 1) — derived, no slider. */
+      var nn = 5 * (nc + 1);
 
       $("rm-pn-out").textContent = "K" + pn;
       $("rm-pc-out").textContent = "K" + pc;
-      $("rm-nn-out").textContent = nn;
       $("rm-nc-out").textContent = nc;
-      $("rm-capline").innerHTML = "Notes room: <b>5 &times; (" + nc + " Community + your seat) = "
-        + cap + "</b> &middot; " + (nn >= cap ? "at capacity" : "using " + nn);
+      $("rm-capline").innerHTML = "Each full member fills 5 Notes seats &mdash; <b>Notes = 5 &times; ("
+        + nc + " Community + your seat) = " + nn + "</b> (assumed full)";
 
       var revN = pn * nn, revC = pc * nc;
       var rev = revN + revC;
-      var costs = 500;  // fixed monthly hosting (~$20 at K25/$); no per-student cost
+      var costs = 185 * 25;  // $185/mo fixed tools (Framer 40 + Claude 100 + Vercel 20 + Supabase 25) at K25/$
       var net = rev - costs;
       var MAX = Math.max(revN, revC, costs, 1) * 1.1;
       $("rm-bar-n").style.width = (revN / MAX * 100) + "%";
@@ -194,26 +187,26 @@ STEP = {
                 ["Community", "K600 / month", "Every course, quizzes, the whole platform"],
                 ["Custom", "Negotiated", "1-on-1 tutoring, dedicated support, custom study plan"],
             ]},
-            {"t": "callout", "tag": "Why there is no Slack bill in this model", "icon": "bulb", "html": "The old economics priced Community against a paid Slack seat (K339/month on Business+). The 2026-07-12 decision (Linear BOO-7) moved paid access off Slack and onto the platform &mdash; reselling Slack seats breached the Slack MSA. The cost base is now platform hosting: Vercel plus Supabase, roughly $0&ndash;45 a month total, and it does not grow per student."},
+            {"t": "callout", "tag": "Why there is no Slack bill in this model", "icon": "bulb", "html": "The old economics priced Community against a paid Slack seat (K339/month on Business+). The 2026-07-12 decision (Linear BOO-7) moved paid access off Slack and onto the platform &mdash; reselling Slack seats breached the Slack MSA. The cost base is now your platform tools &mdash; Framer, Claude, Vercel, Supabase &mdash; about $185 a month total, and it does not grow per student."},
         ]},
 
         {"eyebrow": "Variables", "title": "The Levers You Can Pull", "blocks": [
-            {"t": "p", "html": "A handful of numbers drive this model. Two prices and two headcounts set revenue; trials, conversion, the tier mix, and churn decide how the paying base grows &mdash; and where it stops growing. Running costs stay a small fixed figure, not a lever, so they aren&rsquo;t on a slider. The rest belong side by side because none of them acts alone."},
+            {"t": "p", "html": "A handful of numbers drive this model. Two prices and one headcount &mdash; your full members &mdash; set revenue, with Notes following at 5 seats per member; trials, conversion, the tier mix, and churn decide how the paying base grows over time. Running costs stay a fixed monthly figure, not a lever, so they aren&rsquo;t on a slider. The rest belong side by side because none of them acts alone."},
             {"t": "table", "head": ["Lever", "What it moves", "Where it lives"], "rows": [
                 ["Tier prices", "Revenue per student", "Operations/pricing-strategy.md"],
-                ["Paying students per tier", "Revenue volume &amp; mix", "Operations/revenue-log.md"],
+                ["Full members (Community)", "Revenue &mdash; and the Notes seats they fill", "Operations/revenue-log.md"],
                 ["New trials / month", "Top of the funnel", "Operations/groups.md &amp; leads.md"],
                 ["Trial &rarr; paid conversion", "How fast the base fills", "Day-25 follow-ups in leads.md"],
                 ["Monthly churn", "The ceiling of the base", "Cancellations in revenue-log.md"],
-                ["Running cost (fixed, not a lever)", "A flat monthly floor", "Vercel &amp; Supabase dashboards"],
+                ["Running cost (fixed, not a lever)", "A flat monthly floor", "Framer / Claude / Vercel / Supabase"],
             ]},
         ]},
 
         {"eyebrow": "Price points", "title": "Monthly Snapshot — Price It, Fill It, Cost It", "blocks": [
-            {"t": "p", "html": "This is the business frozen at one month. Set the two prices and decide how many students sit on each tier; running costs are a small fixed figure, not something to fiddle with. The bars split revenue by tier against that cost, and the headline figure is what lands in your pocket."},
+            {"t": "p", "html": "This is the business frozen at one month. Set the two prices and your Community headcount; Notes fills in at 5 seats per member, and running costs are a fixed monthly figure. The bars split revenue by tier against that cost, and the headline figure is what lands in your pocket."},
             {"t": "raw", "html": MODEL_LAB_HTML},
-            {"t": "callout", "tag": "The 5-per-member rule", "icon": "bulb", "html": "Notes students are hosted as free single-channel guests, and Slack allows 5 guests per paid member. Your own seat is a paid member, and every Community student is another &mdash; so the room for Notes is 5 &times; (Community + you). That is why the Notes slider stops where it does: to add more Notes students, add a Community member first. Set Community to 0 and you can still hold 5 Notes on your own seat; set it to 4 and the ceiling is 25."},
-            {"t": "callout", "tag": "How to read it", "icon": "medal", "html": "Because the cost base is fixed, margin climbs with every student &mdash; there is no per-seat cost eating the next sale. That cuts both ways: net profit moves almost one-for-one with revenue, so a K60 price change across ten students is a K600 swing. Try Notes at K300 and K420 before touching anything else &mdash; price is the cheapest experiment you can run."},
+            {"t": "callout", "tag": "The 5-per-member rule", "icon": "bulb", "html": "Notes students are hosted as free single-channel guests, and Slack allows 5 guests per paid member. Your own seat is a paid member, and every Community student is another &mdash; so the model assumes each full member fills 5 Notes seats: Notes = 5 &times; (Community + you). That is why there is no Notes slider &mdash; it follows from Community. At 0 Community you fill 5 Notes on your own seat; at 4 Community, 25."},
+            {"t": "callout", "tag": "How to read it", "icon": "medal", "html": "Because the cost base is fixed, margin climbs with every member &mdash; there is no per-seat cost eating the next sale. That cuts both ways: net profit moves almost one-for-one with revenue, so a K60 price change across your students is a real swing. And each Community member brings 5 Notes seats with it, so adding one full member lifts revenue on both tiers at once."},
         ]},
 
         {"eyebrow": "Growth", "title": "The Funnel Over Twelve Months", "blocks": [
@@ -226,8 +219,8 @@ STEP = {
 
         {"eyebrow": "Reading it", "title": "What the Model Keeps Telling You", "blocks": [
             {"t": "bullets", "items": [
-                "The running cost is a flat ~K500 a month &mdash; two Notes students clear it. Everything after that is margin, because nothing about the cost grows as you add students.",
-                "Notes can&rsquo;t outrun Community. Each full member unlocks 5 Notes seats, so the two headcounts move together &mdash; you can&rsquo;t stack Notes without the members to host them.",
+                "The running cost is a flat ~K4,625 a month &mdash; your $185 of tools (Framer, Claude, Vercel, Supabase) at K25/$. It doesn&rsquo;t grow per student, so once revenue clears it, the rest is margin.",
+                "One full member is worth more than it looks: K600 from them, plus 5 Notes seats at K360 &mdash; up to K2,400 of Notes revenue riding on that single membership.",
                 "Steady state ignores launch spikes. Trials &times; conversion &divide; churn is the whole ceiling &mdash; a big first month just gets you there sooner.",
                 "Community does the heavy lifting per head; Notes does volume. The tier-mix slider often moves month-12 MRR more than either price does.",
                 "Churn is the only lever where small numbers are violent: 5% versus 15% churn is a threefold difference in the ceiling.",
@@ -250,7 +243,7 @@ STEP = {
         "mrr": "Monthly recurring revenue — what all active subscriptions pay in one month, before costs.",
         "net profit": "Revenue minus total costs — what the business actually keeps in a month.",
         "margin": "Net profit as a share of revenue. High here because the cost base is fixed, not per-student.",
-        "cost base": "The fixed monthly bill — platform hosting, held flat at ~K500. It doesn't grow per student.",
+        "cost base": "The fixed monthly tools bill — Framer, Claude, Vercel, Supabase — about $185 (≈K4,625 at K25/$). Flat; it doesn't grow per student.",
         "churn": "The share of paying students who cancel in a month. Sets the ceiling of the base.",
         "conversion": "The share of free trials that become paying students after their free month.",
         "conversion rate": "The share of free trials that become paying students after their free month.",
