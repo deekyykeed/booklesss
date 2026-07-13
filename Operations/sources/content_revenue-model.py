@@ -24,7 +24,7 @@ MODEL_LAB_HTML = """      <div class="lab" id="rm-lab">
           .rm-months .lab-bar { grid-template-columns:3.4rem 1fr 5.2rem; }
         </style>
         <span class="tag"><svg class="ic" aria-hidden="true"><use href="#ic-calc"/></svg>Move the levers &mdash; the business recalculates</span>
-        <p class="rm-lead">Read it top to bottom: set what each tier <b>charges</b>, how many students you <b>have</b>, and what the month <b>costs</b> you. The bars and the big number underneath update as you drag.</p>
+        <p class="rm-lead">Read it top to bottom: set what each tier <b>charges</b> and how many students you <b>have</b> &mdash; running costs are a small fixed figure. The bars and the big number underneath update as you drag.</p>
         <span class="rm-cap first">1 &middot; Prices &mdash; what each tier charges / month</span>
         <p class="rm-sub">The monthly fee for each plan. These same two prices also drive the twelve-month funnel further down.</p>
         <div class="lab-grid">
@@ -39,16 +39,11 @@ MODEL_LAB_HTML = """      <div class="lab" id="rm-lab">
         </div>
         <p class="rm-capline" id="rm-capline"></p>
         <span class="rm-cap">3 &middot; What the month costs you</span>
-        <p class="rm-sub">Your fixed bills &mdash; they don&rsquo;t grow per student. Hosting is billed in US dollars, so the exchange rate turns it into kwacha. All three are <b>per month</b>.</p>
-        <div class="lab-grid">
-          <div class="lab-row"><label for="rm-host">Hosting / month (USD)</label><input type="range" id="rm-host" min="0" max="100" step="5" value="20"><output id="rm-host-out"></output></div>
-          <div class="lab-row"><label for="rm-fx">Exchange rate (K per $)</label><input type="range" id="rm-fx" min="20" max="35" step="0.5" value="25"><output id="rm-fx-out"></output></div>
-          <div class="lab-row"><label for="rm-mkt">Marketing / month</label><input type="range" id="rm-mkt" min="0" max="2000" step="50" value="300"><output id="rm-mkt-out"></output></div>
-        </div>
+        <p class="rm-sub">Running costs are fixed and small &mdash; platform hosting, held at <b>~K500 / month</b> and taken straight off revenue below. It doesn&rsquo;t grow per student, so there&rsquo;s nothing to drag here. A marketing push, when you run one, comes off separately.</p>
         <div class="lab-out">
           <div class="lab-bar"><span class="nm">Notes revenue</span><span class="tr"><span class="fl" id="rm-bar-n"></span></span><output id="rm-val-n"></output></div>
           <div class="lab-bar"><span class="nm">Community revenue</span><span class="tr"><span class="fl" id="rm-bar-c"></span></span><output id="rm-val-c"></output></div>
-          <div class="lab-bar"><span class="nm">Total costs</span><span class="tr"><span class="fl pay" id="rm-bar-k"></span></span><output id="rm-val-k"></output></div>
+          <div class="lab-bar"><span class="nm">Running cost (fixed)</span><span class="tr"><span class="fl pay" id="rm-bar-k"></span></span><output id="rm-val-k"></output></div>
           <div class="lab-total">
             <span class="big"><span id="rm-net"></span> <small>net / month</small></span>
             <span class="note" id="rm-note"></span>
@@ -93,7 +88,6 @@ MODEL_LAB_JS = """  /* ── Revenue model: snapshot + funnel (shared inputs) �
     function calc() {
       var pn = +$("rm-pn").value, pc = +$("rm-pc").value;
       var nc = +$("rm-nc").value;
-      var host = +$("rm-host").value, fx = +$("rm-fx").value, mkt = +$("rm-mkt").value;
 
       /* Slack guest ratio: 5 single-channel guests per paid member, and your
          own seat is a paid member too, so Notes capacity = 5 x (Community + 1).
@@ -109,15 +103,12 @@ MODEL_LAB_JS = """  /* ── Revenue model: snapshot + funnel (shared inputs) �
       $("rm-pc-out").textContent = "K" + pc;
       $("rm-nn-out").textContent = nn;
       $("rm-nc-out").textContent = nc;
-      $("rm-host-out").textContent = "$" + host;
-      $("rm-fx-out").textContent = "K" + fx + "/$";
-      $("rm-mkt-out").textContent = fmtK(mkt);
       $("rm-capline").innerHTML = "Notes room: <b>5 &times; (" + nc + " Community + your seat) = "
         + cap + "</b> &middot; " + (nn >= cap ? "at capacity" : "using " + nn);
 
       var revN = pn * nn, revC = pc * nc;
       var rev = revN + revC;
-      var costs = host * fx + mkt;
+      var costs = 500;  // fixed monthly hosting (~$20 at K25/$); no per-student cost
       var net = rev - costs;
       var MAX = Math.max(revN, revC, costs, 1) * 1.1;
       $("rm-bar-n").style.width = (revN / MAX * 100) + "%";
@@ -207,20 +198,19 @@ STEP = {
         ]},
 
         {"eyebrow": "Variables", "title": "The Levers You Can Pull", "blocks": [
-            {"t": "p", "html": "Eleven numbers drive this model. Two prices and two headcounts set revenue; hosting, the exchange rate, and marketing set cost; trials, conversion, the tier mix, and churn decide how the paying base grows &mdash; and where it stops growing. None of them acts alone, which is exactly why they belong on sliders side by side."},
+            {"t": "p", "html": "A handful of numbers drive this model. Two prices and two headcounts set revenue; trials, conversion, the tier mix, and churn decide how the paying base grows &mdash; and where it stops growing. Running costs stay a small fixed figure, not a lever, so they aren&rsquo;t on a slider. The rest belong side by side because none of them acts alone."},
             {"t": "table", "head": ["Lever", "What it moves", "Where it lives"], "rows": [
                 ["Tier prices", "Revenue per student", "Operations/pricing-strategy.md"],
                 ["Paying students per tier", "Revenue volume &amp; mix", "Operations/revenue-log.md"],
                 ["New trials / month", "Top of the funnel", "Operations/groups.md &amp; leads.md"],
                 ["Trial &rarr; paid conversion", "How fast the base fills", "Day-25 follow-ups in leads.md"],
                 ["Monthly churn", "The ceiling of the base", "Cancellations in revenue-log.md"],
-                ["Hosting &amp; exchange rate", "The fixed cost base", "Vercel &amp; Supabase dashboards"],
-                ["Marketing spend", "Cost per trial", "Operations/groups.md"],
+                ["Running cost (fixed, not a lever)", "A flat monthly floor", "Vercel &amp; Supabase dashboards"],
             ]},
         ]},
 
         {"eyebrow": "Price points", "title": "Monthly Snapshot — Price It, Fill It, Cost It", "blocks": [
-            {"t": "p", "html": "This is the business frozen at one month. Set the two prices, decide how many students sit on each tier, and set the cost base &mdash; hosting is billed in dollars, so the exchange rate is a real lever here, not a footnote. The bars split revenue by tier against total costs, and the headline figure is what lands in your pocket."},
+            {"t": "p", "html": "This is the business frozen at one month. Set the two prices and decide how many students sit on each tier; running costs are a small fixed figure, not something to fiddle with. The bars split revenue by tier against that cost, and the headline figure is what lands in your pocket."},
             {"t": "raw", "html": MODEL_LAB_HTML},
             {"t": "callout", "tag": "The 5-per-member rule", "icon": "bulb", "html": "Notes students are hosted as free single-channel guests, and Slack allows 5 guests per paid member. Your own seat is a paid member, and every Community student is another &mdash; so the room for Notes is 5 &times; (Community + you). That is why the Notes slider stops where it does: to add more Notes students, add a Community member first. Set Community to 0 and you can still hold 5 Notes on your own seat; set it to 4 and the ceiling is 25."},
             {"t": "callout", "tag": "How to read it", "icon": "medal", "html": "Because the cost base is fixed, margin climbs with every student &mdash; there is no per-seat cost eating the next sale. That cuts both ways: net profit moves almost one-for-one with revenue, so a K60 price change across ten students is a K600 swing. Try Notes at K300 and K420 before touching anything else &mdash; price is the cheapest experiment you can run."},
@@ -236,11 +226,11 @@ STEP = {
 
         {"eyebrow": "Reading it", "title": "What the Model Keeps Telling You", "blocks": [
             {"t": "bullets", "items": [
-                "The cost base is roughly K500&ndash;K1,100 a month at realistic hosting and marketing &mdash; two or three Notes students clear it. Everything after that is margin.",
+                "The running cost is a flat ~K500 a month &mdash; two Notes students clear it. Everything after that is margin, because nothing about the cost grows as you add students.",
+                "Notes can&rsquo;t outrun Community. Each full member unlocks 5 Notes seats, so the two headcounts move together &mdash; you can&rsquo;t stack Notes without the members to host them.",
                 "Steady state ignores launch spikes. Trials &times; conversion &divide; churn is the whole ceiling &mdash; a big first month just gets you there sooner.",
-                "Community does the heavy lifting per head; Notes does volume. The mix slider often moves month-12 MRR more than either price does.",
-                "Churn is the only lever where small numbers are violent: 5% versus 15% churn is a threefold difference in ceiling at identical marketing.",
-                "Marketing is the one cost that should scale &mdash; and it only earns its keep as cost per converted trial. Log every group post in groups.md or that number stays invisible.",
+                "Community does the heavy lifting per head; Notes does volume. The tier-mix slider often moves month-12 MRR more than either price does.",
+                "Churn is the only lever where small numbers are violent: 5% versus 15% churn is a threefold difference in the ceiling.",
             ]},
             {"t": "callout", "tag": "Decision to make", "icon": "check", "html": "Find the slider settings you actually believe &mdash; honest conversion, honest churn, prices you can defend on WhatsApp &mdash; and read what they pay. If the answer disappoints, the model shows which lever is cheapest to move first. When a setting becomes the plan, write it into Operations/pricing-strategy.md and hold the monthly logs to it."},
         ]},
@@ -248,7 +238,7 @@ STEP = {
 
     "outcomes": [
         "Price the two tiers and read net profit and margin at any headcount",
-        "State the monthly cost base in kwacha for any hosting bill and exchange rate",
+        "Apply the Slack guest ratio: 5 Notes students per paid member, capped by your Community count",
         "Project the paying base and MRR twelve months out from trials, conversion, and churn",
         "Locate the steady-state ceiling and name which lever raises it fastest",
         "Say in which month the business passes K1,000, K3,000, and K5,000 net at current settings",
@@ -260,7 +250,7 @@ STEP = {
         "mrr": "Monthly recurring revenue — what all active subscriptions pay in one month, before costs.",
         "net profit": "Revenue minus total costs — what the business actually keeps in a month.",
         "margin": "Net profit as a share of revenue. High here because the cost base is fixed, not per-student.",
-        "cost base": "The fixed monthly bills — platform hosting (in dollars) plus marketing spend.",
+        "cost base": "The fixed monthly bill — platform hosting, held flat at ~K500. It doesn't grow per student.",
         "churn": "The share of paying students who cancel in a month. Sets the ceiling of the base.",
         "conversion": "The share of free trials that become paying students after their free month.",
         "conversion rate": "The share of free trials that become paying students after their free month.",
