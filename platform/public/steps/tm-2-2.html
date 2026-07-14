@@ -1129,10 +1129,17 @@ This measures the average number of days you take to pay suppliers.</pre></div><
       }, 420);
     }, true);
     document.addEventListener("pointermove", function (e) {
-      if (pressTimer && (Math.abs(e.clientX - dx) > 10 || Math.abs(e.clientY - dy) > 10)) {
+      if (pressTimer && (Math.abs(e.clientX - dx) > 8 || Math.abs(e.clientY - dy) > 8)) {
         clearTimeout(pressTimer); pressTimer = null;
       }
     }, true);
+    /* A scroll makes the browser fire pointercancel (and a scroll event)
+       rather than pointermove — cancel the pending long-press so scrolling
+       never reads as a hold. */
+    var cancelPress = function () { clearTimeout(pressTimer); pressTimer = null; };
+    document.addEventListener("pointercancel", cancelPress, true);
+    document.addEventListener("touchmove", cancelPress, { capture: true, passive: true });
+    window.addEventListener("scroll", cancelPress, { capture: true, passive: true });
     document.addEventListener("pointerup", function (e) {
       clearTimeout(pressTimer); pressTimer = null;
       if (longPressed) { longPressed = false; return; }
