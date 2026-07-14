@@ -856,6 +856,13 @@
     var s = window.getSelection();
     if (!s || s.isCollapsed) hideTip();
   });
+  /* The popover is fixed-positioned, so once the page scrolls it no longer
+     lines up with the text it explains — close it on any scroll. (Touch has
+     its own cancelPress for the same reason; this covers the desktop
+     selection path and fires regardless of pointer type.) */
+  window.addEventListener("scroll", function () {
+    if (tip.classList.contains("show")) hideTip();
+  }, { capture: true, passive: true });
 
   /* ── Tap-to-define (touch only): double-tap a word, press-hold a sentence.
      A lone tap closes an open popover instead of selecting again. Each
@@ -985,8 +992,12 @@
     }, true);
     /* A scroll makes the browser fire pointercancel (and a scroll event)
        rather than pointermove — cancel the pending long-press so scrolling
-       never reads as a hold. */
-    var cancelPress = function () { clearTimeout(pressTimer); pressTimer = null; };
+       never reads as a hold, and dismiss any popover already open (it is
+       fixed-positioned, so a scroll would otherwise leave it stranded). */
+    var cancelPress = function () {
+      clearTimeout(pressTimer); pressTimer = null;
+      if (tip.classList.contains("show")) hideTip();
+    };
     document.addEventListener("pointercancel", cancelPress, true);
     document.addEventListener("touchmove", cancelPress, { capture: true, passive: true });
     window.addEventListener("scroll", cancelPress, { capture: true, passive: true });
