@@ -1,6 +1,36 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-07-12 (session 15)
+**Last updated:** 2026-07-14 (session 16)
+
+---
+
+## 🌍 North star (owner, 2026-07-14) — where this is actually going
+
+Helping students study, pass exams, and understand their courses is **just the
+entry point**, not the destination. The long-term vision: **Booklesss becomes
+the most reliable place for businesses to find genuine talent and proven
+competence.** Every step a student reads, every outcome they can demonstrably
+do, every quiz they pass is a signal of real, verified capability — not a
+self-reported CV line. The study product is how we accumulate that signal at
+scale; the eventual product is trustworthy competence, surfaced to employers.
+
+**First brick laid (session 16):** step *outcomes are now tickable* — tap to
+mark "I can do this," which fades the text and fills the tick solid, saved
+per-device in `localStorage` (`booklesss-outcomes-<slug>`). This is the seed
+of completion tracking. The roadmap from here: per-student completion (needs
+accounts again — see the dormant auth/Supabase note below) → **personalised
+tests and quizzes** generated from what a student has and hasn't marked done →
+competence scores → the talent layer. Build the tracking spine before the
+quiz/talent features; they all hang off it.
+
+**Team model idea (owner, same session, not yet built):** instead of every
+teammate needing a paid Claude/workspace seat, team members file a Linear
+issue/task; one agent (the founder's Claude) picks it up, does the work, and
+it lands as a reviewed, documented PR. Collapses the per-writer Claude seat
+($100) to one shared Claude → cost base ~$203 flat regardless of headcount.
+Requires a review gate (issue → agent → draft PR → lead approves → merge),
+which is exactly the flow already in use. Revisit the revenue-model step's
+cost section if/when this is adopted.
 
 ---
 
