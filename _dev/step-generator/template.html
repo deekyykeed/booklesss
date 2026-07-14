@@ -318,6 +318,14 @@
   ul.outcomes li.done .ic.line { display: none; }
   ul.outcomes li.done .ic.fill { display: inline-block; }   /* solid, bold tick */
   ul.outcomes li.done > span { opacity: 0.42; transition: opacity 180ms ease; }
+  .outcomes-note {
+    font-family: "Onest", system-ui, sans-serif;
+    font-size: 0.9rem; line-height: 1.6; color: var(--steel);
+    margin: 1.1rem 0 0; max-width: 60ch;
+    padding: 0.85rem 1.05rem; border-radius: 16px;
+    corner-shape: superellipse(2);
+    background: var(--amber-soft); border: 1px solid var(--amber-line);
+  }
 
   /* ── Sources list ─────────────────────────────── */
   .sources-list { list-style: none; padding: 0; margin: 0.6rem 0 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
@@ -1041,6 +1049,16 @@
       });
       paint();
     });
+    /* Reassurance line under the list — universal, so every step gets it. */
+    var list = items[0].closest("ul.outcomes");
+    if (list && !(list.nextElementSibling && list.nextElementSibling.classList.contains("outcomes-note"))) {
+      var note = document.createElement("p");
+      note.className = "outcomes-note";
+      note.innerHTML = "Can’t do all of these yet? That’s completely fine — " +
+        "leave them unticked for now. Come back and check them off as you get there, " +
+        "and we’ll help you close the gaps.";
+      list.parentNode.insertBefore(note, list.nextSibling);
+    }
   })();
 
 {{CALCULATOR_JS}}  /* ── Rate + complete (Supabase via same-origin API) ── */
