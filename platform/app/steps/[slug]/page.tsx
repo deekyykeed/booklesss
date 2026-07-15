@@ -27,16 +27,26 @@ type StepRow = {
 }
 
 // cache() dedupes the row fetch between generateMetadata and the page render.
+// Fail-soft: no Supabase env, or any read error, resolves to null → the page
+// 404s instead of 500ing. So an unconfigured deploy degrades to "step not
+// found", never a server error.
 const getStep = cache(async (slug: string): Promise<StepRow | null> => {
   if (!/^[a-z0-9-]{1,64}$/.test(slug)) return null
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('steps')
-    .select('slug, course_code, title, description, body_html, access, glossary, brand, extra_js')
-    .eq('slug', slug)
-    .eq('status', 'published')
-    .maybeSingle()
-  return (data as StepRow) ?? null
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return null
+  }
+  try {
+    const supabase = await createClient()
+    const { data } = await supabase
+      .from('steps')
+      .select('slug, course_code, title, description, body_html, access, glossary, brand, extra_js')
+      .eq('slug', slug)
+      .eq('status', 'published')
+      .maybeSingle()
+    return (data as StepRow) ?? null
+  } catch {
+    return null
+  }
 })
 
 export async function generateMetadata({
