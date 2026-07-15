@@ -1,21 +1,19 @@
 import { createClient } from '@/lib/supabase/server'
+import { auth } from '@clerk/nextjs/server'
 import { NextResponse, type NextRequest } from 'next/server'
 
-// Which outcome checkboxes ("What you should now be able to do") a student
-// has ticked, per step. Stored as an array of outcome indices. Same-origin
-// fetches from the static step pages (platform/public/steps/*) carry the
-// Supabase session cookie, so the pages authenticate through this route
-// without holding any keys themselves — mirrors /api/step-feedback.
+// Which outcome checkboxes ("What you should now be able to do") a student has
+// ticked, per step, stored as an array of outcome indices. Identity comes from
+// Clerk (auth().userId); the Supabase client carries the Clerk token so RLS
+// keys rows to that user. Mirrors /api/step-feedback.
 
 const STEP_SLUG = /^[a-z0-9-]{1,64}$/
 const MAX_TICKS = 40 // no step has this many outcomes; a sane upper bound
 
-// Supabase may be unconfigured (no env vars). Without this guard
-// createClient() throws and every step page 500s, since the static pages
-// call GET on load.
-const supabaseConfigured = Boolean(
+const configured = Boolean(
   process.env.NEXT_PUBLIC_SUPABASE_URL &&
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 )
 
 // Coerce untrusted input into a clean, de-duped, sorted array of small
@@ -38,20 +36,20 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'invalid step' }, { status: 400 })
   }
 
-  if (!supabaseConfigured) {
+  if (!configured) {
+    return NextResponse.json({ authenticated: false })
+  }
+
+  const { userId } = await auth()
+  if (!userId) {
     return NextResponse.json({ authenticated: false })
   }
 
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
-    return NextResponse.json({ authenticated: false })
-  }
-
   const { data, error } = await supabase
     .from('outcome_ticks')
     .select('ticked')
-    .eq('user_id', user.id)
+    .eq('user_id', userId)
     .eq('step_slug', step)
     .maybeSingle()
 
@@ -63,13 +61,12 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  if (!supabaseConfigured) {
+  if (!configured) {
     return NextResponse.json({ error: 'ticks unavailable' }, { status: 503 })
   }
 
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
+  const { userId } = await auth()
+  if (!userId) {
     return NextResponse.json({ error: 'unauthenticated' }, { status: 401 })
   }
 
@@ -84,9 +81,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'invalid ticks' }, { status: 400 })
   }
 
+  const supabase = await createClient()
   const { error } = await supabase.from('outcome_ticks').upsert(
     {
-      user_id: user.id,
+      user_id: userId,
       step_slug: step,
       ticked,
       updated_at: new Date().toISOString(),

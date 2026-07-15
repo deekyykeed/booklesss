@@ -1,7 +1,13 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import { Analytics } from '@vercel/analytics/next'
+import { ClerkProvider } from '@clerk/nextjs'
 import './globals.css'
+
+// Fail-soft: only mount Clerk when its publishable key is present, so a deploy
+// without Clerk env still builds and serves (same pattern as the Supabase
+// fail-soft). Auth is dormant until the keys are set.
+const hasClerk = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY)
 
 const aptos = localFont({
   src: [
@@ -29,9 +35,25 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
+  const tree = (
     <html lang="en" className={`${aptos.variable} ${parastoo.variable}`}>
       <body>{children}<Analytics /></body>
     </html>
+  )
+  return hasClerk ? (
+    <ClerkProvider
+      appearance={{
+        variables: {
+          colorPrimary: '#0F1F35',
+          colorForeground: '#0F1F35',
+          borderRadius: '0.6rem',
+          fontFamily: 'var(--font-aptos), system-ui, sans-serif',
+        },
+      }}
+    >
+      {tree}
+    </ClerkProvider>
+  ) : (
+    tree
   )
 }

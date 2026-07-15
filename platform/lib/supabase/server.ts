@@ -1,27 +1,26 @@
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { auth } from '@clerk/nextjs/server'
 
+// Supabase data client authenticated as the current Clerk user.
+//
+// Clerk is configured as a Supabase third-party auth provider, so Supabase
+// accepts the Clerk session token and RLS reads the Clerk user id from the
+// JWT `sub` claim (policies use `auth.jwt()->>'sub'`). No Supabase auth
+// cookies — Clerk owns identity; Supabase only stores per-student data.
+//
+// If the Clerk instance exposes the integration via a named JWT template
+// (the older setup) rather than the native one, set CLERK_SUPABASE_JWT_TEMPLATE
+// and it is passed to getToken().
 export async function createClient() {
-  const cookieStore = await cookies()
+  const { getToken } = await auth()
+  const template = process.env.CLERK_SUPABASE_JWT_TEMPLATE
 
-  return createServerClient(
+  return createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll()
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            )
-          } catch {
-            // Server Component — cookies can't be set; middleware handles refresh
-          }
-        },
-      },
+      accessToken: async () =>
+        (template ? await getToken({ template }) : await getToken()) ?? null,
     }
   )
 }
