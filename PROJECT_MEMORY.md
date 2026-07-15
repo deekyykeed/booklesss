@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-07-15 (session 17)
+**Last updated:** 2026-07-15 (session 18)
 
 ---
 
@@ -91,6 +91,27 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**Platform — step page is now the whole app (session 18):** step chrome shipped
+(`components/step-chrome.tsx` + `chrome.css`): glass header with Clerk
+UserButton (settings = Clerk profile modal incl. Billing + custom Study
+profile page), Contents/AI-tutor/Community panes on desktop, full-screen
+blurred sheets on mobile. Clerk appearance = metallic skin + modal backdrop
+blur (see platform/AGENTS.md "The step page IS the app"). Follow-ups:
+- [ ] Wire the AI tutor pane to a real chat backend (composer is disabled
+      "coming soon"; voice orb still the ElevenLabs placeholder).
+- [ ] In-page comments backend (Community pane currently lifts the step's
+      discuss questions + points to Slack).
+- [ ] Verify the Clerk plan slugs the owner created match `basic`/`pro` (or
+      set `CLERK_MEMBER_PLANS` in Vercel), set owner `publicMetadata.role`,
+      and run the prod E2E (signup → read step → tick → gate).
+
+**ECN 1115 Microeconomics (session 18):** prep pack written to
+`Schools/UNZA/ECN 1115 — Microeconomics/COURSE-PREP.md` — proposed lesson
+architecture (7 provisional lessons from the MIT 14.01SC structure), `mic`
+course code, Zambian example bank. Blocked on the owner's machine: source
+inventory of `_pipeline/ECN 1115/` + transcripts (gitignored, local-only).
+Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 
 **→ Linear is now the live backlog** (team Booklesss, `linear-server`). 32 open issues **BOO-6→BOO-37**: business-model audit (BOO-6→23, incl. the two Urgent Slack items) + Projects A/B/C platform/launch backlog (BOO-24→37). Start each session from Linear's Urgent/High list. The items below are the older doc-tracked carryovers not yet migrated into Linear.
 

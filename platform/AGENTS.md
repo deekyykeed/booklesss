@@ -32,6 +32,36 @@ and `shell-parts.json` (icon sprite, tip, voice orb).
 Old links survive: `/steps/<slug>.html` 308-redirects to `/steps/<slug>`
 (`next.config.ts` — redirects run before `/public`).
 
+## The step page IS the app (2026-07-15)
+
+Students never visit any page other than a step (plus sign-in/up and
+/pricing). Everything else layers on top of the reading column via
+`components/step-chrome.tsx` + `app/steps/[slug]/chrome.css` (all classes
+`bkc-*`): a sticky glass header (wordmark, course chip, reading-progress
+hairline, Clerk `<UserButton/>` top right), and three panels — **Contents**
+(on-this-page ToC scanned from the rendered sections + chapter nav from the
+course's other published steps), **AI tutor** (placeholder chat; the voice
+orb stays the voice entry point), **Community** (the step's embedded
+`.discuss` questions lifted out; Slack channel is the destination until
+in-page comments exist). ≥1200px the panels are sticky side panes; below
+that they open as full-screen sheets behind a Clerk-style backdrop blur.
+The chrome hides the shell's legacy `.topbar` and adds `scroll-margin-top`
+so ToC jumps clear the sticky header — everything else inside `.step-shell`
+is untouched, so `port_shell.py` regeneration stays safe.
+
+**Clerk carries the identity surface** (this repo is on Clerk **Core 3**,
+`@clerk/nextjs` v7 — `SignedIn`/`SignedOut` are gone, use `Show`;
+`layout`→`options`, `baseTheme`→`theme`, and `variables` keys were renamed).
+The UserButton popover is the account menu (custom links to /steps and
+/pricing); its profile modal is the settings popup — Account, Security,
+Billing (appears automatically because Clerk Billing is enabled), plus our
+custom **Study profile** page (`components/study-profile.tsx` → /api/profile).
+The house skin lives in `app/layout.tsx` `<ClerkProvider appearance>`:
+metallic neutrals (graphite ink, warm-silver gradients, avatar shimmer) and
+`blur(16px)` on `modalBackdrop`. `cssLayerName: 'clerk'` pairs with the
+`@layer theme, base, clerk, components, utilities;` declaration at the top
+of `globals.css` (Tailwind v4 interop) — keep both or neither.
+
 **Access** (`lib/access.ts`, single policy point): `public` rows → anyone;
 `internal` (ops docs like revenue-model) → Clerk `publicMetadata.role='owner'`
 only; `members` → a Clerk Billing plan in `CLERK_MEMBER_PLANS` (env-configurable,
