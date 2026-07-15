@@ -40,14 +40,46 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>{children}<Analytics /></body>
     </html>
   )
+  // Clerk carries the whole identity surface (sign-in/up, the UserButton
+  // account menu, the profile/settings modal, billing) — this appearance is
+  // the house skin for all of it. The look: Clerk's own "metallic" neutrals
+  // (graphite ink, warm-silver surfaces, hairline borders, avatar shimmer)
+  // over the Booklesss canvas, and a heavy backdrop blur behind every modal.
+  // cssLayerName puts Clerk's styles in the `clerk` cascade layer declared in
+  // globals.css, below Tailwind's utilities (v4 interop).
   return hasClerk ? (
     <ClerkProvider
       appearance={{
+        cssLayerName: 'clerk',
         variables: {
-          colorPrimary: '#0F1F35',
-          colorForeground: '#0F1F35',
+          colorPrimary: '#18181b',
+          colorForeground: '#18181b',
+          colorMutedForeground: '#6b6459',
+          colorBackground: '#fbfbf9',
+          colorInput: '#ffffff',
+          colorBorder: 'rgba(24, 24, 27, 0.12)',
+          colorRing: 'rgba(24, 24, 27, 0.15)',
+          colorModalBackdrop: 'rgba(20, 20, 22, 0.32)',
+          colorShimmer: 'rgba(255, 255, 255, 0.55)',
           borderRadius: '0.6rem',
           fontFamily: 'var(--font-aptos), system-ui, sans-serif',
+        },
+        elements: {
+          // The Clerk-web-app treatment the owner asked for: popups float on
+          // a blurred, dimmed page. backdrop-filter needs the element itself
+          // to be translucent (colorModalBackdrop above carries the alpha).
+          modalBackdrop: {
+            backdropFilter: 'blur(16px) saturate(1.3)',
+            WebkitBackdropFilter: 'blur(16px) saturate(1.3)',
+          },
+          // Metallic card: white highlight rolling into warm silver + sheen.
+          userButtonPopoverCard: {
+            background:
+              'linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0) 18%), linear-gradient(180deg, #fbfbf9, #f1f0ec)',
+            boxShadow:
+              'inset 0 1px 0 rgba(255,255,255,0.9), 0 24px 60px -24px rgba(24,24,27,0.35), 0 4px 16px -8px rgba(24,24,27,0.12)',
+            border: '1px solid rgba(24, 24, 27, 0.09)',
+          },
         },
       }}
     >
