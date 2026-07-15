@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { AuthShell, fieldLabel, fieldInput, primaryButton } from '@/components/auth-shell'
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('')
@@ -38,83 +39,41 @@ export default function ResetPasswordPage() {
     router.refresh()
   }
 
-  const inputStyle: React.CSSProperties = {
-    width: '100%',
-    padding: '10px 14px',
-    background: '#fff',
-    border: '1px solid #e5e7eb',
-    borderRadius: 8,
-    color: '#1a1a1a',
-    fontSize: 14,
-    outline: 'none',
-    boxSizing: 'border-box',
-  }
-
-  const labelStyle: React.CSSProperties = {
-    display: 'block',
-    color: '#6b7280',
-    fontSize: 12,
-    fontWeight: 600,
-    marginBottom: 6,
-    letterSpacing: '0.02em',
-  }
-
   return (
-    <div style={{ width: '100%', maxWidth: 380, padding: '0 24px' }}>
-      <div style={{ textAlign: 'center', marginBottom: 32 }}>
-        <h1 style={{ fontFamily: 'var(--font-parastoo)', fontWeight: 700, fontSize: 22, color: '#0F1F35', margin: '0 0 6px' }}>
-          Set a new password
-        </h1>
-        <p style={{ color: '#9ca3af', fontSize: 13, margin: 0 }}>
-          Choose a new password for your account.
-        </p>
-      </div>
-
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+    <AuthShell
+      title="Set a new password"
+      description="Choose a new password for your account."
+    >
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
         <div>
-          <label style={labelStyle}>New password</label>
+          <label className={fieldLabel}>New password</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
             placeholder="••••••••"
-            style={inputStyle}
+            className={fieldInput}
           />
         </div>
         <div>
-          <label style={labelStyle}>Confirm password</label>
+          <label className={fieldLabel}>Confirm password</label>
           <input
             type="password"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
             required
             placeholder="••••••••"
-            style={inputStyle}
+            className={fieldInput}
           />
         </div>
 
-        {error && <p style={{ color: '#dc2626', fontSize: 13, margin: 0 }}>{error}</p>}
+        {error && <p className="m-0 text-[13px] text-[#dc2626]">{error}</p>}
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            padding: '11px',
-            background: loading ? '#374151' : '#0F1F35',
-            color: '#fff',
-            border: 'none',
-            borderRadius: 8,
-            fontSize: 14,
-            fontWeight: 700,
-            cursor: loading ? 'not-allowed' : 'pointer',
-            marginTop: 4,
-            transition: 'background 0.15s',
-          }}
-        >
+        <button type="submit" disabled={loading} className={primaryButton}>
           {loading ? '…' : 'Update password'}
         </button>
       </form>
-    </div>
+    </AuthShell>
   )
 }

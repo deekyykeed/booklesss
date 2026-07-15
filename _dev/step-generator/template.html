@@ -1021,15 +1021,22 @@
   }
 
   /* ── Tickable outcomes: tap to mark done — the text fades and the tick
-     fills solid. Stored per-device, keyed by step. This is the seed for
-     real completion tracking that will feed personalised quizzes and, in
-     time, verified competence signals. ── */
+     fills solid. Ticks save to the student's account when signed in (via
+     the same-origin /api/outcome-ticks route) and fall back to this device's
+     localStorage otherwise; anonymous ticks merge up on sign-in. This is the
+     backing store for completion tracking that feeds personalised quizzes
+     and, in time, verified competence signals. ── */
   (function () {
     var items = document.querySelectorAll("ul.outcomes li");
     if (!items.length) return;
-    var KEY = "booklesss-outcomes-" + "{{STEP_SLUG}}";
+    var STEP = "{{STEP_SLUG}}";
+    var API = "/api/outcome-ticks";
+    var KEY = "booklesss-outcomes-" + STEP;
     var done = {};
     try { done = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) {}
+    var mode = "detecting"; /* "live" | "local" */
+    var paints = [];
+
     [].forEach.call(items, function (li, i) {
       var line = li.querySelector(".ic");
       if (line && !line.classList.contains("line")) {
@@ -1052,14 +1059,37 @@
       function toggle() {
         if (done[i]) { delete done[i]; } else { done[i] = 1; }
         try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {}
-        paint();
+        paint(); push();
       }
       li.addEventListener("click", toggle);
       li.addEventListener("keydown", function (e) {
         if (e.key === " " || e.key === "Enter") { e.preventDefault(); toggle(); }
       });
+      paints.push(paint);
       paint();
     });
+
+    function repaint() { for (var i = 0; i < paints.length; i++) paints[i](); }
+    function ticksArray() {
+      var a = [];
+      for (var k in done) { if (done[k]) a.push(Number(k)); }
+      return a;
+    }
+    /* Debounced write-up: only when signed in; localStorage already holds
+       the optimistic copy so a failed POST loses nothing. */
+    var pushTimer = null;
+    function push() {
+      if (mode !== "live") return;
+      clearTimeout(pushTimer);
+      pushTimer = setTimeout(function () {
+        fetch(API, {
+          method: "POST", credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ step: STEP, ticked: ticksArray() })
+        }).catch(function () {});
+      }, 400);
+    }
+
     /* Reassurance line under the list — universal, so every step gets it. */
     var list = items[0].closest("ul.outcomes");
     if (list && !(list.nextElementSibling && list.nextElementSibling.classList.contains("outcomes-note"))) {
@@ -1070,6 +1100,29 @@
         "and we’ll help you close the gaps.";
       list.parentNode.insertBefore(note, list.nextSibling);
     }
+
+    /* Detect a signed-in student and hydrate from their account. Ticks made
+       on this device before signing in are unioned into the server set and
+       pushed back up, so nothing is lost across the sign-in boundary. */
+    fetch(API + "?step=" + STEP, { credentials: "same-origin" })
+      .then(function (r) {
+        if (!r.ok) throw new Error();
+        var ct = r.headers.get("content-type") || "";
+        if (ct.indexOf("application/json") === -1) throw new Error();
+        return r.json();
+      })
+      .then(function (d) {
+        if (!d.authenticated) { mode = "local"; return; }
+        mode = "live";
+        var merged = {}, changed = false;
+        (d.ticked || []).forEach(function (i) { merged[i] = 1; });
+        for (var k in done) { if (done[k] && !merged[k]) { merged[k] = 1; changed = true; } }
+        done = merged;
+        try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {}
+        repaint();
+        if (changed) push();
+      })
+      .catch(function () { mode = "local"; });
   })();
 
 {{CALCULATOR_JS}}  /* ── Rate + complete (Supabase via same-origin API) ── */
