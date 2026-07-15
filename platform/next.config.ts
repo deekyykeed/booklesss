@@ -6,13 +6,27 @@ import type { NextConfig } from "next";
 // with voice_agent_id set, the ElevenLabs widget loads from unpkg.com and
 // streams to elevenlabs.io — extend script-src, connect-src (incl. wss:) and
 // keep microphone=(self) below before deploying a voice-enabled step.
+// Clerk loads its UI runtime (clerk-js) and talks to its Frontend API from
+// Clerk's own hosts, and uses a Cloudflare Turnstile challenge for bot
+// protection — all of which the CSP must allow or the sign-in/up widgets
+// render blank. Hosts per Clerk's CSP guide (clerk.com/docs/.../csp-headers):
+// the FAPI + clerk-js on *.clerk.accounts.dev / *.clerk.com, avatars on
+// img.clerk.com, telemetry on clerk-telemetry.com, Turnstile on
+// challenges.cloudflare.com, and worker-src blob: for Clerk's web workers.
+// (On a production Clerk instance the FAPI moves to clerk.<your-domain> —
+// add that host here when that happens.)
+const clerkScript = "https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com";
+const clerkConnect = "https://*.clerk.accounts.dev https://*.clerk.com https://clerk-telemetry.com";
+
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${clerkScript}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: https://www.google.com https://icons.duckduckgo.com",
+  "img-src 'self' data: https://www.google.com https://icons.duckduckgo.com https://img.clerk.com",
   "font-src 'self' data:",
-  "connect-src 'self'",
+  `connect-src 'self' ${clerkConnect}`,
+  "worker-src 'self' blob:",
+  "frame-src 'self' https://challenges.cloudflare.com",
   "frame-ancestors 'self'",
   "base-uri 'self'",
   "form-action 'self'",
