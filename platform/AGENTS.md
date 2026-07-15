@@ -57,10 +57,14 @@ The UserButton popover is the account menu (custom links to /steps and
 Billing (appears automatically because Clerk Billing is enabled), plus our
 custom **Study profile** page (`components/study-profile.tsx` → /api/profile).
 The house skin lives in `app/layout.tsx` `<ClerkProvider appearance>`:
-metallic neutrals (graphite ink, warm-silver gradients, avatar shimmer) and
-`blur(16px)` on `modalBackdrop`. `cssLayerName: 'clerk'` pairs with the
-`@layer theme, base, clerk, components, utilities;` declaration at the top
-of `globals.css` (Tailwind v4 interop) — keep both or neither.
+metallic neutrals (graphite ink, warm-silver gradients) and `blur(16px)` on
+`modalBackdrop`. **Do not set `appearance.cssLayerName`** — it moves all of
+Clerk's styles into a cascade layer, but `globals.css` has unlayered rules
+(`*`, `body`), and unlayered always beats layered, so it silently overrode
+Clerk's own component CSS and rendered the sign-in widget blank on production
+(a regression, fixed same day). cssLayerName is only needed when passing
+Tailwind utility *class strings* to `appearance.elements`; ours are CSS
+objects, so Clerk stays unlayered — the setup under which auth actually works.
 
 **Access** (`lib/access.ts`, single policy point): `public` rows → anyone;
 `internal` (ops docs like revenue-model) → Clerk `publicMetadata.role='owner'`

@@ -43,32 +43,33 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   // Clerk carries the whole identity surface (sign-in/up, the UserButton
   // account menu, the profile/settings modal, billing) — this appearance is
   // the house skin for all of it. The look: Clerk's own "metallic" neutrals
-  // (graphite ink, warm-silver surfaces, hairline borders, avatar shimmer)
-  // over the Booklesss canvas, and a heavy backdrop blur behind every modal.
-  // cssLayerName puts Clerk's styles in the `clerk` cascade layer declared in
-  // globals.css, below Tailwind's utilities (v4 interop).
+  // (graphite ink, warm-silver surfaces) over the Booklesss canvas, and a
+  // heavy backdrop blur behind every modal.
+  //
+  // Do NOT set appearance.cssLayerName here. It moves ALL of Clerk's styles
+  // into a cascade layer, and globals.css has unlayered rules (* and body) —
+  // unlayered always beats layered, so it silently overrode Clerk's own
+  // component styles and rendered the sign-in widget blank on production
+  // (regression fixed 2026-07-15). cssLayerName is only needed when passing
+  // Tailwind utility *class strings* to elements; ours are CSS objects, so
+  // Clerk stays unlayered (as it was when auth worked).
   return hasClerk ? (
     <ClerkProvider
       appearance={{
-        cssLayerName: 'clerk',
         variables: {
           colorPrimary: '#18181b',
           colorForeground: '#18181b',
-          colorMutedForeground: '#6b6459',
           colorBackground: '#fbfbf9',
-          colorInput: '#ffffff',
-          colorBorder: 'rgba(24, 24, 27, 0.12)',
-          colorRing: 'rgba(24, 24, 27, 0.15)',
-          colorModalBackdrop: 'rgba(20, 20, 22, 0.32)',
-          colorShimmer: 'rgba(255, 255, 255, 0.55)',
           borderRadius: '0.6rem',
           fontFamily: 'var(--font-aptos), system-ui, sans-serif',
         },
         elements: {
           // The Clerk-web-app treatment the owner asked for: popups float on
-          // a blurred, dimmed page. backdrop-filter needs the element itself
-          // to be translucent (colorModalBackdrop above carries the alpha).
+          // a blurred, dimmed page. These elements render only for the
+          // UserButton popover and modals (never on the signed-out sign-in
+          // card), so they can't affect the auth pages.
           modalBackdrop: {
+            background: 'rgba(20, 20, 22, 0.32)',
             backdropFilter: 'blur(16px) saturate(1.3)',
             WebkitBackdropFilter: 'blur(16px) saturate(1.3)',
           },
