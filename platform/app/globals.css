@@ -1,7 +1,3 @@
-/* Clerk injects its styles into the `clerk` layer (ClerkProvider
-   appearance.cssLayerName) — declared below Tailwind's components/utilities
-   so Tailwind classes passed to appearance.elements win without !important. */
-@layer theme, base, clerk, components, utilities;
 @import "tailwindcss";
 
 @theme inline {
