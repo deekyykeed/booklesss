@@ -69,11 +69,14 @@ create index if not exists quiz_attempts_user_idx on public.quiz_attempts (user_
 create or replace view public.student_progress
   with (security_invoker = on) as
 select
-  f.user_id, f.step_slug, f.completed, f.rating,
+  coalesce(f.user_id, t.user_id)     as user_id,
+  coalesce(f.step_slug, t.step_slug) as step_slug,
+  coalesce(f.completed, false)       as completed,
+  f.rating,
   coalesce(array_length(t.ticked, 1), 0) as outcomes_ticked,
-  greatest(f.updated_at, coalesce(t.updated_at, f.updated_at)) as last_activity
+  greatest(coalesce(f.updated_at, t.updated_at), coalesce(t.updated_at, f.updated_at)) as last_activity
 from public.step_feedback f
-left join public.outcome_ticks t
+full join public.outcome_ticks t
   on t.user_id = f.user_id and t.step_slug = f.step_slug;
 
 -- ── Step content: the platform's content plane ─────────────
