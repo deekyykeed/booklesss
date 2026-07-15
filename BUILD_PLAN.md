@@ -12,7 +12,7 @@ This executes the standing **BOO-7 decision** (Operations/pricing-strategy.md, 2
 | Plane | Owner | What lives there |
 |---|---|---|
 | **Identity** | **Clerk** | Accounts, sessions, sign-in/up UI, email verification, password reset, user metadata (role, university) |
-| **Billing** | **Clerk Billing** (Stripe underneath) | Plans (`notes`, `community`), subscriptions, payment UI (`<PricingTable/>`), plan checks (`has({plan})`) |
+| **Billing** | **Clerk Billing** (Stripe underneath) | Plans (`basic`, `pro` — slugs set by `CLERK_MEMBER_PLANS`), subscriptions, payment UI (`<PricingTable/>`), plan checks (`has({plan})`) |
 | **Data** | **Supabase** (data-only, no Supabase Auth) | Step **content** (new `steps` table), per-student state (`step_feedback`, `outcome_ticks`, `quiz_attempts`, `profiles`, `course_access`) |
 | **App** | **Next.js 16 on Vercel** | Step renderer (`/steps/[slug]`), gate (`proxy.ts` = `clerkMiddleware`), APIs, pricing page, progress page |
 | **Community & reach** | Slack (free community + link delivery), WhatsApp (leads), Framer (marketing) | Unchanged — but paid access = platform, not Slack seats |
@@ -119,8 +119,8 @@ One helper, used by the step page (single place to change policy):
 canReadStep(auth, step):
   step.access == 'public'    → anyone (lead-magnet steps, no sign-in)
   step.access == 'internal'  → Clerk user with publicMetadata.role == 'owner'
-  step.access == 'members'   → has({plan:'community'})
-                               OR has({plan:'notes'})        # Clerk Billing
+  step.access == 'members'   → has({plan}) for any plan in CLERK_MEMBER_PLANS
+                               (default slugs: basic, pro)   # Clerk Billing
                                OR course_access row for step.course_code   # manual grants
 ```
 
@@ -136,7 +136,7 @@ canReadStep(auth, step):
 - Clerk Billing handles plans, subscriptions and the payment UI; **Stripe is the only payment processor**. Fee: 0.7% + Stripe's fees.
 - **Development instances get Clerk's shared test Stripe gateway** — we can build and fully test the entire billing flow **today, with no Stripe account**.
 - **Production requires your own Stripe account — and Stripe does not support Zambia.** A production Stripe account needs an entity in a supported country (the standard route: US LLC via Stripe Atlas / doola, ~$200–500 one-off).
-- Server-side gating: `const { has } = await auth(); has({ plan: 'community' })`. UI: `<PricingTable/>` (confirmed exported by our installed `@clerk/nextjs@7.5.18`).
+- Server-side gating: `const { has } = await auth(); has({ plan })` for each CLERK_MEMBER_PLANS slug. UI: `<PricingTable/>` (confirmed exported by our installed `@clerk/nextjs@7.5.18`).
 
 **Two payment rails, both first-class:**
 
@@ -145,7 +145,7 @@ canReadStep(auth, step):
 | **Clerk subscriptions** (cards) | Diaspora/card-holding students; the future | `<PricingTable/>` → Stripe checkout → `has({plan})` unlocks | Build today on dev gateway; production blocked on Stripe entity decision |
 | **Mobile money** (MTN MoMo / Airtel) | Most Zambian students, today | Existing WhatsApp flow → owner confirms payment → `course_access` grant (SQL/MCP; admin page later) | **Production path from day one** |
 
-Plans in Clerk (dev): `notes` and `community`. Stripe prices in USD — display equivalents (K360 ≈ $15, K600 ≈ $25 at K25/$). Local ZMW pricing stays the WhatsApp/mobile-money quoted price.
+Plans in Clerk (dev): slugs `basic` and `pro` (set via `CLERK_MEMBER_PLANS`; decoupled from the marketing names so plans can be renamed freely). Stripe prices in USD — display equivalents (K360 ≈ $15, K600 ≈ $25 at K25/$). Local ZMW pricing stays the WhatsApp/mobile-money quoted price.
 
 **Owner decision, not blocking today:** whether/when to form a US entity for live Stripe. Until then card billing stays in test mode and mobile money carries revenue — identical access outcome either way, because `canReadStep` treats both rails equally.
 
@@ -171,7 +171,7 @@ Work happens on `claude/revenue-model-step-hw48uv` → PRs → merge. Product st
 **Checkpoint: steps served from the database; Slack links unbroken.**
 
 ### Phase 2 — Billing (owner ~20 min dashboard, me ~1.5 h)
-1. Owner: Clerk dashboard → enable Billing (dev gateway) → create plans `notes` ($15/mo) + `community` ($25/mo) with feature descriptions from pricing-strategy.md.
+1. Owner: Clerk dashboard → enable Billing (dev gateway) → create plans with slugs `basic` ($15/mo, Notes tier) + `pro` ($25/mo, Community tier) with feature descriptions from pricing-strategy.md.
 2. Me: `/pricing` page (`<PricingTable/>`, branded); `canReadStep` helper wired into the step page; locked-step teaser → pricing.
 3. Manual-grant rail: document + test a `course_access` grant end-to-end (MCP insert → step unlocks).
 4. Verify with Clerk's test card: subscribe → unlock; cancel → lock; grant → unlock without plan.
