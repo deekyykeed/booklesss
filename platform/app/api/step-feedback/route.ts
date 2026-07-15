@@ -1,18 +1,20 @@
 import { createClient } from '@/lib/supabase/server'
+import { auth } from '@clerk/nextjs/server'
 import { NextResponse, type NextRequest } from 'next/server'
 
 // Rating + completion state for static step pages (platform/public/steps/*).
-// Same-origin fetches carry the Supabase session cookie, so the static pages
-// authenticate through this route without holding any keys themselves.
+// Identity comes from Clerk (auth().userId); the Supabase client carries the
+// Clerk token so RLS keys rows to that user. Static pages authenticate through
+// this route via the same-origin Clerk session cookie.
 
 const STEP_SLUG = /^[a-z0-9-]{1,64}$/
 
-// Supabase is currently unconfigured (project deleted, feedback dormant).
-// Without this guard createClient() throws and every step page view 500s,
-// since the static pages call GET on load.
-const supabaseConfigured = Boolean(
+// Needs both Clerk (identity) and Supabase (storage). Without them the route
+// fail-softs so the static pages, which call GET on load, never 500.
+const configured = Boolean(
   process.env.NEXT_PUBLIC_SUPABASE_URL &&
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 )
 
 export async function GET(request: NextRequest) {
@@ -21,20 +23,20 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'invalid step' }, { status: 400 })
   }
 
-  if (!supabaseConfigured) {
+  if (!configured) {
+    return NextResponse.json({ authenticated: false })
+  }
+
+  const { userId } = await auth()
+  if (!userId) {
     return NextResponse.json({ authenticated: false })
   }
 
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
-    return NextResponse.json({ authenticated: false })
-  }
-
   const { data, error } = await supabase
     .from('step_feedback')
     .select('rating, completed')
-    .eq('user_id', user.id)
+    .eq('user_id', userId)
     .eq('step_slug', step)
     .maybeSingle()
 
@@ -50,13 +52,12 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  if (!supabaseConfigured) {
+  if (!configured) {
     return NextResponse.json({ error: 'feedback unavailable' }, { status: 503 })
   }
 
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
+  const { userId } = await auth()
+  if (!userId) {
     return NextResponse.json({ error: 'unauthenticated' }, { status: 401 })
   }
 
@@ -71,9 +72,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'invalid rating' }, { status: 400 })
   }
 
+  const supabase = await createClient()
   const { error } = await supabase.from('step_feedback').upsert(
     {
-      user_id: user.id,
+      user_id: userId,
       step_slug: step,
       rating,
       completed: Boolean(body.completed),
