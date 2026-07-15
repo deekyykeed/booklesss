@@ -56,6 +56,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return hasClerk ? (
     <ClerkProvider
       appearance={{
+        // No logo on any Clerk surface (sign-in/up cards especially).
+        // logoPlacement:'none' is the documented switch; logoBox display:none
+        // is the belt-and-suspenders CSS fallback so nothing slips through.
+        options: {
+          logoPlacement: 'none',
+        },
         variables: {
           colorPrimary: '#18181b',
           colorForeground: '#18181b',
@@ -64,6 +70,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           fontFamily: 'var(--font-aptos), system-ui, sans-serif',
         },
         elements: {
+          logoBox: { display: 'none' },
           // The Clerk-web-app treatment the owner asked for: popups float on
           // a blurred, dimmed page. These elements render only for the
           // UserButton popover and modals (never on the signed-out sign-in
