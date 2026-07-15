@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { ProfileCard } from '@/components/profile-card'
+import { IndexUserChip } from '@/components/index-user-chip'
 
 // Signed-in index of published steps, read from the database (public.steps),
 // with each student's own progress (student_progress view — RLS scopes it to
@@ -58,14 +59,19 @@ export default async function StepsIndex() {
     return s.minutes != null ? { text: `~${s.minutes} min`, color: '#94A3B8' } : null
   }
 
+  const hasClerk = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY)
+
   return (
     <div style={{ maxWidth: 720, margin: '0 auto', padding: '48px 24px 96px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 36 }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/booklesss-mark-black.png" alt="" style={{ width: 26, height: 26, objectFit: 'contain' }} />
-        <span style={{ fontFamily: 'var(--font-parastoo)', fontWeight: 700, fontSize: 22, color: '#0F1F35' }}>
-          Booklesss
-        </span>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 36 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/booklesss-mark-black.png" alt="" style={{ width: 26, height: 26, objectFit: 'contain' }} />
+          <span style={{ fontFamily: 'var(--font-parastoo)', fontWeight: 700, fontSize: 22, color: '#0F1F35' }}>
+            Booklesss
+          </span>
+        </div>
+        {hasClerk && <IndexUserChip />}
       </div>
 
       <h1 style={{ fontFamily: 'var(--font-parastoo)', fontWeight: 700, fontSize: 30, color: '#121212', margin: '0 0 6px' }}>
