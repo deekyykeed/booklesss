@@ -38,14 +38,20 @@ Pipeline behind these: 13 raw UNZA courses in `Schools/UNZA/_pipeline/` (local m
 
 ---
 
-## Money model (current — `Operations/pricing-strategy.md` is the source of truth)
+## Money model (current — BOO-7 executed 2026-07-15; `BUILD_PLAN.md` is the architecture source of truth)
 
-- **Free trial** — 1 month, one course channel, no card.
-- **Notes — K360/month** — single-channel Slack guest. Guest seats cost nothing on a paid Slack plan, so this is ~100% margin.
-- **Community — K600/month** — full workspace. Costs one paid Slack seat (≈K219/month on Pro, K339 on Business+).
+The paid product is **the gated platform** (booklesss.vercel.app), not Slack
+seats. No free trial — **money-back guarantee** instead.
+
+- **Notes — K360/month (~$15)** — one course on the platform: steps, tap-to-define reading, progress tracking.
+- **Community — K600/month (~$25)** — everything: all courses, full community, quizzes when they land.
 - **Custom** — negotiated 1-on-1 tier.
 
-Constraint that makes the whole model work: Slack allows ~5 free single-channel guests per paid member. **This requires a paid Slack plan — see red flag #1 below.**
+Two payment rails, both unlocking the same access (`lib/access.ts`):
+1. **Cards via Clerk Billing** (Stripe under the hood) — full flow built, runs on the dev/test gateway until a Stripe-supported entity exists (Stripe doesn't serve Zambia — see BUILD_PLAN §5).
+2. **Mobile money (MTN/Airtel) via WhatsApp** — the primary Zambian rail today: student pays, owner inserts a `course_access` grant, they're reading in minutes.
+
+Slack stays as the free community + link-delivery layer; it is no longer resold, which clears the Slack-MSA red flag.
 
 Revenue and members to date: **zero recorded.** `revenue-log.md` and `leads.md` are empty. That is the honest starting line.
 

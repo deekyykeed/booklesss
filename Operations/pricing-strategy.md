@@ -2,15 +2,18 @@
 
 **Last updated:** 2026-05-17
 
-> **⚠️ Model change (2026-07-12, BOO-7 decision): the Slack guest-ratio economics
-> below are being retired.** The paid product is moving OFF Slack onto the own
-> platform — "K360 single-channel guest = ~100% margin because Slack guests are
-> free" relied on reselling Slack access, which breaches the Slack/Salesforce MSA.
-> The tier PRICES (K360 Notes / K600 Community / Custom) still stand, but "what
-> they get" becomes **access to the gated platform**, not a Slack seat, and the
-> cost structure is platform hosting (~$0–45/mo), not per-seat Slack. Rework this
-> file when the paywall (Linear BOO-38) lands. Everything below the line is the
-> old Slack-based model, kept for reference only.
+> **✅ BOO-7 executed (2026-07-15): the paywall is live in code.** The paid
+> product is **the gated platform** (booklesss.vercel.app): steps live in
+> Supabase, every step requires a Clerk account, and access comes from either
+> a Clerk Billing subscription (`notes` / `community` plans — card rail, on
+> the Stripe test gateway until a Stripe-supported entity exists) or a manual
+> `course_access` grant (mobile-money rail via WhatsApp). Prices stand:
+> **K360 Notes (~$15) / K600 Community (~$25) / Custom.** No free trial —
+> money-back guarantee. Cost structure is platform hosting + tooling (see
+> the revenue-model step), not per-seat Slack. Slack remains the free
+> community layer only. See `BUILD_PLAN.md` for the full architecture.
+> Everything below the line is the old Slack-based model, kept for reference
+> only.
 
 ---
 
