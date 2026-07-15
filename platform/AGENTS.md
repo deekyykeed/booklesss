@@ -34,8 +34,9 @@ Old links survive: `/steps/<slug>.html` 308-redirects to `/steps/<slug>`
 
 **Access** (`lib/access.ts`, single policy point): `public` rows → anyone;
 `internal` (ops docs like revenue-model) → Clerk `publicMetadata.role='owner'`
-only; `members` → Clerk Billing plan (`has({plan:'community'|'notes'})`) OR a
-manual `course_access` grant — the **mobile-money rail**: student pays via
+only; `members` → a Clerk Billing plan in `CLERK_MEMBER_PLANS` (env-configurable,
+default slugs `basic`,`pro` — decoupled from the marketing names so plans can be
+renamed without a code change) OR a manual `course_access` grant — the **mobile-money rail**: student pays via
 WhatsApp/MoMo, owner inserts the grant row, same door opens. Locked students
 get a teaser + `/pricing` (Clerk `<PricingTable/>`). Steps RLS is the
 backstop: published-only, anon sees `public` rows only.
