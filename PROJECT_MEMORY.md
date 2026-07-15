@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-07-14 (session 16)
+**Last updated:** 2026-07-15 (session 17)
 
 ---
 
@@ -143,6 +143,40 @@ Slack channel post → login-gated web step link → read. The platform is now o
 ---
 
 ## Session Log
+
+### Session 2026-07-15 (session 17 — v1 platform built: Clerk + Supabase content plane + billing)
+
+The biggest build day so far — BUILD_PLAN.md written and executed. The
+platform is now a complete product:
+
+- **Auth → Clerk** (PR #64, merged): Clerk owns identity + auth UI
+  (`/sign-in`, `/sign-up`, prebuilt components branded via appearance);
+  Supabase demoted to data-only via third-party auth (RLS reads Clerk id
+  from `auth.jwt()->>'sub'`; user-id columns are text Clerk ids). Gate =
+  `clerkMiddleware` in proxy.ts, fail-soft without keys.
+- **Content plane → Supabase** (PR #65): steps live in `public.steps`
+  (body_html + glossary/brand + extra_js + access/status), rendered at
+  `/steps/[slug]` by the shell ported out of template.html
+  (`port_shell.py` → step.css / step-client.js / shell-parts.json).
+  `generate_step.py --emit-json` is the publish pipeline (via Supabase MCP
+  from cloud sessions — project REST is egress-blocked). Old
+  `/steps/*.html` links 308-redirect. All 3 steps published (md5-verified).
+- **Billing** (PR #65): `/pricing` with Clerk `<PricingTable/>`;
+  `lib/access.ts` = single policy point — plan (`has({plan})`) OR manual
+  `course_access` grant (mobile-money rail) OR owner; locked → teaser.
+  **Stripe doesn't serve Zambia** → card rail runs on Clerk's dev/test
+  gateway until a Stripe-supported entity exists; MoMo grants carry real
+  revenue meanwhile (BUILD_PLAN §5).
+- **Student surface** (PR #65): /steps index shows per-student progress
+  ('✓ Completed' / 'n/N outcomes') from the `student_progress` view (now a
+  FULL join so tick-only students appear); skippable university/year
+  profile capture → `/api/profile`.
+- Verification pattern for cloud sessions: local **PostgREST mock** with the
+  real row JSON (sandbox egress blocks *.supabase.co), Playwright suite on
+  top — render parity, ticks, calculator, tap-define, scroll-dismiss, gate.
+- Owner dashboard steps to go live (see BUILD_PLAN §3/§6 + PR #64 body):
+  Clerk keys + setup/supabase, Supabase third-party auth, Vercel env vars,
+  Billing plans `notes`/`community`, `role:owner` publicMetadata.
 
 ### Session 2026-07-12 (session 15 — guest pricing → 60%, full business-model audit, Linear populated)
 

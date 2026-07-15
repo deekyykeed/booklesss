@@ -4,9 +4,9 @@
 --
 -- Identity is Clerk (configured as a Supabase third-party auth
 -- provider): user ids are Clerk user ids (text, e.g. 'user_2ab…')
--- and RLS reads the Clerk id from the JWT `sub` claim. Content is
--- NOT in the database — steps are static HTML in public/steps/.
--- Supabase holds per-student state only.
+-- and RLS reads the Clerk id from the JWT `sub` claim. Supabase
+-- holds step CONTENT (public.steps — authored in the repo, published
+-- here, rendered at /steps/[slug]) plus per-student state.
 -- ============================================================
 
 -- ── Profiles (signup metadata) ─────────────────────────────
@@ -69,12 +69,49 @@ create index if not exists quiz_attempts_user_idx on public.quiz_attempts (user_
 create or replace view public.student_progress
   with (security_invoker = on) as
 select
-  f.user_id, f.step_slug, f.completed, f.rating,
+  coalesce(f.user_id, t.user_id)     as user_id,
+  coalesce(f.step_slug, t.step_slug) as step_slug,
+  coalesce(f.completed, false)       as completed,
+  f.rating,
   coalesce(array_length(t.ticked, 1), 0) as outcomes_ticked,
-  greatest(f.updated_at, coalesce(t.updated_at, f.updated_at)) as last_activity
+  greatest(coalesce(f.updated_at, t.updated_at), coalesce(t.updated_at, f.updated_at)) as last_activity
 from public.step_feedback f
-left join public.outcome_ticks t
+full join public.outcome_ticks t
   on t.user_id = f.user_id and t.step_slug = f.step_slug;
+
+-- ── Step content: the platform's content plane ─────────────
+-- Authored in the repo (Python pipeline), published here, rendered
+-- by the Next.js app at /steps/[slug].
+create table if not exists public.steps (
+  slug         text primary key check (slug ~ '^[a-z0-9-]{1,64}$'),
+  course_code  text not null check (course_code ~ '^[a-z]{2,4}$'),
+  lesson       int,
+  step_label   text,
+  title        text not null,
+  description  text,
+  body_html    text not null,
+  outcomes     jsonb not null default '[]',
+  added_value  jsonb not null default '[]',
+  course_chip  text,
+  eyebrow      text,
+  minutes      int,
+  glossary     jsonb not null default '{}',
+  brand        jsonb not null default '{}',
+  extra_js     text,
+  access       text not null default 'members'
+               check (access in ('public','members','internal')),
+  status       text not null default 'draft'
+               check (status in ('draft','published','archived')),
+  version      int not null default 1,
+  published_at timestamptz,
+  updated_at   timestamptz not null default now()
+);
+alter table public.steps enable row level security;
+create policy "read published public" on public.steps for select
+  using (status = 'published' and access = 'public');
+create policy "read published members" on public.steps for select to authenticated
+  using (status = 'published' and access in ('members','internal'));
+create index if not exists steps_course_idx on public.steps (course_code, lesson, step_label);
 
 -- ── Course access (dormant — not enforced at launch) ───────
 create table if not exists public.course_access (

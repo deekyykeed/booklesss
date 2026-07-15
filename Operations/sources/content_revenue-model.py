@@ -218,6 +218,8 @@ MODEL_LAB_JS = """  /* ── Revenue model: snapshot + funnel (shared inputs) �
 
 STEP = {
     "slug": "revenue-model",
+    "course_code": "ops",
+    "access": "internal",   # owner-only on the platform
     "course": "Booklesss HQ",
     "page_title": "Revenue Model — Booklesss HQ",
     "course_chip": "INTERNAL · OPS",

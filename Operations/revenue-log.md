@@ -10,10 +10,11 @@ Update when a student pays or cancels. One row per transaction.
 
 ---
 
-## Rate types
-- **Notes** — K250/month (single-channel guest, one course)
-- **Community** — K500/month (full workspace, all courses)
+## Rate types (per Operations/pricing-strategy.md — platform access, not Slack seats)
+- **Notes** — K360/month (one course on the platform)
+- **Community** — K600/month (all courses + community + quizzes)
 - **Custom** — negotiated rate (tutoring tier)
+- Payment rails: card (Clerk Billing) or mobile money → manual `course_access` grant
 
 ---
 
