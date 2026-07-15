@@ -144,13 +144,20 @@ Diagnosis order that works from a cloud session:
    session for interpretation.
 
 `next.config.ts` sends security headers on every route (incl. the static step
-pages): a CSP locked to `'self'` + the Google/DuckDuckGo favicon services,
+pages): a CSP scoped to `'self'` + the Google/DuckDuckGo favicon services +
+**Clerk's hosts** (`*.clerk.accounts.dev`, `*.clerk.com`, `img.clerk.com`,
+`clerk-telemetry.com`, `challenges.cloudflare.com`, `worker-src blob:`),
 `nosniff`, `SAMEORIGIN`, strict referrer policy, and a Permissions-Policy that
 reserves `microphone=(self)` for the future voice tutor. The **CSP is
 production-only** (`VERCEL_ENV === "production"`) so the Vercel preview toolbar
 keeps working on previews — expect no CSP header on preview deploys; that's
-intentional. Voice tutor will need script-src + connect-src (incl. `wss:`)
-additions for unpkg.com / elevenlabs.io.
+intentional. **The Clerk hosts are load-bearing**: without them the CSP blocks
+clerk-js and the `<SignIn/>`/`<SignUp/>` widgets render blank on production
+(they work on preview because CSP is off there — so this can only be caught on
+a real prod deploy). On a *production* Clerk instance the Frontend API moves to
+`clerk.<your-domain>`; add that host to script-src/connect-src then. Voice tutor
+will later need script-src + connect-src (incl. `wss:`) for unpkg.com /
+elevenlabs.io.
 
 `/api/step-feedback` fail-softs when the Supabase env vars are absent (GET →
 `{authenticated:false}`, POST → 503). Without that guard `createClient()`
