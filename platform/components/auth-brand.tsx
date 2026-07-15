@@ -30,8 +30,7 @@ export function AuthBrand() {
 
 export function AuthUnavailable() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#f5f4ef] px-4 text-center">
-      <AuthBrand />
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#f5f4ef] px-4 text-center">
       <p className="max-w-[320px] text-[14px] text-[#6b7280]">
         Sign-in isn’t available yet — this deploy hasn’t been connected to Clerk.
         Check back shortly.
