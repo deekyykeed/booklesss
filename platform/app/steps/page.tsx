@@ -1,24 +1,43 @@
-import manifest from '@/public/steps/manifest.json'
+import { createClient } from '@/lib/supabase/server'
 
-// Minimal signed-in index of published steps. Slack is the primary router —
-// this page exists so `/` has somewhere to land and students can bookmark it.
+// Signed-in index of published steps, read from the database (public.steps).
+// Slack is the primary router — this page exists so `/` has somewhere to land
+// and students can bookmark it. Internal (ops) steps never appear here; the
+// owner opens them by direct link.
 
-type StepEntry = {
+export const dynamic = 'force-dynamic'
+
+type StepRow = {
   slug: string
   title: string
-  eyebrow: string
-  course: string
-  course_chip: string
-  minutes: number
+  eyebrow: string | null
+  course_chip: string | null
+  minutes: number | null
 }
 
-export default function StepsIndex() {
-  const steps = manifest as StepEntry[]
-  const courses = [...new Set(steps.map((s) => s.course))]
+export default async function StepsIndex() {
+  let steps: StepRow[] = []
+  try {
+    const supabase = await createClient()
+    const { data } = await supabase
+      .from('steps')
+      .select('slug, title, eyebrow, course_chip, minutes')
+      .eq('status', 'published')
+      .neq('access', 'internal')
+      .order('slug')
+    steps = (data as StepRow[]) ?? []
+  } catch {
+    // Supabase unconfigured — render the empty state rather than 500.
+  }
+
+  const courseName = (s: StepRow) =>
+    (s.eyebrow ?? '').split('·')[0].trim() || s.course_chip || 'Course'
+  const courses = [...new Set(steps.map(courseName))]
 
   return (
     <div style={{ maxWidth: 720, margin: '0 auto', padding: '48px 24px 96px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 36 }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/booklesss-mark-black.png" alt="" style={{ width: 26, height: 26, objectFit: 'contain' }} />
         <span style={{ fontFamily: 'var(--font-parastoo)', fontWeight: 700, fontSize: 22, color: '#0F1F35' }}>
           Booklesss
@@ -32,16 +51,22 @@ export default function StepsIndex() {
         Every step posted in your Slack channels lives here too.
       </p>
 
+      {steps.length === 0 && (
+        <p style={{ color: '#94A3B8', fontSize: 14 }}>
+          No steps published yet — check back soon.
+        </p>
+      )}
+
       {courses.map((course) => (
         <section key={course} style={{ marginBottom: 36 }}>
           <h2 style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#c5613f', margin: '0 0 12px' }}>
             {course}
           </h2>
           <div style={{ display: 'grid', gap: 10 }}>
-            {steps.filter((s) => s.course === course).map((s) => (
+            {steps.filter((s) => courseName(s) === course).map((s) => (
               <a
                 key={s.slug}
-                href={`/steps/${s.slug}.html`}
+                href={`/steps/${s.slug}`}
                 style={{
                   display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 16,
                   padding: '14px 18px', background: '#f0efeb',
@@ -55,7 +80,9 @@ export default function StepsIndex() {
                   </span>
                   <span style={{ fontWeight: 700, fontSize: 15 }}>{s.title}</span>
                 </span>
-                <span style={{ fontSize: 12, color: '#94A3B8', whiteSpace: 'nowrap' }}>~{s.minutes} min</span>
+                {s.minutes != null && (
+                  <span style={{ fontSize: 12, color: '#94A3B8', whiteSpace: 'nowrap' }}>~{s.minutes} min</span>
+                )}
               </a>
             ))}
           </div>

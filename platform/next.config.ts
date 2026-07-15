@@ -24,6 +24,18 @@ const csp = [
 const isProdDeploy = process.env.VERCEL_ENV === "production";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      // Steps used to be static files at /steps/<slug>.html; every link ever
+      // posted in Slack keeps working. Redirects run before /public, so this
+      // wins even while the old files exist.
+      {
+        source: "/steps/:slug([a-z0-9-]+)\\.html",
+        destination: "/steps/:slug",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
