@@ -1,9 +1,8 @@
 import { cache } from 'react'
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { canReadStep } from '@/lib/access'
-import { AuthBrand } from '@/components/auth-brand'
 import { StepChrome, type NavStep } from '@/components/step-chrome'
 import shell from './shell-parts.json'
 import './step.css'
@@ -87,40 +86,6 @@ export async function generateMetadata({
   return { title: step.title, description: step.description ?? undefined }
 }
 
-function LockedTeaser({ step }: { step: StepRow }) {
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-[#f5f4ef] px-6 text-center">
-      <AuthBrand />
-      <div className="max-w-[440px]">
-        <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#c5613f]">
-          Members only
-        </p>
-        <h1
-          className="m-0 text-[26px] font-bold leading-tight text-[#121212]"
-          style={{ fontFamily: 'var(--font-parastoo)' }}
-        >
-          {step.title}
-        </h1>
-        {step.description && (
-          <p className="mt-3 text-[15px] leading-relaxed text-[#71717A]">
-            {step.description}
-          </p>
-        )}
-        <a
-          href="/pricing"
-          className="mt-7 inline-block rounded-xl bg-[#0F1F35] px-6 py-3 text-[14px] font-bold text-white no-underline transition-colors hover:bg-[#1a3050]"
-        >
-          Unlock this course
-        </a>
-        <p className="mt-4 text-[13px] text-[#94A3B8]">
-          Paying by mobile money? Message us on WhatsApp — you&rsquo;ll be
-          reading in minutes.
-        </p>
-      </div>
-    </div>
-  )
-}
-
 export default async function StepPage({
   params,
 }: {
@@ -132,7 +97,10 @@ export default async function StepPage({
 
   const verdict = await canReadStep(step.access, step.course_code)
   if (verdict === 'hidden') notFound()
-  if (verdict === 'locked') return <LockedTeaser step={step} />
+  // 'locked' = a members step reached while signed out. The middleware
+  // normally redirects first; this is the belt-and-suspenders fallback.
+  // No paywall — being signed in is the only requirement.
+  if (verdict === 'locked') redirect('/sign-in')
 
   const stepData = JSON.stringify({
     slug: step.slug,
