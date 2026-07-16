@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-07-15 (session 18)
+**Last updated:** 2026-07-16 (session 19)
 
 ---
 
@@ -90,30 +90,77 @@ Slack channel post → login-gated web step link → read. The platform is now o
 - Full execution plan (signups, 30-day push, course pipeline, ElevenLabs voice
   tutor demo structure): see the session-13 plan in the repo PRs.
 
-## Next Session
+## Session 19 wrap (2026-07-16) — step-page-as-app shipped + production auth fixed
 
-**Platform — step page is now the whole app (session 18):** step chrome shipped
-(`components/step-chrome.tsx` + `chrome.css`): glass header with Clerk
-UserButton (settings = Clerk profile modal incl. Billing + custom Study
-profile page), Contents/AI-tutor/Community panes on desktop, full-screen
-blurred sheets on mobile. Clerk appearance = metallic skin + modal backdrop
-blur (see platform/AGENTS.md "The step page IS the app"). Follow-ups:
-- [ ] Wire the AI tutor pane to a real chat backend (composer is disabled
-      "coming soon"; voice orb still the ElevenLabs placeholder).
-- [ ] In-page comments backend (Community pane currently lifts the step's
-      discuss questions + points to Slack).
-- [ ] Verify the Clerk plan slugs the owner created match `basic`/`pro` (or
-      set `CLERK_MEMBER_PLANS` in Vercel), set owner `publicMetadata.role`,
-      and run the prod E2E (signup → read step → tick → gate).
+Handing off to the next agent. Everything below merged to `main` and is on
+production (`booklesss.vercel.app`). PRs this session, all merged:
 
-**ECN 1115 Microeconomics (session 18):** prep pack written to
-`Schools/UNZA/ECN 1115 — Microeconomics/COURSE-PREP.md` — proposed lesson
-architecture (7 provisional lessons from the MIT 14.01SC structure), `mic`
-course code, Zambian example bank. Blocked on the owner's machine: source
-inventory of `_pipeline/ECN 1115/` + transcripts (gitignored, local-only).
-Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
+- **#70 — step page is the whole app.** `components/step-chrome.tsx` +
+  `app/steps/[slug]/chrome.css`: glass header with Clerk `<UserButton/>`
+  (its profile modal is the settings surface — Account/Security/Billing +
+  a custom Study profile page, `components/study-profile.tsx` → /api/profile),
+  a Contents pane (on-this-page ToC scanned from the rendered sections +
+  chapter nav via a new fail-soft `getCourseNav`), an AI-tutor pane
+  (placeholder chat, disabled composer; voice orb stays the ElevenLabs slot),
+  and a Community pane (the step's embedded discuss questions lifted out).
+  ≥1200px = sticky side panes; below = full-screen sheets behind a
+  Clerk-style backdrop blur. Clerk appearance = metallic neutrals + blurred
+  modalBackdrop (`app/layout.tsx`). Docs: platform/AGENTS.md "The step page
+  IS the app". Also shipped `Schools/UNZA/ECN 1115 — Microeconomics/COURSE-PREP.md`.
+- **#71 — fixed blank sign-in (a #70 regression).** #70 set
+  `appearance.cssLayerName:'clerk'`, moving all Clerk styles into a cascade
+  layer; `globals.css` has unlayered rules (`*`, `body`) and unlayered always
+  beats layered, so it silently overrode Clerk's own component CSS → blank
+  widget on production. Removed cssLayerName (only needed for Tailwind class
+  *strings* in `elements`; ours are CSS objects). **Load-bearing — don't
+  re-add cssLayerName** (noted in AGENTS.md).
+- **#72 — Microeconomics Step 1.1 "What Economics Studies".**
+  `01-foundations/sources/content_mic_1_1.py`, `access: public`, course code
+  `mic`. Universal Foundations content (scarcity, opportunity cost, marginal
+  thinking, markets, positive/normative), all ZMW/Zambian examples. **Written
+  and verified, but NOT yet published to Supabase — see hand-off #1.**
+- **#73 — signed-in checkpoint + logo removal.** `IndexUserChip` on the
+  /steps index (green "✓ Signed in" badge + UserButton, guarded by the
+  publishable-key env). Removed Clerk's card logo everywhere
+  (`options.logoPlacement:'none'` + `elements.logoBox` display:none). (Two
+  changes in one PR because the branch was shared and #72 hadn't merged yet.)
 
-**→ Linear is now the live backlog** (team Booklesss, `linear-server`). 32 open issues **BOO-6→BOO-37**: business-model audit (BOO-6→23, incl. the two Urgent Slack items) + Projects A/B/C platform/launch backlog (BOO-24→37). Start each session from Linear's Urgent/High list. The items below are the older doc-tracked carryovers not yet migrated into Linear.
+**Production auth — RESOLVED (was NOT a code bug).** A long "blank page after
+Google sign-in" debug. Root cause: the **`CLERK_SECRET_KEY` env var in Vercel
+had caption text pasted onto it** (`sk_test_…\nThese are the same keys as you
+see below.`), making the `Authorization: Bearer` header invalid →
+"unable to resolve handshake" → infinite 307 redirect loop → blank page.
+Fixed by the owner correcting the var to a clean single line + redeploy.
+Confirmed working end-to-end in the logs: `/sign-in/create/sso-callback 200`,
+`/steps 200`, `/api/profile 200`. Diagnostic lessons (also in AGENTS.md):
+handshake errors only appear for **signed-IN** traffic (clean signed-out logs
+prove nothing); each Vercel deployment bakes in the env vars it built with
+(old deployments keep old broken keys forever — check the deployment id on the
+log line); diagnose with Vercel MCP `get_runtime_logs` (filter level=error)
++ `web_fetch_vercel_url` (reads the live page's publishable key, bypassing the
+sandbox egress block).
+
+### Immediate hand-off (do these first)
+1. **Publish `mic-1-1` to Supabase** — the #1 unblock; Step 1.1 won't appear
+   until it's a row. Payload ready at `_dev/tmp/steps-json/mic-1-1.json`
+   (regenerate: `python3 _dev/step-generator/generate_step.py --emit-json
+   "Schools/UNZA/ECN 1115 — Microeconomics/01-foundations/sources/content_mic_1_1.py"`).
+   Insert into `public.steps` with `status='published'`, `access='public'`.
+   Needs the **Supabase MCP authorized** (it was NOT this session) or run SQL
+   in the dashboard. Live project: `qxbcvmzjomfwxvbqzqds`.
+2. **Microeconomics 1.2+** need the real ECN 1115 lecture files from the
+   owner's `_pipeline/ECN 1115/` (gitignored/local-only). Run the inventory
+   command in COURSE-PREP.md on the owner's machine → reconcile the
+   provisional 7-lesson plan with the real syllabus → lesson-skill → step-skill.
+3. **Housekeeping (unverified):** confirm Clerk plan slugs = `basic`/`pro`
+   (or set `CLERK_MEMBER_PLANS`); set owner `publicMetadata.role='owner'`;
+   **rotate the `sk_test_` key** (it appeared in Vercel logs in full during
+   the debug); AI-tutor chat + in-page comments are still placeholders.
+
+**Connectors not authorized this session** (OAuth needed before use):
+`supabase`, `linear-server`, `Attio`, `design-bridge`.
+
+**→ Linear is the live backlog** (team Booklesss, `linear-server`). 32 open issues **BOO-6→BOO-37**: business-model audit (BOO-6→23, incl. the two Urgent Slack items) + Projects A/B/C platform/launch backlog (BOO-24→37). Start each session from Linear's Urgent/High list. The items below are the older doc-tracked carryovers not yet migrated into Linear.
 
 **Platform — build the top nav bar (spec coming layer by layer from Framer):**
 - [ ] Fill the `{/* navbar items go here */}` placeholder in `(app)/layout.tsx` — user is providing Framer CSS specs one layer at a time; top nav container is scaffolded but empty.

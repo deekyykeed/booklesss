@@ -106,6 +106,36 @@ Clerk↔Supabase link uses a named JWT template instead of the native
 integration. Dashboard wiring: enable the Clerk↔Supabase integration in Clerk,
 and add Clerk as a third-party auth provider in Supabase → Authentication.
 
+### Blank page after sign-in = a malformed Clerk env var (2026-07-16)
+
+Seen in production: Google sign-in succeeds (the Clerk user is created) but
+every signed-in request loops `307 → 307 → …` and the browser lands on a
+blank page, with the return URL carrying a `__clerk_handshake=` token. The
+Vercel runtime logs show `Clerk: unable to resolve handshake:
+[TypeError: Headers.append: "Bearer sk_test_…" is an invalid header value]`
+and `Refreshing the session token resulted in an infinite redirect loop …
+keys do not match`.
+
+Root cause was **not code** — the `CLERK_SECRET_KEY` value in Vercel had extra
+text pasted onto it (a trailing newline + caption). Any stray whitespace/text
+makes the `Authorization: Bearer <key>` header invalid, so the middleware
+handshake throws and loops. Fix: set the env var to the **bare key on one
+line**, nothing after it, then redeploy. Publishable key too.
+
+Diagnosis notes for next time:
+- The handshake error only fires for **signed-IN** requests. Clean logs full
+  of `/sign-in 200` + `/steps 307` prove nothing — those are signed-out and
+  never trigger the handshake. Test while actually logged in.
+- **Each Vercel deployment bakes in the env vars it was built with.** After
+  editing an env var you MUST redeploy, and old deployments keep the old
+  (broken) value forever — check the `dep=…` id on the log line to know which
+  build you're looking at.
+- Diagnose from a cloud session with the **Vercel MCP**: `get_runtime_logs`
+  (filter `level:["error"]`, scope by `deploymentId`) for the handshake error,
+  and `web_fetch_vercel_url` to read the live page — it returns the rendered
+  HTML incl. the `data-clerk-publishable-key`, bypassing the sandbox's
+  `*.vercel.app` egress block, so you can confirm the publishable key is clean.
+
 ## Deployment (Vercel)
 
 Project `booklesss` on the owner's personal team (Hobby plan), root directory
