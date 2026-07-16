@@ -4,12 +4,15 @@ import { useEffect, useRef, useState } from 'react'
 import { UserButton } from '@clerk/nextjs'
 import { StudyProfileSettings } from '@/components/study-profile'
 
-// The step page is the whole app: this chrome layers everything else on top
-// of the reading column. Header (wordmark, course chip, panel buttons, Clerk
-// UserButton), a reading-progress hairline, and three panels — Contents,
-// AI tutor, Community. On wide screens the panels are sticky side panes;
-// below 1200px they open as full-screen sheets behind a Clerk-style
-// backdrop blur. Styles live in app/steps/[slug]/chrome.css (bkc-*).
+// The step page is the whole app, framed like a docs site (structure
+// studied from Clerk's docs — see _dev/design-reference/clerk-docs/):
+// flat header (wordmark, panel buttons, Clerk UserButton) over a
+// three-column frame — left sidebar is the course map, the reading column
+// carries a breadcrumb and a prev/next step pager, the right rail is the
+// step's "On this page" ToC plus meta. AI tutor and Community open as
+// sheets/popovers from the header at every width; below 1200px the
+// sidebar+ToC join them behind a Clerk-style backdrop blur. Styles live
+// in app/steps/[slug]/chrome.css (bkc-*).
 //
 // Clerk carries the identity surface: the UserButton popover is the account
 // menu, and its profile modal (Account / Security / Billing when enabled)
@@ -135,15 +138,16 @@ export function StepChrome({
     }
   }, [])
 
-  // Sheet hygiene: lock body scroll, close on Escape, and close if the
-  // viewport grows into the side-pane layout.
+  // Sheet hygiene: lock body scroll, close on Escape, and close the
+  // Contents sheet if the viewport grows into the sidebar layout (tutor
+  // and community stay sheet-borne at every width).
   useEffect(() => {
     if (!open) return
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(null)
     const mq = window.matchMedia('(min-width: 1200px)')
-    const onMq = () => mq.matches && setOpen(null)
+    const onMq = () => mq.matches && open === 'contents' && setOpen(null)
     window.addEventListener('keydown', onKey)
     mq.addEventListener('change', onMq)
     return () => {
@@ -161,50 +165,65 @@ export function StepChrome({
 
   const lessons = [...new Set(nav.map((s) => s.lesson ?? 0))].sort((a, b) => a - b)
 
+  const idx = nav.findIndex((s) => s.slug === current)
+  const cur = idx >= 0 ? nav[idx] : null
+  const prevStep = idx > 0 ? nav[idx - 1] : null
+  const nextStep = idx >= 0 && idx < nav.length - 1 ? nav[idx + 1] : null
+
+  const chapterNav = (
+    <>
+      {lessons.map((l) => (
+        <div key={l}>
+          {l > 0 && lessons.length > 1 && <p className="bkc-lesson">Lesson {l}</p>}
+          <ul className="bkc-chapters">
+            {nav
+              .filter((s) => (s.lesson ?? 0) === l)
+              .map((s) => (
+                <li key={s.slug}>
+                  <a
+                    href={`/steps/${s.slug}`}
+                    className={s.slug === current ? 'bkc-current' : undefined}
+                    aria-current={s.slug === current ? 'page' : undefined}
+                  >
+                    {s.step_label && <span className="bkc-steplabel">{s.step_label.replace(/^Step /, '')}</span>}
+                    <span>{s.title}</span>
+                  </a>
+                </li>
+              ))}
+          </ul>
+        </div>
+      ))}
+    </>
+  )
+
+  const tocList = (
+    <ul className="bkc-toc">
+      {toc.map((t) => (
+        <li key={t.id}>
+          <a
+            href={`#${t.id}`}
+            onClick={jump(t.id)}
+            className={t.id === activeId ? 'bkc-active' : undefined}
+          >
+            {t.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+
   const contentsPanel = (
     <>
       {toc.length > 0 && (
         <section className="bkc-card">
           <h3 className="bkc-card-label"><Ic id="ic-doc" size={16} /> On this page</h3>
-          <ul className="bkc-toc">
-            {toc.map((t) => (
-              <li key={t.id}>
-                <a
-                  href={`#${t.id}`}
-                  onClick={jump(t.id)}
-                  className={t.id === activeId ? 'bkc-active' : undefined}
-                >
-                  {t.label}
-                </a>
-              </li>
-            ))}
-          </ul>
+          {tocList}
         </section>
       )}
       {nav.length > 0 && (
         <section className="bkc-card">
           <h3 className="bkc-card-label"><Ic id="ic-book-duo" size={16} /> Course steps</h3>
-          {lessons.map((l) => (
-            <div key={l}>
-              {l > 0 && lessons.length > 1 && <p className="bkc-lesson">Lesson {l}</p>}
-              <ul className="bkc-chapters">
-                {nav
-                  .filter((s) => (s.lesson ?? 0) === l)
-                  .map((s) => (
-                    <li key={s.slug}>
-                      <a
-                        href={`/steps/${s.slug}`}
-                        className={s.slug === current ? 'bkc-current' : undefined}
-                        aria-current={s.slug === current ? 'page' : undefined}
-                      >
-                        {s.step_label && <span className="bkc-steplabel">{s.step_label.replace(/^Step /, '')}</span>}
-                        <span>{s.title}</span>
-                      </a>
-                    </li>
-                  ))}
-              </ul>
-            </div>
-          ))}
+          {chapterNav}
         </section>
       )}
     </>
@@ -257,20 +276,21 @@ export function StepChrome({
     community: communityPanel,
   }
 
+  const hasCrumbs = Boolean(courseChip && cur?.step_label)
+
   return (
-    <div className="bkc-root" ref={rootRef}>
+    <div className={hasCrumbs ? 'bkc-root bkc-has-crumbs' : 'bkc-root'} ref={rootRef}>
       <header className="bkc-header">
         <a className="bkc-brand" href="/steps">
           <BrandMark />
           <span>Booklesss<span className="bkc-dot">.</span></span>
         </a>
-        {courseChip && <span className="bkc-chip">{courseChip}</span>}
         <div className="bkc-actions">
           {(Object.keys(PANEL_TITLES) as PanelId[]).map((id) => (
             <button
               key={id}
               type="button"
-              className="bkc-iconbtn bkc-paneline"
+              className={id === 'contents' ? 'bkc-iconbtn bkc-paneline' : 'bkc-iconbtn'}
               aria-label={PANEL_TITLES[id]}
               aria-pressed={open === id}
               onClick={() => setOpen(open === id ? null : id)}
@@ -323,13 +343,68 @@ export function StepChrome({
       </div>
 
       <div className="bkc-grid">
-        <aside className="bkc-pane bkc-left" aria-label="Contents">
-          {contentsPanel}
+        <aside className="bkc-pane bkc-left" aria-label="Course steps">
+          {courseChip && <p className="bkc-course">{courseChip}</p>}
+          {nav.length > 0 && <nav aria-label="Course steps">{chapterNav}</nav>}
         </aside>
-        <main className="bkc-main">{children}</main>
-        <aside className="bkc-pane bkc-right" aria-label="Community and AI tutor">
-          {communityPanel}
-          {tutorPanel}
+
+        <main className="bkc-main">
+          <nav className="bkc-crumbs" aria-label="Breadcrumb">
+            <a href="/steps">{courseChip ?? 'All steps'}</a>
+            {cur?.lesson != null && cur.lesson > 0 && (
+              <>
+                <span className="bkc-crumb-sep">/</span>
+                <span>Lesson {cur.lesson}</span>
+              </>
+            )}
+            {cur?.step_label && (
+              <>
+                <span className="bkc-crumb-sep">/</span>
+                <span className="bkc-crumb-here">{cur.step_label}</span>
+              </>
+            )}
+          </nav>
+
+          {children}
+
+          {(prevStep || nextStep) && (
+            <nav className="bkc-pager" aria-label="Previous and next step">
+              {prevStep ? (
+                <a href={`/steps/${prevStep.slug}`}>
+                  <span className="bkc-pager-dir">Previous</span>
+                  <span className="bkc-pager-title">{prevStep.title}</span>
+                </a>
+              ) : (
+                <span />
+              )}
+              {nextStep ? (
+                <a className="bkc-pager-next" href={`/steps/${nextStep.slug}`}>
+                  <span className="bkc-pager-dir">Next</span>
+                  <span className="bkc-pager-title">{nextStep.title}</span>
+                </a>
+              ) : (
+                <span />
+              )}
+            </nav>
+          )}
+        </main>
+
+        <aside className="bkc-pane bkc-right" aria-label="On this page">
+          {toc.length > 0 && (
+            <>
+              <p className="bkc-rail-label">On this page</p>
+              {tocList}
+            </>
+          )}
+          <div className="bkc-rail-meta">
+            {cur?.minutes != null && <span>~{cur.minutes} min read</span>}
+            <button type="button" onClick={() => setOpen('community')}>
+              Discuss this step
+            </button>
+            <button type="button" onClick={() => setOpen('tutor')}>
+              Ask the AI tutor
+            </button>
+          </div>
         </aside>
       </div>
 
