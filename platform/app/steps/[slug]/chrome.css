@@ -445,7 +445,117 @@
 }
 .bkc-cmdk-empty { padding: 1.2rem 0.7rem; text-align: center; font-size: 0.85rem; color: var(--bkc-meta); }
 
+/* ── Course switcher (sidebar top) ──────────────────────────────────── */
+
+.bkc-switcher { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; width: 100%; }
+.bkc-switch-btn {
+  display: inline-flex; align-items: center; gap: 0.3rem; min-width: 0;
+  font-family: "Parastoo", serif; font-weight: 700; font-size: 1.02rem; line-height: 1.2;
+  color: var(--bkc-ink); background: none; border: none; cursor: pointer;
+  padding: 0.15rem 0.3rem; margin-left: -0.3rem; border-radius: 0.5rem;
+}
+.bkc-switch-btn:hover { background: rgba(24, 24, 27, 0.04); }
+.bkc-switch-course { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bkc-switch-caret { flex: none; color: var(--bkc-meta); }
+.bkc-switch-menu {
+  position: absolute; top: calc(100% + 0.45rem); left: -0.3rem; z-index: 40;
+  min-width: 12.5rem; padding: 0.35rem;
+  background: var(--bkc-metal-card); border: 1px solid var(--bkc-hairline);
+  border-radius: 0.8rem; box-shadow: var(--bkc-pop-shadow);
+  animation: bkc-rise 0.16s ease;
+}
+.bkc-switch-menu-label {
+  font-family: var(--bkc-label-font); font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--bkc-meta);
+  margin: 0.25rem 0.55rem 0.4rem;
+}
+.bkc-switch-item {
+  display: block; padding: 0.45rem 0.55rem; border-radius: 0.55rem;
+  font-size: 0.86rem; color: var(--bkc-steel); text-decoration: none;
+}
+.bkc-switch-item:hover { background: rgba(24, 24, 27, 0.05); color: var(--bkc-ink); }
+
+/* Collapsible lesson header (was a static <p>). */
+.bkc-lesson-btn {
+  display: flex; align-items: center; gap: 0.3rem; width: 100%;
+  background: none; border: none; cursor: pointer; text-align: left;
+}
+.bkc-lesson-btn:hover { color: var(--bkc-steel); }
+.bkc-lesson-caret { flex: none; color: var(--bkc-meta); transition: transform 0.15s ease; }
+.bkc-lesson-caret.bkc-open { transform: rotate(90deg); }
+
+/* ── Theme toggle ───────────────────────────────────────────────────── */
+
+.bkc-themetoggle .bkc-moon { display: none; }
+:root[data-theme="dark"] .bkc-themetoggle .bkc-sun { display: none; }
+:root[data-theme="dark"] .bkc-themetoggle .bkc-moon { display: block; }
+
+/* ── Right-rail footer ──────────────────────────────────────────────── */
+
+.bkc-rail-foot {
+  display: flex; flex-direction: column; gap: 0.05rem;
+  margin-top: 0.3rem; padding-top: 0.5rem;
+  border-top: 1px solid var(--bkc-hairline-soft);
+}
+.bkc-rail-link {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  padding: 0.42rem 0.4rem; border-radius: 0.5rem;
+  background: none; border: none; cursor: pointer; font: inherit;
+  font-size: 0.8rem; color: var(--bkc-steel); text-decoration: none;
+}
+.bkc-rail-link:hover { color: var(--bkc-ink); background: rgba(24, 24, 27, 0.04); }
+.bkc-rail-link svg { flex: none; color: var(--bkc-meta); }
+
+/* ── Dark theme (v1: token overrides) ───────────────────────────────── */
+/* step.css and chrome.css both drive their colours from CSS variables, so
+   redefining the tokens flips most of the surface. A few hardcoded light
+   spots are patched below; deeper content theming is a follow-up. */
+
+:root[data-theme="dark"] {
+  --canvas: #17161a;
+  --surface: #201f24;
+  --ink: #ececee;
+  --steel: #b7b1a6;
+  --meta: #8b8578;
+  --border: #302e34;
+  --amber: #e08258;
+  --amber-soft: rgba(224, 130, 88, 0.12);
+  --amber-line: rgba(224, 130, 88, 0.42);
+  --tip-bg: #201f24;
+  --tip-ink: #ececee;
+  --tip-steel: #b7b1a6;
+  --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+}
+
+:root[data-theme="dark"] .bkc-root {
+  --bkc-ink: #ececee;
+  --bkc-steel: #b7b1a6;
+  --bkc-meta: #8b8578;
+  --bkc-amber: #e08258;
+  --bkc-hairline: rgba(255, 255, 255, 0.10);
+  --bkc-hairline-soft: rgba(255, 255, 255, 0.06);
+  --bkc-metal: linear-gradient(180deg, #2a282e 0%, #232127 45%, #1e1c22 100%);
+  --bkc-metal-card: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 18%),
+    linear-gradient(180deg, #242228 0%, #1d1b21 100%);
+  --bkc-sheen: inset 0 1px 0 rgba(255, 255, 255, 0.06), inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+  --bkc-pop-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.6), 0 4px 16px -8px rgba(0, 0, 0, 0.4);
+}
+:root[data-theme="dark"] .bkc-header {
+  background: color-mix(in srgb, #17161a 80%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+:root[data-theme="dark"] .bkc-search { background: color-mix(in srgb, #ffffff 7%, transparent); }
+:root[data-theme="dark"] .bkc-bubble { background: #232127; border-color: rgba(255, 255, 255, 0.08); }
+:root[data-theme="dark"] .bkc-composer input { background: #232127; }
+:root[data-theme="dark"] .bkc-composer input:disabled { background: #1d1b21; }
+:root[data-theme="dark"] .bkc-toc a:hover,
+:root[data-theme="dark"] .bkc-tree-list a:hover,
+:root[data-theme="dark"] .bkc-switch-btn:hover,
+:root[data-theme="dark"] .bkc-switch-item:hover,
+:root[data-theme="dark"] .bkc-rail-link:hover { background: rgba(255, 255, 255, 0.06); }
+:root[data-theme="dark"] .bkc-tree-list a.bkc-current { background: linear-gradient(90deg, rgba(224, 130, 88, 0.16), transparent 70%); }
+
 @media (prefers-reduced-motion: reduce) {
-  .bkc-backdrop, .bkc-sheet, .bkc-cmdk { animation: none; }
-  .bkc-iconbtn, .bkc-pager-btn, .bkc-search { transition: none; }
+  .bkc-backdrop, .bkc-sheet, .bkc-cmdk, .bkc-switch-menu { animation: none; }
+  .bkc-iconbtn, .bkc-pager-btn, .bkc-search, .bkc-lesson-caret { transition: none; }
 }

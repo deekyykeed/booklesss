@@ -27,6 +27,12 @@ export type NavStep = {
   minutes: number | null
 }
 
+export type CourseLink = {
+  course_code: string
+  label: string
+  href: string
+}
+
 type TocItem = { id: string; label: string; eyebrow: string | null }
 type PanelId = 'nav' | 'onpage' | 'tutor' | 'community'
 
@@ -91,12 +97,16 @@ export function StepChrome({
   courseChip,
   current,
   nav,
+  courses = [],
+  currentCourse,
   children,
 }: {
   hasClerk: boolean
   courseChip: string | null
   current: string
   nav: NavStep[]
+  courses?: CourseLink[]
+  currentCourse?: string
   children: React.ReactNode
 }) {
   const [toc, setToc] = useState<TocItem[]>([])
@@ -107,8 +117,32 @@ export function StepChrome({
   const [searchOpen, setSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [cursor, setCursor] = useState(0)
+  const [switcherOpen, setSwitcherOpen] = useState(false)
+  // Long courses: collapse every lesson except the one holding the current
+  // step, like a docs sidebar that auto-opens the active section.
+  const [collapsed, setCollapsed] = useState<Set<number>>(() => {
+    const cur = nav.find((s) => s.slug === current)?.lesson ?? 0
+    const all = [...new Set(nav.map((s) => s.lesson ?? 0))]
+    return new Set(all.filter((l) => l > 0 && l !== cur))
+  })
   const rootRef = useRef<HTMLDivElement>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
+  const switcherRef = useRef<HTMLDivElement>(null)
+
+  // Theme lives on the document root (set pre-paint by the boot script in
+  // layout.tsx, so no flash and no hydration mismatch). The toggle just flips
+  // data-theme and persists — no React state, so the button markup is
+  // theme-independent and the sun/moon swap is pure CSS.
+  const toggleTheme = () => {
+    const root = document.documentElement
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark'
+    root.dataset.theme = next
+    try {
+      localStorage.setItem('bkc-theme', next)
+    } catch {
+      // storage blocked (private mode) — theme still applies for this session
+    }
+  }
 
   // Build the on-this-page list from the rendered step sections, and lift the
   // step's embedded discussion questions into the Community panel.
@@ -206,11 +240,36 @@ export function StepChrome({
     }
   }, [open, searchOpen])
 
+  // Close the course switcher on outside click or Escape.
+  useEffect(() => {
+    if (!switcherOpen) return
+    const onDown = (e: MouseEvent) => {
+      if (switcherRef.current && !switcherRef.current.contains(e.target as Node)) {
+        setSwitcherOpen(false)
+      }
+    }
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setSwitcherOpen(false)
+    document.addEventListener('mousedown', onDown)
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onDown)
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [switcherOpen])
+
   const jump = (id: string) => (e: React.MouseEvent) => {
     e.preventDefault()
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     setOpen(null)
   }
+
+  const toggleLesson = (l: number) =>
+    setCollapsed((prev) => {
+      const next = new Set(prev)
+      if (next.has(l)) next.delete(l)
+      else next.add(l)
+      return next
+    })
 
   const lessons = [...new Set(nav.map((s) => s.lesson ?? 0))].sort((a, b) => a - b)
 
@@ -246,43 +305,102 @@ export function StepChrome({
 
   // ── Panels ────────────────────────────────────────────────────────────
 
+  const courseName = (courseChip ?? '').split('·')[0].trim() || courseChip || 'Course'
+  const otherCourses = courses.filter((c) => c.course_code !== currentCourse)
+  const canSwitch = otherCourses.length > 0
+
+  const switcher = (
+    <div className="bkc-switcher" ref={switcherRef}>
+      {canSwitch ? (
+        <button
+          type="button"
+          className="bkc-switch-btn"
+          aria-haspopup="menu"
+          aria-expanded={switcherOpen}
+          onClick={() => setSwitcherOpen((v) => !v)}
+        >
+          <span className="bkc-switch-course">{courseName}</span>
+          <svg className="bkc-switch-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M7 10l5 5 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      ) : (
+        <span className="bkc-tree-course">{courseName}</span>
+      )}
+      {nav.length > 0 && (
+        <span className="bkc-tree-count">
+          {nav.length} step{nav.length === 1 ? '' : 's'}
+        </span>
+      )}
+      {canSwitch && switcherOpen && (
+        <div className="bkc-switch-menu" role="menu">
+          <p className="bkc-switch-menu-label">Switch course</p>
+          {otherCourses.map((c) => (
+            <Link
+              key={c.course_code}
+              href={c.href}
+              className="bkc-switch-item"
+              role="menuitem"
+              onClick={() => setSwitcherOpen(false)}
+            >
+              {c.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+
   const navTree = (
     <nav className="bkc-tree" aria-label="Course contents">
-      <div className="bkc-tree-head">
-        <span className="bkc-tree-course">{courseChip ?? 'Course'}</span>
-        {nav.length > 0 && (
-          <span className="bkc-tree-count">
-            {nav.length} step{nav.length === 1 ? '' : 's'}
-          </span>
-        )}
-      </div>
+      <div className="bkc-tree-head">{switcher}</div>
       {nav.length === 0 ? (
         <p className="bkc-community-note">Course steps will appear here.</p>
       ) : (
-        lessons.map((l) => (
-          <div className="bkc-tree-group" key={l}>
-            {l > 0 && lessons.length > 1 && <p className="bkc-lesson">Lesson {l}</p>}
-            <ul className="bkc-tree-list">
-              {nav
-                .filter((s) => (s.lesson ?? 0) === l)
-                .map((s) => (
-                  <li key={s.slug}>
-                    <a
-                      href={`/steps/${s.slug}`}
-                      className={s.slug === current ? 'bkc-current' : undefined}
-                      aria-current={s.slug === current ? 'page' : undefined}
-                      onClick={() => setOpen(null)}
-                    >
-                      {s.step_label && (
-                        <span className="bkc-steplabel">{s.step_label.replace(/^Step /, '')}</span>
-                      )}
-                      <span className="bkc-tree-title">{s.title}</span>
-                    </a>
-                  </li>
-                ))}
-            </ul>
-          </div>
-        ))
+        lessons.map((l) => {
+          const items = nav.filter((s) => (s.lesson ?? 0) === l)
+          const collapsible = l > 0 && lessons.length > 1
+          const isOpen = !collapsed.has(l)
+          return (
+            <div className="bkc-tree-group" key={l}>
+              {collapsible && (
+                <button
+                  type="button"
+                  className="bkc-lesson bkc-lesson-btn"
+                  aria-expanded={isOpen}
+                  onClick={() => toggleLesson(l)}
+                >
+                  <svg
+                    className={`bkc-lesson-caret${isOpen ? ' bkc-open' : ''}`}
+                    width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+                  >
+                    <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  Lesson {l}
+                </button>
+              )}
+              {isOpen && (
+                <ul className="bkc-tree-list">
+                  {items.map((s) => (
+                    <li key={s.slug}>
+                      <a
+                        href={`/steps/${s.slug}`}
+                        className={s.slug === current ? 'bkc-current' : undefined}
+                        aria-current={s.slug === current ? 'page' : undefined}
+                        onClick={() => setOpen(null)}
+                      >
+                        {s.step_label && (
+                          <span className="bkc-steplabel">{s.step_label.replace(/^Step /, '')}</span>
+                        )}
+                        <span className="bkc-tree-title">{s.title}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )
+        })
       )}
     </nav>
   )
@@ -400,6 +518,20 @@ export function StepChrome({
               <Ic id={PANEL_ICONS[id]} />
             </button>
           ))}
+          <button
+            type="button"
+            className="bkc-iconbtn bkc-themetoggle"
+            aria-label="Toggle light or dark theme"
+            onClick={toggleTheme}
+          >
+            <svg className="bkc-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="1.7" />
+              <path d="M12 2.5v2.2M12 19.3v2.2M4.5 4.5l1.6 1.6M17.9 17.9l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.5 19.5l1.6-1.6M17.9 6.1l1.6-1.6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+            </svg>
+            <svg className="bkc-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M20 14.5A8 8 0 1 1 9.5 4a6.3 6.3 0 0 0 10.5 10.5Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+            </svg>
+          </button>
           {hasClerk && (
             <div className="bkc-user">
               <UserButton
@@ -502,6 +634,21 @@ export function StepChrome({
           {onPageCard}
           {communityPanel}
           {tutorPanel}
+          <div className="bkc-rail-foot">
+            <button
+              type="button"
+              className="bkc-rail-link"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 19V6M6 11l6-6 6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Back to top
+            </button>
+            <Link className="bkc-rail-link" href="/steps">
+              <Ic id="ic-book" size={14} /> All courses
+            </Link>
+          </div>
         </aside>
       </div>
 

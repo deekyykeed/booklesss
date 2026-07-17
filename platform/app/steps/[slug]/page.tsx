@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { canReadStep } from '@/lib/access'
 import { AuthBrand } from '@/components/auth-brand'
-import { StepChrome, type NavStep } from '@/components/step-chrome'
+import { StepChrome, type NavStep, type CourseLink } from '@/components/step-chrome'
 import shell from './shell-parts.json'
 import './step.css'
 import './chrome.css'
@@ -76,6 +76,36 @@ const getCourseNav = cache(async (courseCode: string): Promise<NavStep[]> => {
   }
 })
 
+// The set of courses a student can switch between, for the sidebar course
+// switcher (the docs "SDK switcher" analogue). One entry per published course,
+// pointing at that course's first step. Fail-soft: any error → empty list, and
+// the switcher degrades to a static course name.
+const getCourses = cache(async (): Promise<CourseLink[]> => {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return []
+  }
+  try {
+    const supabase = await createClient()
+    const { data } = await supabase
+      .from('steps')
+      .select('slug, course_code, course_chip')
+      .eq('status', 'published')
+      .neq('access', 'internal')
+      .order('course_code')
+      .order('lesson')
+      .order('step_label')
+    const seen = new Map<string, CourseLink>()
+    for (const r of (data as { slug: string; course_code: string; course_chip: string | null }[]) ?? []) {
+      if (seen.has(r.course_code)) continue
+      const label = (r.course_chip ?? '').split('·')[0].trim() || r.course_code
+      seen.set(r.course_code, { course_code: r.course_code, label, href: `/steps/${r.slug}` })
+    }
+    return [...seen.values()]
+  } catch {
+    return []
+  }
+})
+
 export async function generateMetadata({
   params,
 }: {
@@ -140,6 +170,7 @@ export default async function StepPage({
     glossary: step.glossary ?? {},
   })
   const nav = await getCourseNav(step.course_code)
+  const courses = await getCourses()
 
   return (
     <StepChrome
@@ -147,6 +178,8 @@ export default async function StepPage({
       courseChip={step.course_chip}
       current={step.slug}
       nav={nav}
+      courses={courses}
+      currentCourse={step.course_code}
     >
       <div className="step-shell">
         <div dangerouslySetInnerHTML={{ __html: shell.sprite }} />
