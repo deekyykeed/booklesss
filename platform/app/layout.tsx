@@ -29,6 +29,21 @@ const parastoo = localFont({
   display: 'swap',
 })
 
+// Poppins carries button text (the docs chrome); Satoshi carries the smaller
+// supporting text. Poppins is vendored from @fontsource; Satoshi is loaded via
+// an @font-face in globals.css (its files aren't redistributable on npm) and
+// falls back to Poppins/system until the woff2 is dropped into public/fonts.
+const poppins = localFont({
+  src: [
+    { path: '../public/fonts/Poppins-400.woff2', weight: '400', style: 'normal' },
+    { path: '../public/fonts/Poppins-500.woff2', weight: '500', style: 'normal' },
+    { path: '../public/fonts/Poppins-600.woff2', weight: '600', style: 'normal' },
+    { path: '../public/fonts/Poppins-700.woff2', weight: '700', style: 'normal' },
+  ],
+  variable: '--font-poppins',
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
   title: 'Booklesss',
   description: 'Smarter notes for Zambian university students.',
@@ -36,7 +51,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const tree = (
-    <html lang="en" className={`${aptos.variable} ${parastoo.variable}`}>
+    <html lang="en" className={`${aptos.variable} ${parastoo.variable} ${poppins.variable}`}>
       <head>
         {/* Apply the saved (or system) theme before paint — no flash, and it
             leaves the toggle markup theme-independent so there's no hydration

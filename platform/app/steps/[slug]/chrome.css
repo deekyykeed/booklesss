@@ -17,12 +17,36 @@
     linear-gradient(180deg, #fbfbf9 0%, #f3f2ee 100%);
   --bkc-sheen: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(24, 24, 27, 0.03);
   --bkc-pop-shadow: 0 24px 60px -24px rgba(24, 24, 27, 0.35), 0 4px 16px -8px rgba(24, 24, 27, 0.12);
-  --bkc-label-font: "Parkinsans", "Onest", system-ui, sans-serif;
+  /* Small supporting labels ride the Satoshi stack (falls back to Poppins). */
+  --bkc-label-font: var(--font-satoshi-stack);
   /* Sidebar folder-tree: faint branch guide lines + a solid dark active bar. */
   --bkc-tree-line: rgba(24, 24, 27, 0.14);
   --bkc-tree-active: #18181b;
   --bkc-current-bg: rgba(24, 24, 27, 0.05);
+  /* Course-selector panel (the "Select your SDK" block). */
+  --bkc-sdk-panel: #f3f2ee;
+  --bkc-sdk-btn-bg: #ffffff;
+  /* Squircle roundness used across the chrome (progressive: corner-shape). */
+  --bkc-squircle: superellipse(1.4);
   min-height: 100vh;
+  /* Chrome body copy defaults to Satoshi; buttons override to Poppins. The
+     reading column (.step-shell) keeps its own scoped typography. */
+  font-family: var(--font-satoshi-stack);
+}
+
+/* Button text across the docs chrome is Poppins. */
+.bkc-sdk-name, .bkc-sdk-item, .bkc-section, .bkc-tree-title,
+.bkc-pager-title, .bkc-rail-link, .bkc-search-label, .bkc-switch-btn {
+  font-family: var(--font-poppins-stack);
+}
+
+/* Squircle corners throughout (ignored where corner-shape is unsupported,
+   falling back to the plain border-radius already on each element). */
+.bkc-card, .bkc-iconbtn, .bkc-search, .bkc-chip,
+.bkc-sdk, .bkc-sdk-btn, .bkc-sdk-menu, .bkc-sdk-item, .bkc-section,
+.bkc-pager-btn, .bkc-sheet, .bkc-cmdk, .bkc-theme-seg, .bkc-theme-opt,
+.bkc-switch-menu, .bkc-tree-list a, .bkc-toc a {
+  corner-shape: var(--bkc-squircle);
 }
 
 /* The chrome header replaces the shell's own topbar. */
@@ -603,6 +627,8 @@
   --bkc-tree-line: rgba(255, 255, 255, 0.14);
   --bkc-tree-active: #ececee;
   --bkc-current-bg: rgba(255, 255, 255, 0.06);
+  --bkc-sdk-panel: rgba(255, 255, 255, 0.04);
+  --bkc-sdk-btn-bg: #26242b;
 }
 :root[data-theme="dark"] .bkc-header {
   background: color-mix(in srgb, #17161a 80%, transparent);
@@ -620,23 +646,27 @@
 
 /* ── Course selector ("Select your course") ─────────────────────────── */
 
-.bkc-sdk { position: relative; margin-bottom: 0.7rem; }
+.bkc-sdk {
+  position: relative; margin-bottom: 0.85rem;
+  padding: 0.7rem 0.7rem 0.65rem; border-radius: 1.1rem;
+  background: var(--bkc-sdk-panel); border: 1px solid var(--bkc-hairline-soft);
+}
 .bkc-sdk-label {
-  font-family: var(--bkc-label-font); font-size: 0.72rem; font-weight: 700;
-  color: var(--bkc-ink); margin: 0 0 0.45rem; padding: 0 0.15rem;
+  font-family: var(--font-satoshi-stack); font-size: 0.8rem; font-weight: 600;
+  color: var(--bkc-ink); margin: 0 0 0.5rem; padding: 0 0.2rem;
 }
 .bkc-sdk-btn {
   display: flex; align-items: center; gap: 0.6rem; width: 100%;
-  padding: 0.62rem 0.7rem; border-radius: 0.8rem;
-  border: 1px solid var(--bkc-hairline); background: var(--bkc-metal-card);
-  box-shadow: var(--bkc-sheen), 0 1px 2px rgba(24, 24, 27, 0.05);
+  padding: 0.62rem 0.7rem; border-radius: 0.85rem;
+  border: 1px solid var(--bkc-hairline); background: var(--bkc-sdk-btn-bg);
+  box-shadow: 0 1px 2px rgba(24, 24, 27, 0.05), 0 1px 3px rgba(24, 24, 27, 0.08);
   color: var(--bkc-ink); font: inherit; cursor: pointer; text-align: left;
 }
 .bkc-sdk-btn:disabled { cursor: default; }
-.bkc-sdk-btn:not(:disabled):hover { border-color: rgba(24, 24, 27, 0.18); }
+.bkc-sdk-btn:not(:disabled):hover { border-color: rgba(24, 24, 27, 0.2); }
 .bkc-sdk-mark { flex: none; display: inline-flex; color: var(--bkc-amber); }
 .bkc-sdk-name {
-  flex: 1; min-width: 0; font-weight: 600; font-size: 0.95rem;
+  flex: 1; min-width: 0; font-weight: 500; font-size: 1rem;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .bkc-sdk-caret { flex: none; color: var(--bkc-meta); }
