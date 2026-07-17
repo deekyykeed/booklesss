@@ -34,19 +34,33 @@ export type CourseLink = {
 }
 
 type TocItem = { id: string; label: string; eyebrow: string | null }
-type PanelId = 'nav' | 'onpage' | 'tutor' | 'community'
+// The course sidebar is NOT a sheet — on mobile it's an off-canvas panel the
+// app slides over (see navOpen). These are the reading-aid panels only.
+type PanelId = 'onpage' | 'tutor' | 'community'
 
 const PANEL_TITLES: Record<PanelId, string> = {
-  nav: 'Course',
   onpage: 'On this page',
   tutor: 'AI tutor',
   community: 'Community',
 }
 const PANEL_ICONS: Record<PanelId, string> = {
-  nav: 'ic-book-duo',
   onpage: 'ic-doc',
   tutor: 'ic-stars-duo',
   community: 'ic-chat',
+}
+
+// A horizontal swipe should not fight a horizontally-scrollable table or code
+// block: bail if the gesture began inside one.
+function startedInScrollableX(target: EventTarget | null): boolean {
+  let n = target as HTMLElement | null
+  while (n && n !== document.body) {
+    const s = getComputedStyle(n)
+    if ((s.overflowX === 'auto' || s.overflowX === 'scroll') && n.scrollWidth > n.clientWidth) {
+      return true
+    }
+    n = n.parentElement
+  }
+  return false
 }
 
 function Ic({ id, size = 18 }: { id: string; size?: number }) {
@@ -91,6 +105,29 @@ function Chevron() {
     </svg>
   )
 }
+function MoonGlyph() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M20 14.5A8 8 0 1 1 9.5 4a6.3 6.3 0 0 0 10.5 10.5Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+    </svg>
+  )
+}
+function SunGlyph() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M12 2.5v2.2M12 19.3v2.2M4.5 4.5l1.6 1.6M17.9 17.9l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.5 19.5l1.6-1.6M17.9 6.1l1.6-1.6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  )
+}
+function MonitorGlyph() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="3" y="4.5" width="18" height="12" rx="1.6" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M9 20h6M12 16.5V20" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  )
+}
 
 export function StepChrome({
   hasClerk,
@@ -118,6 +155,9 @@ export function StepChrome({
   const [query, setQuery] = useState('')
   const [cursor, setCursor] = useState(0)
   const [switcherOpen, setSwitcherOpen] = useState(false)
+  // Mobile off-canvas course sidebar: when open, the whole app slides right.
+  const [navOpen, setNavOpen] = useState(false)
+  const touchRef = useRef<{ x: number; y: number; skip: boolean } | null>(null)
   // Long courses: collapse every lesson except the one holding the current
   // step, like a docs sidebar that auto-opens the active section.
   const [collapsed, setCollapsed] = useState<Set<number>>(() => {
@@ -130,19 +170,39 @@ export function StepChrome({
   const switcherRef = useRef<HTMLDivElement>(null)
 
   // Theme lives on the document root (set pre-paint by the boot script in
-  // layout.tsx, so no flash and no hydration mismatch). The toggle just flips
-  // data-theme and persists — no React state, so the button markup is
-  // theme-independent and the sun/moon swap is pure CSS.
-  const toggleTheme = () => {
+  // layout.tsx, so no flash and no hydration mismatch). `data-theme` is the
+  // resolved light/dark; `data-theme-mode` is the chosen mode incl. 'system'.
+  // No React state — the active segment highlights via CSS off data-theme-mode,
+  // so the markup is theme-independent and hydration-safe.
+  const setThemeMode = (mode: 'light' | 'dark' | 'system') => {
     const root = document.documentElement
-    const next = root.dataset.theme === 'dark' ? 'light' : 'dark'
-    root.dataset.theme = next
+    root.dataset.themeMode = mode
+    const resolved =
+      mode === 'system'
+        ? window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light'
+        : mode
+    root.dataset.theme = resolved
     try {
-      localStorage.setItem('bkc-theme', next)
+      if (mode === 'system') localStorage.removeItem('bkc-theme')
+      else localStorage.setItem('bkc-theme', mode)
     } catch {
       // storage blocked (private mode) — theme still applies for this session
     }
   }
+
+  // While in 'system' mode, track OS theme changes live (DOM writes only).
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    const onChange = () => {
+      if (document.documentElement.dataset.themeMode === 'system') {
+        document.documentElement.dataset.theme = mq.matches ? 'dark' : 'light'
+      }
+    }
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
 
   // Build the on-this-page list from the rendered step sections, and lift the
   // step's embedded discussion questions into the Community panel.
@@ -218,7 +278,7 @@ export function StepChrome({
   // on Escape, and dismiss side sheets if the viewport grows into the pane
   // layout. Focus the search input when the palette opens.
   useEffect(() => {
-    const anyOpen = open || searchOpen
+    const anyOpen = open || searchOpen || navOpen
     if (!anyOpen) return
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -226,19 +286,45 @@ export function StepChrome({
       if (e.key === 'Escape') {
         setOpen(null)
         setSearchOpen(false)
+        setNavOpen(false)
       }
     }
-    const mq = window.matchMedia('(min-width: 1200px)')
-    const onMq = () => mq.matches && setOpen(null)
+    // Reading-aid panes appear at ≥1200px; the course sidebar becomes a fixed
+    // pane at ≥1024px. Either transition should dismiss its mobile counterpart.
+    const paneMq = window.matchMedia('(min-width: 1200px)')
+    const sideMq = window.matchMedia('(min-width: 1024px)')
+    const onPaneMq = () => paneMq.matches && setOpen(null)
+    const onSideMq = () => sideMq.matches && setNavOpen(false)
     window.addEventListener('keydown', onKey)
-    mq.addEventListener('change', onMq)
+    paneMq.addEventListener('change', onPaneMq)
+    sideMq.addEventListener('change', onSideMq)
     if (searchOpen) searchInputRef.current?.focus()
     return () => {
       document.body.style.overflow = prev
       window.removeEventListener('keydown', onKey)
-      mq.removeEventListener('change', onMq)
+      paneMq.removeEventListener('change', onPaneMq)
+      sideMq.removeEventListener('change', onSideMq)
     }
-  }, [open, searchOpen])
+  }, [open, searchOpen, navOpen])
+
+  // Swipe right (anywhere not inside a horizontal scroller) opens the course
+  // sidebar; swipe left closes it. Touch-only, so it never fires on desktop.
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0]
+    touchRef.current = { x: t.clientX, y: t.clientY, skip: startedInScrollableX(e.target) }
+  }
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const s = touchRef.current
+    touchRef.current = null
+    if (!s || s.skip) return
+    if (!window.matchMedia('(max-width: 1023.98px)').matches) return
+    const t = e.changedTouches[0]
+    const dx = t.clientX - s.x
+    const dy = t.clientY - s.y
+    if (Math.abs(dx) < 64 || Math.abs(dx) < Math.abs(dy) * 1.4) return
+    if (dx > 0 && !navOpen && !open && !searchOpen) setNavOpen(true)
+    else if (dx < 0 && navOpen) setNavOpen(false)
+  }
 
   // Close the course switcher on outside click or Escape.
   useEffect(() => {
@@ -306,102 +392,134 @@ export function StepChrome({
   // ── Panels ────────────────────────────────────────────────────────────
 
   const courseName = (courseChip ?? '').split('·')[0].trim() || courseChip || 'Course'
-  const otherCourses = courses.filter((c) => c.course_code !== currentCourse)
-  const canSwitch = otherCourses.length > 0
-
-  const switcher = (
-    <div className="bkc-switcher" ref={switcherRef}>
-      {canSwitch ? (
-        <button
-          type="button"
-          className="bkc-switch-btn"
-          aria-haspopup="menu"
-          aria-expanded={switcherOpen}
-          onClick={() => setSwitcherOpen((v) => !v)}
-        >
-          <span className="bkc-switch-course">{courseName}</span>
-          <svg className="bkc-switch-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M7 10l5 5 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-      ) : (
-        <span className="bkc-tree-course">{courseName}</span>
-      )}
-      {nav.length > 0 && (
-        <span className="bkc-tree-count">
-          {nav.length} step{nav.length === 1 ? '' : 's'}
-        </span>
-      )}
-      {canSwitch && switcherOpen && (
-        <div className="bkc-switch-menu" role="menu">
-          <p className="bkc-switch-menu-label">Switch course</p>
-          {otherCourses.map((c) => (
-            <Link
-              key={c.course_code}
-              href={c.href}
-              className="bkc-switch-item"
-              role="menuitem"
-              onClick={() => setSwitcherOpen(false)}
-            >
-              {c.label}
-            </Link>
-          ))}
-        </div>
-      )}
-    </div>
-  )
+  const canSwitch = courses.length > 1
 
   const navTree = (
     <nav className="bkc-tree" aria-label="Course contents">
-      <div className="bkc-tree-head">{switcher}</div>
-      {nav.length === 0 ? (
-        <p className="bkc-community-note">Course steps will appear here.</p>
-      ) : (
-        lessons.map((l) => {
-          const items = nav.filter((s) => (s.lesson ?? 0) === l)
-          const collapsible = l > 0 && lessons.length > 1
-          const isOpen = !collapsed.has(l)
-          return (
-            <div className="bkc-tree-group" key={l}>
-              {collapsible && (
-                <button
-                  type="button"
-                  className="bkc-lesson bkc-lesson-btn"
-                  aria-expanded={isOpen}
-                  onClick={() => toggleLesson(l)}
-                >
-                  <svg
-                    className={`bkc-lesson-caret${isOpen ? ' bkc-open' : ''}`}
-                    width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+      {/* Course selector — the "Select your SDK" block. */}
+      <div className="bkc-sdk" ref={switcherRef}>
+        <p className="bkc-sdk-label">Select your course</p>
+        <button
+          type="button"
+          className="bkc-sdk-btn"
+          aria-haspopup={canSwitch ? 'menu' : undefined}
+          aria-expanded={canSwitch ? switcherOpen : undefined}
+          disabled={!canSwitch}
+          onClick={() => canSwitch && setSwitcherOpen((v) => !v)}
+        >
+          <span className="bkc-sdk-mark"><Ic id="ic-book-duo" size={18} /></span>
+          <span className="bkc-sdk-name">{courseName}</span>
+          {canSwitch && (
+            <svg className="bkc-sdk-caret" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M8 9l4-4 4 4M8 15l4 4 4-4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          )}
+        </button>
+        {canSwitch && switcherOpen && (
+          <div className="bkc-sdk-menu" role="menu">
+            {courses.map((c) => (
+              <Link
+                key={c.course_code}
+                href={c.href}
+                role="menuitem"
+                className={`bkc-sdk-item${c.course_code === currentCourse ? ' bkc-sdk-item-active' : ''}`}
+                onClick={() => {
+                  setSwitcherOpen(false)
+                  setNavOpen(false)
+                }}
+              >
+                <Ic id="ic-book-duo" size={16} />
+                <span>{c.label}</span>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Section buttons — the "Guides / Reference" decider. Lessons is the
+          live view; Resources is a placeholder for past papers / assignments. */}
+      <div className="bkc-sections">
+        <button type="button" className="bkc-section bkc-section-active" aria-current="page">
+          <Ic id="ic-book" size={17} /> Lessons
+        </button>
+        <button type="button" className="bkc-section" disabled>
+          <Ic id="ic-doc" size={17} /> Resources
+          <span className="bkc-section-soon">soon</span>
+        </button>
+      </div>
+
+      <hr className="bkc-sidebar-div" />
+
+      {/* Table of contents — the course tree. */}
+      <div className="bkc-toc-tree">
+        {nav.length === 0 ? (
+          <p className="bkc-community-note">Course steps will appear here.</p>
+        ) : (
+          lessons.map((l) => {
+            const items = nav.filter((s) => (s.lesson ?? 0) === l)
+            const collapsible = l > 0 && lessons.length > 1
+            const isOpen = !collapsed.has(l)
+            return (
+              <div className="bkc-tree-group" key={l}>
+                {collapsible && (
+                  <button
+                    type="button"
+                    className="bkc-lesson bkc-lesson-btn"
+                    aria-expanded={isOpen}
+                    onClick={() => toggleLesson(l)}
                   >
-                    <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  Lesson {l}
-                </button>
-              )}
-              {isOpen && (
-                <ul className="bkc-tree-list">
-                  {items.map((s) => (
-                    <li key={s.slug}>
-                      <a
-                        href={`/steps/${s.slug}`}
-                        className={s.slug === current ? 'bkc-current' : undefined}
-                        aria-current={s.slug === current ? 'page' : undefined}
-                        onClick={() => setOpen(null)}
-                      >
-                        {s.step_label && (
-                          <span className="bkc-steplabel">{s.step_label.replace(/^Step /, '')}</span>
-                        )}
-                        <span className="bkc-tree-title">{s.title}</span>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          )
-        })
-      )}
+                    <svg
+                      className={`bkc-lesson-caret${isOpen ? ' bkc-open' : ''}`}
+                      width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+                    >
+                      <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    Lesson {l}
+                  </button>
+                )}
+                {isOpen && (
+                  <ul className="bkc-tree-list">
+                    {items.map((s) => (
+                      <li key={s.slug}>
+                        <a
+                          href={`/steps/${s.slug}`}
+                          className={s.slug === current ? 'bkc-current' : undefined}
+                          aria-current={s.slug === current ? 'page' : undefined}
+                          onClick={() => {
+                            setOpen(null)
+                            setNavOpen(false)
+                          }}
+                        >
+                          {s.step_label && (
+                            <span className="bkc-steplabel">{s.step_label.replace(/^Step /, '')}</span>
+                          )}
+                          <span className="bkc-tree-title">{s.title}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )
+          })
+        )}
+      </div>
+
+      {/* Theme control — 3-way segmented (dark / light / system), pinned low. */}
+      <div className="bkc-theme-row">
+        <span className="bkc-theme-label">Theme</span>
+        <div className="bkc-theme-seg" role="group" aria-label="Theme">
+          <button type="button" data-mode="dark" className="bkc-theme-opt" aria-label="Dark" onClick={() => setThemeMode('dark')}>
+            <MoonGlyph />
+          </button>
+          <button type="button" data-mode="light" className="bkc-theme-opt" aria-label="Light" onClick={() => setThemeMode('light')}>
+            <SunGlyph />
+          </button>
+          <button type="button" data-mode="system" className="bkc-theme-opt" aria-label="System" onClick={() => setThemeMode('system')}>
+            <MonitorGlyph />
+          </button>
+        </div>
+      </div>
     </nav>
   )
 
@@ -466,7 +584,6 @@ export function StepChrome({
   )
 
   const panels: Record<PanelId, React.ReactNode> = {
-    nav: navTree,
     onpage: onPageCard || (
       <p className="bkc-community-note">This step has no sections yet.</p>
     ),
@@ -477,14 +594,27 @@ export function StepChrome({
   const mobileButtons: PanelId[] = ['onpage', 'tutor', 'community']
 
   return (
-    <div className="bkc-root" ref={rootRef}>
+    <div
+      className="bkc-root"
+      ref={rootRef}
+      data-navopen={navOpen ? 'true' : undefined}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+    >
+      {/* Mobile: the course sidebar sits under the app; opening it slides the
+          whole app right to reveal it. On desktop this is hidden (the sidebar
+          is the sticky left pane instead). */}
+      <aside className="bkc-offcanvas" aria-label="Course contents" aria-hidden={navOpen ? undefined : true}>
+        {navTree}
+      </aside>
+      <div className="bkc-shell">
       <header className="bkc-header">
         <button
           type="button"
           className="bkc-iconbtn bkc-navtoggle"
           aria-label="Course contents"
-          aria-pressed={open === 'nav'}
-          onClick={() => setOpen(open === 'nav' ? null : 'nav')}
+          aria-pressed={navOpen}
+          onClick={() => setNavOpen((v) => !v)}
         >
           <MenuGlyph />
         </button>
@@ -518,20 +648,6 @@ export function StepChrome({
               <Ic id={PANEL_ICONS[id]} />
             </button>
           ))}
-          <button
-            type="button"
-            className="bkc-iconbtn bkc-themetoggle"
-            aria-label="Toggle light or dark theme"
-            onClick={toggleTheme}
-          >
-            <svg className="bkc-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="1.7" />
-              <path d="M12 2.5v2.2M12 19.3v2.2M4.5 4.5l1.6 1.6M17.9 17.9l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.5 19.5l1.6-1.6M17.9 6.1l1.6-1.6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-            </svg>
-            <svg className="bkc-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M20 14.5A8 8 0 1 1 9.5 4a6.3 6.3 0 0 0 10.5 10.5Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-            </svg>
-          </button>
           {hasClerk && (
             <div className="bkc-user">
               <UserButton
@@ -652,13 +768,24 @@ export function StepChrome({
         </aside>
       </div>
 
+        {/* Push-to-close: tapping the slid-over app dismisses the sidebar. */}
+        {navOpen && (
+          <button
+            type="button"
+            className="bkc-shell-scrim"
+            aria-label="Close course menu"
+            onClick={() => setNavOpen(false)}
+          />
+        )}
+      </div>
+
       {open && (
         <div className="bkc-sheet-root" role="dialog" aria-modal="true" aria-label={PANEL_TITLES[open]}>
           <div className="bkc-backdrop" onClick={() => setOpen(null)} />
           <div className="bkc-sheet">
             <div className="bkc-sheet-head">
               <h2>
-                {open === 'nav' ? <MenuGlyph /> : <Ic id={PANEL_ICONS[open]} size={16} />} {PANEL_TITLES[open]}
+                <Ic id={PANEL_ICONS[open]} size={16} /> {PANEL_TITLES[open]}
               </h2>
               <button
                 type="button"
