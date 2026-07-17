@@ -7,6 +7,22 @@
   --color-app-bg: #fcfcfc;
 }
 
+/* Docs-chrome type: button text is Poppins, smaller supporting text is
+   Satoshi. Poppins is vendored (next/font/local). Satoshi's files can't be
+   redistributed on npm and the sandbox can't fetch Fontshare — drop
+   Satoshi-Variable.woff2 into public/fonts and it takes over automatically;
+   until then --font-satoshi-stack falls back to Poppins, then system sans. */
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Variable.woff2") format("woff2");
+  font-weight: 300 900;
+  font-display: swap;
+}
+:root {
+  --font-poppins-stack: var(--font-poppins), system-ui, sans-serif;
+  --font-satoshi-stack: "Satoshi", var(--font-poppins), system-ui, sans-serif;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
 }
