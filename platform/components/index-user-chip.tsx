@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { UserButton, useUser } from '@clerk/nextjs'
 
 // Visible "you're signed in" checkpoint for the /steps index — the page a
@@ -22,12 +23,12 @@ export function IndexUserChip() {
 
   if (!isSignedIn) {
     return (
-      <a
+      <Link
         href="/sign-in"
         className="rounded-lg bg-[#18181b] px-4 py-2 text-[13px] font-bold text-white no-underline"
       >
         Sign in
-      </a>
+      </Link>
     )
   }
 
