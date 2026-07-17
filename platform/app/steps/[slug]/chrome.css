@@ -18,6 +18,10 @@
   --bkc-sheen: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(24, 24, 27, 0.03);
   --bkc-pop-shadow: 0 24px 60px -24px rgba(24, 24, 27, 0.35), 0 4px 16px -8px rgba(24, 24, 27, 0.12);
   --bkc-label-font: "Parkinsans", "Onest", system-ui, sans-serif;
+  /* Sidebar folder-tree: faint branch guide lines + a solid dark active bar. */
+  --bkc-tree-line: rgba(24, 24, 27, 0.14);
+  --bkc-tree-active: #18181b;
+  --bkc-current-bg: rgba(24, 24, 27, 0.05);
   min-height: 100vh;
 }
 
@@ -96,15 +100,17 @@
 }
 
 /* ── Layout grid ────────────────────────────────────────────────────── */
+/* Docs proportions: the course-tree sidebar is the spine and appears first
+   (≥1024px); the reading-aids rail joins on wide screens (≥1200px). */
 
 .bkc-grid { display: block; }
 
-@media (min-width: 1200px) {
+@media (min-width: 1024px) {
   .bkc-grid {
     display: grid;
-    grid-template-columns: 16.5rem minmax(0, 1fr) 19.5rem;
+    grid-template-columns: 16.5rem minmax(0, 1fr);
     gap: clamp(1rem, 2.5vw, 2.25rem);
-    max-width: 96rem; margin: 0 auto;
+    max-width: 84rem; margin: 0 auto;
     padding: 0 clamp(1rem, 2.5vw, 2rem);
     align-items: start;
   }
@@ -116,11 +122,67 @@
     padding: 1.1rem 0 2rem;
     scrollbar-width: thin;
   }
+  /* The reading-aids rail only exists at the widest layout. */
+  .bkc-pane.bkc-right { display: none; }
+}
+@media (min-width: 1024px) {
+  /* The course-tree pane runs full height so its theme control pins low. */
+  .bkc-pane.bkc-left { height: calc(100vh - 5.6rem); }
+  .bkc-pane.bkc-left .bkc-tree { flex: 1; }
+}
+@media (min-width: 1200px) {
+  .bkc-grid {
+    grid-template-columns: 16.5rem minmax(0, 1fr) 19rem;
+    max-width: 96rem;
+  }
   /* The voice orb floats fixed at the bottom right — keep the tutor card's
      composer clear of it. */
-  .bkc-pane.bkc-right { padding-right: 0.15rem; padding-bottom: 5rem; }
+  .bkc-pane.bkc-right { display: flex; padding-right: 0.15rem; padding-bottom: 5rem; }
 }
-@media (max-width: 1199.98px) { .bkc-pane { display: none; } }
+@media (max-width: 1023.98px) { .bkc-pane { display: none; } }
+
+/* ── Mobile off-canvas push ─────────────────────────────────────────── */
+/* The sidebar sits fixed under the app; opening it slides the whole app
+   (the shell) right to reveal it — no overlay drawer. Desktop keeps the
+   sticky pane and never transforms. */
+.bkc-shell { position: relative; z-index: 2; }
+
+@media (max-width: 1023.98px) {
+  .bkc-root { --bkc-oc-w: min(17.5rem, 84vw); }
+  .bkc-offcanvas {
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 1;
+    width: var(--bkc-oc-w);
+    overflow-y: auto; overscroll-behavior: contain;
+    padding: 1.05rem 0.9rem 1.3rem;
+    background: var(--surface);
+    -webkit-overflow-scrolling: touch;
+  }
+  .bkc-offcanvas .bkc-tree { min-height: calc(100vh - 2.3rem); }
+  .bkc-shell {
+    min-height: 100vh; background: var(--canvas);
+    transition: transform 0.34s cubic-bezier(0.22, 0.9, 0.3, 1);
+    will-change: transform;
+  }
+  .bkc-root[data-navopen="true"] .bkc-shell {
+    transform: translateX(var(--bkc-oc-w));
+    box-shadow: -14px 0 42px -12px rgba(0, 0, 0, 0.4);
+  }
+  .bkc-shell-scrim {
+    position: absolute; inset: 0; z-index: 65;
+    border: none; padding: 0; cursor: pointer;
+    background: rgba(20, 20, 22, 0.16);
+    -webkit-tap-highlight-color: transparent;
+    animation: bkc-fade 0.2s ease;
+  }
+}
+@media (min-width: 1024px) {
+  .bkc-offcanvas { display: none; }
+  .bkc-shell-scrim { display: none; }
+  .bkc-shell { transform: none; }
+}
+
+/* The hamburger only appears where the sidebar doesn't. */
+@media (min-width: 1024px) { .bkc-iconbtn.bkc-navtoggle { display: none; } }
 
 /* ── Cards (shared by panes and sheets) ─────────────────────────────── */
 
@@ -279,7 +341,375 @@
 @keyframes bkc-rise { from { opacity: 0; transform: translateY(2.5rem) scale(0.98); } }
 @keyframes bkc-pop { from { opacity: 0; transform: translate(-50%, -50%) scale(0.96); } }
 
+/* ── Header search (⌘K trigger) ─────────────────────────────────────── */
+
+.bkc-search {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  margin-left: auto; min-width: 0;
+  width: min(20rem, 34vw); height: 2.125rem;
+  padding: 0 0.5rem 0 0.7rem;
+  border: 1px solid var(--bkc-hairline); border-radius: 0.65rem;
+  background: color-mix(in srgb, #ffffff 62%, transparent);
+  box-shadow: var(--bkc-sheen);
+  color: var(--bkc-meta); cursor: text; font: inherit;
+  transition: border-color 0.12s ease, color 0.12s ease;
+}
+.bkc-search:hover { border-color: rgba(24, 24, 27, 0.18); color: var(--bkc-steel); }
+.bkc-search svg { flex: none; width: 1rem; height: 1rem; }
+.bkc-search-label {
+  flex: 1; min-width: 0; text-align: left; font-size: 0.82rem;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.bkc-header .bkc-actions { margin-left: 0.45rem; }
+
+.bkc-kbd {
+  flex: none; font-family: var(--bkc-label-font);
+  font-size: 0.66rem; font-weight: 700; letter-spacing: 0.04em;
+  color: var(--bkc-steel);
+  padding: 0.1rem 0.35rem; border-radius: 0.35rem;
+  border: 1px solid var(--bkc-hairline);
+  background: var(--bkc-metal); box-shadow: var(--bkc-sheen);
+}
+@media (max-width: 720px) {
+  .bkc-search { width: 2.125rem; padding: 0; justify-content: center; }
+  .bkc-search-label, .bkc-search .bkc-kbd { display: none; }
+}
+
+/* ── Course-tree sidebar (the docs spine) ───────────────────────────── */
+
+.bkc-tree { display: flex; flex-direction: column; min-height: 100%; gap: 0.1rem; }
+.bkc-toc-tree { display: block; }
+.bkc-tree-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem;
+  padding: 0 0.6rem 0.75rem; margin-bottom: 0.4rem;
+  border-bottom: 1px solid var(--bkc-hairline-soft);
+}
+.bkc-tree-course {
+  font-family: "Parastoo", serif; font-weight: 700; font-size: 1.02rem;
+  color: var(--bkc-ink); line-height: 1.2;
+}
+.bkc-tree-count {
+  flex: none; font-family: var(--bkc-label-font);
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--bkc-meta);
+}
+.bkc-tree-group + .bkc-tree-group { margin-top: 0.2rem; }
+/* The branch guide line — one vertical rule down the left of each lesson's
+   step list, like a VS Code / Clerk folder tree. Steps indent past it. */
+.bkc-tree-list {
+  list-style: none; margin: 0.1rem 0 0.1rem 0.7rem; padding: 0;
+  border-left: 1.5px solid var(--bkc-tree-line);
+}
+.bkc-tree-list li { margin: 0; }
+.bkc-tree-list a {
+  position: relative;
+  display: flex; align-items: baseline; gap: 0.5rem;
+  padding: 0.4rem 0.6rem 0.4rem 0.85rem; border-radius: 0 0.5rem 0.5rem 0;
+  color: var(--bkc-steel); text-decoration: none; font-size: 0.84rem;
+  line-height: 1.35;
+}
+.bkc-tree-list a:hover { color: var(--bkc-ink); background: rgba(24, 24, 27, 0.04); }
+.bkc-tree-list .bkc-steplabel {
+  flex: none; font-family: var(--bkc-label-font); font-size: 0.66rem; font-weight: 700;
+  color: var(--bkc-meta); letter-spacing: 0.04em; white-space: nowrap;
+}
+.bkc-tree-title { min-width: 0; }
+/* Active step: the solid dark bar sits right over the guide line for this
+   row, and a quiet pill fills the row. */
+.bkc-tree-list a.bkc-current {
+  color: var(--bkc-ink); font-weight: 600;
+  background: var(--bkc-current-bg);
+}
+.bkc-tree-list a.bkc-current::before {
+  content: ""; position: absolute; left: -1.5px; top: 0.28rem; bottom: 0.28rem;
+  width: 2px; border-radius: 2px; background: var(--bkc-tree-active);
+}
+.bkc-tree-list a.bkc-current .bkc-steplabel { color: var(--bkc-ink); }
+
+/* ── Breadcrumb + pager (inside the reading column) ─────────────────── */
+
+.bkc-crumb {
+  display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap;
+  max-width: 46rem; margin: 0 auto; padding: 1.1rem 16px 0;
+  font-family: var(--bkc-label-font); font-size: 0.72rem;
+  color: var(--bkc-meta);
+}
+.bkc-crumb a { color: var(--bkc-steel); text-decoration: none; }
+.bkc-crumb a:hover { color: var(--bkc-ink); }
+.bkc-crumb-sep { flex: none; color: var(--bkc-meta); opacity: 0.7; }
+.bkc-crumb-cur { color: var(--bkc-ink); font-weight: 600; }
+
+.bkc-pager {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem;
+  max-width: 46rem; margin: 0 auto; padding: 0 16px 4rem;
+}
+@media (max-width: 560px) { .bkc-pager { grid-template-columns: 1fr; } }
+.bkc-pager-btn {
+  display: flex; flex-direction: column; gap: 0.25rem;
+  padding: 0.85rem 1rem; border-radius: 0.9rem;
+  border: 1px solid var(--bkc-hairline); background: var(--bkc-metal-card);
+  box-shadow: var(--bkc-sheen), 0 14px 34px -28px rgba(24, 24, 27, 0.3);
+  text-decoration: none; color: var(--bkc-ink);
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+.bkc-pager-btn:hover { transform: translateY(-1px); border-color: rgba(24, 24, 27, 0.18); }
+.bkc-pager-next { text-align: right; }
+.bkc-pager-dir {
+  font-family: var(--bkc-label-font); font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--bkc-amber);
+}
+.bkc-pager-title { font-size: 0.9rem; font-weight: 600; line-height: 1.3; }
+
+/* ── Command-palette search ─────────────────────────────────────────── */
+
+.bkc-cmdk-root { position: fixed; inset: 0; z-index: 95; }
+.bkc-cmdk {
+  position: absolute; left: 50%; top: 12vh; transform: translateX(-50%);
+  width: min(34rem, calc(100vw - 2rem)); max-height: 70vh;
+  display: flex; flex-direction: column;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 12%),
+    linear-gradient(180deg, #fbfbf9, #f2f1ed);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  outline: 1px solid var(--bkc-hairline);
+  border-radius: 1.1rem; box-shadow: var(--bkc-pop-shadow);
+  overflow: hidden; animation: bkc-rise 0.2s cubic-bezier(0.22, 0.9, 0.3, 1);
+}
+.bkc-cmdk-input {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.9rem 1rem; border-bottom: 1px solid var(--bkc-hairline-soft);
+  color: var(--bkc-steel);
+}
+.bkc-cmdk-input svg { flex: none; width: 1.1rem; height: 1.1rem; }
+.bkc-cmdk-input input {
+  flex: 1; min-width: 0; font: inherit; font-size: 0.95rem;
+  border: none; background: none; outline: none; color: var(--bkc-ink);
+}
+.bkc-cmdk-list {
+  list-style: none; margin: 0; padding: 0.4rem;
+  overflow-y: auto; overscroll-behavior: contain;
+}
+.bkc-cmdk-list a {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+  padding: 0.6rem 0.7rem; border-radius: 0.6rem;
+  text-decoration: none; color: var(--bkc-ink);
+}
+.bkc-cmdk-list a.bkc-cmdk-active { background: rgba(197, 97, 63, 0.1); }
+.bkc-cmdk-label { display: flex; align-items: baseline; gap: 0.5rem; min-width: 0; font-size: 0.88rem; }
+.bkc-cmdk-label > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bkc-cmdk-tag {
+  flex: none; font-family: var(--bkc-label-font); font-size: 0.66rem; font-weight: 700;
+  letter-spacing: 0.04em; color: var(--bkc-amber);
+}
+.bkc-cmdk-meta {
+  flex: none; font-family: var(--bkc-label-font); font-size: 0.66rem;
+  color: var(--bkc-meta); letter-spacing: 0.04em; white-space: nowrap;
+}
+.bkc-cmdk-empty { padding: 1.2rem 0.7rem; text-align: center; font-size: 0.85rem; color: var(--bkc-meta); }
+
+/* ── Course switcher (sidebar top) ──────────────────────────────────── */
+
+.bkc-switcher { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; width: 100%; }
+.bkc-switch-btn {
+  display: inline-flex; align-items: center; gap: 0.3rem; min-width: 0;
+  font-family: "Parastoo", serif; font-weight: 700; font-size: 1.02rem; line-height: 1.2;
+  color: var(--bkc-ink); background: none; border: none; cursor: pointer;
+  padding: 0.15rem 0.3rem; margin-left: -0.3rem; border-radius: 0.5rem;
+}
+.bkc-switch-btn:hover { background: rgba(24, 24, 27, 0.04); }
+.bkc-switch-course { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bkc-switch-caret { flex: none; color: var(--bkc-meta); }
+.bkc-switch-menu {
+  position: absolute; top: calc(100% + 0.45rem); left: -0.3rem; z-index: 40;
+  min-width: 12.5rem; padding: 0.35rem;
+  background: var(--bkc-metal-card); border: 1px solid var(--bkc-hairline);
+  border-radius: 0.8rem; box-shadow: var(--bkc-pop-shadow);
+  animation: bkc-rise 0.16s ease;
+}
+.bkc-switch-menu-label {
+  font-family: var(--bkc-label-font); font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--bkc-meta);
+  margin: 0.25rem 0.55rem 0.4rem;
+}
+.bkc-switch-item {
+  display: block; padding: 0.45rem 0.55rem; border-radius: 0.55rem;
+  font-size: 0.86rem; color: var(--bkc-steel); text-decoration: none;
+}
+.bkc-switch-item:hover { background: rgba(24, 24, 27, 0.05); color: var(--bkc-ink); }
+
+/* Collapsible lesson header (was a static <p>). */
+.bkc-lesson-btn {
+  display: flex; align-items: center; gap: 0.3rem; width: 100%;
+  background: none; border: none; cursor: pointer; text-align: left;
+}
+.bkc-lesson-btn:hover { color: var(--bkc-steel); }
+.bkc-lesson-caret { flex: none; color: var(--bkc-meta); transition: transform 0.15s ease; }
+.bkc-lesson-caret.bkc-open { transform: rotate(90deg); }
+
+/* ── Theme toggle ───────────────────────────────────────────────────── */
+
+.bkc-themetoggle .bkc-moon { display: none; }
+:root[data-theme="dark"] .bkc-themetoggle .bkc-sun { display: none; }
+:root[data-theme="dark"] .bkc-themetoggle .bkc-moon { display: block; }
+
+/* ── Right-rail footer ──────────────────────────────────────────────── */
+
+.bkc-rail-foot {
+  display: flex; flex-direction: column; gap: 0.05rem;
+  margin-top: 0.3rem; padding-top: 0.5rem;
+  border-top: 1px solid var(--bkc-hairline-soft);
+}
+.bkc-rail-link {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  padding: 0.42rem 0.4rem; border-radius: 0.5rem;
+  background: none; border: none; cursor: pointer; font: inherit;
+  font-size: 0.8rem; color: var(--bkc-steel); text-decoration: none;
+}
+.bkc-rail-link:hover { color: var(--bkc-ink); background: rgba(24, 24, 27, 0.04); }
+.bkc-rail-link svg { flex: none; color: var(--bkc-meta); }
+
+/* ── Dark theme (v1: token overrides) ───────────────────────────────── */
+/* step.css and chrome.css both drive their colours from CSS variables, so
+   redefining the tokens flips most of the surface. A few hardcoded light
+   spots are patched below; deeper content theming is a follow-up. */
+
+:root[data-theme="dark"] {
+  --canvas: #17161a;
+  --surface: #201f24;
+  --ink: #ececee;
+  --steel: #b7b1a6;
+  --meta: #8b8578;
+  --border: #302e34;
+  --amber: #e08258;
+  --amber-soft: rgba(224, 130, 88, 0.12);
+  --amber-line: rgba(224, 130, 88, 0.42);
+  --tip-bg: #201f24;
+  --tip-ink: #ececee;
+  --tip-steel: #b7b1a6;
+  --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+}
+
+:root[data-theme="dark"] .bkc-root {
+  --bkc-ink: #ececee;
+  --bkc-steel: #b7b1a6;
+  --bkc-meta: #8b8578;
+  --bkc-amber: #e08258;
+  --bkc-hairline: rgba(255, 255, 255, 0.10);
+  --bkc-hairline-soft: rgba(255, 255, 255, 0.06);
+  --bkc-metal: linear-gradient(180deg, #2a282e 0%, #232127 45%, #1e1c22 100%);
+  --bkc-metal-card: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 18%),
+    linear-gradient(180deg, #242228 0%, #1d1b21 100%);
+  --bkc-sheen: inset 0 1px 0 rgba(255, 255, 255, 0.06), inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+  --bkc-pop-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.6), 0 4px 16px -8px rgba(0, 0, 0, 0.4);
+  --bkc-tree-line: rgba(255, 255, 255, 0.14);
+  --bkc-tree-active: #ececee;
+  --bkc-current-bg: rgba(255, 255, 255, 0.06);
+}
+:root[data-theme="dark"] .bkc-header {
+  background: color-mix(in srgb, #17161a 80%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+:root[data-theme="dark"] .bkc-search { background: color-mix(in srgb, #ffffff 7%, transparent); }
+:root[data-theme="dark"] .bkc-bubble { background: #232127; border-color: rgba(255, 255, 255, 0.08); }
+:root[data-theme="dark"] .bkc-composer input { background: #232127; }
+:root[data-theme="dark"] .bkc-composer input:disabled { background: #1d1b21; }
+:root[data-theme="dark"] .bkc-toc a:hover,
+:root[data-theme="dark"] .bkc-tree-list a:hover,
+:root[data-theme="dark"] .bkc-switch-btn:hover,
+:root[data-theme="dark"] .bkc-switch-item:hover,
+:root[data-theme="dark"] .bkc-rail-link:hover { background: rgba(255, 255, 255, 0.06); }
+
+/* ── Course selector ("Select your course") ─────────────────────────── */
+
+.bkc-sdk { position: relative; margin-bottom: 0.7rem; }
+.bkc-sdk-label {
+  font-family: var(--bkc-label-font); font-size: 0.72rem; font-weight: 700;
+  color: var(--bkc-ink); margin: 0 0 0.45rem; padding: 0 0.15rem;
+}
+.bkc-sdk-btn {
+  display: flex; align-items: center; gap: 0.6rem; width: 100%;
+  padding: 0.62rem 0.7rem; border-radius: 0.8rem;
+  border: 1px solid var(--bkc-hairline); background: var(--bkc-metal-card);
+  box-shadow: var(--bkc-sheen), 0 1px 2px rgba(24, 24, 27, 0.05);
+  color: var(--bkc-ink); font: inherit; cursor: pointer; text-align: left;
+}
+.bkc-sdk-btn:disabled { cursor: default; }
+.bkc-sdk-btn:not(:disabled):hover { border-color: rgba(24, 24, 27, 0.18); }
+.bkc-sdk-mark { flex: none; display: inline-flex; color: var(--bkc-amber); }
+.bkc-sdk-name {
+  flex: 1; min-width: 0; font-weight: 600; font-size: 0.95rem;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.bkc-sdk-caret { flex: none; color: var(--bkc-meta); }
+.bkc-sdk-menu {
+  position: absolute; top: calc(100% + 0.35rem); left: 0; right: 0; z-index: 40;
+  padding: 0.35rem; background: var(--bkc-metal-card);
+  border: 1px solid var(--bkc-hairline); border-radius: 0.8rem;
+  box-shadow: var(--bkc-pop-shadow); animation: bkc-rise 0.16s ease;
+}
+.bkc-sdk-item {
+  display: flex; align-items: center; gap: 0.55rem;
+  padding: 0.5rem 0.55rem; border-radius: 0.55rem;
+  color: var(--bkc-steel); text-decoration: none; font-size: 0.9rem;
+}
+.bkc-sdk-item svg { flex: none; color: var(--bkc-meta); }
+.bkc-sdk-item:hover { background: rgba(24, 24, 27, 0.05); color: var(--bkc-ink); }
+.bkc-sdk-item-active { color: var(--bkc-ink); font-weight: 600; }
+.bkc-sdk-item-active svg { color: var(--bkc-amber); }
+
+/* ── Section buttons ("Guides / Reference" decider) ─────────────────── */
+
+.bkc-sections { display: flex; flex-direction: column; gap: 0.1rem; }
+.bkc-section {
+  display: flex; align-items: center; gap: 0.6rem; width: 100%;
+  padding: 0.58rem 0.7rem; border-radius: 0.7rem;
+  border: none; background: none; color: var(--bkc-steel);
+  font: inherit; font-size: 0.95rem; font-weight: 500;
+  cursor: pointer; text-align: left; text-decoration: none;
+}
+.bkc-section svg { flex: none; color: var(--bkc-meta); }
+.bkc-section:not(:disabled):hover { background: rgba(24, 24, 27, 0.04); color: var(--bkc-ink); }
+.bkc-section-active { background: var(--bkc-current-bg); color: var(--bkc-ink); font-weight: 600; }
+.bkc-section-active svg { color: var(--bkc-ink); }
+.bkc-section:disabled { cursor: default; color: var(--bkc-meta); }
+.bkc-section-soon {
+  margin-left: auto; font-family: var(--bkc-label-font);
+  font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--bkc-meta); border: 1px solid var(--bkc-hairline);
+  border-radius: 999px; padding: 0.08rem 0.4rem;
+}
+
+.bkc-sidebar-div {
+  height: 0; border: none; border-top: 1px solid var(--bkc-hairline-soft);
+  margin: 0.85rem 0.15rem;
+}
+
+/* ── Theme segmented control (dark / light / system) ────────────────── */
+
+.bkc-theme-row {
+  margin-top: auto; padding-top: 1rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+}
+.bkc-theme-label { font-family: var(--bkc-label-font); font-size: 0.78rem; color: var(--bkc-steel); }
+.bkc-theme-seg {
+  display: inline-flex; padding: 0.15rem; gap: 0.1rem;
+  border: 1px solid var(--bkc-hairline); border-radius: 999px;
+  background: var(--bkc-metal); box-shadow: var(--bkc-sheen);
+}
+.bkc-theme-opt {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.95rem; height: 1.6rem; border: none; background: none;
+  color: var(--bkc-meta); border-radius: 999px; cursor: pointer;
+}
+.bkc-theme-opt:hover { color: var(--bkc-ink); }
+:root[data-theme-mode="dark"] .bkc-theme-opt[data-mode="dark"],
+:root[data-theme-mode="light"] .bkc-theme-opt[data-mode="light"],
+:root[data-theme-mode="system"] .bkc-theme-opt[data-mode="system"],
+:root:not([data-theme-mode]) .bkc-theme-opt[data-mode="system"] {
+  background: var(--bkc-metal-card); color: var(--bkc-ink);
+  box-shadow: 0 1px 2px rgba(24, 24, 27, 0.14);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .bkc-backdrop, .bkc-sheet { animation: none; }
-  .bkc-iconbtn { transition: none; }
+  .bkc-backdrop, .bkc-sheet, .bkc-cmdk, .bkc-switch-menu, .bkc-sdk-menu, .bkc-shell-scrim { animation: none; }
+  .bkc-iconbtn, .bkc-pager-btn, .bkc-search, .bkc-lesson-caret, .bkc-shell { transition: none; }
 }

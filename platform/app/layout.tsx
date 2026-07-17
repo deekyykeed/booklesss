@@ -37,6 +37,17 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const tree = (
     <html lang="en" className={`${aptos.variable} ${parastoo.variable}`}>
+      <head>
+        {/* Apply the saved (or system) theme before paint — no flash, and it
+            leaves the toggle markup theme-independent so there's no hydration
+            mismatch. CSP allows inline scripts ('unsafe-inline'). */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var m=localStorage.getItem('bkc-theme');var mode=(m==='dark'||m==='light')?m:'system';var r=document.documentElement;r.dataset.themeMode=mode;r.dataset.theme=mode==='system'?((window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'):mode;}catch(e){}})();",
+          }}
+        />
+      </head>
       <body>{children}<Analytics /></body>
     </html>
   )
