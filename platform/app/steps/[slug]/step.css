@@ -147,23 +147,29 @@
     margin: 0 0 1.6rem; max-width: 38rem;
   }
   .metarow {
-    display: flex; flex-wrap: wrap; gap: 0.5rem 1.3rem;
-    font-family: "Geist Mono", "JetBrains Mono", ui-monospace, monospace;
-    font-size: 0.75rem; color: var(--meta);
-    padding-bottom: 1.8rem; border-bottom: 1px solid var(--border);
+    display: flex; flex-wrap: wrap; gap: 0.4rem 0.55rem;
+    font-family: var(--font-satoshi-stack), system-ui, sans-serif;
+    font-size: 0.8rem; color: var(--steel);
+    padding-bottom: 1.6rem; border-bottom: 1px solid var(--border);
   }
-  .metarow span { display: inline-flex; align-items: center; gap: 0.4rem; }
-  .metarow .ic { font-size: 1.25em; color: var(--steel); }
+  /* Clean chips instead of a monospace grid. */
+  .metarow span {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.25rem 0.6rem; border-radius: 999px;
+    corner-shape: superellipse(1.4);
+    background: var(--surface); border: 1px solid var(--border);
+  }
+  .metarow .ic { font-size: 1.05em; color: var(--meta); }
 
   /* ── Highlight hint pill ──────────────────────── */
   .hint {
-    display: flex; align-items: flex-start; gap: 0.7rem;
+    display: flex; align-items: flex-start; gap: 0.65rem;
     margin: 1.6rem 0 0;
     background: var(--amber-soft);
-    border: 1px solid var(--amber-line);
-    border-radius: 24px;
-    padding: 0.85rem 1rem;
-    font-size: 0.875rem; color: var(--ink); line-height: 1.5;
+    border: 1px solid color-mix(in srgb, var(--amber) 26%, transparent);
+    border-radius: 16px; corner-shape: superellipse(1.4);
+    padding: 0.75rem 0.9rem;
+    font-size: 0.84rem; color: var(--ink); line-height: 1.5;
   }
   .hint svg { flex: none; margin-top: 0.15rem; color: var(--amber); }
   .hint b { font-weight: 700; }
