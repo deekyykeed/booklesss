@@ -43,12 +43,21 @@
 }
 
 /* Squircle corners throughout (ignored where corner-shape is unsupported,
-   falling back to the plain border-radius already on each element). */
-.bkc-card, .bkc-iconbtn, .bkc-search, .bkc-chip,
+   falling back to the plain border-radius already on each element).
+   NOTE: circular controls (.bkc-iconbtn, .bkc-search, .bkc-theme-opt) are
+   deliberately NOT in this list — a superellipse on top of border-radius:50%
+   renders a square-ish squircle, not a circle. They get corner-shape: round. */
+.bkc-card, .bkc-chip,
 .bkc-sdk, .bkc-sdk-btn, .bkc-sdk-menu, .bkc-sdk-item, .bkc-section,
-.bkc-pager-btn, .bkc-sheet, .bkc-cmdk, .bkc-theme-seg, .bkc-theme-opt,
+.bkc-pager-btn, .bkc-sheet, .bkc-cmdk, .bkc-theme-seg,
 .bkc-switch-menu, .bkc-tree-list a, .bkc-toc a {
   corner-shape: var(--bkc-squircle);
+}
+
+/* Perfect circles: the header icon buttons, collapsed search, and theme
+   segment options match the avatar's true roundness. */
+.bkc-iconbtn, .bkc-search, .bkc-theme-opt {
+  corner-shape: round;
 }
 
 /* The chrome header replaces the shell's own topbar. */
