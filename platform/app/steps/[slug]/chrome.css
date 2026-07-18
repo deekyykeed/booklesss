@@ -196,7 +196,9 @@
     width: var(--bkc-oc-w);
     overflow-y: auto; overscroll-behavior: contain;
     padding: 1.05rem 0.9rem 1.3rem;
-    background: var(--surface);
+    /* Same canvas as the page — the sidebar reads as one continuous surface,
+       no separate colour (matching the desktop pane). */
+    background: var(--canvas);
     -webkit-overflow-scrolling: touch;
   }
   .bkc-offcanvas .bkc-tree { min-height: calc(100vh - var(--bkc-header-h) - 2.3rem); }
