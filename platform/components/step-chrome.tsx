@@ -35,15 +35,19 @@ export type CourseLink = {
 
 type TocItem = { id: string; label: string; eyebrow: string | null }
 // The course sidebar is NOT a sheet — on mobile it's an off-canvas panel the
-// app slides over (see navOpen). These are the reading-aid panels only.
-type PanelId = 'onpage' | 'tutor' | 'community'
+// app slides over (see navOpen). On mobile the reading aids (on-this-page,
+// community, tutor) collapse into one 'aids' sheet so the header stays calm;
+// on desktop they live in the right rail.
+type PanelId = 'aids' | 'onpage' | 'tutor' | 'community'
 
 const PANEL_TITLES: Record<PanelId, string> = {
+  aids: 'This step',
   onpage: 'On this page',
   tutor: 'AI tutor',
   community: 'Community',
 }
 const PANEL_ICONS: Record<PanelId, string> = {
+  aids: 'ic-doc',
   onpage: 'ic-doc',
   tutor: 'ic-stars-duo',
   community: 'ic-chat',
@@ -584,14 +588,21 @@ export function StepChrome({
   )
 
   const panels: Record<PanelId, React.ReactNode> = {
+    aids: (
+      <>
+        {onPageCard || (
+          <p className="bkc-community-note">This step has no sections yet.</p>
+        )}
+        {communityPanel}
+        {tutorPanel}
+      </>
+    ),
     onpage: onPageCard || (
       <p className="bkc-community-note">This step has no sections yet.</p>
     ),
     tutor: tutorPanel,
     community: communityPanel,
   }
-
-  const mobileButtons: PanelId[] = ['onpage', 'tutor', 'community']
 
   return (
     <div
@@ -636,18 +647,15 @@ export function StepChrome({
         </button>
 
         <div className="bkc-actions">
-          {mobileButtons.map((id) => (
-            <button
-              key={id}
-              type="button"
-              className="bkc-iconbtn bkc-paneline"
-              aria-label={PANEL_TITLES[id]}
-              aria-pressed={open === id}
-              onClick={() => setOpen(open === id ? null : id)}
-            >
-              <Ic id={PANEL_ICONS[id]} />
-            </button>
-          ))}
+          <button
+            type="button"
+            className="bkc-iconbtn bkc-paneline"
+            aria-label="This step: on-this-page, community, tutor"
+            aria-pressed={open === 'aids'}
+            onClick={() => setOpen(open === 'aids' ? null : 'aids')}
+          >
+            <Ic id="ic-doc" />
+          </button>
           {hasClerk && (
             <div className="bkc-user">
               <UserButton
