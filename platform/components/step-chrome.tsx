@@ -612,13 +612,8 @@ export function StepChrome({
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
-      {/* Mobile: the course sidebar sits under the app; opening it slides the
-          whole app right to reveal it. On desktop this is hidden (the sidebar
-          is the sticky left pane instead). */}
-      <aside className="bkc-offcanvas" aria-label="Course contents" aria-hidden={navOpen ? undefined : true}>
-        {navTree}
-      </aside>
-      <div className="bkc-shell">
+      {/* The header lives OUTSIDE the sliding shell, so it stays fixed and
+          never moves when the sidebar opens — only the content shell slides. */}
       <header className="bkc-header">
         <button
           type="button"
@@ -662,8 +657,8 @@ export function StepChrome({
                 appearance={{
                   elements: {
                     userButtonAvatarBox: {
-                      width: '1.9rem',
-                      height: '1.9rem',
+                      width: '2rem',
+                      height: '2rem',
                       boxShadow:
                         '0 0 0 1px rgba(24,24,27,0.14), inset 0 1px 0 rgba(255,255,255,0.55), 0 1px 3px rgba(24,24,27,0.18)',
                     },
@@ -700,6 +695,13 @@ export function StepChrome({
         <span style={{ width: `${progress * 100}%` }} />
       </div>
 
+      {/* Mobile: the course sidebar sits under the fixed header; opening it
+          slides only this shell right to reveal it. Desktop keeps the sticky
+          left pane instead. */}
+      <aside className="bkc-offcanvas" aria-label="Course contents" aria-hidden={navOpen ? undefined : true}>
+        {navTree}
+      </aside>
+      <div className="bkc-shell">
       <div className="bkc-grid">
         <aside className="bkc-pane bkc-left" aria-label="Course contents">
           {navTree}
