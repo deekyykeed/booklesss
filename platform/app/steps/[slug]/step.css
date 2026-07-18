@@ -144,7 +144,10 @@
     font-weight: 600; letter-spacing: -0.02em; line-height: 1.12;
     margin: 0 0 1rem; text-wrap: balance;
   }
+  /* The intro lede under the H1 is hidden by request — steps open straight
+     into the meta row and content. (Rule kept so it's a one-line re-enable.) */
   .standfirst {
+    display: none;
     font-size: 1.125rem; color: var(--steel); line-height: 1.6;
     font-weight: 400; margin: 0 0 1.6rem; max-width: 40rem;
   }
