@@ -152,7 +152,8 @@
     font-weight: 400; margin: 0 0 1.6rem; max-width: 40rem;
   }
   .metarow {
-    display: flex; flex-wrap: wrap; gap: 0.4rem 0.55rem;
+    /* Hidden by request. Re-enable with: display: flex; */
+    display: none; flex-wrap: wrap; gap: 0.4rem 0.55rem;
     font-family: var(--font-satoshi-stack), system-ui, sans-serif;
     font-size: 0.8rem; color: var(--steel);
     padding-bottom: 1.6rem; border-bottom: 1px solid var(--border);
