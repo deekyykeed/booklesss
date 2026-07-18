@@ -28,6 +28,8 @@
   --bkc-sdk-btn-bg: #ffffff;
   /* Squircle roundness used across the chrome (progressive: corner-shape). */
   --bkc-squircle: superellipse(1.4);
+  /* Fixed header height: 32px circle controls + 7px padding top/bottom. */
+  --bkc-header-h: 46px;
   min-height: 100vh;
   /* Chrome body copy defaults to Satoshi; buttons override to Poppins. The
      reading column (.step-shell) keeps its own scoped typography. */
@@ -54,28 +56,31 @@
 
 /* Anchor jumps (ToC) must land below the sticky header. */
 .bkc-root .step-shell .content > section,
-.bkc-root .step-shell header.step { scroll-margin-top: 4.4rem; }
+.bkc-root .step-shell header.step { scroll-margin-top: calc(var(--bkc-header-h) + 0.9rem); }
 
 /* ── Header ─────────────────────────────────────────────────────────── */
-
+/* Fixed above everything, never transforms (it lives outside the sliding
+   shell). Padding 7px/16px; on mobile it tightens to 7px all round. */
 .bkc-header {
   position: sticky; top: 0; z-index: 60;
-  display: flex; align-items: center; gap: 0.75rem;
-  height: 3.5rem; padding: 0 clamp(0.85rem, 3vw, 1.5rem);
+  display: flex; align-items: center; gap: 0.6rem;
+  min-height: var(--bkc-header-h); padding: 7px 16px;
   background: color-mix(in srgb, #f9f9f7 76%, transparent);
   -webkit-backdrop-filter: blur(18px) saturate(1.6);
   backdrop-filter: blur(18px) saturate(1.6);
   border-bottom: 1px solid var(--bkc-hairline-soft);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
+@media (max-width: 640px) { .bkc-header { padding: 7px; } }
 
 .bkc-brand {
-  display: flex; align-items: center; gap: 0.5rem;
+  display: flex; align-items: center; gap: 0.45rem;
   color: var(--bkc-ink); text-decoration: none;
-  font-family: "Parastoo", serif; font-weight: 700; font-size: 1.25rem;
+  font-family: "Parastoo", serif; font-weight: 700; font-size: 1.2rem;
   letter-spacing: 0.01em; line-height: 1;
 }
-.bkc-brand .bkc-mark { width: 1.15rem; height: 1.15rem; }
+/* The logo mark is a fixed 18px. */
+.bkc-brand .bkc-mark { width: 18px; height: 18px; flex: none; }
 .bkc-brand .bkc-dot { color: var(--bkc-amber); }
 
 .bkc-chip {
@@ -95,30 +100,39 @@
 
 .bkc-actions { display: flex; align-items: center; gap: 0.5rem; margin-left: auto; }
 
+/* Icon buttons are a 16px icon inside a 32px white circle (8px padding),
+   fully round — matching the header reference. */
 .bkc-iconbtn {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 2.125rem; height: 2.125rem; padding: 0;
-  border: 1px solid var(--bkc-hairline); border-radius: 0.65rem;
-  background: var(--bkc-metal); color: var(--bkc-steel);
-  box-shadow: var(--bkc-sheen), 0 1px 2px rgba(24, 24, 27, 0.05);
+  width: 32px; height: 32px; padding: 8px; flex: none;
+  border: 1px solid var(--bkc-hairline); border-radius: 50%;
+  background: var(--bkc-sdk-btn-bg); color: var(--bkc-steel);
+  box-shadow: 0 1px 2px rgba(24, 24, 27, 0.06);
   cursor: pointer;
   transition: transform 0.12s ease, color 0.12s ease, border-color 0.12s ease;
 }
-.bkc-iconbtn:hover { transform: translateY(-1px); color: var(--bkc-ink); border-color: rgba(24, 24, 27, 0.18); }
-.bkc-iconbtn:active { transform: translateY(0); }
-.bkc-iconbtn svg { width: 1.15rem; height: 1.15rem; }
+.bkc-iconbtn:hover { color: var(--bkc-ink); border-color: rgba(24, 24, 27, 0.2); }
+.bkc-iconbtn:active { transform: scale(0.94); }
+.bkc-iconbtn svg { width: 16px; height: 16px; }
 .bkc-iconbtn[aria-pressed="true"] { color: var(--bkc-amber); border-color: rgba(197, 97, 63, 0.4); }
+
+/* The hamburger is plain — no circle container, just the 16px glyph. */
+.bkc-navtoggle {
+  border: none; background: none; box-shadow: none;
+  width: 30px; height: 30px; margin-left: -4px;
+}
+.bkc-navtoggle:hover { background: rgba(24, 24, 27, 0.05); }
 
 /* Panel-toggle buttons only exist where the panes don't fit. */
 @media (min-width: 1200px) { .bkc-iconbtn.bkc-paneline { display: none; } }
 
-/* Clerk's UserButton sits last; give the avatar the same metallic ring. */
-.bkc-user { display: flex; align-items: center; margin-left: 0.2rem; }
+/* Clerk's UserButton sits last; the avatar is a 32px circle image. */
+.bkc-user { display: flex; align-items: center; margin-left: 0.1rem; }
 
 /* Reading progress — a full-width hairline track with a filling bar, so the
    fill reads as progress rather than a stray mark. */
 .bkc-progress {
-  position: sticky; top: 3.5rem; z-index: 59;
+  position: sticky; top: var(--bkc-header-h); z-index: 59;
   height: 2px; background: var(--bkc-hairline-soft);
 }
 .bkc-progress span {
@@ -143,8 +157,8 @@
     align-items: start;
   }
   .bkc-pane {
-    position: sticky; top: 4.6rem;
-    max-height: calc(100vh - 5.6rem);
+    position: sticky; top: calc(var(--bkc-header-h) + 0.7rem);
+    max-height: calc(100vh - var(--bkc-header-h) - 1.4rem);
     overflow-y: auto; overscroll-behavior: contain;
     display: flex; flex-direction: column; gap: 1rem;
     padding: 1.1rem 0 2rem;
@@ -155,7 +169,7 @@
 }
 @media (min-width: 1024px) {
   /* The course-tree pane runs full height so its theme control pins low. */
-  .bkc-pane.bkc-left { height: calc(100vh - 5.6rem); }
+  .bkc-pane.bkc-left { height: calc(100vh - var(--bkc-header-h) - 1.4rem); }
   .bkc-pane.bkc-left .bkc-tree { flex: 1; }
 }
 @media (min-width: 1200px) {
@@ -178,14 +192,14 @@
 @media (max-width: 1023.98px) {
   .bkc-root { --bkc-oc-w: min(17.5rem, 84vw); }
   .bkc-offcanvas {
-    position: fixed; top: 0; left: 0; bottom: 0; z-index: 1;
+    position: fixed; top: var(--bkc-header-h); left: 0; bottom: 0; z-index: 1;
     width: var(--bkc-oc-w);
     overflow-y: auto; overscroll-behavior: contain;
     padding: 1.05rem 0.9rem 1.3rem;
     background: var(--surface);
     -webkit-overflow-scrolling: touch;
   }
-  .bkc-offcanvas .bkc-tree { min-height: calc(100vh - 2.3rem); }
+  .bkc-offcanvas .bkc-tree { min-height: calc(100vh - var(--bkc-header-h) - 2.3rem); }
   .bkc-shell {
     min-height: 100vh; background: var(--canvas);
     transition: transform 0.34s cubic-bezier(0.22, 0.9, 0.3, 1);
@@ -374,16 +388,16 @@
 .bkc-search {
   display: inline-flex; align-items: center; gap: 0.5rem;
   margin-left: auto; min-width: 0;
-  width: min(20rem, 34vw); height: 2.125rem;
+  width: min(20rem, 34vw); height: 32px;
   padding: 0 0.5rem 0 0.7rem;
-  border: 1px solid var(--bkc-hairline); border-radius: 0.65rem;
-  background: color-mix(in srgb, #ffffff 62%, transparent);
-  box-shadow: var(--bkc-sheen);
+  border: 1px solid var(--bkc-hairline); border-radius: 999px;
+  background: var(--bkc-sdk-btn-bg);
+  box-shadow: 0 1px 2px rgba(24, 24, 27, 0.06);
   color: var(--bkc-meta); cursor: text; font: inherit;
   transition: border-color 0.12s ease, color 0.12s ease;
 }
-.bkc-search:hover { border-color: rgba(24, 24, 27, 0.18); color: var(--bkc-steel); }
-.bkc-search svg { flex: none; width: 1rem; height: 1rem; }
+.bkc-search:hover { border-color: rgba(24, 24, 27, 0.2); color: var(--bkc-steel); }
+.bkc-search svg { flex: none; width: 16px; height: 16px; }
 .bkc-search-label {
   flex: 1; min-width: 0; text-align: left; font-size: 0.82rem;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -399,7 +413,8 @@
   background: var(--bkc-metal); box-shadow: var(--bkc-sheen);
 }
 @media (max-width: 720px) {
-  .bkc-search { width: 2.125rem; padding: 0; justify-content: center; }
+  /* Collapse to a 32px circle icon, matching the other header controls. */
+  .bkc-search { width: 32px; padding: 0; justify-content: center; border-radius: 50%; }
   .bkc-search-label, .bkc-search .bkc-kbd { display: none; }
 }
 
