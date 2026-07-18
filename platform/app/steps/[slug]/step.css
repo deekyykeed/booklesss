@@ -168,7 +168,8 @@
 
   /* ── Highlight hint pill ──────────────────────── */
   .hint {
-    display: flex; align-items: flex-start; gap: 0.65rem;
+    /* Hidden by request. Re-enable with: display: flex; */
+    display: none; align-items: flex-start; gap: 0.65rem;
     margin: 1.6rem 0 0;
     background: var(--amber-soft);
     border: 1px solid color-mix(in srgb, var(--amber) 26%, transparent);
