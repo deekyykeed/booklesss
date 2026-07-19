@@ -27,6 +27,13 @@
   box-sizing: border-box;
 }
 
+/* No visible scrollbars anywhere — scrolling itself is untouched. */
+html, body, * {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+::-webkit-scrollbar { display: none; width: 0; height: 0; }
+
 /* ── Squircle / superellipse button ── */
 .squircle-btn {
   corner-shape: superellipse(1.5);

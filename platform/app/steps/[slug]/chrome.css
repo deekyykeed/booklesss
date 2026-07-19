@@ -171,7 +171,7 @@
     overflow-y: auto; overscroll-behavior: contain;
     display: flex; flex-direction: column; gap: 1rem;
     padding: 1.1rem 0 2rem;
-    scrollbar-width: thin;
+    scrollbar-width: none;
   }
   /* The reading-aids rail only exists at the widest layout. */
   .bkc-pane.bkc-right { display: none; }
