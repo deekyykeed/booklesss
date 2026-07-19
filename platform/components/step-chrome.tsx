@@ -75,17 +75,6 @@ function Ic({ id, size = 18 }: { id: string; size?: number }) {
   )
 }
 
-function BrandMark() {
-  return (
-    <svg className="bkc-mark" viewBox="-45 -45 303 303" fill="currentColor" aria-hidden="true">
-      <g transform="rotate(45 106.5 106.5)">
-        <path fillRule="evenodd" d="M0 0H213V213H0Z M36 36H177V177H36Z" />
-        <rect x="71" y="71" width="71" height="71" />
-      </g>
-    </svg>
-  )
-}
-
 // Small inline glyphs for docs affordances that aren't in the shell sprite.
 function SearchGlyph() {
   return (
@@ -159,6 +148,10 @@ export function StepChrome({
   const [query, setQuery] = useState('')
   const [cursor, setCursor] = useState(0)
   const [switcherOpen, setSwitcherOpen] = useState(false)
+  // Header course switcher (the caret next to the brand) — separate from the
+  // sidebar's "Select your course" block so they don't open together.
+  const [hdrSwitchOpen, setHdrSwitchOpen] = useState(false)
+  const hdrSwitchRef = useRef<HTMLDivElement>(null)
   // Mobile off-canvas course sidebar: when open, the whole app slides right.
   const [navOpen, setNavOpen] = useState(false)
   const touchRef = useRef<{ x: number; y: number; skip: boolean } | null>(null)
@@ -330,22 +323,30 @@ export function StepChrome({
     else if (dx < 0 && navOpen) setNavOpen(false)
   }
 
-  // Close the course switcher on outside click or Escape.
+  // Close the course switchers on outside click or Escape.
   useEffect(() => {
-    if (!switcherOpen) return
+    if (!switcherOpen && !hdrSwitchOpen) return
     const onDown = (e: MouseEvent) => {
       if (switcherRef.current && !switcherRef.current.contains(e.target as Node)) {
         setSwitcherOpen(false)
       }
+      if (hdrSwitchRef.current && !hdrSwitchRef.current.contains(e.target as Node)) {
+        setHdrSwitchOpen(false)
+      }
     }
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setSwitcherOpen(false)
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSwitcherOpen(false)
+        setHdrSwitchOpen(false)
+      }
+    }
     document.addEventListener('mousedown', onDown)
     window.addEventListener('keydown', onKey)
     return () => {
       document.removeEventListener('mousedown', onDown)
       window.removeEventListener('keydown', onKey)
     }
-  }, [switcherOpen])
+  }, [switcherOpen, hdrSwitchOpen])
 
   const jump = (id: string) => (e: React.MouseEvent) => {
     e.preventDefault()
@@ -625,23 +626,53 @@ export function StepChrome({
           <MenuGlyph />
         </button>
         <Link className="bkc-brand" href="/steps">
-          <BrandMark />
-          <span>Booklesss<span className="bkc-dot">.</span></span>
+          Booklesss
         </Link>
-        {courseChip && <span className="bkc-chip">{courseChip}</span>}
-
-        <button
-          type="button"
-          className="bkc-search"
-          aria-label="Search this course"
-          onClick={() => setSearchOpen(true)}
-        >
-          <SearchGlyph />
-          <span className="bkc-search-label">Search this course…</span>
-          <kbd className="bkc-kbd">⌘K</kbd>
-        </button>
+        {courseChip && (
+          <span className="bkc-chip">{courseChip.split('·')[0].trim()}</span>
+        )}
+        {canSwitch && (
+          <div className="bkc-hdr-switch" ref={hdrSwitchRef}>
+            <button
+              type="button"
+              className="bkc-hdr-caret"
+              aria-label="Switch course"
+              aria-haspopup="menu"
+              aria-expanded={hdrSwitchOpen}
+              onClick={() => setHdrSwitchOpen((v) => !v)}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M7 9.5 12 4l5 5.5M7 14.5 12 20l5-5.5" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            {hdrSwitchOpen && (
+              <div className="bkc-hdr-menu" role="menu">
+                {courses.map((c) => (
+                  <Link
+                    key={c.course_code}
+                    href={c.href}
+                    role="menuitem"
+                    className={`bkc-sdk-item${c.course_code === currentCourse ? ' bkc-sdk-item-active' : ''}`}
+                    onClick={() => setHdrSwitchOpen(false)}
+                  >
+                    <Ic id="ic-book-duo" size={16} />
+                    <span>{c.label}</span>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="bkc-actions">
+          <button
+            type="button"
+            className="bkc-iconbtn"
+            aria-label="Search this course"
+            onClick={() => setSearchOpen(true)}
+          >
+            <SearchGlyph />
+          </button>
           <button
             type="button"
             className="bkc-iconbtn bkc-paneline"
@@ -649,7 +680,7 @@ export function StepChrome({
             aria-pressed={open === 'aids'}
             onClick={() => setOpen(open === 'aids' ? null : 'aids')}
           >
-            <Ic id="ic-doc" />
+            <Ic id="ic-stars-duo" />
           </button>
           {hasClerk && (
             <div className="bkc-user">

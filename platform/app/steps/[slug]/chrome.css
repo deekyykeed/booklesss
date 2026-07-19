@@ -38,7 +38,7 @@
 
 /* Button text across the docs chrome is Poppins. */
 .bkc-sdk-name, .bkc-sdk-item, .bkc-section, .bkc-tree-title,
-.bkc-pager-title, .bkc-rail-link, .bkc-search-label, .bkc-switch-btn {
+.bkc-pager-title, .bkc-rail-link, .bkc-switch-btn {
   font-family: var(--font-poppins-stack);
 }
 
@@ -82,48 +82,62 @@
 }
 @media (max-width: 640px) { .bkc-header { padding: 7px; } }
 
+/* Brand is plain text — no mark, no serif (per the Framer header reference:
+   medium weight, roomy, near-black). */
 .bkc-brand {
-  display: flex; align-items: center; gap: 0.45rem;
   color: var(--bkc-ink); text-decoration: none;
-  font-family: "Parastoo", serif; font-weight: 700; font-size: 1.2rem;
-  letter-spacing: 0.01em; line-height: 1;
+  font-family: var(--font-poppins-stack);
+  font-weight: 500; font-size: 1.18rem;
+  letter-spacing: -0.01em; line-height: 1;
+  white-space: nowrap;
 }
-/* The logo mark is a fixed 18px. */
-.bkc-brand .bkc-mark { width: 18px; height: 18px; flex: none; }
-.bkc-brand .bkc-dot { color: var(--bkc-amber); }
 
+/* Small uppercase pill next to the brand (the "FREE" chip in the reference). */
 .bkc-chip {
   font-family: var(--bkc-label-font);
-  font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.08em;
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--bkc-steel);
-  padding: 0.3rem 0.7rem; border: 1px solid var(--bkc-hairline);
-  border-radius: 999px; background: var(--bkc-metal);
-  box-shadow: var(--bkc-sheen);
+  padding: 0.3rem 0.68rem; border: 1.5px solid rgba(24, 24, 27, 0.13);
+  border-radius: 999px; corner-shape: round;
+  background: transparent;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  max-width: 40vw;
+  max-width: 34vw;
 }
-@media (max-width: 560px) { .bkc-chip { display: none; } }
-/* Narrow screens: drop the wordmark text to just the mark so the header
-   breathes (the course lives in the sidebar anyway). */
-@media (max-width: 480px) { .bkc-brand span { display: none; } }
+
+/* Course-switch caret next to the chip, with its dropdown. */
+.bkc-hdr-switch { position: relative; display: flex; align-items: center; }
+.bkc-hdr-caret {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; padding: 0;
+  border: none; border-radius: 50%; background: none;
+  color: var(--bkc-steel); cursor: pointer;
+}
+.bkc-hdr-caret:hover { background: rgba(24, 24, 27, 0.05); color: var(--bkc-ink); }
+.bkc-hdr-menu {
+  position: absolute; top: calc(100% + 0.5rem); left: 0; z-index: 70;
+  min-width: 13rem; padding: 0.35rem;
+  background: var(--bkc-metal-card); border: 1px solid var(--bkc-hairline);
+  border-radius: 0.8rem; corner-shape: var(--bkc-squircle);
+  box-shadow: var(--bkc-pop-shadow); animation: bkc-rise 0.16s ease;
+}
 
 .bkc-actions { display: flex; align-items: center; gap: 0.5rem; margin-left: auto; }
 
 /* Icon buttons are a 16px icon inside a 32px white circle (8px padding),
-   fully round — matching the header reference. */
+   fully round — borderless with a soft shadow, ink icons, per the reference. */
 .bkc-iconbtn {
   display: inline-flex; align-items: center; justify-content: center;
   width: 32px; height: 32px; padding: 8px; flex: none;
-  border: 1px solid var(--bkc-hairline); border-radius: 50%;
-  background: var(--bkc-sdk-btn-bg); color: var(--bkc-steel);
-  box-shadow: 0 1px 2px rgba(24, 24, 27, 0.06);
+  border: none; border-radius: 50%;
+  background: var(--bkc-sdk-btn-bg); color: var(--bkc-ink);
+  box-shadow: 0 0 0 1px rgba(24, 24, 27, 0.04), 0 1px 3px rgba(24, 24, 27, 0.1);
   cursor: pointer;
-  transition: transform 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+  transition: transform 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
 }
-.bkc-iconbtn:hover { color: var(--bkc-ink); border-color: rgba(24, 24, 27, 0.2); }
+.bkc-iconbtn:hover { box-shadow: 0 0 0 1px rgba(24, 24, 27, 0.08), 0 2px 5px rgba(24, 24, 27, 0.14); }
 .bkc-iconbtn:active { transform: scale(0.94); }
 .bkc-iconbtn svg { width: 16px; height: 16px; }
-.bkc-iconbtn[aria-pressed="true"] { color: var(--bkc-amber); border-color: rgba(197, 97, 63, 0.4); }
+.bkc-iconbtn[aria-pressed="true"] { color: var(--bkc-amber); box-shadow: 0 0 0 1px rgba(197, 97, 63, 0.35), 0 1px 3px rgba(24, 24, 27, 0.1); }
 
 /* The hamburger is plain — no circle container, just the 16px glyph. */
 .bkc-navtoggle {
@@ -171,7 +185,7 @@
     overflow-y: auto; overscroll-behavior: contain;
     display: flex; flex-direction: column; gap: 1rem;
     padding: 1.1rem 0 2rem;
-    scrollbar-width: thin;
+    scrollbar-width: none;
   }
   /* The reading-aids rail only exists at the widest layout. */
   .bkc-pane.bkc-right { display: none; }
@@ -395,25 +409,7 @@
 
 /* ── Header search (⌘K trigger) ─────────────────────────────────────── */
 
-.bkc-search {
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  margin-left: auto; min-width: 0;
-  width: min(20rem, 34vw); height: 32px;
-  padding: 0 0.5rem 0 0.7rem;
-  border: 1px solid var(--bkc-hairline); border-radius: 999px;
-  background: var(--bkc-sdk-btn-bg);
-  box-shadow: 0 1px 2px rgba(24, 24, 27, 0.06);
-  color: var(--bkc-meta); cursor: text; font: inherit;
-  transition: border-color 0.12s ease, color 0.12s ease;
-}
-.bkc-search:hover { border-color: rgba(24, 24, 27, 0.2); color: var(--bkc-steel); }
-.bkc-search svg { flex: none; width: 16px; height: 16px; }
-.bkc-search-label {
-  flex: 1; min-width: 0; text-align: left; font-size: 0.82rem;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.bkc-header .bkc-actions { margin-left: 0.45rem; }
-
+/* Search is one of the circle icon buttons (Framer-style header). */
 .bkc-kbd {
   flex: none; font-family: var(--bkc-label-font);
   font-size: 0.66rem; font-weight: 700; letter-spacing: 0.04em;
@@ -421,11 +417,6 @@
   padding: 0.1rem 0.35rem; border-radius: 0.35rem;
   border: 1px solid var(--bkc-hairline);
   background: var(--bkc-metal); box-shadow: var(--bkc-sheen);
-}
-@media (max-width: 720px) {
-  /* Collapse to a 32px circle icon, matching the other header controls. */
-  .bkc-search { width: 32px; padding: 0; justify-content: center; border-radius: 50%; }
-  .bkc-search-label, .bkc-search .bkc-kbd { display: none; }
 }
 
 /* ── Course-tree sidebar (the docs spine) ───────────────────────────── */
@@ -663,7 +654,6 @@
   background: color-mix(in srgb, #17161a 80%, transparent);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
-:root[data-theme="dark"] .bkc-search { background: color-mix(in srgb, #ffffff 7%, transparent); }
 :root[data-theme="dark"] .bkc-bubble { background: #232127; border-color: rgba(255, 255, 255, 0.08); }
 :root[data-theme="dark"] .bkc-composer input { background: #232127; }
 :root[data-theme="dark"] .bkc-composer input:disabled { background: #1d1b21; }
@@ -770,5 +760,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .bkc-backdrop, .bkc-sheet, .bkc-cmdk, .bkc-switch-menu, .bkc-sdk-menu, .bkc-shell-scrim { animation: none; }
-  .bkc-iconbtn, .bkc-pager-btn, .bkc-search, .bkc-lesson-caret, .bkc-shell { transition: none; }
+  .bkc-iconbtn, .bkc-pager-btn, .bkc-lesson-caret, .bkc-shell { transition: none; }
 }
