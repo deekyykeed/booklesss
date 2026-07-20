@@ -5,7 +5,7 @@ export default function SignInPage() {
   if (!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) return <AuthUnavailable />
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-[#f5f4ef] px-4 py-10">
-      <SignIn signUpUrl="/sign-up" fallbackRedirectUrl="/steps" />
+      <SignIn signUpUrl="/sign-up" fallbackRedirectUrl="/pricing" />
     </div>
   )
 }

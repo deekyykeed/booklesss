@@ -1,43 +1,28 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
-import Link from 'next/link'
+import { useEffect, useRef, useState } from 'react'
 import { UserButton } from '@clerk/nextjs'
 import { StudyProfileSettings } from '@/components/study-profile'
 
-// The course reads like documentation. This chrome is the docs shell around
-// every step: a persistent left sidebar that is the whole course tree
-// (lessons → steps, the navigation spine), a header with ⌘K search across the
-// course, breadcrumbs + prev/next pagination in the reading column, and a
-// right rail of reading aids — On this page, Community, AI tutor. On wide
-// screens the sidebar and rail are sticky side panes; below that they open as
-// full-screen sheets behind a Clerk-style backdrop blur. Styles live in
-// app/steps/[slug]/chrome.css (bkc-*).
+// The step page IS the app, and it is the ONLY page. There is deliberately no
+// index, no course tree, no course switcher, no step search and no prev/next
+// pager: nothing anywhere offers a way to see all the steps or all the courses.
+// A student arrives on one step from a Slack link and reads it. If you are
+// about to add a browse surface back, don't — see AGENTS.md.
+//
+// What remains is the reading column plus a right rail of aids for THIS step —
+// On this page, Community, AI tutor — and the theme control. Below 1200px the
+// rail collapses into one sheet behind a Clerk-style backdrop blur. Styles live
+// in app/steps/[slug]/chrome.css (bkc-*).
 //
 // Clerk carries the identity surface: the UserButton popover is the account
 // menu, and its profile modal (Account / Security / Billing when enabled)
 // is the settings popup — we add a "Study profile" page to it rather than
 // building our own settings UI.
 
-export type NavStep = {
-  slug: string
-  title: string
-  lesson: number | null
-  step_label: string | null
-  minutes: number | null
-}
-
-export type CourseLink = {
-  course_code: string
-  label: string
-  href: string
-}
-
 type TocItem = { id: string; label: string; eyebrow: string | null }
-// The course sidebar is NOT a sheet — on mobile it's an off-canvas panel the
-// app slides over (see navOpen). On mobile the reading aids (on-this-page,
-// community, tutor) collapse into one 'aids' sheet so the header stays calm;
-// on desktop they live in the right rail.
+// One 'aids' sheet on mobile keeps the header calm; on desktop these live in
+// the right rail. 'onpage' is the individually-addressable on-this-page panel.
 type PanelId = 'aids' | 'onpage' | 'tutor' | 'community'
 
 const PANEL_TITLES: Record<PanelId, string> = {
@@ -53,20 +38,6 @@ const PANEL_ICONS: Record<PanelId, string> = {
   community: 'ic-chat',
 }
 
-// A horizontal swipe should not fight a horizontally-scrollable table or code
-// block: bail if the gesture began inside one.
-function startedInScrollableX(target: EventTarget | null): boolean {
-  let n = target as HTMLElement | null
-  while (n && n !== document.body) {
-    const s = getComputedStyle(n)
-    if ((s.overflowX === 'auto' || s.overflowX === 'scroll') && n.scrollWidth > n.clientWidth) {
-      return true
-    }
-    n = n.parentElement
-  }
-  return false
-}
-
 function Ic({ id, size = 18 }: { id: string; size?: number }) {
   return (
     <svg width={size} height={size} aria-hidden="true" style={{ display: 'block' }}>
@@ -75,22 +46,6 @@ function Ic({ id, size = 18 }: { id: string; size?: number }) {
   )
 }
 
-// Small inline glyphs for docs affordances that aren't in the shell sprite.
-function SearchGlyph() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" />
-      <path d="M16.5 16.5 21 21" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    </svg>
-  )
-}
-function MenuGlyph() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    </svg>
-  )
-}
 function Chevron() {
   return (
     <svg className="bkc-crumb-sep" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -126,17 +81,17 @@ export function StepChrome({
   hasClerk,
   courseChip,
   current,
-  nav,
-  courses = [],
-  currentCourse,
+  lesson,
+  stepLabel,
   children,
 }: {
   hasClerk: boolean
   courseChip: string | null
   current: string
-  nav: NavStep[]
-  courses?: CourseLink[]
-  currentCourse?: string
+  /** This step's own lesson number / label, off its own row — NOT a course
+      listing. Used only to say where you are in the breadcrumb. */
+  lesson?: number | null
+  stepLabel?: string | null
   children: React.ReactNode
 }) {
   const [toc, setToc] = useState<TocItem[]>([])
@@ -144,27 +99,7 @@ export function StepChrome({
   const [discussions, setDiscussions] = useState<string[]>([])
   const [open, setOpen] = useState<PanelId | null>(null)
   const [progress, setProgress] = useState(0)
-  const [searchOpen, setSearchOpen] = useState(false)
-  const [query, setQuery] = useState('')
-  const [cursor, setCursor] = useState(0)
-  const [switcherOpen, setSwitcherOpen] = useState(false)
-  // Header course switcher (the caret next to the brand) — separate from the
-  // sidebar's "Select your course" block so they don't open together.
-  const [hdrSwitchOpen, setHdrSwitchOpen] = useState(false)
-  const hdrSwitchRef = useRef<HTMLDivElement>(null)
-  // Mobile off-canvas course sidebar: when open, the whole app slides right.
-  const [navOpen, setNavOpen] = useState(false)
-  const touchRef = useRef<{ x: number; y: number; skip: boolean } | null>(null)
-  // Long courses: collapse every lesson except the one holding the current
-  // step, like a docs sidebar that auto-opens the active section.
-  const [collapsed, setCollapsed] = useState<Set<number>>(() => {
-    const cur = nav.find((s) => s.slug === current)?.lesson ?? 0
-    const all = [...new Set(nav.map((s) => s.lesson ?? 0))]
-    return new Set(all.filter((l) => l > 0 && l !== cur))
-  })
   const rootRef = useRef<HTMLDivElement>(null)
-  const searchInputRef = useRef<HTMLInputElement>(null)
-  const switcherRef = useRef<HTMLDivElement>(null)
 
   // Theme lives on the document root (set pre-paint by the boot script in
   // layout.tsx, so no flash and no hydration mismatch). `data-theme` is the
@@ -259,94 +194,23 @@ export function StepChrome({
     }
   }, [])
 
-  // Global ⌘K / Ctrl+K opens the course search palette.
+  // Sheet hygiene: lock body scroll while open, close on Escape, and dismiss
+  // if the viewport grows into the side-pane layout.
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault()
-        setSearchOpen((v) => !v)
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [])
-
-  // Overlay hygiene: lock body scroll while a sheet or search is open, close
-  // on Escape, and dismiss side sheets if the viewport grows into the pane
-  // layout. Focus the search input when the palette opens.
-  useEffect(() => {
-    const anyOpen = open || searchOpen || navOpen
-    if (!anyOpen) return
+    if (!open) return
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setOpen(null)
-        setSearchOpen(false)
-        setNavOpen(false)
-      }
-    }
-    // Reading-aid panes appear at ≥1200px; the course sidebar becomes a fixed
-    // pane at ≥1024px. Either transition should dismiss its mobile counterpart.
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(null)
     const paneMq = window.matchMedia('(min-width: 1200px)')
-    const sideMq = window.matchMedia('(min-width: 1024px)')
     const onPaneMq = () => paneMq.matches && setOpen(null)
-    const onSideMq = () => sideMq.matches && setNavOpen(false)
     window.addEventListener('keydown', onKey)
     paneMq.addEventListener('change', onPaneMq)
-    sideMq.addEventListener('change', onSideMq)
-    if (searchOpen) searchInputRef.current?.focus()
     return () => {
       document.body.style.overflow = prev
       window.removeEventListener('keydown', onKey)
       paneMq.removeEventListener('change', onPaneMq)
-      sideMq.removeEventListener('change', onSideMq)
     }
-  }, [open, searchOpen, navOpen])
-
-  // Swipe right (anywhere not inside a horizontal scroller) opens the course
-  // sidebar; swipe left closes it. Touch-only, so it never fires on desktop.
-  const onTouchStart = (e: React.TouchEvent) => {
-    const t = e.touches[0]
-    touchRef.current = { x: t.clientX, y: t.clientY, skip: startedInScrollableX(e.target) }
-  }
-  const onTouchEnd = (e: React.TouchEvent) => {
-    const s = touchRef.current
-    touchRef.current = null
-    if (!s || s.skip) return
-    if (!window.matchMedia('(max-width: 1023.98px)').matches) return
-    const t = e.changedTouches[0]
-    const dx = t.clientX - s.x
-    const dy = t.clientY - s.y
-    if (Math.abs(dx) < 64 || Math.abs(dx) < Math.abs(dy) * 1.4) return
-    if (dx > 0 && !navOpen && !open && !searchOpen) setNavOpen(true)
-    else if (dx < 0 && navOpen) setNavOpen(false)
-  }
-
-  // Close the course switchers on outside click or Escape.
-  useEffect(() => {
-    if (!switcherOpen && !hdrSwitchOpen) return
-    const onDown = (e: MouseEvent) => {
-      if (switcherRef.current && !switcherRef.current.contains(e.target as Node)) {
-        setSwitcherOpen(false)
-      }
-      if (hdrSwitchRef.current && !hdrSwitchRef.current.contains(e.target as Node)) {
-        setHdrSwitchOpen(false)
-      }
-    }
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setSwitcherOpen(false)
-        setHdrSwitchOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', onDown)
-    window.addEventListener('keydown', onKey)
-    return () => {
-      document.removeEventListener('mousedown', onDown)
-      window.removeEventListener('keydown', onKey)
-    }
-  }, [switcherOpen, hdrSwitchOpen])
+  }, [open])
 
   const jump = (id: string) => (e: React.MouseEvent) => {
     e.preventDefault()
@@ -354,178 +218,26 @@ export function StepChrome({
     setOpen(null)
   }
 
-  const toggleLesson = (l: number) =>
-    setCollapsed((prev) => {
-      const next = new Set(prev)
-      if (next.has(l)) next.delete(l)
-      else next.add(l)
-      return next
-    })
-
-  const lessons = [...new Set(nav.map((s) => s.lesson ?? 0))].sort((a, b) => a - b)
-
-  // Reading order: prev/next neighbours and the current step's own metadata,
-  // read straight off the course-ordered nav.
-  const flatIndex = nav.findIndex((s) => s.slug === current)
-  const currentStep = flatIndex >= 0 ? nav[flatIndex] : null
-  const prevStep = flatIndex > 0 ? nav[flatIndex - 1] : null
-  const nextStep = flatIndex >= 0 && flatIndex < nav.length - 1 ? nav[flatIndex + 1] : null
-
-  // Course search: match on step label, title, and lesson number.
-  const results = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    if (!q) return nav
-    return nav.filter((s) => {
-      const hay = `${s.step_label ?? ''} ${s.title} ${s.lesson != null ? `lesson ${s.lesson}` : ''}`.toLowerCase()
-      return q.split(/\s+/).every((t) => hay.includes(t))
-    })
-  }, [query, nav])
-
-  const onSearchKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'ArrowDown') {
-      e.preventDefault()
-      setCursor((c) => Math.min(c + 1, results.length - 1))
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault()
-      setCursor((c) => Math.max(c - 1, 0))
-    } else if (e.key === 'Enter') {
-      const pick = results[cursor]
-      if (pick) window.location.href = `/steps/${pick.slug}`
-    }
-  }
-
   // ── Panels ────────────────────────────────────────────────────────────
 
-  const courseName = (courseChip ?? '').split('·')[0].trim() || courseChip || 'Course'
-  const canSwitch = courses.length > 1
-
-  const navTree = (
-    <nav className="bkc-tree" aria-label="Course contents">
-      {/* Course selector — the "Select your SDK" block. */}
-      <div className="bkc-sdk" ref={switcherRef}>
-        <p className="bkc-sdk-label">Select your course</p>
-        <button
-          type="button"
-          className="bkc-sdk-btn"
-          aria-haspopup={canSwitch ? 'menu' : undefined}
-          aria-expanded={canSwitch ? switcherOpen : undefined}
-          disabled={!canSwitch}
-          onClick={() => canSwitch && setSwitcherOpen((v) => !v)}
-        >
-          <span className="bkc-sdk-mark"><Ic id="ic-book-duo" size={18} /></span>
-          <span className="bkc-sdk-name">{courseName}</span>
-          {canSwitch && (
-            <svg className="bkc-sdk-caret" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M8 9l4-4 4 4M8 15l4 4 4-4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          )}
+  // Theme control — 3-way segmented (dark / light / system). It used to live at
+  // the foot of the course sidebar; with that gone it rides in the reading-aid
+  // rail, and in the mobile sheet alongside it.
+  const themeRow = (
+    <div className="bkc-theme-row">
+      <span className="bkc-theme-label">Theme</span>
+      <div className="bkc-theme-seg" role="group" aria-label="Theme">
+        <button type="button" data-mode="dark" className="bkc-theme-opt" aria-label="Dark" onClick={() => setThemeMode('dark')}>
+          <MoonGlyph />
         </button>
-        {canSwitch && switcherOpen && (
-          <div className="bkc-sdk-menu" role="menu">
-            {courses.map((c) => (
-              <Link
-                key={c.course_code}
-                href={c.href}
-                role="menuitem"
-                className={`bkc-sdk-item${c.course_code === currentCourse ? ' bkc-sdk-item-active' : ''}`}
-                onClick={() => {
-                  setSwitcherOpen(false)
-                  setNavOpen(false)
-                }}
-              >
-                <Ic id="ic-book-duo" size={16} />
-                <span>{c.label}</span>
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Section buttons — the "Guides / Reference" decider. Lessons is the
-          live view; Resources is a placeholder for past papers / assignments. */}
-      <div className="bkc-sections">
-        <button type="button" className="bkc-section bkc-section-active" aria-current="page">
-          <Ic id="ic-book" size={17} /> Lessons
+        <button type="button" data-mode="light" className="bkc-theme-opt" aria-label="Light" onClick={() => setThemeMode('light')}>
+          <SunGlyph />
         </button>
-        <button type="button" className="bkc-section" disabled>
-          <Ic id="ic-doc" size={17} /> Resources
-          <span className="bkc-section-soon">soon</span>
+        <button type="button" data-mode="system" className="bkc-theme-opt" aria-label="System" onClick={() => setThemeMode('system')}>
+          <MonitorGlyph />
         </button>
       </div>
-
-      <hr className="bkc-sidebar-div" />
-
-      {/* Table of contents — the course tree. */}
-      <div className="bkc-toc-tree">
-        {nav.length === 0 ? (
-          <p className="bkc-community-note">Course steps will appear here.</p>
-        ) : (
-          lessons.map((l) => {
-            const items = nav.filter((s) => (s.lesson ?? 0) === l)
-            const collapsible = l > 0 && lessons.length > 1
-            const isOpen = !collapsed.has(l)
-            return (
-              <div className="bkc-tree-group" key={l}>
-                {collapsible && (
-                  <button
-                    type="button"
-                    className="bkc-lesson bkc-lesson-btn"
-                    aria-expanded={isOpen}
-                    onClick={() => toggleLesson(l)}
-                  >
-                    <svg
-                      className={`bkc-lesson-caret${isOpen ? ' bkc-open' : ''}`}
-                      width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"
-                    >
-                      <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                    Lesson {l}
-                  </button>
-                )}
-                {isOpen && (
-                  <ul className="bkc-tree-list">
-                    {items.map((s) => (
-                      <li key={s.slug}>
-                        <a
-                          href={`/steps/${s.slug}`}
-                          className={s.slug === current ? 'bkc-current' : undefined}
-                          aria-current={s.slug === current ? 'page' : undefined}
-                          onClick={() => {
-                            setOpen(null)
-                            setNavOpen(false)
-                          }}
-                        >
-                          {s.step_label && (
-                            <span className="bkc-steplabel">{s.step_label.replace(/^Step /, '')}</span>
-                          )}
-                          <span className="bkc-tree-title">{s.title}</span>
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            )
-          })
-        )}
-      </div>
-
-      {/* Theme control — 3-way segmented (dark / light / system), pinned low. */}
-      <div className="bkc-theme-row">
-        <span className="bkc-theme-label">Theme</span>
-        <div className="bkc-theme-seg" role="group" aria-label="Theme">
-          <button type="button" data-mode="dark" className="bkc-theme-opt" aria-label="Dark" onClick={() => setThemeMode('dark')}>
-            <MoonGlyph />
-          </button>
-          <button type="button" data-mode="light" className="bkc-theme-opt" aria-label="Light" onClick={() => setThemeMode('light')}>
-            <SunGlyph />
-          </button>
-          <button type="button" data-mode="system" className="bkc-theme-opt" aria-label="System" onClick={() => setThemeMode('system')}>
-            <MonitorGlyph />
-          </button>
-        </div>
-      </div>
-    </nav>
+    </div>
   )
 
   const onPageCard = toc.length > 0 && (
@@ -596,6 +308,7 @@ export function StepChrome({
         )}
         {communityPanel}
         {tutorPanel}
+        {themeRow}
       </>
     ),
     onpage: onPageCard || (
@@ -606,73 +319,15 @@ export function StepChrome({
   }
 
   return (
-    <div
-      className="bkc-root"
-      ref={rootRef}
-      data-navopen={navOpen ? 'true' : undefined}
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
-    >
-      {/* The header lives OUTSIDE the sliding shell, so it stays fixed and
-          never moves when the sidebar opens — only the content shell slides. */}
+    <div className="bkc-root" ref={rootRef}>
       <header className="bkc-header">
-        <button
-          type="button"
-          className="bkc-iconbtn bkc-navtoggle"
-          aria-label="Course contents"
-          aria-pressed={navOpen}
-          onClick={() => setNavOpen((v) => !v)}
-        >
-          <MenuGlyph />
-        </button>
-        <Link className="bkc-brand" href="/steps">
-          Booklesss
-        </Link>
+        {/* The wordmark is not a link. There is nowhere to go. */}
+        <span className="bkc-brand">Booklesss</span>
         {courseChip && (
           <span className="bkc-chip">{courseChip.split('·')[0].trim()}</span>
         )}
-        {canSwitch && (
-          <div className="bkc-hdr-switch" ref={hdrSwitchRef}>
-            <button
-              type="button"
-              className="bkc-hdr-caret"
-              aria-label="Switch course"
-              aria-haspopup="menu"
-              aria-expanded={hdrSwitchOpen}
-              onClick={() => setHdrSwitchOpen((v) => !v)}
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M7 9.5 12 4l5 5.5M7 14.5 12 20l5-5.5" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-            {hdrSwitchOpen && (
-              <div className="bkc-hdr-menu" role="menu">
-                {courses.map((c) => (
-                  <Link
-                    key={c.course_code}
-                    href={c.href}
-                    role="menuitem"
-                    className={`bkc-sdk-item${c.course_code === currentCourse ? ' bkc-sdk-item-active' : ''}`}
-                    onClick={() => setHdrSwitchOpen(false)}
-                  >
-                    <Ic id="ic-book-duo" size={16} />
-                    <span>{c.label}</span>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
 
         <div className="bkc-actions">
-          <button
-            type="button"
-            className="bkc-iconbtn"
-            aria-label="Search this course"
-            onClick={() => setSearchOpen(true)}
-          >
-            <SearchGlyph />
-          </button>
           <button
             type="button"
             className="bkc-iconbtn bkc-paneline"
@@ -697,11 +352,7 @@ export function StepChrome({
                 }}
               >
                 <UserButton.MenuItems>
-                  <UserButton.Link
-                    href="/steps"
-                    label="All my steps"
-                    labelIcon={<Ic id="ic-book" size={15} />}
-                  />
+                  {/* No "all my steps" — there is no index to link to. */}
                   <UserButton.Link
                     href="/pricing"
                     label="Plans & pricing"
@@ -726,98 +377,50 @@ export function StepChrome({
         <span style={{ width: `${progress * 100}%` }} />
       </div>
 
-      {/* Mobile: the course sidebar sits under the fixed header; opening it
-          slides only this shell right to reveal it. Desktop keeps the sticky
-          left pane instead. */}
-      <aside className="bkc-offcanvas" aria-label="Course contents" aria-hidden={navOpen ? undefined : true}>
-        {navTree}
-      </aside>
       <div className="bkc-shell">
-      <div className="bkc-grid">
-        <aside className="bkc-pane bkc-left" aria-label="Course contents">
-          {navTree}
-        </aside>
-
-        <main className="bkc-main">
-          <nav className="bkc-crumb" aria-label="Breadcrumb">
-            <Link href="/steps">{courseChip ?? 'Steps'}</Link>
-            {currentStep?.lesson != null && currentStep.lesson > 0 && (
-              <>
-                <Chevron />
-                <span>Lesson {currentStep.lesson}</span>
-              </>
-            )}
-            {currentStep && (
-              <>
-                <Chevron />
-                <span className="bkc-crumb-cur">
-                  {currentStep.step_label ?? currentStep.title}
-                </span>
-              </>
-            )}
-          </nav>
-
-          {children}
-
-          {(prevStep || nextStep) && (
-            <nav className="bkc-pager" aria-label="Step navigation">
-              {prevStep ? (
-                <a className="bkc-pager-btn" href={`/steps/${prevStep.slug}`}>
-                  <span className="bkc-pager-dir">← Previous</span>
-                  <span className="bkc-pager-title">
-                    {prevStep.step_label ? `${prevStep.step_label} · ` : ''}
-                    {prevStep.title}
-                  </span>
-                </a>
-              ) : (
-                <span />
+        <div className="bkc-grid">
+          <main className="bkc-main">
+            {/* Breadcrumb names where you are; every part is static text, not
+                a link. It reads this step's own lesson/label, not a course
+                listing. */}
+            <nav className="bkc-crumb" aria-label="Breadcrumb">
+              <span>{courseChip ?? 'Booklesss'}</span>
+              {lesson != null && lesson > 0 && (
+                <>
+                  <Chevron />
+                  <span>Lesson {lesson}</span>
+                </>
               )}
-              {nextStep ? (
-                <a className="bkc-pager-btn bkc-pager-next" href={`/steps/${nextStep.slug}`}>
-                  <span className="bkc-pager-dir">Next →</span>
-                  <span className="bkc-pager-title">
-                    {nextStep.step_label ? `${nextStep.step_label} · ` : ''}
-                    {nextStep.title}
-                  </span>
-                </a>
-              ) : (
-                <span />
+              {stepLabel && (
+                <>
+                  <Chevron />
+                  <span className="bkc-crumb-cur">{stepLabel}</span>
+                </>
               )}
             </nav>
-          )}
-        </main>
 
-        <aside className="bkc-pane bkc-right" aria-label="Reading aids">
-          {onPageCard}
-          {communityPanel}
-          {tutorPanel}
-          <div className="bkc-rail-foot">
-            <button
-              type="button"
-              className="bkc-rail-link"
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M12 19V6M6 11l6-6 6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              Back to top
-            </button>
-            <Link className="bkc-rail-link" href="/steps">
-              <Ic id="ic-book" size={14} /> All courses
-            </Link>
-          </div>
-        </aside>
-      </div>
+            {children}
+          </main>
 
-        {/* Push-to-close: tapping the slid-over app dismisses the sidebar. */}
-        {navOpen && (
-          <button
-            type="button"
-            className="bkc-shell-scrim"
-            aria-label="Close course menu"
-            onClick={() => setNavOpen(false)}
-          />
-        )}
+          <aside className="bkc-pane bkc-right" aria-label="Reading aids">
+            {onPageCard}
+            {communityPanel}
+            {tutorPanel}
+            {themeRow}
+            <div className="bkc-rail-foot">
+              <button
+                type="button"
+                className="bkc-rail-link"
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 19V6M6 11l6-6 6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Back to top
+              </button>
+            </div>
+          </aside>
+        </div>
       </div>
 
       {open && (
@@ -840,53 +443,6 @@ export function StepChrome({
               </button>
             </div>
             <div className="bkc-sheet-body">{panels[open]}</div>
-          </div>
-        </div>
-      )}
-
-      {searchOpen && (
-        <div className="bkc-cmdk-root" role="dialog" aria-modal="true" aria-label="Search this course">
-          <div className="bkc-backdrop" onClick={() => setSearchOpen(false)} />
-          <div className="bkc-cmdk">
-            <div className="bkc-cmdk-input">
-              <SearchGlyph />
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={query}
-                onChange={(e) => {
-                  setQuery(e.target.value)
-                  setCursor(0)
-                }}
-                onKeyDown={onSearchKey}
-                placeholder="Search steps in this course…"
-                aria-label="Search steps in this course"
-              />
-              <kbd className="bkc-kbd">esc</kbd>
-            </div>
-            <ul className="bkc-cmdk-list">
-              {results.length > 0 ? (
-                results.map((s, i) => (
-                  <li key={s.slug}>
-                    <a
-                      href={`/steps/${s.slug}`}
-                      className={i === cursor ? 'bkc-cmdk-active' : undefined}
-                      onMouseEnter={() => setCursor(i)}
-                    >
-                      <span className="bkc-cmdk-label">
-                        {s.step_label && <span className="bkc-cmdk-tag">{s.step_label}</span>}
-                        <span>{s.title}</span>
-                      </span>
-                      {s.lesson != null && s.lesson > 0 && (
-                        <span className="bkc-cmdk-meta">Lesson {s.lesson}</span>
-                      )}
-                    </a>
-                  </li>
-                ))
-              ) : (
-                <li className="bkc-cmdk-empty">No steps match &ldquo;{query}&rdquo;.</li>
-              )}
-            </ul>
           </div>
         </div>
       )}

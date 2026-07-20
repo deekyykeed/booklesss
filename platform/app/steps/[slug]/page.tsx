@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { canReadStep } from '@/lib/access'
 import { AuthBrand } from '@/components/auth-brand'
-import { StepChrome, type NavStep, type CourseLink } from '@/components/step-chrome'
+import { StepChrome } from '@/components/step-chrome'
 import shell from './shell-parts.json'
 import './step.css'
 import './chrome.css'
@@ -24,6 +24,8 @@ type StepRow = {
   body_html: string
   course_chip: string | null
   access: 'public' | 'members' | 'internal'
+  lesson: number | null
+  step_label: string | null
   glossary: Record<string, string>
   brand: Record<string, unknown>
   extra_js: string | null
@@ -42,67 +44,13 @@ const getStep = cache(async (slug: string): Promise<StepRow | null> => {
     const supabase = await createClient()
     const { data } = await supabase
       .from('steps')
-      .select('slug, course_code, title, description, body_html, course_chip, access, glossary, brand, extra_js')
+      .select('slug, course_code, title, description, body_html, course_chip, access, glossary, brand, extra_js, lesson, step_label')
       .eq('slug', slug)
       .eq('status', 'published')
       .maybeSingle()
     return (data as StepRow) ?? null
   } catch {
     return null
-  }
-})
-
-// Sibling steps of the same course, for the chapter navigation in the
-// Contents panel. Fail-soft like getStep: any error → empty nav, the page
-// still renders. Locked members-steps are listed too — following the link
-// shows the teaser, which is the upsell working as intended.
-const getCourseNav = cache(async (courseCode: string): Promise<NavStep[]> => {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    return []
-  }
-  try {
-    const supabase = await createClient()
-    const { data } = await supabase
-      .from('steps')
-      .select('slug, title, lesson, step_label, minutes')
-      .eq('course_code', courseCode)
-      .eq('status', 'published')
-      .neq('access', 'internal')
-      .order('lesson')
-      .order('step_label')
-    return (data as NavStep[]) ?? []
-  } catch {
-    return []
-  }
-})
-
-// The set of courses a student can switch between, for the sidebar course
-// switcher (the docs "SDK switcher" analogue). One entry per published course,
-// pointing at that course's first step. Fail-soft: any error → empty list, and
-// the switcher degrades to a static course name.
-const getCourses = cache(async (): Promise<CourseLink[]> => {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    return []
-  }
-  try {
-    const supabase = await createClient()
-    const { data } = await supabase
-      .from('steps')
-      .select('slug, course_code, course_chip')
-      .eq('status', 'published')
-      .neq('access', 'internal')
-      .order('course_code')
-      .order('lesson')
-      .order('step_label')
-    const seen = new Map<string, CourseLink>()
-    for (const r of (data as { slug: string; course_code: string; course_chip: string | null }[]) ?? []) {
-      if (seen.has(r.course_code)) continue
-      const label = (r.course_chip ?? '').split('·')[0].trim() || r.course_code
-      seen.set(r.course_code, { course_code: r.course_code, label, href: `/steps/${r.slug}` })
-    }
-    return [...seen.values()]
-  } catch {
-    return []
   }
 })
 
@@ -169,17 +117,14 @@ export default async function StepPage({
     brand: step.brand ?? {},
     glossary: step.glossary ?? {},
   })
-  const nav = await getCourseNav(step.course_code)
-  const courses = await getCourses()
 
   return (
     <StepChrome
       hasClerk={Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY)}
       courseChip={step.course_chip}
       current={step.slug}
-      nav={nav}
-      courses={courses}
-      currentCourse={step.course_code}
+      lesson={step.lesson}
+      stepLabel={step.step_label}
     >
       <div className="step-shell">
         <div dangerouslySetInnerHTML={{ __html: shell.sprite }} />

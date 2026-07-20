@@ -19,12 +19,7 @@
   --bkc-pop-shadow: 0 24px 60px -24px rgba(24, 24, 27, 0.35), 0 4px 16px -8px rgba(24, 24, 27, 0.12);
   /* Small supporting labels ride the Satoshi stack (falls back to Poppins). */
   --bkc-label-font: var(--font-satoshi-stack);
-  /* Sidebar folder-tree: faint branch guide lines + a solid dark active bar. */
-  --bkc-tree-line: rgba(24, 24, 27, 0.14);
-  --bkc-tree-active: #18181b;
   --bkc-current-bg: rgba(24, 24, 27, 0.05);
-  /* Course-selector panel (the "Select your SDK" block). */
-  --bkc-sdk-panel: #f3f2ee;
   --bkc-sdk-btn-bg: #ffffff;
   /* Squircle roundness used across the chrome (progressive: corner-shape). */
   --bkc-squircle: superellipse(1.4);
@@ -37,8 +32,7 @@
 }
 
 /* Button text across the docs chrome is Poppins. */
-.bkc-sdk-name, .bkc-sdk-item, .bkc-section, .bkc-tree-title,
-.bkc-pager-title, .bkc-rail-link, .bkc-switch-btn {
+.bkc-rail-link {
   font-family: var(--font-poppins-stack);
 }
 
@@ -47,10 +41,7 @@
    NOTE: circular controls (.bkc-iconbtn, .bkc-search, .bkc-theme-opt) are
    deliberately NOT in this list — a superellipse on top of border-radius:50%
    renders a square-ish squircle, not a circle. They get corner-shape: round. */
-.bkc-card, .bkc-chip,
-.bkc-sdk, .bkc-sdk-btn, .bkc-sdk-menu, .bkc-sdk-item, .bkc-section,
-.bkc-pager-btn, .bkc-sheet, .bkc-cmdk, .bkc-theme-seg,
-.bkc-switch-menu, .bkc-tree-list a, .bkc-toc a {
+.bkc-card, .bkc-chip, .bkc-sheet, .bkc-theme-seg, .bkc-toc a {
   corner-shape: var(--bkc-squircle);
 }
 
@@ -104,23 +95,6 @@
   max-width: 34vw;
 }
 
-/* Course-switch caret next to the chip, with its dropdown. */
-.bkc-hdr-switch { position: relative; display: flex; align-items: center; }
-.bkc-hdr-caret {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 26px; height: 26px; padding: 0;
-  border: none; border-radius: 50%; background: none;
-  color: var(--bkc-steel); cursor: pointer;
-}
-.bkc-hdr-caret:hover { background: rgba(24, 24, 27, 0.05); color: var(--bkc-ink); }
-.bkc-hdr-menu {
-  position: absolute; top: calc(100% + 0.5rem); left: 0; z-index: 70;
-  min-width: 13rem; padding: 0.35rem;
-  background: var(--bkc-metal-card); border: 1px solid var(--bkc-hairline);
-  border-radius: 0.8rem; corner-shape: var(--bkc-squircle);
-  box-shadow: var(--bkc-pop-shadow); animation: bkc-rise 0.16s ease;
-}
-
 .bkc-actions { display: flex; align-items: center; gap: 0.5rem; margin-left: auto; }
 
 /* Icon buttons are a 16px icon inside a 32px white circle (8px padding),
@@ -138,13 +112,6 @@
 .bkc-iconbtn:active { transform: scale(0.94); }
 .bkc-iconbtn svg { width: 16px; height: 16px; }
 .bkc-iconbtn[aria-pressed="true"] { color: var(--bkc-amber); box-shadow: 0 0 0 1px rgba(197, 97, 63, 0.35), 0 1px 3px rgba(24, 24, 27, 0.1); }
-
-/* The hamburger is plain — no circle container, just the 16px glyph. */
-.bkc-navtoggle {
-  border: none; background: none; box-shadow: none;
-  width: 30px; height: 30px; margin-left: -4px;
-}
-.bkc-navtoggle:hover { background: rgba(24, 24, 27, 0.05); }
 
 /* Panel-toggle buttons only exist where the panes don't fit. */
 @media (min-width: 1200px) { .bkc-iconbtn.bkc-paneline { display: none; } }
@@ -165,17 +132,19 @@
 }
 
 /* ── Layout grid ────────────────────────────────────────────────────── */
-/* Docs proportions: the course-tree sidebar is the spine and appears first
-   (≥1024px); the reading-aids rail joins on wide screens (≥1200px). */
+/* Two columns: the reading surface, and the reading-aids rail on wide
+   screens (≥1200px). There is no left sidebar — the course tree, switcher
+   and step search were removed on purpose (see AGENTS.md). Below 1200px the
+   rail's cards move into the 'This step' sheet. */
 
 .bkc-grid { display: block; }
 
-@media (min-width: 1024px) {
+@media (min-width: 1200px) {
   .bkc-grid {
     display: grid;
-    grid-template-columns: 16.5rem minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 19rem;
     gap: clamp(1rem, 2.5vw, 2.25rem);
-    max-width: 84rem; margin: 0 auto;
+    max-width: 78rem; margin: 0 auto;
     padding: 0 clamp(1rem, 2.5vw, 2rem);
     align-items: start;
   }
@@ -187,68 +156,11 @@
     padding: 1.1rem 0 2rem;
     scrollbar-width: none;
   }
-  /* The reading-aids rail only exists at the widest layout. */
-  .bkc-pane.bkc-right { display: none; }
-}
-@media (min-width: 1024px) {
-  /* The course-tree pane runs full height so its theme control pins low. */
-  .bkc-pane.bkc-left { height: calc(100vh - var(--bkc-header-h) - 1.4rem); }
-  .bkc-pane.bkc-left .bkc-tree { flex: 1; }
-}
-@media (min-width: 1200px) {
-  .bkc-grid {
-    grid-template-columns: 16.5rem minmax(0, 1fr) 19rem;
-    max-width: 96rem;
-  }
   /* The voice orb floats fixed at the bottom right — keep the tutor card's
      composer clear of it. */
   .bkc-pane.bkc-right { display: flex; padding-right: 0.15rem; padding-bottom: 5rem; }
 }
-@media (max-width: 1023.98px) { .bkc-pane { display: none; } }
-
-/* ── Mobile off-canvas push ─────────────────────────────────────────── */
-/* The sidebar sits fixed under the app; opening it slides the whole app
-   (the shell) right to reveal it — no overlay drawer. Desktop keeps the
-   sticky pane and never transforms. */
-.bkc-shell { position: relative; z-index: 2; }
-
-@media (max-width: 1023.98px) {
-  .bkc-root { --bkc-oc-w: min(17.5rem, 84vw); }
-  .bkc-offcanvas {
-    position: fixed; top: var(--bkc-header-h); left: 0; bottom: 0; z-index: 1;
-    width: var(--bkc-oc-w);
-    overflow-y: auto; overscroll-behavior: contain;
-    padding: 1.05rem 0.9rem 1.3rem;
-    /* Same canvas as the page — the sidebar reads as one continuous surface,
-       no separate colour (matching the desktop pane). */
-    background: var(--canvas);
-    -webkit-overflow-scrolling: touch;
-  }
-  .bkc-offcanvas .bkc-tree { min-height: calc(100vh - var(--bkc-header-h) - 2.3rem); }
-  .bkc-shell {
-    min-height: 100vh; background: var(--canvas);
-    transition: transform 0.34s cubic-bezier(0.22, 0.9, 0.3, 1);
-    will-change: transform;
-  }
-  .bkc-root[data-navopen="true"] .bkc-shell {
-    transform: translateX(var(--bkc-oc-w));
-  }
-  /* Just a tap-to-close target — no dim, no shadow, no extras. */
-  .bkc-shell-scrim {
-    position: absolute; inset: 0; z-index: 65;
-    border: none; padding: 0; cursor: pointer;
-    background: transparent;
-    -webkit-tap-highlight-color: transparent;
-  }
-}
-@media (min-width: 1024px) {
-  .bkc-offcanvas { display: none; }
-  .bkc-shell-scrim { display: none; }
-  .bkc-shell { transform: none; }
-}
-
-/* The hamburger only appears where the sidebar doesn't. */
-@media (min-width: 1024px) { .bkc-iconbtn.bkc-navtoggle { display: none; } }
+@media (max-width: 1199.98px) { .bkc-pane { display: none; } }
 
 /* ── Cards (shared by panes and sheets) ─────────────────────────────── */
 
@@ -286,26 +198,6 @@
   border-left-color: var(--bkc-amber);
   background: linear-gradient(90deg, rgba(197, 97, 63, 0.08), transparent 70%);
 }
-
-.bkc-lesson {
-  font-family: var(--bkc-label-font);
-  font-size: 0.625rem; font-weight: 700; letter-spacing: 0.16em;
-  text-transform: uppercase; color: var(--bkc-meta);
-  margin: 0.9rem 0 0.35rem; padding: 0 0.6rem;
-}
-.bkc-chapters { list-style: none; margin: 0; padding: 0; }
-.bkc-chapters a {
-  display: flex; align-items: baseline; gap: 0.5rem;
-  padding: 0.4rem 0.6rem; border-radius: 0.55rem;
-  color: var(--bkc-steel); text-decoration: none; font-size: 0.84rem;
-}
-.bkc-chapters a:hover { color: var(--bkc-ink); background: rgba(24, 24, 27, 0.04); }
-.bkc-chapters .bkc-steplabel {
-  font-family: var(--bkc-label-font); font-size: 0.66rem; font-weight: 700;
-  color: var(--bkc-meta); letter-spacing: 0.04em; white-space: nowrap;
-}
-.bkc-chapters a.bkc-current { color: var(--bkc-ink); font-weight: 600; background: rgba(24, 24, 27, 0.05); }
-.bkc-chapters a.bkc-current .bkc-steplabel { color: var(--bkc-amber); }
 
 /* ── Tutor panel ────────────────────────────────────────────────────── */
 
@@ -407,70 +299,9 @@
 @keyframes bkc-rise { from { opacity: 0; transform: translateY(2.5rem) scale(0.98); } }
 @keyframes bkc-pop { from { opacity: 0; transform: translate(-50%, -50%) scale(0.96); } }
 
-/* ── Header search (⌘K trigger) ─────────────────────────────────────── */
-
-/* Search is one of the circle icon buttons (Framer-style header). */
-.bkc-kbd {
-  flex: none; font-family: var(--bkc-label-font);
-  font-size: 0.66rem; font-weight: 700; letter-spacing: 0.04em;
-  color: var(--bkc-steel);
-  padding: 0.1rem 0.35rem; border-radius: 0.35rem;
-  border: 1px solid var(--bkc-hairline);
-  background: var(--bkc-metal); box-shadow: var(--bkc-sheen);
-}
-
-/* ── Course-tree sidebar (the docs spine) ───────────────────────────── */
-
-.bkc-tree { display: flex; flex-direction: column; min-height: 100%; gap: 0.1rem; }
-.bkc-toc-tree { display: block; }
-.bkc-tree-head {
-  display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem;
-  padding: 0 0.6rem 0.75rem; margin-bottom: 0.4rem;
-  border-bottom: 1px solid var(--bkc-hairline-soft);
-}
-.bkc-tree-course {
-  font-family: "Parastoo", serif; font-weight: 700; font-size: 1.02rem;
-  color: var(--bkc-ink); line-height: 1.2;
-}
-.bkc-tree-count {
-  flex: none; font-family: var(--bkc-label-font);
-  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--bkc-meta);
-}
-.bkc-tree-group + .bkc-tree-group { margin-top: 0.2rem; }
-/* The branch guide line — one vertical rule down the left of each lesson's
-   step list, like a VS Code / Clerk folder tree. Steps indent past it. */
-.bkc-tree-list {
-  list-style: none; margin: 0.1rem 0 0.1rem 0.7rem; padding: 0;
-  border-left: 1.5px solid var(--bkc-tree-line);
-}
-.bkc-tree-list li { margin: 0; }
-.bkc-tree-list a {
-  position: relative;
-  display: flex; align-items: baseline; gap: 0.5rem;
-  padding: 0.4rem 0.6rem 0.4rem 0.85rem; border-radius: 0 0.5rem 0.5rem 0;
-  color: var(--bkc-steel); text-decoration: none; font-size: 0.84rem;
-  line-height: 1.35;
-}
-.bkc-tree-list a:hover { color: var(--bkc-ink); background: rgba(24, 24, 27, 0.04); }
-.bkc-tree-list .bkc-steplabel {
-  flex: none; font-family: var(--bkc-label-font); font-size: 0.66rem; font-weight: 700;
-  color: var(--bkc-meta); letter-spacing: 0.04em; white-space: nowrap;
-}
-.bkc-tree-title { min-width: 0; }
-/* Active step: the solid dark bar sits right over the guide line for this
-   row, and a quiet pill fills the row. */
-.bkc-tree-list a.bkc-current {
-  color: var(--bkc-ink); font-weight: 600;
-  background: var(--bkc-current-bg);
-}
-.bkc-tree-list a.bkc-current::before {
-  content: ""; position: absolute; left: -1.5px; top: 0.28rem; bottom: 0.28rem;
-  width: 2px; border-radius: 2px; background: var(--bkc-tree-active);
-}
-.bkc-tree-list a.bkc-current .bkc-steplabel { color: var(--bkc-ink); }
-
-/* ── Breadcrumb + pager (inside the reading column) ─────────────────── */
+/* ── Breadcrumb (inside the reading column) ───────────────────────── */
+/* Static text, not links: it names where you are. The prev/next pager was
+   removed with the rest of the browse surfaces. */
 
 .bkc-crumb {
   display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap;
@@ -482,112 +313,6 @@
 .bkc-crumb a:hover { color: var(--bkc-ink); }
 .bkc-crumb-sep { flex: none; color: var(--bkc-meta); opacity: 0.7; }
 .bkc-crumb-cur { color: var(--bkc-ink); font-weight: 600; }
-
-.bkc-pager {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem;
-  max-width: 46rem; margin: 0 auto; padding: 0 16px 4rem;
-}
-@media (max-width: 560px) { .bkc-pager { grid-template-columns: 1fr; } }
-.bkc-pager-btn {
-  display: flex; flex-direction: column; gap: 0.25rem;
-  padding: 0.85rem 1rem; border-radius: 0.9rem;
-  border: 1px solid var(--bkc-hairline); background: var(--bkc-metal-card);
-  box-shadow: var(--bkc-sheen), 0 14px 34px -28px rgba(24, 24, 27, 0.3);
-  text-decoration: none; color: var(--bkc-ink);
-  transition: transform 0.12s ease, border-color 0.12s ease;
-}
-.bkc-pager-btn:hover { transform: translateY(-1px); border-color: rgba(24, 24, 27, 0.18); }
-.bkc-pager-next { text-align: right; }
-.bkc-pager-dir {
-  font-family: var(--bkc-label-font); font-size: 0.68rem; font-weight: 700;
-  letter-spacing: 0.08em; text-transform: uppercase; color: var(--bkc-amber);
-}
-.bkc-pager-title { font-size: 0.9rem; font-weight: 600; line-height: 1.3; }
-
-/* ── Command-palette search ─────────────────────────────────────────── */
-
-.bkc-cmdk-root { position: fixed; inset: 0; z-index: 95; }
-.bkc-cmdk {
-  position: absolute; left: 50%; top: 12vh; transform: translateX(-50%);
-  width: min(34rem, calc(100vw - 2rem)); max-height: 70vh;
-  display: flex; flex-direction: column;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 12%),
-    linear-gradient(180deg, #fbfbf9, #f2f1ed);
-  border: 1px solid rgba(255, 255, 255, 0.65);
-  outline: 1px solid var(--bkc-hairline);
-  border-radius: 1.1rem; box-shadow: var(--bkc-pop-shadow);
-  overflow: hidden; animation: bkc-rise 0.2s cubic-bezier(0.22, 0.9, 0.3, 1);
-}
-.bkc-cmdk-input {
-  display: flex; align-items: center; gap: 0.6rem;
-  padding: 0.9rem 1rem; border-bottom: 1px solid var(--bkc-hairline-soft);
-  color: var(--bkc-steel);
-}
-.bkc-cmdk-input svg { flex: none; width: 1.1rem; height: 1.1rem; }
-.bkc-cmdk-input input {
-  flex: 1; min-width: 0; font: inherit; font-size: 0.95rem;
-  border: none; background: none; outline: none; color: var(--bkc-ink);
-}
-.bkc-cmdk-list {
-  list-style: none; margin: 0; padding: 0.4rem;
-  overflow-y: auto; overscroll-behavior: contain;
-}
-.bkc-cmdk-list a {
-  display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
-  padding: 0.6rem 0.7rem; border-radius: 0.6rem;
-  text-decoration: none; color: var(--bkc-ink);
-}
-.bkc-cmdk-list a.bkc-cmdk-active { background: rgba(197, 97, 63, 0.1); }
-.bkc-cmdk-label { display: flex; align-items: baseline; gap: 0.5rem; min-width: 0; font-size: 0.88rem; }
-.bkc-cmdk-label > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.bkc-cmdk-tag {
-  flex: none; font-family: var(--bkc-label-font); font-size: 0.66rem; font-weight: 700;
-  letter-spacing: 0.04em; color: var(--bkc-amber);
-}
-.bkc-cmdk-meta {
-  flex: none; font-family: var(--bkc-label-font); font-size: 0.66rem;
-  color: var(--bkc-meta); letter-spacing: 0.04em; white-space: nowrap;
-}
-.bkc-cmdk-empty { padding: 1.2rem 0.7rem; text-align: center; font-size: 0.85rem; color: var(--bkc-meta); }
-
-/* ── Course switcher (sidebar top) ──────────────────────────────────── */
-
-.bkc-switcher { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; width: 100%; }
-.bkc-switch-btn {
-  display: inline-flex; align-items: center; gap: 0.3rem; min-width: 0;
-  font-family: "Parastoo", serif; font-weight: 700; font-size: 1.02rem; line-height: 1.2;
-  color: var(--bkc-ink); background: none; border: none; cursor: pointer;
-  padding: 0.15rem 0.3rem; margin-left: -0.3rem; border-radius: 0.5rem;
-}
-.bkc-switch-btn:hover { background: rgba(24, 24, 27, 0.04); }
-.bkc-switch-course { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.bkc-switch-caret { flex: none; color: var(--bkc-meta); }
-.bkc-switch-menu {
-  position: absolute; top: calc(100% + 0.45rem); left: -0.3rem; z-index: 40;
-  min-width: 12.5rem; padding: 0.35rem;
-  background: var(--bkc-metal-card); border: 1px solid var(--bkc-hairline);
-  border-radius: 0.8rem; box-shadow: var(--bkc-pop-shadow);
-  animation: bkc-rise 0.16s ease;
-}
-.bkc-switch-menu-label {
-  font-family: var(--bkc-label-font); font-size: 0.6rem; font-weight: 700;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--bkc-meta);
-  margin: 0.25rem 0.55rem 0.4rem;
-}
-.bkc-switch-item {
-  display: block; padding: 0.45rem 0.55rem; border-radius: 0.55rem;
-  font-size: 0.86rem; color: var(--bkc-steel); text-decoration: none;
-}
-.bkc-switch-item:hover { background: rgba(24, 24, 27, 0.05); color: var(--bkc-ink); }
-
-/* Collapsible lesson header (was a static <p>). */
-.bkc-lesson-btn {
-  display: flex; align-items: center; gap: 0.3rem; width: 100%;
-  background: none; border: none; cursor: pointer; text-align: left;
-}
-.bkc-lesson-btn:hover { color: var(--bkc-steel); }
-.bkc-lesson-caret { flex: none; color: var(--bkc-meta); transition: transform 0.15s ease; }
-.bkc-lesson-caret.bkc-open { transform: rotate(90deg); }
 
 /* ── Theme toggle ───────────────────────────────────────────────────── */
 
@@ -644,10 +369,7 @@
     linear-gradient(180deg, #242228 0%, #1d1b21 100%);
   --bkc-sheen: inset 0 1px 0 rgba(255, 255, 255, 0.06), inset 0 -1px 0 rgba(0, 0, 0, 0.25);
   --bkc-pop-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.6), 0 4px 16px -8px rgba(0, 0, 0, 0.4);
-  --bkc-tree-line: rgba(255, 255, 255, 0.14);
-  --bkc-tree-active: #ececee;
   --bkc-current-bg: rgba(255, 255, 255, 0.06);
-  --bkc-sdk-panel: rgba(255, 255, 255, 0.04);
   --bkc-sdk-btn-bg: #26242b;
 }
 :root[data-theme="dark"] .bkc-header {
@@ -658,79 +380,7 @@
 :root[data-theme="dark"] .bkc-composer input { background: #232127; }
 :root[data-theme="dark"] .bkc-composer input:disabled { background: #1d1b21; }
 :root[data-theme="dark"] .bkc-toc a:hover,
-:root[data-theme="dark"] .bkc-tree-list a:hover,
-:root[data-theme="dark"] .bkc-switch-btn:hover,
-:root[data-theme="dark"] .bkc-switch-item:hover,
 :root[data-theme="dark"] .bkc-rail-link:hover { background: rgba(255, 255, 255, 0.06); }
-
-/* ── Course selector ("Select your course") ─────────────────────────── */
-
-.bkc-sdk {
-  position: relative; margin-bottom: 0.85rem;
-  padding: 0.7rem 0.7rem 0.65rem; border-radius: 1.1rem;
-  background: var(--bkc-sdk-panel); border: 1px solid var(--bkc-hairline-soft);
-}
-.bkc-sdk-label {
-  font-family: var(--font-satoshi-stack); font-size: 0.8rem; font-weight: 600;
-  color: var(--bkc-ink); margin: 0 0 0.5rem; padding: 0 0.2rem;
-}
-.bkc-sdk-btn {
-  display: flex; align-items: center; gap: 0.6rem; width: 100%;
-  padding: 0.62rem 0.7rem; border-radius: 0.85rem;
-  border: 1px solid var(--bkc-hairline); background: var(--bkc-sdk-btn-bg);
-  box-shadow: 0 1px 2px rgba(24, 24, 27, 0.05), 0 1px 3px rgba(24, 24, 27, 0.08);
-  color: var(--bkc-ink); font: inherit; cursor: pointer; text-align: left;
-}
-.bkc-sdk-btn:disabled { cursor: default; }
-.bkc-sdk-btn:not(:disabled):hover { border-color: rgba(24, 24, 27, 0.2); }
-.bkc-sdk-mark { flex: none; display: inline-flex; color: var(--bkc-amber); }
-.bkc-sdk-name {
-  flex: 1; min-width: 0; font-weight: 500; font-size: 1rem;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.bkc-sdk-caret { flex: none; color: var(--bkc-meta); }
-.bkc-sdk-menu {
-  position: absolute; top: calc(100% + 0.35rem); left: 0; right: 0; z-index: 40;
-  padding: 0.35rem; background: var(--bkc-metal-card);
-  border: 1px solid var(--bkc-hairline); border-radius: 0.8rem;
-  box-shadow: var(--bkc-pop-shadow); animation: bkc-rise 0.16s ease;
-}
-.bkc-sdk-item {
-  display: flex; align-items: center; gap: 0.55rem;
-  padding: 0.5rem 0.55rem; border-radius: 0.55rem;
-  color: var(--bkc-steel); text-decoration: none; font-size: 0.9rem;
-}
-.bkc-sdk-item svg { flex: none; color: var(--bkc-meta); }
-.bkc-sdk-item:hover { background: rgba(24, 24, 27, 0.05); color: var(--bkc-ink); }
-.bkc-sdk-item-active { color: var(--bkc-ink); font-weight: 600; }
-.bkc-sdk-item-active svg { color: var(--bkc-amber); }
-
-/* ── Section buttons ("Guides / Reference" decider) ─────────────────── */
-
-.bkc-sections { display: flex; flex-direction: column; gap: 0.1rem; }
-.bkc-section {
-  display: flex; align-items: center; gap: 0.6rem; width: 100%;
-  padding: 0.58rem 0.7rem; border-radius: 0.7rem;
-  border: none; background: none; color: var(--bkc-steel);
-  font: inherit; font-size: 0.95rem; font-weight: 500;
-  cursor: pointer; text-align: left; text-decoration: none;
-}
-.bkc-section svg { flex: none; color: var(--bkc-meta); }
-.bkc-section:not(:disabled):hover { background: rgba(24, 24, 27, 0.04); color: var(--bkc-ink); }
-.bkc-section-active { background: var(--bkc-current-bg); color: var(--bkc-ink); font-weight: 600; }
-.bkc-section-active svg { color: var(--bkc-ink); }
-.bkc-section:disabled { cursor: default; color: var(--bkc-meta); }
-.bkc-section-soon {
-  margin-left: auto; font-family: var(--bkc-label-font);
-  font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--bkc-meta); border: 1px solid var(--bkc-hairline);
-  border-radius: 999px; padding: 0.08rem 0.4rem;
-}
-
-.bkc-sidebar-div {
-  height: 0; border: none; border-top: 1px solid var(--bkc-hairline-soft);
-  margin: 0.85rem 0.15rem;
-}
 
 /* ── Theme segmented control (dark / light / system) ────────────────── */
 
@@ -759,6 +409,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bkc-backdrop, .bkc-sheet, .bkc-cmdk, .bkc-switch-menu, .bkc-sdk-menu, .bkc-shell-scrim { animation: none; }
-  .bkc-iconbtn, .bkc-pager-btn, .bkc-lesson-caret, .bkc-shell { transition: none; }
+  .bkc-backdrop, .bkc-sheet { animation: none; }
+  .bkc-iconbtn, .bkc-shell { transition: none; }
 }

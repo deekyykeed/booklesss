@@ -4,14 +4,28 @@
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
-## No dashboard — deliberate
+## No dashboard, and no browse surface at all — deliberate
 
 The dashboard app (`app/(app)/`, components/, lesson reader, community panel)
-was deliberately deleted in July 2026. Do not rebuild it. The platform is:
-Clerk auth (`/sign-in`, `/sign-up`), `/pricing`, the DB-driven step pages
-(`/steps/[slug]`) + `/steps` index, and the data routes (`/api/step-feedback`,
-`/api/outcome-ticks`, `/api/profile`). Students arrive via step links posted
-in Slack.
+was deliberately deleted in July 2026. Do not rebuild it.
+
+**On 2026-07-20 the owner went further: there is to be no place, anywhere,
+where someone can see all the steps or all the courses.** Deleted that day —
+the `/steps` index, the left course-tree sidebar, the mobile off-canvas
+version of it, the course switcher (both the sidebar block and the header
+caret), the ⌘K step-search palette, the prev/next pager, and the "All
+courses" rail link. A student arrives on ONE step from a Slack link and
+reads it.
+
+If you are about to add a step list, a course list, a "next step" link, a
+search across steps, or any other way to move between steps — don't. That is
+the product decision, not an oversight. The only navigation left is
+same-page section jumps.
+
+The platform is: Clerk auth (`/sign-in`, `/sign-up`), `/pricing`, the
+DB-driven step page (`/steps/[slug]`), and the data routes
+(`/api/step-feedback`, `/api/outcome-ticks`, `/api/profile`). Root `/` →
+`/sign-up` (the only front door); post-auth with no return URL → `/pricing`.
 
 ## Content plane: steps live in Supabase (2026-07-15)
 
@@ -37,14 +51,21 @@ Old links survive: `/steps/<slug>.html` 308-redirects to `/steps/<slug>`
 Students never visit any page other than a step (plus sign-in/up and
 /pricing). Everything else layers on top of the reading column via
 `components/step-chrome.tsx` + `app/steps/[slug]/chrome.css` (all classes
-`bkc-*`): a sticky glass header (wordmark, course chip, reading-progress
-hairline, Clerk `<UserButton/>` top right), and three panels — **Contents**
-(on-this-page ToC scanned from the rendered sections + chapter nav from the
-course's other published steps), **AI tutor** (placeholder chat; the voice
-orb stays the voice entry point), **Community** (the step's embedded
-`.discuss` questions lifted out; Slack channel is the destination until
-in-page comments exist). ≥1200px the panels are sticky side panes; below
-that they open as full-screen sheets behind a Clerk-style backdrop blur.
+`bkc-*`): a sticky glass header (wordmark — plain text, NOT a link, since
+there is nowhere to go — course chip, reading-progress hairline, Clerk
+`<UserButton/>` top right), a static breadcrumb in the reading column that
+names where you are (course › lesson › step, read off the step's OWN row via
+the `lesson`/`step_label` props — never a course listing), and three aid
+panels — **On this page** (ToC scanned from THIS step's rendered sections),
+**AI tutor** (placeholder chat; the voice orb stays the voice entry point),
+**Community** (the step's embedded `.discuss` questions lifted out; Slack
+channel is the destination until in-page comments exist). The theme control
+(dark/light/system) used to sit at the foot of the course sidebar; with that
+gone it lives in the reading-aid rail and its mobile sheet.
+
+The grid is two columns — reading surface + right rail at ≥1200px, **no left
+sidebar**. Below 1200px the rail's cards collapse into the single "This step"
+sheet behind a Clerk-style backdrop blur.
 The chrome hides the shell's legacy `.topbar` and adds `scroll-margin-top`
 so ToC jumps clear the sticky header — everything else inside `.step-shell`
 is untouched, so `port_shell.py` regeneration stays safe.
@@ -52,8 +73,8 @@ is untouched, so `port_shell.py` regeneration stays safe.
 **Clerk carries the identity surface** (this repo is on Clerk **Core 3**,
 `@clerk/nextjs` v7 — `SignedIn`/`SignedOut` are gone, use `Show`;
 `layout`→`options`, `baseTheme`→`theme`, and `variables` keys were renamed).
-The UserButton popover is the account menu (custom links to /steps and
-/pricing); its profile modal is the settings popup — Account, Security,
+The UserButton popover is the account menu (one custom link, /pricing — the
+"All my steps" link went with the index); its profile modal is the settings popup — Account, Security,
 Billing (appears automatically because Clerk Billing is enabled), plus our
 custom **Study profile** page (`components/study-profile.tsx` → /api/profile).
 The house skin lives in `app/layout.tsx` `<ClerkProvider appearance>`:
@@ -91,9 +112,9 @@ read `auth().userId` from Clerk and query Supabase through a client that
 forwards the Clerk token (`lib/supabase/server.ts`).
 
 **Steps are gated.** `proxy.ts` (Clerk `clerkMiddleware`) requires a Clerk
-session for `/steps` and every `/steps/*` page (including the static HTML) and
+session for every `/steps/*` page (including the static HTML) and
 redirects signed-out visitors to `/sign-in` (Clerk appends the return URL).
-Root `/` → `/steps`. The gate is **fail-soft**: with no Clerk keys
+Root `/` → `/sign-up`. The gate is **fail-soft**: with no Clerk keys
 (`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` / `CLERK_SECRET_KEY`) it degrades to just
 the root redirect and `<ClerkProvider>` is skipped, so an unconfigured deploy
 still builds and serves steps rather than 500ing.
