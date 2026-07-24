@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 
 /* Mobile navigation drawer state, shared between the header's hamburger, the
  * sliding sidebar, and the tap-to-close scrim. The whole below-header view
@@ -40,6 +40,63 @@ export function MobileNavProvider({ children }: { children: React.ReactNode }) {
     return () => mq.removeEventListener("change", sync);
   }, []);
 
+  // Touch gestures (mobile only): an edge-swipe right opens the drawer, a
+  // swipe left closes it. Bound once; reads live state through a ref. A
+  // direction lock means a vertical drag stays a scroll and never toggles.
+  const openRef = useRef(open);
+  openRef.current = open;
+  useEffect(() => {
+    const THRESHOLD = 55; // px of horizontal travel to trigger
+    const EDGE = 40; // opening swipe must start this close to the left edge
+    let startX = 0;
+    let startY = 0;
+    let tracking = false;
+    let decided = false;
+
+    const onStart = (e: TouchEvent) => {
+      if (window.innerWidth >= 768 || e.touches.length !== 1) return;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      decided = false;
+      // Open only from the left edge; close from anywhere on the open drawer.
+      tracking = openRef.current || startX <= EDGE;
+    };
+    const onMove = (e: TouchEvent) => {
+      if (!tracking) return;
+      const dx = e.touches[0].clientX - startX;
+      const dy = e.touches[0].clientY - startY;
+      if (!decided) {
+        if (Math.abs(dx) < 12 && Math.abs(dy) < 12) return; // wait for intent
+        decided = true;
+        if (Math.abs(dy) >= Math.abs(dx)) {
+          tracking = false; // vertical — leave it to the scroller
+          return;
+        }
+      }
+      if (!openRef.current && dx > THRESHOLD) {
+        setOpen(true);
+        tracking = false;
+      } else if (openRef.current && dx < -THRESHOLD) {
+        setOpen(false);
+        tracking = false;
+      }
+    };
+    const onEnd = () => {
+      tracking = false;
+    };
+
+    window.addEventListener("touchstart", onStart, { passive: true });
+    window.addEventListener("touchmove", onMove, { passive: true });
+    window.addEventListener("touchend", onEnd, { passive: true });
+    window.addEventListener("touchcancel", onEnd, { passive: true });
+    return () => {
+      window.removeEventListener("touchstart", onStart);
+      window.removeEventListener("touchmove", onMove);
+      window.removeEventListener("touchend", onEnd);
+      window.removeEventListener("touchcancel", onEnd);
+    };
+  }, []);
+
   return (
     <Ctx.Provider value={{ open, toggle, close }}>
       {/* The data attribute drives the CSS transforms on the sidebar and the
@@ -77,7 +134,7 @@ export function MobileMenuButton() {
       onClick={toggle}
       aria-label={open ? "Close navigation" : "Open navigation"}
       aria-expanded={open}
-      className="-ml-1 grid h-8 w-8 place-items-center rounded-lg text-ink transition-colors hover:bg-active md:hidden"
+      className="-ml-1 -mr-1.5 grid h-8 w-8 place-items-center rounded-lg text-ink transition-colors hover:bg-active md:hidden"
     >
       <HamburgerBroken />
     </button>

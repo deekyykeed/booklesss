@@ -69,12 +69,14 @@ export function TopBar({
       <div className="flex min-w-0 items-center gap-5">
         {/* logo lockup: mobile shows the hamburger + wordmark; desktop shows
             the mark + wordmark + org switcher. The wordmark is common to both. */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 md:gap-2">
           <MobileMenuButton />
           <span className="hidden md:inline-flex">
             <Logo />
           </span>
-          <span className="font-display text-[15px] font-bold leading-none tracking-tight text-ink">
+          {/* font-bold is already the heaviest weight Familjen Grotesk ships,
+              so weight is maxed — a slightly larger size gives it more presence. */}
+          <span className="font-display text-[17px] font-bold leading-none tracking-tight text-ink">
             {orgName}
           </span>
           <Icon name="sort-vertical-linear" size={14} className="hidden text-muted md:block" />
