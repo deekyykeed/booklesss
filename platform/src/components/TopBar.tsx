@@ -1,5 +1,6 @@
 import { Icon } from "@/lib/icon";
 import { CommandSearch } from "./CommandSearch";
+import { MobileMenuButton } from "./reader/MobileNav";
 
 // Streamline · Solar Broken · "Stop" — Booklesss brand mark
 function Logo() {
@@ -25,13 +26,16 @@ function Logo() {
 /* Shared, fixed 48px header. Transparent so the blob backdrop shows through;
  * the only boxy element is the 1px #dfdfdf bottom hairline. px-16, space-between. */
 
-function CircleButton({ icon, label }: { icon: string; label: string }) {
+function CircleButton({ icon, label, className = "" }: { icon: string; label: string; className?: string }) {
   return (
     <button
       type="button"
       aria-label={label}
       title={label}
-      className="grid h-8 w-8 place-items-center rounded-full border border-[#d4d4d4] bg-white text-muted shadow-[0_0.6px_0.6px_-1.25px_rgba(0,0,0,0.18),0_2.3px_2.3px_-2.5px_rgba(0,0,0,0.16),0_10px_10px_-3.75px_rgba(0,0,0,0.06)] transition-colors hover:text-ink"
+      className={
+        "grid h-8 w-8 place-items-center rounded-full border border-[#d4d4d4] bg-white text-muted shadow-[0_0.6px_0.6px_-1.25px_rgba(0,0,0,0.18),0_2.3px_2.3px_-2.5px_rgba(0,0,0,0.16),0_10px_10px_-3.75px_rgba(0,0,0,0.06)] transition-colors hover:text-ink " +
+        className
+      }
     >
       <Icon name={icon} size={16} />
     </button>
@@ -63,27 +67,34 @@ export function TopBar({
     <header className="fixed inset-x-0 top-0 z-50 flex h-12 items-center justify-between gap-2.5 border-b border-line px-4">
       {/* left cluster — the logo lockup sits apart from the breadcrumb */}
       <div className="flex min-w-0 items-center gap-5">
-        {/* logo lockup: mark + wordmark read as one centered unit */}
+        {/* logo lockup: mobile shows the hamburger + wordmark; desktop shows
+            the mark + wordmark + org switcher. The wordmark is common to both. */}
         <div className="flex items-center gap-2">
-          <Logo />
+          <MobileMenuButton />
+          <span className="hidden md:inline-flex">
+            <Logo />
+          </span>
           <span className="font-display text-[15px] font-medium leading-none tracking-tight text-ink">
             {orgName}
           </span>
-          <Icon name="sort-vertical-linear" size={14} className="text-muted" />
+          <Icon name="sort-vertical-linear" size={14} className="hidden text-muted md:block" />
         </div>
 
-        {breadcrumbSlot
-          ? breadcrumbSlot
-          : breadcrumb && breadcrumb.length > 0 && (
-              <nav className="flex min-w-0 items-center gap-2.5 overflow-hidden">
-                {breadcrumb.map((crumb) => (
-                  <span key={crumb} className="flex items-center gap-2.5">
-                    <span className="select-none text-[#d0d0d0]">/</span>
-                    <span className="whitespace-nowrap text-sm text-ink">{crumb}</span>
-                  </span>
-                ))}
-              </nav>
-            )}
+        {/* desktop only — on mobile the drawer carries navigation instead */}
+        <div className="hidden min-w-0 md:flex">
+          {breadcrumbSlot
+            ? breadcrumbSlot
+            : breadcrumb && breadcrumb.length > 0 && (
+                <nav className="flex min-w-0 items-center gap-2.5 overflow-hidden">
+                  {breadcrumb.map((crumb) => (
+                    <span key={crumb} className="flex items-center gap-2.5">
+                      <span className="select-none text-[#d0d0d0]">/</span>
+                      <span className="whitespace-nowrap text-sm text-ink">{crumb}</span>
+                    </span>
+                  ))}
+                </nav>
+              )}
+        </div>
       </div>
 
       {/* right cluster */}
@@ -93,8 +104,9 @@ export function TopBar({
         </button>
         <div className="flex items-center gap-2">
           <CommandSearch />
-          <CircleButton icon="question-circle-linear" label="Help" />
-          <CircleButton icon="bolt-linear" label="Advisor Center" />
+          {/* Help + advisor are desktop-only; mobile keeps just search + profile */}
+          <CircleButton icon="question-circle-linear" label="Help" className="hidden md:grid" />
+          <CircleButton icon="bolt-linear" label="Advisor Center" className="hidden md:grid" />
           <Avatar />
         </div>
       </div>

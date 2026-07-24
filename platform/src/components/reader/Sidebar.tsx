@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useMobileNav } from "./MobileNav";
 import {
   COURSE,
   DEFAULT_LESSON,
@@ -177,6 +178,8 @@ type Ctx = {
   activeAncestors: Set<string>;
   activeRef: RefObject<HTMLAnchorElement | null>;
   toggle: (id: string) => void;
+  /** Fired when a leaf step is picked — closes the mobile drawer. */
+  onSelect: () => void;
 };
 
 // Module-level (stable identity) so toggling never remounts the tree.
@@ -231,6 +234,7 @@ function Row({ node, depth, ctx }: { node: NavNode; depth: number; ctx: Ctx }) {
     <Link
       href={pathForId(node.id)}
       ref={active ? ctx.activeRef : undefined}
+      onClick={ctx.onSelect}
       style={{ paddingLeft: pad }}
       className={
         "step relative z-[2] text-left text-sm font-medium transition-colors " +
@@ -352,8 +356,18 @@ export function Sidebar() {
     });
   };
 
+  /* Picking a step closes the mobile drawer — but only after a beat, so the
+   * selector finishes sliding to the new step before the view slides back to
+   * the content. No-op on desktop, where the drawer isn't a thing. */
+  const { close: closeMobileNav } = useMobileNav();
+  const onSelect = useCallback(() => {
+    if (window.matchMedia("(max-width: 767px)").matches) {
+      window.setTimeout(closeMobileNav, 280);
+    }
+  }, [closeMobileNav]);
+
   const activeAncestors = useMemo(() => new Set(ancestorsOf(activeId)), [activeId]);
-  const ctx: Ctx = { openIds, activeId, activeAncestors, activeRef, toggle };
+  const ctx: Ctx = { openIds, activeId, activeAncestors, activeRef, toggle, onSelect };
 
   /* ---------------- resize ---------------- */
   const widthRef = useRef(SIDEBAR_DEFAULT);
@@ -470,7 +484,7 @@ export function Sidebar() {
 
   return (
     <aside
-      className="sidebar-panel fixed left-0 top-12 z-40 hidden h-[calc(100vh-48px)] flex-col border-r border-line md:flex"
+      className="sidebar-panel fixed left-0 top-12 z-40 flex h-[calc(100vh-48px)] flex-col border-r border-line"
       style={{ width: "var(--sidebar-docs)" }}
     >
       {/* Drag to resize. Sits over the right border, 8px wide for an easy
@@ -491,7 +505,7 @@ export function Sidebar() {
         onPointerLeave={() => { if (!draggingRef.current) setResizeHint(false); }}
         onFocus={() => setResizeHint(true)}
         onBlur={() => setResizeHint(false)}
-        className="absolute inset-y-0 -right-1 z-30 w-2 cursor-col-resize focus:outline-none"
+        className="absolute inset-y-0 -right-1 z-30 hidden w-2 cursor-col-resize focus:outline-none md:block"
       />
 
       <nav className="no-scrollbar flex-1 overflow-y-auto p-2">

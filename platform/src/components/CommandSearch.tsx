@@ -24,7 +24,7 @@ function Magnifier({ size = 16, className }: { size?: number; className?: string
   );
 }
 
-export function CommandSearch({ minWidth = 150 }: { minWidth?: number }) {
+export function CommandSearch() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -64,13 +64,14 @@ export function CommandSearch({ minWidth = 150 }: { minWidth?: number }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        style={{ minWidth }}
-        className="group flex items-center gap-2.5 rounded-full border border-[#d4d4d4] bg-white py-2 pl-2 pr-3 text-left shadow-[0_0.6px_0.6px_-1.25px_rgba(0,0,0,0.18),0_2.3px_2.3px_-2.5px_rgba(0,0,0,0.16),0_10px_10px_-3.75px_rgba(0,0,0,0.06)] transition-colors hover:bg-[#fbfbfb]"
+        className="group grid h-8 w-8 place-items-center rounded-full border border-[#d4d4d4] bg-white text-left text-muted shadow-[0_0.6px_0.6px_-1.25px_rgba(0,0,0,0.18),0_2.3px_2.3px_-2.5px_rgba(0,0,0,0.16),0_10px_10px_-3.75px_rgba(0,0,0,0.06)] transition-colors hover:bg-[#fbfbfb] hover:text-ink md:flex md:h-auto md:w-auto md:min-w-[150px] md:items-center md:gap-2.5 md:py-2 md:pl-2 md:pr-3"
         aria-label="Search"
       >
+        {/* Mobile: a plain circle matching the other header buttons. Desktop:
+            expands into the labelled search pill with the Ctrl-K hint. */}
         <Magnifier size={16} className="text-muted" />
-        <span className="flex-1 text-xs text-placeholder">Search...</span>
-        <kbd className="rounded bg-[#f2f2f2] px-1.5 py-0.5 font-sans text-[11px] leading-none tracking-[-0.275px] text-muted">
+        <span className="hidden flex-1 text-xs text-placeholder md:block">Search...</span>
+        <kbd className="hidden rounded bg-[#f2f2f2] px-1.5 py-0.5 font-sans text-[11px] leading-none tracking-[-0.275px] text-muted md:block">
           Ctrl K
         </kbd>
       </button>
