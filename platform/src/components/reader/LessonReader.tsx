@@ -38,7 +38,7 @@ export function LessonReader({ lesson }: { lesson: Lesson }) {
   };
 
   return (
-    <div className="mx-auto flex max-w-[1080px] items-stretch gap-12 px-8 py-10">
+    <div className="mx-auto flex max-w-[1080px] items-stretch gap-12 px-5 py-10 md:px-8">
       {/* maxWidth inline rather than a Tailwind arbitrary class — the scanner
           has silently dropped several of those in this project. */}
       <div className="min-w-0 flex-1 pb-[40vh]" style={{ maxWidth: 700 }}>
