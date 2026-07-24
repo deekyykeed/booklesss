@@ -22,8 +22,8 @@ function Logo() {
   );
 }
 
-/* Shared, fixed 48px header. Matches the Framer "Header Row":
- * bg canvas, 0.67px bottom hairline, px-16, space-between. */
+/* Shared, fixed 48px header. Boxy chrome, per the Framer "Header Row":
+ * flat #fcfcfc fill, 1px #dfdfdf bottom hairline, px-16, space-between. */
 
 function CircleButton({ icon, label }: { icon: string; label: string }) {
   return (
@@ -60,7 +60,7 @@ export function TopBar({
   breadcrumbSlot?: React.ReactNode;
 }) {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex h-12 items-center justify-between gap-2.5 px-4">
+    <header className="fixed inset-x-0 top-0 z-50 flex h-12 items-center justify-between gap-2.5 border-b border-line bg-[#fcfcfc] px-4">
       {/* left cluster — the logo lockup sits apart from the breadcrumb */}
       <div className="flex min-w-0 items-center gap-5">
         {/* logo lockup: mark + wordmark read as one centered unit */}

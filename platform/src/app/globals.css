@@ -223,7 +223,7 @@
     bottom: 0;
     left: 0;
     z-index: 10; /* above .bg-waves (0), below sidebar (40) and top bar (50) */
-    padding: 0 8px 8px 0; /* float the card in from the right and bottom edges */
+    padding: 0; /* boxy: content is flush to the edges, no floating inset */
   }
   @media (min-width: 768px) {
     .content-frame {
@@ -231,23 +231,14 @@
     }
   }
 
-  /* Content surface — the card every lesson renders inside. It is the scroll
+  /* Content surface — the panel every lesson renders inside. It is the scroll
      container (the page itself doesn't scroll), so it stays pinned while the
-     content moves within it. */
-  /* Layer 2: the glass panel. Translucent white lets the gradient + blobs
-     through; backdrop-filter blurs them into a soft wash before the white is
-     laid over the top. Both properties are required — without the blur it is
-     just frosted white, without the transparency the blur reveals nothing. */
+     content moves within it. Boxy: a flat, solid-white panel flush to the
+     header and the sidebar divider — no radius, no border, no glass. The
+     sidebar's right hairline is the only line between it and the nav. */
   .content-surface {
     position: relative;
-    background-color: rgba(255, 255, 255, 0.55);
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
-    border: 2px solid rgba(0, 0, 0, 0.14);
-    border-radius: 24px;
-    corner-shape: superellipse(2);
-    box-shadow: 0 4px 18px -1px rgba(0, 0, 0, 0.05);
-    transition: border-left-color 150ms ease;
+    background-color: #ffffff;
     overflow-y: auto;
     overflow-x: hidden;
     overscroll-behavior: contain;
@@ -275,10 +266,13 @@
     color: rgba(0, 0, 0, 0.4);
   }
 
-  /* Hovering (or focusing) the sidebar's resize handle darkens the content
-     surface's left border — the edge that actually moves. */
-  :root[data-resize-hint] .content-surface {
-    border-left-color: rgba(0, 0, 0, 0.38);
+  /* Hovering (or focusing) the sidebar's resize handle darkens the sidebar's
+     right hairline — the divider that actually moves. */
+  .sidebar-panel {
+    transition: border-right-color 150ms ease;
+  }
+  :root[data-resize-hint] .sidebar-panel {
+    border-right-color: rgba(0, 0, 0, 0.38);
   }
 
   /* Active-step bar. Position/size are set inline; shape lives here because
@@ -291,20 +285,15 @@
     overflow: var(--overflow-clip-fallback, clip);
   }
 
-  /* Selected step — raised card. Paints above the rail (so the rail passes
-     behind it) while the active bar sits above the card, reading as if the
-     bar were inside the button. */
-  /* Same glass treatment as the content surface: translucent white over a
-     blurred backdrop, so the blobs drifting behind the sidebar tint it too. */
+  /* Selected step — flat boxy chip. Paints above the rail (so the rail passes
+     behind it) while the active bar sits above the chip, reading as if the
+     bar were inside the button. Boxy: a solid-white fill with the same #dfdfdf
+     hairline as the rest of the chrome and one faint shadow — no glass blur,
+     tighter radius. */
   .step-selector {
-    border-color: #d4d4d4; /* same as the search bar */
-    border-radius: 12px; /* tighter than the 16px .step box */
-    background-color: rgba(255, 255, 255, 0.85);
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
-    box-shadow:
-      0 0.3010936508871964px 0.3010936508871964px -1.25px rgba(0, 0, 0, 0.18),
-      0 1.1442666516217286px 1.1442666516217286px -2.5px rgba(0, 0, 0, 0.16),
-      0 5px 5px -3.75px rgba(0, 0, 0, 0.06);
+    border-color: var(--color-line);
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 1px 1px -0.5px rgba(0, 0, 0, 0.06);
   }
 }
