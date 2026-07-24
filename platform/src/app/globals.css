@@ -289,10 +289,16 @@
       padding-top: var(--header-h);
       transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .content-surface {
+    /* Scoped through [data-mobile-nav] so these outrank the base .content-surface
+       rule, which is defined LATER in the file and would otherwise win at equal
+       specificity. The surface must not be a scroll container here (overflow
+       visible) and overscroll-behavior must be auto — as a non-scrollable
+       scroll container with `contain` it swallows the touch and the page can't
+       scroll (it only scrolled with the drawer open, via the scrim). */
+    [data-mobile-nav] .content-surface {
       height: auto; /* grow with the content instead of filling a fixed frame */
-      overflow-x: clip;
-      overflow-y: visible; /* no inner scroll — the document scrolls */
+      overflow: visible; /* no inner scroll — the document scrolls */
+      overscroll-behavior: auto;
     }
     [data-mobile-nav="open"] .sidebar-panel {
       transform: translateX(0);
@@ -369,7 +375,7 @@
      tighter radius. */
   .step-selector {
     border-color: var(--color-line);
-    border-radius: 8px;
+    border-radius: 12px;
     background-color: rgba(255, 255, 255, 0.85);
     -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
