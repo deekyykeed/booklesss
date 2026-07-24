@@ -1,0 +1,9 @@
+marketing
+node_modules
+.next
+*.png
+blob.mjs
+blob2.mjs
+perf.mjs
+railbox.txt
+.env.local

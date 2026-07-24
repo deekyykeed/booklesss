@@ -1,0 +1,310 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ *
+ * Booklesss design tokens — measured from the Framer source project.
+ * Light-only surface. Hairline borders. Inter + Familjen Grotesk.
+ * ------------------------------------------------------------------ */
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-familjen), var(--font-inter), ui-sans-serif, sans-serif;
+  --font-nav: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-content: "Aptos", var(--font-inter), system-ui, sans-serif;
+
+  --color-canvas: #f5f5f5;          /* app background — hsl(0,0%,96%) */
+  --color-card: #fcfcfb;            /* stat cards                */
+  --color-line: #dfdfdf;            /* header / sidebar dividers  */
+  --color-line-2: #d4d4d4;          /* pills, tags, circle buttons*/
+  --color-ink: #171717;             /* primary text              */
+  --color-ink-2: #525252;           /* tertiary text             */
+  --color-muted: #707070;           /* secondary text            */
+  --color-placeholder: #b2b2b2;     /* input placeholders        */
+  --color-active: #ededed;          /* selected nav item         */
+  --color-card-label: #52514e;      /* card titles               */
+  --color-card-dim: #898781;        /* muted card numbers        */
+  --color-brand: #3ecf8e;           /* Booklesss green mark      */
+  --color-danger: #8d2525;          /* red inline link           */
+  --color-btn: #0b0b0b;             /* solid black button        */
+
+  --header-h: 48px;
+  --sidebar-docs: 265px;
+  --sidebar-dash: 208px;
+}
+
+@layer base {
+  html {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 20px;
+  }
+  /* hide scrollbars everywhere but keep scrolling */
+  html,
+  body {
+    scrollbar-width: none;
+  }
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    display: none;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--color-brand) 24%, transparent);
+  }
+}
+
+@layer utilities {
+  /* scrollable, no visible scrollbar */
+  .no-scrollbar,
+  .scroll-thin {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar,
+  .scroll-thin::-webkit-scrollbar {
+    display: none;
+  }
+  /* iOS-style continuous corners (superellipse ~50% smoothing); falls back
+     to a plain 8px radius where corner-shape is unsupported */
+  /* Adds iOS-style continuous corners (~50% smoothing) to whatever radius the
+     element already has. Pair with any rounded-* utility, e.g.
+     `className="squircle rounded-xl"`. Falls back to a plain radius where
+     corner-shape is unsupported. */
+  .squircle {
+    corner-shape: superellipse(2.4);
+  }
+
+  @keyframes indFade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+@layer components {
+  /* Sidebar step row. Every row carries the same box — including a 2px
+     transparent border — so selecting one doesn't shift the list. The
+     depth indent is applied inline as padding-left and wins over the
+     shorthand below. */
+  .step {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    align-content: center;
+    flex-wrap: nowrap;
+    gap: 10px;
+    width: 100%;
+    height: min-content;
+    padding: 4px 8px;
+    border: 2px solid transparent;
+    border-radius: 16px;
+    corner-shape: superellipse(2);
+  }
+
+  /* Animated backdrop. Palette sampled from page-background.png (hues
+     195-220, lightness 93-98%). Sits behind everything: the top bar and
+     sidebar are transparent so it reads across the whole window, and the
+     opaque content card covers the middle. Soft radial gradients fading to
+     transparent, so no blur filter is needed — only transforms animate,
+     which stays on the compositor. */
+  .bg-waves {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background-color: #f8f9fc; /* hsl(220, 47%, 98%) — lifted 2pt to lighten the app through the glass */
+  }
+  /* No will-change: a continuously-running transform animation is promoted to
+     the compositor automatically, so the hint only pinned GPU memory for every
+     blob permanently, including while idle. */
+  .bg-waves span {
+    position: absolute;
+    display: block;
+    border-radius: 50%;
+  }
+  /* Discrete blobs, sized so each reads as its own shape rather than a
+     full-screen wash. Colours are the image's hues (195-225) deepened enough
+     to be visible. Each wanders a closed loop, so the motion is seamless and
+     the set never resyncs. Dial --wave-strength for intensity. */
+  .bg-waves span {
+    opacity: var(--wave-strength, 0.42);
+  }
+  .bg-waves span:nth-child(1) {
+    width: 50vw; height: 50vw; left: -8vw; top: -10vh;
+    background: radial-gradient(closest-side, #b3c4e6 0%, rgba(179, 196, 230, 0) 100%);
+    animation: float1 19s ease-in-out infinite;
+  }
+  .bg-waves span:nth-child(2) {
+    width: 44vw; height: 44vw; right: -6vw; top: -8vh;
+    background: radial-gradient(closest-side, #c7d4ee 0%, rgba(199, 212, 238, 0) 100%);
+    animation: float2 24s ease-in-out infinite;
+  }
+  .bg-waves span:nth-child(3) {
+    width: 47vw; height: 47vw; left: 10vw; bottom: -12vh;
+    background: radial-gradient(closest-side, #cbd5f5 0%, rgba(203, 213, 245, 0) 100%);
+    animation: float3 21s ease-in-out infinite;
+  }
+  .bg-waves span:nth-child(4) {
+    width: 41vw; height: 41vw; right: 4vw; bottom: -10vh;
+    background: radial-gradient(closest-side, #b9dce9 0%, rgba(185, 220, 233, 0) 100%);
+    animation: float4 27s ease-in-out infinite;
+  }
+  .bg-waves span:nth-child(5) {
+    width: 35vw; height: 35vw; left: 38vw; top: 30vh;
+    background: radial-gradient(closest-side, #d5c9ec 0%, rgba(213, 201, 236, 0) 100%);
+    animation: float5 17s ease-in-out infinite;
+  }
+  .bg-waves span:nth-child(6) {
+    width: 38vw; height: 38vw; left: -4vw; top: 42vh;
+    background: radial-gradient(closest-side, #c0cde7 0%, rgba(192, 205, 231, 0) 100%);
+    animation: float6 30s ease-in-out infinite;
+  }
+
+  /* Closed loops (0% == 100%) so each blob wanders without a jump. */
+  @keyframes float1 {
+    0%,100% { transform: translate3d(0, 0, 0) scale(1); }
+    25%     { transform: translate3d(26vw, 14vh, 0) scale(1.15); }
+    50%     { transform: translate3d(48vw, 44vh, 0) scale(0.9); }
+    75%     { transform: translate3d(12vw, 30vh, 0) scale(1.1); }
+  }
+  @keyframes float2 {
+    0%,100% { transform: translate3d(0, 0, 0) scale(1.05); }
+    30%     { transform: translate3d(-34vw, 26vh, 0) scale(0.92); }
+    60%     { transform: translate3d(-12vw, 58vh, 0) scale(1.2); }
+    85%     { transform: translate3d(-40vw, 20vh, 0) scale(1); }
+  }
+  @keyframes float3 {
+    0%,100% { transform: translate3d(0, 0, 0) scale(1); }
+    28%     { transform: translate3d(30vw, -34vh, 0) scale(1.18); }
+    55%     { transform: translate3d(-18vw, -52vh, 0) scale(0.95); }
+    80%     { transform: translate3d(-34vw, -16vh, 0) scale(1.08); }
+  }
+  @keyframes float4 {
+    0%,100% { transform: translate3d(0, 0, 0) scale(1.1); }
+    35%     { transform: translate3d(-28vw, -40vh, 0) scale(0.95); }
+    65%     { transform: translate3d(8vw, -62vh, 0) scale(1.22); }
+    88%     { transform: translate3d(-16vw, -22vh, 0) scale(1); }
+  }
+  @keyframes float5 {
+    0%,100% { transform: translate3d(0, 0, 0) scale(1); }
+    22%     { transform: translate3d(-38vw, -18vh, 0) scale(1.25); }
+    48%     { transform: translate3d(24vw, -34vh, 0) scale(0.88); }
+    74%     { transform: translate3d(40vw, 16vh, 0) scale(1.12); }
+  }
+  @keyframes float6 {
+    0%,100% { transform: translate3d(0, 0, 0) scale(1.08); }
+    26%     { transform: translate3d(34vw, -26vh, 0) scale(0.94); }
+    52%     { transform: translate3d(62vw, 10vh, 0) scale(1.18); }
+    78%     { transform: translate3d(22vw, 34vh, 0) scale(1); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bg-waves span { animation: none; }
+  }
+
+  /* Frame that positions the content card: flush against the top bar and the
+     sidebar, inset from the right and bottom edges. Written out rather than
+     composed from utilities so the geometry can't depend on which Tailwind
+     classes happen to be generated. */
+  .content-frame {
+    position: fixed;
+    top: var(--header-h);
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 10; /* above .bg-waves (0), below sidebar (40) and top bar (50) */
+    padding: 0 8px 8px 0; /* float the card in from the right and bottom edges */
+  }
+  @media (min-width: 768px) {
+    .content-frame {
+      padding-left: var(--sidebar-docs);
+    }
+  }
+
+  /* Content surface — the card every lesson renders inside. It is the scroll
+     container (the page itself doesn't scroll), so it stays pinned while the
+     content moves within it. */
+  /* Layer 2: the glass panel. Translucent white lets the gradient + blobs
+     through; backdrop-filter blurs them into a soft wash before the white is
+     laid over the top. Both properties are required — without the blur it is
+     just frosted white, without the transparency the blur reveals nothing. */
+  .content-surface {
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.55);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border: 2px solid rgba(0, 0, 0, 0.14);
+    border-radius: 24px;
+    corner-shape: superellipse(2);
+    box-shadow: 0 4px 18px -1px rgba(0, 0, 0, 0.05);
+    transition: border-left-color 150ms ease;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+  }
+
+  /* Rail. The backdrop behind it drifts constantly, so a fixed grey fades in
+     and out of view as the blobs pass. Instead it darkens whatever is behind
+     it, holding a constant contrast against a moving background.
+     backdrop-filter (not mix-blend-mode) because blending is confined to the
+     nearest stacking context — the sidebar is fixed + z-40, so a blended rail
+     would never see the blobs. Falls back to a flat grey where unsupported. */
+  /* Flat colour rather than backdrop-filter: 14 rails each re-sampling a
+     moving backdrop every frame cost more than they were worth, and that
+     budget now goes to the glass panel. Semi-transparent so it still picks
+     up a little of whatever drifts behind it. */
+  .rail {
+    background-color: rgba(0, 0, 0, 0.09);
+  }
+
+  /* Unselected step text and chevrons. Semi-transparent black rather than a
+     fixed grey, so — like the rails — the colour composites with whatever
+     drifts behind the sidebar instead of sitting flat on top of it. Slightly
+     darker than the #999999 it replaces. */
+  .step-dim {
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+  /* Hovering (or focusing) the sidebar's resize handle darkens the content
+     surface's left border — the edge that actually moves. */
+  :root[data-resize-hint] .content-surface {
+    border-left-color: rgba(0, 0, 0, 0.38);
+  }
+
+  /* Active-step bar. Position/size are set inline; shape lives here because
+     corner-shape isn't a typed React style property. */
+  .step-bar {
+    display: block;
+    background-color: #808080; /* dark grey accent bar on the selected step */
+    border-radius: 2px;
+    corner-shape: superellipse(1.5);
+    overflow: var(--overflow-clip-fallback, clip);
+  }
+
+  /* Selected step — raised card. Paints above the rail (so the rail passes
+     behind it) while the active bar sits above the card, reading as if the
+     bar were inside the button. */
+  /* Same glass treatment as the content surface: translucent white over a
+     blurred backdrop, so the blobs drifting behind the sidebar tint it too. */
+  .step-selector {
+    border-color: #d4d4d4; /* same as the search bar */
+    border-radius: 12px; /* tighter than the 16px .step box */
+    background-color: rgba(255, 255, 255, 0.85);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    box-shadow:
+      0 0.3010936508871964px 0.3010936508871964px -1.25px rgba(0, 0, 0, 0.18),
+      0 1.1442666516217286px 1.1442666516217286px -2.5px rgba(0, 0, 0, 0.16),
+      0 5px 5px -3.75px rgba(0, 0, 0, 0.06);
+  }
+}

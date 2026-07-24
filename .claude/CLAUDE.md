@@ -133,29 +133,13 @@ Three custom skills in `.claude/skills/`, one per phase of the pipeline:
 
 ### Platform Icons (Next.js)
 
-All icons in `platform/` come from the **Streamline Solar Linear** free set via the Streamline MCP (`mcp__b0437a7b-*`). They live in `platform/components/icons/solar.tsx` as inline SVG React components.
+All icons in `platform/` come from the **Solar** set (by 480 Design) via the local `@iconify-json/solar` package — no MCP, no network. The `Icon` component in `platform/src/lib/icon.tsx` resolves the icon data at render time on the server and inlines the SVG (zero client JS).
 
-**Workflow to add a new icon:**
-1. Find the icon on [streamlinehq.com](https://streamlinehq.com) — filter to **Solar Linear**, **Free** only. The URL contains the icon hash, e.g. `?icon=ico_6QOPYGi2HVDmaEW4`.
-2. Copy the hash from the URL (`ico_…` part).
-3. Download via Streamline MCP:
-   ```
-   mcp__b0437a7b__download_asset: format=svg, iconHash=ico_…, size=24, strokeWidth=1.5, responsive=true
-   ```
-4. `curl` the returned `downloadUrl` to get the SVG source.
-5. Add a new `export function XxxLinear` to `solar.tsx` — replace all `stroke="#000000"` and `fill="#000000"` with `currentColor`.
-6. Import and use in the component.
+**To use an icon:** `<Icon name="magnifer-linear" />` — suffix `-linear` for Solar Line, `-bold` for Solar Bold. Optional props: `size`, `strokeWidth`, `className`, `style`. Unknown names warn in dev and render nothing. Browse names at [icones.js.org/collection/solar](https://icones.js.org/collection/solar).
 
-**Cloud sessions — the `curl` in step 4 fails.** The egress proxy blocks
-every Streamline host (`public-api`/`assets`/`cdn`.streamlinehq.com — org
-policy 403, same wall as Linear/Supabase), so the download URL can't be
-fetched. Use `mcp__…__get_icon_by_hash` instead: it returns the full SVG
-source **inline** in the response's `svg` field — no download host needed.
-Recolor by string-replacing its two default colors (`#020202` ink,
-`#0c6fff` accent) with the target colours. This is how TM 2.1's Cash
-Conversion Cycle diagram got its Freehand Duotone icons.
+The old Streamline-MCP workflow (`solar.tsx` with hand-inlined SVGs) belonged to the previous platform app, deleted 2026-07-24 — recoverable from git history before that date if ever needed.
 
-**Never** hardcode Framer CDN URLs for icons — always source from Streamline and inline the SVG so icons respond to `color` CSS.
+**Never** hardcode Framer CDN URLs for icons — always inline SVG so icons respond to `color` CSS.
 
 ### Transcription
 `_dev/transcribe.py` uses OpenAI Whisper (`small.en` model). Outputs `[video-name]_transcript.md` alongside the source video. Skips files already transcribed. Source video collection is in `Schools/UNZA/_pipeline/_video-archive/` (ECO 155 macroeconomics, MIT 14.01SC microeconomics).
