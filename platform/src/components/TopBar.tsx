@@ -64,7 +64,7 @@ export function TopBar({
   breadcrumbSlot?: React.ReactNode;
 }) {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex h-12 items-center justify-between gap-2.5 border-b border-line px-4">
+    <header className="app-header fixed inset-x-0 top-0 z-50 flex h-12 items-center justify-between gap-2.5 border-b border-line px-4">
       {/* left cluster — the logo lockup sits apart from the breadcrumb */}
       <div className="flex min-w-0 items-center gap-5">
         {/* logo lockup: mobile shows the hamburger + wordmark; desktop shows
@@ -74,7 +74,7 @@ export function TopBar({
           <span className="hidden md:inline-flex">
             <Logo />
           </span>
-          <span className="font-display text-[15px] font-medium leading-none tracking-tight text-ink">
+          <span className="font-display text-[15px] font-bold leading-none tracking-tight text-ink">
             {orgName}
           </span>
           <Icon name="sort-vertical-linear" size={14} className="hidden text-muted md:block" />

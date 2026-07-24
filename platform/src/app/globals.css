@@ -212,6 +212,25 @@
     .bg-waves span { animation: none; }
   }
 
+  /* App shell. Desktop is a fixed-height frame: fixed header + sidebar with an
+     internally-scrolling content surface. Mobile drops the height lock so the
+     document itself scrolls — that's what lets the mobile browser collapse its
+     URL bar. The drawer's sideways shift is contained with overflow-x: clip,
+     which (unlike hidden) does NOT turn the shell back into a scroll container,
+     so the page keeps scrolling vertically. */
+  .app-shell {
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: clip;
+  }
+  @media (min-width: 768px) {
+    .app-shell {
+      height: 100vh;
+      min-height: 0;
+      overflow: hidden;
+    }
+  }
+
   /* Frame that positions the content card: flush against the top bar and the
      sidebar, inset from the right and bottom edges. Written out rather than
      composed from utilities so the geometry can't depend on which Tailwind
@@ -243,6 +262,16 @@
     [data-mobile-nav] {
       --drawer-w: min(300px, 84vw);
     }
+    /* The page now scrolls under the fixed header, so a fully transparent
+       header would let content bleed through it. Give it the same frosted
+       glass as the content surface (blur + light translucency, not a flat
+       fill) so what scrolls under it becomes a soft wash. Desktop keeps the
+       transparent header — there, content never passes beneath it. */
+    .app-header {
+      background-color: rgba(255, 255, 255, 0.72);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+    }
     .sidebar-panel {
       width: var(--drawer-w) !important;
       transform: translateX(-100%);
@@ -251,7 +280,19 @@
         visibility 0s linear 320ms;
     }
     .content-frame {
+      /* Flow in the document (not a fixed pane) so the page itself scrolls and
+         the browser can hide its URL bar. Still positioned + z-10 so it paints
+         above the fixed blob backdrop; padding-top clears the fixed header. */
+      position: relative;
+      inset: auto;
+      z-index: 10;
+      padding-top: var(--header-h);
       transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .content-surface {
+      height: auto; /* grow with the content instead of filling a fixed frame */
+      overflow-x: clip;
+      overflow-y: visible; /* no inner scroll — the document scrolls */
     }
     [data-mobile-nav="open"] .sidebar-panel {
       transform: translateX(0);
@@ -271,6 +312,7 @@
      sidebar divider, no radius, no border, no drop shadow. */
   .content-surface {
     position: relative;
+    height: 100%;
     background-color: rgba(255, 255, 255, 0.72);
     -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);

@@ -43,8 +43,10 @@ export function MobileNavProvider({ children }: { children: React.ReactNode }) {
   return (
     <Ctx.Provider value={{ open, toggle, close }}>
       {/* The data attribute drives the CSS transforms on the sidebar and the
-          content frame; it is the ancestor both selectors hang off. */}
-      <div data-mobile-nav={open ? "open" : "closed"} className="h-screen overflow-hidden bg-canvas">
+          content frame; it is the ancestor both selectors hang off. .app-shell
+          is a fixed-height frame on desktop and a normal scrolling document on
+          mobile — see globals.css. */}
+      <div data-mobile-nav={open ? "open" : "closed"} className="app-shell bg-canvas">
         {children}
       </div>
     </Ctx.Provider>

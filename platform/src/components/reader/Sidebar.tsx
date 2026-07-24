@@ -178,8 +178,8 @@ type Ctx = {
   activeAncestors: Set<string>;
   activeRef: RefObject<HTMLAnchorElement | null>;
   toggle: (id: string) => void;
-  /** Fired when a leaf step is picked — closes the mobile drawer. */
-  onSelect: () => void;
+  /** Fired when a leaf step is picked — moves the selector and closes the drawer. */
+  onSelect: (id: string) => void;
 };
 
 // Module-level (stable identity) so toggling never remounts the tree.
@@ -234,7 +234,7 @@ function Row({ node, depth, ctx }: { node: NavNode; depth: number; ctx: Ctx }) {
     <Link
       href={pathForId(node.id)}
       ref={active ? ctx.activeRef : undefined}
-      onClick={ctx.onSelect}
+      onClick={() => ctx.onSelect(node.id)}
       style={{ paddingLeft: pad }}
       className={
         "step relative z-[2] text-left text-sm font-medium transition-colors " +
@@ -248,11 +248,22 @@ function Row({ node, depth, ctx }: { node: NavNode; depth: number; ctx: Ctx }) {
 
 export function Sidebar() {
   const pathname = usePathname();
-  const activeId = useMemo(() => {
+  const routeActive = useMemo(() => {
     if (!pathname || pathname === "/") return DEFAULT_LESSON;
     const seg = pathname.replace(/^\/+/, "").split("/");
     return lessonIdForSlug(seg) ?? DEFAULT_LESSON;
   }, [pathname]);
+
+  /* Optimistic selection. The selector is normally driven by the route, so it
+   * can't move until navigation commits — a visible lag on tap. Instead, a tap
+   * sets pendingActive immediately and the indicator animates on its own clock
+   * while the page switches behind it. Cleared once the route catches up, so
+   * back/forward (which change the path with no tap) still drive the selector. */
+  const [pendingActive, setPendingActive] = useState<string | null>(null);
+  const activeId = pendingActive ?? routeActive;
+  useEffect(() => {
+    if (pendingActive && routeActive === pendingActive) setPendingActive(null);
+  }, [routeActive, pendingActive]);
 
   const [openIds, setOpenIds] = useState<Set<string>>(() => {
     const s = new Set<string>(courseIndex().defaultOpen);
@@ -360,11 +371,16 @@ export function Sidebar() {
    * selector finishes sliding to the new step before the view slides back to
    * the content. No-op on desktop, where the drawer isn't a thing. */
   const { close: closeMobileNav } = useMobileNav();
-  const onSelect = useCallback(() => {
-    if (window.matchMedia("(max-width: 767px)").matches) {
-      window.setTimeout(closeMobileNav, 280);
-    }
-  }, [closeMobileNav]);
+  const onSelect = useCallback(
+    (id: string) => {
+      setPendingActive(id); // move the selector now, not when the route commits
+      if (window.matchMedia("(max-width: 767px)").matches) {
+        // Let the selector finish sliding before the drawer slides back.
+        window.setTimeout(closeMobileNav, 280);
+      }
+    },
+    [closeMobileNav],
+  );
 
   const activeAncestors = useMemo(() => new Set(ancestorsOf(activeId)), [activeId]);
   const ctx: Ctx = { openIds, activeId, activeAncestors, activeRef, toggle, onSelect };
@@ -484,7 +500,7 @@ export function Sidebar() {
 
   return (
     <aside
-      className="sidebar-panel fixed left-0 top-12 z-40 flex h-[calc(100vh-48px)] flex-col border-r border-line"
+      className="sidebar-panel fixed left-0 top-12 z-40 flex h-[calc(100dvh-48px)] flex-col border-r border-line"
       style={{ width: "var(--sidebar-docs)" }}
     >
       {/* Drag to resize. Sits over the right border, 8px wide for an easy

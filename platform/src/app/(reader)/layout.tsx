@@ -25,7 +25,7 @@ export default function ReaderLayout({ children }: { children: React.ReactNode }
       {/* Flush against the top bar and the sidebar; on mobile it slides right
           to uncover the drawer. */}
       <main className="content-frame">
-        <div id="content-surface" className="content-surface no-scrollbar h-full">
+        <div id="content-surface" className="content-surface no-scrollbar">
           {children}
         </div>
       </main>
