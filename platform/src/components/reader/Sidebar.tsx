@@ -470,7 +470,7 @@ export function Sidebar() {
 
   return (
     <aside
-      className="sidebar-panel fixed left-0 top-12 z-40 hidden h-[calc(100vh-48px)] flex-col border-r border-line bg-[#fcfcfc] md:flex"
+      className="sidebar-panel fixed left-0 top-12 z-40 hidden h-[calc(100vh-48px)] flex-col border-r border-line md:flex"
       style={{ width: "var(--sidebar-docs)" }}
     >
       {/* Drag to resize. Sits over the right border, 8px wide for an easy

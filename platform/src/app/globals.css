@@ -233,12 +233,15 @@
 
   /* Content surface — the panel every lesson renders inside. It is the scroll
      container (the page itself doesn't scroll), so it stays pinned while the
-     content moves within it. Boxy: a flat, solid-white panel flush to the
-     header and the sidebar divider — no radius, no border, no glass. The
-     sidebar's right hairline is the only line between it and the nav. */
+     content moves within it. Still the frosted glass panel — translucent white
+     over a blurred backdrop, so the blobs drift softly behind the text — but
+     whiter than before (0.72, was 0.55) and boxy: flush to the header and the
+     sidebar divider, no radius, no border, no drop shadow. */
   .content-surface {
     position: relative;
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
     overflow-y: auto;
     overflow-x: hidden;
     overscroll-behavior: contain;
@@ -293,7 +296,9 @@
   .step-selector {
     border-color: var(--color-line);
     border-radius: 8px;
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.85);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
     box-shadow: 0 1px 1px -0.5px rgba(0, 0, 0, 0.06);
   }
 }
