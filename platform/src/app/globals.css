@@ -282,6 +282,17 @@
     }
   }
 
+  /* Collapse/expand: ease the content gutter in step with the sliding panel
+     (same 260ms + easing) so nothing snaps. Gated on data-collapsing, which is
+     set only for the duration of a toggle — a resize drag never sets it, so
+     dragging the handle stays transition-free and frame-perfect. */
+  @media (min-width: 768px) {
+    .app-shell[data-collapsing] .content-frame {
+      transition: padding-left 260ms cubic-bezier(0.22, 1, 0.36, 1),
+        padding-right 260ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  }
+
   /* Mobile drawer (below md). The sidebar is an off-canvas panel; opening it
      slides the whole content frame right to uncover it — a push, not an
      overlay — while the fixed header stays put. --drawer-w caps the width so a

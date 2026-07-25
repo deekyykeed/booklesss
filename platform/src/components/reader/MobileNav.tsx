@@ -74,29 +74,38 @@ export function MobileNavProvider({ children }: { children: React.ReactNode }) {
   const [leftCollapsed, setLeftCollapsed] = useState(false);
   const [rightCollapsed, setRightCollapsed] = useState(false);
   const [sections, setSections] = useState<Section[] | null>(null);
+  // Briefly true while a collapse/expand plays, so the content gutter can
+  // transition in step with the sliding panel. A resize drag, which writes the
+  // width var every frame, leaves this false and stays transition-free/snappy.
+  const [collapsing, setCollapsing] = useState(false);
+  const collapseTimer = useRef(0);
+  const flagCollapsing = useCallback(() => {
+    setCollapsing(true);
+    window.clearTimeout(collapseTimer.current);
+    collapseTimer.current = window.setTimeout(() => setCollapsing(false), 340);
+  }, []);
+  useEffect(() => () => window.clearTimeout(collapseTimer.current), []);
 
   const toggleLeft = useCallback(() => setSide((s) => (s === "left" ? null : "left")), []);
   const toggleRight = useCallback(() => setSide((s) => (s === "right" ? null : "right")), []);
   const close = useCallback(() => setSide(null), []);
 
-  const toggleLeftCollapsed = useCallback(
-    () =>
-      setLeftCollapsed((c) => {
-        const next = !c;
-        try { localStorage.setItem(LEFT_COLLAPSED_KEY, next ? "1" : "0"); } catch { /* ignore */ }
-        return next;
-      }),
-    [],
-  );
-  const toggleRightCollapsed = useCallback(
-    () =>
-      setRightCollapsed((c) => {
-        const next = !c;
-        try { localStorage.setItem(RIGHT_COLLAPSED_KEY, next ? "1" : "0"); } catch { /* ignore */ }
-        return next;
-      }),
-    [],
-  );
+  const toggleLeftCollapsed = useCallback(() => {
+    flagCollapsing();
+    setLeftCollapsed((c) => {
+      const next = !c;
+      try { localStorage.setItem(LEFT_COLLAPSED_KEY, next ? "1" : "0"); } catch { /* ignore */ }
+      return next;
+    });
+  }, [flagCollapsing]);
+  const toggleRightCollapsed = useCallback(() => {
+    flagCollapsing();
+    setRightCollapsed((c) => {
+      const next = !c;
+      try { localStorage.setItem(RIGHT_COLLAPSED_KEY, next ? "1" : "0"); } catch { /* ignore */ }
+      return next;
+    });
+  }, [flagCollapsing]);
 
   // Restore collapse state before paint (client only). A brief flash is possible
   // but the panels animate anyway, so it reads as intentional.
@@ -222,6 +231,7 @@ export function MobileNavProvider({ children }: { children: React.ReactNode }) {
         data-mobile-nav={side ?? "closed"}
         data-left-collapsed={leftCollapsed ? "" : undefined}
         data-right-collapsed={rightCollapsed ? "" : undefined}
+        data-collapsing={collapsing ? "" : undefined}
         className="app-shell bg-canvas"
       >
         {children}
