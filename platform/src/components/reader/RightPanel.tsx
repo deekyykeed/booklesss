@@ -209,16 +209,25 @@ function ChatComposer({
     el.style.height = Math.min(el.scrollHeight, 132) + "px";
   }, [value]);
 
+  // The exact top-bar circle button: white fill, #d4d4d4 hairline, soft layered
+  // shadow. On mobile the composer's controls read identically to the header.
+  const headerBtn =
+    "border border-[#d4d4d4] bg-white text-muted shadow-[0_0.6px_0.6px_-1.25px_rgba(0,0,0,0.18),0_2.3px_2.3px_-2.5px_rgba(0,0,0,0.16),0_10px_10px_-3.75px_rgba(0,0,0,0.06)]";
+
   return (
+    // Mobile: no outer padding, so the bar goes flush to the panel's sides and
+    // the screen bottom. Desktop: the floating card gets its margin back.
     <form
       onSubmit={(e) => {
         e.preventDefault();
         onSubmit();
       }}
-      className="shrink-0 px-3 pb-3 pt-2"
+      className="shrink-0 xl:px-3 xl:pb-3 xl:pt-2"
       data-no-swipe
     >
-      <div className="squircle rounded-2xl border border-line bg-white/70 px-3 pb-2 pt-2.5 backdrop-blur-md focus-within:border-line-2">
+      {/* Mobile: a flush input bar — no radius, only a top hairline as the
+          divider. Desktop (xl): the rounded squircle card with a full border. */}
+      <div className="squircle border-t border-line bg-white/70 px-3 pb-2 pt-2.5 backdrop-blur-md focus-within:border-line-2 xl:rounded-2xl xl:border">
         <textarea
           ref={taRef}
           value={value}
@@ -243,28 +252,32 @@ function ChatComposer({
             aria-label={voiceOn ? "Turn off voice mode" : "Turn on voice mode"}
             title="Voice mode"
             className={
-              "grid h-8 w-8 place-items-center rounded-full border transition-colors " +
-              (voiceOn
-                ? "border-transparent bg-btn text-white"
-                : "border-line-2 bg-white text-muted shadow-sm hover:text-ink")
+              "grid h-8 w-8 place-items-center rounded-full transition-colors " +
+              (voiceOn ? "border border-transparent bg-btn text-white" : headerBtn + " hover:text-ink")
             }
           >
             <MicIcon />
           </button>
+          {/* Send: header-style (white) on mobile; filled accent on desktop. */}
           <button
             type="submit"
             disabled={!canSend}
             aria-label="Send"
             className={
               "grid h-8 w-8 shrink-0 place-items-center rounded-full transition-colors " +
-              (canSend ? "bg-btn text-white" : "bg-active text-placeholder")
+              headerBtn +
+              " hover:text-ink " +
+              (canSend
+                ? "xl:border-transparent xl:bg-btn xl:text-white xl:shadow-none"
+                : "xl:border-transparent xl:bg-active xl:text-placeholder xl:shadow-none")
             }
           >
             <SendArrow />
           </button>
         </div>
       </div>
-      <p className="mt-1.5 px-1 text-[10.5px] text-placeholder">
+      {/* The 'coming soon' hint would break the flush-to-bottom bar on mobile. */}
+      <p className="mt-1.5 hidden px-1 text-[10.5px] text-placeholder xl:block">
         {voiceOn ? "Voice mode on — coming soon" : "AI tutor — coming soon"}
       </p>
     </form>
