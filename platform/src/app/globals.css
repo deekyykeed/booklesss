@@ -521,8 +521,8 @@
   .voice-glow > span {
     position: absolute;
     border-radius: 50%;
-    filter: blur(20px);
-    opacity: calc(var(--von, 0) * (0.12 + var(--voice, 0) * 0.85));
+    filter: blur(30px);
+    opacity: calc(var(--von, 0) * (0.03 + var(--voice, 0) * 0.28));
   }
   .voice-glow > span:nth-child(1) {
     left: -6%;
@@ -545,17 +545,16 @@
     height: 150%;
     background: radial-gradient(closest-side, rgb(var(--g3, 45 212 191)) 0%, rgba(0, 0, 0, 0) 100%);
   }
-  /* Border ring that glows the primary colour as you speak. */
+  /* Soft outer halo that glows the primary colour as you speak. No crisp 1px
+     ring — that read as a second line next to the card's own border. */
   .composer-card::after {
     content: "";
     position: absolute;
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    opacity: calc(var(--voice, 0) * 0.95);
-    box-shadow:
-      0 0 0 1px rgb(var(--g1, 168 85 247)),
-      0 0 20px 1px rgb(var(--g1, 168 85 247));
+    opacity: calc(var(--voice, 0) * 0.5);
+    box-shadow: 0 0 16px 1px rgb(var(--g1, 168 85 247));
   }
   @media (prefers-reduced-motion: reduce) {
     .voice-glow > span,
