@@ -182,8 +182,8 @@ function ChatThread({ messages }: { messages: ChatMessage[] }) {
 
 /* Composer pinned to the panel's bottom, in the reference layout: the message on
  * top, a control row beneath with a voice-mode toggle and the send button — both
- * circular, matching the header buttons. Enter sends, Shift+Enter newlines; the
- * field auto-grows. Marked data-no-swipe so a horizontal drag while typing never
+ * circular, matching the header buttons. Enter inserts a newline (send is the
+ * button only); the field auto-grows. Marked data-no-swipe so a drag while typing never
  * yanks the drawer. Voice mode is a UI toggle for now (ready to wire to a real
  * voice session). */
 function ChatComposer({
@@ -227,17 +227,11 @@ function ChatComposer({
     >
       {/* Mobile: a flush input bar — no radius, only a top hairline as the
           divider. Desktop (xl): the rounded squircle card with a full border. */}
-      <div className="squircle border-t border-line bg-white/70 px-3 pb-2 pt-2.5 backdrop-blur-md focus-within:border-line-2 xl:rounded-2xl xl:border">
+      <div className="squircle border-t border-line bg-white/70 px-3 pb-2 pt-2.5 backdrop-blur-md focus-within:border-line-2 xl:rounded-3xl xl:border">
         <textarea
           ref={taRef}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              onSubmit();
-            }
-          }}
           rows={1}
           placeholder="Ask about this step…"
           aria-label="Ask about this step"
