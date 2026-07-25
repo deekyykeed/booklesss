@@ -142,18 +142,23 @@ function PanelIcon({ dir }: { dir: "close" | "open" }) {
   );
 }
 
-function SendArrow() {
+/* Solar · Bold Duotone — hand-inlined (not via <Icon>, which would pull the whole
+ * Solar JSON into this client bundle). currentColor drives the solid parts; the
+ * opacity:.5 shapes give the duotone. */
+function SendArrow({ size = 24 }: { size?: number }) {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 19V6m0 0-5.5 5.5M12 6l5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" opacity=".5" d="M12 20.75a.75.75 0 0 0 .75-.75v-9.25h-1.5V20c0 .414.336.75.75.75" />
+      <path fill="currentColor" d="M6 10.75a.75.75 0 0 1-.53-1.28l6-6a.75.75 0 0 1 1.06 0l6 6a.75.75 0 0 1-.53 1.28z" />
     </svg>
   );
 }
-function MicIcon() {
+function MicIcon({ size = 22 }: { size?: number }) {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M6 11a6 6 0 0 0 12 0M12 17v3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d="M4 9a.75.75 0 0 1 .75.75v1a7.25 7.25 0 1 0 14.5 0v-1a.75.75 0 0 1 1.5 0v1a8.75 8.75 0 0 1-8 8.718v2.282a.75.75 0 0 1-1.5 0v-2.282a8.75 8.75 0 0 1-8-8.718v-1A.75.75 0 0 1 4 9" />
+      <path fill="currentColor" opacity=".5" d="M12 2a5.75 5.75 0 0 0-5.75 5.75v3a5.75 5.75 0 0 0 11.452.75H13a.75.75 0 0 1 0-1.5h4.75V8.5H13A.75.75 0 0 1 13 7h4.701A5.75 5.75 0 0 0 12 2" />
+      <path fill="currentColor" d="M12.25 10.75c0 .414.336.75.75.75h4.701l.049-1.5H13a.75.75 0 0 0-.75.75m0-3c0 .414.336.75.75.75h4.75L17.701 7H13a.75.75 0 0 0-.75.75" />
     </svg>
   );
 }
@@ -209,11 +214,6 @@ function ChatComposer({
     el.style.height = Math.min(el.scrollHeight, 132) + "px";
   }, [value]);
 
-  // The exact top-bar circle button: white fill, #d4d4d4 hairline, soft layered
-  // shadow. On mobile the composer's controls read identically to the header.
-  const headerBtn =
-    "border border-[#d4d4d4] bg-white text-muted shadow-[0_0.6px_0.6px_-1.25px_rgba(0,0,0,0.18),0_2.3px_2.3px_-2.5px_rgba(0,0,0,0.16),0_10px_10px_-3.75px_rgba(0,0,0,0.06)]";
-
   return (
     // Mobile: no outer padding, so the bar goes flush to the panel's sides and
     // the screen bottom. Desktop: the floating card gets its margin back.
@@ -238,7 +238,9 @@ function ChatComposer({
           style={{ maxHeight: 132 }}
           className="no-scrollbar block w-full resize-none bg-transparent px-1 text-[13px] leading-5 text-ink placeholder:text-placeholder focus:outline-none"
         />
-        <div className="mt-1.5 flex items-center justify-end gap-1.5">
+        {/* Bare icons — no container. Bigger, Solar duotone, so each reads
+            clearly on its own. */}
+        <div className="mt-1 flex items-center justify-end gap-1">
           <button
             type="button"
             onClick={onToggleVoice}
@@ -246,24 +248,19 @@ function ChatComposer({
             aria-label={voiceOn ? "Turn off voice mode" : "Turn on voice mode"}
             title="Voice mode"
             className={
-              "grid h-8 w-8 place-items-center rounded-full transition-colors " +
-              (voiceOn ? "border border-transparent bg-btn text-white" : headerBtn + " hover:text-ink")
+              "grid h-8 w-8 place-items-center transition-colors " +
+              (voiceOn ? "text-ink" : "text-muted hover:text-ink")
             }
           >
             <MicIcon />
           </button>
-          {/* Send: header-style (white) on mobile; filled accent on desktop. */}
           <button
             type="submit"
             disabled={!canSend}
             aria-label="Send"
             className={
-              "grid h-8 w-8 shrink-0 place-items-center rounded-full transition-colors " +
-              headerBtn +
-              " hover:text-ink " +
-              (canSend
-                ? "xl:border-transparent xl:bg-btn xl:text-white xl:shadow-none"
-                : "xl:border-transparent xl:bg-active xl:text-placeholder xl:shadow-none")
+              "grid h-8 w-8 shrink-0 place-items-center transition-colors " +
+              (canSend ? "text-ink" : "text-placeholder")
             }
           >
             <SendArrow />
