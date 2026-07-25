@@ -1,0 +1,1202 @@
+[
+  {
+    "id": "getting-started",
+    "label": "Getting started",
+    "defaultOpen": true,
+    "children": [
+      {
+        "id": "what-is-economics",
+        "label": "What is Economics",
+        "lesson": {
+          "title": "What is Economics",
+          "kicker": "Getting started",
+          "sections": [
+            {
+              "id": "overview",
+              "blocks": [
+                {
+                  "text": "Economics is the study of how people, firms, and governments make choices when resources are scarce — and how those choices add up across an entire society. Because you can never have everything, every decision means giving something else up.",
+                  "type": "p"
+                },
+                {
+                  "text": "Rule of thumb: whenever you make a decision, ask “compared to what?” That question is the whole subject in miniature.",
+                  "type": "callout"
+                }
+              ],
+              "heading": "Overview"
+            },
+            {
+              "id": "key-ideas",
+              "blocks": [
+                {
+                  "type": "ul",
+                  "items": [
+                    "Scarcity forces trade-offs: every choice carries an opportunity cost — the value of the next best thing you gave up.",
+                    "Microeconomics zooms in on single markets, firms, and households; macroeconomics zooms out to the whole economy.",
+                    "Incentives drive behaviour — change the costs and benefits, and you change what people do.",
+                    "Models are deliberate simplifications: they trade some realism for the clarity to reason about cause and effect."
+                  ]
+                }
+              ],
+              "heading": "Key ideas"
+            },
+            {
+              "id": "in-practice",
+              "blocks": [
+                {
+                  "text": "Imagine you have a free Saturday. You could work a shift for $80, study for an exam, or relax. Economics doesn't tell you which is “right” — it tells you to weigh each option against what you give up. If you choose to relax, the opportunity cost is the $80 you didn't earn plus the exam marks you didn't gain. Naming that cost is what turns a vague feeling into a clear decision.",
+                  "type": "p"
+                }
+              ],
+              "heading": "In practice"
+            },
+            {
+              "id": "summary",
+              "blocks": [
+                {
+                  "text": "Economics is a way of thinking, not a pile of facts. Once you start spotting scarcity, trade-offs, and incentives in everyday life, the rest of the course is just adding precision to instincts you already have.",
+                  "type": "p"
+                }
+              ],
+              "heading": "Summary"
+            },
+            {
+              "id": "try-it",
+              "blocks": [
+                {
+                  "text": "Economics is about making choices precise — and so is code. Edit the snippet below and press Run to see the output. Try changing the numbers.",
+                  "type": "p"
+                },
+                {
+                  "code": "// Economics in code — revenue = price × quantity\nconst price = 4;       // $ per coffee\nconst quantity = 100;  // cups sold today\n\nconst revenue = price * quantity;\nconsole.log(\"Revenue: $\" + revenue);\n\n// Opportunity cost: the value of the best thing you gave up\nconst wageFromShift = 80;   // if you had worked instead\nconst valueOfResting = 60;  // how much the rest is worth to you\nconsole.log(\"Opportunity cost of resting: $\" + (wageFromShift - valueOfResting));",
+                  "type": "playground"
+                }
+              ],
+              "heading": "Try it yourself"
+            }
+          ]
+        }
+      },
+      {
+        "id": "how-to-use",
+        "label": "How to use this course",
+        "lesson": {
+          "title": "How to use this course",
+          "kicker": "Getting started",
+          "sections": [
+            {
+              "id": "overview",
+              "blocks": [
+                {
+                  "text": "Work top-to-bottom or jump straight to a topic in the sidebar. Folders expand to reveal sub-topics, and each lesson is short enough to finish in one sitting.",
+                  "type": "p"
+                }
+              ],
+              "heading": "Overview"
+            },
+            {
+              "id": "key-ideas",
+              "blocks": [
+                {
+                  "type": "ul",
+                  "items": [
+                    "Open a folder to reveal its lessons; the arrow shows whether a section is expanded.",
+                    "The lesson you are reading is highlighted in the sidebar so you never lose your place.",
+                    "Every lesson ends with a “Key ideas” recap — skim these to revise quickly before a test."
+                  ]
+                }
+              ],
+              "heading": "Key ideas"
+            }
+          ]
+        }
+      },
+      {
+        "id": "glossary",
+        "label": "Key terms & glossary",
+        "lesson": {
+          "title": "Key terms & glossary",
+          "kicker": "Getting started",
+          "sections": [
+            {
+              "id": "overview",
+              "blocks": [
+                {
+                  "text": "A quick reference for the vocabulary that shows up again and again. Come back here whenever a term stops making sense.",
+                  "type": "p"
+                }
+              ],
+              "heading": "Overview"
+            },
+            {
+              "id": "key-ideas",
+              "blocks": [
+                {
+                  "type": "ul",
+                  "items": [
+                    "Opportunity cost — the value of the best alternative you gave up.",
+                    "Marginal — the effect of one more unit (one more hour, one more slice).",
+                    "Equilibrium — a state with no pressure to change; supply meets demand.",
+                    "Ceteris paribus — “all else equal”, the assumption that lets us isolate one cause."
+                  ]
+                }
+              ],
+              "heading": "Key ideas"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "microeconomics",
+    "label": "Microeconomics",
+    "children": [
+      {
+        "id": "supply-demand",
+        "label": "Supply & demand",
+        "children": [
+          {
+            "id": "law-of-demand",
+            "label": "The law of demand",
+            "lesson": {
+              "title": "The law of demand",
+              "kicker": "Supply & demand",
+              "sections": [
+                {
+                  "id": "overview",
+                  "blocks": [
+                    {
+                      "text": "All else equal, as the price of a good rises the quantity people want to buy falls — and as price falls, quantity demanded rises. That inverse relationship is why demand curves slope downward.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "blocks": [
+                    {
+                      "type": "ul",
+                      "items": [
+                        "A price change moves you along the demand curve; a change in tastes, income, or the price of related goods shifts the whole curve.",
+                        "The substitution effect: when something gets pricier, buyers switch to alternatives.",
+                        "The income effect: a higher price makes buyers effectively poorer, so they buy less."
+                      ]
+                    }
+                  ],
+                  "heading": "Key ideas"
+                },
+                {
+                  "id": "in-practice",
+                  "blocks": [
+                    {
+                      "text": "A coffee shop raises a latte from $4 to $5. The next morning, a handful of regulars switch to filter coffee or skip the second cup — quantity demanded falls. Nothing about the customers changed; only the price did, so we slide up the same demand curve rather than shifting it. If instead a viral post made lattes trendy, the whole curve would shift right and more would sell at every price.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "In practice"
+                },
+                {
+                  "id": "summary",
+                  "blocks": [
+                    {
+                      "text": "Always separate a movement along the curve (caused by the good's own price) from a shift of the curve (caused by anything else). Mixing them up is the single most common mistake in intro microeconomics.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Summary"
+                }
+              ]
+            }
+          },
+          {
+            "id": "law-of-supply",
+            "label": "The law of supply",
+            "lesson": {
+              "title": "The law of supply",
+              "kicker": "Supply & demand",
+              "sections": [
+                {
+                  "id": "overview",
+                  "blocks": [
+                    {
+                      "text": "As the price of a good rises, producers are willing and able to supply more of it, because higher prices cover higher marginal costs and promise more profit. Supply curves therefore slope upward.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "blocks": [
+                    {
+                      "type": "ul",
+                      "items": [
+                        "Higher price → larger quantity supplied (a movement along the curve).",
+                        "Costs, technology, and the number of sellers shift the entire supply curve.",
+                        "In the short run, firms expand output by working existing capacity harder."
+                      ]
+                    }
+                  ],
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "equilibrium",
+            "label": "Market equilibrium",
+            "lesson": {
+              "title": "Market equilibrium",
+              "kicker": "Supply & demand",
+              "sections": [
+                {
+                  "id": "overview",
+                  "blocks": [
+                    {
+                      "text": "Equilibrium is the price at which the quantity buyers want exactly equals the quantity sellers offer. There is no shortage and no surplus, so there is no pressure for the price to move.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "blocks": [
+                    {
+                      "type": "ul",
+                      "items": [
+                        "Above equilibrium: a surplus builds up and pushes the price down.",
+                        "Below equilibrium: a shortage forms and pulls the price up.",
+                        "Shifts in supply or demand create a new equilibrium price and quantity."
+                      ]
+                    }
+                  ],
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "elasticity",
+            "label": "Elasticity",
+            "children": [
+              {
+                "id": "ped",
+                "label": "Price elasticity of demand",
+                "lesson": {
+                  "title": "Price elasticity of demand",
+                  "kicker": "Elasticity",
+                  "sections": [
+                    {
+                      "id": "overview",
+                      "blocks": [
+                        {
+                          "text": "Price elasticity of demand measures how sensitive quantity demanded is to a change in price: the percentage change in quantity divided by the percentage change in price.",
+                          "type": "p"
+                        }
+                      ],
+                      "heading": "Overview"
+                    },
+                    {
+                      "id": "key-ideas",
+                      "blocks": [
+                        {
+                          "type": "ul",
+                          "items": [
+                            "Elastic (>1): quantity reacts a lot — think holidays or a specific brand of coffee.",
+                            "Inelastic (<1): quantity barely moves — think petrol or insulin.",
+                            "Total revenue rises when you cut the price of an elastic good, and falls for an inelastic one."
+                          ]
+                        }
+                      ],
+                      "heading": "Key ideas"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "yed",
+                "label": "Income elasticity",
+                "lesson": {
+                  "title": "Income elasticity of demand",
+                  "kicker": "Elasticity",
+                  "sections": [
+                    {
+                      "id": "overview",
+                      "blocks": [
+                        {
+                          "text": "Income elasticity measures how demand responds when incomes change — the percentage change in quantity demanded divided by the percentage change in income.",
+                          "type": "p"
+                        }
+                      ],
+                      "heading": "Overview"
+                    },
+                    {
+                      "id": "key-ideas",
+                      "blocks": [
+                        {
+                          "type": "ul",
+                          "items": [
+                            "Normal goods have positive income elasticity: richer buyers want more.",
+                            "Luxury goods have elasticity above 1 — demand grows faster than income.",
+                            "Inferior goods have negative elasticity: demand falls as income rises."
+                          ]
+                        }
+                      ],
+                      "heading": "Key ideas"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "xed",
+                "label": "Cross-price elasticity",
+                "lesson": {
+                  "title": "Cross-price elasticity",
+                  "kicker": "Elasticity",
+                  "sections": [
+                    {
+                      "id": "overview",
+                      "blocks": [
+                        {
+                          "text": "Cross-price elasticity measures how the demand for one good responds to a price change in another good — revealing whether two goods are substitutes or complements.",
+                          "type": "p"
+                        }
+                      ],
+                      "heading": "Overview"
+                    },
+                    {
+                      "id": "key-ideas",
+                      "blocks": [
+                        {
+                          "type": "ul",
+                          "items": [
+                            "Positive value → substitutes (tea and coffee).",
+                            "Negative value → complements (printers and ink).",
+                            "Near zero → the two goods are basically unrelated."
+                          ]
+                        }
+                      ],
+                      "heading": "Key ideas"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "consumer-choice",
+        "label": "Consumer choice",
+        "children": [
+          {
+            "id": "utility",
+            "label": "Utility & marginal utility",
+            "lesson": {
+              "title": "Utility & marginal utility",
+              "kicker": "Consumer choice",
+              "sections": [
+                {
+                  "id": "overview",
+                  "blocks": [
+                    {
+                      "text": "Utility is a way to describe the satisfaction a person gets from consuming goods. Marginal utility is the extra satisfaction from one more unit — and it usually shrinks the more you already have.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "blocks": [
+                    {
+                      "type": "ul",
+                      "items": [
+                        "Diminishing marginal utility: the second slice of pizza delights you less than the first.",
+                        "Consumers maximise utility by equalising marginal utility per dollar across goods.",
+                        "It explains why demand curves slope down — extra units are worth less, so you'll only buy them at a lower price."
+                      ]
+                    }
+                  ],
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "indifference",
+            "label": "Indifference curves",
+            "lesson": {
+              "title": "Indifference curves",
+              "kicker": "Consumer choice",
+              "sections": [
+                {
+                  "id": "overview",
+                  "blocks": [
+                    {
+                      "text": "An indifference curve joins all the combinations of two goods that leave a consumer equally satisfied. Together with a budget line, it shows the best bundle a consumer can afford.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "blocks": [
+                    {
+                      "type": "ul",
+                      "items": [
+                        "Curves further from the origin represent higher satisfaction.",
+                        "Their slope — the marginal rate of substitution — is how much of one good you'll swap for the other.",
+                        "The optimal choice sits where the budget line just touches the highest reachable curve."
+                      ]
+                    }
+                  ],
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "budget",
+            "label": "Budget constraints",
+            "lesson": {
+              "title": "Budget constraints",
+              "kicker": "Consumer choice",
+              "sections": [
+                {
+                  "id": "overview",
+                  "blocks": [
+                    {
+                      "text": "A budget constraint shows every combination of goods a consumer can buy with a given income and set of prices. It draws the boundary between what's affordable and what isn't.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "blocks": [
+                    {
+                      "type": "ul",
+                      "items": [
+                        "The slope reflects the relative price of the two goods.",
+                        "More income shifts the line outward; a price change pivots it.",
+                        "Consumers choose the affordable bundle that reaches their highest indifference curve."
+                      ]
+                    }
+                  ],
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "firms",
+        "label": "Firms & production",
+        "children": [
+          {
+            "id": "costs",
+            "label": "Costs of production",
+            "lesson": {
+              "title": "Costs of production",
+              "kicker": "Firms & production",
+              "sections": [
+                {
+                  "id": "overview",
+                  "blocks": [
+                    {
+                      "text": "Firms pay fixed costs that don't change with output and variable costs that do. Understanding how average and marginal costs behave is the key to deciding how much to produce.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "blocks": [
+                    {
+                      "type": "ul",
+                      "items": [
+                        "Marginal cost is the cost of producing one more unit.",
+                        "Average total cost is typically U-shaped as output grows.",
+                        "A firm expands output while the extra revenue exceeds the extra (marginal) cost."
+                      ]
+                    }
+                  ],
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "revenue-profit",
+            "label": "Revenue & profit",
+            "lesson": {
+              "title": "Revenue & profit",
+              "kicker": "Firms & production",
+              "sections": [
+                {
+                  "id": "overview",
+                  "blocks": [
+                    {
+                      "text": "Revenue is price times quantity; profit is revenue minus total cost. Firms maximise profit by producing where marginal revenue equals marginal cost.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "blocks": [
+                    {
+                      "type": "ul",
+                      "items": [
+                        "Economic profit counts opportunity cost, not just accounting cost.",
+                        "MR = MC is the profit-maximising rule in every market structure.",
+                        "If price falls below average variable cost, a firm shuts down in the short run."
+                      ]
+                    }
+                  ],
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "economies-scale",
+            "label": "Economies of scale",
+            "lesson": {
+              "title": "Economies of scale",
+              "kicker": "Firms & production",
+              "sections": [
+                {
+                  "id": "overview",
+                  "blocks": [
+                    {
+                      "text": "Economies of scale exist when producing more lowers the average cost per unit — through bulk buying, specialised labour, or spreading fixed costs over more output.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "blocks": [
+                    {
+                      "type": "ul",
+                      "items": [
+                        "Internal economies come from the firm's own growth; external ones come from the whole industry.",
+                        "Beyond a point, diseconomies of scale set in as coordination gets harder.",
+                        "They help explain why some industries are dominated by a few large firms."
+                      ]
+                    }
+                  ],
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "market-structures",
+        "label": "Market structures",
+        "children": [
+          {
+            "id": "perfect-competition",
+            "label": "Perfect competition",
+            "lesson": {
+              "title": "Perfect competition",
+              "kicker": "Market structures",
+              "sections": [
+                {
+                  "id": "overview",
+                  "blocks": [
+                    {
+                      "text": "A perfectly competitive market has many small firms selling identical products, with free entry and full information. No single firm can influence the price — they are all price takers.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "blocks": [
+                    {
+                      "type": "ul",
+                      "items": [
+                        "Firms produce where price equals marginal cost.",
+                        "In the long run, free entry drives economic profit to zero.",
+                        "It's a benchmark for efficiency, rarely seen exactly in the real world."
+                      ]
+                    }
+                  ],
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "monopoly",
+            "label": "Monopoly",
+            "lesson": {
+              "title": "Monopoly",
+              "kicker": "Market structures",
+              "sections": [
+                {
+                  "id": "overview",
+                  "blocks": [
+                    {
+                      "text": "A monopoly is the single seller of a product with no close substitutes, protected by barriers to entry. It sets price above marginal cost, producing less than a competitive market would.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "blocks": [
+                    {
+                      "type": "ul",
+                      "items": [
+                        "Monopolists are price makers, not price takers.",
+                        "They earn long-run profit because entry is blocked.",
+                        "The trade-off: higher prices and lower output, but sometimes more R&D."
+                      ]
+                    }
+                  ],
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "oligopoly",
+            "label": "Oligopoly & game theory",
+            "lesson": {
+              "title": "Oligopoly & game theory",
+              "kicker": "Market structures",
+              "sections": [
+                {
+                  "id": "overview",
+                  "blocks": [
+                    {
+                      "text": "An oligopoly is a market dominated by a few interdependent firms. Because each one's best move depends on the others', economists analyse them with game theory.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "blocks": [
+                    {
+                      "type": "ul",
+                      "items": [
+                        "Firms may collude to raise prices — or compete fiercely and trigger price wars.",
+                        "The kinked demand curve helps explain sticky oligopoly prices.",
+                        "See The prisoner's dilemma for why cooperation is hard to sustain."
+                      ]
+                    }
+                  ],
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "macroeconomics",
+    "label": "Macroeconomics",
+    "children": [
+      {
+        "id": "measuring",
+        "label": "Measuring the economy",
+        "children": [
+          {
+            "id": "gdp",
+            "label": "Gross Domestic Product",
+            "lesson": {
+              "title": "Gross Domestic Product (GDP)",
+              "kicker": "Measuring the economy",
+              "sections": [
+                {
+                  "id": "overview",
+                  "blocks": [
+                    {
+                      "text": "GDP is the total market value of all final goods and services produced within a country in a given period. It's the headline measure of the size of an economy.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "blocks": [
+                    {
+                      "type": "ul",
+                      "items": [
+                        "Real GDP strips out inflation so you can compare years fairly.",
+                        "It can be measured three ways: output, income, and expenditure — all should agree.",
+                        "GDP ignores unpaid work, inequality, and environmental costs, so it's an incomplete measure of wellbeing."
+                      ]
+                    }
+                  ],
+                  "heading": "Key ideas"
+                },
+                {
+                  "id": "in-practice",
+                  "blocks": [
+                    {
+                      "text": "When the news says an economy “grew 2.5% last quarter”, that figure is the change in real GDP. Economists watch it to date recessions (two straight quarters of falling real GDP is a common rule of thumb) and to compare living standards across countries by dividing GDP by population — GDP per capita.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "In practice"
+                },
+                {
+                  "id": "summary",
+                  "blocks": [
+                    {
+                      "text": "GDP is the best single number we have for the size of an economy, but treat it as a thermometer, not a report card: it measures output, not happiness, fairness, or sustainability.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Summary"
+                }
+              ]
+            }
+          },
+          {
+            "id": "inflation",
+            "label": "Inflation & the CPI",
+            "lesson": {
+              "title": "Inflation & the CPI",
+              "kicker": "Measuring the economy",
+              "sections": [
+                {
+                  "id": "overview",
+                  "blocks": [
+                    {
+                      "text": "Inflation is a sustained rise in the general price level, which erodes the purchasing power of money. It's usually tracked with the Consumer Price Index, a basket of typical household goods.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "blocks": [
+                    {
+                      "type": "ul",
+                      "items": [
+                        "Demand-pull inflation comes from too much spending; cost-push from rising input costs.",
+                        "Moderate, stable inflation (around 2%) is generally seen as healthy.",
+                        "Deflation — falling prices — can be as damaging as high inflation."
+                      ]
+                    }
+                  ],
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "unemployment",
+            "label": "Unemployment",
+            "lesson": {
+              "title": "Unemployment",
+              "kicker": "Measuring the economy",
+              "sections": [
+                {
+                  "id": "overview",
+                  "blocks": [
+                    {
+                      "text": "The unemployment rate is the share of the labour force that is willing and able to work but cannot find a job. It comes in several types with very different causes.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "blocks": [
+                    {
+                      "type": "ul",
+                      "items": [
+                        "Frictional: people between jobs. Structural: skills don't match available jobs.",
+                        "Cyclical unemployment rises during recessions.",
+                        "There's often a short-run trade-off between unemployment and inflation (the Phillips curve)."
+                      ]
+                    }
+                  ],
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "policy",
+        "label": "Policy",
+        "children": [
+          {
+            "id": "fiscal",
+            "label": "Fiscal policy",
+            "lesson": {
+              "title": "Fiscal policy",
+              "kicker": "Policy",
+              "sections": [
+                {
+                  "id": "overview",
+                  "blocks": [
+                    {
+                      "text": "Fiscal policy is the government's use of spending and taxation to influence the economy. Spending more or taxing less stimulates demand; the reverse cools an overheating economy.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "blocks": [
+                    {
+                      "type": "ul",
+                      "items": [
+                        "Expansionary policy fights recessions but can widen the deficit.",
+                        "The multiplier: one dollar of government spending can raise total output by more than a dollar.",
+                        "Automatic stabilisers (like unemployment benefits) act without new legislation."
+                      ]
+                    }
+                  ],
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "monetary",
+            "label": "Monetary policy",
+            "lesson": {
+              "title": "Monetary policy",
+              "kicker": "Policy",
+              "sections": [
+                {
+                  "id": "overview",
+                  "blocks": [
+                    {
+                      "text": "Monetary policy is how a central bank manages interest rates and the money supply to keep inflation and employment on target. It's the main day-to-day tool for steering the economy.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "blocks": [
+                    {
+                      "type": "ul",
+                      "items": [
+                        "Lower rates encourage borrowing and spending; higher rates restrain them.",
+                        "Central banks are usually independent of the government.",
+                        "Quantitative easing injects money directly when rates are already near zero."
+                      ]
+                    }
+                  ],
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "trade",
+        "label": "International trade",
+        "children": [
+          {
+            "id": "comparative-advantage",
+            "label": "Comparative advantage",
+            "lesson": {
+              "title": "Comparative advantage",
+              "kicker": "International trade",
+              "sections": [
+                {
+                  "id": "overview",
+                  "blocks": [
+                    {
+                      "text": "A country has a comparative advantage in whatever it can produce at the lowest opportunity cost. Even a country that's worse at everything gains by specialising and trading.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "blocks": [
+                    {
+                      "type": "ul",
+                      "items": [
+                        "It's about relative cost, not absolute skill.",
+                        "Specialisation plus trade lets both partners consume beyond their own limits.",
+                        "It's the core argument for why free trade can make everyone better off."
+                      ]
+                    }
+                  ],
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "exchange-rates",
+            "label": "Exchange rates",
+            "lesson": {
+              "title": "Exchange rates",
+              "kicker": "International trade",
+              "sections": [
+                {
+                  "id": "overview",
+                  "blocks": [
+                    {
+                      "text": "An exchange rate is the price of one currency in terms of another. It shapes the cost of imports and exports and can be set by markets or managed by governments.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "blocks": [
+                    {
+                      "type": "ul",
+                      "items": [
+                        "A weaker currency makes exports cheaper and imports dearer.",
+                        "Floating rates move with supply and demand; fixed rates are pegged.",
+                        "Interest rates, trade balances, and expectations all push rates around."
+                      ]
+                    }
+                  ],
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "behavioral",
+    "label": "Behavioral economics",
+    "children": [
+      {
+        "id": "biases",
+        "label": "Cognitive biases",
+        "lesson": {
+          "title": "Cognitive biases",
+          "kicker": "Behavioral economics",
+          "sections": [
+            {
+              "id": "overview",
+              "blocks": [
+                {
+                  "text": "Behavioral economics studies the systematic ways real people depart from the “perfectly rational” actor of standard theory. Cognitive biases are the predictable mental shortcuts behind those departures.",
+                  "type": "p"
+                }
+              ],
+              "heading": "Overview"
+            },
+            {
+              "id": "key-ideas",
+              "blocks": [
+                {
+                  "type": "ul",
+                  "items": [
+                    "Loss aversion: losses hurt about twice as much as equivalent gains feel good.",
+                    "Anchoring: the first number you see quietly shapes your later judgements.",
+                    "Present bias: we over-value rewards now and under-save for later."
+                  ]
+                }
+              ],
+              "heading": "Key ideas"
+            }
+          ]
+        }
+      },
+      {
+        "id": "nudges",
+        "label": "Nudges & choice architecture",
+        "lesson": {
+          "title": "Nudges & choice architecture",
+          "kicker": "Behavioral economics",
+          "sections": [
+            {
+              "id": "overview",
+              "blocks": [
+                {
+                  "text": "A nudge changes the way choices are presented — without banning options or changing incentives — to steer people toward better decisions. The design of those options is called choice architecture.",
+                  "type": "p"
+                }
+              ],
+              "heading": "Overview"
+            },
+            {
+              "id": "key-ideas",
+              "blocks": [
+                {
+                  "type": "ul",
+                  "items": [
+                    "Defaults are powerful: automatic pension enrolment dramatically raises saving.",
+                    "Good nudges are transparent and easy to opt out of.",
+                    "Small framing changes can produce large behavioural effects."
+                  ]
+                }
+              ],
+              "heading": "Key ideas"
+            }
+          ]
+        }
+      },
+      {
+        "id": "prisoners-dilemma",
+        "label": "The prisoner's dilemma",
+        "lesson": {
+          "title": "The prisoner's dilemma",
+          "kicker": "Behavioral economics",
+          "sections": [
+            {
+              "id": "overview",
+              "blocks": [
+                {
+                  "text": "The prisoner's dilemma is the classic game showing why two rational players might fail to cooperate even when cooperation would leave them both better off. It underpins much of game theory.",
+                  "type": "p"
+                }
+              ],
+              "heading": "Overview"
+            },
+            {
+              "id": "key-ideas",
+              "blocks": [
+                {
+                  "type": "ul",
+                  "items": [
+                    "Each player's dominant strategy is to defect — so both do, and both lose.",
+                    "It explains arms races, price wars, and why cartels break down.",
+                    "Repeating the game can sustain cooperation through reputation and retaliation."
+                  ]
+                }
+              ],
+              "heading": "Key ideas"
+            },
+            {
+              "id": "in-practice",
+              "blocks": [
+                {
+                  "text": "Two rival petrol stations on the same corner both “know” they'd earn more if they kept prices high. But each is tempted to undercut the other by a cent to steal customers — so both cut, and both end up with thin margins. That's the prisoner's dilemma playing out on the street: individually rational moves lead to a collectively worse outcome.",
+                  "type": "p"
+                }
+              ],
+              "heading": "In practice"
+            },
+            {
+              "id": "summary",
+              "blocks": [
+                {
+                  "text": "Whenever you see cooperation that “should” happen but doesn't — climate agreements, doping in sport, ad spending wars — look for a prisoner's dilemma underneath. The fix is almost always to change the payoffs or repeat the game.",
+                  "type": "p"
+                }
+              ],
+              "heading": "Summary"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "resources",
+    "label": "Resources",
+    "children": [
+      {
+        "id": "formula-sheet",
+        "label": "Formula sheet",
+        "lesson": {
+          "title": "Formula sheet",
+          "kicker": "Resources",
+          "sections": [
+            {
+              "id": "overview",
+              "blocks": [
+                {
+                  "text": "The formulas you'll reach for most often, gathered in one place.",
+                  "type": "p"
+                }
+              ],
+              "heading": "Overview"
+            },
+            {
+              "id": "key-ideas",
+              "blocks": [
+                {
+                  "type": "ul",
+                  "items": [
+                    "Price elasticity of demand = %Δ quantity ÷ %Δ price",
+                    "GDP (expenditure) = C + I + G + (X − M)",
+                    "Profit = Total revenue − Total cost",
+                    "Real value = Nominal value ÷ (Price index ÷ 100)"
+                  ]
+                }
+              ],
+              "heading": "Key ideas"
+            }
+          ]
+        }
+      },
+      {
+        "id": "practice",
+        "label": "Practice problems",
+        "lesson": {
+          "title": "Practice problems",
+          "kicker": "Resources",
+          "sections": [
+            {
+              "id": "overview",
+              "blocks": [
+                {
+                  "text": "Short exercises to test whether the ideas have really stuck. Try each one before checking the reasoning.",
+                  "type": "p"
+                }
+              ],
+              "heading": "Overview"
+            },
+            {
+              "id": "key-ideas",
+              "blocks": [
+                {
+                  "type": "ul",
+                  "items": [
+                    "If a coffee shop raises prices 10% and sales fall 5%, is demand elastic or inelastic?",
+                    "A country can make either 4 cars or 8 tonnes of wheat. What is the opportunity cost of one car?",
+                    "Explain how a central bank might respond to inflation rising above target."
+                  ]
+                }
+              ],
+              "heading": "Key ideas"
+            }
+          ]
+        }
+      }
+    ]
+  }
+]
