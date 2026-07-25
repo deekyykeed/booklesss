@@ -470,6 +470,7 @@
      hairline as the rest of the chrome and one faint shadow — no glass blur,
      tighter radius. */
   .step-selector {
+    border-width: 1px; /* the .step rows carry a 2px transparent border; the chip is thinner */
     border-color: var(--color-line);
     border-radius: 12px;
     background-color: rgba(255, 255, 255, 0.85);
