@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { Section } from "@/lib/course";
 import { useReaderShell } from "./MobileNav";
 import { useFollow } from "./useFollow";
@@ -145,7 +146,7 @@ function PanelIcon({ dir }: { dir: "close" | "open" }) {
 /* Solar, hand-inlined (not via <Icon>, which would pull the whole Solar JSON
  * into this client bundle). Line at rest; bold once active (voice mode on / a
  * message ready to send). Send is a round-arrow-up. */
-function SendArrow({ size = 24, active = false }: { size?: number; active?: boolean }) {
+function SendArrow({ size = 26, active = false }: { size?: number; active?: boolean }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
       {active ? (
@@ -159,7 +160,7 @@ function SendArrow({ size = 24, active = false }: { size?: number; active?: bool
     </svg>
   );
 }
-function MicIcon({ size = 22, active = false }: { size?: number; active?: boolean }) {
+function MicIcon({ size = 26, active = false }: { size?: number; active?: boolean }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
       {active ? (
@@ -274,7 +275,7 @@ function ChatComposer({
             aria-label="Send"
             className={
               "grid h-8 w-8 shrink-0 place-items-center transition-colors " +
-              (canSend ? "text-ink" : "text-placeholder")
+              (canSend ? "text-ink" : "text-muted")
             }
           >
             <SendArrow active={canSend} />
@@ -286,6 +287,77 @@ function ChatComposer({
         {voiceOn ? "Voice mode on — coming soon" : "AI tutor — coming soon"}
       </p>
     </form>
+  );
+}
+
+/* Voice mode: while active, mirror the mic's live loudness onto a full-screen
+ * dim — the background darkens as you speak and clears as you go quiet. Portaled
+ * to <body> so it covers the page; z-35 keeps it under the chrome (panels + top
+ * bar stay lit) and pointer-events-none so it never intercepts taps. No mic or a
+ * denied permission simply means no dim (the toggle still works). */
+function VoiceOverlay({ active }: { active: boolean }) {
+  const [mounted, setMounted] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    if (!active) return;
+    let raf = 0;
+    let stream: MediaStream | null = null;
+    let audio: AudioContext | null = null;
+    let cancelled = false;
+    let level = 0;
+
+    navigator.mediaDevices
+      ?.getUserMedia({ audio: true })
+      .then((s) => {
+        if (cancelled) {
+          s.getTracks().forEach((t) => t.stop());
+          return;
+        }
+        stream = s;
+        audio = new AudioContext();
+        const source = audio.createMediaStreamSource(s);
+        const analyser = audio.createAnalyser();
+        analyser.fftSize = 512;
+        source.connect(analyser);
+        const data = new Uint8Array(analyser.fftSize);
+        const tick = () => {
+          analyser.getByteTimeDomainData(data);
+          let sum = 0;
+          for (let i = 0; i < data.length; i++) {
+            const v = (data[i] - 128) / 128;
+            sum += v * v;
+          }
+          const rms = Math.sqrt(sum / data.length); // ~0..0.4 while speaking
+          const target = Math.min(1, rms * 3.5);
+          level += (target - level) * 0.22; // smooth so it isn't jittery
+          ref.current?.style.setProperty("opacity", Math.min(0.55, level * 0.6).toFixed(3));
+          raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+      })
+      .catch(() => {
+        /* no mic / permission denied — no dim */
+      });
+
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(raf);
+      stream?.getTracks().forEach((t) => t.stop());
+      audio?.close().catch(() => {});
+    };
+  }, [active]);
+
+  if (!mounted || !active) return null;
+  return createPortal(
+    <div
+      ref={ref}
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-0 z-[35] bg-black"
+      style={{ opacity: 0 }}
+    />,
+    document.body,
   );
 }
 
@@ -379,6 +451,7 @@ export function RightPanel() {
 
   return (
     <>
+      <VoiceOverlay active={voiceOn} />
       {/* Reopen affordance — only when collapsed, desktop only (mobile uses the
           drawer). Pinned to the right edge just below the header. */}
       {rightCollapsed && (
