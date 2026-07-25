@@ -150,25 +150,73 @@ function SendIcon() {
   );
 }
 
-/* Disabled composer, pinned to the panel's bottom. Visual placeholder for the
- * AI tutor that will live here — no backend yet. */
-function ChatComposer() {
+type ChatMessage = { id: number; text: string };
+
+/* The messages you've sent, above the composer. No AI backend yet, so these are
+ * your own turns only — the composer captures input and is ready to wire to a
+ * tutor endpoint later. */
+function ChatThread({ messages }: { messages: ChatMessage[] }) {
+  if (!messages.length) return null;
   return (
-    <div className="shrink-0 px-3 pb-3 pt-2">
-      <div className="squircle flex items-center gap-2 rounded-2xl border border-line bg-white/70 px-3 py-2 backdrop-blur-md">
+    <div className="mt-6 flex flex-col gap-2 border-t border-line pt-4">
+      {messages.map((m) => (
+        <div
+          key={m.id}
+          className="squircle max-w-[85%] self-end rounded-2xl bg-active px-3 py-2 text-[13px] leading-5 text-ink"
+          data-no-swipe
+        >
+          {m.text}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* Composer pinned to the panel's bottom. Typeable now; Enter or the send button
+ * submits. Marked data-no-swipe so a horizontal drag while typing never yanks
+ * the drawer. */
+function ChatComposer({
+  value,
+  onChange,
+  onSubmit,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  onSubmit: () => void;
+}) {
+  const canSend = value.trim().length > 0;
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit();
+      }}
+      className="shrink-0 px-3 pb-3 pt-2"
+      data-no-swipe
+    >
+      <div className="squircle flex items-center gap-2 rounded-2xl border border-line bg-white/70 px-3 py-2 backdrop-blur-md focus-within:border-line-2">
         <input
           type="text"
-          disabled
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
           placeholder="Ask about this step…"
-          aria-label="Ask about this step (coming soon)"
-          className="min-w-0 flex-1 bg-transparent text-[13px] text-ink placeholder:text-placeholder focus:outline-none disabled:cursor-not-allowed"
+          aria-label="Ask about this step"
+          className="min-w-0 flex-1 bg-transparent text-[13px] text-ink placeholder:text-placeholder focus:outline-none"
         />
-        <span className="squircle grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-active text-placeholder">
+        <button
+          type="submit"
+          disabled={!canSend}
+          aria-label="Send"
+          className={
+            "squircle grid h-6 w-6 shrink-0 place-items-center rounded-lg transition-colors " +
+            (canSend ? "bg-btn text-white" : "bg-active text-placeholder")
+          }
+        >
           <SendIcon />
-        </span>
+        </button>
       </div>
       <p className="mt-1.5 px-1 text-[10.5px] text-placeholder">AI tutor — coming soon</p>
-    </div>
+    </form>
   );
 }
 
@@ -242,6 +290,23 @@ export function RightPanel() {
     e.preventDefault();
   };
 
+  /* ---------------- chat (no backend yet) ---------------- */
+  const [draft, setDraft] = useState("");
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const nextId = useRef(1);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const sendMessage = () => {
+    const text = draft.trim();
+    if (!text) return;
+    setMessages((m) => [...m, { id: nextId.current++, text }]);
+    setDraft("");
+  };
+  // Keep the newest message in view once it's added.
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [messages]);
+
   return (
     <>
       {/* Reopen affordance — only when collapsed, desktop only (mobile uses the
@@ -299,17 +364,18 @@ export function RightPanel() {
           </button>
         </div>
 
-        {/* Scroll area: the TOC up top, then reserved empty space (the AI answer
-            surface will grow here later). */}
-        <div className="no-scrollbar flex-1 overflow-y-auto px-3 pb-4">
+        {/* Scroll area: the TOC up top, then your chat turns (the AI answer
+            surface will grow here once wired). */}
+        <div ref={scrollRef} className="no-scrollbar flex-1 overflow-y-auto px-3 pb-4">
           {sections && sections.length > 0 ? (
             <TableOfContents sections={sections} />
           ) : (
             <p className="px-1 pt-1 text-[13px] text-placeholder">No sections</p>
           )}
+          <ChatThread messages={messages} />
         </div>
 
-        <ChatComposer />
+        <ChatComposer value={draft} onChange={setDraft} onSubmit={sendMessage} />
       </aside>
     </>
   );
