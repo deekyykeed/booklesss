@@ -142,10 +142,18 @@ function PanelIcon({ dir }: { dir: "close" | "open" }) {
   );
 }
 
-function SendIcon() {
+function SendArrow() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M4.5 12h13m0 0-5-5m5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M12 19V6m0 0-5.5 5.5M12 6l5.5 5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+function MicIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M6 11a6 6 0 0 0 12 0M12 17v3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
     </svg>
   );
 }
@@ -172,19 +180,35 @@ function ChatThread({ messages }: { messages: ChatMessage[] }) {
   );
 }
 
-/* Composer pinned to the panel's bottom. Typeable now; Enter or the send button
- * submits. Marked data-no-swipe so a horizontal drag while typing never yanks
- * the drawer. */
+/* Composer pinned to the panel's bottom, in the reference layout: the message on
+ * top, a control row beneath with a voice-mode toggle and the send button — both
+ * circular, matching the header buttons. Enter sends, Shift+Enter newlines; the
+ * field auto-grows. Marked data-no-swipe so a horizontal drag while typing never
+ * yanks the drawer. Voice mode is a UI toggle for now (ready to wire to a real
+ * voice session). */
 function ChatComposer({
   value,
   onChange,
   onSubmit,
+  voiceOn,
+  onToggleVoice,
 }: {
   value: string;
   onChange: (v: string) => void;
   onSubmit: () => void;
+  voiceOn: boolean;
+  onToggleVoice: () => void;
 }) {
   const canSend = value.trim().length > 0;
+  const taRef = useRef<HTMLTextAreaElement>(null);
+  // Auto-grow with the content, capped so the composer never eats the panel.
+  useEffect(() => {
+    const el = taRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = Math.min(el.scrollHeight, 132) + "px";
+  }, [value]);
+
   return (
     <form
       onSubmit={(e) => {
@@ -194,28 +218,55 @@ function ChatComposer({
       className="shrink-0 px-3 pb-3 pt-2"
       data-no-swipe
     >
-      <div className="squircle flex items-center gap-2 rounded-2xl border border-line bg-white/70 px-3 py-2 backdrop-blur-md focus-within:border-line-2">
-        <input
-          type="text"
+      <div className="squircle rounded-2xl border border-line bg-white/70 px-3 pb-2 pt-2.5 backdrop-blur-md focus-within:border-line-2">
+        <textarea
+          ref={taRef}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              onSubmit();
+            }
+          }}
+          rows={1}
           placeholder="Ask about this step…"
           aria-label="Ask about this step"
-          className="min-w-0 flex-1 bg-transparent text-[13px] text-ink placeholder:text-placeholder focus:outline-none"
+          style={{ maxHeight: 132 }}
+          className="no-scrollbar block w-full resize-none bg-transparent px-1 text-[13px] leading-5 text-ink placeholder:text-placeholder focus:outline-none"
         />
-        <button
-          type="submit"
-          disabled={!canSend}
-          aria-label="Send"
-          className={
-            "squircle grid h-6 w-6 shrink-0 place-items-center rounded-lg transition-colors " +
-            (canSend ? "bg-btn text-white" : "bg-active text-placeholder")
-          }
-        >
-          <SendIcon />
-        </button>
+        <div className="mt-1.5 flex items-center justify-end gap-1.5">
+          <button
+            type="button"
+            onClick={onToggleVoice}
+            aria-pressed={voiceOn}
+            aria-label={voiceOn ? "Turn off voice mode" : "Turn on voice mode"}
+            title="Voice mode"
+            className={
+              "grid h-8 w-8 place-items-center rounded-full border transition-colors " +
+              (voiceOn
+                ? "border-transparent bg-btn text-white"
+                : "border-line-2 bg-white text-muted shadow-sm hover:text-ink")
+            }
+          >
+            <MicIcon />
+          </button>
+          <button
+            type="submit"
+            disabled={!canSend}
+            aria-label="Send"
+            className={
+              "grid h-8 w-8 shrink-0 place-items-center rounded-full transition-colors " +
+              (canSend ? "bg-btn text-white" : "bg-active text-placeholder")
+            }
+          >
+            <SendArrow />
+          </button>
+        </div>
       </div>
-      <p className="mt-1.5 px-1 text-[10.5px] text-placeholder">AI tutor — coming soon</p>
+      <p className="mt-1.5 px-1 text-[10.5px] text-placeholder">
+        {voiceOn ? "Voice mode on — coming soon" : "AI tutor — coming soon"}
+      </p>
     </form>
   );
 }
@@ -293,6 +344,7 @@ export function RightPanel() {
   /* ---------------- chat (no backend yet) ---------------- */
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [voiceOn, setVoiceOn] = useState(false);
   const nextId = useRef(1);
   const scrollRef = useRef<HTMLDivElement>(null);
   const sendMessage = () => {
@@ -375,7 +427,13 @@ export function RightPanel() {
           <ChatThread messages={messages} />
         </div>
 
-        <ChatComposer value={draft} onChange={setDraft} onSubmit={sendMessage} />
+        <ChatComposer
+          value={draft}
+          onChange={setDraft}
+          onSubmit={sendMessage}
+          voiceOn={voiceOn}
+          onToggleVoice={() => setVoiceOn((v) => !v)}
+        />
       </aside>
     </>
   );
