@@ -256,7 +256,7 @@ export function MobileMenuButton() {
       onClick={toggleLeft}
       aria-label={open ? "Close navigation" : "Open navigation"}
       aria-expanded={open}
-      className="-ml-1 -mr-1.5 grid h-8 w-8 place-items-center rounded-lg text-ink transition-colors hover:bg-active md:hidden"
+      className="-mr-1.5 grid h-8 w-8 place-items-center rounded-lg text-ink transition-colors hover:bg-active md:hidden"
     >
       <HamburgerBroken />
     </button>

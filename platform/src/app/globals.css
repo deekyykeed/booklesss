@@ -342,31 +342,46 @@
     }
   }
 
-  /* Right (step context) panel below xl: an OVERLAY drawer. It slides in over
-     the content from the right rather than pushing it, so it never fights the
-     left rail that is already present from md up. The shared scrim dims/dismisses
-     it. A soft left shadow lifts it off the content it covers (the left drawer
-     needs none — it is revealed behind a push). At xl+ it is the flush rail. */
+  /* Right (step context) panel below xl: a PUSH drawer, exactly like the left
+     nav on mobile — the view slides LEFT to uncover it, and it stays transparent
+     so the animated backdrop reads through it (a peer of the sidebar, never an
+     opaque sheet on top of the text). At xl+ it is the flush rail. */
   @media (max-width: 1279px) {
+    [data-mobile-nav] {
+      --drawer-w-r: min(340px, 88vw);
+    }
     .rightbar-panel {
-      width: min(340px, 88vw) !important;
+      width: var(--drawer-w-r) !important;
       transform: translateX(100%);
       visibility: hidden;
-      /* As an overlay it sits ON TOP of the content, so unlike the desktop rail
-         (which sits beside the content over the blob backdrop) it needs a fill —
-         a frosted white so the text underneath doesn't bleed through, while the
-         blur keeps it feeling like the same translucent chrome. */
-      background-color: rgba(255, 255, 255, 0.92);
-      -webkit-backdrop-filter: blur(20px);
-      backdrop-filter: blur(20px);
-      box-shadow: -10px 0 30px -14px rgba(0, 0, 0, 0.22);
       transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
         visibility 0s linear 320ms;
+    }
+    /* The <768 block already gives the frame a transform transition; this covers
+       the 768–1279 band, where the frame is fixed, so the slide still animates. */
+    .content-frame {
+      transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
     }
     [data-mobile-nav="right"] .rightbar-panel {
       transform: translateX(0);
       visibility: visible;
       transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
+    }
+    [data-mobile-nav="right"] .content-frame {
+      transform: translateX(calc(-1 * var(--drawer-w-r)));
+    }
+  }
+
+  /* In the tablet band the left rail coexists, so a plain content push would
+     slide the text behind that (transparent) rail. Move the nav rail off with
+     the content — the whole left-and-content shifts left as one unit to reveal
+     the context panel, nothing overlapping. */
+  @media (min-width: 768px) and (max-width: 1279px) {
+    [data-mobile-nav="right"] .sidebar-panel {
+      transform: translateX(-100%);
+      visibility: hidden;
+      transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 0s linear 320ms;
     }
   }
 

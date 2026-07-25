@@ -36,7 +36,7 @@ export function LessonReader({ lesson }: { lesson: Lesson }) {
     // maxWidth inline rather than a Tailwind arbitrary class — the scanner has
     // silently dropped several of those. px-4 (16px) so the content sits close to
     // the surface edges on mobile.
-    <div key={pathname} className="lesson-fade mx-auto px-4 py-10 md:px-8" style={{ maxWidth: 720 }}>
+    <div key={pathname} className="lesson-fade mx-auto px-4 py-10 md:px-6" style={{ maxWidth: 720 }}>
       <div className="min-w-0 pb-[40vh]">
         <LessonView lesson={lesson} />
       </div>

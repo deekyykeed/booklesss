@@ -199,7 +199,7 @@ function Row({ node, depth, ctx }: { node: NavNode; depth: number; ctx: Ctx }) {
           style={{ paddingLeft: pad }}
           className={
             "step relative z-[2] text-left text-sm transition-colors " +
-            (holdsActive ? "font-semibold text-ink" : "font-medium step-dim hover:text-ink")
+            (holdsActive ? "font-semibold text-ink" : "font-semibold step-dim hover:text-ink")
           }
           aria-expanded={open}
         >
@@ -237,7 +237,7 @@ function Row({ node, depth, ctx }: { node: NavNode; depth: number; ctx: Ctx }) {
       onClick={() => ctx.onSelect(node.id)}
       style={{ paddingLeft: pad }}
       className={
-        "step relative z-[2] text-left text-sm font-medium transition-colors " +
+        "step relative z-[2] text-left text-sm font-semibold transition-colors " +
         (active ? "text-ink" : "step-dim hover:text-ink")
       }
     >
