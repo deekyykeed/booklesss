@@ -513,4 +513,54 @@
       animation: none;
     }
   }
+
+  /* Voice-mode glow. JS writes --voice (0..1, live loudness) to the composer
+     form while voice mode is on; --von flags it on; --g1..3 are the per-session
+     random colours. The blobs sit behind the card and the ::after ring hugs its
+     border — both scale with --voice, so the composer lights up as you speak. */
+  .voice-glow > span {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(20px);
+    opacity: calc(var(--von, 0) * (0.12 + var(--voice, 0) * 0.85));
+  }
+  .voice-glow > span:nth-child(1) {
+    left: -6%;
+    bottom: -25%;
+    width: 52%;
+    height: 150%;
+    background: radial-gradient(closest-side, rgb(var(--g1, 168 85 247)) 0%, rgba(0, 0, 0, 0) 100%);
+  }
+  .voice-glow > span:nth-child(2) {
+    right: -6%;
+    bottom: -25%;
+    width: 52%;
+    height: 150%;
+    background: radial-gradient(closest-side, rgb(var(--g2, 59 130 246)) 0%, rgba(0, 0, 0, 0) 100%);
+  }
+  .voice-glow > span:nth-child(3) {
+    left: 22%;
+    top: -35%;
+    width: 56%;
+    height: 150%;
+    background: radial-gradient(closest-side, rgb(var(--g3, 45 212 191)) 0%, rgba(0, 0, 0, 0) 100%);
+  }
+  /* Border ring that glows the primary colour as you speak. */
+  .composer-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: calc(var(--voice, 0) * 0.95);
+    box-shadow:
+      0 0 0 1px rgb(var(--g1, 168 85 247)),
+      0 0 20px 1px rgb(var(--g1, 168 85 247));
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .voice-glow > span,
+    .composer-card::after {
+      transition: none;
+    }
+  }
 }

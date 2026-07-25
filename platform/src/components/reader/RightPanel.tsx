@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import type { Section } from "@/lib/course";
 import { useReaderShell } from "./MobileNav";
 import { useFollow } from "./useFollow";
@@ -200,12 +199,12 @@ function ChatThread({ messages }: { messages: ChatMessage[] }) {
   );
 }
 
-/* Composer pinned to the panel's bottom, in the reference layout: the message on
- * top, a control row beneath with a voice-mode toggle and the send button — both
- * circular, matching the header buttons. Enter inserts a newline (send is the
- * button only); the field auto-grows. Marked data-no-swipe so a drag while typing never
- * yanks the drawer. Voice mode is a UI toggle for now (ready to wire to a real
- * voice session). */
+/* Composer pinned to the panel's bottom: message on top, a control row beneath
+ * with the voice-mode toggle and send. Enter inserts a newline (send is the
+ * button only); the field auto-grows. In voice mode the mic drives coloured glow
+ * blobs behind the card and a border glow, both scaled by live loudness — the
+ * whole thing lights up as you speak. Blob colours are randomised each session.
+ * data-no-swipe so a drag while typing never yanks the drawer. */
 function ChatComposer({
   value,
   onChange,
@@ -221,6 +220,8 @@ function ChatComposer({
 }) {
   const canSend = value.trim().length > 0;
   const taRef = useRef<HTMLTextAreaElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
   // Auto-grow with the content, capped so the composer never eats the panel.
   useEffect(() => {
     const el = taRef.current;
@@ -229,79 +230,32 @@ function ChatComposer({
     el.style.height = Math.min(el.scrollHeight, 132) + "px";
   }, [value]);
 
-  return (
-    // Mobile: no outer padding, so the bar goes flush to the panel's sides and
-    // the screen bottom. Desktop: the floating card gets its margin back.
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit();
-      }}
-      className="shrink-0 xl:px-3 xl:pb-3 xl:pt-2"
-      data-no-swipe
-    >
-      {/* Mobile: a flush input bar — no radius, only a top hairline as the
-          divider. Desktop (xl): the rounded squircle card with a full border. */}
-      <div className="squircle border-t border-line bg-white/70 px-3 pb-2 pt-2.5 backdrop-blur-md focus-within:border-line-2 xl:rounded-3xl xl:border">
-        <textarea
-          ref={taRef}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          rows={1}
-          placeholder="Ask about this step…"
-          aria-label="Ask about this step"
-          style={{ maxHeight: 132 }}
-          className="no-scrollbar block w-full resize-none bg-transparent px-1 text-[13px] leading-5 text-ink placeholder:text-placeholder focus:outline-none"
-        />
-        {/* Bare icons — no container. Bigger, Solar duotone, so each reads
-            clearly on its own. */}
-        <div className="mt-1 flex items-center justify-end gap-1">
-          <button
-            type="button"
-            onClick={onToggleVoice}
-            aria-pressed={voiceOn}
-            aria-label={voiceOn ? "Turn off voice mode" : "Turn on voice mode"}
-            title="Voice mode"
-            className={
-              "grid h-8 w-8 place-items-center transition-colors " +
-              (voiceOn ? "text-ink" : "text-muted hover:text-ink")
-            }
-          >
-            <MicIcon active={voiceOn} />
-          </button>
-          <button
-            type="submit"
-            disabled={!canSend}
-            aria-label="Send"
-            className={
-              "grid h-8 w-8 shrink-0 place-items-center transition-colors " +
-              (canSend ? "text-ink" : "text-muted")
-            }
-          >
-            <SendArrow active={canSend} />
-          </button>
-        </div>
-      </div>
-      {/* The 'coming soon' hint would break the flush-to-bottom bar on mobile. */}
-      <p className="mt-1.5 hidden px-1 text-[10.5px] text-placeholder xl:block">
-        {voiceOn ? "Voice mode on — coming soon" : "AI tutor — coming soon"}
-      </p>
-    </form>
-  );
-}
-
-/* Voice mode: while active, mirror the mic's live loudness onto a full-screen
- * dim — the background darkens as you speak and clears as you go quiet. Portaled
- * to <body> so it covers the page; z-35 keeps it under the chrome (panels + top
- * bar stay lit) and pointer-events-none so it never intercepts taps. No mic or a
- * denied permission simply means no dim (the toggle still works). */
-function VoiceOverlay({ active }: { active: boolean }) {
-  const [mounted, setMounted] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => setMounted(true), []);
-
+  // Voice mode: capture the mic and write smoothed loudness to --voice on the
+  // form (the glow blobs + border ring read it). Randomise the blob colours each
+  // time voice mode switches on. No mic / denied permission just leaves it dark.
   useEffect(() => {
-    if (!active) return;
+    const el = formRef.current;
+    if (!el) return;
+    const clear = () => {
+      el.style.setProperty("--von", "0");
+      el.style.setProperty("--voice", "0");
+    };
+    if (!voiceOn) {
+      clear();
+      return;
+    }
+
+    const palette = [
+      "168 85 247", "59 130 246", "45 212 191", "236 72 153",
+      "251 146 60", "52 211 153", "129 140 248", "244 63 94",
+    ];
+    const shuffled = [...palette].sort(() => Math.random() - 0.5);
+    el.style.setProperty("--g1", shuffled[0]);
+    el.style.setProperty("--g2", shuffled[1]);
+    el.style.setProperty("--g3", shuffled[2]);
+    el.style.setProperty("--von", "1");
+    el.style.setProperty("--voice", "0");
+
     let raf = 0;
     let stream: MediaStream | null = null;
     let audio: AudioContext | null = null;
@@ -330,15 +284,15 @@ function VoiceOverlay({ active }: { active: boolean }) {
             sum += v * v;
           }
           const rms = Math.sqrt(sum / data.length); // ~0..0.4 while speaking
-          const target = Math.min(1, rms * 3.5);
-          level += (target - level) * 0.22; // smooth so it isn't jittery
-          ref.current?.style.setProperty("opacity", Math.min(0.55, level * 0.6).toFixed(3));
+          const target = Math.min(1, rms * 4);
+          level += (target - level) * 0.25; // smooth so it isn't jittery
+          el.style.setProperty("--voice", level.toFixed(3));
           raf = requestAnimationFrame(tick);
         };
         raf = requestAnimationFrame(tick);
       })
       .catch(() => {
-        /* no mic / permission denied — no dim */
+        /* no mic / permission denied — no glow */
       });
 
     return () => {
@@ -346,18 +300,75 @@ function VoiceOverlay({ active }: { active: boolean }) {
       cancelAnimationFrame(raf);
       stream?.getTracks().forEach((t) => t.stop());
       audio?.close().catch(() => {});
+      clear();
     };
-  }, [active]);
+  }, [voiceOn]);
 
-  if (!mounted || !active) return null;
-  return createPortal(
-    <div
-      ref={ref}
-      aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-[35] bg-black"
-      style={{ opacity: 0 }}
-    />,
-    document.body,
+  return (
+    // Mobile: no outer padding, so the bar goes flush to the panel's sides and
+    // the screen bottom. Desktop: the floating card gets its margin back.
+    <form
+      ref={formRef}
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit();
+      }}
+      className="voice-host relative shrink-0 xl:px-3 xl:pb-3 xl:pt-2"
+      data-no-swipe
+    >
+      {/* Coloured glow behind the card; each blob's opacity scales with --voice. */}
+      <div aria-hidden="true" className="voice-glow pointer-events-none absolute inset-0">
+        <span />
+        <span />
+        <span />
+      </div>
+      {/* Mobile: a flush input bar — no radius, only a top hairline as the
+          divider. Desktop (xl): the rounded squircle card with a full border.
+          .composer-card carries the voice border ring (::after). */}
+      <div className="composer-card squircle relative border-t border-line bg-white/70 px-3 pb-2 pt-2.5 backdrop-blur-md focus-within:border-line-2 xl:rounded-3xl xl:border">
+        <textarea
+          ref={taRef}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          rows={1}
+          placeholder="Ask about this step…"
+          aria-label="Ask about this step"
+          style={{ maxHeight: 132 }}
+          className="no-scrollbar relative block w-full resize-none bg-transparent px-1 text-[13px] leading-5 text-ink placeholder:text-placeholder focus:outline-none"
+        />
+        {/* Bare icons — no container. Spaced apart. */}
+        <div className="relative mt-1 flex items-center justify-end gap-3">
+          <button
+            type="button"
+            onClick={onToggleVoice}
+            aria-pressed={voiceOn}
+            aria-label={voiceOn ? "Turn off voice mode" : "Turn on voice mode"}
+            title="Voice mode"
+            className={
+              "grid h-8 w-8 place-items-center transition-colors " +
+              (voiceOn ? "text-ink" : "text-muted hover:text-ink")
+            }
+          >
+            <MicIcon active={voiceOn} />
+          </button>
+          <button
+            type="submit"
+            disabled={!canSend}
+            aria-label="Send"
+            className={
+              "grid h-8 w-8 shrink-0 place-items-center transition-colors " +
+              (canSend ? "text-ink" : "text-muted")
+            }
+          >
+            <SendArrow active={canSend} />
+          </button>
+        </div>
+      </div>
+      {/* The 'coming soon' hint would break the flush-to-bottom bar on mobile. */}
+      <p className="relative mt-1.5 hidden px-1 text-[10.5px] text-placeholder xl:block">
+        {voiceOn ? "Voice mode on — coming soon" : "AI tutor — coming soon"}
+      </p>
+    </form>
   );
 }
 
@@ -451,7 +462,6 @@ export function RightPanel() {
 
   return (
     <>
-      <VoiceOverlay active={voiceOn} />
       {/* Reopen affordance — only when collapsed, desktop only (mobile uses the
           drawer). Pinned to the right edge just below the header. */}
       {rightCollapsed && (
