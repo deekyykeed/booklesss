@@ -142,23 +142,42 @@ function PanelIcon({ dir }: { dir: "close" | "open" }) {
   );
 }
 
-/* Solar · Bold Duotone — hand-inlined (not via <Icon>, which would pull the whole
- * Solar JSON into this client bundle). currentColor drives the solid parts; the
- * opacity:.5 shapes give the duotone. */
-function SendArrow({ size = 24 }: { size?: number }) {
+/* Solar duotone, hand-inlined (not via <Icon>, which would pull the whole Solar
+ * JSON into this client bundle). Line-duotone at rest; bold-duotone once active
+ * (voice mode on / a message ready to send). currentColor drives the solid
+ * parts, opacity:.5 shapes give the duotone. */
+function SendArrow({ size = 24, active = false }: { size?: number; active?: boolean }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
-      <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" opacity=".5" d="M12 20.75a.75.75 0 0 0 .75-.75v-9.25h-1.5V20c0 .414.336.75.75.75" />
-      <path fill="currentColor" d="M6 10.75a.75.75 0 0 1-.53-1.28l6-6a.75.75 0 0 1 1.06 0l6 6a.75.75 0 0 1-.53 1.28z" />
+      {active ? (
+        <>
+          <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" opacity=".5" d="M12 20.75a.75.75 0 0 0 .75-.75v-9.25h-1.5V20c0 .414.336.75.75.75" />
+          <path fill="currentColor" d="M6 10.75a.75.75 0 0 1-.53-1.28l6-6a.75.75 0 0 1 1.06 0l6 6a.75.75 0 0 1-.53 1.28z" />
+        </>
+      ) : (
+        <g fill="none">
+          <path fill="currentColor" opacity=".5" d="M11.25 20a.75.75 0 0 0 1.5 0zm1.5 0V4h-1.5v16z" />
+          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m18 10l-6-6l-6 6" />
+        </g>
+      )}
     </svg>
   );
 }
-function MicIcon({ size = 22 }: { size?: number }) {
+function MicIcon({ size = 22, active = false }: { size?: number; active?: boolean }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
-      <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d="M4 9a.75.75 0 0 1 .75.75v1a7.25 7.25 0 1 0 14.5 0v-1a.75.75 0 0 1 1.5 0v1a8.75 8.75 0 0 1-8 8.718v2.282a.75.75 0 0 1-1.5 0v-2.282a8.75 8.75 0 0 1-8-8.718v-1A.75.75 0 0 1 4 9" />
-      <path fill="currentColor" opacity=".5" d="M12 2a5.75 5.75 0 0 0-5.75 5.75v3a5.75 5.75 0 0 0 11.452.75H13a.75.75 0 0 1 0-1.5h4.75V8.5H13A.75.75 0 0 1 13 7h4.701A5.75 5.75 0 0 0 12 2" />
-      <path fill="currentColor" d="M12.25 10.75c0 .414.336.75.75.75h4.701l.049-1.5H13a.75.75 0 0 0-.75.75m0-3c0 .414.336.75.75.75h4.75L17.701 7H13a.75.75 0 0 0-.75.75" />
+      {active ? (
+        <>
+          <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d="M4 9a.75.75 0 0 1 .75.75v1a7.25 7.25 0 1 0 14.5 0v-1a.75.75 0 0 1 1.5 0v1a8.75 8.75 0 0 1-8 8.718v2.282a.75.75 0 0 1-1.5 0v-2.282a8.75 8.75 0 0 1-8-8.718v-1A.75.75 0 0 1 4 9" />
+          <path fill="currentColor" opacity=".5" d="M12 2a5.75 5.75 0 0 0-5.75 5.75v3a5.75 5.75 0 0 0 11.452.75H13a.75.75 0 0 1 0-1.5h4.75V8.5H13A.75.75 0 0 1 13 7h4.701A5.75 5.75 0 0 0 12 2" />
+          <path fill="currentColor" d="M12.25 10.75c0 .414.336.75.75.75h4.701l.049-1.5H13a.75.75 0 0 0-.75.75m0-3c0 .414.336.75.75.75h4.75L17.701 7H13a.75.75 0 0 0-.75.75" />
+        </>
+      ) : (
+        <g fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M7 8a5 5 0 0 1 10 0v3a5 5 0 0 1-10 0z" />
+          <path strokeLinecap="round" opacity=".5" d="M13 8h4m-4 3h4m3-1v1a8 8 0 0 1-8 8m-8-9v1a8 8 0 0 0 8 8m0 0v3" />
+        </g>
+      )}
     </svg>
   );
 }
@@ -252,7 +271,7 @@ function ChatComposer({
               (voiceOn ? "text-ink" : "text-muted hover:text-ink")
             }
           >
-            <MicIcon />
+            <MicIcon active={voiceOn} />
           </button>
           <button
             type="submit"
@@ -263,7 +282,7 @@ function ChatComposer({
               (canSend ? "text-ink" : "text-placeholder")
             }
           >
-            <SendArrow />
+            <SendArrow active={canSend} />
           </button>
         </div>
       </div>
