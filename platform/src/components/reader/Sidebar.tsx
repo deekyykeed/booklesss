@@ -370,7 +370,7 @@ export function Sidebar() {
   /* Picking a step closes the mobile drawer — but only after a beat, so the
    * selector finishes sliding to the new step before the view slides back to
    * the content. No-op on desktop, where the drawer isn't a thing. */
-  const { close: closeMobileNav } = useMobileNav();
+  const { close: closeMobileNav, leftCollapsed, toggleLeftCollapsed } = useMobileNav();
   const onSelect = useCallback(
     (id: string) => {
       setPendingActive(id); // move the selector now, not when the route commits
@@ -499,6 +499,20 @@ export function Sidebar() {
   };
 
   return (
+    <>
+      {/* Reopen affordance — only when collapsed, desktop only (mobile uses the
+          drawer). Pinned to the left edge just below the header. */}
+      {leftCollapsed && (
+        <button
+          type="button"
+          onClick={toggleLeftCollapsed}
+          aria-label="Open navigation"
+          title="Open navigation"
+          className="squircle fixed left-3 top-16 z-40 hidden h-8 w-8 place-items-center rounded-lg border border-line bg-white/80 text-muted shadow-sm backdrop-blur-md transition-colors hover:text-ink md:grid"
+        >
+          <PanelIcon />
+        </button>
+      )}
     <aside
       className="sidebar-panel fixed left-0 top-12 z-40 flex h-[calc(100dvh-48px)] flex-col border-r border-line"
       style={{ width: "var(--sidebar-docs)" }}
@@ -569,12 +583,15 @@ export function Sidebar() {
       <div className="p-2">
         <button
           type="button"
+          onClick={toggleLeftCollapsed}
           aria-label="Collapse sidebar"
-          className="squircle grid h-8 w-8 place-items-center rounded-lg text-muted transition-colors hover:bg-active hover:text-ink"
+          title="Collapse"
+          className="squircle hidden h-8 w-8 place-items-center rounded-lg text-muted transition-colors hover:bg-active hover:text-ink md:grid"
         >
           <PanelIcon />
         </button>
       </div>
     </aside>
+    </>
   );
 }

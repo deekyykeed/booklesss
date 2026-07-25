@@ -1,5 +1,6 @@
 import { TopBar } from "@/components/TopBar";
 import { Sidebar } from "@/components/reader/Sidebar";
+import { RightPanel } from "@/components/reader/RightPanel";
 import { LessonBreadcrumb } from "@/components/reader/LessonBreadcrumb";
 import { MobileNavProvider, MobileScrim } from "@/components/reader/MobileNav";
 
@@ -21,6 +22,7 @@ export default function ReaderLayout({ children }: { children: React.ReactNode }
       </div>
       <TopBar orgName="Bklsss" breadcrumbSlot={<LessonBreadcrumb />} />
       <Sidebar />
+      <RightPanel />
       <MobileScrim />
       {/* Flush against the top bar and the sidebar; on mobile it slides right
           to uncover the drawer. */}

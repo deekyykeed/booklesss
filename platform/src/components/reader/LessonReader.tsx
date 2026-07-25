@@ -1,51 +1,44 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import type { Lesson } from "@/lib/course";
 import { LessonView } from "./LessonView";
-import { OnThisPage } from "./OnThisPage";
+import { useReaderShell } from "./MobileNav";
 
-// Per-lesson content + on-this-page TOC. Remounts on navigation (each lesson
-// is its own route); the persistent sidebar lives in the layout.
+// Per-lesson content. The "on this page" TOC now lives in the persistent right
+// panel, so this route just renders the reading column and publishes its
+// sections to the shell for that panel to pick up. Remounts on navigation (each
+// lesson is its own route); the persistent chrome lives in the layout.
 export function LessonReader({ lesson }: { lesson: Lesson }) {
-  const [activeSection, setActiveSection] = useState(lesson.sections[0].id);
+  const { setSections } = useReaderShell();
+  const pathname = usePathname();
 
-  // scroll-spy
+  // Publish this lesson's sections for the right panel's TOC + scroll-spy.
   useEffect(() => {
-    setActiveSection(lesson.sections[0].id);
-    const visible = new Set<string>();
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) visible.add(e.target.id);
-          else visible.delete(e.target.id);
-        }
-        const first = lesson.sections.find((s) => visible.has(s.id));
-        if (first) setActiveSection(first.id);
-      },
-      { rootMargin: "-72px 0px -68% 0px", threshold: 0 },
-    );
-    lesson.sections.forEach((s) => {
-      const el = document.getElementById(s.id);
-      if (el) io.observe(el);
-    });
-    return () => io.disconnect();
-  }, [lesson]);
+    setSections(lesson.sections);
+    return () => setSections(null);
+  }, [lesson, setSections]);
 
-  const goToSection = (id: string) => {
-    setActiveSection(id);
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  // A new lesson opens at the top. The content surface is the scroll container
+  // on desktop and persists across routes, so reset it explicitly; on mobile the
+  // document itself scrolls. Runs before the fade so the text doesn't animate in
+  // halfway down the previous scroll position.
+  useEffect(() => {
+    document.getElementById("content-surface")?.scrollTo({ top: 0 });
+    if (window.matchMedia("(max-width: 767px)").matches) window.scrollTo(0, 0);
+  }, [pathname]);
 
   return (
-    <div className="mx-auto flex max-w-[1080px] items-stretch gap-12 px-5 py-10 md:px-8">
-      {/* maxWidth inline rather than a Tailwind arbitrary class — the scanner
-          has silently dropped several of those in this project. */}
-      <div className="min-w-0 flex-1 pb-[40vh]" style={{ maxWidth: 700 }}>
+    // key={pathname} makes this a fresh element each lesson, so .lesson-fade
+    // replays the quick fade + de-blur on every navigation (the segment file is
+    // shared across lessons, so React would otherwise reconcile and not replay).
+    // maxWidth inline rather than a Tailwind arbitrary class — the scanner has
+    // silently dropped several of those. px-4 (16px) so the content sits close to
+    // the surface edges on mobile.
+    <div key={pathname} className="lesson-fade mx-auto px-4 py-10 md:px-8" style={{ maxWidth: 720 }}>
+      <div className="min-w-0 pb-[40vh]">
         <LessonView lesson={lesson} />
-      </div>
-      <div className="hidden w-[210px] shrink-0 xl:block">
-        <OnThisPage sections={lesson.sections} activeId={activeSection} onSelect={goToSection} />
       </div>
     </div>
   );

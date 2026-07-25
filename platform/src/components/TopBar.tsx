@@ -1,6 +1,6 @@
 import { Icon } from "@/lib/icon";
 import { CommandSearch } from "./CommandSearch";
-import { MobileMenuButton } from "./reader/MobileNav";
+import { MobileMenuButton, MobileContextButton } from "./reader/MobileNav";
 
 // Streamline · Solar Broken · "Stop" — Booklesss brand mark
 function Logo() {
@@ -105,6 +105,8 @@ export function TopBar({
           Feedback
         </button>
         <div className="flex items-center gap-2">
+          {/* Opens the right (step context) drawer — mirror of the left hamburger */}
+          <MobileContextButton />
           <CommandSearch />
           {/* Help + advisor are desktop-only; mobile keeps just search + profile */}
           <CircleButton icon="question-circle-linear" label="Help" className="hidden md:grid" />

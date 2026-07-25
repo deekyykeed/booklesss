@@ -27,6 +27,7 @@
 
   --header-h: 48px;
   --sidebar-docs: 265px;
+  --rightbar-w: 300px;
   --sidebar-dash: 208px;
 }
 
@@ -244,9 +245,40 @@
     z-index: 10; /* above .bg-waves (0), below sidebar (40) and top bar (50) */
     padding: 0; /* boxy: content is flush to the edges, no floating inset */
   }
+  /* Left (course) sidebar is a rail from md; the content clears it on the left.
+     Collapse reclaims that gutter instantly (a transition on padding would lag
+     the per-frame resize drag) while the panel slides off under its own
+     transform transition. */
   @media (min-width: 768px) {
     .content-frame {
       padding-left: var(--sidebar-docs);
+    }
+    .app-shell[data-left-collapsed] .content-frame {
+      padding-left: 0;
+    }
+    .app-shell[data-left-collapsed] .sidebar-panel {
+      transform: translateX(-100%);
+      visibility: hidden;
+      transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 0s linear 260ms, border-right-color 150ms ease;
+    }
+  }
+
+  /* Right (step context) panel is a permanent rail only at xl — two full rails
+     plus a readable column need ~1280px; below that it is an overlay drawer (see
+     the max-width block). Collapse reclaims the right gutter. */
+  @media (min-width: 1280px) {
+    .content-frame {
+      padding-right: var(--rightbar-w);
+    }
+    .app-shell[data-right-collapsed] .content-frame {
+      padding-right: 0;
+    }
+    .app-shell[data-right-collapsed] .rightbar-panel {
+      transform: translateX(100%);
+      visibility: hidden;
+      transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 0s linear 260ms, border-left-color 150ms ease;
     }
   }
 
@@ -300,13 +332,34 @@
       overflow: visible; /* no inner scroll — the document scrolls */
       overscroll-behavior: auto;
     }
-    [data-mobile-nav="open"] .sidebar-panel {
+    [data-mobile-nav="left"] .sidebar-panel {
       transform: translateX(0);
       visibility: visible;
       transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
     }
-    [data-mobile-nav="open"] .content-frame {
+    [data-mobile-nav="left"] .content-frame {
       transform: translateX(var(--drawer-w));
+    }
+  }
+
+  /* Right (step context) panel below xl: an OVERLAY drawer. It slides in over
+     the content from the right rather than pushing it, so it never fights the
+     left rail that is already present from md up. The shared scrim dims/dismisses
+     it. A soft left shadow lifts it off the content it covers (the left drawer
+     needs none — it is revealed behind a push). At xl+ it is the flush rail. */
+  @media (max-width: 1279px) {
+    .rightbar-panel {
+      width: min(340px, 88vw) !important;
+      transform: translateX(100%);
+      visibility: hidden;
+      box-shadow: -10px 0 30px -14px rgba(0, 0, 0, 0.22);
+      transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 0s linear 320ms;
+    }
+    [data-mobile-nav="right"] .rightbar-panel {
+      transform: translateX(0);
+      visibility: visible;
+      transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
     }
   }
 
@@ -354,8 +407,29 @@
   .sidebar-panel {
     transition: border-right-color 150ms ease;
   }
+  .rightbar-panel {
+    transition: border-left-color 150ms ease;
+  }
   :root[data-resize-hint] .sidebar-panel {
     border-right-color: rgba(0, 0, 0, 0.38);
+  }
+  /* The right panel's resize handle is on its LEFT edge, so its own left
+     hairline is the one that moves. */
+  :root[data-resize-hint-right] .rightbar-panel {
+    border-left-color: rgba(0, 0, 0, 0.38);
+  }
+  /* Desktop-only transform transition so collapse/expand slides. Placed after
+     the base transitions so it wins at md+; mutually exclusive with the mobile
+     drawer transitions, which live in the max-width media query. */
+  @media (min-width: 768px) {
+    .sidebar-panel {
+      transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+        border-right-color 150ms ease;
+    }
+    .rightbar-panel {
+      transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+        border-left-color 150ms ease;
+    }
   }
 
   /* Active-step bar. Position/size are set inline; shape lives here because
@@ -380,5 +454,29 @@
     -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
     box-shadow: 0 1px 1px -0.5px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Page transition. The left selector already animates to the new step, but the
+     content used to hard-cut. Keyed by route in LessonReader so it replays every
+     navigation: the new lesson fades up and de-blurs quickly instead of jumping. */
+  @keyframes lessonIn {
+    from {
+      opacity: 0;
+      filter: blur(6px);
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateY(0);
+    }
+  }
+  .lesson-fade {
+    animation: lessonIn 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lesson-fade {
+      animation: none;
+    }
   }
 }
