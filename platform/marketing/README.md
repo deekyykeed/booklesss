@@ -35,10 +35,21 @@ npm run build && npx next start -p 3100        # fonts come from the app's build
 node marketing/_scripts/5-day-carousels.mjs    # today, or DAY=2026-07-26 …
 ```
 
-New crops come from `_scripts/4b-neutralize-capture.mjs`, which screenshots the
-real UI with the course tree relabelled to a neutral multi-subject curriculum —
-the live app only holds economics, and the posts are about Booklesss holding
-every subject. Never post a raw capture of the seeded course.
+New crops come from two capture scripts, both of which relabel the course tree
+to a neutral multi-subject curriculum first (`_scripts/neutralize.mjs`) — the
+live app only holds economics, and the posts are about Booklesss holding every
+subject. Never post a raw capture of the seeded course.
+
+| Script | Crops |
+| --- | --- |
+| `4b-neutralize-capture.mjs` | sidebar, subjects shelf, lesson list, reader, search palette, full window |
+| `7-ai-crops.mjs` | top bar, the STEP panel, the AI composer — at rest and with voice mode lit |
+
+Voice mode's glow is driven by live mic loudness, and headless has no mic, so
+`7-ai-crops.mjs` switches voice mode on for real and then writes a loudness
+value by hand. The state is genuine; only the volume is staged. Re-shoot the
+crops whenever the app changes — a post should never show UI that no longer
+exists.
 
 ## social/
 

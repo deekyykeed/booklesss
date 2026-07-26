@@ -1,48 +1,28 @@
-# 2026-07-26 · show the app
+# 2026-07-26 · the AI layer, in progress
 
-Launch day said what Booklesss *is*. Today shows what it **does** — one slot
-per thing you can only understand by seeing it: search, the runnable code
-panel, and the shape every lesson shares. 9:16, all light, un-boxed
-**superzoom** shots, ending on the Google search-bar CTA. Post each folder's
-images in order (`01 → 05`).
+Morning only today. One carousel, all of it shot from the **current** build —
+the top bar, the STEP panel, and the AI composer that now lives at the bottom
+of it, voice mode included. 9:16, light, un-boxed superzooms, Google
+search-bar CTA to close. Post in order (`01 → 06`).
 
-> Copy stays on the product, never on the economics content. No prices, no
-> deadlines, no invite links — the CTA is the Google search bar, same as
-> launch day.
+> The tutor isn't wired to a backend yet and the app's own "coming soon" hint
+> is left in the shots — the copy is build-in-public, and never says an answer
+> comes back. No prices, no deadlines, no invite links.
 
 | Slot | Time (local) | Folder |
 |------|------|-------|
 | ☀️ Morning | ~08:00 | `morning/` |
-| 🌤️ Afternoon | ~13:00 | `afternoon/` |
-| 🌙 Evening | ~19:00 | `evening/` |
 
 ---
 
 ### ☀️ Morning — `morning/`
-**Post title:** Find any lesson in a second
+**Post title:** The tutor, being built into the page
 **Caption:**
-> One box, everything in it 🔎 — courses, lessons and docs all come back from the
-> same search. No folders to dig through, no tab you left open somewhere.
+> Building the AI layer into Booklesss in the open 🛠️ It doesn't answer yet —
+> this is the part that's finished: a panel for the step you're on, a box to ask
+> in, and a voice mode that lights up as you talk. Answers next.
 > Search **booklesss** (three s's) on Google — we're the first result. 👇
-> #studytok #edtech #learning #onlinelearning #buildinpublic
-
-### 🌤️ Afternoon — `afternoon/`
-**Post title:** Read it, then run it
-**Caption:**
-> Reading about it is one thing — running it is another 🧪 A lesson can carry a
-> real editor: change a number, hit Run, watch the answer move. JavaScript and
-> Python, nothing to install.
-> Search **booklesss** (three s's) on Google, or comment "link". 👇
-> #learntocode #studytok #edtech #javascript #python
-
-### 🌙 Evening — `evening/`
-**Post title:** Every lesson, the same shape
-**Caption:**
-> The best thing about Booklesss is the boring thing: every lesson has the same
-> four sections, so you always know where you are and what's left. Learn the
-> layout once, use it on every subject.
-> Search **booklesss** (three s's) on Google. 👇
-> #buildinpublic #designengineering #edtech #ux #indiehackers
+> #buildinpublic #edtech #ai #designengineering #studytok
 
 ---
 

@@ -103,6 +103,23 @@ function bleed(o) {
     </div>
   </div>` };
 }
+// a wide band of UI crossing the frame — bleeds off both sides, and off the
+// bottom when the crop is tall enough. No top fade: a card fading at its own
+// top edge reads as a mistake, where a nav bar or a composer wants clean edges.
+function strip(o) {
+  const d = !!o.dark;
+  return { dark: d, html: `<div class="layer">
+    <h1 style="position:absolute;left:${SAFE.left}px;top:430px;font-size:100px;line-height:1.0;color:${ink(d)}">${o.title}</h1>
+    <p class="sub" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right + 8}px;top:${o.subTop || 690}px;font-size:30px;line-height:1.42;color:${subc(d)}">${o.sub || ""}</p>
+    <div style="position:absolute;left:0;right:0;top:${o.top}px;bottom:0;overflow:hidden;${
+      o.fade
+        ? `-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 ${o.fade}px);mask-image:linear-gradient(to bottom,transparent 0,#000 ${o.fade}px)`
+        : ""
+    }">
+      <img src="${o.img}" style="position:absolute;display:block;width:${o.imgW}px;left:${o.imgL || 0}px;top:0">
+    </div>
+  </div>` };
+}
 function promise(o) {
   const d = !!o.dark;
   return { dark: d, html: `<div class="layer">
@@ -150,6 +167,14 @@ const crops = {
   reader: { img: IMG["reader-neu"], imgW: 2000, imgL: -120, imgTop: 1000 }, // a lesson's heading + lead
   command: { img: IMG["command-neu"], imgW: 1560, imgL: -40, imgTop: 1000 }, // the search palette
   playground: { img: IMG.playground, imgW: 2400, imgL: -30, imgTop: 980 },  // the runnable code panel
+
+  /* the app as it stands now (7-ai-crops.mjs) — the step panel and the AI
+   * composer that lives at the bottom of it. `top` (not `imgTop`) marks these
+   * as strip() geometry: a band that bleeds sideways, no top fade. */
+  panel: { img: IMG["step-panel"], imgW: 1080, imgL: 0, imgTop: 880 },
+  topbar: { img: IMG.topbar, imgW: 3988, imgL: -360, top: 1170 },
+  composer: { img: IMG["composer-rest"], imgW: 1160, imgL: -40, top: 1360, fade: 110 },
+  voice: { img: IMG["composer-voice"], imgW: 1160, imgL: -40, top: 1330, fade: 140 },
 };
 
 /* ---- the day ---- */
@@ -159,7 +184,7 @@ if (!fs.existsSync(dayFile)) {
   process.exit(1);
 }
 const day = await import(`./days/${DAY}.mjs`);
-const SLOTS = day.slots({ cover, bleed, promise, searchCTA, full, crops });
+const SLOTS = day.slots({ cover, bleed, strip, promise, searchCTA, full, crops });
 
 /* ---- render ---- */
 fs.rmSync(OUT, { recursive: true, force: true });
