@@ -145,7 +145,7 @@ function PanelIcon({ dir }: { dir: "close" | "open" }) {
 /* Solar, hand-inlined (not via <Icon>, which would pull the whole Solar JSON
  * into this client bundle). Line at rest; bold once active (voice mode on / a
  * message ready to send). Send is a round-arrow-up. */
-function SendArrow({ size = 26, active = false }: { size?: number; active?: boolean }) {
+function SendArrow({ size = 20, active = false }: { size?: number; active?: boolean }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
       {active ? (
@@ -159,7 +159,22 @@ function SendArrow({ size = 26, active = false }: { size?: number; active?: bool
     </svg>
   );
 }
-function MicIcon({ size = 26, active = false }: { size?: number; active?: boolean }) {
+/* Plus — the attach-style square on the left of the toolbar. Here it starts a
+ * fresh conversation rather than attaching a file (nothing to attach yet). */
+function PlusIcon({ size = 15 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        d="M12 5v14M5 12h14"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+function MicIcon({ size = 20, active = false }: { size?: number; active?: boolean }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
       {active ? (
@@ -178,6 +193,10 @@ function MicIcon({ size = 26, active = false }: { size?: number; active?: boolea
 }
 
 type ChatMessage = { id: number; text: string };
+
+/* Whether a question is about the open step or the whole course. */
+type AskScope = "step" | "course";
+const SCOPE_KEY = "booklesss:ask-scope";
 
 /* The messages you've sent, above the composer. No AI backend yet, so these are
  * your own turns only — the composer captures input and is ready to wire to a
@@ -199,24 +218,34 @@ function ChatThread({ messages }: { messages: ChatMessage[] }) {
   );
 }
 
-/* Composer pinned to the panel's bottom: message on top, a control row beneath
- * with the voice-mode toggle and send. Enter inserts a newline (send is the
- * button only); the field auto-grows. In voice mode the mic drives coloured glow
- * blobs behind the card and a border glow, both scaled by live loudness — the
- * whole thing lights up as you speak. Blob colours are randomised each session.
- * data-no-swipe so a drag while typing never yanks the drawer. */
+/* Composer pinned to the panel's bottom: message on top, a control row beneath —
+ * new-chat, the scope segmented control, then voice and send. Enter inserts a
+ * newline (send is the button only); the field auto-grows. In voice mode the mic
+ * drives coloured glow blobs behind the card, scaled by live loudness, so the
+ * card lights up as you speak. Blob colours are randomised each session.
+ * data-no-swipe so a drag while typing never yanks the drawer.
+ * The card's construction (nested radii, two-layer shadow, compact step-down)
+ * lives in globals.css under "AI composer". */
 function ChatComposer({
   value,
   onChange,
   onSubmit,
   voiceOn,
   onToggleVoice,
+  scope,
+  onScopeChange,
+  onNewChat,
+  canReset,
 }: {
   value: string;
   onChange: (v: string) => void;
   onSubmit: () => void;
   voiceOn: boolean;
   onToggleVoice: () => void;
+  scope: AskScope;
+  onScopeChange: (s: AskScope) => void;
+  onNewChat: () => void;
+  canReset: boolean;
 }) {
   const canSend = value.trim().length > 0;
   const taRef = useRef<HTMLTextAreaElement>(null);
@@ -304,16 +333,16 @@ function ChatComposer({
     };
   }, [voiceOn]);
 
+  const label = scope === "step" ? "this step" : "this course";
+
   return (
-    // Mobile: no outer padding, so the bar goes flush to the panel's sides and
-    // the screen bottom. Desktop: the floating card gets its margin back.
     <form
       ref={formRef}
       onSubmit={(e) => {
         e.preventDefault();
         onSubmit();
       }}
-      className="voice-host relative shrink-0 xl:px-3 xl:pb-3 xl:pt-2"
+      className="voice-host composer-host relative shrink-0"
       data-no-swipe
     >
       {/* Coloured glow behind the card; each blob's opacity scales with --voice. */}
@@ -322,52 +351,80 @@ function ChatComposer({
         <span />
         <span />
       </div>
-      {/* Mobile: a flush input bar — no radius, only a top hairline as the
-          divider. Desktop (xl): the rounded squircle card with a full border.
-          .composer-card carries the voice border ring (::after). */}
-      <div className="composer-card squircle relative border-t border-line bg-white/70 px-3 pb-2 pt-2.5 backdrop-blur-md focus-within:border-line-2 xl:rounded-3xl xl:border">
-        <textarea
-          ref={taRef}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          rows={1}
-          placeholder="Ask about this step…"
-          aria-label="Ask about this step"
-          style={{ maxHeight: 132 }}
-          className="no-scrollbar relative block w-full resize-none bg-transparent px-1 text-[13px] leading-5 text-ink placeholder:text-placeholder focus:outline-none"
-        />
-        {/* Bare icons — no container. Spaced apart. */}
-        <div className="relative mt-1 flex items-center justify-end gap-3">
-          <button
-            type="button"
-            onClick={onToggleVoice}
-            aria-pressed={voiceOn}
-            aria-label={voiceOn ? "Turn off voice mode" : "Turn on voice mode"}
-            title="Voice mode"
-            className={
-              "grid h-8 w-8 place-items-center transition-colors " +
-              (voiceOn ? "text-ink" : "text-muted hover:text-ink")
-            }
-          >
-            <MicIcon active={voiceOn} />
-          </button>
-          <button
-            type="submit"
-            disabled={!canSend}
-            aria-label="Send"
-            className={
-              "grid h-8 w-8 shrink-0 place-items-center transition-colors " +
-              (canSend ? "text-ink" : "text-muted")
-            }
-          >
-            <SendArrow active={canSend} />
-          </button>
+      <div className="composer-shell relative">
+        <div className="composer-card squircle">
+          <textarea
+            ref={taRef}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            rows={1}
+            placeholder={`Ask about ${label}…`}
+            aria-label={`Ask about ${label}`}
+            style={{ maxHeight: 132 }}
+            className="composer-input no-scrollbar"
+          />
+          <div className="composer-tools">
+            <button
+              type="button"
+              onClick={onNewChat}
+              disabled={!canReset}
+              aria-label="New chat"
+              title="New chat"
+              className="composer-attach squircle"
+            >
+              <PlusIcon />
+            </button>
+
+            {/* What the answer is allowed to draw on. No backend yet, so this
+                only sets the placeholder — but it is real state, persisted, and
+                the value a tutor endpoint will need on day one. */}
+            <div
+              role="group"
+              aria-label="Answer scope"
+              data-active={scope}
+              className="seg-track squircle"
+            >
+              <span aria-hidden="true" className="seg-thumb squircle" />
+              {(["step", "course"] as const).map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => onScopeChange(s)}
+                  aria-pressed={scope === s}
+                  data-on={scope === s ? "" : undefined}
+                  className="seg-pill squircle"
+                >
+                  {s === "step" ? "Step" : "Course"}
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={onToggleVoice}
+              aria-pressed={voiceOn}
+              aria-label={voiceOn ? "Turn off voice mode" : "Turn on voice mode"}
+              title="Voice mode"
+              data-on={voiceOn ? "" : undefined}
+              className="composer-icon squircle ml-auto"
+            >
+              <MicIcon active={voiceOn} />
+            </button>
+            <button
+              type="submit"
+              disabled={!canSend}
+              aria-label="Send"
+              data-on={canSend ? "" : undefined}
+              className="composer-icon squircle"
+            >
+              <SendArrow active={canSend} />
+            </button>
+          </div>
         </div>
+        <p className="mt-1.5 hidden px-1 text-[10.5px] text-placeholder xl:block">
+          {voiceOn ? "Voice mode on — coming soon" : "AI tutor — coming soon"}
+        </p>
       </div>
-      {/* The 'coming soon' hint would break the flush-to-bottom bar on mobile. */}
-      <p className="relative mt-1.5 hidden px-1 text-[10.5px] text-placeholder xl:block">
-        {voiceOn ? "Voice mode on — coming soon" : "AI tutor — coming soon"}
-      </p>
     </form>
   );
 }
@@ -446,6 +503,7 @@ export function RightPanel() {
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [voiceOn, setVoiceOn] = useState(false);
+  const [scope, setScope] = useState<AskScope>("step");
   const nextId = useRef(1);
   const scrollRef = useRef<HTMLDivElement>(null);
   const sendMessage = () => {
@@ -453,6 +511,23 @@ export function RightPanel() {
     if (!text) return;
     setMessages((m) => [...m, { id: nextId.current++, text }]);
     setDraft("");
+  };
+  const newChat = () => {
+    setMessages([]);
+    setDraft("");
+  };
+
+  // Scope survives reloads — it is a preference, not per-conversation state.
+  // Restored before paint (same as the width above) so the thumb never starts
+  // on Step and jumps.
+  useIso(() => {
+    let saved: string | null = null;
+    try { saved = localStorage.getItem(SCOPE_KEY); } catch { /* private mode */ }
+    if (saved === "step" || saved === "course") setScope(saved);
+  }, []);
+  const pickScope = (s: AskScope) => {
+    setScope(s);
+    try { localStorage.setItem(SCOPE_KEY, s); } catch { /* ignore */ }
   };
   // Keep the newest message in view once it's added.
   useEffect(() => {
@@ -534,6 +609,10 @@ export function RightPanel() {
           onSubmit={sendMessage}
           voiceOn={voiceOn}
           onToggleVoice={() => setVoiceOn((v) => !v)}
+          scope={scope}
+          onScopeChange={pickScope}
+          onNewChat={newChat}
+          canReset={messages.length > 0 || draft.length > 0}
         />
       </aside>
     </>

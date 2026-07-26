@@ -545,4 +545,203 @@
     height: 150%;
     background: radial-gradient(closest-side, rgb(var(--g3, 45 212 191)) 0%, rgba(0, 0, 0, 0) 100%);
   }
+
+  /* ------------------------------------------------------------------ *
+   * AI composer — built to the claude.ai composer construction.
+   *
+   * The card is a white slab carrying TWO shadow layers: a very soft drop
+   * shadow and a 0.5px ring standing in for the border. The ring is a
+   * shadow rather than a real border because a sub-pixel shadow stays
+   * crisp at any zoom, where a 0.67px border rounds to something fuzzy.
+   * Hover darkens the ring; focus-within deepens the drop.
+   *
+   * Radii are deliberately nested — card 20 → segmented track 7 → thumb 6
+   * → pill 5, attach 6 — so concentric corners stay concentric whatever
+   * the padding. That nesting is the whole trick.
+   *
+   * The host is a size container, so the compact layout (8px padding,
+   * 6px gap, 12px radius, 14px type) keys off the panel's own width, not
+   * the viewport — the rail is user-resizable, so a media query would
+   * measure the wrong box. 264px is the content width of the 300px
+   * default rail minus its 12px gutters, so the rail has to be dragged
+   * genuinely narrow before anything shrinks.
+   * ------------------------------------------------------------------ */
+  .composer-host {
+    container-type: inline-size;
+    padding: 8px 12px max(12px, env(safe-area-inset-bottom));
+  }
+  .composer-shell {
+    width: 100%;
+    max-width: 672px;
+    margin: 0 auto;
+  }
+  .composer-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+    border-radius: 12px;
+    /* Opaque at rest. In voice mode it thins just enough for the coloured
+       blobs behind it to read through the slab instead of only haloing it. */
+    background: rgb(255 255 255 / calc(1 - var(--von, 0) * 0.12));
+    box-shadow:
+      0 4px 20px rgba(0, 0, 0, 0.035),
+      0 0 0 0.5px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 150ms ease;
+  }
+  .composer-card:hover {
+    box-shadow:
+      0 4px 20px rgba(0, 0, 0, 0.035),
+      0 0 0 0.5px rgba(0, 0, 0, 0.14);
+  }
+  .composer-card:focus-within {
+    box-shadow:
+      0 4px 20px rgba(0, 0, 0, 0.075),
+      0 0 0 0.5px rgba(0, 0, 0, 0.14);
+  }
+
+  .composer-input {
+    display: block;
+    width: 100%;
+    resize: none;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    font-size: 14px;
+    line-height: 19.6px; /* 1.4 */
+    color: var(--color-ink);
+  }
+  .composer-input:focus {
+    outline: none;
+  }
+  .composer-input::placeholder {
+    color: rgb(123 121 116);
+  }
+
+  .composer-tools {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Attach/new-chat square — the smallest control, so it takes the tightest
+     radius in the chain. */
+  .composer-attach {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    color: var(--color-muted);
+    transition: background-color 120ms ease, color 120ms ease, opacity 120ms ease;
+  }
+  .composer-attach:hover:not(:disabled) {
+    background: rgb(240 240 238);
+    color: var(--color-ink);
+  }
+  .composer-attach:disabled {
+    opacity: 0.4;
+  }
+
+  /* Segmented control. Equal grid columns keep the sliding thumb's maths
+     trivial: it is exactly half the padded track, so switching sides is a
+     single translateX(100%) rather than measured geometry. */
+  .seg-track {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+    height: 26px;
+    padding: 1px;
+    border-radius: 6px;
+    background: rgb(246 246 244);
+  }
+  .seg-thumb {
+    position: absolute;
+    top: 1px;
+    bottom: 1px;
+    left: 1px;
+    width: calc((100% - 2px) / 2);
+    border-radius: 5px;
+    background: #fff;
+    /* inset hairline + a 1px lift — this pair is what reads as "raised". */
+    box-shadow:
+      inset 0 0 0 1px rgba(0, 0, 0, 0.1),
+      0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .seg-track[data-active="course"] .seg-thumb {
+    transform: translateX(100%);
+  }
+  .seg-pill {
+    position: relative;
+    z-index: 1;
+    padding: 0 8px;
+    border-radius: 5px;
+    font-size: 12.5px;
+    line-height: 1;
+    color: var(--color-muted);
+    transition: color 150ms ease;
+  }
+  .seg-pill[data-on] {
+    color: var(--color-ink);
+  }
+  .seg-pill:hover {
+    color: var(--color-ink);
+  }
+
+  /* Right-hand icon buttons — 32px touch targets holding a 20px glyph. */
+  .composer-icon {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    color: var(--color-muted);
+    transition: color 120ms ease;
+  }
+  .composer-icon:hover:not(:disabled) {
+    color: var(--color-ink);
+  }
+  .composer-icon[data-on] {
+    color: var(--color-ink);
+  }
+
+  @container (min-width: 264px) {
+    .composer-card {
+      gap: 12px;
+      padding: 14px;
+      border-radius: 20px;
+    }
+    .composer-input {
+      font-size: 16px;
+      line-height: 22.4px;
+    }
+    .composer-tools {
+      gap: 8px;
+    }
+    .seg-track {
+      height: 28px;
+      border-radius: 7px;
+    }
+    .seg-thumb {
+      border-radius: 6px;
+    }
+    .seg-pill {
+      padding: 0 10px;
+      font-size: 14px;
+    }
+    .composer-icon {
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .seg-thumb {
+      transition: none;
+    }
+  }
 }
