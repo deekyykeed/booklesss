@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-07-25 (session 19)
+**Last updated:** 2026-07-26 (session 20)
 
 ---
 
@@ -183,6 +183,65 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-07-26 (session 20 — reader right-panel + AI composer + voice glow)
+
+Long UI-iteration day on the course reader. ~15 small commits to `main` (push =
+deploy), each verified with Playwright before pushing.
+
+**Done:**
+- **Right "step context" panel** — mirror of the left sidebar: resizable +
+  collapsible frosted rail at **xl (≥1280)**, transparent **push-drawer below xl**
+  (in the 768–1279 band the nav rail slides off with the content so nothing
+  overlaps). Moved the On-this-page TOC into it. Two mobile drawers: swipe-right →
+  course nav, swipe-left → step context. Wired the left sidebar's (previously
+  dead) collapse button for parity.
+- **Motion:** content **fade + de-blur on lesson change** (+ scroll reset);
+  **smooth sidebar collapse/expand** — the content gutter eases in step with the
+  panel, gated on a transient `data-collapsing` flag so a resize drag stays
+  transition-free.
+- **AI composer** (`RightPanel.tsx`): typeable, echoes your turns as bubbles (no
+  backend); **Enter = newline, send button only**; redesigned to the owner's
+  reference (message on top, control row). Icons: bare (no circle container),
+  **Solar line→bold on active**, **round-arrow send**, size 26, spaced. Mobile =
+  flush edge-to-edge bar, no radius; desktop = rounded **24px** card.
+- **Voice mode:** mic capture (`getUserMedia` + Web Audio analyser) drives
+  **randomised-colour glow blobs behind the composer**, scaled by live loudness.
+  Ready to wire to a real voice backend (**ElevenLabs** connector is available but
+  needs auth).
+- **Header/type tweaks:** mobile hamburger glyph aligned to 16px then spaced from
+  the wordmark; nav step weight 500→600; selector border 1px; mobile content
+  padding 20→16.
+
+**What Worked:**
+- Playwright headless for QA of *every* change — screenshots + DOM measurement.
+  `--use-fake-ui-for-media-stream --use-fake-device-for-media-stream` auto-grants
+  the mic + feeds fake audio to test voice mode. **In-page rAF sampling** for
+  animation curves: a cross-process `page.evaluate` loop starves the main-thread
+  padding animation and gives false "it snaps" readings; sample inside the page.
+- **Pathspec commits** (`git commit --only -- <paths>`) to commit ONLY my reader
+  files while the other session's big staged reorg sat untouched in the shared
+  OneDrive tree.
+- Hand-inlining specific Solar icon paths (extracted from
+  `@iconify-json/solar/icons.json` via node) instead of `<Icon>`, which imports
+  the whole Solar JSON — bad to pull into a client component.
+
+**Dead Ends (do not retry):**
+- **Windows EPERM lock on `.next`** mid-build (OneDrive holding a chunk file) —
+  kill node + `rm -rf .next`, rebuild. Recurred again this session.
+- Voice: a **full-screen background dim** and a **composer border-glow ring** were
+  both built then rejected by the owner. Glow lives ONLY as blobs behind the
+  composer now; the `0 0 0 1px` ring read as a double border line.
+- `next start` leaves a **lingering node child** after TaskStop that keeps holding
+  the port (EADDRINUSE on restart) — kill by PID / use a fresh port each time.
+
+**Flags:**
+- ⚠️ The **other session's staged reorg** (`platform/marketing`→`Demand/social`,
+  `_dev`→`tools`, `WORKSPACE.md`, deleted scratch pngs — ~70 entries) is still
+  **uncommitted** in the working tree. Not mine; left untouched all session. Its
+  owner needs to commit it.
+- Linear was **unauthorized** this session — tracker not updated (this work wasn't
+  tracked there anyway).
 
 ### Session 2026-07-25 (session 19 — platform replaced with static reader + Supabase content migration)
 
