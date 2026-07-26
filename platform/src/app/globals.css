@@ -518,6 +518,14 @@
      form while voice mode is on; --von flags it on; --g1..3 are the per-session
      random colours. The blobs sit behind the card and the ::after ring hugs its
      border — both scale with --voice, so the composer lights up as you speak. */
+  /* The blobs are wider than the rail on purpose, but the panel is a fixed
+     z-40 overlay — anything spilling past its left border paints ON TOP of the
+     text the student is reading. Clip to the rail's own box (open upwards, so
+     the wash still rises behind the panel's content) and the cut lands exactly
+     on the panel border, where the hairline hides it. */
+  .voice-glow {
+    clip-path: inset(-400px 0 0 0);
+  }
   .voice-glow > span {
     position: absolute;
     border-radius: 50%;
@@ -582,11 +590,11 @@
   .composer-card {
     /* One ring layer, never two — a second ring stacked on the hairline reads
        as a double border. Hover and focus move --ring-a; speaking only widens
-       that same ring, 0.5px to 1px at full loudness. Its darkness never
+       that same ring, 0.5px to 1.5px at full loudness. Its darkness never
        changes with the voice. */
     --ring-a: 0.08;
-    --drop-a: 0.05;
-    --ring-w: calc(0.5px + var(--von, 0) * var(--voice, 0) * 0.5px);
+    --drop-a: 0.08;
+    --ring-w: calc(0.5px + var(--von, 0) * var(--voice, 0) * 1px);
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -606,7 +614,7 @@
   }
   .composer-card:focus-within {
     --ring-a: 0.14;
-    --drop-a: 0.095;
+    --drop-a: 0.14;
   }
 
   .composer-input {
