@@ -69,7 +69,7 @@ export function TopBar({
       <div className="flex min-w-0 items-center gap-5">
         {/* logo lockup: mobile shows the hamburger + wordmark; desktop shows
             the mark + wordmark + org switcher. The wordmark is common to both. */}
-        <div className="flex items-center gap-1 md:gap-2">
+        <div className="flex items-center gap-2.5 md:gap-2">
           <MobileMenuButton />
           <span className="hidden md:inline-flex">
             <Logo />

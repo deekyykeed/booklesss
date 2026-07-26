@@ -545,21 +545,4 @@
     height: 150%;
     background: radial-gradient(closest-side, rgb(var(--g3, 45 212 191)) 0%, rgba(0, 0, 0, 0) 100%);
   }
-  /* Soft outer halo that glows the primary colour as you speak. No crisp 1px
-     ring — that read as a second line next to the card's own border. */
-  .composer-card::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    opacity: calc(var(--voice, 0) * 0.5);
-    box-shadow: 0 0 16px 1px rgb(var(--g1, 168 85 247));
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .voice-glow > span,
-    .composer-card::after {
-      transition: none;
-    }
-  }
 }
