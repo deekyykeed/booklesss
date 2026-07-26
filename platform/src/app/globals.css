@@ -31,6 +31,26 @@
   --sidebar-dash: 208px;
 }
 
+/* Voice-glow blob colours. Registered as real <color>s (not the raw "r g b"
+   triplets they used to be) so they can be TRANSITIONED — an unregistered
+   custom property jumps between values, which made a colour reshuffle snap.
+   Declared outside the layers because @property is not a style rule. */
+@property --g1 {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgb(168 85 247);
+}
+@property --g2 {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgb(59 130 246);
+}
+@property --g3 {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgb(45 212 191);
+}
+
 @layer base {
   html {
     background: var(--color-canvas);
@@ -526,6 +546,40 @@
   .voice-glow {
     clip-path: inset(-400px 0 0 0);
   }
+
+  /* Each blob drifts on its own clock — different durations and delays, all
+     primes-ish so they never resynchronise into a single pulsing mass. Only
+     runs while voice mode is on (the attribute), since animating three blurred
+     layers at opacity 0 is pure GPU waste. */
+  @keyframes blobDriftA {
+    0% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(14%, -8%, 0) scale(1.18); }
+    100% { transform: translate3d(0, 0, 0) scale(1); }
+  }
+  @keyframes blobDriftB {
+    0% { transform: translate3d(0, 0, 0) scale(1.08); }
+    50% { transform: translate3d(-16%, -5%, 0) scale(0.92); }
+    100% { transform: translate3d(0, 0, 0) scale(1.08); }
+  }
+  @keyframes blobDriftC {
+    0% { transform: translate3d(0, 0, 0) scale(0.95); }
+    50% { transform: translate3d(9%, 10%, 0) scale(1.22); }
+    100% { transform: translate3d(0, 0, 0) scale(0.95); }
+  }
+  .voice-host[data-voice] .voice-glow > span:nth-child(1) {
+    animation: blobDriftA 9s ease-in-out infinite;
+  }
+  .voice-host[data-voice] .voice-glow > span:nth-child(2) {
+    animation: blobDriftB 11s ease-in-out infinite;
+  }
+  .voice-host[data-voice] .voice-glow > span:nth-child(3) {
+    animation: blobDriftC 13s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .voice-host[data-voice] .voice-glow > span {
+      animation: none;
+    }
+  }
   .voice-glow > span {
     position: absolute;
     border-radius: 50%;
@@ -536,26 +590,31 @@
        blobs should be the colour, not a tint of it. */
     opacity: calc(var(--von, 0) * (0.06 + var(--voice, 0) * 0.88));
   }
+  /* JS reshuffles the three colours every few seconds while you speak; the
+     transition here is what makes that a fade rather than a jump. */
+  .voice-host {
+    transition: --g1 1.6s linear, --g2 1.6s linear, --g3 1.6s linear;
+  }
   .voice-glow > span:nth-child(1) {
     left: -6%;
     bottom: -25%;
     width: 52%;
     height: 150%;
-    background: radial-gradient(closest-side, rgb(var(--g1, 168 85 247)) 0%, rgba(0, 0, 0, 0) 100%);
+    background: radial-gradient(closest-side, var(--g1) 0%, rgba(0, 0, 0, 0) 100%);
   }
   .voice-glow > span:nth-child(2) {
     right: -6%;
     bottom: -25%;
     width: 52%;
     height: 150%;
-    background: radial-gradient(closest-side, rgb(var(--g2, 59 130 246)) 0%, rgba(0, 0, 0, 0) 100%);
+    background: radial-gradient(closest-side, var(--g2) 0%, rgba(0, 0, 0, 0) 100%);
   }
   .voice-glow > span:nth-child(3) {
     left: 22%;
     top: -35%;
     width: 56%;
     height: 150%;
-    background: radial-gradient(closest-side, rgb(var(--g3, 45 212 191)) 0%, rgba(0, 0, 0, 0) 100%);
+    background: radial-gradient(closest-side, var(--g3) 0%, rgba(0, 0, 0, 0) 100%);
   }
 
   /* ------------------------------------------------------------------ *
@@ -728,6 +787,35 @@
       width: 32px;
       height: 32px;
       border-radius: 10px; /* steps down from the wider card radius */
+    }
+  }
+
+  /* ---- Below xl: the composer is a flush bar, not a floating card ----
+     Edge to edge, square, sitting on the screen bottom. It keeps ONE line —
+     an inset rule along the top — instead of a ring on four sides, and that
+     line is what thickens when you speak. The bottom padding lives INSIDE the
+     card (plus the safe area) so the controls ride high off the screen edge
+     rather than the whole bar floating up on a margin.
+     Must follow the @container block: same specificity, so source order wins. */
+  @media (max-width: 1279px) {
+    .composer-host {
+      padding: 0;
+    }
+    .composer-card {
+      --ring-w: calc(1px + var(--von, 0) * var(--voice, 0) * 2px);
+      border-radius: 0;
+      padding: 12px 14px calc(22px + env(safe-area-inset-bottom));
+      box-shadow: inset 0 var(--ring-w) 0 rgb(0 0 0 / var(--ring-a));
+    }
+    /* With the bar flush to the bottom and both sides, the only direction the
+       glow can read from is up — so anchor the blobs to the bar's top edge and
+       let them rise. The clip-path above already leaves the top open. */
+    .voice-glow > span:nth-child(1),
+    .voice-glow > span:nth-child(2),
+    .voice-glow > span:nth-child(3) {
+      top: auto;
+      bottom: 88%;
+      height: 190px;
     }
   }
 }

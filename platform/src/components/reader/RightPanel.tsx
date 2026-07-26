@@ -271,6 +271,7 @@ function ChatComposer({
     const clear = () => {
       el.style.setProperty("--von", "0");
       el.style.setProperty("--voice", "0");
+      el.removeAttribute("data-voice");
     };
     if (!voiceOn) {
       clear();
@@ -278,15 +279,22 @@ function ChatComposer({
     }
 
     const palette = [
-      "168 85 247", "59 130 246", "45 212 191", "236 72 153",
-      "251 146 60", "52 211 153", "129 140 248", "244 63 94",
+      "rgb(168 85 247)", "rgb(59 130 246)", "rgb(45 212 191)", "rgb(236 72 153)",
+      "rgb(251 146 60)", "rgb(52 211 153)", "rgb(129 140 248)", "rgb(244 63 94)",
     ];
-    const shuffled = [...palette].sort(() => Math.random() - 0.5);
-    el.style.setProperty("--g1", shuffled[0]);
-    el.style.setProperty("--g2", shuffled[1]);
-    el.style.setProperty("--g3", shuffled[2]);
+    // Three at a time, reshuffled on a clock. --g1..3 are registered @property
+    // colours, so each new trio cross-fades in rather than snapping.
+    const paint = () => {
+      const picked = [...palette].sort(() => Math.random() - 0.5);
+      el.style.setProperty("--g1", picked[0]);
+      el.style.setProperty("--g2", picked[1]);
+      el.style.setProperty("--g3", picked[2]);
+    };
+    paint();
+    const recolour = window.setInterval(paint, 4200);
     el.style.setProperty("--von", "1");
     el.style.setProperty("--voice", "0");
+    el.setAttribute("data-voice", ""); // starts the blobs drifting
 
     let raf = 0;
     let stream: MediaStream | null = null;
@@ -332,6 +340,7 @@ function ChatComposer({
     return () => {
       cancelled = true;
       cancelAnimationFrame(raf);
+      window.clearInterval(recolour);
       stream?.getTracks().forEach((t) => t.stop());
       audio?.close().catch(() => {});
       clear();
