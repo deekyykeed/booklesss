@@ -146,6 +146,8 @@ All icons in `platform/` come from the **Solar** set (by 480 Design) via the loc
 
 The old Streamline-MCP workflow (`solar.tsx` with hand-inlined SVGs) belonged to the previous platform app, deleted 2026-07-24 — recoverable from git history before that date if ever needed.
 
+**One exception:** the composer's attachment chips use **Streamline Ultimate Colors (Free)** file-type badges (PDF / JPG / XLS / doc), hand-inlined in `platform/src/components/reader/file-icons.tsx`. They are multicolour on purpose — the colour is what distinguishes the file types — so they keep their own fills rather than following `currentColor`. Licensed CC BY 4.0, attribution still owed (as with Solar). Everything else stays Solar.
+
 **Never** hardcode Framer CDN URLs for icons — always inline SVG so icons respond to `color` CSS.
 
 ### Transcription

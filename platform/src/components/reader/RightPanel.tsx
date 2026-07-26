@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Section } from "@/lib/course";
+import { FileTypeIcon } from "./file-icons";
 import { useReaderShell } from "./MobileNav";
 import { useFollow } from "./useFollow";
 
@@ -360,6 +361,7 @@ function ChatComposer({
             <div className="composer-chips">
               {files.map((f) => (
                 <span key={f.id} className="composer-chip squircle">
+                  <FileTypeIcon name={f.name} />
                   <span className="composer-chip-name">{f.name}</span>
                   <button
                     type="button"
