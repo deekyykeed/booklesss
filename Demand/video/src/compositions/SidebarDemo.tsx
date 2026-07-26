@@ -212,17 +212,24 @@ const Chevron: React.FC<{ open: number; s: number; color: string }> = ({ open, s
   </svg>
 );
 
-export const SidebarDemo: React.FC = () => {
+/** Where to put the panel, in frame pixels. Omit for the standalone layout. */
+export type PanelBox = { x: number; y: number; h: number; scale: number };
+
+export const SidebarDemo: React.FC<{
+  /** false = just the live panel, for embedding in another composition */
+  chrome?: boolean;
+  panel?: PanelBox;
+}> = ({ chrome = true, panel }) => {
   const frame = useCurrentFrame();
   const { fps, width, height } = useVideoConfig();
 
   /* The panel, blown up from its real 265px so the type is legible on a
    * phone. Everything inside is drawn in app pixels and scaled as a unit. */
-  const s = 2.55;
+  const s = panel?.scale ?? 2.55;
   const panelW = PANEL_W * s;
-  const panelH = height - 400;
-  const panelX = (width - panelW) / 2;
-  const panelY = 220;
+  const panelH = panel?.h ?? height - 400;
+  const panelX = panel?.x ?? (width - panelW) / 2;
+  const panelY = panel?.y ?? 220;
 
   const now = sceneAt(frame, fps);
   const before = sceneAt(Math.max(0, frame - 1), fps);
@@ -241,9 +248,10 @@ export const SidebarDemo: React.FC = () => {
 
   return (
     <AbsoluteFill>
-      <Blobs palette="voice" strength={0.55} />
+      {chrome ? <Blobs palette="voice" strength={0.55} /> : null}
 
       {/* Caption */}
+      {chrome ? (
       <div
         style={{
           position: "absolute",
@@ -261,6 +269,7 @@ export const SidebarDemo: React.FC = () => {
       >
         Your course, always one tap away
       </div>
+      ) : null}
 
       {/* The sidebar panel */}
       <div
@@ -415,6 +424,7 @@ export const SidebarDemo: React.FC = () => {
       </div>
 
       {/* Footer line */}
+      {chrome ? (
       <div
         style={{
           position: "absolute",
@@ -431,6 +441,7 @@ export const SidebarDemo: React.FC = () => {
       >
         booklesss.vercel.app
       </div>
+      ) : null}
     </AbsoluteFill>
   );
 };

@@ -3,6 +3,13 @@ import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } fr
 import { bodyStack, displayStack } from "../brand";
 import { Blobs } from "./Blobs";
 import { Mark } from "./Wordmark";
+import { FRAME_H, FRAME_W, STAGE } from "../safe";
+
+/* Lay a block out inside the social safe area rather than the whole frame —
+ * the platform covers the top, the right rail and the bottom. */
+const stagePad = `${STAGE.y}px ${FRAME_W - STAGE.x - STAGE.w}px ${
+  FRAME_H - STAGE.y - STAGE.h
+}px ${STAGE.x}px`;
 
 /* The reader app's own tokens (platform/src/app/globals.css), not the PDF
  * cream — this is a demo of the app, so it should look like the app. */
@@ -42,7 +49,9 @@ export const Caption: React.FC<{
   headline: string;
   sub?: string;
   delay?: number;
-}> = ({ side, headline, sub, delay = 4 }) => {
+  /** pin to the top of the social safe area instead of the frame edge */
+  safe?: boolean;
+}> = ({ side, headline, sub, delay = 4, safe = false }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
@@ -57,7 +66,11 @@ export const Caption: React.FC<{
     <AbsoluteFill
       style={{
         justifyContent: side === "top" ? "flex-start" : "flex-end",
-        padding: side === "top" ? "132px 76px 0" : "0 76px 148px",
+        padding: safe
+          ? stagePad
+          : side === "top"
+            ? "132px 76px 0"
+            : "0 76px 148px",
       }}
     >
       <div>
@@ -65,7 +78,7 @@ export const Caption: React.FC<{
           style={{
             margin: 0,
             fontFamily: displayStack,
-            fontSize: 74,
+            fontSize: safe ? 64 : 74,
             fontWeight: 700,
             lineHeight: 1.06,
             letterSpacing: -1.6,
@@ -108,7 +121,11 @@ export const Statement: React.FC<{
   headline: string;
   sub?: string;
   mark?: boolean;
-}> = ({ eyebrow, headline, sub, mark = false }) => {
+  /** lay out inside the social safe area instead of the full frame */
+  safe?: boolean;
+  /** a Streamline duotone icon, above the type */
+  icon?: React.ReactNode;
+}> = ({ eyebrow, headline, sub, mark = false, safe = false, icon }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
@@ -126,9 +143,13 @@ export const Statement: React.FC<{
         style={{
           justifyContent: "center",
           alignItems: "flex-start",
-          padding: "0 84px",
+          padding: safe ? stagePad : "0 84px",
         }}
       >
+        {icon ? (
+          <div style={{ ...rise(0), marginBottom: 34 }}>{icon}</div>
+        ) : null}
+
         {mark ? (
           <div style={{ ...rise(0), marginBottom: 40 }}>
             <Mark size={64} />
@@ -156,7 +177,7 @@ export const Statement: React.FC<{
           style={{
             margin: 0,
             fontFamily: displayStack,
-            fontSize: 96,
+            fontSize: safe ? 82 : 96,
             fontWeight: 700,
             lineHeight: 1.03,
             letterSpacing: -2.4,

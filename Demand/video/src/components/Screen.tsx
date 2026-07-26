@@ -1,6 +1,64 @@
 import React from "react";
-import { AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame } from "remotion";
+import {
+  AbsoluteFill,
+  Easing,
+  Img,
+  interpolate,
+  spring,
+  staticFile,
+  useCurrentFrame,
+  useVideoConfig,
+} from "remotion";
 import { SHOTS, type ShotKey } from "../shots";
+
+/** A flick-scroll over a tall capture: each stop is where the page comes to
+ * rest, and the spring between them carries the momentum of a thumb flick. */
+export const ScrollShot: React.FC<{
+  shot: ShotKey;
+  /** frame -> scroll position, in frame pixels from the top */
+  stops: { at: number; y: number }[];
+  zoom?: number;
+  width?: number;
+  height?: number;
+}> = ({ shot, stops, zoom = 1.3, width = 1080, height = 1920 }) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const { file, w, h } = SHOTS[shot];
+
+  const base = Math.max(width / w, height / h) * zoom;
+  const drawW = w * base;
+  const drawH = h * base;
+  const maxScroll = Math.max(0, drawH - height);
+
+  let i = 0;
+  for (let k = 0; k < stops.length; k++) if (frame >= stops[k].at) i = k;
+  const to = stops[i];
+  const from = stops[Math.max(0, i - 1)];
+
+  /* Heavy mass, no bounce: a scrolled page decelerates, it doesn't spring back. */
+  const t = spring({
+    frame: frame - to.at,
+    fps,
+    config: { damping: 200, mass: 1.6 },
+  });
+  const y = Math.min(maxScroll, interpolate(t, [0, 1], [from.y, to.y]));
+
+  return (
+    <AbsoluteFill style={{ overflow: "hidden" }}>
+      <Img
+        src={staticFile(file)}
+        style={{
+          position: "absolute",
+          left: (width - drawW) / 2,
+          top: 0,
+          width: drawW,
+          height: drawH,
+          transform: `translate3d(0, ${-y}px, 0)`,
+        }}
+      />
+    </AbsoluteFill>
+  );
+};
 
 /* A real app capture, full-bleed, under a moving camera.
  *

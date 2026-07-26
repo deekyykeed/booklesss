@@ -12,7 +12,9 @@
     "still": "remotion still",
     "sync:shots": "node scripts/sync-shots.mjs",
     "render:demo": "remotion render ProductDemo out/product-demo.mp4",
-    "upgrade": "remotion upgrade"
+    "upgrade": "remotion upgrade",
+    "build:icons": "node scripts/build-icons.mjs",
+    "render:action": "remotion render InAction out/booklesss-in-action.mp4"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.499",
@@ -23,7 +25,7 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "remotion": "^4.0.499",
-    "zod": "^3.25.76"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/react": "^19.2.17",

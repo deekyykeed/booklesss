@@ -6,6 +6,7 @@ import { SIDEBAR_DEMO_DURATION, SidebarDemo } from "./compositions/SidebarDemo";
 import { ContactSheet } from "./compositions/ContactSheet";
 import { PRODUCT_DEMO_DURATION, ProductDemo } from "./compositions/ProductDemo";
 import { DemoSheet, SHEET_H, SHEET_W } from "./compositions/DemoSheet";
+import { IN_ACTION_DURATION, InAction } from "./compositions/InAction";
 import { FPS, TOTAL, defaultDemoProps, demoSchema } from "./schema";
 
 export const RemotionRoot: React.FC = () => {
@@ -21,6 +22,17 @@ export const RemotionRoot: React.FC = () => {
         height={1920}
         schema={demoSchema}
         defaultProps={defaultDemoProps}
+      />
+
+      {/* "In action" — the live one: real typing, scrolling and voice glow,
+          laid out inside the social safe area. */}
+      <Composition
+        id="InAction"
+        component={InAction}
+        durationInFrames={IN_ACTION_DURATION}
+        fps={FPS}
+        width={1080}
+        height={1920}
       />
 
       {/* The 60s product demo — real app captures under a moving camera. */}
@@ -46,7 +58,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="DemoSheet"
         component={DemoSheet}
-        durationInFrames={PRODUCT_DEMO_DURATION}
+        durationInFrames={IN_ACTION_DURATION}
         fps={FPS}
         width={SHEET_W}
         height={SHEET_H}

@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill, Sequence } from "remotion";
-import { ProductDemo } from "./ProductDemo";
+import { InAction } from "./InAction";
 import { bodyStack } from "../brand";
 
 /* QA board for the 60s demo: fifteen moments of the real composition, laid out
@@ -53,7 +53,7 @@ export const DemoSheet: React.FC<{ everyNFrames?: number }> = ({ everyNFrames = 
                 }}
               >
                 <Sequence from={-n} layout="none">
-                  <ProductDemo />
+                  <InAction />
                 </Sequence>
               </div>
             </div>
