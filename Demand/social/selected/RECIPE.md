@@ -9,7 +9,7 @@ for any other screen, not just the one it was made from.
 
 ![macro-crop-bleed](macro-crop-bleed.png)
 
-Same image as `social/03-detail.png`. A tiny piece of UI, blown up until it
+Same image as `stills/03-detail.png`. A tiny piece of UI, blown up until it
 fills the bottom of the frame, dissolving in under the headline.
 
 **Why it works:** it shows one detail instead of a whole screen, so there is

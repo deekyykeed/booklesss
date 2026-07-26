@@ -1,21 +1,34 @@
-import { chromium } from "./pw.mjs";
+/* Day carousels — renders the day's three 9:16 carousels straight to
+ * posts/<DAY>/{morning,afternoon,evening}/NN.png.
+ *
+ * Self-contained: crops come from _source/carousel-crops, fonts are the vendored
+ * copies in _source/fonts (embedded as data: URIs). No build, no running server.
+ *
+ *   node _scripts/5-day-carousels.mjs            # DAY defaults below
+ *   DAY=2026-07-26 node _scripts/5-day-carousels.mjs
+ *
+ * All light. Dark backgrounds wait until the app ships a real dark mode — a light
+ * screenshot on a dark canvas doesn't sit right. Edit SLOTS copy, then re-run.
+ */
+import { chromium, CROPS, POSTS, INTER_DATA, FAMILJEN_DATA, dayFolder } from "./paths.mjs";
 import fs from "fs";
 import path from "path";
 
-const SRC = "cc-src";
-const DAY = "2026-07-24";
-const OUT = path.join("cc-day", DAY);
-fs.rmSync("cc-day", { recursive: true, force: true });
+const DAY = process.env.DAY || "2026-07-25";
+// e.g. posts/2026-W30 (Jul 20-26)/2026-07-25 Saturday/ — weekday named, grouped by week
+const OUT = path.join(POSTS, dayFolder(DAY).rel);
+fs.mkdirSync(OUT, { recursive: true });   // keep any existing PLAN.md; only the slot dirs are cleared below
 
-const uri = (f) => "data:image/png;base64," + fs.readFileSync(path.join(SRC, f)).toString("base64");
+const uri = (f) => "data:image/png;base64," + fs.readFileSync(path.join(CROPS, f)).toString("base64");
 const IMG = Object.fromEntries(
-  fs.readdirSync(SRC).filter((f) => f.endsWith(".png")).map((f) => [f.replace(".png", ""), uri(f)]),
+  fs.readdirSync(CROPS).filter((f) => f.endsWith(".png")).map((f) => [f.replace(".png", ""), uri(f)]),
 );
 // Solar Bold Duotone "Bolt" (same icon family as the app's own logo), brand-recoloured
-const FLASH = fs.readFileSync(path.join(SRC, "solar-bolt.svg"), "utf8").replace(/<desc>[\s\S]*?<\/desc>/, "");
+const FLASH = fs.readFileSync(path.join(CROPS, "solar-bolt.svg"), "utf8").replace(/<desc>[\s\S]*?<\/desc>/, "");
 
-const INTER = "/_next/static/media/83afe278b6a6bb3c-s.p.2bn3s6zvc0dyp.woff2";
-const FAMILJEN = "/_next/static/media/f5edcc6a132fb1ad-s.p.3ii__yurxaf4q.woff2";
+// vendored fonts, embedded so nothing has to be served
+const INTER = INTER_DATA();
+const FAMILJEN = FAMILJEN_DATA();
 
 const SAFE = { left: 88, right: 150 };
 
@@ -112,7 +125,7 @@ function searchCTA(o) {
       <span style="font-size:47px;color:#3c4043;letter-spacing:-.01em">bookle<b style="font-weight:800;color:#202124">sss</b><span style="display:inline-block;width:3px;height:46px;background:#4285F4;margin-left:4px;vertical-align:-8px"></span></span>
       <span style="margin-left:auto;display:flex;flex-shrink:0">${LENS}</span>
     </div>
-    <p class="sub" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:1090px;font-size:31px;line-height:1.45;color:${subc(d)}">Or just comment <b style="color:${ink(d)}">&ldquo;link&rdquo;</b> and I&rsquo;ll send it. &#128071;</p>
+    <p class="sub" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:1090px;font-size:31px;line-height:1.45;color:${subc(d)}">Or DM me <b style="color:${ink(d)}">&ldquo;link&rdquo;</b> &mdash; I&rsquo;ll send it straight over. &#128071;</p>
   </div>` };
 }
 // full clear app — NOT faded at the top, just the actual app (soft bottom edge only)
@@ -141,24 +154,24 @@ const B_READER = { img: IMG["reader-neu"], imgW: 1440, imgL: -150, imgTop: 1010 
  *      platform — every subject, never one course. All superzoom + type. ---- */
 const SLOTS = {
   morning: [
-    cover({ eyebrow: "Introducing", title: "Meet<br>Booklesss.", sub: "Every course you'll ever take &mdash; in one place, without the textbook." }),
-    bleed({ ...B_SUBJECTS, title: "Every subject,<br>one place.", sub: "Whatever you're learning next, it lives here." }),
-    bleed({ ...B_ACTIVE, title: "Never lose<br>your place.", sub: "It always knows where you are." }),
-    promise({ title: "Learn anything,<br>without the textbook.", line: "Clear. Fast. Free to start." }),
+    cover({ eyebrow: "One home for everything", title: "All your notes.<br>Sorted.", sub: "Every course, every lesson &mdash; finally in one place." }),
+    bleed({ ...B_SUBJECTS, title: "Every subject,<br>side by side.", sub: "Switch between them in a tap." }),
+    bleed({ ...B_LESSONS, title: "Know exactly<br>what&rsquo;s next.", sub: "A clear path from the first lesson to the last." }),
+    promise({ title: "Studying,<br>without the mess.", line: "Open it and you&rsquo;re already sorted." }),
     searchCTA({}),
   ],
   afternoon: [
-    cover({ eyebrow: "A new way to learn", title: "Ditch the<br>textbook.", sub: "Booklesss teaches any subject in plain English. Free.", subTop: 1010 }),
-    bleed({ ...B_LESSONS, title: "A clear path<br>through anything.", sub: "Start here. Move on when it clicks." }),
-    bleed({ ...B_SUBJECTS, title: "One home for<br>everything.", sub: "Maths, code, history, design &mdash; all in here." }),
-    promise({ title: "No textbooks.<br>No limits.", line: "Just open it and learn." }),
+    cover({ eyebrow: "Built to be read", title: "Notes you&rsquo;ll<br>actually read.", sub: "Plain English. Clean pages. Nothing in the way.", subTop: 1010 }),
+    bleed({ ...B_READER, title: "Made for<br>reading.", sub: "Every lesson, calm and clear." }),
+    bleed({ ...B_ACTIVE, title: "It keeps<br>your place.", sub: "Pick up right where you left off." }),
+    promise({ title: "Less friction.<br>More learning.", line: "The textbook, minus the pain." }),
     searchCTA({}),
   ],
   evening: [
-    cover({ eyebrow: "For people who like good software", title: "We rebuilt<br>the textbook.", sub: "One home for everything you learn &mdash; fast, quiet, and a little obsessive.", subTop: 1010 }),
-    bleed({ ...B_TOC, title: "See the shape<br>of every lesson.", sub: "Overview, key ideas, practice, summary." }),
-    bleed({ ...B_ACTIVE, title: "A 3px detail<br>we sweated.", sub: "It rides with you, frame-perfect." }),
-    promise({ title: "Booklesss.", line: "Learn anything without the textbook." }),
+    cover({ eyebrow: "For people who love good software", title: "We sweat<br>the details.", sub: "The kind of thing you feel before you notice it.", subTop: 1010 }),
+    bleed({ ...B_TOC, title: "See the shape<br>of every lesson.", sub: "Overview, key ideas, practice, done." }),
+    bleed({ ...B_ACTIVE, title: "A 3px detail<br>we argued over.", sub: "It rides with you, frame-perfect." }),
+    promise({ title: "Booklesss.", line: "Learn anything, without the textbook." }),
     searchCTA({}),
   ],
 };
@@ -168,19 +181,18 @@ const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 2 });
 for (const [slot, slides] of Object.entries(SLOTS)) {
   const dir = path.join(OUT, slot);
+  fs.rmSync(dir, { recursive: true, force: true });   // clear stale images, leave PLAN.md untouched
   fs.mkdirSync(dir, { recursive: true });
   for (let i = 0; i < slides.length; i++) {
     const s = slides[i];
     const body = (s.dark ? DARK_BG : LIGHT_BG) + s.html + wordmark(s.dark);
     const html = `<!doctype html><html><head><meta charset="utf-8"><style>${BASE_CSS}</style></head><body>${body}</body></html>`;
-    await page.route("**/__s", (r) => r.fulfill({ status: 200, contentType: "text/html", body: html }));
-    await page.goto("http://localhost:3100/__s");
+    await page.setContent(html, { waitUntil: "load" });
     await page.evaluate(() => document.fonts.ready);
-    await page.waitForTimeout(320);
+    await page.waitForTimeout(200);
     await page.screenshot({ path: path.join(dir, `${String(i + 1).padStart(2, "0")}.png`) });
-    await page.unroute("**/__s");
   }
   console.log("  •", slot, `(${slides.length} images)`);
 }
 await browser.close();
-console.log("done");
+console.log("done ->", OUT);

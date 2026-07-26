@@ -10,8 +10,10 @@ This file is the map. Read top to bottom and you know the state of the business,
 
 | You want to… | Go to |
 |---|---|
+| Understand the whole folder layout | `WORKSPACE.md` (the map + "do not move" rules) |
 | See what content exists per course | `Schools/[School]/[Course]/_course.md` |
 | Run the day (post, reply, log) | `Operations/daily-checklist.md` |
+| Post daily social content (carousels) | `Demand/social/` |
 | Check Slack config, channels, invite links | `Operations/workspace.md` |
 | Check prices and unit economics | `Operations/pricing-strategy.md` |
 | Log a lead / a payment / a group drop | `Operations/leads.md` · `revenue-log.md` · `groups.md` |
