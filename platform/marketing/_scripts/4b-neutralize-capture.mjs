@@ -1,8 +1,11 @@
-import { chromium } from "./pw.mjs";
 import fs from "fs";
-const SRC = "cc-src";
-const BASE = "http://localhost:3100";
-const LESSON = "/microeconomics/supply-demand/law-of-demand";
+import path from "path";
+import { chromium, BASE, LESSON, SOURCE } from "./paths.mjs";
+
+const SRC = path.join(SOURCE, "carousel-crops");
+fs.mkdirSync(SRC, { recursive: true });
+// CHROMIUM=/path/to/chrome for machines with a pre-baked browser.
+const launch = process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {};
 
 /* The live app only has an economics course loaded, so real screenshots would
  * expose it. Booklesss is meant to hold EVERY course — so before capturing we
@@ -25,6 +28,8 @@ const MAP = {
   "Market equilibrium": "Functions",
   "Elasticity": "Loops",
   "Price elasticity of demand": "For loops",
+  "Income elasticity of demand": "While loops",
+  "Cross-price elasticity of demand": "Nested loops",
   "Income elasticity": "While loops",
   "Cross-price elasticity": "Nested loops",
   "Utility & marginal utility": "Objects",
@@ -48,8 +53,10 @@ const READER = {
     "Booklesss is built to make the next thing you learn feel easy to start — and hard to put down.",
 };
 
-// runs in the page (Playwright passes a single arg)
-function transform({ map, reader }) {
+// runs in the page (Playwright passes a single arg). `deep` also rewrites keys
+// that sit INSIDE a longer string — the search palette's hints read
+// "Microeconomics / Supply & demand", so exact-match relabelling misses them.
+function transform({ map, reader, deep }) {
   // 1. reader content -> neutral
   const fc = document.querySelector(".font-content");
   if (fc) {
@@ -73,17 +80,27 @@ function transform({ map, reader }) {
   }
   // 2. relabel every remaining text node that exactly matches a map key (nav, breadcrumb, …)
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-  const hits = [];
-  while (walker.nextNode()) {
-    if (map[walker.currentNode.nodeValue.trim()]) hits.push(walker.currentNode);
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  if (deep) {
+    // longest key first, so "Price elasticity of demand" wins over "Elasticity"
+    const keys = Object.keys(map).sort((a, b) => b.length - a.length);
+    nodes.forEach((n) => {
+      let v = n.nodeValue;
+      keys.forEach((k) => { if (v.includes(k)) v = v.split(k).join(map[k]); });
+      if (v !== n.nodeValue) n.nodeValue = v;
+    });
+    return;
   }
-  hits.forEach((n) => {
-    const key = n.nodeValue.trim();
-    n.nodeValue = n.nodeValue.replace(key, map[key]);
-  });
+  nodes
+    .filter((n) => map[n.nodeValue.trim()])
+    .forEach((n) => {
+      const key = n.nodeValue.trim();
+      n.nodeValue = n.nodeValue.replace(key, map[key]);
+    });
 }
 
-const browser = await chromium.launch();
+const browser = await chromium.launch(launch);
 
 /* A. active-row macro (neutral) — DPR 6 */
 {
@@ -172,6 +189,22 @@ const browser = await chromium.launch();
   await page.close();
 }
 
+/* F. Search palette (neutral) — the real Cmd-K palette over a neutral tree, DPR 4 */
+{
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 4 });
+  await page.goto(BASE + LESSON, { waitUntil: "networkidle" });
+  await page.waitForTimeout(900);
+  await page.keyboard.press("Control+k");
+  await page.waitForTimeout(500);
+  const input = page.locator('input[placeholder^="Search courses"]');
+  // deep: the result hints are composite ("Microeconomics / Supply & demand")
+  await page.evaluate(transform, { map: MAP, reader: READER, deep: true });
+  await page.waitForTimeout(200);
+  const modal = input.locator('xpath=ancestor::div[contains(@class,"rounded-xl")][1]');
+  await modal.screenshot({ path: `${SRC}/command-neu.png` });
+  await page.close();
+}
+
 await browser.close();
 const png = (p) => { const b = fs.readFileSync(p); return b.readUInt32BE(16) + "x" + b.readUInt32BE(20); };
-console.log("active-neu", png(`${SRC}/active-neu.png`), "| subjects", png(`${SRC}/subjects.png`), "| lessons", png(`${SRC}/lessons-neu.png`), "| reader", png(`${SRC}/reader-neu.png`));
+console.log("command-neu", png(`${SRC}/command-neu.png`), "|", "active-neu", png(`${SRC}/active-neu.png`), "| subjects", png(`${SRC}/subjects.png`), "| lessons", png(`${SRC}/lessons-neu.png`), "| reader", png(`${SRC}/reader-neu.png`));

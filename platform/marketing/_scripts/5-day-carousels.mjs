@@ -1,11 +1,22 @@
-import { chromium } from "./pw.mjs";
+/* One day of social carousels — three slots (morning / afternoon / evening),
+ * each a set of 9:16 PNGs plus the day's PLAN.md.
+ *
+ *   node marketing/_scripts/5-day-carousels.mjs            # today
+ *   DAY=2026-07-24 node marketing/_scripts/5-day-carousels.mjs
+ *
+ * Needs the production server up (fonts come out of the app's own build):
+ *   npm run build && npx next start -p 3100
+ *
+ * The copy for each day lives in `days/<date>.mjs` — write that file, then run
+ * this. Nothing here knows what a day says; it only knows how a slide looks.
+ */
 import fs from "fs";
 import path from "path";
+import { chromium, MARKETING, SCRIPTS, SOURCE, BASE } from "./paths.mjs";
 
-const SRC = "cc-src";
-const DAY = "2026-07-24";
-const OUT = path.join("cc-day", DAY);
-fs.rmSync("cc-day", { recursive: true, force: true });
+const DAY = process.env.DAY || new Date().toISOString().slice(0, 10);
+const SRC = path.join(SOURCE, "carousel-crops");
+const OUT = path.join(MARKETING, "posts", DAY);
 
 const uri = (f) => "data:image/png;base64," + fs.readFileSync(path.join(SRC, f)).toString("base64");
 const IMG = Object.fromEntries(
@@ -101,7 +112,7 @@ function promise(o) {
   </div>` };
 }
 // the CTA: a Google search bar with "booklesss" typed. No button.
-function searchCTA(o) {
+function searchCTA(o = {}) {
   const d = !!o.dark;
   return { dark: d, html: `<div class="layer">
     <h1 style="position:absolute;left:${SAFE.left}px;top:470px;font-size:104px;line-height:.98;color:${ink(d)}">Search<br>booklesss.</h1>
@@ -131,56 +142,87 @@ function full(o) {
 /* crop geometries — all neutral/multi-subject, all SUPERZOOMS into a specific
  * area of interest (never the whole app). All light: dark bg waits for the app
  * to get a real dark mode. */
-const B_ACTIVE = { img: IMG["active-neu"], imgW: 1080, imgL: 0, imgTop: 944 };   // the fave: selected-lesson pill
-const B_SUBJECTS = { img: IMG.subjects, imgW: 900, imgL: 78, imgTop: 1000 };     // the subject shelf
-const B_LESSONS = { img: IMG["lessons-neu"], imgW: 1080, imgL: 0, imgTop: 900 }; // a subject's lesson list
-const B_TOC = { img: IMG.toc, imgW: 1560, imgL: -20, imgTop: 1000 };             // the on-this-page outline
-const B_READER = { img: IMG["reader-neu"], imgW: 1440, imgL: -150, imgTop: 1010 };// a lesson's heading + lead
-
-/* ---- the day: three light carousels (>=4 each). About Booklesss the
- *      platform — every subject, never one course. All superzoom + type. ---- */
-const SLOTS = {
-  morning: [
-    cover({ eyebrow: "Introducing", title: "Meet<br>Booklesss.", sub: "Every course you'll ever take &mdash; in one place, without the textbook." }),
-    bleed({ ...B_SUBJECTS, title: "Every subject,<br>one place.", sub: "Whatever you're learning next, it lives here." }),
-    bleed({ ...B_ACTIVE, title: "Never lose<br>your place.", sub: "It always knows where you are." }),
-    promise({ title: "Learn anything,<br>without the textbook.", line: "Clear. Fast. Free to start." }),
-    searchCTA({}),
-  ],
-  afternoon: [
-    cover({ eyebrow: "A new way to learn", title: "Ditch the<br>textbook.", sub: "Booklesss teaches any subject in plain English. Free.", subTop: 1010 }),
-    bleed({ ...B_LESSONS, title: "A clear path<br>through anything.", sub: "Start here. Move on when it clicks." }),
-    bleed({ ...B_SUBJECTS, title: "One home for<br>everything.", sub: "Maths, code, history, design &mdash; all in here." }),
-    promise({ title: "No textbooks.<br>No limits.", line: "Just open it and learn." }),
-    searchCTA({}),
-  ],
-  evening: [
-    cover({ eyebrow: "For people who like good software", title: "We rebuilt<br>the textbook.", sub: "One home for everything you learn &mdash; fast, quiet, and a little obsessive.", subTop: 1010 }),
-    bleed({ ...B_TOC, title: "See the shape<br>of every lesson.", sub: "Overview, key ideas, practice, summary." }),
-    bleed({ ...B_ACTIVE, title: "A 3px detail<br>we sweated.", sub: "It rides with you, frame-perfect." }),
-    promise({ title: "Booklesss.", line: "Learn anything without the textbook." }),
-    searchCTA({}),
-  ],
+const crops = {
+  active: { img: IMG["active-neu"], imgW: 1080, imgL: 0, imgTop: 944 },     // the fave: selected-lesson pill
+  subjects: { img: IMG.subjects, imgW: 900, imgL: 78, imgTop: 1000 },       // the subject shelf
+  lessons: { img: IMG["lessons-neu"], imgW: 1080, imgL: 0, imgTop: 900 },   // a subject's lesson list
+  toc: { img: IMG.toc, imgW: 1560, imgL: -20, imgTop: 1000 },               // the on-this-page outline
+  reader: { img: IMG["reader-neu"], imgW: 2000, imgL: -120, imgTop: 1000 }, // a lesson's heading + lead
+  command: { img: IMG["command-neu"], imgW: 1560, imgL: -40, imgTop: 1000 }, // the search palette
+  playground: { img: IMG.playground, imgW: 2400, imgL: -30, imgTop: 980 },  // the runnable code panel
 };
 
+/* ---- the day ---- */
+const dayFile = path.join(SCRIPTS, "days", `${DAY}.mjs`);
+if (!fs.existsSync(dayFile)) {
+  console.error(`No copy for ${DAY}. Write marketing/_scripts/days/${DAY}.mjs first (copy the newest one).`);
+  process.exit(1);
+}
+const day = await import(`./days/${DAY}.mjs`);
+const SLOTS = day.slots({ cover, bleed, promise, searchCTA, full, crops });
+
 /* ---- render ---- */
-const browser = await chromium.launch();
+fs.rmSync(OUT, { recursive: true, force: true });
+// CHROMIUM=/path/to/chrome when the machine has a browser Playwright didn't
+// download itself (sandboxes, CI images with a pre-baked Chromium).
+const browser = await chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {});
 const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 2 });
-for (const [slot, slides] of Object.entries(SLOTS)) {
+for (const [slot, meta] of Object.entries(SLOTS)) {
   const dir = path.join(OUT, slot);
   fs.mkdirSync(dir, { recursive: true });
-  for (let i = 0; i < slides.length; i++) {
-    const s = slides[i];
+  for (let i = 0; i < meta.slides.length; i++) {
+    const s = meta.slides[i];
     const body = (s.dark ? DARK_BG : LIGHT_BG) + s.html + wordmark(s.dark);
     const html = `<!doctype html><html><head><meta charset="utf-8"><style>${BASE_CSS}</style></head><body>${body}</body></html>`;
     await page.route("**/__s", (r) => r.fulfill({ status: 200, contentType: "text/html", body: html }));
-    await page.goto("http://localhost:3100/__s");
+    await page.goto(`${BASE}/__s`);
     await page.evaluate(() => document.fonts.ready);
     await page.waitForTimeout(320);
     await page.screenshot({ path: path.join(dir, `${String(i + 1).padStart(2, "0")}.png`) });
     await page.unroute("**/__s");
   }
-  console.log("  •", slot, `(${slides.length} images)`);
+  console.log("  •", slot, `(${meta.slides.length} images)`);
 }
 await browser.close();
-console.log("done");
+
+/* ---- the plan ---- */
+const ICON = { morning: "☀️", afternoon: "🌤️", evening: "🌙" };
+const rows = Object.entries(SLOTS)
+  .map(([slot, m]) => `| ${ICON[slot] || ""} ${slot[0].toUpperCase() + slot.slice(1)} | ${m.time} | \`${slot}/\` |`)
+  .join("\n");
+const sections = Object.entries(SLOTS)
+  .map(([slot, m]) => `### ${ICON[slot] || ""} ${slot[0].toUpperCase() + slot.slice(1)} — \`${slot}/\`
+**Post title:** ${m.postTitle}
+**Caption:**
+${m.caption.trim().split("\n").map((l) => `> ${l}`).join("\n")}`)
+  .join("\n\n");
+
+fs.writeFileSync(
+  path.join(OUT, "PLAN.md"),
+  `# ${DAY} · ${day.title}
+
+${day.note.trim()}
+
+| Slot | Time (local) | Folder |
+|------|------|-------|
+${rows}
+
+---
+
+${sections}
+
+---
+
+## Safe areas (researched — see chat for sources)
+Cross-platform (IG Reels + TikTok + Shorts) shared safe box is **900×1400
+centred** in 1080×1920 → keep text/logo within **~90px sides, ~260px top/bottom**.
+IG Reels also wants text/logos **≥250px from top** and **≥420px from bottom**.
+These layouts sit inside all of that (text runs ~x88–930, ~y300–1150); imagery
+still bleeds to the edges.
+
+*Planned one day at a time — tomorrow gets its own \`posts/<date>/\` folder.
+Write \`_scripts/days/<date>.mjs\`, then run \`_scripts/5-day-carousels.mjs\`.
+No posting connector here, so upload manually or via a scheduler.*
+`,
+);
+console.log("done →", path.relative(MARKETING, OUT));

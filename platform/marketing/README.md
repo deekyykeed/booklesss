@@ -25,7 +25,20 @@ search-bar CTA** ("search booklesss — three s's — first result"). Text/logo 
 inside the social safe area (top ~300px, bottom ~340px, right ~150px clear).
 
 Planned one day at a time — no fixed calendar, because the app changes daily.
-Regenerate a day with `_scripts/5-day-carousels.mjs` (edit the `SLOTS` copy first).
+Each day's copy is a module: `_scripts/days/<date>.mjs` (title, the note that
+opens PLAN.md, and the three slots — post title, caption, slides). Write that
+file, then run the generator; it renders the PNGs **and** writes PLAN.md from
+the same module, so the captions and the images never drift apart.
+
+```bash
+npm run build && npx next start -p 3100        # fonts come from the app's build
+node marketing/_scripts/5-day-carousels.mjs    # today, or DAY=2026-07-26 …
+```
+
+New crops come from `_scripts/4b-neutralize-capture.mjs`, which screenshots the
+real UI with the course tree relabelled to a neutral multi-subject curriculum —
+the live app only holds economics, and the posts are about Booklesss holding
+every subject. Never post a raw capture of the seeded course.
 
 ## social/
 
