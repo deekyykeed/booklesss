@@ -643,16 +643,26 @@
 
   /* Attached files, listed above the field. Nothing uploads them yet — they
      clear with the draft when it sends. */
+  /* One row that scrolls sideways rather than wrapping — a stack of wrapped
+     chips would push the field down the panel every time another file lands. */
   .composer-chips {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    /* room for the chips' own rounding against the scroll edge */
+    margin: 0 -2px;
+    padding: 0 2px;
+  }
+  .composer-chips::-webkit-scrollbar {
+    display: none;
   }
   .composer-chip {
     display: inline-flex;
+    flex: 0 0 auto;
     align-items: center;
     gap: 5px;
-    max-width: 100%;
     height: 26px;
     padding: 0 4px 0 5px; /* the type badge carries its own optical inset */
     border-radius: 6px;
@@ -660,7 +670,10 @@
     font-size: 12.5px;
     color: var(--color-ink-2);
   }
+  /* Deliberately short: the badge already says what kind of file it is, so the
+     name only has to jog your memory, not be readable in full. */
   .composer-chip-name {
+    max-width: 72px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
