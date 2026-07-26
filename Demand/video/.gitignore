@@ -1,0 +1,9 @@
+node_modules/
+out/
+.remotion/
+
+# Screen recordings dropped in for a render — source footage stays local
+# (repo root .gitignore already blocks *.mp4/*.mov/*.webm, this is belt+braces)
+public/recordings/*
+!public/recordings/.gitkeep
+public/app/

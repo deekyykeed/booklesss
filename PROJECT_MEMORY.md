@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-07-25 (session 19)
+**Last updated:** 2026-07-26 (session 21)
 
 ---
 
@@ -183,6 +183,135 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-07-26 (session 21 — workspace reorg + social build-in-public pipeline)
+
+Parallel to session 20 (same OneDrive tree). This session: reorganised the
+workspace and built the daily-social system into a build-in-public progress log.
+
+**Done:**
+- **Marketing moved out of the app → `Demand/social/`** (owner's call: make Demand
+  the home). Renamed the inner `social/`→`stills/`. Recreated the lost `pw.mjs`
+  shim; repointed `paths.mjs` (Playwright borrowed from `platform/`); **vendored the
+  two app fonts into `_source/fonts/`** so the day generator is self-contained (no
+  build, no running server). Committed as `99d2c29`.
+- **`tools/`** created for standalone utilities (`transcribe*.py` moved from `_dev/`).
+  Removed 8 platform-root scratch files (blob/perf/test-pngs). **`WORKSPACE.md`** map
+  written (tree + "do not move" rules); CLAUDE.md/README pointers updated.
+- **Posts folder = week → weekday** (`posts/2026-W30 (Jul 20-26)/2026-07-26 Sunday/…`)
+  via a `dayFolder()` helper; both generators now default `DAY` to **today's real
+  date** (`new Date()`), fixing a wrong-date bug (see Dead Ends).
+- **Social pipeline (build-in-public):** `cap-feature.mjs` shoots the **live app,
+  mobile layout** (drawer-only clips so the composer + glow fill; strips the Next
+  dev badge; injects `--voice` for a lit glow); `prog-post.mjs` renders **full-bleed**
+  9:16 progress carousels (app fills the frame, no boxes, faded text zone).
+- **Two posts for today:** afternoon = **AI tutor** (composer / voice glow / typing
+  demo), evening = **reading + navigation**. Honest framing — the AI composer is
+  UI-only ("coming soon"), so copy says "building this", not "it answers".
+- **Safe-area layout:** lifted the focal UI into the centre safe box (clear of the
+  top ~260, bottom ~420 caption zone, right button rail), biased centre-left. CTA
+  trimmed to **"DM me 'link'"** (no "comment"), bigger sub text.
+- **2 feedback memories:** [[feedback_marketing_capture_mobile]] (shoot the mobile
+  layout), [[feedback_marketing_cta_dm]] (DM CTA, never "comment").
+
+**What Worked:**
+- **Stale `.next` dev-lock:** the concurrent dev server had crashed (PID dead, ports
+  free) but left a lock claiming ":3111 in use". `rm -rf platform/.next` cleared it →
+  fresh `next dev -p 3100` started fine. Diagnose with `Get-Process`/`Get-NetTCPConnection`
+  before assuming a real server is up.
+- **Vivid still glow:** DON'T grant the mic — then the component's loudness rAF loop
+  never starts, so an injected `--voice` (pushed past 1, e.g. 1.9 → opacity ~0.55)
+  sticks for the screenshot. The live app glow is intentionally subtle; a still needs
+  it stronger.
+- **Full-bleed + safe areas:** place the shot as a positioned `<img>` (not object-fit
+  cover — cover glues content to the bottom); a negative `top` lifts the focal UI into
+  the centre, with top+bottom bg-gradient fades dissolving it (no card, caption zone clear).
+- **Drawer-only clips** `{x:62,w:340}` drop the reader sliver so the composer/glow fill;
+  remove `nextjs-portal` before each screenshot to kill the dev badge.
+
+**Dead Ends (do not retry):**
+- **Hardcoded `DAY = "2026-07-25"`** → posts filed under a phantom "Saturday" folder
+  while today was **Sunday 2026-07-26**. Always derive from `new Date().toLocaleDateString("en-CA")`.
+- **Boxed device/card mockups** for the progress posts — owner rejected ("too small,
+  boxed, images repeated, no typing demo"). Use full-bleed zoomed crops, one distinct
+  shot per slide.
+- **Composer glued to the frame bottom** (object-fit cover "center bottom") — lands in
+  the IG/TikTok caption zone and gets covered. Must lift into the centre safe box.
+
+**Flags:**
+- **Linear (`linear-server`) needs auth** — backlog not updated this session.
+- **Parallel session** (session 20 reader + a new `Demand/video/` Remotion project)
+  shares the tree. Committed my files via pathspec; left `Demand/video/*` and
+  `platform/src/{globals.css,RightPanel.tsx}` uncommitted for that effort.
+- **Dev server left running** on `localhost:3100`.
+- No posting connector exists — the posts are a **manual upload**.
+
+**Next Session:**
+- [ ] Post Sunday's afternoon + evening progress posts (manual upload).
+- [ ] Redo or drop the old evergreen `morning/` post (stale "comment" CTA, desktop crops).
+- [ ] Optional: dial safe-area margins to exact pixel specs if the owner provides them.
+- [ ] Mobile re-capture + crop-geometry re-tune for the daily carousels (per [[feedback_marketing_capture_mobile]]).
+
+---
+
+### Session 2026-07-26 (session 20 — reader right-panel + AI composer + voice glow)
+
+Long UI-iteration day on the course reader. ~15 small commits to `main` (push =
+deploy), each verified with Playwright before pushing.
+
+**Done:**
+- **Right "step context" panel** — mirror of the left sidebar: resizable +
+  collapsible frosted rail at **xl (≥1280)**, transparent **push-drawer below xl**
+  (in the 768–1279 band the nav rail slides off with the content so nothing
+  overlaps). Moved the On-this-page TOC into it. Two mobile drawers: swipe-right →
+  course nav, swipe-left → step context. Wired the left sidebar's (previously
+  dead) collapse button for parity.
+- **Motion:** content **fade + de-blur on lesson change** (+ scroll reset);
+  **smooth sidebar collapse/expand** — the content gutter eases in step with the
+  panel, gated on a transient `data-collapsing` flag so a resize drag stays
+  transition-free.
+- **AI composer** (`RightPanel.tsx`): typeable, echoes your turns as bubbles (no
+  backend); **Enter = newline, send button only**; redesigned to the owner's
+  reference (message on top, control row). Icons: bare (no circle container),
+  **Solar line→bold on active**, **round-arrow send**, size 26, spaced. Mobile =
+  flush edge-to-edge bar, no radius; desktop = rounded **24px** card.
+- **Voice mode:** mic capture (`getUserMedia` + Web Audio analyser) drives
+  **randomised-colour glow blobs behind the composer**, scaled by live loudness.
+  Ready to wire to a real voice backend (**ElevenLabs** connector is available but
+  needs auth).
+- **Header/type tweaks:** mobile hamburger glyph aligned to 16px then spaced from
+  the wordmark; nav step weight 500→600; selector border 1px; mobile content
+  padding 20→16.
+
+**What Worked:**
+- Playwright headless for QA of *every* change — screenshots + DOM measurement.
+  `--use-fake-ui-for-media-stream --use-fake-device-for-media-stream` auto-grants
+  the mic + feeds fake audio to test voice mode. **In-page rAF sampling** for
+  animation curves: a cross-process `page.evaluate` loop starves the main-thread
+  padding animation and gives false "it snaps" readings; sample inside the page.
+- **Pathspec commits** (`git commit --only -- <paths>`) to commit ONLY my reader
+  files while the other session's big staged reorg sat untouched in the shared
+  OneDrive tree.
+- Hand-inlining specific Solar icon paths (extracted from
+  `@iconify-json/solar/icons.json` via node) instead of `<Icon>`, which imports
+  the whole Solar JSON — bad to pull into a client component.
+
+**Dead Ends (do not retry):**
+- **Windows EPERM lock on `.next`** mid-build (OneDrive holding a chunk file) —
+  kill node + `rm -rf .next`, rebuild. Recurred again this session.
+- Voice: a **full-screen background dim** and a **composer border-glow ring** were
+  both built then rejected by the owner. Glow lives ONLY as blobs behind the
+  composer now; the `0 0 0 1px` ring read as a double border line.
+- `next start` leaves a **lingering node child** after TaskStop that keeps holding
+  the port (EADDRINUSE on restart) — kill by PID / use a fresh port each time.
+
+**Flags:**
+- ⚠️ The **other session's staged reorg** (`platform/marketing`→`Demand/social`,
+  `_dev`→`tools`, `WORKSPACE.md`, deleted scratch pngs — ~70 entries) is still
+  **uncommitted** in the working tree. Not mine; left untouched all session. Its
+  owner needs to commit it.
+- Linear was **unauthorized** this session — tracker not updated (this work wasn't
+  tracked there anyway).
 
 ### Session 2026-07-25 (session 19 — platform replaced with static reader + Supabase content migration)
 

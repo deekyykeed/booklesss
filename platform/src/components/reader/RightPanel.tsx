@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Section } from "@/lib/course";
+import { FileTypeIcon } from "./file-icons";
 import { useReaderShell } from "./MobileNav";
 import { useFollow } from "./useFollow";
 
@@ -145,7 +146,7 @@ function PanelIcon({ dir }: { dir: "close" | "open" }) {
 /* Solar, hand-inlined (not via <Icon>, which would pull the whole Solar JSON
  * into this client bundle). Line at rest; bold once active (voice mode on / a
  * message ready to send). Send is a round-arrow-up. */
-function SendArrow({ size = 26, active = false }: { size?: number; active?: boolean }) {
+function SendArrow({ size = 20, active = false }: { size?: number; active?: boolean }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
       {active ? (
@@ -159,7 +160,31 @@ function SendArrow({ size = 26, active = false }: { size?: number; active?: bool
     </svg>
   );
 }
-function MicIcon({ size = 26, active = false }: { size?: number; active?: boolean }) {
+/* Solar · paperclip — Broken at rest, Bold once something is attached. Same
+ * rest→active switch the mic and send use, so the toolbar stays one family. */
+function ClipIcon({ size = 20, active = false }: { size?: number; active?: boolean }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      {active ? (
+        <path
+          fill="currentColor"
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M8.886 3.363c2.942-2.817 7.7-2.817 10.643 0c2.961 2.834 2.961 7.444 0 10.279l-7.948 7.608c-2.09 2-5.466 2-7.556 0a5.03 5.03 0 0 1 0-7.324l7.834-7.498a3.253 3.253 0 0 1 4.468 0a3 3 0 0 1 0 4.367l-7.89 7.554a.75.75 0 1 1-1.038-1.084l7.89-7.553a1.503 1.503 0 0 0 0-2.2a1.753 1.753 0 0 0-2.393 0L5.062 15.01a3.53 3.53 0 0 0 0 5.156c1.51 1.445 3.972 1.445 5.482 0l7.948-7.608c2.344-2.244 2.344-5.868 0-8.112c-2.363-2.261-6.206-2.261-8.57 0l-6.403 6.13A.75.75 0 0 1 2.48 9.493z"
+        />
+      ) : (
+        <path
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeWidth="1.5"
+          d="M19.01 13.1c2.653-2.54 2.653-6.656 0-9.196s-6.953-2.539-9.606 0M7.918 17.807l7.89-7.553a2.253 2.253 0 0 0 0-3.284a2.503 2.503 0 0 0-3.43 0l-7.834 7.498a4.28 4.28 0 0 0 0 6.24c1.8 1.723 4.718 1.723 6.518 0l3.974-3.804M3 10.034L6.202 6.97"
+        />
+      )}
+    </svg>
+  );
+}
+function MicIcon({ size = 20, active = false }: { size?: number; active?: boolean }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
       {active ? (
@@ -199,12 +224,14 @@ function ChatThread({ messages }: { messages: ChatMessage[] }) {
   );
 }
 
-/* Composer pinned to the panel's bottom: message on top, a control row beneath
- * with the voice-mode toggle and send. Enter inserts a newline (send is the
- * button only); the field auto-grows. In voice mode the mic drives coloured glow
- * blobs behind the card and a border glow, both scaled by live loudness — the
- * whole thing lights up as you speak. Blob colours are randomised each session.
- * data-no-swipe so a drag while typing never yanks the drawer. */
+/* Composer pinned to the panel's bottom: message on top, a control row beneath —
+ * attach on the left, voice and send on the right. Enter inserts a newline (send
+ * is the button only); the field auto-grows. In voice mode the mic
+ * drives coloured glow blobs behind the card, scaled by live loudness, so the
+ * card lights up as you speak. Blob colours are randomised each session.
+ * data-no-swipe so a drag while typing never yanks the drawer.
+ * The card's construction (nested radii, two-layer shadow, compact step-down)
+ * lives in globals.css under "AI composer". */
 function ChatComposer({
   value,
   onChange,
@@ -221,6 +248,11 @@ function ChatComposer({
   const canSend = value.trim().length > 0;
   const taRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  /* Picked files, listed as chips above the field. Nothing uploads them yet —
+   * they ride along with the draft and clear when it sends. */
+  const [files, setFiles] = useState<{ id: number; name: string }[]>([]);
+  const fileId = useRef(1);
 
   // Auto-grow with the content, capped so the composer never eats the panel.
   useEffect(() => {
@@ -239,6 +271,7 @@ function ChatComposer({
     const clear = () => {
       el.style.setProperty("--von", "0");
       el.style.setProperty("--voice", "0");
+      el.removeAttribute("data-voice");
     };
     if (!voiceOn) {
       clear();
@@ -246,15 +279,22 @@ function ChatComposer({
     }
 
     const palette = [
-      "168 85 247", "59 130 246", "45 212 191", "236 72 153",
-      "251 146 60", "52 211 153", "129 140 248", "244 63 94",
+      "rgb(168 85 247)", "rgb(59 130 246)", "rgb(45 212 191)", "rgb(236 72 153)",
+      "rgb(251 146 60)", "rgb(52 211 153)", "rgb(129 140 248)", "rgb(244 63 94)",
     ];
-    const shuffled = [...palette].sort(() => Math.random() - 0.5);
-    el.style.setProperty("--g1", shuffled[0]);
-    el.style.setProperty("--g2", shuffled[1]);
-    el.style.setProperty("--g3", shuffled[2]);
+    // Three at a time, reshuffled on a clock. --g1..3 are registered @property
+    // colours, so each new trio cross-fades in rather than snapping.
+    const paint = () => {
+      const picked = [...palette].sort(() => Math.random() - 0.5);
+      el.style.setProperty("--g1", picked[0]);
+      el.style.setProperty("--g2", picked[1]);
+      el.style.setProperty("--g3", picked[2]);
+    };
+    paint();
+    const recolour = window.setInterval(paint, 4200);
     el.style.setProperty("--von", "1");
     el.style.setProperty("--voice", "0");
+    el.setAttribute("data-voice", ""); // starts the blobs drifting
 
     let raf = 0;
     let stream: MediaStream | null = null;
@@ -284,8 +324,10 @@ function ChatComposer({
             sum += v * v;
           }
           const rms = Math.sqrt(sum / data.length); // ~0..0.4 while speaking
-          const target = Math.min(1, rms * 4);
-          level += (target - level) * 0.25; // smooth so it isn't jittery
+          const target = Math.min(1, rms * 7); // gain: ordinary speech should peg the top of the range
+          // Fast attack, slow release — the glow jumps on a syllable and eases
+          // back down, instead of averaging every sentence into a flat wash.
+          level += (target - level) * (target > level ? 0.5 : 0.1);
           el.style.setProperty("--voice", level.toFixed(3));
           raf = requestAnimationFrame(tick);
         };
@@ -298,6 +340,7 @@ function ChatComposer({
     return () => {
       cancelled = true;
       cancelAnimationFrame(raf);
+      window.clearInterval(recolour);
       stream?.getTracks().forEach((t) => t.stop());
       audio?.close().catch(() => {});
       clear();
@@ -305,15 +348,14 @@ function ChatComposer({
   }, [voiceOn]);
 
   return (
-    // Mobile: no outer padding, so the bar goes flush to the panel's sides and
-    // the screen bottom. Desktop: the floating card gets its margin back.
     <form
       ref={formRef}
       onSubmit={(e) => {
         e.preventDefault();
         onSubmit();
+        setFiles([]);
       }}
-      className="voice-host relative shrink-0 xl:px-3 xl:pb-3 xl:pt-2"
+      className="voice-host composer-host relative shrink-0"
       data-no-swipe
     >
       {/* Coloured glow behind the card; each blob's opacity scales with --voice. */}
@@ -322,52 +364,96 @@ function ChatComposer({
         <span />
         <span />
       </div>
-      {/* Mobile: a flush input bar — no radius, only a top hairline as the
-          divider. Desktop (xl): the rounded squircle card with a full border.
-          .composer-card carries the voice border ring (::after). */}
-      <div className="composer-card squircle relative border-t border-line bg-white/70 px-3 pb-2 pt-2.5 backdrop-blur-md focus-within:border-line-2 xl:rounded-3xl xl:border">
-        <textarea
-          ref={taRef}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          rows={1}
-          placeholder="Ask about this step…"
-          aria-label="Ask about this step"
-          style={{ maxHeight: 132 }}
-          className="no-scrollbar relative block w-full resize-none bg-transparent px-1 text-[13px] leading-5 text-ink placeholder:text-placeholder focus:outline-none"
-        />
-        {/* Bare icons — no container. Spaced apart. */}
-        <div className="relative mt-1 flex items-center justify-end gap-3">
-          <button
-            type="button"
-            onClick={onToggleVoice}
-            aria-pressed={voiceOn}
-            aria-label={voiceOn ? "Turn off voice mode" : "Turn on voice mode"}
-            title="Voice mode"
-            className={
-              "grid h-8 w-8 place-items-center transition-colors " +
-              (voiceOn ? "text-ink" : "text-muted hover:text-ink")
-            }
-          >
-            <MicIcon active={voiceOn} />
-          </button>
-          <button
-            type="submit"
-            disabled={!canSend}
-            aria-label="Send"
-            className={
-              "grid h-8 w-8 shrink-0 place-items-center transition-colors " +
-              (canSend ? "text-ink" : "text-muted")
-            }
-          >
-            <SendArrow active={canSend} />
-          </button>
+      <div className="composer-shell relative">
+        <div className="composer-card squircle">
+          {files.length > 0 && (
+            <div className="composer-chips">
+              {files.map((f) => (
+                <span key={f.id} className="composer-chip squircle">
+                  <FileTypeIcon name={f.name} />
+                  <span className="composer-chip-name">{f.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => setFiles((list) => list.filter((x) => x.id !== f.id))}
+                    aria-label={`Remove ${f.name}`}
+                    className="composer-chip-x"
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        d="M6 6l12 12M18 6L6 18"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+          <textarea
+            ref={taRef}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            rows={1}
+            placeholder="Ask about this step…"
+            aria-label="Ask about this step"
+            style={{ maxHeight: 132 }}
+            className="composer-input no-scrollbar"
+          />
+          <div className="composer-tools">
+            <input
+              ref={fileRef}
+              type="file"
+              multiple
+              hidden
+              onChange={(e) => {
+                const picked = Array.from(e.target.files ?? []).map((f) => ({
+                  id: fileId.current++,
+                  name: f.name,
+                }));
+                if (picked.length) setFiles((list) => [...list, ...picked]);
+                e.target.value = ""; // so picking the same file twice still fires
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              aria-label="Attach a file"
+              title="Attach"
+              data-on={files.length > 0 ? "" : undefined}
+              className="composer-icon squircle"
+            >
+              <ClipIcon active={files.length > 0} />
+            </button>
+
+            <button
+              type="button"
+              onClick={onToggleVoice}
+              aria-pressed={voiceOn}
+              aria-label={voiceOn ? "Turn off voice mode" : "Turn on voice mode"}
+              title="Voice mode"
+              data-on={voiceOn ? "" : undefined}
+              className="composer-icon squircle ml-auto"
+            >
+              <MicIcon active={voiceOn} />
+            </button>
+            <button
+              type="submit"
+              disabled={!canSend}
+              aria-label="Send"
+              data-on={canSend ? "" : undefined}
+              className="composer-icon squircle"
+            >
+              <SendArrow active={canSend} />
+            </button>
+          </div>
         </div>
+        <p className="mt-1.5 hidden px-1 text-[10.5px] text-placeholder xl:block">
+          {voiceOn ? "Voice mode on — coming soon" : "AI tutor — coming soon"}
+        </p>
       </div>
-      {/* The 'coming soon' hint would break the flush-to-bottom bar on mobile. */}
-      <p className="relative mt-1.5 hidden px-1 text-[10.5px] text-placeholder xl:block">
-        {voiceOn ? "Voice mode on — coming soon" : "AI tutor — coming soon"}
-      </p>
     </form>
   );
 }

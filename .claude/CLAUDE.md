@@ -19,12 +19,12 @@ python3 "Schools/[School]/[Course]/[lesson]/sources/build_[course]_[step]_[slug]
 
 **Transcribe a video lecture:**
 ```bash
-python3 _dev/transcribe.py "path/to/video.mp4"
+python3 tools/transcribe.py "path/to/video.mp4"
 ```
 
 **Bulk-transcribe a folder of videos:**
 ```bash
-python3 _dev/transcribe_bulk.py "path/to/folder/"
+python3 tools/transcribe_bulk.py "path/to/folder/"
 ```
 
 No build system, no tests, no linter. Scripts are self-contained.
@@ -45,16 +45,23 @@ Booklesss/
 │       ├── BBA 1110 — Business Administration/
 │       └── _pipeline/                 ← 13 raw UNZA courses (LOCAL ONLY — gitignored)
 │
-├── _dev/
+├── _dev/                             ← shared build assets (referenced by ALL build scripts)
 │   ├── brand/                         ← logo, mark, grain.png
 │   ├── fonts/                         ← Parastoo, Aptos, Parkinsans
+│   ├── step-generator/               ← Python HTML step generator (used by some content_*.py)
 │   └── tmp/                           ← scratch previews and text extracts (gitignored)
 │
+├── tools/                            ← standalone utility scripts (transcribe.py, transcribe_bulk.py)
 ├── Operations/                        ← workspace.md, leads, revenue, checklist,
 │                                        pricing-strategy.md, positioning.md
-├── Demand/                            ← demand-side: marketing flyers, video scripts
-└── Brand/                             ← raw asset drop zone (logos, hero images)
+├── Demand/                            ← demand-side content
+│   └── social/                       ← daily 9:16 social carousels + generators (the posting hub)
+├── platform/                         ← Next.js 16 course-reader app (booklesss.vercel.app)
+└── Brand/                            ← raw asset drop zone (logos, hero images)
 ```
+
+See [`WORKSPACE.md`](../WORKSPACE.md) for the full map, per-folder detail, and the
+**"do not move"** rules (lesson build scripts, `_dev/fonts`+`brand`, marketing generators).
 
 ### Active Course Anatomy
 
@@ -139,10 +146,12 @@ All icons in `platform/` come from the **Solar** set (by 480 Design) via the loc
 
 The old Streamline-MCP workflow (`solar.tsx` with hand-inlined SVGs) belonged to the previous platform app, deleted 2026-07-24 — recoverable from git history before that date if ever needed.
 
+**One exception:** the composer's attachment chips use **Streamline Ultimate Colors (Free)** file-type badges (PDF / JPG / XLS / doc), hand-inlined in `platform/src/components/reader/file-icons.tsx`. They are multicolour on purpose — the colour is what distinguishes the file types — so they keep their own fills rather than following `currentColor`. Licensed CC BY 4.0, attribution still owed (as with Solar). Everything else stays Solar.
+
 **Never** hardcode Framer CDN URLs for icons — always inline SVG so icons respond to `color` CSS.
 
 ### Transcription
-`_dev/transcribe.py` uses OpenAI Whisper (`small.en` model). Outputs `[video-name]_transcript.md` alongside the source video. Skips files already transcribed. Source video collection is in `Schools/UNZA/_pipeline/_video-archive/` (ECO 155 macroeconomics, MIT 14.01SC microeconomics).
+`tools/transcribe.py` uses OpenAI Whisper (`small.en` model). Outputs `[video-name]_transcript.md` alongside the source video. Skips files already transcribed. Source video collection is in `Schools/UNZA/_pipeline/_video-archive/` (ECO 155 macroeconomics, MIT 14.01SC microeconomics).
 
 ## Project Tracking (Linear)
 

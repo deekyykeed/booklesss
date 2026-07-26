@@ -39,7 +39,7 @@ PY
 Also worth doing locally while prepping:
 
 ```bash
-python3 _dev/transcribe_bulk.py "Schools/UNZA/_pipeline/_video-archive/"
+python3 tools/transcribe_bulk.py "Schools/UNZA/_pipeline/_video-archive/"
 ```
 
 (`transcribe_bulk.py` skips videos that already have a `_transcript.md`, so this is
