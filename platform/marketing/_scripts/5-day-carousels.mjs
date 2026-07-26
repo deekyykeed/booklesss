@@ -12,7 +12,31 @@
  */
 import fs from "fs";
 import path from "path";
-import { chromium, MARKETING, SCRIPTS, SOURCE, BASE } from "./paths.mjs";
+import { createRequire } from "module";
+import { chromium, MARKETING, ROOT, SCRIPTS, SOURCE, BASE } from "./paths.mjs";
+
+/* Icons come from a local Iconify set and are inlined as SVG — the same way
+ * the app itself does it (src/lib/icon.tsx, @iconify-json/solar). This is
+ * Streamline's free Freehand Line set, so the sketchy hand-drawn marks sit
+ * against the clean UI shots. No network at render time.
+ *   Browse names: icones.js.org/collection/streamline-freehand */
+const require = createRequire(path.join(ROOT, "package.json"));
+const { getIconData, iconToSVG, replaceIDs } = require("@iconify/utils");
+const FREEHAND = require("@iconify-json/streamline-freehand/icons.json");
+
+function icon(name, size = 104) {
+  const data = getIconData(FREEHAND, name);
+  if (!data) throw new Error(`Unknown Freehand icon: "${name}"`);
+  const r = iconToSVG(data, { height: size, width: size });
+  const attrs = Object.entries(r.attributes).map(([k, v]) => `${k}="${v}"`).join(" ");
+  // no colour here: the body uses currentColor, so the wrapper's colour wins
+  return `<svg xmlns="http://www.w3.org/2000/svg" ${attrs} width="${size}" height="${size}">${replaceIDs(r.body)}</svg>`;
+}
+// Stamped top-right, on the wordmark's line, inside the safe area.
+const stamp = (name, d) =>
+  name
+    ? `<div style="position:absolute;right:${SAFE.right}px;top:258px;color:${ink(d)};opacity:.8;z-index:5">${icon(name)}</div>`
+    : "";
 
 const DAY = process.env.DAY || new Date().toISOString().slice(0, 10);
 const SRC = path.join(SOURCE, "carousel-crops");
@@ -88,6 +112,7 @@ function cover(o) {
     <div class="eyebrow" style="position:absolute;left:${SAFE.left}px;top:560px;color:${eyec(d)}">${o.eyebrow}</div>
     <h1 style="position:absolute;left:${SAFE.left}px;top:${o.titleTop || 612}px;font-size:${o.size || 122}px;line-height:.96;color:${ink(d)}">${o.title}</h1>
     <p class="sub" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right + 8}px;top:${o.subTop || 1030}px;font-size:33px;line-height:1.4;color:${subc(d)}">${o.sub}</p>
+    ${stamp(o.icon, d)}
   </div>` };
 }
 // the signature: crop bleeds off the bottom, faded at top — NO container
@@ -101,6 +126,7 @@ function bleed(o) {
       mask-image:linear-gradient(to bottom,transparent 0,#000 160px)">
       <img src="${o.img}" style="position:absolute;display:block;width:${o.imgW}px;left:${o.imgL || 0}px;top:0">
     </div>
+    ${stamp(o.icon, d)}
   </div>` };
 }
 // a wide band of UI crossing the frame — bleeds off both sides, and off the
@@ -118,6 +144,7 @@ function strip(o) {
     }">
       <img src="${o.img}" style="position:absolute;display:block;width:${o.imgW}px;left:${o.imgL || 0}px;top:0">
     </div>
+    ${stamp(o.icon, d)}
   </div>` };
 }
 function promise(o) {
@@ -141,6 +168,7 @@ function searchCTA(o = {}) {
       <span style="margin-left:auto;display:flex;flex-shrink:0">${LENS}</span>
     </div>
     <p class="sub" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:1090px;font-size:31px;line-height:1.45;color:${subc(d)}">Or just comment <b style="color:${ink(d)}">&ldquo;link&rdquo;</b> and I&rsquo;ll send it. &#128071;</p>
+    ${stamp(o.icon, d)}
   </div>` };
 }
 // full clear app — NOT faded at the top, just the actual app (soft bottom edge only)

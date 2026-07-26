@@ -45,6 +45,14 @@ subject. Never post a raw capture of the seeded course.
 | `4b-neutralize-capture.mjs` | sidebar, subjects shelf, lesson list, reader, search palette, full window |
 | `7-ai-crops.mjs` | top bar, the STEP panel, the AI composer — at rest and with voice mode lit |
 
+**Icons** are Streamline's free Freehand Line set, pulled the same way the app
+pulls Solar — a local Iconify package (`@iconify-json/streamline-freehand`)
+resolved and inlined as SVG at render time, no network. Set `icon: "<name>"` on
+any slide and it stamps top-right, on the wordmark's line. Names:
+[icones.js.org/collection/streamline-freehand](https://icones.js.org/collection/streamline-freehand).
+The premium Freehand set is paywalled and its download URLs are unreachable
+from a sandbox anyway — stay on the Iconify package.
+
 Voice mode's glow is driven by live mic loudness, and headless has no mic, so
 `7-ai-crops.mjs` switches voice mode on for real and then writes a loudness
 value by hand. The state is genuine; only the volume is staged. Re-shoot the

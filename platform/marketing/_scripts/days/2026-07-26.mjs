@@ -30,6 +30,7 @@ Search **booklesss** (three s's) on Google — we're the first result. 👇
 #buildinpublic #edtech #ai #designengineering #studytok`,
     slides: [
       cover({
+        icon: "alert-alarm-clock",
         eyebrow: "For the night before",
         title: "You'll never<br>break another<br>night again.",
         size: 108,
@@ -39,25 +40,29 @@ Search **booklesss** (three s's) on Google — we're the first result. 👇
       }),
       strip({
         ...crops.topbar,
+        icon: "gps-location-rectangle",
         title: "You always know<br>where you are.",
         sub: "Subject, section, step &mdash; across the top of every page.",
       }),
       bleed({
         ...crops.panel,
+        icon: "book-flip-page",
         title: "A panel for the<br>step you're on.",
         sub: "Contents up top. What you ask sits underneath it.",
       }),
       strip({
         ...crops.composer,
+        icon: "conversation-question-text-1",
         title: "The box sits next<br>to the words.",
         sub: "Ask where you got stuck &mdash; not in another tab. Answers are being wired now.",
       }),
       strip({
         ...crops.voice,
+        icon: "microphone",
         title: "Or say it<br>out loud.",
         sub: "Voice mode lights up as you speak.",
       }),
-      searchCTA(),
+      searchCTA({ icon: "cursor-highlight-click-1" }),
     ],
   },
 });
