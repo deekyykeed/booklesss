@@ -31,6 +31,7 @@ const INTER = INTER_DATA();
 const FAMILJEN = FAMILJEN_DATA();
 
 const SAFE = { left: 88, right: 150 };
+const H = 1920;   // 9:16 — full-screen vertical (Reels / TikTok / Stories)
 
 const LOGO = (s, dark) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none">
 <path d="M3.46484 20.5359c1.46447 1.4645 3.82149 1.4645 8.53556 1.4645 4.714 0 7.071 0 8.5355 -1.4645 1.4645 -1.4645 1.4645 -3.8215 1.4645 -8.5355 0 -4.71407 0 -7.07109 -1.4645 -8.53556L3.46484 20.5359Z" fill="${dark ? "#9a9aa0" : "#737374"}"/>
@@ -54,7 +55,7 @@ const BASE_CSS = `
 @font-face{font-family:PSans;src:url(${INTER}) format('woff2');font-weight:100 900;font-display:block}
 @font-face{font-family:PDisplay;src:url(${FAMILJEN}) format('woff2');font-weight:400 700;font-display:block}
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:1080px;height:1920px;overflow:hidden}
+html,body{width:1080px;height:${H}px;overflow:hidden}
 body{font-family:PSans,system-ui,sans-serif;position:relative;-webkit-font-smoothing:antialiased}
 .bg{position:absolute;inset:0;z-index:0}
 .grain{position:absolute;inset:0;z-index:3;pointer-events:none;background-image:url("${GRAIN}");background-size:220px 220px;opacity:.30;mix-blend-mode:overlay}
