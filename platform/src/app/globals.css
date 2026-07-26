@@ -521,10 +521,12 @@
   .voice-glow > span {
     position: absolute;
     border-radius: 50%;
-    filter: blur(30px);
-    /* Idle floor + a loudness-driven climb. Peaks around 0.65 so speaking
-       reads as real colour rather than a tint. */
-    opacity: calc(var(--von, 0) * (0.05 + var(--voice, 0) * 0.6));
+    /* Tighter blur than the ambient page blobs — spreading it further just
+       washes the colour out. */
+    filter: blur(24px);
+    /* Idle floor + a loudness-driven climb, peaking near 1: at full voice the
+       blobs should be the colour, not a tint of it. */
+    opacity: calc(var(--von, 0) * (0.06 + var(--voice, 0) * 0.88));
   }
   .voice-glow > span:nth-child(1) {
     left: -6%;
@@ -578,28 +580,34 @@
     margin: 0 auto;
   }
   .composer-card {
+    /* One ring layer, never two — a second ring stacked on the hairline reads
+       as a double border. Hover and focus move --ring-a; speaking widens and
+       darkens that same ring through --voice, so the edge thickens as you talk
+       instead of a new line appearing beside it. */
+    --ring-a: 0.08;
+    --drop-a: 0.035;
+    --ring-w: calc(0.5px + var(--von, 0) * var(--voice, 0) * 2.5px);
     display: flex;
     flex-direction: column;
     gap: 6px;
     padding: 8px;
-    border-radius: 12px;
+    border-radius: 16px;
     /* Opaque at rest. In voice mode it thins so the coloured blobs read
        through the slab instead of only haloing it. */
-    background: rgb(255 255 255 / calc(1 - var(--von, 0) * 0.2));
+    background: rgb(255 255 255 / calc(1 - var(--von, 0) * 0.28));
     box-shadow:
-      0 4px 20px rgba(0, 0, 0, 0.035),
-      0 0 0 0.5px rgba(0, 0, 0, 0.08);
-    transition: box-shadow 150ms ease;
+      0 4px 20px rgb(0 0 0 / var(--drop-a)),
+      0 0 0 var(--ring-w)
+        rgb(0 0 0 / calc(var(--ring-a) + var(--von, 0) * var(--voice, 0) * 0.62));
+    /* Short enough to track the voice, long enough to smooth hover/focus. */
+    transition: box-shadow 110ms ease;
   }
   .composer-card:hover {
-    box-shadow:
-      0 4px 20px rgba(0, 0, 0, 0.035),
-      0 0 0 0.5px rgba(0, 0, 0, 0.14);
+    --ring-a: 0.14;
   }
   .composer-card:focus-within {
-    box-shadow:
-      0 4px 20px rgba(0, 0, 0, 0.075),
-      0 0 0 0.5px rgba(0, 0, 0, 0.14);
+    --ring-a: 0.14;
+    --drop-a: 0.075;
   }
 
   .composer-input {
@@ -687,7 +695,7 @@
     .composer-card {
       gap: 12px;
       padding: 14px;
-      border-radius: 20px;
+      border-radius: 28px;
     }
     .composer-input {
       font-size: 16px;
@@ -699,6 +707,7 @@
     .composer-icon {
       width: 32px;
       height: 32px;
+      border-radius: 10px; /* steps down from the wider card radius */
     }
   }
 }

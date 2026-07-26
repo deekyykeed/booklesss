@@ -305,8 +305,10 @@ function ChatComposer({
             sum += v * v;
           }
           const rms = Math.sqrt(sum / data.length); // ~0..0.4 while speaking
-          const target = Math.min(1, rms * 5.5); // gain: normal speech should reach the top of the range
-          level += (target - level) * 0.25; // smooth so it isn't jittery
+          const target = Math.min(1, rms * 7); // gain: ordinary speech should peg the top of the range
+          // Fast attack, slow release — the glow jumps on a syllable and eases
+          // back down, instead of averaging every sentence into a flat wash.
+          level += (target - level) * (target > level ? 0.5 : 0.1);
           el.style.setProperty("--voice", level.toFixed(3));
           raf = requestAnimationFrame(tick);
         };
