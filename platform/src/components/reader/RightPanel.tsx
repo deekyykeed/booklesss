@@ -159,17 +159,16 @@ function SendArrow({ size = 20, active = false }: { size?: number; active?: bool
     </svg>
   );
 }
-/* Plus — the attach-style square on the left of the toolbar. Here it starts a
- * fresh conversation rather than attaching a file (nothing to attach yet). */
-function PlusIcon({ size = 15 }: { size?: number }) {
+/* Solar · paperclip-linear — attach, on the left of the toolbar. */
+function ClipIcon({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
       <path
-        d="M12 5v14M5 12h14"
         fill="none"
         stroke="currentColor"
-        strokeWidth="2"
         strokeLinecap="round"
+        strokeWidth="1.5"
+        d="m7.918 17.807l7.89-7.553a2.253 2.253 0 0 0 0-3.284a2.503 2.503 0 0 0-3.43 0l-7.834 7.498a4.28 4.28 0 0 0 0 6.24c1.8 1.723 4.718 1.723 6.518 0l7.949-7.608c2.652-2.54 2.652-6.656 0-9.196s-6.954-2.539-9.607 0L3 10.034"
       />
     </svg>
   );
@@ -194,10 +193,6 @@ function MicIcon({ size = 20, active = false }: { size?: number; active?: boolea
 
 type ChatMessage = { id: number; text: string };
 
-/* Whether a question is about the open step or the whole course. */
-type AskScope = "step" | "course";
-const SCOPE_KEY = "booklesss:ask-scope";
-
 /* The messages you've sent, above the composer. No AI backend yet, so these are
  * your own turns only — the composer captures input and is ready to wire to a
  * tutor endpoint later. */
@@ -219,8 +214,8 @@ function ChatThread({ messages }: { messages: ChatMessage[] }) {
 }
 
 /* Composer pinned to the panel's bottom: message on top, a control row beneath —
- * new-chat, the scope segmented control, then voice and send. Enter inserts a
- * newline (send is the button only); the field auto-grows. In voice mode the mic
+ * attach on the left, voice and send on the right. Enter inserts a newline (send
+ * is the button only); the field auto-grows. In voice mode the mic
  * drives coloured glow blobs behind the card, scaled by live loudness, so the
  * card lights up as you speak. Blob colours are randomised each session.
  * data-no-swipe so a drag while typing never yanks the drawer.
@@ -232,24 +227,21 @@ function ChatComposer({
   onSubmit,
   voiceOn,
   onToggleVoice,
-  scope,
-  onScopeChange,
-  onNewChat,
-  canReset,
 }: {
   value: string;
   onChange: (v: string) => void;
   onSubmit: () => void;
   voiceOn: boolean;
   onToggleVoice: () => void;
-  scope: AskScope;
-  onScopeChange: (s: AskScope) => void;
-  onNewChat: () => void;
-  canReset: boolean;
 }) {
   const canSend = value.trim().length > 0;
   const taRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  /* Picked files, listed as chips above the field. Nothing uploads them yet —
+   * they ride along with the draft and clear when it sends. */
+  const [files, setFiles] = useState<{ id: number; name: string }[]>([]);
+  const fileId = useRef(1);
 
   // Auto-grow with the content, capped so the composer never eats the panel.
   useEffect(() => {
@@ -313,7 +305,7 @@ function ChatComposer({
             sum += v * v;
           }
           const rms = Math.sqrt(sum / data.length); // ~0..0.4 while speaking
-          const target = Math.min(1, rms * 4);
+          const target = Math.min(1, rms * 5.5); // gain: normal speech should reach the top of the range
           level += (target - level) * 0.25; // smooth so it isn't jittery
           el.style.setProperty("--voice", level.toFixed(3));
           raf = requestAnimationFrame(tick);
@@ -333,14 +325,13 @@ function ChatComposer({
     };
   }, [voiceOn]);
 
-  const label = scope === "step" ? "this step" : "this course";
-
   return (
     <form
       ref={formRef}
       onSubmit={(e) => {
         e.preventDefault();
         onSubmit();
+        setFiles([]);
       }}
       className="voice-host composer-host relative shrink-0"
       data-no-swipe
@@ -353,51 +344,65 @@ function ChatComposer({
       </div>
       <div className="composer-shell relative">
         <div className="composer-card squircle">
+          {files.length > 0 && (
+            <div className="composer-chips">
+              {files.map((f) => (
+                <span key={f.id} className="composer-chip squircle">
+                  <span className="composer-chip-name">{f.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => setFiles((list) => list.filter((x) => x.id !== f.id))}
+                    aria-label={`Remove ${f.name}`}
+                    className="composer-chip-x"
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        d="M6 6l12 12M18 6L6 18"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
           <textarea
             ref={taRef}
             value={value}
             onChange={(e) => onChange(e.target.value)}
             rows={1}
-            placeholder={`Ask about ${label}…`}
-            aria-label={`Ask about ${label}`}
+            placeholder="Ask about this step…"
+            aria-label="Ask about this step"
             style={{ maxHeight: 132 }}
             className="composer-input no-scrollbar"
           />
           <div className="composer-tools">
+            <input
+              ref={fileRef}
+              type="file"
+              multiple
+              hidden
+              onChange={(e) => {
+                const picked = Array.from(e.target.files ?? []).map((f) => ({
+                  id: fileId.current++,
+                  name: f.name,
+                }));
+                if (picked.length) setFiles((list) => [...list, ...picked]);
+                e.target.value = ""; // so picking the same file twice still fires
+              }}
+            />
             <button
               type="button"
-              onClick={onNewChat}
-              disabled={!canReset}
-              aria-label="New chat"
-              title="New chat"
-              className="composer-attach squircle"
+              onClick={() => fileRef.current?.click()}
+              aria-label="Attach a file"
+              title="Attach"
+              className="composer-icon squircle"
             >
-              <PlusIcon />
+              <ClipIcon />
             </button>
-
-            {/* What the answer is allowed to draw on. No backend yet, so this
-                only sets the placeholder — but it is real state, persisted, and
-                the value a tutor endpoint will need on day one. */}
-            <div
-              role="group"
-              aria-label="Answer scope"
-              data-active={scope}
-              className="seg-track squircle"
-            >
-              <span aria-hidden="true" className="seg-thumb squircle" />
-              {(["step", "course"] as const).map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => onScopeChange(s)}
-                  aria-pressed={scope === s}
-                  data-on={scope === s ? "" : undefined}
-                  className="seg-pill squircle"
-                >
-                  {s === "step" ? "Step" : "Course"}
-                </button>
-              ))}
-            </div>
 
             <button
               type="button"
@@ -503,7 +508,6 @@ export function RightPanel() {
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [voiceOn, setVoiceOn] = useState(false);
-  const [scope, setScope] = useState<AskScope>("step");
   const nextId = useRef(1);
   const scrollRef = useRef<HTMLDivElement>(null);
   const sendMessage = () => {
@@ -511,23 +515,6 @@ export function RightPanel() {
     if (!text) return;
     setMessages((m) => [...m, { id: nextId.current++, text }]);
     setDraft("");
-  };
-  const newChat = () => {
-    setMessages([]);
-    setDraft("");
-  };
-
-  // Scope survives reloads — it is a preference, not per-conversation state.
-  // Restored before paint (same as the width above) so the thumb never starts
-  // on Step and jumps.
-  useIso(() => {
-    let saved: string | null = null;
-    try { saved = localStorage.getItem(SCOPE_KEY); } catch { /* private mode */ }
-    if (saved === "step" || saved === "course") setScope(saved);
-  }, []);
-  const pickScope = (s: AskScope) => {
-    setScope(s);
-    try { localStorage.setItem(SCOPE_KEY, s); } catch { /* ignore */ }
   };
   // Keep the newest message in view once it's added.
   useEffect(() => {
@@ -609,10 +596,6 @@ export function RightPanel() {
           onSubmit={sendMessage}
           voiceOn={voiceOn}
           onToggleVoice={() => setVoiceOn((v) => !v)}
-          scope={scope}
-          onScopeChange={pickScope}
-          onNewChat={newChat}
-          canReset={messages.length > 0 || draft.length > 0}
         />
       </aside>
     </>
