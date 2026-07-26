@@ -6,9 +6,7 @@ import {
   BAR,
   BAR_H,
   FOLDER_IDS,
-  GAP,
   PANEL_W,
-  PITCH,
   RAIL,
   RAIL_INSET,
   ROW_H,
@@ -79,7 +77,6 @@ type Scene = {
   rails: { id: string; x: number; top: number; bottom: number; opacity: number }[];
   chipY: number;
   barX: number;
-  barCentre: number;
   glowFrom: string;
   glowTo: string;
   glowT: number;
@@ -189,7 +186,6 @@ function sceneAt(frame: number, fps: number): Scene {
       barLeftFor(selDepth(prev.selected) - 1),
       barLeftFor(selDepth(next.selected) - 1),
     ]),
-    barCentre: 0,
     glowFrom: GLOW[(bi === 0 ? 0 : bi - 1) % GLOW.length],
     glowTo: GLOW[bi % GLOW.length],
     glowT: tList,
