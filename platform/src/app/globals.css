@@ -581,12 +581,12 @@
   }
   .composer-card {
     /* One ring layer, never two — a second ring stacked on the hairline reads
-       as a double border. Hover and focus move --ring-a; speaking widens and
-       darkens that same ring through --voice, so the edge thickens as you talk
-       instead of a new line appearing beside it. */
+       as a double border. Hover and focus move --ring-a; speaking only widens
+       that same ring, 0.5px to 1px at full loudness. Its darkness never
+       changes with the voice. */
     --ring-a: 0.08;
     --drop-a: 0.035;
-    --ring-w: calc(0.5px + var(--von, 0) * var(--voice, 0) * 2.5px);
+    --ring-w: calc(0.5px + var(--von, 0) * var(--voice, 0) * 0.5px);
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -597,8 +597,7 @@
     background: rgb(255 255 255 / calc(1 - var(--von, 0) * 0.28));
     box-shadow:
       0 4px 20px rgb(0 0 0 / var(--drop-a)),
-      0 0 0 var(--ring-w)
-        rgb(0 0 0 / calc(var(--ring-a) + var(--von, 0) * var(--voice, 0) * 0.62));
+      0 0 0 var(--ring-w) rgb(0 0 0 / var(--ring-a));
     /* Short enough to track the voice, long enough to smooth hover/focus. */
     transition: box-shadow 110ms ease;
   }
