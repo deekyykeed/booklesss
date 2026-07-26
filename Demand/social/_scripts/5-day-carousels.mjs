@@ -14,7 +14,7 @@ import { chromium, CROPS, POSTS, INTER_DATA, FAMILJEN_DATA, dayFolder } from "./
 import fs from "fs";
 import path from "path";
 
-const DAY = process.env.DAY || "2026-07-25";
+const DAY = process.env.DAY || new Date().toLocaleDateString("en-CA"); // today, local (YYYY-MM-DD)
 // e.g. posts/2026-W30 (Jul 20-26)/2026-07-25 Saturday/ — weekday named, grouped by week
 const OUT = path.join(POSTS, dayFolder(DAY).rel);
 fs.mkdirSync(OUT, { recursive: true });   // keep any existing PLAN.md; only the slot dirs are cleared below
