@@ -21,17 +21,20 @@ search-bar CTA to close. Post in order (\`01 → 06\`).
 export const slots = ({ cover, bleed, strip, searchCTA, crops }) => ({
   morning: {
     time: "~08:00",
-    postTitle: "The tutor, being built into the page",
-    caption: `Building the AI layer into Booklesss in the open 🛠️ It doesn't answer yet —
-this is the part that's finished: a panel for the step you're on, a box to ask
-in, and a voice mode that lights up as you talk. Answers next.
+    postTitle: "You'll never break another night again",
+    caption: `You'll never break another night again 🌙 Building the AI layer into Booklesss
+in the open: it doesn't answer yet, but this part is done — a panel for the
+step you're on, a box to ask in right where you got stuck, and a voice mode
+that lights up as you talk. Answers next.
 Search **booklesss** (three s's) on Google — we're the first result. 👇
 #buildinpublic #edtech #ai #designengineering #studytok`,
     slides: [
       cover({
-        eyebrow: "The AI layer · in progress",
-        title: "Ask the page<br>a question.",
-        sub: "We're building the tutor into the reader. Here's what's on screen today.",
+        eyebrow: "For the night before",
+        title: "You'll never<br>break another<br>night again.",
+        size: 108,
+        titleTop: 580,
+        sub: "The step you're stuck on and the question you'd have Googled at 2am &mdash; same page.",
         subTop: 1010,
       }),
       strip({

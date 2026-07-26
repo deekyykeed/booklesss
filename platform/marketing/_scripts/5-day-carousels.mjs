@@ -86,7 +86,7 @@ function cover(o) {
   const d = !!o.dark;
   return { dark: d, html: `<div class="layer">
     <div class="eyebrow" style="position:absolute;left:${SAFE.left}px;top:560px;color:${eyec(d)}">${o.eyebrow}</div>
-    <h1 style="position:absolute;left:${SAFE.left}px;top:612px;font-size:122px;line-height:.96;color:${ink(d)}">${o.title}</h1>
+    <h1 style="position:absolute;left:${SAFE.left}px;top:${o.titleTop || 612}px;font-size:${o.size || 122}px;line-height:.96;color:${ink(d)}">${o.title}</h1>
     <p class="sub" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right + 8}px;top:${o.subTop || 1030}px;font-size:33px;line-height:1.4;color:${subc(d)}">${o.sub}</p>
   </div>` };
 }

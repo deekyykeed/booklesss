@@ -16,11 +16,12 @@ search-bar CTA to close. Post in order (`01 → 06`).
 ---
 
 ### ☀️ Morning — `morning/`
-**Post title:** The tutor, being built into the page
+**Post title:** You'll never break another night again
 **Caption:**
-> Building the AI layer into Booklesss in the open 🛠️ It doesn't answer yet —
-> this is the part that's finished: a panel for the step you're on, a box to ask
-> in, and a voice mode that lights up as you talk. Answers next.
+> You'll never break another night again 🌙 Building the AI layer into Booklesss
+> in the open: it doesn't answer yet, but this part is done — a panel for the
+> step you're on, a box to ask in right where you got stuck, and a voice mode
+> that lights up as you talk. Answers next.
 > Search **booklesss** (three s's) on Google — we're the first result. 👇
 > #buildinpublic #edtech #ai #designengineering #studytok
 
