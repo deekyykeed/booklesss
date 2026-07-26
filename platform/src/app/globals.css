@@ -807,15 +807,10 @@
       padding: 12px 14px calc(22px + env(safe-area-inset-bottom));
       box-shadow: inset 0 var(--ring-w) 0 rgb(0 0 0 / var(--ring-a));
     }
-    /* With the bar flush to the bottom and both sides, the only direction the
-       glow can read from is up — so anchor the blobs to the bar's top edge and
-       let them rise. The clip-path above already leaves the top open. */
-    .voice-glow > span:nth-child(1),
-    .voice-glow > span:nth-child(2),
-    .voice-glow > span:nth-child(3) {
-      top: auto;
-      bottom: 88%;
-      height: 190px;
-    }
+    /* The blobs are NOT repositioned here. They stay behind the bar exactly as
+       on desktop — it is the full-bleed bar itself that hides them left, right
+       and below, so the only part left to see is what rises past its top edge.
+       Anchoring them above the bar instead detaches the glow from the thing
+       it belongs to. */
   }
 }
