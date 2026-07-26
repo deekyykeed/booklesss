@@ -76,7 +76,8 @@
       "Bash(python3 -c \"import PyPDF2; print\\('PyPDF2 ok'\\)\")",
       "Bash(pdftotext -v)",
       "Bash(python3 -c ' *)",
-      "Bash(curl -sL -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\)\" \"https://www.salesforce.com/en-us/wp-content/uploads/sites/4/documents/legal/Salesforce_MSA.pdf\" -o msa.pdf)"
+      "Bash(curl -sL -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\)\" \"https://www.salesforce.com/en-us/wp-content/uploads/sites/4/documents/legal/Salesforce_MSA.pdf\" -o msa.pdf)",
+      "mcp__Claude_Code_Remote__send_later"
     ]
   },
   "enabledMcpjsonServers": [
