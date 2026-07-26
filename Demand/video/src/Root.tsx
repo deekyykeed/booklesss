@@ -3,6 +3,9 @@ import { Composition } from "remotion";
 import { DemoVertical } from "./compositions/DemoVertical";
 import { DemoWide } from "./compositions/DemoWide";
 import { SIDEBAR_DEMO_DURATION, SidebarDemo } from "./compositions/SidebarDemo";
+import { ContactSheet } from "./compositions/ContactSheet";
+import { PRODUCT_DEMO_DURATION, ProductDemo } from "./compositions/ProductDemo";
+import { DemoSheet, SHEET_H, SHEET_W } from "./compositions/DemoSheet";
 import { FPS, TOTAL, defaultDemoProps, demoSchema } from "./schema";
 
 export const RemotionRoot: React.FC = () => {
@@ -18,6 +21,35 @@ export const RemotionRoot: React.FC = () => {
         height={1920}
         schema={demoSchema}
         defaultProps={defaultDemoProps}
+      />
+
+      {/* The 60s product demo — real app captures under a moving camera. */}
+      <Composition
+        id="ProductDemo"
+        component={ProductDemo}
+        durationInFrames={PRODUCT_DEMO_DURATION}
+        fps={FPS}
+        width={1080}
+        height={1920}
+      />
+
+      {/* QA boards — not deliverables. ContactSheet = every capture at once;
+          DemoSheet = fifteen moments of the demo as one still. */}
+      <Composition
+        id="ContactSheet"
+        component={ContactSheet}
+        durationInFrames={1}
+        fps={FPS}
+        width={1620}
+        height={1400}
+      />
+      <Composition
+        id="DemoSheet"
+        component={DemoSheet}
+        durationInFrames={PRODUCT_DEMO_DURATION}
+        fps={FPS}
+        width={SHEET_W}
+        height={SHEET_H}
       />
 
       {/* Sidebar motion study — the app's own blob backdrop, the selector

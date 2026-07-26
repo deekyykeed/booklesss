@@ -10,6 +10,8 @@
     "render:vertical": "remotion render DemoVertical out/demo-vertical.mp4",
     "render:wide": "remotion render DemoWide out/demo-wide.mp4",
     "still": "remotion still",
+    "sync:shots": "node scripts/sync-shots.mjs",
+    "render:demo": "remotion render ProductDemo out/product-demo.mp4",
     "upgrade": "remotion upgrade"
   },
   "dependencies": {

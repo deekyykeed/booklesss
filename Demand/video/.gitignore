@@ -6,3 +6,4 @@ out/
 # (repo root .gitignore already blocks *.mp4/*.mov/*.webm, this is belt+braces)
 public/recordings/*
 !public/recordings/.gitkeep
+public/app/
