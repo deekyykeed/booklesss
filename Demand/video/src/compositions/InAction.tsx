@@ -13,7 +13,7 @@ import { PANEL_W } from "../nav-tree";
 import { Screen, ScrollShot } from "../components/Screen";
 
 /* ------------------------------------------------------------------ *
- * Booklesss — "in action". 1080x1920, 55.0s.
+ * Booklesss — "in action". 1080x1920, 30.0s.
  *
  * The difference from the first demo: this one MOVES. Rather than panning a
  * camera over still captures, the interactive parts are rebuilt live and
@@ -31,21 +31,29 @@ import { Screen, ScrollShot } from "../components/Screen";
  * building it, never that it answers.
  * ------------------------------------------------------------------ */
 
-const T = 8; // quick cuts — "active and quick"
+const T = 6; // quick cuts — "active and quick"
 
+/* Recut from 55s to 30s. Every beat holds only as long as it takes to read the
+ * line and see the thing happen once — a viewer reads a six-word headline in
+ * well under two seconds, and the old cut sat on each one for four.
+ *
+ * The live beats had their internals rescaled to match (scroll stops, typing
+ * speed, send point). Shortening the sequence alone would have cut them off
+ * mid-gesture: the composer used to send at frame 196 of a 315-frame beat, so
+ * a 174-frame beat would have ended before the message ever went. */
 const D = {
-  hook: 120,
-  nav: 285,
-  scroll: 255,
-  askIntro: 120,
-  typing: 315,
-  voice: 300,
-  finish: 130,
-  cta: 181,
+  hook: 66,
+  nav: 156,
+  scroll: 138,
+  askIntro: 60,
+  typing: 174,
+  voice: 162,
+  finish: 66,
+  cta: 120,
 } as const;
 
 export const IN_ACTION_DURATION =
-  Object.values(D).reduce((a, b) => a + b, 0) - T * 7; // 1706 - 56 = 1650 = 55.0s
+  Object.values(D).reduce((a, b) => a + b, 0) - T * 7; // 942 - 42 = 900 = 30.0s
 
 const fadeT = { presentation: fade(), timing: linearTiming({ durationInFrames: T }) };
 const slideUp = {
@@ -96,11 +104,13 @@ const ScrollBeat: React.FC = () => (
     <ScrollShot
       shot="reader"
       zoom={1.06}
+      /* Three flicks in 92 frames instead of 182 — the same travel, thumbed at
+         the speed someone actually skims. */
       stops={[
         { at: 0, y: 0 },
-        { at: 42, y: 190 },
-        { at: 112, y: 380 },
-        { at: 182, y: 560 },
+        { at: 20, y: 190 },
+        { at: 56, y: 380 },
+        { at: 92, y: 560 },
       ]}
     />
     <Scrim side="top" extent={42} />
@@ -124,7 +134,7 @@ const PageBehind: React.FC = () => (
     <AbsoluteFill style={{ opacity: 0.5 }}>
       <Screen
         shot="lessonTop"
-        dur={320}
+        dur={175} /* matches the beat, so the drift completes instead of stopping short */
         from={{ scale: 1.04, y: -30 }}
         to={{ scale: 1.09, y: -80 }}
         focus={{ y: 0 }}
@@ -159,12 +169,14 @@ const TypingBeat: React.FC = () => (
       <LiveComposer
         width={CENTERED_W}
         s={1.32}
+        /* 24 cps types the 45-char question in ~1.9s, done by frame 68; it
+           sends at 96 and the sent state holds for the rest of the beat. */
         mode={{
           kind: "typing",
           text: "Explain the law of demand with a local example",
-          startAt: 26,
-          cps: 19,
-          sendAt: 196,
+          startAt: 12,
+          cps: 24,
+          sendAt: 96,
         }}
       />
     </ComposerStage>
@@ -229,8 +241,8 @@ const VoiceBeat: React.FC = () => (
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 44 }}>
         <Mic size={96} line={UI.ink} duo="#d6c9ec" />
       </div>
-      <LiveComposer width={CENTERED_W} s={1.32} mode={{ kind: "voice", startAt: 18 }} />
-      <VoiceBars startAt={18} />
+      <LiveComposer width={CENTERED_W} s={1.32} mode={{ kind: "voice", startAt: 12 }} />
+      <VoiceBars startAt={12} />
     </ComposerStage>
     <Caption
       safe
