@@ -585,7 +585,7 @@
        that same ring, 0.5px to 1px at full loudness. Its darkness never
        changes with the voice. */
     --ring-a: 0.08;
-    --drop-a: 0.035;
+    --drop-a: 0.05;
     --ring-w: calc(0.5px + var(--von, 0) * var(--voice, 0) * 0.5px);
     display: flex;
     flex-direction: column;
@@ -596,7 +596,7 @@
        through the slab instead of only haloing it. */
     background: rgb(255 255 255 / calc(1 - var(--von, 0) * 0.28));
     box-shadow:
-      0 4px 20px rgb(0 0 0 / var(--drop-a)),
+      0 5px 22px rgb(0 0 0 / var(--drop-a)),
       0 0 0 var(--ring-w) rgb(0 0 0 / var(--ring-a));
     /* Short enough to track the voice, long enough to smooth hover/focus. */
     transition: box-shadow 110ms ease;
@@ -606,7 +606,7 @@
   }
   .composer-card:focus-within {
     --ring-a: 0.14;
-    --drop-a: 0.075;
+    --drop-a: 0.095;
   }
 
   .composer-input {
