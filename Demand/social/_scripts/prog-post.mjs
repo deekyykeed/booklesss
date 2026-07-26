@@ -55,11 +55,15 @@ body{font-family:PSans,system-ui,sans-serif;position:relative;-webkit-font-smoot
   linear-gradient(#FCFCFD,#F2F3F6)}
 .grain{position:absolute;inset:0;z-index:6;pointer-events:none;background-image:url("${GRAIN}");background-size:220px 220px;opacity:.26;mix-blend-mode:overlay}
 .layer{position:absolute;inset:0;z-index:4}
-.shot{position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:cover}
-/* the app dissolves up into the light where the headline sits — text-legible top,
-   sharp app below. No card, no border. */
-.fade{position:absolute;inset:0;z-index:2;background:linear-gradient(to bottom,
-  ${BG} 0%, ${BG} 40%, rgba(246,246,249,0) 68%)}
+/* The focal UI is lifted into the social safe box (clear of the top ~260px, the
+   bottom ~460px, and the right button rail). The shot bleeds off the sides; it
+   dissolves into the light at the top (under the headline) and at the bottom
+   (leaving the caption zone clear). No card, no border. */
+.shot{position:absolute;left:-40px;z-index:1;width:1120px}
+.fade-top{position:absolute;top:0;left:0;right:0;height:1000px;z-index:2;background:linear-gradient(to bottom,
+  ${BG} 0%, ${BG} 80%, rgba(246,246,249,0) 100%)}
+.fade-bot{position:absolute;bottom:0;left:0;right:0;height:560px;z-index:2;background:linear-gradient(to top,
+  ${BG} 0%, ${BG} 30%, rgba(246,246,249,0) 100%)}
 .wm{position:absolute;left:${SAFE.left}px;top:300px;display:flex;align-items:center;gap:13px;z-index:7;color:${INK}}
 .wm span{font-size:27px;font-weight:600;letter-spacing:-.022em}
 .eyebrow{font-size:24px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:${EYE}}
@@ -76,8 +80,10 @@ const cover = (o) => ({ bg: "gradient", html: `<div class="layer">
   <p class="sub" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right + 8}px;top:${o.subTop || 1040}px;font-size:38px;line-height:1.42">${o.sub}</p>
 </div>` });
 
-// full-bleed app shot, faded at the top for the headline
-const feature = (o) => ({ bg: "shot", img: o.img, pos: o.pos || "center bottom", html: `<div class="layer">
+// app shot lifted into the safe zone, dissolving at top (under the headline) and
+// bottom (clearing the caption zone). `top` places the shot so the focal UI lands
+// around the vertical centre.
+const feature = (o) => ({ bg: "shot", img: o.img, top: o.top ?? -520, html: `<div class="layer">
   <h1 style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:${o.h1 || 360}px;font-size:${o.size || 106}px;line-height:1.0">${o.title}</h1>
   <p class="sub" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right + 8}px;top:${o.subTop || 660}px;font-size:${o.subSize || 39}px;line-height:1.4">${o.sub || ""}</p>
 </div>` });
@@ -100,9 +106,9 @@ const CONFIGS = {
     slot: "afternoon",
     slides: [
       cover({ eyebrow: "Building in public", title: "An AI tutor,<br>in your notes.", sub: "A look at what we&rsquo;re wiring into the reader right now." }),
-      feature({ img: AF_PAGE, title: "It lives right<br>in the page.", sub: "No new tab &mdash; it knows the exact step you&rsquo;re on.", pos: "center bottom" }),
-      feature({ img: AF_VOICE, title: "Ask, or just<br>talk to it.", sub: "Voice mode &mdash; speak, and the whole thing lights up.", pos: "center bottom" }),
-      feature({ img: AF_TYPED, title: "Or type it<br>out.", sub: "Ask about the exact step, in your own words.", pos: "center bottom" }),
+      feature({ img: AF_PAGE, title: "It lives right<br>in the page.", sub: "No new tab &mdash; it knows the exact step you&rsquo;re on.", top: -700 }),
+      feature({ img: AF_VOICE, title: "Ask, or just<br>talk to it.", sub: "Voice mode &mdash; speak, and the whole thing lights up.", top: -640 }),
+      feature({ img: AF_TYPED, title: "Or type it<br>out.", sub: "Ask about the exact step, in your own words.", top: -640 }),
       cover({ eyebrow: "In the works", title: "Coming to<br>Booklesss soon.", sub: "The AI tutor + voice mode &mdash; we&rsquo;re building it now. First look.", subTop: 1020 }),
       searchCTA(),
     ],
@@ -111,8 +117,8 @@ const CONFIGS = {
     slot: "evening",
     slides: [
       cover({ eyebrow: "Building in public", title: "Your whole<br>course, sorted.", sub: "Every subject in one place &mdash; and actually nice to read." }),
-      feature({ img: EV_NAV, title: "Every subject,<br>one tap away.", sub: "Jump anywhere in the course, instantly.", pos: "left top" }),
-      feature({ img: EV_READER, title: "Made for<br>reading.", sub: "Plain English, clean pages, nothing in the way.", pos: "left top" }),
+      feature({ img: EV_NAV, title: "Every subject,<br>one tap away.", sub: "Jump anywhere in the course, instantly.", top: -220 }),
+      feature({ img: EV_READER, title: "Made for<br>reading.", sub: "Plain English, clean pages, nothing in the way.", top: -240 }),
       cover({ eyebrow: "In the works", title: "More, every<br>week.", sub: "We&rsquo;re building Booklesss in the open. Follow along.", subTop: 1020 }),
       searchCTA(),
     ],
@@ -132,7 +138,7 @@ for (let i = 0; i < cfg.slides.length; i++) {
   const s = cfg.slides[i];
   const base =
     s.bg === "shot"
-      ? `<img class="shot" src="${s.img}" style="object-position:${s.pos}"><div class="fade"></div>`
+      ? `<img class="shot" src="${s.img}" style="top:${s.top}px"><div class="fade-top"></div><div class="fade-bot"></div>`
       : `<div class="gradient"></div>`;
   const html = `<!doctype html><html><head><meta charset="utf-8"><style>${CSS}</style></head><body>${base}${s.html}${wordmark}<div class="grain"></div></body></html>`;
   await page.setContent(html, { waitUntil: "load" });
