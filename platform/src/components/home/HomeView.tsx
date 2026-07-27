@@ -302,13 +302,19 @@ function Spark({ series, tone }: { series: number[]; tone: string }) {
                 <stop offset="0" stopColor={tone} stopOpacity="0.10" />
                 <stop offset="1" stopColor={tone} stopOpacity="0" />
               </linearGradient>
+              {/* The stroke's own fade: faint where the fortnight begins,
+                  strongest at today, so the line reads as arriving at the
+                  head rather than hanging uniformly. */}
+              <linearGradient id={`${id}s`} x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stopColor={tone} stopOpacity="0.10" />
+                <stop offset="1" stopColor={tone} stopOpacity="0.5" />
+              </linearGradient>
             </defs>
             <path d={area} fill={`url(#${id})`} />
-            <path d={line} fill="none" stroke={tone} strokeOpacity="0.38" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-            {/* Today, at the head of the line — the one full-ink element of
-                the backdrop, because "where you are now" is its point. The
-                white ring keeps it legible over the wash. */}
-            <circle cx={pts[pts.length - 1].x} cy={pts[pts.length - 1].y} r="3" fill={tone} stroke="#ffffff" strokeWidth="2" />
+            <path d={line} fill="none" stroke={`url(#${id}s)`} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+            {/* Today: a white head ringed in the line's own colour — an open
+                point where the line has got to, not a plug on the end. */}
+            <circle cx={pts[pts.length - 1].x} cy={pts[pts.length - 1].y} r="3.5" fill="#ffffff" stroke={tone} strokeWidth="2" />
           </svg>
         );
       })()}
@@ -316,7 +322,7 @@ function Spark({ series, tone }: { series: number[]; tone: string }) {
   );
 }
 
-/** Week-over-week/** Week-over-week movement, phrased like the reference: a percentage when
+/** Week-over-week movement, phrased like the reference: a percentage when
  *  last week gives a denominator, the raw count when it doesn't. Measured
  *  both sides — never a projection. */
 function weekDelta(cur: number, prev: number): { text: string; dir: 1 | 0 | -1 } {
