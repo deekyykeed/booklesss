@@ -383,9 +383,13 @@ function Stat({
 }) {
   return (
     <div className="dash-stat squircle">
-      <p className="dash-stat-label">{label}</p>
-      <span className="mt-3 block text-ink">{icon}</span>
-      <div className="mt-3 flex items-end justify-between gap-3">
+      {/* Title and mark share the top row, both hanging from the card's top
+          edge — the mark doesn't float in the gap, it captions the title. */}
+      <div className="flex items-start justify-between gap-2">
+        <p className="dash-stat-label">{label}</p>
+        <span className="shrink-0 text-ink">{icon}</span>
+      </div>
+      <div className="mt-4 flex items-end justify-between gap-3">
         <p className="flex min-w-0 items-baseline gap-1.5 pb-1">
           <span className="dash-stat-value">{value}</span>
           {unit && <span className="dash-stat-unit">{unit}</span>}
