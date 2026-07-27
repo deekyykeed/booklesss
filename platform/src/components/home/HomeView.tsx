@@ -29,7 +29,15 @@ function timeGreeting(): string {
   return "Good evening";
 }
 
-export function HomeView({ name }: { name?: string }) {
+export function HomeView({
+  name,
+  afterGreeting,
+}: {
+  name?: string;
+  /** Slot under the greeting — the sign-in prompt when Clerk is on and nobody
+   *  is signed in. Kept as a slot so this component stays Clerk-free. */
+  afterGreeting?: React.ReactNode;
+}) {
   const { hydrated, doneCount, isComplete, streak, daysStudied, studiedToday } = useProgress();
 
   const totals = useMemo(() => {
@@ -70,6 +78,7 @@ export function HomeView({ name }: { name?: string }) {
         {name ? `, ${name}` : ""}
       </h1>
       <p className="mt-1.5 text-[14px] leading-6 text-muted">{line}</p>
+      {afterGreeting}
 
       {/* ---- how the studying is going ---- */}
       <section className="mt-6">
