@@ -326,10 +326,11 @@ function Spark({ series, tone }: { series: number[]; tone: string }) {
 
   const H = 62;
   const TOP = 6;
-  /* Indented off the card's left edge, and opened with a zero anchor so the
-   * curve lifts out of the floor instead of materialising mid-air. The anchor
-   * is a drawing convention, not a datum — the 14 real days follow it. */
-  const LEFT = 30;
+  /* The curve keeps to the card's right half, clear of the number and the
+   * delta, and opens with a zero anchor so it lifts out of the floor instead
+   * of materialising mid-air. The anchor is a drawing convention, not a
+   * datum — the 14 real days follow it. */
+  const LEFT = Math.round(w / 2);
   const max = Math.max(...series);
   const n = series.length;
 
