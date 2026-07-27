@@ -3,22 +3,39 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
-import { breadcrumbFor, courseIndex, pathForId } from "@/lib/course";
+import { highlight, search } from "@/lib/search";
+import { scrollToSection } from "@/lib/scroll-to-section";
 
-type Item = { label: string; hint: string; href: string };
+/* Searches the whole course — lesson titles AND the body of every section —
+ * against the bundled course data (see lib/search.ts). A section hit links to
+ * its anchor, so a search for a phrase lands on the paragraph containing it
+ * rather than the top of the lesson. */
 
-// Built once from the REAL course tree, so search reflects the actual lessons
-// (and navigates to them) rather than a placeholder list. Steps live in
-// lib/course.ts today — there is no backend yet — so this stays in sync with
-// the sidebar for free.
-const ITEMS: Item[] = (() => {
-  const { lessons } = courseIndex();
-  return [...lessons.entries()].map(([id, lesson]) => ({
-    label: lesson.title,
-    hint: breadcrumbFor(id).slice(0, -1).join(" / "),
-    href: pathForId(id),
-  }));
-})();
+/** Renders a string with the matched terms marked. */
+function Marked({ text, query }: { text: string; query: string }) {
+  return (
+    <>
+      {highlight(text, query).map((p, i) =>
+        p.hit ? (
+          <mark key={i} className="rounded-[3px] bg-[#fdf3c7] px-[1px] text-ink">
+            {p.text}
+          </mark>
+        ) : (
+          <span key={i}>{p.text}</span>
+        ),
+      )}
+    </>
+  );
+}
+
+/* Marks a hit that points at a section rather than a whole lesson. */
+function SectionMark() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="mt-[3px] shrink-0 text-placeholder">
+      <path d="M10 3 8 21M16 3l-2 18M3.5 8.5h17M3 15.5h17" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  );
+}
 
 // Inline magnifier so the trigger needs no server round-trip for its icon.
 function Magnifier({ size = 16, className }: { size?: number; className?: string }) {
@@ -38,18 +55,27 @@ export function CommandSearch() {
   const [mounted, setMounted] = useState(false);
   const [show, setShow] = useState(false);
   const [query, setQuery] = useState("");
+  // Which result the keyboard is on. Reset whenever the query changes, since
+  // the list underneath it has changed.
+  const [active, setActive] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
 
-  const results = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return ITEMS;
-    return ITEMS.filter((i) => i.label.toLowerCase().includes(q) || i.hint.toLowerCase().includes(q));
-  }, [query]);
+  const results = useMemo(() => search(query), [query]);
 
   const close = useCallback(() => setOpen(false), []);
   const go = useCallback(
     (href: string) => {
       setOpen(false);
+      const [path, hash] = href.split("#");
+      /* Already on this lesson: pushing the same path wouldn't re-run the
+       * route's scroll handling, so the jump has to happen here. Waiting a
+       * frame lets the palette's exit animation start first. */
+      if (hash && path === window.location.pathname) {
+        window.history.replaceState(null, "", href);
+        requestAnimationFrame(() => scrollToSection(hash));
+        return;
+      }
       router.push(href);
     },
     [router],
@@ -69,6 +95,36 @@ export function CommandSearch() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  /* Arrow keys move the selection and Enter opens it — table stakes for a
+   * ⌘K palette, and previously the results were mouse-only. Handled on the
+   * input, which holds focus the whole time the palette is open. */
+  const onInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!results.length) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActive((i) => (i + 1) % results.length);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActive((i) => (i - 1 + results.length) % results.length);
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      setActive(0);
+    } else if (e.key === "End") {
+      e.preventDefault();
+      setActive(results.length - 1);
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      const hit = results[active];
+      if (hit) go(hit.href);
+    }
+  };
+
+  // Keep the highlighted row in view as the selection moves past the fold.
+  useEffect(() => {
+    listRef.current?.querySelector<HTMLElement>("[data-active='true']")
+      ?.scrollIntoView({ block: "nearest" });
+  }, [active]);
+
   // Mount, then flip `show` on the next frame so the enter transition runs from
   // the closed state. On close, flip `show` off and unmount once it has played.
   useEffect(() => {
@@ -87,6 +143,7 @@ export function CommandSearch() {
     const t = setTimeout(() => {
       setMounted(false);
       setQuery("");
+      setActive(0);
     }, 200);
     return () => clearTimeout(t);
   }, [open]);
@@ -136,8 +193,13 @@ export function CommandSearch() {
                 <input
                   ref={inputRef}
                   value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search courses, lessons, docs…"
+                  onChange={(e) => {
+                    setQuery(e.target.value);
+                    setActive(0); // the list underneath just changed
+                  }}
+                  onKeyDown={onInputKeyDown}
+                  placeholder="Search lessons and their content…"
+                  aria-label="Search the course"
                   className="w-full bg-transparent py-3.5 text-sm text-ink outline-none placeholder:text-placeholder"
                 />
                 <kbd className="rounded border border-[#e6e6e6] bg-[#fafafa] px-1.5 py-0.5 text-[11px] leading-none text-muted">
@@ -145,23 +207,54 @@ export function CommandSearch() {
                 </kbd>
               </div>
 
-              <ul className="max-h-[320px] overflow-y-auto scroll-thin p-2">
+              <ul ref={listRef} className="max-h-[380px] overflow-y-auto scroll-thin p-2">
                 {results.length === 0 && (
-                  <li className="px-3 py-8 text-center text-sm text-muted">No results found.</li>
+                  <li className="px-3 py-8 text-center text-sm text-muted">
+                    Nothing matches “{query.trim()}”.
+                  </li>
                 )}
-                {results.map((item) => (
+                {results.map((item, i) => (
                   <li key={item.href}>
                     <button
                       type="button"
+                      data-active={i === active}
                       onClick={() => go(item.href)}
-                      className="flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-[#f4f4f4]"
+                      // Pointer and keyboard drive the same selection, so the
+                      // highlight never splits in two.
+                      onMouseMove={() => i !== active && setActive(i)}
+                      className="flex w-full items-start gap-2.5 rounded-lg px-3 py-2.5 text-left transition-colors data-[active=true]:bg-[#f4f4f4]"
                     >
-                      <span className="text-sm text-ink">{item.label}</span>
-                      {item.hint && <span className="text-xs text-placeholder">{item.hint}</span>}
+                      {item.kind === "section" && <SectionMark />}
+                      <span className="min-w-0 flex-1">
+                        <span className="flex items-baseline justify-between gap-3">
+                          <span className="truncate text-sm text-ink">
+                            <Marked text={item.label} query={query} />
+                          </span>
+                          {item.hint && (
+                            <span className="shrink-0 truncate text-xs text-placeholder">{item.hint}</span>
+                          )}
+                        </span>
+                        {/* Why this hit matched, when it matched on body text. */}
+                        {item.snippet && (
+                          <span className="mt-0.5 block text-xs leading-5 text-muted">
+                            <Marked text={item.snippet} query={query} />
+                          </span>
+                        )}
+                      </span>
                     </button>
                   </li>
                 ))}
               </ul>
+
+              {results.length > 0 && (
+                <div className="flex items-center gap-3 border-t border-[#ececec] px-4 py-2 text-[11px] text-placeholder">
+                  <span>↑↓ to move</span>
+                  <span>↵ to open</span>
+                  <span className="ml-auto">
+                    {results.length} result{results.length === 1 ? "" : "s"}
+                  </span>
+                </div>
+              )}
             </div>
           </div>,
           document.body,

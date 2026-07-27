@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import type { Lesson } from "@/lib/course";
 import { LessonView } from "./LessonView";
 import { useReaderShell } from "./MobileNav";
+import { scrollToSection } from "@/lib/scroll-to-section";
 
 // Per-lesson content. The "on this page" TOC now lives in the persistent right
 // panel, so this route just renders the reading column and publishes its
@@ -25,7 +26,14 @@ export function LessonReader({ lesson, lessonId }: { lesson: Lesson; lessonId: s
   // on desktop and persists across routes, so reset it explicitly; on mobile the
   // document itself scrolls. Runs before the fade so the text doesn't animate in
   // halfway down the previous scroll position.
+  //
+  // Unless we arrived at a section anchor — from a search hit, or a shared
+  // link — in which case that section is the point, so go there instead.
+  // Instant rather than smooth: a fresh page shouldn't animate past content
+  // the reader never asked to see.
   useEffect(() => {
+    const hash = decodeURIComponent(window.location.hash.slice(1));
+    if (hash && scrollToSection(hash, "auto")) return;
     document.getElementById("content-surface")?.scrollTo({ top: 0 });
     if (window.matchMedia("(max-width: 767px)").matches) window.scrollTo(0, 0);
   }, [pathname]);
