@@ -582,7 +582,8 @@ export function Sidebar() {
           onClick={toggleLeftCollapsed}
           aria-label="Open navigation"
           title="Open navigation"
-          className="squircle fixed left-3 top-16 z-40 hidden h-8 w-8 place-items-center rounded-lg border border-line bg-white/80 text-muted shadow-sm backdrop-blur-md transition-colors hover:text-ink md:grid"
+          className="squircle fixed top-16 z-40 hidden h-8 w-8 place-items-center rounded-lg border border-line bg-white/80 text-muted shadow-sm backdrop-blur-md transition-colors hover:text-ink md:grid"
+          style={{ left: "calc(var(--rail-w) + 12px)" }}
         >
           <PanelIcon />
         </button>

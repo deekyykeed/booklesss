@@ -27,6 +27,7 @@
   --color-btn: #0b0b0b;             /* solid black button        */
 
   --header-h: 48px;
+  --rail-w: 56px;
   --sidebar-docs: 265px;
   --rightbar-w: 300px;
   --sidebar-dash: 208px;
@@ -257,6 +258,42 @@
      sidebar, inset from the right and bottom edges. Written out rather than
      composed from utilities so the geometry can't depend on which Tailwind
      classes happen to be generated. */
+  /* The duo sidebar's narrow half. Same material as the wide panels.
+     "app-rail", not "rail" — the step tree already uses .rail for its
+     indentation lines, and generic names collide. */
+  .app-rail {
+    left: 0;
+    width: var(--rail-w);
+    background-color: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  .rail-btn {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 14px;
+    corner-shape: superellipse(2);
+    color: var(--color-muted);
+    transition: color 140ms ease, background-color 140ms ease;
+  }
+  .rail-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--color-ink);
+  }
+  .rail-btn[data-active] {
+    background-color: rgba(0, 0, 0, 0.08);
+    color: var(--color-ink);
+  }
+  .rail-btn[data-soon] {
+    color: rgba(0, 0, 0, 0.28);
+    cursor: default;
+  }
+  .rail-btn[data-soon] svg {
+    opacity: 0.6;
+  }
+
   .content-frame {
     position: fixed;
     top: var(--header-h);
@@ -271,11 +308,16 @@
      the per-frame resize drag) while the panel slides off under its own
      transform transition. */
   @media (min-width: 768px) {
-    .content-frame {
-      padding-left: var(--sidebar-docs);
+    /* The wide half starts where the rail ends. */
+    .sidebar-panel {
+      left: var(--rail-w) !important;
     }
+    .content-frame {
+      padding-left: calc(var(--rail-w) + var(--sidebar-docs));
+    }
+    /* Collapsing the wide panel keeps the rail — it's the constant half. */
     .app-shell[data-left-collapsed] .content-frame {
-      padding-left: 0;
+      padding-left: var(--rail-w);
     }
     .app-shell[data-left-collapsed] .sidebar-panel {
       transform: translateX(-100%);
