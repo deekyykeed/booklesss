@@ -546,6 +546,52 @@
    * backdrop, one hairline, no heavy shadow — so the index reads as part of
    * the app rather than a separate marketing page.
    * ------------------------------------------------------------------ */
+  /* Home rail rows, and the "Dashboard" way-out at the top of the course
+     navigator. Same box as a .step row so the two rails line up exactly. */
+  .home-nav {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 6px 8px;
+    border: 2px solid transparent;
+    border-radius: 14px;
+    corner-shape: superellipse(2);
+    font-family: var(--font-nav);
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.55);
+    transition: color 140ms ease, background-color 140ms ease;
+  }
+  .home-nav[href]:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+    color: var(--color-ink);
+  }
+  .home-nav[data-active] {
+    background-color: rgba(255, 255, 255, 0.85);
+    border-color: var(--color-line);
+    color: var(--color-ink);
+    font-weight: 600;
+    box-shadow: 0 1px 1px -0.5px rgba(0, 0, 0, 0.06);
+  }
+  /* Not yet built: shown so the shape is legible, but plainly inert. */
+  .home-nav[data-soon] {
+    color: rgba(0, 0, 0, 0.3);
+    cursor: default;
+  }
+  .home-soon {
+    flex-shrink: 0;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background-color: rgba(0, 0, 0, 0.05);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-placeholder);
+  }
+
   .dash-heading {
     font-family: var(--font-sans);
     font-size: 11px;

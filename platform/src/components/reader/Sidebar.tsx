@@ -558,6 +558,24 @@ export function Sidebar() {
         className="absolute inset-y-0 -right-1 z-30 hidden w-2 cursor-col-resize focus:outline-none md:block"
       />
 
+      {/* Way out of the course, above the step tree — the student's home is a
+          level up from whatever step they're reading. */}
+      <div className="p-2 pb-0">
+        <Link href="/" onClick={() => closeMobileNav()} className="home-nav squircle">
+          <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" className="shrink-0">
+            <path
+              d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4v-5.5H9V20H5a1 1 0 0 1-1-1z"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span className="min-w-0 flex-1 truncate">Dashboard</span>
+        </Link>
+        <div className="mx-2 mt-2 h-px bg-line" />
+      </div>
+
       <nav className="no-scrollbar flex-1 overflow-y-auto p-2">
         <div ref={listRef} className="relative flex flex-col gap-0.5">
           {/* Selected-step card. Rides the same measurement and the same

@@ -15,15 +15,47 @@ Recreated pixel-faithfully from the Framer source on a hand-tuned, static-first 
 
 | Route | Surface |
 |-------|---------|
-| `/` | Student dashboard — progress, the next step, the course unit by unit |
+| `/` | Home — greeting, study stats, and the student's courses |
+| `/economics` | That course's overview — progress, next step, unit by unit |
 | `/[...slug]` | One prerendered route per lesson, e.g. `/microeconomics/supply-demand/law-of-demand` |
 | `/sign-in`, `/sign-up` | Clerk auth (only when Clerk is configured — see below) |
 | `/page`, `/old-home` | Parked scratch pages from the earlier dashboard build |
 
-## The dashboard (`/`)
+## Home (`/`) and the course overview (`/economics`)
 
-The student's index: overall completion, the one step to open next, the course
-unit by unit, and a short queue. It shares the reader's chrome — same header,
+Two levels. **Home** is above the courses: a time-of-day greeting, how the
+studying is going (streak, days studied, checkpoints, steps), then the course
+list. **The course overview** is inside one course. A "Dashboard" row sits at
+the top of the course navigator, so home is always one click from any step.
+
+Home swaps the course navigator for `HomeSidebar`. Exams, Upcoming and Settings
+are drawn there and marked **Soon** — they aren't wired to anything, and showing
+the shape is more useful than links that 404.
+
+`lib/courses.ts` is the course registry. **One course exists**: `gen-course.mjs`
+pulls a single slug out of Supabase and `course-data.json` is that course's
+tree, so its top-level nodes are units, not sibling courses. Adding a second is
+a data change first — the generator has to emit a course per slug and the JSON
+gains a level. Home reads the registry, so it won't need touching then.
+
+**Not built, for want of data:** a coaching or AI summary of how the week went.
+There's no tutor backend, and no study goal is captured at sign-up, so a
+"you're behind target" line would be invented. Home states facts instead —
+streak, whether you've studied today — until there's a target to measure
+against.
+
+### Streak data
+
+`lib/progress.tsx` records the local dates on which a checkpoint was cleared
+(`days`), which is what makes the streak a fact rather than a guess. The store
+moved to a `v2` key for it; anyone holding `v1` progress is migrated on read,
+with `days` starting empty — their real dates are unknown, so the streak begins
+the next time they study rather than being backfilled with invented ones.
+
+## The course overview
+
+Overall completion, the one step to open next, the course unit by unit, and a
+short queue. It shares the reader's chrome — same header,
 same course nav — but has no right rail, since "on this page" and the step
 composer are both about a step and there isn't one here. That's what
 `MobileNavProvider hasRightPanel={false}` and `.content-frame.no-rightbar` do:
