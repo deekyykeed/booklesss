@@ -1,6 +1,7 @@
 "use client";
 
 import { ClerkFailed, ClerkLoaded, ClerkLoading, Show, SignInButton, UserButton } from "@clerk/nextjs";
+import { CoursesGlyph, DashboardGlyph } from "./home/plump-glyphs";
 
 /* Deliberately a CLIENT component.
  *
@@ -29,7 +30,18 @@ export function Account() {
 
       <ClerkLoaded>
         <Show when="signed-in">
-          <UserButton />
+          {/* The menu carries the same Plump gradient marks as the dashboard
+              tiles, so Clerk's surface reads as this app rather than a stock
+              widget. Custom links first — they're why the menu is opened —
+              then Clerk's own account and sign-out rows. */}
+          <UserButton>
+            <UserButton.MenuItems>
+              <UserButton.Link href="/" label="Dashboard" labelIcon={<DashboardGlyph size={16} />} />
+              <UserButton.Link href="/#courses" label="My courses" labelIcon={<CoursesGlyph size={16} />} />
+              <UserButton.Action label="manageAccount" />
+              <UserButton.Action label="signOut" />
+            </UserButton.MenuItems>
+          </UserButton>
         </Show>
         <Show when="signed-out">
           <SignInButton mode="modal">
