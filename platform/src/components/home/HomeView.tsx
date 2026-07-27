@@ -7,7 +7,7 @@ import { checkpointsFor, labelFor, pathForId } from "@/lib/course";
 import { isStudyDay, streakSeries, studyHistory, useProgress } from "@/lib/progress";
 import { CompletionRing } from "@/components/reader/CompletionRing";
 import { smoothPath, StudyChart } from "./StudyChart";
-import { CalendarGlyph, CheckGlyph, FireGlyph, MedalGlyph } from "./plump-glyphs";
+
 
 /* ------------------------------------------------------------------ *
  * Home — above the courses, not inside one.
@@ -247,6 +247,51 @@ export function HomeView({
   );
 }
 
+/* ---------------- stat marks ----------------
+ *
+ * Solar · Bold, hand-inlined (via <Icon> the whole ~7,400-icon set would land
+ * in this client bundle), 20px, each in its stat's hue — the same colour its
+ * graph line arrives at, so mark and line read as one thing. Solid Bold
+ * rather than Line or Duotone: at 20px a single filled silhouette is the
+ * weight that stays legible.
+ */
+
+const G = { width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", "aria-hidden": true, className: "shrink-0" } as const;
+
+function FireGlyph() {
+  return (
+    <svg {...G}>
+      <path fill="currentColor" d="M12.832 21.801c3.126-.626 7.168-2.875 7.168-8.69c0-5.291-3.873-8.815-6.658-10.434c-.619-.36-1.342.113-1.342.828v1.828c0 1.442-.606 4.074-2.29 5.169c-.86.559-1.79-.278-1.894-1.298l-.086-.838c-.1-.974-1.092-1.565-1.87-.971C4.461 8.46 3 10.33 3 13.11C3 20.221 8.289 22 10.933 22q.232 0 .484-.015C10.111 21.874 8 21.064 8 18.444c0-2.05 1.495-3.435 2.631-4.11c.306-.18.663.055.663.41v.59c0 .45.175 1.155.59 1.637c.47.546 1.159-.026 1.214-.744c.018-.226.246-.37.442-.256c.641.375 1.46 1.175 1.46 2.473c0 2.048-1.129 2.99-2.168 3.357" />
+    </svg>
+  );
+}
+
+function CalendarGlyph() {
+  return (
+    <svg {...G}>
+      <path fill="currentColor" d="M7.75 2.5a.75.75 0 0 0-1.5 0v1.58c-1.44.115-2.384.397-3.078 1.092c-.695.694-.977 1.639-1.093 3.078h19.842c-.116-1.44-.398-2.384-1.093-3.078c-.694-.695-1.639-.977-3.078-1.093V2.5a.75.75 0 0 0-1.5 0v1.513C15.585 4 14.839 4 14 4h-4c-.839 0-1.585 0-2.25.013z" />
+      <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d="M2 12c0-.839 0-1.585.013-2.25h19.974C22 10.415 22 11.161 22 12v2c0 3.771 0 5.657-1.172 6.828S17.771 22 14 22h-4c-3.771 0-5.657 0-6.828-1.172S2 17.771 2 14zm15 2a1 1 0 1 0 0-2a1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2a1 1 0 0 0 0 2m-4-5a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-6-3a1 1 0 1 0 0-2a1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2a1 1 0 0 0 0 2" />
+    </svg>
+  );
+}
+
+function CheckGlyph() {
+  return (
+    <svg {...G}>
+      <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10m-5.97-3.03a.75.75 0 0 1 0 1.06l-5 5a.75.75 0 0 1-1.06 0l-2-2a.75.75 0 1 1 1.06-1.06l1.47 1.47l2.235-2.235L14.97 8.97a.75.75 0 0 1 1.06 0" />
+    </svg>
+  );
+}
+
+function MedalGlyph() {
+  return (
+    <svg {...G}>
+      <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d="M13.436 5.783a3 3 0 0 0-2.872 0L5.769 8.397a3 3 0 0 0-1.563 2.634v4.938a3 3 0 0 0 1.563 2.634l4.795 2.614a3 3 0 0 0 2.872 0l4.794-2.614a3 3 0 0 0 1.564-2.634V11.03a3 3 0 0 0-1.564-2.634zM12 10.5c-.284 0-.474.34-.854 1.023l-.098.176c-.108.194-.162.29-.246.354c-.085.064-.19.088-.4.135l-.19.044c-.738.167-1.107.25-1.195.532s.164.577.667 1.165l.13.152c.143.167.215.25.247.354s.021.215 0 .438l-.02.203c-.076.785-.114 1.178.115 1.352c.23.174.576.015 1.267-.303l.178-.082c.197-.09.295-.135.399-.135s.202.045.399.135l.178.082c.691.319 1.037.477 1.267.303s.191-.567.115-1.352l-.02-.203c-.021-.223-.032-.334 0-.438s.104-.187.247-.354l.13-.152c.503-.588.755-.882.667-1.165c-.088-.282-.457-.365-1.195-.532l-.19-.044c-.21-.047-.315-.07-.4-.135c-.084-.064-.138-.16-.246-.354l-.098-.176c-.38-.682-.57-1.023-.854-1.023" />
+      <path fill="currentColor" d="M11 2h2c1.886 0 2.828 0 3.414.586S17 4.114 17 6v.018l-2.846-1.552a4.5 4.5 0 0 0-4.308 0L7 6.018V6c0-1.886 0-2.828.586-3.414S9.114 2 11 2" />
+    </svg>
+  );
+}
+
 /** The pale end of a Plump gradient: the hue mixed toward white, the same
  *  arithmetic the icon generator uses, so line and icon share their stops. */
 function pale(hex: string, t: number): string {
@@ -382,7 +427,7 @@ function Stat({
             edge — the mark captions the title. */}
         <div className="flex items-start justify-between gap-2">
           <p className="dash-stat-label">{label}</p>
-          <span className="shrink-0 text-ink">{icon}</span>
+          <span className="shrink-0" style={{ color: tone }}>{icon}</span>
         </div>
         <p className="mt-4 flex items-baseline gap-1.5">
           <span className="dash-stat-value">{value}</span>
