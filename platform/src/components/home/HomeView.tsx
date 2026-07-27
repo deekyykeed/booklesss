@@ -100,14 +100,21 @@ export function HomeView({ name }: { name?: string }) {
 
             return (
               <div key={c.slug} className="dash-card squircle">
-                <div className="flex flex-wrap items-center gap-4">
-                  <CompletionRing value={ratio} size={48} stroke={4} className="text-ink" />
-                  <div className="min-w-0 flex-1">
-                    <p className="font-display text-[18px] font-semibold leading-tight text-ink">{c.title}</p>
-                    <p className="mt-0.5 text-[13px] leading-5 text-muted">{c.subtitle}</p>
-                    <p className="mt-1 text-[12.5px] text-placeholder">
-                      {cSteps} of {c.lessonIds.length} steps · {cDone} of {c.totalCheckpoints} checkpoints
-                    </p>
+                {/* Stacks below sm, one row from sm up. NOT flex-wrap: the text
+                    column is flex-basis 0, so it never overflows the line and
+                    never triggers a wrap — it just gets squeezed to whatever
+                    the fixed-width buttons leave, one word per line. Whether a
+                    card survived depended on how wide its button labels were. */}
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                  <div className="flex min-w-0 flex-1 items-center gap-4">
+                    <CompletionRing value={ratio} size={48} stroke={4} className="text-ink" />
+                    <div className="min-w-0 flex-1">
+                      <p className="font-display text-[18px] font-semibold leading-tight text-ink">{c.title}</p>
+                      <p className="mt-0.5 text-[13px] leading-5 text-muted">{c.subtitle}</p>
+                      <p className="mt-1 text-[12.5px] text-placeholder">
+                        {cSteps} of {c.lessonIds.length} steps · {cDone} of {c.totalCheckpoints} checkpoints
+                      </p>
+                    </div>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     <Link href={`/${c.slug}`} className="step-complete-btn squircle">

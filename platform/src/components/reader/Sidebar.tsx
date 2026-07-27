@@ -15,6 +15,7 @@ import {
   type NavNode,
 } from "@/lib/course";
 import { useFollow } from "./useFollow";
+import { courseForNode } from "@/lib/courses";
 import { useProgress } from "@/lib/progress";
 import { CompletionRing } from "./CompletionRing";
 
@@ -419,6 +420,17 @@ export function Sidebar() {
     [closeMobileNav],
   );
 
+  /* One course at a time. course-data.json is a single flat tree spanning every
+   * course, so without this the rail lists Corporate Finance's units beneath
+   * Economics' — a student reading one course has no use for another's steps.
+   * Falls back to the whole tree if no course claims the node, which is better
+   * than an empty rail. */
+  const course = useMemo(() => courseForNode(activeId), [activeId]);
+  const units = useMemo(
+    () => (course ? COURSE.filter((n) => course.unitIds.includes(n.id)) : COURSE),
+    [course],
+  );
+
   const activeAncestors = useMemo(() => new Set(ancestorsOf(activeId)), [activeId]);
   const ctx: Ctx = { openIds, activeId, activeAncestors, activeRef, toggle, onSelect };
 
@@ -583,6 +595,18 @@ export function Sidebar() {
           <span className="min-w-0 flex-1 truncate">Dashboard</span>
         </Link>
         <div className="mx-2 mt-2 h-px bg-line" />
+        {/* Which course this rail is showing. With one course it was obvious;
+            with several, a list of units alone doesn't say where you are.
+            Suppressed where the course's whole tree hangs off a single node
+            named after it — otherwise the rail reads "Corporate Finance" twice,
+            once as the heading and again as the row beneath it. (Promoting that
+            node's children instead would misplace the active indicator, which
+            takes its indent from the node's depth in the full tree.) */}
+        {course && !(units.length === 1 && units[0].label === course.title) && (
+          <p className="truncate px-2.5 pb-0.5 pt-3 font-display text-[13.5px] font-semibold text-ink">
+            {course.title}
+          </p>
+        )}
       </div>
 
       <nav className="no-scrollbar flex-1 overflow-y-auto p-2">
@@ -622,7 +646,7 @@ export function Sidebar() {
               }}
             />
           )}
-          {COURSE.map((n) => (
+          {units.map((n) => (
             <Row key={n.id} node={n} depth={0} ctx={ctx} />
           ))}
         </div>

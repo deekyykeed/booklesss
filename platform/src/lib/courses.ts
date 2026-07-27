@@ -1,4 +1,4 @@
-import { checkpointsFor, lessonsUnder } from "./course";
+import { ancestorsOf, checkpointsFor, lessonsUnder } from "./course";
 import courseIndexData from "./course-index.json";
 
 /* ------------------------------------------------------------------ *
@@ -52,6 +52,20 @@ export const COURSES: CourseMeta[] = (courseIndexData as CourseIndexEntry[]).map
 
 export function courseBySlug(slug: string): CourseMeta | undefined {
   return COURSES.find((c) => c.slug === slug);
+}
+
+/**
+ * The course a nav node belongs to, found via its top-level ancestor.
+ *
+ * The tree is flat across courses, so this is what lets the reader show one
+ * course at a time: a student in Economics has no use for Corporate Finance's
+ * units sitting under their step list. Returns undefined for a node no course
+ * claims — callers fall back to the whole tree rather than an empty rail.
+ */
+export function courseForNode(nodeId: string): CourseMeta | undefined {
+  // ancestorsOf is nearest-first, so the last entry is the top-level node.
+  const root = ancestorsOf(nodeId).at(-1) ?? nodeId;
+  return COURSES.find((c) => c.unitIds.includes(root));
 }
 
 /** Every lesson across every course, for whole-library totals. */

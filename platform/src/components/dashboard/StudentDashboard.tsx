@@ -110,23 +110,27 @@ export function StudentDashboard({ course }: { course: CourseMeta }) {
           <h2 className="dash-heading">
             {hydrated && stats.checksDone > 0 ? "Pick up where you left off" : "Start here"}
           </h2>
-          <div className="dash-card squircle mt-2.5 flex flex-wrap items-center gap-4">
-            <CompletionRing
-              value={hydrated ? ratio(stats.next) : 0}
-              size={34}
-              stroke={3}
-              className="text-ink"
-            />
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-xs text-placeholder">
-                {breadcrumbFor(stats.next).slice(0, -1).join(" / ")}
-              </p>
-              <p className="mt-0.5 truncate font-display text-[17px] font-semibold text-ink">
-                {labelFor(stats.next)}
-              </p>
-              <p className="mt-0.5 text-[13px] text-muted">
-                {hydrated ? doneCount(stats.next) : 0} of {checkpointsFor(stats.next).length} checkpoints
-              </p>
+          {/* Stacks below sm, one row from sm up — see the note on the course
+              cards in HomeView: flex-wrap can't save a flex-basis-0 column. */}
+          <div className="dash-card squircle mt-2.5 flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="flex min-w-0 flex-1 items-center gap-4">
+              <CompletionRing
+                value={hydrated ? ratio(stats.next) : 0}
+                size={34}
+                stroke={3}
+                className="text-ink"
+              />
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-xs text-placeholder">
+                  {breadcrumbFor(stats.next).slice(0, -1).join(" / ")}
+                </p>
+                <p className="mt-0.5 truncate font-display text-[17px] font-semibold text-ink">
+                  {labelFor(stats.next)}
+                </p>
+                <p className="mt-0.5 text-[13px] text-muted">
+                  {hydrated ? doneCount(stats.next) : 0} of {checkpointsFor(stats.next).length} checkpoints
+                </p>
+              </div>
             </div>
             <Link href={pathForId(stats.next)} className="dash-cta squircle">
               {hydrated && doneCount(stats.next) > 0 ? "Continue" : "Start"}
