@@ -432,7 +432,9 @@ function Stat({
           <p className="dash-stat-label">{label}</p>
           <span className="shrink-0" style={{ color: tone }}>{icon}</span>
         </div>
-        <p className="mt-4 flex items-baseline gap-1.5">
+        {/* mt-7/mt-2: the number sits low, nearer the delta than the title —
+            the air lives between title and figure, not inside the figures. */}
+        <p className="mt-7 flex items-baseline gap-1.5">
           <span className="dash-stat-value">{value}</span>
           {unit && <span className="dash-stat-unit">{unit}</span>}
         </p>
