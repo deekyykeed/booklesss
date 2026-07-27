@@ -141,6 +141,7 @@ export function HomeView({
             value={String(streak)}
             unit={streak === 1 ? "day" : "days"}
             tone={TONE.streak}
+            icon={<FireGlyph />}
             series={spark.streaks}
             delta={spark.dStreak}
           />
@@ -149,6 +150,7 @@ export function HomeView({
             value={String(daysStudied)}
             unit={daysStudied === 1 ? "day" : "days"}
             tone={TONE.days}
+            icon={<CalendarGlyph />}
             series={spark.cumDays}
             delta={spark.dDays}
           />
@@ -157,6 +159,7 @@ export function HomeView({
             value={`${done.checks}`}
             unit={`/ ${totals.checks}`}
             tone={TONE.checks}
+            icon={<CheckGlyph />}
             series={spark.checksDaily}
             delta={spark.dChecks}
           />
@@ -165,6 +168,7 @@ export function HomeView({
             value={`${done.steps}`}
             unit={`/ ${totals.steps}`}
             tone={TONE.steps}
+            icon={<MedalGlyph />}
             series={spark.stepsDaily}
             delta={spark.dSteps}
           />
@@ -244,27 +248,60 @@ export function HomeView({
 
 /* ---------------- the reference tile, piece by piece ----------------
  *
- * Copied from the reference card: label top-left with clear air under it, the
- * value large on the left, a small area sparkline on the right with its peak
- * marked and labelled, and a footer of trend icon + delta + "last week".
+ * Label, then the stat's own mark — 24px, plain ink — sitting in the air
+ * between the title and the number, then the value beside its sparkline,
+ * then the week-over-week line. No icon by the percentage: its colour is
+ * the cue.
  *
- * The footer icon is Solar Line "Graph Up"/"Graph Down" — the rounded square
- * is part of the glyph itself, not a container drawn around it. Green when
- * the week improved, the house red when it fell, grey when flat. Inlined
- * because <Icon> would pull the whole Solar set into this client bundle.
+ * Marks are Solar Line, hand-inlined (via <Icon> the whole ~7,400-icon set
+ * would land in this client bundle). Line rather than Bold Duotone because a
+ * grey duotone at this size is a blob — the faint layer is a filled panel
+ * that swallows the detail.
  */
 
-function TrendGlyph({ dir }: { dir: 1 | 0 | -1 }) {
-  const color = dir > 0 ? "#17754d" : dir < 0 ? "var(--color-danger)" : "var(--color-placeholder)";
+const G = { width: 24, height: 24, viewBox: "0 0 24 24", fill: "none", "aria-hidden": true, className: "shrink-0" } as const;
+
+function FireGlyph() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0" style={{ color }}>
+    <svg {...G}>
       <g fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464C22 4.93 22 7.286 22 12s0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z" />
-        {dir < 0 ? (
-          <path strokeLinecap="round" strokeLinejoin="round" d="m7 10l2.293 2.293a1 1 0 0 0 1.414 0l1.586-1.586a1 1 0 0 1 1.414 0L17 14m0 0v-2.5m0 2.5h-2.5" />
-        ) : (
-          <path strokeLinecap="round" strokeLinejoin="round" d="m7 14l2.293-2.293a1 1 0 0 1 1.414 0l1.586 1.586a1 1 0 0 0 1.414 0L17 10m0 0v2.5m0-2.5h-2.5" />
-        )}
+        <path d="M20 13.111C20 20.222 13.956 22 10.933 22C8.29 22 3 20.222 3 13.111c0-2.782 1.461-4.65 2.86-5.716c.778-.594 1.77-.003 1.87.971l.086.838c.105 1.02 1.033 1.857 1.893 1.298C11.394 9.407 12 6.775 12 5.333V5.01c0-1.43 1.444-2.35 2.602-1.512C17.165 5.35 20 8.584 20 13.11Z" />
+        <path d="M8 18.445C8 21.289 10.489 22 11.733 22c1.09 0 3.267-.711 3.267-3.555c0-1.102-.59-1.845-1.16-2.274c-.398-.299-.957-.03-1.094.449c-.178.624-.823 1.016-1.152.456c-.3-.512-.3-1.28-.3-1.743c0-.636-.64-1.048-1.155-.674C9.106 15.409 8 16.68 8 18.445Z" />
+      </g>
+    </svg>
+  );
+}
+
+function CalendarGlyph() {
+  return (
+    <svg {...G}>
+      <g fill="none">
+        <path stroke="currentColor" strokeWidth="1.5" d="M2 12c0-3.771 0-5.657 1.172-6.828S6.229 4 10 4h4c3.771 0 5.657 0 6.828 1.172S22 8.229 22 12v2c0 3.771 0 5.657-1.172 6.828S17.771 22 14 22h-4c-3.771 0-5.657 0-6.828-1.172S2 17.771 2 14z" />
+        <path stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" d="M7 4V2.5M17 4V2.5M2.5 9h19" />
+        <path fill="currentColor" d="M18 17a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0" />
+      </g>
+    </svg>
+  );
+}
+
+function CheckGlyph() {
+  return (
+    <svg {...G}>
+      <g fill="none" stroke="currentColor" strokeWidth="1.5">
+        <circle cx="12" cy="12" r="10" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="m8.5 12.5l2 2l5-5" />
+      </g>
+    </svg>
+  );
+}
+
+function MedalGlyph() {
+  return (
+    <svg {...G}>
+      <g fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M17 8V6c0-1.886 0-2.828-.586-3.414S14.886 2 13 2h-2c-1.886 0-2.828 0-3.414.586S7 4.114 7 6v2" />
+        <path d="M10.564 5.783a3 3 0 0 1 2.872 0l4.794 2.614a3 3 0 0 1 1.564 2.634v4.938a3 3 0 0 1-1.564 2.634l-4.794 2.614a3 3 0 0 1-2.872 0l-4.795-2.614a3 3 0 0 1-1.563-2.634V11.03a3 3 0 0 1 1.563-2.634z" />
+        <path d="M11.146 11.523c.38-.682.57-1.023.854-1.023s.474.341.854 1.023l.098.176c.108.194.162.29.246.355c.085.063.19.087.4.135l.19.043c.738.167 1.107.25 1.195.533c.088.282-.164.576-.667 1.164l-.13.152c-.143.168-.215.251-.247.355s-.021.214 0 .438l.02.203c.076.784.114 1.177-.115 1.351c-.23.175-.576.016-1.267-.302l-.178-.083c-.197-.09-.295-.135-.399-.135s-.202.045-.399.135l-.178.083c-.691.318-1.037.477-1.267.302c-.23-.174-.191-.567-.115-1.351l.02-.203c.021-.224.032-.335 0-.438c-.032-.104-.104-.187-.247-.355l-.13-.152c-.503-.588-.755-.882-.667-1.164c.088-.283.457-.366 1.195-.533l.19-.043c.21-.048.315-.072.4-.135c.084-.064.138-.161.246-.355z" />
       </g>
     </svg>
   );
@@ -329,6 +366,7 @@ function Stat({
   value,
   unit,
   tone,
+  icon,
   series,
   delta,
 }: {
@@ -337,6 +375,8 @@ function Stat({
   unit?: string;
   /** The stat's hue — carries the sparkline. */
   tone: string;
+  /** The stat's mark, 24px in plain ink, between the title and the number. */
+  icon: React.ReactNode;
   /** Last 14 days of this stat, oldest first. */
   series: number[];
   delta: { text: string; dir: 1 | 0 | -1 };
@@ -344,17 +384,16 @@ function Stat({
   return (
     <div className="dash-stat squircle">
       <p className="dash-stat-label">{label}</p>
-      {/* The air between the title and the number is part of the reference,
-          not slack to trim — the value needs the row to itself. */}
-      <div className="mt-4 flex items-end justify-between gap-3">
+      <span className="mt-3 block text-ink">{icon}</span>
+      <div className="mt-3 flex items-end justify-between gap-3">
         <p className="flex min-w-0 items-baseline gap-1.5 pb-1">
           <span className="dash-stat-value">{value}</span>
           {unit && <span className="dash-stat-unit">{unit}</span>}
         </p>
         <Spark series={series} tone={tone} />
       </div>
+      {/* No icon here — the percentage's colour is the direction. */}
       <p className="dash-stat-foot">
-        <TrendGlyph dir={delta.dir} />
         <span
           className="dash-stat-lead"
           style={{ color: delta.dir > 0 ? "#17754d" : delta.dir < 0 ? "var(--color-danger)" : "var(--color-muted)" }}
