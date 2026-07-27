@@ -346,7 +346,10 @@ function Spark({ series, tone }: { series: number[]; tone: string }) {
           y: TOP + (1 - v / max) * (H - TOP),
         }));
         const line = smoothPath(pts);
-        const area = `${line} L${w - 5} ${H} L${LEFT} ${H} Z`;
+        /* The line stops 5px shy of the edge for the head's sake, but the
+           wash carries on flat to the card edge — otherwise those 5px read
+           as a seam between the fill and the corner. */
+        const area = `${line} L${w} ${pts[pts.length - 1].y.toFixed(1)} L${w} ${H} L${LEFT} ${H} Z`;
         return (
           <svg width={w} height={H} className="block">
             <defs>
