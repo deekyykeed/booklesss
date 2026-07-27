@@ -36,6 +36,10 @@ const TONE = {
   steps: "#4a3aa7",
 } as const;
 
+/** The Time studied card's hue — the same green its line is drawn with
+ *  (StudyChart's LINE), so the mark and the plot agree. */
+const CHART_TONE = "#17754d";
+
 /** The reference's anchored delta — "+20% · 25 last week": the movement AND
  *  the number it moved from, so the percentage explains itself. Falls back to
  *  a raw "+n" when last week was zero and no percentage exists. */
@@ -149,10 +153,33 @@ export function HomeView({
       {/* ---- how the studying is going ---- */}
       <section className="mt-6">
         <h2 className="dash-heading">Your studying</h2>
+
+        {/* Full width above the tiles: the shape of the studying over time
+            leads, the tiles below are today's state. Only reading inside a
+            lesson is timed, so a flat stretch means nothing was read, not
+            that the chart is broken. */}
+        <div className="dash-card squircle mt-4">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span style={{ color: CHART_TONE }}>
+                <ClockGlyph />
+              </span>
+              <h3 className="font-display text-[15px] font-semibold leading-tight text-ink">Time studied</h3>
+            </div>
+            <p className="shrink-0 text-[12px] text-placeholder">
+              {totalSecs > 0 ? `${fmtTotal(totalSecs)} over 30 days` : "Last 30 days"}
+            </p>
+          </div>
+          <div className="mt-1">
+            <StudyChart days={days} hydrated={hydrated} />
+          </div>
+        </div>
+
         {/* Tighter gutter on phones so each tile keeps its width at two-up;
             the air lives above and below the band, not between the tiles. */}
-        <div className="mt-4 grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-3">
+        <div className="mt-5 grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-3">
           <Stat
+            hydrated={hydrated}
             label="Current streak"
             value={String(streak)}
             unit={streak === 1 ? "day" : "days"}
@@ -166,6 +193,7 @@ export function HomeView({
             }}
           />
           <Stat
+            hydrated={hydrated}
             label="Days studied"
             value={String(daysStudied)}
             unit={daysStudied === 1 ? "day" : "days"}
@@ -175,6 +203,7 @@ export function HomeView({
             foot={weekFoot(spark.wDays.cur, spark.wDays.prev, "day")}
           />
           <Stat
+            hydrated={hydrated}
             label="Checkpoints"
             value={`${done.checks}`}
             unit={`/ ${totals.checks}`}
@@ -184,6 +213,7 @@ export function HomeView({
             foot={weekFoot(spark.wChecks.cur, spark.wChecks.prev)}
           />
           <Stat
+            hydrated={hydrated}
             label="Steps complete"
             value={`${done.steps}`}
             unit={`/ ${totals.steps}`}
@@ -192,21 +222,6 @@ export function HomeView({
             series={spark.stepsDaily}
             foot={weekFoot(spark.wSteps.cur, spark.wSteps.prev, "step")}
           />
-        </div>
-
-        {/* Full width under the tiles: the tiles are today's state, this is the
-            shape of it over time. Only reading inside a lesson is timed, so a
-            flat stretch means nothing was read, not that the chart is broken. */}
-        <div className="dash-card squircle mt-5">
-          <div className="flex items-baseline justify-between gap-3">
-            <h3 className="font-display text-[15px] font-semibold leading-tight text-ink">Time studied</h3>
-            <p className="shrink-0 text-[12px] text-placeholder">
-              {totalSecs > 0 ? `${fmtTotal(totalSecs)} over 30 days` : "Last 30 days"}
-            </p>
-          </div>
-          <div className="mt-1">
-            <StudyChart days={days} hydrated={hydrated} />
-          </div>
         </div>
       </section>
 
@@ -293,6 +308,16 @@ function CalendarGlyph() {
       <path fill="currentColor" d="M6.94 2c.416 0 .753.324.753.724v1.46c.668-.012 1.417-.012 2.26-.012h4.015c.842 0 1.591 0 2.259.013v-1.46c0-.4.337-.725.753-.725s.753.324.753.724V4.25c1.445.111 2.394.384 3.09 1.055c.698.67.982 1.582 1.097 2.972L22 9H2v-.724c.116-1.39.4-2.302 1.097-2.972s1.645-.944 3.09-1.055V2.724c0-.4.337-.724.753-.724" />
       <path fill="currentColor" opacity=".5" d="M22 14v-2c0-.839-.004-2.335-.017-3H2.01c-.013.665-.01 2.161-.01 3v2c0 3.771 0 5.657 1.172 6.828S6.228 22 10 22h4c3.77 0 5.656 0 6.828-1.172S22 17.772 22 14" />
       <path fill="currentColor" d="M18 17a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0" />
+    </svg>
+  );
+}
+
+/* Solar · "Clock Circle" — the Time studied card's mark. */
+function ClockGlyph() {
+  return (
+    <svg {...G}>
+      <path fill="currentColor" opacity=".5" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10" />
+      <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d="M12 7.25a.75.75 0 0 1 .75.75v3.69l2.28 2.28a.75.75 0 1 1-1.06 1.06l-2.5-2.5a.75.75 0 0 1-.22-.53V8a.75.75 0 0 1 .75-.75" />
     </svg>
   );
 }
@@ -413,6 +438,7 @@ function Spark({ series, tone }: { series: number[]; tone: string }) {
 }
 
 function Stat({
+  hydrated,
   label,
   value,
   unit,
@@ -421,6 +447,9 @@ function Stat({
   series,
   foot,
 }: {
+  /** Until the store has read localStorage the numbers don't exist yet —
+   *  the tile shows a quiet dash rather than a zero pretending to be one. */
+  hydrated: boolean;
   label: string;
   value: string;
   unit?: string;
@@ -448,19 +477,33 @@ function Stat({
         {/* mt-7/mt-2: the number sits low, nearer its footer than the title —
             the air lives between title and figure, not inside the figures. */}
         <p className="mt-7 flex items-baseline gap-1.5">
-          <span className="dash-stat-value">{value}</span>
-          {unit && <span className="dash-stat-unit">{unit}</span>}
+          {hydrated ? (
+            <>
+              <span className="dash-stat-value">{value}</span>
+              {unit && <span className="dash-stat-unit">{unit}</span>}
+            </>
+          ) : (
+            <span className="dash-stat-value" style={{ color: "var(--color-placeholder)" }}>–</span>
+          )}
         </p>
+        {/* The footer keeps its line even while loading, so the tile doesn't
+            change height when the numbers arrive. */}
         <p className="dash-stat-foot">
-          <span
-            className="dash-stat-lead"
-            style={{
-              color: foot.good ? `color-mix(in oklab, ${tone} 82%, #000)` : "var(--color-placeholder)",
-            }}
-          >
-            {foot.lead}
-          </span>
-          <span className="truncate">{foot.tail}</span>
+          {hydrated ? (
+            <>
+              <span
+                className="dash-stat-lead"
+                style={{
+                  color: foot.good ? `color-mix(in oklab, ${tone} 82%, #000)` : "var(--color-placeholder)",
+                }}
+              >
+                {foot.lead}
+              </span>
+              <span className="truncate">{foot.tail}</span>
+            </>
+          ) : (
+            " "
+          )}
         </p>
       </div>
     </div>
