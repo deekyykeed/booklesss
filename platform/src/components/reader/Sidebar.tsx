@@ -15,7 +15,7 @@ import {
   type NavNode,
 } from "@/lib/course";
 import { useFollow } from "./useFollow";
-import { courseForNode } from "@/lib/courses";
+import { courseForNode, type CourseMeta } from "@/lib/courses";
 import { useProgress } from "@/lib/progress";
 import { CompletionRing } from "./CompletionRing";
 
@@ -201,6 +201,67 @@ type Ctx = {
   /** Fired when a leaf step is picked — moves the selector and closes the drawer. */
   onSelect: (id: string) => void;
 };
+
+/* Solar · Bold Duotone · "Book 2". Duotone rather than Line because this names
+ * the course you're actually in — the same weight the nav gives an active row.
+ * Inlined for the same reason as the glyphs above: <Icon> would pull the whole
+ * Solar set into this client bundle. Solar's own opacity=".5" is untouched, so
+ * the two tones follow the icon's colour. */
+function CourseGlyph() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" className="shrink-0 text-ink">
+      <path
+        fill="currentColor"
+        opacity=".5"
+        d="M4.727 2.733c.306-.308.734-.508 1.544-.618C7.105 2.002 8.209 2 9.793 2h4.414c1.584 0 2.688.002 3.522.115c.81.11 1.238.31 1.544.618c.305.308.504.74.613 1.557c.112.84.114 1.955.114 3.552V18H7.426c-1.084 0-1.462.006-1.753.068c-.513.11-.96.347-1.285.667c-.11.108-.164.161-.291.505A1.3 1.3 0 0 0 4 19.7V7.842c0-1.597.002-2.711.114-3.552c.109-.816.308-1.249.613-1.557"
+      />
+      <path
+        fill="currentColor"
+        d="M20 18H7.426c-1.084 0-1.462.006-1.753.068c-.513.11-.96.347-1.285.667c-.11.108-.164.161-.291.505s-.107.489-.066.78l.022.15c.11.653.31.998.616 1.244c.307.246.737.407 1.55.494c.837.09 1.946.092 3.536.092h4.43c1.59 0 2.7-.001 3.536-.092c.813-.087 1.243-.248 1.55-.494c.2-.16.354-.362.467-.664H8a.75.75 0 0 1 0-1.5h11.975c.018-.363.023-.776.025-1.25M7.25 7A.75.75 0 0 1 8 6.25h8a.75.75 0 0 1 0 1.5H8A.75.75 0 0 1 7.25 7M8 9.75a.75.75 0 0 0 0 1.5h5a.75.75 0 0 0 0-1.5z"
+      />
+    </svg>
+  );
+}
+
+/* The course this rail belongs to, at the top of it.
+ *
+ * Plain bold text didn't read as the course — it sat at the same weight as the
+ * unit rows beneath it. As a card with its own glyph and a progress bar it's a
+ * different kind of thing entirely: what you're in, and how far through it you
+ * are, rather than somewhere to go.
+ *
+ * The bar is the same one the dashboard uses (.dash-bar), so a student sees the
+ * same measure of the same course in both places. */
+function CourseHeader({ course }: { course: CourseMeta }) {
+  const { hydrated, doneCount, isComplete } = useProgress();
+
+  const steps = course.lessonIds.length;
+  const stepsDone = hydrated ? course.lessonIds.filter((id) => isComplete(id)).length : 0;
+  const checksDone = hydrated ? course.lessonIds.reduce((n, id) => n + doneCount(id), 0) : 0;
+  const pct = course.totalCheckpoints
+    ? Math.round((checksDone / course.totalCheckpoints) * 100)
+    : 0;
+
+  return (
+    <div className="course-card squircle">
+      <div className="flex items-center gap-2">
+        <CourseGlyph />
+        <span className="min-w-0 flex-1 truncate font-display text-[14.5px] font-semibold leading-tight text-ink">
+          {course.title}
+        </span>
+      </div>
+      <div className="dash-bar mt-2.5" role="presentation">
+        <span className="dash-bar-fill" style={{ width: `${pct}%` }} />
+      </div>
+      <p className="mt-1.5 flex items-baseline justify-between gap-2 text-[11px] text-muted">
+        <span className="truncate">
+          {stepsDone} of {steps} steps
+        </span>
+        <span className="shrink-0 tabular-nums">{pct}%</span>
+      </p>
+    </div>
+  );
+}
 
 /* Per-step completion, at the end of its row. Always rendered so the row width
  * never shifts mid-read, but dimmed right down until the step is actually
@@ -595,18 +656,7 @@ export function Sidebar() {
           <span className="min-w-0 flex-1 truncate">Dashboard</span>
         </Link>
         <div className="mx-2 mt-2 h-px bg-line" />
-        {/* Which course this rail is showing. With one course it was obvious;
-            with several, a list of units alone doesn't say where you are.
-            Suppressed where the course's whole tree hangs off a single node
-            named after it — otherwise the rail reads "Corporate Finance" twice,
-            once as the heading and again as the row beneath it. (Promoting that
-            node's children instead would misplace the active indicator, which
-            takes its indent from the node's depth in the full tree.) */}
-        {course && !(units.length === 1 && units[0].label === course.title) && (
-          <p className="truncate px-2.5 pb-0.5 pt-3 font-display text-[13.5px] font-semibold text-ink">
-            {course.title}
-          </p>
-        )}
+        {course && <CourseHeader course={course} />}
       </div>
 
       <nav className="no-scrollbar flex-1 overflow-y-auto p-2">
