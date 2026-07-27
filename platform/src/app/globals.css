@@ -22,6 +22,7 @@
   --color-card-label: #52514e;      /* card titles               */
   --color-card-dim: #898781;        /* muted card numbers        */
   --color-brand: #3ecf8e;           /* Booklesss green mark      */
+  --color-brand-deep: #17754d;      /* brand green, readable as text on white */
   --color-danger: #8d2525;          /* red inline link           */
   --color-btn: #0b0b0b;             /* solid black button        */
 
@@ -532,6 +533,376 @@
     .lesson-fade {
       animation: none;
     }
+  }
+
+  /* Placeholder for the account control while Clerk's script loads. Holds the
+     exact 32px the avatar will occupy, with the same hairline as the circle
+     buttons beside it, so the header doesn't reflow when auth resolves. */
+  .account-skeleton {
+    display: block;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 9999px;
+    background-color: rgba(0, 0, 0, 0.05);
+    animation: accountPulse 1.4s ease-in-out infinite;
+  }
+  @keyframes accountPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .account-skeleton {
+      animation: none;
+    }
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Step checkpoints + completion
+   *
+   * Every section of a step ends in a checkpoint; ticking them all completes
+   * the step. The ring (CompletionRing) shows the same fraction in the
+   * sidebar, the right panel header and the closing card, so the reader sees
+   * one number wherever they look.
+   * ------------------------------------------------------------------ */
+
+  /* The tick lands at the END of the section, after a rule that runs out of
+     the text and into it — so it reads as the section closing, not as another
+     paragraph. */
+  .checkpoint-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 18px;
+  }
+  .checkpoint-rule {
+    height: 1px;
+    flex: 1;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1));
+  }
+  .checkpoint-btn {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 7px;
+    height: 30px;
+    padding: 0 11px 0 7px;
+    border-radius: 15px;
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--color-muted);
+    transition: color 160ms ease, background-color 160ms ease;
+  }
+  .checkpoint-btn:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+    color: var(--color-ink);
+  }
+  .checkpoint-btn[data-done] {
+    color: var(--color-brand-deep);
+  }
+  /* Ghosted at rest so the control advertises the tick you're about to earn,
+     half-lit on hover, solid once earned. */
+  .checkpoint-tick {
+    opacity: 0;
+    transition: opacity 160ms ease;
+  }
+  .checkpoint-btn:hover .checkpoint-tick {
+    opacity: 0.4;
+  }
+  .checkpoint-btn[data-done] .checkpoint-tick {
+    opacity: 1;
+  }
+
+  /* Ring completion flourish. transform-box: fill-box is what makes
+     transform-origin: center mean the glyph's own centre inside an SVG. */
+  @keyframes ringPop {
+    0% {
+      transform: scale(0.5);
+      opacity: 0;
+    }
+    60% {
+      transform: scale(1.14);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  .ring-pop {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: ringPop 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ring-pop {
+      animation: none;
+    }
+  }
+
+  /* ---- Comprehension check dialog ----
+     Same frosted-glass language as the reader's own overlays. Sits above the
+     sidebars (z-40) and the top bar (z-50). */
+  .quiz-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background-color: rgba(17, 17, 17, 0.28);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    animation: quizFade 160ms ease both;
+  }
+  @keyframes quizFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .quiz-card {
+    width: 100%;
+    max-width: 460px;
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    scrollbar-width: none;
+    padding: 20px;
+    border: 1px solid var(--color-line);
+    border-radius: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 1px 1px -0.5px rgba(0, 0, 0, 0.06), 0 24px 48px -12px rgba(0, 0, 0, 0.24);
+    animation: quizRise 200ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .quiz-card::-webkit-scrollbar { display: none; }
+  @keyframes quizRise {
+    from { opacity: 0; transform: translateY(8px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .quiz-backdrop, .quiz-card { animation: none; }
+  }
+
+  .quiz-eyebrow {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--color-muted);
+  }
+  .quiz-close {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    color: var(--color-muted);
+    transition: color 140ms ease, background-color 140ms ease;
+  }
+  .quiz-close:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--color-ink);
+  }
+  .quiz-question {
+    margin-top: 10px;
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 1.32;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+  }
+
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  /* One row per choice: a lettered marker, then the text. The marker is what
+     carries the right/wrong colour, so the row never becomes a block of
+     colour that's hard to read. */
+  .quiz-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid var(--color-line);
+    border-radius: 12px;
+    background-color: #ffffff;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.45;
+    text-align: left;
+    color: var(--color-ink-2);
+    transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease;
+  }
+  .quiz-option:not(:disabled):hover {
+    border-color: var(--color-line-2);
+    color: var(--color-ink);
+  }
+  .quiz-option[data-state="picked"] {
+    border-color: var(--color-ink);
+    color: var(--color-ink);
+  }
+  .quiz-option[data-state="right"] {
+    border-color: color-mix(in srgb, var(--color-brand) 55%, var(--color-line));
+    background-color: color-mix(in srgb, var(--color-brand) 8%, #ffffff);
+    color: var(--color-ink);
+  }
+  .quiz-option[data-state="wrong"] {
+    border-color: color-mix(in srgb, var(--color-danger) 40%, var(--color-line));
+    background-color: color-mix(in srgb, var(--color-danger) 5%, #ffffff);
+    color: var(--color-ink);
+  }
+  /* Answered options are disabled, but they must stay fully legible — this is
+     the explanation now, not a dimmed-out form. */
+  .quiz-option:disabled {
+    opacity: 1;
+    cursor: default;
+  }
+  .quiz-marker {
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    border: 1px solid var(--color-line-2);
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-muted);
+    transition: all 140ms ease;
+  }
+  .quiz-option[data-state="picked"] .quiz-marker {
+    border-color: var(--color-ink);
+    background-color: var(--color-ink);
+    color: #ffffff;
+  }
+  .quiz-option[data-state="right"] .quiz-marker {
+    border-color: var(--color-brand);
+    background-color: var(--color-brand);
+    color: #ffffff;
+  }
+  .quiz-option[data-state="wrong"] .quiz-marker {
+    border-color: var(--color-danger);
+    background-color: var(--color-danger);
+    color: #ffffff;
+  }
+
+  .quiz-explain {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background-color: rgba(0, 0, 0, 0.035);
+  }
+  .quiz-verdict {
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .quiz-explain[data-result="right"] .quiz-verdict { color: var(--color-brand-deep); }
+  .quiz-explain[data-result="wrong"] .quiz-verdict { color: var(--color-danger); }
+  .quiz-explain-text {
+    margin-top: 3px;
+    font-family: var(--font-content);
+    font-size: 14px;
+    line-height: 1.5;
+    color: #39393f;
+  }
+
+  .quiz-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .quiz-btn-primary {
+    height: 34px;
+    padding: 0 14px;
+    border-radius: 10px;
+    background-color: var(--color-btn);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: #ffffff;
+    transition: background-color 140ms ease, opacity 140ms ease;
+  }
+  .quiz-btn-primary:hover:not(:disabled) { background-color: #000000; }
+  .quiz-btn-primary:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+  .quiz-btn-ghost {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 10px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-muted);
+    transition: color 140ms ease, background-color 140ms ease;
+  }
+  .quiz-btn-ghost:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+    color: var(--color-ink);
+  }
+
+  /* Closing card of every step. Turns green only when every checkpoint is
+     ticked — that colour change IS the reward, so nothing else on the card
+     needs to shout. */
+  .step-complete {
+    margin-top: 40px;
+    padding: 18px;
+    border: 1px solid #e7e7e6;
+    border-radius: 18px;
+    background-color: rgba(255, 255, 255, 0.75);
+    transition: border-color 260ms ease, background-color 260ms ease;
+  }
+  .step-complete[data-complete] {
+    border-color: color-mix(in srgb, var(--color-brand) 50%, #e7e7e6);
+    background-color: color-mix(in srgb, var(--color-brand) 7%, rgba(255, 255, 255, 0.85));
+  }
+  .step-complete-btn,
+  .step-complete-next {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid var(--color-line);
+    border-radius: 10px;
+    background-color: #fff;
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--color-ink-2);
+    transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease;
+  }
+  .step-complete-btn:hover,
+  .step-complete-next:hover {
+    border-color: var(--color-line-2);
+    color: var(--color-ink);
+  }
+  /* Once the step is done, moving on is the obvious next act — so the link
+     goes solid and the secondary button stays quiet. */
+  .step-complete-next[data-primary] {
+    border-color: var(--color-btn);
+    background-color: var(--color-btn);
+    color: #fff;
+  }
+  .step-complete-next[data-primary]:hover {
+    color: #fff;
+    border-color: #000;
+    background-color: #000;
   }
 
   /* Voice-mode glow. JS writes --voice (0..1, live loudness) to the composer

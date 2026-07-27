@@ -15,6 +15,8 @@ import {
   type NavNode,
 } from "@/lib/course";
 import { useFollow } from "./useFollow";
+import { useProgress } from "@/lib/progress";
+import { CompletionRing } from "./CompletionRing";
 
 const STEP = 18;
 const RAIL = 2;
@@ -182,6 +184,23 @@ type Ctx = {
   onSelect: (id: string) => void;
 };
 
+/* Per-step completion, at the end of its row. Always rendered so the row width
+ * never shifts mid-read, but dimmed right down until the step is actually
+ * under way — 28 bright empty rings would be pure noise. */
+function StepRing({ lessonId }: { lessonId: string }) {
+  const { hydrated, ratio } = useProgress();
+  const v = hydrated ? ratio(lessonId) : 0;
+  return (
+    <CompletionRing
+      value={v}
+      size={14}
+      stroke={1.75}
+      className="transition-opacity duration-200"
+      style={{ opacity: v > 0 ? 1 : 0.4 }}
+    />
+  );
+}
+
 // Module-level (stable identity) so toggling never remounts the tree.
 function Row({ node, depth, ctx }: { node: NavNode; depth: number; ctx: Ctx }) {
   const pad = padFor(depth);
@@ -242,6 +261,7 @@ function Row({ node, depth, ctx }: { node: NavNode; depth: number; ctx: Ctx }) {
       }
     >
       <span className="min-w-0 flex-1 truncate">{node.label}</span>
+      <StepRing lessonId={node.id} />
     </Link>
   );
 }

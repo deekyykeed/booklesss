@@ -1,11 +1,44 @@
-import type { Lesson } from "@/lib/course";
+"use client";
+
+import { checkpointsFor, type Lesson } from "@/lib/course";
+import { useProgress } from "@/lib/progress";
 import { CodePlayground } from "./CodePlayground";
+import { Checkpoint, StepComplete } from "./Checkpoint";
+import { CompletionRing } from "./CompletionRing";
+
+/* Ring + count beside the step's kicker — the same numbers the sidebar and the
+ * right panel show, at the top of what they describe. */
+function StepProgressBadge({ lessonId }: { lessonId: string }) {
+  const { hydrated, doneCount, ratio } = useProgress();
+  const total = checkpointsFor(lessonId).length;
+  if (!total) return null;
+  const done = hydrated ? doneCount(lessonId) : 0;
+
+  return (
+    <span className="flex shrink-0 items-center gap-1.5 text-muted">
+      <CompletionRing
+        value={hydrated ? ratio(lessonId) : 0}
+        size={15}
+        stroke={2}
+        label={`${done} of ${total} checkpoints complete`}
+      />
+      <span className="font-sans text-xs font-medium tabular-nums">
+        {done}/{total}
+      </span>
+    </span>
+  );
+}
 
 // Content column. Base font is Aptos (font-content); headings use Familjen.
-export function LessonView({ lesson }: { lesson: Lesson }) {
+export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: string }) {
   return (
     <div className="font-content">
-      <p className="mb-2 font-sans text-xs font-medium uppercase tracking-[0.08em] text-muted">{lesson.kicker}</p>
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <p className="min-w-0 truncate font-sans text-xs font-medium uppercase tracking-[0.08em] text-muted">
+          {lesson.kicker}
+        </p>
+        <StepProgressBadge lessonId={lessonId} />
+      </div>
       <h1 className="font-display text-[30px] font-medium leading-[1.2] tracking-[-0.02em] text-ink">{lesson.title}</h1>
 
       <div className="mt-8 flex flex-col gap-10">
@@ -35,9 +68,15 @@ export function LessonView({ lesson }: { lesson: Lesson }) {
                 );
               })}
             </div>
+            {/* One checkpoint closes each section — working down the step is
+                what fills the ring. Where the section carries a check, the
+                tick is earned by answering it. */}
+            <Checkpoint lessonId={lessonId} checkpointId={s.id} heading={s.heading} check={s.check} />
           </section>
         ))}
       </div>
+
+      <StepComplete lessonId={lessonId} />
     </div>
   );
 }

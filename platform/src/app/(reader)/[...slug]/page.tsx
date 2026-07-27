@@ -15,5 +15,5 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
   const id = lessonIdForSlug(slug ?? []);
   if (!id) notFound();
   const lesson = courseIndex().lessons.get(id)!;
-  return <LessonReader lesson={lesson} />;
+  return <LessonReader lesson={lesson} lessonId={id} />;
 }

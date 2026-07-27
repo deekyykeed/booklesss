@@ -1,4 +1,7 @@
 import { Icon } from "@/lib/icon";
+import { clerkEnabled } from "@/lib/clerk";
+import { Account as ClerkAccount } from "./Account";
+import { ClerkIsland } from "./ClerkIsland";
 import { CommandSearch } from "./CommandSearch";
 import { MobileMenuButton, MobileContextButton } from "./reader/MobileNav";
 
@@ -51,6 +54,21 @@ function Avatar() {
     >
       DM
     </div>
+  );
+}
+
+/* Account control. With Clerk configured this is the real thing — the user
+ * menu once signed in, a sign-in button when not. Without keys it stays the
+ * static placeholder avatar the header has always shown, so an unconfigured
+ * clone looks unchanged. */
+function Account() {
+  if (!clerkEnabled) return <Avatar />;
+  // If auth fails to load, fall back to the placeholder avatar rather than
+  // letting the header take the lesson down with it.
+  return (
+    <ClerkIsland fallback={<Avatar />}>
+      <ClerkAccount />
+    </ClerkIsland>
   );
 }
 
@@ -111,7 +129,7 @@ export function TopBar({
           {/* Help + advisor are desktop-only; mobile keeps just search + profile */}
           <CircleButton icon="question-circle-linear" label="Help" className="hidden md:grid" />
           <CircleButton icon="bolt-linear" label="Advisor Center" className="hidden md:grid" />
-          <Avatar />
+          <Account />
         </div>
       </div>
     </header>

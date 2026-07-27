@@ -23,7 +23,17 @@
                   "type": "callout"
                 }
               ],
-              "heading": "Overview"
+              "heading": "Overview",
+              "check": {
+                "question": "Why does this section say every decision means giving something up?",
+                "options": [
+                  "Because most decisions cost money.",
+                  "Because resources are scarce, so choosing one option rules out another.",
+                  "Because people are bad at planning ahead."
+                ],
+                "answer": 1,
+                "explain": "Scarcity is the reason. If resources were unlimited you could have everything, and nothing would be forgone."
+              }
             },
             {
               "id": "key-ideas",
@@ -38,7 +48,17 @@
                   ]
                 }
               ],
-              "heading": "Key ideas"
+              "heading": "Key ideas",
+              "check": {
+                "question": "Opportunity cost is the value of what?",
+                "options": [
+                  "Everything you didn't choose, added together.",
+                  "The next best thing you gave up.",
+                  "The money you actually handed over."
+                ],
+                "answer": 1,
+                "explain": "Only the single best alternative counts — not the sum of all the others, and not the cash you spent."
+              }
             },
             {
               "id": "in-practice",
@@ -48,7 +68,17 @@
                   "type": "p"
                 }
               ],
-              "heading": "In practice"
+              "heading": "In practice",
+              "check": {
+                "question": "You skip an $80 shift and an exam revision session in order to relax. What is the opportunity cost of relaxing?",
+                "options": [
+                  "Nothing — you didn't spend any money.",
+                  "The $80 you didn't earn plus the exam marks you didn't gain.",
+                  "The $80 only, since marks aren't money."
+                ],
+                "answer": 1,
+                "explain": "Opportunity cost counts everything you gave up, whether or not it was cash. Naming it turns a vague feeling into a clear decision."
+              }
             },
             {
               "id": "summary",
@@ -58,7 +88,17 @@
                   "type": "p"
                 }
               ],
-              "heading": "Summary"
+              "heading": "Summary",
+              "check": {
+                "question": "Which best matches the section's closing point?",
+                "options": [
+                  "Economics is a body of facts to memorise before the exam.",
+                  "Economics is a way of thinking that adds precision to instincts you already have.",
+                  "Economics is really a branch of mathematics."
+                ],
+                "answer": 1,
+                "explain": "The section frames the rest of the course as sharpening instincts you already have about scarcity, trade-offs and incentives."
+              }
             },
             {
               "id": "try-it",
@@ -72,7 +112,17 @@
                   "type": "playground"
                 }
               ],
-              "heading": "Try it yourself"
+              "heading": "Try it yourself",
+              "check": {
+                "question": "In the snippet, wageFromShift is 80 and valueOfResting is 60. What does it print as the opportunity cost of resting?",
+                "options": [
+                  "$60",
+                  "$20",
+                  "$140"
+                ],
+                "answer": 1,
+                "explain": "It prints the difference: 80 − 60 = 20, the net value given up by resting instead of working the shift."
+              }
             }
           ]
         }
@@ -92,7 +142,17 @@
                   "type": "p"
                 }
               ],
-              "heading": "Overview"
+              "heading": "Overview",
+              "check": {
+                "question": "How is this course meant to be worked through?",
+                "options": [
+                  "Strictly in order, first lesson to last.",
+                  "Either top-to-bottom or by jumping straight to a topic in the sidebar.",
+                  "Only by searching for what you need."
+                ],
+                "answer": 1,
+                "explain": "Both routes work — lessons are short enough to finish in one sitting either way."
+              }
             },
             {
               "id": "key-ideas",
@@ -106,7 +166,17 @@
                   ]
                 }
               ],
-              "heading": "Key ideas"
+              "heading": "Key ideas",
+              "check": {
+                "question": "What does this section suggest as the quickest way to revise before a test?",
+                "options": [
+                  "Re-read every lesson in full.",
+                  "Skim each lesson's “Key ideas” recap.",
+                  "Do the practice problems only."
+                ],
+                "answer": 1,
+                "explain": "Every lesson ends with a Key ideas recap, which is built for exactly this kind of fast revision."
+              }
             }
           ]
         }
@@ -126,7 +196,17 @@
                   "type": "p"
                 }
               ],
-              "heading": "Overview"
+              "heading": "Overview",
+              "check": {
+                "question": "How is this glossary meant to be used?",
+                "options": [
+                  "Memorise it all before starting the course.",
+                  "Come back to it whenever a term stops making sense.",
+                  "Read it once at the end."
+                ],
+                "answer": 1,
+                "explain": "It's a quick reference for vocabulary that keeps recurring, not a lesson to be learned in one go."
+              }
             },
             {
               "id": "key-ideas",
@@ -141,7 +221,17 @@
                   ]
                 }
               ],
-              "heading": "Key ideas"
+              "heading": "Key ideas",
+              "check": {
+                "question": "What does “ceteris paribus” mean?",
+                "options": [
+                  "All else equal.",
+                  "Other things being unequal.",
+                  "At the margin."
+                ],
+                "answer": 0,
+                "explain": "It's the assumption that everything else is held constant, which is what lets you isolate one cause."
+              }
             }
           ]
         }
@@ -171,7 +261,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Overview"
+                  "heading": "Overview",
+                  "check": {
+                    "question": "All else equal, when the price of a good rises, quantity demanded does what?",
+                    "options": [
+                      "Rises.",
+                      "Falls.",
+                      "Stays the same."
+                    ],
+                    "answer": 1,
+                    "explain": "That inverse relationship between price and quantity demanded is exactly why demand curves slope downward."
+                  }
                 },
                 {
                   "id": "key-ideas",
@@ -185,7 +285,17 @@
                       ]
                     }
                   ],
-                  "heading": "Key ideas"
+                  "heading": "Key ideas",
+                  "check": {
+                    "question": "A change in the good's OWN price causes what?",
+                    "options": [
+                      "A shift of the whole demand curve.",
+                      "A movement along the demand curve.",
+                      "Both at once."
+                    ],
+                    "answer": 1,
+                    "explain": "Only the good's own price moves you along the curve. Tastes, income and related-goods prices shift the whole curve."
+                  }
                 },
                 {
                   "id": "in-practice",
@@ -195,7 +305,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "In practice"
+                  "heading": "In practice",
+                  "check": {
+                    "question": "A latte goes from $4 to $5 and some regulars switch to filter coffee. What has happened?",
+                    "options": [
+                      "The demand curve shifted left.",
+                      "We moved along the same demand curve.",
+                      "The supply curve shifted right."
+                    ],
+                    "answer": 1,
+                    "explain": "Nothing about the customers changed — only the price — so this is a slide up the same curve, not a shift of it."
+                  }
                 },
                 {
                   "id": "summary",
@@ -205,7 +325,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Summary"
+                  "heading": "Summary",
+                  "check": {
+                    "question": "What does this section call the single most common mistake in intro microeconomics?",
+                    "options": [
+                      "Confusing supply with demand.",
+                      "Confusing a movement along the curve with a shift of the curve.",
+                      "Forgetting to say “ceteris paribus”."
+                    ],
+                    "answer": 1,
+                    "explain": "Always ask what changed: the good's own price (movement) or anything else (shift)."
+                  }
                 }
               ]
             }
@@ -225,7 +355,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Overview"
+                  "heading": "Overview",
+                  "check": {
+                    "question": "Why do supply curves slope upward?",
+                    "options": [
+                      "Because higher prices cover higher marginal costs and promise more profit.",
+                      "Because producers always prefer selling more.",
+                      "Because costs fall as the price rises."
+                    ],
+                    "answer": 0,
+                    "explain": "A higher price makes additional, more expensive units worth producing — so quantity supplied rises with price."
+                  }
                 },
                 {
                   "id": "key-ideas",
@@ -239,7 +379,17 @@
                       ]
                     }
                   ],
-                  "heading": "Key ideas"
+                  "heading": "Key ideas",
+                  "check": {
+                    "question": "Which of these shifts the whole supply curve rather than moving along it?",
+                    "options": [
+                      "The good's own price rising.",
+                      "A new technology that cuts production costs.",
+                      "Buyers wanting more of the good."
+                    ],
+                    "answer": 1,
+                    "explain": "Costs, technology and the number of sellers shift the entire curve; the good's own price only moves you along it."
+                  }
                 }
               ]
             }
@@ -259,7 +409,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Overview"
+                  "heading": "Overview",
+                  "check": {
+                    "question": "What is true at market equilibrium?",
+                    "options": [
+                      "A small surplus remains, which keeps the price stable.",
+                      "Quantity demanded equals quantity supplied, so there's no pressure on price.",
+                      "Supply always exceeds demand slightly."
+                    ],
+                    "answer": 1,
+                    "explain": "With no shortage and no surplus, nothing pushes the price in either direction."
+                  }
                 },
                 {
                   "id": "key-ideas",
@@ -273,7 +433,17 @@
                       ]
                     }
                   ],
-                  "heading": "Key ideas"
+                  "heading": "Key ideas",
+                  "check": {
+                    "question": "If the price sits ABOVE equilibrium, what happens?",
+                    "options": [
+                      "A shortage forms and pulls the price up.",
+                      "A surplus builds up and pushes the price down.",
+                      "Nothing — the price stays where it is."
+                    ],
+                    "answer": 1,
+                    "explain": "Above equilibrium sellers offer more than buyers want, so the unsold surplus drives the price back down."
+                  }
                 }
               ]
             }
@@ -297,7 +467,17 @@
                           "type": "p"
                         }
                       ],
-                      "heading": "Overview"
+                      "heading": "Overview",
+                      "check": {
+                        "question": "How is price elasticity of demand calculated?",
+                        "options": [
+                          "Change in quantity ÷ change in price, in units.",
+                          "Percentage change in quantity ÷ percentage change in price.",
+                          "Price ÷ quantity."
+                        ],
+                        "answer": 1,
+                        "explain": "Using percentages is what makes the measure independent of the units the good is sold in."
+                      }
                     },
                     {
                       "id": "key-ideas",
@@ -311,7 +491,17 @@
                           ]
                         }
                       ],
-                      "heading": "Key ideas"
+                      "heading": "Key ideas",
+                      "check": {
+                        "question": "Cutting the price of a good with ELASTIC demand does what to total revenue?",
+                        "options": [
+                          "Raises it.",
+                          "Lowers it.",
+                          "Leaves it unchanged."
+                        ],
+                        "answer": 0,
+                        "explain": "Demand is responsive, so the extra quantity sold more than makes up for the lower price per unit."
+                      }
                     }
                   ]
                 }
@@ -331,7 +521,17 @@
                           "type": "p"
                         }
                       ],
-                      "heading": "Overview"
+                      "heading": "Overview",
+                      "check": {
+                        "question": "Income elasticity measures how demand responds to a change in what?",
+                        "options": [
+                          "The good's own price.",
+                          "Consumer income.",
+                          "The price of another good."
+                        ],
+                        "answer": 1,
+                        "explain": "It's the percentage change in quantity demanded divided by the percentage change in income."
+                      }
                     },
                     {
                       "id": "key-ideas",
@@ -345,7 +545,17 @@
                           ]
                         }
                       ],
-                      "heading": "Key ideas"
+                      "heading": "Key ideas",
+                      "check": {
+                        "question": "A good whose demand FALLS as income rises is called what?",
+                        "options": [
+                          "A luxury good.",
+                          "An inferior good.",
+                          "A normal good."
+                        ],
+                        "answer": 1,
+                        "explain": "Inferior goods have negative income elasticity — buyers trade up to something else as they get richer."
+                      }
                     }
                   ]
                 }
@@ -365,7 +575,17 @@
                           "type": "p"
                         }
                       ],
-                      "heading": "Overview"
+                      "heading": "Overview",
+                      "check": {
+                        "question": "Cross-price elasticity reveals whether two goods are what?",
+                        "options": [
+                          "Normal or inferior.",
+                          "Substitutes or complements.",
+                          "Elastic or inelastic."
+                        ],
+                        "answer": 1,
+                        "explain": "It measures how demand for one good responds to a price change in another, which is exactly what that relationship is."
+                      }
                     },
                     {
                       "id": "key-ideas",
@@ -379,7 +599,17 @@
                           ]
                         }
                       ],
-                      "heading": "Key ideas"
+                      "heading": "Key ideas",
+                      "check": {
+                        "question": "Printers and ink have a negative cross-price elasticity. That makes them what?",
+                        "options": [
+                          "Substitutes.",
+                          "Complements.",
+                          "Unrelated goods."
+                        ],
+                        "answer": 1,
+                        "explain": "A negative value means a price rise in one cuts demand for the other — they're bought together."
+                      }
                     }
                   ]
                 }
@@ -407,7 +637,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Overview"
+                  "heading": "Overview",
+                  "check": {
+                    "question": "What is marginal utility?",
+                    "options": [
+                      "The total satisfaction from everything you consume.",
+                      "The extra satisfaction from one more unit.",
+                      "Satisfaction divided by price."
+                    ],
+                    "answer": 1,
+                    "explain": "And it usually shrinks the more of something you already have."
+                  }
                 },
                 {
                   "id": "key-ideas",
@@ -421,7 +661,17 @@
                       ]
                     }
                   ],
-                  "heading": "Key ideas"
+                  "heading": "Key ideas",
+                  "check": {
+                    "question": "How does diminishing marginal utility help explain a downward-sloping demand curve?",
+                    "options": [
+                      "Extra units are worth less to you, so you'll only buy them at a lower price.",
+                      "Because supply rises when price rises.",
+                      "Because incomes fall as prices rise."
+                    ],
+                    "answer": 0,
+                    "explain": "If the second unit delights you less than the first, it takes a lower price to make it worth buying."
+                  }
                 }
               ]
             }
@@ -441,7 +691,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Overview"
+                  "heading": "Overview",
+                  "check": {
+                    "question": "Every point on a single indifference curve represents what?",
+                    "options": [
+                      "The same total spending.",
+                      "The same level of satisfaction.",
+                      "The same quantity of both goods."
+                    ],
+                    "answer": 1,
+                    "explain": "That's what makes the consumer indifferent between them — the bundles differ, the satisfaction doesn't."
+                  }
                 },
                 {
                   "id": "key-ideas",
@@ -455,7 +715,17 @@
                       ]
                     }
                   ],
-                  "heading": "Key ideas"
+                  "heading": "Key ideas",
+                  "check": {
+                    "question": "Where does the consumer's optimal bundle sit?",
+                    "options": [
+                      "Where the budget line crosses the origin.",
+                      "Where the budget line just touches the highest reachable indifference curve.",
+                      "Where two indifference curves cross."
+                    ],
+                    "answer": 1,
+                    "explain": "Curves further from the origin mean more satisfaction, so you go as far out as the budget line allows."
+                  }
                 }
               ]
             }
@@ -475,7 +745,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Overview"
+                  "heading": "Overview",
+                  "check": {
+                    "question": "What does a budget constraint show?",
+                    "options": [
+                      "Which bundle the consumer wants most.",
+                      "Every combination of goods affordable at a given income and set of prices.",
+                      "The cheapest bundle available."
+                    ],
+                    "answer": 1,
+                    "explain": "It draws the boundary between what's affordable and what isn't — it says nothing about preferences."
+                  }
                 },
                 {
                   "id": "key-ideas",
@@ -489,7 +769,17 @@
                       ]
                     }
                   ],
-                  "heading": "Key ideas"
+                  "heading": "Key ideas",
+                  "check": {
+                    "question": "What does an increase in income do to the budget line?",
+                    "options": [
+                      "Pivots it around one axis.",
+                      "Shifts it outward.",
+                      "Leaves it unchanged."
+                    ],
+                    "answer": 1,
+                    "explain": "More income moves the whole line out; a change in one price is what pivots it."
+                  }
                 }
               ]
             }
@@ -515,7 +805,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Overview"
+                  "heading": "Overview",
+                  "check": {
+                    "question": "Which kind of cost does NOT change with output?",
+                    "options": [
+                      "Variable cost.",
+                      "Fixed cost.",
+                      "Marginal cost."
+                    ],
+                    "answer": 1,
+                    "explain": "Fixed costs are paid regardless of how much the firm produces; variable costs move with output."
+                  }
                 },
                 {
                   "id": "key-ideas",
@@ -529,7 +829,17 @@
                       ]
                     }
                   ],
-                  "heading": "Key ideas"
+                  "heading": "Key ideas",
+                  "check": {
+                    "question": "A firm should keep expanding output while what is true?",
+                    "options": [
+                      "Average cost is still falling.",
+                      "The extra revenue from a unit exceeds its marginal cost.",
+                      "Fixed costs have not yet been covered."
+                    ],
+                    "answer": 1,
+                    "explain": "Every unit that brings in more than it costs to make adds to profit."
+                  }
                 }
               ]
             }
@@ -549,7 +859,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Overview"
+                  "heading": "Overview",
+                  "check": {
+                    "question": "Profit is maximised at the output where what holds?",
+                    "options": [
+                      "Revenue is at its highest.",
+                      "Marginal revenue equals marginal cost.",
+                      "Average cost is at its lowest."
+                    ],
+                    "answer": 1,
+                    "explain": "MR = MC is the profit-maximising rule, and it holds in every market structure."
+                  }
                 },
                 {
                   "id": "key-ideas",
@@ -563,7 +883,17 @@
                       ]
                     }
                   ],
-                  "heading": "Key ideas"
+                  "heading": "Key ideas",
+                  "check": {
+                    "question": "What distinguishes economic profit from accounting profit?",
+                    "options": [
+                      "Economic profit also counts opportunity cost.",
+                      "Economic profit ignores fixed costs.",
+                      "Economic profit is always the larger of the two."
+                    ],
+                    "answer": 0,
+                    "explain": "Accounting profit only subtracts money actually spent; economic profit also subtracts what you gave up to do this instead."
+                  }
                 }
               ]
             }
@@ -583,7 +913,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Overview"
+                  "heading": "Overview",
+                  "check": {
+                    "question": "Economies of scale mean that as output rises, what falls?",
+                    "options": [
+                      "Total cost.",
+                      "Average cost per unit.",
+                      "Marginal revenue."
+                    ],
+                    "answer": 1,
+                    "explain": "Bulk buying, specialised labour and spreading fixed costs over more units all cut the cost of each one."
+                  }
                 },
                 {
                   "id": "key-ideas",
@@ -597,7 +937,17 @@
                       ]
                     }
                   ],
-                  "heading": "Key ideas"
+                  "heading": "Key ideas",
+                  "check": {
+                    "question": "What does this section say happens beyond a certain size?",
+                    "options": [
+                      "Economies of scale keep growing indefinitely.",
+                      "Diseconomies of scale set in as coordination gets harder.",
+                      "Fixed costs disappear entirely."
+                    ],
+                    "answer": 1,
+                    "explain": "Size stops paying once the firm becomes harder to coordinate than the savings are worth."
+                  }
                 }
               ]
             }
@@ -623,7 +973,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Overview"
+                  "heading": "Overview",
+                  "check": {
+                    "question": "In perfect competition, an individual firm is what?",
+                    "options": [
+                      "A price maker.",
+                      "A price taker.",
+                      "A monopolist."
+                    ],
+                    "answer": 1,
+                    "explain": "With many small firms selling identical products, no single firm can move the market price."
+                  }
                 },
                 {
                   "id": "key-ideas",
@@ -637,7 +997,17 @@
                       ]
                     }
                   ],
-                  "heading": "Key ideas"
+                  "heading": "Key ideas",
+                  "check": {
+                    "question": "In the long run, what does free entry do to economic profit here?",
+                    "options": [
+                      "Drives it to zero.",
+                      "Raises it steadily.",
+                      "Has no effect on it."
+                    ],
+                    "answer": 0,
+                    "explain": "Any profit attracts new entrants, and their competition competes that profit away."
+                  }
                 }
               ]
             }
@@ -657,7 +1027,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Overview"
+                  "heading": "Overview",
+                  "check": {
+                    "question": "Compared with a competitive market, a monopoly typically does what?",
+                    "options": [
+                      "Charges less and produces more.",
+                      "Charges more and produces less.",
+                      "Charges and produces roughly the same."
+                    ],
+                    "answer": 1,
+                    "explain": "It sets price above marginal cost, which means producing less than a competitive market would."
+                  }
                 },
                 {
                   "id": "key-ideas",
@@ -671,7 +1051,17 @@
                       ]
                     }
                   ],
-                  "heading": "Key ideas"
+                  "heading": "Key ideas",
+                  "check": {
+                    "question": "Why can a monopoly keep earning profit in the long run?",
+                    "options": [
+                      "Because its costs are always lower.",
+                      "Because barriers to entry block competitors from entering.",
+                      "Because demand for its product is always inelastic."
+                    ],
+                    "answer": 1,
+                    "explain": "In perfect competition entry competes profit away; a monopoly is protected precisely because entry is blocked."
+                  }
                 }
               ]
             }
@@ -691,7 +1081,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Overview"
+                  "heading": "Overview",
+                  "check": {
+                    "question": "Why do economists analyse oligopoly using game theory?",
+                    "options": [
+                      "Because the market has very many tiny firms.",
+                      "Because each firm's best move depends on what the others do.",
+                      "Because prices in these markets are set by law."
+                    ],
+                    "answer": 1,
+                    "explain": "A few firms, each interdependent — that mutual second-guessing is what game theory is built to handle."
+                  }
                 },
                 {
                   "id": "key-ideas",
@@ -705,7 +1105,17 @@
                       ]
                     }
                   ],
-                  "heading": "Key ideas"
+                  "heading": "Key ideas",
+                  "check": {
+                    "question": "The kinked demand curve is used to explain what?",
+                    "options": [
+                      "Why oligopoly prices tend to be sticky.",
+                      "Why monopolies invest in R&D.",
+                      "Why supply curves slope upward."
+                    ],
+                    "answer": 0,
+                    "explain": "It's the standard account of why firms in an oligopoly leave their prices unchanged even as costs move."
+                  }
                 }
               ]
             }
@@ -737,7 +1147,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Overview"
+                  "heading": "Overview",
+                  "check": {
+                    "question": "What does GDP count?",
+                    "options": [
+                      "Every transaction, including second-hand sales.",
+                      "The market value of final goods and services produced in a period.",
+                      "Government spending only."
+                    ],
+                    "answer": 1,
+                    "explain": "It's the headline measure of the size of an economy — output produced within a country over a given period."
+                  }
                 },
                 {
                   "id": "key-ideas",
@@ -751,7 +1171,17 @@
                       ]
                     }
                   ],
-                  "heading": "Key ideas"
+                  "heading": "Key ideas",
+                  "check": {
+                    "question": "What does real GDP do that nominal GDP does not?",
+                    "options": [
+                      "Includes unpaid work.",
+                      "Strips out inflation so different years compare fairly.",
+                      "Counts exports only."
+                    ],
+                    "answer": 1,
+                    "explain": "Without that adjustment, rising prices alone would look like a growing economy."
+                  }
                 },
                 {
                   "id": "in-practice",
@@ -761,7 +1191,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "In practice"
+                  "heading": "In practice",
+                  "check": {
+                    "question": "What is the common rule of thumb for dating a recession?",
+                    "options": [
+                      "Any quarter in which prices fall.",
+                      "Two straight quarters of falling real GDP.",
+                      "Unemployment rising above 5%."
+                    ],
+                    "answer": 1,
+                    "explain": "It's a rough convention rather than an official definition, but it's the one usually quoted."
+                  }
                 },
                 {
                   "id": "summary",
@@ -771,7 +1211,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Summary"
+                  "heading": "Summary",
+                  "check": {
+                    "question": "How does the summary say GDP should be treated?",
+                    "options": [
+                      "As a report card on a country's wellbeing.",
+                      "As a thermometer — it measures output, not happiness, fairness or sustainability.",
+                      "As a precise measure of inequality."
+                    ],
+                    "answer": 1,
+                    "explain": "It's the best single number for the size of an economy, and a poor one for how well people are living."
+                  }
                 }
               ]
             }
@@ -791,7 +1241,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Overview"
+                  "heading": "Overview",
+                  "check": {
+                    "question": "Inflation erodes what?",
+                    "options": [
+                      "The purchasing power of money.",
+                      "The number of goods an economy can produce.",
+                      "The exchange rate, and nothing else."
+                    ],
+                    "answer": 0,
+                    "explain": "A sustained rise in the general price level means each unit of currency buys less than it did."
+                  }
                 },
                 {
                   "id": "key-ideas",
@@ -805,7 +1265,17 @@
                       ]
                     }
                   ],
-                  "heading": "Key ideas"
+                  "heading": "Key ideas",
+                  "check": {
+                    "question": "Inflation driven by rising input costs is called what?",
+                    "options": [
+                      "Demand-pull inflation.",
+                      "Cost-push inflation.",
+                      "Deflation."
+                    ],
+                    "answer": 1,
+                    "explain": "Demand-pull comes from too much spending; cost-push comes from the supply side, as inputs get dearer."
+                  }
                 }
               ]
             }
@@ -825,7 +1295,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Overview"
+                  "heading": "Overview",
+                  "check": {
+                    "question": "The unemployment rate counts people who are what?",
+                    "options": [
+                      "Not working, for any reason at all.",
+                      "Willing and able to work but unable to find a job.",
+                      "Working fewer hours than they would like."
+                    ],
+                    "answer": 1,
+                    "explain": "Someone who isn't looking for work isn't in the labour force, so they don't appear in the rate."
+                  }
                 },
                 {
                   "id": "key-ideas",
@@ -839,7 +1319,17 @@
                       ]
                     }
                   ],
-                  "heading": "Key ideas"
+                  "heading": "Key ideas",
+                  "check": {
+                    "question": "Unemployment caused by workers' skills not matching available jobs is which type?",
+                    "options": [
+                      "Frictional.",
+                      "Structural.",
+                      "Cyclical."
+                    ],
+                    "answer": 1,
+                    "explain": "Frictional is the gap between jobs; cyclical rises in recessions; structural is the skills mismatch."
+                  }
                 }
               ]
             }
@@ -865,7 +1355,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Overview"
+                  "heading": "Overview",
+                  "check": {
+                    "question": "Fiscal policy is the government's use of what?",
+                    "options": [
+                      "Interest rates and the money supply.",
+                      "Spending and taxation.",
+                      "Exchange rate pegs."
+                    ],
+                    "answer": 1,
+                    "explain": "Interest rates and the money supply are monetary policy, run by the central bank."
+                  }
                 },
                 {
                   "id": "key-ideas",
@@ -879,7 +1379,17 @@
                       ]
                     }
                   ],
-                  "heading": "Key ideas"
+                  "heading": "Key ideas",
+                  "check": {
+                    "question": "What makes automatic stabilisers automatic?",
+                    "options": [
+                      "They need new legislation each time they're used.",
+                      "They act without new legislation.",
+                      "They only operate during booms."
+                    ],
+                    "answer": 1,
+                    "explain": "Something like unemployment benefit rises as soon as a downturn starts, with no new decision required."
+                  }
                 }
               ]
             }
@@ -899,7 +1409,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Overview"
+                  "heading": "Overview",
+                  "check": {
+                    "question": "Who runs monetary policy?",
+                    "options": [
+                      "The government's treasury department.",
+                      "The central bank.",
+                      "Commercial banks, collectively."
+                    ],
+                    "answer": 1,
+                    "explain": "And central banks are usually independent of the government, which is what protects the inflation target."
+                  }
                 },
                 {
                   "id": "key-ideas",
@@ -913,7 +1433,17 @@
                       ]
                     }
                   ],
-                  "heading": "Key ideas"
+                  "heading": "Key ideas",
+                  "check": {
+                    "question": "When is quantitative easing typically used?",
+                    "options": [
+                      "When inflation is running very high.",
+                      "When interest rates are already near zero.",
+                      "When the currency is pegged."
+                    ],
+                    "answer": 1,
+                    "explain": "Once rates can't usefully go lower, the central bank injects money directly instead."
+                  }
                 }
               ]
             }
@@ -939,7 +1469,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Overview"
+                  "heading": "Overview",
+                  "check": {
+                    "question": "A country has a comparative advantage in whatever it can produce at what?",
+                    "options": [
+                      "The lowest absolute cost.",
+                      "The lowest opportunity cost.",
+                      "The highest quality."
+                    ],
+                    "answer": 1,
+                    "explain": "It's about what you give up to make something — not whether you're better at it than anyone else."
+                  }
                 },
                 {
                   "id": "key-ideas",
@@ -953,7 +1493,17 @@
                       ]
                     }
                   ],
-                  "heading": "Key ideas"
+                  "heading": "Key ideas",
+                  "check": {
+                    "question": "Can a country that is worse at producing everything still gain from trade?",
+                    "options": [
+                      "No — it has nothing worth offering.",
+                      "Yes — the gains come from relative, not absolute, cost.",
+                      "Only if it has natural resources to sell."
+                    ],
+                    "answer": 1,
+                    "explain": "Specialising where your opportunity cost is lowest lets both partners consume beyond their own limits."
+                  }
                 }
               ]
             }
@@ -973,7 +1523,17 @@
                       "type": "p"
                     }
                   ],
-                  "heading": "Overview"
+                  "heading": "Overview",
+                  "check": {
+                    "question": "An exchange rate is what?",
+                    "options": [
+                      "The interest rate charged on foreign loans.",
+                      "The price of one currency in terms of another.",
+                      "The balance of trade between two countries."
+                    ],
+                    "answer": 1,
+                    "explain": "That price is what shapes the cost of imports and exports."
+                  }
                 },
                 {
                   "id": "key-ideas",
@@ -987,7 +1547,17 @@
                       ]
                     }
                   ],
-                  "heading": "Key ideas"
+                  "heading": "Key ideas",
+                  "check": {
+                    "question": "A weaker domestic currency makes what happen?",
+                    "options": [
+                      "Exports cheaper and imports dearer.",
+                      "Exports dearer and imports cheaper.",
+                      "No difference to either."
+                    ],
+                    "answer": 0,
+                    "explain": "Foreign buyers need less of their own currency to buy your goods, while imports take more of yours."
+                  }
                 }
               ]
             }
@@ -1015,7 +1585,17 @@
                   "type": "p"
                 }
               ],
-              "heading": "Overview"
+              "heading": "Overview",
+              "check": {
+                "question": "What does behavioral economics study?",
+                "options": [
+                  "The random mistakes people make by accident.",
+                  "The systematic, predictable ways people depart from perfect rationality.",
+                  "How firms decide what to charge."
+                ],
+                "answer": 1,
+                "explain": "The departures are patterned, which is what makes them worth modelling at all."
+              }
             },
             {
               "id": "key-ideas",
@@ -1029,7 +1609,17 @@
                   ]
                 }
               ],
-              "heading": "Key ideas"
+              "heading": "Key ideas",
+              "check": {
+                "question": "Loss aversion means that losses do what?",
+                "options": [
+                  "Feel about the same as equivalent gains.",
+                  "Hurt about twice as much as equivalent gains feel good.",
+                  "Are generally ignored by decision-makers."
+                ],
+                "answer": 1,
+                "explain": "That asymmetry is why people cling to what they already have far more than standard theory predicts."
+              }
             }
           ]
         }
@@ -1049,7 +1639,17 @@
                   "type": "p"
                 }
               ],
-              "heading": "Overview"
+              "heading": "Overview",
+              "check": {
+                "question": "What makes something a nudge rather than a regulation?",
+                "options": [
+                  "It bans the worse option outright.",
+                  "It changes how choices are presented, without banning options or changing incentives.",
+                  "It taxes the worse option."
+                ],
+                "answer": 1,
+                "explain": "Bans and taxes change the options or their costs; a nudge only changes how they're laid out."
+              }
             },
             {
               "id": "key-ideas",
@@ -1063,7 +1663,17 @@
                   ]
                 }
               ],
-              "heading": "Key ideas"
+              "heading": "Key ideas",
+              "check": {
+                "question": "Which example does this section give of a powerful nudge?",
+                "options": [
+                  "A tax on sugary drinks.",
+                  "Automatic enrolment into a pension.",
+                  "Banning cigarette advertising."
+                ],
+                "answer": 1,
+                "explain": "Defaults are powerful precisely because most people never change them — so the default choice becomes most people's choice."
+              }
             }
           ]
         }
@@ -1083,7 +1693,17 @@
                   "type": "p"
                 }
               ],
-              "heading": "Overview"
+              "heading": "Overview",
+              "check": {
+                "question": "What does the prisoner's dilemma show?",
+                "options": [
+                  "That cooperation always wins in the end.",
+                  "That two rational players can fail to cooperate even when both would be better off.",
+                  "That people rarely behave rationally."
+                ],
+                "answer": 1,
+                "explain": "Both players reason perfectly well and still end up somewhere worse than if they'd cooperated."
+              }
             },
             {
               "id": "key-ideas",
@@ -1097,7 +1717,17 @@
                   ]
                 }
               ],
-              "heading": "Key ideas"
+              "heading": "Key ideas",
+              "check": {
+                "question": "In a one-shot prisoner's dilemma, each player's dominant strategy is what?",
+                "options": [
+                  "To cooperate.",
+                  "To defect.",
+                  "To pick at random."
+                ],
+                "answer": 1,
+                "explain": "Defecting is better whatever the other does — so both defect, and both end up worse off."
+              }
             },
             {
               "id": "in-practice",
@@ -1107,7 +1737,17 @@
                   "type": "p"
                 }
               ],
-              "heading": "In practice"
+              "heading": "In practice",
+              "check": {
+                "question": "Two petrol stations both undercut each other and end up on thin margins. Why is this a prisoner's dilemma?",
+                "options": [
+                  "Because they agreed in advance to cut prices.",
+                  "Because each acting in its own interest leaves both worse off.",
+                  "Because customers end up paying more."
+                ],
+                "answer": 1,
+                "explain": "Each cut is individually rational — steal the customers — but the pair of rational moves is collectively worse."
+              }
             },
             {
               "id": "summary",
@@ -1117,7 +1757,17 @@
                   "type": "p"
                 }
               ],
-              "heading": "Summary"
+              "heading": "Summary",
+              "check": {
+                "question": "According to the summary, the fix is almost always to do what?",
+                "options": [
+                  "Add more players to the game.",
+                  "Change the payoffs, or repeat the game.",
+                  "Regulate the price directly."
+                ],
+                "answer": 1,
+                "explain": "Repetition lets reputation and retaliation do the work; changing payoffs removes the temptation to defect."
+              }
             }
           ]
         }
@@ -1143,7 +1793,17 @@
                   "type": "p"
                 }
               ],
-              "heading": "Overview"
+              "heading": "Overview",
+              "check": {
+                "question": "GDP by the expenditure method is which of these?",
+                "options": [
+                  "C + I + G + (X − M)",
+                  "C + I + G + (M − X)",
+                  "C + I + G"
+                ],
+                "answer": 0,
+                "explain": "Consumption, investment and government spending, plus net exports — exports minus imports."
+              }
             },
             {
               "id": "key-ideas",
@@ -1158,7 +1818,17 @@
                   ]
                 }
               ],
-              "heading": "Key ideas"
+              "heading": "Key ideas",
+              "check": {
+                "question": "How do you convert a nominal value into a real one?",
+                "options": [
+                  "Nominal × (price index ÷ 100)",
+                  "Nominal ÷ (price index ÷ 100)",
+                  "Nominal − price index"
+                ],
+                "answer": 1,
+                "explain": "Dividing by the index scaled to 100 strips out the price change, leaving the value in constant terms."
+              }
             }
           ]
         }
@@ -1178,7 +1848,17 @@
                   "type": "p"
                 }
               ],
-              "heading": "Overview"
+              "heading": "Overview",
+              "check": {
+                "question": "A coffee shop raises prices 10% and sales fall 5%. Is demand elastic or inelastic?",
+                "options": [
+                  "Elastic.",
+                  "Inelastic.",
+                  "Unit elastic."
+                ],
+                "answer": 1,
+                "explain": "Price elasticity here is 5% ÷ 10% = 0.5. Below 1, so demand is inelastic — quantity barely moved."
+              }
             },
             {
               "id": "key-ideas",
@@ -1192,7 +1872,17 @@
                   ]
                 }
               ],
-              "heading": "Key ideas"
+              "heading": "Key ideas",
+              "check": {
+                "question": "A country can produce either 4 cars or 8 tonnes of wheat. What is the opportunity cost of one car?",
+                "options": [
+                  "2 tonnes of wheat.",
+                  "4 tonnes of wheat.",
+                  "Half a tonne of wheat."
+                ],
+                "answer": 0,
+                "explain": "Giving up all 8 tonnes buys 4 cars, so each car costs 8 ÷ 4 = 2 tonnes of wheat."
+              }
             }
           ]
         }

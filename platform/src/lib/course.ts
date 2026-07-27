@@ -14,7 +14,24 @@ export type Block =
   | { type: "callout"; text: string }
   | { type: "playground"; code: string };
 
-export type Section = { id: string; heading: string; blocks: Block[] };
+/* A section's comprehension check. Answering it correctly is what ticks that
+ * checkpoint — the point being that a step is completed by demonstrating the
+ * idea, not by asserting you read it.
+ *
+ * Optional on purpose: a section without one falls back to a plain "mark as
+ * done" tick, so questions can be written gradually without the reader caring
+ * which sections have them yet. */
+export type Check = {
+  question: string;
+  /** Two to four choices; order is as authored. */
+  options: string[];
+  /** Index into `options`. */
+  answer: number;
+  /** Why the right answer is right — shown after answering, right or wrong. */
+  explain: string;
+};
+
+export type Section = { id: string; heading: string; blocks: Block[]; check?: Check };
 export type Lesson = { title: string; kicker?: string; sections: Section[] };
 
 export type NavNode = {
@@ -106,4 +123,36 @@ export function lessonIdForSlug(slug: string[]): string | null {
 /** Every lesson slug (for generateStaticParams). */
 export function allLessonSlugs(): string[][] {
   return [...courseIndex().idToPath.values()].map((p) => p.split("/"));
+}
+
+/* ---- checkpoints ----------------------------------------------------- *
+ * A step's checkpoints ARE its sections: one per section, in reading order.
+ * Nothing extra to author — adding a section adds a checkpoint, so the ring
+ * and the "on this page" list can never drift apart. */
+
+/** Checkpoint ids for a lesson (its section ids), or [] if unknown. */
+export function checkpointsFor(lessonId: string): string[] {
+  return courseIndex().lessons.get(lessonId)?.sections.map((s) => s.id) ?? [];
+}
+
+/** True when any of the lesson's sections carries a comprehension check. */
+export function hasChecks(lessonId: string): boolean {
+  return !!courseIndex().lessons.get(lessonId)?.sections.some((s) => s.check);
+}
+
+/** Every lesson id in reading order — the order they appear in the nav tree. */
+export function orderedLessonIds(): string[] {
+  return [...courseIndex().idToPath.keys()];
+}
+
+/** The next lesson in reading order, or null at the end of the course. */
+export function nextLessonId(id: string): string | null {
+  const order = orderedLessonIds();
+  const i = order.indexOf(id);
+  return i >= 0 && i < order.length - 1 ? order[i + 1] : null;
+}
+
+/** Human label for a lesson or folder id. */
+export function labelFor(id: string): string {
+  return courseIndex().labels.get(id) ?? id;
 }

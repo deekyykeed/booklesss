@@ -4,7 +4,7 @@
 // The reader consumes the committed JSON, so the site stays fully static (no
 // Supabase at runtime); this step is the only thing that touches the DB.
 import { createClient } from "@supabase/supabase-js";
-import { existsSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -62,8 +62,65 @@ async function generate() {
   }
 
   const tree = build("__root__");
+  const carried = carryOverChecks(tree);
   writeFileSync(OUT, JSON.stringify(tree, null, 2) + "\n");
-  console.log(`gen-course: wrote course-data.json — ${nodesRes.data.length} nodes, ${lessonsRes.data.length} lessons`);
+  console.log(
+    `gen-course: wrote course-data.json — ${nodesRes.data.length} nodes, ${lessonsRes.data.length} lessons` +
+      (carried ? `, ${carried} comprehension check(s) carried over from the previous snapshot` : ""),
+  );
+}
+
+/* Section comprehension checks (`section.check`) drive the checkpoints — a
+ * reader ticks a checkpoint by answering one, so losing them silently would
+ * turn every checkpoint back into a self-marked "done".
+ *
+ * They live in the `sections` JSONB, so once they're authored in Supabase they
+ * come through here on their own and this is a no-op. Until then they exist
+ * only in the committed snapshot, and a regenerate would wipe them — so any
+ * check missing from the incoming data is carried across from the previous
+ * file. Supabase always wins where it has one; this only fills gaps, and says
+ * how many it filled rather than doing it quietly.
+ *
+ * Deleting a check therefore means deleting it in Supabase AND in the JSON. */
+function carryOverChecks(tree) {
+  if (!existsSync(OUT)) return 0;
+
+  let previous;
+  try {
+    previous = JSON.parse(readFileSync(OUT, "utf8"));
+  } catch {
+    return 0; // unreadable snapshot — nothing to carry, and not worth failing over
+  }
+
+  const byKey = new Map();
+  const index = (nodes) => {
+    for (const n of nodes ?? []) {
+      for (const s of n.lesson?.sections ?? []) {
+        if (s.check) byKey.set(`${n.id}/${s.id}`, s.check);
+      }
+      index(n.children);
+    }
+  };
+  index(previous);
+  if (!byKey.size) return 0;
+
+  let carried = 0;
+  const apply = (nodes) => {
+    for (const n of nodes ?? []) {
+      for (const s of n.lesson?.sections ?? []) {
+        if (!s.check) {
+          const prev = byKey.get(`${n.id}/${s.id}`);
+          if (prev) {
+            s.check = prev;
+            carried++;
+          }
+        }
+      }
+      apply(n.children);
+    }
+  };
+  apply(tree);
+  return carried;
 }
 
 generate().catch((err) => {

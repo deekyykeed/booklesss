@@ -5,6 +5,9 @@ import type { Section } from "@/lib/course";
 import { FileTypeIcon } from "./file-icons";
 import { useReaderShell } from "./MobileNav";
 import { useFollow } from "./useFollow";
+import { useProgress } from "@/lib/progress";
+import { CompletionRing } from "./CompletionRing";
+import { checkpointsFor } from "@/lib/course";
 
 /* ---- geometry, mirroring the left sidebar's resize model ---- */
 const RIGHTBAR_MIN = 240;
@@ -42,8 +45,9 @@ const RAIL_INSET = (ROW_H - BAR_H) / 2;
  * (published by the lesson route) so this persistent panel needn't know the
  * lesson. Picking a section smooth-scrolls the content; on mobile it also lets
  * the drawer slide back. */
-function TableOfContents({ sections }: { sections: Section[] }) {
+function TableOfContents({ sections, lessonId }: { sections: Section[]; lessonId: string | null }) {
   const { close } = useReaderShell();
+  const { hydrated, isDone } = useProgress();
   const [activeId, setActiveId] = useState(sections[0]?.id ?? "");
   const listRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLButtonElement>(null);
@@ -106,6 +110,9 @@ function TableOfContents({ sections }: { sections: Section[] }) {
       </p>
       {sections.map((s) => {
         const active = s.id === activeId;
+        // Each TOC entry is also a checkpoint, so the list doubles as the
+        // step's tick sheet.
+        const done = hydrated && !!lessonId && isDone(lessonId, s.id);
         return (
           <button
             key={s.id}
@@ -114,11 +121,28 @@ function TableOfContents({ sections }: { sections: Section[] }) {
             onClick={() => go(s.id)}
             style={{ paddingLeft: PAD, minHeight: ROW_H }}
             className={
-              "flex w-full items-center py-1 pr-2 text-left text-[13px] font-medium transition-colors " +
+              "flex w-full items-center gap-2 py-1 pr-2 text-left text-[13px] font-medium transition-colors " +
               (active ? "text-ink" : "text-[#8a8a92] hover:text-ink")
             }
           >
-            {s.heading}
+            <span className="min-w-0 flex-1 truncate">{s.heading}</span>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              className="shrink-0 transition-opacity duration-200"
+              style={{ opacity: done ? 1 : 0, color: "var(--color-brand)" }}
+            >
+              <path
+                d="m5 12.8 4.2 4.2L19 7"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </button>
         );
       })}
@@ -458,8 +482,30 @@ function ChatComposer({
   );
 }
 
+/* Ring + count in the panel header, so how far you are through the step is
+ * visible without scrolling the TOC. */
+function PanelProgress({ lessonId }: { lessonId: string }) {
+  const { hydrated, doneCount, ratio } = useProgress();
+  const total = checkpointsFor(lessonId).length;
+  if (!total) return null;
+  const done = hydrated ? doneCount(lessonId) : 0;
+  return (
+    <span className="flex items-center gap-1.5 text-muted">
+      <CompletionRing
+        value={hydrated ? ratio(lessonId) : 0}
+        size={14}
+        stroke={2}
+        label={`${done} of ${total} checkpoints complete`}
+      />
+      <span className="text-[11px] font-medium tabular-nums">
+        {done}/{total}
+      </span>
+    </span>
+  );
+}
+
 export function RightPanel() {
-  const { rightCollapsed, toggleRightCollapsed, sections } = useReaderShell();
+  const { rightCollapsed, toggleRightCollapsed, sections, lessonId } = useReaderShell();
 
   /* ---------------- resize ---------------- */
   const widthRef = useRef(RIGHTBAR_DEFAULT);
@@ -591,7 +637,10 @@ export function RightPanel() {
         {/* Header row — collapse control. Mirrors the left panel's footer button
             placement but at the top, on the side nearest its edge. */}
         <div className="flex h-11 shrink-0 items-center justify-between px-3">
-          <span className="text-[11px] font-semibold uppercase tracking-[0.09em] text-muted">Step</span>
+          <div className="flex min-w-0 items-center gap-2.5">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.09em] text-muted">Step</span>
+            {lessonId && <PanelProgress lessonId={lessonId} />}
+          </div>
           <button
             type="button"
             onClick={toggleRightCollapsed}
@@ -607,7 +656,7 @@ export function RightPanel() {
             surface will grow here once wired). */}
         <div ref={scrollRef} className="no-scrollbar flex-1 overflow-y-auto px-3 pb-4">
           {sections && sections.length > 0 ? (
-            <TableOfContents sections={sections} />
+            <TableOfContents sections={sections} lessonId={lessonId} />
           ) : (
             <p className="px-1 pt-1 text-[13px] text-placeholder">No sections</p>
           )}
