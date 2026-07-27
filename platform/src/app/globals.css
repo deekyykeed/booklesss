@@ -673,11 +673,60 @@
     background-color: rgba(255, 255, 255, 0.8);
     box-shadow: 0 1px 1px -0.5px rgba(0, 0, 0, 0.05);
   }
+  /* Label on top, the number big, then one measured line beneath it carrying
+     the stat's mark. Same card as the rest of the dashboard, just rounder and
+     roomier so the number has somewhere to sit. */
   .dash-stat {
-    padding: 14px;
+    padding: 15px 16px 14px;
     border: 1px solid var(--color-line);
-    border-radius: 14px;
+    border-radius: 20px;
     background-color: rgba(255, 255, 255, 0.8);
+  }
+  .dash-stat-label {
+    font-size: 12.5px;
+    line-height: 1.2;
+    color: var(--color-muted);
+  }
+  .dash-stat-value {
+    font-family: var(--font-display);
+    /* Proportional figures, not tabular: at display size tabular-nums gives
+       every digit the width of a 0 and "21" reads loose. Columns of numbers
+       still get tabular — see the chart's table view. */
+    font-size: 27px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+  }
+  .dash-stat-unit {
+    font-size: 12px;
+    color: var(--color-placeholder);
+  }
+  .dash-stat-foot {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    min-width: 0;
+    font-size: 11.5px;
+    line-height: 1.2;
+    color: var(--color-muted);
+  }
+  /* Tinted square holding the glyph — the border and fill are both mixed from
+     the stat's own hue, set inline, so this rule never names a colour. */
+  .dash-stat-chip {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    corner-shape: superellipse(2);
+  }
+  .dash-stat-lead {
+    flex-shrink: 0;
+    font-weight: 600;
   }
   /* Whole card is the link, so the target is the card and not just its title. */
   .dash-unit {

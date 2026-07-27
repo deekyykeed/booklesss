@@ -52,6 +52,10 @@ export const STUDY_DAY_MIN_SECS = 120;
 
 const counts = (d: StudyDay | undefined) => (d ? d.checks > 0 || d.secs >= STUDY_DAY_MIN_SECS : false);
 
+/** Whether a day clears the bar above. Exported so callers measuring weeks
+ *  count the same days the streak does. */
+export const isStudyDay = counts;
+
 type Snapshot = {
   /** Signed-in user id, or null for the shared anonymous bucket. */
   scope: string | null;
@@ -254,6 +258,24 @@ function streakFrom(days: Record<string, StudyDay>): number {
   return n;
 }
 
+/** The longest run of consecutive study days ever recorded. */
+function longestStreakFrom(days: Record<string, StudyDay>): number {
+  const dates = Object.keys(days).filter((d) => counts(days[d])).sort();
+  let best = 0;
+  let run = 0;
+  let prev: number | null = null;
+  for (const date of dates) {
+    const [y, m, d] = date.split("-").map(Number);
+    const t = Date.UTC(y, m - 1, d);
+    // Compare in whole UTC days: the dates are already local calendar days, so
+    // this is date arithmetic, not a timezone conversion.
+    run = prev !== null && t - prev === 86_400_000 ? run + 1 : 1;
+    prev = t;
+    if (run > best) best = run;
+  }
+  return best;
+}
+
 /** One entry per day from `from` to today, gaps filled with zeroes. */
 export function studyHistory(days: Record<string, StudyDay>, span: number): (StudyDay & { date: string })[] {
   const out: (StudyDay & { date: string })[] = [];
@@ -281,6 +303,8 @@ export type ProgressApi = {
   reset: (lessonId: string) => void;
   /** Consecutive days studied, ending today or yesterday. */
   streak: number;
+  /** The longest such run ever recorded. */
+  bestStreak: number;
   /** Days that carry a checkpoint or at least STUDY_DAY_MIN_SECS of reading. */
   daysStudied: number;
   /** True if today has crossed that same bar. */
@@ -328,6 +352,7 @@ export function useProgress(): ProgressApi {
     completeAll: (lessonId) => mutate(lessonId, () => checkpointsFor(lessonId), true),
     reset: (lessonId) => mutate(lessonId, () => [], false),
     streak: snap.hydrated ? streakFrom(days) : 0,
+    bestStreak: snap.hydrated ? longestStreakFrom(days) : 0,
     daysStudied: snap.hydrated ? Object.values(days).filter(counts).length : 0,
     studiedToday: snap.hydrated && counts(days[today()]),
     totalSecs: snap.hydrated ? Object.values(days).reduce((n, d) => n + d.secs, 0) : 0,

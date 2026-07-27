@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { COURSES } from "@/lib/courses";
 import { checkpointsFor, labelFor, pathForId } from "@/lib/course";
-import { useProgress } from "@/lib/progress";
+import { isStudyDay, studyHistory, useProgress } from "@/lib/progress";
 import { CompletionRing } from "@/components/reader/CompletionRing";
 import { StudyChart } from "./StudyChart";
 
@@ -21,6 +21,18 @@ import { StudyChart } from "./StudyChart";
  *     instead — streak, whether you've studied today — until there is a
  *     target to measure against.
  * ------------------------------------------------------------------ */
+
+/* One hue per stat, so a tile is identifiable before the number is read.
+ * Validated together against the card surface with the dataviz script:
+ * lightness band, chroma floor, all-pairs CVD separation and contrast all
+ * pass. Green sits on Checkpoints deliberately — completion is the one thing
+ * green means across this app, and a cleared checkpoint is exactly that. */
+const TONE = {
+  streak: "#eb6834",
+  days: "#2a78d6",
+  checks: "#17754d",
+  steps: "#4a3aa7",
+} as const;
 
 /** Total reading time, for the chart's caption. */
 function fmtTotal(secs: number): string {
@@ -47,8 +59,20 @@ export function HomeView({
    *  is signed in. Kept as a slot so this component stays Clerk-free. */
   afterGreeting?: React.ReactNode;
 }) {
-  const { hydrated, doneCount, isComplete, streak, daysStudied, studiedToday, totalSecs, days } =
+  const { hydrated, doneCount, isComplete, streak, bestStreak, daysStudied, studiedToday, totalSecs, days } =
     useProgress();
+
+  /* This week against last. Both halves are measured the same way the streak
+   * measures a day, so the tiles can't disagree with each other. */
+  const week = useMemo(() => {
+    const h = studyHistory(days, 14);
+    const prev = h.slice(0, 7);
+    const cur = h.slice(7);
+    return {
+      daysDelta: cur.filter(isStudyDay).length - prev.filter(isStudyDay).length,
+      checks: cur.reduce((n, d) => n + d.checks, 0),
+    };
+  }, [days]);
 
   const totals = useMemo(() => {
     const lessons = COURSES.flatMap((c) => c.lessonIds);
@@ -95,20 +119,41 @@ export function HomeView({
         <h2 className="dash-heading">Your studying</h2>
         <div className="mt-2.5 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <Stat
+            label="Current streak"
             value={String(streak)}
             unit={streak === 1 ? "day" : "days"}
-            label="Current streak"
-            lit={streak > 0}
+            lead={bestStreak > 0 ? `Best ${bestStreak}` : "—"}
+            tail={bestStreak > 0 ? (bestStreak === 1 ? "day so far" : "days so far") : "no streak yet"}
+            tone={TONE.streak}
             icon={<FireGlyph />}
           />
           <Stat
+            label="Days studied"
             value={String(daysStudied)}
             unit={daysStudied === 1 ? "day" : "days"}
-            label="Days studied"
+            lead={week.daysDelta > 0 ? `+${week.daysDelta}` : String(week.daysDelta)}
+            tail="vs last week"
+            tone={TONE.days}
             icon={<CalendarGlyph />}
           />
-          <Stat value={`${done.checks}`} unit={`/ ${totals.checks}`} label="Checkpoints" icon={<CheckGlyph />} />
-          <Stat value={`${done.steps}`} unit={`/ ${totals.steps}`} label="Steps complete" icon={<MedalGlyph />} />
+          <Stat
+            label="Checkpoints"
+            value={`${done.checks}`}
+            unit={`/ ${totals.checks}`}
+            lead={`+${week.checks}`}
+            tail="this week"
+            tone={TONE.checks}
+            icon={<CheckGlyph />}
+          />
+          <Stat
+            label="Steps complete"
+            value={`${done.steps}`}
+            unit={`/ ${totals.steps}`}
+            lead={String(totals.steps - done.steps)}
+            tail="still to go"
+            tone={TONE.steps}
+            icon={<MedalGlyph />}
+          />
         </div>
 
         {/* Full width under the tiles: the tiles are today's state, this is the
@@ -185,25 +230,29 @@ export function HomeView({
 
 /* ---------------- stat glyphs ----------------
  *
- * Solar · Line, hand-inlined. Line rather than Bold Duotone: at 17px Solar's
- * duotones collapse into a grey blob — the faint layer is usually a filled
- * panel, and the detail drawn inside it disappears. Inlined rather than
- * resolved through <Icon> because this file is a client component, and <Icon>
- * would pull the whole ~7,400-icon Solar set into the bundle for four paths.
- * Bodies copied byte-for-byte from @iconify-json/solar.
+ * Solar · Bold Duotone, hand-inlined. Solar's duotones are two paths in
+ * currentColor, the back one at opacity .5 — the set ships no colours of its
+ * own, so "its default colours" would be whatever grey it inherits. Each stat
+ * gets a hue instead and the two tones follow it, which is what makes the mark
+ * read as itself at this size: grey duotone at 17px collapsed into a blob,
+ * which is why these were Line before.
  *
- * They're identifying marks, not decoration: one per measure, sized to sit
- * beside the number without competing with it. */
+ * The hues were run through the dataviz validator against the card surface:
+ * lightness band, chroma floor, all-pairs CVD separation and contrast all
+ * pass. Colour is never the only cue anyway — every tile is labelled.
+ *
+ * Inlined rather than resolved through <Icon> because this is a client
+ * component, and <Icon> would pull the whole ~7,400-icon Solar set into the
+ * bundle for four paths. Bodies copied byte-for-byte from @iconify-json/solar.
+ */
 
-const G = { width: 17, height: 17, viewBox: "0 0 24 24", fill: "none", "aria-hidden": true, className: "shrink-0" } as const;
+const G = { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", "aria-hidden": true, className: "shrink-0" } as const;
 
 function FireGlyph() {
   return (
     <svg {...G}>
-      <g fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M20 13.111C20 20.222 13.956 22 10.933 22C8.29 22 3 20.222 3 13.111c0-2.782 1.461-4.65 2.86-5.716c.778-.594 1.77-.003 1.87.971l.086.838c.105 1.02 1.033 1.857 1.893 1.298C11.394 9.407 12 6.775 12 5.333V5.01c0-1.43 1.444-2.35 2.602-1.512C17.165 5.35 20 8.584 20 13.11Z" />
-        <path d="M8 18.445C8 21.289 10.489 22 11.733 22c1.09 0 3.267-.711 3.267-3.555c0-1.102-.59-1.845-1.16-2.274c-.398-.299-.957-.03-1.094.449c-.178.624-.823 1.016-1.152.456c-.3-.512-.3-1.28-.3-1.743c0-.636-.64-1.048-1.155-.674C9.106 15.409 8 16.68 8 18.445Z" />
-      </g>
+      <path fill="currentColor" opacity=".5" d="M12.832 21.801c3.126-.626 7.168-2.875 7.168-8.69c0-5.291-3.873-8.815-6.658-10.434c-.619-.36-1.342.113-1.342.828v1.828c0 1.442-.606 4.074-2.29 5.169c-.86.559-1.79-.278-1.894-1.298l-.086-.838c-.1-.974-1.092-1.565-1.87-.971C4.461 8.46 3 10.33 3 13.11C3 20.221 8.289 22 10.933 22q.232 0 .484-.015c.446-.056 0 .099 1.415-.185" />
+      <path fill="currentColor" d="M8 18.444c0 2.62 2.111 3.43 3.417 3.542c.446-.056 0 .099 1.415-.185C13.871 21.434 15 20.492 15 18.444c0-1.297-.819-2.098-1.46-2.473c-.196-.115-.424.03-.441.256c-.056.718-.746 1.29-1.215.744c-.415-.482-.59-1.187-.59-1.638v-.59c0-.354-.357-.59-.663-.408C9.495 15.008 8 16.395 8 18.445" />
     </svg>
   );
 }
@@ -211,11 +260,9 @@ function FireGlyph() {
 function CalendarGlyph() {
   return (
     <svg {...G}>
-      <g fill="none">
-        <path stroke="currentColor" strokeWidth="1.5" d="M2 12c0-3.771 0-5.657 1.172-6.828S6.229 4 10 4h4c3.771 0 5.657 0 6.828 1.172S22 8.229 22 12v2c0 3.771 0 5.657-1.172 6.828S17.771 22 14 22h-4c-3.771 0-5.657 0-6.828-1.172S2 17.771 2 14z" />
-        <path stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" d="M7 4V2.5M17 4V2.5M2.5 9h19" />
-        <path fill="currentColor" d="M18 17a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0" />
-      </g>
+      <path fill="currentColor" d="M6.94 2c.416 0 .753.324.753.724v1.46c.668-.012 1.417-.012 2.26-.012h4.015c.842 0 1.591 0 2.259.013v-1.46c0-.4.337-.725.753-.725s.753.324.753.724V4.25c1.445.111 2.394.384 3.09 1.055c.698.67.982 1.582 1.097 2.972L22 9H2v-.724c.116-1.39.4-2.302 1.097-2.972s1.645-.944 3.09-1.055V2.724c0-.4.337-.724.753-.724" />
+      <path fill="currentColor" opacity=".5" d="M22 14v-2c0-.839-.004-2.335-.017-3H2.01c-.013.665-.01 2.161-.01 3v2c0 3.771 0 5.657 1.172 6.828S6.228 22 10 22h4c3.77 0 5.656 0 6.828-1.172S22 17.772 22 14" />
+      <path fill="currentColor" d="M18 17a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0" />
     </svg>
   );
 }
@@ -223,10 +270,8 @@ function CalendarGlyph() {
 function CheckGlyph() {
   return (
     <svg {...G}>
-      <g fill="none" stroke="currentColor" strokeWidth="1.5">
-        <circle cx="12" cy="12" r="10" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="m8.5 12.5l2 2l5-5" />
-      </g>
+      <path fill="currentColor" opacity=".5" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10" />
+      <path fill="currentColor" d="M16.03 8.97a.75.75 0 0 1 0 1.06l-5 5a.75.75 0 0 1-1.06 0l-2-2a.75.75 0 1 1 1.06-1.06l1.47 1.47l2.235-2.235L14.97 8.97a.75.75 0 0 1 1.06 0" />
     </svg>
   );
 }
@@ -234,46 +279,58 @@ function CheckGlyph() {
 function MedalGlyph() {
   return (
     <svg {...G}>
-      <g fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M17 8V6c0-1.886 0-2.828-.586-3.414S14.886 2 13 2h-2c-1.886 0-2.828 0-3.414.586S7 4.114 7 6v2" />
-        <path d="M10.564 5.783a3 3 0 0 1 2.872 0l4.794 2.614a3 3 0 0 1 1.564 2.634v4.938a3 3 0 0 1-1.564 2.634l-4.794 2.614a3 3 0 0 1-2.872 0l-4.795-2.614a3 3 0 0 1-1.563-2.634V11.03a3 3 0 0 1 1.563-2.634z" />
-        <path d="M11.146 11.523c.38-.682.57-1.023.854-1.023s.474.341.854 1.023l.098.176c.108.194.162.29.246.355c.085.063.19.087.4.135l.19.043c.738.167 1.107.25 1.195.533c.088.282-.164.576-.667 1.164l-.13.152c-.143.168-.215.251-.247.355s-.021.214 0 .438l.02.203c.076.784.114 1.177-.115 1.351c-.23.175-.576.016-1.267-.302l-.178-.083c-.197-.09-.295-.135-.399-.135s-.202.045-.399.135l-.178.083c-.691.318-1.037.477-1.267.302c-.23-.174-.191-.567-.115-1.351l.02-.203c.021-.224.032-.335 0-.438c-.032-.104-.104-.187-.247-.355l-.13-.152c-.503-.588-.755-.882-.667-1.164c.088-.283.457-.366 1.195-.533l.19-.043c.21-.048.315-.072.4-.135c.084-.064.138-.161.246-.355z" />
-      </g>
+      <path fill="currentColor" opacity=".5" d="M12.795 2h-2c-1.886 0-2.829 0-3.414.586c-.586.586-.586 1.528-.586 3.414v3.5h10V6c0-1.886 0-2.828-.586-3.414S14.681 2 12.795 2" />
+      <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d="M13.23 5.783a3 3 0 0 0-2.872 0L5.564 8.397A3 3 0 0 0 4 11.031v4.938a3 3 0 0 0 1.564 2.634l4.794 2.614a3 3 0 0 0 2.872 0l4.795-2.614a3 3 0 0 0 1.564-2.634V11.03a3 3 0 0 0-1.564-2.634zM11.794 10.5c-.284 0-.474.34-.854 1.023l-.098.176c-.108.194-.162.29-.246.354s-.19.088-.399.135l-.19.044c-.739.167-1.108.25-1.195.532c-.088.283.163.577.666 1.165l.13.152c.144.167.215.25.247.354s.022.215 0 .438l-.02.203c-.076.785-.114 1.178.116 1.352s.575.015 1.266-.303l.179-.082c.196-.09.294-.135.398-.135s.203.045.399.135l.179.082c.69.319 1.036.477 1.266.303s.192-.567.116-1.352l-.02-.203c-.022-.223-.033-.334 0-.438c.032-.103.103-.187.246-.354l.13-.152c.504-.588.755-.882.667-1.165c-.088-.282-.457-.365-1.194-.532l-.191-.044c-.21-.047-.315-.07-.399-.135c-.084-.064-.138-.16-.246-.354l-.098-.176c-.38-.682-.57-1.023-.855-1.023" />
     </svg>
   );
 }
 
 function Stat({
+  label,
   value,
   unit,
-  label,
-  lit,
+  lead,
+  tail,
+  tone,
   icon,
 }: {
+  label: string;
   value: string;
   unit?: string;
-  label: string;
-  lit?: boolean;
+  /** The footer's emphasised figure, in the stat's hue. Always a measured
+   *  number — there is no projection or target anywhere on this page. */
+  lead: string;
+  /** What that figure is of, in muted ink. */
+  tail: string;
+  /** The stat's hue. Carries the glyph, its chip and the footer figure. */
+  tone: string;
   icon: React.ReactNode;
 }) {
-  // The lit streak takes the icon with it, so the tile reads as one thing
-  // rather than a green number beside a grey mark.
-  const tone = lit ? "var(--color-brand-deep)" : "var(--color-ink)";
   return (
     <div className="dash-stat squircle">
-      <p className="flex items-baseline gap-1.5">
+      <p className="dash-stat-label">{label}</p>
+      <p className="mt-3 flex items-baseline gap-1.5">
+        <span className="dash-stat-value">{value}</span>
+        {unit && <span className="dash-stat-unit">{unit}</span>}
+      </p>
+      <p className="dash-stat-foot">
+        {/* colour-mix rather than an eight-digit hex, so one token per stat
+            drives the glyph, its chip and the figure, and they can't drift */}
         <span
-          className="self-center"
-          style={{ color: lit ? "var(--color-brand-deep)" : "var(--color-placeholder)" }}
+          className="dash-stat-chip"
+          style={{
+            color: tone,
+            backgroundColor: `color-mix(in oklab, ${tone} 12%, transparent)`,
+            borderColor: `color-mix(in oklab, ${tone} 24%, transparent)`,
+          }}
         >
           {icon}
         </span>
-        <span className="font-display text-[22px] font-semibold tabular-nums leading-none" style={{ color: tone }}>
-          {value}
+        <span className="dash-stat-lead" style={{ color: tone }}>
+          {lead}
         </span>
-        {unit && <span className="text-[11.5px] text-placeholder">{unit}</span>}
+        <span className="truncate">{tail}</span>
       </p>
-      <p className="mt-1.5 text-[11.5px] leading-4 text-muted">{label}</p>
     </div>
   );
 }
