@@ -1,19 +1,28 @@
-import { COURSE, checkpointsFor, lessonsUnder } from "./course";
+import { checkpointsFor, lessonsUnder } from "./course";
+import courseIndexData from "./course-index.json";
 
 /* ------------------------------------------------------------------ *
  * The student's course list.
  *
- * ONE course exists today. `gen-course.mjs` pulls a single slug
- * ("economics") out of Supabase and course-data.json is that one course's
- * tree — its top-level nodes are the course's units, not sibling courses.
- * So this registry is shaped for many and holds one, rather than pretending
- * to a library that isn't there.
+ * course-data.json is one flat nav tree so the reader's routing and sidebar
+ * never need to know about courses — a course is simply the top-level nodes it
+ * owns. That does mean the tree alone can't say where one course ends and the
+ * next begins, which is what course-index.json is for: gen-course.mjs writes
+ * both, and the index records each course's slug, title, subtitle and root
+ * node ids straight from Supabase.
  *
- * Adding a second course is a data change before it is a UI one: the
- * generator has to emit a course per slug and course-data.json has to gain a
- * level. Everything below reads from this list, so the home page won't need
- * touching when that happens.
+ * So adding a course is a content change only. Author it, seed it, regenerate,
+ * and it appears here, on the home page and at /<slug> with nothing in the UI
+ * to touch.
  * ------------------------------------------------------------------ */
+
+type CourseIndexEntry = {
+  slug: string;
+  title: string;
+  subtitle: string;
+  /** Top-level nav node ids belonging to this course. */
+  rootIds: string[];
+};
 
 export type CourseMeta = {
   /** Route segment: /economics */
@@ -27,26 +36,19 @@ export type CourseMeta = {
   totalCheckpoints: number;
 };
 
-function build(slug: string, title: string, subtitle: string, unitIds: string[]): CourseMeta {
-  const lessonIds = unitIds.flatMap((id) => lessonsUnder(id));
+function build({ slug, title, subtitle, rootIds }: CourseIndexEntry): CourseMeta {
+  const lessonIds = rootIds.flatMap((id) => lessonsUnder(id));
   return {
     slug,
     title,
     subtitle,
-    unitIds,
+    unitIds: rootIds,
     lessonIds,
     totalCheckpoints: lessonIds.reduce((n, id) => n + checkpointsFor(id).length, 0),
   };
 }
 
-export const COURSES: CourseMeta[] = [
-  build(
-    "economics",
-    "Economics",
-    "Micro, macro and behavioural — the whole introductory course.",
-    COURSE.map((n) => n.id),
-  ),
-];
+export const COURSES: CourseMeta[] = (courseIndexData as CourseIndexEntry[]).map(build);
 
 export function courseBySlug(slug: string): CourseMeta | undefined {
   return COURSES.find((c) => c.slug === slug);

@@ -123,7 +123,12 @@ const die = (label, error) => {
 const up = await sb
   .from("courses")
   .upsert(
-    { slug: manifest.slug, title: manifest.title, position: manifest.position ?? 0 },
+    {
+      slug: manifest.slug,
+      title: manifest.title,
+      subtitle: manifest.subtitle ?? null,
+      position: manifest.position ?? 0,
+    },
     { onConflict: "slug" },
   )
   .select("id")

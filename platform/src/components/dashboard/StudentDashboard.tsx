@@ -3,15 +3,13 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import {
-  COURSE,
   checkpointsFor,
   labelFor,
   lessonsUnder,
-  orderedLessonIds,
   pathForId,
-  totalCheckpoints,
   breadcrumbFor,
 } from "@/lib/course";
+import type { CourseMeta } from "@/lib/courses";
 import { useProgress } from "@/lib/progress";
 import { CompletionRing } from "@/components/reader/CompletionRing";
 
@@ -33,21 +31,22 @@ function pct(n: number, d: number) {
   return d > 0 ? Math.round((n / d) * 100) : 0;
 }
 
-export function StudentDashboard() {
+export function StudentDashboard({ course }: { course: CourseMeta }) {
   const { hydrated, doneCount, isComplete, ratio } = useProgress();
 
-  // Course shape is static; only the progress numbers move.
-  const shape = useMemo(() => {
-    const lessons = orderedLessonIds();
-    return {
-      lessons,
-      totalSteps: lessons.length,
-      totalChecks: totalCheckpoints(),
-      units: COURSE.map((u) => ({ id: u.id, label: u.label, lessons: lessonsUnder(u.id) })).filter(
-        (u) => u.lessons.length > 0,
-      ),
-    };
-  }, []);
+  // Course shape is static; only the progress numbers move. Scoped to this
+  // course's own units, so a second course never counts towards the first.
+  const shape = useMemo(
+    () => ({
+      lessons: course.lessonIds,
+      totalSteps: course.lessonIds.length,
+      totalChecks: course.totalCheckpoints,
+      units: course.unitIds
+        .map((id) => ({ id, label: labelFor(id), lessons: lessonsUnder(id) }))
+        .filter((u) => u.lessons.length > 0),
+    }),
+    [course],
+  );
 
   const stats = useMemo(() => {
     if (!hydrated) {
@@ -81,7 +80,7 @@ export function StudentDashboard() {
     <div className="mx-auto w-full max-w-[900px] px-4 py-10 md:px-6">
       <p className="font-sans text-xs font-medium uppercase tracking-[0.08em] text-muted">Your course</p>
       <h1 className="mt-1 font-display text-[30px] font-medium leading-[1.2] tracking-[-0.02em] text-ink">
-        Economics
+        {course.title}
       </h1>
 
       {/* ---- overall progress ---- */}

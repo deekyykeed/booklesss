@@ -8,7 +8,13 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "lib", "course-data.json");
+const LIB = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "lib");
+const OUT = join(LIB, "course-data.json");
+/* Which top-level nodes belong to which course. course-data.json is one flat
+ * tree so the reader's nav and routing stay course-agnostic, which means the
+ * tree alone can't say where one course ends and the next begins — this is
+ * what the home page and the course dashboards read to tell them apart. */
+const INDEX_OUT = join(LIB, "course-index.json");
 
 async function generate() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -21,7 +27,7 @@ async function generate() {
    * it owns, so its own root node is what separates it in the sidebar and what
    * gives its lessons a URL prefix. Lesson slugs are therefore unique across
    * courses, not merely within one; seed-course.mjs is what enforces that. */
-  const coursesRes = await sb.from("courses").select("id, slug, title, position");
+  const coursesRes = await sb.from("courses").select("id, slug, title, subtitle, position");
   if (coursesRes.error) throw coursesRes.error;
   const courses = coursesRes.data.sort((a, b) => a.position - b.position || a.slug.localeCompare(b.slug));
   if (!courses.length) throw new Error("no courses in the database");
@@ -63,9 +69,22 @@ async function generate() {
     });
   }
 
-  const tree = courses.flatMap((c) => build(`__root__:${c.id}`));
+  // Each course contributes its root nodes; the index records which are whose.
+  const index = [];
+  const tree = courses.flatMap((c) => {
+    const roots = build(`__root__:${c.id}`);
+    index.push({
+      slug: c.slug,
+      title: c.title,
+      subtitle: c.subtitle ?? "",
+      rootIds: roots.map((n) => n.id),
+    });
+    return roots;
+  });
+
   const carried = carryOverChecks(tree);
   writeFileSync(OUT, JSON.stringify(tree, null, 2) + "\n");
+  writeFileSync(INDEX_OUT, JSON.stringify(index, null, 2) + "\n");
   console.log(
     `gen-course: wrote course-data.json — ${courses.length} course(s) ` +
       `(${courses.map((c) => c.slug).join(", ")}), ${nodesRes.data.length} nodes, ` +

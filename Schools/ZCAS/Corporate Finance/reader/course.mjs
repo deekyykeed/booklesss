@@ -23,6 +23,8 @@ import irrAndMirr from "../01-investment/reader/irr-and-mirr.mjs";
 export default {
   slug: "corporate-finance",
   title: "Corporate Finance",
+  // One line under the title on the home page's course card.
+  subtitle: "Investment appraisal, cost of capital, valuation and risk — BAC4301 at ZCAS.",
   // Sits after economics in the sidebar.
   position: 1,
 
