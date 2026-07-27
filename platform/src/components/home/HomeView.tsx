@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { COURSES } from "@/lib/courses";
-import { checkpointsFor, labelFor, pathForId } from "@/lib/course";
+import { checkpointsFor, labelFor, lessonsUnder, pathForId } from "@/lib/course";
 import { isStudyDay, streakSeries, studyHistory, useProgress } from "@/lib/progress";
-import { CompletionRing } from "@/components/reader/CompletionRing";
+import { CourseGlyph } from "@/components/reader/CourseGlyph";
 import { smoothPath, StudyChart } from "./StudyChart";
 
 
@@ -39,6 +39,15 @@ const TONE = {
 /** The Time studied card's hue — the same green its line is drawn with
  *  (StudyChart's LINE), so the mark and the plot agree. */
 const CHART_TONE = "#17754d";
+
+/** One hue per course, carried by the card's gradient, mark and sparkline.
+ *  Keyed by slug like CourseGlyph — a new course gets the fallback the day
+ *  it's seeded, and picking its colour is a one-line change here. */
+const COURSE_TONE: Record<string, string> = {
+  economics: "#2a78d6",
+  "corporate-finance": "#17754d",
+};
+const COURSE_TONE_FALLBACK = "#4a3aa7";
 
 /** The reference's anchored delta — "+20% · 25 last week": the movement AND
  *  the number it moved from, so the percentage explains itself. Falls back to
@@ -231,37 +240,67 @@ export function HomeView({
       {/* ---- the courses themselves ---- */}
       <section id="courses" className="mt-8 scroll-mt-20 pb-10">
         <h2 className="dash-heading">My courses</h2>
-        <div className="mt-2.5 flex flex-col gap-3">
+        <div className="mt-2.5 grid gap-3 md:grid-cols-2">
           {COURSES.map((c) => {
             const cDone = hydrated ? c.lessonIds.reduce((n, id) => n + doneCount(id), 0) : 0;
             const cSteps = hydrated ? c.lessonIds.filter((id) => isComplete(id)).length : 0;
-            const ratio = c.totalCheckpoints ? cDone / c.totalCheckpoints : 0;
+            const pctDone = c.totalCheckpoints ? Math.round((cDone / c.totalCheckpoints) * 100) : 0;
             const started = c.lessonIds.filter((id) => !hydrated || !isComplete(id));
             const next = started.find((id) => hydrated && doneCount(id) > 0) ?? started[0] ?? c.lessonIds[0];
+            const unitsStarted = hydrated
+              ? c.unitIds.filter((uid) => lessonsUnder(uid).some((id) => doneCount(id) > 0)).length
+              : 0;
+            const tone = COURSE_TONE[c.slug] ?? COURSE_TONE_FALLBACK;
+            /* The card's mini graph is the course's own progress curve —
+               checkpoints cleared, accumulated lesson by lesson in course
+               order, so the line climbs where you've worked and runs flat
+               where you haven't got to yet, its head at the current total.
+               Not a time series: the store doesn't record per-course
+               activity by day, and this shape is honest and available. */
+            let acc = 0;
+            const profile = c.lessonIds.map((id) => (acc += hydrated ? doneCount(id) : 0));
 
             return (
-              <div key={c.slug} className="dash-card squircle">
-                {/* Stacks below sm, one row from sm up. NOT flex-wrap: the text
-                    column is flex-basis 0, so it never overflows the line and
-                    never triggers a wrap — it just gets squeezed to whatever
-                    the fixed-width buttons leave, one word per line. Whether a
-                    card survived depended on how wide its button labels were. */}
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <div className="flex min-w-0 flex-1 items-center gap-4">
-                    <CompletionRing value={ratio} size={48} stroke={4} className="text-ink" />
-                    <div className="min-w-0 flex-1">
-                      <p className="font-display text-[18px] font-semibold leading-tight text-ink">{c.title}</p>
-                      <p className="mt-0.5 text-[13px] leading-5 text-muted">{c.subtitle}</p>
-                      <p className="mt-1 text-[12.5px] text-placeholder">
-                        {cSteps} of {c.lessonIds.length} steps · {cDone} of {c.totalCheckpoints} checkpoints
-                      </p>
+              <div key={c.slug} className="course-card squircle p-3.5 lg:p-[18px]">
+                {/* A thin wash of the course's hue falling from the top edge. */}
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-x-0 top-0 h-14"
+                  style={{ background: `linear-gradient(to bottom, ${tone}26, transparent)` }}
+                />
+                <Spark series={profile} tone={tone} />
+                {/* space-between: stats hang from the top, identity sits on
+                    the bottom, the air lives in the middle. */}
+                <div className="relative flex min-h-[188px] flex-col justify-between gap-6">
+                  {/* One stat left, two right. */}
+                  <div className="flex items-start justify-between gap-3">
+                    <CardStat value={hydrated ? `${pctDone}%` : "–"} label="Complete" />
+                    <div className="flex gap-5">
+                      <CardStat right value={hydrated ? `${cSteps}/${c.lessonIds.length}` : "–"} label="Steps" />
+                      <CardStat right value={hydrated ? `${cDone}/${c.totalCheckpoints}` : "–"} label="Checkpoints" />
                     </div>
                   </div>
-                  <div className="flex shrink-0 items-center gap-2">
-                    <Link href={`/${c.slug}`} className="step-complete-btn squircle">
-                      Course home
-                    </Link>
-                    <Link href={pathForId(next)} className="dash-cta squircle">
+                  {/* Mark above the title, the personal line under it. */}
+                  <div className="flex items-end justify-between gap-3">
+                    <div className="min-w-0">
+                      <span className="block" style={{ color: tone }}>
+                        <CourseGlyph slug={c.slug} size={24} />
+                      </span>
+                      <Link
+                        href={`/${c.slug}`}
+                        className="mt-2 block truncate font-display text-[18px] font-semibold leading-tight text-ink"
+                      >
+                        {c.title}
+                      </Link>
+                      <p className="mt-1 truncate text-[12.5px] text-placeholder">
+                        {hydrated
+                          ? cDone > 0
+                            ? `${unitsStarted} of ${c.unitIds.length} unit${c.unitIds.length === 1 ? "" : "s"} started · Next · ${labelFor(next)}`
+                            : "Not started yet"
+                          : " "}
+                      </p>
+                    </div>
+                    <Link href={pathForId(next)} className="dash-cta squircle shrink-0">
                       {cDone > 0 ? "Continue" : "Start"}
                       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path d="M5 12h13m0 0-5.5-5.5M18 12l-5.5 5.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
@@ -269,17 +308,22 @@ export function HomeView({
                     </Link>
                   </div>
                 </div>
-
-                {cDone > 0 && (
-                  <p className="mt-3.5 truncate text-xs text-placeholder">
-                    Next · {labelFor(next)} ({doneCount(next)}/{checkpointsFor(next).length})
-                  </p>
-                )}
               </div>
             );
           })}
         </div>
       </section>
+    </div>
+  );
+}
+
+/** A course card's compact figure — value over label, the tile grammar at
+ *  card-corner size. */
+function CardStat({ value, label, right }: { value: string; label: string; right?: boolean }) {
+  return (
+    <div className={right ? "text-right" : undefined}>
+      <p className="font-display text-[17px] font-semibold leading-none text-ink">{value}</p>
+      <p className="mt-1 text-[11px] font-medium text-muted">{label}</p>
     </div>
   );
 }
