@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { studyHistory, type StudyDay } from "@/lib/progress";
 
 /* ------------------------------------------------------------------ *
@@ -24,7 +24,6 @@ const PAD = { t: 16, r: 12, b: 24, l: 34 };
 
 const LINE = "#17754d"; // --color-brand-deep
 const WASH = "#3ecf8e"; // --color-brand, at 10%
-const SURFACE = "#fcfcfb"; // --color-card, for the marker's ring
 
 /** Clean tick values, so the axis never reads 7.3 minutes. */
 function niceMax(minutes: number): number {
@@ -111,6 +110,7 @@ const fmtMins = (secs: number) => {
 };
 
 export function StudyChart({ days, hydrated }: { days: Record<string, StudyDay>; hydrated: boolean }) {
+  const id = useId();
   const box = useRef<HTMLDivElement>(null);
   const [w, setW] = useState(680);
   const [cursor, setCursor] = useState<number | null>(null);
@@ -204,6 +204,13 @@ export function StudyChart({ days, hydrated }: { days: Record<string, StudyDay>;
           onKeyDown={onKey}
           className="block touch-pan-y focus:outline-none"
         >
+          <defs>
+            {/* The head's lift — same recipe as the stat-tile sparklines, so
+                every line on the dashboard ends the same way. */}
+            <filter id={`${id}f`} x="-60%" y="-60%" width="220%" height="220%">
+              <feDropShadow dx="0" dy="1" stdDeviation="1.3" floodColor={LINE} floodOpacity="0.45" />
+            </filter>
+          </defs>
           {/* gridlines: hairline, solid, one step off the surface */}
           {[0, 0.5, 1].map((f) => (
             <g key={f}>
@@ -259,15 +266,18 @@ export function StudyChart({ days, hydrated }: { days: Record<string, StudyDay>;
 
           {/* Today, at the head of the line. Always drawn (the crosshair dot
               simply lands on top of it when the cursor reaches the end), so
-              the reader can see where "now" is without hovering. */}
+              the reader can see where "now" is without hovering. White with
+              the line's ring and a shadow in the same hue — the head design
+              the stat-tile sparklines wear. */}
           {hasData && (
             <circle
               cx={x(series.length - 1)}
               cy={y(series[series.length - 1].secs / 60)}
-              r="4"
-              fill={LINE}
-              stroke={SURFACE}
-              strokeWidth="2"
+              r="3.5"
+              fill="#ffffff"
+              stroke={LINE}
+              strokeWidth="1.2"
+              filter={`url(#${id}f)`}
             />
           )}
 
@@ -297,10 +307,11 @@ export function StudyChart({ days, hydrated }: { days: Record<string, StudyDay>;
               <circle
                 cx={x(cursor!)}
                 cy={y(active.secs / 60)}
-                r="4"
-                fill={LINE}
-                stroke={SURFACE}
-                strokeWidth="2"
+                r="3.5"
+                fill="#ffffff"
+                stroke={LINE}
+                strokeWidth="1.2"
+                filter={`url(#${id}f)`}
               />
             </>
           )}
