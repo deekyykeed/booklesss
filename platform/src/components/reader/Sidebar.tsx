@@ -589,7 +589,7 @@ export function Sidebar() {
         </button>
       )}
     <aside
-      className="sidebar-panel fixed left-0 top-12 z-40 flex h-[calc(100dvh-48px)] flex-col border-r border-line"
+      className="sidebar-panel beside-rail fixed left-0 top-12 z-40 flex h-[calc(100dvh-48px)] flex-col border-r border-line"
       style={{ width: "var(--sidebar-docs)" }}
     >
       {/* Drag to resize. Sits over the right border, 8px wide for an easy

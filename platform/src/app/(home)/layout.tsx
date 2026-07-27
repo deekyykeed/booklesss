@@ -1,5 +1,4 @@
 import { TopBar } from "@/components/TopBar";
-import { Rail } from "@/components/Rail";
 import { HomeSidebar } from "@/components/home/HomeSidebar";
 import { MobileNavProvider, MobileScrim } from "@/components/reader/MobileNav";
 import { ProgressScope } from "@/components/reader/ProgressScope";
@@ -24,7 +23,6 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
           ))}
         </div>
         <TopBar orgName="Bklsss" />
-      <Rail active="dashboard" />
         <HomeSidebar active="dashboard" />
         <MobileScrim />
         <main className="content-frame no-rightbar">

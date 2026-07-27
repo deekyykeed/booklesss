@@ -32,9 +32,14 @@ type RailItem = {
   brand?: React.ReactNode;
 };
 
+/* The main sidebar of the whole app, so the set is the app's levels, not one
+ * page's shortcuts: where you are (Dashboard), what you're here for (My
+ * courses), the people (Community), the two destinations that are coming
+ * (Exams, Upcoming), and Settings kept apart at the bottom. The academic cap
+ * is the courses mark — the same meaning it carries in the account menu. */
 const ITEMS: RailItem[] = [
   { id: "dashboard", label: "Dashboard", href: "/", solar: "widget" },
-  { id: "courses", label: "My courses", href: "/#courses", solar: "book-2" },
+  { id: "courses", label: "My courses", href: "/#courses", solar: "square-academic-cap" },
   {
     id: "community",
     label: "Community",
@@ -48,16 +53,19 @@ const ITEMS: RailItem[] = [
 
 const SETTINGS: RailItem = { id: "settings", label: "Settings", solar: "settings-minimalistic" };
 
+/* Line at rest, solid Bold when current — the filled silhouette is the
+ * selected weight here, heavier than the duotone the labelled rows use,
+ * because at icon-only size the fill is what reads across the room. */
 function glyph(item: RailItem, active: boolean) {
   if (item.brand) return item.brand;
   if (!item.solar) return null;
-  return <Icon name={`${item.solar}-${active ? "bold-duotone" : "linear"}`} size={20} />;
+  return <Icon name={`${item.solar}-${active ? "bold" : "linear"}`} size={20} />;
 }
 
 function RailButton({ item, active }: { item: RailItem; active: boolean }) {
   if (!item.href) {
     return (
-      <span className="rail-btn squircle" data-soon="" title={`${item.label} — coming soon`} aria-disabled="true">
+      <span className="rail-btn squircle" data-soon="" data-tip={`${item.label} — soon`} aria-disabled="true">
         {glyph(item, false)}
         <span className="sr-only">{item.label} (coming soon)</span>
       </span>
@@ -75,7 +83,7 @@ function RailButton({ item, active }: { item: RailItem; active: boolean }) {
       target="_blank"
       rel="noreferrer"
       className="rail-btn squircle"
-      title={item.label}
+      data-tip={item.label}
     >
       {inner}
     </a>
@@ -83,7 +91,7 @@ function RailButton({ item, active }: { item: RailItem; active: boolean }) {
     <Link
       href={item.href}
       className="rail-btn squircle"
-      title={item.label}
+      data-tip={item.label}
       data-active={active ? "" : undefined}
       aria-current={active ? "page" : undefined}
     >
