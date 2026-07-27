@@ -261,12 +261,11 @@
   /* The duo sidebar's narrow half. Same material as the wide panels.
      "app-rail", not "rail" — the step tree already uses .rail for its
      indentation lines, and generic names collide. */
+  /* Transparent like every sidebar container — the animated backdrop reads
+     through all of them; only the hairline divider marks the column. */
   .app-rail {
     left: 0;
     width: var(--rail-w);
-    background-color: rgba(255, 255, 255, 0.55);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
   }
   .rail-btn {
     position: relative;
