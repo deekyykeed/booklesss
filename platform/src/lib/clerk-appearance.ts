@@ -42,7 +42,8 @@ export const clerkAppearance: Appearance = {
   elements: {
     /* ---- shared card surfaces (sign-in / sign-up, modal and page) ---- */
     cardBox: {
-      borderRadius: "18px",
+      // The dashboard's cards sit at 28px now; Clerk's card joins the family.
+      borderRadius: "24px",
       border: "1px solid var(--color-line)",
       boxShadow: CARD_SHADOW,
       overflow: "hidden",
@@ -114,7 +115,7 @@ export const clerkAppearance: Appearance = {
       color: "var(--color-ink-2)",
     },
     userButtonPopoverCard: {
-      borderRadius: "14px",
+      borderRadius: "18px",
       border: "1px solid var(--color-line)",
       boxShadow: CARD_SHADOW,
     },

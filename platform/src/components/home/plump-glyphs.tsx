@@ -1,15 +1,18 @@
 /* ------------------------------------------------------------------ *
- * Stat-tile marks — Streamline "Plump" free set (CC BY 4.0, attribution
- * owed, same as the composer's file-type badges), gradient-filled.
+ * Plump gradient marks — Streamline "Plump" free set (CC BY 4.0,
+ * attribution owed, same as the composer's file-type badges).
  *
  * The geometry is the open-source Plump set as shipped in
  * @iconify-json/streamline-plump-color. Streamline's own Plump *Gradient*
  * SVGs aren't reachable from this environment (the download API sits
  * behind the egress proxy), so the gradient treatment is applied here:
- * each icon's light layer runs from a pale step of its stat's hue down to
- * the hue, and the dark layer from the hue into its shadow — the same
+ * each icon's light layer runs from a pale step of its hue down to the
+ * hue, and the dark layer from the hue into its shadow — the same
  * two-layer construction the Plump Gradient style uses, on the same
- * shapes, in this app's validated stat hues.
+ * shapes, in this app's validated hues.
+ *
+ * Used by the dashboard's stat tiles and by the Clerk user menu, so the
+ * two read as one set.
  *
  * GENERATED: the fills are a find-and-replace over the set's two flat
  * colours (#8fbffa light, #2859c5 dark). Regenerate rather than
@@ -68,4 +71,16 @@ export function CheckGlyph({ size = 28 }: { size?: number }) {
 const BODY_MEDAL = "<g fill=\"none\" stroke-width=\"3\"><path fill=\"#fff\" d=\"M24 3c-7 0-10 1-10 1v.491c.014.033 1.707 4.066 4.599 9.668C19.964 14.064 21.727 14 24 14s4.036.064 5.401.16C32.304 8.533 34 4.49 34 4.49V4s-3-1-10-1\"/><path fill=\"#8fbffa\" d=\"M35.462 29.438c4.05-4.593 7.256-9.086 8.702-11.194c.536-.782.655-1.774.255-2.634C41.15 8.588 34 4 34 4s-3.337 7.957-8.663 17.074c4.793.53 8.735 3.886 10.125 8.364M3.836 18.244c-.536-.782-.655-1.774-.255-2.634C6.85 8.588 14 4 14 4s3.337 7.957 8.663 17.074c-4.794.531-8.735 3.886-10.126 8.364c-4.05-4.593-7.255-9.086-8.7-11.194Z\"/><path fill=\"#fff\" d=\"M12 33a12 12 0 1 0 24 0a12 12 0 1 0-24 0\"/><path fill=\"#8fbffa\" d=\"M22.89 26.64a1.25 1.25 0 0 1 2.22 0l1.51 2.912l3.22.634a1.25 1.25 0 0 1 .688 2.062l-2.288 2.545l.42 3.395a1.25 1.25 0 0 1-1.8 1.272L24 38.032l-2.86 1.428a1.25 1.25 0 0 1-1.799-1.272l.42-3.395l-2.289-2.545a1.25 1.25 0 0 1 .688-2.062l3.22-.634l1.51-2.913Z\"/><path stroke=\"#2859c5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M14 4s3-1 10-1s10 1 10 1M18.845 14.143A81 81 0 0 1 24 14c2.139 0 3.826.056 5.155.143M12 33a12 12 0 1 0 24 0a12 12 0 1 0-24 0\"/><path stroke=\"#2859c5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M35.462 29.438c4.05-4.593 7.256-9.086 8.702-11.194c.536-.782.655-1.774.255-2.634C41.15 8.588 34 4 34 4s-3.337 7.957-8.663 17.074m-2.674 0C17.337 11.957 14 4 14 4S6.85 8.588 3.58 15.61c-.4.86-.281 1.852.255 2.634c1.446 2.108 4.651 6.6 8.701 11.194M22.89 26.64a1.25 1.25 0 0 1 2.22 0l1.51 2.912l3.22.634a1.25 1.25 0 0 1 .688 2.062l-2.288 2.545l.419 3.395a1.25 1.25 0 0 1-1.799 1.272L24 38.032l-2.86 1.428a1.25 1.25 0 0 1-1.8-1.272l.42-3.395l-2.288-2.545a1.25 1.25 0 0 1 .688-2.062l3.22-.634l1.51-2.913Z\"/></g>";
 export function MedalGlyph({ size = 28 }: { size?: number }) {
   return <Glyph size={size} body={BODY_MEDAL} light={["#aea6d7","#5c4eb0"] as [string, string]} dark={["#4a3aa7","#30266d"] as [string, string]} />;
+}
+
+// Plump "dashboard-1"
+const BODY_DASHBOARD = "<g fill=\"none\" stroke-width=\"3\"><path fill=\"#8fbffa\" d=\"M44.461 8.257c-.208-2.555-2.163-4.51-4.718-4.718C36.515 3.277 31.364 3 24 3s-12.515.277-15.743.539c-2.555.208-4.51 2.163-4.718 4.718C3.277 11.485 3 16.636 3 24s.277 12.515.539 15.743c.208 2.555 2.163 4.51 4.718 4.718C11.485 44.723 16.636 45 24 45s12.515-.277 15.743-.539c2.555-.208 4.51-2.163 4.718-4.718C44.723 36.515 45 31.364 45 24s-.277-12.515-.539-15.743\"/><path fill=\"#fff\" d=\"M26.228 4.782a3.42 3.42 0 0 0-4.456 0c-1.819 1.533-4.751 4.147-8.797 8.193s-6.66 6.978-8.193 8.797a3.42 3.42 0 0 0 0 4.456c1.533 1.819 4.147 4.751 8.193 8.797s6.978 6.66 8.797 8.193a3.42 3.42 0 0 0 4.456 0c1.819-1.533 4.751-4.147 8.797-8.193s6.66-6.978 8.193-8.797a3.42 3.42 0 0 0 0-4.456c-1.533-1.819-4.147-4.751-8.193-8.797s-6.978-6.66-8.797-8.193\"/><path stroke=\"#2859c5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M39.743 3.539c2.555.208 4.51 2.163 4.718 4.718C44.723 11.485 45 16.636 45 24s-.277 12.515-.539 15.743c-.208 2.555-2.163 4.51-4.718 4.718C36.515 44.723 31.364 45 24 45s-12.515-.277-15.743-.539c-2.555-.208-4.51-2.163-4.718-4.718C3.277 36.515 3 31.364 3 24s.277-12.515.539-15.743c.208-2.555 2.163-4.51 4.718-4.718C11.485 3.277 16.636 3 24 3s12.515.277 15.743.539\"/><path stroke=\"#2859c5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M25.127 3.874a1.78 1.78 0 0 0-2.254 0c-1.598 1.288-4.898 4.101-9.898 9.101s-7.813 8.3-9.101 9.898a1.78 1.78 0 0 0 0 2.254c1.288 1.599 4.101 4.898 9.101 9.898s8.3 7.814 9.898 9.102a1.78 1.78 0 0 0 2.254 0c1.599-1.288 4.898-4.102 9.898-9.102s7.814-8.3 9.102-9.898a1.78 1.78 0 0 0 0-2.254c-1.288-1.598-4.102-4.898-9.102-9.898s-8.3-7.813-9.898-9.101\"/></g>";
+export function DashboardGlyph({ size = 28 }: { size?: number }) {
+  return <Glyph size={size} body={BODY_DASHBOARD} light={["#9fc2ed","#3f86da"] as [string, string]} dark={["#2a78d6","#1b4e8b"] as [string, string]} />;
+}
+
+// Plump "graduation-cap"
+const BODY_COURSES = "<g fill=\"none\" stroke-width=\"3\"><path fill=\"#8fbffa\" d=\"M3.052 16.555c-1.382-.662-1.382-2.448 0-3.11c1.812-.868 4.519-2.1 8.348-3.695c5.32-2.216 8.954-3.53 10.905-4.196a5.23 5.23 0 0 1 3.39 0c1.95.666 5.586 1.98 10.905 4.196c3.83 1.595 6.536 2.827 8.349 3.695c1.38.662 1.38 2.448 0 3.11c-1.813.868-4.52 2.1-8.349 3.695c-5.32 2.216-8.954 3.53-10.905 4.196a5.23 5.23 0 0 1-3.39 0c-1.95-.666-5.586-1.98-10.905-4.196c-3.83-1.596-6.536-2.827-8.348-3.695\"/><path fill=\"#8fbffa\" d=\"M11.102 20.126A75 75 0 0 0 11 24.167c0 3.094.159 5.037.315 6.2c.137 1.016.719 1.88 1.627 2.355C14.698 33.642 18.265 35 24 35s9.302-1.358 11.058-2.278c.908-.475 1.49-1.339 1.627-2.354c.156-1.164.315-3.107.315-6.2a75 75 0 0 0-.102-4.042l-.298.124c-5.32 2.217-8.954 3.53-10.905 4.197a5.23 5.23 0 0 1-3.39 0c-1.95-.666-5.586-1.98-10.905-4.197z\"/><path fill=\"#fff\" d=\"M8 40a3 3 0 1 1-6 0a3 3 0 1 1 6 0\"/><path stroke=\"#2859c5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M5 18v19M3.052 16.555c-1.382-.662-1.382-2.448 0-3.11c1.812-.868 4.519-2.1 8.348-3.695c5.32-2.216 8.954-3.53 10.905-4.196a5.23 5.23 0 0 1 3.39 0c1.95.666 5.586 1.98 10.905 4.196c3.83 1.595 6.536 2.827 8.349 3.695c1.38.662 1.38 2.448 0 3.11c-1.813.868-4.52 2.1-8.349 3.695c-5.32 2.216-8.954 3.53-10.905 4.196a5.23 5.23 0 0 1-3.39 0c-1.95-.666-5.586-1.98-10.905-4.196c-3.83-1.596-6.536-2.827-8.348-3.695\"/><path stroke=\"#2859c5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M11.102 20.125A75 75 0 0 0 11 24.166c0 3.094.159 5.037.315 6.2c.137 1.016.719 1.88 1.627 2.355C14.698 33.641 18.265 35 24 35s9.302-1.358 11.058-2.278c.908-.475 1.49-1.339 1.627-2.354c.156-1.164.315-3.107.315-6.2a75 75 0 0 0-.102-4.042M8 40a3 3 0 1 1-6 0a3 3 0 1 1 6 0\"/></g>";
+export function CoursesGlyph({ size = 28 }: { size?: number }) {
+  return <Glyph size={size} body={BODY_COURSES} light={["#97c1af","#2e835f"] as [string, string]} dark={["#17754d","#0f4c32"] as [string, string]} />;
 }
