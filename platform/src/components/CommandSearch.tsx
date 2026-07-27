@@ -226,12 +226,20 @@ export function CommandSearch() {
                     >
                       {item.kind === "section" && <SectionMark />}
                       <span className="min-w-0 flex-1">
+                        {/* The title takes the room and the context yields:
+                            min-w-0 + flex-1 on the title, and a capped hint
+                            that truncates and disappears entirely on narrow
+                            screens. Previously the hint was shrink-0, so on a
+                            phone it kept its full width and squeezed the title
+                            down to a letter or two. */}
                         <span className="flex items-baseline justify-between gap-3">
-                          <span className="truncate text-sm text-ink">
+                          <span className="min-w-0 flex-1 truncate text-sm text-ink">
                             <Marked text={item.label} query={query} />
                           </span>
                           {item.hint && (
-                            <span className="shrink-0 truncate text-xs text-placeholder">{item.hint}</span>
+                            <span className="hidden max-w-[40%] shrink truncate text-xs text-placeholder sm:block">
+                              {item.hint}
+                            </span>
                           )}
                         </span>
                         {/* Why this hit matched, when it matched on body text. */}
