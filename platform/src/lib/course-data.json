@@ -1890,1259 +1890,1253 @@
     ]
   },
   {
-    "id": "corporate-finance",
-    "label": "Corporate Finance",
+    "id": "investment-appraisal",
+    "label": "Investment appraisal",
     "defaultOpen": true,
     "children": [
       {
-        "id": "investment-appraisal",
-        "label": "Investment appraisal",
-        "children": [
-          {
-            "id": "free-cash-flows",
-            "label": "Free cash flows",
-            "lesson": {
-              "title": "Free cash flows",
-              "kicker": "Investment appraisal",
-              "sections": [
+        "id": "free-cash-flows",
+        "label": "Free cash flows",
+        "lesson": {
+          "title": "Free cash flows",
+          "kicker": "Investment appraisal",
+          "sections": [
+            {
+              "id": "what-it-is",
+              "check": {
+                "answer": 0,
+                "explain": "Investment in non-current assets and working capital is deducted after operating profit, so a year of heavy capital spending can swallow a rising profit. Depreciation is added back rather than deducted, and dividends are paid out of free cash flow — they sit after it, not inside it.",
+                "options": [
+                  "It spent heavily on new plant and on stock, so the cash went into those rather than to investors",
+                  "Its depreciation charge increased, which reduced the cash available",
+                  "It paid a larger dividend, which is deducted in arriving at free cash flow",
+                  "Free cash flow cannot fall in a year when operating profit rises"
+                ],
+                "question": "A company’s operating profit rose from ZMW4 million to ZMW6 million, but its free cash flow fell over the same year. What best explains that?"
+              },
+              "blocks": [
                 {
-                  "id": "what-it-is",
-                  "check": {
-                    "answer": 0,
-                    "explain": "Investment in non-current assets and working capital is deducted after operating profit, so a year of heavy capital spending can swallow a rising profit. Depreciation is added back rather than deducted, and dividends are paid out of free cash flow — they sit after it, not inside it.",
-                    "options": [
-                      "It spent heavily on new plant and on stock, so the cash went into those rather than to investors",
-                      "Its depreciation charge increased, which reduced the cash available",
-                      "It paid a larger dividend, which is deducted in arriving at free cash flow",
-                      "Free cash flow cannot fall in a year when operating profit rises"
-                    ],
-                    "question": "A company’s operating profit rose from ZMW4 million to ZMW6 million, but its free cash flow fell over the same year. What best explains that?"
-                  },
-                  "blocks": [
-                    {
-                      "text": "Free cash flow is the cash a business has left after it has paid its operating costs and its tax, and made the investment it needs to keep trading and to grow. Nobody inside the business has a further claim on it, which is what makes it free — it can go to the people who funded the business.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "That is why it tells you more than profit does. Profit is struck after non-cash charges like depreciation and before the capital spending that keeps the machinery running, so it can move in one direction while the bank balance moves in the other. Cash cannot. A company can report a rising operating profit for three years and still run out of money.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "The gap is easy to see in a Zambian milling business. It sells maize meal to wholesalers on 60-day credit, books the revenue and the profit the day the truck leaves, and then has to find cash for the ZESCO bill, the fuel and the next consignment of grain before a single customer has paid. The profit is real. The cash is somewhere else.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "Free cash flow is what a business could hand to its investors without damaging its ability to keep trading.",
-                      "type": "callout"
-                    }
-                  ],
-                  "heading": "What free cash flow is"
+                  "text": "Free cash flow is the cash a business has left after it has paid its operating costs and its tax, and made the investment it needs to keep trading and to grow. Nobody inside the business has a further claim on it, which is what makes it free — it can go to the people who funded the business.",
+                  "type": "p"
                 },
                 {
-                  "id": "to-the-firm",
-                  "check": {
-                    "answer": 0,
-                    "explain": "Free cash flow to the firm measures what the whole business generates for everyone who funded it. Interest is a payment to one of those groups, so it comes off only when you go a step further and work out free cash flow to equity.",
-                    "options": [
-                      "Free cash flow to the firm is the cash available to lenders and shareholders together, so paying the lenders first would understate it",
-                      "Interest is a non-cash charge, so it is added back alongside depreciation",
-                      "Interest has already been taken off in arriving at profit before interest and tax",
-                      "Interest is relieved against tax, so deducting it as well would be double-counting"
-                    ],
-                    "question": "Interest paid is not deducted when you calculate free cash flow to the firm. Why not?"
-                  },
-                  "blocks": [
-                    {
-                      "text": "You build free cash flow out of the accounts. Start at operating profit before interest and tax, then correct it for everything the accounts recorded on a basis other than cash.",
-                      "type": "p"
-                    },
-                    {
-                      "rows": [
-                        [
-                          "Operating profit before interest and tax (PBIT)",
-                          "X"
-                        ],
-                        [
-                          "Add back depreciation",
-                          "X"
-                        ],
-                        [
-                          "Less tax paid",
-                          "(X)"
-                        ],
-                        [
-                          "Operating cash flow",
-                          "X"
-                        ],
-                        [
-                          "Less replacement investment in non-current assets",
-                          "(X)"
-                        ],
-                        [
-                          "Less incremental investment in non-current assets",
-                          "(X)"
-                        ],
-                        [
-                          "Less incremental investment in working capital",
-                          "(X)"
-                        ]
-                      ],
-                      "type": "table",
-                      "total": [
-                        "Free cash flow to the firm",
-                        "X"
-                      ],
-                      "columns": [
-                        {
-                          "label": "Free cash flow to the firm"
-                        },
-                        {
-                          "align": "right",
-                          "label": "ZMW"
-                        }
-                      ],
-                      "subtotals": [
-                        3
-                      ]
-                    },
-                    {
-                      "type": "ul",
-                      "items": [
-                        "Depreciation is added back because no money moved. It is the accounts spreading the cost of an asset over its life, not a payment made this year.",
-                        "Tax is deducted at the amount actually paid, because that money genuinely leaves.",
-                        "Replacement investment keeps the existing assets working. A business that stops replacing them is quietly shrinking, so this spending is not optional.",
-                        "Incremental investment in non-current assets buys the extra capacity that growth needs.",
-                        "Incremental working capital is the stock and the receivables that growth ties up before any customer pays."
-                      ]
-                    },
-                    {
-                      "text": "Interest is nowhere in that working, and its absence is the point. This is cash to the firm as a whole — to lenders and shareholders together. Deducting interest here would pay one group of investors before you had finished measuring what there is to share.",
-                      "type": "p"
-                    }
-                  ],
-                  "heading": "Building free cash flow to the firm"
+                  "text": "That is why it tells you more than profit does. Profit is struck after non-cash charges like depreciation and before the capital spending that keeps the machinery running, so it can move in one direction while the bank balance moves in the other. Cash cannot. A company can report a rising operating profit for three years and still run out of money.",
+                  "type": "p"
                 },
                 {
-                  "id": "to-equity",
-                  "check": {
-                    "answer": 0,
-                    "explain": "90 − 12 − 30 + 20 = 68. The new borrowing is added, not deducted: it is cash coming in. Stopping at 48 means forgetting it, and 28 means subtracting it by mistake.",
-                    "options": [
-                      "ZMW68 million",
-                      "ZMW48 million",
-                      "ZMW98 million",
-                      "ZMW28 million"
-                    ],
-                    "question": "Airtel Zambia generates free cash flow to the firm of ZMW90 million. It pays ZMW12 million of debt interest, repays ZMW30 million of loans, and raises ZMW20 million of new debt. What is its free cash flow to equity?"
-                  },
-                  "blocks": [
-                    {
-                      "text": "Free cash flow to equity is what is left for shareholders once the lenders have been paid everything they are owed this year. You get to it by carrying on from where the last working stopped.",
-                      "type": "p"
-                    },
-                    {
-                      "rows": [
-                        [
-                          "Free cash flow to the firm",
-                          "X"
-                        ],
-                        [
-                          "Less debt interest paid",
-                          "(X)"
-                        ],
-                        [
-                          "Less debt repaid",
-                          "(X)"
-                        ],
-                        [
-                          "Add cash raised from new debt issues",
-                          "X"
-                        ]
-                      ],
-                      "type": "table",
-                      "total": [
-                        "Free cash flow to equity",
-                        "X"
-                      ],
-                      "columns": [
-                        {
-                          "label": "Free cash flow to equity"
-                        },
-                        {
-                          "align": "right",
-                          "label": "ZMW"
-                        }
-                      ]
-                    },
-                    {
-                      "text": "New borrowing is added rather than ignored. It is cash arriving in the business that the shareholders can use this year, even though it will have to be serviced and repaid later. A company that repays ZMW30 million of old loans and draws down ZMW30 million of new ones has moved no cash at all, and the working should say so.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "Because it is the shareholders’ cash, free cash flow to equity is the honest way to test whether a dividend is affordable.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "Cash dividend cover  =  FCFE ÷ D",
-                      "type": "formula",
-                      "where": [
-                        "FCFE = free cash flow to equity for the year",
-                        "D = dividends actually paid to shareholders in the year"
-                      ]
-                    },
-                    {
-                      "text": "A cover of 2 means the company generated twice the cash it handed out. Below 1 means it paid dividends it had not earned in cash, and funded the difference from reserves or from borrowing. The same company measured on earnings can look comfortable, because earnings never had the capital spending taken out of them.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "Cash to the firm answers what the business generates. Cash to equity answers what the shareholders can actually be paid.",
-                      "type": "callout"
-                    }
-                  ],
-                  "heading": "From the firm to equity"
+                  "text": "The gap is easy to see in a Zambian milling business. It sells maize meal to wholesalers on 60-day credit, books the revenue and the profit the day the truck leaves, and then has to find cash for the ZESCO bill, the fuel and the next consignment of grain before a single customer has paid. The profit is real. The cash is somewhere else.",
+                  "type": "p"
                 },
                 {
-                  "id": "which-measure",
-                  "check": {
-                    "answer": 0,
-                    "explain": "Shares are a claim on what is left after the lenders are paid, so the cash flow must be the one measured after debt service, and the rate must be the return shareholders require. Option 4 is a perfectly good working — it just values the whole firm, not the equity.",
-                    "options": [
-                      "Free cash flow to equity, discounted at the cost of equity",
-                      "Free cash flow to the firm, discounted at the cost of equity",
-                      "Free cash flow to equity, discounted at the weighted average cost of capital",
-                      "Free cash flow to the firm, discounted at the weighted average cost of capital"
-                    ],
-                    "question": "A valuer is working out what Zambeef’s shares are worth. Which combination is right?"
-                  },
-                  "blocks": [
-                    {
-                      "text": "Free cash flow does three jobs, and which of the two measures you reach for follows from the job in front of you.",
-                      "type": "p"
-                    },
-                    {
-                      "type": "ul",
-                      "items": [
-                        "Appraising a project — the free cash flows the project itself generates are what get discounted to find its net present value.",
-                        "Reading a company’s health — a business whose free cash flow has turned negative while its profit holds up is the classic early warning, which is why the measure is central to work on corporate failure and reconstruction.",
-                        "Valuing a business — the value of a company is the present value of the free cash flows it will produce, so this is where a share price comes from."
-                      ]
-                    },
-                    {
-                      "rows": [
-                        [
-                          "Is this project worth doing?",
-                          "To the firm",
-                          "Cost of capital (WACC)"
-                        ],
-                        [
-                          "What is the whole business worth?",
-                          "To the firm",
-                          "Cost of capital (WACC)"
-                        ],
-                        [
-                          "What are the shares worth?",
-                          "To equity",
-                          "Cost of equity"
-                        ],
-                        [
-                          "Can we sustain this dividend?",
-                          "To equity",
-                          "Not discounted"
-                        ]
-                      ],
-                      "type": "table",
-                      "columns": [
-                        {
-                          "label": "The question"
-                        },
-                        {
-                          "label": "The measure"
-                        },
-                        {
-                          "label": "Discounted at"
-                        }
-                      ]
-                    },
-                    {
-                      "text": "The pairing is not a convention to memorise — it is a matching rule. Cash that belongs to everybody is discounted at a rate that reflects what everybody demands. Cash that belongs to shareholders alone is discounted at what shareholders alone demand. Mixing them values a company at a number nobody could ever collect. Where those two rates come from is the whole of Lesson 2.",
-                      "type": "p"
-                    }
-                  ],
-                  "heading": "Choosing between the two measures"
-                },
-                {
-                  "id": "worked-example",
-                  "check": {
-                    "answer": 0,
-                    "explain": "An extra ZMW40,000 tied up in stock and receivables is ZMW40,000 that did not reach anybody, so both measures drop by the full amount: the firm to ZMW165,000 and equity to ZMW140,000. Working capital is very much a cash item — it is cash sitting in the warehouse instead of the bank.",
-                    "options": [
-                      "It falls to ZMW140,000",
-                      "It stays at ZMW180,000, because working capital is not a cash item",
-                      "It falls to ZMW165,000",
-                      "It falls to ZMW140,000 only if the company also borrows to fund the extra stock"
-                    ],
-                    "question": "Take the same figures, but suppose the increase in working capital had been ZMW90,000 instead of ZMW50,000. What happens to free cash flow to equity?"
-                  },
-                  "blocks": [
-                    {
-                      "text": "A company reports the following for the year. Calculate its free cash flow to the firm and to equity.",
-                      "type": "p"
-                    },
-                    {
-                      "rows": [
-                        [
-                          "Operating profit",
-                          "300"
-                        ],
-                        [
-                          "Depreciation",
-                          "120"
-                        ],
-                        [
-                          "Tax paid",
-                          "140"
-                        ],
-                        [
-                          "Increase in working capital",
-                          "50"
-                        ],
-                        [
-                          "Capital expenditure replacing existing assets",
-                          "10"
-                        ],
-                        [
-                          "Capital expenditure on new investments",
-                          "15"
-                        ],
-                        [
-                          "Interest paid",
-                          "5"
-                        ],
-                        [
-                          "Loan repaid",
-                          "20"
-                        ]
-                      ],
-                      "type": "table",
-                      "columns": [
-                        {
-                          "label": "Extracted from the accounts"
-                        },
-                        {
-                          "align": "right",
-                          "label": "ZMW’000"
-                        }
-                      ]
-                    },
-                    {
-                      "text": "Work to the firm first, and leave the interest and the loan repayment out of it — they belong to the second stage.",
-                      "type": "p"
-                    },
-                    {
-                      "rows": [
-                        [
-                          "Operating profit (PBIT)",
-                          "300"
-                        ],
-                        [
-                          "Add back depreciation",
-                          "120"
-                        ],
-                        [
-                          "Less tax paid",
-                          "(140)"
-                        ],
-                        [
-                          "Operating cash flow",
-                          "280"
-                        ],
-                        [
-                          "Less replacement of non-current assets",
-                          "(10)"
-                        ],
-                        [
-                          "Less incremental non-current asset investment",
-                          "(15)"
-                        ],
-                        [
-                          "Less increase in working capital",
-                          "(50)"
-                        ]
-                      ],
-                      "type": "table",
-                      "total": [
-                        "Free cash flow to the firm",
-                        "205"
-                      ],
-                      "columns": [
-                        {
-                          "label": "Free cash flow to the firm"
-                        },
-                        {
-                          "align": "right",
-                          "label": "ZMW’000"
-                        }
-                      ],
-                      "subtotals": [
-                        3
-                      ]
-                    },
-                    {
-                      "text": "Now take the lenders out to reach the shareholders.",
-                      "type": "p"
-                    },
-                    {
-                      "note": "No new debt was raised this year, so there is nothing to add back.",
-                      "rows": [
-                        [
-                          "Free cash flow to the firm",
-                          "205"
-                        ],
-                        [
-                          "Less debt interest paid",
-                          "(5)"
-                        ],
-                        [
-                          "Less loan repaid",
-                          "(20)"
-                        ]
-                      ],
-                      "type": "table",
-                      "total": [
-                        "Free cash flow to equity",
-                        "180"
-                      ],
-                      "columns": [
-                        {
-                          "label": "Free cash flow to equity"
-                        },
-                        {
-                          "align": "right",
-                          "label": "ZMW’000"
-                        }
-                      ]
-                    },
-                    {
-                      "text": "Read what the two figures say. The business generated ZMW205,000 for everyone who funded it. After servicing its debt, ZMW180,000 of that belonged to shareholders — so a dividend of ZMW90,000 would be covered twice over, and a dividend of ZMW200,000 would have to come from somewhere other than this year’s trading.",
-                      "type": "p"
-                    }
-                  ],
-                  "heading": "Worked example"
+                  "text": "Free cash flow is what a business could hand to its investors without damaging its ability to keep trading.",
+                  "type": "callout"
                 }
-              ]
-            }
-          },
-          {
-            "id": "npv-and-payback",
-            "label": "NPV & discounted payback",
-            "lesson": {
-              "title": "NPV and discounted payback",
-              "kicker": "Investment appraisal",
-              "sections": [
+              ],
+              "heading": "What free cash flow is"
+            },
+            {
+              "id": "to-the-firm",
+              "check": {
+                "answer": 0,
+                "explain": "Free cash flow to the firm measures what the whole business generates for everyone who funded it. Interest is a payment to one of those groups, so it comes off only when you go a step further and work out free cash flow to equity.",
+                "options": [
+                  "Free cash flow to the firm is the cash available to lenders and shareholders together, so paying the lenders first would understate it",
+                  "Interest is a non-cash charge, so it is added back alongside depreciation",
+                  "Interest has already been taken off in arriving at profit before interest and tax",
+                  "Interest is relieved against tax, so deducting it as well would be double-counting"
+                ],
+                "question": "Interest paid is not deducted when you calculate free cash flow to the firm. Why not?"
+              },
+              "blocks": [
                 {
-                  "id": "time-value",
-                  "check": {
-                    "answer": 0,
-                    "explain": "500,000 × 0.751 = 375,500. Multiplying by the factor moves money backwards to today; dividing by it would move today’s money forward to year 3, which is the ZMW665,500 answer.",
-                    "options": [
-                      "ZMW375,500",
-                      "ZMW500,000, because the money is certain",
-                      "ZMW665,500",
-                      "ZMW350,000"
-                    ],
-                    "question": "A project will pay ZMW500,000 in three years. The cost of capital is 10%. What is that worth today?"
-                  },
-                  "blocks": [
-                    {
-                      "text": "ZMW1,000 in your hand today is worth more than ZMW1,000 promised in a year. You could put today’s money to work, and the promise might not be kept. Before you can add up cash flows that arrive in different years, you have to restate them all in today’s money.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "That restatement is discounting, and the rate you discount at is the company’s cost of capital — what its investors demand for leaving their money in the business. Multiply a future cash flow by its discount factor and you have its present value.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "Discount factor  =  1 ÷ (1 + r)ⁿ",
-                      "type": "formula",
-                      "where": [
-                        "r = the cost of capital, written as a decimal",
-                        "n = the number of years until the cash flow arrives"
-                      ]
-                    },
-                    {
-                      "text": "At a cost of capital of 10%, a kwacha due in one year is worth 1 ÷ 1.10 = 0.909 today, and one due in two years is worth 1 ÷ 1.10² = 0.826. The factor falls every year, which is the arithmetic saying what everyone already knows: the further away the money, the less you should pay for it now.",
-                      "type": "p"
-                    },
-                    {
-                      "note": "Cash at year 0 is already in today’s money, so its factor is 1.000.",
-                      "rows": [
-                        [
-                          "1",
-                          "0.909",
-                          "909"
-                        ],
-                        [
-                          "2",
-                          "0.826",
-                          "826"
-                        ],
-                        [
-                          "3",
-                          "0.751",
-                          "751"
-                        ],
-                        [
-                          "4",
-                          "0.683",
-                          "683"
-                        ],
-                        [
-                          "5",
-                          "0.621",
-                          "621"
-                        ]
-                      ],
-                      "type": "table",
-                      "columns": [
-                        {
-                          "label": "Year"
-                        },
-                        {
-                          "align": "right",
-                          "label": "Factor at 10%"
-                        },
-                        {
-                          "align": "right",
-                          "label": "What ZMW1,000 is worth today"
-                        }
-                      ]
-                    }
-                  ],
-                  "heading": "Why a future kwacha is worth less"
+                  "text": "You build free cash flow out of the accounts. Start at operating profit before interest and tax, then correct it for everything the accounts recorded on a basis other than cash.",
+                  "type": "p"
                 },
                 {
-                  "id": "npv",
-                  "check": {
-                    "answer": 0,
-                    "explain": "When you must pick one, take the larger NPV — the objective is to add the most value, not the highest return per kwacha. Return per kwacha only becomes the deciding test when capital is rationed, which is a later step. And they cannot both be taken; they are mutually exclusive.",
-                    "options": [
-                      "Project A, because it adds more value to the business",
-                      "Project B, because it earns more per kwacha invested",
-                      "Both, since both have positive NPVs",
-                      "Neither can be chosen without knowing the payback periods"
+                  "rows": [
+                    [
+                      "Operating profit before interest and tax (PBIT)",
+                      "X"
                     ],
-                    "question": "Two mutually exclusive projects are appraised at the same cost of capital. Project A has an NPV of ZMW400,000; Project B has an NPV of ZMW250,000 on half the initial outlay. Which should the company take?"
-                  },
-                  "blocks": [
+                    [
+                      "Add back depreciation",
+                      "X"
+                    ],
+                    [
+                      "Less tax paid",
+                      "(X)"
+                    ],
+                    [
+                      "Operating cash flow",
+                      "X"
+                    ],
+                    [
+                      "Less replacement investment in non-current assets",
+                      "(X)"
+                    ],
+                    [
+                      "Less incremental investment in non-current assets",
+                      "(X)"
+                    ],
+                    [
+                      "Less incremental investment in working capital",
+                      "(X)"
+                    ]
+                  ],
+                  "type": "table",
+                  "total": [
+                    "Free cash flow to the firm",
+                    "X"
+                  ],
+                  "columns": [
                     {
-                      "text": "Net present value is the sum of the present values of every cash flow a project causes, including the money you spend at the start. It answers one question: does this project make the owners of the business richer, and by how much in today’s money?",
-                      "type": "p"
+                      "label": "Free cash flow to the firm"
                     },
                     {
-                      "text": "NPV  =  Σ  CFₙ ÷ (1 + r)ⁿ  −  I₀",
-                      "type": "formula",
-                      "where": [
-                        "CFₙ = the net cash flow the project generates in year n",
-                        "r = the cost of capital used to discount",
-                        "n = the year in which the cash flow arrives",
-                        "I₀ = the amount invested at the start, in year 0"
-                      ]
-                    },
-                    {
-                      "type": "ul",
-                      "items": [
-                        "A positive NPV means the project earns more than the cost of the money funding it. Accept it.",
-                        "A negative NPV means it earns less. The business would be better off leaving the money where it is.",
-                        "An NPV of zero means it earns exactly the required return — no better, no worse than the alternative."
-                      ]
-                    },
-                    {
-                      "text": "The number itself is meaningful, not just its sign. An NPV of ZMW1,967 says the project is worth ZMW1,967 more than it costs, in today’s money, after paying every provider of capital what they demanded.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "NPV is the amount by which a project increases the value of the business, measured today.",
-                      "type": "callout"
+                      "align": "right",
+                      "label": "ZMW"
                     }
                   ],
-                  "heading": "Net present value"
+                  "subtotals": [
+                    3
+                  ]
                 },
                 {
-                  "id": "npv-worked",
-                  "check": {
-                    "answer": 0,
-                    "explain": "Year 0 is today. Discounting exists to bring future money back to the present, and this money is already there. Outflows in later years are discounted exactly like inflows.",
-                    "options": [
-                      "Because it is already in today’s money, so there is nothing to discount",
-                      "Because outflows are never discounted, only inflows are",
-                      "Because the discount factor for the first year is always 1.000",
-                      "Because the project has not started earning, so the cost of capital does not yet apply"
-                    ],
-                    "question": "In the working above, why does the year 0 outflow carry a discount factor of 1.000?"
-                  },
-                  "blocks": [
-                    {
-                      "text": "A project needs ZMW24,000 up front and will generate cash over five years. The cost of capital is 10%. Lay the years out in a column, discount each one, and add up.",
-                      "type": "p"
-                    },
-                    {
-                      "rows": [
-                        [
-                          "0",
-                          "(24,000)",
-                          "1.000",
-                          "(24,000)"
-                        ],
-                        [
-                          "1",
-                          "7,800",
-                          "0.909",
-                          "7,090"
-                        ],
-                        [
-                          "2",
-                          "6,000",
-                          "0.826",
-                          "4,956"
-                        ],
-                        [
-                          "3",
-                          "4,200",
-                          "0.751",
-                          "3,154"
-                        ],
-                        [
-                          "4",
-                          "7,400",
-                          "0.683",
-                          "5,054"
-                        ],
-                        [
-                          "5",
-                          "9,200",
-                          "0.621",
-                          "5,713"
-                        ]
-                      ],
-                      "type": "table",
-                      "total": [
-                        "NPV",
-                        "",
-                        "",
-                        "1,967"
-                      ],
-                      "columns": [
-                        {
-                          "label": "Year"
-                        },
-                        {
-                          "align": "right",
-                          "label": "Cash flow ZMW"
-                        },
-                        {
-                          "align": "right",
-                          "label": "Factor at 10%"
-                        },
-                        {
-                          "align": "right",
-                          "label": "Present value ZMW"
-                        }
-                      ]
-                    },
-                    {
-                      "text": "The NPV is positive, so the project is worth doing: it returns the ZMW24,000, pays the 10% the providers of capital require on it, and leaves ZMW1,967 of value over.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "Notice how the answer is built. The initial outlay sits at year 0 at a factor of 1.000, because it is spent today and needs no discounting. Every other line is a forecast cash flow multiplied by its factor. There is no arithmetic in an NPV harder than that — the difficulty in an exam is always in deciding which cash flows belong in the table at all.",
-                      "type": "p"
-                    }
-                  ],
-                  "heading": "Working an NPV"
+                  "type": "ul",
+                  "items": [
+                    "Depreciation is added back because no money moved. It is the accounts spreading the cost of an asset over its life, not a payment made this year.",
+                    "Tax is deducted at the amount actually paid, because that money genuinely leaves.",
+                    "Replacement investment keeps the existing assets working. A business that stops replacing them is quietly shrinking, so this spending is not optional.",
+                    "Incremental investment in non-current assets buys the extra capacity that growth needs.",
+                    "Incremental working capital is the stock and the receivables that growth ties up before any customer pays."
+                  ]
                 },
                 {
-                  "id": "discounted-payback",
-                  "check": {
-                    "answer": 0,
-                    "explain": "The tests answer different questions. NPV asks whether the project is worth more than it costs; discounted payback asks how long the company is exposed before it gets its money back. A project can easily create value slowly.",
-                    "options": [
-                      "It creates value, but ties the money up for longer than the company is willing to wait",
-                      "The NPV must be wrong, because a project cannot create value if it fails its payback target",
-                      "It should be rejected, because payback is the more reliable of the two tests",
-                      "The two tests always agree, so one of the calculations contains an error"
-                    ],
-                    "question": "The project above has a discounted payback of 4.66 years against a 4-year target, and an NPV of ZMW1,967. What does that tell you?"
-                  },
-                  "blocks": [
-                    {
-                      "text": "The discounted payback period is how long the project takes to earn its money back in present-value terms — the point at which the discounted inflows have caught up with the initial cost. A project passes if it pays back within the company’s target, where the company has set one.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "You find it by carrying the present values forward in a running total and watching for the year the balance turns positive.",
-                      "type": "p"
-                    },
-                    {
-                      "note": "The balance is still ZMW3,746 short at the end of year 4, and in surplus by the end of year 5 — so payback happens during year 5.",
-                      "rows": [
-                        [
-                          "0",
-                          "(24,000)",
-                          "(24,000)"
-                        ],
-                        [
-                          "1",
-                          "7,090",
-                          "(16,910)"
-                        ],
-                        [
-                          "2",
-                          "4,956",
-                          "(11,954)"
-                        ],
-                        [
-                          "3",
-                          "3,154",
-                          "(8,800)"
-                        ],
-                        [
-                          "4",
-                          "5,054",
-                          "(3,746)"
-                        ],
-                        [
-                          "5",
-                          "5,713",
-                          "1,967"
-                        ]
-                      ],
-                      "type": "table",
-                      "columns": [
-                        {
-                          "label": "Year"
-                        },
-                        {
-                          "align": "right",
-                          "label": "Present value ZMW"
-                        },
-                        {
-                          "align": "right",
-                          "label": "Cumulative PV ZMW"
-                        }
-                      ]
-                    },
-                    {
-                      "text": "To pin down where in that year, assume the year-5 cash arrives evenly and take the fraction you still needed.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "DPP  =  A  +  (B ÷ C)",
-                      "type": "formula",
-                      "where": [
-                        "A = the last full year in which the cumulative balance is still negative",
-                        "B = the amount still outstanding at the end of year A, as a positive figure",
-                        "C = the present value of the cash flow arriving in the following year"
-                      ]
-                    },
-                    {
-                      "text": "Here that is 4 + (3,746 ÷ 5,713) = 4.66 years. Against a target of 4 years, the project fails — while its NPV said accept. The two tests disagree because they measure different things, and only one of them is about value.",
-                      "type": "p"
-                    }
-                  ],
-                  "heading": "Discounted payback period"
-                },
-                {
-                  "id": "choosing",
-                  "check": {
-                    "answer": 0,
-                    "explain": "Once the outlay is recovered the method stops counting, so a long, highly profitable tail is worth nothing to it. Ignoring the time value of money is the weakness of ordinary payback — discounting is precisely what this version fixes.",
-                    "options": [
-                      "It ignores every cash flow that arrives after the payback point",
-                      "It ignores the time value of money",
-                      "It cannot be used when a project has cash flows in more than one year",
-                      "It requires an estimate of the cost of capital, which NPV does not"
-                    ],
-                    "question": "What is the main weakness of discounted payback as an appraisal method?"
-                  },
-                  "blocks": [
-                    {
-                      "text": "Discounted payback is a real improvement on ordinary payback, because it counts the cost of the money while the project is waiting to break even. It still has the flaw that ordinary payback has: it stops counting the moment the money is back.",
-                      "type": "p"
-                    },
-                    {
-                      "rows": [
-                        [
-                          "What it measures",
-                          "Value added, in today’s money",
-                          "Time until the outlay is recovered"
-                        ],
-                        [
-                          "Cash after the payback point",
-                          "Counted in full",
-                          "Ignored entirely"
-                        ],
-                        [
-                          "Answers",
-                          "Should we do this?",
-                          "How long are we exposed?"
-                        ],
-                        [
-                          "Decision rule",
-                          "Accept if positive",
-                          "Accept if within the target"
-                        ]
-                      ],
-                      "type": "table",
-                      "columns": [
-                        {
-                          "label": ""
-                        },
-                        {
-                          "label": "Net present value"
-                        },
-                        {
-                          "label": "Discounted payback"
-                        }
-                      ]
-                    },
-                    {
-                      "text": "Two projects can pay back on exactly the same day, and one of them can go on earning for another decade while the other stops dead. Payback cannot see the difference; NPV can. That is why NPV is the primary test and payback is a secondary one — a check on risk and liquidity rather than on whether the project is worth doing.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "For a Zambian business the liquidity question is not a technicality. A firm carrying kwacha debt through a period of high interest rates may genuinely need its money back inside three years, whatever the NPV says about year eight.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "NPV decides whether a project is worth doing. Payback decides whether the company can afford to wait.",
-                      "type": "callout"
-                    }
-                  ],
-                  "heading": "What each test is good for"
+                  "text": "Interest is nowhere in that working, and its absence is the point. This is cash to the firm as a whole — to lenders and shareholders together. Deducting interest here would pay one group of investors before you had finished measuring what there is to share.",
+                  "type": "p"
                 }
-              ]
-            }
-          },
-          {
-            "id": "irr-and-mirr",
-            "label": "IRR & MIRR",
-            "lesson": {
-              "title": "IRR and MIRR",
-              "kicker": "Investment appraisal",
-              "sections": [
+              ],
+              "heading": "Building free cash flow to the firm"
+            },
+            {
+              "id": "to-equity",
+              "check": {
+                "answer": 0,
+                "explain": "90 − 12 − 30 + 20 = 68. The new borrowing is added, not deducted: it is cash coming in. Stopping at 48 means forgetting it, and 28 means subtracting it by mistake.",
+                "options": [
+                  "ZMW68 million",
+                  "ZMW48 million",
+                  "ZMW98 million",
+                  "ZMW28 million"
+                ],
+                "question": "Airtel Zambia generates free cash flow to the firm of ZMW90 million. It pays ZMW12 million of debt interest, repays ZMW30 million of loans, and raises ZMW20 million of new debt. What is its free cash flow to equity?"
+              },
+              "blocks": [
                 {
-                  "id": "irr",
-                  "check": {
-                    "answer": 0,
-                    "explain": "The NPV is zero at 9%, and NPV falls as the discount rate rises — so at 13% it must be below zero. The project earns less than the money funding it costs.",
-                    "options": [
-                      "Reject it — its NPV at 13% must be negative",
-                      "Accept it — a positive IRR always means a project is worth doing",
-                      "Reject it, but only if the discounted payback also fails",
-                      "There is not enough information without knowing the size of the outlay"
-                    ],
-                    "question": "A conventional project has an IRR of 9%. The company’s cost of capital is 13%. What follows?"
-                  },
-                  "blocks": [
-                    {
-                      "text": "The internal rate of return is the discount rate at which a project’s NPV is exactly zero — the rate at which the project just breaks even in present-value terms. It is a break-even test on the cost of money rather than on sales volume.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "Because it is a rate, it comes with a decision rule that reads naturally to anyone running a business: borrow at 10%, earn 13%, take the project.",
-                      "type": "p"
-                    },
-                    {
-                      "type": "ul",
-                      "items": [
-                        "For a conventional project — money out first, then a run of inflows — accept it if the IRR is above the cost of capital.",
-                        "Reject it if the IRR is below the cost of capital, because the project earns less than the money funding it costs."
-                      ]
-                    },
-                    {
-                      "text": "That readability is the whole appeal of IRR, and it is why boards ask for it. A percentage can be compared against the bank’s lending rate without any further explanation, where an NPV of ZMW1,967 needs someone to say what it is 1,967 of.",
-                      "type": "p"
-                    }
-                  ],
-                  "heading": "The internal rate of return"
+                  "text": "Free cash flow to equity is what is left for shareholders once the lenders have been paid everything they are owed this year. You get to it by carrying on from where the last working stopped.",
+                  "type": "p"
                 },
                 {
-                  "id": "interpolation",
-                  "check": {
-                    "answer": 0,
-                    "explain": "5% + [32,000 ÷ (32,000 + 78,000)] × 5% = 5% + 1.45% = 6.45%. The NPV falls away steeply here, so the crossing point sits much closer to the lower rate than to the midpoint of 7.5%.",
-                    "options": [
-                      "6.45%",
-                      "8.54%",
-                      "7.50%",
-                      "5.29%"
+                  "rows": [
+                    [
+                      "Free cash flow to the firm",
+                      "X"
                     ],
-                    "question": "A project has an NPV of ZMW32,000 at 5% and an NPV of (ZMW78,000) at 10%. What is its IRR?"
-                  },
-                  "blocks": [
-                    {
-                      "text": "There is no way to solve for IRR directly by hand on a project with several years of cash flows. Instead you calculate the NPV at two rates — one that leaves it positive and one that pushes it negative — and read off the point in between where the line crosses zero.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "Take the same ZMW24,000 project from the last step. At 10% its NPV was ZMW1,967. Run it again at 14%.",
-                      "type": "p"
-                    },
-                    {
-                      "rows": [
-                        [
-                          "0",
-                          "(24,000)",
-                          "1.000",
-                          "(24,000)",
-                          "1.000",
-                          "(24,000)"
-                        ],
-                        [
-                          "1",
-                          "7,800",
-                          "0.909",
-                          "7,090",
-                          "0.877",
-                          "6,841"
-                        ],
-                        [
-                          "2",
-                          "6,000",
-                          "0.826",
-                          "4,956",
-                          "0.769",
-                          "4,614"
-                        ],
-                        [
-                          "3",
-                          "4,200",
-                          "0.751",
-                          "3,154",
-                          "0.675",
-                          "2,835"
-                        ],
-                        [
-                          "4",
-                          "7,400",
-                          "0.683",
-                          "5,054",
-                          "0.592",
-                          "4,381"
-                        ],
-                        [
-                          "5",
-                          "9,200",
-                          "0.621",
-                          "5,713",
-                          "0.519",
-                          "4,775"
-                        ]
-                      ],
-                      "type": "table",
-                      "total": [
-                        "NPV",
-                        "",
-                        "",
-                        "1,967",
-                        "",
-                        "(554)"
-                      ],
-                      "columns": [
-                        {
-                          "label": "Year"
-                        },
-                        {
-                          "align": "right",
-                          "label": "Cash flow ZMW"
-                        },
-                        {
-                          "align": "right",
-                          "label": "Factor at 10%"
-                        },
-                        {
-                          "align": "right",
-                          "label": "PV ZMW"
-                        },
-                        {
-                          "align": "right",
-                          "label": "Factor at 14%"
-                        },
-                        {
-                          "align": "right",
-                          "label": "PV ZMW"
-                        }
-                      ]
-                    },
-                    {
-                      "text": "The NPV crossed from positive to negative somewhere between the two rates, so that is where the IRR sits.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "IRR  =  A  +  [ a ÷ (a − b) ]  ×  (B − A)",
-                      "type": "formula",
-                      "where": [
-                        "A = the lower discount rate, the one giving a positive NPV",
-                        "a = the NPV at rate A",
-                        "B = the higher discount rate, the one giving a negative NPV",
-                        "b = the NPV at rate B, which is a negative figure"
-                      ]
-                    },
-                    {
-                      "text": "Watch the sign. Because b is negative, subtracting it adds: a − b = 1,967 − (−554) = 2,521. That denominator is the total distance the NPV travelled between the two rates, and the numerator is how much of that distance had been covered by the time it reached zero.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "IRR  =  10%  +  [ 1,967 ÷ 2,521 ]  ×  4%  =  13.12%",
-                      "type": "formula"
-                    },
-                    {
-                      "text": "Against a 10% cost of capital the project is accepted, which agrees with the positive NPV — as it must, since both are reading the same cash flows.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "Interpolation draws a straight line between two NPVs. The real relationship is a curve, so the answer is close rather than exact — and the further apart the two rates, the rougher it gets.",
-                      "type": "callout"
-                    }
+                    [
+                      "Less debt interest paid",
+                      "(X)"
+                    ],
+                    [
+                      "Less debt repaid",
+                      "(X)"
+                    ],
+                    [
+                      "Add cash raised from new debt issues",
+                      "X"
+                    ]
                   ],
-                  "heading": "Finding IRR by interpolation"
+                  "type": "table",
+                  "total": [
+                    "Free cash flow to equity",
+                    "X"
+                  ],
+                  "columns": [
+                    {
+                      "label": "Free cash flow to equity"
+                    },
+                    {
+                      "align": "right",
+                      "label": "ZMW"
+                    }
+                  ]
                 },
                 {
-                  "id": "irr-problems",
-                  "check": {
-                    "answer": 0,
-                    "explain": "Each change of sign in the cash flows creates the possibility of another rate at which NPV equals zero. With two changes there can be two IRRs, and 'accept if the IRR exceeds the cost of capital' cannot be applied to two different numbers. NPV handles the same cash flows without any difficulty.",
-                    "options": [
-                      "The cash flows change direction twice, so the project can have more than one IRR and the accept rule breaks down",
-                      "The rehabilitation cost cannot be discounted, because it is an outflow rather than an inflow",
-                      "IRR cannot be calculated for projects lasting more than five years",
-                      "The IRR will be understated, because the final outflow is discounted most heavily"
-                    ],
-                    "question": "A copper project has an outflow in year 0, inflows in years 1 to 8, and a large rehabilitation outflow in year 9. What is the specific difficulty this creates for IRR?"
-                  },
-                  "blocks": [
-                    {
-                      "text": "IRR is the most widely quoted appraisal figure and the least reliable. Three problems, in rising order of seriousness.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "The decision rule is not always clear cut",
-                      "type": "h2"
-                    },
-                    {
-                      "text": "A project whose cash flows change direction more than once — an outflow, then inflows, then a large closure or restoration cost at the end — can have two IRRs, or more, or none at all. A mine with a rehabilitation obligation in its final year is the textbook case, and it is a common shape in Zambia. Told that a project has IRRs of 6% and 31%, the rule to accept when the IRR beats the cost of capital simply has no answer.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "It is not the return on the project",
-                      "type": "h2"
-                    },
-                    {
-                      "text": "IRR is routinely read as the return the project earns. It is not. The calculation assumes every cash flow the project throws off is immediately reinvested at the IRR itself for the rest of the project’s life. A project showing an IRR of 30% only earns 30% if the company really can find 30% homes for the cash as it arrives — and a company that could do that reliably would not need the project.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "It does not compare projects",
-                      "type": "h2"
-                    },
-                    {
-                      "text": "Because two projects can have different lives, different sizes and different reinvestment assumptions buried in their own IRRs, ranking them by IRR can put the wrong one first. A small project with a spectacular percentage can beat a large one that adds far more value, and the percentage gives you no way to see it.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "Where NPV and IRR disagree about which project to take, NPV is right. IRR is reported because it communicates well, not because it decides well.",
-                      "type": "callout"
-                    }
-                  ],
-                  "heading": "Where IRR misleads"
+                  "text": "New borrowing is added rather than ignored. It is cash arriving in the business that the shareholders can use this year, even though it will have to be serviced and repaid later. A company that repays ZMW30 million of old loans and draws down ZMW30 million of new ones has moved no cash at all, and the working should say so.",
+                  "type": "p"
                 },
                 {
-                  "id": "mirr",
-                  "check": {
-                    "answer": 0,
-                    "explain": "The reinvestment assumption is the flaw. A project with a 30% IRR only delivers 30% if every kwacha it releases can be put back to work at 30%, which is rarely true. MIRR makes you state the achievable rate instead.",
-                    "options": [
-                      "IRR assumes cash flows are reinvested at the IRR itself; MIRR uses a reinvestment rate the company can actually achieve",
-                      "IRR ignores the time value of money, while MIRR discounts properly",
-                      "IRR cannot handle an initial outflow, whereas MIRR can",
-                      "IRR gives an answer in kwacha, while MIRR gives a percentage"
-                    ],
-                    "question": "What does MIRR fix that IRR gets wrong?"
-                  },
-                  "blocks": [
-                    {
-                      "text": "MIRR keeps what is useful about IRR — a single percentage you can hold against the cost of borrowing — while removing the assumption that broke it. Instead of pretending cash is reinvested at the IRR, you state the rate at which the company can genuinely reinvest, and build the answer on that.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "The method collapses the project into two numbers: what it costs today, and what it will be worth at the end.",
-                      "type": "p"
-                    },
-                    {
-                      "type": "ul",
-                      "items": [
-                        "Take every outflow and discount it back to year 0 at the cost of capital. That is the investment phase, PVCF.",
-                        "Take every inflow and compound it forward to the final year at the reinvestment rate. That is the return phase, FVCF.",
-                        "Find the annual rate that grows PVCF into FVCF over the project’s life.",
-                        "Accept the project if that rate exceeds the cost of capital."
-                      ]
-                    },
-                    {
-                      "text": "MIRR  =  ⁿ√( FVCF ÷ PVCF )  −  1",
-                      "type": "formula",
-                      "where": [
-                        "FVCF = the future value of the return phase, compounded to the final year at the reinvestment rate",
-                        "PVCF = the present value of the investment phase, discounted at the cost of capital",
-                        "n = the life of the project, in years"
-                      ]
-                    },
-                    {
-                      "text": "Two different rates appear in one calculation, and that is deliberate rather than sloppy. Money the company spends is funded at its cost of capital; money the company receives is put to work at whatever it can actually earn. Those are genuinely different rates, and IRR’s mistake was assuming they were the same.",
-                      "type": "p"
-                    }
-                  ],
-                  "heading": "The modified internal rate of return"
+                  "text": "Because it is the shareholders’ cash, free cash flow to equity is the honest way to test whether a dividend is affordable.",
+                  "type": "p"
                 },
                 {
-                  "id": "mirr-worked",
-                  "check": {
-                    "answer": 0,
-                    "explain": "⁴√(80 ÷ 50) − 1 = 12.5%, below the 14% cost of capital, so reject. The ZMW30 million of growth looks generous until you notice it took four years to earn — which is exactly what turning it into an annual rate is for. The reinvestment rate is not needed separately; it is already inside the ZMW80 million.",
-                    "options": [
-                      "No — the MIRR is about 12.5%, which is below the 14% cost of capital",
-                      "Yes — the MIRR is about 12.5%, and the project returns ZMW30 million more than it cost",
-                      "Yes — the MIRR is about 16%, which beats the cost of capital",
-                      "There is not enough information without knowing the reinvestment rate"
-                    ],
-                    "question": "A project’s inflows compound to ZMW80 million by its final year, against an investment phase worth ZMW50 million today. The project runs for four years and the cost of capital is 14%. Should it be accepted?"
-                  },
-                  "blocks": [
-                    {
-                      "text": "Same ZMW24,000 project once more. The cost of capital is 10%, and the company can reinvest cash it receives at 12%. Compound each inflow forward to year 5 — a cash flow arriving in year 1 has four years left to grow, one arriving in year 5 has none.",
-                      "type": "p"
-                    },
-                    {
-                      "rows": [
-                        [
-                          "1",
-                          "7,800",
-                          "4 years",
-                          "12,273"
-                        ],
-                        [
-                          "2",
-                          "6,000",
-                          "3 years",
-                          "8,430"
-                        ],
-                        [
-                          "3",
-                          "4,200",
-                          "2 years",
-                          "5,268"
-                        ],
-                        [
-                          "4",
-                          "7,400",
-                          "1 year",
-                          "8,288"
-                        ],
-                        [
-                          "5",
-                          "9,200",
-                          "—",
-                          "9,200"
-                        ]
-                      ],
-                      "type": "table",
-                      "total": [
-                        "Future value of the return phase",
-                        "",
-                        "",
-                        "43,459"
-                      ],
-                      "columns": [
-                        {
-                          "label": "Year"
-                        },
-                        {
-                          "align": "right",
-                          "label": "Cash flow ZMW"
-                        },
-                        {
-                          "align": "right",
-                          "label": "Compounded at 12% for"
-                        },
-                        {
-                          "align": "right",
-                          "label": "Value at year 5 ZMW"
-                        }
-                      ]
-                    },
-                    {
-                      "text": "The investment phase is simply the ZMW24,000, already at year 0. So the whole project reduces to a single question: what annual rate turns ZMW24,000 today into ZMW43,459 in five years?",
-                      "type": "p"
-                    },
-                    {
-                      "text": "MIRR  =  ⁵√( 43,459 ÷ 24,000 )  −  1  =  12.6%",
-                      "type": "formula"
-                    },
-                    {
-                      "text": "12.6% is comfortably above the 10% cost of capital, so the project is accepted. Set the three answers side by side and the pattern is worth keeping.",
-                      "type": "p"
-                    },
-                    {
-                      "rows": [
-                        [
-                          "NPV at 10%",
-                          "ZMW1,967",
-                          "Accept — adds value"
-                        ],
-                        [
-                          "IRR",
-                          "13.12%",
-                          "Accept — but assumes reinvestment at 13.12%"
-                        ],
-                        [
-                          "MIRR at 12% reinvestment",
-                          "12.60%",
-                          "Accept — on an assumption the company can meet"
-                        ],
-                        [
-                          "Discounted payback",
-                          "4.66 years",
-                          "Fails a 4-year target"
-                        ]
-                      ],
-                      "type": "table",
-                      "columns": [
-                        {
-                          "label": "Measure"
-                        },
-                        {
-                          "align": "right",
-                          "label": "Result"
-                        },
-                        {
-                          "label": "Reads as"
-                        }
-                      ]
-                    },
-                    {
-                      "text": "MIRR comes in below IRR, and it will whenever the reinvestment rate is below the IRR. That gap is the size of IRR’s flattery. Where a project shows an IRR far above anything the company could realistically earn on spare cash, expect MIRR to be a good deal lower — and to be the number worth trusting.",
-                      "type": "p"
-                    },
-                    {
-                      "text": "MIRR is always the more honest percentage. NPV is still the decision.",
-                      "type": "callout"
-                    }
-                  ],
-                  "heading": "Working a MIRR"
+                  "text": "Cash dividend cover  =  FCFE ÷ D",
+                  "type": "formula",
+                  "where": [
+                    "FCFE = free cash flow to equity for the year",
+                    "D = dividends actually paid to shareholders in the year"
+                  ]
+                },
+                {
+                  "text": "A cover of 2 means the company generated twice the cash it handed out. Below 1 means it paid dividends it had not earned in cash, and funded the difference from reserves or from borrowing. The same company measured on earnings can look comfortable, because earnings never had the capital spending taken out of them.",
+                  "type": "p"
+                },
+                {
+                  "text": "Cash to the firm answers what the business generates. Cash to equity answers what the shareholders can actually be paid.",
+                  "type": "callout"
                 }
-              ]
+              ],
+              "heading": "From the firm to equity"
+            },
+            {
+              "id": "which-measure",
+              "check": {
+                "answer": 0,
+                "explain": "Shares are a claim on what is left after the lenders are paid, so the cash flow must be the one measured after debt service, and the rate must be the return shareholders require. Option 4 is a perfectly good working — it just values the whole firm, not the equity.",
+                "options": [
+                  "Free cash flow to equity, discounted at the cost of equity",
+                  "Free cash flow to the firm, discounted at the cost of equity",
+                  "Free cash flow to equity, discounted at the weighted average cost of capital",
+                  "Free cash flow to the firm, discounted at the weighted average cost of capital"
+                ],
+                "question": "A valuer is working out what Zambeef’s shares are worth. Which combination is right?"
+              },
+              "blocks": [
+                {
+                  "text": "Free cash flow does three jobs, and which of the two measures you reach for follows from the job in front of you.",
+                  "type": "p"
+                },
+                {
+                  "type": "ul",
+                  "items": [
+                    "Appraising a project — the free cash flows the project itself generates are what get discounted to find its net present value.",
+                    "Reading a company’s health — a business whose free cash flow has turned negative while its profit holds up is the classic early warning, which is why the measure is central to work on corporate failure and reconstruction.",
+                    "Valuing a business — the value of a company is the present value of the free cash flows it will produce, so this is where a share price comes from."
+                  ]
+                },
+                {
+                  "rows": [
+                    [
+                      "Is this project worth doing?",
+                      "To the firm",
+                      "Cost of capital (WACC)"
+                    ],
+                    [
+                      "What is the whole business worth?",
+                      "To the firm",
+                      "Cost of capital (WACC)"
+                    ],
+                    [
+                      "What are the shares worth?",
+                      "To equity",
+                      "Cost of equity"
+                    ],
+                    [
+                      "Can we sustain this dividend?",
+                      "To equity",
+                      "Not discounted"
+                    ]
+                  ],
+                  "type": "table",
+                  "columns": [
+                    {
+                      "label": "The question"
+                    },
+                    {
+                      "label": "The measure"
+                    },
+                    {
+                      "label": "Discounted at"
+                    }
+                  ]
+                },
+                {
+                  "text": "The pairing is not a convention to memorise — it is a matching rule. Cash that belongs to everybody is discounted at a rate that reflects what everybody demands. Cash that belongs to shareholders alone is discounted at what shareholders alone demand. Mixing them values a company at a number nobody could ever collect. Where those two rates come from is the whole of Lesson 2.",
+                  "type": "p"
+                }
+              ],
+              "heading": "Choosing between the two measures"
+            },
+            {
+              "id": "worked-example",
+              "check": {
+                "answer": 0,
+                "explain": "An extra ZMW40,000 tied up in stock and receivables is ZMW40,000 that did not reach anybody, so both measures drop by the full amount: the firm to ZMW165,000 and equity to ZMW140,000. Working capital is very much a cash item — it is cash sitting in the warehouse instead of the bank.",
+                "options": [
+                  "It falls to ZMW140,000",
+                  "It stays at ZMW180,000, because working capital is not a cash item",
+                  "It falls to ZMW165,000",
+                  "It falls to ZMW140,000 only if the company also borrows to fund the extra stock"
+                ],
+                "question": "Take the same figures, but suppose the increase in working capital had been ZMW90,000 instead of ZMW50,000. What happens to free cash flow to equity?"
+              },
+              "blocks": [
+                {
+                  "text": "A company reports the following for the year. Calculate its free cash flow to the firm and to equity.",
+                  "type": "p"
+                },
+                {
+                  "rows": [
+                    [
+                      "Operating profit",
+                      "300"
+                    ],
+                    [
+                      "Depreciation",
+                      "120"
+                    ],
+                    [
+                      "Tax paid",
+                      "140"
+                    ],
+                    [
+                      "Increase in working capital",
+                      "50"
+                    ],
+                    [
+                      "Capital expenditure replacing existing assets",
+                      "10"
+                    ],
+                    [
+                      "Capital expenditure on new investments",
+                      "15"
+                    ],
+                    [
+                      "Interest paid",
+                      "5"
+                    ],
+                    [
+                      "Loan repaid",
+                      "20"
+                    ]
+                  ],
+                  "type": "table",
+                  "columns": [
+                    {
+                      "label": "Extracted from the accounts"
+                    },
+                    {
+                      "align": "right",
+                      "label": "ZMW’000"
+                    }
+                  ]
+                },
+                {
+                  "text": "Work to the firm first, and leave the interest and the loan repayment out of it — they belong to the second stage.",
+                  "type": "p"
+                },
+                {
+                  "rows": [
+                    [
+                      "Operating profit (PBIT)",
+                      "300"
+                    ],
+                    [
+                      "Add back depreciation",
+                      "120"
+                    ],
+                    [
+                      "Less tax paid",
+                      "(140)"
+                    ],
+                    [
+                      "Operating cash flow",
+                      "280"
+                    ],
+                    [
+                      "Less replacement of non-current assets",
+                      "(10)"
+                    ],
+                    [
+                      "Less incremental non-current asset investment",
+                      "(15)"
+                    ],
+                    [
+                      "Less increase in working capital",
+                      "(50)"
+                    ]
+                  ],
+                  "type": "table",
+                  "total": [
+                    "Free cash flow to the firm",
+                    "205"
+                  ],
+                  "columns": [
+                    {
+                      "label": "Free cash flow to the firm"
+                    },
+                    {
+                      "align": "right",
+                      "label": "ZMW’000"
+                    }
+                  ],
+                  "subtotals": [
+                    3
+                  ]
+                },
+                {
+                  "text": "Now take the lenders out to reach the shareholders.",
+                  "type": "p"
+                },
+                {
+                  "note": "No new debt was raised this year, so there is nothing to add back.",
+                  "rows": [
+                    [
+                      "Free cash flow to the firm",
+                      "205"
+                    ],
+                    [
+                      "Less debt interest paid",
+                      "(5)"
+                    ],
+                    [
+                      "Less loan repaid",
+                      "(20)"
+                    ]
+                  ],
+                  "type": "table",
+                  "total": [
+                    "Free cash flow to equity",
+                    "180"
+                  ],
+                  "columns": [
+                    {
+                      "label": "Free cash flow to equity"
+                    },
+                    {
+                      "align": "right",
+                      "label": "ZMW’000"
+                    }
+                  ]
+                },
+                {
+                  "text": "Read what the two figures say. The business generated ZMW205,000 for everyone who funded it. After servicing its debt, ZMW180,000 of that belonged to shareholders — so a dividend of ZMW90,000 would be covered twice over, and a dividend of ZMW200,000 would have to come from somewhere other than this year’s trading.",
+                  "type": "p"
+                }
+              ],
+              "heading": "Worked example"
             }
-          }
-        ]
+          ]
+        }
+      },
+      {
+        "id": "npv-and-payback",
+        "label": "NPV & discounted payback",
+        "lesson": {
+          "title": "NPV and discounted payback",
+          "kicker": "Investment appraisal",
+          "sections": [
+            {
+              "id": "time-value",
+              "check": {
+                "answer": 0,
+                "explain": "500,000 × 0.751 = 375,500. Multiplying by the factor moves money backwards to today; dividing by it would move today’s money forward to year 3, which is the ZMW665,500 answer.",
+                "options": [
+                  "ZMW375,500",
+                  "ZMW500,000, because the money is certain",
+                  "ZMW665,500",
+                  "ZMW350,000"
+                ],
+                "question": "A project will pay ZMW500,000 in three years. The cost of capital is 10%. What is that worth today?"
+              },
+              "blocks": [
+                {
+                  "text": "ZMW1,000 in your hand today is worth more than ZMW1,000 promised in a year. You could put today’s money to work, and the promise might not be kept. Before you can add up cash flows that arrive in different years, you have to restate them all in today’s money.",
+                  "type": "p"
+                },
+                {
+                  "text": "That restatement is discounting, and the rate you discount at is the company’s cost of capital — what its investors demand for leaving their money in the business. Multiply a future cash flow by its discount factor and you have its present value.",
+                  "type": "p"
+                },
+                {
+                  "text": "Discount factor  =  1 ÷ (1 + r)ⁿ",
+                  "type": "formula",
+                  "where": [
+                    "r = the cost of capital, written as a decimal",
+                    "n = the number of years until the cash flow arrives"
+                  ]
+                },
+                {
+                  "text": "At a cost of capital of 10%, a kwacha due in one year is worth 1 ÷ 1.10 = 0.909 today, and one due in two years is worth 1 ÷ 1.10² = 0.826. The factor falls every year, which is the arithmetic saying what everyone already knows: the further away the money, the less you should pay for it now.",
+                  "type": "p"
+                },
+                {
+                  "note": "Cash at year 0 is already in today’s money, so its factor is 1.000.",
+                  "rows": [
+                    [
+                      "1",
+                      "0.909",
+                      "909"
+                    ],
+                    [
+                      "2",
+                      "0.826",
+                      "826"
+                    ],
+                    [
+                      "3",
+                      "0.751",
+                      "751"
+                    ],
+                    [
+                      "4",
+                      "0.683",
+                      "683"
+                    ],
+                    [
+                      "5",
+                      "0.621",
+                      "621"
+                    ]
+                  ],
+                  "type": "table",
+                  "columns": [
+                    {
+                      "label": "Year"
+                    },
+                    {
+                      "align": "right",
+                      "label": "Factor at 10%"
+                    },
+                    {
+                      "align": "right",
+                      "label": "What ZMW1,000 is worth today"
+                    }
+                  ]
+                }
+              ],
+              "heading": "Why a future kwacha is worth less"
+            },
+            {
+              "id": "npv",
+              "check": {
+                "answer": 0,
+                "explain": "When you must pick one, take the larger NPV — the objective is to add the most value, not the highest return per kwacha. Return per kwacha only becomes the deciding test when capital is rationed, which is a later step. And they cannot both be taken; they are mutually exclusive.",
+                "options": [
+                  "Project A, because it adds more value to the business",
+                  "Project B, because it earns more per kwacha invested",
+                  "Both, since both have positive NPVs",
+                  "Neither can be chosen without knowing the payback periods"
+                ],
+                "question": "Two mutually exclusive projects are appraised at the same cost of capital. Project A has an NPV of ZMW400,000; Project B has an NPV of ZMW250,000 on half the initial outlay. Which should the company take?"
+              },
+              "blocks": [
+                {
+                  "text": "Net present value is the sum of the present values of every cash flow a project causes, including the money you spend at the start. It answers one question: does this project make the owners of the business richer, and by how much in today’s money?",
+                  "type": "p"
+                },
+                {
+                  "text": "NPV  =  Σ  CFₙ ÷ (1 + r)ⁿ  −  I₀",
+                  "type": "formula",
+                  "where": [
+                    "CFₙ = the net cash flow the project generates in year n",
+                    "r = the cost of capital used to discount",
+                    "n = the year in which the cash flow arrives",
+                    "I₀ = the amount invested at the start, in year 0"
+                  ]
+                },
+                {
+                  "type": "ul",
+                  "items": [
+                    "A positive NPV means the project earns more than the cost of the money funding it. Accept it.",
+                    "A negative NPV means it earns less. The business would be better off leaving the money where it is.",
+                    "An NPV of zero means it earns exactly the required return — no better, no worse than the alternative."
+                  ]
+                },
+                {
+                  "text": "The number itself is meaningful, not just its sign. An NPV of ZMW1,967 says the project is worth ZMW1,967 more than it costs, in today’s money, after paying every provider of capital what they demanded.",
+                  "type": "p"
+                },
+                {
+                  "text": "NPV is the amount by which a project increases the value of the business, measured today.",
+                  "type": "callout"
+                }
+              ],
+              "heading": "Net present value"
+            },
+            {
+              "id": "npv-worked",
+              "check": {
+                "answer": 0,
+                "explain": "Year 0 is today. Discounting exists to bring future money back to the present, and this money is already there. Outflows in later years are discounted exactly like inflows.",
+                "options": [
+                  "Because it is already in today’s money, so there is nothing to discount",
+                  "Because outflows are never discounted, only inflows are",
+                  "Because the discount factor for the first year is always 1.000",
+                  "Because the project has not started earning, so the cost of capital does not yet apply"
+                ],
+                "question": "In the working above, why does the year 0 outflow carry a discount factor of 1.000?"
+              },
+              "blocks": [
+                {
+                  "text": "A project needs ZMW24,000 up front and will generate cash over five years. The cost of capital is 10%. Lay the years out in a column, discount each one, and add up.",
+                  "type": "p"
+                },
+                {
+                  "rows": [
+                    [
+                      "0",
+                      "(24,000)",
+                      "1.000",
+                      "(24,000)"
+                    ],
+                    [
+                      "1",
+                      "7,800",
+                      "0.909",
+                      "7,090"
+                    ],
+                    [
+                      "2",
+                      "6,000",
+                      "0.826",
+                      "4,956"
+                    ],
+                    [
+                      "3",
+                      "4,200",
+                      "0.751",
+                      "3,154"
+                    ],
+                    [
+                      "4",
+                      "7,400",
+                      "0.683",
+                      "5,054"
+                    ],
+                    [
+                      "5",
+                      "9,200",
+                      "0.621",
+                      "5,713"
+                    ]
+                  ],
+                  "type": "table",
+                  "total": [
+                    "NPV",
+                    "",
+                    "",
+                    "1,967"
+                  ],
+                  "columns": [
+                    {
+                      "label": "Year"
+                    },
+                    {
+                      "align": "right",
+                      "label": "Cash flow ZMW"
+                    },
+                    {
+                      "align": "right",
+                      "label": "Factor at 10%"
+                    },
+                    {
+                      "align": "right",
+                      "label": "Present value ZMW"
+                    }
+                  ]
+                },
+                {
+                  "text": "The NPV is positive, so the project is worth doing: it returns the ZMW24,000, pays the 10% the providers of capital require on it, and leaves ZMW1,967 of value over.",
+                  "type": "p"
+                },
+                {
+                  "text": "Notice how the answer is built. The initial outlay sits at year 0 at a factor of 1.000, because it is spent today and needs no discounting. Every other line is a forecast cash flow multiplied by its factor. There is no arithmetic in an NPV harder than that — the difficulty in an exam is always in deciding which cash flows belong in the table at all.",
+                  "type": "p"
+                }
+              ],
+              "heading": "Working an NPV"
+            },
+            {
+              "id": "discounted-payback",
+              "check": {
+                "answer": 0,
+                "explain": "The tests answer different questions. NPV asks whether the project is worth more than it costs; discounted payback asks how long the company is exposed before it gets its money back. A project can easily create value slowly.",
+                "options": [
+                  "It creates value, but ties the money up for longer than the company is willing to wait",
+                  "The NPV must be wrong, because a project cannot create value if it fails its payback target",
+                  "It should be rejected, because payback is the more reliable of the two tests",
+                  "The two tests always agree, so one of the calculations contains an error"
+                ],
+                "question": "The project above has a discounted payback of 4.66 years against a 4-year target, and an NPV of ZMW1,967. What does that tell you?"
+              },
+              "blocks": [
+                {
+                  "text": "The discounted payback period is how long the project takes to earn its money back in present-value terms — the point at which the discounted inflows have caught up with the initial cost. A project passes if it pays back within the company’s target, where the company has set one.",
+                  "type": "p"
+                },
+                {
+                  "text": "You find it by carrying the present values forward in a running total and watching for the year the balance turns positive.",
+                  "type": "p"
+                },
+                {
+                  "note": "The balance is still ZMW3,746 short at the end of year 4, and in surplus by the end of year 5 — so payback happens during year 5.",
+                  "rows": [
+                    [
+                      "0",
+                      "(24,000)",
+                      "(24,000)"
+                    ],
+                    [
+                      "1",
+                      "7,090",
+                      "(16,910)"
+                    ],
+                    [
+                      "2",
+                      "4,956",
+                      "(11,954)"
+                    ],
+                    [
+                      "3",
+                      "3,154",
+                      "(8,800)"
+                    ],
+                    [
+                      "4",
+                      "5,054",
+                      "(3,746)"
+                    ],
+                    [
+                      "5",
+                      "5,713",
+                      "1,967"
+                    ]
+                  ],
+                  "type": "table",
+                  "columns": [
+                    {
+                      "label": "Year"
+                    },
+                    {
+                      "align": "right",
+                      "label": "Present value ZMW"
+                    },
+                    {
+                      "align": "right",
+                      "label": "Cumulative PV ZMW"
+                    }
+                  ]
+                },
+                {
+                  "text": "To pin down where in that year, assume the year-5 cash arrives evenly and take the fraction you still needed.",
+                  "type": "p"
+                },
+                {
+                  "text": "DPP  =  A  +  (B ÷ C)",
+                  "type": "formula",
+                  "where": [
+                    "A = the last full year in which the cumulative balance is still negative",
+                    "B = the amount still outstanding at the end of year A, as a positive figure",
+                    "C = the present value of the cash flow arriving in the following year"
+                  ]
+                },
+                {
+                  "text": "Here that is 4 + (3,746 ÷ 5,713) = 4.66 years. Against a target of 4 years, the project fails — while its NPV said accept. The two tests disagree because they measure different things, and only one of them is about value.",
+                  "type": "p"
+                }
+              ],
+              "heading": "Discounted payback period"
+            },
+            {
+              "id": "choosing",
+              "check": {
+                "answer": 0,
+                "explain": "Once the outlay is recovered the method stops counting, so a long, highly profitable tail is worth nothing to it. Ignoring the time value of money is the weakness of ordinary payback — discounting is precisely what this version fixes.",
+                "options": [
+                  "It ignores every cash flow that arrives after the payback point",
+                  "It ignores the time value of money",
+                  "It cannot be used when a project has cash flows in more than one year",
+                  "It requires an estimate of the cost of capital, which NPV does not"
+                ],
+                "question": "What is the main weakness of discounted payback as an appraisal method?"
+              },
+              "blocks": [
+                {
+                  "text": "Discounted payback is a real improvement on ordinary payback, because it counts the cost of the money while the project is waiting to break even. It still has the flaw that ordinary payback has: it stops counting the moment the money is back.",
+                  "type": "p"
+                },
+                {
+                  "rows": [
+                    [
+                      "What it measures",
+                      "Value added, in today’s money",
+                      "Time until the outlay is recovered"
+                    ],
+                    [
+                      "Cash after the payback point",
+                      "Counted in full",
+                      "Ignored entirely"
+                    ],
+                    [
+                      "Answers",
+                      "Should we do this?",
+                      "How long are we exposed?"
+                    ],
+                    [
+                      "Decision rule",
+                      "Accept if positive",
+                      "Accept if within the target"
+                    ]
+                  ],
+                  "type": "table",
+                  "columns": [
+                    {
+                      "label": ""
+                    },
+                    {
+                      "label": "Net present value"
+                    },
+                    {
+                      "label": "Discounted payback"
+                    }
+                  ]
+                },
+                {
+                  "text": "Two projects can pay back on exactly the same day, and one of them can go on earning for another decade while the other stops dead. Payback cannot see the difference; NPV can. That is why NPV is the primary test and payback is a secondary one — a check on risk and liquidity rather than on whether the project is worth doing.",
+                  "type": "p"
+                },
+                {
+                  "text": "For a Zambian business the liquidity question is not a technicality. A firm carrying kwacha debt through a period of high interest rates may genuinely need its money back inside three years, whatever the NPV says about year eight.",
+                  "type": "p"
+                },
+                {
+                  "text": "NPV decides whether a project is worth doing. Payback decides whether the company can afford to wait.",
+                  "type": "callout"
+                }
+              ],
+              "heading": "What each test is good for"
+            }
+          ]
+        }
+      },
+      {
+        "id": "irr-and-mirr",
+        "label": "IRR & MIRR",
+        "lesson": {
+          "title": "IRR and MIRR",
+          "kicker": "Investment appraisal",
+          "sections": [
+            {
+              "id": "irr",
+              "check": {
+                "answer": 0,
+                "explain": "The NPV is zero at 9%, and NPV falls as the discount rate rises — so at 13% it must be below zero. The project earns less than the money funding it costs.",
+                "options": [
+                  "Reject it — its NPV at 13% must be negative",
+                  "Accept it — a positive IRR always means a project is worth doing",
+                  "Reject it, but only if the discounted payback also fails",
+                  "There is not enough information without knowing the size of the outlay"
+                ],
+                "question": "A conventional project has an IRR of 9%. The company’s cost of capital is 13%. What follows?"
+              },
+              "blocks": [
+                {
+                  "text": "The internal rate of return is the discount rate at which a project’s NPV is exactly zero — the rate at which the project just breaks even in present-value terms. It is a break-even test on the cost of money rather than on sales volume.",
+                  "type": "p"
+                },
+                {
+                  "text": "Because it is a rate, it comes with a decision rule that reads naturally to anyone running a business: borrow at 10%, earn 13%, take the project.",
+                  "type": "p"
+                },
+                {
+                  "type": "ul",
+                  "items": [
+                    "For a conventional project — money out first, then a run of inflows — accept it if the IRR is above the cost of capital.",
+                    "Reject it if the IRR is below the cost of capital, because the project earns less than the money funding it costs."
+                  ]
+                },
+                {
+                  "text": "That readability is the whole appeal of IRR, and it is why boards ask for it. A percentage can be compared against the bank’s lending rate without any further explanation, where an NPV of ZMW1,967 needs someone to say what it is 1,967 of.",
+                  "type": "p"
+                }
+              ],
+              "heading": "The internal rate of return"
+            },
+            {
+              "id": "interpolation",
+              "check": {
+                "answer": 0,
+                "explain": "5% + [32,000 ÷ (32,000 + 78,000)] × 5% = 5% + 1.45% = 6.45%. The NPV falls away steeply here, so the crossing point sits much closer to the lower rate than to the midpoint of 7.5%.",
+                "options": [
+                  "6.45%",
+                  "8.54%",
+                  "7.50%",
+                  "5.29%"
+                ],
+                "question": "A project has an NPV of ZMW32,000 at 5% and an NPV of (ZMW78,000) at 10%. What is its IRR?"
+              },
+              "blocks": [
+                {
+                  "text": "There is no way to solve for IRR directly by hand on a project with several years of cash flows. Instead you calculate the NPV at two rates — one that leaves it positive and one that pushes it negative — and read off the point in between where the line crosses zero.",
+                  "type": "p"
+                },
+                {
+                  "text": "Take the same ZMW24,000 project from the last step. At 10% its NPV was ZMW1,967. Run it again at 14%.",
+                  "type": "p"
+                },
+                {
+                  "rows": [
+                    [
+                      "0",
+                      "(24,000)",
+                      "1.000",
+                      "(24,000)",
+                      "1.000",
+                      "(24,000)"
+                    ],
+                    [
+                      "1",
+                      "7,800",
+                      "0.909",
+                      "7,090",
+                      "0.877",
+                      "6,841"
+                    ],
+                    [
+                      "2",
+                      "6,000",
+                      "0.826",
+                      "4,956",
+                      "0.769",
+                      "4,614"
+                    ],
+                    [
+                      "3",
+                      "4,200",
+                      "0.751",
+                      "3,154",
+                      "0.675",
+                      "2,835"
+                    ],
+                    [
+                      "4",
+                      "7,400",
+                      "0.683",
+                      "5,054",
+                      "0.592",
+                      "4,381"
+                    ],
+                    [
+                      "5",
+                      "9,200",
+                      "0.621",
+                      "5,713",
+                      "0.519",
+                      "4,775"
+                    ]
+                  ],
+                  "type": "table",
+                  "total": [
+                    "NPV",
+                    "",
+                    "",
+                    "1,967",
+                    "",
+                    "(554)"
+                  ],
+                  "columns": [
+                    {
+                      "label": "Year"
+                    },
+                    {
+                      "align": "right",
+                      "label": "Cash flow ZMW"
+                    },
+                    {
+                      "align": "right",
+                      "label": "Factor at 10%"
+                    },
+                    {
+                      "align": "right",
+                      "label": "PV ZMW"
+                    },
+                    {
+                      "align": "right",
+                      "label": "Factor at 14%"
+                    },
+                    {
+                      "align": "right",
+                      "label": "PV ZMW"
+                    }
+                  ]
+                },
+                {
+                  "text": "The NPV crossed from positive to negative somewhere between the two rates, so that is where the IRR sits.",
+                  "type": "p"
+                },
+                {
+                  "text": "IRR  =  A  +  [ a ÷ (a − b) ]  ×  (B − A)",
+                  "type": "formula",
+                  "where": [
+                    "A = the lower discount rate, the one giving a positive NPV",
+                    "a = the NPV at rate A",
+                    "B = the higher discount rate, the one giving a negative NPV",
+                    "b = the NPV at rate B, which is a negative figure"
+                  ]
+                },
+                {
+                  "text": "Watch the sign. Because b is negative, subtracting it adds: a − b = 1,967 − (−554) = 2,521. That denominator is the total distance the NPV travelled between the two rates, and the numerator is how much of that distance had been covered by the time it reached zero.",
+                  "type": "p"
+                },
+                {
+                  "text": "IRR  =  10%  +  [ 1,967 ÷ 2,521 ]  ×  4%  =  13.12%",
+                  "type": "formula"
+                },
+                {
+                  "text": "Against a 10% cost of capital the project is accepted, which agrees with the positive NPV — as it must, since both are reading the same cash flows.",
+                  "type": "p"
+                },
+                {
+                  "text": "Interpolation draws a straight line between two NPVs. The real relationship is a curve, so the answer is close rather than exact — and the further apart the two rates, the rougher it gets.",
+                  "type": "callout"
+                }
+              ],
+              "heading": "Finding IRR by interpolation"
+            },
+            {
+              "id": "irr-problems",
+              "check": {
+                "answer": 0,
+                "explain": "Each change of sign in the cash flows creates the possibility of another rate at which NPV equals zero. With two changes there can be two IRRs, and 'accept if the IRR exceeds the cost of capital' cannot be applied to two different numbers. NPV handles the same cash flows without any difficulty.",
+                "options": [
+                  "The cash flows change direction twice, so the project can have more than one IRR and the accept rule breaks down",
+                  "The rehabilitation cost cannot be discounted, because it is an outflow rather than an inflow",
+                  "IRR cannot be calculated for projects lasting more than five years",
+                  "The IRR will be understated, because the final outflow is discounted most heavily"
+                ],
+                "question": "A copper project has an outflow in year 0, inflows in years 1 to 8, and a large rehabilitation outflow in year 9. What is the specific difficulty this creates for IRR?"
+              },
+              "blocks": [
+                {
+                  "text": "IRR is the most widely quoted appraisal figure and the least reliable. Three problems, in rising order of seriousness.",
+                  "type": "p"
+                },
+                {
+                  "text": "The decision rule is not always clear cut",
+                  "type": "h2"
+                },
+                {
+                  "text": "A project whose cash flows change direction more than once — an outflow, then inflows, then a large closure or restoration cost at the end — can have two IRRs, or more, or none at all. A mine with a rehabilitation obligation in its final year is the textbook case, and it is a common shape in Zambia. Told that a project has IRRs of 6% and 31%, the rule to accept when the IRR beats the cost of capital simply has no answer.",
+                  "type": "p"
+                },
+                {
+                  "text": "It is not the return on the project",
+                  "type": "h2"
+                },
+                {
+                  "text": "IRR is routinely read as the return the project earns. It is not. The calculation assumes every cash flow the project throws off is immediately reinvested at the IRR itself for the rest of the project’s life. A project showing an IRR of 30% only earns 30% if the company really can find 30% homes for the cash as it arrives — and a company that could do that reliably would not need the project.",
+                  "type": "p"
+                },
+                {
+                  "text": "It does not compare projects",
+                  "type": "h2"
+                },
+                {
+                  "text": "Because two projects can have different lives, different sizes and different reinvestment assumptions buried in their own IRRs, ranking them by IRR can put the wrong one first. A small project with a spectacular percentage can beat a large one that adds far more value, and the percentage gives you no way to see it.",
+                  "type": "p"
+                },
+                {
+                  "text": "Where NPV and IRR disagree about which project to take, NPV is right. IRR is reported because it communicates well, not because it decides well.",
+                  "type": "callout"
+                }
+              ],
+              "heading": "Where IRR misleads"
+            },
+            {
+              "id": "mirr",
+              "check": {
+                "answer": 0,
+                "explain": "The reinvestment assumption is the flaw. A project with a 30% IRR only delivers 30% if every kwacha it releases can be put back to work at 30%, which is rarely true. MIRR makes you state the achievable rate instead.",
+                "options": [
+                  "IRR assumes cash flows are reinvested at the IRR itself; MIRR uses a reinvestment rate the company can actually achieve",
+                  "IRR ignores the time value of money, while MIRR discounts properly",
+                  "IRR cannot handle an initial outflow, whereas MIRR can",
+                  "IRR gives an answer in kwacha, while MIRR gives a percentage"
+                ],
+                "question": "What does MIRR fix that IRR gets wrong?"
+              },
+              "blocks": [
+                {
+                  "text": "MIRR keeps what is useful about IRR — a single percentage you can hold against the cost of borrowing — while removing the assumption that broke it. Instead of pretending cash is reinvested at the IRR, you state the rate at which the company can genuinely reinvest, and build the answer on that.",
+                  "type": "p"
+                },
+                {
+                  "text": "The method collapses the project into two numbers: what it costs today, and what it will be worth at the end.",
+                  "type": "p"
+                },
+                {
+                  "type": "ul",
+                  "items": [
+                    "Take every outflow and discount it back to year 0 at the cost of capital. That is the investment phase, PVCF.",
+                    "Take every inflow and compound it forward to the final year at the reinvestment rate. That is the return phase, FVCF.",
+                    "Find the annual rate that grows PVCF into FVCF over the project’s life.",
+                    "Accept the project if that rate exceeds the cost of capital."
+                  ]
+                },
+                {
+                  "text": "MIRR  =  ⁿ√( FVCF ÷ PVCF )  −  1",
+                  "type": "formula",
+                  "where": [
+                    "FVCF = the future value of the return phase, compounded to the final year at the reinvestment rate",
+                    "PVCF = the present value of the investment phase, discounted at the cost of capital",
+                    "n = the life of the project, in years"
+                  ]
+                },
+                {
+                  "text": "Two different rates appear in one calculation, and that is deliberate rather than sloppy. Money the company spends is funded at its cost of capital; money the company receives is put to work at whatever it can actually earn. Those are genuinely different rates, and IRR’s mistake was assuming they were the same.",
+                  "type": "p"
+                }
+              ],
+              "heading": "The modified internal rate of return"
+            },
+            {
+              "id": "mirr-worked",
+              "check": {
+                "answer": 0,
+                "explain": "⁴√(80 ÷ 50) − 1 = 12.5%, below the 14% cost of capital, so reject. The ZMW30 million of growth looks generous until you notice it took four years to earn — which is exactly what turning it into an annual rate is for. The reinvestment rate is not needed separately; it is already inside the ZMW80 million.",
+                "options": [
+                  "No — the MIRR is about 12.5%, which is below the 14% cost of capital",
+                  "Yes — the MIRR is about 12.5%, and the project returns ZMW30 million more than it cost",
+                  "Yes — the MIRR is about 16%, which beats the cost of capital",
+                  "There is not enough information without knowing the reinvestment rate"
+                ],
+                "question": "A project’s inflows compound to ZMW80 million by its final year, against an investment phase worth ZMW50 million today. The project runs for four years and the cost of capital is 14%. Should it be accepted?"
+              },
+              "blocks": [
+                {
+                  "text": "Same ZMW24,000 project once more. The cost of capital is 10%, and the company can reinvest cash it receives at 12%. Compound each inflow forward to year 5 — a cash flow arriving in year 1 has four years left to grow, one arriving in year 5 has none.",
+                  "type": "p"
+                },
+                {
+                  "rows": [
+                    [
+                      "1",
+                      "7,800",
+                      "4 years",
+                      "12,273"
+                    ],
+                    [
+                      "2",
+                      "6,000",
+                      "3 years",
+                      "8,430"
+                    ],
+                    [
+                      "3",
+                      "4,200",
+                      "2 years",
+                      "5,268"
+                    ],
+                    [
+                      "4",
+                      "7,400",
+                      "1 year",
+                      "8,288"
+                    ],
+                    [
+                      "5",
+                      "9,200",
+                      "—",
+                      "9,200"
+                    ]
+                  ],
+                  "type": "table",
+                  "total": [
+                    "Future value of the return phase",
+                    "",
+                    "",
+                    "43,459"
+                  ],
+                  "columns": [
+                    {
+                      "label": "Year"
+                    },
+                    {
+                      "align": "right",
+                      "label": "Cash flow ZMW"
+                    },
+                    {
+                      "align": "right",
+                      "label": "Compounded at 12% for"
+                    },
+                    {
+                      "align": "right",
+                      "label": "Value at year 5 ZMW"
+                    }
+                  ]
+                },
+                {
+                  "text": "The investment phase is simply the ZMW24,000, already at year 0. So the whole project reduces to a single question: what annual rate turns ZMW24,000 today into ZMW43,459 in five years?",
+                  "type": "p"
+                },
+                {
+                  "text": "MIRR  =  ⁵√( 43,459 ÷ 24,000 )  −  1  =  12.6%",
+                  "type": "formula"
+                },
+                {
+                  "text": "12.6% is comfortably above the 10% cost of capital, so the project is accepted. Set the three answers side by side and the pattern is worth keeping.",
+                  "type": "p"
+                },
+                {
+                  "rows": [
+                    [
+                      "NPV at 10%",
+                      "ZMW1,967",
+                      "Accept — adds value"
+                    ],
+                    [
+                      "IRR",
+                      "13.12%",
+                      "Accept — but assumes reinvestment at 13.12%"
+                    ],
+                    [
+                      "MIRR at 12% reinvestment",
+                      "12.60%",
+                      "Accept — on an assumption the company can meet"
+                    ],
+                    [
+                      "Discounted payback",
+                      "4.66 years",
+                      "Fails a 4-year target"
+                    ]
+                  ],
+                  "type": "table",
+                  "columns": [
+                    {
+                      "label": "Measure"
+                    },
+                    {
+                      "align": "right",
+                      "label": "Result"
+                    },
+                    {
+                      "label": "Reads as"
+                    }
+                  ]
+                },
+                {
+                  "text": "MIRR comes in below IRR, and it will whenever the reinvestment rate is below the IRR. That gap is the size of IRR’s flattery. Where a project shows an IRR far above anything the company could realistically earn on spare cash, expect MIRR to be a good deal lower — and to be the number worth trusting.",
+                  "type": "p"
+                },
+                {
+                  "text": "MIRR is always the more honest percentage. NPV is still the decision.",
+                  "type": "callout"
+                }
+              ],
+              "heading": "Working a MIRR"
+            }
+          ]
+        }
       }
     ]
   }

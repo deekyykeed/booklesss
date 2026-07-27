@@ -149,7 +149,9 @@ export function HomeView({
       {/* ---- how the studying is going ---- */}
       <section className="mt-6">
         <h2 className="dash-heading">Your studying</h2>
-        <div className="mt-2.5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {/* Tighter gutter on phones so each tile keeps its width at two-up;
+            the air lives above and below the band, not between the tiles. */}
+        <div className="mt-4 grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-3">
           <Stat
             label="Current streak"
             value={String(streak)}
@@ -195,7 +197,7 @@ export function HomeView({
         {/* Full width under the tiles: the tiles are today's state, this is the
             shape of it over time. Only reading inside a lesson is timed, so a
             flat stretch means nothing was read, not that the chart is broken. */}
-        <div className="dash-card squircle mt-3">
+        <div className="dash-card squircle mt-5">
           <div className="flex items-baseline justify-between gap-3">
             <h3 className="font-display text-[15px] font-semibold leading-tight text-ink">Time studied</h3>
             <p className="shrink-0 text-[12px] text-placeholder">
