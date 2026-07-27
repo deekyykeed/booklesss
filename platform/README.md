@@ -15,10 +15,28 @@ Recreated pixel-faithfully from the Framer source on a hand-tuned, static-first 
 
 | Route | Surface |
 |-------|---------|
-| `/` | Lesson reader, showing the default step (`what-is-economics`) |
+| `/` | Student dashboard — progress, the next step, the course unit by unit |
 | `/[...slug]` | One prerendered route per lesson, e.g. `/microeconomics/supply-demand/law-of-demand` |
 | `/sign-in`, `/sign-up` | Clerk auth (only when Clerk is configured — see below) |
 | `/page`, `/old-home` | Parked scratch pages from the earlier dashboard build |
+
+## The dashboard (`/`)
+
+The student's index: overall completion, the one step to open next, the course
+unit by unit, and a short queue. It shares the reader's chrome — same header,
+same course nav — but has no right rail, since "on this page" and the step
+composer are both about a step and there isn't one here. That's what
+`MobileNavProvider hasRightPanel={false}` and `.content-frame.no-rightbar` do:
+hide the rail's toggle, stop a left-swipe uncovering an empty drawer, and give
+the content back the gutter.
+
+Everything on it derives from the same checkpoint store the reader writes to —
+no second source of truth, and no new state. "Next" prefers a step you've
+already started over an untouched one, so you finish what you opened.
+
+There is deliberately no "recently studied": the store records *which*
+checkpoints are done, not *when*, so any recency claim would be invented.
+Adding timestamps is a change to `lib/progress.tsx`, not to the dashboard.
 
 ## Step progress
 

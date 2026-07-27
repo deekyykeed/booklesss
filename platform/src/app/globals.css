@@ -292,6 +292,10 @@
     .content-frame {
       padding-right: var(--rightbar-w);
     }
+    /* Surfaces with no right rail (the dashboard) keep that gutter. */
+    .content-frame.no-rightbar {
+      padding-right: 0;
+    }
     .app-shell[data-right-collapsed] .content-frame {
       padding-right: 0;
     }
@@ -533,6 +537,93 @@
     .lesson-fade {
       animation: none;
     }
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Student dashboard ("/")
+   *
+   * Same material as the reader's own surfaces — white over the drifting
+   * backdrop, one hairline, no heavy shadow — so the index reads as part of
+   * the app rather than a separate marketing page.
+   * ------------------------------------------------------------------ */
+  .dash-heading {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--color-muted);
+  }
+  .dash-card {
+    padding: 18px;
+    border: 1px solid var(--color-line);
+    border-radius: 18px;
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 1px 1px -0.5px rgba(0, 0, 0, 0.05);
+  }
+  .dash-stat {
+    padding: 14px;
+    border: 1px solid var(--color-line);
+    border-radius: 14px;
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+  /* Whole card is the link, so the target is the card and not just its title. */
+  .dash-unit {
+    display: block;
+    padding: 15px;
+    border: 1px solid var(--color-line);
+    border-radius: 16px;
+    background-color: rgba(255, 255, 255, 0.8);
+    transition: border-color 160ms ease, background-color 160ms ease;
+  }
+  .dash-unit:hover {
+    border-color: var(--color-line-2);
+    background-color: #ffffff;
+  }
+  .dash-bar {
+    position: relative;
+    height: 5px;
+    border-radius: 999px;
+    background-color: rgba(0, 0, 0, 0.07);
+    overflow: hidden;
+  }
+  .dash-bar-fill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background-color: var(--color-brand);
+    transition: width 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .dash-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    transition: border-color 160ms ease, background-color 160ms ease;
+  }
+  .dash-row:hover {
+    border-color: var(--color-line);
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+  .dash-cta {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 6px;
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 12px;
+    background-color: var(--color-btn);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: #ffffff;
+    transition: background-color 160ms ease;
+  }
+  .dash-cta:hover {
+    background-color: #000000;
   }
 
   /* Placeholder for the account control while Clerk's script loads. Holds the

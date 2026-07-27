@@ -135,6 +135,33 @@ export function checkpointsFor(lessonId: string): string[] {
   return courseIndex().lessons.get(lessonId)?.sections.map((s) => s.id) ?? [];
 }
 
+/** Every lesson id beneath a nav node, in reading order. */
+export function lessonsUnder(nodeId: string): string[] {
+  const find = (list: NavNode[]): NavNode | null => {
+    for (const n of list) {
+      if (n.id === nodeId) return n;
+      const hit = n.children ? find(n.children) : null;
+      if (hit) return hit;
+    }
+    return null;
+  };
+  const out: string[] = [];
+  const collect = (n: NavNode) => {
+    if (n.lesson) out.push(n.id);
+    n.children?.forEach(collect);
+  };
+  const node = find(COURSE);
+  if (node) collect(node);
+  return out;
+}
+
+/** Every checkpoint in the course — the denominator for overall progress. */
+export function totalCheckpoints(): number {
+  let n = 0;
+  for (const id of courseIndex().idToPath.keys()) n += checkpointsFor(id).length;
+  return n;
+}
+
 /** True when any of the lesson's sections carries a comprehension check. */
 export function hasChecks(lessonId: string): boolean {
   return !!courseIndex().lessons.get(lessonId)?.sections.some((s) => s.check);
