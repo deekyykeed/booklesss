@@ -14,7 +14,24 @@ export type Block =
   | { type: "callout"; text: string }
   | { type: "playground"; code: string };
 
-export type Section = { id: string; heading: string; blocks: Block[] };
+/* A section's comprehension check. Answering it correctly is what ticks that
+ * checkpoint — the point being that a step is completed by demonstrating the
+ * idea, not by asserting you read it.
+ *
+ * Optional on purpose: a section without one falls back to a plain "mark as
+ * done" tick, so questions can be written gradually without the reader caring
+ * which sections have them yet. */
+export type Check = {
+  question: string;
+  /** Two to four choices; order is as authored. */
+  options: string[];
+  /** Index into `options`. */
+  answer: number;
+  /** Why the right answer is right — shown after answering, right or wrong. */
+  explain: string;
+};
+
+export type Section = { id: string; heading: string; blocks: Block[]; check?: Check };
 export type Lesson = { title: string; kicker?: string; sections: Section[] };
 
 export type NavNode = {
@@ -116,6 +133,11 @@ export function allLessonSlugs(): string[][] {
 /** Checkpoint ids for a lesson (its section ids), or [] if unknown. */
 export function checkpointsFor(lessonId: string): string[] {
   return courseIndex().lessons.get(lessonId)?.sections.map((s) => s.id) ?? [];
+}
+
+/** True when any of the lesson's sections carries a comprehension check. */
+export function hasChecks(lessonId: string): boolean {
+  return !!courseIndex().lessons.get(lessonId)?.sections.some((s) => s.check);
 }
 
 /** Every lesson id in reading order — the order they appear in the nav tree. */

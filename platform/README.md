@@ -23,10 +23,50 @@ Recreated pixel-faithfully from the Framer source on a hand-tuned, static-first 
 ## Step progress
 
 Each step's **checkpoints are its sections** — nothing extra to author, so adding
-a section adds a checkpoint. Ticking the checkpoint at the end of a section fills
-that step's completion ring, and the last tick completes the step. The same ring
+a section adds a checkpoint. Clearing the checkpoint at the end of a section fills
+that step's completion ring, and the last one completes the step. The same ring
 appears beside the step in the sidebar, in the right panel header, and on the
 closing card of the step.
+
+### Comprehension checks
+
+A checkpoint is cleared by **answering a question about the section**, not by
+saying you read it. Give a section a `check` and its checkpoint opens that
+question instead of ticking:
+
+```jsonc
+{
+  "id": "key-ideas",
+  "heading": "Key ideas",
+  "blocks": [ /* … */ ],
+  "check": {
+    "question": "Opportunity cost is the value of what?",
+    "options": ["Everything you didn't choose, added together.",
+                "The next best thing you gave up.",
+                "The money you actually handed over."],
+    "answer": 1,                     // index into options
+    "explain": "Only the single best alternative counts — …"
+  }
+}
+```
+
+A **first** wrong answer marks only what you picked and sends you back to the
+text; it deliberately does not show which option was right, or "try again" would
+just mean clicking the green one. A **second** miss reveals the answer and the
+explanation, and you still have to select it to clear the checkpoint. Escape or
+Cancel closes without clearing anything, so the tick is always earned.
+
+`check` is optional — a section without one keeps the plain self-marked tick, so
+questions can be rolled out gradually. Where a step has any checks, the "Mark all
+done" shortcut disappears (it would be a skip button).
+
+**Authoring:** `check` lives inside the `sections` JSONB, which `gen-course.mjs`
+copies verbatim, so once a question is in Supabase it flows through on its own.
+Until then it exists only in the committed `course-data.json` — and a regenerate
+would wipe it. So `gen:course` **carries over any check the incoming data
+doesn't have** and logs how many it kept. Supabase always wins where it has one;
+this only fills gaps. Deleting a question therefore means deleting it in both
+places.
 
 Progress lives in `src/lib/progress.tsx` — a `useSyncExternalStore` store over
 localStorage, so it survives reloads and doesn't break server rendering. It is
