@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useMemo } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { COURSES } from "@/lib/courses";
 import { checkpointsFor, labelFor, pathForId } from "@/lib/course";
 import { isStudyDay, streakSeries, studyHistory, useProgress } from "@/lib/progress";
@@ -307,49 +307,64 @@ function MedalGlyph() {
   );
 }
 
-/* The tile's own graph: last 14 days of the stat, gradient wash under a
- * smooth line (same monotone-cubic as the big chart, so a sparkline can't
- * overshoot its data either), peak day marked with a dot on a hairline and
- * labelled with its value. Decorative supplement — the numbers it summarises
- * are the text beside it. */
+/* The tile's own graph — the card's backdrop, not a figure beside the
+ * number. Anchored to the bottom edge and spanning the full card width,
+ * behind the text, at a fraction of the ink it had as a foreground element:
+ * the line carries the shape, the wash gives it a floor, and nothing is
+ * labelled — it's atmosphere with the true curve, and the numbers in front
+ * are the data. Same monotone-cubic as the big chart, so even the backdrop
+ * can't overshoot what happened.
+ *
+ * Width is measured (ResizeObserver) rather than stretched through a
+ * viewBox — preserveAspectRatio="none" would distort the stroke. */
 function Spark({ series, tone }: { series: number[]; tone: string }) {
   const id = useId();
-  const W = 104;
-  const H = 58;
-  const TOP = 16; // room for the peak label
-  const max = Math.max(...series);
-  if (series.length < 2 || max <= 0) return <span aria-hidden="true" style={{ width: W }} className="shrink-0" />;
+  const box = useRef<HTMLDivElement>(null);
+  const [w, setW] = useState(0);
 
+  useEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      const next = Math.round(entry.contentRect.width);
+      if (next > 0) setW(next);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const H = 62;
+  const TOP = 6;
+  const max = Math.max(...series);
   const n = series.length;
-  const pts = series.map((v, i) => ({
-    x: 2 + (i * (W - 4)) / (n - 1),
-    y: TOP + (1 - v / max) * (H - TOP - 2),
-  }));
-  const line = smoothPath(pts);
-  const area = `${line} L${pts[n - 1].x.toFixed(1)} ${H} L${pts[0].x.toFixed(1)} ${H} Z`;
-  const peak = series.indexOf(max);
-  const labelX = Math.min(Math.max(pts[peak].x, 12), W - 12);
 
   return (
-    <svg width={W} height={H} aria-hidden="true" className="shrink-0">
-      <defs>
-        <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor={tone} stopOpacity="0.22" />
-          <stop offset="1" stopColor={tone} stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path d={area} fill={`url(#${id})`} />
-      <line x1={pts[peak].x} x2={pts[peak].x} y1={pts[peak].y} y2={H - 1} stroke="var(--color-line-2)" strokeWidth="1" />
-      <path d={line} fill="none" stroke={tone} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-      <circle cx={pts[peak].x} cy={pts[peak].y} r="3.5" fill={tone} stroke="#ffffff" strokeWidth="2" />
-      <text x={labelX} y={10.5} textAnchor="middle" className="fill-[var(--color-ink)] text-[10px] font-semibold">
-        {max}
-      </text>
-    </svg>
+    <div ref={box} aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0" style={{ height: H }}>
+      {w > 0 && n > 1 && max > 0 && (() => {
+        const pts = series.map((v, i) => ({
+          x: (i * w) / (n - 1),
+          y: TOP + (1 - v / max) * (H - TOP),
+        }));
+        const line = smoothPath(pts);
+        const area = `${line} L${w} ${H} L0 ${H} Z`;
+        return (
+          <svg width={w} height={H} className="block">
+            <defs>
+              <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stopColor={tone} stopOpacity="0.10" />
+                <stop offset="1" stopColor={tone} stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            <path d={area} fill={`url(#${id})`} />
+            <path d={line} fill="none" stroke={tone} strokeOpacity="0.38" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+          </svg>
+        );
+      })()}
+    </div>
   );
 }
 
-/** Week-over-week movement, phrased like the reference: a percentage when
+/** Week-over-week/** Week-over-week movement, phrased like the reference: a percentage when
  *  last week gives a denominator, the raw count when it doesn't. Measured
  *  both sides — never a projection. */
 function weekDelta(cur: number, prev: number): { text: string; dir: 1 | 0 | -1 } {
@@ -383,29 +398,30 @@ function Stat({
 }) {
   return (
     <div className="dash-stat squircle">
-      {/* Title and mark share the top row, both hanging from the card's top
-          edge — the mark doesn't float in the gap, it captions the title. */}
-      <div className="flex items-start justify-between gap-2">
-        <p className="dash-stat-label">{label}</p>
-        <span className="shrink-0 text-ink">{icon}</span>
-      </div>
-      <div className="mt-4 flex items-end justify-between gap-3">
-        <p className="flex min-w-0 items-baseline gap-1.5 pb-1">
+      <Spark series={series} tone={tone} />
+      {/* Everything readable sits above the backdrop. */}
+      <div className="relative">
+        {/* Title and mark share the top row, both hanging from the card's top
+            edge — the mark captions the title. */}
+        <div className="flex items-start justify-between gap-2">
+          <p className="dash-stat-label">{label}</p>
+          <span className="shrink-0 text-ink">{icon}</span>
+        </div>
+        <p className="mt-4 flex items-baseline gap-1.5">
           <span className="dash-stat-value">{value}</span>
           {unit && <span className="dash-stat-unit">{unit}</span>}
         </p>
-        <Spark series={series} tone={tone} />
+        {/* No icon here — the percentage's colour is the direction. */}
+        <p className="dash-stat-foot">
+          <span
+            className="dash-stat-lead"
+            style={{ color: delta.dir > 0 ? "#17754d" : delta.dir < 0 ? "var(--color-danger)" : "var(--color-muted)" }}
+          >
+            {delta.text}
+          </span>
+          <span className="truncate">last week</span>
+        </p>
       </div>
-      {/* No icon here — the percentage's colour is the direction. */}
-      <p className="dash-stat-foot">
-        <span
-          className="dash-stat-lead"
-          style={{ color: delta.dir > 0 ? "#17754d" : delta.dir < 0 ? "var(--color-danger)" : "var(--color-muted)" }}
-        >
-          {delta.text}
-        </span>
-        <span className="truncate">last week</span>
-      </p>
     </div>
   );
 }

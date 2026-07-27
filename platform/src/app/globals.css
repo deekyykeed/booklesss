@@ -679,6 +679,10 @@
      Proportions taken from the reference: a plainly-set dark label, a value
      that dominates the card, and a footer of outline-chip + figure + tail. */
   .dash-stat {
+    /* relative + hidden: the sparkline is an absolutely-positioned backdrop
+       anchored to the bottom edge, clipped by the card's own corners. */
+    position: relative;
+    overflow: hidden;
     padding: 17px 17px 15px;
     border: 1px solid var(--color-line);
     border-radius: 24px;
