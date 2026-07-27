@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { COURSES } from "@/lib/courses";
-import { checkpointsFor, labelFor, pathForId } from "@/lib/course";
+import { checkpointsFor, labelFor, lessonsUnder } from "@/lib/course";
 import { isStudyDay, streakSeries, studyHistory, useProgress } from "@/lib/progress";
-import { CompletionRing } from "@/components/reader/CompletionRing";
+import { CourseMark } from "./course-glyphs";
 import { smoothPath, StudyChart } from "./StudyChart";
 
 
@@ -39,6 +39,15 @@ const TONE = {
 /** The Time studied card's hue — the same green its line is drawn with
  *  (StudyChart's LINE), so the mark and the plot agree. */
 const CHART_TONE = "#17754d";
+
+/** One hue per course, carried by the card's gradient, mark and sparkline.
+ *  Keyed by slug like CourseGlyph — a new course gets the fallback the day
+ *  it's seeded, and picking its colour is a one-line change here. */
+const COURSE_TONE: Record<string, string> = {
+  economics: "#2a78d6",
+  "corporate-finance": "#17754d",
+};
+const COURSE_TONE_FALLBACK = "#4a3aa7";
 
 /** The reference's anchored delta — "+20% · 25 last week": the movement AND
  *  the number it moved from, so the percentage explains itself. Falls back to
@@ -157,8 +166,10 @@ export function HomeView({
         {/* Full width above the tiles: the shape of the studying over time
             leads, the tiles below are today's state. Only reading inside a
             lesson is timed, so a flat stretch means nothing was read, not
-            that the chart is broken. */}
-        <div className="dash-card squircle mt-4">
+            that the chart is broken. On phones the card wears the tiles'
+            14px padding so the band reads as one set; desktop keeps the
+            card's 18px. */}
+        <div className="dash-card squircle mt-4 p-3.5 lg:p-[18px]">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <span style={{ color: CHART_TONE }}>
@@ -175,9 +186,10 @@ export function HomeView({
           </div>
         </div>
 
-        {/* Tighter gutter on phones so each tile keeps its width at two-up;
-            the air lives above and below the band, not between the tiles. */}
-        <div className="mt-5 grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-3">
+        {/* Tighter gutter on phones so each tile keeps its width at two-up.
+            The chart-to-tiles gap matches that gutter on phones — one grid
+            rhythm for the whole band — and opens back up on desktop. */}
+        <div className="mt-2 grid grid-cols-2 gap-2 lg:mt-5 lg:grid-cols-4 lg:gap-3">
           <Stat
             hydrated={hydrated}
             label="Current streak"
@@ -228,55 +240,108 @@ export function HomeView({
       {/* ---- the courses themselves ---- */}
       <section id="courses" className="mt-8 scroll-mt-20 pb-10">
         <h2 className="dash-heading">My courses</h2>
-        <div className="mt-2.5 flex flex-col gap-3">
+        <div className="mt-2.5 grid gap-3 md:grid-cols-2">
           {COURSES.map((c) => {
             const cDone = hydrated ? c.lessonIds.reduce((n, id) => n + doneCount(id), 0) : 0;
             const cSteps = hydrated ? c.lessonIds.filter((id) => isComplete(id)).length : 0;
-            const ratio = c.totalCheckpoints ? cDone / c.totalCheckpoints : 0;
+            const pctDone = c.totalCheckpoints ? Math.round((cDone / c.totalCheckpoints) * 100) : 0;
             const started = c.lessonIds.filter((id) => !hydrated || !isComplete(id));
             const next = started.find((id) => hydrated && doneCount(id) > 0) ?? started[0] ?? c.lessonIds[0];
+            const tone = COURSE_TONE[c.slug] ?? COURSE_TONE_FALLBACK;
+            /* The card's centrepiece is the course's spine: one segment per
+               unit, sized by the unit's share of the course, filled by its
+               cleared checkpoints. It shows where in the course the work has
+               landed — which a decorative curve never managed. */
+            const segments = c.unitIds.map((uid) => {
+              const ls = lessonsUnder(uid);
+              return {
+                total: ls.reduce((n, id) => n + checkpointsFor(id).length, 0),
+                done: hydrated ? ls.reduce((n, id) => n + doneCount(id), 0) : 0,
+              };
+            });
 
             return (
-              <div key={c.slug} className="dash-card squircle">
-                {/* Stacks below sm, one row from sm up. NOT flex-wrap: the text
-                    column is flex-basis 0, so it never overflows the line and
-                    never triggers a wrap — it just gets squeezed to whatever
-                    the fixed-width buttons leave, one word per line. Whether a
-                    card survived depended on how wide its button labels were. */}
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <div className="flex min-w-0 flex-1 items-center gap-4">
-                    <CompletionRing value={ratio} size={48} stroke={4} className="text-ink" />
-                    <div className="min-w-0 flex-1">
-                      <p className="font-display text-[18px] font-semibold leading-tight text-ink">{c.title}</p>
-                      <p className="mt-0.5 text-[13px] leading-5 text-muted">{c.subtitle}</p>
-                      <p className="mt-1 text-[12.5px] text-placeholder">
-                        {cSteps} of {c.lessonIds.length} steps · {cDone} of {c.totalCheckpoints} checkpoints
+              /* The card IS the button — no CTAs inside it. It opens the
+                 course home, where "Pick up where you left off" carries the
+                 continue action. */
+              <Link key={c.slug} href={`/${c.slug}`} className="course-card squircle block p-3.5 lg:p-[18px]">
+                {/* A thin wash of the course's hue falling from the top edge. */}
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-x-0 top-0 h-14"
+                  style={{ background: `linear-gradient(to bottom, ${tone}26, transparent)` }}
+                />
+                <div className="relative">
+                  {/* Identity left, the one anchor number right. */}
+                  <div className="flex items-start justify-between gap-3">
+                    <CourseMark slug={c.slug} tone={tone} size={30} />
+                    <div className="text-right">
+                      <p className="font-display text-[26px] font-semibold leading-none tracking-[-0.02em] text-ink">
+                        {hydrated ? `${pctDone}%` : "–"}
                       </p>
+                      <p className="mt-1 text-[11px] font-medium text-muted">complete</p>
                     </div>
                   </div>
-                  <div className="flex shrink-0 items-center gap-2">
-                    <Link href={`/${c.slug}`} className="step-complete-btn squircle">
-                      Course home
-                    </Link>
-                    <Link href={pathForId(next)} className="dash-cta squircle">
-                      {cDone > 0 ? "Continue" : "Start"}
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M5 12h13m0 0-5.5-5.5M18 12l-5.5 5.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </Link>
+                    {/* Name and code, under the mark. */}
+                  <p className="mt-3 truncate font-display text-[19px] font-semibold leading-tight text-ink">
+                    {c.title}
+                  </p>
+                  <p className="mt-0.5 truncate text-[12.5px] text-muted">{c.subtitle}</p>
+
+                  {/* The spine: a segment per unit, its width the unit's share
+                      of the course, its fill the checkpoints cleared there. */}
+                  <div className="mt-5">
+                    <UnitBar segments={segments} tone={tone} />
+                    <p className="mt-2 truncate text-[12px] text-placeholder">
+                      {hydrated
+                        ? `${cDone} of ${c.totalCheckpoints} checkpoints · ${cSteps} of ${c.lessonIds.length} steps`
+                        : " "}
+                    </p>
+                  </div>
+
+                  {/* Where to go from here — the whole card is the door. */}
+                  <div className="mt-4 flex items-center justify-between gap-3 border-t border-line pt-3">
+                    <p className="min-w-0 truncate text-[13px] leading-5 text-ink">
+                      <span className="text-placeholder">{cDone > 0 ? "Next · " : "Start · "}</span>
+                      {hydrated ? labelFor(next) : " "}
+                    </p>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="card-arrow shrink-0" style={{ color: tone }}>
+                      <path d="M5 12h13m0 0-5.5-5.5M18 12l-5.5 5.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
                   </div>
                 </div>
-
-                {cDone > 0 && (
-                  <p className="mt-3.5 truncate text-xs text-placeholder">
-                    Next · {labelFor(next)} ({doneCount(next)}/{checkpointsFor(next).length})
-                  </p>
-                )}
-              </div>
+              </Link>
             );
           })}
         </div>
       </section>
+    </div>
+  );
+}
+
+/* The course card's spine — one segment per unit, laid out in course order.
+ * Each segment's width is the unit's share of the course's checkpoints, and
+ * its fill is how much of that unit is cleared, so the bar reads as a map:
+ * where the work has landed, and how much course remains past it. */
+function UnitBar({ segments, tone }: { segments: { done: number; total: number }[]; tone: string }) {
+  return (
+    <div className="flex gap-1" role="presentation">
+      {segments.map((s, i) => (
+        <div
+          key={i}
+          className="h-1.5 overflow-hidden rounded-full"
+          style={{ flexGrow: Math.max(s.total, 1), flexBasis: 0, backgroundColor: `${tone}1f` }}
+        >
+          <div
+            className="h-full rounded-full"
+            style={{
+              width: `${s.total ? (s.done / s.total) * 100 : 0}%`,
+              backgroundColor: tone,
+              transition: "width 600ms cubic-bezier(0.16, 1, 0.3, 1)",
+            }}
+          />
+        </div>
+      ))}
     </div>
   );
 }
