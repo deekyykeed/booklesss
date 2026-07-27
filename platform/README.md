@@ -74,6 +74,25 @@ scoped per signed-in user when Clerk is configured. The stored shape
 (`lessonId -> checkpoint ids`) is what a `progress` table row would hold, so
 moving it server-side later is a write-through rather than a rewrite.
 
+## Search
+
+⌘K searches the **whole course, including section body text** — not just lesson
+titles. `src/lib/search.ts` builds an in-memory index from the same bundled
+course data the reader renders, so there's no request and no backend: searching
+"price maker" scores 30 lessons and 69 sections on each keystroke, which is
+cheaper than any indexing cleverness would be.
+
+Two kinds of hit. A **lesson** hit matches its title or kicker and opens the
+lesson; a **section** hit matches its heading or body and links to `#id`, so you
+land on the paragraph that matched rather than the top of the page. Section hits
+show an excerpt centred on the match, with the terms marked. Every term must
+appear (AND), so "opportunity cost" doesn't drag in every mention of "cost".
+
+**`section.check` is deliberately not indexed.** Those are the comprehension
+questions — indexing the options or the explanation would let a reader search up
+an answer without reading the step, which is the one thing the checks exist to
+prevent. If you add searchable fields, keep them out.
+
 ## Auth (Clerk)
 
 Clerk is wired up but **entirely optional**: with no keys set, there is no
