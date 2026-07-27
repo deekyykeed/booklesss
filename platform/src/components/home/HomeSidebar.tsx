@@ -29,7 +29,7 @@ type Item = {
 
 const ITEMS: Item[] = [
   { id: "dashboard", label: "Dashboard", href: "/", solar: "widget" },
-  { id: "courses", label: "My courses", href: "/#courses", solar: "book-2" },
+  { id: "courses", label: "My courses", href: "/#courses", solar: "square-academic-cap" },
   {
     id: "community",
     label: "Community",
@@ -43,18 +43,13 @@ const ITEMS: Item[] = [
   { id: "settings", label: "Settings", solar: "settings-minimalistic" },
 ];
 
-/* Line at rest, Bold Duotone once the row is the current page — the weight
- * change is what reads as selected, alongside the darkened background.
- *
- * Solar ships duotone as two currentColor paths with opacity=".5" on the
- * secondary shape, and that is left exactly as authored: no fill or opacity is
- * overridden here, so the icon tones are the set's own. They follow the row's
- * text colour, which is what makes an active row's glyph ink-coloured without
- * anything being hard-coded. */
+/* Line at rest, solid Bold once the row is the current page — the same two
+ * weights the icon rail speaks, so the whole sidebar has one system: line or
+ * bold, nothing in between. */
 function glyphFor(item: Item, active: boolean) {
   if (item.brand) return item.brand;
   if (!item.solar) return null;
-  return <Icon name={`${item.solar}-${active ? "bold-duotone" : "linear"}`} size={17} />;
+  return <Icon name={`${item.solar}-${active ? "bold" : "linear"}`} size={17} />;
 }
 
 export function HomeSidebar({ active = "dashboard" }: { active?: string }) {

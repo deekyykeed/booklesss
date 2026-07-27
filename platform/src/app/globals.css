@@ -334,15 +334,24 @@
      the per-frame resize drag) while the panel slides off under its own
      transform transition. */
   @media (min-width: 768px) {
-    /* The wide half starts where the rail ends. */
-    .sidebar-panel {
+    /* The duo exists only in the step experience: there the main navigation
+       is collapsed to its icon rail and the course navigator sits beside it
+       (.beside-rail). On the dashboard the expanded main navigation is the
+       whole sidebar — no rail, no second column. */
+    .sidebar-panel.beside-rail {
       left: var(--rail-w) !important;
     }
     .content-frame {
+      padding-left: var(--sidebar-docs);
+    }
+    .content-frame.with-rail {
       padding-left: calc(var(--rail-w) + var(--sidebar-docs));
     }
     /* Collapsing the wide panel keeps the rail — it's the constant half. */
     .app-shell[data-left-collapsed] .content-frame {
+      padding-left: 0;
+    }
+    .app-shell[data-left-collapsed] .content-frame.with-rail {
       padding-left: var(--rail-w);
     }
     .app-shell[data-left-collapsed] .sidebar-panel {

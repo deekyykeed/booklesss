@@ -29,7 +29,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <Rail active="courses" />
         <Sidebar />
         <MobileScrim />
-        <main className="content-frame no-rightbar">
+        <main className="content-frame no-rightbar with-rail">
           <div id="content-surface" className="content-surface no-scrollbar">
             {children}
           </div>
