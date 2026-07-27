@@ -358,7 +358,7 @@ function Spark({ series, tone }: { series: number[]; tone: string }) {
                   colour, still fading in — faint where the fortnight begins,
                   arriving at full presence at today. */}
               <linearGradient id={`${id}s`} x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0" stopColor={pale(tone, 0.55)} stopOpacity="0.45" />
+                <stop offset="0" stopColor={pale(tone, 0.55)} stopOpacity="0.12" />
                 <stop offset="1" stopColor={tone} stopOpacity="0.9" />
               </linearGradient>
               <filter id={`${id}f`} x="-60%" y="-60%" width="220%" height="220%">
@@ -376,7 +376,7 @@ function Spark({ series, tone }: { series: number[]; tone: string }) {
               r="3.5"
               fill="#ffffff"
               stroke={tone}
-              strokeWidth="2"
+              strokeWidth="1.2"
               filter={`url(#${id}f)`}
             />
           </svg>
