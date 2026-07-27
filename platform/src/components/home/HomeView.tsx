@@ -6,6 +6,7 @@ import { COURSES } from "@/lib/courses";
 import { checkpointsFor, labelFor, pathForId } from "@/lib/course";
 import { useProgress } from "@/lib/progress";
 import { CompletionRing } from "@/components/reader/CompletionRing";
+import { StudyChart } from "./StudyChart";
 
 /* ------------------------------------------------------------------ *
  * Home — above the courses, not inside one.
@@ -20,6 +21,14 @@ import { CompletionRing } from "@/components/reader/CompletionRing";
  *     instead — streak, whether you've studied today — until there is a
  *     target to measure against.
  * ------------------------------------------------------------------ */
+
+/** Total reading time, for the chart's caption. */
+function fmtTotal(secs: number): string {
+  const m = Math.round(secs / 60);
+  if (m < 60) return `${m} min`;
+  const h = Math.floor(m / 60);
+  return m % 60 ? `${h}h ${m % 60}m` : `${h}h`;
+}
 
 function timeGreeting(): string {
   const h = new Date().getHours();
@@ -38,7 +47,8 @@ export function HomeView({
    *  is signed in. Kept as a slot so this component stays Clerk-free. */
   afterGreeting?: React.ReactNode;
 }) {
-  const { hydrated, doneCount, isComplete, streak, daysStudied, studiedToday } = useProgress();
+  const { hydrated, doneCount, isComplete, streak, daysStudied, studiedToday, totalSecs, days } =
+    useProgress();
 
   const totals = useMemo(() => {
     const lessons = COURSES.flatMap((c) => c.lessonIds);
@@ -93,6 +103,21 @@ export function HomeView({
           <Stat value={String(daysStudied)} unit={daysStudied === 1 ? "day" : "days"} label="Days studied" />
           <Stat value={`${done.checks}`} unit={`/ ${totals.checks}`} label="Checkpoints" />
           <Stat value={`${done.steps}`} unit={`/ ${totals.steps}`} label="Steps complete" />
+        </div>
+
+        {/* Full width under the tiles: the tiles are today's state, this is the
+            shape of it over time. Only reading inside a lesson is timed, so a
+            flat stretch means nothing was read, not that the chart is broken. */}
+        <div className="dash-card squircle mt-3">
+          <div className="flex items-baseline justify-between gap-3">
+            <h3 className="font-display text-[15px] font-semibold leading-tight text-ink">Time studied</h3>
+            <p className="shrink-0 text-[12px] text-placeholder">
+              {totalSecs > 0 ? `${fmtTotal(totalSecs)} over 30 days` : "Last 30 days"}
+            </p>
+          </div>
+          <div className="mt-1">
+            <StudyChart days={days} hydrated={hydrated} />
+          </div>
         </div>
       </section>
 

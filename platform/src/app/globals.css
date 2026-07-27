@@ -604,6 +604,60 @@
     color: var(--color-placeholder);
   }
 
+  /* Chart chrome. The card is the chart's surface — the validator checked the
+     line against this colour, so it can't be swapped for a tint without
+     re-running it. */
+  .chart-frame {
+    border-radius: 14px;
+    background-color: var(--color-card);
+  }
+  .chart-tip {
+    position: absolute;
+    transform: translate(-50%, -100%);
+    pointer-events: none;
+    padding: 6px 9px;
+    border: 1px solid var(--color-line);
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    font-size: 13px;
+    line-height: 1.35;
+    white-space: nowrap;
+  }
+  .chart-table {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--color-muted);
+  }
+  .chart-table > summary {
+    cursor: pointer;
+    width: fit-content;
+    color: var(--color-muted);
+  }
+  .chart-table > summary:hover {
+    color: var(--color-ink);
+  }
+  .chart-table table {
+    margin-top: 8px;
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .chart-table th {
+    padding: 4px 0;
+    border-bottom: 1px solid var(--color-line);
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-ink-2);
+  }
+  .chart-table td {
+    padding: 4px 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .chart-table th + th,
+  .chart-table td + td {
+    text-align: right;
+  }
+
   .dash-heading {
     font-family: var(--font-sans);
     font-size: 11px;

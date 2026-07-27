@@ -4,6 +4,7 @@ import { RightPanel } from "@/components/reader/RightPanel";
 import { LessonBreadcrumb } from "@/components/reader/LessonBreadcrumb";
 import { MobileNavProvider, MobileScrim } from "@/components/reader/MobileNav";
 import { ProgressScope } from "@/components/reader/ProgressScope";
+import { StudyClock } from "@/components/reader/StudyClock";
 import { clerkEnabled } from "@/lib/clerk";
 import { ClerkIsland } from "@/components/ClerkIsland";
 
@@ -22,6 +23,9 @@ export default function ReaderLayout({ children }: { children: React.ReactNode }
           <ProgressScope />
         </ClerkIsland>
       )}
+      {/* Times reading, for the dashboard's activity chart. Here rather than in
+          the root layout: only a lesson counts as studying. */}
+      <StudyClock />
       <MobileNavProvider>
       {/* Animated backdrop — shows through the transparent top bar and
           sidebar, and around the content card. */}
