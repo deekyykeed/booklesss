@@ -23,7 +23,7 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
           ))}
         </div>
         <TopBar orgName="Bklsss" />
-        <HomeSidebar active="home" />
+        <HomeSidebar active="dashboard" />
         <MobileScrim />
         <main className="content-frame no-rightbar">
           <div id="content-surface" className="content-surface no-scrollbar">

@@ -28,7 +28,7 @@ type Item = {
 };
 
 const ITEMS: Item[] = [
-  { id: "home", label: "Home", href: "/", solar: "home-2" },
+  { id: "dashboard", label: "Dashboard", href: "/", solar: "home-2" },
   { id: "courses", label: "My courses", href: "/#courses", solar: "book-2" },
   {
     id: "community",
@@ -57,7 +57,7 @@ function glyphFor(item: Item, active: boolean) {
   return <Icon name={`${item.solar}-${active ? "bold-duotone" : "linear"}`} size={17} />;
 }
 
-export function HomeSidebar({ active = "home" }: { active?: string }) {
+export function HomeSidebar({ active = "dashboard" }: { active?: string }) {
   return (
     <aside
       className="sidebar-panel fixed left-0 top-12 z-40 flex h-[calc(100dvh-48px)] flex-col border-r border-line"
