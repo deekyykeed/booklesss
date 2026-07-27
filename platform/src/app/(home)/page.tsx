@@ -4,7 +4,7 @@ import { HomeViewWithUser } from "@/components/home/HomeViewWithUser";
 import { clerkEnabled } from "@/lib/clerk";
 
 export const metadata: Metadata = {
-  title: "Home · Booklesss",
+  title: "Dashboard · Booklesss",
   description: "Your studying, and your courses.",
 };
 

@@ -15,32 +15,33 @@ Recreated pixel-faithfully from the Framer source on a hand-tuned, static-first 
 
 | Route | Surface |
 |-------|---------|
-| `/` | Home — greeting, study stats, and the student's courses |
+| `/` | Dashboard — greeting, study stats, and the student's courses |
 | `/economics` | That course's overview — progress, next step, unit by unit |
 | `/[...slug]` | One prerendered route per lesson, e.g. `/microeconomics/supply-demand/law-of-demand` |
 | `/sign-in`, `/sign-up` | Clerk auth (only when Clerk is configured — see below) |
 | `/page`, `/old-home` | Parked scratch pages from the earlier dashboard build |
 
-## Home (`/`) and the course overview (`/economics`)
+## The dashboard (`/`) and the course overview (`/economics`)
 
-Two levels. **Home** is above the courses: a time-of-day greeting, how the
-studying is going (streak, days studied, checkpoints, steps), then the course
-list. **The course overview** is inside one course. A "Dashboard" row sits at
-the top of the course navigator, so home is always one click from any step.
+Two levels. **The dashboard** is above the courses: a time-of-day greeting, how
+the studying is going (streak, days studied, checkpoints, steps), then the
+course list. **The course overview** is inside one course. A "Dashboard" row
+sits at the top of the course navigator, so it's always one click from any step
+— the same word in both rails, on purpose.
 
-Home swaps the course navigator for `HomeSidebar`. Exams, Upcoming and Settings
-are drawn there and marked **Soon** — they aren't wired to anything, and showing
-the shape is more useful than links that 404.
+The dashboard swaps the course navigator for `HomeSidebar`. Exams, Upcoming and
+Settings are drawn there and marked **Soon** — they aren't wired to anything,
+and showing the shape is more useful than links that 404.
 
 `lib/courses.ts` is the course registry. **One course exists**: `gen-course.mjs`
 pulls a single slug out of Supabase and `course-data.json` is that course's
 tree, so its top-level nodes are units, not sibling courses. Adding a second is
 a data change first — the generator has to emit a course per slug and the JSON
-gains a level. Home reads the registry, so it won't need touching then.
+gains a level. The dashboard reads the registry, so it won't need touching then.
 
 **Not built, for want of data:** a coaching or AI summary of how the week went.
 There's no tutor backend, and no study goal is captured at sign-up, so a
-"you're behind target" line would be invented. Home states facts instead —
+"you're behind target" line would be invented. It states facts instead —
 streak, whether you've studied today — until there's a target to measure
 against.
 
