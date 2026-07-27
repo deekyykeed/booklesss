@@ -287,12 +287,14 @@ function Spark({ series, tone }: { series: number[]; tone: string }) {
     <div ref={box} aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0" style={{ height: H }}>
       {w > LEFT && n > 1 && max > 0 && (() => {
         const drawn = [0, ...series];
+        /* 5px shy of the right edge, so the head dot isn't halved by the
+           card's overflow clip. */
         const pts = drawn.map((v, i) => ({
-          x: LEFT + (i * (w - LEFT)) / (drawn.length - 1),
+          x: LEFT + (i * (w - LEFT - 5)) / (drawn.length - 1),
           y: TOP + (1 - v / max) * (H - TOP),
         }));
         const line = smoothPath(pts);
-        const area = `${line} L${w} ${H} L${LEFT} ${H} Z`;
+        const area = `${line} L${w - 5} ${H} L${LEFT} ${H} Z`;
         return (
           <svg width={w} height={H} className="block">
             <defs>
@@ -303,6 +305,10 @@ function Spark({ series, tone }: { series: number[]; tone: string }) {
             </defs>
             <path d={area} fill={`url(#${id})`} />
             <path d={line} fill="none" stroke={tone} strokeOpacity="0.38" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+            {/* Today, at the head of the line — the one full-ink element of
+                the backdrop, because "where you are now" is its point. The
+                white ring keeps it legible over the wash. */}
+            <circle cx={pts[pts.length - 1].x} cy={pts[pts.length - 1].y} r="3" fill={tone} stroke="#ffffff" strokeWidth="2" />
           </svg>
         );
       })()}

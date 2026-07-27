@@ -257,6 +257,20 @@ export function StudyChart({ days, hydrated }: { days: Record<string, StudyDay>;
               </text>
             ))}
 
+          {/* Today, at the head of the line. Always drawn (the crosshair dot
+              simply lands on top of it when the cursor reaches the end), so
+              the reader can see where "now" is without hovering. */}
+          {hasData && (
+            <circle
+              cx={x(series.length - 1)}
+              cy={y(series[series.length - 1].secs / 60)}
+              r="4"
+              fill={LINE}
+              stroke={SURFACE}
+              strokeWidth="2"
+            />
+          )}
+
           {showPeak && (
             <text
               x={Math.min(Math.max(x(peak), PAD.l + 16), PAD.l + plotW - 16)}
