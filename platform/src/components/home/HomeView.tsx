@@ -157,8 +157,10 @@ export function HomeView({
         {/* Full width above the tiles: the shape of the studying over time
             leads, the tiles below are today's state. Only reading inside a
             lesson is timed, so a flat stretch means nothing was read, not
-            that the chart is broken. */}
-        <div className="dash-card squircle mt-4">
+            that the chart is broken. On phones the card wears the tiles'
+            14px padding so the band reads as one set; desktop keeps the
+            card's 18px. */}
+        <div className="dash-card squircle mt-4 p-3.5 lg:p-[18px]">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <span style={{ color: CHART_TONE }}>
@@ -175,9 +177,10 @@ export function HomeView({
           </div>
         </div>
 
-        {/* Tighter gutter on phones so each tile keeps its width at two-up;
-            the air lives above and below the band, not between the tiles. */}
-        <div className="mt-5 grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-3">
+        {/* Tighter gutter on phones so each tile keeps its width at two-up.
+            The chart-to-tiles gap matches that gutter on phones — one grid
+            rhythm for the whole band — and opens back up on desktop. */}
+        <div className="mt-2 grid grid-cols-2 gap-2 lg:mt-5 lg:grid-cols-4 lg:gap-3">
           <Stat
             hydrated={hydrated}
             label="Current streak"
