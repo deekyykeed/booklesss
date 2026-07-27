@@ -36,7 +36,10 @@ type ReaderShell = {
   toggleLeftCollapsed: () => void;
   toggleRightCollapsed: () => void;
   sections: Section[] | null;
-  setSections: (s: Section[] | null) => void;
+  /** Id of the lesson those sections belong to — the right panel needs it to
+   *  read that step's progress. */
+  lessonId: string | null;
+  setLesson: (lessonId: string | null, sections: Section[] | null) => void;
 };
 
 const Ctx = createContext<ReaderShell | null>(null);
@@ -54,7 +57,8 @@ const NOOP: ReaderShell = {
   toggleLeftCollapsed: () => {},
   toggleRightCollapsed: () => {},
   sections: null,
-  setSections: () => {},
+  lessonId: null,
+  setLesson: () => {},
 };
 
 export function useReaderShell(): ReaderShell {
@@ -73,7 +77,14 @@ export function MobileNavProvider({ children }: { children: React.ReactNode }) {
   const [side, setSide] = useState<Side>(null);
   const [leftCollapsed, setLeftCollapsed] = useState(false);
   const [rightCollapsed, setRightCollapsed] = useState(false);
-  const [sections, setSections] = useState<Section[] | null>(null);
+  const [lesson, setLessonState] = useState<{ id: string | null; sections: Section[] | null }>({
+    id: null,
+    sections: null,
+  });
+  const setLesson = useCallback(
+    (id: string | null, sections: Section[] | null) => setLessonState({ id, sections }),
+    [],
+  );
   // Briefly true while a collapse/expand plays, so the content gutter can
   // transition in step with the sliding panel. A resize drag, which writes the
   // width var every frame, leaves this false and stays transition-free/snappy.
@@ -217,8 +228,9 @@ export function MobileNavProvider({ children }: { children: React.ReactNode }) {
     rightCollapsed,
     toggleLeftCollapsed,
     toggleRightCollapsed,
-    sections,
-    setSections,
+    sections: lesson.sections,
+    lessonId: lesson.id,
+    setLesson,
   };
 
   return (

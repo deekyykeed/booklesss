@@ -10,15 +10,16 @@ import { useReaderShell } from "./MobileNav";
 // panel, so this route just renders the reading column and publishes its
 // sections to the shell for that panel to pick up. Remounts on navigation (each
 // lesson is its own route); the persistent chrome lives in the layout.
-export function LessonReader({ lesson }: { lesson: Lesson }) {
-  const { setSections } = useReaderShell();
+export function LessonReader({ lesson, lessonId }: { lesson: Lesson; lessonId: string }) {
+  const { setLesson } = useReaderShell();
   const pathname = usePathname();
 
-  // Publish this lesson's sections for the right panel's TOC + scroll-spy.
+  // Publish this lesson's id + sections for the right panel's TOC, scroll-spy
+  // and progress ring.
   useEffect(() => {
-    setSections(lesson.sections);
-    return () => setSections(null);
-  }, [lesson, setSections]);
+    setLesson(lessonId, lesson.sections);
+    return () => setLesson(null, null);
+  }, [lesson, lessonId, setLesson]);
 
   // A new lesson opens at the top. The content surface is the scroll container
   // on desktop and persists across routes, so reset it explicitly; on mobile the
@@ -38,7 +39,7 @@ export function LessonReader({ lesson }: { lesson: Lesson }) {
     // the surface edges on mobile.
     <div key={pathname} className="lesson-fade mx-auto px-4 py-10 md:px-6" style={{ maxWidth: 720 }}>
       <div className="min-w-0 pb-[40vh]">
-        <LessonView lesson={lesson} />
+        <LessonView lesson={lesson} lessonId={lessonId} />
       </div>
     </div>
   );

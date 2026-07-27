@@ -22,6 +22,7 @@
   --color-card-label: #52514e;      /* card titles               */
   --color-card-dim: #898781;        /* muted card numbers        */
   --color-brand: #3ecf8e;           /* Booklesss green mark      */
+  --color-brand-deep: #17754d;      /* brand green, readable as text on white */
   --color-danger: #8d2525;          /* red inline link           */
   --color-btn: #0b0b0b;             /* solid black button        */
 
@@ -532,6 +533,140 @@
     .lesson-fade {
       animation: none;
     }
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Step checkpoints + completion
+   *
+   * Every section of a step ends in a checkpoint; ticking them all completes
+   * the step. The ring (CompletionRing) shows the same fraction in the
+   * sidebar, the right panel header and the closing card, so the reader sees
+   * one number wherever they look.
+   * ------------------------------------------------------------------ */
+
+  /* The tick lands at the END of the section, after a rule that runs out of
+     the text and into it — so it reads as the section closing, not as another
+     paragraph. */
+  .checkpoint-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 18px;
+  }
+  .checkpoint-rule {
+    height: 1px;
+    flex: 1;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1));
+  }
+  .checkpoint-btn {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 7px;
+    height: 30px;
+    padding: 0 11px 0 7px;
+    border-radius: 15px;
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--color-muted);
+    transition: color 160ms ease, background-color 160ms ease;
+  }
+  .checkpoint-btn:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+    color: var(--color-ink);
+  }
+  .checkpoint-btn[data-done] {
+    color: var(--color-brand-deep);
+  }
+  /* Ghosted at rest so the control advertises the tick you're about to earn,
+     half-lit on hover, solid once earned. */
+  .checkpoint-tick {
+    opacity: 0;
+    transition: opacity 160ms ease;
+  }
+  .checkpoint-btn:hover .checkpoint-tick {
+    opacity: 0.4;
+  }
+  .checkpoint-btn[data-done] .checkpoint-tick {
+    opacity: 1;
+  }
+
+  /* Ring completion flourish. transform-box: fill-box is what makes
+     transform-origin: center mean the glyph's own centre inside an SVG. */
+  @keyframes ringPop {
+    0% {
+      transform: scale(0.5);
+      opacity: 0;
+    }
+    60% {
+      transform: scale(1.14);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  .ring-pop {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: ringPop 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ring-pop {
+      animation: none;
+    }
+  }
+
+  /* Closing card of every step. Turns green only when every checkpoint is
+     ticked — that colour change IS the reward, so nothing else on the card
+     needs to shout. */
+  .step-complete {
+    margin-top: 40px;
+    padding: 18px;
+    border: 1px solid #e7e7e6;
+    border-radius: 18px;
+    background-color: rgba(255, 255, 255, 0.75);
+    transition: border-color 260ms ease, background-color 260ms ease;
+  }
+  .step-complete[data-complete] {
+    border-color: color-mix(in srgb, var(--color-brand) 50%, #e7e7e6);
+    background-color: color-mix(in srgb, var(--color-brand) 7%, rgba(255, 255, 255, 0.85));
+  }
+  .step-complete-btn,
+  .step-complete-next {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid var(--color-line);
+    border-radius: 10px;
+    background-color: #fff;
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--color-ink-2);
+    transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease;
+  }
+  .step-complete-btn:hover,
+  .step-complete-next:hover {
+    border-color: var(--color-line-2);
+    color: var(--color-ink);
+  }
+  /* Once the step is done, moving on is the obvious next act — so the link
+     goes solid and the secondary button stays quiet. */
+  .step-complete-next[data-primary] {
+    border-color: var(--color-btn);
+    background-color: var(--color-btn);
+    color: #fff;
+  }
+  .step-complete-next[data-primary]:hover {
+    color: #fff;
+    border-color: #000;
+    background-color: #000;
   }
 
   /* Voice-mode glow. JS writes --voice (0..1, live loudness) to the composer

@@ -3,6 +3,9 @@ import { Sidebar } from "@/components/reader/Sidebar";
 import { RightPanel } from "@/components/reader/RightPanel";
 import { LessonBreadcrumb } from "@/components/reader/LessonBreadcrumb";
 import { MobileNavProvider, MobileScrim } from "@/components/reader/MobileNav";
+import { ProgressScope } from "@/components/reader/ProgressScope";
+import { clerkEnabled } from "@/lib/clerk";
+import { ClerkIsland } from "@/components/ClerkIsland";
 
 // Persistent chrome: this layout stays mounted while you navigate between
 // lessons, so the sidebar's sliding active indicator animates across routes
@@ -10,7 +13,16 @@ import { MobileNavProvider, MobileScrim } from "@/components/reader/MobileNav";
 // data-mobile-nav flag that drives the drawer slide.
 export default function ReaderLayout({ children }: { children: React.ReactNode }) {
   return (
-    <MobileNavProvider>
+    <>
+      {/* Ties stored progress to the signed-in Clerk user. Only mounted when
+          Clerk is configured — it calls useUser(), which needs ClerkProvider.
+          Progress itself needs no provider: it's a module store (lib/progress). */}
+      {clerkEnabled && (
+        <ClerkIsland>
+          <ProgressScope />
+        </ClerkIsland>
+      )}
+      <MobileNavProvider>
       {/* Animated backdrop — shows through the transparent top bar and
           sidebar, and around the content card. */}
       <div className="bg-waves" aria-hidden="true">
@@ -31,6 +43,7 @@ export default function ReaderLayout({ children }: { children: React.ReactNode }
           {children}
         </div>
       </main>
-    </MobileNavProvider>
+      </MobileNavProvider>
+    </>
   );
 }

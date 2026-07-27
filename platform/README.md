@@ -15,9 +15,43 @@ Recreated pixel-faithfully from the Framer source on a hand-tuned, static-first 
 
 | Route | Surface |
 |-------|---------|
-| `/` | Org dashboard — icon sidebar + stat cards (credits, spend, caching, token volume) |
-| `/project` | Docs/lesson reader — collapsible docs sidebar + lesson heading |
-| `/page` | Work-in-progress docs nav |
+| `/` | Lesson reader, showing the default step (`what-is-economics`) |
+| `/[...slug]` | One prerendered route per lesson, e.g. `/microeconomics/supply-demand/law-of-demand` |
+| `/sign-in`, `/sign-up` | Clerk auth (only when Clerk is configured — see below) |
+| `/page`, `/old-home` | Parked scratch pages from the earlier dashboard build |
+
+## Step progress
+
+Each step's **checkpoints are its sections** — nothing extra to author, so adding
+a section adds a checkpoint. Ticking the checkpoint at the end of a section fills
+that step's completion ring, and the last tick completes the step. The same ring
+appears beside the step in the sidebar, in the right panel header, and on the
+closing card of the step.
+
+Progress lives in `src/lib/progress.tsx` — a `useSyncExternalStore` store over
+localStorage, so it survives reloads and doesn't break server rendering. It is
+scoped per signed-in user when Clerk is configured. The stored shape
+(`lessonId -> checkpoint ids`) is what a `progress` table row would hold, so
+moving it server-side later is a write-through rather than a rewrite.
+
+## Auth (Clerk)
+
+Clerk is wired up but **entirely optional**: with no keys set, there is no
+provider, no proxy, no auth UI, and the app behaves exactly as it did before.
+Everything hangs off `clerkEnabled` in `src/lib/clerk.ts`. Copy `.env.example`
+to `.env.local` and fill in the keys to turn it on.
+
+Two things to keep in mind when touching this:
+
+- **Auth UI must stay a client island.** Clerk's `<Show>` works in server
+  components, but there it resolves auth during the server render and opts every
+  route out of static generation — the whole site stops being prerendered. That
+  is why `src/components/Account.tsx` is `"use client"`.
+- Nothing is gated yet. Every lesson is still public; making the course
+  members-only is a one-line change in `src/proxy.ts` (see the comment there).
+
+Note the file is `proxy.ts`, not `middleware.ts` — Next 16 renamed the
+convention. Clerk's docs still say middleware; only the filename differs.
 
 ## Develop
 
@@ -31,14 +65,24 @@ npm start        # serve the production build
 
 ```
 src/
-  app/                 route entries (/, /project, /page) + root layout
+  app/                 (reader) route group + root layout, sign-in / sign-up
+  proxy.ts             Clerk proxy (pass-through when Clerk isn't configured)
   components/
-    TopBar.tsx         fixed 48px header (logo, org switcher, breadcrumb, actions)
+    TopBar.tsx         fixed 48px header (logo, breadcrumb, search, account)
+    Account.tsx        Clerk user button / sign-in (client island — see Auth)
+    ClerkIsland.tsx    error boundary so an auth failure can't unmount the reader
     CommandSearch.tsx  ⌘K palette (client island)
-    DocsSidebar.tsx    collapsible lesson navigator (client island)
-    DashboardSidebar.tsx  org icon rail
-    StatCard.tsx       dashboard cards, progress ring, buttons
-  lib/icon.tsx         server-only Solar SVG renderer — <Icon name="magnifer-linear" />
+    reader/
+      Sidebar.tsx        course navigator + per-step completion ring
+      RightPanel.tsx     "on this page" TOC, step progress, AI composer
+      LessonView.tsx     the reading column
+      Checkpoint.tsx     end-of-section tick + end-of-step completion card
+      CompletionRing.tsx the ring itself, used at three sizes
+  lib/
+    course.ts          nav tree, routing index, checkpoint helpers
+    progress.ts[x]     checkpoint store (localStorage)
+    clerk.ts           clerkEnabled flag + auth URLs
+    icon.tsx           server-only Solar SVG renderer — <Icon name="magnifer-linear" />
 ```
 
 Design tokens live in `src/app/globals.css` (`@theme`). Icons: use `-linear` for Solar Line,
