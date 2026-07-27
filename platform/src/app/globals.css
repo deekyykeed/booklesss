@@ -565,20 +565,30 @@
     transition: color 140ms ease, background-color 140ms ease;
   }
   .home-nav[href]:hover {
-    background-color: rgba(0, 0, 0, 0.04);
+    background-color: rgba(0, 0, 0, 0.05);
     color: var(--color-ink);
   }
+  /* Plain darkening, not the frosted card. That glass chip belongs to the step
+     selector alone — it earns its border and shadow by sliding between steps.
+     A nav button just needs to look pressed, so it goes a shade darker and
+     keeps the squircle. */
   .home-nav[data-active] {
-    background-color: rgba(255, 255, 255, 0.85);
-    border-color: var(--color-line);
+    background-color: rgba(0, 0, 0, 0.08);
     color: var(--color-ink);
     font-weight: 600;
-    box-shadow: 0 1px 1px -0.5px rgba(0, 0, 0, 0.06);
   }
-  /* Not yet built: shown so the shape is legible, but plainly inert. */
+  .home-nav[data-active]:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  /* Not yet built: shown so the shape is legible, but plainly inert. The icon
+     dims with the label — a full-colour brand mark in a disabled row reads as
+     the one live thing on the list, which is the opposite of the truth. */
   .home-nav[data-soon] {
     color: rgba(0, 0, 0, 0.3);
     cursor: default;
+  }
+  .home-nav[data-soon] svg {
+    opacity: 0.45;
   }
   .home-soon {
     flex-shrink: 0;

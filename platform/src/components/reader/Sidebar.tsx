@@ -112,6 +112,20 @@ function Chevron({ open, active }: { open: boolean; active?: boolean }) {
     </svg>
   );
 }
+/* Solar · Linear · "Home 2", inlined rather than pulled through <Icon>: this is
+ * a client component, and that helper imports the whole ~7,400-icon Solar set.
+ * Same reasoning as the chevron above and the composer's glyphs. */
+function HomeGlyph() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" className="shrink-0">
+      <g fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M2 12.204c0-2.289 0-3.433.52-4.381c.518-.949 1.467-1.537 3.364-2.715l2-1.241C9.889 2.622 10.892 2 12 2s2.11.622 4.116 1.867l2 1.241c1.897 1.178 2.846 1.766 3.365 2.715S22 9.915 22 12.203v1.522c0 3.9 0 5.851-1.172 7.063S17.771 22 14 22h-4c-3.771 0-5.657 0-6.828-1.212S2 17.626 2 13.725z" />
+        <path strokeLinecap="round" d="M12 15v3" />
+      </g>
+    </svg>
+  );
+}
+
 function PanelIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -562,15 +576,7 @@ export function Sidebar() {
           level up from whatever step they're reading. */}
       <div className="p-2 pb-0">
         <Link href="/" onClick={() => closeMobileNav()} className="home-nav squircle">
-          <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" className="shrink-0">
-            <path
-              d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4v-5.5H9V20H5a1 1 0 0 1-1-1z"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <HomeGlyph />
           <span className="min-w-0 flex-1 truncate">Dashboard</span>
         </Link>
         <div className="mx-2 mt-2 h-px bg-line" />
