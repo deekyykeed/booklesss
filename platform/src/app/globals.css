@@ -671,7 +671,7 @@
     border: 1px solid var(--color-line);
     /* Matches .dash-stat, so the tiles and the cards under them read as one
        set rather than two radii sitting next to each other. */
-    border-radius: 24px;
+    border-radius: 28px;
     background-color: rgba(255, 255, 255, 0.8);
     box-shadow: 0 1px 1px -0.5px rgba(0, 0, 0, 0.05);
   }
@@ -685,7 +685,7 @@
     overflow: hidden;
     padding: 17px 17px 15px;
     border: 1px solid var(--color-line);
-    border-radius: 24px;
+    border-radius: 28px;
     background-color: #ffffff;
     box-shadow: 0 1px 1px -0.5px rgba(0, 0, 0, 0.04);
   }
