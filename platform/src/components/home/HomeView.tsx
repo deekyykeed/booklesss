@@ -326,18 +326,23 @@ function Spark({ series, tone }: { series: number[]; tone: string }) {
 
   const H = 62;
   const TOP = 6;
+  /* Indented off the card's left edge, and opened with a zero anchor so the
+   * curve lifts out of the floor instead of materialising mid-air. The anchor
+   * is a drawing convention, not a datum — the 14 real days follow it. */
+  const LEFT = 30;
   const max = Math.max(...series);
   const n = series.length;
 
   return (
     <div ref={box} aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0" style={{ height: H }}>
-      {w > 0 && n > 1 && max > 0 && (() => {
-        const pts = series.map((v, i) => ({
-          x: (i * w) / (n - 1),
+      {w > LEFT && n > 1 && max > 0 && (() => {
+        const drawn = [0, ...series];
+        const pts = drawn.map((v, i) => ({
+          x: LEFT + (i * (w - LEFT)) / (drawn.length - 1),
           y: TOP + (1 - v / max) * (H - TOP),
         }));
         const line = smoothPath(pts);
-        const area = `${line} L${w} ${H} L0 ${H} Z`;
+        const area = `${line} L${w} ${H} L${LEFT} ${H} Z`;
         return (
           <svg width={w} height={H} className="block">
             <defs>
