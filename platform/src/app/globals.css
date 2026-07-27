@@ -716,20 +716,6 @@
     line-height: 1.2;
     color: var(--color-muted);
   }
-  /* Outline chip, as in the reference: white inside, a hairline in the stat's
-     hue, the glyph in the same hue. Both colours are mixed from that one hue
-     inline, so this rule never names a colour of its own. */
-  .dash-stat-chip {
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-    width: 21px;
-    height: 21px;
-    border: 1.25px solid transparent;
-    border-radius: 8px;
-    corner-shape: superellipse(2);
-    background-color: #ffffff;
-  }
   .dash-stat-lead {
     flex-shrink: 0;
     font-weight: 600;

@@ -246,7 +246,7 @@ export function HomeView({
  * bundle for four paths. Bodies copied byte-for-byte from @iconify-json/solar.
  */
 
-const G = { width: 13, height: 13, viewBox: "0 0 24 24", fill: "none", "aria-hidden": true, className: "shrink-0" } as const;
+const G = { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", "aria-hidden": true, className: "shrink-0" } as const;
 
 function FireGlyph() {
   return (
@@ -314,15 +314,10 @@ function Stat({
         {unit && <span className="dash-stat-unit">{unit}</span>}
       </p>
       <p className="dash-stat-foot">
-        {/* colour-mix rather than an eight-digit hex, so one token per stat
-            drives the glyph, its chip and the figure, and they can't drift */}
-        <span
-          className="dash-stat-chip"
-          style={{
-            color: tone,
-            borderColor: `color-mix(in oklab, ${tone} 55%, transparent)`,
-          }}
-        >
+        {/* The glyph on its own. A chip around it was a box drawn about a
+            13px mark, and the box was taking the room the mark needed to be
+            legible. One hue drives the glyph and the figure beside it. */}
+        <span className="shrink-0" style={{ color: tone }}>
           {icon}
         </span>
         <span className="dash-stat-lead" style={{ color: tone }}>
