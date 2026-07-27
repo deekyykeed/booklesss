@@ -1,10 +1,122 @@
 "use client";
 
-import { checkpointsFor, type Lesson } from "@/lib/course";
+import { checkpointsFor, type Column, type Lesson } from "@/lib/course";
 import { useProgress } from "@/lib/progress";
 import { CodePlayground } from "./CodePlayground";
 import { Checkpoint, StepComplete } from "./Checkpoint";
 import { CompletionRing } from "./CompletionRing";
+
+/* A display equation, set apart from the prose. `where` names each symbol
+ * directly beneath it — the formula and its legend have to be readable in one
+ * look, so they share a card rather than sitting as separate blocks. */
+function Formula({ text, where }: { text: string; where?: string[] }) {
+  return (
+    <div className="squircle rounded-xl border border-[#e7e7e6] bg-white px-4 py-4">
+      <p className="text-center font-display text-[17.5px] leading-8 tracking-[-0.01em] text-ink">{text}</p>
+      {where?.length ? (
+        <div className="mt-3 flex flex-col gap-1.5 border-t border-[#f0efee] pt-3">
+          {where.map((w, i) => {
+            // "r = the cost of capital" → the symbol carries the display face,
+            // so the eye can jump from the equation straight to its definition.
+            const at = w.indexOf("=");
+            if (at < 1) return <p key={i} className="text-[14px] leading-6 text-muted">{w}</p>;
+            return (
+              <p key={i} className="text-[14px] leading-6 text-muted">
+                <span className="font-display text-ink">{w.slice(0, at).trim()}</span>
+                {" = "}
+                {w.slice(at + 1).trim()}
+              </p>
+            );
+          })}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+/* Columns of figures. Numeric columns are right-aligned and tabular so digits
+ * stack by place value — a working the reader can check line by line, which is
+ * the only reason to make it a table instead of prose. */
+function DataTable({
+  columns,
+  rows,
+  subtotals,
+  total,
+  note,
+}: {
+  columns: Column[];
+  rows: string[][];
+  subtotals?: number[];
+  total?: string[];
+  note?: string;
+}) {
+  const cell = (i: number) =>
+    columns[i]?.align === "right" ? "text-right tabular-nums" : "text-left";
+  const carried = new Set(subtotals ?? []);
+
+  return (
+    <figure className="flex flex-col gap-2">
+      {/* Wide workings scroll inside their own box; the page never does. */}
+      <div className="no-scrollbar squircle overflow-x-auto rounded-xl border border-[#e7e7e6] bg-white">
+        <table className="w-full border-collapse text-[14.5px]">
+          <thead>
+            <tr className="bg-[#f7f7f6]">
+              {columns.map((c, i) => (
+                <th
+                  key={i}
+                  scope="col"
+                  className={
+                    "whitespace-nowrap px-3.5 py-2.5 font-sans text-[12px] font-semibold uppercase tracking-[0.05em] text-muted " +
+                    (c.align === "right" ? "text-right" : "text-left")
+                  }
+                >
+                  {c.label}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r, i) => {
+              // A carried subtotal is a figure, not a working — ruled off above
+              // and set in ink so the eye can find the line the sum lands on.
+              const sub = carried.has(i);
+              return (
+                <tr key={i} className={sub ? "border-t border-[#c9c9c6]" : "border-t border-[#f0efee]"}>
+                  {r.map((v, j) => (
+                    <td
+                      key={j}
+                      className={
+                        "px-3.5 py-2 leading-6 " +
+                        (sub ? "font-semibold text-ink " : "text-[#39393f] ") +
+                        cell(j)
+                      }
+                    >
+                      {v}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })}
+          </tbody>
+          {total?.length ? (
+            /* The figure the working was building towards — a heavier rule
+               above it, the way it is ruled off on paper. */
+            <tfoot>
+              <tr className="border-t-2 border-[#d9d9d7]">
+                {total.map((v, j) => (
+                  <td key={j} className={"px-3.5 py-2.5 font-semibold leading-6 text-ink " + cell(j)}>
+                    {v}
+                  </td>
+                ))}
+              </tr>
+            </tfoot>
+          ) : null}
+        </table>
+      </div>
+      {note ? <figcaption className="px-1 text-[13.5px] leading-6 text-muted">{note}</figcaption> : null}
+    </figure>
+  );
+}
 
 /* Ring + count beside the step's kicker — the same numbers the sidebar and the
  * right panel show, at the top of what they describe. */
@@ -56,6 +168,18 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
                     </div>
                   );
                 if (b.type === "playground") return <CodePlayground key={j} code={b.code} />;
+                if (b.type === "formula") return <Formula key={j} text={b.text} where={b.where} />;
+                if (b.type === "table")
+                  return (
+                    <DataTable
+                      key={j}
+                      columns={b.columns}
+                      rows={b.rows}
+                      subtotals={b.subtotals}
+                      total={b.total}
+                      note={b.note}
+                    />
+                  );
                 return (
                   <ul key={j} className="flex flex-col gap-2.5">
                     {b.items.map((it, k) => (

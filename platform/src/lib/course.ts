@@ -7,12 +7,34 @@
 
 import courseData from "./course-data.json";
 
+/* A column in a `table` block. Numeric columns align right so figures stack by
+ * their digits — the whole reason a working is a table and not a list. */
+export type Column = { label: string; align?: "left" | "right" };
+
 export type Block =
   | { type: "p"; text: string }
   | { type: "h2"; text: string }
   | { type: "ul"; items: string[] }
   | { type: "callout"; text: string }
-  | { type: "playground"; code: string };
+  | { type: "playground"; code: string }
+  /* A display equation. Deliberately plain text rather than LaTeX: the finance
+   * courses need ~20 formulas, none of which need a typesetting engine, and a
+   * math bundle would cost more than it returns. `where` names every symbol —
+   * a formula whose letters aren't defined on the same screen is decoration. */
+  | { type: "formula"; text: string; where?: string[] }
+  /* Anything with columns: cash-flow workings, waterfalls, comparisons. `total`
+   * is a final row set off by a rule above it, for the figure the working was
+   * building towards; `subtotals` marks intermediate rows that are ruled off
+   * the same way (operating cash flow on the way to free cash flow). */
+  | {
+      type: "table";
+      columns: Column[];
+      rows: string[][];
+      /** Indices into `rows` that are carried subtotals, not workings. */
+      subtotals?: number[];
+      total?: string[];
+      note?: string;
+    };
 
 /* A section's comprehension check. Answering it correctly is what ticks that
  * checkpoint — the point being that a step is completed by demonstrating the

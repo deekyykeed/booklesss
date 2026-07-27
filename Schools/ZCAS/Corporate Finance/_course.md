@@ -1,6 +1,48 @@
 # BAC4301 Corporate Finance — Course Status
 
-**Last updated:** 2026-05-26
+**Last updated:** 2026-07-27
+
+---
+
+## ⚠️ Surface changed (2026-07-27) — CF is being written for the reader, not for PDF
+
+Corporate Finance is now authored for the **course reader**
+(`booklesss.vercel.app`), not as Slack-posted PDFs. Everything below about PDF
+rebuilds, Slack channels and the v2 PDF standard describes the previous plan and
+is kept for provenance — do not act on it without checking with the owner.
+Reasons: the paid product is moving off Slack (Linear BOO-7), the CF Slack
+channels were never created, and the reader is the live product.
+
+**Where reader content lives**
+
+| | |
+|---|---|
+| Authored source | `reader/course.mjs` (manifest) + `<lesson>/reader/<step>.mjs` |
+| Published to | Supabase `qxbcvmzjomfwxvbqzqds` — `courses → nav_nodes → lessons` |
+| Read by the app | `platform/src/lib/course-data.json` (generated, committed) |
+| Publish | `npm run seed:course "<path to reader/course.mjs>"` then `npm run gen:course` |
+| House style | `.claude/skills/step-feedback/RULES.md` — read before writing a step |
+| URL | `/corporate-finance/<lesson>/<step>` |
+
+**Reader step status — Lesson 1 Investment appraisal**
+
+| # | Step | Slug | Sections | Written |
+|---|------|------|----------|---------|
+| 1 | Free cash flows | `free-cash-flows` | 5 | ✅ 2026-07-27 |
+| 2 | NPV & discounted payback | `npv-and-payback` | 5 | ✅ 2026-07-27 |
+| 3 | IRR & MIRR | `irr-and-mirr` | 5 | ✅ 2026-07-27 |
+| 4 | Inflation & tax in appraisal | `inflation-and-tax` | — | ☐ |
+| 5 | Adjusted present value | `apv` | — | ☐ |
+| 6 | Capital rationing | `capital-rationing` | — | ☐ |
+| 7 | International project appraisal | `international-projects` | — | ☐ |
+
+Every section carries a comprehension check, so each step's checkpoint ring is
+earned by answering rather than self-marking.
+
+**Source correction found:** the 2024 *Investment Appraisal Part 2* slide prints
+the year-5 discount factor at 14% as `0.477`. The correct factor is `0.519`,
+which is what the slide's own present value of 4,775 was calculated with. The
+reader step uses 0.519; the NPV of (554) is unaffected.
 
 ---
 

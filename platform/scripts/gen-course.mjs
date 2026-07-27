@@ -9,7 +9,6 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "lib", "course-data.json");
-const COURSE_SLUG = "economics";
 
 async function generate() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -17,26 +16,29 @@ async function generate() {
   if (!url || !key) throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY");
   const sb = createClient(url, key, { auth: { persistSession: false } });
 
-  const course = await sb.from("courses").select("id").eq("slug", COURSE_SLUG).single();
-  if (course.error) throw course.error;
-  const courseId = course.data.id;
+  /* Every course, in `position` order, concatenated into one tree. The reader
+   * has no course dimension of its own — a course is just the top-level node(s)
+   * it owns, so its own root node is what separates it in the sidebar and what
+   * gives its lessons a URL prefix. Lesson slugs are therefore unique across
+   * courses, not merely within one; seed-course.mjs is what enforces that. */
+  const coursesRes = await sb.from("courses").select("id, slug, title, position");
+  if (coursesRes.error) throw coursesRes.error;
+  const courses = coursesRes.data.sort((a, b) => a.position - b.position || a.slug.localeCompare(b.slug));
+  if (!courses.length) throw new Error("no courses in the database");
 
   const nodesRes = await sb
     .from("nav_nodes")
-    .select("id, parent_id, slug, label, position, default_open")
-    .eq("course_id", courseId);
+    .select("id, course_id, parent_id, slug, label, position, default_open");
   if (nodesRes.error) throw nodesRes.error;
 
-  const lessonsRes = await sb
-    .from("lessons")
-    .select("node_id, title, kicker, sections")
-    .eq("course_id", courseId);
+  const lessonsRes = await sb.from("lessons").select("node_id, title, kicker, sections");
   if (lessonsRes.error) throw lessonsRes.error;
 
   const lessonByNode = new Map(lessonsRes.data.map((l) => [l.node_id, l]));
   const childrenOf = new Map();
   for (const n of nodesRes.data) {
-    const k = n.parent_id ?? "__root__";
+    // Root nodes are keyed per course, so courses can't absorb each other's.
+    const k = n.parent_id ?? `__root__:${n.course_id}`;
     if (!childrenOf.has(k)) childrenOf.set(k, []);
     childrenOf.get(k).push(n);
   }
@@ -61,11 +63,13 @@ async function generate() {
     });
   }
 
-  const tree = build("__root__");
+  const tree = courses.flatMap((c) => build(`__root__:${c.id}`));
   const carried = carryOverChecks(tree);
   writeFileSync(OUT, JSON.stringify(tree, null, 2) + "\n");
   console.log(
-    `gen-course: wrote course-data.json — ${nodesRes.data.length} nodes, ${lessonsRes.data.length} lessons` +
+    `gen-course: wrote course-data.json — ${courses.length} course(s) ` +
+      `(${courses.map((c) => c.slug).join(", ")}), ${nodesRes.data.length} nodes, ` +
+      `${lessonsRes.data.length} lessons` +
       (carried ? `, ${carried} comprehension check(s) carried over from the previous snapshot` : ""),
   );
 }
