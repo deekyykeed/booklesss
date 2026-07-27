@@ -669,16 +669,62 @@
   .dash-card {
     padding: 18px;
     border: 1px solid var(--color-line);
-    border-radius: 18px;
+    /* Matches .dash-stat, so the tiles and the cards under them read as one
+       set rather than two radii sitting next to each other. */
+    border-radius: 24px;
     background-color: rgba(255, 255, 255, 0.8);
     box-shadow: 0 1px 1px -0.5px rgba(0, 0, 0, 0.05);
   }
+  /* Label, the number large, then one measured line carrying the stat's mark.
+     Proportions taken from the reference: a plainly-set dark label, a value
+     that dominates the card, and a footer of outline-chip + figure + tail. */
   .dash-stat {
-    padding: 14px;
+    /* relative + hidden: the sparkline is an absolutely-positioned backdrop
+       anchored to the bottom edge, clipped by the card's own corners. */
+    position: relative;
+    overflow: hidden;
+    padding: 17px 17px 15px;
     border: 1px solid var(--color-line);
-    border-radius: 14px;
-    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 24px;
+    background-color: #ffffff;
+    box-shadow: 0 1px 1px -0.5px rgba(0, 0, 0, 0.04);
   }
+  .dash-stat-label {
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--color-ink);
+  }
+  .dash-stat-value {
+    font-family: var(--font-display);
+    /* Proportional figures, not tabular: at display size tabular-nums gives
+       every digit the width of a 0 and "21" reads loose. Columns of numbers
+       still get tabular — see the chart's table view. */
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+  }
+  .dash-stat-unit {
+    font-size: 12.5px;
+    color: var(--color-placeholder);
+  }
+  .dash-stat-foot {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 14px;
+    min-width: 0;
+    font-size: 12px;
+    line-height: 1.2;
+    color: var(--color-muted);
+  }
+  .dash-stat-lead {
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+
   /* Whole card is the link, so the target is the card and not just its title. */
   .dash-unit {
     display: block;
@@ -746,7 +792,7 @@
     width: 32px;
     height: 32px;
     flex-shrink: 0;
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--color-line-2);
     border-radius: 9999px;
     background-color: rgba(0, 0, 0, 0.05);
     animation: accountPulse 1.4s ease-in-out infinite;
