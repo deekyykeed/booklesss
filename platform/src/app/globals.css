@@ -764,6 +764,12 @@
     border-radius: 32px;
     background-color: #ffffff;
     box-shadow: 0 1px 1px -0.5px rgba(0, 0, 0, 0.04);
+    /* The card is the link — the hover says so without shouting. */
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .course-card:hover {
+    border-color: var(--color-line-2);
+    box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.08);
   }
   /* Label, the number large, then one measured line carrying the stat's mark.
      Proportions taken from the reference: a plainly-set dark label, a value

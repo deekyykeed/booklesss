@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { COURSES } from "@/lib/courses";
-import { checkpointsFor, labelFor, lessonsUnder, pathForId } from "@/lib/course";
+import { labelFor, lessonsUnder } from "@/lib/course";
 import { isStudyDay, streakSeries, studyHistory, useProgress } from "@/lib/progress";
-import { CourseGlyph } from "@/components/reader/CourseGlyph";
+import { CourseMark } from "./course-glyphs";
 import { smoothPath, StudyChart } from "./StudyChart";
 
 
@@ -261,7 +261,10 @@ export function HomeView({
             const profile = c.lessonIds.map((id) => (acc += hydrated ? doneCount(id) : 0));
 
             return (
-              <div key={c.slug} className="course-card squircle p-3.5 lg:p-[18px]">
+              /* The card IS the button — no CTAs inside it. It opens the
+                 course home, where "Pick up where you left off" carries the
+                 continue action. */
+              <Link key={c.slug} href={`/${c.slug}`} className="course-card squircle block p-3.5 lg:p-[18px]">
                 {/* A thin wash of the course's hue falling from the top edge. */}
                 <div
                   aria-hidden="true"
@@ -281,34 +284,21 @@ export function HomeView({
                     </div>
                   </div>
                   {/* Mark above the title, the personal line under it. */}
-                  <div className="flex items-end justify-between gap-3">
-                    <div className="min-w-0">
-                      <span className="block" style={{ color: tone }}>
-                        <CourseGlyph slug={c.slug} size={24} />
-                      </span>
-                      <Link
-                        href={`/${c.slug}`}
-                        className="mt-2 block truncate font-display text-[18px] font-semibold leading-tight text-ink"
-                      >
-                        {c.title}
-                      </Link>
-                      <p className="mt-1 truncate text-[12.5px] text-placeholder">
+                  <div className="min-w-0">
+                    <CourseMark slug={c.slug} tone={tone} />
+                    <p className="mt-2 truncate font-display text-[18px] font-semibold leading-tight text-ink">
+                      {c.title}
+                    </p>
+                    <p className="mt-1 truncate text-[12.5px] text-placeholder">
                         {hydrated
                           ? cDone > 0
                             ? `${unitsStarted} of ${c.unitIds.length} unit${c.unitIds.length === 1 ? "" : "s"} started · Next · ${labelFor(next)}`
                             : "Not started yet"
                           : " "}
                       </p>
-                    </div>
-                    <Link href={pathForId(next)} className="dash-cta squircle shrink-0">
-                      {cDone > 0 ? "Continue" : "Start"}
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M5 12h13m0 0-5.5-5.5M18 12l-5.5 5.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </Link>
                   </div>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>
