@@ -34,6 +34,9 @@ export type StudyDay = {
   checks: number;
   /** Seconds spent reading, measured by StudyClock — see its accrual rules. */
   secs: number;
+  /** Steps whose final checkpoint was cleared that day. Counts completion
+   *  events — un-ticking later doesn't erase the day the step was finished. */
+  steps: number;
 };
 
 type State = {
@@ -104,8 +107,12 @@ function cleanDays(raw: unknown): Record<string, StudyDay> {
   const out: Record<string, StudyDay> = {};
   for (const [date, v] of Object.entries(raw)) {
     if (!v || typeof v !== "object") continue;
-    const day = { checks: whole((v as StudyDay).checks), secs: whole((v as StudyDay).secs) };
-    if (day.checks || day.secs) out[date] = day;
+    const day = {
+      checks: whole((v as StudyDay).checks),
+      secs: whole((v as StudyDay).secs),
+      steps: whole((v as StudyDay).steps),
+    };
+    if (day.checks || day.secs || day.steps) out[date] = day;
   }
   return out;
 }
@@ -135,7 +142,7 @@ function read(scope: string | null): State {
       const rawDays: unknown = (parsed as { days?: unknown })?.days;
       const days: Record<string, StudyDay> = {};
       if (Array.isArray(rawDays)) {
-        for (const d of rawDays) if (typeof d === "string") days[d] = { checks: 1, secs: 0 };
+        for (const d of rawDays) if (typeof d === "string") days[d] = { checks: 1, secs: 0, steps: 0 };
       }
       return { done: cleanMap((parsed as { done?: unknown })?.done), days };
     }
@@ -179,7 +186,7 @@ const getServerSnapshot = () => EMPTY;
 
 /** Today's row, with whatever is already on it. */
 const dayAt = (days: Record<string, StudyDay>, date: string): StudyDay =>
-  days[date] ?? { checks: 0, secs: 0 };
+  days[date] ?? { checks: 0, secs: 0, steps: 0 };
 
 /**
  * @param markToday true when the change represents studying (clearing a
@@ -195,10 +202,16 @@ function mutate(lessonId: string, next: (prev: string[]) => string[], markToday:
   // Credit what was actually cleared, so finishing a whole step in one go
   // counts as the several checkpoints it was, not as one.
   const added = Math.max(0, list.length - prev.length);
-  if (markToday && added) {
+  // A step is finished the moment its last checkpoint clears — that event is
+  // what the steps series records, so it's detected here rather than derived
+  // later (the store can't reconstruct WHEN a step completed after the fact).
+  const ids = checkpointsFor(lessonId);
+  const covers = (l: string[]) => ids.length > 0 && ids.every((id) => l.includes(id));
+  const finished = markToday && !covers(prev) && covers(list) ? 1 : 0;
+  if (markToday && (added || finished)) {
     const t = today();
     const day = dayAt(days, t);
-    days = { ...days, [t]: { ...day, checks: day.checks + added } };
+    days = { ...days, [t]: { ...day, checks: day.checks + added, steps: day.steps + finished } };
   }
 
   const state = { done, days };
@@ -274,6 +287,26 @@ function longestStreakFrom(days: Record<string, StudyDay>): number {
     if (run > best) best = run;
   }
   return best;
+}
+
+/** The streak as it stood at the end of each of the last `span` days —
+ *  the series a sparkline can plot. No "today isn't over" grace here: a day
+ *  either qualified or it didn't. */
+export function streakSeries(days: Record<string, StudyDay>, span: number): number[] {
+  const out: number[] = [];
+  const cursor = new Date();
+  cursor.setDate(cursor.getDate() - (span - 1));
+  for (let i = 0; i < span; i++) {
+    let n = 0;
+    const c = new Date(cursor);
+    while (counts(days[isoDay(c)])) {
+      n++;
+      c.setDate(c.getDate() - 1);
+    }
+    out.push(n);
+    cursor.setDate(cursor.getDate() + 1);
+  }
+  return out;
 }
 
 /** One entry per day from `from` to today, gaps filled with zeroes. */

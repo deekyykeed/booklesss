@@ -52,7 +52,7 @@ const fmtDay = (iso: string, long = false) => {
  * overshoot a local extreme — every point on the line stays within the values
  * either side of it. The curve is a reading aid; it must not invent data.
  */
-function smoothPath(pts: { x: number; y: number }[]): string {
+export function smoothPath(pts: { x: number; y: number }[]): string {
   if (pts.length < 2) return pts.length ? `M${pts[0].x} ${pts[0].y}` : "";
 
   const n = pts.length;

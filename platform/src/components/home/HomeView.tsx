@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { useId, useMemo } from "react";
 import { COURSES } from "@/lib/courses";
 import { checkpointsFor, labelFor, pathForId } from "@/lib/course";
-import { isStudyDay, studyHistory, useProgress } from "@/lib/progress";
+import { isStudyDay, streakSeries, studyHistory, useProgress } from "@/lib/progress";
 import { CompletionRing } from "@/components/reader/CompletionRing";
-import { StudyChart } from "./StudyChart";
+import { smoothPath, StudyChart } from "./StudyChart";
 
 /* ------------------------------------------------------------------ *
  * Home — above the courses, not inside one.
@@ -22,11 +22,12 @@ import { StudyChart } from "./StudyChart";
  *     target to measure against.
  * ------------------------------------------------------------------ */
 
-/* One hue per stat, so a tile is identifiable before the number is read.
- * Validated together against the card surface with the dataviz script:
- * lightness band, chroma floor, all-pairs CVD separation and contrast all
- * pass. Green sits on Checkpoints deliberately — completion is the one thing
- * green means across this app, and a cleared checkpoint is exactly that. */
+/* One hue per stat, carried by its sparkline — the reference dashboard does
+ * the same across its top row (blue, yellow, cyan). Validated together
+ * against the card surface with the dataviz script: lightness band, chroma
+ * floor, all-pairs CVD separation and contrast all pass. Green sits on
+ * Checkpoints deliberately — completion is the one thing green means across
+ * this app, and a cleared checkpoint is exactly that. */
 const TONE = {
   streak: "#eb6834",
   days: "#2a78d6",
@@ -62,15 +63,32 @@ export function HomeView({
   const { hydrated, doneCount, isComplete, streak, bestStreak, daysStudied, studiedToday, totalSecs, days } =
     useProgress();
 
-  /* This week against last. Both halves are measured the same way the streak
-   * measures a day, so the tiles can't disagree with each other. */
-  const week = useMemo(() => {
+  /* Each tile's series and its week-over-week movement, all measured with
+   * the same isStudyDay test the streak uses, so no two tiles can disagree
+   * about what counted as a day. 14 days: last week vs the week before. */
+  const spark = useMemo(() => {
     const h = studyHistory(days, 14);
-    const prev = h.slice(0, 7);
-    const cur = h.slice(7);
+    const checksDaily = h.map((d) => d.checks);
+    const stepsDaily = h.map((d) => d.steps);
+    const streaks = streakSeries(days, 14);
+    const qualifying = h.map((d) => (isStudyDay(d) ? 1 : 0));
+
+    // Days studied is cumulative — the count as it stood at each day's end,
+    // including every qualifying day before the window.
+    const inWindow = new Set(h.map((d) => d.date));
+    let acc = Object.entries(days).filter(([date, d]) => isStudyDay(d) && !inWindow.has(date)).length;
+    const cumDays = h.map((d) => (acc += isStudyDay(d) ? 1 : 0));
+
+    const sum = (a: number[]) => a.reduce((n, v) => n + v, 0);
     return {
-      daysDelta: cur.filter(isStudyDay).length - prev.filter(isStudyDay).length,
-      checks: cur.reduce((n, d) => n + d.checks, 0),
+      checksDaily,
+      stepsDaily,
+      streaks,
+      cumDays,
+      dChecks: weekDelta(sum(checksDaily.slice(7)), sum(checksDaily.slice(0, 7))),
+      dSteps: weekDelta(sum(stepsDaily.slice(7)), sum(stepsDaily.slice(0, 7))),
+      dDays: weekDelta(sum(qualifying.slice(7)), sum(qualifying.slice(0, 7))),
+      dStreak: weekDelta(streaks[13] ?? 0, streaks[6] ?? 0),
     };
   }, [days]);
 
@@ -117,42 +135,38 @@ export function HomeView({
       {/* ---- how the studying is going ---- */}
       <section className="mt-6">
         <h2 className="dash-heading">Your studying</h2>
-        <div className="mt-2.5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="mt-2.5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Stat
             label="Current streak"
             value={String(streak)}
             unit={streak === 1 ? "day" : "days"}
-            lead={bestStreak > 0 ? `Best ${bestStreak}` : "—"}
-            tail={bestStreak > 0 ? (bestStreak === 1 ? "day so far" : "days so far") : "no streak yet"}
             tone={TONE.streak}
-            icon={<FireGlyph />}
+            series={spark.streaks}
+            delta={spark.dStreak}
           />
           <Stat
             label="Days studied"
             value={String(daysStudied)}
             unit={daysStudied === 1 ? "day" : "days"}
-            lead={week.daysDelta > 0 ? `+${week.daysDelta}` : String(week.daysDelta)}
-            tail="vs last week"
             tone={TONE.days}
-            icon={<CalendarGlyph />}
+            series={spark.cumDays}
+            delta={spark.dDays}
           />
           <Stat
             label="Checkpoints"
             value={`${done.checks}`}
             unit={`/ ${totals.checks}`}
-            lead={`+${week.checks}`}
-            tail="this week"
             tone={TONE.checks}
-            icon={<CheckGlyph />}
+            series={spark.checksDaily}
+            delta={spark.dChecks}
           />
           <Stat
             label="Steps complete"
             value={`${done.steps}`}
             unit={`/ ${totals.steps}`}
-            lead={String(totals.steps - done.steps)}
-            tail="still to go"
             tone={TONE.steps}
-            icon={<MedalGlyph />}
+            series={spark.stepsDaily}
+            delta={spark.dSteps}
           />
         </div>
 
@@ -228,102 +242,126 @@ export function HomeView({
   );
 }
 
-/* ---------------- stat glyphs ----------------
+/* ---------------- the reference tile, piece by piece ----------------
  *
- * Solar · Bold Duotone, hand-inlined. Solar's duotones are two paths in
- * currentColor, the back one at opacity .5 — the set ships no colours of its
- * own, so "its default colours" would be whatever grey it inherits. Each stat
- * gets a hue instead and the two tones follow it, which is what makes the mark
- * read as itself at this size: grey duotone at 17px collapsed into a blob,
- * which is why these were Line before.
+ * Copied from the reference card: label top-left with clear air under it, the
+ * value large on the left, a small area sparkline on the right with its peak
+ * marked and labelled, and a footer of trend icon + delta + "last week".
  *
- * The hues were run through the dataviz validator against the card surface:
- * lightness band, chroma floor, all-pairs CVD separation and contrast all
- * pass. Colour is never the only cue anyway — every tile is labelled.
- *
- * Inlined rather than resolved through <Icon> because this is a client
- * component, and <Icon> would pull the whole ~7,400-icon Solar set into the
- * bundle for four paths. Bodies copied byte-for-byte from @iconify-json/solar.
+ * The footer icon is Solar Line "Graph Up"/"Graph Down" — the rounded square
+ * is part of the glyph itself, not a container drawn around it. Green when
+ * the week improved, the house red when it fell, grey when flat. Inlined
+ * because <Icon> would pull the whole Solar set into this client bundle.
  */
 
-const G = { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", "aria-hidden": true, className: "shrink-0" } as const;
-
-function FireGlyph() {
+function TrendGlyph({ dir }: { dir: 1 | 0 | -1 }) {
+  const color = dir > 0 ? "#17754d" : dir < 0 ? "var(--color-danger)" : "var(--color-placeholder)";
   return (
-    <svg {...G}>
-      <path fill="currentColor" opacity=".5" d="M12.832 21.801c3.126-.626 7.168-2.875 7.168-8.69c0-5.291-3.873-8.815-6.658-10.434c-.619-.36-1.342.113-1.342.828v1.828c0 1.442-.606 4.074-2.29 5.169c-.86.559-1.79-.278-1.894-1.298l-.086-.838c-.1-.974-1.092-1.565-1.87-.971C4.461 8.46 3 10.33 3 13.11C3 20.221 8.289 22 10.933 22q.232 0 .484-.015c.446-.056 0 .099 1.415-.185" />
-      <path fill="currentColor" d="M8 18.444c0 2.62 2.111 3.43 3.417 3.542c.446-.056 0 .099 1.415-.185C13.871 21.434 15 20.492 15 18.444c0-1.297-.819-2.098-1.46-2.473c-.196-.115-.424.03-.441.256c-.056.718-.746 1.29-1.215.744c-.415-.482-.59-1.187-.59-1.638v-.59c0-.354-.357-.59-.663-.408C9.495 15.008 8 16.395 8 18.445" />
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0" style={{ color }}>
+      <g fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464C22 4.93 22 7.286 22 12s0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z" />
+        {dir < 0 ? (
+          <path strokeLinecap="round" strokeLinejoin="round" d="m7 10l2.293 2.293a1 1 0 0 0 1.414 0l1.586-1.586a1 1 0 0 1 1.414 0L17 14m0 0v-2.5m0 2.5h-2.5" />
+        ) : (
+          <path strokeLinecap="round" strokeLinejoin="round" d="m7 14l2.293-2.293a1 1 0 0 1 1.414 0l1.586 1.586a1 1 0 0 0 1.414 0L17 10m0 0v2.5m0-2.5h-2.5" />
+        )}
+      </g>
     </svg>
   );
 }
 
-function CalendarGlyph() {
+/* The tile's own graph: last 14 days of the stat, gradient wash under a
+ * smooth line (same monotone-cubic as the big chart, so a sparkline can't
+ * overshoot its data either), peak day marked with a dot on a hairline and
+ * labelled with its value. Decorative supplement — the numbers it summarises
+ * are the text beside it. */
+function Spark({ series, tone }: { series: number[]; tone: string }) {
+  const id = useId();
+  const W = 104;
+  const H = 58;
+  const TOP = 16; // room for the peak label
+  const max = Math.max(...series);
+  if (series.length < 2 || max <= 0) return <span aria-hidden="true" style={{ width: W }} className="shrink-0" />;
+
+  const n = series.length;
+  const pts = series.map((v, i) => ({
+    x: 2 + (i * (W - 4)) / (n - 1),
+    y: TOP + (1 - v / max) * (H - TOP - 2),
+  }));
+  const line = smoothPath(pts);
+  const area = `${line} L${pts[n - 1].x.toFixed(1)} ${H} L${pts[0].x.toFixed(1)} ${H} Z`;
+  const peak = series.indexOf(max);
+  const labelX = Math.min(Math.max(pts[peak].x, 12), W - 12);
+
   return (
-    <svg {...G}>
-      <path fill="currentColor" d="M6.94 2c.416 0 .753.324.753.724v1.46c.668-.012 1.417-.012 2.26-.012h4.015c.842 0 1.591 0 2.259.013v-1.46c0-.4.337-.725.753-.725s.753.324.753.724V4.25c1.445.111 2.394.384 3.09 1.055c.698.67.982 1.582 1.097 2.972L22 9H2v-.724c.116-1.39.4-2.302 1.097-2.972s1.645-.944 3.09-1.055V2.724c0-.4.337-.724.753-.724" />
-      <path fill="currentColor" opacity=".5" d="M22 14v-2c0-.839-.004-2.335-.017-3H2.01c-.013.665-.01 2.161-.01 3v2c0 3.771 0 5.657 1.172 6.828S6.228 22 10 22h4c3.77 0 5.656 0 6.828-1.172S22 17.772 22 14" />
-      <path fill="currentColor" d="M18 17a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0" />
+    <svg width={W} height={H} aria-hidden="true" className="shrink-0">
+      <defs>
+        <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor={tone} stopOpacity="0.22" />
+          <stop offset="1" stopColor={tone} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={area} fill={`url(#${id})`} />
+      <line x1={pts[peak].x} x2={pts[peak].x} y1={pts[peak].y} y2={H - 1} stroke="var(--color-line-2)" strokeWidth="1" />
+      <path d={line} fill="none" stroke={tone} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+      <circle cx={pts[peak].x} cy={pts[peak].y} r="3.5" fill={tone} stroke="#ffffff" strokeWidth="2" />
+      <text x={labelX} y={10.5} textAnchor="middle" className="fill-[var(--color-ink)] text-[10px] font-semibold">
+        {max}
+      </text>
     </svg>
   );
 }
 
-function CheckGlyph() {
-  return (
-    <svg {...G}>
-      <path fill="currentColor" opacity=".5" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10" />
-      <path fill="currentColor" d="M16.03 8.97a.75.75 0 0 1 0 1.06l-5 5a.75.75 0 0 1-1.06 0l-2-2a.75.75 0 1 1 1.06-1.06l1.47 1.47l2.235-2.235L14.97 8.97a.75.75 0 0 1 1.06 0" />
-    </svg>
-  );
-}
-
-function MedalGlyph() {
-  return (
-    <svg {...G}>
-      <path fill="currentColor" opacity=".5" d="M12.795 2h-2c-1.886 0-2.829 0-3.414.586c-.586.586-.586 1.528-.586 3.414v3.5h10V6c0-1.886 0-2.828-.586-3.414S14.681 2 12.795 2" />
-      <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d="M13.23 5.783a3 3 0 0 0-2.872 0L5.564 8.397A3 3 0 0 0 4 11.031v4.938a3 3 0 0 0 1.564 2.634l4.794 2.614a3 3 0 0 0 2.872 0l4.795-2.614a3 3 0 0 0 1.564-2.634V11.03a3 3 0 0 0-1.564-2.634zM11.794 10.5c-.284 0-.474.34-.854 1.023l-.098.176c-.108.194-.162.29-.246.354s-.19.088-.399.135l-.19.044c-.739.167-1.108.25-1.195.532c-.088.283.163.577.666 1.165l.13.152c.144.167.215.25.247.354s.022.215 0 .438l-.02.203c-.076.785-.114 1.178.116 1.352s.575.015 1.266-.303l.179-.082c.196-.09.294-.135.398-.135s.203.045.399.135l.179.082c.69.319 1.036.477 1.266.303s.192-.567.116-1.352l-.02-.203c-.022-.223-.033-.334 0-.438c.032-.103.103-.187.246-.354l.13-.152c.504-.588.755-.882.667-1.165c-.088-.282-.457-.365-1.194-.532l-.191-.044c-.21-.047-.315-.07-.399-.135c-.084-.064-.138-.16-.246-.354l-.098-.176c-.38-.682-.57-1.023-.855-1.023" />
-    </svg>
-  );
+/** Week-over-week movement, phrased like the reference: a percentage when
+ *  last week gives a denominator, the raw count when it doesn't. Measured
+ *  both sides — never a projection. */
+function weekDelta(cur: number, prev: number): { text: string; dir: 1 | 0 | -1 } {
+  if (prev > 0) {
+    const pct = Math.round(((cur - prev) / prev) * 100);
+    return { text: `${pct > 0 ? "+" : ""}${pct}%`, dir: pct > 0 ? 1 : pct < 0 ? -1 : 0 };
+  }
+  if (cur > 0) return { text: `+${cur}`, dir: 1 };
+  return { text: "0", dir: 0 };
 }
 
 function Stat({
   label,
   value,
   unit,
-  lead,
-  tail,
   tone,
-  icon,
+  series,
+  delta,
 }: {
   label: string;
   value: string;
   unit?: string;
-  /** The footer's emphasised figure, in the stat's hue. Always a measured
-   *  number — there is no projection or target anywhere on this page. */
-  lead: string;
-  /** What that figure is of, in muted ink. */
-  tail: string;
-  /** The stat's hue. Carries the glyph, its chip and the footer figure. */
+  /** The stat's hue — carries the sparkline. */
   tone: string;
-  icon: React.ReactNode;
+  /** Last 14 days of this stat, oldest first. */
+  series: number[];
+  delta: { text: string; dir: 1 | 0 | -1 };
 }) {
   return (
     <div className="dash-stat squircle">
       <p className="dash-stat-label">{label}</p>
-      <p className="mt-3 flex items-baseline gap-1.5">
-        <span className="dash-stat-value">{value}</span>
-        {unit && <span className="dash-stat-unit">{unit}</span>}
-      </p>
+      {/* The air between the title and the number is part of the reference,
+          not slack to trim — the value needs the row to itself. */}
+      <div className="mt-4 flex items-end justify-between gap-3">
+        <p className="flex min-w-0 items-baseline gap-1.5 pb-1">
+          <span className="dash-stat-value">{value}</span>
+          {unit && <span className="dash-stat-unit">{unit}</span>}
+        </p>
+        <Spark series={series} tone={tone} />
+      </div>
       <p className="dash-stat-foot">
-        {/* The glyph on its own. A chip around it was a box drawn about a
-            13px mark, and the box was taking the room the mark needed to be
-            legible. One hue drives the glyph and the figure beside it. */}
-        <span className="shrink-0" style={{ color: tone }}>
-          {icon}
+        <TrendGlyph dir={delta.dir} />
+        <span
+          className="dash-stat-lead"
+          style={{ color: delta.dir > 0 ? "#17754d" : delta.dir < 0 ? "var(--color-danger)" : "var(--color-muted)" }}
+        >
+          {delta.text}
         </span>
-        <span className="dash-stat-lead" style={{ color: tone }}>
-          {lead}
-        </span>
-        <span className="truncate">{tail}</span>
+        <span className="truncate">last week</span>
       </p>
     </div>
   );
