@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Icon } from "@/lib/icon";
 import { clerkEnabled } from "@/lib/clerk";
 import { Account as ClerkAccount } from "./Account";
@@ -89,14 +90,19 @@ export function TopBar({
             the mark + wordmark + org switcher. The wordmark is common to both. */}
         <div className="flex items-center gap-2.5 md:gap-2">
           <MobileMenuButton />
-          <span className="hidden md:inline-flex">
-            <Logo />
-          </span>
-          {/* font-bold is already the heaviest weight Familjen Grotesk ships,
-              so weight is maxed — a slightly larger size gives it more presence. */}
-          <span className="font-display text-[17px] font-bold leading-none tracking-tight text-ink">
-            {orgName}
-          </span>
+          {/* The lockup is the way home. The course navigator shows one course
+              and its steps and nothing above them, so without this a student
+              who opened a lesson has no route back to the dashboard. */}
+          <Link href="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-70 md:gap-2">
+            <span className="hidden md:inline-flex">
+              <Logo />
+            </span>
+            {/* font-bold is already the heaviest weight Familjen Grotesk ships,
+                so weight is maxed — a slightly larger size gives it more presence. */}
+            <span className="font-display text-[17px] font-bold leading-none tracking-tight text-ink">
+              {orgName}
+            </span>
+          </Link>
           <Icon name="sort-vertical-linear" size={14} className="hidden text-muted md:block" />
         </div>
 

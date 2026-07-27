@@ -18,6 +18,7 @@ import { useFollow } from "./useFollow";
 import { courseForNode, type CourseMeta } from "@/lib/courses";
 import { useProgress } from "@/lib/progress";
 import { CompletionRing } from "./CompletionRing";
+import { CourseGlyph } from "./CourseGlyph";
 
 const STEP = 18;
 const RAIL = 2;
@@ -113,23 +114,6 @@ function Chevron({ open, active }: { open: boolean; active?: boolean }) {
     </svg>
   );
 }
-/* Solar · Line · "Widget" — the four-panel grid, i.e. the dashboard glyph.
- * Inlined rather than resolved through <Icon>, which would pull the whole
- * ~7,400-icon Solar set into this client bundle for one path (same reason as
- * the chevron and panel glyphs below). Kept byte-identical to the set. */
-function DashboardGlyph() {
-  return (
-    <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" className="shrink-0">
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        d="M2.5 6.5c0-1.886 0-2.828.586-3.414S4.614 2.5 6.5 2.5s2.828 0 3.414.586s.586 1.528.586 3.414s0 2.828-.586 3.414s-1.528.586-3.414.586s-2.828 0-3.414-.586S2.5 8.386 2.5 6.5Zm11 11c0-1.886 0-2.828.586-3.414s1.528-.586 3.414-.586s2.828 0 3.414.586s.586 1.528.586 3.414s0 2.828-.586 3.414s-1.528.586-3.414.586s-2.828 0-3.414-.586s-.586-1.528-.586-3.414Zm-11 0c0-1.886 0-2.828.586-3.414S4.614 13.5 6.5 13.5s2.828 0 3.414.586s.586 1.528.586 3.414s0 2.828-.586 3.414s-1.528.586-3.414.586s-2.828 0-3.414-.586S2.5 19.386 2.5 17.5Zm11-11c0-1.886 0-2.828.586-3.414S15.614 2.5 17.5 2.5s2.828 0 3.414.586s.586 1.528.586 3.414s0 2.828-.586 3.414s-1.528.586-3.414.586s-2.828 0-3.414-.586S13.5 8.386 13.5 6.5Z"
-      />
-    </svg>
-  );
-}
-
 function PanelIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -202,33 +186,13 @@ type Ctx = {
   onSelect: (id: string) => void;
 };
 
-/* Solar · Bold Duotone · "Book 2". Duotone rather than Line because this names
- * the course you're actually in — the same weight the nav gives an active row.
- * Inlined for the same reason as the glyphs above: <Icon> would pull the whole
- * Solar set into this client bundle. Solar's own opacity=".5" is untouched, so
- * the two tones follow the icon's colour. */
-function CourseGlyph() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" className="shrink-0 text-ink">
-      <path
-        fill="currentColor"
-        opacity=".5"
-        d="M4.727 2.733c.306-.308.734-.508 1.544-.618C7.105 2.002 8.209 2 9.793 2h4.414c1.584 0 2.688.002 3.522.115c.81.11 1.238.31 1.544.618c.305.308.504.74.613 1.557c.112.84.114 1.955.114 3.552V18H7.426c-1.084 0-1.462.006-1.753.068c-.513.11-.96.347-1.285.667c-.11.108-.164.161-.291.505A1.3 1.3 0 0 0 4 19.7V7.842c0-1.597.002-2.711.114-3.552c.109-.816.308-1.249.613-1.557"
-      />
-      <path
-        fill="currentColor"
-        d="M20 18H7.426c-1.084 0-1.462.006-1.753.068c-.513.11-.96.347-1.285.667c-.11.108-.164.161-.291.505s-.107.489-.066.78l.022.15c.11.653.31.998.616 1.244c.307.246.737.407 1.55.494c.837.09 1.946.092 3.536.092h4.43c1.59 0 2.7-.001 3.536-.092c.813-.087 1.243-.248 1.55-.494c.2-.16.354-.362.467-.664H8a.75.75 0 0 1 0-1.5h11.975c.018-.363.023-.776.025-1.25M7.25 7A.75.75 0 0 1 8 6.25h8a.75.75 0 0 1 0 1.5H8A.75.75 0 0 1 7.25 7M8 9.75a.75.75 0 0 0 0 1.5h5a.75.75 0 0 0 0-1.5z"
-      />
-    </svg>
-  );
-}
-
 /* The course this rail belongs to, at the top of it.
  *
- * Plain bold text didn't read as the course — it sat at the same weight as the
- * unit rows beneath it. As a card with its own glyph and a progress bar it's a
- * different kind of thing entirely: what you're in, and how far through it you
- * are, rather than somewhere to go.
+ * Not boxed. It doesn't need a card to say it's a different kind of thing from
+ * the rows below — it's the only title in the panel, at nearly twice their
+ * size, with its own mark and a progress bar. A border around it would just be
+ * a second edge inside a panel that already has one. A hairline separates it
+ * from the tree instead.
  *
  * The bar is the same one the dashboard uses (.dash-bar), so a student sees the
  * same measure of the same course in both places. */
@@ -243,17 +207,17 @@ function CourseHeader({ course }: { course: CourseMeta }) {
     : 0;
 
   return (
-    <div className="course-card squircle">
-      <div className="flex items-center gap-2">
-        <CourseGlyph />
-        <span className="min-w-0 flex-1 truncate font-display text-[14.5px] font-semibold leading-tight text-ink">
+    <div className="px-2 pb-3 pt-1">
+      <div className="flex items-center gap-2.5 text-ink">
+        <CourseGlyph slug={course.slug} size={22} />
+        <span className="min-w-0 flex-1 truncate font-display text-[17px] font-semibold leading-tight">
           {course.title}
         </span>
       </div>
-      <div className="dash-bar mt-2.5" role="presentation">
+      <div className="dash-bar mt-3" role="presentation">
         <span className="dash-bar-fill" style={{ width: `${pct}%` }} />
       </div>
-      <p className="mt-1.5 flex items-baseline justify-between gap-2 text-[11px] text-muted">
+      <p className="mt-2 flex items-baseline justify-between gap-2 text-[11.5px] text-muted">
         <span className="truncate">
           {stepsDone} of {steps} steps
         </span>
@@ -648,16 +612,14 @@ export function Sidebar() {
         className="absolute inset-y-0 -right-1 z-30 hidden w-2 cursor-col-resize focus:outline-none md:block"
       />
 
-      {/* Way out of the course, above the step tree — the dashboard is a level
-          up from whatever step they're reading. */}
-      <div className="p-2 pb-0">
-        <Link href="/" onClick={() => closeMobileNav()} className="home-nav squircle">
-          <DashboardGlyph />
-          <span className="min-w-0 flex-1 truncate">Dashboard</span>
-        </Link>
-        <div className="mx-2 mt-2 h-px bg-line" />
-        {course && <CourseHeader course={course} />}
-      </div>
+      {/* The course you're in, above its steps. The way back out to the
+          dashboard is the wordmark in the header. */}
+      {course && (
+        <div className="p-2 pb-0">
+          <CourseHeader course={course} />
+          <div className="mx-2 h-px bg-line" />
+        </div>
+      )}
 
       <nav className="no-scrollbar flex-1 overflow-y-auto p-2">
         <div ref={listRef} className="relative flex flex-col gap-0.5">
