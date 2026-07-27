@@ -3,6 +3,7 @@ import { Inter, Familjen_Grotesk } from "next/font/google";
 import localFont from "next/font/local";
 import { ClerkProvider } from "@clerk/nextjs";
 import { clerkEnabled } from "@/lib/clerk";
+import { clerkAppearance } from "@/lib/clerk-appearance";
 import "./globals.css";
 
 // The logo is an icon again, so Burbank is no longer loaded. Both it and
@@ -60,19 +61,7 @@ export default function RootLayout({
   if (!clerkEnabled) return document;
 
   return (
-    <ClerkProvider
-      appearance={{
-        variables: {
-          colorPrimary: "#17754d", // brand green, darkened to stay readable
-          colorForeground: "#171717",
-          colorMutedForeground: "#707070",
-          colorBorder: "#dfdfdf",
-          borderRadius: "10px",
-          fontFamily: "var(--font-inter), ui-sans-serif, system-ui, sans-serif",
-        },
-      }}
-    >
-      {document}
-    </ClerkProvider>
+    // One appearance for every Clerk surface — see lib/clerk-appearance.ts.
+    <ClerkProvider appearance={clerkAppearance}>{document}</ClerkProvider>
   );
 }

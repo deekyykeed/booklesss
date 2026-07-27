@@ -50,6 +50,16 @@ Two things to keep in mind when touching this:
 - Nothing is gated yet. Every lesson is still public; making the course
   members-only is a one-line change in `src/proxy.ts` (see the comment there).
 
+All Clerk surfaces — the sign-in popup, the `/sign-in` and `/sign-up` pages and
+the account menu — are styled once in `src/lib/clerk-appearance.ts`, set on
+`ClerkProvider` so it cascades. It uses style objects rather than Tailwind class
+names, since those live outside JSX and this project has been bitten by the
+class scanner dropping arbitrary values. Actions are black (matching the app's
+other buttons); green stays reserved for progress and success.
+
+The header's account slot reserves its 32px while Clerk boots (`.account-skeleton`),
+so the avatar doesn't pop in and shift the row.
+
 Note the file is `proxy.ts`, not `middleware.ts` — Next 16 renamed the
 convention. Clerk's docs still say middleware; only the filename differs.
 

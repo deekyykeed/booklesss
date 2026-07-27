@@ -535,6 +535,29 @@
     }
   }
 
+  /* Placeholder for the account control while Clerk's script loads. Holds the
+     exact 32px the avatar will occupy, with the same hairline as the circle
+     buttons beside it, so the header doesn't reflow when auth resolves. */
+  .account-skeleton {
+    display: block;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 9999px;
+    background-color: rgba(0, 0, 0, 0.05);
+    animation: accountPulse 1.4s ease-in-out infinite;
+  }
+  @keyframes accountPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .account-skeleton {
+      animation: none;
+    }
+  }
+
   /* ------------------------------------------------------------------ *
    * Step checkpoints + completion
    *
