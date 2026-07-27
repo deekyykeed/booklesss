@@ -1,4 +1,5 @@
 import { TopBar } from "@/components/TopBar";
+import { Rail } from "@/components/Rail";
 import { Sidebar } from "@/components/reader/Sidebar";
 import { MobileNavProvider, MobileScrim } from "@/components/reader/MobileNav";
 import { ProgressScope } from "@/components/reader/ProgressScope";
@@ -25,6 +26,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           ))}
         </div>
         <TopBar orgName="Bklsss" />
+      <Rail active="courses" />
         <Sidebar />
         <MobileScrim />
         <main className="content-frame no-rightbar">
