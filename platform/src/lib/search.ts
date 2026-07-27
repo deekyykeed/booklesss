@@ -64,8 +64,12 @@ const INDEX: Record_[] = (() => {
   const walk = (nodes: NavNode[]) => {
     for (const n of nodes) {
       if (n.lesson) {
+        /* Just the immediate parent, not the whole trail. "Microeconomics /
+         * Supply & demand / Elasticity" is three quarters of a narrow screen
+         * spent on context nobody asked for — and it used to crowd the lesson
+         * title, the one thing being scanned, down to a couple of letters. */
         const trail = breadcrumbFor(n.id);
-        const parents = trail.slice(0, -1).join(" / ");
+        const parents = trail.at(-2) ?? "";
         const href = pathForId(n.id);
         const kicker = n.lesson.kicker ?? "";
 
@@ -85,8 +89,9 @@ const INDEX: Record_[] = (() => {
           out.push({
             kind: "section",
             label: s.heading,
-            // A section is only meaningful next to the lesson it belongs to.
-            hint: [parents, n.lesson.title].filter(Boolean).join(" / "),
+            // A section is only meaningful next to the lesson it belongs to —
+            // and the lesson alone is enough to place it.
+            hint: n.lesson.title,
             href: `${href}#${s.id}`,
             key: s.heading.toLowerCase(),
             body: raw.toLowerCase(),

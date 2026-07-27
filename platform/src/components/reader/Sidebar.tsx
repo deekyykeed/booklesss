@@ -112,16 +112,19 @@ function Chevron({ open, active }: { open: boolean; active?: boolean }) {
     </svg>
   );
 }
-/* Solar · Linear · "Home 2", inlined rather than pulled through <Icon>: this is
- * a client component, and that helper imports the whole ~7,400-icon Solar set.
- * Same reasoning as the chevron above and the composer's glyphs. */
-function HomeGlyph() {
+/* Solar · Line · "Widget" — the four-panel grid, i.e. the dashboard glyph.
+ * Inlined rather than resolved through <Icon>, which would pull the whole
+ * ~7,400-icon Solar set into this client bundle for one path (same reason as
+ * the chevron and panel glyphs below). Kept byte-identical to the set. */
+function DashboardGlyph() {
   return (
     <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" className="shrink-0">
-      <g fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M2 12.204c0-2.289 0-3.433.52-4.381c.518-.949 1.467-1.537 3.364-2.715l2-1.241C9.889 2.622 10.892 2 12 2s2.11.622 4.116 1.867l2 1.241c1.897 1.178 2.846 1.766 3.365 2.715S22 9.915 22 12.203v1.522c0 3.9 0 5.851-1.172 7.063S17.771 22 14 22h-4c-3.771 0-5.657 0-6.828-1.212S2 17.626 2 13.725z" />
-        <path strokeLinecap="round" d="M12 15v3" />
-      </g>
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        d="M2.5 6.5c0-1.886 0-2.828.586-3.414S4.614 2.5 6.5 2.5s2.828 0 3.414.586s.586 1.528.586 3.414s0 2.828-.586 3.414s-1.528.586-3.414.586s-2.828 0-3.414-.586S2.5 8.386 2.5 6.5Zm11 11c0-1.886 0-2.828.586-3.414s1.528-.586 3.414-.586s2.828 0 3.414.586s.586 1.528.586 3.414s0 2.828-.586 3.414s-1.528.586-3.414.586s-2.828 0-3.414-.586s-.586-1.528-.586-3.414Zm-11 0c0-1.886 0-2.828.586-3.414S4.614 13.5 6.5 13.5s2.828 0 3.414.586s.586 1.528.586 3.414s0 2.828-.586 3.414s-1.528.586-3.414.586s-2.828 0-3.414-.586S2.5 19.386 2.5 17.5Zm11-11c0-1.886 0-2.828.586-3.414S15.614 2.5 17.5 2.5s2.828 0 3.414.586s.586 1.528.586 3.414s0 2.828-.586 3.414s-1.528.586-3.414.586s-2.828 0-3.414-.586S13.5 8.386 13.5 6.5Z"
+      />
     </svg>
   );
 }
@@ -572,11 +575,11 @@ export function Sidebar() {
         className="absolute inset-y-0 -right-1 z-30 hidden w-2 cursor-col-resize focus:outline-none md:block"
       />
 
-      {/* Way out of the course, above the step tree — the student's home is a
-          level up from whatever step they're reading. */}
+      {/* Way out of the course, above the step tree — the dashboard is a level
+          up from whatever step they're reading. */}
       <div className="p-2 pb-0">
         <Link href="/" onClick={() => closeMobileNav()} className="home-nav squircle">
-          <HomeGlyph />
+          <DashboardGlyph />
           <span className="min-w-0 flex-1 truncate">Dashboard</span>
         </Link>
         <div className="mx-2 mt-2 h-px bg-line" />
