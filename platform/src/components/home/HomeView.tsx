@@ -247,6 +247,13 @@ export function HomeView({
   );
 }
 
+/** The pale end of a Plump gradient: the hue mixed toward white, the same
+ *  arithmetic the icon generator uses, so line and icon share their stops. */
+function pale(hex: string, t: number): string {
+  const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+  return "#" + c.map((v) => Math.round(v + (255 - v) * t).toString(16).padStart(2, "0")).join("");
+}
+
 /* The tile's own graph — the card's backdrop, not a figure beside the
  * number. Anchored to the bottom edge and spanning the full card width,
  * behind the text, at a fraction of the ink it had as a foreground element:
@@ -302,19 +309,31 @@ function Spark({ series, tone }: { series: number[]; tone: string }) {
                 <stop offset="0" stopColor={tone} stopOpacity="0.10" />
                 <stop offset="1" stopColor={tone} stopOpacity="0" />
               </linearGradient>
-              {/* The stroke's own fade: faint where the fortnight begins,
-                  strongest at today, so the line reads as arriving at the
-                  head rather than hanging uniformly. */}
+              {/* The line wears the icon's own gradient, pale stop to main
+                  colour, still fading in — faint where the fortnight begins,
+                  arriving at full presence at today. */}
               <linearGradient id={`${id}s`} x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0" stopColor={tone} stopOpacity="0.10" />
-                <stop offset="1" stopColor={tone} stopOpacity="0.5" />
+                <stop offset="0" stopColor={pale(tone, 0.55)} stopOpacity="0.45" />
+                <stop offset="1" stopColor={tone} stopOpacity="0.9" />
               </linearGradient>
+              <filter id={`${id}f`} x="-60%" y="-60%" width="220%" height="220%">
+                <feDropShadow dx="0" dy="1" stdDeviation="1.3" floodColor={tone} floodOpacity="0.45" />
+              </filter>
             </defs>
             <path d={area} fill={`url(#${id})`} />
             <path d={line} fill="none" stroke={`url(#${id}s)`} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-            {/* Today: a white head ringed in the line's own colour — an open
-                point where the line has got to, not a plug on the end. */}
-            <circle cx={pts[pts.length - 1].x} cy={pts[pts.length - 1].y} r="3.5" fill="#ffffff" stroke={tone} strokeWidth="2" />
+            {/* Today: a white head ringed in the line's main colour, lifted
+                off the card by a shadow in the same hue — an open point where
+                the line has got to, not a plug on the end. */}
+            <circle
+              cx={pts[pts.length - 1].x}
+              cy={pts[pts.length - 1].y}
+              r="3.5"
+              fill="#ffffff"
+              stroke={tone}
+              strokeWidth="2"
+              filter={`url(#${id}f)`}
+            />
           </svg>
         );
       })()}
