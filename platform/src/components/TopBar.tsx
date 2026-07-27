@@ -46,11 +46,14 @@ function CircleButton({ icon, label, className = "" }: { icon: string; label: st
   );
 }
 
+/* Same shell as the circle buttons beside it — white, one #d4d4d4 hairline,
+ * the same three-layer shadow. It used to be a green disc, which made the one
+ * control that isn't about progress the loudest thing in the header; green is
+ * reserved for completion. */
 function Avatar() {
   return (
     <div
-      className="grid h-8 w-8 place-items-center overflow-hidden rounded-full border border-black/10 text-[11px] font-semibold text-white shadow-[0_0.6px_0.6px_-1.25px_rgba(0,0,0,0.18),0_2.3px_2.3px_-2.5px_rgba(0,0,0,0.16)]"
-      style={{ background: "linear-gradient(135deg,#3ecf8e,#1f9e6b)" }}
+      className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-full border border-[#d4d4d4] bg-white text-[11px] font-semibold text-ink-2 shadow-[0_0.6px_0.6px_-1.25px_rgba(0,0,0,0.18),0_2.3px_2.3px_-2.5px_rgba(0,0,0,0.16),0_10px_10px_-3.75px_rgba(0,0,0,0.06)]"
       aria-label="Account"
     >
       DM

@@ -97,20 +97,21 @@ export const clerkAppearance: Appearance = {
     },
 
     /* ---- the profile picture + its menu ---- */
-    // 32px to line up with the circle buttons beside it; the hairline and
-    // shadow are lifted straight off them.
+    // 32px to line up with the circle buttons beside it, wearing the same
+    // #d4d4d4 hairline and the same shadow — one family, not a special case.
     userButtonAvatarBox: {
       width: "32px",
       height: "32px",
-      border: "1px solid rgba(0,0,0,0.1)",
+      border: "1px solid var(--color-line-2)",
       boxShadow: CIRCLE_SHADOW,
     },
-    // Clerk falls back to initials when a user has no photo. Give that
-    // fallback the house gradient so it reads as ours either way — a real
-    // photo simply covers it.
+    // Clerk falls back to initials when a user has no photo. That fallback used
+    // to be a green gradient, which put the header's loudest colour on the one
+    // control that has nothing to do with progress — green is for completion
+    // here. Plain white with ink initials instead; a real photo covers it.
     avatarBox: {
-      background: "linear-gradient(135deg,#3ecf8e,#1f9e6b)",
-      color: "#ffffff",
+      background: "#ffffff",
+      color: "var(--color-ink-2)",
     },
     userButtonPopoverCard: {
       borderRadius: "14px",
