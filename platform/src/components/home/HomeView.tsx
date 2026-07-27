@@ -99,10 +99,16 @@ export function HomeView({
             unit={streak === 1 ? "day" : "days"}
             label="Current streak"
             lit={streak > 0}
+            icon={<FireGlyph />}
           />
-          <Stat value={String(daysStudied)} unit={daysStudied === 1 ? "day" : "days"} label="Days studied" />
-          <Stat value={`${done.checks}`} unit={`/ ${totals.checks}`} label="Checkpoints" />
-          <Stat value={`${done.steps}`} unit={`/ ${totals.steps}`} label="Steps complete" />
+          <Stat
+            value={String(daysStudied)}
+            unit={daysStudied === 1 ? "day" : "days"}
+            label="Days studied"
+            icon={<CalendarGlyph />}
+          />
+          <Stat value={`${done.checks}`} unit={`/ ${totals.checks}`} label="Checkpoints" icon={<CheckGlyph />} />
+          <Stat value={`${done.steps}`} unit={`/ ${totals.steps}`} label="Steps complete" icon={<MedalGlyph />} />
         </div>
 
         {/* Full width under the tiles: the tiles are today's state, this is the
@@ -177,24 +183,92 @@ export function HomeView({
   );
 }
 
+/* ---------------- stat glyphs ----------------
+ *
+ * Solar · Line, hand-inlined. Line rather than Bold Duotone: at 17px Solar's
+ * duotones collapse into a grey blob — the faint layer is usually a filled
+ * panel, and the detail drawn inside it disappears. Inlined rather than
+ * resolved through <Icon> because this file is a client component, and <Icon>
+ * would pull the whole ~7,400-icon Solar set into the bundle for four paths.
+ * Bodies copied byte-for-byte from @iconify-json/solar.
+ *
+ * They're identifying marks, not decoration: one per measure, sized to sit
+ * beside the number without competing with it. */
+
+const G = { width: 17, height: 17, viewBox: "0 0 24 24", fill: "none", "aria-hidden": true, className: "shrink-0" } as const;
+
+function FireGlyph() {
+  return (
+    <svg {...G}>
+      <g fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M20 13.111C20 20.222 13.956 22 10.933 22C8.29 22 3 20.222 3 13.111c0-2.782 1.461-4.65 2.86-5.716c.778-.594 1.77-.003 1.87.971l.086.838c.105 1.02 1.033 1.857 1.893 1.298C11.394 9.407 12 6.775 12 5.333V5.01c0-1.43 1.444-2.35 2.602-1.512C17.165 5.35 20 8.584 20 13.11Z" />
+        <path d="M8 18.445C8 21.289 10.489 22 11.733 22c1.09 0 3.267-.711 3.267-3.555c0-1.102-.59-1.845-1.16-2.274c-.398-.299-.957-.03-1.094.449c-.178.624-.823 1.016-1.152.456c-.3-.512-.3-1.28-.3-1.743c0-.636-.64-1.048-1.155-.674C9.106 15.409 8 16.68 8 18.445Z" />
+      </g>
+    </svg>
+  );
+}
+
+function CalendarGlyph() {
+  return (
+    <svg {...G}>
+      <g fill="none">
+        <path stroke="currentColor" strokeWidth="1.5" d="M2 12c0-3.771 0-5.657 1.172-6.828S6.229 4 10 4h4c3.771 0 5.657 0 6.828 1.172S22 8.229 22 12v2c0 3.771 0 5.657-1.172 6.828S17.771 22 14 22h-4c-3.771 0-5.657 0-6.828-1.172S2 17.771 2 14z" />
+        <path stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" d="M7 4V2.5M17 4V2.5M2.5 9h19" />
+        <path fill="currentColor" d="M18 17a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0" />
+      </g>
+    </svg>
+  );
+}
+
+function CheckGlyph() {
+  return (
+    <svg {...G}>
+      <g fill="none" stroke="currentColor" strokeWidth="1.5">
+        <circle cx="12" cy="12" r="10" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="m8.5 12.5l2 2l5-5" />
+      </g>
+    </svg>
+  );
+}
+
+function MedalGlyph() {
+  return (
+    <svg {...G}>
+      <g fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M17 8V6c0-1.886 0-2.828-.586-3.414S14.886 2 13 2h-2c-1.886 0-2.828 0-3.414.586S7 4.114 7 6v2" />
+        <path d="M10.564 5.783a3 3 0 0 1 2.872 0l4.794 2.614a3 3 0 0 1 1.564 2.634v4.938a3 3 0 0 1-1.564 2.634l-4.794 2.614a3 3 0 0 1-2.872 0l-4.795-2.614a3 3 0 0 1-1.563-2.634V11.03a3 3 0 0 1 1.563-2.634z" />
+        <path d="M11.146 11.523c.38-.682.57-1.023.854-1.023s.474.341.854 1.023l.098.176c.108.194.162.29.246.355c.085.063.19.087.4.135l.19.043c.738.167 1.107.25 1.195.533c.088.282-.164.576-.667 1.164l-.13.152c-.143.168-.215.251-.247.355s-.021.214 0 .438l.02.203c.076.784.114 1.177-.115 1.351c-.23.175-.576.016-1.267-.302l-.178-.083c-.197-.09-.295-.135-.399-.135s-.202.045-.399.135l-.178.083c-.691.318-1.037.477-1.267.302c-.23-.174-.191-.567-.115-1.351l.02-.203c.021-.224.032-.335 0-.438c-.032-.104-.104-.187-.247-.355l-.13-.152c-.503-.588-.755-.882-.667-1.164c.088-.283.457-.366 1.195-.533l.19-.043c.21-.048.315-.072.4-.135c.084-.064.138-.161.246-.355z" />
+      </g>
+    </svg>
+  );
+}
+
 function Stat({
   value,
   unit,
   label,
   lit,
+  icon,
 }: {
   value: string;
   unit?: string;
   label: string;
   lit?: boolean;
+  icon: React.ReactNode;
 }) {
+  // The lit streak takes the icon with it, so the tile reads as one thing
+  // rather than a green number beside a grey mark.
+  const tone = lit ? "var(--color-brand-deep)" : "var(--color-ink)";
   return (
     <div className="dash-stat squircle">
-      <p className="flex items-baseline gap-1">
+      <p className="flex items-baseline gap-1.5">
         <span
-          className="font-display text-[22px] font-semibold tabular-nums leading-none"
-          style={lit ? { color: "var(--color-brand-deep)" } : { color: "var(--color-ink)" }}
+          className="self-center"
+          style={{ color: lit ? "var(--color-brand-deep)" : "var(--color-placeholder)" }}
         >
+          {icon}
+        </span>
+        <span className="font-display text-[22px] font-semibold tabular-nums leading-none" style={{ color: tone }}>
           {value}
         </span>
         {unit && <span className="text-[11.5px] text-placeholder">{unit}</span>}
