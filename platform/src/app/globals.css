@@ -546,8 +546,10 @@
    * backdrop, one hairline, no heavy shadow — so the index reads as part of
    * the app rather than a separate marketing page.
    * ------------------------------------------------------------------ */
-  /* Home rail rows, and the "Dashboard" way-out at the top of the course
-     navigator. Same box as a .step row so the two rails line up exactly. */
+  /* The course card at the top of the course rail. Sits on the white the rest
+     of the rail doesn't have, so it reads as the thing the rail belongs to
+     rather than another row in it. */
+  /* Home rail rows. Same box as a .step row so the two rails line up exactly. */
   .home-nav {
     box-sizing: border-box;
     display: flex;

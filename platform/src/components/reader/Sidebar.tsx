@@ -15,9 +15,10 @@ import {
   type NavNode,
 } from "@/lib/course";
 import { useFollow } from "./useFollow";
-import { courseForNode } from "@/lib/courses";
+import { courseForNode, type CourseMeta } from "@/lib/courses";
 import { useProgress } from "@/lib/progress";
 import { CompletionRing } from "./CompletionRing";
+import { CourseGlyph } from "./CourseGlyph";
 
 const STEP = 18;
 const RAIL = 2;
@@ -113,23 +114,6 @@ function Chevron({ open, active }: { open: boolean; active?: boolean }) {
     </svg>
   );
 }
-/* Solar · Line · "Widget" — the four-panel grid, i.e. the dashboard glyph.
- * Inlined rather than resolved through <Icon>, which would pull the whole
- * ~7,400-icon Solar set into this client bundle for one path (same reason as
- * the chevron and panel glyphs below). Kept byte-identical to the set. */
-function DashboardGlyph() {
-  return (
-    <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" className="shrink-0">
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        d="M2.5 6.5c0-1.886 0-2.828.586-3.414S4.614 2.5 6.5 2.5s2.828 0 3.414.586s.586 1.528.586 3.414s0 2.828-.586 3.414s-1.528.586-3.414.586s-2.828 0-3.414-.586S2.5 8.386 2.5 6.5Zm11 11c0-1.886 0-2.828.586-3.414s1.528-.586 3.414-.586s2.828 0 3.414.586s.586 1.528.586 3.414s0 2.828-.586 3.414s-1.528.586-3.414.586s-2.828 0-3.414-.586s-.586-1.528-.586-3.414Zm-11 0c0-1.886 0-2.828.586-3.414S4.614 13.5 6.5 13.5s2.828 0 3.414.586s.586 1.528.586 3.414s0 2.828-.586 3.414s-1.528.586-3.414.586s-2.828 0-3.414-.586S2.5 19.386 2.5 17.5Zm11-11c0-1.886 0-2.828.586-3.414S15.614 2.5 17.5 2.5s2.828 0 3.414.586s.586 1.528.586 3.414s0 2.828-.586 3.414s-1.528.586-3.414.586s-2.828 0-3.414-.586S13.5 8.386 13.5 6.5Z"
-      />
-    </svg>
-  );
-}
-
 function PanelIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -201,6 +185,47 @@ type Ctx = {
   /** Fired when a leaf step is picked — moves the selector and closes the drawer. */
   onSelect: (id: string) => void;
 };
+
+/* The course this rail belongs to, at the top of it.
+ *
+ * Not boxed. It doesn't need a card to say it's a different kind of thing from
+ * the rows below — it's the only title in the panel, at nearly twice their
+ * size, with its own mark and a progress bar. A border around it would just be
+ * a second edge inside a panel that already has one. A hairline separates it
+ * from the tree instead.
+ *
+ * The bar is the same one the dashboard uses (.dash-bar), so a student sees the
+ * same measure of the same course in both places. */
+function CourseHeader({ course }: { course: CourseMeta }) {
+  const { hydrated, doneCount, isComplete } = useProgress();
+
+  const steps = course.lessonIds.length;
+  const stepsDone = hydrated ? course.lessonIds.filter((id) => isComplete(id)).length : 0;
+  const checksDone = hydrated ? course.lessonIds.reduce((n, id) => n + doneCount(id), 0) : 0;
+  const pct = course.totalCheckpoints
+    ? Math.round((checksDone / course.totalCheckpoints) * 100)
+    : 0;
+
+  return (
+    <div className="px-2 pb-3 pt-1">
+      <div className="flex items-center gap-2.5 text-ink">
+        <CourseGlyph slug={course.slug} size={22} />
+        <span className="min-w-0 flex-1 truncate font-display text-[17px] font-semibold leading-tight">
+          {course.title}
+        </span>
+      </div>
+      <div className="dash-bar mt-3" role="presentation">
+        <span className="dash-bar-fill" style={{ width: `${pct}%` }} />
+      </div>
+      <p className="mt-2 flex items-baseline justify-between gap-2 text-[11.5px] text-muted">
+        <span className="truncate">
+          {stepsDone} of {steps} steps
+        </span>
+        <span className="shrink-0 tabular-nums">{pct}%</span>
+      </p>
+    </div>
+  );
+}
 
 /* Per-step completion, at the end of its row. Always rendered so the row width
  * never shifts mid-read, but dimmed right down until the step is actually
@@ -587,27 +612,14 @@ export function Sidebar() {
         className="absolute inset-y-0 -right-1 z-30 hidden w-2 cursor-col-resize focus:outline-none md:block"
       />
 
-      {/* Way out of the course, above the step tree — the dashboard is a level
-          up from whatever step they're reading. */}
-      <div className="p-2 pb-0">
-        <Link href="/" onClick={() => closeMobileNav()} className="home-nav squircle">
-          <DashboardGlyph />
-          <span className="min-w-0 flex-1 truncate">Dashboard</span>
-        </Link>
-        <div className="mx-2 mt-2 h-px bg-line" />
-        {/* Which course this rail is showing. With one course it was obvious;
-            with several, a list of units alone doesn't say where you are.
-            Suppressed where the course's whole tree hangs off a single node
-            named after it — otherwise the rail reads "Corporate Finance" twice,
-            once as the heading and again as the row beneath it. (Promoting that
-            node's children instead would misplace the active indicator, which
-            takes its indent from the node's depth in the full tree.) */}
-        {course && !(units.length === 1 && units[0].label === course.title) && (
-          <p className="truncate px-2.5 pb-0.5 pt-3 font-display text-[13.5px] font-semibold text-ink">
-            {course.title}
-          </p>
-        )}
-      </div>
+      {/* The course you're in, above its steps. The way back out to the
+          dashboard is the wordmark in the header. */}
+      {course && (
+        <div className="p-2 pb-0">
+          <CourseHeader course={course} />
+          <div className="mx-2 h-px bg-line" />
+        </div>
+      )}
 
       <nav className="no-scrollbar flex-1 overflow-y-auto p-2">
         <div ref={listRef} className="relative flex flex-col gap-0.5">
