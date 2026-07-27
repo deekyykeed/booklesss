@@ -246,7 +246,7 @@ export function HomeView({
  * bundle for four paths. Bodies copied byte-for-byte from @iconify-json/solar.
  */
 
-const G = { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", "aria-hidden": true, className: "shrink-0" } as const;
+const G = { width: 13, height: 13, viewBox: "0 0 24 24", fill: "none", "aria-hidden": true, className: "shrink-0" } as const;
 
 function FireGlyph() {
   return (
@@ -320,8 +320,7 @@ function Stat({
           className="dash-stat-chip"
           style={{
             color: tone,
-            backgroundColor: `color-mix(in oklab, ${tone} 12%, transparent)`,
-            borderColor: `color-mix(in oklab, ${tone} 24%, transparent)`,
+            borderColor: `color-mix(in oklab, ${tone} 55%, transparent)`,
           }}
         >
           {icon}
