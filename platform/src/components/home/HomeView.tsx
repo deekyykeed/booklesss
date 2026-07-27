@@ -36,6 +36,20 @@ const TONE = {
   steps: "#4a3aa7",
 } as const;
 
+/** The reference's anchored delta — "+20% · 25 last week": the movement AND
+ *  the number it moved from, so the percentage explains itself. Falls back to
+ *  a raw "+n" when last week was zero and no percentage exists. */
+function weekFoot(cur: number, prev: number, unit?: string): { lead: string; tail: string; good: boolean } {
+  // Pluralised by last week's count, since that's the number printed.
+  const u = unit ? ` ${prev === 1 ? unit : `${unit}s`}` : "";
+  if (prev > 0) {
+    const pct = Math.round(((cur - prev) / prev) * 100);
+    return { lead: `${pct > 0 ? "+" : ""}${pct}%`, tail: `${prev}${u} last week`, good: cur > 0 && cur >= prev };
+  }
+  if (cur > 0) return { lead: `+${cur}`, tail: `0${unit ? ` ${unit}s` : ""} last week`, good: true };
+  return { lead: "0", tail: unit ? `${unit}s this week` : "this week", good: false };
+}
+
 /** Total reading time, for the chart's caption. */
 function fmtTotal(secs: number): string {
   const m = Math.round(secs / 60);
@@ -86,10 +100,9 @@ export function HomeView({
       stepsDaily,
       streaks,
       cumDays,
-      dChecks: weekDelta(sum(checksDaily.slice(7)), sum(checksDaily.slice(0, 7))),
-      dSteps: weekDelta(sum(stepsDaily.slice(7)), sum(stepsDaily.slice(0, 7))),
-      dDays: weekDelta(sum(qualifying.slice(7)), sum(qualifying.slice(0, 7))),
-      dStreak: weekDelta(streaks[13] ?? 0, streaks[6] ?? 0),
+      wDays: { cur: sum(qualifying.slice(7)), prev: sum(qualifying.slice(0, 7)) },
+      wChecks: { cur: sum(checksDaily.slice(7)), prev: sum(checksDaily.slice(0, 7)) },
+      wSteps: { cur: sum(stepsDaily.slice(7)), prev: sum(stepsDaily.slice(0, 7)) },
     };
   }, [days]);
 
@@ -144,7 +157,11 @@ export function HomeView({
             tone={TONE.streak}
             icon={<FireGlyph />}
             series={spark.streaks}
-            delta={spark.dStreak}
+            foot={{
+              lead: `Best ${bestStreak}`,
+              tail: bestStreak === 1 ? "day" : "days",
+              good: streak > 0 && streak >= bestStreak,
+            }}
           />
           <Stat
             label="Days studied"
@@ -153,7 +170,7 @@ export function HomeView({
             tone={TONE.days}
             icon={<CalendarGlyph />}
             series={spark.cumDays}
-            delta={spark.dDays}
+            foot={weekFoot(spark.wDays.cur, spark.wDays.prev, "day")}
           />
           <Stat
             label="Checkpoints"
@@ -162,7 +179,7 @@ export function HomeView({
             tone={TONE.checks}
             icon={<CheckGlyph />}
             series={spark.checksDaily}
-            delta={spark.dChecks}
+            foot={weekFoot(spark.wChecks.cur, spark.wChecks.prev)}
           />
           <Stat
             label="Steps complete"
@@ -171,7 +188,7 @@ export function HomeView({
             tone={TONE.steps}
             icon={<MedalGlyph />}
             series={spark.stepsDaily}
-            delta={spark.dSteps}
+            foot={weekFoot(spark.wSteps.cur, spark.wSteps.prev, "step")}
           />
         </div>
 
@@ -393,18 +410,6 @@ function Spark({ series, tone }: { series: number[]; tone: string }) {
   );
 }
 
-/** Week-over-week movement, phrased like the reference: a percentage when
- *  last week gives a denominator, the raw count when it doesn't. Measured
- *  both sides — never a projection. */
-function weekDelta(cur: number, prev: number): { text: string; dir: 1 | 0 | -1 } {
-  if (prev > 0) {
-    const pct = Math.round(((cur - prev) / prev) * 100);
-    return { text: `${pct > 0 ? "+" : ""}${pct}%`, dir: pct > 0 ? 1 : pct < 0 ? -1 : 0 };
-  }
-  if (cur > 0) return { text: `+${cur}`, dir: 1 };
-  return { text: "0", dir: 0 };
-}
-
 function Stat({
   label,
   value,
@@ -412,18 +417,20 @@ function Stat({
   tone,
   icon,
   series,
-  delta,
+  foot,
 }: {
   label: string;
   value: string;
   unit?: string;
-  /** The stat's hue — carries the sparkline. */
+  /** The stat's hue — carries the mark and the sparkline. */
   tone: string;
-  /** The stat's mark, 24px in plain ink, between the title and the number. */
   icon: React.ReactNode;
   /** Last 14 days of this stat, oldest first. */
   series: number[];
-  delta: { text: string; dir: 1 | 0 | -1 };
+  /** One line in the stat's own terms — a percentage means nothing for a
+   *  streak, so each tile says what movement actually means for it. `good`
+   *  lights the figure in the tile's hue; otherwise it recedes to grey. */
+  foot: { lead: string; tail: string; good: boolean };
 }) {
   return (
     <div className="dash-stat squircle">
@@ -436,27 +443,22 @@ function Stat({
           <p className="dash-stat-label">{label}</p>
           <span className="shrink-0" style={{ color: tone }}>{icon}</span>
         </div>
-        {/* mt-7/mt-2: the number sits low, nearer the delta than the title —
+        {/* mt-7/mt-2: the number sits low, nearer its footer than the title —
             the air lives between title and figure, not inside the figures. */}
         <p className="mt-7 flex items-baseline gap-1.5">
           <span className="dash-stat-value">{value}</span>
           {unit && <span className="dash-stat-unit">{unit}</span>}
         </p>
-        {/* The percentage carries the verdict in the tile's own voice: a rich
-            step of the sparkline's hue when the week improved, dim grey when
-            it fell or went nowhere — good weeks light up in the stat's
-            colour, bad ones recede rather than shout. */}
         <p className="dash-stat-foot">
           <span
             className="dash-stat-lead"
             style={{
-              color:
-                delta.dir > 0 ? `color-mix(in oklab, ${tone} 82%, #000)` : "var(--color-placeholder)",
+              color: foot.good ? `color-mix(in oklab, ${tone} 82%, #000)` : "var(--color-placeholder)",
             }}
           >
-            {delta.text}
+            {foot.lead}
           </span>
-          <span className="truncate">last week</span>
+          <span className="truncate">{foot.tail}</span>
         </p>
       </div>
     </div>
