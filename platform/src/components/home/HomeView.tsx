@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { COURSES } from "@/lib/courses";
-import { labelFor, lessonsUnder } from "@/lib/course";
+import { checkpointsFor, labelFor, lessonsUnder } from "@/lib/course";
 import { isStudyDay, streakSeries, studyHistory, useProgress } from "@/lib/progress";
 import { CourseMark } from "./course-glyphs";
 import { smoothPath, StudyChart } from "./StudyChart";
@@ -247,18 +247,18 @@ export function HomeView({
             const pctDone = c.totalCheckpoints ? Math.round((cDone / c.totalCheckpoints) * 100) : 0;
             const started = c.lessonIds.filter((id) => !hydrated || !isComplete(id));
             const next = started.find((id) => hydrated && doneCount(id) > 0) ?? started[0] ?? c.lessonIds[0];
-            const unitsStarted = hydrated
-              ? c.unitIds.filter((uid) => lessonsUnder(uid).some((id) => doneCount(id) > 0)).length
-              : 0;
             const tone = COURSE_TONE[c.slug] ?? COURSE_TONE_FALLBACK;
-            /* The card's mini graph is the course's own progress curve —
-               checkpoints cleared, accumulated lesson by lesson in course
-               order, so the line climbs where you've worked and runs flat
-               where you haven't got to yet, its head at the current total.
-               Not a time series: the store doesn't record per-course
-               activity by day, and this shape is honest and available. */
-            let acc = 0;
-            const profile = c.lessonIds.map((id) => (acc += hydrated ? doneCount(id) : 0));
+            /* The card's centrepiece is the course's spine: one segment per
+               unit, sized by the unit's share of the course, filled by its
+               cleared checkpoints. It shows where in the course the work has
+               landed — which a decorative curve never managed. */
+            const segments = c.unitIds.map((uid) => {
+              const ls = lessonsUnder(uid);
+              return {
+                total: ls.reduce((n, id) => n + checkpointsFor(id).length, 0),
+                done: hydrated ? ls.reduce((n, id) => n + doneCount(id), 0) : 0,
+              };
+            });
 
             return (
               /* The card IS the button — no CTAs inside it. It opens the
@@ -271,31 +271,43 @@ export function HomeView({
                   className="pointer-events-none absolute inset-x-0 top-0 h-14"
                   style={{ background: `linear-gradient(to bottom, ${tone}26, transparent)` }}
                 />
-                <Spark series={profile} tone={tone} />
-                {/* space-between: stats hang from the top, identity sits on
-                    the bottom, the air lives in the middle. */}
-                <div className="relative flex min-h-[188px] flex-col justify-between gap-6">
-                  {/* One stat left, two right. */}
+                <div className="relative">
+                  {/* Identity left, the one anchor number right. */}
                   <div className="flex items-start justify-between gap-3">
-                    <CardStat value={hydrated ? `${pctDone}%` : "–"} label="Complete" />
-                    <div className="flex gap-5">
-                      <CardStat right value={hydrated ? `${cSteps}/${c.lessonIds.length}` : "–"} label="Steps" />
-                      <CardStat right value={hydrated ? `${cDone}/${c.totalCheckpoints}` : "–"} label="Checkpoints" />
+                    <CourseMark slug={c.slug} tone={tone} size={30} />
+                    <div className="text-right">
+                      <p className="font-display text-[26px] font-semibold leading-none tracking-[-0.02em] text-ink">
+                        {hydrated ? `${pctDone}%` : "–"}
+                      </p>
+                      <p className="mt-1 text-[11px] font-medium text-muted">complete</p>
                     </div>
                   </div>
-                  {/* Mark above the title, the personal line under it. */}
-                  <div className="min-w-0">
-                    <CourseMark slug={c.slug} tone={tone} />
-                    <p className="mt-2 truncate font-display text-[18px] font-semibold leading-tight text-ink">
-                      {c.title}
+                    {/* Name and code, under the mark. */}
+                  <p className="mt-3 truncate font-display text-[19px] font-semibold leading-tight text-ink">
+                    {c.title}
+                  </p>
+                  <p className="mt-0.5 truncate text-[12.5px] text-muted">{c.subtitle}</p>
+
+                  {/* The spine: a segment per unit, its width the unit's share
+                      of the course, its fill the checkpoints cleared there. */}
+                  <div className="mt-5">
+                    <UnitBar segments={segments} tone={tone} />
+                    <p className="mt-2 truncate text-[12px] text-placeholder">
+                      {hydrated
+                        ? `${cDone} of ${c.totalCheckpoints} checkpoints · ${cSteps} of ${c.lessonIds.length} steps`
+                        : " "}
                     </p>
-                    <p className="mt-1 truncate text-[12.5px] text-placeholder">
-                        {hydrated
-                          ? cDone > 0
-                            ? `${unitsStarted} of ${c.unitIds.length} unit${c.unitIds.length === 1 ? "" : "s"} started · Next · ${labelFor(next)}`
-                            : "Not started yet"
-                          : " "}
-                      </p>
+                  </div>
+
+                  {/* Where to go from here — the whole card is the door. */}
+                  <div className="mt-4 flex items-center justify-between gap-3 border-t border-line pt-3">
+                    <p className="min-w-0 truncate text-[13px] leading-5 text-ink">
+                      <span className="text-placeholder">{cDone > 0 ? "Next · " : "Start · "}</span>
+                      {hydrated ? labelFor(next) : " "}
+                    </p>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="card-arrow shrink-0" style={{ color: tone }}>
+                      <path d="M5 12h13m0 0-5.5-5.5M18 12l-5.5 5.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
                   </div>
                 </div>
               </Link>
@@ -307,13 +319,29 @@ export function HomeView({
   );
 }
 
-/** A course card's compact figure — value over label, the tile grammar at
- *  card-corner size. */
-function CardStat({ value, label, right }: { value: string; label: string; right?: boolean }) {
+/* The course card's spine — one segment per unit, laid out in course order.
+ * Each segment's width is the unit's share of the course's checkpoints, and
+ * its fill is how much of that unit is cleared, so the bar reads as a map:
+ * where the work has landed, and how much course remains past it. */
+function UnitBar({ segments, tone }: { segments: { done: number; total: number }[]; tone: string }) {
   return (
-    <div className={right ? "text-right" : undefined}>
-      <p className="font-display text-[17px] font-semibold leading-none text-ink">{value}</p>
-      <p className="mt-1 text-[11px] font-medium text-muted">{label}</p>
+    <div className="flex gap-1" role="presentation">
+      {segments.map((s, i) => (
+        <div
+          key={i}
+          className="h-1.5 overflow-hidden rounded-full"
+          style={{ flexGrow: Math.max(s.total, 1), flexBasis: 0, backgroundColor: `${tone}1f` }}
+        >
+          <div
+            className="h-full rounded-full"
+            style={{
+              width: `${s.total ? (s.done / s.total) * 100 : 0}%`,
+              backgroundColor: tone,
+              transition: "width 600ms cubic-bezier(0.16, 1, 0.3, 1)",
+            }}
+          />
+        </div>
+      ))}
     </div>
   );
 }
