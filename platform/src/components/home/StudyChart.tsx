@@ -1,10 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
-import { studyHistory, type StudyDay } from "@/lib/progress";
+import type { StudyDay } from "@/lib/progress";
 
 /* ------------------------------------------------------------------ *
- * Time studied, day by day.
+ * Time studied, one week at a view.
+ *
+ * The plot is a Monday-to-Sunday week — seven slots, always — and the
+ * chevrons page back through earlier weeks, as far as the first recorded
+ * day and no further. The current week draws its line only up to today:
+ * the remaining weekday labels stand as empty slots rather than a line
+ * confidently reporting zeroes for days that haven't happened.
  *
  * One series — minutes read per day — so there is no legend: the heading names
  * what's plotted. The line carries the readable step of the brand green
@@ -18,7 +24,6 @@ import { studyHistory, type StudyDay } from "@/lib/progress";
  * the tooltip still reports the checkpoints. Nothing here is estimated.
  * ------------------------------------------------------------------ */
 
-const SPAN = 30; // days
 const H = 152;
 const PAD = { t: 16, r: 12, b: 24, l: 34 };
 
@@ -32,6 +37,18 @@ function niceMax(minutes: number): number {
   return Math.ceil(minutes / 60) * 60;
 }
 
+const isoDay = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+/** Monday of the week `back` weeks before the one containing today. Local
+ *  time throughout — study days are recorded against local dates. */
+function mondayOf(back: number): Date {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() - ((d.getDay() + 6) % 7) - back * 7);
+  return d;
+}
+
 const fmtDay = (iso: string, long = false) => {
   const [y, m, d] = iso.split("-").map(Number);
   const date = new Date(y, m - 1, d);
@@ -39,6 +56,16 @@ const fmtDay = (iso: string, long = false) => {
     ? { weekday: "short", day: "numeric", month: "short" }
     : { day: "numeric", month: "short" });
 };
+
+/** "21–27 Jul" / "28 Jul – 3 Aug" — the visible week, tersely. */
+function fmtRange(mon: Date): string {
+  const sun = new Date(mon);
+  sun.setDate(sun.getDate() + 6);
+  const m = (d: Date) => d.toLocaleDateString(undefined, { month: "short" });
+  return m(mon) === m(sun)
+    ? `${mon.getDate()}–${sun.getDate()} ${m(sun)}`
+    : `${mon.getDate()} ${m(mon)} – ${sun.getDate()} ${m(sun)}`;
+}
 
 /**
  * A smooth path through the points — monotone cubic, not a plain spline.
@@ -109,11 +136,29 @@ const fmtMins = (secs: number) => {
   return m % 60 ? `${h}h ${m % 60}m` : `${h}h`;
 };
 
+const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+function Chevron({ dir }: { dir: "left" | "right" }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d={dir === "left" ? "M15 6l-6 6 6 6" : "M9 6l6 6-6 6"}
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function StudyChart({ days, hydrated }: { days: Record<string, StudyDay>; hydrated: boolean }) {
   const id = useId();
   const box = useRef<HTMLDivElement>(null);
   const [w, setW] = useState(680);
   const [cursor, setCursor] = useState<number | null>(null);
+  /** Weeks back from the current one. 0 = this week. */
+  const [back, setBack] = useState(0);
 
   /* Measured rather than a scaling viewBox: preserveAspectRatio="none" would
    * stretch the 2px stroke and turn the end marker into an ellipse.
@@ -133,46 +178,83 @@ export function StudyChart({ days, hydrated }: { days: Record<string, StudyDay>;
     return () => ro.disconnect();
   }, [hydrated]);
 
-  const series = useMemo(() => (hydrated ? studyHistory(days, SPAN) : []), [days, hydrated]);
+  const monday = useMemo(() => mondayOf(back), [back]);
+  const todayIso = isoDay(new Date());
+
+  /* The seven slots of the visible week, gaps filled with zeroes. `drawn` is
+   * the prefix the line may cover — everything for a past week, up to today
+   * for the current one. Future days keep their slot and label but get no
+   * line: an absence is not a measurement. */
+  const series = useMemo(() => {
+    const out: (StudyDay & { date: string })[] = [];
+    const cursor = new Date(monday);
+    for (let i = 0; i < 7; i++) {
+      const date = isoDay(cursor);
+      out.push({ date, ...(days[date] ?? { checks: 0, secs: 0, steps: 0 }) });
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return out;
+  }, [days, monday]);
+  const drawn = useMemo(
+    () => (back === 0 ? series.filter((d) => d.date <= todayIso) : series),
+    [series, back, todayIso],
+  );
+
+  /* Paging stops at the first recorded day — an endless run of provably empty
+   * weeks is scrolling for its own sake. With nothing recorded at all there is
+   * nowhere to go. */
+  const earliest = useMemo(() => {
+    let min: string | undefined;
+    for (const [date, d] of Object.entries(days)) {
+      if ((d.secs || d.checks) && (!min || date < min)) min = date;
+    }
+    return min;
+  }, [days]);
+  const canGoBack = !!earliest && earliest < series[0].date;
 
   const plotW = Math.max(1, w - PAD.l - PAD.r);
   const plotH = H - PAD.t - PAD.b;
-  const max = niceMax(Math.max(...series.map((d) => d.secs / 60), 0));
-  const step = series.length > 1 ? plotW / (series.length - 1) : 0;
+  const max = niceMax(Math.max(...drawn.map((d) => d.secs / 60), 0));
+  const step = plotW / 6; // seven slots, six gaps — fixed, so Mon–Sun always fills the width
 
   const x = useCallback((i: number) => PAD.l + i * step, [step]);
   const y = useCallback((mins: number) => PAD.t + plotH - (mins / max) * plotH, [plotH, max]);
 
   const line = useMemo(
-    () => smoothPath(series.map((d, i) => ({ x: x(i), y: y(d.secs / 60) }))),
-    [series, x, y],
+    () => smoothPath(drawn.map((d, i) => ({ x: x(i), y: y(d.secs / 60) }))),
+    [drawn, x, y],
   );
-  const area = series.length
-    ? `${line} L${x(series.length - 1).toFixed(1)} ${PAD.t + plotH} L${PAD.l} ${PAD.t + plotH} Z`
+  const area = drawn.length > 1
+    ? `${line} L${x(drawn.length - 1).toFixed(1)} ${PAD.t + plotH} L${PAD.l} ${PAD.t + plotH} Z`
     : "";
 
-  const totalSecs = series.reduce((n, d) => n + d.secs, 0);
+  const totalSecs = drawn.reduce((n, d) => n + d.secs, 0);
   /* With nothing recorded, a line pinned to the baseline is worse than no line:
-   * it draws a confident zero across a month nobody has studied yet, which
-   * looks like a measurement rather than an absence. The axes stay so the shape
-   * is legible; the plot says what's missing. */
+   * it draws a confident zero across a week nobody has studied, which looks
+   * like a measurement rather than an absence. The axes stay so the shape is
+   * legible; the plot says what's missing. */
   const hasData = totalSecs > 0;
-  const active = hasData && cursor !== null ? series[cursor] : undefined;
+  const active = hasData && cursor !== null ? drawn[cursor] : undefined;
   /* The peak is the one point worth a direct label — a number on every day
-   * would be unreadable at 30 points and nobody would read it anyway. */
-  const peak = series.reduce((best, d, i) => (d.secs > (series[best]?.secs ?? 0) ? i : best), 0);
+   * would crowd even seven points, and the tooltip has the rest. */
+  const peak = drawn.reduce((best, d, i) => (d.secs > (drawn[best]?.secs ?? 0) ? i : best), 0);
   const showPeak = hasData && cursor === null;
+
+  const page = (dir: 1 | -1) => {
+    setCursor(null);
+    setBack((b) => Math.max(0, b + dir));
+  };
 
   const onMove = (e: React.PointerEvent<SVGSVGElement>) => {
     if (!step || !hasData) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const i = Math.round((e.clientX - rect.left - PAD.l) / step);
-    setCursor(Math.min(series.length - 1, Math.max(0, i)));
+    setCursor(Math.min(drawn.length - 1, Math.max(0, i)));
   };
 
   const onKey = (e: React.KeyboardEvent<SVGSVGElement>) => {
     if (!hasData) return;
-    const last = series.length - 1;
+    const last = drawn.length - 1;
     const at = cursor ?? last;
     if (e.key === "ArrowLeft") setCursor(Math.max(0, at - 1));
     else if (e.key === "ArrowRight") setCursor(Math.min(last, at + 1));
@@ -185,8 +267,40 @@ export function StudyChart({ days, hydrated }: { days: Record<string, StudyDay>;
 
   if (!hydrated) return <div className="chart-frame" style={{ height: H }} />;
 
+  const weekLabel = back === 0 ? "This week" : back === 1 ? "Last week" : fmtRange(monday);
+
   return (
     <div>
+      {/* The week being looked at, and the way to earlier ones. */}
+      <div className="mb-1 flex items-center justify-between gap-3">
+        <p className="text-[12px] font-medium text-muted">
+          {weekLabel}
+          {back > 0 && <span className="text-placeholder"> · {fmtRange(monday)}</span>}
+        </p>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => page(1)}
+            disabled={!canGoBack}
+            aria-label="Earlier week"
+            title="Earlier week"
+            className="squircle grid h-6 w-6 place-items-center rounded-lg text-muted transition-colors hover:bg-active hover:text-ink disabled:pointer-events-none disabled:opacity-30"
+          >
+            <Chevron dir="left" />
+          </button>
+          <button
+            type="button"
+            onClick={() => page(-1)}
+            disabled={back === 0}
+            aria-label="Later week"
+            title="Later week"
+            className="squircle grid h-6 w-6 place-items-center rounded-lg text-muted transition-colors hover:bg-active hover:text-ink disabled:pointer-events-none disabled:opacity-30"
+          >
+            <Chevron dir="right" />
+          </button>
+        </div>
+      </div>
+
       {/* data-no-swipe: the plot is an interactive horizontal surface — a
           finger sweeping the crosshair must never read as a drawer swipe. */}
       <div ref={box} className="relative" data-no-swipe>
@@ -197,8 +311,8 @@ export function StudyChart({ days, hydrated }: { days: Record<string, StudyDay>;
           tabIndex={0}
           aria-label={
             hasData
-              ? `Minutes studied per day over the last ${SPAN} days. ${fmtMins(totalSecs)} in total.`
-              : `Minutes studied per day over the last ${SPAN} days. Nothing recorded yet.`
+              ? `Minutes studied per day, ${weekLabel.toLowerCase()} (${fmtRange(monday)}). ${fmtMins(totalSecs)} in total.`
+              : `Minutes studied per day, ${weekLabel.toLowerCase()} (${fmtRange(monday)}). Nothing recorded.`
           }
           onPointerMove={onMove}
           onPointerLeave={() => setCursor(null)}
@@ -248,33 +362,41 @@ export function StudyChart({ days, hydrated }: { days: Record<string, StudyDay>;
               textAnchor="middle"
               className="fill-[var(--color-muted)] text-[12.5px]"
             >
-              No reading time yet — open a step and this fills in.
+              {back === 0
+                ? "No reading time yet this week — open a step and this fills in."
+                : "Nothing recorded this week."}
             </text>
           )}
 
-          {/* x labels: the ends and the middle, never all thirty */}
-          {series.length > 1 &&
-            [0, Math.floor((series.length - 1) / 2), series.length - 1].map((i) => (
-              <text
-                key={i}
-                x={Math.min(Math.max(x(i), PAD.l + 12), PAD.l + plotW - 12)}
-                y={H - 7}
-                textAnchor={i === 0 ? "start" : i === series.length - 1 ? "end" : "middle"}
-                className="fill-[var(--color-placeholder)] text-[10px]"
-              >
-                {i === series.length - 1 ? "Today" : fmtDay(series[i].date)}
-              </text>
-            ))}
+          {/* x labels: the seven weekdays, every one — that's the point of a
+              week view. Days yet to happen sit dimmer. */}
+          {series.map((d, i) => (
+            <text
+              key={d.date}
+              x={x(i)}
+              y={H - 7}
+              textAnchor={i === 0 ? "start" : i === 6 ? "end" : "middle"}
+              className={
+                d.date > todayIso
+                  ? "fill-[var(--color-line-2)] text-[10px]"
+                  : d.date === todayIso
+                    ? "fill-[var(--color-muted)] text-[10px] font-semibold"
+                    : "fill-[var(--color-placeholder)] text-[10px]"
+              }
+            >
+              {WEEKDAYS[i]}
+            </text>
+          ))}
 
-          {/* Today, at the head of the line. Always drawn (the crosshair dot
-              simply lands on top of it when the cursor reaches the end), so
-              the reader can see where "now" is without hovering. White with
-              the line's ring and a shadow in the same hue — the head design
-              the stat-tile sparklines wear. */}
-          {hasData && (
+          {/* The head of the line — today in the current week, Sunday in a past
+              one. Always drawn (the crosshair dot simply lands on top of it when
+              the cursor reaches the end), so the reader can see where the line
+              ends without hovering. White with the line's ring and a shadow in
+              the same hue — the head design the stat-tile sparklines wear. */}
+          {hasData && drawn.length > 0 && (
             <circle
-              cx={x(series.length - 1)}
-              cy={y(series[series.length - 1].secs / 60)}
+              cx={x(drawn.length - 1)}
+              cy={y(drawn[drawn.length - 1].secs / 60)}
               r="3.5"
               fill="#ffffff"
               stroke={LINE}
@@ -286,11 +408,11 @@ export function StudyChart({ days, hydrated }: { days: Record<string, StudyDay>;
           {showPeak && (
             <text
               x={Math.min(Math.max(x(peak), PAD.l + 16), PAD.l + plotW - 16)}
-              y={Math.max(y(series[peak].secs / 60) - 9, 11)}
+              y={Math.max(y(drawn[peak].secs / 60) - 9, 11)}
               textAnchor="middle"
               className="fill-[var(--color-ink)] text-[10.5px] font-semibold"
             >
-              {fmtMins(series[peak].secs)}
+              {fmtMins(drawn[peak].secs)}
             </text>
           )}
 
@@ -350,16 +472,16 @@ export function StudyChart({ days, hydrated }: { days: Record<string, StudyDay>;
             </tr>
           </thead>
           <tbody>
-            {series.filter((d) => d.secs || d.checks).map((d) => (
+            {drawn.filter((d) => d.secs || d.checks).map((d) => (
               <tr key={d.date}>
                 <td>{fmtDay(d.date, true)}</td>
                 <td className="tabular-nums">{fmtMins(d.secs)}</td>
                 <td className="tabular-nums">{d.checks}</td>
               </tr>
             ))}
-            {!series.some((d) => d.secs || d.checks) && (
+            {!drawn.some((d) => d.secs || d.checks) && (
               <tr>
-                <td colSpan={3}>Nothing recorded in the last {SPAN} days.</td>
+                <td colSpan={3}>Nothing recorded this week.</td>
               </tr>
             )}
           </tbody>
