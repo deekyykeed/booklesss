@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import type { StudyDay } from "@/lib/progress";
+import { COURSES } from "@/lib/courses";
+import { CHART_TONE, courseTone, MOMENTUM_TONE } from "./tones";
 
 /* ------------------------------------------------------------------ *
  * Time studied, one week at a view.
@@ -27,7 +29,7 @@ import type { StudyDay } from "@/lib/progress";
 const H = 152;
 const PAD = { t: 16, r: 12, b: 24, l: 34 };
 
-const LINE = "#17754d"; // --color-brand-deep
+const LINE = CHART_TONE; // --color-brand-deep
 const WASH = "#3ecf8e"; // --color-brand, at 10%
 
 /** Clean tick values, so the axis never reads 7.3 minutes. */
@@ -138,6 +140,36 @@ const fmtMins = (secs: number) => {
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
+function LegendChip({
+  color,
+  label,
+  width,
+  dashed = false,
+}: {
+  color: string;
+  label: string;
+  width: number;
+  dashed?: boolean;
+}) {
+  return (
+    <span className="flex items-center gap-1.5 text-[11px] leading-4 text-muted">
+      <svg width="16" height="6" viewBox="0 0 16 6" aria-hidden="true" className="shrink-0">
+        <line
+          x1="0"
+          x2="16"
+          y1="3"
+          y2="3"
+          stroke={color}
+          strokeWidth={width}
+          strokeDasharray={dashed ? "4 3" : undefined}
+          strokeLinecap="round"
+        />
+      </svg>
+      {label}
+    </span>
+  );
+}
+
 function Chevron({ dir }: { dir: "left" | "right" }) {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -200,6 +232,79 @@ export function StudyChart({ days, hydrated }: { days: Record<string, StudyDay>;
     [series, back, todayIso],
   );
 
+  /* Where per-course attribution begins — the earliest day carrying a courses
+   * map. Days before it hold a total but no split, so a course line drawn
+   * across them would plot zeroes nobody measured; each line simply starts
+   * where its data does. */
+  const attributedSince = useMemo(() => {
+    let min: string | undefined;
+    for (const [date, d] of Object.entries(days)) {
+      if (d.courses && (!min || date < min)) min = date;
+    }
+    return min;
+  }, [days]);
+
+  /* One thin line per course that recorded time in the visible week. `i` is
+   * the weekday slot, so a line starting mid-week starts mid-plot. */
+  const courseSeries = useMemo(() => {
+    if (!attributedSince) return [];
+    return COURSES.map((c) => ({
+      slug: c.slug,
+      title: c.title,
+      tone: courseTone(c.slug),
+      pts: series
+        .map((d, i) => ({ i, date: d.date, mins: (d.courses?.[c.slug] ?? 0) / 60 }))
+        .filter((p) => p.date >= attributedSince && p.date <= todayIso),
+    })).filter((c) => c.pts.some((p) => p.mins > 0));
+  }, [series, attributedSince, todayIso]);
+
+  /* Momentum: an exponentially weighted average of daily minutes, half-life
+   * three days — yesterday weighs double last Thursday, so the curve tracks
+   * how much effort is going in NOW, not the flat mean. Warmed up over the
+   * three weeks before the visible one so Monday doesn't start from zero.
+   *
+   * In the current week the fainter dashes carry on past today: fed with the
+   * average of the last three days, they show where momentum lands by Sunday
+   * if effort stays as it has been. That segment is the one drawn thing here
+   * that is not a measurement, which is why it alone is faded — and why the
+   * momentum line as a whole is dashed, never solid like the measured ones. */
+  const momentum = useMemo(() => {
+    const iso = (d: Date) => isoDay(d);
+    const alpha = 1 - Math.pow(0.5, 1 / 3);
+    const mondayIso = iso(monday);
+    const cur = new Date(monday);
+    cur.setDate(cur.getDate() - 21);
+    let ema = 0;
+    while (iso(cur) < mondayIso) {
+      ema += alpha * ((days[iso(cur)]?.secs ?? 0) / 60 - ema);
+      cur.setDate(cur.getDate() + 1);
+    }
+    const measured: { i: number; v: number }[] = [];
+    for (let i = 0; i < 7; i++) {
+      const date = iso(cur);
+      if (date > todayIso) break;
+      ema += alpha * ((days[date]?.secs ?? 0) / 60 - ema);
+      measured.push({ i, v: ema });
+      cur.setDate(cur.getDate() + 1);
+    }
+    const projected: { i: number; v: number }[] = [];
+    if (back === 0 && measured.length > 0 && measured.length < 7) {
+      const r = new Date();
+      let feed = 0;
+      for (let k = 0; k < 3; k++) {
+        feed += (days[iso(r)]?.secs ?? 0) / 60 / 3;
+        r.setDate(r.getDate() - 1);
+      }
+      let p = measured[measured.length - 1].v;
+      projected.push({ i: measured.length - 1, v: p }); // join at today
+      for (let i = measured.length; i < 7; i++) {
+        p += alpha * (feed - p);
+        projected.push({ i, v: p });
+      }
+    }
+    return { measured, projected };
+  }, [days, monday, todayIso, back]);
+
   /* Paging stops at the first recorded day — an endless run of provably empty
    * weeks is scrolling for its own sake. With nothing recorded at all there is
    * nowhere to go. */
@@ -214,7 +319,16 @@ export function StudyChart({ days, hydrated }: { days: Record<string, StudyDay>;
 
   const plotW = Math.max(1, w - PAD.l - PAD.r);
   const plotH = H - PAD.t - PAD.b;
-  const max = niceMax(Math.max(...drawn.map((d) => d.secs / 60), 0));
+  // Every series shares the scale, so the axis must clear them all — momentum
+  // can sit above a light day's total.
+  const max = niceMax(
+    Math.max(
+      ...drawn.map((d) => d.secs / 60),
+      ...momentum.measured.map((p) => p.v),
+      ...momentum.projected.map((p) => p.v),
+      0,
+    ),
+  );
   const step = plotW / 6; // seven slots, six gaps — fixed, so Mon–Sun always fills the width
 
   const x = useCallback((i: number) => PAD.l + i * step, [step]);
@@ -353,6 +467,49 @@ export function StudyChart({ days, hydrated }: { days: Record<string, StudyDay>;
           {hasData ? (
             <>
               <path d={area} fill={WASH} fillOpacity="0.1" />
+              {/* Per-course lines under the total: thinner, so the sum stays
+                  the headline and the split reads as its parts. A one-day-old
+                  line is a dot — a path with one point draws nothing. */}
+              {courseSeries.map((c) =>
+                c.pts.length > 1 ? (
+                  <path
+                    key={c.slug}
+                    d={smoothPath(c.pts.map((p) => ({ x: x(p.i), y: y(p.mins) })))}
+                    fill="none"
+                    stroke={c.tone}
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    opacity="0.9"
+                  />
+                ) : (
+                  <circle key={c.slug} cx={x(c.pts[0].i)} cy={y(c.pts[0].mins)} r="2.5" fill={c.tone} opacity="0.9" />
+                ),
+              )}
+              {/* Momentum: dashed because it's derived, faded further where
+                  it's projected rather than measured. */}
+              {momentum.measured.length > 1 && (
+                <path
+                  d={smoothPath(momentum.measured.map((p) => ({ x: x(p.i), y: y(p.v) })))}
+                  fill="none"
+                  stroke={MOMENTUM_TONE}
+                  strokeWidth="1.5"
+                  strokeDasharray="5 4"
+                  strokeLinecap="round"
+                  opacity="0.85"
+                />
+              )}
+              {momentum.projected.length > 1 && (
+                <path
+                  d={smoothPath(momentum.projected.map((p) => ({ x: x(p.i), y: y(p.v) })))}
+                  fill="none"
+                  stroke={MOMENTUM_TONE}
+                  strokeWidth="1.5"
+                  strokeDasharray="2 5"
+                  strokeLinecap="round"
+                  opacity="0.5"
+                />
+              )}
               <path d={line} fill="none" stroke={LINE} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
             </>
           ) : (
@@ -451,6 +608,16 @@ export function StudyChart({ days, hydrated }: { days: Record<string, StudyDay>;
           >
             <p className="font-semibold text-ink">{fmtMins(active.secs)}</p>
             <p className="text-[11px] text-muted">{fmtDay(active.date, true)}</p>
+            {active.courses &&
+              Object.entries(active.courses).map(([slug, secs]) => (
+                <p key={slug} className="flex items-center gap-1.5 text-[11px] text-muted">
+                  <span
+                    className="inline-block h-1.5 w-1.5 shrink-0 rounded-full"
+                    style={{ backgroundColor: courseTone(slug) }}
+                  />
+                  {COURSES.find((c) => c.slug === slug)?.title ?? slug} · {fmtMins(secs)}
+                </p>
+              ))}
             {active.checks > 0 && (
               <p className="text-[11px] text-muted">
                 {active.checks} checkpoint{active.checks === 1 ? "" : "s"}
@@ -459,6 +626,25 @@ export function StudyChart({ days, hydrated }: { days: Record<string, StudyDay>;
           </div>
         )}
       </div>
+
+      {/* What each line is. Only earned entries: course chips appear once a
+          course has attributed time in view, momentum once it has a curve. */}
+      {hasData && (
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 px-1">
+          <LegendChip color={LINE} label="All courses" width={2} />
+          {courseSeries.map((c) => (
+            <LegendChip key={c.slug} color={c.tone} label={c.title} width={1.5} />
+          ))}
+          {momentum.measured.length > 1 && (
+            <LegendChip
+              color={MOMENTUM_TONE}
+              label={momentum.projected.length > 1 ? "Momentum — faint dashes projected" : "Momentum"}
+              width={1.5}
+              dashed
+            />
+          )}
+        </div>
+      )}
 
       {/* Everything the hover shows, reachable without hovering. */}
       <details className="chart-table">
