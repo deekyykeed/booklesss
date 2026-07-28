@@ -100,21 +100,21 @@ export function CourseCard({
         </div>
       </div>
 
-      {/* Name and action share the card's foot as one tight block — the title
-          sits directly on the button, above the sparkline backdrop the way
-          the stat tiles set their number over theirs. */}
-      <div className="relative mt-auto pt-3">
-        <p className="truncate font-display text-[21px] font-semibold leading-tight tracking-[-0.01em] text-ink">
+      {/* Name and action share the card's bottom line — the title on the
+          left, the button tucked into the bottom-right corner, both over the
+          sparkline backdrop the way the tiles set their number over theirs. */}
+      <div className="relative mt-auto flex items-center justify-between gap-3 pt-3">
+        <p className="min-w-0 truncate font-display text-[21px] font-semibold leading-tight tracking-[-0.01em] text-ink">
           {course.title}
         </p>
 
-        {/* The button IS the progress bar: the fill is how far through the
-            course they are, and pressing it opens the step they'd resume.
-            The card's other surfaces go to the course home. Its box matches
-            the sidebar's step selector: the same tight padding, chip-sized. */}
+        {/* The button IS the progress bar: it says only the one word, but its
+            fill is how far through the course they are, and pressing it opens
+            the step they'd resume — the aria-label still names that step.
+            The card's other surfaces go to the course home. */}
         <Link
           href={pathForId(next)}
-          className="course-resume squircle relative z-10 mt-2 flex items-center justify-between gap-3 overflow-hidden px-2.5 py-1.5"
+          className="course-resume squircle relative z-10 flex shrink-0 items-center gap-2 overflow-hidden px-2.5 py-1.5"
           aria-label={`${started ? "Resume" : "Start"} ${course.title} — ${hydrated ? labelFor(next) : ""}`}
         >
           <span
@@ -126,10 +126,7 @@ export function CourseCard({
               transition: "width 600ms cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           />
-          <span className="relative min-w-0 truncate text-[13px] leading-5 text-ink">
-            <span className="text-placeholder">{started ? "Resume · " : "Start · "}</span>
-            {hydrated ? labelFor(next) : " "}
-          </span>
+          <span className="relative text-[13px] leading-5 text-ink">{started ? "Resume" : "Start"}</span>
           <svg
             width="15"
             height="15"
