@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import type { CourseMeta } from "@/lib/courses";
 import { labelFor, pathForId } from "@/lib/course";
-import { studyHistory, type StudyDay } from "@/lib/progress";
+import { courseStreak, studyHistory, type StudyDay } from "@/lib/progress";
 import { ChecklistMark, StopwatchMark } from "./card-glyphs";
 import { Spark } from "./Spark";
 
@@ -71,7 +71,7 @@ export function CourseCard({
    * carry a total but no breakdown, so they contribute nothing here — the
    * alternative would be attributing another course's minutes to this one. */
   const time = useMemo(() => {
-    if (!hydrated) return { series: [] as number[], total: 0, last: null as string | null };
+    if (!hydrated) return { series: [] as number[], total: 0, last: null as string | null, streak: 0 };
     const series = studyHistory(days, 14).map((d) => (d.courses?.[course.slug] ?? 0) / 60);
     const total = Object.values(days).reduce((n, d) => n + (d.courses?.[course.slug] ?? 0), 0);
     /* The most recent day with reading logged against this course — the same
@@ -80,7 +80,7 @@ export function CourseCard({
       (best, [date, d]) => ((d.courses?.[course.slug] ?? 0) > 0 && (!best || date > best) ? date : best),
       null,
     );
-    return { series, total, last };
+    return { series, total, last, streak: courseStreak(days, course.slug) };
   }, [hydrated, days, course.slug]);
 
   const started = done > 0;
@@ -121,8 +121,17 @@ export function CourseCard({
         </p>
 
         {/* One line of the reader's own history with this course — when they
-            last sat with it, from the same per-course seconds as the curve. */}
-        <p className="mt-1 truncate text-[12px] leading-4 text-muted">{hydrated ? fmtLast(time.last) : "–"}</p>
+            last sat with it, and their current run. The streak shows from
+            day one: the point is to reward effort, and the first day back is
+            effort. Both facts come from the same per-course seconds as the
+            curve. */}
+        <p className="mt-1 truncate text-[12px] leading-4 text-muted">
+          {hydrated
+            ? time.streak > 0
+              ? `${fmtLast(time.last)} · ${time.streak}-day streak`
+              : fmtLast(time.last)
+            : "–"}
+        </p>
 
         {/* The one action, kept small: a completion ring — how far through
             the course they are — and the one word. Pressing it opens the
