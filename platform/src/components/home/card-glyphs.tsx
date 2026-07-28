@@ -1,5 +1,5 @@
 /* ------------------------------------------------------------------ *
- * Course-card marks — Solar Bold (by 480 Design), the same set the sidebars
+ * Course-card marks — Solar Line (by 480 Design), the same set the sidebars
  * and top bar use, so a card's marks read as part of the app's furniture
  * rather than a second icon language.
  *
@@ -24,31 +24,42 @@ const box = (size: number, className?: string) =>
     className: "shrink-0" + (className ? " " + className : ""),
   }) as const;
 
-/* Solar Bold · "Checklist Minimalistic" */
+/* Solar Line · "Checklist Minimalistic" */
 export function ChecklistMark({ size = 16, className }: Props) {
   return (
     <svg {...box(size, className)}>
-      <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d="M3.464 3.464C2 4.93 2 7.286 2 12s0 7.071 1.464 8.535C4.93 22 7.286 22 12 22s7.071 0 8.535-1.465C22 19.072 22 16.714 22 12s0-7.071-1.465-8.536C19.072 2 16.714 2 12 2S4.929 2 3.464 3.464m7.08 4.053a.75.75 0 1 0-1.087-1.034l-2.314 2.43l-.6-.63a.75.75 0 1 0-1.086 1.034l1.143 1.2a.75.75 0 0 0 1.086 0zM13 8.25a.75.75 0 0 0 0 1.5h5a.75.75 0 0 0 0-1.5zm-2.457 6.267a.75.75 0 1 0-1.086-1.034l-2.314 2.43l-.6-.63a.75.75 0 1 0-1.086 1.034l1.143 1.2a.75.75 0 0 0 1.086 0zM13 15.25a.75.75 0 0 0 0 1.5h5a.75.75 0 0 0 0-1.5z" />
+      <g fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464C22 4.93 22 7.286 22 12s0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M6 15.8L7.143 17L10 14M6 8.8L7.143 10L10 7" />
+        <path strokeLinecap="round" d="M13 9h5m-5 7h5" />
+      </g>
     </svg>
   );
 }
 
-/* Solar Bold · "Stopwatch" */
+/* Solar Line · "Stopwatch" */
 export function StopwatchMark({ size = 16, className }: Props) {
   return (
     <svg {...box(size, className)}>
-      <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d="M12 22a9 9 0 1 0 0-18a9 9 0 0 0 0 18m0-13.75a.75.75 0 0 1 .75.75v4a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75M9.25 2a.75.75 0 0 1 .75-.75h4a.75.75 0 0 1 0 1.5h-4A.75.75 0 0 1 9.25 2" />
+      <g fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M21 13a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 13V9" />
+        <path strokeLinecap="round" d="M10 2h4" />
+      </g>
     </svg>
   );
 }
 
-/* Solar Bold · "Users Group Rounded" */
+/* Solar Line · "Users Group Rounded" */
 export function ReadersMark({ size = 16, className }: Props) {
   return (
     <svg {...box(size, className)}>
-      <circle cx="9.001" cy="6" r="4" fill="currentColor" />
-      <ellipse cx="9.001" cy="17.001" fill="currentColor" rx="7" ry="4" />
-      <path fill="currentColor" d="M21 17c0 1.657-2.036 3-4.521 3c.732-.8 1.236-1.805 1.236-2.998c0-1.195-.505-2.2-1.239-3.001C18.962 14 21 15.344 21 17M18 6a3 3 0 0 1-4.029 2.82A5.7 5.7 0 0 0 14.714 6c0-1.025-.27-1.987-.742-2.819A3 3 0 0 1 18 6.001" />
+      <g fill="none" stroke="currentColor" strokeWidth="1.5">
+        <circle cx="9" cy="6" r="4" />
+        <path strokeLinecap="round" d="M15 9a3 3 0 1 0 0-6" />
+        <ellipse cx="9" cy="17" rx="7" ry="4" />
+        <path strokeLinecap="round" d="M18 14c1.754.385 3 1.359 3 2.5c0 1.03-1.014 1.923-2.5 2.37" />
+      </g>
     </svg>
   );
 }
