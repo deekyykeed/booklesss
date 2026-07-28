@@ -159,7 +159,7 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
             {i > 0 && <h2 className="mb-4 text-[19px] font-semibold tracking-[-0.01em] text-ink">{s.heading}</h2>}
             <div className="flex flex-col gap-5">
               {s.blocks.map((b, j) => {
-                if (b.type === "p") return <p key={j} className="text-[15.5px] leading-7 text-[#39393f]">{b.text}</p>;
+                if (b.type === "p") return <p key={j} className="text-[18px] leading-[30px] text-[#4a4a52]">{b.text}</p>;
                 if (b.type === "h2") return <h2 key={j} className="text-[19px] font-semibold text-ink">{b.text}</h2>;
                 if (b.type === "callout")
                   return (
@@ -183,7 +183,7 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
                 return (
                   <ul key={j} className="flex flex-col gap-2.5">
                     {b.items.map((it, k) => (
-                      <li key={k} className="flex gap-3 text-[15.5px] leading-7 text-[#39393f]">
+                      <li key={k} className="flex gap-3 text-[18px] leading-[30px] text-[#4a4a52]">
                         <span className="mt-[11px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#cfcfd4]" />
                         <span>{it}</span>
                       </li>
