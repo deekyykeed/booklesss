@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import type { CourseMeta } from "@/lib/courses";
 import { labelFor, pathForId } from "@/lib/course";
 import { studyHistory, type StudyDay } from "@/lib/progress";
-import { ChecklistMark, StopwatchMark } from "./card-glyphs";
+import { ChecklistMark, ReadersMark, StopwatchMark } from "./card-glyphs";
 import { Spark } from "./Spark";
 
 /* ------------------------------------------------------------------ *
@@ -41,6 +41,9 @@ export function CourseCard({
   steps,
   /** The step the button resumes — where they left off, or the first one. */
   next,
+  /** Readers in this course right now, or null when presence hasn't synced
+   *  (or isn't configured) — null renders no figure at all. */
+  live,
 }: {
   course: CourseMeta;
   tone: string;
@@ -49,6 +52,7 @@ export function CourseCard({
   done: number;
   steps: number;
   next: string;
+  live: number | null;
 }) {
   const pct = course.totalCheckpoints ? done / course.totalCheckpoints : 0;
 
@@ -89,6 +93,11 @@ export function CourseCard({
             value={hydrated && time.total > 0 ? fmtTime(time.total) : "–"}
             mark={<StopwatchMark size={15} />}
           />
+          {/* Who's in this course right now — the one figure about other
+              people. Only rendered once presence has actually synced, so an
+              unconfigured or still-connecting channel shows nothing rather
+              than a made-up zero. */}
+          {live !== null && <Figure label="reading now" value={`${live}`} mark={<ReadersMark size={15} />} />}
         </div>
       </div>
 
@@ -122,7 +131,10 @@ export function CourseCard({
               transition: "width 600ms cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           />
-          <span className="relative text-[13px] leading-5 text-ink">{started ? "Resume" : "Start"}</span>
+          <span className="relative min-w-0 truncate text-[13px] leading-5 text-ink">
+            <span className="text-placeholder">{started ? "Resume · " : "Start · "}</span>
+            {hydrated ? labelFor(next) : " "}
+          </span>
           <svg
             width="15"
             height="15"

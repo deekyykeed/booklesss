@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { COURSES } from "@/lib/courses";
 import { isStudyDay, streakSeries, studyHistory, useProgress } from "@/lib/progress";
+import { useLiveReaders } from "@/lib/presence";
 import { CourseCard } from "./CourseCard";
 import { Spark } from "./Spark";
 import { StudyChart } from "./StudyChart";
@@ -80,6 +81,11 @@ export function HomeView({
 }) {
   const { hydrated, doneCount, isComplete, streak, bestStreak, daysStudied, studiedToday, totalSecs, days } =
     useProgress();
+
+  /* Who's reading right now, per course — watching only, this page isn't a
+   * reader. Null until presence syncs (or forever if it isn't configured),
+   * and the cards show nothing rather than a number nobody measured. */
+  const live = useLiveReaders(null);
 
   /* Each tile's series and its week-over-week movement, all measured with
    * the same isStudyDay test the streak uses, so no two tiles can disagree
@@ -244,6 +250,7 @@ export function HomeView({
                 done={cDone}
                 steps={cSteps}
                 next={next}
+                live={live ? (live[c.slug] ?? 0) : null}
               />
             );
           })}
