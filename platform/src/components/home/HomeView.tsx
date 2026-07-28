@@ -162,7 +162,7 @@ export function HomeView({
             card's 18px. */}
         <div className="dash-card squircle mt-4 p-3.5 lg:p-[18px]">
           <div className="flex items-center justify-between gap-3">
-            <h3 className="font-display text-[15px] font-semibold leading-tight text-ink">Time studied</h3>
+            <h3 className="font-display text-[15px] font-semibold leading-tight text-ink">Productive time</h3>
             <p className="shrink-0 text-[12px] text-placeholder">
               {totalSecs > 0 ? `${fmtTotal(totalSecs)} over 30 days` : "Last 30 days"}
             </p>

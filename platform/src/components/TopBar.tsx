@@ -77,9 +77,11 @@ export function TopBar({
               who opened a lesson has no route back to the dashboard. */}
           <Link href="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-70 md:gap-2">
             {/* The wordmark is the whole logo, so it gets logo scale — 22px
-                against the 48px bar — rather than nav-label scale. font-bold is
-                already the heaviest weight Familjen Grotesk ships. */}
-            <span className="font-display text-[22px] font-bold leading-none tracking-tight text-ink">
+                against the 48px bar — rather than nav-label scale. On phones it
+                shares the bar with the hamburger and the header controls, so it
+                steps down to 18px. font-bold is already the heaviest weight
+                Familjen Grotesk ships. */}
+            <span className="font-display text-[18px] font-bold leading-none tracking-tight text-ink md:text-[22px]">
               {orgName}
             </span>
           </Link>
