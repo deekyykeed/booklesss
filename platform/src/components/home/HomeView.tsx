@@ -1,12 +1,11 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import { COURSES } from "@/lib/courses";
-import { checkpointsFor, labelFor, lessonsUnder } from "@/lib/course";
 import { isStudyDay, streakSeries, studyHistory, useProgress } from "@/lib/progress";
-import { CourseMark } from "./course-glyphs";
-import { smoothPath, StudyChart } from "./StudyChart";
+import { CourseCard } from "./CourseCard";
+import { Spark } from "./Spark";
+import { StudyChart } from "./StudyChart";
 import { courseTone } from "./tones";
 
 
@@ -230,104 +229,26 @@ export function HomeView({
           {COURSES.map((c) => {
             const cDone = hydrated ? c.lessonIds.reduce((n, id) => n + doneCount(id), 0) : 0;
             const cSteps = hydrated ? c.lessonIds.filter((id) => isComplete(id)).length : 0;
-            const pctDone = c.totalCheckpoints ? Math.round((cDone / c.totalCheckpoints) * 100) : 0;
-            const started = c.lessonIds.filter((id) => !hydrated || !isComplete(id));
-            const next = started.find((id) => hydrated && doneCount(id) > 0) ?? started[0] ?? c.lessonIds[0];
-            const tone = courseTone(c.slug);
-            /* The card's centrepiece is the course's spine: one segment per
-               unit, sized by the unit's share of the course, filled by its
-               cleared checkpoints. It shows where in the course the work has
-               landed — which a decorative curve never managed. */
-            const segments = c.unitIds.map((uid) => {
-              const ls = lessonsUnder(uid);
-              return {
-                total: ls.reduce((n, id) => n + checkpointsFor(id).length, 0),
-                done: hydrated ? ls.reduce((n, id) => n + doneCount(id), 0) : 0,
-              };
-            });
+            /* Where the button lands: the step they've started but not
+               finished, else the first one they haven't finished. */
+            const unfinished = c.lessonIds.filter((id) => !hydrated || !isComplete(id));
+            const next = unfinished.find((id) => hydrated && doneCount(id) > 0) ?? unfinished[0] ?? c.lessonIds[0];
 
             return (
-              /* The card IS the button — no CTAs inside it. It opens the
-                 course home, where "Pick up where you left off" carries the
-                 continue action. */
-              <Link key={c.slug} href={`/${c.slug}`} className="course-card squircle block p-3.5 lg:p-[18px]">
-                {/* A thin wash of the course's hue falling from the top edge. */}
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-x-0 top-0 h-14"
-                  style={{ background: `linear-gradient(to bottom, ${tone}26, transparent)` }}
-                />
-                <div className="relative">
-                  {/* Identity left, the one anchor number right. */}
-                  <div className="flex items-start justify-between gap-3">
-                    <CourseMark slug={c.slug} tone={tone} size={30} />
-                    <div className="text-right">
-                      <p className="font-display text-[26px] font-semibold leading-none tracking-[-0.02em] text-ink">
-                        {hydrated ? `${pctDone}%` : "–"}
-                      </p>
-                      <p className="mt-1 text-[11px] font-medium text-muted">complete</p>
-                    </div>
-                  </div>
-                    {/* Name and code, under the mark. */}
-                  <p className="mt-3 truncate font-display text-[19px] font-semibold leading-tight text-ink">
-                    {c.title}
-                  </p>
-                  <p className="mt-0.5 truncate text-[12.5px] text-muted">{c.subtitle}</p>
-
-                  {/* The spine: a segment per unit, its width the unit's share
-                      of the course, its fill the checkpoints cleared there. */}
-                  <div className="mt-5">
-                    <UnitBar segments={segments} tone={tone} />
-                    <p className="mt-2 truncate text-[12px] text-placeholder">
-                      {hydrated
-                        ? `${cDone} of ${c.totalCheckpoints} checkpoints · ${cSteps} of ${c.lessonIds.length} steps`
-                        : " "}
-                    </p>
-                  </div>
-
-                  {/* Where to go from here — the whole card is the door. */}
-                  <div className="mt-4 flex items-center justify-between gap-3 border-t border-line pt-3">
-                    <p className="min-w-0 truncate text-[13px] leading-5 text-ink">
-                      <span className="text-placeholder">{cDone > 0 ? "Next · " : "Start · "}</span>
-                      {hydrated ? labelFor(next) : " "}
-                    </p>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="card-arrow shrink-0" style={{ color: tone }}>
-                      <path d="M5 12h13m0 0-5.5-5.5M18 12l-5.5 5.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </div>
-                </div>
-              </Link>
+              <CourseCard
+                key={c.slug}
+                course={c}
+                tone={courseTone(c.slug)}
+                hydrated={hydrated}
+                days={days}
+                done={cDone}
+                steps={cSteps}
+                next={next}
+              />
             );
           })}
         </div>
       </section>
-    </div>
-  );
-}
-
-/* The course card's spine — one segment per unit, laid out in course order.
- * Each segment's width is the unit's share of the course's checkpoints, and
- * its fill is how much of that unit is cleared, so the bar reads as a map:
- * where the work has landed, and how much course remains past it. */
-function UnitBar({ segments, tone }: { segments: { done: number; total: number }[]; tone: string }) {
-  return (
-    <div className="flex gap-1" role="presentation">
-      {segments.map((s, i) => (
-        <div
-          key={i}
-          className="h-1.5 overflow-hidden rounded-full"
-          style={{ flexGrow: Math.max(s.total, 1), flexBasis: 0, backgroundColor: `${tone}1f` }}
-        >
-          <div
-            className="h-full rounded-full"
-            style={{
-              width: `${s.total ? (s.done / s.total) * 100 : 0}%`,
-              backgroundColor: tone,
-              transition: "width 600ms cubic-bezier(0.16, 1, 0.3, 1)",
-            }}
-          />
-        </div>
-      ))}
     </div>
   );
 }
@@ -378,103 +299,6 @@ function MedalGlyph() {
       <path fill="currentColor" opacity=".5" d="M12.795 2h-2c-1.886 0-2.829 0-3.414.586c-.586.586-.586 1.528-.586 3.414v3.5h10V6c0-1.886 0-2.828-.586-3.414S14.681 2 12.795 2" />
       <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d="M13.23 5.783a3 3 0 0 0-2.872 0L5.564 8.397A3 3 0 0 0 4 11.031v4.938a3 3 0 0 0 1.564 2.634l4.794 2.614a3 3 0 0 0 2.872 0l4.795-2.614a3 3 0 0 0 1.564-2.634V11.03a3 3 0 0 0-1.564-2.634zM11.794 10.5c-.284 0-.474.34-.854 1.023l-.098.176c-.108.194-.162.29-.246.354s-.19.088-.399.135l-.19.044c-.739.167-1.108.25-1.195.532c-.088.283.163.577.666 1.165l.13.152c.144.167.215.25.247.354s.022.215 0 .438l-.02.203c-.076.785-.114 1.178.116 1.352s.575.015 1.266-.303l.179-.082c.196-.09.294-.135.398-.135s.203.045.399.135l.179.082c.69.319 1.036.477 1.266.303s.192-.567.116-1.352l-.02-.203c-.022-.223-.033-.334 0-.438c.032-.103.103-.187.246-.354l.13-.152c.504-.588.755-.882.667-1.165c-.088-.282-.457-.365-1.194-.532l-.191-.044c-.21-.047-.315-.07-.399-.135c-.084-.064-.138-.16-.246-.354l-.098-.176c-.38-.682-.57-1.023-.855-1.023" />
     </svg>
-  );
-}
-
-/** The pale end of a Plump gradient: the hue mixed toward white, the same
- *  arithmetic the icon generator uses, so line and icon share their stops. */
-function pale(hex: string, t: number): string {
-  const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
-  return "#" + c.map((v) => Math.round(v + (255 - v) * t).toString(16).padStart(2, "0")).join("");
-}
-
-/* The tile's own graph — the card's backdrop, not a figure beside the
- * number. Anchored to the bottom edge and spanning the full card width,
- * behind the text, at a fraction of the ink it had as a foreground element:
- * the line carries the shape, the wash gives it a floor, and nothing is
- * labelled — it's atmosphere with the true curve, and the numbers in front
- * are the data. Same monotone-cubic as the big chart, so even the backdrop
- * can't overshoot what happened.
- *
- * Width is measured (ResizeObserver) rather than stretched through a
- * viewBox — preserveAspectRatio="none" would distort the stroke. */
-function Spark({ series, tone }: { series: number[]; tone: string }) {
-  const id = useId();
-  const box = useRef<HTMLDivElement>(null);
-  const [w, setW] = useState(0);
-
-  useEffect(() => {
-    const el = box.current;
-    if (!el) return;
-    const ro = new ResizeObserver(([entry]) => {
-      const next = Math.round(entry.contentRect.width);
-      if (next > 0) setW(next);
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  const H = 62;
-  const TOP = 6;
-  /* The curve keeps to the card's right half, clear of the number and the
-   * delta, and opens with a zero anchor so it lifts out of the floor instead
-   * of materialising mid-air. The anchor is a drawing convention, not a
-   * datum — the 14 real days follow it. */
-  const LEFT = Math.round(w / 2);
-  const max = Math.max(...series);
-  const n = series.length;
-
-  return (
-    <div ref={box} aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0" style={{ height: H }}>
-      {w > LEFT && n > 1 && max > 0 && (() => {
-        const drawn = [0, ...series];
-        /* 5px shy of the right edge, so the head dot isn't halved by the
-           card's overflow clip. */
-        const pts = drawn.map((v, i) => ({
-          x: LEFT + (i * (w - LEFT - 5)) / (drawn.length - 1),
-          y: TOP + (1 - v / max) * (H - TOP),
-        }));
-        const line = smoothPath(pts);
-        /* The line stops 5px shy of the edge for the head's sake, but the
-           wash carries on flat to the card edge — otherwise those 5px read
-           as a seam between the fill and the corner. */
-        const area = `${line} L${w} ${pts[pts.length - 1].y.toFixed(1)} L${w} ${H} L${LEFT} ${H} Z`;
-        return (
-          <svg width={w} height={H} className="block">
-            <defs>
-              <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stopColor={tone} stopOpacity="0.10" />
-                <stop offset="1" stopColor={tone} stopOpacity="0" />
-              </linearGradient>
-              {/* The line wears the icon's own gradient, pale stop to main
-                  colour, still fading in — faint where the fortnight begins,
-                  arriving at full presence at today. */}
-              <linearGradient id={`${id}s`} x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0" stopColor={pale(tone, 0.55)} stopOpacity="0.12" />
-                <stop offset="1" stopColor={tone} stopOpacity="0.9" />
-              </linearGradient>
-              <filter id={`${id}f`} x="-60%" y="-60%" width="220%" height="220%">
-                <feDropShadow dx="0" dy="1" stdDeviation="1.3" floodColor={tone} floodOpacity="0.45" />
-              </filter>
-            </defs>
-            <path d={area} fill={`url(#${id})`} />
-            <path d={line} fill="none" stroke={`url(#${id}s)`} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-            {/* Today: a white head ringed in the line's main colour, lifted
-                off the card by a shadow in the same hue — an open point where
-                the line has got to, not a plug on the end. */}
-            <circle
-              cx={pts[pts.length - 1].x}
-              cy={pts[pts.length - 1].y}
-              r="3.5"
-              fill="#ffffff"
-              stroke={tone}
-              strokeWidth="1.2"
-              filter={`url(#${id}f)`}
-            />
-          </svg>
-        );
-      })()}
-    </div>
   );
 }
 
