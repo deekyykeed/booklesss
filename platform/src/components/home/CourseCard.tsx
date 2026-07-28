@@ -107,6 +107,7 @@ export function CourseCard({
                 : "performance score"
             }
             value={time.perf ? `${time.perf.score}%` : "–"}
+            caption="score"
             mark={<TrendMark size={13} />}
           />
           {/* Who's in this course right now, marked by the pulsing live dot.
@@ -184,13 +185,25 @@ export function CourseCard({
   );
 }
 
-/** One figure in the header row: its mark, then the number. The label is for
- *  screen readers — sighted readers get it from the mark. */
-function Figure({ label, value, mark }: { label: string; value: string; mark: React.ReactNode }) {
+/** One figure in the header row: its mark, the number, and optionally one
+ *  quiet word of context after it — for figures whose mark alone doesn't say
+ *  what the number is. The full label is for screen readers and the hover. */
+function Figure({
+  label,
+  value,
+  mark,
+  caption,
+}: {
+  label: string;
+  value: string;
+  mark: React.ReactNode;
+  caption?: string;
+}) {
   return (
     <span className="flex items-center gap-1.5 text-ink-2" title={label}>
       {mark}
       <span className="text-[12.5px] font-medium tabular-nums text-muted">{value}</span>
+      {caption && <span className="text-[11px] text-placeholder">{caption}</span>}
       <span className="sr-only">{label}</span>
     </span>
   );
