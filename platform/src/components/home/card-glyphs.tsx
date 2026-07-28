@@ -7,9 +7,9 @@
  * whole set, which is fine on the server but would drag every icon into
  * this client bundle. Regenerate from the package rather than editing paths.
  *
- * "Clock Circle" and "Trending Up" caption the card's figures — this week's
- * reading and the performance score. The live figure carries the animated
- * .live-dot instead of a glyph. Both take currentColor.
+ * "Fire" and "Trending Up" caption the card's figures — the course streak
+ * and the performance score. The live figure carries the animated .live-dot
+ * instead of a glyph. Both take currentColor.
  * ------------------------------------------------------------------ */
 
 type Props = { size?: number; className?: string };
@@ -40,13 +40,13 @@ export function TrendMark({ size = 16, className }: Props) {
   );
 }
 
-/* MynaUI Line · "Clock Circle" */
-export function StopwatchMark({ size = 16, className }: Props) {
+/* MynaUI Line · "Fire" */
+export function StreakMark({ size = 16, className }: Props) {
   return (
     <svg {...box(size, className)}>
       <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
-        <path d="M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0" />
-        <path d="M12 6v6l4 2" />
+        <path d="M19.27 16.202A7.81 7.81 0 0 1 12.06 21c-4.313 0-7.81-3.492-7.81-7.8S5.89 7.13 8.455 3c4.806 2.1 4.806 8.4 4.806 8.4s1.579-3.038 4.807-4.5c1.034 3.042 2.43 6.365 1.202 9.302" />
+        <path d="M12 18a5 5 0 0 1-5-5" />
       </g>
     </svg>
   );
