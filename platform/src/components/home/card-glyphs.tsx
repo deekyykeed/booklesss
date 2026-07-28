@@ -8,9 +8,8 @@
  * whole set, which is fine on the server but would drag every Solar icon into
  * this client bundle. Regenerate from the package rather than editing paths.
  *
- * "Folder" says the card is a course — a type marker, not the course's own
- * identity, which the title carries. "Checklist" and "Stopwatch" caption the
- * two figures beside it. All three take currentColor.
+ * "Checklist" and "Stopwatch" caption the card's two figures. Both take
+ * currentColor.
  * ------------------------------------------------------------------ */
 
 type Props = { size?: number; className?: string };
@@ -24,15 +23,6 @@ const box = (size: number, className?: string) =>
     "aria-hidden": true,
     className: "shrink-0" + (className ? " " + className : ""),
   }) as const;
-
-/* Solar Bold · "Folder" */
-export function FolderMark({ size = 16, className }: Props) {
-  return (
-    <svg {...box(size, className)}>
-      <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d="M2.07 5.258C2 5.626 2 6.068 2 6.95V14c0 3.771 0 5.657 1.172 6.828S6.229 22 10 22h4c3.771 0 5.657 0 6.828-1.172S22 17.771 22 14v-2.202c0-2.632 0-3.949-.77-4.804a3 3 0 0 0-.224-.225C20.151 6 18.834 6 16.202 6h-.374c-1.153 0-1.73 0-2.268-.153a4 4 0 0 1-.848-.352C12.224 5.224 11.816 4.815 11 4l-.55-.55c-.274-.274-.41-.41-.554-.53a4 4 0 0 0-2.18-.903C7.53 2 7.336 2 6.95 2c-.883 0-1.324 0-1.692.07A4 4 0 0 0 2.07 5.257M12.25 10a.75.75 0 0 1 .75-.75h5a.75.75 0 0 1 0 1.5h-5a.75.75 0 0 1-.75-.75" />
-    </svg>
-  );
-}
 
 /* Solar Bold · "Checklist Minimalistic" */
 export function ChecklistMark({ size = 16, className }: Props) {

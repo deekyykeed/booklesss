@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import type { CourseMeta } from "@/lib/courses";
 import { labelFor, pathForId } from "@/lib/course";
 import { studyHistory, type StudyDay } from "@/lib/progress";
-import { ChecklistMark, FolderMark, StopwatchMark } from "./card-glyphs";
+import { ChecklistMark, StopwatchMark } from "./card-glyphs";
 import { Spark } from "./Spark";
 
 /** The trend line is furniture, not a course marker — it wears the app's grey
@@ -79,14 +79,11 @@ export function CourseCard({
         style={{ backgroundColor: `${tone}05` }}
       />
 
-      {/* Type mark left, the two figures right — what this is, and how it's
-          going, on one line. Two, not three: the checkpoint count and the
-          percentage were the same fact twice, and the percentage is also the
-          button's fill, so the count is the one that stays. */}
-      <div className="relative flex items-center justify-between gap-3">
-        <span className="text-ink-2">
-          <FolderMark size={20} />
-        </span>
+      {/* The two figures, kept to the right — how the course is going, on one
+          line. Two, not three: the checkpoint count and the percentage were
+          the same fact twice, and the percentage is also the button's fill,
+          so the count is the one that stays. */}
+      <div className="relative flex items-center justify-end gap-3">
         <div className="flex items-center gap-4">
           <Figure
             label="checkpoints cleared"
@@ -102,9 +99,9 @@ export function CourseCard({
       </div>
 
       {/* Name and action share the card's foot as one tight block — the title
-          sits directly on the button, and the open middle keeps the pair
-          clear of the figures above. */}
-      <div className="relative mt-auto pt-6">
+          sits directly on the button, and the sparkline strip above is most
+          of the air separating the pair from the figures. */}
+      <div className="relative mt-auto pt-3">
         {/* This course's reading over the last fortnight, drawn as the stat
             tiles draw theirs: edge to edge, full width, nothing sharing its
             line. It takes its own 46px of the column above the title/button
