@@ -18,7 +18,6 @@ import { useFollow } from "./useFollow";
 import { courseForNode, type CourseMeta } from "@/lib/courses";
 import { useProgress } from "@/lib/progress";
 import { CompletionRing } from "./CompletionRing";
-import { CourseGlyph } from "./CourseGlyph";
 
 const STEP = 18;
 const RAIL = 2;
@@ -188,22 +187,15 @@ type Ctx = {
 
 /* The course this rail belongs to, at the top of it.
  *
- * Just the mark and the name — no progress bar, no counts. The details live
- * on the dashboard's course card and the course home; in the step experience
- * this line only says where you are, and the step rings below carry progress.
- *
- * Not boxed. It doesn't need a card to say it's a different kind of thing from
- * the rows below — it's the only title in the panel, at nearly twice their
- * size, with its own mark. A hairline separates it from the tree instead. */
+ * Just the name now — no mark, no divider, no progress. The dashboard card
+ * carries the course's full identity; here the title alone says where you
+ * are, and its display size against the rows below is separation enough. */
 function CourseHeader({ course }: { course: CourseMeta }) {
   return (
-    <div className="px-2 pb-3 pt-1">
-      <div className="flex items-center gap-2.5 text-ink">
-        <CourseGlyph slug={course.slug} size={22} />
-        <span className="min-w-0 flex-1 truncate font-display text-[17px] font-semibold leading-tight">
-          {course.title}
-        </span>
-      </div>
+    <div className="px-2 pb-2 pt-1">
+      <span className="block truncate font-display text-[17px] font-semibold leading-tight text-ink">
+        {course.title}
+      </span>
     </div>
   );
 }
@@ -599,7 +591,6 @@ export function Sidebar() {
       {course && (
         <div className="p-2 pb-0">
           <CourseHeader course={course} />
-          <div className="mx-2 h-px bg-line" />
         </div>
       )}
 

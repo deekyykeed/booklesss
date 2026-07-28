@@ -1,6 +1,6 @@
 "use client";
 
-import { checkpointsFor, type Column, type Lesson } from "@/lib/course";
+import { breadcrumbFor, checkpointsFor, type Column, type Lesson } from "@/lib/course";
 import { useProgress } from "@/lib/progress";
 import { CodePlayground } from "./CodePlayground";
 import { Checkpoint, StepComplete } from "./Checkpoint";
@@ -57,7 +57,7 @@ function DataTable({
   return (
     <figure className="flex flex-col gap-2">
       {/* Wide workings scroll inside their own box; the page never does. */}
-      <div className="no-scrollbar squircle overflow-x-auto rounded-xl border border-[#e7e7e6] bg-white">
+      <div className="no-scrollbar squircle overflow-x-auto rounded-2xl border border-[#e7e7e6] bg-white">
         <table className="w-full border-collapse text-[14.5px]">
           <thead>
             <tr className="bg-[#f7f7f6]">
@@ -143,12 +143,23 @@ function StepProgressBadge({ lessonId }: { lessonId: string }) {
 
 // Content column. Base font is Aptos (font-content); headings use Familjen.
 export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: string }) {
+  /* Where this step sits in the course, right above its title — the trail of
+   * ancestors only, since the title itself is the last crumb. Replaces both
+   * the old kicker (which only echoed the parent label) and the header
+   * breadcrumb (which sat detached from the reading column). */
+  const crumbs = breadcrumbFor(lessonId).slice(0, -1);
+
   return (
     <div className="font-content">
       <div className="mb-2 flex items-center justify-between gap-3">
-        <p className="min-w-0 truncate font-sans text-xs font-medium uppercase tracking-[0.08em] text-muted">
-          {lesson.kicker}
-        </p>
+        <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-2 overflow-hidden font-sans text-[13px] text-muted">
+          {crumbs.map((c, i) => (
+            <span key={i} className="flex min-w-0 items-center gap-2">
+              {i > 0 && <span className="select-none text-[#d0d0d0]">/</span>}
+              <span className="truncate whitespace-nowrap">{c}</span>
+            </span>
+          ))}
+        </nav>
         <StepProgressBadge lessonId={lessonId} />
       </div>
       <h1 className="font-display text-[30px] font-medium leading-[1.2] tracking-[-0.02em] text-ink">{lesson.title}</h1>
