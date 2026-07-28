@@ -34,9 +34,10 @@ export function Spark({
    *  the right half, clear of the number and the delta; a card with nothing
    *  else on that line can run it wider. */
   from = 0.5,
-  /** How far short of the right edge the curve's head stops. The wash still
-   *  runs to the edge; this is only so the head dot clears a rounded corner. */
-  padRight = 5,
+  /** How far short of the right edge the curve's head stops — the head dot's
+   *  own outer radius (3.5 + half its stroke), so the dot lands flush against
+   *  the edge without being clipped. The wash still runs to the edge. */
+  padRight = 4,
 }: {
   /** The stat's recent history, oldest first. */
   series: number[];
