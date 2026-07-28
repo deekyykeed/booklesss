@@ -8,6 +8,7 @@ import { isStudyDay, streakSeries, studyHistory, useProgress } from "@/lib/progr
 import { CourseMark } from "./course-glyphs";
 import { smoothPath, StudyChart } from "./StudyChart";
 import { courseTone } from "./tones";
+import { CardLab } from "./CardLab";
 
 
 /* ------------------------------------------------------------------ *
@@ -300,6 +301,10 @@ export function HomeView({
             );
           })}
         </div>
+
+        {/* TEMPORARY: candidate card designs for the owner to pick from.
+            Delete the section (and CardLab.tsx) once one wins. */}
+        <CardLab />
       </section>
     </div>
   );
