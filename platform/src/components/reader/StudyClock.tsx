@@ -1,7 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { addStudySeconds } from "@/lib/progress";
+import { lessonIdForSlug } from "@/lib/course";
+import { courseForNode } from "@/lib/courses";
 
 /* ------------------------------------------------------------------ *
  * Measures time spent reading, so the dashboard can plot it.
@@ -32,6 +35,14 @@ const MAX_TICK_S = (TICK_MS * 2) / 1000;
 const ACTIVITY = ["pointerdown", "pointermove", "keydown", "wheel", "touchstart", "scroll"] as const;
 
 export function StudyClock() {
+  /* Which course the open lesson belongs to, so the seconds land attributed as
+   * well as totalled. A ref, not effect state: flush() runs from timers and
+   * unload handlers that must see the current route without re-arming them. */
+  const pathname = usePathname();
+  const courseRef = useRef<string | undefined>(undefined);
+  const lessonId = pathname ? lessonIdForSlug(pathname.replace(/^\/+/, "").split("/")) : null;
+  courseRef.current = lessonId ? courseForNode(lessonId)?.slug : undefined;
+
   useEffect(() => {
     let last = Date.now();
     let lastActive = Date.now();
@@ -47,7 +58,7 @@ export function StudyClock() {
       if (document.visibilityState !== "visible") return;
       if (now - lastActive > IDLE_MS) return;
       if (elapsed <= 0) return;
-      addStudySeconds(Math.min(Math.round(elapsed), MAX_TICK_S));
+      addStudySeconds(Math.min(Math.round(elapsed), MAX_TICK_S), courseRef.current);
     };
 
     const onVisibility = () => {

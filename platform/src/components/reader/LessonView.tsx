@@ -1,6 +1,6 @@
 "use client";
 
-import { checkpointsFor, type Column, type Lesson } from "@/lib/course";
+import { breadcrumbFor, checkpointsFor, type Column, type Lesson } from "@/lib/course";
 import { useProgress } from "@/lib/progress";
 import { CodePlayground } from "./CodePlayground";
 import { Checkpoint, StepComplete } from "./Checkpoint";
@@ -11,7 +11,7 @@ import { CompletionRing } from "./CompletionRing";
  * look, so they share a card rather than sitting as separate blocks. */
 function Formula({ text, where }: { text: string; where?: string[] }) {
   return (
-    <div className="squircle rounded-xl border border-[#e7e7e6] bg-white px-4 py-4">
+    <div className="squircle rounded-2xl border border-[#e7e7e6] bg-white px-4 py-4">
       <p className="text-center font-display text-[17.5px] leading-8 tracking-[-0.01em] text-ink">{text}</p>
       {where?.length ? (
         <div className="mt-3 flex flex-col gap-1.5 border-t border-[#f0efee] pt-3">
@@ -57,7 +57,7 @@ function DataTable({
   return (
     <figure className="flex flex-col gap-2">
       {/* Wide workings scroll inside their own box; the page never does. */}
-      <div className="no-scrollbar squircle overflow-x-auto rounded-xl border border-[#e7e7e6] bg-white">
+      <div className="no-scrollbar squircle overflow-x-auto rounded-3xl border border-[#e7e7e6] bg-white">
         <table className="w-full border-collapse text-[14.5px]">
           <thead>
             <tr className="bg-[#f7f7f6]">
@@ -143,12 +143,23 @@ function StepProgressBadge({ lessonId }: { lessonId: string }) {
 
 // Content column. Base font is Aptos (font-content); headings use Familjen.
 export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: string }) {
+  /* Where this step sits in the course, right above its title — the trail of
+   * ancestors only, since the title itself is the last crumb. Replaces both
+   * the old kicker (which only echoed the parent label) and the header
+   * breadcrumb (which sat detached from the reading column). */
+  const crumbs = breadcrumbFor(lessonId).slice(0, -1);
+
   return (
     <div className="font-content">
       <div className="mb-2 flex items-center justify-between gap-3">
-        <p className="min-w-0 truncate font-sans text-xs font-medium uppercase tracking-[0.08em] text-muted">
-          {lesson.kicker}
-        </p>
+        <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-2 overflow-hidden font-sans text-[13px] text-muted">
+          {crumbs.map((c, i) => (
+            <span key={i} className="flex min-w-0 items-center gap-2">
+              {i > 0 && <span className="select-none text-[#d0d0d0]">/</span>}
+              <span className="truncate whitespace-nowrap">{c}</span>
+            </span>
+          ))}
+        </nav>
         <StepProgressBadge lessonId={lessonId} />
       </div>
       <h1 className="font-display text-[30px] font-medium leading-[1.2] tracking-[-0.02em] text-ink">{lesson.title}</h1>
@@ -159,11 +170,11 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
             {i > 0 && <h2 className="mb-4 text-[19px] font-semibold tracking-[-0.01em] text-ink">{s.heading}</h2>}
             <div className="flex flex-col gap-5">
               {s.blocks.map((b, j) => {
-                if (b.type === "p") return <p key={j} className="text-[15.5px] leading-7 text-[#39393f]">{b.text}</p>;
+                if (b.type === "p") return <p key={j} className="text-[18px] leading-[30px] text-[#4a4a52]">{b.text}</p>;
                 if (b.type === "h2") return <h2 key={j} className="text-[19px] font-semibold text-ink">{b.text}</h2>;
                 if (b.type === "callout")
                   return (
-                    <div key={j} className="squircle rounded-xl border border-[#e7e7e6] bg-white px-4 py-3 text-[14.5px] leading-6 text-[#4a4a52]">
+                    <div key={j} className="squircle rounded-2xl border border-[#e7e7e6] bg-white px-4 py-3 text-[14.5px] leading-6 text-[#4a4a52]">
                       {b.text}
                     </div>
                   );
@@ -183,7 +194,7 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
                 return (
                   <ul key={j} className="flex flex-col gap-2.5">
                     {b.items.map((it, k) => (
-                      <li key={k} className="flex gap-3 text-[15.5px] leading-7 text-[#39393f]">
+                      <li key={k} className="flex gap-3 text-[18px] leading-[30px] text-[#4a4a52]">
                         <span className="mt-[11px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#cfcfd4]" />
                         <span>{it}</span>
                       </li>

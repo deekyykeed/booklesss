@@ -7,6 +7,7 @@ import { checkpointsFor, labelFor, lessonsUnder } from "@/lib/course";
 import { isStudyDay, streakSeries, studyHistory, useProgress } from "@/lib/progress";
 import { CourseMark } from "./course-glyphs";
 import { smoothPath, StudyChart } from "./StudyChart";
+import { courseTone } from "./tones";
 
 
 /* ------------------------------------------------------------------ *
@@ -36,18 +37,8 @@ const TONE = {
   steps: "#4a3aa7",
 } as const;
 
-/** The Time studied card's hue — the same green its line is drawn with
- *  (StudyChart's LINE), so the mark and the plot agree. */
-const CHART_TONE = "#17754d";
-
-/** One hue per course, carried by the card's gradient, mark and sparkline.
- *  Keyed by slug like CourseGlyph — a new course gets the fallback the day
- *  it's seeded, and picking its colour is a one-line change here. */
-const COURSE_TONE: Record<string, string> = {
-  economics: "#2a78d6",
-  "corporate-finance": "#17754d",
-};
-const COURSE_TONE_FALLBACK = "#4a3aa7";
+/* Hues live in tones.ts, shared with the study chart so a course's card and
+ * its line on the plot always agree. */
 
 /** The reference's anchored delta — "+20% · 25 last week": the movement AND
  *  the number it moved from, so the percentage explains itself. Falls back to
@@ -171,12 +162,7 @@ export function HomeView({
             card's 18px. */}
         <div className="dash-card squircle mt-4 p-3.5 lg:p-[18px]">
           <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <span style={{ color: CHART_TONE }}>
-                <ClockGlyph />
-              </span>
-              <h3 className="font-display text-[15px] font-semibold leading-tight text-ink">Time studied</h3>
-            </div>
+            <h3 className="font-display text-[15px] font-semibold leading-tight text-ink">Productive time</h3>
             <p className="shrink-0 text-[12px] text-placeholder">
               {totalSecs > 0 ? `${fmtTotal(totalSecs)} over 30 days` : "Last 30 days"}
             </p>
@@ -247,7 +233,7 @@ export function HomeView({
             const pctDone = c.totalCheckpoints ? Math.round((cDone / c.totalCheckpoints) * 100) : 0;
             const started = c.lessonIds.filter((id) => !hydrated || !isComplete(id));
             const next = started.find((id) => hydrated && doneCount(id) > 0) ?? started[0] ?? c.lessonIds[0];
-            const tone = COURSE_TONE[c.slug] ?? COURSE_TONE_FALLBACK;
+            const tone = courseTone(c.slug);
             /* The card's centrepiece is the course's spine: one segment per
                unit, sized by the unit's share of the course, filled by its
                cleared checkpoints. It shows where in the course the work has
@@ -373,16 +359,6 @@ function CalendarGlyph() {
       <path fill="currentColor" d="M6.94 2c.416 0 .753.324.753.724v1.46c.668-.012 1.417-.012 2.26-.012h4.015c.842 0 1.591 0 2.259.013v-1.46c0-.4.337-.725.753-.725s.753.324.753.724V4.25c1.445.111 2.394.384 3.09 1.055c.698.67.982 1.582 1.097 2.972L22 9H2v-.724c.116-1.39.4-2.302 1.097-2.972s1.645-.944 3.09-1.055V2.724c0-.4.337-.724.753-.724" />
       <path fill="currentColor" opacity=".5" d="M22 14v-2c0-.839-.004-2.335-.017-3H2.01c-.013.665-.01 2.161-.01 3v2c0 3.771 0 5.657 1.172 6.828S6.228 22 10 22h4c3.77 0 5.656 0 6.828-1.172S22 17.772 22 14" />
       <path fill="currentColor" d="M18 17a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0" />
-    </svg>
-  );
-}
-
-/* Solar · "Clock Circle" — the Time studied card's mark. */
-function ClockGlyph() {
-  return (
-    <svg {...G}>
-      <path fill="currentColor" opacity=".5" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10" />
-      <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d="M12 7.25a.75.75 0 0 1 .75.75v3.69l2.28 2.28a.75.75 0 1 1-1.06 1.06l-2.5-2.5a.75.75 0 0 1-.22-.53V8a.75.75 0 0 1 .75-.75" />
     </svg>
   );
 }

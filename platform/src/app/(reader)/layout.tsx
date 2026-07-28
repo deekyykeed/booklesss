@@ -1,8 +1,6 @@
 import { TopBar } from "@/components/TopBar";
-import { Rail } from "@/components/Rail";
 import { Sidebar } from "@/components/reader/Sidebar";
 import { RightPanel } from "@/components/reader/RightPanel";
-import { LessonBreadcrumb } from "@/components/reader/LessonBreadcrumb";
 import { MobileNavProvider, MobileScrim } from "@/components/reader/MobileNav";
 import { ProgressScope } from "@/components/reader/ProgressScope";
 import { StudyClock } from "@/components/reader/StudyClock";
@@ -37,14 +35,13 @@ export default function ReaderLayout({ children }: { children: React.ReactNode }
           <span key={i} />
         ))}
       </div>
-      <TopBar orgName="Bklsss" breadcrumbSlot={<LessonBreadcrumb />} />
-      <Rail active="courses" />
+      <TopBar orgName="Bklsss" />
       <Sidebar />
       <RightPanel />
       <MobileScrim />
       {/* Flush against the top bar and the sidebar; on mobile it slides right
           to uncover the drawer. */}
-      <main className="content-frame with-rail">
+      <main className="content-frame">
         <div id="content-surface" className="content-surface no-scrollbar">
           {children}
         </div>
