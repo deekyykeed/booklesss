@@ -120,12 +120,16 @@ export function CourseCard({
           {course.title}
         </p>
 
+        {/* What the course is about, held to two lines — the body the card
+            was missing with the title standing alone. */}
+        <p className="mt-1 line-clamp-2 text-[12.5px] leading-5 text-muted">{course.subtitle}</p>
+
         {/* One line of the reader's own history with this course — when they
             last sat with it, and their current run. The streak shows from
             day one: the point is to reward effort, and the first day back is
             effort. Both facts come from the same per-course seconds as the
             curve. */}
-        <p className="mt-1 truncate text-[12px] leading-4 text-muted">
+        <p className="mt-2 truncate text-[12px] leading-4 text-muted">
           {hydrated
             ? time.streak > 0
               ? `${fmtLast(time.last)} · ${time.streak}-day streak`
