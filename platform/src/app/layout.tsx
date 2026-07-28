@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Inter, Familjen_Grotesk } from "next/font/google";
 import localFont from "next/font/local";
+import { ClerkProvider } from "@clerk/nextjs";
+import { clerkEnabled } from "@/lib/clerk";
+import { clerkAppearance } from "@/lib/clerk-appearance";
 import "./globals.css";
 
 // The logo is an icon again, so Burbank is no longer loaded. Both it and
@@ -44,12 +47,21 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  return (
+  const document = (
     <html
       lang="en"
       className={`${inter.variable} ${familjen.variable} ${aptos.variable} h-full`}
     >
       <body className="min-h-full bg-canvas text-ink">{children}</body>
     </html>
+  );
+
+  // No keys configured -> no provider, and the app renders exactly as it did
+  // before Clerk. See src/lib/clerk.ts.
+  if (!clerkEnabled) return document;
+
+  return (
+    // One appearance for every Clerk surface — see lib/clerk-appearance.ts.
+    <ClerkProvider appearance={clerkAppearance}>{document}</ClerkProvider>
   );
 }

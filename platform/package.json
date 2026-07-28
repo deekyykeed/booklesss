@@ -7,10 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "gen:course": "node --env-file=.env.local scripts/gen-course.mjs"
+    "gen:course": "node --env-file=.env.local scripts/gen-course.mjs",
+    "seed:course": "node --env-file=.env.local scripts/seed-course.mjs"
   },
   "dependencies": {
+    "@clerk/nextjs": "^7.6.1",
     "@iconify-json/solar": "^1.2.5",
+    "@iconify-json/streamline-plump-color": "^1.2.2",
     "@iconify/utils": "^3.1.4",
     "@supabase/supabase-js": "^2.110.8",
     "next": "16.2.10",

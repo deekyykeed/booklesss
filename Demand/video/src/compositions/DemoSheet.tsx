@@ -24,7 +24,9 @@ const LABEL_H = 26;
 export const SHEET_W = COLS * TILE_W + 16 * (COLS + 1);
 export const SHEET_H = ROWS * (TILE_H + LABEL_H) + 16 * (ROWS + 1);
 
-export const DemoSheet: React.FC<{ everyNFrames?: number }> = ({ everyNFrames = 120 }) => {
+/* 15 tiles x 60 = 900 frames, i.e. the whole 30s cut. Was every 120 when the
+ * video ran 55s; left alone, eight of the tiles would sample past the end. */
+export const DemoSheet: React.FC<{ everyNFrames?: number }> = ({ everyNFrames = 60 }) => {
   const marks = Array.from({ length: COLS * ROWS }, (_, i) => i * everyNFrames);
   const scale = TILE_W / 1080;
 

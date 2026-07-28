@@ -1,4 +1,8 @@
+import Link from "next/link";
 import { Icon } from "@/lib/icon";
+import { clerkEnabled } from "@/lib/clerk";
+import { Account as ClerkAccount } from "./Account";
+import { ClerkIsland } from "./ClerkIsland";
 import { CommandSearch } from "./CommandSearch";
 import { MobileMenuButton, MobileContextButton } from "./reader/MobileNav";
 
@@ -42,15 +46,33 @@ function CircleButton({ icon, label, className = "" }: { icon: string; label: st
   );
 }
 
+/* Same shell as the circle buttons beside it — white, one #d4d4d4 hairline,
+ * the same three-layer shadow. It used to be a green disc, which made the one
+ * control that isn't about progress the loudest thing in the header; green is
+ * reserved for completion. */
 function Avatar() {
   return (
     <div
-      className="grid h-8 w-8 place-items-center overflow-hidden rounded-full border border-black/10 text-[11px] font-semibold text-white shadow-[0_0.6px_0.6px_-1.25px_rgba(0,0,0,0.18),0_2.3px_2.3px_-2.5px_rgba(0,0,0,0.16)]"
-      style={{ background: "linear-gradient(135deg,#3ecf8e,#1f9e6b)" }}
+      className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-full border border-[#d4d4d4] bg-white text-[11px] font-semibold text-ink-2 shadow-[0_0.6px_0.6px_-1.25px_rgba(0,0,0,0.18),0_2.3px_2.3px_-2.5px_rgba(0,0,0,0.16),0_10px_10px_-3.75px_rgba(0,0,0,0.06)]"
       aria-label="Account"
     >
       DM
     </div>
+  );
+}
+
+/* Account control. With Clerk configured this is the real thing — the user
+ * menu once signed in, a sign-in button when not. Without keys it stays the
+ * static placeholder avatar the header has always shown, so an unconfigured
+ * clone looks unchanged. */
+function Account() {
+  if (!clerkEnabled) return <Avatar />;
+  // If auth fails to load, fall back to the placeholder avatar rather than
+  // letting the header take the lesson down with it.
+  return (
+    <ClerkIsland fallback={<Avatar />}>
+      <ClerkAccount />
+    </ClerkIsland>
   );
 }
 
@@ -71,14 +93,19 @@ export function TopBar({
             the mark + wordmark + org switcher. The wordmark is common to both. */}
         <div className="flex items-center gap-2.5 md:gap-2">
           <MobileMenuButton />
-          <span className="hidden md:inline-flex">
-            <Logo />
-          </span>
-          {/* font-bold is already the heaviest weight Familjen Grotesk ships,
-              so weight is maxed — a slightly larger size gives it more presence. */}
-          <span className="font-display text-[17px] font-bold leading-none tracking-tight text-ink">
-            {orgName}
-          </span>
+          {/* The lockup is the way home. The course navigator shows one course
+              and its steps and nothing above them, so without this a student
+              who opened a lesson has no route back to the dashboard. */}
+          <Link href="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-70 md:gap-2">
+            <span className="hidden md:inline-flex">
+              <Logo />
+            </span>
+            {/* font-bold is already the heaviest weight Familjen Grotesk ships,
+                so weight is maxed — a slightly larger size gives it more presence. */}
+            <span className="font-display text-[17px] font-bold leading-none tracking-tight text-ink">
+              {orgName}
+            </span>
+          </Link>
           <Icon name="sort-vertical-linear" size={14} className="hidden text-muted md:block" />
         </div>
 
@@ -111,7 +138,7 @@ export function TopBar({
           {/* Help + advisor are desktop-only; mobile keeps just search + profile */}
           <CircleButton icon="question-circle-linear" label="Help" className="hidden md:grid" />
           <CircleButton icon="bolt-linear" label="Advisor Center" className="hidden md:grid" />
-          <Avatar />
+          <Account />
         </div>
       </div>
     </header>

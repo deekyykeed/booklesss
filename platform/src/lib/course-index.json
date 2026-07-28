@@ -1,0 +1,22 @@
+[
+  {
+    "slug": "economics",
+    "title": "Economics",
+    "subtitle": "Micro, macro and behavioural — the whole introductory course.",
+    "rootIds": [
+      "getting-started",
+      "microeconomics",
+      "macroeconomics",
+      "behavioral",
+      "resources"
+    ]
+  },
+  {
+    "slug": "corporate-finance",
+    "title": "Corporate Finance",
+    "subtitle": "Investment appraisal, cost of capital, valuation and risk — BAC4301 at ZCAS.",
+    "rootIds": [
+      "investment-appraisal"
+    ]
+  }
+]

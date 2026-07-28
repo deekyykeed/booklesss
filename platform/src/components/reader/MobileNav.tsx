@@ -36,7 +36,13 @@ type ReaderShell = {
   toggleLeftCollapsed: () => void;
   toggleRightCollapsed: () => void;
   sections: Section[] | null;
-  setSections: (s: Section[] | null) => void;
+  /** Id of the lesson those sections belong to — the right panel needs it to
+   *  read that step's progress. */
+  lessonId: string | null;
+  setLesson: (lessonId: string | null, sections: Section[] | null) => void;
+  /** False on surfaces with no right rail (the dashboard, the parked pages).
+   *  Hides its toggle and stops a swipe uncovering an empty drawer. */
+  hasRightPanel: boolean;
 };
 
 const Ctx = createContext<ReaderShell | null>(null);
@@ -54,7 +60,9 @@ const NOOP: ReaderShell = {
   toggleLeftCollapsed: () => {},
   toggleRightCollapsed: () => {},
   sections: null,
-  setSections: () => {},
+  lessonId: null,
+  setLesson: () => {},
+  hasRightPanel: false,
 };
 
 export function useReaderShell(): ReaderShell {
@@ -69,11 +77,24 @@ const RIGHT_COLLAPSED_KEY = "booklesss:right-collapsed";
 // useLayoutEffect on the client, useEffect on the server (avoids the SSR warning).
 const useIso = typeof document !== "undefined" ? useLayoutEffect : useEffect;
 
-export function MobileNavProvider({ children }: { children: React.ReactNode }) {
+export function MobileNavProvider({
+  children,
+  hasRightPanel = true,
+}: {
+  children: React.ReactNode;
+  hasRightPanel?: boolean;
+}) {
   const [side, setSide] = useState<Side>(null);
   const [leftCollapsed, setLeftCollapsed] = useState(false);
   const [rightCollapsed, setRightCollapsed] = useState(false);
-  const [sections, setSections] = useState<Section[] | null>(null);
+  const [lesson, setLessonState] = useState<{ id: string | null; sections: Section[] | null }>({
+    id: null,
+    sections: null,
+  });
+  const setLesson = useCallback(
+    (id: string | null, sections: Section[] | null) => setLessonState({ id, sections }),
+    [],
+  );
   // Briefly true while a collapse/expand plays, so the content gutter can
   // transition in step with the sliding panel. A resize drag, which writes the
   // width var every frame, leaves this false and stays transition-free/snappy.
@@ -187,7 +208,7 @@ export function MobileNavProvider({ children }: { children: React.ReactNode }) {
         // Open a side only where that side is a drawer: left below md, right
         // below xl. Swipe right opens the course nav; swipe left opens context.
         if (dx > THRESHOLD && w < 768) { setSide("left"); tracking = false; }
-        else if (dx < -THRESHOLD && w < 1280) { setSide("right"); tracking = false; }
+        else if (dx < -THRESHOLD && w < 1280 && hasRightPanel) { setSide("right"); tracking = false; }
       } else if (cur === "left" && dx < -THRESHOLD) {
         setSide(null); tracking = false;
       } else if (cur === "right" && dx > THRESHOLD) {
@@ -206,7 +227,7 @@ export function MobileNavProvider({ children }: { children: React.ReactNode }) {
       window.removeEventListener("touchend", onEnd);
       window.removeEventListener("touchcancel", onEnd);
     };
-  }, []);
+  }, [hasRightPanel]);
 
   const value: ReaderShell = {
     side,
@@ -217,8 +238,10 @@ export function MobileNavProvider({ children }: { children: React.ReactNode }) {
     rightCollapsed,
     toggleLeftCollapsed,
     toggleRightCollapsed,
-    sections,
-    setSections,
+    sections: lesson.sections,
+    lessonId: lesson.id,
+    setLesson,
+    hasRightPanel,
   };
 
   return (
@@ -276,8 +299,10 @@ export function MobileMenuButton() {
 /* Solar · Broken · "Notebook" style — opens the right (step context) drawer.
  * Mobile only; sits in the header's right cluster. */
 export function MobileContextButton() {
-  const { toggleRight, side } = useReaderShell();
+  const { toggleRight, side, hasRightPanel } = useReaderShell();
   const open = side === "right";
+  // Nothing to toggle on the dashboard or the parked pages.
+  if (!hasRightPanel) return null;
   return (
     <button
       type="button"

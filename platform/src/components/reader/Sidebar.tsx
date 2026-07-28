@@ -15,6 +15,10 @@ import {
   type NavNode,
 } from "@/lib/course";
 import { useFollow } from "./useFollow";
+import { courseForNode, type CourseMeta } from "@/lib/courses";
+import { useProgress } from "@/lib/progress";
+import { CompletionRing } from "./CompletionRing";
+import { CourseGlyph } from "./CourseGlyph";
 
 const STEP = 18;
 const RAIL = 2;
@@ -182,6 +186,64 @@ type Ctx = {
   onSelect: (id: string) => void;
 };
 
+/* The course this rail belongs to, at the top of it.
+ *
+ * Not boxed. It doesn't need a card to say it's a different kind of thing from
+ * the rows below — it's the only title in the panel, at nearly twice their
+ * size, with its own mark and a progress bar. A border around it would just be
+ * a second edge inside a panel that already has one. A hairline separates it
+ * from the tree instead.
+ *
+ * The bar is the same one the dashboard uses (.dash-bar), so a student sees the
+ * same measure of the same course in both places. */
+function CourseHeader({ course }: { course: CourseMeta }) {
+  const { hydrated, doneCount, isComplete } = useProgress();
+
+  const steps = course.lessonIds.length;
+  const stepsDone = hydrated ? course.lessonIds.filter((id) => isComplete(id)).length : 0;
+  const checksDone = hydrated ? course.lessonIds.reduce((n, id) => n + doneCount(id), 0) : 0;
+  const pct = course.totalCheckpoints
+    ? Math.round((checksDone / course.totalCheckpoints) * 100)
+    : 0;
+
+  return (
+    <div className="px-2 pb-3 pt-1">
+      <div className="flex items-center gap-2.5 text-ink">
+        <CourseGlyph slug={course.slug} size={22} />
+        <span className="min-w-0 flex-1 truncate font-display text-[17px] font-semibold leading-tight">
+          {course.title}
+        </span>
+      </div>
+      <div className="dash-bar mt-3" role="presentation">
+        <span className="dash-bar-fill" style={{ width: `${pct}%` }} />
+      </div>
+      <p className="mt-2 flex items-baseline justify-between gap-2 text-[11.5px] text-muted">
+        <span className="truncate">
+          {stepsDone} of {steps} steps
+        </span>
+        <span className="shrink-0 tabular-nums">{pct}%</span>
+      </p>
+    </div>
+  );
+}
+
+/* Per-step completion, at the end of its row. Always rendered so the row width
+ * never shifts mid-read, but dimmed right down until the step is actually
+ * under way — 28 bright empty rings would be pure noise. */
+function StepRing({ lessonId }: { lessonId: string }) {
+  const { hydrated, ratio } = useProgress();
+  const v = hydrated ? ratio(lessonId) : 0;
+  return (
+    <CompletionRing
+      value={v}
+      size={14}
+      stroke={1.75}
+      className="transition-opacity duration-200"
+      style={{ opacity: v > 0 ? 1 : 0.4 }}
+    />
+  );
+}
+
 // Module-level (stable identity) so toggling never remounts the tree.
 function Row({ node, depth, ctx }: { node: NavNode; depth: number; ctx: Ctx }) {
   const pad = padFor(depth);
@@ -242,6 +304,7 @@ function Row({ node, depth, ctx }: { node: NavNode; depth: number; ctx: Ctx }) {
       }
     >
       <span className="min-w-0 flex-1 truncate">{node.label}</span>
+      <StepRing lessonId={node.id} />
     </Link>
   );
 }
@@ -382,6 +445,17 @@ export function Sidebar() {
     [closeMobileNav],
   );
 
+  /* One course at a time. course-data.json is a single flat tree spanning every
+   * course, so without this the rail lists Corporate Finance's units beneath
+   * Economics' — a student reading one course has no use for another's steps.
+   * Falls back to the whole tree if no course claims the node, which is better
+   * than an empty rail. */
+  const course = useMemo(() => courseForNode(activeId), [activeId]);
+  const units = useMemo(
+    () => (course ? COURSE.filter((n) => course.unitIds.includes(n.id)) : COURSE),
+    [course],
+  );
+
   const activeAncestors = useMemo(() => new Set(ancestorsOf(activeId)), [activeId]);
   const ctx: Ctx = { openIds, activeId, activeAncestors, activeRef, toggle, onSelect };
 
@@ -508,13 +582,14 @@ export function Sidebar() {
           onClick={toggleLeftCollapsed}
           aria-label="Open navigation"
           title="Open navigation"
-          className="squircle fixed left-3 top-16 z-40 hidden h-8 w-8 place-items-center rounded-lg border border-line bg-white/80 text-muted shadow-sm backdrop-blur-md transition-colors hover:text-ink md:grid"
+          className="squircle fixed top-16 z-40 hidden h-8 w-8 place-items-center rounded-lg border border-line bg-white/80 text-muted shadow-sm backdrop-blur-md transition-colors hover:text-ink md:grid"
+          style={{ left: "calc(var(--rail-w) + 12px)" }}
         >
           <PanelIcon />
         </button>
       )}
     <aside
-      className="sidebar-panel fixed left-0 top-12 z-40 flex h-[calc(100dvh-48px)] flex-col border-r border-line"
+      className="sidebar-panel beside-rail fixed left-0 top-12 z-40 flex h-[calc(100dvh-48px)] flex-col border-r border-line"
       style={{ width: "var(--sidebar-docs)" }}
     >
       {/* Drag to resize. Sits over the right border, 8px wide for an easy
@@ -537,6 +612,15 @@ export function Sidebar() {
         onBlur={() => setResizeHint(false)}
         className="absolute inset-y-0 -right-1 z-30 hidden w-2 cursor-col-resize focus:outline-none md:block"
       />
+
+      {/* The course you're in, above its steps. The way back out to the
+          dashboard is the wordmark in the header. */}
+      {course && (
+        <div className="p-2 pb-0">
+          <CourseHeader course={course} />
+          <div className="mx-2 h-px bg-line" />
+        </div>
+      )}
 
       <nav className="no-scrollbar flex-1 overflow-y-auto p-2">
         <div ref={listRef} className="relative flex flex-col gap-0.5">
@@ -575,7 +659,7 @@ export function Sidebar() {
               }}
             />
           )}
-          {COURSE.map((n) => (
+          {units.map((n) => (
             <Row key={n.id} node={n} depth={0} ctx={ctx} />
           ))}
         </div>
