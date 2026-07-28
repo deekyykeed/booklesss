@@ -84,7 +84,7 @@ export function CourseCard({
           percentage were the same fact twice, and the percentage is also the
           button's fill, so the count is the one that stays. */}
       <div className="relative flex items-center justify-between gap-3">
-        <span className="text-muted">
+        <span className="text-ink-2">
           <FolderMark size={20} />
         </span>
         <div className="flex items-center gap-4">
@@ -101,33 +101,28 @@ export function CourseCard({
         </div>
       </div>
 
-      {/* Air between the figures and the name, the way the stat tiles hold
-          their number away from their label. */}
-      <div className="relative mt-12">
+      {/* Name and action share the card's foot, held together as one block
+          with the open middle keeping them clear of the figures above. */}
+      <div className="relative mt-auto pt-12">
         <p className="truncate font-display text-[21px] font-semibold leading-tight tracking-[-0.01em] text-ink">
           {course.title}
         </p>
-        <p className="mt-1 line-clamp-2 text-[12.5px] leading-5 text-muted">{course.subtitle}</p>
-      </div>
-
-      {/* The action sits at the card's foot whatever the description's
-          length, so a row of cards keeps one baseline. */}
-      <div className="relative mt-auto pt-6">
         {/* This course's reading over the last fortnight, drawn as the stat
             tiles draw theirs: edge to edge, full width, nothing sharing its
             line. It takes its own 46px of the column rather than floating
             over the text — so its floor is exactly the button's top edge and
             the curve rests on the button. */}
-        <div className="pointer-events-none relative -mx-4 h-[46px] lg:-mx-5">
+        <div className="pointer-events-none relative -mx-4 mt-2 h-[46px] lg:-mx-5">
           <Spark series={time.series} tone={SPARK_TONE} height={46} from={0.06} padRight={16} />
         </div>
 
         {/* The button IS the progress bar: the fill is how far through the
             course they are, and pressing it opens the step they'd resume.
-            The card's other surfaces go to the course home. */}
+            The card's other surfaces go to the course home. Its box matches
+            the sidebar's step selector: the same tight padding, chip-sized. */}
         <Link
           href={pathForId(next)}
-          className="course-resume squircle relative z-10 flex items-center justify-between gap-3 overflow-hidden px-4 py-3"
+          className="course-resume squircle relative z-10 flex items-center justify-between gap-3 overflow-hidden px-2.5 py-1.5"
           aria-label={`${started ? "Resume" : "Start"} ${course.title} — ${hydrated ? labelFor(next) : ""}`}
         >
           <span
@@ -176,7 +171,7 @@ export function CourseCard({
  *  screen readers — sighted readers get it from the mark. */
 function Figure({ label, value, mark }: { label: string; value: string; mark: React.ReactNode }) {
   return (
-    <span className="flex items-center gap-1.5 text-placeholder" title={label}>
+    <span className="flex items-center gap-1.5 text-ink-2" title={label}>
       {mark}
       <span className="text-[12.5px] font-medium tabular-nums text-muted">{value}</span>
       <span className="sr-only">{label}</span>
