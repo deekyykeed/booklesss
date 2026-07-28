@@ -6,7 +6,7 @@ import { COURSES } from "@/lib/courses";
 import { CHART_TONE, courseTone, MOMENTUM_TONE } from "./tones";
 
 /* ------------------------------------------------------------------ *
- * Time studied, one week at a view.
+ * Productive time, one week at a view.
  *
  * The plot is a Monday-to-Sunday week — seven slots, always — and the
  * chevrons page back through earlier weeks, as far as the first recorded
