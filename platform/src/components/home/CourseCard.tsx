@@ -8,10 +8,6 @@ import { studyHistory, type StudyDay } from "@/lib/progress";
 import { ChecklistMark, StopwatchMark } from "./card-glyphs";
 import { Spark } from "./Spark";
 
-/** The trend line is furniture, not a course marker — it wears the app's grey
- *  wherever it appears, the way the momentum series does on the study chart. */
-const SPARK_TONE = "#8b8b93";
-
 /* ------------------------------------------------------------------ *
  * A course card.
  *
@@ -79,6 +75,12 @@ export function CourseCard({
         style={{ backgroundColor: `${tone}05` }}
       />
 
+      {/* This course's reading over the last fortnight, drawn exactly as the
+          stat tiles draw theirs: a backdrop in the course's own hue, anchored
+          to the card's bottom edge behind the text, curve kept to the right
+          half. Same component, same defaults, so the two read as one set. */}
+      <Spark series={time.series} tone={tone} />
+
       {/* The two figures, kept to the right — how the course is going, on one
           line. Two, not three: the checkpoint count and the percentage were
           the same fact twice, and the percentage is also the button's fill,
@@ -99,17 +101,9 @@ export function CourseCard({
       </div>
 
       {/* Name and action share the card's foot as one tight block — the title
-          sits directly on the button, and the sparkline strip above is most
-          of the air separating the pair from the figures. */}
+          sits directly on the button, above the sparkline backdrop the way
+          the stat tiles set their number over theirs. */}
       <div className="relative mt-auto pt-3">
-        {/* This course's reading over the last fortnight, drawn as the stat
-            tiles draw theirs: edge to edge, full width, nothing sharing its
-            line. It takes its own 46px of the column above the title/button
-            pair, so its floor rests on the group rather than splitting it. */}
-        <div className="pointer-events-none relative -mx-4 h-[46px] lg:-mx-5">
-          <Spark series={time.series} tone={SPARK_TONE} height={46} from={0.06} padRight={16} />
-        </div>
-
         <p className="truncate font-display text-[21px] font-semibold leading-tight tracking-[-0.01em] text-ink">
           {course.title}
         </p>
