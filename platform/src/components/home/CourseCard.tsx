@@ -115,7 +115,7 @@ export function CourseCard({
       {/* The card's foot: the title on its own undisturbed row, then the
           button beneath it in the bottom-right corner, both over the
           sparkline backdrop the way the tiles set their number over theirs. */}
-      <div className="relative mt-auto pt-3">
+      <div className="relative mt-auto pt-8">
         <p className="truncate font-display text-[21px] font-semibold leading-tight tracking-[-0.01em] text-ink">
           {course.title}
         </p>
