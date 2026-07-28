@@ -57,7 +57,7 @@ function DataTable({
   return (
     <figure className="flex flex-col gap-2">
       {/* Wide workings scroll inside their own box; the page never does. */}
-      <div className="no-scrollbar squircle overflow-x-auto rounded-xl border border-[#e7e7e6] bg-white">
+      <div className="no-scrollbar squircle overflow-x-auto rounded-2xl border border-[#e7e7e6] bg-white">
         <table className="w-full border-collapse text-[14.5px]">
           <thead>
             <tr className="bg-[#f7f7f6]">
