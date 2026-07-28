@@ -309,6 +309,25 @@ function longestStreakFrom(days: Record<string, StudyDay>): number {
   return best;
 }
 
+/** The current consecutive-day run on one course, counted the way the app
+ *  streak is: the same seconds bar, measured against the course's own
+ *  recorded time (checkpoints aren't recorded per course), and the run
+ *  doesn't break just because today hasn't been studied yet. */
+export function courseStreak(days: Record<string, StudyDay>, slug: string): number {
+  const qualifies = (date: string) => (days[date]?.courses?.[slug] ?? 0) >= STUDY_DAY_MIN_SECS;
+  const cursor = new Date();
+  if (!qualifies(isoDay(cursor))) {
+    cursor.setDate(cursor.getDate() - 1);
+    if (!qualifies(isoDay(cursor))) return 0;
+  }
+  let n = 0;
+  while (qualifies(isoDay(cursor))) {
+    n++;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return n;
+}
+
 /** The streak as it stood at the end of each of the last `span` days —
  *  the series a sparkline can plot. No "today isn't over" grace here: a day
  *  either qualified or it didn't. */
