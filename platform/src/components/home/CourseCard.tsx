@@ -66,15 +66,6 @@ export function CourseCard({
 
   return (
     <div className="course-card squircle flex flex-col p-4 lg:p-5">
-      {/* The one place the course's own colour appears: a flat wash over the
-          whole card, faint enough that two cards side by side are told apart
-          rather than colour-coded. Everything else is the app's greys. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
-        style={{ backgroundColor: `${tone}05` }}
-      />
-
       {/* This course's reading over the last fortnight, drawn exactly as the
           stat tiles draw theirs: a backdrop in the course's own hue, anchored
           to the card's bottom edge behind the text, curve kept to the right
