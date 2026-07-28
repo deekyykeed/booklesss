@@ -188,24 +188,14 @@ type Ctx = {
 
 /* The course this rail belongs to, at the top of it.
  *
+ * Just the mark and the name — no progress bar, no counts. The details live
+ * on the dashboard's course card and the course home; in the step experience
+ * this line only says where you are, and the step rings below carry progress.
+ *
  * Not boxed. It doesn't need a card to say it's a different kind of thing from
  * the rows below — it's the only title in the panel, at nearly twice their
- * size, with its own mark and a progress bar. A border around it would just be
- * a second edge inside a panel that already has one. A hairline separates it
- * from the tree instead.
- *
- * The bar is the same one the dashboard uses (.dash-bar), so a student sees the
- * same measure of the same course in both places. */
+ * size, with its own mark. A hairline separates it from the tree instead. */
 function CourseHeader({ course }: { course: CourseMeta }) {
-  const { hydrated, doneCount, isComplete } = useProgress();
-
-  const steps = course.lessonIds.length;
-  const stepsDone = hydrated ? course.lessonIds.filter((id) => isComplete(id)).length : 0;
-  const checksDone = hydrated ? course.lessonIds.reduce((n, id) => n + doneCount(id), 0) : 0;
-  const pct = course.totalCheckpoints
-    ? Math.round((checksDone / course.totalCheckpoints) * 100)
-    : 0;
-
   return (
     <div className="px-2 pb-3 pt-1">
       <div className="flex items-center gap-2.5 text-ink">
@@ -214,15 +204,6 @@ function CourseHeader({ course }: { course: CourseMeta }) {
           {course.title}
         </span>
       </div>
-      <div className="dash-bar mt-3" role="presentation">
-        <span className="dash-bar-fill" style={{ width: `${pct}%` }} />
-      </div>
-      <p className="mt-2 flex items-baseline justify-between gap-2 text-[11.5px] text-muted">
-        <span className="truncate">
-          {stepsDone} of {steps} steps
-        </span>
-        <span className="shrink-0 tabular-nums">{pct}%</span>
-      </p>
     </div>
   );
 }
