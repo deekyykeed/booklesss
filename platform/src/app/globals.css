@@ -709,6 +709,38 @@
   .course-resume:hover {
     background-color: #ffffff;
   }
+  /* The live mark: a green dot with a ring that blooms out of it and fades,
+     over and over — the universal "this is happening now". Dot and ring both
+     take the brand green; the ring is a ::before so the dot needs no extra
+     markup. transform/opacity only, so it stays on the compositor. */
+  .live-dot {
+    position: relative;
+    width: 7px;
+    height: 7px;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    background-color: var(--color-brand);
+  }
+  .live-dot::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1.5px solid var(--color-brand);
+    animation: livePulse 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  }
+  @keyframes livePulse {
+    0% {
+      transform: scale(1);
+      opacity: 0.9;
+    }
+    70%,
+    100% {
+      transform: scale(2.8);
+      opacity: 0;
+    }
+  }
+
   /* The footer arrow leans into the door on hover — same spring the rest of
      the app eases with, transform-only. */
   .course-card .card-arrow {
