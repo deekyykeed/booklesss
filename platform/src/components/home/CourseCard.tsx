@@ -70,13 +70,13 @@ export function CourseCard({
 
   return (
     <div className="course-card squircle flex flex-col p-4 lg:p-5">
-      {/* The one place the course's own colour appears: a wash off the top
-          edge, faint enough that two cards side by side are told apart rather
-          than colour-coded. Everything else on the card is the app's greys. */}
+      {/* The one place the course's own colour appears: a flat wash over the
+          whole card, faint enough that two cards side by side are told apart
+          rather than colour-coded. Everything else is the app's greys. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
-        style={{ background: `linear-gradient(to bottom, ${tone}14, ${tone}05 45%, ${tone}05)` }}
+        style={{ backgroundColor: `${tone}05` }}
       />
 
       {/* Type mark left, the two figures right — what this is, and how it's
