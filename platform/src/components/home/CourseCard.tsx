@@ -102,9 +102,9 @@ export function CourseCard({
       </div>
 
       {/* Name and action share the card's foot as one tight block — the title
-          sits directly on the button, and the open middle keeps the pair
-          clear of the figures above. */}
-      <div className="relative mt-auto pt-6">
+          sits directly on the button, and the sparkline strip above is most
+          of the air separating the pair from the figures. */}
+      <div className="relative mt-auto pt-3">
         {/* This course's reading over the last fortnight, drawn as the stat
             tiles draw theirs: edge to edge, full width, nothing sharing its
             line. It takes its own 46px of the column above the title/button
