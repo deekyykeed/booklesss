@@ -727,7 +727,7 @@
     inset: 0;
     border-radius: inherit;
     border: 1.5px solid var(--color-brand);
-    animation: livePulse 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    animation: livePulse 1.3s cubic-bezier(0.16, 1, 0.3, 1) infinite;
   }
   @keyframes livePulse {
     0% {
