@@ -11,7 +11,7 @@ import { CompletionRing } from "./CompletionRing";
  * look, so they share a card rather than sitting as separate blocks. */
 function Formula({ text, where }: { text: string; where?: string[] }) {
   return (
-    <div className="squircle rounded-xl border border-[#e7e7e6] bg-white px-4 py-4">
+    <div className="squircle rounded-2xl border border-[#e7e7e6] bg-white px-4 py-4">
       <p className="text-center font-display text-[17.5px] leading-8 tracking-[-0.01em] text-ink">{text}</p>
       {where?.length ? (
         <div className="mt-3 flex flex-col gap-1.5 border-t border-[#f0efee] pt-3">
@@ -57,7 +57,7 @@ function DataTable({
   return (
     <figure className="flex flex-col gap-2">
       {/* Wide workings scroll inside their own box; the page never does. */}
-      <div className="no-scrollbar squircle overflow-x-auto rounded-2xl border border-[#e7e7e6] bg-white">
+      <div className="no-scrollbar squircle overflow-x-auto rounded-3xl border border-[#e7e7e6] bg-white">
         <table className="w-full border-collapse text-[14.5px]">
           <thead>
             <tr className="bg-[#f7f7f6]">
@@ -174,7 +174,7 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
                 if (b.type === "h2") return <h2 key={j} className="text-[19px] font-semibold text-ink">{b.text}</h2>;
                 if (b.type === "callout")
                   return (
-                    <div key={j} className="squircle rounded-xl border border-[#e7e7e6] bg-white px-4 py-3 text-[14.5px] leading-6 text-[#4a4a52]">
+                    <div key={j} className="squircle rounded-2xl border border-[#e7e7e6] bg-white px-4 py-3 text-[14.5px] leading-6 text-[#4a4a52]">
                       {b.text}
                     </div>
                   );

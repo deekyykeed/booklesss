@@ -188,7 +188,7 @@ export function CodePlayground({ code: initialJs }: { code: string }) {
     t === "error" ? "text-[#c0392b]" : t === "warn" ? "text-[#b7791f]" : t === "muted" ? "text-placeholder" : "text-[#2b2b2b]";
 
   return (
-    <div className="squircle overflow-hidden rounded-2xl bg-white" style={{ boxShadow: PANEL_SHADOW }}>
+    <div className="squircle overflow-hidden rounded-3xl bg-white" style={{ boxShadow: PANEL_SHADOW }}>
       {/* toolbar */}
       <div className="flex items-center gap-2 border-b border-[#f0f0f0] px-4 py-2.5">
         <span className="flex gap-1.5">
