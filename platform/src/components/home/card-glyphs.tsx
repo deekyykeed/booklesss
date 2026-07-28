@@ -8,8 +8,8 @@
  * whole set, which is fine on the server but would drag every Solar icon into
  * this client bundle. Regenerate from the package rather than editing paths.
  *
- * "Checklist", "Stopwatch" and "Users Group Rounded" caption the card's
- * figures. All take currentColor.
+ * "Checklist" and "Stopwatch" caption the card's figures — the live figure
+ * carries the animated .live-dot instead of a glyph. Both take currentColor.
  * ------------------------------------------------------------------ */
 
 type Props = { size?: number; className?: string };
@@ -50,16 +50,3 @@ export function StopwatchMark({ size = 16, className }: Props) {
   );
 }
 
-/* Solar Line · "Users Group Rounded" */
-export function ReadersMark({ size = 16, className }: Props) {
-  return (
-    <svg {...box(size, className)}>
-      <g fill="none" stroke="currentColor" strokeWidth="1.5">
-        <circle cx="9" cy="6" r="4" />
-        <path strokeLinecap="round" d="M15 9a3 3 0 1 0 0-6" />
-        <ellipse cx="9" cy="17" rx="7" ry="4" />
-        <path strokeLinecap="round" d="M18 14c1.754.385 3 1.359 3 2.5c0 1.03-1.014 1.923-2.5 2.37" />
-      </g>
-    </svg>
-  );
-}

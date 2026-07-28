@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import type { CourseMeta } from "@/lib/courses";
 import { labelFor, pathForId } from "@/lib/course";
 import { studyHistory, type StudyDay } from "@/lib/progress";
-import { ChecklistMark, ReadersMark, StopwatchMark } from "./card-glyphs";
+import { ChecklistMark, StopwatchMark } from "./card-glyphs";
 import { Spark } from "./Spark";
 
 /* ------------------------------------------------------------------ *
@@ -21,6 +21,17 @@ import { Spark } from "./Spark";
  * a course studied before then shows no curve rather than a flat invented
  * one.
  * ------------------------------------------------------------------ */
+
+/** The live figure's floor, at the owner's call: a seeded baseline so the
+ *  room never reads empty while the platform is small. Seeded from the course
+ *  and the hour, so it differs per course and drifts through the day the way
+ *  a real room would; any actual presence count is added on top. */
+function liveBaseline(slug: string): number {
+  const s = `${slug}:${Math.floor(Date.now() / 3_600_000)}`;
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return 2 + (Math.abs(h) % 7);
+}
 
 /** Minutes read, in the card's terms: under an hour stays in minutes. */
 function fmtTime(secs: number): string {
@@ -86,18 +97,22 @@ export function CourseCard({
           <Figure
             label="checkpoints cleared"
             value={hydrated ? `${done}/${course.totalCheckpoints}` : "–"}
-            mark={<ChecklistMark size={15} />}
+            mark={<ChecklistMark size={13} />}
           />
           <Figure
             label="read"
             value={hydrated && time.total > 0 ? fmtTime(time.total) : "–"}
-            mark={<StopwatchMark size={15} />}
+            mark={<StopwatchMark size={13} />}
           />
-          {/* Who's in this course right now — the one figure about other
-              people. Holds the same "–" the other figures use until presence
-              has actually synced, so an unconfigured or still-connecting
-              channel never shows a made-up zero. */}
-          <Figure label="reading now" value={live !== null ? `${live}` : "–"} mark={<ReadersMark size={15} />} />
+          {/* Who's in this course right now, marked by the pulsing live dot.
+              The number is the seeded baseline plus any synced presence
+              count; hydration-gated so the server and first client paint
+              agree on "–". */}
+          <Figure
+            label="reading now"
+            value={hydrated ? `${liveBaseline(course.slug) + (live ?? 0)}` : "–"}
+            mark={<span className="live-dot" aria-hidden="true" />}
+          />
         </div>
       </div>
 
