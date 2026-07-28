@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import type { CourseMeta } from "@/lib/courses";
 import { labelFor, pathForId } from "@/lib/course";
-import { courseStreak, studyHistory, type StudyDay } from "@/lib/progress";
+import { studyHistory, type StudyDay } from "@/lib/progress";
 import { ChecklistMark, StopwatchMark } from "./card-glyphs";
 import { Spark } from "./Spark";
 
@@ -30,20 +30,6 @@ function fmtTime(secs: number): string {
   return m % 60 ? `${h}h ${m % 60}m` : `${h}h`;
 }
 
-/** When this course was last read, in the reader's own terms: named days
- *  while it's fresh, a date once it isn't. */
-function fmtLast(date: string | null): string {
-  if (!date) return "No reading yet";
-  const [y, m, d] = date.split("-").map(Number);
-  const then = new Date(y, m - 1, d);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const diff = Math.round((today.getTime() - then.getTime()) / 86400000);
-  if (diff <= 0) return "Studied today";
-  if (diff === 1) return "Studied yesterday";
-  if (diff < 14) return `Last studied ${diff} days ago`;
-  return `Last studied ${then.toLocaleDateString(undefined, { day: "numeric", month: "short" })}`;
-}
 
 export function CourseCard({
   course,
@@ -71,16 +57,10 @@ export function CourseCard({
    * carry a total but no breakdown, so they contribute nothing here — the
    * alternative would be attributing another course's minutes to this one. */
   const time = useMemo(() => {
-    if (!hydrated) return { series: [] as number[], total: 0, last: null as string | null, streak: 0 };
+    if (!hydrated) return { series: [] as number[], total: 0 };
     const series = studyHistory(days, 14).map((d) => (d.courses?.[course.slug] ?? 0) / 60);
     const total = Object.values(days).reduce((n, d) => n + (d.courses?.[course.slug] ?? 0), 0);
-    /* The most recent day with reading logged against this course — the same
-     * per-course rule as the figures, so pre-breakdown days don't count. */
-    const last = Object.entries(days).reduce<string | null>(
-      (best, [date, d]) => ((d.courses?.[course.slug] ?? 0) > 0 && (!best || date > best) ? date : best),
-      null,
-    );
-    return { series, total, last, streak: courseStreak(days, course.slug) };
+    return { series, total };
   }, [hydrated, days, course.slug]);
 
   const started = done > 0;
@@ -124,33 +104,42 @@ export function CourseCard({
             was missing with the title standing alone. */}
         <p className="mt-1 line-clamp-2 text-[12.5px] leading-5 text-muted">{course.subtitle}</p>
 
-        {/* One line of the reader's own history with this course — when they
-            last sat with it, and their current run. The streak shows from
-            day one: the point is to reward effort, and the first day back is
-            effort. Both facts come from the same per-course seconds as the
-            curve. */}
-        <p className="mt-2 truncate text-[12px] leading-4 text-muted">
-          {hydrated
-            ? time.streak > 0
-              ? `${fmtLast(time.last)} · ${time.streak}-day streak`
-              : fmtLast(time.last)
-            : "–"}
-        </p>
-
-        {/* The one action, kept small: a completion ring — how far through
-            the course they are — and the one word. Pressing it opens the
-            step they'd resume; the aria-label still names that step. The
-            card's other surfaces go to the course home. */}
-        <div className="mt-2 flex justify-end">
-          <Link
-            href={pathForId(next)}
-            className="course-resume squircle relative z-10 flex shrink-0 items-center gap-1.5 px-2 py-1"
-            aria-label={`${started ? "Resume" : "Start"} ${course.title} — ${hydrated ? labelFor(next) : ""}`}
+        {/* The button IS the progress bar: full width, one word, its fill
+            showing how far through the course they are. Pressing it opens
+            the step they'd resume; the aria-label still names that step.
+            The card's other surfaces go to the course home. */}
+        <Link
+          href={pathForId(next)}
+          className="course-resume squircle relative z-10 mt-3 flex items-center justify-between gap-3 overflow-hidden px-2.5 py-1.5"
+          aria-label={`${started ? "Resume" : "Start"} ${course.title} — ${hydrated ? labelFor(next) : ""}`}
+        >
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-0 left-0"
+            style={{
+              width: `${Math.round(pct * 100)}%`,
+              backgroundColor: "rgba(23, 23, 23, 0.07)",
+              transition: "width 600ms cubic-bezier(0.16, 1, 0.3, 1)",
+            }}
+          />
+          <span className="relative text-[13px] leading-5 text-ink">{started ? "Resume" : "Start"}</span>
+          <svg
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+            className="card-arrow relative shrink-0 text-muted"
           >
-            <ProgressRing pct={hydrated ? pct : 0} />
-            <span className="relative text-[12px] leading-4 text-ink">{started ? "Resume" : "Start"}</span>
-          </Link>
-        </div>
+            <path
+              d="M5 12h13m0 0-5.5-5.5M18 12l-5.5 5.5"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </Link>
       </div>
 
       {/* The card's quiet surfaces open the course itself. Stretched over the
@@ -160,30 +149,6 @@ export function CourseCard({
         <span className="sr-only">{course.title}</span>
       </Link>
     </div>
-  );
-}
-
-/** The button's completion ring: a grey track, the cleared fraction drawn
- *  over it in ink. Sized to sit in the chip where a glyph would. */
-function ProgressRing({ pct, size = 13 }: { pct: number; size?: number }) {
-  const r = 5;
-  const c = 2 * Math.PI * r;
-  return (
-    <svg width={size} height={size} viewBox="0 0 14 14" aria-hidden="true" className="relative shrink-0 -rotate-90">
-      <circle cx="7" cy="7" r={r} fill="none" stroke="var(--color-line-2)" strokeWidth="2.2" />
-      <circle
-        cx="7"
-        cy="7"
-        r={r}
-        fill="none"
-        stroke="var(--color-ink)"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeDasharray={c}
-        strokeDashoffset={c * (1 - pct)}
-        style={{ transition: "stroke-dashoffset 600ms cubic-bezier(0.16, 1, 0.3, 1)" }}
-      />
-    </svg>
   );
 }
 
