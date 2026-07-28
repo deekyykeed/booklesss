@@ -56,13 +56,6 @@ export function StudentDashboard({ course }: { course: CourseMeta }) {
         {course.title}
       </h1>
 
-      {/* The banner. Decorative — the wave backdrop held still — so it's an
-          empty alt; the title above already says everything it would. */}
-      <div className="squircle mt-5 overflow-hidden rounded-3xl border border-line">
-        {/* eslint-disable-next-line @next/next/no-img-element -- static asset, no optimizer pass needed */}
-        <img src="/course-banner.svg" alt="" className="block h-[180px] w-full object-cover md:h-[220px]" />
-      </div>
-
       <div className="mt-6 flex flex-col gap-4 text-[15.5px] leading-7 text-[#4a4a52]">
         <p>{course.subtitle}</p>
         <p>
