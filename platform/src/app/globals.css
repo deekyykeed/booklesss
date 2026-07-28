@@ -695,6 +695,21 @@
     border-color: var(--color-line-2);
     box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.08);
   }
+  /* The resume button, which is also the course's progress bar: a squircle
+     the width of the card, its fill (inline, in the course's hue) showing how
+     far through the course the reader is. Border in the same hue at low alpha
+     comes from the element, so the button belongs to its course without
+     shouting. Radius is the card's own, stepped down for the inset. */
+  .course-resume {
+    border: 1px solid var(--color-line);
+    border-radius: 18px;
+    background-color: rgba(255, 255, 255, 0.6);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+  .course-card:hover .course-resume,
+  .course-resume:hover {
+    background-color: #ffffff;
+  }
   /* The footer arrow leans into the door on hover — same spring the rest of
      the app eases with, transform-only. */
   .course-card .card-arrow {

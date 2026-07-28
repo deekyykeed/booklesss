@@ -2,14 +2,14 @@
 
 9:16, all light. Post each folder's images in order (`01 → 06`).
 
-> **Afternoon is a build-in-public progress post** (new format — a real feature,
-> shot from the live app). **Morning + evening are the older evergreen set**
-> (pre-pivot, and still carry the old "comment" CTA) — redo them as progress posts
-> or drop them.
+> **Morning + afternoon are build-in-public progress posts** — real features,
+> shot from the live app. Morning was redone as one (it was stale evergreen with
+> the old "comment" CTA). **Evening is still the older evergreen set** — redo it
+> as a progress post or drop it.
 
 | Slot | Time (local) | Folder | Type |
 |------|------|-------|------|
-| ☀️ Morning | ~08:00 | `morning/` | evergreen (stale) |
+| ☀️ Morning | ~08:00 | `morning/` | **progress post** |
 | 🌤️ Afternoon | ~13:00 | `afternoon/` | **progress post** |
 | 🌙 Evening | ~19:00 | `evening/` | evergreen (stale) |
 
@@ -26,13 +26,21 @@
 
 ---
 
-### ☀️ Morning — `morning/` · evergreen (stale — old "comment" CTA)
-**Post title:** All your notes. Sorted.
+### ☀️ Morning — `morning/` · the AI layer (build-in-public), 6 images
+**Post title:** You'll never break another night again
 **Caption:**
-> Every course, every lesson — finally in one place. 📚 Computer science, maths,
-> history, design… all sorted, all in order, nothing lost.
+> You'll never break another night again 🌙 Building the AI layer into Booklesss
+> in the open: it doesn't answer yet, but this part is done — a panel for the
+> step you're on, a box to ask in right where you got stuck, and a voice mode
+> that lights up as you talk. Answers next.
 > Search **booklesss** (three s's) on Google — we're the first result. 👇
-> #studytok #edtech #onlinelearning #studygram #buildinpublic
+> #buildinpublic #edtech #ai #designengineering #studytok
+
+Every frame is the current build: the top bar, the STEP panel, the composer at
+rest, voice mode lit. The app's own "AI tutor — coming soon" hint is left
+visible, and no slide claims an answer comes back. One staged detail: the voice
+glow tracks live mic loudness and headless has no mic, so `7-ai-crops.mjs`
+switches voice mode on for real and then writes a mid-sentence loudness value.
 
 ### 🌙 Evening — `evening/` · evergreen (stale — old "comment" CTA)
 **Post title:** We sweat the details
@@ -44,7 +52,11 @@
 
 ---
 
-*Regenerate: the progress post = `node _scripts/prog-post.mjs` (after
-`cap-feature.mjs` with the dev server up). The evergreen carousels =
-`node _scripts/5-day-carousels.mjs`. Both default to today's date and are
-self-contained. No posting connector here — upload manually or via a scheduler.*
+*Regenerate: the afternoon progress post = `node _scripts/prog-post.mjs` (after
+`cap-feature.mjs` with the dev server up). The carousels =
+`node _scripts/5-day-carousels.mjs`, and pass `SLOT=morning` to rebuild one slot
+without clearing the others — a blanket run refills every slot folder from
+SLOTS, which would wipe the afternoon post. The AI-layer crops behind the
+morning set = `node _scripts/7-ai-crops.mjs`. All default to today's date and
+are self-contained. No posting connector here — upload manually or via a
+scheduler.*

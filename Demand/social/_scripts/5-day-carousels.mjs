@@ -6,13 +6,32 @@
  *
  *   node _scripts/5-day-carousels.mjs            # DAY defaults below
  *   DAY=2026-07-26 node _scripts/5-day-carousels.mjs
+ *   SLOT=morning node _scripts/5-day-carousels.mjs   # one slot, leave the rest
  *
  * All light. Dark backgrounds wait until the app ships a real dark mode — a light
  * screenshot on a dark canvas doesn't sit right. Edit SLOTS copy, then re-run.
  */
-import { chromium, CROPS, POSTS, INTER_DATA, FAMILJEN_DATA, dayFolder } from "./paths.mjs";
+import { chromium, CROPS, POSTS, PLATFORM, INTER_DATA, FAMILJEN_DATA, dayFolder } from "./paths.mjs";
 import fs from "fs";
 import path from "path";
+import { createRequire } from "module";
+
+/* Icons: Streamline's free Freehand Line set, pulled the way the app pulls
+ * Solar — a local Iconify package resolved and inlined as SVG. The sketchy
+ * marks sit against the clean UI shots. Names: icones.js.org/collection/
+ * streamline-freehand. Packages live in platform/. */
+const require = createRequire(path.join(PLATFORM, "package.json"));
+const { getIconData, iconToSVG, replaceIDs } = require("@iconify/utils");
+const FREEHAND = require("@iconify-json/streamline-freehand/icons.json");
+
+function icon(name, size = 104) {
+  const data = getIconData(FREEHAND, name);
+  if (!data) throw new Error(`Unknown Freehand icon: "${name}"`);
+  const r = iconToSVG(data, { height: size, width: size });
+  const attrs = Object.entries(r.attributes).map(([k, v]) => `${k}="${v}"`).join(" ");
+  // no colour here: the body uses currentColor, so the wrapper's colour wins
+  return `<svg xmlns="http://www.w3.org/2000/svg" ${attrs} width="${size}" height="${size}">${replaceIDs(r.body)}</svg>`;
+}
 
 const DAY = process.env.DAY || new Date().toLocaleDateString("en-CA"); // today, local (YYYY-MM-DD)
 // e.g. posts/2026-W30 (Jul 20-26)/2026-07-25 Saturday/ — weekday named, grouped by week
@@ -82,6 +101,11 @@ const DARK_BG = `<div class="bg" style="background:
 const ink = (d) => (d ? "#F4F4F7" : "#0D0D0F");
 const subc = (d) => (d ? "rgba(233,233,238,.64)" : "#6A6A72");
 const eyec = (d) => (d ? "#A99BFF" : "#6C4CF0");
+// A slide's icon, stamped top-right on the wordmark's line, inside the safe area.
+const stamp = (name, d) =>
+  name
+    ? `<div style="position:absolute;right:${SAFE.right}px;top:258px;color:${ink(d)};opacity:.8;z-index:5">${icon(name)}</div>`
+    : "";
 const wordmark = (d) => `<div class="wm" style="color:${ink(d)}">${LOGO(32, d)}<span>Bklsss</span></div>`;
 
 /* ---- boxless templates ---- */
@@ -89,8 +113,9 @@ function cover(o) {
   const d = !!o.dark;
   return { dark: d, html: `<div class="layer">
     <div class="eyebrow" style="position:absolute;left:${SAFE.left}px;top:560px;color:${eyec(d)}">${o.eyebrow}</div>
-    <h1 style="position:absolute;left:${SAFE.left}px;top:612px;font-size:122px;line-height:.96;color:${ink(d)}">${o.title}</h1>
+    <h1 style="position:absolute;left:${SAFE.left}px;top:${o.titleTop || 612}px;font-size:${o.size || 122}px;line-height:.96;color:${ink(d)}">${o.title}</h1>
     <p class="sub" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right + 8}px;top:${o.subTop || 1030}px;font-size:33px;line-height:1.4;color:${subc(d)}">${o.sub}</p>
+    ${stamp(o.icon, d)}
   </div>` };
 }
 // the signature: crop bleeds off the bottom, faded at top — NO container
@@ -104,6 +129,26 @@ function bleed(o) {
       mask-image:linear-gradient(to bottom,transparent 0,#000 160px)">
       <img src="${o.img}" style="position:absolute;display:block;width:${o.imgW}px;left:${o.imgL || 0}px;top:0">
     </div>
+    ${stamp(o.icon, d)}
+  </div>` };
+}
+/* a wide band of UI crossing the frame — bleeds off both sides, and off the
+ * bottom when the crop is tall enough. `fade` softens the top edge where the
+ * crop's own background would otherwise show a seam; leave it off for a nav bar
+ * or a card, whose real edges should stay crisp. */
+function strip(o) {
+  const d = !!o.dark;
+  return { dark: d, html: `<div class="layer">
+    <h1 style="position:absolute;left:${SAFE.left}px;top:430px;font-size:100px;line-height:1.0;color:${ink(d)}">${o.title}</h1>
+    <p class="sub" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right + 8}px;top:${o.subTop || 690}px;font-size:30px;line-height:1.42;color:${subc(d)}">${o.sub || ""}</p>
+    <div style="position:absolute;left:0;right:0;top:${o.top}px;bottom:0;overflow:hidden;${
+      o.fade
+        ? `-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 ${o.fade}px);mask-image:linear-gradient(to bottom,transparent 0,#000 ${o.fade}px)`
+        : ""
+    }">
+      <img src="${o.img}" style="position:absolute;display:block;width:${o.imgW}px;left:${o.imgL || 0}px;top:0">
+    </div>
+    ${stamp(o.icon, d)}
   </div>` };
 }
 function promise(o) {
@@ -127,6 +172,7 @@ function searchCTA(o) {
       <span style="margin-left:auto;display:flex;flex-shrink:0">${LENS}</span>
     </div>
     <p class="sub" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:1090px;font-size:31px;line-height:1.45;color:${subc(d)}">Or DM me <b style="color:${ink(d)}">&ldquo;link&rdquo;</b> &mdash; I&rsquo;ll send it straight over. &#128071;</p>
+    ${stamp(o.icon, d)}
   </div>` };
 }
 // full clear app — NOT faded at the top, just the actual app (soft bottom edge only)
@@ -151,15 +197,35 @@ const B_LESSONS = { img: IMG["lessons-neu"], imgW: 1080, imgL: 0, imgTop: 900 };
 const B_TOC = { img: IMG.toc, imgW: 1560, imgL: -20, imgTop: 1000 };             // the on-this-page outline
 const B_READER = { img: IMG["reader-neu"], imgW: 1440, imgL: -150, imgTop: 1010 };// a lesson's heading + lead
 
+/* the app as it stands now (7-ai-crops.mjs) — the STEP panel and the AI
+ * composer at the bottom of it. `top` (not `imgTop`) marks strip() geometry. */
+const B_PANEL = { img: IMG["step-panel"], imgW: 1080, imgL: 0, imgTop: 880 };            // contents + a question you asked
+const S_TOPBAR = { img: IMG.topbar, imgW: 3988, imgL: -360, top: 1170 };                 // breadcrumb across the top
+const S_COMPOSER = { img: IMG["composer-rest"], imgW: 1160, imgL: -40, top: 1360, fade: 110 };  // the ask box at rest
+const S_VOICE = { img: IMG["composer-voice"], imgW: 1160, imgL: -40, top: 1330, fade: 140 };    // voice mode, lit
+
 /* ---- the day: three light carousels (>=4 each). About Booklesss the
  *      platform — every subject, never one course. All superzoom + type. ---- */
 const SLOTS = {
+  /* Progress post: the AI layer as it stands today. The tutor has no backend
+   * yet and the app says so in its own hint text ("AI tutor — coming soon"),
+   * which is left visible in the crops — so nothing here claims an answer
+   * comes back. */
   morning: [
-    cover({ eyebrow: "One home for everything", title: "All your notes.<br>Sorted.", sub: "Every course, every lesson &mdash; finally in one place." }),
-    bleed({ ...B_SUBJECTS, title: "Every subject,<br>side by side.", sub: "Switch between them in a tap." }),
-    bleed({ ...B_LESSONS, title: "Know exactly<br>what&rsquo;s next.", sub: "A clear path from the first lesson to the last." }),
-    promise({ title: "Studying,<br>without the mess.", line: "Open it and you&rsquo;re already sorted." }),
-    searchCTA({}),
+    cover({
+      icon: "alert-alarm-clock",
+      eyebrow: "For the night before",
+      title: "You'll never<br>break another<br>night again.",
+      size: 108,
+      titleTop: 580,
+      sub: "The step you're stuck on and the question you'd have Googled at 2am &mdash; same page.",
+      subTop: 1010,
+    }),
+    strip({ ...S_TOPBAR, icon: "gps-location-rectangle", title: "You always know<br>where you are.", sub: "Subject, section, step &mdash; across the top of every page." }),
+    bleed({ ...B_PANEL, icon: "book-flip-page", title: "A panel for the<br>step you're on.", sub: "Contents up top. What you ask sits underneath it." }),
+    strip({ ...S_COMPOSER, icon: "conversation-question-text-1", title: "The box sits next<br>to the words.", sub: "Ask where you got stuck &mdash; not in another tab. Answers are being wired now." }),
+    strip({ ...S_VOICE, icon: "microphone", title: "Or say it<br>out loud.", sub: "Voice mode lights up as you speak." }),
+    searchCTA({ icon: "cursor-highlight-click-1" }),
   ],
   afternoon: [
     cover({ eyebrow: "Built to be read", title: "Notes you&rsquo;ll<br>actually read.", sub: "Plain English. Clean pages. Nothing in the way.", subTop: 1010 }),
@@ -178,9 +244,15 @@ const SLOTS = {
 };
 
 /* ---- render ---- */
-const browser = await chromium.launch();
+const browser = await chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {});
 const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 2 });
+/* SLOT=morning renders one slot only. Worth reaching for: a slot's images can
+ * come from another generator (prog-post.mjs writes the progress posts), and a
+ * blanket re-run would clear that folder and refill it from SLOTS. */
+const ONLY = process.env.SLOT;
+if (ONLY && !SLOTS[ONLY]) throw new Error(`No such slot: "${ONLY}" (have: ${Object.keys(SLOTS).join(", ")})`);
 for (const [slot, slides] of Object.entries(SLOTS)) {
+  if (ONLY && slot !== ONLY) continue;
   const dir = path.join(OUT, slot);
   fs.rmSync(dir, { recursive: true, force: true });   // clear stale images, leave PLAN.md untouched
   fs.mkdirSync(dir, { recursive: true });

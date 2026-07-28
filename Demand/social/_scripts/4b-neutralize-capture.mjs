@@ -1,89 +1,14 @@
-import { chromium } from "./pw.mjs";
 import fs from "fs";
-const SRC = "cc-src";
-const BASE = "http://localhost:3100";
-const LESSON = "/microeconomics/supply-demand/law-of-demand";
+import path from "path";
+import { chromium, BASE, CROPS, LESSON } from "./paths.mjs";
+import { MAP, READER, transform } from "./neutralize.mjs";
 
-/* The live app only has an economics course loaded, so real screenshots would
- * expose it. Booklesss is meant to hold EVERY course — so before capturing we
- * relabel the nav + breadcrumb to a neutral multi-subject curriculum and swap
- * the reader for generic, subject-free copy. Placeholder labels, real UI. */
-const MAP = {
-  "What is Economics": "Welcome to Booklesss",
-  "How to use this course": "How Booklesss works",
-  "Key terms & glossary": "Key terms",
-  "Microeconomics": "Computer Science",
-  "Macroeconomics": "Mathematics",
-  "Behavioral economics": "History",
-  "Resources": "Design",
-  "Supply & demand": "Foundations",
-  "Consumer choice": "Core skills",
-  "Firms & production": "Projects",
-  "Market structures": "Going further",
-  "The law of demand": "Your first lesson",
-  "The law of supply": "Variables",
-  "Market equilibrium": "Functions",
-  "Elasticity": "Loops",
-  "Price elasticity of demand": "For loops",
-  "Income elasticity": "While loops",
-  "Cross-price elasticity": "Nested loops",
-  "Utility & marginal utility": "Objects",
-  "Indifference curves": "Arrays",
-  "Budget constraints": "Recursion",
-};
+const SRC = CROPS;
+fs.mkdirSync(SRC, { recursive: true });
+// CHROMIUM=/path/to/chrome for machines with a pre-baked browser.
+const launch = process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {};
 
-const READER = {
-  kicker: "Foundations",
-  title: "Your first lesson",
-  lead: "Booklesss turns any subject into something you can actually read — short, plain-language lessons that get to the point and build on each other.",
-  callout: "Rule of thumb: if an idea can be explained simply, Booklesss explains it simply.",
-  ideas: [
-    "Every lesson opens with the big idea, then fills in the details.",
-    "You move at your own pace — nothing is locked, nothing is timed.",
-    "Examples come from real life, not abstract theory.",
-  ],
-  practice:
-    "Say you're picking up something new this week. Instead of a 900-page textbook, you get a clear path: start here, learn the core idea, try it, and move on when it clicks.",
-  summary:
-    "Booklesss is built to make the next thing you learn feel easy to start — and hard to put down.",
-};
-
-// runs in the page (Playwright passes a single arg)
-function transform({ map, reader }) {
-  // 1. reader content -> neutral
-  const fc = document.querySelector(".font-content");
-  if (fc) {
-    const kicker = fc.querySelector("p");
-    if (kicker) kicker.textContent = reader.kicker;
-    const h1 = fc.querySelector("h1");
-    if (h1) h1.textContent = reader.title;
-    const lead = fc.querySelector("#overview p");
-    if (lead) lead.textContent = reader.lead;
-    const callout = fc.querySelector("#overview .squircle");
-    if (callout) callout.textContent = reader.callout;
-    const lis = fc.querySelectorAll("#key-ideas li");
-    lis.forEach((li, i) => {
-      const span = li.querySelector("span:last-child");
-      if (span && reader.ideas[i]) span.textContent = reader.ideas[i];
-    });
-    const pr = fc.querySelector("#in-practice p");
-    if (pr) pr.textContent = reader.practice;
-    const su = fc.querySelector("#summary p");
-    if (su) su.textContent = reader.summary;
-  }
-  // 2. relabel every remaining text node that exactly matches a map key (nav, breadcrumb, …)
-  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-  const hits = [];
-  while (walker.nextNode()) {
-    if (map[walker.currentNode.nodeValue.trim()]) hits.push(walker.currentNode);
-  }
-  hits.forEach((n) => {
-    const key = n.nodeValue.trim();
-    n.nodeValue = n.nodeValue.replace(key, map[key]);
-  });
-}
-
-const browser = await chromium.launch();
+const browser = await chromium.launch(launch);
 
 /* A. active-row macro (neutral) — DPR 6 */
 {
@@ -172,6 +97,22 @@ const browser = await chromium.launch();
   await page.close();
 }
 
+/* F. Search palette (neutral) — the real Cmd-K palette over a neutral tree, DPR 4 */
+{
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 4 });
+  await page.goto(BASE + LESSON, { waitUntil: "networkidle" });
+  await page.waitForTimeout(900);
+  await page.keyboard.press("Control+k");
+  await page.waitForTimeout(500);
+  const input = page.locator('input[placeholder^="Search courses"]');
+  // deep: the result hints are composite ("Microeconomics / Supply & demand")
+  await page.evaluate(transform, { map: MAP, reader: READER, deep: true });
+  await page.waitForTimeout(200);
+  const modal = input.locator('xpath=ancestor::div[contains(@class,"rounded-xl")][1]');
+  await modal.screenshot({ path: `${SRC}/command-neu.png` });
+  await page.close();
+}
+
 await browser.close();
 const png = (p) => { const b = fs.readFileSync(p); return b.readUInt32BE(16) + "x" + b.readUInt32BE(20); };
-console.log("active-neu", png(`${SRC}/active-neu.png`), "| subjects", png(`${SRC}/subjects.png`), "| lessons", png(`${SRC}/lessons-neu.png`), "| reader", png(`${SRC}/reader-neu.png`));
+console.log("command-neu", png(`${SRC}/command-neu.png`), "|", "active-neu", png(`${SRC}/active-neu.png`), "| subjects", png(`${SRC}/subjects.png`), "| lessons", png(`${SRC}/lessons-neu.png`), "| reader", png(`${SRC}/reader-neu.png`));

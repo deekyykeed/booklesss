@@ -57,9 +57,25 @@ neutral crops in `_source/carousel-crops/` and embeds the vendored fonts from
 # edit the SLOTS copy in _scripts/5-day-carousels.mjs first, then:
 DAY=2026-07-27 node _scripts/5-day-carousels.mjs
 # → posts/2026-W31 (Jul 27 - Aug 2)/2026-07-27 Monday/
+
+SLOT=morning DAY=2026-07-27 node _scripts/5-day-carousels.mjs   # one slot only
 ```
 
 Re-running a day rebuilds its images but leaves that day's `PLAN.md` alone.
+
+⚠️ A blanket run clears **every** slot folder and refills it from `SLOTS` — so
+if a slot's images came from another generator (`prog-post.mjs` writes the
+progress posts), pass `SLOT=` to rebuild just the one you mean.
+
+**Icons.** Slides take `icon: "<name>"` and stamp it top-right, on the
+wordmark's line. They come from Streamline's free Freehand Line set, pulled the
+way the app pulls Solar — a local Iconify package
+(`@iconify-json/streamline-freehand`, a devDependency of `platform/`) resolved
+with `@iconify/utils` and inlined as SVG at render time. No network, nothing
+vendored by hand; an unknown name throws. Browse names at
+[icones.js.org/collection/streamline-freehand](https://icones.js.org/collection/streamline-freehand).
+The premium Freehand set is paywalled and its download URLs are unreachable
+from a sandbox anyway — stay on the Iconify package.
 
 Then write that day's `PLAN.md` (copy an existing day's and swap the captions).
 
@@ -101,7 +117,22 @@ cd ../Demand/social
 node _scripts/1-capture.mjs   # raw crops   -> _source/
 node _scripts/2-posters.mjs   # stills      -> stills/
 node _scripts/3-video.mjs     # motion clip -> stills/
+node _scripts/7-ai-crops.mjs  # top bar, STEP panel, AI composer -> _source/carousel-crops/
 ```
+
+`4b-neutralize-capture.mjs` and `7-ai-crops.mjs` share one relabelling map
+(`neutralize.mjs`): the live app only holds the economics course, and the posts
+are about Booklesss holding every subject, so every capture is relabelled to a
+neutral multi-subject curriculum before the shot. Never post a raw capture of
+the seeded course.
+
+`7-ai-crops.mjs` also stages one thing on purpose: voice mode's glow is driven
+by live mic loudness and headless has no mic, so it switches voice mode on for
+real — the bold icon, the border ring, the "Voice mode on" hint are all genuine
+app state — then writes a mid-sentence loudness value so the still shows what a
+speaking frame looks like.
+
+Both accept `CHROMIUM=<path>` for machines with a pre-baked browser.
 
 Point them elsewhere with `BASE_URL=http://localhost:3000`.
 
