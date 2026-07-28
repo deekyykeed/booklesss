@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-07-26 (session 21)
+**Last updated:** 2026-07-28 (session 22)
 
 ---
 
@@ -183,6 +183,79 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-07-28 (session 22 — reader/home UI pass: brand, sidebar, course home, weekly chart)
+
+Cloud session, all work via PRs on `claude/understand-webapp-t8jf49`. Three PRs
+merged this session before the wrap (#111, #112, plus an earlier batch on main:
+spine course cards with Freehand marks, the mobile swipe-guard for tables/graphs,
+dashboard band spacing, 18px Aptos reading text); #113 open at wrap time.
+
+**Done:**
+- **PR #111 (merged):** reader table corners 12→16px; step-sidebar header cut to
+  the course name; **breadcrumbs moved from the top bar into the content column**,
+  directly above the step title (replaced the kicker, which only echoed the parent
+  label; `LessonBreadcrumb.tsx` deleted, top bar has no breadcrumb slot).
+- **PR #112 (merged):**
+  - **Wordmark is the logo** — Solar "Stop" mark + `Logo` component deleted;
+    "Bklsss" scales 17→22px in the header.
+  - **Radius pass, squircle kept:** tables + code playground 16→24px; formula
+    cards + callouts 12→16px.
+  - **Duo sidebar removed** — `Rail.tsx` and all its CSS (`.app-rail`, `.rail-btn`,
+    `.with-rail`, `.beside-rail`, `--rail-w`) deleted; one sidebar everywhere, with
+    the **Dashboard link** (widget glyph + label → `/`) restored atop the step tree
+    where the course title sat.
+  - **Course home rewritten as a docs-style text page:** title, orientation prose
+    with a start/continue link woven in, then every unit a ruled heading with its
+    steps as link rows. (First attempt — dark hero + stat tiles — rejected same
+    session; see Dead Ends.)
+  - **Study chart → one week per view** (Mon–Sun labels always), chevrons page back
+    to the first recorded day; current week draws only to today, future days dimmed.
+  - **Per-course study time:** `StudyDay.courses` (secs per slug, additive/optional),
+    StudyClock passes the open lesson's course per tick. Chart draws a thin line per
+    course + a **momentum curve** (EMA of daily minutes, half-life 3 days, warmed up
+    3 weeks) whose **faded dashed tail projects to Sunday** fed by the last 3 days'
+    average. Legend under the plot; tooltip breaks a day down by course.
+  - **Tones centralised in `home/tones.ts`;** Corporate Finance green→amber
+    `#c17e3a` (card + chart) so its line can't be confused with the total's green.
+- **PR #113 (open at wrap):** clock glyph removed from the Time studied card;
+  course-home banner image removed again (`public/course-banner.svg` deleted);
+  visual QA pass over home / course home / step page at desktop + mobile — all good.
+
+**Owner design rulings (do not re-ask):**
+- The **wordmark alone is the logo** in the app — no icon mark anywhere.
+- **One sidebar.** Never resurrect the 56px icon rail ("duo sidebar").
+- The **course home is a text index** (docs-landing style: title, prose, step
+  links) — *not* a second dashboard. No stat tiles, no progress hero, no banner image.
+- **Breadcrumbs belong in the content column** above the step title, not the header.
+- Reader containers wear **soft squircle corners** (24px tables/playground,
+  16px cards/callouts).
+
+**Dead Ends (do not retry):**
+- **Dark-hero + stat-tiles course home** (docs-dashboard hybrid) — built, merged,
+  rejected within the hour. The docs reference meant *text-heavy with links*, not
+  another dashboard.
+- **Banner image below the course title** — asked for ("an image wouldn't hurt"),
+  drawn as a still-waves SVG, then cut ("remove that image thing"). Don't reintroduce.
+
+**Flags:**
+- **Per-course chart lines start 2026-07-28** — older days hold totals only, so the
+  split legitimately begins where the data does (no fabricated zeroes).
+- The Time studied card's corner figure is still the **30-day total** beside a
+  weekly chart (labelled, so not wrong); owner hasn't said whether it should
+  follow the visible week.
+- On a course home, the **sidebar tree shows the first course** regardless of which
+  course's page is open (predates this session; flagged, no ruling yet).
+- The **momentum projection** is the one drawn thing that isn't a measurement —
+  it's dashed + faded and the legend says so. Keep it that way.
+
+**Next Session:**
+- [ ] Merge/close PR #113 if still open.
+- [ ] Decide: card corner total → visible week? Sidebar tree scoped to the open course?
+- [ ] The store now has per-course seconds — the dashboard course cards could show
+      per-course time studied with no further store work.
+
+---
 
 ### Session 2026-07-26 (session 21 — workspace reorg + social build-in-public pipeline)
 
