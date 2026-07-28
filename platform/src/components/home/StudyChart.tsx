@@ -187,7 +187,9 @@ export function StudyChart({ days, hydrated }: { days: Record<string, StudyDay>;
 
   return (
     <div>
-      <div ref={box} className="relative">
+      {/* data-no-swipe: the plot is an interactive horizontal surface — a
+          finger sweeping the crosshair must never read as a drawer swipe. */}
+      <div ref={box} className="relative" data-no-swipe>
         <svg
           width={w}
           height={H}

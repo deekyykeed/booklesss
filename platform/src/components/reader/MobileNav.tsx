@@ -177,11 +177,32 @@ export function MobileNavProvider({
     let tracking = false;
     let decided = false;
 
+    /* True when any ancestor of the touch actually scrolls horizontally —
+     * a wide table, a chart wrapper, a code block. Checked live rather than
+     * kept as a selector list: the list kept falling out of date (tables and
+     * graphs weren't on it), and "content wider than its box with overflow-x
+     * auto/scroll" is the real condition under which a sideways drag must
+     * mean scrolling, never a drawer. */
+    const insideHScroller = (el: Element | null): boolean => {
+      for (let n: Element | null = el; n && n !== document.body; n = n.parentElement) {
+        if (!(n instanceof HTMLElement)) continue;
+        if (n.scrollWidth > n.clientWidth + 1) {
+          const ox = getComputedStyle(n).overflowX;
+          if (ox === "auto" || ox === "scroll") return true;
+        }
+      }
+      return false;
+    };
+
     const onStart = (e: TouchEvent) => {
       // Above xl both panels are rails — no drawer to swipe.
       if (window.innerWidth >= 1280 || e.touches.length !== 1) return;
       const t = e.target as Element | null;
       if (t?.closest?.("[data-no-swipe], pre, textarea, input, select, [contenteditable], .cm-editor")) {
+        tracking = false;
+        return;
+      }
+      if (insideHScroller(t)) {
         tracking = false;
         return;
       }
