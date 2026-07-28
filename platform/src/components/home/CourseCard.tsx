@@ -122,7 +122,10 @@ export function CourseCard({
               transition: "width 600ms cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           />
-          <span className="relative text-[13px] leading-5 text-ink">{started ? "Resume" : "Start"}</span>
+          <span className="relative min-w-0 truncate text-[13px] leading-5 text-ink">
+            <span className="text-placeholder">{started ? "Resume · " : "Start · "}</span>
+            {hydrated ? labelFor(next) : " "}
+          </span>
           <svg
             width="15"
             height="15"
