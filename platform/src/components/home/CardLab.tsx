@@ -296,6 +296,151 @@ function CardPoster({ d }: { d: CardData }) {
   );
 }
 
+/* H/I · Swept — the reference card: title, a curved sweep behind it, a
+ * "Progress" row with a chunky segmented bar (one segment per unit, sized by
+ * its share), and a footer of unit discs (the avatar-stack slot) + a chip.
+ * H wears the course tone as the card; I is the same bones on the site's
+ * default surface. */
+
+function SweptSweep({ fill }: { fill: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-x-0 top-0 h-[92px] w-full"
+      viewBox="0 0 720 92"
+      preserveAspectRatio="none"
+    >
+      <path d="M0 0 H720 V34 C560 88 380 -18 190 46 C120 68 50 64 0 40 Z" fill={fill} />
+    </svg>
+  );
+}
+
+function SweptSegments({ d, track, fill }: { d: CardData; track: string; fill: string }) {
+  return (
+    <div className="flex gap-1.5" role="presentation">
+      {d.units.map((u, i) => (
+        <div
+          key={i}
+          className="h-[5px] overflow-hidden rounded-full"
+          style={{ flexGrow: Math.max(u.total, 1), flexBasis: 0, backgroundColor: track }}
+        >
+          <div
+            className="h-full rounded-full"
+            style={{ width: `${u.total ? (u.done / u.total) * 100 : 0}%`, backgroundColor: fill }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** The avatar-stack slot, honestly filled: one disc per unit, solid once the
+ *  unit is complete. Caps at four, the rest fold into a +n disc. */
+function SweptDiscs({ d, base, done, text }: { d: CardData; base: string; done: string; text: string }) {
+  const shown = d.units.slice(0, 4);
+  const rest = d.units.length - shown.length;
+  return (
+    <div className="flex items-center">
+      {shown.map((u, i) => (
+        <span
+          key={i}
+          title={u.label}
+          className={"grid h-[22px] w-[22px] place-items-center rounded-full text-[9px] font-semibold " + (i > 0 ? "-ml-1.5" : "")}
+          style={{
+            backgroundColor: u.total > 0 && u.done >= u.total ? done : base,
+            color: text,
+            boxShadow: "0 0 0 2px rgba(255,255,255,0.001)",
+          }}
+        >
+          {u.label.slice(0, 1)}
+        </span>
+      ))}
+      {rest > 0 && (
+        <span
+          className="-ml-1.5 grid h-[22px] w-[22px] place-items-center rounded-full text-[9px] font-semibold"
+          style={{ backgroundColor: base, color: text }}
+        >
+          +{rest}
+        </span>
+      )}
+    </div>
+  );
+}
+
+function Kebab({ className }: { className: string }) {
+  return (
+    <span aria-hidden="true" className={"select-none text-[15px] font-bold leading-none tracking-[0.12em] " + className}>
+      ···
+    </span>
+  );
+}
+
+/* H · toned: the course hue is the card. */
+function CardSwept({ d }: { d: CardData }) {
+  return (
+    <Link
+      href={`/${d.course.slug}`}
+      className="squircle relative block overflow-hidden rounded-[32px] p-3.5 text-white lg:p-[18px]"
+      style={{ backgroundColor: d.tone }}
+    >
+      <SweptSweep fill="rgba(255,255,255,0.12)" />
+      <div className="relative">
+        <div className="flex items-start justify-between gap-3">
+          <p className="min-w-0 font-display text-[20px] font-semibold leading-tight">{d.course.title}</p>
+          <Kebab className="text-white/70" />
+        </div>
+        <div className="mt-6 flex items-baseline justify-between gap-3">
+          <p className="text-[12.5px] text-white/80">Progress</p>
+          <p className="text-[13px] font-semibold tabular-nums">{d.pct}%</p>
+        </div>
+        <div className="mt-2">
+          <SweptSegments d={d} track="rgba(255,255,255,0.28)" fill="#ffffff" />
+        </div>
+        <div className="mt-5 flex items-center justify-between gap-3">
+          <SweptDiscs d={d} base="rgba(255,255,255,0.25)" done="rgba(255,255,255,0.9)" text="rgba(0,0,0,0.55)" />
+          <span className="flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-[12px] font-medium">
+            {d.started ? "Continue" : "Start"}
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12h13m0 0-5.5-5.5M18 12l-5.5 5.5" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+/* I · the same bones on the site's default surface. */
+function CardSweptLight({ d }: { d: CardData }) {
+  return (
+    <Link href={`/${d.course.slug}`} className={CARD + " relative overflow-hidden"}>
+      <SweptSweep fill={`${d.tone}0f`} />
+      <div className="relative">
+        <div className="flex items-start justify-between gap-3">
+          <p className="min-w-0 font-display text-[20px] font-semibold leading-tight text-ink">{d.course.title}</p>
+          <Kebab className="text-placeholder" />
+        </div>
+        <div className="mt-6 flex items-baseline justify-between gap-3">
+          <p className="text-[12.5px] text-muted">Progress</p>
+          <p className="text-[13px] font-semibold tabular-nums text-ink">{d.pct}%</p>
+        </div>
+        <div className="mt-2">
+          <SweptSegments d={d} track={`${d.tone}1f`} fill={d.tone} />
+        </div>
+        <div className="mt-5 flex items-center justify-between gap-3">
+          <SweptDiscs d={d} base={`${d.tone}26`} done={d.tone} text="#ffffff" />
+          <span className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium text-ink" style={{ backgroundColor: `${d.tone}17` }}>
+            {d.started ? "Continue" : "Start"}
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ color: d.tone }}>
+              <path d="M5 12h13m0 0-5.5-5.5M18 12l-5.5 5.5" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 /* The lab itself ----------------------------------------------------- */
 
 const VARIANTS: { key: string; name: string; note: string; render: (d: CardData) => React.ReactNode }[] = [
@@ -306,6 +451,8 @@ const VARIANTS: { key: string; name: string; note: string; render: (d: CardData)
   { key: "E", name: "Study time", note: "the course's own minutes as a sparkline", render: (d) => <CardStudyTime d={d} /> },
   { key: "F", name: "Ink", note: "the dark cut", render: (d) => <CardInk d={d} /> },
   { key: "G", name: "Poster", note: "a tone field carries mark + number", render: (d) => <CardPoster d={d} /> },
+  { key: "H", name: "Swept · toned", note: "the reference card, course hue as the card", render: (d) => <CardSwept d={d} /> },
+  { key: "I", name: "Swept · default", note: "the reference card on the site's surface", render: (d) => <CardSweptLight d={d} /> },
 ];
 
 export function CardLab() {
