@@ -6,27 +6,6 @@ import { ClerkIsland } from "./ClerkIsland";
 import { CommandSearch } from "./CommandSearch";
 import { MobileMenuButton, MobileContextButton } from "./reader/MobileNav";
 
-// Streamline · Solar Broken · "Stop" — Booklesss brand mark
-function Logo() {
-  return (
-    <svg
-      width="22"
-      height="22"
-      viewBox="0 0 24 24"
-      fill="none"
-      strokeWidth="1.5"
-      aria-hidden="true"
-      className="shrink-0 text-ink"
-    >
-      <path
-        d="M22 12c0 4.714 0 7.0711-1.4645 8.5355C19.0711 22 16.714 22 12 22c-4.71405 0-7.07107 0-8.53553-1.4645C2 19.0711 2 16.714 2 12c0-4.71405 0-7.07107 1.46447-8.53553C4.92893 2 7.28595 2 12 2c4.714 0 7.0711 0 8.5355 1.46447.9738.97374 1.3001 2.34208 1.4094 4.53553"
-        stroke="currentColor"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
 /* Shared, fixed 48px header. Transparent so the blob backdrop shows through;
  * the only boxy element is the 1px #dfdfdf bottom hairline. px-16, space-between. */
 
@@ -89,20 +68,18 @@ export function TopBar({
     <header className="app-header fixed inset-x-0 top-0 z-50 flex h-12 items-center justify-between gap-2.5 border-b border-line px-4">
       {/* left cluster — the logo lockup sits apart from the breadcrumb */}
       <div className="flex min-w-0 items-center gap-5">
-        {/* logo lockup: mobile shows the hamburger + wordmark; desktop shows
-            the mark + wordmark + org switcher. The wordmark is common to both. */}
+        {/* logo lockup: the wordmark IS the logo — no mark. Mobile adds the
+            hamburger before it; desktop adds the org switcher after. */}
         <div className="flex items-center gap-2.5 md:gap-2">
           <MobileMenuButton />
           {/* The lockup is the way home. The course navigator shows one course
               and its steps and nothing above them, so without this a student
               who opened a lesson has no route back to the dashboard. */}
           <Link href="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-70 md:gap-2">
-            <span className="hidden md:inline-flex">
-              <Logo />
-            </span>
-            {/* font-bold is already the heaviest weight Familjen Grotesk ships,
-                so weight is maxed — a slightly larger size gives it more presence. */}
-            <span className="font-display text-[17px] font-bold leading-none tracking-tight text-ink">
+            {/* The wordmark is the whole logo, so it gets logo scale — 22px
+                against the 48px bar — rather than nav-label scale. font-bold is
+                already the heaviest weight Familjen Grotesk ships. */}
+            <span className="font-display text-[22px] font-bold leading-none tracking-tight text-ink">
               {orgName}
             </span>
           </Link>

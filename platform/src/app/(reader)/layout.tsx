@@ -1,5 +1,4 @@
 import { TopBar } from "@/components/TopBar";
-import { Rail } from "@/components/Rail";
 import { Sidebar } from "@/components/reader/Sidebar";
 import { RightPanel } from "@/components/reader/RightPanel";
 import { MobileNavProvider, MobileScrim } from "@/components/reader/MobileNav";
@@ -37,13 +36,12 @@ export default function ReaderLayout({ children }: { children: React.ReactNode }
         ))}
       </div>
       <TopBar orgName="Bklsss" />
-      <Rail active="courses" />
       <Sidebar />
       <RightPanel />
       <MobileScrim />
       {/* Flush against the top bar and the sidebar; on mobile it slides right
           to uncover the drawer. */}
-      <main className="content-frame with-rail">
+      <main className="content-frame">
         <div id="content-surface" className="content-surface no-scrollbar">
           {children}
         </div>

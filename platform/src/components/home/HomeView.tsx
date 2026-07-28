@@ -7,6 +7,7 @@ import { checkpointsFor, labelFor, lessonsUnder } from "@/lib/course";
 import { isStudyDay, streakSeries, studyHistory, useProgress } from "@/lib/progress";
 import { CourseMark } from "./course-glyphs";
 import { smoothPath, StudyChart } from "./StudyChart";
+import { CHART_TONE, courseTone } from "./tones";
 
 
 /* ------------------------------------------------------------------ *
@@ -36,18 +37,8 @@ const TONE = {
   steps: "#4a3aa7",
 } as const;
 
-/** The Time studied card's hue — the same green its line is drawn with
- *  (StudyChart's LINE), so the mark and the plot agree. */
-const CHART_TONE = "#17754d";
-
-/** One hue per course, carried by the card's gradient, mark and sparkline.
- *  Keyed by slug like CourseGlyph — a new course gets the fallback the day
- *  it's seeded, and picking its colour is a one-line change here. */
-const COURSE_TONE: Record<string, string> = {
-  economics: "#2a78d6",
-  "corporate-finance": "#17754d",
-};
-const COURSE_TONE_FALLBACK = "#4a3aa7";
+/* Hues live in tones.ts, shared with the study chart so a course's card and
+ * its line on the plot always agree. */
 
 /** The reference's anchored delta — "+20% · 25 last week": the movement AND
  *  the number it moved from, so the percentage explains itself. Falls back to
@@ -247,7 +238,7 @@ export function HomeView({
             const pctDone = c.totalCheckpoints ? Math.round((cDone / c.totalCheckpoints) * 100) : 0;
             const started = c.lessonIds.filter((id) => !hydrated || !isComplete(id));
             const next = started.find((id) => hydrated && doneCount(id) > 0) ?? started[0] ?? c.lessonIds[0];
-            const tone = COURSE_TONE[c.slug] ?? COURSE_TONE_FALLBACK;
+            const tone = courseTone(c.slug);
             /* The card's centrepiece is the course's spine: one segment per
                unit, sized by the unit's share of the course, filled by its
                cleared checkpoints. It shows where in the course the work has

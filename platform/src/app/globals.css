@@ -27,7 +27,6 @@
   --color-btn: #0b0b0b;             /* solid black button        */
 
   --header-h: 48px;
-  --rail-w: 56px;
   --sidebar-docs: 265px;
   --rightbar-w: 300px;
   --sidebar-dash: 208px;
@@ -258,67 +257,6 @@
      sidebar, inset from the right and bottom edges. Written out rather than
      composed from utilities so the geometry can't depend on which Tailwind
      classes happen to be generated. */
-  /* The duo sidebar's narrow half. Same material as the wide panels.
-     "app-rail", not "rail" — the step tree already uses .rail for its
-     indentation lines, and generic names collide. */
-  /* Transparent like every sidebar container — the animated backdrop reads
-     through all of them; only the hairline divider marks the column. */
-  .app-rail {
-    left: 0;
-    width: var(--rail-w);
-  }
-  .rail-btn {
-    position: relative;
-    display: grid;
-    place-items: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 14px;
-    corner-shape: superellipse(2);
-    color: var(--color-muted);
-    transition: color 140ms ease, background-color 140ms ease;
-  }
-  /* Instant tooltip to the button's right — the rail is icons only, so the
-     name has to be one hover away, faster than the browser's title delay. */
-  .rail-btn[data-tip]::after {
-    content: attr(data-tip);
-    position: absolute;
-    left: calc(100% + 10px);
-    top: 50%;
-    transform: translateY(-50%) translateX(-4px);
-    z-index: 60;
-    padding: 4px 9px;
-    border-radius: 8px;
-    background-color: var(--color-btn);
-    color: #ffffff;
-    font-size: 12px;
-    line-height: 1.3;
-    white-space: nowrap;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 120ms ease 60ms, transform 120ms ease 60ms;
-  }
-  .rail-btn[data-tip]:hover::after,
-  .rail-btn[data-tip]:focus-visible::after {
-    opacity: 1;
-    transform: translateY(-50%) translateX(0);
-  }
-  .rail-btn:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-    color: var(--color-ink);
-  }
-  .rail-btn[data-active] {
-    background-color: rgba(0, 0, 0, 0.08);
-    color: var(--color-ink);
-  }
-  .rail-btn[data-soon] {
-    color: rgba(0, 0, 0, 0.28);
-    cursor: default;
-  }
-  .rail-btn[data-soon] svg {
-    opacity: 0.6;
-  }
-
   .content-frame {
     position: fixed;
     top: var(--header-h);
@@ -333,25 +271,11 @@
      the per-frame resize drag) while the panel slides off under its own
      transform transition. */
   @media (min-width: 768px) {
-    /* The duo exists only in the step experience: there the main navigation
-       is collapsed to its icon rail and the course navigator sits beside it
-       (.beside-rail). On the dashboard the expanded main navigation is the
-       whole sidebar — no rail, no second column. */
-    .sidebar-panel.beside-rail {
-      left: var(--rail-w) !important;
-    }
     .content-frame {
       padding-left: var(--sidebar-docs);
     }
-    .content-frame.with-rail {
-      padding-left: calc(var(--rail-w) + var(--sidebar-docs));
-    }
-    /* Collapsing the wide panel keeps the rail — it's the constant half. */
     .app-shell[data-left-collapsed] .content-frame {
       padding-left: 0;
-    }
-    .app-shell[data-left-collapsed] .content-frame.with-rail {
-      padding-left: var(--rail-w);
     }
     .app-shell[data-left-collapsed] .sidebar-panel {
       transform: translateX(-100%);

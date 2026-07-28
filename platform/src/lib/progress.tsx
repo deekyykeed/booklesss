@@ -37,6 +37,11 @@ export type StudyDay = {
   /** Steps whose final checkpoint was cleared that day. Counts completion
    *  events — un-ticking later doesn't erase the day the step was finished. */
   steps: number;
+  /** Seconds per course slug, summing (bar rounding) to `secs`. Optional and
+   *  additive: days recorded before this field shipped have the total only,
+   *  and the chart draws course lines only from where this data starts —
+   *  a zero here would be an invention, not a measurement. */
+  courses?: Record<string, number>;
 };
 
 type State = {
@@ -101,17 +106,30 @@ function cleanMap(raw: unknown): Record<string, string[]> {
 
 const whole = (n: unknown) => (typeof n === "number" && Number.isFinite(n) && n > 0 ? Math.floor(n) : 0);
 
+/** Positive numbers keyed by course slug; anything else is dropped. */
+function cleanCourses(raw: unknown): Record<string, number> | undefined {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return undefined;
+  const out: Record<string, number> = {};
+  for (const [slug, v] of Object.entries(raw)) {
+    const n = whole(v);
+    if (n) out[slug] = n;
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
 /** Dates mapped to a day record. Anything that isn't one is dropped. */
 function cleanDays(raw: unknown): Record<string, StudyDay> {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
   const out: Record<string, StudyDay> = {};
   for (const [date, v] of Object.entries(raw)) {
     if (!v || typeof v !== "object") continue;
-    const day = {
+    const day: StudyDay = {
       checks: whole((v as StudyDay).checks),
       secs: whole((v as StudyDay).secs),
       steps: whole((v as StudyDay).steps),
     };
+    const courses = cleanCourses((v as StudyDay).courses);
+    if (courses) day.courses = courses;
     if (day.checks || day.secs || day.steps) out[date] = day;
   }
   return out;
@@ -229,13 +247,15 @@ function mutate(lessonId: string, next: (prev: string[]) => string[], markToday:
  * step, so emitting each tick would re-render the whole reader for a number
  * nobody can see change.
  */
-export function addStudySeconds(secs: number) {
+export function addStudySeconds(secs: number, course?: string) {
   const n = Math.floor(secs);
   if (!snapshot.hydrated || n <= 0) return;
 
   const t = today();
   const day = dayAt(snapshot.state.days, t);
-  const updated = { ...day, secs: day.secs + n };
+  const updated: StudyDay = { ...day, secs: day.secs + n };
+  // The same seconds, attributed — so the chart can draw one line per course.
+  if (course) updated.courses = { ...day.courses, [course]: (day.courses?.[course] ?? 0) + n };
   const state = {
     done: snapshot.state.done,
     days: { ...snapshot.state.days, [t]: updated },

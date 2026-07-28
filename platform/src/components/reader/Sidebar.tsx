@@ -15,7 +15,7 @@ import {
   type NavNode,
 } from "@/lib/course";
 import { useFollow } from "./useFollow";
-import { courseForNode, type CourseMeta } from "@/lib/courses";
+import { courseForNode } from "@/lib/courses";
 import { useProgress } from "@/lib/progress";
 import { CompletionRing } from "./CompletionRing";
 
@@ -185,18 +185,20 @@ type Ctx = {
   onSelect: (id: string) => void;
 };
 
-/* The course this rail belongs to, at the top of it.
- *
- * Just the name now — no mark, no divider, no progress. The dashboard card
- * carries the course's full identity; here the title alone says where you
- * are, and its display size against the rows below is separation enough. */
-function CourseHeader({ course }: { course: CourseMeta }) {
+/* Solar · Line · "Widget" — the four-panel grid, i.e. the dashboard glyph.
+ * Inlined rather than resolved through <Icon>, which would pull the whole
+ * ~7,400-icon Solar set into this client bundle for one path (same reason as
+ * the chevron and panel glyphs below). Kept byte-identical to the set. */
+function DashboardGlyph() {
   return (
-    <div className="px-2 pb-2 pt-1">
-      <span className="block truncate font-display text-[17px] font-semibold leading-tight text-ink">
-        {course.title}
-      </span>
-    </div>
+    <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" className="shrink-0">
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        d="M2.5 6.5c0-1.886 0-2.828.586-3.414S4.614 2.5 6.5 2.5s2.828 0 3.414.586s.586 1.528.586 3.414s0 2.828-.586 3.414s-1.528.586-3.414.586s-2.828 0-3.414-.586S2.5 8.386 2.5 6.5Zm11 11c0-1.886 0-2.828.586-3.414s1.528-.586 3.414-.586s2.828 0 3.414.586s.586 1.528.586 3.414s0 2.828-.586 3.414s-1.528.586-3.414.586s-2.828 0-3.414-.586s-.586-1.528-.586-3.414Zm-11 0c0-1.886 0-2.828.586-3.414S4.614 13.5 6.5 13.5s2.828 0 3.414.586s.586 1.528.586 3.414s0 2.828-.586 3.414s-1.528.586-3.414.586s-2.828 0-3.414-.586S2.5 19.386 2.5 17.5Zm11-11c0-1.886 0-2.828.586-3.414S15.614 2.5 17.5 2.5s2.828 0 3.414.586s.586 1.528.586 3.414s0 2.828-.586 3.414s-1.528.586-3.414.586s-2.828 0-3.414-.586S13.5 8.386 13.5 6.5Z"
+      />
+    </svg>
   );
 }
 
@@ -556,13 +558,13 @@ export function Sidebar() {
           aria-label="Open navigation"
           title="Open navigation"
           className="squircle fixed top-16 z-40 hidden h-8 w-8 place-items-center rounded-lg border border-line bg-white/80 text-muted shadow-sm backdrop-blur-md transition-colors hover:text-ink md:grid"
-          style={{ left: "calc(var(--rail-w) + 12px)" }}
+          style={{ left: 12 }}
         >
           <PanelIcon />
         </button>
       )}
     <aside
-      className="sidebar-panel beside-rail fixed left-0 top-12 z-40 flex h-[calc(100dvh-48px)] flex-col border-r border-line"
+      className="sidebar-panel fixed left-0 top-12 z-40 flex h-[calc(100dvh-48px)] flex-col border-r border-line"
       style={{ width: "var(--sidebar-docs)" }}
     >
       {/* Drag to resize. Sits over the right border, 8px wide for an easy
@@ -586,13 +588,15 @@ export function Sidebar() {
         className="absolute inset-y-0 -right-1 z-30 hidden w-2 cursor-col-resize focus:outline-none md:block"
       />
 
-      {/* The course you're in, above its steps. The way back out to the
-          dashboard is the wordmark in the header. */}
-      {course && (
-        <div className="p-2 pb-0">
-          <CourseHeader course={course} />
-        </div>
-      )}
+      {/* Way out of the course, above the step tree — the dashboard is a level
+          up from whatever step they're reading. */}
+      <div className="p-2 pb-0">
+        <Link href="/" onClick={() => closeMobileNav()} className="home-nav squircle">
+          <DashboardGlyph />
+          <span className="min-w-0 flex-1 truncate">Dashboard</span>
+        </Link>
+        <div className="mx-2 mt-2 h-px bg-line" />
+      </div>
 
       <nav className="no-scrollbar flex-1 overflow-y-auto p-2">
         <div ref={listRef} className="relative flex flex-col gap-0.5">
