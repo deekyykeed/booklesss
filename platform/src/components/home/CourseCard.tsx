@@ -42,7 +42,7 @@ export function CourseCard({
   /** The step the button resumes — where they left off, or the first one. */
   next,
   /** Readers in this course right now, or null when presence hasn't synced
-   *  (or isn't configured) — null renders no figure at all. */
+   *  (or isn't configured) — null shows the figure's "–" placeholder. */
   live,
 }: {
   course: CourseMeta;
@@ -94,10 +94,10 @@ export function CourseCard({
             mark={<StopwatchMark size={15} />}
           />
           {/* Who's in this course right now — the one figure about other
-              people. Only rendered once presence has actually synced, so an
-              unconfigured or still-connecting channel shows nothing rather
-              than a made-up zero. */}
-          {live !== null && <Figure label="reading now" value={`${live}`} mark={<ReadersMark size={15} />} />}
+              people. Holds the same "–" the other figures use until presence
+              has actually synced, so an unconfigured or still-connecting
+              channel never shows a made-up zero. */}
+          <Figure label="reading now" value={live !== null ? `${live}` : "–"} mark={<ReadersMark size={15} />} />
         </div>
       </div>
 
