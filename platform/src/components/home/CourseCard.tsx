@@ -121,12 +121,13 @@ export function CourseCard({
         </p>
 
         {/* One line of the reader's own history with this course — when they
-            last sat with it, and their current run once it's a run (a 1-day
-            streak says nothing "Studied today" doesn't). Both from the same
-            per-course seconds as the curve. */}
+            last sat with it, and their current run. The streak shows from
+            day one: the point is to reward effort, and the first day back is
+            effort. Both facts come from the same per-course seconds as the
+            curve. */}
         <p className="mt-1 truncate text-[12px] leading-4 text-muted">
           {hydrated
-            ? time.streak >= 2
+            ? time.streak > 0
               ? `${fmtLast(time.last)} · ${time.streak}-day streak`
               : fmtLast(time.last)
             : "–"}
