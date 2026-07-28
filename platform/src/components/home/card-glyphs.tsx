@@ -7,9 +7,9 @@
  * whole set, which is fine on the server but would drag every icon into
  * this client bundle. Regenerate from the package rather than editing paths.
  *
- * "List Check" and "Clock Circle" caption the card's figures (MynaUI has no
- * stopwatch; the clock is its reading-time mark). The live figure carries
- * the animated .live-dot instead of a glyph. Both take currentColor.
+ * "Clock Circle" and "Trending Up" caption the card's figures — this week's
+ * reading and the performance score. The live figure carries the animated
+ * .live-dot instead of a glyph. Both take currentColor.
  * ------------------------------------------------------------------ */
 
 type Props = { size?: number; className?: string };
@@ -24,8 +24,8 @@ const box = (size: number, className?: string) =>
     className: "shrink-0" + (className ? " " + className : ""),
   }) as const;
 
-/* MynaUI Line · "List Check" */
-export function ChecklistMark({ size = 16, className }: Props) {
+/* MynaUI Line · "Trending Up" */
+export function TrendMark({ size = 16, className }: Props) {
   return (
     <svg {...box(size, className)}>
       <path
@@ -34,7 +34,7 @@ export function ChecklistMark({ size = 16, className }: Props) {
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="1.5"
-        d="M7.5 16.039L4.688 19.5L3 18.346m4.5-8.077l-2.812 3.462L3 12.577M7.5 4.5L4.688 7.962L3 6.808M11 17.5h10M11 12h10M11 6.5h10"
+        d="m20 7l-5.846 5.938c-1.964 1.983-4.106-2.148-6.153-.001L4 17m9-10h7v7"
       />
     </svg>
   );

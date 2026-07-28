@@ -5,7 +5,8 @@ import { useMemo } from "react";
 import type { CourseMeta } from "@/lib/courses";
 import { labelFor, pathForId } from "@/lib/course";
 import { studyHistory, type StudyDay } from "@/lib/progress";
-import { ChecklistMark, StopwatchMark } from "./card-glyphs";
+import { coursePerformance } from "@/lib/performance";
+import { StopwatchMark, TrendMark } from "./card-glyphs";
 import { Spark } from "./Spark";
 
 /* ------------------------------------------------------------------ *
@@ -72,11 +73,10 @@ export function CourseCard({
    * carry a total but no breakdown, so they contribute nothing here — the
    * alternative would be attributing another course's minutes to this one. */
   const time = useMemo(() => {
-    if (!hydrated) return { series: [] as number[], total: 0 };
+    if (!hydrated) return { series: [] as number[], perf: null };
     const series = studyHistory(days, 14).map((d) => (d.courses?.[course.slug] ?? 0) / 60);
-    const total = Object.values(days).reduce((n, d) => n + (d.courses?.[course.slug] ?? 0), 0);
-    return { series, total };
-  }, [hydrated, days, course.slug]);
+    return { series, perf: coursePerformance(days, course.slug, done, course.totalCheckpoints) };
+  }, [hydrated, days, course.slug, done, course.totalCheckpoints]);
 
   const started = done > 0;
 
@@ -88,21 +88,30 @@ export function CourseCard({
           half. Same component, same defaults, so the two read as one set. */}
       <Spark series={time.series} tone={tone} />
 
-      {/* The two figures, kept to the right — how the course is going, on one
-          line. Two, not three: the checkpoint count and the percentage were
-          the same fact twice, and the percentage is also the button's fill,
-          so the count is the one that stays. */}
+      {/* The figures, kept to the right — what the reader put in and what it
+          adds up to, on one line. This week's reading totals the fortnight
+          curve's newest half; the score praises effort as much as coverage,
+          and its hover title shows the working. */}
       <div className="relative flex items-center justify-end gap-3">
         <div className="flex items-center gap-4">
           <Figure
-            label="checkpoints cleared"
-            value={hydrated ? `${done}/${course.totalCheckpoints}` : "–"}
-            mark={<ChecklistMark size={13} />}
+            label="read this week"
+            value={time.perf && time.perf.weekSecs > 0 ? fmtTime(time.perf.weekSecs) : "–"}
+            mark={<StopwatchMark size={13} />}
           />
           <Figure
-            label="read"
-            value={hydrated && time.total > 0 ? fmtTime(time.total) : "–"}
-            mark={<StopwatchMark size={13} />}
+            label={
+              time.perf
+                ? `performance score — ${Math.round(time.perf.parts.coverage * 100)}% covered, ` +
+                  `${time.perf.weekDays} study day${time.perf.weekDays === 1 ? "" : "s"} this week, ` +
+                  `momentum ${Math.round(time.perf.parts.momentum * 100)}%` +
+                  (time.perf.parts.schedule !== null
+                    ? `, on schedule ${Math.round(time.perf.parts.schedule * 100)}%`
+                    : "")
+                : "performance score"
+            }
+            value={time.perf ? `${time.perf.score}` : "–"}
+            mark={<TrendMark size={13} />}
           />
           {/* Who's in this course right now, marked by the pulsing live dot.
               The number is the seeded baseline plus any synced presence
