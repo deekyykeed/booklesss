@@ -69,8 +69,9 @@ export function CourseCard({
       {/* This course's reading over the last fortnight, drawn exactly as the
           stat tiles draw theirs: a backdrop in the course's own hue, anchored
           to the card's bottom edge behind the text, curve kept to the right
-          half. Same component, same defaults, so the two read as one set. */}
-      <Spark series={time.series} tone={tone} />
+          half. padRight is the head dot's own outer radius, so the dot lands
+          flush against the card edge instead of a hair short of it. */}
+      <Spark series={time.series} tone={tone} padRight={4} />
 
       {/* The two figures, kept to the right — how the course is going, on one
           line. Two, not three: the checkpoint count and the percentage were
