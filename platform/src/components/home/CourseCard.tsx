@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useMemo } from "react";
 import type { CourseMeta } from "@/lib/courses";
 import { labelFor, pathForId } from "@/lib/course";
-import { studyHistory, type StudyDay } from "@/lib/progress";
+import { courseStreak, studyHistory, type StudyDay } from "@/lib/progress";
 import { coursePerformance } from "@/lib/performance";
-import { StopwatchMark, TrendMark } from "./card-glyphs";
+import { StreakMark, TrendMark } from "./card-glyphs";
 import { Spark } from "./Spark";
 
 /* ------------------------------------------------------------------ *
@@ -32,14 +32,6 @@ function liveBaseline(slug: string): number {
   let h = 0;
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
   return 2 + (Math.abs(h) % 7);
-}
-
-/** Minutes read, in the card's terms: under an hour stays in minutes. */
-function fmtTime(secs: number): string {
-  const m = Math.round(secs / 60);
-  if (m < 60) return `${m}m`;
-  const h = Math.floor(m / 60);
-  return m % 60 ? `${h}h ${m % 60}m` : `${h}h`;
 }
 
 
@@ -73,9 +65,13 @@ export function CourseCard({
    * carry a total but no breakdown, so they contribute nothing here — the
    * alternative would be attributing another course's minutes to this one. */
   const time = useMemo(() => {
-    if (!hydrated) return { series: [] as number[], perf: null };
+    if (!hydrated) return { series: [] as number[], perf: null, streak: 0 };
     const series = studyHistory(days, 14).map((d) => (d.courses?.[course.slug] ?? 0) / 60);
-    return { series, perf: coursePerformance(days, course.slug, done, course.totalCheckpoints) };
+    return {
+      series,
+      perf: coursePerformance(days, course.slug, done, course.totalCheckpoints),
+      streak: courseStreak(days, course.slug),
+    };
   }, [hydrated, days, course.slug, done, course.totalCheckpoints]);
 
   const started = done > 0;
@@ -88,16 +84,16 @@ export function CourseCard({
           half. Same component, same defaults, so the two read as one set. */}
       <Spark series={time.series} tone={tone} />
 
-      {/* The figures, kept to the right — what the reader put in and what it
-          adds up to, on one line. This week's reading totals the fortnight
-          curve's newest half; the score praises effort as much as coverage,
-          and its hover title shows the working. */}
+      {/* The figures, kept to the right — effort and what it adds up to, on
+          one line. The streak is the purest effort figure (the curve below
+          already draws this week's minutes); the score praises effort as
+          much as coverage, and its hover title shows the working. */}
       <div className="relative flex items-center justify-end gap-3">
         <div className="flex items-center gap-4">
           <Figure
-            label="read this week"
-            value={time.perf && time.perf.weekSecs > 0 ? fmtTime(time.perf.weekSecs) : "–"}
-            mark={<StopwatchMark size={13} />}
+            label="day streak on this course"
+            value={hydrated ? `${time.streak}d` : "–"}
+            mark={<StreakMark size={13} />}
           />
           <Figure
             label={
@@ -110,7 +106,7 @@ export function CourseCard({
                     : "")
                 : "performance score"
             }
-            value={time.perf ? `${time.perf.score}` : "–"}
+            value={time.perf ? `${time.perf.score}%` : "–"}
             mark={<TrendMark size={13} />}
           />
           {/* Who's in this course right now, marked by the pulsing live dot.
