@@ -101,20 +101,21 @@ export function CourseCard({
         </div>
       </div>
 
-      {/* Name and action share the card's foot, held together as one block
-          with the open middle keeping them clear of the figures above. */}
-      <div className="relative mt-auto pt-12">
+      {/* Name and action share the card's foot as one tight block — the title
+          sits directly on the button, and the open middle keeps the pair
+          clear of the figures above. */}
+      <div className="relative mt-auto pt-6">
+        {/* This course's reading over the last fortnight, drawn as the stat
+            tiles draw theirs: edge to edge, full width, nothing sharing its
+            line. It takes its own 46px of the column above the title/button
+            pair, so its floor rests on the group rather than splitting it. */}
+        <div className="pointer-events-none relative -mx-4 h-[46px] lg:-mx-5">
+          <Spark series={time.series} tone={SPARK_TONE} height={46} from={0.06} padRight={16} />
+        </div>
+
         <p className="truncate font-display text-[21px] font-semibold leading-tight tracking-[-0.01em] text-ink">
           {course.title}
         </p>
-        {/* This course's reading over the last fortnight, drawn as the stat
-            tiles draw theirs: edge to edge, full width, nothing sharing its
-            line. It takes its own 46px of the column rather than floating
-            over the text — so its floor is exactly the button's top edge and
-            the curve rests on the button. */}
-        <div className="pointer-events-none relative -mx-4 mt-2 h-[46px] lg:-mx-5">
-          <Spark series={time.series} tone={SPARK_TONE} height={46} from={0.06} padRight={16} />
-        </div>
 
         {/* The button IS the progress bar: the fill is how far through the
             course they are, and pressing it opens the step they'd resume.
@@ -122,7 +123,7 @@ export function CourseCard({
             the sidebar's step selector: the same tight padding, chip-sized. */}
         <Link
           href={pathForId(next)}
-          className="course-resume squircle relative z-10 flex items-center justify-between gap-3 overflow-hidden px-2.5 py-1.5"
+          className="course-resume squircle relative z-10 mt-2 flex items-center justify-between gap-3 overflow-hidden px-2.5 py-1.5"
           aria-label={`${started ? "Resume" : "Start"} ${course.title} — ${hydrated ? labelFor(next) : ""}`}
         >
           <span
