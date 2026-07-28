@@ -30,6 +30,21 @@ function fmtTime(secs: number): string {
   return m % 60 ? `${h}h ${m % 60}m` : `${h}h`;
 }
 
+/** When this course was last read, in the reader's own terms: named days
+ *  while it's fresh, a date once it isn't. */
+function fmtLast(date: string | null): string {
+  if (!date) return "No reading yet";
+  const [y, m, d] = date.split("-").map(Number);
+  const then = new Date(y, m - 1, d);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const diff = Math.round((today.getTime() - then.getTime()) / 86400000);
+  if (diff <= 0) return "Studied today";
+  if (diff === 1) return "Studied yesterday";
+  if (diff < 14) return `Last studied ${diff} days ago`;
+  return `Last studied ${then.toLocaleDateString(undefined, { day: "numeric", month: "short" })}`;
+}
+
 export function CourseCard({
   course,
   tone,
@@ -56,10 +71,16 @@ export function CourseCard({
    * carry a total but no breakdown, so they contribute nothing here — the
    * alternative would be attributing another course's minutes to this one. */
   const time = useMemo(() => {
-    if (!hydrated) return { series: [] as number[], total: 0 };
+    if (!hydrated) return { series: [] as number[], total: 0, last: null as string | null };
     const series = studyHistory(days, 14).map((d) => (d.courses?.[course.slug] ?? 0) / 60);
     const total = Object.values(days).reduce((n, d) => n + (d.courses?.[course.slug] ?? 0), 0);
-    return { series, total };
+    /* The most recent day with reading logged against this course — the same
+     * per-course rule as the figures, so pre-breakdown days don't count. */
+    const last = Object.entries(days).reduce<string | null>(
+      (best, [date, d]) => ((d.courses?.[course.slug] ?? 0) > 0 && (!best || date > best) ? date : best),
+      null,
+    );
+    return { series, total, last };
   }, [hydrated, days, course.slug]);
 
   const started = done > 0;
@@ -98,6 +119,10 @@ export function CourseCard({
         <p className="truncate font-display text-[21px] font-semibold leading-tight tracking-[-0.01em] text-ink">
           {course.title}
         </p>
+
+        {/* One line of the reader's own history with this course — when they
+            last sat with it, from the same per-course seconds as the curve. */}
+        <p className="mt-1 truncate text-[12px] leading-4 text-muted">{hydrated ? fmtLast(time.last) : "–"}</p>
 
         {/* The one action, kept small: a completion ring — how far through
             the course they are — and the one word. Pressing it opens the
