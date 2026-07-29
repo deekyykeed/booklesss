@@ -28,7 +28,9 @@ import { CHART_TONE, courseTone } from "./tones";
  * ------------------------------------------------------------------ */
 
 const H = 132;
-const PAD = { t: 14, r: 10, b: 10, l: 10 };
+/** Only a top inset: the curve rests on the container's floor and runs to
+ *  both edges, exactly as the tile sparklines do. */
+const TOP = 8;
 const SPAN = 7;
 
 const LINE = CHART_TONE; // --color-brand-deep
@@ -180,16 +182,15 @@ export function StudyChart({
     })).filter((c) => c.pts.some((p) => p.mins > 0));
   }, [series, attributedSince]);
 
-  const plotW = Math.max(1, w - PAD.l - PAD.r);
-  const plotH = H - PAD.t - PAD.b;
+  const plotH = H - TOP;
   const max = Math.max(...series.map((d) => d.secs / 60), 10);
-  const step = plotW / (SPAN - 1);
+  const step = w / (SPAN - 1);
 
-  const x = (i: number) => PAD.l + i * step;
-  const y = (mins: number) => PAD.t + plotH - (mins / max) * plotH;
+  const x = (i: number) => i * step;
+  const y = (mins: number) => TOP + plotH - (mins / max) * plotH;
 
   const line = smoothPath(series.map((d, i) => ({ x: x(i), y: y(d.secs / 60) })));
-  const area = `${line} L${x(SPAN - 1).toFixed(1)} ${PAD.t + plotH} L${PAD.l} ${PAD.t + plotH} Z`;
+  const area = `${line} L${w} ${H} L0 ${H} Z`;
 
   const totalSecs = series.reduce((n, d) => n + d.secs, 0);
   /* With nothing recorded, a line pinned to the baseline is worse than no
@@ -201,7 +202,7 @@ export function StudyChart({
   const onMove = (e: React.PointerEvent<SVGSVGElement>) => {
     if (!step || !hasData) return;
     const rect = e.currentTarget.getBoundingClientRect();
-    const i = Math.round((e.clientX - rect.left - PAD.l) / step);
+    const i = Math.round((e.clientX - rect.left) / step);
     setCursor(Math.min(SPAN - 1, Math.max(0, i)));
   };
 
@@ -217,168 +218,168 @@ export function StudyChart({
     e.preventDefault();
   };
 
-  if (!hydrated) return <div className="chart-frame" style={{ height: H }} />;
+  if (!hydrated) return <div className="dash-card squircle" style={{ height: H }} />;
 
   return (
     <div>
-      {/* The headline: where the reader stands across everything, set like the
-          course cards' score — same face, brand green once it's good. */}
-      <div className="mb-1 flex items-start justify-between gap-3">
-        <span
-          className="font-display text-[30px] font-semibold leading-none tracking-[-0.02em]"
-          style={{ color: perf && perf.score >= 70 ? "var(--color-brand-deep)" : "var(--color-ink)" }}
-          title={
-            perf
-              ? `overall score — ${Math.round(perf.parts.coverage * 100)}% covered, ` +
-                `${perf.weekDays} study day${perf.weekDays === 1 ? "" : "s"} and ` +
-                `${perf.weekChecks} checkpoint${perf.weekChecks === 1 ? "" : "s"} this week`
-              : "overall score"
-          }
-        >
-          {perf ? `${perf.score}%` : "–"}
-          <span className="sr-only"> overall performance score</span>
-        </span>
-        <p className="shrink-0 pt-1 text-[12px] text-placeholder">
-          {hasData ? `${fmtMins(totalSecs)} · last 7 days` : "Last 7 days"}
-        </p>
-      </div>
-
-      {/* data-no-swipe: the plot is an interactive horizontal surface — a
-          finger sweeping the crosshair must never read as a drawer swipe. */}
-      <div ref={box} className="relative" data-no-swipe>
-        <svg
-          width={w}
-          height={H}
-          role="img"
-          tabIndex={0}
-          aria-label={
-            hasData
-              ? `Minutes studied per day over the last seven days. ${fmtMins(totalSecs)} in total.`
-              : "Minutes studied per day over the last seven days. Nothing recorded."
-          }
-          onPointerMove={onMove}
-          onPointerLeave={() => setCursor(null)}
-          onBlur={() => setCursor(null)}
-          onKeyDown={onKey}
-          className="block touch-pan-y focus:outline-none"
-        >
-          <defs>
-            {/* The head's lift — same recipe as the stat-tile sparklines, so
-                every line on the dashboard ends the same way. */}
-            <filter id={`${id}f`} x="-60%" y="-60%" width="220%" height="220%">
-              <feDropShadow dx="0" dy="1" stdDeviation="1.3" floodColor={LINE} floodOpacity="0.45" />
-            </filter>
-          </defs>
-
-          {hasData ? (
-            <>
-              <path d={area} fill={WASH} fillOpacity="0.1" />
-              {/* Per-course lines under the total: thinner, so the sum stays
-                  the headline and the split reads as its parts. A one-day-old
-                  line is a dot — a path with one point draws nothing. */}
-              {courseSeries.map((c) =>
-                c.pts.length > 1 ? (
-                  <path
-                    key={c.slug}
-                    d={smoothPath(c.pts.map((p) => ({ x: x(p.i), y: y(p.mins) })))}
-                    fill="none"
-                    stroke={c.tone}
-                    strokeWidth="1.5"
-                    strokeLinejoin="round"
-                    strokeLinecap="round"
-                    opacity="0.9"
-                  />
-                ) : (
-                  <circle key={c.slug} cx={x(c.pts[0].i)} cy={y(c.pts[0].mins)} r="2.5" fill={c.tone} opacity="0.9" />
-                ),
-              )}
-              <path d={line} fill="none" stroke={LINE} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-              {/* Today, at the right edge where the window always ends. */}
-              <circle
-                cx={x(SPAN - 1)}
-                cy={y(series[SPAN - 1].secs / 60)}
-                r="3.5"
-                fill="#ffffff"
-                stroke={LINE}
-                strokeWidth="1.2"
-                filter={`url(#${id}f)`}
-              />
-            </>
-          ) : (
-            <text
-              x={PAD.l + plotW / 2}
-              y={PAD.t + plotH / 2 + 4}
-              textAnchor="middle"
-              className="fill-[var(--color-muted)] text-[12.5px]"
-            >
-              No reading time yet — open a step and this fills in.
-            </text>
-          )}
-
-          {/* the crosshair finds the X — readers aim at a day, not a 2px line */}
-          {active && (
-            <>
-              <line
-                x1={x(cursor!)}
-                x2={x(cursor!)}
-                y1={PAD.t - 4}
-                y2={PAD.t + plotH}
-                stroke="var(--color-line-2)"
-                strokeWidth="1"
-                shapeRendering="crispEdges"
-              />
-              <circle
-                cx={x(cursor!)}
-                cy={y(active.secs / 60)}
-                r="3.5"
-                fill="#ffffff"
-                stroke={LINE}
-                strokeWidth="1.2"
-                filter={`url(#${id}f)`}
-              />
-            </>
-          )}
-        </svg>
-
-        {active && (
-          <div
-            className="chart-tip"
-            style={{
-              left: Math.min(Math.max(x(cursor!), 54), Math.max(w - 54, 54)),
-              top: Math.max(y(active.secs / 60) - 12, 0),
-            }}
+      {/* The card is the plot's frame: the lines are its backdrop, running to
+          both edges and resting on its floor the way the tile sparklines do,
+          with the readable layer over them — names top-left, score top-right. */}
+      <div className="dash-card squircle relative overflow-hidden p-3.5 lg:p-[18px]">
+        {/* data-no-swipe: the plot is an interactive horizontal surface — a
+            finger sweeping the crosshair must never read as a drawer swipe. */}
+        <div ref={box} className="absolute inset-x-0 bottom-0" style={{ height: H }} data-no-swipe>
+          <svg
+            width={w}
+            height={H}
+            role="img"
+            tabIndex={0}
+            aria-label={
+              hasData
+                ? `Minutes studied per day over the last seven days. ${fmtMins(totalSecs)} in total.`
+                : "Minutes studied per day over the last seven days. Nothing recorded."
+            }
+            onPointerMove={onMove}
+            onPointerLeave={() => setCursor(null)}
+            onBlur={() => setCursor(null)}
+            onKeyDown={onKey}
+            className="block touch-pan-y focus:outline-none"
           >
-            <p className="font-semibold text-ink">{fmtMins(active.secs)}</p>
-            <p className="text-[11px] text-muted">{fmtDay(active.date)}</p>
-            {active.courses &&
-              Object.entries(active.courses).map(([slug, secs]) => (
-                <p key={slug} className="flex items-center gap-1.5 text-[11px] text-muted">
-                  <span
-                    className="inline-block h-1.5 w-1.5 shrink-0 rounded-full"
-                    style={{ backgroundColor: courseTone(slug) }}
-                  />
-                  {COURSES.find((c) => c.slug === slug)?.title ?? slug} · {fmtMins(secs)}
+            <defs>
+              {/* The head's lift — same recipe as the stat-tile sparklines, so
+                  every line on the dashboard ends the same way. */}
+              <filter id={`${id}f`} x="-60%" y="-60%" width="220%" height="220%">
+                <feDropShadow dx="0" dy="1" stdDeviation="1.3" floodColor={LINE} floodOpacity="0.45" />
+              </filter>
+            </defs>
+
+            {hasData && (
+              <>
+                <path d={area} fill={WASH} fillOpacity="0.1" />
+                {/* Per-course lines under the total: thinner, so the sum stays
+                    the headline and the split reads as its parts. A one-day-old
+                    line is a dot — a path with one point draws nothing. */}
+                {courseSeries.map((c) =>
+                  c.pts.length > 1 ? (
+                    <path
+                      key={c.slug}
+                      d={smoothPath(c.pts.map((p) => ({ x: x(p.i), y: y(p.mins) })))}
+                      fill="none"
+                      stroke={c.tone}
+                      strokeWidth="1.5"
+                      strokeLinejoin="round"
+                      strokeLinecap="round"
+                      opacity="0.9"
+                    />
+                  ) : (
+                    <circle key={c.slug} cx={x(c.pts[0].i)} cy={y(c.pts[0].mins)} r="2.5" fill={c.tone} opacity="0.9" />
+                  ),
+                )}
+                <path d={line} fill="none" stroke={LINE} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+                {/* Today, at the right edge where the window always ends. The
+                    head sits a whisker in so it isn't halved by the clip. */}
+                <circle
+                  cx={x(SPAN - 1) - 4}
+                  cy={y(series[SPAN - 1].secs / 60)}
+                  r="3.5"
+                  fill="#ffffff"
+                  stroke={LINE}
+                  strokeWidth="1.2"
+                  filter={`url(#${id}f)`}
+                />
+              </>
+            )}
+
+            {/* the crosshair finds the X — readers aim at a day, not a 2px line */}
+            {active && (
+              <>
+                <line
+                  x1={x(cursor!)}
+                  x2={x(cursor!)}
+                  y1={0}
+                  y2={H}
+                  stroke="var(--color-line-2)"
+                  strokeWidth="1"
+                  shapeRendering="crispEdges"
+                />
+                <circle
+                  cx={x(cursor!)}
+                  cy={y(active.secs / 60)}
+                  r="3.5"
+                  fill="#ffffff"
+                  stroke={LINE}
+                  strokeWidth="1.2"
+                  filter={`url(#${id}f)`}
+                />
+              </>
+            )}
+          </svg>
+
+          {active && (
+            <div
+              className="chart-tip"
+              style={{
+                left: Math.min(Math.max(x(cursor!), 54), Math.max(w - 54, 54)),
+                top: Math.max(y(active.secs / 60) - 12, 0),
+              }}
+            >
+              <p className="font-semibold text-ink">{fmtMins(active.secs)}</p>
+              <p className="text-[11px] text-muted">{fmtDay(active.date)}</p>
+              {active.courses &&
+                Object.entries(active.courses).map(([slug, secs]) => (
+                  <p key={slug} className="flex items-center gap-1.5 text-[11px] text-muted">
+                    <span
+                      className="inline-block h-1.5 w-1.5 shrink-0 rounded-full"
+                      style={{ backgroundColor: courseTone(slug) }}
+                    />
+                    {COURSES.find((c) => c.slug === slug)?.title ?? slug} · {fmtMins(secs)}
+                  </p>
+                ))}
+              {active.checks > 0 && (
+                <p className="text-[11px] text-muted">
+                  {active.checks} checkpoint{active.checks === 1 ? "" : "s"}
                 </p>
-              ))}
-            {active.checks > 0 && (
-              <p className="text-[11px] text-muted">
-                {active.checks} checkpoint{active.checks === 1 ? "" : "s"}
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Over the plot: which line is which, and where the reader stands.
+            pointer-events-none so the crosshair still tracks underneath. */}
+        <div
+          className="pointer-events-none relative flex items-start justify-between gap-3"
+          style={{ minHeight: H - 34 }}
+        >
+          <div className="flex flex-col gap-1">
+            {hasData ? (
+              <>
+                <LegendDot color={LINE} label="Overall" />
+                {courseSeries.map((c) => (
+                  <LegendDot key={c.slug} color={c.tone} label={c.title} />
+                ))}
+              </>
+            ) : (
+              <p className="max-w-[240px] text-[11.5px] leading-4 text-placeholder">
+                No reading time yet — open a step and this fills in.
               </p>
             )}
           </div>
-        )}
-      </div>
-
-      {/* Which line is which — the chart's one label, since the plot carries
-          no axis. Course entries appear once a course has time in view. */}
-      {hasData && (
-        <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 px-1">
-          <LegendDot color={LINE} label="Overall" />
-          {courseSeries.map((c) => (
-            <LegendDot key={c.slug} color={c.tone} label={c.title} />
-          ))}
+          <span
+            className="shrink-0 font-display text-[30px] font-semibold leading-none tracking-[-0.02em]"
+            style={{ color: perf && perf.score >= 70 ? "var(--color-brand-deep)" : "var(--color-ink)" }}
+            title={
+              perf
+                ? `overall score — ${Math.round(perf.parts.coverage * 100)}% covered, ` +
+                  `${perf.weekDays} study day${perf.weekDays === 1 ? "" : "s"} and ` +
+                  `${perf.weekChecks} checkpoint${perf.weekChecks === 1 ? "" : "s"} this week`
+                : "overall score"
+            }
+          >
+            {perf ? `${perf.score}%` : "–"}
+            <span className="sr-only"> overall performance score</span>
+          </span>
         </div>
-      )}
+      </div>
 
       {/* Everything the hover shows, reachable without hovering. */}
       <details className="chart-table">
