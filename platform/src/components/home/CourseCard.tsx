@@ -6,7 +6,7 @@ import type { CourseMeta } from "@/lib/courses";
 import { labelFor, pathForId } from "@/lib/course";
 import { courseStreak, studyHistory, type StudyDay } from "@/lib/progress";
 import { coursePerformance } from "@/lib/performance";
-import { CardMark, StreakMark, TrendMark } from "./card-glyphs";
+import { CardMark, StreakMark } from "./card-glyphs";
 import { Spark } from "./Spark";
 
 /* ------------------------------------------------------------------ *
@@ -84,23 +84,19 @@ export function CourseCard({
           half. Same component, same defaults, so the two read as one set. */}
       <Spark series={time.series} tone={tone} />
 
-      {/* The card's mark top-left, the figures right — effort and what it
-          adds up to, on one line. The streak is the purest effort figure
-          (the curve below already draws this week's minutes); the score
-          praises effort as much as coverage, and its hover title shows the
-          working. */}
+      {/* The card's mark top-left; the right side belongs to the score. It is
+          the course's overall verdict — coverage, consistency, momentum and
+          (with an exam date) schedule in one number — so it gets the display
+          face at figure size, going brand green from 70 up. The working stays
+          on hover; the small figures sit beneath it. */}
       <div className="relative flex items-start justify-between gap-3">
         <span className="text-ink">
           <CardMark size={24} />
         </span>
-        <div className="flex items-center gap-4">
-          <Figure
-            label="day streak on this course"
-            value={hydrated ? `${time.streak}d` : "–"}
-            mark={<StreakMark size={13} />}
-          />
-          <Figure
-            label={
+        <div className="flex flex-col items-end gap-1.5">
+          <span
+            className="flex items-baseline gap-1.5"
+            title={
               time.perf
                 ? `performance score — ${Math.round(time.perf.parts.coverage * 100)}% covered, ` +
                   `${time.perf.weekDays} study day${time.perf.weekDays === 1 ? "" : "s"} this week, ` +
@@ -110,20 +106,33 @@ export function CourseCard({
                     : "")
                 : "performance score"
             }
-            value={time.perf ? `${time.perf.score}%` : "–"}
-            caption="score"
-            mark={<TrendMark size={13} />}
-          />
-          {/* Who's in this course right now, marked by the pulsing live dot.
-              The number is the seeded baseline plus any synced presence
-              count; hydration-gated so the server and first client paint
-              agree on "–". */}
-          <Figure
-            label="reading now"
-            value={hydrated ? `${liveBaseline(course.slug) + (live ?? 0)}` : "–"}
-            caption="online"
-            mark={<span className="live-dot" aria-hidden="true" />}
-          />
+          >
+            <span
+              className="font-display text-[26px] font-semibold leading-none tracking-[-0.01em]"
+              style={{ color: time.perf && time.perf.score >= 70 ? "var(--color-brand-deep)" : "var(--color-ink)" }}
+            >
+              {time.perf ? `${time.perf.score}%` : "–"}
+            </span>
+            <span className="text-[11px] font-medium text-muted">score</span>
+            <span className="sr-only">performance score</span>
+          </span>
+          <div className="flex items-center gap-4">
+            <Figure
+              label="day streak on this course"
+              value={hydrated ? `${time.streak}d` : "–"}
+              mark={<StreakMark size={13} />}
+            />
+            {/* Who's in this course right now, marked by the pulsing live
+                dot. The number is the seeded baseline plus any synced
+                presence count; hydration-gated so the server and first
+                client paint agree on "–". */}
+            <Figure
+              label="reading now"
+              value={hydrated ? `${liveBaseline(course.slug) + (live ?? 0)}` : "–"}
+              caption="online"
+              mark={<span className="live-dot" aria-hidden="true" />}
+            />
+          </div>
         </div>
       </div>
 
