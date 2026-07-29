@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { checkpointsFor } from "./course";
+import { courseForNode } from "./courses";
 
 /* ------------------------------------------------------------------ *
  * Step progress — which checkpoints a reader has cleared, and what each day
@@ -42,6 +43,10 @@ export type StudyDay = {
    *  and the chart draws course lines only from where this data starts —
    *  a zero here would be an invention, not a measurement. */
   courses?: Record<string, number>;
+  /** Checkpoints per course slug, summing to `checks`. Same additive rule as
+   *  `courses`: days recorded before this field shipped carry the total only,
+   *  and per-course velocity is measured only from where this data starts. */
+  courseChecks?: Record<string, number>;
 };
 
 type State = {
@@ -130,6 +135,8 @@ function cleanDays(raw: unknown): Record<string, StudyDay> {
     };
     const courses = cleanCourses((v as StudyDay).courses);
     if (courses) day.courses = courses;
+    const courseChecks = cleanCourses((v as StudyDay).courseChecks);
+    if (courseChecks) day.courseChecks = courseChecks;
     if (day.checks || day.secs || day.steps) out[date] = day;
   }
   return out;
@@ -229,7 +236,12 @@ function mutate(lessonId: string, next: (prev: string[]) => string[], markToday:
   if (markToday && (added || finished)) {
     const t = today();
     const day = dayAt(days, t);
-    days = { ...days, [t]: { ...day, checks: day.checks + added, steps: day.steps + finished } };
+    const next_: StudyDay = { ...day, checks: day.checks + added, steps: day.steps + finished };
+    // The same checkpoints, attributed to their course — what per-course
+    // velocity is measured from. A lesson no course claims credits nothing.
+    const slug = added ? courseForNode(lessonId)?.slug : undefined;
+    if (slug) next_.courseChecks = { ...day.courseChecks, [slug]: (day.courseChecks?.[slug] ?? 0) + added };
+    days = { ...days, [t]: next_ };
   }
 
   const state = { done, days };
