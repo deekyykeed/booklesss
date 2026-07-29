@@ -6,7 +6,7 @@ import type { CourseMeta } from "@/lib/courses";
 import { labelFor, pathForId } from "@/lib/course";
 import { courseStreak, studyHistory, type StudyDay } from "@/lib/progress";
 import { coursePerformance } from "@/lib/performance";
-import { StreakMark, TrendMark } from "./card-glyphs";
+import { CardMark, StreakMark, TrendMark } from "./card-glyphs";
 import { Spark } from "./Spark";
 
 /* ------------------------------------------------------------------ *
@@ -84,11 +84,15 @@ export function CourseCard({
           half. Same component, same defaults, so the two read as one set. */}
       <Spark series={time.series} tone={tone} />
 
-      {/* The figures, kept to the right — effort and what it adds up to, on
-          one line. The streak is the purest effort figure (the curve below
-          already draws this week's minutes); the score praises effort as
-          much as coverage, and its hover title shows the working. */}
-      <div className="relative flex items-center justify-end gap-3">
+      {/* The card's mark top-left, the figures right — effort and what it
+          adds up to, on one line. The streak is the purest effort figure
+          (the curve below already draws this week's minutes); the score
+          praises effort as much as coverage, and its hover title shows the
+          working. */}
+      <div className="relative flex items-center justify-between gap-3">
+        <span className="text-ink">
+          <CardMark size={32} />
+        </span>
         <div className="flex items-center gap-4">
           <Figure
             label="day streak on this course"
@@ -117,6 +121,7 @@ export function CourseCard({
           <Figure
             label="reading now"
             value={hydrated ? `${liveBaseline(course.slug) + (live ?? 0)}` : "–"}
+            caption="online"
             mark={<span className="live-dot" aria-hidden="true" />}
           />
         </div>
