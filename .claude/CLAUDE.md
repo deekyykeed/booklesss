@@ -133,7 +133,13 @@ Each step cover has an accent-bordered "ADDED VALUE" panel listing companion res
 3–4 page PDF teasers for WhatsApp marketing. File name format: `[Hook Title] - Booklesss.pdf`. Use Zambian companies (Zanaco, Zambeef, ZESCO, First Quantum) and ZMW currency in examples. Check `Operations/pricing-strategy.md` for the current offer before writing any pricing or deadline into a lead magnet.
 
 ### Skills (Claude Code Extensions)
-Three custom skills in `.claude/skills/`, one per phase of the pipeline:
+Custom skills in `.claude/skills/`. Three cover the course pipeline, one covers
+the daily socials:
+- **`daily-post`** — PUBLISH. The build-in-public social pipeline: read what
+  actually shipped from the git log, pick the story, capture the reader's mobile
+  layout, render the 9:16 carousels, write the day's `PLAN.md`. Its `RULES.md`
+  holds the accumulated framing/copy rules and is where the owner's reactions get
+  written back. Output lands in `Demand/social/posts/<week>/<day>/`.
 - **`lesson-skill`** — PLAN. Course architecture: takes a course's raw source, groups topics into lessons by mental frame (lesson = one Slack channel = noise isolation), sets steps-per-lesson by source depth, and emits `_course.md`, the folder scaffold, the channel map, and the course outline PDF. Runs before any writing.
 - **`step-skill`** — WRITE + DESIGN. The PDF design system (colors, typography, callout specs) *and* the lesson-writing process (source → ReportLab script → PDF). Invoke for all PDF content — lesson steps, lead magnets, business documents. (Absorbed the former `booklesss-write` skill.)
 - **`design-system`** — Web/UI only (Framer, landing pages). Not for PDF work.

@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-07-28 (session 22)
+**Last updated:** 2026-07-29 (session 23)
 
 ---
 
@@ -183,6 +183,77 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-07-29 (session 23 — daily-post skill + two days of build-in-public carousels)
+
+Local session, all in `Demand/social/` + `.claude/skills/`. No app code touched.
+
+**Done:**
+- **Two days of progress posts**, both shot from the live app's mobile layout and
+  rendered as 9:16 carousels into `Demand/social/posts/2026-W31 (Jul 27 - Aug 2)/`:
+  - **Mon 27 Jul** — afternoon *"A second course just landed"* (7 slides: the two
+    course cards, the CF course home, the ZCAS lesson tree, search across both
+    courses) and evening *"Finance notes that show the working"* (6 slides: the
+    discount-factor formula, an NPV worked to ZMW1,967, the section check question).
+  - **Tue 28 Jul** — afternoon *"Your studying, now measured"* (7 slides: the
+    weekly productive-time chart with its momentum line, the accrual rule as a
+    text slide, the four stat tiles, the redesigned course cards) and evening
+    *"The reader got quieter"* (6 slides: 18px body type, the course home as
+    prose, one sidebar). **Tuesday's set has been posted by the owner.**
+  - Each day has a `PLAN.md` with running order and captions. **No morning slot**
+    either day — the old evergreen set still carries the dead "comment" CTA.
+- **New capture scripts** `cap-courses.mjs` and `cap-dashboard.mjs`, both seeding
+  a plausible month of progress into `localStorage` (real checkpoint ids off
+  `course-data.json`) so the dashboard photographs as a used app rather than a
+  zero state, with Corporate Finance credited only from its actual launch date.
+- **`prog-post.mjs` improvements:** shots are now read lazily per-post (a new
+  day's capture can no longer break an older post's render), and `feature()`
+  takes per-slide `fadeTop`/`fadeBot`.
+- **New skill `.claude/skills/daily-post/`** (SKILL.md + RULES.md) covering the
+  whole pipeline — read the git log for what shipped, pick the story, capture
+  mobile, render, write PLAN.md — plus the honesty rules. RULES.md is the file
+  the owner's reactions get written back into. Registered in `.claude/CLAUDE.md`.
+
+**What Worked:**
+- **Computing the poster framing instead of guessing it.** A 9:16 shot at
+  `width:1120px` renders 1991px tall; the default fades leave only ~800–1750
+  visible and ~1000–1360 fully clear. Deciding which source pixel must land in
+  that window and solving for `top` turned a guess-and-check loop into one or two
+  passes. Written up in RULES.md.
+- **Per-slide fade overrides.** A seven-row table and a four-option quiz are
+  800–1200px tall in frame; the default `fadeBot: 560` swallowed the NPV total
+  and two of the four options. Dropping it to 330–460 for those slides only.
+- **Every crop exactly 9:16.** A shorter clip scales to less than the frame
+  height and leaves a hard edge where the image stops.
+- Reading each rendered PNG back before moving on — several crops that looked
+  fine by arithmetic were cutting words in half.
+
+**Dead Ends (do not retry):**
+- **Trusting "Another next dev server is already running".** A server on :3120
+  held the port with a crashed render worker — `/corporate-finance` 500'd with
+  "Jest worker encountered 2 child process exceptions" and every later request
+  hung. It is not proof of a healthy server; curl a route before working around it.
+- **Capturing before pulling.** Six commits landed *mid-capture* on the Tuesday
+  run, one renaming the chart heading to "Productive time" — the whole first pass
+  was stale on arrival. Pull immediately before `cap-*.mjs`, not before the session.
+- **Hardcoding the lesson URL.** `Corporate Finance: drop the wrapper node`
+  moved the reader path from `/corporate-finance/investment-appraisal/…` to
+  `/investment-appraisal/…` overnight; the capture script 404'd silently
+  (`networkidle` resolves on a 404) and only failed later on a missing selector.
+
+**Flags:**
+- ⚠️ **Day-folder dates drifted.** The generators derive the day from
+  `new Date()`, and this session spanned midnight more than once — Monday's
+  carousels were rendered under Monday, Tuesday's under Tuesday, but the owner
+  reports the real day is now **Wednesday 30 Jul**. Check the folder date against
+  the actual day before posting, and pass `DAY=` explicitly when it matters.
+- ⚠️ **`linear-server` still unauthorized** — the backlog was not updated. Fourth
+  session running.
+- **The Tuesday shots are already out of date**: ~30 further PRs (rolling
+  seven-day chart, tiles rebuilt again, course-card layout) landed after the
+  capture. Fine — Tuesday is posted — but Wednesday's post needs a fresh capture.
+- **Monday's two carousels are still unposted.**
+- No posting connector exists — uploads are manual.
 
 ### Session 2026-07-28 (session 22 — reader/home UI pass: brand, sidebar, course home, weekly chart)
 

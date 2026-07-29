@@ -1,35 +1,92 @@
-/* The live app only has an economics course loaded, so real screenshots would
- * expose it. Booklesss is meant to hold EVERY course — so before capturing we
- * relabel the nav + breadcrumb to a neutral multi-subject curriculum and swap
- * the reader for generic, subject-free copy. Placeholder labels, real UI.
+/* Booklesss is not a school and it is not a course. Posts must never suggest
+ * otherwise — no ZCAS, no UNZA, no BAC4301, no "Corporate Finance", no
+ * "Economics". (Owner's rule, 2026-07-29.)
  *
- * Shared by every capture script. `transform` is serialised into the page by
- * Playwright, so it may only use its own argument — no module-scope closure. */
+ * The live app happens to be seeded with two real courses, so a raw screenshot
+ * of it would say exactly the thing we are not allowed to say. Before every
+ * capture we relabel the UI to a neutral curriculum: two ordinary subjects any
+ * student anywhere would recognise. **Placeholder labels, real UI** — nothing
+ * is drawn, moved or restyled, only the words are swapped.
+ *
+ * Shared by every capture script, and applied immediately before every
+ * screenshot (React re-renders undo it, so it cannot be done once up front).
+ * `transform` is serialised into the page by Playwright, so it may only use its
+ * own argument — no module-scope closure.
+ */
+
+/* The two courses, as the posts show them. The slugs stay whatever the app
+ * uses; only what a reader can see changes. */
+export const COURSE_TITLES = {
+  Economics: "Mathematics",
+  "Corporate Finance": "Computer Science",
+};
 
 export const MAP = {
+  /* ---- course identity (the part that carried the school's name) ---- */
+  Economics: "Mathematics",
+  "Corporate Finance": "Computer Science",
+  "Micro, macro and behavioural — the whole introductory course.":
+    "Algebra, functions, statistics and calculus — the whole first-year course.",
+  "Investment appraisal, cost of capital, valuation and risk — BAC4301 at ZCAS.":
+    "Programming, data and how software actually works — from the ground up.",
+
+  /* ---- course 1 → Mathematics ---- */
+  "Getting started": "Getting started",
   "What is Economics": "Welcome to Booklesss",
   "How to use this course": "How Booklesss works",
   "Key terms & glossary": "Key terms",
-  "Microeconomics": "Computer Science",
-  "Macroeconomics": "Mathematics",
-  "Behavioral economics": "History",
-  "Resources": "Design",
+
+  Microeconomics: "Algebra",
   "Supply & demand": "Foundations",
-  "Consumer choice": "Core skills",
-  "Firms & production": "Projects",
-  "Market structures": "Going further",
-  "The law of demand": "Your first lesson",
-  "The law of supply": "Variables",
-  "Market equilibrium": "Functions",
-  "Elasticity": "Loops",
-  "Price elasticity of demand": "For loops",
-  "Income elasticity of demand": "While loops",
-  "Cross-price elasticity of demand": "Nested loops",
-  "Income elasticity": "While loops",
-  "Cross-price elasticity": "Nested loops",
-  "Utility & marginal utility": "Objects",
-  "Indifference curves": "Arrays",
-  "Budget constraints": "Recursion",
+  "The law of demand": "Working with equations",
+  "The law of supply": "Rearranging formulas",
+  "Market equilibrium": "Simultaneous equations",
+  Elasticity: "Functions",
+  "Price elasticity of demand": "Linear functions",
+  "Income elasticity of demand": "Quadratic functions",
+  "Income elasticity": "Quadratic functions",
+  "Cross-price elasticity of demand": "Exponential functions",
+  "Cross-price elasticity": "Exponential functions",
+  "Consumer choice": "Graphs",
+  "Utility & marginal utility": "Reading a graph",
+  "Indifference curves": "Curves & gradients",
+  "Budget constraints": "Area under a curve",
+  "Firms & production": "Sequences",
+  "Costs of production": "Arithmetic sequences",
+  "Revenue & profit": "Geometric sequences",
+  "Economies of scale": "Series & sums",
+  "Market structures": "Probability",
+  "Perfect competition": "Counting outcomes",
+  Monopoly: "Conditional probability",
+  "Oligopoly & game theory": "Distributions",
+
+  Macroeconomics: "Statistics",
+  "Measuring the economy": "Describing data",
+  "Gross Domestic Product": "Mean, median, mode",
+  "Inflation & the CPI": "Spread & deviation",
+  Unemployment: "Outliers",
+  Policy: "Sampling",
+  "Fiscal policy": "Random samples",
+  "Monetary policy": "Bias in sampling",
+  "International trade": "Correlation",
+  "Comparative advantage": "Scatter plots",
+  "Exchange rates": "Lines of best fit",
+
+  "Behavioral economics": "Calculus",
+  "Cognitive biases": "Rates of change",
+  "Nudges & choice architecture": "Differentiation",
+  "The prisoner's dilemma": "Integration",
+  "The prisoner’s dilemma": "Integration",
+
+  Resources: "Resources",
+  "Formula sheet": "Formula sheet",
+  "Practice problems": "Practice problems",
+
+  /* ---- course 2 → Computer Science ---- */
+  "Investment appraisal": "Foundations",
+  "Free cash flows": "Your first program",
+  "NPV & discounted payback": "Variables & data",
+  "IRR & MIRR": "Loops & conditions",
 };
 
 export const READER = {
@@ -48,13 +105,35 @@ export const READER = {
     "Booklesss is built to make the next thing you learn feel easy to start — and hard to put down.",
 };
 
+/* Anything that must never survive into a rendered post. Checked after the
+ * relabel, so a label the map missed fails the capture instead of shipping.
+ * Lower-cased before matching. */
+export const BANNED = [
+  "zcas",
+  "unza",
+  "bac4301",
+  "bbf4302",
+  "bba 1110",
+  "corporate finance",
+  "economics",
+  "microeconom",
+  "macroeconom",
+  "elasticity",
+  "npv",
+  "irr",
+  "cash flow",
+  "supply & demand",
+  "kwacha",
+  "zmw",
+];
+
 // runs in the page (Playwright passes a single arg). `deep` also rewrites keys
 // that sit INSIDE a longer string — the search palette's hints read
 // "Microeconomics / Supply & demand", so exact-match relabelling misses them.
 export function transform({ map, reader, deep }) {
   // 1. reader content -> neutral
   const fc = document.querySelector(".font-content");
-  if (fc) {
+  if (fc && reader) {
     const kicker = fc.querySelector("p");
     if (kicker) kicker.textContent = reader.kicker;
     const h1 = fc.querySelector("h1");
@@ -82,7 +161,9 @@ export function transform({ map, reader, deep }) {
     const keys = Object.keys(map).sort((a, b) => b.length - a.length);
     nodes.forEach((n) => {
       let v = n.nodeValue;
-      keys.forEach((k) => { if (v.includes(k)) v = v.split(k).join(map[k]); });
+      keys.forEach((k) => {
+        if (v.includes(k)) v = v.split(k).join(map[k]);
+      });
       if (v !== n.nodeValue) n.nodeValue = v;
     });
     return;
@@ -93,4 +174,24 @@ export function transform({ map, reader, deep }) {
       const key = n.nodeValue.trim();
       n.nodeValue = n.nodeValue.replace(key, map[key]);
     });
+}
+
+/* Runs in the page after `transform`: returns the banned words still visible.
+ * A capture script throws on a non-empty result rather than writing the PNG. */
+export function scan(banned) {
+  const seen = new Set();
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  while (walker.nextNode()) {
+    const el = walker.currentNode.parentElement;
+    if (!el) continue;
+    // screen-reader-only text and hidden nodes are not in the photograph
+    if (el.closest(".sr-only,[aria-hidden='true']")) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0) continue;
+    const v = walker.currentNode.nodeValue.toLowerCase();
+    banned.forEach((b) => {
+      if (v.includes(b)) seen.add(b);
+    });
+  }
+  return [...seen];
 }

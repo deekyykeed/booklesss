@@ -15,13 +15,11 @@ import path from "path";
 const DAY = process.env.DAY || new Date().toLocaleDateString("en-CA");
 const POST = process.env.POST || "aitutor";
 
+/* Shots are read on demand, not all up front: each day's capture script writes
+ * only the shots that day's posts need, so eagerly loading every name would
+ * make an older post fail because a newer one hasn't been captured. */
 const CAP = path.join(SOURCE, "feature-capture");
 const img = (f) => "data:image/png;base64," + fs.readFileSync(path.join(CAP, f)).toString("base64");
-const AF_PAGE = img("af-page.png");
-const AF_VOICE = img("af-voice.png");
-const AF_TYPED = img("af-typed.png");
-const EV_NAV = img("ev-nav.png");
-const EV_READER = img("ev-reader.png");
 
 const INTER = INTER_DATA();
 const FAMILJEN = FAMILJEN_DATA();
@@ -60,9 +58,9 @@ body{font-family:PSans,system-ui,sans-serif;position:relative;-webkit-font-smoot
    dissolves into the light at the top (under the headline) and at the bottom
    (leaving the caption zone clear). No card, no border. */
 .shot{position:absolute;left:-40px;z-index:1;width:1120px}
-.fade-top{position:absolute;top:0;left:0;right:0;height:1000px;z-index:2;background:linear-gradient(to bottom,
+.fade-top{position:absolute;top:0;left:0;right:0;z-index:2;background:linear-gradient(to bottom,
   ${BG} 0%, ${BG} 80%, rgba(246,246,249,0) 100%)}
-.fade-bot{position:absolute;bottom:0;left:0;right:0;height:560px;z-index:2;background:linear-gradient(to top,
+.fade-bot{position:absolute;bottom:0;left:0;right:0;z-index:2;background:linear-gradient(to top,
   ${BG} 0%, ${BG} 30%, rgba(246,246,249,0) 100%)}
 .wm{position:absolute;left:${SAFE.left}px;top:300px;display:flex;align-items:center;gap:13px;z-index:7;color:${INK}}
 .wm span{font-size:27px;font-weight:600;letter-spacing:-.022em}
@@ -83,10 +81,22 @@ const cover = (o) => ({ bg: "gradient", html: `<div class="layer">
 // app shot lifted into the safe zone, dissolving at top (under the headline) and
 // bottom (clearing the caption zone). `top` places the shot so the focal UI lands
 // around the vertical centre.
-const feature = (o) => ({ bg: "shot", img: o.img, top: o.top ?? -520, html: `<div class="layer">
+//
+// fadeTop/fadeBot are per-slide because how much room a shot needs depends on
+// what is in it: a composer is one small object and can sit in the middle, but a
+// seven-row table is 800px tall and the default fades eat its last rows. Widen
+// the window for those, and keep the default where the focal UI is compact.
+const feature = (o) => ({
+  bg: "shot",
+  img: o.img,
+  top: o.top ?? -520,
+  fadeTop: o.fadeTop ?? 1000,
+  fadeBot: o.fadeBot ?? 560,
+  html: `<div class="layer">
   <h1 style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:${o.h1 || 360}px;font-size:${o.size || 106}px;line-height:1.0">${o.title}</h1>
   <p class="sub" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right + 8}px;top:${o.subTop || 660}px;font-size:${o.subSize || 39}px;line-height:1.4">${o.sub || ""}</p>
-</div>` });
+</div>`,
+});
 
 // closing Google search CTA — DM (never comment), trimmed, bigger sub
 const searchCTA = () => ({ bg: "gradient", html: `<div class="layer">
@@ -100,33 +110,93 @@ const searchCTA = () => ({ bg: "gradient", html: `<div class="layer">
   <p class="sub" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:1110px;font-size:40px;line-height:1.35;color:${INK}">Or DM me <b>&ldquo;link&rdquo;</b>. &#128071;</p>
 </div>` });
 
-/* ---- posts ---- */
+/* ---- posts ----
+ * Each entry is a thunk so only the selected post's shots are read off disk. */
 const CONFIGS = {
-  aitutor: {
+  aitutor: () => ({
     slot: "afternoon",
     slides: [
       cover({ eyebrow: "Building in public", title: "An AI tutor,<br>in your notes.", sub: "A look at what we&rsquo;re wiring into the reader right now." }),
-      feature({ img: AF_PAGE, title: "It lives right<br>in the page.", sub: "No new tab &mdash; it knows the exact step you&rsquo;re on.", top: -700 }),
-      feature({ img: AF_VOICE, title: "Ask, or just<br>talk to it.", sub: "Voice mode &mdash; speak, and the whole thing lights up.", top: -640 }),
-      feature({ img: AF_TYPED, title: "Or type it<br>out.", sub: "Ask about the exact step, in your own words.", top: -640 }),
+      feature({ img: img("af-page.png"), title: "It lives right<br>in the page.", sub: "No new tab &mdash; it knows the exact step you&rsquo;re on.", top: -700 }),
+      feature({ img: img("af-voice.png"), title: "Ask, or just<br>talk to it.", sub: "Voice mode &mdash; speak, and the whole thing lights up.", top: -640 }),
+      feature({ img: img("af-typed.png"), title: "Or type it<br>out.", sub: "Ask about the exact step, in your own words.", top: -640 }),
       cover({ eyebrow: "In the works", title: "Coming to<br>Booklesss soon.", sub: "The AI tutor + voice mode &mdash; we&rsquo;re building it now. First look.", subTop: 1020 }),
       searchCTA(),
     ],
-  },
-  reading: {
+  }),
+  reading: () => ({
     slot: "evening",
     slides: [
       cover({ eyebrow: "Building in public", title: "Your whole<br>course, sorted.", sub: "Every subject in one place &mdash; and actually nice to read." }),
-      feature({ img: EV_NAV, title: "Every subject,<br>one tap away.", sub: "Jump anywhere in the course, instantly.", top: -220 }),
-      feature({ img: EV_READER, title: "Made for<br>reading.", sub: "Plain English, clean pages, nothing in the way.", top: -240 }),
+      feature({ img: img("ev-nav.png"), title: "Every subject,<br>one tap away.", sub: "Jump anywhere in the course, instantly.", top: -220 }),
+      feature({ img: img("ev-reader.png"), title: "Made for<br>reading.", sub: "Plain English, clean pages, nothing in the way.", top: -240 }),
       cover({ eyebrow: "In the works", title: "More, every<br>week.", sub: "We&rsquo;re building Booklesss in the open. Follow along.", subTop: 1020 }),
       searchCTA(),
     ],
-  },
+  }),
+
+  /* 2026-07-27 — the app stopped being a one-course app. */
+  courses: () => ({
+    slot: "afternoon",
+    slides: [
+      cover({ eyebrow: "Building in public", title: "A second course<br>just landed.", sub: "Corporate Finance is live on Booklesss &mdash; and adding the next one is now just writing it." }),
+      feature({ img: img("cf-dash.png"), title: "Two courses,<br>one place.", sub: "Side by side, each with how far you&rsquo;ve actually got.", top: -180 }),
+      feature({ img: img("cf-home.png"), title: "Every course<br>gets a home.", sub: "Where you are, and the one obvious thing to do next.", top: 820 }),
+      feature({ img: img("cf-nav.png"), title: "Real ZCAS<br>material.", sub: "BAC4301 investment appraisal &mdash; free cash flows, NPV, IRR.", top: 800, fadeBot: 460 }),
+      feature({ img: img("cf-search.png"), title: "One search,<br>every course.", sub: "Type a word, land on the section that explains it.", top: 740, fadeBot: 460 }),
+      cover({ eyebrow: "In the works", title: "More courses,<br>every week.", sub: "We&rsquo;re building Booklesss in the open. Follow along.", subTop: 1020 }),
+      searchCTA(),
+    ],
+  }),
+
+  /* 2026-07-27 evening — what the new course's writing actually looks like. */
+  finance: () => ({
+    slot: "evening",
+    slides: [
+      cover({ eyebrow: "Building in public", title: "Finance notes that<br>show the working.", sub: "We rewrote Corporate Finance so the maths explains itself.", subTop: 1010 }),
+      feature({ img: img("cf-formula.png"), title: "Every formula,<br>in plain English.", sub: "What each letter means, right under it.", top: 300 }),
+      /* A whole discounting table plus its total is taller than the default
+       * window, so this slide trades some of the bottom fade for the last rows
+       * — the ZMW1,967 answer is the point of the shot. */
+      feature({ img: img("cf-table.png"), title: "Worked in<br>kwacha.", sub: "Real ZMW numbers, down to the answer.", top: 300, fadeBot: 330 }),
+      feature({ img: img("cf-check.png"), title: "Then it checks<br>you got it.", sub: "A question at the end of each section. The tick has to be earned.", top: 580, fadeBot: 340 }),
+      cover({ eyebrow: "In the works", title: "Cost of capital<br>is next.", sub: "One step at a time, written from the real ZCAS lectures.", subTop: 1020 }),
+      searchCTA(),
+    ],
+  }),
+
+  /* 2026-07-28 — the dashboard rebuilt around measuring the studying. */
+  measured: () => ({
+    slot: "afternoon",
+    slides: [
+      cover({ eyebrow: "Building in public", title: "Your studying,<br>now measured.", sub: "The dashboard got rebuilt around one question: how much did you actually read?", subTop: 1010 }),
+      feature({ img: img("d-week.png"), title: "A week of<br>real minutes.", sub: "Time read per day, with a momentum line through it.", top: 800, fadeBot: 380 }),
+      /* No screenshot for this one on purpose — the rule is the feature, and it
+       * is the most honest thing we shipped all day. */
+      cover({ eyebrow: "How it counts", title: "Only while<br>you're reading.", sub: "Tab hidden, or nothing moves for a minute, and the clock stops. It would rather undercount than flatter you.", subTop: 990 }),
+      feature({ img: img("d-tiles.png"), title: "Four numbers,<br>each with a trend.", sub: "Streak, days, checkpoints, steps — and how each moved on last week.", top: 630, fadeBot: 400 }),
+      feature({ img: img("d-courses.png"), title: "Both courses,<br>redesigned.", sub: "One card each, the spine showing where in the course the work landed.", top: 527, fadeBot: 400 }),
+      cover({ eyebrow: "In the works", title: "The next card,<br>drawn by hand.", sub: "We built seven candidate designs, threw them all out, and started again.", subTop: 1010 }),
+      searchCTA(),
+    ],
+  }),
+
+  /* 2026-07-28 evening — a day spent taking things off the reading page. */
+  quieter: () => ({
+    slot: "evening",
+    slides: [
+      cover({ eyebrow: "Building in public", title: "The reader<br>got quieter.", sub: "A whole day of taking things off the page you actually read on." }),
+      feature({ img: img("r-read.png"), title: "Bigger type,<br>lighter weight.", sub: "Base text up to 18px. Long passages stopped fighting back.", top: -60 }),
+      feature({ img: img("r-index.png"), title: "A course home<br>that reads.", sub: "What the course is and where you left off — written out, not a wall of tiles.", top: 340, fadeBot: 400 }),
+      feature({ img: img("r-nav.png"), title: "One sidebar,<br>one job.", sub: "The steps, their rings, and a way back. Nothing else.", top: 800, fadeBot: 460 }),
+      cover({ eyebrow: "In the works", title: "Less of it,<br>every week.", sub: "We&rsquo;re building Booklesss in the open. Follow along.", subTop: 1020 }),
+      searchCTA(),
+    ],
+  }),
 };
 
-const cfg = CONFIGS[POST];
-if (!cfg) throw new Error(`unknown POST "${POST}" (aitutor | reading)`);
+const cfg = CONFIGS[POST]?.();
+if (!cfg) throw new Error(`unknown POST "${POST}" (${Object.keys(CONFIGS).join(" | ")})`);
 const OUT = path.join(POSTS, dayFolder(DAY).rel, cfg.slot);
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
@@ -138,7 +208,9 @@ for (let i = 0; i < cfg.slides.length; i++) {
   const s = cfg.slides[i];
   const base =
     s.bg === "shot"
-      ? `<img class="shot" src="${s.img}" style="top:${s.top}px"><div class="fade-top"></div><div class="fade-bot"></div>`
+      ? `<img class="shot" src="${s.img}" style="top:${s.top}px">
+         <div class="fade-top" style="height:${s.fadeTop}px"></div>
+         <div class="fade-bot" style="height:${s.fadeBot}px"></div>`
       : `<div class="gradient"></div>`;
   const html = `<!doctype html><html><head><meta charset="utf-8"><style>${CSS}</style></head><body>${base}${s.html}${wordmark}<div class="grain"></div></body></html>`;
   await page.setContent(html, { waitUntil: "load" });

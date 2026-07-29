@@ -16,3 +16,10 @@ _textbooks/
 
 __pycache__/
 *.pyc
+
+# Social output — the rendered 9:16 carousels and the raw app captures they are
+# built from. Both are large PNGs and both are regenerable from _scripts/
+# (cap-*.mjs then prog-post.mjs), so the repo carries the recipe, not the images.
+# Each day's PLAN.md is text and IS tracked — that's the running order and captions.
+Demand/social/posts/**/*.png
+Demand/social/_source/feature-capture/*.png
