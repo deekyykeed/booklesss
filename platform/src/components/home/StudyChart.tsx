@@ -51,12 +51,9 @@ function mondayOf(back: number): Date {
   return d;
 }
 
-const fmtDay = (iso: string, long = false) => {
+const fmtDay = (iso: string) => {
   const [y, m, d] = iso.split("-").map(Number);
-  const date = new Date(y, m - 1, d);
-  return date.toLocaleDateString(undefined, long
-    ? { weekday: "short", day: "numeric", month: "short" }
-    : { day: "numeric", month: "short" });
+  return new Date(y, m - 1, d).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
 };
 
 /** "21–27 Jul" / "28 Jul – 3 Aug" — the visible week, tersely. */
@@ -607,7 +604,7 @@ export function StudyChart({ days, hydrated }: { days: Record<string, StudyDay>;
             }}
           >
             <p className="font-semibold text-ink">{fmtMins(active.secs)}</p>
-            <p className="text-[11px] text-muted">{fmtDay(active.date, true)}</p>
+            <p className="text-[11px] text-muted">{fmtDay(active.date)}</p>
             {active.courses &&
               Object.entries(active.courses).map(([slug, secs]) => (
                 <p key={slug} className="flex items-center gap-1.5 text-[11px] text-muted">
@@ -645,34 +642,6 @@ export function StudyChart({ days, hydrated }: { days: Record<string, StudyDay>;
           )}
         </div>
       )}
-
-      {/* Everything the hover shows, reachable without hovering. */}
-      <details className="chart-table">
-        <summary>View as table</summary>
-        <table>
-          <thead>
-            <tr>
-              <th>Day</th>
-              <th>Time</th>
-              <th>Checkpoints</th>
-            </tr>
-          </thead>
-          <tbody>
-            {drawn.filter((d) => d.secs || d.checks).map((d) => (
-              <tr key={d.date}>
-                <td>{fmtDay(d.date, true)}</td>
-                <td className="tabular-nums">{fmtMins(d.secs)}</td>
-                <td className="tabular-nums">{d.checks}</td>
-              </tr>
-            ))}
-            {!drawn.some((d) => d.secs || d.checks) && (
-              <tr>
-                <td colSpan={3}>Nothing recorded this week.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </details>
     </div>
   );
 }
