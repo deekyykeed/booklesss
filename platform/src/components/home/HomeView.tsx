@@ -184,7 +184,7 @@ export function HomeView({
             that the chart is broken. On phones the card wears the tiles'
             14px padding so the band reads as one set; desktop keeps the
             card's 18px. */}
-        <div className="dash-card squircle mt-4 p-3.5 lg:p-[18px]">
+        <div className="mt-4">
           <StudyChart days={days} hydrated={hydrated} perf={overall} />
         </div>
 
