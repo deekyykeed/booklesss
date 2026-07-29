@@ -54,10 +54,11 @@ function weekFoot(cur: number, prev: number, unit?: string): { lead: string; tai
   return { lead: "0", tail: unit ? `${unit}s this week` : "this week", good: false };
 }
 
-/** Total reading time, for the chart's caption. */
+/** Reading time, compact — "18m", "2h 40m" — so a tile's value holds one
+ *  line on a phone. */
 function fmtTotal(secs: number): string {
   const m = Math.round(secs / 60);
-  if (m < 60) return `${m} min`;
+  if (m < 60) return `${m}m`;
   const h = Math.floor(m / 60);
   return m % 60 ? `${h}h ${m % 60}m` : `${h}h`;
 }
@@ -197,15 +198,14 @@ export function HomeView({
               single sitting, the day that cost the most. */}
           <Stat
             hydrated={hydrated}
-            label="Time studied"
+            label="Time this week"
             value={spark.wSecs.cur > 0 ? fmtTotal(spark.wSecs.cur) : "0"}
-            unit="this week"
             tone={TONE.time}
             icon={<StopwatchGlyph />}
             series={spark.minsDaily}
             foot={{
               lead: `Best ${spark.bestDaySecs > 0 ? fmtTotal(spark.bestDaySecs) : "0"}`,
-              tail: "in one sitting",
+              tail: "one sitting",
               good: spark.wSecs.cur > 0 && spark.wSecs.cur >= spark.wSecs.prev,
             }}
           />
