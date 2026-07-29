@@ -91,7 +91,7 @@ export function CourseCard({
           working. */}
       <div className="relative flex items-center justify-between gap-3">
         <span className="text-ink">
-          <CardMark size={32} />
+          <CardMark size={24} />
         </span>
         <div className="flex items-center gap-4">
           <Figure
