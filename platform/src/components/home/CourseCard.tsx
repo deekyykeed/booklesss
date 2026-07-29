@@ -99,8 +99,8 @@ export function CourseCard({
             title={
               time.perf
                 ? `performance score — ${Math.round(time.perf.parts.coverage * 100)}% covered, ` +
-                  `${time.perf.weekDays} study day${time.perf.weekDays === 1 ? "" : "s"} this week, ` +
-                  `momentum ${Math.round(time.perf.parts.momentum * 100)}%` +
+                  `${time.perf.weekDays} study day${time.perf.weekDays === 1 ? "" : "s"} and ` +
+                  `${time.perf.weekChecks} checkpoint${time.perf.weekChecks === 1 ? "" : "s"} this week` +
                   (time.perf.parts.schedule !== null
                     ? `, on schedule ${Math.round(time.perf.parts.schedule * 100)}%`
                     : "")
