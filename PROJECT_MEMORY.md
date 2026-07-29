@@ -252,7 +252,17 @@ Local session, all in `Demand/social/` + `.claude/skills/`. No app code touched.
 - **The Tuesday shots are already out of date**: ~30 further PRs (rolling
   seven-day chart, tiles rebuilt again, course-card layout) landed after the
   capture. Fine — Tuesday is posted — but Wednesday's post needs a fresh capture.
-- **Monday's two carousels are still unposted.**
+- 🚨 **Monday's two carousels are unposted AND now break a rule.** A parallel
+  session established (2026-07-29) that posts must **never name a course or
+  school** — no ZCAS, no UNZA, no BAC4301, no "Corporate Finance", no
+  "Economics", in copy or legible in a shot; its `_scripts/neutralize.mjs`
+  relabels the UI to neutral subjects before capture. Monday's afternoon set
+  leads with *"Real ZCAS material"* and BAC4301. Re-cut it against the rule or
+  drop it. Rule is now written into `daily-post/RULES.md`.
+- **This session's commit swept in a parallel session's untracked work**
+  (`_scripts/cap-day.mjs`, `neutralize.mjs`) from the shared OneDrive tree —
+  preserved, not lost, but it wasn't mine to commit. Use worktrees for parallel
+  sessions, or pathspec commits (`git commit --only -- <paths>`).
 - No posting connector exists — uploads are manual.
 
 ### Session 2026-07-28 (session 22 — reader/home UI pass: brand, sidebar, course home, weekly chart)

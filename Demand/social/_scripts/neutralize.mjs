@@ -176,19 +176,31 @@ export function transform({ map, reader, deep }) {
     });
 }
 
-/* Runs in the page after `transform`: returns the banned words still visible.
- * A capture script throws on a non-empty result rather than writing the PNG. */
-export function scan(banned) {
+/* Runs in the page immediately before a screenshot: returns the banned words
+ * that would actually appear IN THE CROP. Scoped to the clip rather than the
+ * whole document on purpose — the rule is that nothing banned reaches a post,
+ * and a word two screens below the crop never does. A capture script throws on
+ * a non-empty result instead of writing the PNG, so the check cannot be
+ * forgotten the way a note in a README can.
+ *
+ * `clip` is the same {x, y, width, height} passed to page.screenshot(), in CSS
+ * pixels of the viewport. */
+export function scan({ banned, clip }) {
   const seen = new Set();
+  const L = clip.x, T = clip.y, R = clip.x + clip.width, B = clip.y + clip.height;
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   while (walker.nextNode()) {
-    const el = walker.currentNode.parentElement;
+    const node = walker.currentNode;
+    const el = node.parentElement;
     if (!el) continue;
     // screen-reader-only text and hidden nodes are not in the photograph
     if (el.closest(".sr-only,[aria-hidden='true']")) continue;
+    const s = getComputedStyle(el);
+    if (s.visibility === "hidden" || s.display === "none" || Number(s.opacity) === 0) continue;
     const r = el.getBoundingClientRect();
     if (r.width === 0 || r.height === 0) continue;
-    const v = walker.currentNode.nodeValue.toLowerCase();
+    if (r.right <= L || r.left >= R || r.bottom <= T || r.top >= B) continue; // outside the crop
+    const v = node.nodeValue.toLowerCase();
     banned.forEach((b) => {
       if (v.includes(b)) seen.add(b);
     });

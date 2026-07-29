@@ -152,8 +152,6 @@ const prep = async () => {
     });
   });
   await page.evaluate(transform, { map: MAP, reader: READER, deep: true });
-  const leaked = await page.evaluate(scan, BANNED);
-  if (leaked.length) throw new Error(`banned words still on screen: ${leaked.join(", ")} — extend MAP in neutralize.mjs`);
 };
 
 const go = async (url) => {
@@ -183,7 +181,17 @@ const TALL = { x: 0, y: 156, width: 402, height: 715 };
 const MID = { x: 0, y: 159, width: 402, height: 715 };
 const DRAWER = { x: 0, y: 40, width: 300, height: 533 };
 
+/* Nothing is written without being checked first: the banned-word scan runs
+ * against the exact crop about to be photographed, so a course code or a
+ * school name cannot reach a post through an oversight. */
 const shot = async (name, clip) => {
+  const leaked = await page.evaluate(scan, { banned: BANNED, clip });
+  if (leaked.length) {
+    throw new Error(
+      `${name}: banned words inside the crop — ${leaked.join(", ")}. ` +
+        `Extend MAP in neutralize.mjs, or move the crop.`,
+    );
+  }
   await page.screenshot({ path: out(name), clip });
   console.log("  " + name);
 };
@@ -216,16 +224,18 @@ await go("/");
 /* The dashboard's own opening line — the greeting and the state of play. */
 await shot("w-top.png", { x: 0, y: 60, width: 402, height: 715 });
 
-/* The chart card as it stands today: this week drawn only as far as today,
- * the momentum tail projecting the rest. */
+/* The chart card. As of today it is a rolling seven-day plot — no week pager
+ * any more, it just always shows the last seven days. */
 await bring(".dash-card", 200);
 await shot("w-chart.png", MID);
 
-/* Paged back a week, where a whole seven-day curve is on show. */
-await page.click('button[aria-label="Earlier week"]');
-await page.waitForTimeout(700);
-await prep();
-await shot("w-chart-week.png", MID);
+/* Its headline: the overall score and the hours behind it, set in the same
+ * face the course cards use. */
+await macro("w-score-all.png", ".dash-card .font-display", { width: 300, padTop: 34 });
+
+/* The plot itself, close in, where the per-course lines and the momentum
+ * curve separate. */
+await macro("w-curve.png", ".dash-card svg", { width: 340, padTop: 26 });
 
 /* The four tiles, together and one at a time. */
 await go("/");
@@ -246,8 +256,12 @@ await macro("w-score.png", ".course-card .font-display", { width: 300, padTop: 4
 /* The resume button: its fill IS the progress bar, and it names the next step. */
 await macro("w-resume.png", ".course-resume", { width: 300, padTop: 76 });
 
-/* ---------- the reader ---------- */
-const LESSON = "/investment-appraisal/npv-and-payback";
+/* ---------- the reader ----------
+ * Shot on the step whose body neutralize.mjs actually rewrites. The other
+ * course's steps carry worked examples in kwacha with the course's own
+ * formulas in them, and there is no honest way to relabel a table of numbers —
+ * so those pages are simply not photographed. The crop scan enforces it. */
+const LESSON = "/microeconomics/supply-demand/law-of-demand";
 await go(LESSON);
 await page.evaluate(() => window.scrollTo(0, 0));
 await page.waitForTimeout(400);

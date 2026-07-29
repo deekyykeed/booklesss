@@ -10,6 +10,15 @@ that turns out to have been a one-off.
 
 ## Copy
 
+- **NEVER name a specific course or school.** (Owner's rule, 2026-07-29.) No
+  ZCAS, no UNZA, no BAC4301, no "Corporate Finance", no "Economics" — not in a
+  headline, not in a caption, not in a hashtag, and not legible in a screenshot.
+  Booklesss is not one syllabus and not one university, and a post that names one
+  says it is. The live app is seeded with real courses, so a raw capture says the
+  forbidden thing by itself: relabel the UI to neutral subjects before shooting
+  (`_scripts/neutralize.mjs`) — **placeholder labels, real UI**, never a retouched
+  poster. ⚠️ The 27 Jul carousels were written before this rule and break it
+  ("Real ZCAS material", BAC4301); they need re-cutting before they go out.
 - **CTA is "Search booklesss — three s's — first result on Google", plus "Or DM
   me 'link'".** Never "comment" — you cannot put a link in a comment, and DMs
   convert better. (`feedback_marketing_cta_dm`, `feedback_marketing_cta_search`)
