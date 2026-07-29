@@ -16,11 +16,10 @@ import { CHART_TONE, courseTone } from "./tones";
  * be misread as a calendar week.
  *
  * Minimal, but a chart rather than a decoration: two hairline gridlines carry
- * the scale (their values printed just above them at the left, so the lines
- * still run edge to edge), and the days are named along the foot — the window
- * rolls, so the last slot is always "Today" and the rest are named backwards
- * from it. Everything else stays out of the way: no frame, no ticks, no
- * y-axis gutter. The crosshair has the exact numbers when they're wanted.
+ * the scale, their values printed just above them at the left so no y-axis
+ * gutter is needed and the lines can run edge to edge. Everything else stays
+ * out of the way — no frame, no ticks — and the crosshair has the exact
+ * numbers when they're wanted.
  *
  * Minutes come from StudyClock, which only counts a visible tab with recent
  * interaction. Days recorded before per-course attribution shipped hold a
