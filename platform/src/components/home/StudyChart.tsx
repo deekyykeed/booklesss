@@ -11,10 +11,9 @@ import { CHART_TONE, courseTone } from "./tones";
  *
  * It always shows the last seven days ending today and keeps rolling: nothing
  * resets on a Monday, the lines never restart at a week boundary, and their
- * heads stay at the right edge where today is. That is why there are no
- * weekday markers — the slots aren't named days, they're "six days ago"
- * through "now", and naming them would invite reading the plot as a calendar
- * it isn't.
+ * heads stay at the right edge where today is. The foot is labelled from that
+ * end backwards — the last slot is "Today", never a weekday, so the plot can't
+ * be misread as a calendar week.
  *
  * Minimal, but a chart rather than a decoration: two hairline gridlines carry
  * the scale (their values printed just above them at the left, so the lines
