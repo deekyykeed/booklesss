@@ -117,8 +117,10 @@ export function CourseCard({
         <p className="truncate font-display text-[21px] font-semibold leading-tight tracking-[-0.01em] text-ink">
           {course.title}
         </p>
+        {/* The number and a small raised %, nothing else — the owner's
+            sketch, to the letter. */}
         <span
-          className="mt-2 inline-flex items-baseline gap-1.5 rounded-[14px] border border-line bg-white/60 px-2.5 py-1"
+          className="mt-2 inline-flex items-start gap-[3px] rounded-[14px] border border-line bg-white/60 px-2.5 py-1"
           title={
             time.perf
               ? `performance score — ${Math.round(time.perf.parts.coverage * 100)}% covered, ` +
@@ -129,14 +131,12 @@ export function CourseCard({
                   : "")
               : "performance score"
           }
+          style={{ color: time.perf && time.perf.score >= 70 ? "var(--color-brand-deep)" : "var(--color-ink)" }}
         >
-          <span
-            className="font-display text-[21px] font-semibold leading-tight tracking-[-0.01em]"
-            style={{ color: time.perf && time.perf.score >= 70 ? "var(--color-brand-deep)" : "var(--color-ink)" }}
-          >
-            {time.perf ? `${time.perf.score}%` : "–"}
+          <span className="font-display text-[21px] font-semibold leading-none tracking-[-0.01em]">
+            {time.perf ? time.perf.score : "–"}
           </span>
-          <span className="text-[11px] font-medium text-muted">score</span>
+          <span className="mt-[1px] font-display text-[12px] font-semibold leading-none">%</span>
           <span className="sr-only">performance score</span>
         </span>
 
