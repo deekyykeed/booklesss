@@ -12,7 +12,6 @@ import {
   weakestLesson,
 } from "@/lib/progress";
 import { useLiveReaders } from "@/lib/presence";
-import { overallPerformance } from "@/lib/performance";
 import { labelFor } from "@/lib/course";
 import { CourseCard } from "./CourseCard";
 import { Spark } from "./Spark";
@@ -64,6 +63,14 @@ function weekFoot(cur: number, prev: number, unit?: string): { lead: string; tai
   return { lead: "0", tail: unit ? `${unit}s this week` : "this week", good: false };
 }
 
+/** Total reading time, for the chart's caption. */
+function fmtTotal(secs: number): string {
+  const m = Math.round(secs / 60);
+  if (m < 60) return `${m} min`;
+  const h = Math.floor(m / 60);
+  return m % 60 ? `${h}h ${m % 60}m` : `${h}h`;
+}
+
 function timeGreeting(): string {
   const h = new Date().getHours();
   if (h < 5) return "Still up";
@@ -81,7 +88,7 @@ export function HomeView({
    *  is signed in. Kept as a slot so this component stays Clerk-free. */
   afterGreeting?: React.ReactNode;
 }) {
-  const { hydrated, doneCount, isComplete, streak, daysStudied, studiedToday, days, quiz, touched, done: cleared } =
+  const { hydrated, doneCount, isComplete, streak, daysStudied, studiedToday, totalSecs, days, quiz, touched, done: cleared } =
     useProgress();
 
   /* Who's reading right now, per course — watching only, this page isn't a
@@ -131,13 +138,6 @@ export function HomeView({
     return { checks, steps };
   }, [hydrated, doneCount, isComplete, totals]);
 
-  /* Where the reader stands across every course — the chart's headline. Null
-   * until hydration, so the server and first client paint agree on "–". */
-  const overall = useMemo(
-    () => (hydrated ? overallPerformance(days, done.checks, totals.checks) : null),
-    [hydrated, days, done.checks, totals.checks],
-  );
-
   /* The four tiles' figures. Each only appears once it has been measured:
    * quiz records and touch dates accrue from the day they shipped, so a fresh
    * reader sees a placeholder rather than a flattering zero. */
@@ -184,8 +184,16 @@ export function HomeView({
             that the chart is broken. On phones the card wears the tiles'
             14px padding so the band reads as one set; desktop keeps the
             card's 18px. */}
-        <div className="mt-4">
-          <StudyChart days={days} hydrated={hydrated} perf={overall} />
+        <div className="dash-card squircle mt-4 p-3.5 lg:p-[18px]">
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="font-display text-[15px] font-semibold leading-tight text-ink">Productive time</h3>
+            <p className="shrink-0 text-[12px] text-placeholder">
+              {totalSecs > 0 ? `${fmtTotal(totalSecs)} over 30 days` : "Last 30 days"}
+            </p>
+          </div>
+          <div className="mt-1">
+            <StudyChart days={days} hydrated={hydrated} />
+          </div>
         </div>
 
         {/* Tighter gutter on phones so each tile keeps its width at two-up.

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { smoothPath } from "./smooth-path";
+import { smoothPath } from "./StudyChart";
 
 /* ------------------------------------------------------------------ *
  * The tile-and-card sparkline — a backdrop, not a figure beside the number.
