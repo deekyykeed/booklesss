@@ -18,8 +18,8 @@ import { CHART_TONE, courseTone } from "./tones";
  *
  * Deliberately bare: no gridlines, no axis, no ticks. The score states where
  * the reader stands and the legend says which line is which; the lines
- * themselves carry shape, not exact values (the crosshair and the table below
- * have the numbers when they're wanted).
+ * themselves carry shape, not exact values, and the crosshair has the numbers
+ * when they're wanted.
  *
  * Minutes come from StudyClock, which only counts a visible tab with recent
  * interaction. Days recorded before per-course attribution shipped hold a
@@ -380,34 +380,6 @@ export function StudyChart({
           </span>
         </div>
       </div>
-
-      {/* Everything the hover shows, reachable without hovering. */}
-      <details className="chart-table">
-        <summary>View as table</summary>
-        <table>
-          <thead>
-            <tr>
-              <th>Day</th>
-              <th>Time</th>
-              <th>Checkpoints</th>
-            </tr>
-          </thead>
-          <tbody>
-            {series.filter((d) => d.secs || d.checks).map((d) => (
-              <tr key={d.date}>
-                <td>{fmtDay(d.date)}</td>
-                <td className="tabular-nums">{fmtMins(d.secs)}</td>
-                <td className="tabular-nums">{d.checks}</td>
-              </tr>
-            ))}
-            {!series.some((d) => d.secs || d.checks) && (
-              <tr>
-                <td colSpan={3}>Nothing recorded in the last seven days.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </details>
     </div>
   );
 }
