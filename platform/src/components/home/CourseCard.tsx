@@ -109,42 +109,40 @@ export function CourseCard({
         </div>
       </div>
 
-      {/* The card's foot. The title line carries the score at its end, set
-          in the title's own style so the two read as one line — the course
-          and its verdict together. Brand green from 70 up; the working stays
-          on hover. */}
+      {/* The card's foot. The title keeps its own full-width line; the score
+          sits in its own container directly beneath it — a bordered chip in
+          the card's chrome, the number in the display face with its quiet
+          caption. Brand green from 70 up; the working stays on hover. */}
       <div className="relative mt-auto pt-8">
-        <div className="flex items-baseline justify-between gap-3">
-          <p className="min-w-0 truncate font-display text-[21px] font-semibold leading-tight tracking-[-0.01em] text-ink">
-            {course.title}
-          </p>
+        <p className="truncate font-display text-[21px] font-semibold leading-tight tracking-[-0.01em] text-ink">
+          {course.title}
+        </p>
+        <span
+          className="mt-2 inline-flex items-baseline gap-1.5 rounded-[14px] border border-line bg-white/60 px-2.5 py-1"
+          title={
+            time.perf
+              ? `performance score — ${Math.round(time.perf.parts.coverage * 100)}% covered, ` +
+                `${time.perf.weekDays} study day${time.perf.weekDays === 1 ? "" : "s"} and ` +
+                `${time.perf.weekChecks} checkpoint${time.perf.weekChecks === 1 ? "" : "s"} this week` +
+                (time.perf.parts.schedule !== null
+                  ? `, on schedule ${Math.round(time.perf.parts.schedule * 100)}%`
+                  : "")
+              : "performance score"
+          }
+        >
           <span
-            className="flex shrink-0 items-baseline gap-1"
-            title={
-              time.perf
-                ? `performance score — ${Math.round(time.perf.parts.coverage * 100)}% covered, ` +
-                  `${time.perf.weekDays} study day${time.perf.weekDays === 1 ? "" : "s"} and ` +
-                  `${time.perf.weekChecks} checkpoint${time.perf.weekChecks === 1 ? "" : "s"} this week` +
-                  (time.perf.parts.schedule !== null
-                    ? `, on schedule ${Math.round(time.perf.parts.schedule * 100)}%`
-                    : "")
-                : "performance score"
-            }
+            className="font-display text-[21px] font-semibold leading-tight tracking-[-0.01em]"
+            style={{ color: time.perf && time.perf.score >= 70 ? "var(--color-brand-deep)" : "var(--color-ink)" }}
           >
-            <span
-              className="font-display text-[21px] font-semibold leading-tight tracking-[-0.01em]"
-              style={{ color: time.perf && time.perf.score >= 70 ? "var(--color-brand-deep)" : "var(--color-ink)" }}
-            >
-              {time.perf ? `${time.perf.score}%` : "–"}
-            </span>
-            <span className="text-[11px] font-medium text-muted">score</span>
-            <span className="sr-only">performance score</span>
+            {time.perf ? `${time.perf.score}%` : "–"}
           </span>
-        </div>
+          <span className="text-[11px] font-medium text-muted">score</span>
+          <span className="sr-only">performance score</span>
+        </span>
 
         {/* What the course is about, held to two lines — the body the card
             was missing with the title standing alone. */}
-        <p className="mt-1 line-clamp-2 text-[12.5px] leading-5 text-muted">{course.subtitle}</p>
+        <p className="mt-2 line-clamp-2 text-[12.5px] leading-5 text-muted">{course.subtitle}</p>
 
         {/* The button IS the progress bar: full width, one word, its fill
             showing how far through the course they are. Pressing it opens
