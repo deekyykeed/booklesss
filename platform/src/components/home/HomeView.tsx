@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { COURSES } from "@/lib/courses";
-import { isStudyDay, streakSeries, studyHistory, useProgress } from "@/lib/progress";
+import { streakSeries, studyHistory, useProgress } from "@/lib/progress";
 import { useLiveReaders } from "@/lib/presence";
 import { CourseCard } from "./CourseCard";
 import { Spark } from "./Spark";
@@ -32,7 +32,7 @@ import { courseTone } from "./tones";
  * this app, and a cleared checkpoint is exactly that. */
 const TONE = {
   streak: "#eb6834",
-  days: "#2a78d6",
+  time: "#2a78d6",
   checks: "#17754d",
   steps: "#4a3aa7",
 } as const;
@@ -87,29 +87,25 @@ export function HomeView({
    * and the cards show nothing rather than a number nobody measured. */
   const live = useLiveReaders(null);
 
-  /* Each tile's series and its week-over-week movement, all measured with
-   * the same isStudyDay test the streak uses, so no two tiles can disagree
-   * about what counted as a day. 14 days: last week vs the week before. */
+  /* Each tile's series and its week-over-week movement, from the same day
+   * records the streak reads. 14 days: last week vs the week before. */
   const spark = useMemo(() => {
     const h = studyHistory(days, 14);
     const checksDaily = h.map((d) => d.checks);
     const stepsDaily = h.map((d) => d.steps);
+    const minsDaily = h.map((d) => d.secs / 60);
     const streaks = streakSeries(days, 14);
-    const qualifying = h.map((d) => (isStudyDay(d) ? 1 : 0));
-
-    // Days studied is cumulative — the count as it stood at each day's end,
-    // including every qualifying day before the window.
-    const inWindow = new Set(h.map((d) => d.date));
-    let acc = Object.entries(days).filter(([date, d]) => isStudyDay(d) && !inWindow.has(date)).length;
-    const cumDays = h.map((d) => (acc += isStudyDay(d) ? 1 : 0));
 
     const sum = (a: number[]) => a.reduce((n, v) => n + v, 0);
     return {
       checksDaily,
       stepsDaily,
+      minsDaily,
       streaks,
-      cumDays,
-      wDays: { cur: sum(qualifying.slice(7)), prev: sum(qualifying.slice(0, 7)) },
+      // This week's reading time, and the longest single sitting in it — the
+      // sacrifice the time tile praises.
+      wSecs: { cur: sum(h.slice(7).map((d) => d.secs)), prev: sum(h.slice(0, 7).map((d) => d.secs)) },
+      bestDaySecs: Math.max(0, ...h.slice(7).map((d) => d.secs)),
       wChecks: { cur: sum(checksDaily.slice(7)), prev: sum(checksDaily.slice(0, 7)) },
       wSteps: { cur: sum(stepsDaily.slice(7)), prev: sum(stepsDaily.slice(0, 7)) },
     };
@@ -195,15 +191,23 @@ export function HomeView({
               good: streak > 0 && streak >= bestStreak,
             }}
           />
+          {/* Time given this week — the sacrifice tile. Lifetime days-studied
+              went with it: it only ever counted up, so it praised
+              accumulation, not this week's effort. The foot holds the longest
+              single sitting, the day that cost the most. */}
           <Stat
             hydrated={hydrated}
-            label="Days studied"
-            value={String(daysStudied)}
-            unit={daysStudied === 1 ? "day" : "days"}
-            tone={TONE.days}
-            icon={<CalendarGlyph />}
-            series={spark.cumDays}
-            foot={weekFoot(spark.wDays.cur, spark.wDays.prev, "day")}
+            label="Time studied"
+            value={spark.wSecs.cur > 0 ? fmtTotal(spark.wSecs.cur) : "0"}
+            unit="this week"
+            tone={TONE.time}
+            icon={<StopwatchGlyph />}
+            series={spark.minsDaily}
+            foot={{
+              lead: `Best ${spark.bestDaySecs > 0 ? fmtTotal(spark.bestDaySecs) : "0"}`,
+              tail: "in one sitting",
+              good: spark.wSecs.cur > 0 && spark.wSecs.cur >= spark.wSecs.prev,
+            }}
           />
           <Stat
             hydrated={hydrated}
@@ -281,12 +285,12 @@ function FireGlyph() {
   );
 }
 
-function CalendarGlyph() {
+function StopwatchGlyph() {
   return (
     <svg {...G}>
-      <path fill="currentColor" d="M6.94 2c.416 0 .753.324.753.724v1.46c.668-.012 1.417-.012 2.26-.012h4.015c.842 0 1.591 0 2.259.013v-1.46c0-.4.337-.725.753-.725s.753.324.753.724V4.25c1.445.111 2.394.384 3.09 1.055c.698.67.982 1.582 1.097 2.972L22 9H2v-.724c.116-1.39.4-2.302 1.097-2.972s1.645-.944 3.09-1.055V2.724c0-.4.337-.724.753-.724" />
-      <path fill="currentColor" opacity=".5" d="M22 14v-2c0-.839-.004-2.335-.017-3H2.01c-.013.665-.01 2.161-.01 3v2c0 3.771 0 5.657 1.172 6.828S6.228 22 10 22h4c3.77 0 5.656 0 6.828-1.172S22 17.772 22 14" />
-      <path fill="currentColor" d="M18 17a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0" />
+      <path fill="currentColor" d="M12 23a9 9 0 1 0 0-18a9 9 0 0 0 0 18" opacity=".5" />
+      <path fill="currentColor" d="M12 9.25a.75.75 0 0 1 .75.75v4a.75.75 0 0 1-1.5 0v-4a.75.75 0 0 1 .75-.75" />
+      <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d="M9.25 2.75A.75.75 0 0 1 10 2h4a.75.75 0 0 1 0 1.5h-4a.75.75 0 0 1-.75-.75" />
     </svg>
   );
 }
