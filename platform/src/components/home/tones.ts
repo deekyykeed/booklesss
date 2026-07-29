@@ -20,6 +20,3 @@ const COURSE_TONE: Record<string, string> = {
 const COURSE_TONE_FALLBACK = "#4a3aa7";
 
 export const courseTone = (slug: string) => COURSE_TONE[slug] ?? COURSE_TONE_FALLBACK;
-
-/** Momentum — a derived series, so it wears a text tone, never a course hue. */
-export const MOMENTUM_TONE = "#8b8b93";

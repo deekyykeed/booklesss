@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { COURSES } from "@/lib/courses";
 import { streakSeries, studyHistory, useProgress } from "@/lib/progress";
 import { useLiveReaders } from "@/lib/presence";
+import { overallPerformance } from "@/lib/performance";
 import { CourseCard } from "./CourseCard";
 import { Spark } from "./Spark";
 import { StudyChart } from "./StudyChart";
@@ -80,8 +81,7 @@ export function HomeView({
    *  is signed in. Kept as a slot so this component stays Clerk-free. */
   afterGreeting?: React.ReactNode;
 }) {
-  const { hydrated, doneCount, isComplete, streak, bestStreak, daysStudied, studiedToday, totalSecs, days } =
-    useProgress();
+  const { hydrated, doneCount, isComplete, streak, bestStreak, daysStudied, studiedToday, days } = useProgress();
 
   /* Who's reading right now, per course — watching only, this page isn't a
    * reader. Null until presence syncs (or forever if it isn't configured),
@@ -132,6 +132,13 @@ export function HomeView({
     return { checks, steps };
   }, [hydrated, doneCount, isComplete, totals]);
 
+  /* Where the reader stands across every course — the chart's headline. Null
+   * until hydration, so the server and first client paint agree on "–". */
+  const overall = useMemo(
+    () => (hydrated ? overallPerformance(days, done.checks, totals.checks) : null),
+    [hydrated, days, done.checks, totals.checks],
+  );
+
   /* Facts, not encouragement dressed as insight. */
   const line = !hydrated
     ? "Loading your progress…"
@@ -163,15 +170,7 @@ export function HomeView({
             14px padding so the band reads as one set; desktop keeps the
             card's 18px. */}
         <div className="dash-card squircle mt-4 p-3.5 lg:p-[18px]">
-          <div className="flex items-center justify-between gap-3">
-            <h3 className="font-display text-[15px] font-semibold leading-tight text-ink">Productive time</h3>
-            <p className="shrink-0 text-[12px] text-placeholder">
-              {totalSecs > 0 ? `${fmtTotal(totalSecs)} over 30 days` : "Last 30 days"}
-            </p>
-          </div>
-          <div className="mt-1">
-            <StudyChart days={days} hydrated={hydrated} />
-          </div>
+          <StudyChart days={days} hydrated={hydrated} perf={overall} />
         </div>
 
         {/* Tighter gutter on phones so each tile keeps its width at two-up.
