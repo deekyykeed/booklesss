@@ -84,18 +84,42 @@ export function CourseCard({
           half. Same component, same defaults, so the two read as one set. */}
       <Spark series={time.series} tone={tone} />
 
-      {/* The card's mark top-left; the right side belongs to the score. It is
-          the course's overall verdict — coverage, consistency, momentum and
-          (with an exam date) schedule in one number — so it gets the display
-          face at figure size, going brand green from 70 up. The working stays
-          on hover; the small figures sit beneath it. */}
+      {/* The card's mark top-left, the small figures right — effort and
+          company on one quiet line. The score lives on the title line below. */}
       <div className="relative flex items-start justify-between gap-3">
         <span className="text-ink">
           <CardMark size={24} />
         </span>
-        <div className="flex flex-col items-end gap-1.5">
+        <div className="flex items-center gap-4">
+          <Figure
+            label="day streak on this course"
+            value={hydrated ? `${time.streak}d` : "–"}
+            mark={<StreakMark size={13} />}
+          />
+          {/* Who's in this course right now, marked by the pulsing live dot.
+              The number is the seeded baseline plus any synced presence
+              count; hydration-gated so the server and first client paint
+              agree on "–". */}
+          <Figure
+            label="reading now"
+            value={hydrated ? `${liveBaseline(course.slug) + (live ?? 0)}` : "–"}
+            caption="online"
+            mark={<span className="live-dot" aria-hidden="true" />}
+          />
+        </div>
+      </div>
+
+      {/* The card's foot. The title line carries the score at its end, set
+          in the title's own style so the two read as one line — the course
+          and its verdict together. Brand green from 70 up; the working stays
+          on hover. */}
+      <div className="relative mt-auto pt-8">
+        <div className="flex items-baseline justify-between gap-3">
+          <p className="min-w-0 truncate font-display text-[21px] font-semibold leading-tight tracking-[-0.01em] text-ink">
+            {course.title}
+          </p>
           <span
-            className="flex items-baseline gap-1.5"
+            className="flex shrink-0 items-baseline gap-1"
             title={
               time.perf
                 ? `performance score — ${Math.round(time.perf.parts.coverage * 100)}% covered, ` +
@@ -108,7 +132,7 @@ export function CourseCard({
             }
           >
             <span
-              className="font-display text-[26px] font-semibold leading-none tracking-[-0.01em]"
+              className="font-display text-[21px] font-semibold leading-tight tracking-[-0.01em]"
               style={{ color: time.perf && time.perf.score >= 70 ? "var(--color-brand-deep)" : "var(--color-ink)" }}
             >
               {time.perf ? `${time.perf.score}%` : "–"}
@@ -116,33 +140,7 @@ export function CourseCard({
             <span className="text-[11px] font-medium text-muted">score</span>
             <span className="sr-only">performance score</span>
           </span>
-          <div className="flex items-center gap-4">
-            <Figure
-              label="day streak on this course"
-              value={hydrated ? `${time.streak}d` : "–"}
-              mark={<StreakMark size={13} />}
-            />
-            {/* Who's in this course right now, marked by the pulsing live
-                dot. The number is the seeded baseline plus any synced
-                presence count; hydration-gated so the server and first
-                client paint agree on "–". */}
-            <Figure
-              label="reading now"
-              value={hydrated ? `${liveBaseline(course.slug) + (live ?? 0)}` : "–"}
-              caption="online"
-              mark={<span className="live-dot" aria-hidden="true" />}
-            />
-          </div>
         </div>
-      </div>
-
-      {/* The card's foot: the title on its own undisturbed row, then the
-          button beneath it in the bottom-right corner, both over the
-          sparkline backdrop the way the tiles set their number over theirs. */}
-      <div className="relative mt-auto pt-8">
-        <p className="truncate font-display text-[21px] font-semibold leading-tight tracking-[-0.01em] text-ink">
-          {course.title}
-        </p>
 
         {/* What the course is about, held to two lines — the body the card
             was missing with the title standing alone. */}
