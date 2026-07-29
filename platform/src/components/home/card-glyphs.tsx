@@ -25,6 +25,38 @@ const box = (size: number, className?: string) =>
     className: "shrink-0" + (className ? " " + className : ""),
   }) as const;
 
+/* MynaUI Line · "Trending Up" */
+export function TrendUpMark({ size = 16, className }: Props) {
+  return (
+    <svg {...box(size, className)}>
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="m20 7l-5.846 5.938c-1.964 1.983-4.106-2.148-6.153-.001L4 17m9-10h7v7"
+      />
+    </svg>
+  );
+}
+
+/* MynaUI Line · "Trending Down" */
+export function TrendDownMark({ size = 16, className }: Props) {
+  return (
+    <svg {...box(size, className)}>
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="m20 17l-5.846-5.938c-1.964-1.983-4.106 2.148-6.153.001L4 7m9 10h7v-7"
+      />
+    </svg>
+  );
+}
+
 /* MynaUI Line · "Folder" */
 export function CardMark({ size = 16, className }: Props) {
   return (

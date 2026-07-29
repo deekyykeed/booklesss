@@ -6,7 +6,7 @@ import type { CourseMeta } from "@/lib/courses";
 import { labelFor, pathForId } from "@/lib/course";
 import { courseStreak, studyHistory, type StudyDay } from "@/lib/progress";
 import { coursePerformance } from "@/lib/performance";
-import { CardMark, StreakMark } from "./card-glyphs";
+import { CardMark, StreakMark, TrendDownMark, TrendUpMark } from "./card-glyphs";
 import { Spark } from "./Spark";
 
 /* ------------------------------------------------------------------ *
@@ -117,11 +117,15 @@ export function CourseCard({
         <p className="truncate font-display text-[21px] font-semibold leading-tight tracking-[-0.01em] text-ink">
           {course.title}
         </p>
+        {/* The owner's sketch, compact: the number, a small raised %, and
+            tucked under the % the week's movement — trend arrow and points,
+            green climbing, red falling. */}
         <span
-          className="mt-2 inline-flex items-baseline gap-1.5 rounded-[14px] border border-line bg-white/60 px-2.5 py-1"
+          className="mt-2 inline-flex items-center gap-1 rounded-[10px] border border-line bg-white/60 px-2 py-[3px]"
           title={
             time.perf
-              ? `performance score — ${Math.round(time.perf.parts.coverage * 100)}% covered, ` +
+              ? `performance score, ${time.perf.delta >= 0 ? "up" : "down"} ${Math.abs(time.perf.delta)} this week — ` +
+                `${Math.round(time.perf.parts.coverage * 100)}% covered, ` +
                 `${time.perf.weekDays} study day${time.perf.weekDays === 1 ? "" : "s"} and ` +
                 `${time.perf.weekChecks} checkpoint${time.perf.weekChecks === 1 ? "" : "s"} this week` +
                 (time.perf.parts.schedule !== null
@@ -131,12 +135,35 @@ export function CourseCard({
           }
         >
           <span
-            className="font-display text-[21px] font-semibold leading-tight tracking-[-0.01em]"
+            className="font-display text-[16px] font-semibold leading-none tracking-[-0.01em]"
             style={{ color: time.perf && time.perf.score >= 70 ? "var(--color-brand-deep)" : "var(--color-ink)" }}
           >
-            {time.perf ? `${time.perf.score}%` : "–"}
+            {time.perf ? time.perf.score : "–"}
           </span>
-          <span className="text-[11px] font-medium text-muted">score</span>
+          <span className="flex flex-col items-start gap-[2px]">
+            <span
+              className="font-display text-[9.5px] font-semibold leading-none"
+              style={{ color: time.perf && time.perf.score >= 70 ? "var(--color-brand-deep)" : "var(--color-ink)" }}
+            >
+              %
+            </span>
+            {time.perf && (
+              <span
+                className="flex items-center gap-[2px] leading-none"
+                style={{
+                  color:
+                    time.perf.delta > 0
+                      ? "var(--color-brand-deep)"
+                      : time.perf.delta < 0
+                        ? "var(--color-danger)"
+                        : "var(--color-muted)",
+                }}
+              >
+                {time.perf.delta < 0 ? <TrendDownMark size={9} /> : <TrendUpMark size={9} />}
+                <span className="text-[9.5px] font-semibold tabular-nums">{Math.abs(time.perf.delta)}</span>
+              </span>
+            )}
+          </span>
           <span className="sr-only">performance score</span>
         </span>
 
