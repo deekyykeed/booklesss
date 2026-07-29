@@ -16,10 +16,12 @@ import { CHART_TONE, courseTone } from "./tones";
  * through "now", and naming them would invite reading the plot as a calendar
  * it isn't.
  *
- * Deliberately bare: no gridlines, no axis, no ticks. The score states where
- * the reader stands and the legend says which line is which; the lines
- * themselves carry shape, not exact values (the crosshair and the table below
- * have the numbers when they're wanted).
+ * Minimal, but a chart rather than a decoration: two hairline gridlines carry
+ * the scale (their values printed just above them at the left, so the lines
+ * still run edge to edge), and the days are named along the foot — the window
+ * rolls, so the last slot is always "Today" and the rest are named backwards
+ * from it. Everything else stays out of the way: no frame, no ticks, no
+ * y-axis gutter. The crosshair has the exact numbers when they're wanted.
  *
  * Minutes come from StudyClock, which only counts a visible tab with recent
  * interaction. Days recorded before per-course attribution shipped hold a
@@ -27,10 +29,13 @@ import { CHART_TONE, courseTone } from "./tones";
  * Nothing here is estimated.
  * ------------------------------------------------------------------ */
 
-const H = 132;
-/** Only a top inset: the curve rests on the container's floor and runs to
- *  both edges, exactly as the tile sparklines do. */
-const TOP = 8;
+const H = 168;
+/** The curve's ceiling — clear of the score and the legend, which sit over
+ *  the plot's top corners. Its floor is the container's own bottom edge, so
+ *  the wash runs off the card the way the tile sparklines do. */
+const TOP = 58;
+/** Where the day names sit, over the foot of the wash. */
+const FOOT = 13;
 const SPAN = 7;
 
 const LINE = CHART_TONE; // --color-brand-deep
@@ -40,6 +45,21 @@ const fmtDay = (iso: string) => {
   const [y, m, d] = iso.split("-").map(Number);
   return new Date(y, m - 1, d).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
 };
+
+/** The foot label for a slot. The window rolls, so the last one is always
+ *  today — naming it as a weekday would read as a calendar the plot isn't. */
+const fmtSlot = (iso: string, last: boolean) => {
+  if (last) return "Today";
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString(undefined, { weekday: "short" });
+};
+
+/** Clean tick values, so the scale never reads 7.3 minutes. */
+function niceMax(minutes: number): number {
+  if (minutes <= 10) return 10;
+  for (const step of [15, 20, 30, 45, 60, 90, 120]) if (minutes <= step) return step;
+  return Math.ceil(minutes / 60) * 60;
+}
 
 /**
  * A smooth path through the points — monotone cubic, not a plain spline.
@@ -183,7 +203,7 @@ export function StudyChart({
   }, [series, attributedSince]);
 
   const plotH = H - TOP;
-  const max = Math.max(...series.map((d) => d.secs / 60), 10);
+  const max = niceMax(Math.max(...series.map((d) => d.secs / 60), 0));
   const step = w / (SPAN - 1);
 
   const x = (i: number) => i * step;
@@ -253,6 +273,27 @@ export function StudyChart({
               </filter>
             </defs>
 
+            {/* The scale: two hairlines, their value printed just above each
+                at the left so the lines still run edge to edge. The floor
+                needs no line — it is the card's own edge. */}
+            {hasData &&
+              [0.5, 1].map((f) => (
+                <g key={f}>
+                  <line
+                    x1={0}
+                    x2={w}
+                    y1={y(max * f)}
+                    y2={y(max * f)}
+                    stroke="var(--color-line)"
+                    strokeWidth="1"
+                    shapeRendering="crispEdges"
+                  />
+                  <text x={2} y={y(max * f) - 4} className="fill-[var(--color-placeholder)] text-[9.5px] tabular-nums">
+                    {Math.round(max * f)}m
+                  </text>
+                </g>
+              ))}
+
             {hasData && (
               <>
                 <path d={area} fill={WASH} fillOpacity="0.1" />
@@ -289,6 +330,26 @@ export function StudyChart({
                 />
               </>
             )}
+
+            {/* The days, named backwards from today along the foot. Set over
+                the wash rather than in a gutter of their own, so the plot
+                keeps its floor at the card's edge. */}
+            {hasData &&
+              series.map((d, i) => (
+                <text
+                  key={d.date}
+                  x={i === 0 ? 2 : i === SPAN - 1 ? w - 2 : x(i)}
+                  y={H - FOOT + 9}
+                  textAnchor={i === 0 ? "start" : i === SPAN - 1 ? "end" : "middle"}
+                  className={
+                    i === SPAN - 1
+                      ? "fill-[var(--color-muted)] text-[10px] font-semibold"
+                      : "fill-[var(--color-placeholder)] text-[10px]"
+                  }
+                >
+                  {fmtSlot(d.date, i === SPAN - 1)}
+                </text>
+              ))}
 
             {/* the crosshair finds the X — readers aim at a day, not a 2px line */}
             {active && (
@@ -348,7 +409,7 @@ export function StudyChart({
             pointer-events-none so the crosshair still tracks underneath. */}
         <div
           className="pointer-events-none relative flex items-start justify-between gap-3"
-          style={{ minHeight: H - 34 }}
+          style={{ minHeight: H - 40 }}
         >
           <div className="flex flex-col gap-1">
             {hasData ? (
@@ -380,34 +441,6 @@ export function StudyChart({
           </span>
         </div>
       </div>
-
-      {/* Everything the hover shows, reachable without hovering. */}
-      <details className="chart-table">
-        <summary>View as table</summary>
-        <table>
-          <thead>
-            <tr>
-              <th>Day</th>
-              <th>Time</th>
-              <th>Checkpoints</th>
-            </tr>
-          </thead>
-          <tbody>
-            {series.filter((d) => d.secs || d.checks).map((d) => (
-              <tr key={d.date}>
-                <td>{fmtDay(d.date)}</td>
-                <td className="tabular-nums">{fmtMins(d.secs)}</td>
-                <td className="tabular-nums">{d.checks}</td>
-              </tr>
-            ))}
-            {!series.some((d) => d.secs || d.checks) && (
-              <tr>
-                <td colSpan={3}>Nothing recorded in the last seven days.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </details>
     </div>
   );
 }
