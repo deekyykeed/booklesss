@@ -89,7 +89,7 @@ export function CourseCard({
           (the curve below already draws this week's minutes); the score
           praises effort as much as coverage, and its hover title shows the
           working. */}
-      <div className="relative flex items-center justify-between gap-3">
+      <div className="relative flex items-start justify-between gap-3">
         <span className="text-ink">
           <CardMark size={24} />
         </span>
