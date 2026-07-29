@@ -42,6 +42,9 @@ export function StudyClock() {
   const courseRef = useRef<string | undefined>(undefined);
   const lessonId = pathname ? lessonIdForSlug(pathname.replace(/^\/+/, "").split("/")) : null;
   courseRef.current = lessonId ? courseForNode(lessonId)?.slug : undefined;
+  /* And which step, so reading one clears its review debt. */
+  const lessonRef = useRef<string | undefined>(undefined);
+  lessonRef.current = lessonId ?? undefined;
 
   useEffect(() => {
     let last = Date.now();
@@ -58,7 +61,7 @@ export function StudyClock() {
       if (document.visibilityState !== "visible") return;
       if (now - lastActive > IDLE_MS) return;
       if (elapsed <= 0) return;
-      addStudySeconds(Math.min(Math.round(elapsed), MAX_TICK_S), courseRef.current);
+      addStudySeconds(Math.min(Math.round(elapsed), MAX_TICK_S), courseRef.current, lessonRef.current);
     };
 
     const onVisibility = () => {
