@@ -131,3 +131,52 @@ export function coursePerformance(
     weekDays,
   };
 }
+
+/**
+ * The same score for the whole library — the figure the study chart carries.
+ *
+ * It reads the day totals (`secs`, `checks`) rather than the per-course maps,
+ * which is both simpler and more honest: those totals have been recorded since
+ * the store's first version, so an overall score has no attribution gap to
+ * apologise for. No exam term — a library doesn't sit one exam.
+ */
+export function overallPerformance(
+  days: Record<string, StudyDay>,
+  done: number,
+  totalCheckpoints: number,
+): Performance {
+  const coverage = totalCheckpoints > 0 ? Math.min(1, done / totalCheckpoints) : 0;
+
+  const fortnight = studyHistory(days, 14);
+  const week = fortnight.slice(7);
+  const prevWeek = fortnight.slice(0, 7);
+
+  const weekDays = week.filter((d) => d.secs >= STUDY_DAY_MIN_SECS || d.checks > 0).length;
+  const weekChecks = week.reduce((n, d) => n + d.checks, 0);
+  const prevDays = prevWeek.filter((d) => d.secs >= STUDY_DAY_MIN_SECS || d.checks > 0).length;
+  const prevChecks = prevWeek.reduce((n, d) => n + d.checks, 0);
+
+  /* One course's worth of weekly checkpoints per active course: a reader
+   * carrying three courses is expected to move on more of them than one
+   * carrying a single course. */
+  const target = Math.max(1, DEFAULT_WEEKLY_CHECKS);
+
+  const weigh = (cov: number, con: number, vel: number) => 45 * cov + 30 * con + 25 * vel;
+
+  const score = weigh(coverage, Math.min(1, weekDays / 5), Math.min(1, weekChecks / target));
+  const coveragePrev = totalCheckpoints > 0 ? Math.min(1, Math.max(0, done - weekChecks) / totalCheckpoints) : 0;
+  const scorePrev = weigh(coveragePrev, Math.min(1, prevDays / 5), Math.min(1, prevChecks / target));
+
+  return {
+    score: Math.round(score),
+    delta: Math.round(score) - Math.round(scorePrev),
+    parts: {
+      coverage,
+      consistency: Math.min(1, weekDays / 5),
+      velocity: Math.min(1, weekChecks / target),
+      schedule: null,
+    },
+    weekChecks,
+    weekDays,
+  };
+}

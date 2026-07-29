@@ -6,7 +6,7 @@ import type { CourseMeta } from "@/lib/courses";
 import { labelFor, pathForId } from "@/lib/course";
 import { courseStreak, studyHistory, type StudyDay } from "@/lib/progress";
 import { coursePerformance } from "@/lib/performance";
-import { CardMark, StreakMark } from "./card-glyphs";
+import { CardMark, OnlineMark, StreakMark } from "./card-glyphs";
 import { Spark } from "./Spark";
 
 /* ------------------------------------------------------------------ *
@@ -96,16 +96,18 @@ export function CourseCard({
             value={hydrated ? `${time.streak}d` : "–"}
             mark={<StreakMark size={13} />}
           />
-          {/* Who's in this course right now, marked by the pulsing live dot.
-              The number is the seeded baseline plus any synced presence
-              count; hydration-gated so the server and first client paint
-              agree on "–". */}
-          <Figure
-            label="reading now"
-            value={hydrated ? `${liveBaseline(course.slug) + (live ?? 0)}` : "–"}
-            caption="online"
-            mark={<span className="live-dot" aria-hidden="true" />}
-          />
+          {/* Who's in this course right now: the pulsing live dot, the count,
+              then the raised-hand mark in place of the word. The number is
+              the seeded baseline plus any synced presence count;
+              hydration-gated so the server and first client paint agree. */}
+          <span className="flex items-center gap-1.5 text-ink-2" title="reading now">
+            <span className="live-dot" aria-hidden="true" />
+            <span className="text-[12.5px] font-medium tabular-nums text-muted">
+              {hydrated ? `${liveBaseline(course.slug) + (live ?? 0)}` : "–"}
+            </span>
+            <OnlineMark size={13} />
+            <span className="sr-only">reading now</span>
+          </span>
         </div>
       </div>
 
@@ -198,25 +200,13 @@ export function CourseCard({
   );
 }
 
-/** One figure in the header row: its mark, the number, and optionally one
- *  quiet word of context after it — for figures whose mark alone doesn't say
- *  what the number is. The full label is for screen readers and the hover. */
-function Figure({
-  label,
-  value,
-  mark,
-  caption,
-}: {
-  label: string;
-  value: string;
-  mark: React.ReactNode;
-  caption?: string;
-}) {
+/** One figure in the header row: its mark, then the number. The label is for
+ *  screen readers and the hover — sighted readers get it from the mark. */
+function Figure({ label, value, mark }: { label: string; value: string; mark: React.ReactNode }) {
   return (
     <span className="flex items-center gap-1.5 text-ink-2" title={label}>
       {mark}
       <span className="text-[12.5px] font-medium tabular-nums text-muted">{value}</span>
-      {caption && <span className="text-[11px] text-placeholder">{caption}</span>}
       <span className="sr-only">{label}</span>
     </span>
   );
