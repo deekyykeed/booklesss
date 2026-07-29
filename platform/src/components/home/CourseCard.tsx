@@ -121,6 +121,7 @@ export function CourseCard({
           <Figure
             label="reading now"
             value={hydrated ? `${liveBaseline(course.slug) + (live ?? 0)}` : "–"}
+            caption="online"
             mark={<span className="live-dot" aria-hidden="true" />}
           />
         </div>
