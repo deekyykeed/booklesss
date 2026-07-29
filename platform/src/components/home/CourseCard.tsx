@@ -114,14 +114,17 @@ export function CourseCard({
           the card's chrome, the number in the display face with its quiet
           caption. Brand green from 70 up; the working stays on hover. */}
       <div className="relative mt-auto pt-8">
-        <p className="truncate font-display text-[21px] font-semibold leading-tight tracking-[-0.01em] text-ink">
-          {course.title}
-        </p>
-        {/* The owner's sketch, compact: the number, a small raised %, and
-            tucked under the % the week's movement — trend arrow and points,
-            green climbing, red falling. */}
-        <span
-          className="mt-2 inline-flex items-center gap-1 rounded-[10px] border border-line bg-white/60 px-2 py-[3px]"
+        {/* Title and score share the one row: the title left, the chip at
+            the line's end. */}
+        <div className="flex items-center justify-between gap-3">
+          <p className="min-w-0 truncate font-display text-[21px] font-semibold leading-tight tracking-[-0.01em] text-ink">
+            {course.title}
+          </p>
+          {/* The owner's sketch, compact: the number, a small raised %, and
+              tucked under the % the week's movement — trend arrow and points,
+              green climbing, red falling. */}
+          <span
+            className="inline-flex shrink-0 items-center gap-1 rounded-[10px] border border-line bg-white/60 px-2 py-[3px]"
           title={
             time.perf
               ? `performance score, ${time.perf.delta >= 0 ? "up" : "down"} ${Math.abs(time.perf.delta)} this week — ` +
@@ -165,7 +168,8 @@ export function CourseCard({
             )}
           </span>
           <span className="sr-only">performance score</span>
-        </span>
+          </span>
+        </div>
 
         {/* What the course is about, held to two lines — the body the card
             was missing with the title standing alone. */}
