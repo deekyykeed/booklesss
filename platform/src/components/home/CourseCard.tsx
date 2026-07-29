@@ -114,10 +114,11 @@ export function CourseCard({
           the card's chrome, the number in the display face with its quiet
           caption. Brand green from 70 up; the working stays on hover. */}
       <div className="relative mt-auto pt-8">
-        {/* Title and score share the one row: the title left, the chip at
-            the line's end. */}
-        <div className="flex items-center justify-between gap-3">
-          <p className="min-w-0 truncate font-display text-[21px] font-semibold leading-tight tracking-[-0.01em] text-ink">
+        {/* Title and score share the one row: the title fills and may wrap
+            to a second line when long; the chip keeps its place at the far
+            end, hanging from the row's top, with the gap between them. */}
+        <div className="flex items-start justify-between gap-3">
+          <p className="min-w-0 flex-1 font-display text-[21px] font-semibold leading-tight tracking-[-0.01em] text-ink">
             {course.title}
           </p>
           {/* The owner's sketch, compact: the number, a small raised %, and
