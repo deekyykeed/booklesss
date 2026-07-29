@@ -2,9 +2,18 @@
 
 import { useMemo } from "react";
 import { COURSES } from "@/lib/courses";
-import { streakSeries, studyHistory, useProgress } from "@/lib/progress";
+import {
+  daysStudiedIn,
+  firstTryStats,
+  isStudyDay,
+  staleLessons,
+  studyHistory,
+  useProgress,
+  weakestLesson,
+} from "@/lib/progress";
 import { useLiveReaders } from "@/lib/presence";
 import { overallPerformance } from "@/lib/performance";
+import { labelFor } from "@/lib/course";
 import { CourseCard } from "./CourseCard";
 import { Spark } from "./Spark";
 import { StudyChart } from "./StudyChart";
@@ -32,10 +41,10 @@ import { courseTone } from "./tones";
  * Checkpoints deliberately — completion is the one thing green means across
  * this app, and a cleared checkpoint is exactly that. */
 const TONE = {
-  streak: "#eb6834",
-  time: "#2a78d6",
-  checks: "#17754d",
-  steps: "#4a3aa7",
+  days: "#eb6834",
+  accuracy: "#17754d",
+  debt: "#2a78d6",
+  weak: "#4a3aa7",
 } as const;
 
 /* Hues live in tones.ts, shared with the study chart so a course's card and
@@ -55,15 +64,6 @@ function weekFoot(cur: number, prev: number, unit?: string): { lead: string; tai
   return { lead: "0", tail: unit ? `${unit}s this week` : "this week", good: false };
 }
 
-/** Reading time, compact — "18m", "2h 40m" — so a tile's value holds one
- *  line on a phone. */
-function fmtTotal(secs: number): string {
-  const m = Math.round(secs / 60);
-  if (m < 60) return `${m}m`;
-  const h = Math.floor(m / 60);
-  return m % 60 ? `${h}h ${m % 60}m` : `${h}h`;
-}
-
 function timeGreeting(): string {
   const h = new Date().getHours();
   if (h < 5) return "Still up";
@@ -81,7 +81,8 @@ export function HomeView({
    *  is signed in. Kept as a slot so this component stays Clerk-free. */
   afterGreeting?: React.ReactNode;
 }) {
-  const { hydrated, doneCount, isComplete, streak, bestStreak, daysStudied, studiedToday, days } = useProgress();
+  const { hydrated, doneCount, isComplete, streak, daysStudied, studiedToday, days, quiz, touched, done: cleared } =
+    useProgress();
 
   /* Who's reading right now, per course — watching only, this page isn't a
    * reader. Null until presence syncs (or forever if it isn't configured),
@@ -92,23 +93,21 @@ export function HomeView({
    * records the streak reads. 14 days: last week vs the week before. */
   const spark = useMemo(() => {
     const h = studyHistory(days, 14);
-    const checksDaily = h.map((d) => d.checks);
-    const stepsDaily = h.map((d) => d.steps);
-    const minsDaily = h.map((d) => d.secs / 60);
-    const streaks = streakSeries(days, 14);
+    // Typed, not inferred: (0 | 1)[] would narrow the rolling sum's
+    // accumulator to 0 | 1 and refuse to add past one.
+    const qualifying: number[] = h.map((d) => (isStudyDay(d) ? 1 : 0));
+
+    /* A rolling seven-day count of study days, one point per day: it moves
+     * every day rather than sawtoothing at a week boundary, so the line reads
+     * as effort holding up or slipping. */
+    const daysRolling = qualifying.map((_, i) =>
+      qualifying.slice(Math.max(0, i - 6), i + 1).reduce((n, v) => n + v, 0),
+    );
 
     const sum = (a: number[]) => a.reduce((n, v) => n + v, 0);
     return {
-      checksDaily,
-      stepsDaily,
-      minsDaily,
-      streaks,
-      // This week's reading time, and the longest single sitting in it — the
-      // sacrifice the time tile praises.
-      wSecs: { cur: sum(h.slice(7).map((d) => d.secs)), prev: sum(h.slice(0, 7).map((d) => d.secs)) },
-      bestDaySecs: Math.max(0, ...h.slice(7).map((d) => d.secs)),
-      wChecks: { cur: sum(checksDaily.slice(7)), prev: sum(checksDaily.slice(0, 7)) },
-      wSteps: { cur: sum(stepsDaily.slice(7)), prev: sum(stepsDaily.slice(0, 7)) },
+      daysRolling,
+      wDays: { cur: sum(qualifying.slice(7)), prev: sum(qualifying.slice(0, 7)) },
     };
   }, [days]);
 
@@ -138,6 +137,22 @@ export function HomeView({
     () => (hydrated ? overallPerformance(days, done.checks, totals.checks) : null),
     [hydrated, days, done.checks, totals.checks],
   );
+
+  /* The four tiles' figures. Each only appears once it has been measured:
+   * quiz records and touch dates accrue from the day they shipped, so a fresh
+   * reader sees a placeholder rather than a flattering zero. */
+  const tiles = useMemo(() => {
+    if (!hydrated) return null;
+    const answered = firstTryStats(quiz);
+    const stale = staleLessons(cleared, touched);
+    return {
+      weekDays: daysStudiedIn(days, 7),
+      answered,
+      accuracy: answered.total ? Math.round((answered.first / answered.total) * 100) : null,
+      stale,
+      weakest: weakestLesson(quiz),
+    };
+  }, [hydrated, days, quiz, touched, cleared]);
 
   /* Facts, not encouragement dressed as insight. */
   const line = !hydrated
@@ -177,56 +192,72 @@ export function HomeView({
             The chart-to-tiles gap matches that gutter on phones — one grid
             rhythm for the whole band — and opens back up on desktop. */}
         <div className="mt-2 grid grid-cols-2 gap-2 lg:mt-5 lg:grid-cols-4 lg:gap-3">
+          {/* Showing up — the forgiving twin of the streak, which lives on the
+              course cards. Six days out of seven reads as six, not as broken. */}
           <Stat
             hydrated={hydrated}
-            label="Current streak"
-            value={String(streak)}
-            unit={streak === 1 ? "day" : "days"}
-            tone={TONE.streak}
-            icon={<FireGlyph />}
-            series={spark.streaks}
-            foot={{
-              lead: `Best ${bestStreak}`,
-              tail: bestStreak === 1 ? "day" : "days",
-              good: streak > 0 && streak >= bestStreak,
-            }}
+            label="Days this week"
+            value={`${tiles?.weekDays ?? 0}`}
+            unit="/ 7"
+            tone={TONE.days}
+            icon={<CalendarGlyph />}
+            series={spark.daysRolling}
+            foot={weekFoot(spark.wDays.cur, spark.wDays.prev, "day")}
           />
-          {/* Time given this week — the sacrifice tile. Lifetime days-studied
-              went with it: it only ever counted up, so it praised
-              accumulation, not this week's effort. The foot holds the longest
-              single sitting, the day that cost the most. */}
+          {/* Whether it stuck. Every checkpoint is a passed comprehension
+              check, so this is the share answered right at the first attempt —
+              the one figure here an exam would recognise. */}
           <Stat
             hydrated={hydrated}
-            label="Time this week"
-            value={spark.wSecs.cur > 0 ? fmtTotal(spark.wSecs.cur) : "0"}
-            tone={TONE.time}
-            icon={<StopwatchGlyph />}
-            series={spark.minsDaily}
-            foot={{
-              lead: `Best ${spark.bestDaySecs > 0 ? fmtTotal(spark.bestDaySecs) : "0"}`,
-              tail: "one sitting",
-              good: spark.wSecs.cur > 0 && spark.wSecs.cur >= spark.wSecs.prev,
-            }}
-          />
-          <Stat
-            hydrated={hydrated}
-            label="Checkpoints"
-            value={`${done.checks}`}
-            unit={`/ ${totals.checks}`}
-            tone={TONE.checks}
+            label="First try"
+            value={tiles && tiles.accuracy !== null ? `${tiles.accuracy}%` : "–"}
+            unit={tiles?.answered.total ? `of ${tiles.answered.total}` : undefined}
+            tone={TONE.accuracy}
             icon={<CheckGlyph />}
-            series={spark.checksDaily}
-            foot={weekFoot(spark.wChecks.cur, spark.wChecks.prev)}
+            series={[]}
+            foot={
+              tiles?.answered.total
+                ? {
+                    lead: `${tiles.answered.first} right`,
+                    tail: "first time",
+                    good: (tiles.accuracy ?? 0) >= 70,
+                  }
+                : { lead: "None", tail: "answered yet", good: false }
+            }
           />
+          {/* What is slipping away. Finished steps left alone three weeks or
+              more — the only tile that can worsen while you idle, which is
+              exactly the warning the others can't give. */}
           <Stat
             hydrated={hydrated}
-            label="Steps complete"
-            value={`${done.steps}`}
-            unit={`/ ${totals.steps}`}
-            tone={TONE.steps}
-            icon={<MedalGlyph />}
-            series={spark.stepsDaily}
-            foot={weekFoot(spark.wSteps.cur, spark.wSteps.prev, "step")}
+            label="Going stale"
+            value={`${tiles?.stale.length ?? 0}`}
+            unit={tiles?.stale.length === 1 ? "step" : "steps"}
+            tone={TONE.debt}
+            icon={<StopwatchGlyph />}
+            series={[]}
+            foot={
+              tiles?.stale.length
+                ? { lead: labelFor(tiles.stale[0].lessonId), tail: `${tiles.stale[0].days} days ago`, good: false }
+                : { lead: "Nothing", tail: "needs revisiting", good: true }
+            }
+          />
+          {/* What to fix next: the step answered worst first time. Named only
+              once a few questions have been answered there — one miss is a bad
+              day, not a weakness. */}
+          <Stat
+            hydrated={hydrated}
+            label="Weakest step"
+            value={tiles?.weakest ? `${Math.round((tiles.weakest.first / tiles.weakest.total) * 100)}%` : "–"}
+            unit={tiles?.weakest ? "first try" : undefined}
+            tone={TONE.weak}
+            icon={<TargetGlyph />}
+            series={[]}
+            foot={
+              tiles?.weakest
+                ? { lead: labelFor(tiles.weakest.lessonId), tail: "worth another pass", good: false }
+                : { lead: "Nothing", tail: "flagged yet", good: true }
+            }
           />
         </div>
       </section>
@@ -275,11 +306,12 @@ export function HomeView({
 
 const G = { width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", "aria-hidden": true, className: "shrink-0" } as const;
 
-function FireGlyph() {
+function CalendarGlyph() {
   return (
     <svg {...G}>
-      <path fill="currentColor" opacity=".5" d="M12.832 21.801c3.126-.626 7.168-2.875 7.168-8.69c0-5.291-3.873-8.815-6.658-10.434c-.619-.36-1.342.113-1.342.828v1.828c0 1.442-.606 4.074-2.29 5.169c-.86.559-1.79-.278-1.894-1.298l-.086-.838c-.1-.974-1.092-1.565-1.87-.971C4.461 8.46 3 10.33 3 13.11C3 20.221 8.289 22 10.933 22q.232 0 .484-.015c.446-.056 0 .099 1.415-.185" />
-      <path fill="currentColor" d="M8 18.444c0 2.62 2.111 3.43 3.417 3.542c.446-.056 0 .099 1.415-.185C13.871 21.434 15 20.492 15 18.444c0-1.297-.819-2.098-1.46-2.473c-.196-.115-.424.03-.441.256c-.056.718-.746 1.29-1.215.744c-.415-.482-.59-1.187-.59-1.638v-.59c0-.354-.357-.59-.663-.408C9.495 15.008 8 16.395 8 18.445" />
+      <path fill="currentColor" d="M6.94 2c.416 0 .753.324.753.724v1.46c.668-.012 1.417-.012 2.26-.012h4.015c.842 0 1.591 0 2.259.013v-1.46c0-.4.337-.725.753-.725s.753.324.753.724V4.25c1.445.111 2.394.384 3.09 1.055c.698.67.982 1.582 1.097 2.972L22 9H2v-.724c.116-1.39.4-2.302 1.097-2.972s1.645-.944 3.09-1.055V2.724c0-.4.337-.724.753-.724" />
+      <path fill="currentColor" opacity=".5" d="M22 14v-2c0-.839-.004-2.335-.017-3H2.01c-.013.665-.01 2.161-.01 3v2c0 3.771 0 5.657 1.172 6.828S6.228 22 10 22h4c3.77 0 5.656 0 6.828-1.172S22 17.772 22 14" />
+      <path fill="currentColor" d="M18 17a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0" />
     </svg>
   );
 }
@@ -303,11 +335,11 @@ function CheckGlyph() {
   );
 }
 
-function MedalGlyph() {
+function TargetGlyph() {
   return (
     <svg {...G}>
-      <path fill="currentColor" opacity=".5" d="M12.795 2h-2c-1.886 0-2.829 0-3.414.586c-.586.586-.586 1.528-.586 3.414v3.5h10V6c0-1.886 0-2.828-.586-3.414S14.681 2 12.795 2" />
-      <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d="M13.23 5.783a3 3 0 0 0-2.872 0L5.564 8.397A3 3 0 0 0 4 11.031v4.938a3 3 0 0 0 1.564 2.634l4.794 2.614a3 3 0 0 0 2.872 0l4.795-2.614a3 3 0 0 0 1.564-2.634V11.03a3 3 0 0 0-1.564-2.634zM11.794 10.5c-.284 0-.474.34-.854 1.023l-.098.176c-.108.194-.162.29-.246.354s-.19.088-.399.135l-.19.044c-.739.167-1.108.25-1.195.532c-.088.283.163.577.666 1.165l.13.152c.144.167.215.25.247.354s.022.215 0 .438l-.02.203c-.076.785-.114 1.178.116 1.352s.575.015 1.266-.303l.179-.082c.196-.09.294-.135.398-.135s.203.045.399.135l.179.082c.69.319 1.036.477 1.266.303s.192-.567.116-1.352l-.02-.203c-.022-.223-.033-.334 0-.438c.032-.103.103-.187.246-.354l.13-.152c.504-.588.755-.882.667-1.165c-.088-.282-.457-.365-1.194-.532l-.191-.044c-.21-.047-.315-.07-.399-.135c-.084-.064-.138-.16-.246-.354l-.098-.176c-.38-.682-.57-1.023-.855-1.023" />
+      <path fill="currentColor" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10" opacity=".5" />
+      <path fill="currentColor" d="M9.25 12a.75.75 0 0 1 .75-.75h1.25V10a.75.75 0 0 1 1.5 0v1.25H14a.75.75 0 0 1 0 1.5h-1.25V14a.75.75 0 0 1-1.5 0v-1.25H10a.75.75 0 0 1-.75-.75m-7.222.75a10 10 0 0 1 0-1.5H5a.75.75 0 0 1 0 1.5zm10.722 9.222a10 10 0 0 1-1.5 0V19a.75.75 0 0 1 1.5 0zm9.222-10.722a10 10 0 0 1 0 1.5H19a.75.75 0 0 1 0-1.5zM12.75 2.028V5a.75.75 0 0 1-1.5 0V2.028a10 10 0 0 1 1.5 0" />
     </svg>
   );
 }

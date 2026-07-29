@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { checkpointsFor, hasChecks, labelFor, nextLessonId, pathForId, type Check } from "@/lib/course";
-import { useProgress } from "@/lib/progress";
+import { recordCheck, useProgress } from "@/lib/progress";
 import { CompletionRing } from "./CompletionRing";
 import { CheckQuiz } from "./CheckQuiz";
 
@@ -95,7 +95,8 @@ export function Checkpoint({
         <CheckQuiz
           check={check}
           heading={heading}
-          onPass={() => {
+          onPass={(firstTry) => {
+            recordCheck(lessonId, firstTry);
             toggle(lessonId, checkpointId);
             setQuizOpen(false);
           }}

@@ -21,7 +21,8 @@ type Props = {
   check: Check;
   /** Section heading, shown as the eyebrow so the question has context. */
   heading: string;
-  onPass: () => void;
+  /** Passed the check — `firstTry` is false if it took more than one go. */
+  onPass: (firstTry: boolean) => void;
   onClose: () => void;
 };
 
@@ -201,7 +202,7 @@ export function CheckQuiz({ check, heading, onPass, onClose }: Props) {
             </button>
           )}
           {answered && result === "right" && (
-            <button type="button" onClick={onPass} className="quiz-btn-primary squircle">
+            <button type="button" onClick={() => onPass(attempts <= 1)} className="quiz-btn-primary squircle">
               Mark checkpoint done
             </button>
           )}
