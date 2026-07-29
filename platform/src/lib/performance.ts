@@ -36,6 +36,9 @@ const DEFAULT_WEEKLY_CHECKS = 4;
 export type Performance = {
   /** 0..100, rounded. */
   score: number;
+  /** Points moved since a week ago: the score minus the same score computed
+   *  with every window shifted back 7 days. Positive is climbing. */
+  delta: number;
   /** Each term 0..1; schedule is null when no exam date is set (or nothing
    *  has been read yet, so there is no runway to judge). */
   parts: { coverage: number; consistency: number; velocity: number; schedule: number | null };
@@ -58,8 +61,12 @@ export function coursePerformance(
 ): Performance {
   const coverage = totalCheckpoints > 0 ? Math.min(1, done / totalCheckpoints) : 0;
 
-  /* This week, from the same history the card's curve draws. */
-  const week = studyHistory(days, 7);
+  /* Both weeks of the same fortnight the card's curve draws: the newest 7
+   * are this week's terms, the older 7 rebuild last week's score for the
+   * delta. */
+  const fortnight = studyHistory(days, 14);
+  const week = fortnight.slice(7);
+  const prevWeek = fortnight.slice(0, 7);
   const weekDays = week.filter((d) => (d.courses?.[slug] ?? 0) >= STUDY_DAY_MIN_SECS).length;
   const weekChecks = week.reduce((n, d) => n + (d.courseChecks?.[slug] ?? 0), 0);
 
@@ -91,10 +98,36 @@ export function coursePerformance(
     }
   }
 
-  const score =
-    schedule === null
-      ? 45 * coverage + 30 * consistency + 25 * velocity
-      : 35 * coverage + 25 * consistency + 15 * velocity + 25 * schedule;
+  const weigh = (cov: number, con: number, vel: number, sch: number | null) =>
+    sch === null ? 45 * cov + 30 * con + 25 * vel : 35 * cov + 25 * con + 15 * vel + 25 * sch;
 
-  return { score: Math.round(score), parts: { coverage, consistency, velocity, schedule }, weekChecks, weekDays };
+  const score = weigh(coverage, consistency, velocity, schedule);
+
+  /* The same score as it stood a week ago: coverage rolled back by this
+   * week's cleared checkpoints, effort terms from the older week, schedule
+   * against a runway seven days shorter. courseChecks only accrues from the
+   * day it shipped, so early deltas move on effort alone rather than
+   * inventing a coverage history. */
+  const prevDays = prevWeek.filter((d) => (d.courses?.[slug] ?? 0) >= STUDY_DAY_MIN_SECS).length;
+  const prevChecks = prevWeek.reduce((n, d) => n + (d.courseChecks?.[slug] ?? 0), 0);
+  const coveragePrev = totalCheckpoints > 0 ? Math.min(1, Math.max(0, done - weekChecks) / totalCheckpoints) : 0;
+  let schedulePrev: number | null = null;
+  if (schedule !== null && exam) {
+    const first = Object.keys(days)
+      .filter((d) => (days[d].courses?.[slug] ?? 0) > 0)
+      .sort()[0]!;
+    const runway = dayUTC(exam) - dayUTC(first);
+    const gone = Math.min(Math.max(today - 7 * 86_400_000 - dayUTC(first), 0), runway);
+    const expected = runway > 0 ? gone / runway : 1;
+    schedulePrev = expected > 0 ? Math.min(1, coveragePrev / expected) : 1;
+  }
+  const scorePrev = weigh(coveragePrev, Math.min(1, prevDays / 5), Math.min(1, prevChecks / target), schedulePrev);
+
+  return {
+    score: Math.round(score),
+    delta: Math.round(score) - Math.round(scorePrev),
+    parts: { coverage, consistency, velocity, schedule },
+    weekChecks,
+    weekDays,
+  };
 }
