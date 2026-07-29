@@ -611,19 +611,97 @@
     border-radius: 14px;
     background-color: var(--color-card);
   }
-  .chart-tip {
+  /* The hovered day's card — the reference's read: the day, a movement
+     badge, then a row per series with its value flush right. Positioned
+     beside the crosshair rather than over it, so the lines stay visible. */
+  .chart-card {
     position: absolute;
-    transform: translate(-50%, -100%);
+    z-index: 5;
     pointer-events: none;
-    padding: 6px 9px;
+    min-width: 176px;
+    padding: 9px 11px;
     border: 1px solid var(--color-line);
-    border-radius: 10px;
+    border-radius: 14px;
     background-color: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    box-shadow: 0 6px 20px -6px rgba(0, 0, 0, 0.16), 0 1px 2px rgba(0, 0, 0, 0.05);
     font-size: 13px;
     line-height: 1.35;
     white-space: nowrap;
   }
+
+  /* The small tinted pill — the score in the header, the movement in the
+     card. Neutral by default; `data-good` greens it, `data-bad` reddens it. */
+  .chart-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 7px;
+    border-radius: 9999px;
+    background-color: var(--color-active);
+    color: var(--color-ink-2);
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+  .chart-badge[data-good] {
+    background-color: color-mix(in srgb, var(--color-brand) 18%, #fff);
+    color: var(--color-brand-deep);
+  }
+  .chart-badge[data-bad] {
+    background-color: color-mix(in srgb, var(--color-danger) 12%, #fff);
+    color: var(--color-danger);
+  }
+
+  /* The range chip and its menu. */
+  .chart-range {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border: 1px solid var(--color-line);
+    border-radius: 10px;
+    background-color: #fff;
+    color: var(--color-ink-2);
+    font-size: 12.5px;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .chart-range:hover {
+    border-color: var(--color-line-2);
+    color: var(--color-ink);
+  }
+  .chart-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    z-index: 20;
+    min-width: 150px;
+    padding: 4px;
+    border: 1px solid var(--color-line);
+    border-radius: 14px;
+    background-color: #fff;
+    box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.18);
+  }
+  .chart-menu button {
+    display: block;
+    width: 100%;
+    padding: 6px 9px;
+    border-radius: 10px;
+    text-align: left;
+    font-size: 12.5px;
+    color: var(--color-ink-2);
+  }
+  .chart-menu button:hover {
+    background-color: var(--color-active);
+    color: var(--color-ink);
+  }
+  .chart-menu button[data-on] {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+
   .dash-heading {
     font-family: var(--font-sans);
     font-size: 11px;
