@@ -93,7 +93,9 @@ export function HomeView({
    * records the streak reads. 14 days: last week vs the week before. */
   const spark = useMemo(() => {
     const h = studyHistory(days, 14);
-    const qualifying = h.map((d) => (isStudyDay(d) ? 1 : 0));
+    // Typed, not inferred: (0 | 1)[] would narrow the rolling sum's
+    // accumulator to 0 | 1 and refuse to add past one.
+    const qualifying: number[] = h.map((d) => (isStudyDay(d) ? 1 : 0));
 
     /* A rolling seven-day count of study days, one point per day: it moves
      * every day rather than sawtoothing at a week boundary, so the line reads
