@@ -138,8 +138,10 @@ export function CourseCard({
               : "performance score"
           }
         >
+          {/* The figure wears the title's own style — same face, same size —
+              so the line reads as one voice. */}
           <span
-            className="font-display text-[16px] font-semibold leading-none tracking-[-0.01em]"
+            className="font-display text-[21px] font-semibold leading-none tracking-[-0.01em]"
             style={{ color: time.perf && time.perf.score >= 70 ? "var(--color-brand-deep)" : "var(--color-ink)" }}
           >
             {time.perf ? time.perf.score : "–"}
