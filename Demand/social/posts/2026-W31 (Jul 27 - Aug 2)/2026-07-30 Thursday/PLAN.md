@@ -6,17 +6,23 @@
 five reminders; this file holds what goes in them.
 
 Today's ship was one thing, not five: **the home page was rebuilt around
-measuring the studying.** The chart became a rolling seven-day plot, the four
-stat tiles were rebuilt around what actually changes a decision, and the course
-card went through about fifteen layouts before landing. So these are five
-*angles* on one day's work, not five announcements — each slot has one sentence
-it has to prove, and its own shots.
+measuring the studying** — and then half of it was deleted again. The study
+chart was built, rebuilt four times and dropped; an overall score took its place
+at the top of the page; the tiles were cut down to the ones that change a
+decision; and the course card went through about fifteen layouts before landing.
+So these are five *angles* on one day's work, not five announcements — each slot
+has one sentence it has to prove, and its own shots.
 
 > **Honest note on the cadence.** One day of commits does not usually contain
-> five separate features. Slots 1–4 are each carrying a real, distinct, shipped
-> change. Slot 5 is deliberately the softest — a live count and the overall
-> score, both real but neither new today. If tomorrow ships less than this,
-> the right move is four strong posts, not five padded ones.
+> five separate features. Slots 1–4 each carry a real, distinct, shipped change.
+> Slot 5 is deliberately the softest — the live count is real but was not new
+> today. If tomorrow ships less than this, the right move is four strong posts,
+> not five padded ones.
+
+> ⚠️ **This day was captured three times.** The app shipped nine platform
+> commits *during* the run, twice invalidating a finished carousel — the second
+> time by deleting the feature the morning post was about. Pull immediately
+> before capturing, and re-read what shipped before writing copy about it.
 
 | Slot | Time (local) | Folder | Slides | What it proves |
 |------|------|-------|-------|------|
@@ -24,7 +30,7 @@ it has to prove, and its own shots.
 | ☀️ Midday | ~11:00 | `2-midday/` | 6 | three tiles, each earning its place |
 | 🌤️ Afternoon | ~15:00 | `3-afternoon/` | 6 | one card per subject, redrawn fifteen times |
 | 🌆 Evening | ~19:00 | `4-evening/` | 5 | the page you actually read on |
-| 🌙 Night | ~21:30 | `5-night/` | 5 | you're not reading alone |
+| 🌙 Night | ~21:30 | `5-night/` | 4 | you're not reading alone |
 
 **Every shot is the real app, relabelled to a neutral two-subject curriculum.**
 No course name, no school name, no course code appears in any slide or any
@@ -111,14 +117,14 @@ in the works → search CTA
 ### 🌙 Night — `5-night/` · You're not reading alone
 **Post title:** You're not reading alone
 
-**Slides:** cover → a live count on every subject → and one score over all of it
-→ in the works → search CTA
+**Slides:** cover → a live count on every subject → in the works → search CTA
+
+> **Four slides.** The overall-score shot belongs to the morning post now, and
+> reusing it here would read as padding.
 
 **Caption:**
 > Every subject shows how many people are in it right now 🛠️ — not a follower
-> count, just who's actually reading with you tonight. Over the top of all of
-> it, one score: how much you've covered, how often you turn up, and how much
-> sticks first time.
+> count, just who's actually reading with you tonight.
 > Five posts a day from here on, all of it shot from the real thing. Nothing
 > here is a mockup.
 > Search **booklesss** (three s's) on Google, or DM me "link". 👇

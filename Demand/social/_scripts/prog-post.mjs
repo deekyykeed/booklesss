@@ -307,7 +307,6 @@ const CONFIGS = {
     slides: [
       cover({ eyebrow: "Building in public", title: "You are not<br>reading alone.", sub: "Every card shows how many other people are in that subject right now." }),
       feature({ img: img("w-live.png"), shotLeft: 0, title: "A live count,<br>on every subject.", sub: "Not a follower number. Just who is actually in there with you tonight.", top: 30, fadeBot: 430 }),
-      feature({ img: img("w-score-all.png"), shotLeft: 0, title: "And one score<br>over all of it.", sub: "How much you have covered, how often you turn up, how much sticks first time.", top: 515 }),
       cover({ eyebrow: "In the works", title: "Built in public,<br>every day.", sub: "Five posts a day, all of it shot from the real thing. Nothing here is a mockup.", subTop: 1000 }),
       searchCTA(),
     ],
