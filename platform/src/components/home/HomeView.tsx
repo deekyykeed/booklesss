@@ -224,7 +224,7 @@ export function HomeView({
       {/* ---- the courses themselves ---- */}
       <section id="courses" className="mt-8 scroll-mt-20 pb-10">
         <h2 className="dash-heading">My courses</h2>
-        <div className="mt-2.5 grid grid-cols-2 gap-2 lg:gap-3">
+        <div className="mt-2.5 grid gap-3 md:grid-cols-2">
           {COURSES.map((c) => {
             const cDone = hydrated ? c.lessonIds.reduce((n, id) => n + doneCount(id), 0) : 0;
             const cSteps = hydrated ? c.lessonIds.filter((id) => isComplete(id)).length : 0;
