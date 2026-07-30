@@ -16,9 +16,10 @@ HERE  = Path(__file__).resolve().parent
 ROOT  = HERE.parent.parent.parent
 BRAND = ROOT / "_dev" / "brand"
 FONTS = ROOT / "_dev" / "fonts"
-OUT   = HERE / "Carousel_02.pdf"
 
-TOTAL = 6
+OUT_NAME = "Carousel_02.pdf"
+TOTAL    = 6
+OUT      = HERE / OUT_NAME
 
 pdfmetrics.registerFont(TTFont("Parastoo-Bold", FONTS / "Parastoo-Bold.ttf"))
 pdfmetrics.registerFont(TTFont("Parastoo",      FONTS / "Parastoo.ttf"))
@@ -31,18 +32,20 @@ MID  = (0x3D/255, 0x3D/255, 0x3D/255)
 SOFT = (0x5F/255, 0x6B/255, 0x65/255)
 RULE = (0xC8/255, 0xC2/255, 0xB5/255)
 
-W, H  = 108 * mm, 192 * mm
-PAD   = 10 * mm
+W, H   = 108 * mm, 192 * mm
+PAD    = 10 * mm
 LIVE_W = W - 2 * PAD
-TINY  =  7
-BIG   = 40
-BODY  = 28
+TINY   =  7
+BIG    = 44          # display statement
+BODY   = 18          # supporting line — small on purpose
+K_BIG  = 1.15        # display leading factor: tight, block reads as one unit
+K_BODY = 1.45        # body leading factor
 
 LIVE_TOP = H - 20 * mm
 LIVE_BOT = 16 * mm
 
 
-# ── Draw helpers (shared with _template — keep in sync) ───────────────────────
+# ── Draw helpers (do not edit) ────────────────────────────────────────────────
 
 def _bg(c, grain):
     c.setFillColorRGB(*BG)
@@ -73,17 +76,16 @@ def _label(c, text, y):
     t = c.beginText(PAD, y)
     t.setFont("Aptos-Bold", TINY); t.setFillColorRGB(*SOFT); t.setCharSpace(1.8)
     t.textLine(text.upper()); c.drawText(t)
-    return y - TINY * 1.4 - 8 * mm
 
 def _big(c, lines, y, size):
-    ld = size * 1.45
+    ld = size * K_BIG
     c.setFont("Parastoo-Bold", size); c.setFillColorRGB(*INK)
     for line in lines:
         c.drawString(PAD, y, line); y -= ld
     return y
 
 def _body(c, lines, y, size):
-    ld = size * 1.55
+    ld = size * K_BODY
     c.setFont("Parastoo", size); c.setFillColorRGB(*MID)
     for line in lines:
         if line == "": y -= ld * 0.5
@@ -98,17 +100,21 @@ def _fit(lines, font, size):
     return size if maxw <= LIVE_W else size * LIVE_W / maxw
 
 
-def slide(c, grain, logo, n, label, big=None, body=None, gap=6 * mm):
-    """Draw one slide: eyebrow label + optional big block + optional body block,
+def slide(c, grain, logo, n, label, big=None, body=None, gap=8 * mm):
+    """Draw one slide: eyebrow label + big statement + optional supporting body,
     optically centred in the live zone. Content never runs past the column."""
     big, body = big or [], body or []
     big_size  = _fit(big,  "Parastoo-Bold", BIG)
     body_size = _fit(body, "Parastoo",      BODY)
-    ld_big, ld_body = big_size * 1.45, body_size * 1.55
+    ld_big, ld_body = big_size * K_BIG, body_size * K_BODY
+
+    # Gap from label baseline to the first baseline must clear the display
+    # ascenders (Parastoo caps reach ~0.72 em above the baseline).
+    first_gap = (big_size if big else body_size) * 0.72 + 12
 
     # Visual height: label cap-top → last baseline → descender. Mirrors the
     # draw calls below; trailing leading after the last line is NOT height.
-    h = TINY * 0.7 + TINY * 1.4 + 8 * mm          # label cap + gap to first baseline
+    h = TINY * 0.7 + first_gap                     # label cap + gap to first baseline
     if big:
         h += (len(big) - 1) * ld_big
     if body:
@@ -118,10 +124,11 @@ def slide(c, grain, logo, n, label, big=None, body=None, gap=6 * mm):
     h += (body_size if body else big_size) * 0.25  # descender below last baseline
 
     spare = (LIVE_TOP - LIVE_BOT) - h
-    top   = LIVE_TOP - max(spare, 0) * 0.45        # optical centre, slightly high
+    top   = LIVE_TOP - max(spare, 0) * 0.44        # optical centre, slightly high
 
     _bg(c, grain); _chrome(c, logo, n)
-    y = _label(c, label, top - TINY * 0.7)
+    _label(c, label, top - TINY * 0.7)
+    y = top - TINY * 0.7 - first_gap
     if big:
         y = _big(c, big, y, big_size)
         if body:
@@ -131,7 +138,7 @@ def slide(c, grain, logo, n, label, big=None, body=None, gap=6 * mm):
     c.showPage()
 
 
-# ── Slides ────────────────────────────────────────────────────────────────────
+# ── SLIDES — edit below this line ─────────────────────────────────────────────
 
 def build():
     grain = ImageReader(str(BRAND / "grain.png"))                if (BRAND / "grain.png").exists()                else None
@@ -145,37 +152,29 @@ def build():
 
     # 2 / 6 — The short version
     slide(c, grain, logo, 2, "THE SHORT VERSION",
-          big=["A workspace", "for your", "course."])
+          big=["A workspace", "for your", "course."],
+          body=["Being a student is hard", "and disorganised. This isn't."])
 
     # 3 / 6 — One place
     slide(c, grain, logo, 3, "ONE PLACE",
-          body=["Everything you",
-                "need to keep up,",
-                "in one place,",
-                "",
-                "ready when",
-                "you are."])
+          big=["One place.", "Everything."],
+          body=["All your course material,", "ready when you are."])
 
     # 4 / 6 — What's inside
     slide(c, grain, logo, 4, "WHAT'S INSIDE",
-          body=["Every topic,",
-                "rebuilt as short,",
-                "readable steps.",
-                "",
-                "Dropped weekly."])
+          big=["Short,", "readable", "steps."],
+          body=["Every topic, rebuilt.", "Dropped weekly."])
 
     # 5 / 6 — Courses
     slide(c, grain, logo, 5, "COURSES",
-          body=["Three courses",
-                "live now.",
-                "",
-                "More on",
-                "the way."])
+          big=["Three live", "courses."],
+          body=["Strategic Management,", "Treasury Management,",
+                "Business Administration.", "More on the way."])
 
     # 6 / 6 — CTA
     slide(c, grain, logo, 6, "START HERE",
           big=["booklesss", ".framer.ai"],
-          body=["ZCAS · UNZA", "students."])
+          body=["ZCAS · UNZA students."])
 
     c.save()
     print(f"Built: {OUT}  ({TOTAL} slides)")
