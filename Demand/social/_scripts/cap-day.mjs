@@ -94,16 +94,24 @@ const quiz = {
   "npv-and-payback": { first: 3, total: 4 },
 };
 
-/* Thirty days of study, deterministic so a re-run redraws the same curve.
- * 0 = a day nothing was read. The last seven end on today and give the "days
- * this week" tile a 5 / 7 — good, not perfect, which is the honest shape. */
+/* Four weeks of study, deterministic so a re-run redraws the same curve.
+ * 0 = a day nothing was read.
+ *
+ * The chart plots minutes per day across a rolling seven, so a zero genuinely
+ * drops the line to the floor. Rest days are therefore kept ADJACENT rather
+ * than alternating: two days off together draw one trough, which is both what
+ * a week off actually looks like and a line you can read. Alternating them
+ * draws a comb, and a comb photographs as decoration.
+ *
+ * The last seven give the "days this week" tile 5 / 7 against the previous
+ * week's 6 — good, not perfect, which is the honest shape to show. */
 const MINUTES = [
   18, 26, 0, 31, 22, 0, 0,
   29, 35, 0, 24, 41, 14, 0,
-  33, 27, 44, 0, 19, 38, 0,
-  25, 46,
-  // this week (Thu → today)
-  26, 0, 34, 41, 0, 38, 22,
+  // last week: six days, which is what the tile compares this week against
+  27, 38, 19, 34, 0, 28, 36,
+  // this week, ending today: five days, with the weekend off
+  32, 41, 0, 0, 27, 38, 22,
 ];
 const days = {};
 for (let i = 0; i < MINUTES.length; i++) {
@@ -154,20 +162,29 @@ const prep = async () => {
   await page.evaluate(transform, { map: MAP, reader: READER, deep: true });
 };
 
-const go = async (url) => {
-  await page.goto(BASE + url, { waitUntil: "networkidle" });
-  await page.waitForTimeout(900);
+/* `networkidle` is the wrong wait against a dev server: HMR holds a socket open
+ * and a recompile mid-navigation never settles, so the run dies on a page that
+ * is in fact fine. Wait for the DOM, then for something real to be on it. */
+const go = async (url, ready = "main") => {
+  await page.goto(BASE + url, { waitUntil: "domcontentloaded", timeout: 60000 });
+  await page.waitForSelector(ready, { timeout: 60000 });
+  await page.waitForTimeout(1100);
   await prep();
 };
 
 /* Put a known element a known distance below the viewport top. Raw pixel
- * offsets break the moment the content above changes length. */
+ * offsets break the moment the content above changes length.
+ *
+ * The offsets below are large on purpose. The poster dissolves the top of every
+ * shot into the background so the headline can sit over it, so a subject
+ * photographed near the top of its crop arrives half-faded. Leaving ~160px of
+ * page above the subject is what buys it a clear landing in the frame. */
 const bring = async (sel, top = 150) => {
   await page.evaluate(
     ([s, t]) => {
       const el = document.querySelector(s);
       if (!el) throw new Error("no element for " + s);
-      window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - t });
+      window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - t, behavior: "instant" });
     },
     [sel, top],
   );
@@ -184,36 +201,70 @@ const DRAWER = { x: 0, y: 40, width: 300, height: 533 };
 /* Nothing is written without being checked first: the banned-word scan runs
  * against the exact crop about to be photographed, so a course code or a
  * school name cannot reach a post through an oversight. */
-const shot = async (name, clip) => {
-  const leaked = await page.evaluate(scan, { banned: BANNED, clip });
+const shot = async (name, clip, full = false) => {
+  await prep();
+  const leaked = await page.evaluate(scan, { banned: BANNED, clip, pageSpace: full });
   if (leaked.length) {
     throw new Error(
       `${name}: banned words inside the crop — ${leaked.join(", ")}. ` +
         `Extend MAP in neutralize.mjs, or move the crop.`,
     );
   }
-  await page.screenshot({ path: out(name), clip });
+  await page.screenshot({ path: out(name), clip, fullPage: full });
   console.log("  " + name);
 };
 
 /* A macro of one real element: measure it, then build the tightest 9:16 crop
  * that holds it. Narrower crop = larger in the frame, so `width` is the zoom
- * control. Nothing is composed — it is the app, closer. */
+ * control. Nothing is composed — it is the app, closer.
+ *
+ * The crop is taken against a FULL-PAGE screenshot, in document coordinates,
+ * not against the viewport. The dashboard is barely taller than a phone
+ * screen, so an element near its foot can never be scrolled to the top of the
+ * viewport — a viewport crop of it silently clamps and photographs whatever
+ * sits above instead, which is how three different "macros" came out as the
+ * same picture. In page space there is no such ceiling.
+ *
+ * `padTop` is how much of the crop sits above the element. */
 const macro = async (name, sel, { width = 250, padTop = 14, nth = 0 } = {}) => {
   const box = await page.evaluate(
     ([s, i]) => {
       const el = document.querySelectorAll(s)[i];
       if (!el) throw new Error("no element for " + s);
       const r = el.getBoundingClientRect();
-      return { x: r.x, y: r.y, w: r.width, h: r.height };
+      return {
+        x: r.x + window.scrollX,
+        y: r.y + window.scrollY,
+        w: r.width,
+        h: r.height,
+        docW: document.documentElement.scrollWidth,
+        docH: document.documentElement.scrollHeight,
+      };
     },
     [sel, nth],
   );
-  const w = Math.min(402, Math.max(width, 120));
-  const h = Math.round((w * 16) / 9);
-  const x = Math.max(0, Math.min(402 - w, Math.round(box.x + box.w / 2 - w / 2)));
-  const y = Math.max(0, Math.min(874 - h, Math.round(box.y - padTop)));
-  await shot(name, { x, y, width: w, height: h });
+  /* A 9:16 crop is nearly twice as tall as it is wide, so a wide crop anchored
+   * near the foot of a short page does not fit and would slide up — putting the
+   * subject in the middle of the frame with something else on top. Shrink to
+   * fit instead: the element stays where it was asked to be, and the shot just
+   * comes in closer. */
+  const room = box.docH - Math.max(0, box.y - padTop);
+  let w = Math.min(box.docW, Math.max(width, 120));
+  let h = Math.round((w * 16) / 9);
+  if (h > room) {
+    h = Math.floor(room);
+    w = Math.round((h * 9) / 16);
+    console.log(`    ${name}: ${width}px wide would overrun the page — closed in to ${w}px`);
+  }
+  /* Centre the crop on the element when it fits inside it. When the element is
+   * WIDER than the crop, align left instead: the app's text is left-aligned, so
+   * centring shaves the first letters off every line — "athematics", "esume" —
+   * which reads as a mistake rather than as a close-up. Bleeding off the right
+   * is how the eye expects a line to leave the frame. */
+  const ideal = box.w > w ? box.x - 6 : box.x + box.w / 2 - w / 2;
+  const x = Math.max(0, Math.min(box.docW - w, Math.round(ideal)));
+  const y = Math.max(0, Math.min(box.docH - h, Math.round(box.y - padTop)));
+  await shot(name, { x, y, width: w, height: h }, true);
 };
 
 console.log("capturing ->", DIR);
@@ -226,35 +277,34 @@ await shot("w-top.png", { x: 0, y: 60, width: 402, height: 715 });
 
 /* The chart card. As of today it is a rolling seven-day plot — no week pager
  * any more, it just always shows the last seven days. */
-await bring(".dash-card", 200);
+await bring(".dash-card", 320);
 await shot("w-chart.png", MID);
 
 /* Its headline: the overall score and the hours behind it, set in the same
  * face the course cards use. */
-await macro("w-score-all.png", ".dash-card .font-display", { width: 300, padTop: 34 });
+await macro("w-score-all.png", ".dash-card .font-display", { width: 300, padTop: 130 });
 
 /* The plot itself, close in, where the per-course lines and the momentum
  * curve separate. */
-await macro("w-curve.png", ".dash-card svg", { width: 340, padTop: 26 });
+await macro("w-curve.png", ".dash-card svg", { width: 340, padTop: 150 });
 
 /* The four tiles, together and one at a time. */
 await go("/");
-await bring(".dash-stat", 250);
+await bring(".dash-stat", 340);
 await shot("w-tiles.png", MID);
-await macro("w-tile-days.png", ".dash-stat", { width: 232, nth: 0 });
-await macro("w-tile-stale.png", ".dash-stat", { width: 232, nth: 2 });
+await macro("w-tile-days.png", ".dash-stat", { width: 232, nth: 0, padTop: 90 });
+await macro("w-tile-stale.png", ".dash-stat", { width: 232, nth: 2, padTop: 90 });
 
 /* The courses themselves. */
 await go("/");
-await bring("#courses", 190);
+await bring("#courses", 330);
 await shot("w-cards.png", TALL);
-await macro("w-card.png", ".course-card", { width: 372, padTop: 10 });
 /* The card's own header row — the streak and who else is reading right now. */
-await macro("w-live.png", ".course-card .live-dot", { width: 200, padTop: 60 });
+await macro("w-live.png", ".course-card .live-dot", { width: 230, padTop: 200 });
 /* The title line, where the performance score sits. */
-await macro("w-score.png", ".course-card .font-display", { width: 300, padTop: 40 });
+await macro("w-score.png", ".course-card .font-display", { width: 290, padTop: 300 });
 /* The resume button: its fill IS the progress bar, and it names the next step. */
-await macro("w-resume.png", ".course-resume", { width: 300, padTop: 76 });
+await macro("w-resume.png", ".course-resume", { width: 330, padTop: 330 });
 
 /* ---------- the reader ----------
  * Shot on the step whose body neutralize.mjs actually rewrites. The other
@@ -268,7 +318,7 @@ await page.waitForTimeout(400);
 await prep();
 await shot("w-read-top.png", TALL);
 
-await bring("#key-ideas", 210);
+await bring("#key-ideas", 340);
 await shot("w-read.png", MID);
 
 await page.evaluate(() => window.scrollTo(0, 0));

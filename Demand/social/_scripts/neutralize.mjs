@@ -184,9 +184,13 @@ export function transform({ map, reader, deep }) {
  * forgotten the way a note in a README can.
  *
  * `clip` is the same {x, y, width, height} passed to page.screenshot(), in CSS
- * pixels of the viewport. */
-export function scan({ banned, clip }) {
+ * pixels. Set `pageSpace` when the clip belongs to a full-page screenshot,
+ * whose coordinates are the document's rather than the viewport's — otherwise
+ * the check would compare two different origins and pass everything. */
+export function scan({ banned, clip, pageSpace }) {
   const seen = new Set();
+  const ox = pageSpace ? window.scrollX : 0;
+  const oy = pageSpace ? window.scrollY : 0;
   const L = clip.x, T = clip.y, R = clip.x + clip.width, B = clip.y + clip.height;
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   while (walker.nextNode()) {
@@ -197,8 +201,9 @@ export function scan({ banned, clip }) {
     if (el.closest(".sr-only,[aria-hidden='true']")) continue;
     const s = getComputedStyle(el);
     if (s.visibility === "hidden" || s.display === "none" || Number(s.opacity) === 0) continue;
-    const r = el.getBoundingClientRect();
-    if (r.width === 0 || r.height === 0) continue;
+    const b0 = el.getBoundingClientRect();
+    if (b0.width === 0 || b0.height === 0) continue;
+    const r = { left: b0.left + ox, right: b0.right + ox, top: b0.top + oy, bottom: b0.bottom + oy };
     if (r.right <= L || r.left >= R || r.bottom <= T || r.top >= B) continue; // outside the crop
     const v = node.nodeValue.toLowerCase();
     banned.forEach((b) => {

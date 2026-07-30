@@ -23,7 +23,33 @@ const img = (f) => "data:image/png;base64," + fs.readFileSync(path.join(CAP, f))
 
 const INTER = INTER_DATA();
 const FAMILJEN = FAMILJEN_DATA();
-const SAFE = { left: 88, right: 150 };
+
+/* ---------------------------------------------------------------- *
+ * THE SAFE AREA — the hard boundary every word has to live inside.
+ *
+ * The frame is 1080x1920, but the reader never sees all of it: the app
+ * draws its own furniture on top. Measured against Reels and TikTok at
+ * 9:16, the covered regions are
+ *
+ *   top     the account header and progress bars      ~ 0 -  300
+ *   right   the like / comment / share / avatar rail  ~ 880 - 1080
+ *   bottom  the caption, handle and audio strip       ~ 1400 - 1920
+ *
+ * The right rail is the one that kept catching us out: at the old
+ * 150px margin every sub-heading ran to x=930, which is underneath the
+ * share button. The text was there — it just could not be read.
+ *
+ * These margins are deliberately pessimistic. Losing 80px of line
+ * length costs a wrap; losing a sentence under a button costs the post.
+ * ---------------------------------------------------------------- */
+const SAFE = {
+  top: 300,
+  bottom: 1400, // nothing may extend past this y
+  left: 96,
+  right: 232, // margin from the right edge -> text ends at x=848
+};
+const SAFE_W = 1080 - SAFE.left - SAFE.right;
+
 const INK = "#0D0D0F", SUB = "#5F5F68", EYE = "#6C4CF0", BG = "#F6F6F9";
 
 const LOGO = (s) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none">
@@ -57,12 +83,12 @@ body{font-family:PSans,system-ui,sans-serif;position:relative;-webkit-font-smoot
    bottom ~460px, and the right button rail). The shot bleeds off the sides; it
    dissolves into the light at the top (under the headline) and at the bottom
    (leaving the caption zone clear). No card, no border. */
-.shot{position:absolute;left:-40px;z-index:1;width:1120px}
+.shot{position:absolute;z-index:1;width:1120px}
 .fade-top{position:absolute;top:0;left:0;right:0;z-index:2;background:linear-gradient(to bottom,
   ${BG} 0%, ${BG} 80%, rgba(246,246,249,0) 100%)}
 .fade-bot{position:absolute;bottom:0;left:0;right:0;z-index:2;background:linear-gradient(to top,
   ${BG} 0%, ${BG} 30%, rgba(246,246,249,0) 100%)}
-.wm{position:absolute;left:${SAFE.left}px;top:300px;display:flex;align-items:center;gap:13px;z-index:7;color:${INK}}
+.wm{position:absolute;left:${SAFE.left}px;top:${SAFE.top + 16}px;display:flex;align-items:center;gap:13px;z-index:7;color:${INK}}
 .wm span{font-size:27px;font-weight:600;letter-spacing:-.022em}
 .eyebrow{font-size:24px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:${EYE}}
 h1{font-family:PDisplay,PSans,sans-serif;font-weight:500;letter-spacing:-.035em;color:${INK}}
@@ -73,9 +99,9 @@ const wordmark = `<div class="wm">${LOGO(32)}<span>Bklsss</span></div>`;
 
 // text-only slide (cover / closer) — sits on the brand gradient
 const cover = (o) => ({ bg: "gradient", html: `<div class="layer">
-  <div class="eyebrow" style="position:absolute;left:${SAFE.left}px;top:560px">${o.eyebrow}</div>
-  <h1 style="position:absolute;left:${SAFE.left}px;top:612px;font-size:118px;line-height:.98">${o.title}</h1>
-  <p class="sub" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right + 8}px;top:${o.subTop || 1040}px;font-size:38px;line-height:1.42">${o.sub}</p>
+  <div class="eyebrow safe" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:560px">${o.eyebrow}</div>
+  <h1 class="safe" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:612px;font-size:${o.size || 104}px;line-height:1.0">${o.title}</h1>
+  <p class="sub safe" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:${o.subTop || 1010}px;font-size:38px;line-height:1.42">${o.sub}</p>
 </div>` });
 
 // app shot lifted into the safe zone, dissolving at top (under the headline) and
@@ -86,28 +112,37 @@ const cover = (o) => ({ bg: "gradient", html: `<div class="layer">
 // what is in it: a composer is one small object and can sit in the middle, but a
 // seven-row table is 800px tall and the default fades eat its last rows. Widen
 // the window for those, and keep the default where the focal UI is compact.
+/* `shotLeft` is how far the shot hangs off the left edge. The frame is 1080 and
+ * the shot is 1120, so the default -40 bleeds it equally either side — right for
+ * a whole-screen shot, where the edges are chrome nobody needs.
+ *
+ * It has to be 0 for a tight macro. Those crops are already framed to the pixel
+ * by the capture script, and a further 40px shaved off the left takes the first
+ * letter of every line with it — which is what turned "first-year" into
+ * "irst-year" in an otherwise finished slide. */
 const feature = (o) => ({
   bg: "shot",
   img: o.img,
   top: o.top ?? -520,
+  shotLeft: o.shotLeft ?? -40,
   fadeTop: o.fadeTop ?? 1000,
   fadeBot: o.fadeBot ?? 560,
   html: `<div class="layer">
-  <h1 style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:${o.h1 || 360}px;font-size:${o.size || 106}px;line-height:1.0">${o.title}</h1>
-  <p class="sub" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right + 8}px;top:${o.subTop || 660}px;font-size:${o.subSize || 39}px;line-height:1.4">${o.sub || ""}</p>
+  <h1 class="safe" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:${o.h1 || 360}px;font-size:${o.size || 96}px;line-height:1.02">${o.title}</h1>
+  <p class="sub safe" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:${o.subTop || 640}px;font-size:${o.subSize || 39}px;line-height:1.4">${o.sub || ""}</p>
 </div>`,
 });
 
 // closing Google search CTA — DM (never comment), trimmed, bigger sub
 const searchCTA = () => ({ bg: "gradient", html: `<div class="layer">
-  <h1 style="position:absolute;left:${SAFE.left}px;top:470px;font-size:104px;line-height:.98">Search<br>booklesss.</h1>
-  <p class="sub" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:770px;font-size:38px;line-height:1.35">Three s&rsquo;s. We&rsquo;re the first result on Google.</p>
-  <div style="position:absolute;left:${SAFE.left}px;right:${SAFE.left}px;top:895px;height:132px;background:#fff;border:1px solid #e6e6ea;border-radius:66px;box-shadow:0 2px 4px rgba(20,20,40,.05),0 18px 40px -14px rgba(20,20,50,.22);display:flex;align-items:center;gap:28px;padding:0 44px">
+  <h1 class="safe" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:470px;font-size:100px;line-height:1.0">Search<br>booklesss.</h1>
+  <p class="sub safe" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:760px;font-size:38px;line-height:1.35">Three s&rsquo;s. We&rsquo;re the first result on Google.</p>
+  <div class="safe" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:890px;height:132px;background:#fff;border:1px solid #e6e6ea;border-radius:66px;box-shadow:0 2px 4px rgba(20,20,40,.05),0 18px 40px -14px rgba(20,20,50,.22);display:flex;align-items:center;gap:24px;padding:0 40px">
     <span style="display:flex;flex-shrink:0">${GOOGLE_G}</span>
-    <span style="font-size:47px;color:#3c4043;letter-spacing:-.01em">bookle<b style="font-weight:800;color:#202124">sss</b><span style="display:inline-block;width:3px;height:46px;background:#4285F4;margin-left:4px;vertical-align:-8px"></span></span>
+    <span style="font-size:46px;color:#3c4043;letter-spacing:-.01em">bookle<b style="font-weight:800;color:#202124">sss</b><span style="display:inline-block;width:3px;height:45px;background:#4285F4;margin-left:4px;vertical-align:-8px"></span></span>
     <span style="margin-left:auto;display:flex;flex-shrink:0">${LENS}</span>
   </div>
-  <p class="sub" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:1110px;font-size:40px;line-height:1.35;color:${INK}">Or DM me <b>&ldquo;link&rdquo;</b>. &#128071;</p>
+  <p class="sub safe" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:1100px;font-size:40px;line-height:1.35;color:${INK}">Or DM me <b>&ldquo;link&rdquo;</b>. &#128071;</p>
 </div>` });
 
 /* ---- posts ----
@@ -193,6 +228,84 @@ const CONFIGS = {
       searchCTA(),
     ],
   }),
+
+  /* ------------------------------------------------------------------ *
+   * 2026-07-30 — five slots.
+   *
+   * One day of commits, five posts. The day's shipping was all one thing —
+   * the home page rebuilt around measuring the studying — so these are five
+   * ANGLES on it, not five announcements. Each slot has one sentence it is
+   * trying to prove, and its own shots; where a slot had nothing new to show
+   * it gets a written slide instead of a recycled crop.
+   *
+   * Not one of them names a course or a school. The screenshots carry a
+   * neutral two-subject curriculum (see neutralize.mjs) and the copy stays on
+   * the product, because Booklesss is not one syllabus.
+   * ------------------------------------------------------------------ */
+
+  /* 1 — the chart. */
+  "w-chart": () => ({
+    slot: "1-morning",
+    slides: [
+      cover({ eyebrow: "Building in public", title: "Your week,<br>as one line.", sub: "We rebuilt the home page around one question: how much did you actually read?" }),
+      feature({ img: img("w-chart.png"), title: "Seven days,<br>always rolling.", sub: "It ends on today and keeps moving. Nothing resets on a Monday.", top: 555 }),
+      feature({ img: img("w-curve.png"), shotLeft: 0, title: "Each subject<br>gets its own line.", sub: "The dark line is everything together. The lighter ones are what it is made of.", top: 506, fadeBot: 470 }),
+      cover({ eyebrow: "How it counts", title: "Only while<br>you&rsquo;re reading.", sub: "Tab hidden, or nothing moves for a minute, and the clock stops. It would rather undercount than flatter you.", subTop: 980 }),
+      searchCTA(),
+    ],
+  }),
+
+  /* 2 — the four tiles. */
+  "w-tiles": () => ({
+    slot: "2-midday",
+    slides: [
+      cover({ eyebrow: "Building in public", title: "Four numbers,<br>chosen carefully.", sub: "We threw out the old dashboard tiles. These four are the ones that change what you do next." }),
+      feature({ img: img("w-tiles.png"), title: "The whole week,<br>at a glance.", sub: "Days read, answers right first time, what is going stale, and where you are weakest.", top: 500, fadeBot: 440 }),
+      feature({ img: img("w-tile-days.png"), shotLeft: 0, title: "Compared to<br>last week.", sub: "Not a lonely number &mdash; every tile says which way it moved.", top: 566 }),
+      feature({ img: img("w-tile-stale.png"), shotLeft: 0, title: "It tells you<br>what is slipping.", sub: "Steps you finished a while ago and have not looked at since.", top: 566 }),
+      cover({ eyebrow: "In the works", title: "Fewer numbers,<br>not more.", sub: "A dashboard earns a tile by changing a decision. Everything else came off.", subTop: 1000 }),
+      searchCTA(),
+    ],
+  }),
+
+  /* 3 — the course card, which took the whole day and about fifteen attempts. */
+  "w-card": () => ({
+    slot: "3-afternoon",
+    slides: [
+      cover({ eyebrow: "Building in public", title: "One card<br>per subject.", sub: "We redesigned this card about fifteen times today. Here is where it landed." }),
+      feature({ img: img("w-cards.png"), title: "Everything you<br>are studying.", sub: "Side by side, each with how far you have actually got.", top: 515, fadeBot: 440 }),
+      feature({ img: img("w-score.png"), shotLeft: 0, title: "The score sits<br>on the title line.", sub: "No badge, no container. It reads as part of the name.", top: -160, fadeBot: 430 }),
+      feature({ img: img("w-resume.png"), shotLeft: 0, title: "The button is<br>the progress bar.", sub: "Its fill is how far in you are, and it names the exact step you stopped on.", top: -120, fadeBot: 430 }),
+      cover({ eyebrow: "What it took", title: "Seven designs,<br>all binned.", sub: "We built them, looked at them, threw them out, and drew the whole thing again by hand.", subTop: 990 }),
+      searchCTA(),
+    ],
+  }),
+
+  /* 4 — the reading page itself. */
+  "w-read": () => ({
+    slot: "4-evening",
+    slides: [
+      cover({ eyebrow: "Building in public", title: "The part you<br>actually read.", sub: "All the measuring is in service of one thing: the page in front of you." }),
+      feature({ img: img("w-read.png"), title: "Plain English,<br>short sections.", sub: "The big idea first, then the details. Nothing padded to fill a page.", top: 500, fadeBot: 430 }),
+      feature({ img: img("w-nav.png"), title: "Everything,<br>one tap away.", sub: "The whole subject in a list, with a ring on each step showing what you have cleared.", top: 300, fadeBot: 430 }),
+      cover({ eyebrow: "In the works", title: "More of it,<br>every week.", sub: "We&rsquo;re building Booklesss in the open. Follow along.", subTop: 1010 }),
+      searchCTA(),
+    ],
+  }),
+
+  /* 5 — the closer. Deliberately the least feature-y of the five: a day this
+   * uniform cannot carry five product announcements, so the last slot is about
+   * how the thing is built rather than what was added. */
+  "w-live": () => ({
+    slot: "5-night",
+    slides: [
+      cover({ eyebrow: "Building in public", title: "You are not<br>reading alone.", sub: "Every card shows how many other people are in that subject right now." }),
+      feature({ img: img("w-live.png"), shotLeft: 0, title: "A live count,<br>on every subject.", sub: "Not a follower number. Just who is actually in there with you tonight.", top: 30, fadeBot: 430 }),
+      feature({ img: img("w-score-all.png"), shotLeft: 0, title: "And one score<br>over all of it.", sub: "How much you have covered, how often you turn up, how much sticks first time.", top: 515 }),
+      cover({ eyebrow: "In the works", title: "Built in public,<br>every day.", sub: "Five posts a day, all of it shot from the real thing. Nothing here is a mockup.", subTop: 1000 }),
+      searchCTA(),
+    ],
+  }),
 };
 
 const cfg = CONFIGS[POST]?.();
@@ -208,7 +321,7 @@ for (let i = 0; i < cfg.slides.length; i++) {
   const s = cfg.slides[i];
   const base =
     s.bg === "shot"
-      ? `<img class="shot" src="${s.img}" style="top:${s.top}px">
+      ? `<img class="shot" src="${s.img}" style="top:${s.top}px;left:${s.shotLeft}px">
          <div class="fade-top" style="height:${s.fadeTop}px"></div>
          <div class="fade-bot" style="height:${s.fadeBot}px"></div>`
       : `<div class="gradient"></div>`;
@@ -216,6 +329,41 @@ for (let i = 0; i < cfg.slides.length; i++) {
   await page.setContent(html, { waitUntil: "load" });
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(200);
+
+  /* The safe area is checked, not trusted. Every `.safe` block is measured
+   * after layout — after the real font has loaded and the text has wrapped —
+   * and anything crossing the boundary fails the render instead of being
+   * written out. A margin in a stylesheet only describes where a box starts;
+   * this is what catches the third line that wrapped into the caption, or the
+   * long word that pushed a heading under the share button. */
+  const over = await page.evaluate((safe) => {
+    const bad = [];
+    document.querySelectorAll(".safe").forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      const txt = (el.textContent || "").trim().replace(/\s+/g, " ").slice(0, 46);
+      const push = (edge, by) => bad.push(`${edge} by ${Math.ceil(by)}px — "${txt}"`);
+      if (r.top < safe.top) push("above the top", safe.top - r.top);
+      if (r.bottom > safe.bottom) push("below the bottom", r.bottom - safe.bottom);
+      if (r.left < safe.left) push("past the left", safe.left - r.left);
+      if (r.right > 1080 - safe.right) push("under the right rail", r.right - (1080 - safe.right));
+      /* The box is constrained by `left`/`right`, so ordinary text wraps inside
+       * it and the rect alone would report everything as fine. Content wider
+       * than its own box is text with no wrap point — one long word, a URL —
+       * spilling out over the rail while the box stays put. */
+      if (el.scrollWidth > el.clientWidth + 1) push("overflowing its box", el.scrollWidth - el.clientWidth);
+    });
+    return bad;
+  }, SAFE);
+
+  if (over.length) {
+    throw new Error(
+      `slide ${i + 1} of "${POST}" breaks the safe area:\n  ` +
+        over.join("\n  ") +
+        `\nShorten the line, drop the font size, or move it up — do not widen the safe area.`,
+    );
+  }
+
   await page.screenshot({ path: path.join(OUT, `${String(i + 1).padStart(2, "0")}.png`) });
 }
 await browser.close();
