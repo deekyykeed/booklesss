@@ -18,6 +18,7 @@ import { useFollow } from "./useFollow";
 import { courseForNode } from "@/lib/courses";
 import { useProgress } from "@/lib/progress";
 import { CompletionRing } from "./CompletionRing";
+import { MynaIcon } from "@/components/icons/myna";
 
 const STEP = 18;
 const RAIL = 2;
@@ -100,27 +101,23 @@ const setResizeHint = (on: boolean) =>
 // useLayoutEffect on the client, useEffect on the server (avoids SSR warning).
 const useIso = typeof document !== "undefined" ? useLayoutEffect : useEffect;
 
+/* One glyph, rotated rather than swapped for a second one, so the arrow turns
+ * as the group opens instead of cutting to a different mark. */
 function Chevron({ open, active }: { open: boolean; active?: boolean }) {
-  // Streamline · Mingcute Line · "Down Small Line"
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
+    <MynaIcon
+      name="chevron-down"
+      size={18}
       className={
         "shrink-0 transition-transform duration-200 " +
         (active ? "text-ink " : "step-dim ") +
         (open ? "" : "-rotate-90")
-      }>
-      <path d="M8.465 10.293a1 1 0 0 1 1.414 0L12 12.414l2.121 -2.121a1 1 0 0 1 1.415 1.414l-2.829 2.829a1 1 0 0 1 -1.414 0l-2.828 -2.829a1 1 0 0 1 0 -1.414Z" />
-    </svg>
+      }
+    />
   );
 }
 function PanelIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="3" y="4" width="18" height="16" rx="2.5" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M9 4v16" stroke="currentColor" strokeWidth="1.6" />
-      <path d="m13.5 9.5 2.5 2.5-2.5 2.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
+  return <MynaIcon name="sidebar" size={18} />;
 }
 
 /* Measured-height expand/collapse — animates from 0 to the content's real
@@ -187,19 +184,10 @@ type Ctx = {
 
 /* Solar · Line · "Widget" — the four-panel grid, i.e. the dashboard glyph.
  * Inlined rather than resolved through <Icon>, which would pull the whole
- * ~7,400-icon Solar set into this client bundle for one path (same reason as
- * the chevron and panel glyphs below). Kept byte-identical to the set. */
+ * the same glyph the home rail marks Dashboard with, so the way out of a course
+ * looks the same from either side. */
 function DashboardGlyph() {
-  return (
-    <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" className="shrink-0">
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        d="M2.5 6.5c0-1.886 0-2.828.586-3.414S4.614 2.5 6.5 2.5s2.828 0 3.414.586s.586 1.528.586 3.414s0 2.828-.586 3.414s-1.528.586-3.414.586s-2.828 0-3.414-.586S2.5 8.386 2.5 6.5Zm11 11c0-1.886 0-2.828.586-3.414s1.528-.586 3.414-.586s2.828 0 3.414.586s.586 1.528.586 3.414s0 2.828-.586 3.414s-1.528.586-3.414.586s-2.828 0-3.414-.586s-.586-1.528-.586-3.414Zm-11 0c0-1.886 0-2.828.586-3.414S4.614 13.5 6.5 13.5s2.828 0 3.414.586s.586 1.528.586 3.414s0 2.828-.586 3.414s-1.528.586-3.414.586s-2.828 0-3.414-.586S2.5 19.386 2.5 17.5Zm11-11c0-1.886 0-2.828.586-3.414S15.614 2.5 17.5 2.5s2.828 0 3.414.586s.586 1.528.586 3.414s0 2.828-.586 3.414s-1.528.586-3.414.586s-2.828 0-3.414-.586S13.5 8.386 13.5 6.5Z"
-      />
-    </svg>
-  );
+  return <MynaIcon name="layout-dashboard" size={17} className="shrink-0" />;
 }
 
 /* Per-step completion, at the end of its row. Always rendered so the row width

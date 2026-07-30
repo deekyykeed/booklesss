@@ -1,4 +1,4 @@
-import { Icon } from "@/lib/icon";
+import { MynaIcon } from "@/components/icons/myna";
 
 const CARD_SHADOW =
   "0 0.6px 0.6px -1.25px rgba(0,0,0,0.14), 0 2.3px 2.3px -2.5px rgba(0,0,0,0.12), 0 10px 10px -3.75px rgba(0,0,0,0.05)";
@@ -26,7 +26,7 @@ export function Card({
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-1.5">
           <h3 className="whitespace-nowrap text-sm font-semibold text-card-label">{title}</h3>
-          <Icon name="info-circle-linear" size={14} className="shrink-0 text-card-dim" />
+          <MynaIcon name="info-circle" size={14} className="shrink-0 text-card-dim" />
         </div>
         {action}
       </div>

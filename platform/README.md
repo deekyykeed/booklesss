@@ -8,7 +8,7 @@ Recreated pixel-faithfully from the Framer source on a hand-tuned, static-first 
 - **Next.js 16** (App Router, React Server Components) — every route prerendered as static HTML
 - **Tailwind CSS v4** — design tokens measured from the Framer project
 - **`next/font`** — self-hosted **Inter** (UI) + **Familjen Grotesk** (headings), zero CLS
-- **Solar Bold + Solar Line** icons (`@iconify-json/solar`) inlined as SVG on the server — no icon font, no client JS, no per-icon network request
+- **MynaUI Line + Solid** icons (`@iconify-json/mynaui`) inlined as SVG at generation time — no icon font, no client JS, no per-icon network request
 - Client JS only where interaction demands it: the ⌘K command palette and the collapsible docs sidebar
 
 ## Routes
@@ -202,8 +202,11 @@ src/
     course.ts          nav tree, routing index, checkpoint helpers
     progress.ts[x]     checkpoint store (localStorage)
     clerk.ts           clerkEnabled flag + auth URLs
-    icon.tsx           server-only Solar SVG renderer — <Icon name="magnifer-linear" />
+  components/
+    icons/myna.tsx     generated MynaUI set — <MynaIcon name="search" />, see scripts/gen-icons.mjs
 ```
 
-Design tokens live in `src/app/globals.css` (`@theme`). Icons: use `-linear` for Solar Line,
-`-bold` for Solar Bold.
+Design tokens live in `src/app/globals.css` (`@theme`). Icons: plain name for MynaUI Line,
+`-solid` for its filled twin. Adding one is a name in `scripts/gen-icons.mjs` plus
+`npm run gen:icons` — the set itself is never imported at runtime, so nothing icon-shaped
+reaches the browser beyond the paths actually drawn.

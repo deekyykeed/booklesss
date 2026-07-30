@@ -10,6 +10,7 @@ import {
   useState,
 } from "react";
 import type { Section } from "@/lib/course";
+import { MynaIcon } from "@/components/icons/myna";
 
 /* Reader shell state, shared by both sidebars, the header's hamburger, and the
  * tap-to-close scrim. It owns three things:
@@ -284,20 +285,7 @@ export function MobileNavProvider({
   );
 }
 
-/* Solar · Broken · "Hamburger Menu" — inlined (not via <Icon>) so the whole
- * Solar JSON stays out of the client bundle. */
-function HamburgerBroken({ size = 16 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M4 7h3m13 0h-9m9 10h-3M4 17h9m-9-5h16"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
+
 
 /* Sits where the logo lockup does on desktop; opens the left (course) drawer.
  * Mobile only. */
@@ -312,13 +300,14 @@ export function MobileMenuButton() {
       aria-expanded={open}
       className="-ml-2 grid h-8 w-8 place-items-center rounded-lg text-ink transition-colors hover:bg-active md:hidden"
     >
-      <HamburgerBroken />
+      <MynaIcon name="menu" size={16} />
     </button>
   );
 }
 
-/* Solar · Broken · "Notebook" style — opens the right (step context) drawer.
- * Mobile only; sits in the header's right cluster. */
+/* Opens the right (step context) drawer — the panel glyph, mirroring the
+ * collapse control the same panel wears on desktop. Mobile only; sits in the
+ * header's right cluster. */
 export function MobileContextButton() {
   const { toggleRight, side, hasRightPanel } = useReaderShell();
   const open = side === "right";
@@ -332,11 +321,7 @@ export function MobileContextButton() {
       aria-expanded={open}
       className="grid h-8 w-8 place-items-center rounded-lg text-ink transition-colors hover:bg-active xl:hidden"
     >
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M4 6h11m-11 6h11m-11 6h7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx="19" cy="7.5" r="2" stroke="currentColor" strokeWidth="1.5" />
-        <path d="M19 12.5v5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
+      <MynaIcon name="sidebar" size={18} />
     </button>
   );
 }

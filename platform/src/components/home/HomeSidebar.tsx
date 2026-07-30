@@ -1,4 +1,4 @@
-import { Icon } from "@/lib/icon";
+import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
 import { SLACK_INVITE_URL } from "@/lib/links";
 import { HomeNavLink } from "./HomeNavLink";
 import { SlackMark } from "./SlackMark";
@@ -7,10 +7,10 @@ import { SlackMark } from "./SlackMark";
  * the same app, not a separate marketing shell — but it lists places rather
  * than steps.
  *
- * A SERVER component on purpose: <Icon> resolves Solar on the server and
- * inlines the SVG, so none of the ~7,400-icon set reaches the browser. Only
- * the links themselves are a client island (HomeNavLink), because tapping one
- * has to close the mobile drawer.
+ * Icons are MynaUI, inlined from the generated set (components/icons/myna) —
+ * so nothing icon-shaped is fetched at runtime. Only the links themselves are a
+ * client island (HomeNavLink), because tapping one has to close the mobile
+ * drawer.
  *
  * Destinations with no href are drawn as they will be and marked "Soon"
  * instead of being wired to a 404 — showing the shape is useful, pretending
@@ -21,15 +21,15 @@ type Item = {
   label: string;
   href?: string;
   external?: boolean;
-  /** Solar base name — the variant is picked by state, see glyphFor. */
-  solar?: string;
-  /** Brand marks aren't in Solar at all (see SlackMark). */
+  /** MynaUI base name — the variant is picked by state, see glyphFor. */
+  icon?: MynaIconName;
+  /** Brand marks aren't in MynaUI at all (see SlackMark). */
   brand?: React.ReactNode;
 };
 
 const ITEMS: Item[] = [
-  { id: "dashboard", label: "Dashboard", href: "/", solar: "widget" },
-  { id: "courses", label: "My courses", href: "/#courses", solar: "square-academic-cap" },
+  { id: "dashboard", label: "Dashboard", href: "/", icon: "layout-dashboard" },
+  { id: "courses", label: "My courses", href: "/#courses", icon: "book-open" },
   {
     id: "community",
     label: "Community",
@@ -38,18 +38,19 @@ const ITEMS: Item[] = [
     external: true,
     brand: <SlackMark size={17} />,
   },
-  { id: "exams", label: "Exams", solar: "clipboard-check" },
-  { id: "events", label: "Upcoming", solar: "calendar-minimalistic" },
-  { id: "settings", label: "Settings", solar: "settings-minimalistic" },
+  { id: "exams", label: "Exams", icon: "clipboard" },
+  { id: "events", label: "Upcoming", icon: "calendar" },
+  { id: "settings", label: "Settings", icon: "cog" },
 ];
 
-/* Line at rest, solid Bold once the row is the current page — the same two
- * weights the icon rail speaks, so the whole sidebar has one system: line or
- * bold, nothing in between. */
+/* Line at rest, solid once the row is the current page — MynaUI ships both
+ * weights of each glyph, so the whole rail has one system: line or solid,
+ * nothing in between. */
 function glyphFor(item: Item, active: boolean) {
   if (item.brand) return item.brand;
-  if (!item.solar) return null;
-  return <Icon name={`${item.solar}-${active ? "bold" : "linear"}`} size={17} />;
+  if (!item.icon) return null;
+  const name = (active ? `${item.icon}-solid` : item.icon) as MynaIconName;
+  return <MynaIcon name={name} size={17} />;
 }
 
 export function HomeSidebar({ active = "dashboard" }: { active?: string }) {

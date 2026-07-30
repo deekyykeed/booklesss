@@ -604,26 +604,6 @@
     color: var(--color-placeholder);
   }
 
-  /* Chart chrome. The card is the chart's surface — the validator checked the
-     line against this colour, so it can't be swapped for a tint without
-     re-running it. */
-  .chart-frame {
-    border-radius: 14px;
-    background-color: var(--color-card);
-  }
-  .chart-tip {
-    position: absolute;
-    transform: translate(-50%, -100%);
-    pointer-events: none;
-    padding: 6px 9px;
-    border: 1px solid var(--color-line);
-    border-radius: 10px;
-    background-color: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-    font-size: 13px;
-    line-height: 1.35;
-    white-space: nowrap;
-  }
   .dash-heading {
     font-family: var(--font-sans);
     font-size: 11px;
@@ -631,15 +611,6 @@
     text-transform: uppercase;
     letter-spacing: 0.09em;
     color: var(--color-muted);
-  }
-  .dash-card {
-    padding: 18px;
-    border: 1px solid var(--color-line);
-    /* Matches .dash-stat, so the tiles and the cards under them read as one
-       set rather than two radii sitting next to each other. */
-    border-radius: 28px;
-    background-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 1px 1px -0.5px rgba(0, 0, 0, 0.05);
   }
   /* The course cards: one step up from the tiles' 28 — the courses are the
      page's headline cards, and the extra radius says so. relative + hidden
@@ -739,8 +710,8 @@
   .dash-stat-value {
     font-family: var(--font-display);
     /* Proportional figures, not tabular: at display size tabular-nums gives
-       every digit the width of a 0 and "21" reads loose. Columns of numbers
-       still get tabular — see the chart's table view. */
+       every digit the width of a 0 and "21" reads loose. Columns of figures
+       still get tabular — see the reader's tables. */
     font-size: 30px;
     font-weight: 500;
     line-height: 1;

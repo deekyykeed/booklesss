@@ -9,6 +9,18 @@ import { useProgress } from "@/lib/progress";
 import { CompletionRing } from "./CompletionRing";
 import { checkpointsFor } from "@/lib/course";
 
+/* The AI tutor is not connected. There is no model, no endpoint — the composer
+ * only ever echoed your own turns back as bubbles, and the voice orb reacts to
+ * your microphone and nothing else. So the whole layer is off: a student who
+ * types a question into it and gets nothing back learns that the app is broken,
+ * which is a worse first impression than the panel simply not offering it.
+ *
+ * Everything else in this panel is real and stays — "on this page" and the
+ * step's checkpoint ring both read live state. Turning the tutor back on is
+ * this one flag: the composer, the thread and the voice glow are all built and
+ * gated on it, waiting for a backend to answer. */
+const AI_TUTOR_ENABLED = false;
+
 /* ---- geometry, mirroring the left sidebar's resize model ---- */
 const RIGHTBAR_MIN = 240;
 const RIGHTBAR_MAX = 480;
@@ -652,24 +664,26 @@ export function RightPanel() {
           </button>
         </div>
 
-        {/* Scroll area: the TOC up top, then your chat turns (the AI answer
-            surface will grow here once wired). */}
+        {/* Scroll area: the TOC, and — once the tutor is wired — your chat
+            turns beneath it. */}
         <div ref={scrollRef} className="no-scrollbar flex-1 overflow-y-auto px-3 pb-4">
           {sections && sections.length > 0 ? (
             <TableOfContents sections={sections} lessonId={lessonId} />
           ) : (
             <p className="px-1 pt-1 text-[13px] text-placeholder">No sections</p>
           )}
-          <ChatThread messages={messages} />
+          {AI_TUTOR_ENABLED && <ChatThread messages={messages} />}
         </div>
 
-        <ChatComposer
-          value={draft}
-          onChange={setDraft}
-          onSubmit={sendMessage}
-          voiceOn={voiceOn}
-          onToggleVoice={() => setVoiceOn((v) => !v)}
-        />
+        {AI_TUTOR_ENABLED && (
+          <ChatComposer
+            value={draft}
+            onChange={setDraft}
+            onSubmit={sendMessage}
+            voiceOn={voiceOn}
+            onToggleVoice={() => setVoiceOn((v) => !v)}
+          />
+        )}
       </aside>
     </>
   );
