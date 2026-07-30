@@ -6,19 +6,20 @@ import { rate, useProgress, type Grasp } from "@/lib/progress";
 import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
 import { CompletionRing } from "./CompletionRing";
 
-/* The five answers, best first — a signal ramp of five bars down to one, each
- * a proper labelled button: the bar on the left, its word beside it. The icon
- * carries the scale at a glance, the label removes the ambiguity.
+/* The five answers, best first — a confidence ramp that reads by meaning, not
+ * by an abstract bar count: a tick for understood, a smile for nearly, a
+ * half-circle for the middle, a frown for struggling, a cross for not yet. Each
+ * is a proper labelled button, the icon beside its word.
  *
  * Hues run green to red across the ramp, evenly stepped, each dark enough to
  * hold at 5.2:1 or better on the content surface. Green is completion, the
  * same thing it means everywhere else here. */
 const ANSWERS: { id: Grasp; label: string; icon: MynaIconName; tone: string }[] = [
-  { id: "got", label: "Got it", icon: "mobile-signal-five", tone: "#17754d" },
-  { id: "mostly", label: "Mostly", icon: "mobile-signal-four", tone: "#4d7326" },
-  { id: "half", label: "Half", icon: "mobile-signal-three", tone: "#7a6a1c" },
-  { id: "barely", label: "Barely", icon: "mobile-signal-two", tone: "#a3512b" },
-  { id: "not", label: "Not yet", icon: "mobile-signal-one", tone: "#a33b31" },
+  { id: "got", label: "Got it", icon: "check-circle", tone: "#17754d" },
+  { id: "mostly", label: "Mostly", icon: "smile", tone: "#4d7326" },
+  { id: "half", label: "Half", icon: "circle-half", tone: "#7a6a1c" },
+  { id: "barely", label: "Barely", icon: "sad", tone: "#a3512b" },
+  { id: "not", label: "Not yet", icon: "x-circle", tone: "#a33b31" },
 ];
 
 /* End-of-section checkpoint — a scale rather than a tick.
