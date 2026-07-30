@@ -153,10 +153,10 @@ export function HomeView({
             hydrated={hydrated}
             label="Overall score"
             /* A dash until something has been cleared, like the tiles beside
-               it: a confident 0 out of 100 reads as a mark awarded, when in
-               fact nothing has been measured yet. */
-            value={perf && done.checks > 0 ? `${perf.score}` : "–"}
-            unit={perf && done.checks > 0 ? "/ 100" : undefined}
+               it: a confident 0% reads as a mark awarded, when in fact nothing
+               has been measured yet. No "/ 100" — the % says the scale, and
+               the tile's own footer moves it in percentage points. */
+            value={perf && done.checks > 0 ? `${perf.score}%` : "–"}
             tone={TONE.score}
             icon={<MynaIcon name="chart-bar-increasing" size={20} className="shrink-0" />}
             series={[]}
@@ -224,7 +224,7 @@ export function HomeView({
       {/* ---- the courses themselves ---- */}
       <section id="courses" className="mt-8 scroll-mt-20 pb-10">
         <h2 className="dash-heading">My courses</h2>
-        <div className="mt-2.5 grid grid-cols-2 gap-2 lg:gap-3">
+        <div className="mt-2.5 grid gap-3 md:grid-cols-2">
           {COURSES.map((c) => {
             const cDone = hydrated ? c.lessonIds.reduce((n, id) => n + doneCount(id), 0) : 0;
             const cSteps = hydrated ? c.lessonIds.filter((id) => isComplete(id)).length : 0;

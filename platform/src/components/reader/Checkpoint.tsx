@@ -6,25 +6,33 @@ import { rate, useProgress, type Grasp } from "@/lib/progress";
 import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
 import { CompletionRing } from "./CompletionRing";
 
-/* The three answers, in the order they're offered: best first, so the common
- * case is the shortest reach. Each carries its own hue — green is completion,
- * as everywhere else in this app; amber is the hedge; red is the honest miss.
- * All three are dark enough to read as 12.5px text on the page (5.2:1 or
- * better against the content surface). */
+/* The five answers, best first — a signal ramp of five bars down to one, so
+ * the row reads as a scale without a word of instruction. The label is what a
+ * hover and a screen reader get; on the page the bars carry it.
+ *
+ * Hues run green to red across the ramp, evenly stepped, each dark enough to
+ * hold at 5.2:1 or better on the content surface. Green is completion, the
+ * same thing it means everywhere else here. */
 const ANSWERS: { id: Grasp; label: string; icon: MynaIconName; tone: string }[] = [
-  { id: "got", label: "Got it", icon: "check-circle", tone: "#17754d" },
-  { id: "almost", label: "Almost", icon: "question-circle", tone: "#96601f" },
-  { id: "not", label: "Not yet", icon: "x-circle", tone: "#a33b31" },
+  { id: "got", label: "Got it", icon: "mobile-signal-five", tone: "#17754d" },
+  { id: "mostly", label: "Mostly", icon: "mobile-signal-four", tone: "#4d7326" },
+  { id: "half", label: "Half of it", icon: "mobile-signal-three", tone: "#7a6a1c" },
+  { id: "barely", label: "Barely", icon: "mobile-signal-two", tone: "#a3512b" },
+  { id: "not", label: "Not yet", icon: "mobile-signal-one", tone: "#a33b31" },
 ];
 
-/* End-of-section checkpoint — now a question rather than a tick.
+/* End-of-section checkpoint — a scale rather than a tick.
  *
  * "Mark as done" only ever asked whether the reader had scrolled past. Asking
- * whether the section landed costs the same one tap and returns something the
- * dashboard can actually use: which steps are understood and which need
- * another pass. Any of the three answers clears the checkpoint (see rate() —
+ * how much of the section landed costs the same one tap and returns something
+ * the dashboard can use: which steps are understood and which need another
+ * pass. Any of the five answers clears the checkpoint (see rate() —
  * withholding progress from an honest "Not yet" would just teach everyone to
- * press "Got it"); pressing the answer you already gave takes it back. */
+ * press the top of the scale); pressing the answer you already gave takes it
+ * back.
+ *
+ * No prompt text: five ordered bars at the end of a section read as a rating
+ * without being told, the way a star row does. */
 export function Checkpoint({
   lessonId,
   checkpointId,
@@ -43,8 +51,12 @@ export function Checkpoint({
   return (
     <div className="checkpoint-row">
       <span className="checkpoint-rule" aria-hidden="true" />
-      <div className="grasp-group" role="group" aria-label={`Did "${heading}" land?`} data-answered={chosen ?? undefined}>
-        <span className="grasp-ask">{chosen ? "You said" : "Did that land?"}</span>
+      <div
+        className="grasp-group"
+        role="radiogroup"
+        aria-label={`How much of "${heading}" landed?`}
+        data-answered={chosen ?? undefined}
+      >
         {ANSWERS.map((a) => {
           const active = chosen === a.id;
           return (
@@ -55,20 +67,22 @@ export function Checkpoint({
                  second-press-undoes rule the tick had, so an answer stays the
                  reader's to correct. */
               onClick={() => (active ? toggle(lessonId, checkpointId) : rate(lessonId, checkpointId, a.id))}
-              aria-pressed={active}
+              role="radio"
+              aria-checked={active}
+              aria-label={a.label}
+              title={a.label}
               data-active={active ? "" : undefined}
               className="grasp-btn squircle"
               style={{ "--grasp-tone": a.tone } as React.CSSProperties}
             >
-              <MynaIcon name={active ? (`${a.icon}-solid` as MynaIconName) : a.icon} size={16} />
-              <span>{a.label}</span>
+              <MynaIcon name={active ? (`${a.icon}-solid` as MynaIconName) : a.icon} size={18} />
             </button>
           );
         })}
       </div>
-      {/* Marked done some other way (the step's "Mark all done"), so there is
+      {/* Marked done some other way (the step's "Mark rest done"), so there is
           no answer to show as pressed — say what happened rather than leaving
-          three untouched buttons under a finished section. */}
+          five untouched buttons under a finished section. */}
       {done && !chosen && <span className="grasp-plain">Done</span>}
     </div>
   );
