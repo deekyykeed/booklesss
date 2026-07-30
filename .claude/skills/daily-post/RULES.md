@@ -57,6 +57,17 @@ has wrapped — and throws with the offending line if anything crosses.
 - A margin in a stylesheet only says where a box *starts*. The check is what
   catches the third line that wrapped into the caption zone.
 
+**A shot slide has a second boundary.** The safe area only knows the frame's
+edges; on a `feature()` slide the text must also clear the point where the top
+fade stops being solid and the screenshot starts showing through — `0.8 ×
+fadeTop`. Cross it and the copy lands on top of the app's own words, both
+perfectly inside the safe area and unreadable. This is checked too, and it has
+caught overlaps of 4px that were invisible until you looked for them.
+
+When it fires, either shorten the sub by a line or raise `fadeTop`. Raising it
+hides a little more of the shot; that is usually the cheaper trade, unless the
+copy grew a line it did not need.
+
 ---
 
 ## Cadence

@@ -243,13 +243,18 @@ const CONFIGS = {
    * the product, because Booklesss is not one syllabus.
    * ------------------------------------------------------------------ */
 
-  /* 1 — the chart. */
+  /* 1 — the chart.
+   *
+   * Four slides, not five. The chart card is ~820px tall in frame and there is
+   * only one crop of it worth showing; a second angle on the same card would be
+   * the same picture with a different caption. */
   "w-chart": () => ({
     slot: "1-morning",
     slides: [
       cover({ eyebrow: "Building in public", title: "Your week,<br>as one line.", sub: "We rebuilt the home page around one question: how much did you actually read?" }),
-      feature({ img: img("w-chart.png"), title: "Seven days,<br>always rolling.", sub: "It ends on today and keeps moving. Nothing resets on a Monday.", top: 555 }),
-      feature({ img: img("w-curve.png"), shotLeft: 0, title: "Each subject<br>gets its own line.", sub: "The dark line is everything together. The lighter ones are what it is made of.", top: 506, fadeBot: 470 }),
+      /* Framed so the plot, the weekday axis and the legend sit in the clear
+       * window; the card's own title dissolves into the headline above it. */
+      feature({ img: img("w-curve.png"), shotLeft: 0, title: "A week of<br>real minutes.", sub: "Every subject drawn under the total, plus a dashed projection.", top: 238, fadeTop: 980, fadeBot: 340 }),
       cover({ eyebrow: "How it counts", title: "Only while<br>you&rsquo;re reading.", sub: "Tab hidden, or nothing moves for a minute, and the clock stops. It would rather undercount than flatter you.", subTop: 980 }),
       searchCTA(),
     ],
@@ -260,7 +265,7 @@ const CONFIGS = {
     slot: "2-midday",
     slides: [
       cover({ eyebrow: "Building in public", title: "Four numbers,<br>chosen carefully.", sub: "We threw out the old dashboard tiles. These four are the ones that change what you do next." }),
-      feature({ img: img("w-tiles.png"), title: "The whole week,<br>at a glance.", sub: "Days read, answers right first time, what is going stale, and where you are weakest.", top: 500, fadeBot: 440 }),
+      feature({ img: img("w-tiles.png"), title: "The whole week,<br>at a glance.", sub: "Days read, answers right first time, what is going stale, and where you are weakest.", top: 500, fadeTop: 1020, fadeBot: 440 }),
       feature({ img: img("w-tile-days.png"), shotLeft: 0, title: "Compared to<br>last week.", sub: "Not a lonely number &mdash; every tile says which way it moved.", top: 566 }),
       feature({ img: img("w-tile-stale.png"), shotLeft: 0, title: "It tells you<br>what is slipping.", sub: "Steps you finished a while ago and have not looked at since.", top: 566 }),
       cover({ eyebrow: "In the works", title: "Fewer numbers,<br>not more.", sub: "A dashboard earns a tile by changing a decision. Everything else came off.", subTop: 1000 }),
@@ -287,7 +292,7 @@ const CONFIGS = {
     slides: [
       cover({ eyebrow: "Building in public", title: "The part you<br>actually read.", sub: "All the measuring is in service of one thing: the page in front of you." }),
       feature({ img: img("w-read.png"), title: "Plain English,<br>short sections.", sub: "The big idea first, then the details. Nothing padded to fill a page.", top: 500, fadeBot: 430 }),
-      feature({ img: img("w-nav.png"), title: "Everything,<br>one tap away.", sub: "The whole subject in a list, with a ring on each step showing what you have cleared.", top: 300, fadeBot: 430 }),
+      feature({ img: img("w-nav.png"), title: "Everything,<br>one tap away.", sub: "The whole subject in a list, with a ring on each step showing what you have cleared.", top: 300, fadeTop: 1020, fadeBot: 430 }),
       cover({ eyebrow: "In the works", title: "More of it,<br>every week.", sub: "We&rsquo;re building Booklesss in the open. Follow along.", subTop: 1010 }),
       searchCTA(),
     ],
@@ -362,6 +367,33 @@ for (let i = 0; i < cfg.slides.length; i++) {
         over.join("\n  ") +
         `\nShorten the line, drop the font size, or move it up — do not widen the safe area.`,
     );
+  }
+
+  /* The safe area only knows the frame's edges. On a shot slide there is a
+   * second boundary: the point where the top fade stops being solid and the
+   * screenshot starts showing through. Text crossing it lands on top of the
+   * app's own words — which is how a sub-heading ended up sitting across a
+   * card's title, both perfectly inside the safe area and unreadable. */
+  if (s.bg === "shot") {
+    const solidTo = Math.round(s.fadeTop * 0.8);
+    const clash = await page.evaluate((limit) => {
+      const bad = [];
+      document.querySelectorAll(".safe").forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.height && r.bottom > limit)
+          bad.push(
+            `${Math.ceil(r.bottom - limit)}px into the shot — "${(el.textContent || "").trim().replace(/\s+/g, " ").slice(0, 46)}"`,
+          );
+      });
+      return bad;
+    }, solidTo);
+    if (clash.length) {
+      throw new Error(
+        `slide ${i + 1} of "${POST}" runs text over the screenshot (solid until ${solidTo}px):\n  ` +
+          clash.join("\n  ") +
+          `\nShorten the sub, or raise fadeTop so the shot stays covered behind it.`,
+      );
+    }
   }
 
   await page.screenshot({ path: path.join(OUT, `${String(i + 1).padStart(2, "0")}.png`) });

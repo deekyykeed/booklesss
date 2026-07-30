@@ -20,7 +20,7 @@ it has to prove, and its own shots.
 
 | Slot | Time (local) | Folder | Slides | What it proves |
 |------|------|-------|-------|------|
-| 🌅 Morning | ~07:00 | `1-morning/` | 5 | the chart is a rolling seven days, not a calendar week |
+| 🌅 Morning | ~07:00 | `1-morning/` | 4 | the chart shows real minutes, per subject, with a projection |
 | ☀️ Midday | ~11:00 | `2-midday/` | 6 | four tiles, each earning its place |
 | 🌤️ Afternoon | ~15:00 | `3-afternoon/` | 6 | one card per subject, redrawn fifteen times |
 | 🌆 Evening | ~19:00 | `4-evening/` | 5 | the page you actually read on |
@@ -37,14 +37,18 @@ banned word in it.
 ### 🌅 Morning — `1-morning/` · Your week, as one line
 **Post title:** Your week, as one line
 
-**Slides:** cover → seven days, always rolling → each subject gets its own line
-→ *how it counts* (no screenshot — the accrual rule is the feature) → search CTA
+**Slides:** cover → a week of real minutes → *how it counts* (no screenshot —
+the accrual rule is the feature) → search CTA
+
+> **Four slides, not five.** The chart card is ~820px tall in frame and there is
+> only one crop of it worth showing — a second angle would be the same picture
+> with a different caption.
 
 **Caption:**
-> Building in public 🛠️ — the study chart is now a rolling seven days. It ends
-> on today and keeps moving, so nothing resets on a Monday and the line never
-> restarts at a week boundary. Underneath the total, every subject gets its own
-> line. And the clock is deliberately strict: hide the tab or stop moving for a
+> Building in public 🛠️ — the study chart shows what you actually read, in
+> minutes, day by day. Every subject gets its own line under the total, and the
+> dashed one is momentum: where the week is heading if you carry on like this.
+> The clock behind it is deliberately strict — hide the tab or stop moving for a
 > minute and it stops counting. It would rather undercount than flatter you.
 > Search **booklesss** (three s's) on Google, or DM me "link". 👇
 > #buildinpublic #edtech #studytok #zambia

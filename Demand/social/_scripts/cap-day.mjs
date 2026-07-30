@@ -284,9 +284,11 @@ await shot("w-chart.png", MID);
  * face the course cards use. */
 await macro("w-score-all.png", ".dash-card .font-display", { width: 300, padTop: 130 });
 
-/* The plot itself, close in, where the per-course lines and the momentum
- * curve separate. */
-await macro("w-curve.png", ".dash-card svg", { width: 340, padTop: 150 });
+/* The card itself, closer in — the plot with its weekday axis and the legend
+ * that names the momentum projection. Aimed at the card, not at its <svg>:
+ * the chart was rebuilt today and the first svg inside it is no longer the
+ * plot, so a selector pointing at the drawing silently reframed itself. */
+await macro("w-curve.png", ".dash-card", { width: 372, padTop: 150 });
 
 /* The four tiles, together and one at a time. */
 await go("/");
