@@ -6,17 +6,18 @@ import { rate, useProgress, type Grasp } from "@/lib/progress";
 import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
 import { CompletionRing } from "./CompletionRing";
 
-/* The three answers, best first — meaning icons, not abstract marks: a tick
- * for understood, a half-circle for partly, a cross for not yet. Each is a
- * proper labelled button, the icon beside its word.
+/* The three answers, worst to best left-to-right so the thumbs-up lands on
+ * the right where the eye finishes: a thumbs-down for not yet, a half-circle
+ * for partly, a thumbs-up for understood. Each is a proper labelled button,
+ * the icon beside its word.
  *
- * Green to amber to red, each dark enough to hold at 5.2:1 or better on the
+ * Red to amber to green, each dark enough to hold at 5.2:1 or better on the
  * content surface. Green is completion, the same thing it means everywhere
  * else here. */
 const ANSWERS: { id: Grasp; label: string; icon: MynaIconName; tone: string }[] = [
-  { id: "got", label: "Got it", icon: "check-circle", tone: "#17754d" },
+  { id: "not", label: "Not yet", icon: "dislike", tone: "#a33b31" },
   { id: "almost", label: "Almost", icon: "circle-half", tone: "#96601f" },
-  { id: "not", label: "Not yet", icon: "x-circle", tone: "#a33b31" },
+  { id: "got", label: "Got it", icon: "like", tone: "#17754d" },
 ];
 
 /* End-of-section checkpoint — a scale rather than a tick.

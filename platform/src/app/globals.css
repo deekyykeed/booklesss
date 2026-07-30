@@ -802,11 +802,12 @@
   .checkpoint-row {
     margin-top: 20px;
   }
-  /* The three buttons in a row, left-aligned under the text; they wrap on a
-     narrow phone rather than squeezing. */
+  /* The three buttons in a row, aligned to the right edge of the reading
+     column; they wrap on a narrow phone rather than squeezing. */
   .grasp-group {
     display: flex;
     flex-wrap: wrap;
+    justify-content: flex-end;
     gap: 6px;
   }
   /* A proper labelled button: the signal bar on the left, its word beside it,

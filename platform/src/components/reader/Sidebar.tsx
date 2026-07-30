@@ -583,7 +583,6 @@ export function Sidebar() {
           <DashboardGlyph />
           <span className="min-w-0 flex-1 truncate">Dashboard</span>
         </Link>
-        <div className="mx-2 mt-2 h-px bg-line" />
       </div>
 
       <nav className="no-scrollbar flex-1 overflow-y-auto p-2">
