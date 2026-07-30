@@ -3,8 +3,6 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import type { Lesson } from "@/lib/course";
-import { courseForNode } from "@/lib/courses";
-import { useLiveReaders } from "@/lib/presence";
 import { LessonView } from "./LessonView";
 import { useReaderShell } from "./MobileNav";
 import { scrollToSection } from "@/lib/scroll-to-section";
@@ -16,10 +14,6 @@ import { scrollToSection } from "@/lib/scroll-to-section";
 export function LessonReader({ lesson, lessonId }: { lesson: Lesson; lessonId: string }) {
   const { setLesson } = useReaderShell();
   const pathname = usePathname();
-
-  // Announce this tab as a live reader of the lesson's course — the home
-  // page's course cards count these. No-op when presence isn't configured.
-  useLiveReaders(courseForNode(lessonId)?.slug ?? null);
 
   // Publish this lesson's id + sections for the right panel's TOC, scroll-spy
   // and progress ring.

@@ -9,9 +9,8 @@
  * this client bundle. Regenerate from the package rather than editing paths.
  *
  * "Fire" captions the streak figure; the score is set as a bare display
- * number and the live figure carries the animated .live-dot, so neither
- * needs a glyph. The card's own mark, top-left, is the "Folder". All take
- * currentColor.
+ * number, so it needs no glyph. The card's own mark, top-left, is the
+ * "Folder". All take currentColor.
  * ------------------------------------------------------------------ */
 
 type Props = { size?: number; className?: string };
@@ -54,22 +53,6 @@ export function TrendDownMark({ size = 16, className }: Props) {
         strokeWidth="1.5"
         d="m20 17l-5.846-5.938c-1.964-1.983-4.106 2.148-6.153.001L4 7m9 10h7v-7"
       />
-    </svg>
-  );
-}
-
-/* "User Hand Up" — the raised hand of someone present, at the
- * owner's pick; it captions the live count beside the pulsing dot. */
-export function OnlineMark({ size = 16, className }: Props) {
-  return (
-    <svg {...box(size, className)}>
-      <g fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path
-          strokeLinecap="round"
-          d="M8 13h8m-8 0v5c0 1.886 0 2.828.586 3.414S10.114 22 12 22s2.828 0 3.414-.586S16 19.886 16 18v-5m-8 0a7.46 7.46 0 0 1-5.618-5.472L2 6m14 7c1.71 0 3.15 1.28 3.35 2.98L20 21.5"
-        />
-        <circle cx="12" cy="6" r="4" />
-      </g>
     </svg>
   );
 }

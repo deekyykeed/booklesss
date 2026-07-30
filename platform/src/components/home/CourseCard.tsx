@@ -6,7 +6,7 @@ import type { CourseMeta } from "@/lib/courses";
 import { labelFor, pathForId } from "@/lib/course";
 import { courseStreak, studyHistory, type StudyDay } from "@/lib/progress";
 import { coursePerformance } from "@/lib/performance";
-import { CardMark, OnlineMark, StreakMark } from "./card-glyphs";
+import { CardMark, StreakMark } from "./card-glyphs";
 import { Spark } from "./Spark";
 
 /* ------------------------------------------------------------------ *
@@ -23,18 +23,6 @@ import { Spark } from "./Spark";
  * one.
  * ------------------------------------------------------------------ */
 
-/** The live figure's floor, at the owner's call: a seeded baseline so the
- *  room never reads empty while the platform is small. Seeded from the course
- *  and the hour, so it differs per course and drifts through the day the way
- *  a real room would; any actual presence count is added on top. */
-function liveBaseline(slug: string): number {
-  const s = `${slug}:${Math.floor(Date.now() / 3_600_000)}`;
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
-  return 2 + (Math.abs(h) % 7);
-}
-
-
 export function CourseCard({
   course,
   tone,
@@ -45,9 +33,6 @@ export function CourseCard({
   steps,
   /** The step the button resumes — where they left off, or the first one. */
   next,
-  /** Readers in this course right now, or null when presence hasn't synced
-   *  (or isn't configured) — null shows the figure's "–" placeholder. */
-  live,
 }: {
   course: CourseMeta;
   tone: string;
@@ -56,7 +41,6 @@ export function CourseCard({
   done: number;
   steps: number;
   next: string;
-  live: number | null;
 }) {
   const pct = course.totalCheckpoints ? done / course.totalCheckpoints : 0;
 
@@ -84,10 +68,9 @@ export function CourseCard({
           half. Same component, same defaults, so the two read as one set. */}
       <Spark series={time.series} tone={tone} />
 
-      {/* The card's mark, then the small figures under it — a portrait
-          header rather than a wide one, so two cards can stand side by side on
-          a phone without the figures colliding with the mark. The score lives
-          on the title line below. */}
+      {/* The card's mark, then the streak under it — a portrait header rather
+          than a wide one, so two cards can stand side by side on a phone. The
+          score lives on the title line below. */}
       <div className="relative flex flex-col gap-3">
         <span className="text-ink">
           <CardMark size={24} />
@@ -98,18 +81,6 @@ export function CourseCard({
             value={hydrated ? `${time.streak}d` : "–"}
             mark={<StreakMark size={13} />}
           />
-          {/* Who's in this course right now: the pulsing live dot, the count,
-              then the raised-hand mark in place of the word. The number is
-              the seeded baseline plus any synced presence count;
-              hydration-gated so the server and first client paint agree. */}
-          <span className="flex items-center gap-1.5 text-ink-2" title="reading now">
-            <span className="live-dot" aria-hidden="true" />
-            <span className="text-[12.5px] font-medium tabular-nums text-muted">
-              {hydrated ? `${liveBaseline(course.slug) + (live ?? 0)}` : "–"}
-            </span>
-            <OnlineMark size={13} />
-            <span className="sr-only">reading now</span>
-          </span>
         </div>
       </div>
 

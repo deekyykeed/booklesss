@@ -5,7 +5,6 @@ import { COURSES } from "@/lib/courses";
 import { graspStats, staleLessons, useProgress, weakestLesson } from "@/lib/progress";
 import { overallPerformance, type Performance } from "@/lib/performance";
 import { MynaIcon } from "@/components/icons/myna";
-import { useLiveReaders } from "@/lib/presence";
 import { labelFor } from "@/lib/course";
 import { CourseCard } from "./CourseCard";
 import { Spark } from "./Spark";
@@ -70,11 +69,6 @@ export function HomeView({
 }) {
   const { hydrated, doneCount, isComplete, streak, daysStudied, studiedToday, days, grasp, touched, done: cleared } =
     useProgress();
-
-  /* Who's reading right now, per course — watching only, this page isn't a
-   * reader. Null until presence syncs (or forever if it isn't configured),
-   * and the cards show nothing rather than a number nobody measured. */
-  const live = useLiveReaders(null);
 
   const totals = useMemo(() => {
     const lessons = COURSES.flatMap((c) => c.lessonIds);
@@ -249,7 +243,6 @@ export function HomeView({
                 done={cDone}
                 steps={cSteps}
                 next={next}
-                live={live ? (live[c.slug] ?? 0) : null}
               />
             );
           })}
