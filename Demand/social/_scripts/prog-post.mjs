@@ -243,19 +243,20 @@ const CONFIGS = {
    * the product, because Booklesss is not one syllabus.
    * ------------------------------------------------------------------ */
 
-  /* 1 — the chart.
+  /* 1 — the chart we deleted.
    *
-   * Four slides, not five. The chart card is ~820px tall in frame and there is
-   * only one crop of it worth showing; a second angle on the same card would be
-   * the same picture with a different caption. */
+   * This slot was built twice. The first version was a tour of the study chart;
+   * between capturing it and rendering it the chart was rebuilt, then reverted,
+   * then dropped from the page altogether. Rather than post a tour of a screen
+   * that no longer exists, the deletion became the story — which is the more
+   * honest build-in-public post anyway. */
   "w-chart": () => ({
     slot: "1-morning",
     slides: [
-      cover({ eyebrow: "Building in public", title: "Your week,<br>as one line.", sub: "We rebuilt the home page around one question: how much did you actually read?" }),
-      /* Framed so the plot, the weekday axis and the legend sit in the clear
-       * window; the card's own title dissolves into the headline above it. */
-      feature({ img: img("w-curve.png"), shotLeft: 0, title: "A week of<br>real minutes.", sub: "Every subject drawn under the total, plus a dashed projection.", top: 238, fadeTop: 980, fadeBot: 340 }),
-      cover({ eyebrow: "How it counts", title: "Only while<br>you&rsquo;re reading.", sub: "Tab hidden, or nothing moves for a minute, and the clock stops. It would rather undercount than flatter you.", subTop: 980 }),
+      cover({ eyebrow: "Building in public", title: "We deleted<br>the chart.", sub: "Built it, rebuilt it four times, then took it off the page completely. Today, in one day." }),
+      feature({ img: img("w-score-all.png"), shotLeft: 0, title: "One number<br>took its place.", sub: "Out of 100, with how far it moved on last week.", top: 566 }),
+      feature({ img: img("w-tiles.png"), title: "And it leads<br>the page now.", sub: "The first thing you see is where you stand, not a graph you have to read.", top: 500, fadeTop: 1020, fadeBot: 440 }),
+      cover({ eyebrow: "What we learnt", title: "A chart is not<br>an answer.", sub: "It looked impressive and told you nothing you could act on. A score you can compare to last week does more work than seven days of lines.", subTop: 960 }),
       searchCTA(),
     ],
   }),
@@ -264,10 +265,10 @@ const CONFIGS = {
   "w-tiles": () => ({
     slot: "2-midday",
     slides: [
-      cover({ eyebrow: "Building in public", title: "Four numbers,<br>chosen carefully.", sub: "We threw out the old dashboard tiles. These four are the ones that change what you do next." }),
-      feature({ img: img("w-tiles.png"), title: "The whole week,<br>at a glance.", sub: "Days read, answers right first time, what is going stale, and where you are weakest.", top: 500, fadeTop: 1020, fadeBot: 440 }),
-      feature({ img: img("w-tile-days.png"), shotLeft: 0, title: "Compared to<br>last week.", sub: "Not a lonely number &mdash; every tile says which way it moved.", top: 566 }),
-      feature({ img: img("w-tile-stale.png"), shotLeft: 0, title: "It tells you<br>what is slipping.", sub: "Steps you finished a while ago and have not looked at since.", top: 566 }),
+      cover({ eyebrow: "Building in public", title: "Three numbers,<br>that earn it.", sub: "A tile has to earn its place by changing what you do next. Three that did." }),
+      feature({ img: img("w-tile-first.png"), shotLeft: 0, title: "How much<br>sticks first time.", sub: "Not how many you got right eventually. How many you got right first try.", top: 566 }),
+      feature({ img: img("w-tile-stale.png"), shotLeft: 0, title: "What is<br>slipping away.", sub: "Steps you finished a while ago and have not looked at since.", top: 566 }),
+      feature({ img: img("w-tile-weak.png"), shotLeft: 0, title: "And the one<br>to go back to.", sub: "It names your weakest step, so the next move is never a guess.", top: 566 }),
       cover({ eyebrow: "In the works", title: "Fewer numbers,<br>not more.", sub: "A dashboard earns a tile by changing a decision. Everything else came off.", subTop: 1000 }),
       searchCTA(),
     ],

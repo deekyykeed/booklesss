@@ -20,8 +20,8 @@ it has to prove, and its own shots.
 
 | Slot | Time (local) | Folder | Slides | What it proves |
 |------|------|-------|-------|------|
-| 🌅 Morning | ~07:00 | `1-morning/` | 4 | the chart shows real minutes, per subject, with a projection |
-| ☀️ Midday | ~11:00 | `2-midday/` | 6 | four tiles, each earning its place |
+| 🌅 Morning | ~07:00 | `1-morning/` | 5 | the chart got built, rebuilt, then deleted |
+| ☀️ Midday | ~11:00 | `2-midday/` | 6 | three tiles, each earning its place |
 | 🌤️ Afternoon | ~15:00 | `3-afternoon/` | 6 | one card per subject, redrawn fifteen times |
 | 🌆 Evening | ~19:00 | `4-evening/` | 5 | the page you actually read on |
 | 🌙 Night | ~21:30 | `5-night/` | 5 | you're not reading alone |
@@ -34,39 +34,42 @@ banned word in it.
 
 ---
 
-### 🌅 Morning — `1-morning/` · Your week, as one line
-**Post title:** Your week, as one line
+### 🌅 Morning — `1-morning/` · We deleted the chart
+**Post title:** We deleted the chart
 
-**Slides:** cover → a week of real minutes → *how it counts* (no screenshot —
-the accrual rule is the feature) → search CTA
+**Slides:** cover → one number took its place → and it leads the page now →
+*what we learnt* → search CTA
 
-> **Four slides, not five.** The chart card is ~820px tall in frame and there is
-> only one crop of it worth showing — a second angle would be the same picture
-> with a different caption.
+> **This slot was built twice.** The first version was a tour of the study
+> chart. Between capturing it and rendering it, the chart was rebuilt, reverted,
+> and then dropped from the page entirely — so the tour would have been of a
+> screen that no longer exists. The deletion became the story instead, which is
+> the more honest build-in-public post anyway.
 
 **Caption:**
-> Building in public 🛠️ — the study chart shows what you actually read, in
-> minutes, day by day. Every subject gets its own line under the total, and the
-> dashed one is momentum: where the week is heading if you carry on like this.
-> The clock behind it is deliberately strict — hide the tab or stop moving for a
-> minute and it stops counting. It would rather undercount than flatter you.
+> We deleted the chart 🛠️ — built it, rebuilt it four times, and took it off
+> the page completely. All in one day.
+> It looked impressive and told you nothing you could act on. What replaced it
+> is one number out of 100, with how far it moved on last week, sitting at the
+> top of the page where the graph used to be.
+> Shipping is mostly deciding what not to keep.
 > Search **booklesss** (three s's) on Google, or DM me "link". 👇
-> #buildinpublic #edtech #studytok #zambia
+> #buildinpublic #designinpublic #edtech #studytok #zambia
 
 ---
 
-### ☀️ Midday — `2-midday/` · Four numbers, chosen carefully
-**Post title:** Four numbers, chosen carefully
+### ☀️ Midday — `2-midday/` · Three numbers that earn it
+**Post title:** Three numbers that earn it
 
-**Slides:** cover → the whole week at a glance → compared to last week → it tells
-you what is slipping → in the works → search CTA
+**Slides:** cover → how much sticks first time → what is slipping away → and the
+one to go back to → in the works → search CTA
 
 **Caption:**
-> We threw out the old dashboard tiles today 🛠️ — a tile now has to earn its
-> place by changing what you do next. What survived: days read this week, how
-> many answers you got right first time, what's going stale, and where you're
-> weakest. Every one says which way it moved on last week, because a number on
-> its own tells you nothing.
+> A tile has to earn its place by changing what you do next 🛠️ — so most of
+> them came off the dashboard today.
+> The three that survived, next to the overall score: how many answers you got
+> right *first* try, which finished steps are going stale, and your single
+> weakest step — named, so the next move is never a guess.
 > Search **booklesss** (three s's) on Google, or DM me "link". 👇
 > #buildinpublic #edtech #productdesign #studytok #zambia
 

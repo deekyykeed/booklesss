@@ -275,27 +275,21 @@ await go("/");
 /* The dashboard's own opening line — the greeting and the state of play. */
 await shot("w-top.png", { x: 0, y: 60, width: 402, height: 715 });
 
-/* The chart card. As of today it is a rolling seven-day plot — no week pager
- * any more, it just always shows the last seven days. */
-await bring(".dash-card", 320);
-await shot("w-chart.png", MID);
-
-/* Its headline: the overall score and the hours behind it, set in the same
- * face the course cards use. */
-await macro("w-score-all.png", ".dash-card .font-display", { width: 300, padTop: 130 });
-
-/* The card itself, closer in — the plot with its weekday axis and the legend
- * that names the momentum projection. Aimed at the card, not at its <svg>:
- * the chart was rebuilt today and the first svg inside it is no longer the
- * plot, so a selector pointing at the drawing silently reframed itself. */
-await macro("w-curve.png", ".dash-card", { width: 372, padTop: 150 });
+/* No chart shots any more. `.dash-card` was built, rebuilt four times and then
+ * deleted in the same day — the home page now leads straight into the tiles
+ * with an overall score. Nothing here photographs it, because photographing a
+ * screen that no longer exists is the one thing these posts must never do. */
 
 /* The four tiles, together and one at a time. */
 await go("/");
 await bring(".dash-stat", 340);
 await shot("w-tiles.png", MID);
-await macro("w-tile-days.png", ".dash-stat", { width: 232, nth: 0, padTop: 90 });
+/* The tiles, in the order the page now puts them: the overall score leads,
+ * where the chart used to be. "Days this week" is gone with it. */
+await macro("w-score-all.png", ".dash-stat", { width: 232, nth: 0, padTop: 90 });
+await macro("w-tile-first.png", ".dash-stat", { width: 232, nth: 1, padTop: 90 });
 await macro("w-tile-stale.png", ".dash-stat", { width: 232, nth: 2, padTop: 90 });
+await macro("w-tile-weak.png", ".dash-stat", { width: 232, nth: 3, padTop: 90 });
 
 /* The courses themselves. */
 await go("/");
