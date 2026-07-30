@@ -26,19 +26,18 @@ export type MynaIconName =
   | "calendar-solid"
   | "cog"
   | "cog-solid"
-  | "mobile-signal-five"
-  | "mobile-signal-five-solid"
-  | "mobile-signal-four"
-  | "mobile-signal-four-solid"
-  | "mobile-signal-three"
-  | "mobile-signal-three-solid"
-  | "mobile-signal-two"
-  | "mobile-signal-two-solid"
-  | "mobile-signal-one"
-  | "mobile-signal-one-solid"
+  | "check-circle"
+  | "check-circle-solid"
+  | "smile"
+  | "smile-solid"
+  | "circle-half"
+  | "circle-half-solid"
+  | "sad"
+  | "sad-solid"
+  | "x-circle"
+  | "x-circle-solid"
   | "check"
   | "chart-bar-increasing"
-  | "check-circle"
   | "clock-1"
   | "target"
   | "users"
@@ -85,32 +84,30 @@ const BODIES: Record<MynaIconName, string> = {
     '<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M10.11 3.9a1 1 0 0 1 .995-.9h1.79a1 1 0 0 1 .995.9l.033.333a8 8 0 0 1 2.209.915l.259-.212a1 1 0 0 1 1.34.067l1.266 1.266a1 1 0 0 1 .067 1.34l-.212.26c.409.676.72 1.419.915 2.208l.332.033a1 1 0 0 1 .901.995v1.79a1 1 0 0 1-.9.995l-.333.033a8 8 0 0 1-.915 2.209l.212.259a1 1 0 0 1-.067 1.34l-1.266 1.266a1 1 0 0 1-1.34.067l-.26-.212a8 8 0 0 1-2.208.915l-.033.332a1 1 0 0 1-.995.901h-1.79a1 1 0 0 1-.995-.9l-.033-.333a8 8 0 0 1-2.209-.915l-.259.212a1 1 0 0 1-1.34-.067L5.003 17.73a1 1 0 0 1-.067-1.34l.212-.26a8 8 0 0 1-.915-2.208L3.9 13.89a1 1 0 0 1-.9-.995v-1.79a1 1 0 0 1 .9-.995l.333-.033a8 8 0 0 1 .915-2.209l-.212-.259a1 1 0 0 1 .067-1.34L6.27 5.003a1 1 0 0 1 1.34-.067l.26.212a8 8 0 0 1 2.208-.915z"/><path d="M14.5 12a2.5 2.5 0 1 0-5 0a2.5 2.5 0 0 0 5 0"/></g>',
   "cog-solid":
     '<path fill="currentColor" d="M9.391 3.646a1.75 1.75 0 0 1 1.714-1.396h1.79a1.75 1.75 0 0 1 1.714 1.396a8.7 8.7 0 0 1 1.453.602a1.75 1.75 0 0 1 2.2.225l1.265 1.266a1.75 1.75 0 0 1 .225 2.199q.365.693.602 1.453a1.75 1.75 0 0 1 1.396 1.714v1.79a1.75 1.75 0 0 1-1.396 1.714q-.237.76-.602 1.453a1.75 1.75 0 0 1-.225 2.2l-1.266 1.265a1.75 1.75 0 0 1-2.199.225a8.7 8.7 0 0 1-1.453.602a1.75 1.75 0 0 1-1.714 1.396h-1.79a1.75 1.75 0 0 1-1.714-1.396a8.7 8.7 0 0 1-1.453-.602a1.75 1.75 0 0 1-2.2-.225l-1.265-1.266a1.75 1.75 0 0 1-.225-2.199a8.7 8.7 0 0 1-.602-1.453a1.75 1.75 0 0 1-1.396-1.714v-1.79a1.75 1.75 0 0 1 1.396-1.714a8.7 8.7 0 0 1 .602-1.453a1.75 1.75 0 0 1 .225-2.2l1.266-1.265a1.75 1.75 0 0 1 2.199-.225a8.7 8.7 0 0 1 1.453-.602M8.75 12a3.25 3.25 0 1 0 6.5 0a3.25 3.25 0 0 0-6.5 0"/>',
-  "mobile-signal-five":
-    '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21v-1m18 1V3m-9 18v-9m4.5 9V8m-9 13v-5"/>',
-  "mobile-signal-five-solid":
-    '<path fill="currentColor" d="M21 2.25a.75.75 0 0 1 .75.75v18a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75m-4.5 5a.75.75 0 0 1 .75.75v13a.75.75 0 0 1-1.5 0V8a.75.75 0 0 1 .75-.75m-4.5 4a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-1.5 0v-9a.75.75 0 0 1 .75-.75m-4.5 4a.75.75 0 0 1 .75.75v5a.75.75 0 0 1-1.5 0v-5a.75.75 0 0 1 .75-.75m-4.5 4a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1a.75.75 0 0 1 .75-.75"/>',
-  "mobile-signal-four":
-    '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21v-1m9 1v-9m4.5 9V8m-9 13v-5"/>',
-  "mobile-signal-four-solid":
-    '<path fill="currentColor" d="M16.5 7.25a.75.75 0 0 1 .75.75v13a.75.75 0 0 1-1.5 0V8a.75.75 0 0 1 .75-.75m-4.5 4a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-1.5 0v-9a.75.75 0 0 1 .75-.75m-4.5 4a.75.75 0 0 1 .75.75v5a.75.75 0 0 1-1.5 0v-5a.75.75 0 0 1 .75-.75m-4.5 4a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1a.75.75 0 0 1 .75-.75"/>',
-  "mobile-signal-three":
-    '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21v-1m9 1v-9m-4.5 9v-5"/>',
-  "mobile-signal-three-solid":
-    '<path fill="currentColor" d="M12 11.25a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-1.5 0v-9a.75.75 0 0 1 .75-.75m-4.5 4a.75.75 0 0 1 .75.75v5a.75.75 0 0 1-1.5 0v-5a.75.75 0 0 1 .75-.75m-4.5 4a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1a.75.75 0 0 1 .75-.75"/>',
-  "mobile-signal-two":
-    '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21v-1m4.5 1v-5"/>',
-  "mobile-signal-two-solid":
-    '<path fill="currentColor" d="M7.5 15.25a.75.75 0 0 1 .75.75v5a.75.75 0 0 1-1.5 0v-5a.75.75 0 0 1 .75-.75m-4.5 4a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1a.75.75 0 0 1 .75-.75"/>',
-  "mobile-signal-one":
-    '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21v-1"/>',
-  "mobile-signal-one-solid":
-    '<path fill="currentColor" d="M3 19.25a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1a.75.75 0 0 1 .75-.75"/>',
+  "check-circle":
+    '<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0"/><path d="m8.667 12.633l1.505 1.721a1 1 0 0 0 1.564-.073L15.333 9.3"/></g>',
+  "check-circle-solid":
+    '<path fill="currentColor" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75s-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12m13.523-3.308a.75.75 0 0 0-1.048.169l-3.597 4.981a.25.25 0 0 1-.391.018l-1.506-1.72a.75.75 0 1 0-1.129.987l1.506 1.721a1.75 1.75 0 0 0 2.736-.128l3.597-4.98a.75.75 0 0 0-.168-1.048"/>',
+  "smile":
+    '<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M9 15c.85.63 1.885 1 3 1s2.15-.37 3-1m-5.5-4.5V10m5 .5V10"/><path d="M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0"/></g>',
+  "smile-solid":
+    '<path fill="currentColor" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75s-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12m6.148 2.553a.75.75 0 0 0 .155 1.05A5.77 5.77 0 0 0 12 16.75a5.77 5.77 0 0 0 3.447-1.148a.75.75 0 0 0-.894-1.204A4.27 4.27 0 0 1 12 15.25a4.27 4.27 0 0 1-2.553-.852a.75.75 0 0 0-1.05.155M15.25 10a.75.75 0 1 0-1.5 0v.5a.75.75 0 0 0 1.5 0zM9.5 9.25a.75.75 0 0 0-.75.75v.5a.75.75 0 0 0 1.5 0V10a.75.75 0 0 0-.75-.75"/>',
+  "circle-half":
+    '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21a9 9 0 1 0 0-18m0 18a9 9 0 1 1 0-18m0 18V3"/>',
+  "circle-half-solid":
+    '<path fill="currentColor" d="M11.25 3.784a8.25 8.25 0 0 0 0 16.432zM2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75s-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12"/>',
+  "sad":
+    '<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M9 16c.85-.63 1.885-1 3-1s2.15.37 3 1m-5.5-5.5V10m5 .5V10"/><path d="M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0"/></g>',
+  "sad-solid":
+    '<path fill="currentColor" d="M2.25 12c0 5.385 4.365 9.75 9.75 9.75s9.75-4.365 9.75-9.75S17.385 2.25 12 2.25S2.25 6.615 2.25 12m6.303 3.398A5.77 5.77 0 0 1 12 14.25c1.285 0 2.474.427 3.447 1.148a.75.75 0 0 1-.894 1.204A4.27 4.27 0 0 0 12 15.75a4.27 4.27 0 0 0-2.553.852a.75.75 0 1 1-.894-1.204M10.25 10v.5a.75.75 0 1 1-1.5 0V10a.75.75 0 1 1 1.5 0m4.25-.75a.75.75 0 0 1 .75.75v.5a.75.75 0 1 1-1.5 0V10a.75.75 0 0 1 .75-.75"/>',
+  "x-circle":
+    '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0m-6-3l-6 6m0-6l6 6"/>',
+  "x-circle-solid":
+    '<path fill="currentColor" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75s-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12m6.22-3.53a.75.75 0 0 0 0 1.06L10.94 12l-2.47 2.47a.75.75 0 1 0 1.06 1.06L12 13.06l2.47 2.47a.75.75 0 0 0 1.06-1.06L13.06 12l2.47-2.47a.75.75 0 0 0-1.06-1.06L12 10.94L9.53 8.47a.75.75 0 0 0-1.06 0"/>',
   "check":
     '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m6 13.626l1.606 1.722c.886.95 1.329 1.424 1.825 1.574c.436.131.9.096 1.315-.1c.473-.224.852-.761 1.612-1.836L18 7"/>',
   "chart-bar-increasing":
     '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21H9.4c-2.24 0-3.36 0-4.216-.436a4 4 0 0 1-1.748-1.748C3 17.96 3 16.84 3 14.6V3m4 4.5h5m-5 9h10M7 12h7"/>',
-  "check-circle":
-    '<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0"/><path d="m8.667 12.633l1.505 1.721a1 1 0 0 0 1.564-.073L15.333 9.3"/></g>',
   "clock-1":
     '<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M12 6v6l2.5-4"/><path d="M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0"/></g>',
   "target":

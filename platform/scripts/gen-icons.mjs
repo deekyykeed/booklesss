@@ -37,21 +37,20 @@ const ICONS = [
   "calendar-solid",
   "cog",
   "cog-solid",
-  // the end-of-section answer: a five-step ramp, five bars down to one
-  "mobile-signal-five",
-  "mobile-signal-five-solid",
-  "mobile-signal-four",
-  "mobile-signal-four-solid",
-  "mobile-signal-three",
-  "mobile-signal-three-solid",
-  "mobile-signal-two",
-  "mobile-signal-two-solid",
-  "mobile-signal-one",
-  "mobile-signal-one-solid",
-  // progress + the dashboard's stat tiles
+  // the end-of-section answer: a confidence ramp, tick down to cross
+  "check-circle",
+  "check-circle-solid",
+  "smile",
+  "smile-solid",
+  "circle-half",
+  "circle-half-solid",
+  "sad",
+  "sad-solid",
+  "x-circle",
+  "x-circle-solid",
+  // progress + the dashboard's stat tiles (check-circle above serves both)
   "check",
   "chart-bar-increasing",
-  "check-circle",
   "clock-1",
   "target",
   // the parked /old-home scratch rail
@@ -63,8 +62,13 @@ const ICONS = [
 
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "components", "icons", "myna.tsx");
 
+// A name listed twice (an icon shared by two surfaces) would emit a duplicate
+// key and fail the TS build — dedupe so the same icon can be listed under
+// each place it's used without a landmine.
+const NAMES = [...new Set(ICONS)];
+
 const bodies = {};
-for (const name of ICONS) {
+for (const name of NAMES) {
   const data = getIconData(mynaui, name);
   if (!data) throw new Error(`Unknown MynaUI icon: "${name}"`);
   // 24-grid, stroke-based: the body keeps stroke="currentColor", so colour and
@@ -72,8 +76,8 @@ for (const name of ICONS) {
   bodies[name] = iconToSVG(data, { height: 24, width: 24 }).body;
 }
 
-const union = ICONS.map((n) => `  | "${n}"`).join("\n");
-const entries = ICONS.map((n) => `  "${n}":\n    '${bodies[n].replace(/'/g, "\\'")}',`).join("\n");
+const union = NAMES.map((n) => `  | "${n}"`).join("\n");
+const entries = NAMES.map((n) => `  "${n}":\n    '${bodies[n].replace(/'/g, "\\'")}',`).join("\n");
 
 writeFileSync(
   OUT,
@@ -137,4 +141,4 @@ export function MynaIcon({
   "utf8",
 );
 
-console.log(`Wrote ${ICONS.length} icons to ${OUT}`);
+console.log(`Wrote ${NAMES.length} icons to ${OUT}`);

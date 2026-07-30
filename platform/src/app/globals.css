@@ -814,41 +814,54 @@
     min-width: 24px;
     background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1));
   }
+  /* The five buttons in a row. On desktop the rule's flex-1 pushes them to the
+     end of the line; on a phone the whole group wraps below the rule and the
+     pills wrap among themselves. */
   .grasp-group {
     display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  /* A proper labelled button: the signal bar on the left, its word beside it,
+     side by side in a pill. White with a hairline — controls sitting on the
+     page, not coloured chips competing with the text above them. */
+  .grasp-btn {
+    display: inline-flex;
     align-items: center;
     gap: 6px;
-    flex-wrap: wrap;
-  }
-  /* Icon-only, so each button is a square target rather than a pill. White
-     with a hairline, the same chrome the header's circle buttons wear — the
-     row has to read as controls sitting on the page, not as five coloured
-     chips competing with the text above them. */
-  .grasp-btn {
-    display: inline-grid;
-    place-items: center;
     flex-shrink: 0;
-    width: 32px;
-    height: 32px;
-    border-radius: 10px;
+    height: 34px;
+    padding: 0 13px 0 11px;
+    border-radius: 999px;
     border: 1px solid var(--color-line-2);
     background-color: #ffffff;
     /* Muted, not placeholder grey: the low end of the ramp is a single small
        bar, and at #b2b2b2 that button reads as empty rather than as the
        bottom of a scale. */
     color: var(--color-muted);
-    transition: color 160ms ease, border-color 160ms ease, opacity 160ms ease;
+    transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease, opacity 160ms ease;
+  }
+  .grasp-label {
+    font-size: 12.5px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
   }
   .grasp-btn:hover {
     color: var(--grasp-tone);
     border-color: var(--grasp-tone);
   }
-  /* The answer given keeps the white face — only the border and the glyph
-     take its hue, and the glyph fills in. Enough to find at a glance without
-     a block of colour landing in the middle of a reading column. */
+  /* The answer given: its hue on the border, glyph and label, over the
+     faintest wash of the same — enough to read as chosen at a glance without a
+     solid block of colour landing in the reading column. */
   .grasp-btn[data-active] {
     color: var(--grasp-tone);
     border-color: var(--grasp-tone);
+    background-color: color-mix(in oklab, var(--grasp-tone) 8%, #ffffff);
+  }
+  .grasp-btn[data-active] .grasp-label {
+    font-weight: 600;
   }
   /* Once something is answered the rest recede — still there to change your
      mind with, no longer competing with the answer you gave. */
@@ -857,12 +870,6 @@
   }
   .grasp-group[data-answered] .grasp-btn:not([data-active]):hover {
     opacity: 1;
-  }
-  .grasp-plain {
-    font-family: var(--font-sans);
-    font-size: 12.5px;
-    font-weight: 500;
-    color: var(--color-brand-deep);
   }
 
   /* Ring completion flourish. transform-box: fill-box is what makes
