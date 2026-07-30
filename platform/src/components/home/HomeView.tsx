@@ -2,10 +2,9 @@
 
 import { useMemo } from "react";
 import { COURSES } from "@/lib/courses";
-import { graspStats, staleLessons, useProgress, weakestLesson } from "@/lib/progress";
-import { overallPerformance, type Performance } from "@/lib/performance";
+import { isStudyDay, studyHistory, useProgress } from "@/lib/progress";
+import { overallPerformance, overallScoreHistory, type Performance } from "@/lib/performance";
 import { MynaIcon } from "@/components/icons/myna";
-import { labelFor } from "@/lib/course";
 import { CourseCard } from "./CourseCard";
 import { Spark } from "./Spark";
 import { courseTone } from "./tones";
@@ -25,18 +24,24 @@ import { courseTone } from "./tones";
  *     target to measure against.
  * ------------------------------------------------------------------ */
 
-/* One hue per stat. Validated together against the card surface with the
- * dataviz script: lightness band, chroma floor, all-pairs CVD separation and
- * contrast all pass — so the four hues stay as a set even as the stats they
- * carry change. Green sits on "Got it" deliberately: completion is the one
- * thing green means across this app, and a section the reader says landed is
- * exactly that. The score wears the warm orange the days tile used to. */
+/* One hue per stat — the four validated together against the card surface
+ * with the dataviz script (lightness band, chroma floor, all-pairs CVD
+ * separation, contrast). Green sits on Coverage: completion is the one thing
+ * green means across this app, and coverage is progress straight toward it. */
 const TONE = {
-  score: "#eb6834",
-  accuracy: "#17754d",
-  debt: "#2a78d6",
-  weak: "#4a3aa7",
+  score: "#eb6834", // performance — warm orange
+  streak: "#4a3aa7", // showing up — purple
+  coverage: "#17754d", // progress to done — green
+  time: "#2a78d6", // hours on task — blue
 } as const;
+
+/** Reading time as a short human string. */
+function fmtTime(secs: number): string {
+  const m = Math.round(secs / 60);
+  if (m < 60) return `${m} min`;
+  const h = Math.floor(m / 60);
+  return m % 60 ? `${h}h ${m % 60}m` : `${h}h`;
+}
 
 /* Course hues live in tones.ts, shared by each course's card and its mark. */
 
@@ -67,8 +72,7 @@ export function HomeView({
    *  is signed in. Kept as a slot so this component stays Clerk-free. */
   afterGreeting?: React.ReactNode;
 }) {
-  const { hydrated, doneCount, isComplete, streak, daysStudied, studiedToday, days, grasp, touched, done: cleared } =
-    useProgress();
+  const { hydrated, doneCount, isComplete, streak, bestStreak, daysStudied, studiedToday, days } = useProgress();
 
   const totals = useMemo(() => {
     const lessons = COURSES.flatMap((c) => c.lessonIds);
@@ -101,20 +105,45 @@ export function HomeView({
     [hydrated, days, done.checks, totals.checks],
   );
 
-  /* The four tiles' figures. Each only appears once it has been measured:
-   * answers and touch dates accrue from the day they shipped, so a fresh
-   * reader sees a placeholder rather than a flattering zero. */
-  const tiles = useMemo(() => {
-    if (!hydrated) return null;
-    const answered = graspStats(grasp);
-    const stale = staleLessons(cleared, touched);
+  /* One 14-day series per tile — the mini chart each carries — plus the
+   * this-week-vs-last figures its footer reads. Every point is measured: the
+   * time is the clock's seconds, coverage is the cumulative checkpoint record,
+   * and the streak line is a rolling count of the days that cleared the bar. */
+  const charts = useMemo(() => {
+    const win = studyHistory(days, 14); // oldest first
+    const total = totals.checks;
+
+    // Coverage as it stood each day: today's cleared total, less what was
+    // cleared after that day. Ends exactly on today's coverage.
+    const coverageSeries = win.map((_, i) => {
+      let after = 0;
+      for (let j = i + 1; j < win.length; j++) after += win[j].checks;
+      return total ? Math.min(1, Math.max(0, done.checks - after) / total) * 100 : 0;
+    });
+
+    // Showing up: a rolling seven-day count of qualifying days, so the line
+    // reads as consistency holding or slipping rather than a 0/1 sawtooth.
+    const q: number[] = win.map((d) => (isStudyDay(d) ? 1 : 0));
+    const streakSeries = q.map((_, i) => q.slice(Math.max(0, i - 6), i + 1).reduce((n, v) => n + v, 0));
+
     return {
-      answered,
-      landed: answered.total ? Math.round((answered.got / answered.total) * 100) : null,
-      stale,
-      weakest: weakestLesson(grasp),
+      time: win.map((d) => d.secs / 60),
+      coverage: coverageSeries,
+      streak: streakSeries,
+      secsWeek: win.slice(7).reduce((n, d) => n + d.secs, 0),
+      secsPrev: win.slice(0, 7).reduce((n, d) => n + d.secs, 0),
+      weekChecks: win.slice(7).reduce((n, d) => n + d.checks, 0),
     };
-  }, [hydrated, grasp, touched, cleared]);
+  }, [days, totals.checks, done.checks]);
+
+  const perfSeries = useMemo(
+    () => (hydrated ? overallScoreHistory(days, done.checks, totals.checks) : []),
+    [hydrated, days, done.checks, totals.checks],
+  );
+
+  const coverage = totals.checks ? Math.round((done.checks / totals.checks) * 100) : 0;
+  const minWeek = Math.round(charts.secsWeek / 60);
+  const minPrev = Math.round(charts.secsPrev / 60);
 
   /* Facts, not encouragement dressed as insight. */
   const line = !hydrated
@@ -122,10 +151,10 @@ export function HomeView({
     : done.checks === 0
       ? "You haven't started yet — the first step takes about ten minutes."
       : studiedToday
-        ? `You've studied today${streak > 1 ? ` — ${streak} days in a row` : ""}. ${done.checks} checkpoints cleared so far.`
+        ? `You've studied today${streak > 1 ? ` — ${streak} days in a row` : ""}. ${done.checks} sections done so far.`
         : streak > 0
-          ? `${streak}-day streak going. Clear a checkpoint today to keep it.`
-          : `${done.checks} checkpoints cleared across ${daysStudied} day${daysStudied === 1 ? "" : "s"}.`;
+          ? `${streak}-day streak going. Do a section today to keep it.`
+          : `${done.checks} sections done across ${daysStudied} day${daysStudied === 1 ? "" : "s"}.`;
 
   return (
     <div className="mx-auto w-full max-w-[900px] px-4 py-10 md:px-6">
@@ -140,82 +169,79 @@ export function HomeView({
       <section className="mt-6">
         <h2 className="dash-heading">Your studying</h2>
 
-        {/* The tiles are the band now — today's state, four figures, no plot
-            above them. Tighter gutter on phones so each tile keeps its width
-            at two-up; the heading-to-tiles gap matches "My courses" below, so
-            both sections hang off their heading the same way. */}
+        {/* Four tiles, effort first: three of the four count what you did —
+            turned up, put in the hours, worked through the course — and only
+            the score folds in how much is finished, at a quarter of its weight.
+            Each carries its own 14-day mini chart. Tighter gutter on phones so
+            each keeps its width at two-up. */}
         <div className="mt-2.5 grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-3">
-          {/* The headline figure, and the only tile that reads the others'
-              ingredients at once: coverage, showing up, and checkpoints cleared
-              this week. It leads the row because it's the answer a student
-              actually wants. */}
+          {/* 1. Performance — the headline blend, weighted toward effort:
+              showing up and this week's work are three-quarters of it. Its
+              chart is that same score recomputed for each of the last 14 days. */}
           <Stat
             hydrated={hydrated}
-            label="Overall score"
-            /* A dash until something has been cleared, like the tiles beside
-               it: a confident 0% reads as a mark awarded, when in fact nothing
-               has been measured yet. No "/ 100" — the % says the scale, and
-               the tile's own footer moves it in percentage points. */
+            label="Performance"
+            /* A dash until something is cleared: a confident 0% reads as a mark
+               awarded when nothing has been measured yet. */
             value={perf && done.checks > 0 ? `${perf.score}%` : "–"}
             tone={TONE.score}
             icon={<MynaIcon name="chart-bar-increasing" size={20} className="shrink-0" />}
-            series={[]}
+            series={perfSeries}
             foot={scoreFoot(perf, done.checks)}
           />
-          {/* Whether it stuck — the share of finished sections the reader
-              said they got, from the answer at the end of each one. Their own
-              verdict, not a test result, which is the only claim the app can
-              honestly make about understanding today. */}
+          {/* 2. Streak — the purest reward for turning up: it moves on effort
+              alone and never touches whether anything was understood. The chart
+              is a rolling count of the days you showed up. */}
           <Stat
             hydrated={hydrated}
-            label="Got it"
-            value={tiles && tiles.landed !== null ? `${tiles.landed}%` : "–"}
-            unit={tiles?.answered.total ? `of ${tiles.answered.total}` : undefined}
-            tone={TONE.accuracy}
-            icon={<MynaIcon name="check-circle" size={20} className="shrink-0" />}
-            series={[]}
+            label="Streak"
+            value={`${streak}`}
+            unit={streak === 1 ? "day" : "days"}
+            tone={TONE.streak}
+            icon={<MynaIcon name="zap" size={20} className="shrink-0" />}
+            series={charts.streak}
             foot={
-              tiles?.answered.total
-                ? {
-                    lead: `${tiles.answered.got} landed`,
-                    tail: `of ${tiles.answered.total} answered`,
-                    good: (tiles.landed ?? 0) >= 70,
-                  }
-                : { lead: "None", tail: "answered yet", good: false }
+              bestStreak > 0
+                ? { lead: `${bestStreak} best`, tail: "days so far", good: streak > 0 }
+                : { lead: "None", tail: "studied yet", good: false }
             }
           />
-          {/* What is slipping away. Finished steps left alone three weeks or
-              more — the only tile that can worsen while you idle, which is
-              exactly the warning the others can't give. */}
+          {/* 3. Coverage — how much of the course you've worked through:
+              sections answered over all sections. The chart is that share
+              climbing day by day. */}
           <Stat
             hydrated={hydrated}
-            label="Going stale"
-            value={`${tiles?.stale.length ?? 0}`}
-            unit={tiles?.stale.length === 1 ? "step" : "steps"}
-            tone={TONE.debt}
+            label="Coverage"
+            value={done.checks > 0 ? `${coverage}%` : "–"}
+            tone={TONE.coverage}
+            icon={<MynaIcon name="book-open" size={20} className="shrink-0" />}
+            series={charts.coverage}
+            foot={
+              charts.weekChecks > 0
+                ? { lead: `+${charts.weekChecks}`, tail: "this week", good: true }
+                : { lead: "None", tail: "added this week", good: false }
+            }
+          />
+          {/* 4. Time this week — the clock's own measurement, surfaced at last.
+              It undercounts on purpose (see StudyClock), so the number is only
+              ever honest. The chart is the minutes read each day. */}
+          <Stat
+            hydrated={hydrated}
+            label="Time this week"
+            value={charts.secsWeek > 0 ? fmtTime(charts.secsWeek) : "–"}
+            tone={TONE.time}
             icon={<MynaIcon name="clock-1" size={20} className="shrink-0" />}
-            series={[]}
+            series={charts.time}
             foot={
-              tiles?.stale.length
-                ? { lead: labelFor(tiles.stale[0].lessonId), tail: `${tiles.stale[0].days} days ago`, good: false }
-                : { lead: "Nothing", tail: "needs revisiting", good: true }
-            }
-          />
-          {/* What to fix next: the step whose sections landed worst. Named
-              only once a few of them have been answered there — one "not yet"
-              is a hard section, not a weak step. */}
-          <Stat
-            hydrated={hydrated}
-            label="Weakest step"
-            value={tiles?.weakest ? `${Math.round((tiles.weakest.got / tiles.weakest.total) * 100)}%` : "–"}
-            unit={tiles?.weakest ? "got it" : undefined}
-            tone={TONE.weak}
-            icon={<MynaIcon name="target" size={20} className="shrink-0" />}
-            series={[]}
-            foot={
-              tiles?.weakest
-                ? { lead: labelFor(tiles.weakest.lessonId), tail: "worth another pass", good: false }
-                : { lead: "Nothing", tail: "flagged yet", good: true }
+              minPrev > 0
+                ? {
+                    lead: `${minWeek >= minPrev ? "+" : ""}${minWeek - minPrev}m`,
+                    tail: "vs last week",
+                    good: minWeek >= minPrev && minWeek > 0,
+                  }
+                : minWeek > 0
+                  ? { lead: `+${minWeek}m`, tail: "first week", good: true }
+                  : { lead: "None", tail: "logged yet", good: false }
             }
           />
         </div>
