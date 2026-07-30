@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Icon } from "@/lib/icon";
+import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
 import { clerkEnabled } from "@/lib/clerk";
 import { Account as ClerkAccount } from "./Account";
 import { ClerkIsland } from "./ClerkIsland";
@@ -9,7 +9,7 @@ import { MobileMenuButton, MobileContextButton } from "./reader/MobileNav";
 /* Shared, fixed 48px header. Transparent so the blob backdrop shows through;
  * the only boxy element is the 1px #dfdfdf bottom hairline. px-16, space-between. */
 
-function CircleButton({ icon, label, className = "" }: { icon: string; label: string; className?: string }) {
+function CircleButton({ icon, label, className = "" }: { icon: MynaIconName; label: string; className?: string }) {
   return (
     <button
       type="button"
@@ -20,7 +20,7 @@ function CircleButton({ icon, label, className = "" }: { icon: string; label: st
         className
       }
     >
-      <Icon name={icon} size={16} />
+      <MynaIcon name={icon} size={16} />
     </button>
   );
 }
@@ -85,7 +85,7 @@ export function TopBar({
               {orgName}
             </span>
           </Link>
-          <Icon name="sort-vertical-linear" size={14} className="hidden text-muted md:block" />
+          <MynaIcon name="chevron-down" size={14} className="hidden text-muted md:block" />
         </div>
 
         {/* desktop only — on mobile the drawer carries navigation instead */}
@@ -115,8 +115,8 @@ export function TopBar({
           <MobileContextButton />
           <CommandSearch />
           {/* Help + advisor are desktop-only; mobile keeps just search + profile */}
-          <CircleButton icon="question-circle-linear" label="Help" className="hidden md:grid" />
-          <CircleButton icon="bolt-linear" label="Advisor Center" className="hidden md:grid" />
+          <CircleButton icon="question-circle" label="Help" className="hidden md:grid" />
+          <CircleButton icon="zap" label="Advisor Center" className="hidden md:grid" />
           <Account />
         </div>
       </div>

@@ -2,13 +2,12 @@
  * Course marks for the dashboard cards — Streamline Freehand Duotone.
  *
  * GENERATED geometry: paths are byte-for-byte from the free "Freehand
- * Duotone" set (Streamline, CC BY 4.0 — attribution owed, as with Solar),
+ * Duotone" set (Streamline, CC BY 4.0 — attribution owed, as with MynaUI),
  * fetched via the Streamline MCP. The set's two colours are remapped to
  * ours: the hand-drawn line takes the app ink, the accent layer takes the
  * course's own hue, so each card's mark, gradient and sparkline agree.
  *
- * Cards only. The sidebars speak Solar Line/Bold exclusively — the reader's
- * course header keeps CourseGlyph (Solar), and nothing Freehand may leak
+ * Cards only. The sidebars speak MynaUI Line/Solid exclusively, and nothing Freehand may leak
  * into a sidebar.
  *
  * Icons: "Analytics Graph Stock" (economics), "Money Bag"

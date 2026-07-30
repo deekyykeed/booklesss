@@ -2,20 +2,13 @@
 
 import { useMemo } from "react";
 import { COURSES } from "@/lib/courses";
-import {
-  daysStudiedIn,
-  firstTryStats,
-  isStudyDay,
-  staleLessons,
-  studyHistory,
-  useProgress,
-  weakestLesson,
-} from "@/lib/progress";
+import { firstTryStats, staleLessons, useProgress, weakestLesson } from "@/lib/progress";
+import { overallPerformance, type Performance } from "@/lib/performance";
+import { MynaIcon } from "@/components/icons/myna";
 import { useLiveReaders } from "@/lib/presence";
 import { labelFor } from "@/lib/course";
 import { CourseCard } from "./CourseCard";
 import { Spark } from "./Spark";
-import { StudyChart } from "./StudyChart";
 import { courseTone } from "./tones";
 
 
@@ -33,42 +26,29 @@ import { courseTone } from "./tones";
  *     target to measure against.
  * ------------------------------------------------------------------ */
 
-/* One hue per stat, carried by its sparkline — the reference dashboard does
- * the same across its top row (blue, yellow, cyan). Validated together
- * against the card surface with the dataviz script: lightness band, chroma
- * floor, all-pairs CVD separation and contrast all pass. Green sits on
- * Checkpoints deliberately — completion is the one thing green means across
- * this app, and a cleared checkpoint is exactly that. */
+/* One hue per stat. Validated together against the card surface with the
+ * dataviz script: lightness band, chroma floor, all-pairs CVD separation and
+ * contrast all pass — so the four hues stay as a set even as the stats they
+ * carry change. Green sits on First try deliberately: completion is the one
+ * thing green means across this app, and a question answered right first time
+ * is exactly that. The score wears the warm orange the days tile used to. */
 const TONE = {
-  days: "#eb6834",
+  score: "#eb6834",
   accuracy: "#17754d",
   debt: "#2a78d6",
   weak: "#4a3aa7",
 } as const;
 
-/* Hues live in tones.ts, shared with the study chart so a course's card and
- * its line on the plot always agree. */
+/* Course hues live in tones.ts, shared by each course's card and its mark. */
 
-/** The reference's anchored delta — "+20% · 25 last week": the movement AND
- *  the number it moved from, so the percentage explains itself. Falls back to
- *  a raw "+n" when last week was zero and no percentage exists. */
-function weekFoot(cur: number, prev: number, unit?: string): { lead: string; tail: string; good: boolean } {
-  // Pluralised by last week's count, since that's the number printed.
-  const u = unit ? ` ${prev === 1 ? unit : `${unit}s`}` : "";
-  if (prev > 0) {
-    const pct = Math.round(((cur - prev) / prev) * 100);
-    return { lead: `${pct > 0 ? "+" : ""}${pct}%`, tail: `${prev}${u} last week`, good: cur > 0 && cur >= prev };
-  }
-  if (cur > 0) return { lead: `+${cur}`, tail: `0${unit ? ` ${unit}s` : ""} last week`, good: true };
-  return { lead: "0", tail: unit ? `${unit}s this week` : "this week", good: false };
-}
-
-/** Total reading time, for the chart's caption. */
-function fmtTotal(secs: number): string {
-  const m = Math.round(secs / 60);
-  if (m < 60) return `${m} min`;
-  const h = Math.floor(m / 60);
-  return m % 60 ? `${h}h ${m % 60}m` : `${h}h`;
+/** The score tile's footer: where the number has moved to, in points. A score
+ *  nobody has earned yet says so rather than reporting a flat week — with
+ *  nothing cleared there is no previous score to have moved from. */
+function scoreFoot(perf: Performance | null, cleared: number): { lead: string; tail: string; good: boolean } {
+  if (!perf || cleared === 0) return { lead: "Not started", tail: "nothing yet", good: false };
+  if (perf.delta > 0) return { lead: `+${perf.delta} pts`, tail: "on last week", good: true };
+  if (perf.delta < 0) return { lead: `${perf.delta} pts`, tail: "on last week", good: false };
+  return { lead: "Level", tail: "with last week", good: true };
 }
 
 function timeGreeting(): string {
@@ -88,35 +68,13 @@ export function HomeView({
    *  is signed in. Kept as a slot so this component stays Clerk-free. */
   afterGreeting?: React.ReactNode;
 }) {
-  const { hydrated, doneCount, isComplete, streak, daysStudied, studiedToday, totalSecs, days, quiz, touched, done: cleared } =
+  const { hydrated, doneCount, isComplete, streak, daysStudied, studiedToday, days, quiz, touched, done: cleared } =
     useProgress();
 
   /* Who's reading right now, per course — watching only, this page isn't a
    * reader. Null until presence syncs (or forever if it isn't configured),
    * and the cards show nothing rather than a number nobody measured. */
   const live = useLiveReaders(null);
-
-  /* Each tile's series and its week-over-week movement, from the same day
-   * records the streak reads. 14 days: last week vs the week before. */
-  const spark = useMemo(() => {
-    const h = studyHistory(days, 14);
-    // Typed, not inferred: (0 | 1)[] would narrow the rolling sum's
-    // accumulator to 0 | 1 and refuse to add past one.
-    const qualifying: number[] = h.map((d) => (isStudyDay(d) ? 1 : 0));
-
-    /* A rolling seven-day count of study days, one point per day: it moves
-     * every day rather than sawtoothing at a week boundary, so the line reads
-     * as effort holding up or slipping. */
-    const daysRolling = qualifying.map((_, i) =>
-      qualifying.slice(Math.max(0, i - 6), i + 1).reduce((n, v) => n + v, 0),
-    );
-
-    const sum = (a: number[]) => a.reduce((n, v) => n + v, 0);
-    return {
-      daysRolling,
-      wDays: { cur: sum(qualifying.slice(7)), prev: sum(qualifying.slice(0, 7)) },
-    };
-  }, [days]);
 
   const totals = useMemo(() => {
     const lessons = COURSES.flatMap((c) => c.lessonIds);
@@ -138,6 +96,17 @@ export function HomeView({
     return { checks, steps };
   }, [hydrated, doneCount, isComplete, totals]);
 
+  /* The overall score — one figure for "how am I doing" across every course.
+   * Each term in it is measured and recomputable by hand (see lib/performance):
+   * how much of the library is covered, how many days were studied this week,
+   * how many checkpoints were cleared this week. Its delta is the same score
+   * recomputed as it stood seven days ago, so the movement is a comparison
+   * rather than a guess. */
+  const perf = useMemo(
+    () => (hydrated ? overallPerformance(days, done.checks, totals.checks) : null),
+    [hydrated, days, done.checks, totals.checks],
+  );
+
   /* The four tiles' figures. Each only appears once it has been measured:
    * quiz records and touch dates accrue from the day they shipped, so a fresh
    * reader sees a placeholder rather than a flattering zero. */
@@ -146,13 +115,12 @@ export function HomeView({
     const answered = firstTryStats(quiz);
     const stale = staleLessons(cleared, touched);
     return {
-      weekDays: daysStudiedIn(days, 7),
       answered,
       accuracy: answered.total ? Math.round((answered.first / answered.total) * 100) : null,
       stale,
       weakest: weakestLesson(quiz),
     };
-  }, [hydrated, days, quiz, touched, cleared]);
+  }, [hydrated, quiz, touched, cleared]);
 
   /* Facts, not encouragement dressed as insight. */
   const line = !hydrated
@@ -178,39 +146,27 @@ export function HomeView({
       <section className="mt-6">
         <h2 className="dash-heading">Your studying</h2>
 
-        {/* Full width above the tiles: the shape of the studying over time
-            leads, the tiles below are today's state. Only reading inside a
-            lesson is timed, so a flat stretch means nothing was read, not
-            that the chart is broken. On phones the card wears the tiles'
-            14px padding so the band reads as one set; desktop keeps the
-            card's 18px. */}
-        <div className="dash-card squircle mt-4 p-3.5 lg:p-[18px]">
-          <div className="flex items-center justify-between gap-3">
-            <h3 className="font-display text-[15px] font-semibold leading-tight text-ink">Productive time</h3>
-            <p className="shrink-0 text-[12px] text-placeholder">
-              {totalSecs > 0 ? `${fmtTotal(totalSecs)} over 30 days` : "Last 30 days"}
-            </p>
-          </div>
-          <div className="mt-1">
-            <StudyChart days={days} hydrated={hydrated} />
-          </div>
-        </div>
-
-        {/* Tighter gutter on phones so each tile keeps its width at two-up.
-            The chart-to-tiles gap matches that gutter on phones — one grid
-            rhythm for the whole band — and opens back up on desktop. */}
-        <div className="mt-2 grid grid-cols-2 gap-2 lg:mt-5 lg:grid-cols-4 lg:gap-3">
-          {/* Showing up — the forgiving twin of the streak, which lives on the
-              course cards. Six days out of seven reads as six, not as broken. */}
+        {/* The tiles are the band now — today's state, four figures, no plot
+            above them. Tighter gutter on phones so each tile keeps its width
+            at two-up; the heading-to-tiles gap matches "My courses" below, so
+            both sections hang off their heading the same way. */}
+        <div className="mt-2.5 grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-3">
+          {/* The headline figure, and the only tile that reads the others'
+              ingredients at once: coverage, showing up, and checkpoints cleared
+              this week. It leads the row because it's the answer a student
+              actually wants. */}
           <Stat
             hydrated={hydrated}
-            label="Days this week"
-            value={`${tiles?.weekDays ?? 0}`}
-            unit="/ 7"
-            tone={TONE.days}
-            icon={<CalendarGlyph />}
-            series={spark.daysRolling}
-            foot={weekFoot(spark.wDays.cur, spark.wDays.prev, "day")}
+            label="Overall score"
+            /* A dash until something has been cleared, like the tiles beside
+               it: a confident 0 out of 100 reads as a mark awarded, when in
+               fact nothing has been measured yet. */
+            value={perf && done.checks > 0 ? `${perf.score}` : "–"}
+            unit={perf && done.checks > 0 ? "/ 100" : undefined}
+            tone={TONE.score}
+            icon={<MynaIcon name="chart-bar-increasing" size={20} className="shrink-0" />}
+            series={[]}
+            foot={scoreFoot(perf, done.checks)}
           />
           {/* Whether it stuck. Every checkpoint is a passed comprehension
               check, so this is the share answered right at the first attempt —
@@ -221,7 +177,7 @@ export function HomeView({
             value={tiles && tiles.accuracy !== null ? `${tiles.accuracy}%` : "–"}
             unit={tiles?.answered.total ? `of ${tiles.answered.total}` : undefined}
             tone={TONE.accuracy}
-            icon={<CheckGlyph />}
+            icon={<MynaIcon name="check-circle" size={20} className="shrink-0" />}
             series={[]}
             foot={
               tiles?.answered.total
@@ -242,7 +198,7 @@ export function HomeView({
             value={`${tiles?.stale.length ?? 0}`}
             unit={tiles?.stale.length === 1 ? "step" : "steps"}
             tone={TONE.debt}
-            icon={<StopwatchGlyph />}
+            icon={<MynaIcon name="clock-1" size={20} className="shrink-0" />}
             series={[]}
             foot={
               tiles?.stale.length
@@ -259,7 +215,7 @@ export function HomeView({
             value={tiles?.weakest ? `${Math.round((tiles.weakest.first / tiles.weakest.total) * 100)}%` : "–"}
             unit={tiles?.weakest ? "first try" : undefined}
             tone={TONE.weak}
-            icon={<TargetGlyph />}
+            icon={<MynaIcon name="target" size={20} className="shrink-0" />}
             series={[]}
             foot={
               tiles?.weakest
@@ -299,56 +255,6 @@ export function HomeView({
         </div>
       </section>
     </div>
-  );
-}
-
-/* ---------------- stat marks ----------------
- *
- * Solar · Bold Duotone, hand-inlined (via <Icon> the whole ~7,400-icon set
- * would land in this client bundle), 20px, each in its stat's hue. The
- * duotone's own opacity-.5 back layer does the two-tone work: colour the
- * glyph once and it renders as two versions of that colour, the body a
- * lighter step and the detail the rich one — the same pale-to-main pairing
- * the sparkline's gradient uses.
- */
-
-const G = { width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", "aria-hidden": true, className: "shrink-0" } as const;
-
-function CalendarGlyph() {
-  return (
-    <svg {...G}>
-      <path fill="currentColor" d="M6.94 2c.416 0 .753.324.753.724v1.46c.668-.012 1.417-.012 2.26-.012h4.015c.842 0 1.591 0 2.259.013v-1.46c0-.4.337-.725.753-.725s.753.324.753.724V4.25c1.445.111 2.394.384 3.09 1.055c.698.67.982 1.582 1.097 2.972L22 9H2v-.724c.116-1.39.4-2.302 1.097-2.972s1.645-.944 3.09-1.055V2.724c0-.4.337-.724.753-.724" />
-      <path fill="currentColor" opacity=".5" d="M22 14v-2c0-.839-.004-2.335-.017-3H2.01c-.013.665-.01 2.161-.01 3v2c0 3.771 0 5.657 1.172 6.828S6.228 22 10 22h4c3.77 0 5.656 0 6.828-1.172S22 17.772 22 14" />
-      <path fill="currentColor" d="M18 17a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0" />
-    </svg>
-  );
-}
-
-function StopwatchGlyph() {
-  return (
-    <svg {...G}>
-      <path fill="currentColor" d="M12 23a9 9 0 1 0 0-18a9 9 0 0 0 0 18" opacity=".5" />
-      <path fill="currentColor" d="M12 9.25a.75.75 0 0 1 .75.75v4a.75.75 0 0 1-1.5 0v-4a.75.75 0 0 1 .75-.75" />
-      <path fill="currentColor" fillRule="evenodd" clipRule="evenodd" d="M9.25 2.75A.75.75 0 0 1 10 2h4a.75.75 0 0 1 0 1.5h-4a.75.75 0 0 1-.75-.75" />
-    </svg>
-  );
-}
-
-function CheckGlyph() {
-  return (
-    <svg {...G}>
-      <path fill="currentColor" opacity=".5" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10" />
-      <path fill="currentColor" d="M16.03 8.97a.75.75 0 0 1 0 1.06l-5 5a.75.75 0 0 1-1.06 0l-2-2a.75.75 0 1 1 1.06-1.06l1.47 1.47l2.235-2.235L14.97 8.97a.75.75 0 0 1 1.06 0" />
-    </svg>
-  );
-}
-
-function TargetGlyph() {
-  return (
-    <svg {...G}>
-      <path fill="currentColor" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10" opacity=".5" />
-      <path fill="currentColor" d="M9.25 12a.75.75 0 0 1 .75-.75h1.25V10a.75.75 0 0 1 1.5 0v1.25H14a.75.75 0 0 1 0 1.5h-1.25V14a.75.75 0 0 1-1.5 0v-1.25H10a.75.75 0 0 1-.75-.75m-7.222.75a10 10 0 0 1 0-1.5H5a.75.75 0 0 1 0 1.5zm10.722 9.222a10 10 0 0 1-1.5 0V19a.75.75 0 0 1 1.5 0zm9.222-10.722a10 10 0 0 1 0 1.5H19a.75.75 0 0 1 0-1.5zM12.75 2.028V5a.75.75 0 0 1-1.5 0V2.028a10 10 0 0 1 1.5 0" />
-    </svg>
   );
 }
 

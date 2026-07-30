@@ -146,13 +146,13 @@ the daily socials:
 
 ### Platform Icons (Next.js)
 
-All icons in `platform/` come from the **Solar** set (by 480 Design) via the local `@iconify-json/solar` package — no MCP, no network. The `Icon` component in `platform/src/lib/icon.tsx` resolves the icon data at render time on the server and inlines the SVG (zero client JS).
+All icons in `platform/` come from the **MynaUI** set (by Praveen Juge) via the local `@iconify-json/mynaui` package — no MCP, no network. **Solar is gone** (owner's call, 2026-07-30): the course cards had worn MynaUI since they were built, and the rest of the chrome was moved onto it to match. `@iconify-json/solar` and the old `src/lib/icon.tsx` renderer were removed with it.
 
-**To use an icon:** `<Icon name="magnifer-linear" />` — suffix `-linear` for Solar Line, `-bold` for Solar Bold. Optional props: `size`, `strokeWidth`, `className`, `style`. Unknown names warn in dev and render nothing. Browse names at [icones.js.org/collection/solar](https://icones.js.org/collection/solar).
+**To use an icon:** `<MynaIcon name="search" />` from `platform/src/components/icons/myna.tsx` — plain name for MynaUI Line, `-solid` for its filled twin (what the sidebars mark the current row with). Optional props: `size`, `strokeWidth`, `className`, `style`. Browse names at [icones.js.org/collection/mynaui](https://icones.js.org/collection/mynaui).
 
-The old Streamline-MCP workflow (`solar.tsx` with hand-inlined SVGs) belonged to the previous platform app, deleted 2026-07-24 — recoverable from git history before that date if ever needed.
+**That module is generated.** Adding an icon = add the name to `ICONS` in `platform/scripts/gen-icons.mjs`, run `npm run gen:icons`, done. Only the paths actually drawn are inlined, which is why it works in client components — importing the 2,650-icon set into one would ship the lot to the browser. Never hand-edit the generated file; unknown names fail the generator loudly rather than rendering nothing.
 
-**One exception:** the composer's attachment chips use **Streamline Ultimate Colors (Free)** file-type badges (PDF / JPG / XLS / doc), hand-inlined in `platform/src/components/reader/file-icons.tsx`. They are multicolour on purpose — the colour is what distinguishes the file types — so they keep their own fills rather than following `currentColor`. Licensed CC BY 4.0, attribution still owed (as with Solar). Everything else stays Solar.
+**Two exceptions, both deliberate:** the composer's attachment chips use **Streamline Ultimate Colors (Free)** file-type badges (`reader/file-icons.tsx`) and the course cards use **Streamline Plump** gradient marks (`home/plump-glyphs.tsx`, `home/course-glyphs.tsx`). Both are multicolour on purpose — the colour is what carries the meaning — so they keep their own fills rather than following `currentColor`. CC BY 4.0, attribution still owed (as with MynaUI). Everything monochrome is MynaUI.
 
 **Never** hardcode Framer CDN URLs for icons — always inline SVG so icons respond to `color` CSS.
 

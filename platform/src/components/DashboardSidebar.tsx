@@ -1,16 +1,16 @@
-import { Icon } from "@/lib/icon";
+import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
 
 /* 208px icon rail for the org dashboard (the "/" surface). */
 
-type NavItem = { label: string; icon: string; active?: boolean };
+type NavItem = { label: string; icon: MynaIconName; active?: boolean };
 
 const ITEMS: NavItem[] = [
-  { label: "Projects", icon: "widget-2-linear", active: true },
-  { label: "Team", icon: "users-group-rounded-linear" },
-  { label: "Integrations", icon: "plug-circle-linear" },
-  { label: "Usage", icon: "chart-2-linear" },
-  { label: "Billing", icon: "card-linear" },
-  { label: "Organization Settings", icon: "settings-linear" },
+  { label: "Projects", icon: "layout-dashboard", active: true },
+  { label: "Team", icon: "users" },
+  { label: "Integrations", icon: "puzzle" },
+  { label: "Usage", icon: "chart-bar" },
+  { label: "Billing", icon: "credit-card" },
+  { label: "Organization Settings", icon: "cog" },
 ];
 
 export function DashboardSidebar() {
@@ -31,7 +31,7 @@ export function DashboardSidebar() {
                 : "text-muted hover:bg-active/60 hover:text-ink")
             }
           >
-            <Icon
+            <MynaIcon
               name={item.icon}
               size={20}
               className={item.active ? "text-ink" : "text-muted opacity-90"}
@@ -46,7 +46,7 @@ export function DashboardSidebar() {
         aria-label="Collapse sidebar"
         className="grid h-8 w-8 place-items-center rounded-md text-muted transition-colors hover:bg-active hover:text-ink"
       >
-        <Icon name="sidebar-minimalistic-linear" size={18} />
+        <MynaIcon name="sidebar" size={18} />
       </button>
     </aside>
   );

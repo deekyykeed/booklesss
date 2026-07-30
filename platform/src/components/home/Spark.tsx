@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { smoothPath } from "./StudyChart";
+import { smoothPath } from "./curve";
 
 /* ------------------------------------------------------------------ *
  * The tile-and-card sparkline — a backdrop, not a figure beside the number.
@@ -10,8 +10,8 @@ import { smoothPath } from "./StudyChart";
  * width, behind the text, at a fraction of the ink it would have as a
  * foreground element: the line carries the shape, the wash gives it a floor,
  * and nothing is labelled — it's atmosphere with the true curve, and the
- * numbers in front are the data. Same monotone-cubic as the big chart, so
- * even the backdrop can't overshoot what happened.
+ * numbers in front are the data. Monotone-cubic (see ./curve), so even the
+ * backdrop can't overshoot what happened.
  *
  * Width is measured (ResizeObserver) rather than stretched through a
  * viewBox — preserveAspectRatio="none" would distort the stroke.

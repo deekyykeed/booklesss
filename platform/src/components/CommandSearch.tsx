@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { highlight, search } from "@/lib/search";
 import { scrollToSection } from "@/lib/scroll-to-section";
+import { MynaIcon } from "@/components/icons/myna";
 
 /* Searches the whole course — lesson titles AND the body of every section —
  * against the bundled course data (see lib/search.ts). A section hit links to
@@ -37,14 +38,8 @@ function SectionMark() {
   );
 }
 
-// Inline magnifier so the trigger needs no server round-trip for its icon.
 function Magnifier({ size = 16, className }: { size?: number; className?: string }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true" className={className}>
-      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.6" />
-      <path d="m20 20-3-3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-    </svg>
-  );
+  return <MynaIcon name="search" size={size} className={className} />;
 }
 
 export function CommandSearch() {
