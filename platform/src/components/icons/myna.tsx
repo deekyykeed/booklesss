@@ -26,11 +26,17 @@ export type MynaIconName =
   | "calendar-solid"
   | "cog"
   | "cog-solid"
+  | "mobile-signal-five"
+  | "mobile-signal-five-solid"
+  | "mobile-signal-four"
+  | "mobile-signal-four-solid"
+  | "mobile-signal-three"
+  | "mobile-signal-three-solid"
+  | "mobile-signal-two"
+  | "mobile-signal-two-solid"
+  | "mobile-signal-one"
+  | "mobile-signal-one-solid"
   | "check"
-  | "check-circle-solid"
-  | "question-circle-solid"
-  | "x-circle"
-  | "x-circle-solid"
   | "chart-bar-increasing"
   | "check-circle"
   | "clock-1"
@@ -79,16 +85,28 @@ const BODIES: Record<MynaIconName, string> = {
     '<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M10.11 3.9a1 1 0 0 1 .995-.9h1.79a1 1 0 0 1 .995.9l.033.333a8 8 0 0 1 2.209.915l.259-.212a1 1 0 0 1 1.34.067l1.266 1.266a1 1 0 0 1 .067 1.34l-.212.26c.409.676.72 1.419.915 2.208l.332.033a1 1 0 0 1 .901.995v1.79a1 1 0 0 1-.9.995l-.333.033a8 8 0 0 1-.915 2.209l.212.259a1 1 0 0 1-.067 1.34l-1.266 1.266a1 1 0 0 1-1.34.067l-.26-.212a8 8 0 0 1-2.208.915l-.033.332a1 1 0 0 1-.995.901h-1.79a1 1 0 0 1-.995-.9l-.033-.333a8 8 0 0 1-2.209-.915l-.259.212a1 1 0 0 1-1.34-.067L5.003 17.73a1 1 0 0 1-.067-1.34l.212-.26a8 8 0 0 1-.915-2.208L3.9 13.89a1 1 0 0 1-.9-.995v-1.79a1 1 0 0 1 .9-.995l.333-.033a8 8 0 0 1 .915-2.209l-.212-.259a1 1 0 0 1 .067-1.34L6.27 5.003a1 1 0 0 1 1.34-.067l.26.212a8 8 0 0 1 2.208-.915z"/><path d="M14.5 12a2.5 2.5 0 1 0-5 0a2.5 2.5 0 0 0 5 0"/></g>',
   "cog-solid":
     '<path fill="currentColor" d="M9.391 3.646a1.75 1.75 0 0 1 1.714-1.396h1.79a1.75 1.75 0 0 1 1.714 1.396a8.7 8.7 0 0 1 1.453.602a1.75 1.75 0 0 1 2.2.225l1.265 1.266a1.75 1.75 0 0 1 .225 2.199q.365.693.602 1.453a1.75 1.75 0 0 1 1.396 1.714v1.79a1.75 1.75 0 0 1-1.396 1.714q-.237.76-.602 1.453a1.75 1.75 0 0 1-.225 2.2l-1.266 1.265a1.75 1.75 0 0 1-2.199.225a8.7 8.7 0 0 1-1.453.602a1.75 1.75 0 0 1-1.714 1.396h-1.79a1.75 1.75 0 0 1-1.714-1.396a8.7 8.7 0 0 1-1.453-.602a1.75 1.75 0 0 1-2.2-.225l-1.265-1.266a1.75 1.75 0 0 1-.225-2.199a8.7 8.7 0 0 1-.602-1.453a1.75 1.75 0 0 1-1.396-1.714v-1.79a1.75 1.75 0 0 1 1.396-1.714a8.7 8.7 0 0 1 .602-1.453a1.75 1.75 0 0 1 .225-2.2l1.266-1.265a1.75 1.75 0 0 1 2.199-.225a8.7 8.7 0 0 1 1.453-.602M8.75 12a3.25 3.25 0 1 0 6.5 0a3.25 3.25 0 0 0-6.5 0"/>',
+  "mobile-signal-five":
+    '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21v-1m18 1V3m-9 18v-9m4.5 9V8m-9 13v-5"/>',
+  "mobile-signal-five-solid":
+    '<path fill="currentColor" d="M21 2.25a.75.75 0 0 1 .75.75v18a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75m-4.5 5a.75.75 0 0 1 .75.75v13a.75.75 0 0 1-1.5 0V8a.75.75 0 0 1 .75-.75m-4.5 4a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-1.5 0v-9a.75.75 0 0 1 .75-.75m-4.5 4a.75.75 0 0 1 .75.75v5a.75.75 0 0 1-1.5 0v-5a.75.75 0 0 1 .75-.75m-4.5 4a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1a.75.75 0 0 1 .75-.75"/>',
+  "mobile-signal-four":
+    '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21v-1m9 1v-9m4.5 9V8m-9 13v-5"/>',
+  "mobile-signal-four-solid":
+    '<path fill="currentColor" d="M16.5 7.25a.75.75 0 0 1 .75.75v13a.75.75 0 0 1-1.5 0V8a.75.75 0 0 1 .75-.75m-4.5 4a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-1.5 0v-9a.75.75 0 0 1 .75-.75m-4.5 4a.75.75 0 0 1 .75.75v5a.75.75 0 0 1-1.5 0v-5a.75.75 0 0 1 .75-.75m-4.5 4a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1a.75.75 0 0 1 .75-.75"/>',
+  "mobile-signal-three":
+    '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21v-1m9 1v-9m-4.5 9v-5"/>',
+  "mobile-signal-three-solid":
+    '<path fill="currentColor" d="M12 11.25a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-1.5 0v-9a.75.75 0 0 1 .75-.75m-4.5 4a.75.75 0 0 1 .75.75v5a.75.75 0 0 1-1.5 0v-5a.75.75 0 0 1 .75-.75m-4.5 4a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1a.75.75 0 0 1 .75-.75"/>',
+  "mobile-signal-two":
+    '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21v-1m4.5 1v-5"/>',
+  "mobile-signal-two-solid":
+    '<path fill="currentColor" d="M7.5 15.25a.75.75 0 0 1 .75.75v5a.75.75 0 0 1-1.5 0v-5a.75.75 0 0 1 .75-.75m-4.5 4a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1a.75.75 0 0 1 .75-.75"/>',
+  "mobile-signal-one":
+    '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21v-1"/>',
+  "mobile-signal-one-solid":
+    '<path fill="currentColor" d="M3 19.25a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1a.75.75 0 0 1 .75-.75"/>',
   "check":
     '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m6 13.626l1.606 1.722c.886.95 1.329 1.424 1.825 1.574c.436.131.9.096 1.315-.1c.473-.224.852-.761 1.612-1.836L18 7"/>',
-  "check-circle-solid":
-    '<path fill="currentColor" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75s-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12m13.523-3.308a.75.75 0 0 0-1.048.169l-3.597 4.981a.25.25 0 0 1-.391.018l-1.506-1.72a.75.75 0 1 0-1.129.987l1.506 1.721a1.75 1.75 0 0 0 2.736-.128l3.597-4.98a.75.75 0 0 0-.168-1.048"/>',
-  "question-circle-solid":
-    '<path fill="currentColor" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75s9.75-4.365 9.75-9.75S17.385 2.25 12 2.25m0 12.497a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-1.5 0v-.5a.75.75 0 0 1 .75-.75m1.872-6.814c.544.482.878 1.188.878 2.057c0 .64-.164 1.138-.45 1.543c-.256.365-.588.614-.823.79l-.027.02c-.263.198-.416.32-.524.474c-.09.127-.176.317-.176.68a.75.75 0 0 1-1.5 0c0-.64.164-1.14.45-1.544c.256-.364.588-.613.823-.79l.027-.02c.263-.198.416-.32.524-.474c.09-.127.176-.317.176-.679c0-.46-.166-.75-.372-.934a1.33 1.33 0 0 0-.878-.31c-.34 0-.657.114-.877.31c-.207.183-.373.474-.373.934a.75.75 0 0 1-1.5 0c0-.869.334-1.575.877-2.057A2.83 2.83 0 0 1 12 7.246c.66 0 1.343.218 1.872.687"/>',
-  "x-circle":
-    '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0m-6-3l-6 6m0-6l6 6"/>',
-  "x-circle-solid":
-    '<path fill="currentColor" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75s-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12m6.22-3.53a.75.75 0 0 0 0 1.06L10.94 12l-2.47 2.47a.75.75 0 1 0 1.06 1.06L12 13.06l2.47 2.47a.75.75 0 0 0 1.06-1.06L13.06 12l2.47-2.47a.75.75 0 0 0-1.06-1.06L12 10.94L9.53 8.47a.75.75 0 0 0-1.06 0"/>',
   "chart-bar-increasing":
     '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21H9.4c-2.24 0-3.36 0-4.216-.436a4 4 0 0 1-1.748-1.748C3 17.96 3 16.84 3 14.6V3m4 4.5h5m-5 9h10M7 12h7"/>',
   "check-circle":

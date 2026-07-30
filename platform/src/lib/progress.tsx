@@ -23,7 +23,9 @@ import { courseForNode } from "./courses";
  * syncing later is a write-through, not a rewrite.
  * ------------------------------------------------------------------ */
 
-const KEY = "booklesss:progress:v4";
+const KEY = "booklesss:progress:v5";
+/** v4 asked the same question with three answers instead of five. */
+const V4_KEY = "booklesss:progress:v4";
 /** v3 stored comprehension-check results (`quiz`) where v4 stores how well the
  *  reader says a section landed. The two aren't the same claim, so v3's records
  *  are dropped rather than translated — see read(). */
@@ -53,14 +55,24 @@ export type StudyDay = {
   courseChecks?: Record<string, number>;
 };
 
-/** How well a section landed, in the reader's own words. Three answers, not
- *  five: the middle one has to mean something, and "almost" is the only
- *  hedge worth acting on. */
-export type Grasp = "got" | "almost" | "not";
+/** How well a section landed, in the reader's own words — five steps, best
+ *  first, drawn as a signal ramp of five bars down to one. */
+export type Grasp = "got" | "mostly" | "half" | "barely" | "not";
 
-export const GRASPS: Grasp[] = ["got", "almost", "not"];
+export const GRASPS: Grasp[] = ["got", "mostly", "half", "barely", "not"];
 
-const isGrasp = (v: unknown): v is Grasp => v === "got" || v === "almost" || v === "not";
+/** What each answer is worth when a step's answers are averaged. Evenly
+ *  spaced, because the scale is: nothing here claims that "mostly" is nearer
+ *  to "got" than "half" is to "mostly". */
+export const GRASP_WEIGHT: Record<Grasp, number> = {
+  got: 1,
+  mostly: 0.75,
+  half: 0.5,
+  barely: 0.25,
+  not: 0,
+};
+
+const isGrasp = (v: unknown): v is Grasp => (GRASPS as string[]).includes(v as string);
 
 type State = {
   /** lessonId -> cleared checkpoint ids. */
@@ -198,6 +210,35 @@ function read(scope: string | null): State {
           days: cleanDays((parsed as { days?: unknown }).days),
           touched: cleanDates((parsed as { touched?: unknown }).touched),
           grasp: cleanGrasp((parsed as { grasp?: unknown }).grasp),
+        };
+      }
+    }
+
+    /* Migrate v4 — the same question with three answers rather than five.
+     * Its answers map onto the new scale without inventing precision: "got"
+     * and "not" are the same claim at either end, and "almost" was the single
+     * hedge, which is "mostly" here. Nobody is credited with a finer answer
+     * than the one they actually gave. */
+    const v4 = localStorage.getItem(storageKey(scope, V4_KEY));
+    if (v4) {
+      const parsed = JSON.parse(v4);
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+        const OLD: Record<string, Grasp> = { got: "got", almost: "mostly", not: "not" };
+        const raw = (parsed as { grasp?: unknown }).grasp;
+        const grasp: Record<string, Record<string, Grasp>> = {};
+        if (raw && typeof raw === "object" && !Array.isArray(raw)) {
+          for (const [lessonId, row] of Object.entries(raw)) {
+            if (!row || typeof row !== "object" || Array.isArray(row)) continue;
+            const next: Record<string, Grasp> = {};
+            for (const [id, g] of Object.entries(row)) if (typeof g === "string" && OLD[g]) next[id] = OLD[g];
+            if (Object.keys(next).length) grasp[lessonId] = next;
+          }
+        }
+        return {
+          done: cleanMap((parsed as { done?: unknown }).done),
+          days: cleanDays((parsed as { days?: unknown }).days),
+          touched: cleanDates((parsed as { touched?: unknown }).touched),
+          grasp,
         };
       }
     }
@@ -490,9 +531,9 @@ export function graspStats(grasp: Record<string, Record<string, Grasp>>): { got:
   return { got, total };
 }
 
-/** The step the reader said landed worst. Needs a few answers before it will
- *  name anything — one "not yet" is a hard section, not a weak step. An
- *  "almost" counts as half, since it is half an answer. */
+/** The step the reader said landed worst, scored on the five-step scale
+ *  (see GRASP_WEIGHT). Needs a few answers before it will name anything —
+ *  one weak section is a hard section, not a weak step. */
 export function weakestLesson(
   grasp: Record<string, Record<string, Grasp>>,
   minAnswered = 3,
@@ -502,7 +543,7 @@ export function weakestLesson(
     const answers = Object.values(row);
     if (answers.length < minAnswered) continue;
     const got = answers.filter((g) => g === "got").length;
-    const score = (got + answers.filter((g) => g === "almost").length * 0.5) / answers.length;
+    const score = answers.reduce((n, g) => n + GRASP_WEIGHT[g], 0) / answers.length;
     if (score === 1) continue; // nothing to flag on a step that all landed
     if (!worst || score < worst.score) worst = { lessonId, got, total: answers.length, score };
   }
