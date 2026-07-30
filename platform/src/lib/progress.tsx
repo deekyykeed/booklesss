@@ -23,7 +23,11 @@ import { courseForNode } from "./courses";
  * syncing later is a write-through, not a rewrite.
  * ------------------------------------------------------------------ */
 
-const KEY = "booklesss:progress:v3";
+const KEY = "booklesss:progress:v4";
+/** v3 stored comprehension-check results (`quiz`) where v4 stores how well the
+ *  reader says a section landed. The two aren't the same claim, so v3's records
+ *  are dropped rather than translated — see read(). */
+const V3_KEY = "booklesss:progress:v3";
 /** v2 stored study days as a bare date list — no counts, no time. */
 const V2_KEY = "booklesss:progress:v2";
 /** v1 stored the bare lessonId -> checkpoint ids map, with no dates at all. */
@@ -49,11 +53,14 @@ export type StudyDay = {
   courseChecks?: Record<string, number>;
 };
 
-/** What a lesson's comprehension checks have shown: how many were answered
- *  there, and how many of those were right at the first attempt. First-try is
- *  the honest signal — a question answered right on the third go proves the
- *  explanation worked, not that it was known. */
-export type QuizRecord = { first: number; total: number };
+/** How well a section landed, in the reader's own words. Three answers, not
+ *  five: the middle one has to mean something, and "almost" is the only
+ *  hedge worth acting on. */
+export type Grasp = "got" | "almost" | "not";
+
+export const GRASPS: Grasp[] = ["got", "almost", "not"];
+
+const isGrasp = (v: unknown): v is Grasp => v === "got" || v === "almost" || v === "not";
 
 type State = {
   /** lessonId -> cleared checkpoint ids. */
@@ -65,8 +72,10 @@ type State = {
    *  is measured from; only accrues from the day this field shipped, so a
    *  lesson finished before then is untouched until it's next opened. */
   touched: Record<string, string>;
-  /** lessonId -> its comprehension-check record. */
-  quiz: Record<string, QuizRecord>;
+  /** lessonId -> checkpointId -> how well that section landed. Per checkpoint
+   *  rather than a running tally, so changing your mind overwrites one answer
+   *  instead of being counted twice. */
+  grasp: Record<string, Record<string, Grasp>>;
 };
 
 /* A day counts toward the streak once it carries a cleared checkpoint or two
@@ -89,7 +98,7 @@ type Snapshot = {
   hydrated: boolean;
 };
 
-const EMPTY_STATE: State = { done: {}, days: {}, touched: {}, quiz: {} };
+const EMPTY_STATE: State = { done: {}, days: {}, touched: {}, grasp: {} };
 const EMPTY: Snapshot = { scope: null, state: EMPTY_STATE, hydrated: false };
 
 /* Module-level: one reader per tab, so a singleton store is the whole state.
@@ -144,16 +153,16 @@ function cleanDates(raw: unknown): Record<string, string> {
   return out;
 }
 
-/** lessonId -> quiz record. A record claiming more first-try answers than
- *  answers is clamped rather than trusted. */
-function cleanQuiz(raw: unknown): Record<string, QuizRecord> {
+/** lessonId -> checkpointId -> grasp. Anything that isn't one of the three
+ *  answers is dropped rather than guessed at. */
+function cleanGrasp(raw: unknown): Record<string, Record<string, Grasp>> {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
-  const out: Record<string, QuizRecord> = {};
-  for (const [k, v] of Object.entries(raw)) {
-    if (!v || typeof v !== "object") continue;
-    const total = whole((v as QuizRecord).total);
-    const first = Math.min(total, whole((v as QuizRecord).first));
-    if (total) out[k] = { first, total };
+  const out: Record<string, Record<string, Grasp>> = {};
+  for (const [lessonId, v] of Object.entries(raw)) {
+    if (!v || typeof v !== "object" || Array.isArray(v)) continue;
+    const row: Record<string, Grasp> = {};
+    for (const [checkpointId, g] of Object.entries(v)) if (isGrasp(g)) row[checkpointId] = g;
+    if (Object.keys(row).length) out[lessonId] = row;
   }
   return out;
 }
@@ -188,7 +197,26 @@ function read(scope: string | null): State {
           done: cleanMap((parsed as { done?: unknown }).done),
           days: cleanDays((parsed as { days?: unknown }).days),
           touched: cleanDates((parsed as { touched?: unknown }).touched),
-          quiz: cleanQuiz((parsed as { quiz?: unknown }).quiz),
+          grasp: cleanGrasp((parsed as { grasp?: unknown }).grasp),
+        };
+      }
+    }
+
+    /* Migrate v3 — everything but its `quiz` records. Those counted how many
+     * comprehension questions were answered right at the first attempt, and the
+     * questions are gone; a first-try answer is not the same claim as "I got
+     * this", so translating one into the other would be inventing an answer the
+     * reader never gave. Ratings start empty and accrue from the next section
+     * they mark. Progress, study days and touch dates come across untouched. */
+    const v3 = localStorage.getItem(storageKey(scope, V3_KEY));
+    if (v3) {
+      const parsed = JSON.parse(v3);
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+        return {
+          done: cleanMap((parsed as { done?: unknown }).done),
+          days: cleanDays((parsed as { days?: unknown }).days),
+          touched: cleanDates((parsed as { touched?: unknown }).touched),
+          grasp: {},
         };
       }
     }
@@ -207,14 +235,14 @@ function read(scope: string | null): State {
       if (Array.isArray(rawDays)) {
         for (const d of rawDays) if (typeof d === "string") days[d] = { checks: 1, secs: 0, steps: 0 };
       }
-      return { done: cleanMap((parsed as { done?: unknown })?.done), days, touched: {}, quiz: {} };
+      return { done: cleanMap((parsed as { done?: unknown })?.done), days, touched: {}, grasp: {} };
     }
 
     /* Migrate whoever is still on v1. Their dates are genuinely unknown, so days
      * starts empty rather than backfilled with invented ones — a streak begins
      * the next time they study. */
     const v1 = localStorage.getItem(storageKey(scope, V1_KEY));
-    if (v1) return { done: cleanMap(JSON.parse(v1)), days: {}, touched: {}, quiz: {} };
+    if (v1) return { done: cleanMap(JSON.parse(v1)), days: {}, touched: {}, grasp: {} };
     return EMPTY_STATE;
   } catch {
     return EMPTY_STATE; // private mode, quota, or malformed JSON
@@ -293,24 +321,41 @@ function mutate(lessonId: string, next: (prev: string[]) => string[], markToday:
 }
 
 /**
- * Record the outcome of a comprehension check. Called once per question the
- * moment it is first answered correctly, with whether that was the first
- * attempt — the reader gets the tick either way, but only a first-attempt
- * answer counts toward knowing it.
+ * Answer a checkpoint: how well the section landed, and — because answering IS
+ * finishing the section — clear the checkpoint too.
+ *
+ * All three answers clear it, "not" included. The checkpoint records that the
+ * section was worked; the rating records whether it stuck, and they are
+ * different questions. Withholding progress from an honest "not yet" would
+ * only teach readers to press "Got it", which would cost the app the one
+ * signal this control exists to collect.
+ *
+ * Answering again overwrites — a section re-read and finally understood should
+ * say so, and nothing about the first answer is worth preserving.
  */
-export function recordCheck(lessonId: string, firstTry: boolean) {
+export function rate(lessonId: string, checkpointId: string, grasp: Grasp) {
   if (!snapshot.hydrated) return;
-  const prev = snapshot.state.quiz[lessonId] ?? { first: 0, total: 0 };
-  const state = {
-    ...snapshot.state,
-    quiz: {
-      ...snapshot.state.quiz,
-      [lessonId]: { first: prev.first + (firstTry ? 1 : 0), total: prev.total + 1 },
-    },
-  };
-  snapshot = { ...snapshot, state };
-  persist(snapshot.scope, state);
-  emit();
+  const row = { ...(snapshot.state.grasp[lessonId] ?? {}), [checkpointId]: grasp };
+  snapshot = { ...snapshot, state: { ...snapshot.state, grasp: { ...snapshot.state.grasp, [lessonId]: row } } };
+  // mutate() persists and emits, and credits the day for what was cleared.
+  mutate(
+    lessonId,
+    (prev) => (prev.includes(checkpointId) ? prev : [...prev, checkpointId]),
+    true,
+  );
+}
+
+/** Drop a checkpoint's answer — what un-ticking it means, since the rating
+ *  described a section the reader has just said they haven't done. */
+function clearRating(lessonId: string, checkpointId?: string) {
+  const row = snapshot.state.grasp[lessonId];
+  if (!row) return snapshot.state.grasp;
+  const next = { ...row };
+  if (checkpointId) delete next[checkpointId];
+  const grasp = { ...snapshot.state.grasp };
+  if (!checkpointId || !Object.keys(next).length) delete grasp[lessonId];
+  else grasp[lessonId] = next;
+  return grasp;
 }
 
 /**
@@ -432,29 +477,36 @@ export function daysStudiedIn(days: Record<string, StudyDay>, span = 7): number 
   return studyHistory(days, span).filter(counts).length;
 }
 
-/** First-try answers against answers given, across every lesson. */
-export function firstTryStats(quiz: Record<string, QuizRecord>): { first: number; total: number } {
-  let first = 0;
+/** Sections marked "got it" against sections answered, across every lesson. */
+export function graspStats(grasp: Record<string, Record<string, Grasp>>): { got: number; total: number } {
+  let got = 0;
   let total = 0;
-  for (const q of Object.values(quiz)) {
-    first += q.first;
-    total += q.total;
+  for (const row of Object.values(grasp)) {
+    for (const g of Object.values(row)) {
+      total++;
+      if (g === "got") got++;
+    }
   }
-  return { first, total };
+  return { got, total };
 }
 
-/** The lesson answered worst at the first attempt. Needs a few answers before
- *  it will name anything — one missed question is a bad day, not a weakness. */
+/** The step the reader said landed worst. Needs a few answers before it will
+ *  name anything — one "not yet" is a hard section, not a weak step. An
+ *  "almost" counts as half, since it is half an answer. */
 export function weakestLesson(
-  quiz: Record<string, QuizRecord>,
+  grasp: Record<string, Record<string, Grasp>>,
   minAnswered = 3,
-): { lessonId: string; first: number; total: number } | null {
-  let worst: { lessonId: string; first: number; total: number } | null = null;
-  for (const [lessonId, q] of Object.entries(quiz)) {
-    if (q.total < minAnswered || q.first === q.total) continue;
-    if (!worst || q.first / q.total < worst.first / worst.total) worst = { lessonId, ...q };
+): { lessonId: string; got: number; total: number } | null {
+  let worst: { lessonId: string; got: number; total: number; score: number } | null = null;
+  for (const [lessonId, row] of Object.entries(grasp)) {
+    const answers = Object.values(row);
+    if (answers.length < minAnswered) continue;
+    const got = answers.filter((g) => g === "got").length;
+    const score = (got + answers.filter((g) => g === "almost").length * 0.5) / answers.length;
+    if (score === 1) continue; // nothing to flag on a step that all landed
+    if (!worst || score < worst.score) worst = { lessonId, got, total: answers.length, score };
   }
-  return worst;
+  return worst ? { lessonId: worst.lessonId, got: worst.got, total: worst.total } : null;
 }
 
 /** Finished steps not opened in `after` days, oldest first — what is going
@@ -517,8 +569,10 @@ export type ProgressApi = {
   totalSecs: number;
   /** Every recorded day, for the activity chart. */
   days: Record<string, StudyDay>;
-  /** lessonId -> its comprehension-check record. */
-  quiz: Record<string, QuizRecord>;
+  /** lessonId -> checkpointId -> how well that section landed. */
+  grasp: Record<string, Record<string, Grasp>>;
+  /** This checkpoint's answer, or null if it hasn't been answered. */
+  graspOf: (lessonId: string, checkpointId: string) => Grasp | null;
   /** lessonId -> the date it was last read or worked. */
   touched: Record<string, string>;
   /** Cleared checkpoints per lesson, for staleness. */
@@ -550,6 +604,10 @@ export function useProgress(): ProgressApi {
     },
     toggle: (lessonId, checkpointId) => {
       const adding = !(done[lessonId] ?? []).includes(checkpointId);
+      // Un-ticking says the section isn't done after all, so its answer goes
+      // with it. (Ticking never lands here with a rating to keep: rate() is
+      // what clears a checkpoint the reader has answered.)
+      if (!adding) snapshot = { ...snapshot, state: { ...snapshot.state, grasp: clearRating(lessonId, checkpointId) } };
       mutate(
         lessonId,
         (prev) =>
@@ -560,14 +618,19 @@ export function useProgress(): ProgressApi {
       );
     },
     completeAll: (lessonId) => mutate(lessonId, () => checkpointsFor(lessonId), true),
-    reset: (lessonId) => mutate(lessonId, () => [], false),
+    reset: (lessonId) => {
+      snapshot = { ...snapshot, state: { ...snapshot.state, grasp: clearRating(lessonId) } };
+      mutate(lessonId, () => [], false);
+    },
     streak: snap.hydrated ? streakFrom(days) : 0,
     bestStreak: snap.hydrated ? longestStreakFrom(days) : 0,
     daysStudied: snap.hydrated ? Object.values(days).filter(counts).length : 0,
     studiedToday: snap.hydrated && counts(days[today()]),
     totalSecs: snap.hydrated ? Object.values(days).reduce((n, d) => n + d.secs, 0) : 0,
     days: snap.hydrated ? days : EMPTY_STATE.days,
-    quiz: snap.hydrated ? snap.state.quiz : EMPTY_STATE.quiz,
+    grasp: snap.hydrated ? snap.state.grasp : EMPTY_STATE.grasp,
+    graspOf: (lessonId, checkpointId) =>
+      (snap.hydrated ? snap.state.grasp[lessonId]?.[checkpointId] : undefined) ?? null,
     touched: snap.hydrated ? snap.state.touched : EMPTY_STATE.touched,
     done: snap.hydrated ? done : EMPTY_STATE.done,
   };

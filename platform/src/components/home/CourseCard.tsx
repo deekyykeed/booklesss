@@ -77,20 +77,22 @@ export function CourseCard({
   const started = done > 0;
 
   return (
-    <div className="course-card squircle flex flex-col p-4 lg:p-5">
+    <div className="course-card squircle flex min-h-[250px] flex-col p-3.5 lg:min-h-[268px] lg:p-5">
       {/* This course's reading over the last fortnight, drawn exactly as the
           stat tiles draw theirs: a backdrop in the course's own hue, anchored
           to the card's bottom edge behind the text, curve kept to the right
           half. Same component, same defaults, so the two read as one set. */}
       <Spark series={time.series} tone={tone} />
 
-      {/* The card's mark top-left, the small figures right — effort and
-          company on one quiet line. The score lives on the title line below. */}
-      <div className="relative flex items-start justify-between gap-3">
+      {/* The card's mark, then the small figures under it — a portrait
+          header rather than a wide one, so two cards can stand side by side on
+          a phone without the figures colliding with the mark. The score lives
+          on the title line below. */}
+      <div className="relative flex flex-col gap-3">
         <span className="text-ink">
           <CardMark size={24} />
         </span>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
           <Figure
             label="day streak on this course"
             value={hydrated ? `${time.streak}d` : "–"}
@@ -111,22 +113,17 @@ export function CourseCard({
         </div>
       </div>
 
-      {/* The card's foot. The title keeps its own full-width line; the score
-          sits in its own container directly beneath it — a bordered chip in
-          the card's chrome, the number in the display face with its quiet
-          caption. Brand green from 70 up; the working stays on hover. */}
-      <div className="relative mt-auto pt-8">
-        {/* Title and score share the one row: the title fills and may wrap
-            to a second line when long; the chip keeps its place at the far
-            end, hanging from the row's top, with the gap between them. */}
-        <div className="flex items-start justify-between gap-3">
-          <p className="min-w-0 flex-1 font-display text-[21px] font-semibold leading-tight tracking-[-0.01em] text-ink">
-            {course.title}
-          </p>
-          {/* Just the percentage, in the title's own voice — no container,
-              no marks. The working stays on hover. */}
+      {/* The card's foot. Brand green on the score from 70 up; the working
+          stays on hover. */}
+      <div className="relative mt-auto pt-5 lg:pt-6">
+        {/* The score sits ABOVE the title rather than beside it. At half a
+            phone's width there isn't room for both on one line, and a
+            two-line title pushing a percentage around reads as a bug. */}
+        <div className="flex flex-col gap-1">
+          {/* Just the percentage, above the title and quieter than it — the
+              title names the course, the score only qualifies it. */}
           <span
-            className="shrink-0 font-display text-[21px] font-semibold leading-tight tracking-[-0.01em]"
+            className="font-display text-[15px] font-semibold leading-none tracking-[-0.01em]"
             style={{ color: time.perf && time.perf.score >= 70 ? "var(--color-brand-deep)" : "var(--color-ink)" }}
             title={
               time.perf
@@ -143,11 +140,14 @@ export function CourseCard({
             {time.perf ? `${time.perf.score}%` : "–"}
             <span className="sr-only"> performance score</span>
           </span>
+          <p className="font-display text-[19px] font-semibold leading-tight tracking-[-0.01em] text-ink lg:text-[21px]">
+            {course.title}
+          </p>
         </div>
 
-        {/* What the course is about, held to two lines — the body the card
-            was missing with the title standing alone. */}
-        <p className="mt-2 line-clamp-2 text-[12.5px] leading-5 text-muted">{course.subtitle}</p>
+        {/* What the course is about. Three lines, not two: the card is
+            narrower than it was, and the same sentence needs the extra one. */}
+        <p className="mt-2 line-clamp-3 text-[12.5px] leading-5 text-muted">{course.subtitle}</p>
 
         {/* The button IS the progress bar: full width, one word, its fill
             showing how far through the course they are. Pressing it opens
@@ -167,7 +167,7 @@ export function CourseCard({
               transition: "width 600ms cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           />
-          <span className="relative min-w-0 truncate text-[13px] leading-5 text-ink">
+          <span className="relative min-w-0 truncate text-[12.5px] leading-5 text-ink lg:text-[13px]">
             <span className="text-placeholder">{started ? "Resume · " : "Start · "}</span>
             {hydrated ? labelFor(next) : " "}
           </span>

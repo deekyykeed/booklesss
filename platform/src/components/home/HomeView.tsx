@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { COURSES } from "@/lib/courses";
-import { firstTryStats, staleLessons, useProgress, weakestLesson } from "@/lib/progress";
+import { graspStats, staleLessons, useProgress, weakestLesson } from "@/lib/progress";
 import { overallPerformance, type Performance } from "@/lib/performance";
 import { MynaIcon } from "@/components/icons/myna";
 import { useLiveReaders } from "@/lib/presence";
@@ -29,9 +29,9 @@ import { courseTone } from "./tones";
 /* One hue per stat. Validated together against the card surface with the
  * dataviz script: lightness band, chroma floor, all-pairs CVD separation and
  * contrast all pass — so the four hues stay as a set even as the stats they
- * carry change. Green sits on First try deliberately: completion is the one
- * thing green means across this app, and a question answered right first time
- * is exactly that. The score wears the warm orange the days tile used to. */
+ * carry change. Green sits on "Got it" deliberately: completion is the one
+ * thing green means across this app, and a section the reader says landed is
+ * exactly that. The score wears the warm orange the days tile used to. */
 const TONE = {
   score: "#eb6834",
   accuracy: "#17754d",
@@ -68,7 +68,7 @@ export function HomeView({
    *  is signed in. Kept as a slot so this component stays Clerk-free. */
   afterGreeting?: React.ReactNode;
 }) {
-  const { hydrated, doneCount, isComplete, streak, daysStudied, studiedToday, days, quiz, touched, done: cleared } =
+  const { hydrated, doneCount, isComplete, streak, daysStudied, studiedToday, days, grasp, touched, done: cleared } =
     useProgress();
 
   /* Who's reading right now, per course — watching only, this page isn't a
@@ -108,19 +108,19 @@ export function HomeView({
   );
 
   /* The four tiles' figures. Each only appears once it has been measured:
-   * quiz records and touch dates accrue from the day they shipped, so a fresh
+   * answers and touch dates accrue from the day they shipped, so a fresh
    * reader sees a placeholder rather than a flattering zero. */
   const tiles = useMemo(() => {
     if (!hydrated) return null;
-    const answered = firstTryStats(quiz);
+    const answered = graspStats(grasp);
     const stale = staleLessons(cleared, touched);
     return {
       answered,
-      accuracy: answered.total ? Math.round((answered.first / answered.total) * 100) : null,
+      landed: answered.total ? Math.round((answered.got / answered.total) * 100) : null,
       stale,
-      weakest: weakestLesson(quiz),
+      weakest: weakestLesson(grasp),
     };
-  }, [hydrated, quiz, touched, cleared]);
+  }, [hydrated, grasp, touched, cleared]);
 
   /* Facts, not encouragement dressed as insight. */
   const line = !hydrated
@@ -168,13 +168,14 @@ export function HomeView({
             series={[]}
             foot={scoreFoot(perf, done.checks)}
           />
-          {/* Whether it stuck. Every checkpoint is a passed comprehension
-              check, so this is the share answered right at the first attempt —
-              the one figure here an exam would recognise. */}
+          {/* Whether it stuck — the share of finished sections the reader
+              said they got, from the answer at the end of each one. Their own
+              verdict, not a test result, which is the only claim the app can
+              honestly make about understanding today. */}
           <Stat
             hydrated={hydrated}
-            label="First try"
-            value={tiles && tiles.accuracy !== null ? `${tiles.accuracy}%` : "–"}
+            label="Got it"
+            value={tiles && tiles.landed !== null ? `${tiles.landed}%` : "–"}
             unit={tiles?.answered.total ? `of ${tiles.answered.total}` : undefined}
             tone={TONE.accuracy}
             icon={<MynaIcon name="check-circle" size={20} className="shrink-0" />}
@@ -182,9 +183,9 @@ export function HomeView({
             foot={
               tiles?.answered.total
                 ? {
-                    lead: `${tiles.answered.first} right`,
-                    tail: "first time",
-                    good: (tiles.accuracy ?? 0) >= 70,
+                    lead: `${tiles.answered.got} landed`,
+                    tail: `of ${tiles.answered.total} answered`,
+                    good: (tiles.landed ?? 0) >= 70,
                   }
                 : { lead: "None", tail: "answered yet", good: false }
             }
@@ -206,14 +207,14 @@ export function HomeView({
                 : { lead: "Nothing", tail: "needs revisiting", good: true }
             }
           />
-          {/* What to fix next: the step answered worst first time. Named only
-              once a few questions have been answered there — one miss is a bad
-              day, not a weakness. */}
+          {/* What to fix next: the step whose sections landed worst. Named
+              only once a few of them have been answered there — one "not yet"
+              is a hard section, not a weak step. */}
           <Stat
             hydrated={hydrated}
             label="Weakest step"
-            value={tiles?.weakest ? `${Math.round((tiles.weakest.first / tiles.weakest.total) * 100)}%` : "–"}
-            unit={tiles?.weakest ? "first try" : undefined}
+            value={tiles?.weakest ? `${Math.round((tiles.weakest.got / tiles.weakest.total) * 100)}%` : "–"}
+            unit={tiles?.weakest ? "got it" : undefined}
             tone={TONE.weak}
             icon={<MynaIcon name="target" size={20} className="shrink-0" />}
             series={[]}
@@ -229,7 +230,7 @@ export function HomeView({
       {/* ---- the courses themselves ---- */}
       <section id="courses" className="mt-8 scroll-mt-20 pb-10">
         <h2 className="dash-heading">My courses</h2>
-        <div className="mt-2.5 grid gap-3 md:grid-cols-2">
+        <div className="mt-2.5 grid grid-cols-2 gap-2 lg:gap-3">
           {COURSES.map((c) => {
             const cDone = hydrated ? c.lessonIds.reduce((n, id) => n + doneCount(id), 0) : 0;
             const cSteps = hydrated ? c.lessonIds.filter((id) => isComplete(id)).length : 0;

@@ -1,123 +1,94 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { checkpointsFor, hasChecks, labelFor, nextLessonId, pathForId, type Check } from "@/lib/course";
-import { recordCheck, useProgress } from "@/lib/progress";
+import { checkpointsFor, labelFor, nextLessonId, pathForId } from "@/lib/course";
+import { rate, useProgress, type Grasp } from "@/lib/progress";
+import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
 import { CompletionRing } from "./CompletionRing";
-import { CheckQuiz } from "./CheckQuiz";
 
-/* Hand-inlined rather than via <Icon>: that helper imports the whole Solar
- * JSON, which would land in the client bundle for one glyph. Same reasoning
- * as the composer's icons in RightPanel. */
-function CheckMark({ done, quiz }: { done: boolean; quiz?: boolean }) {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <circle
-        cx="12"
-        cy="12"
-        r="9.25"
-        fill={done ? "var(--color-brand)" : "none"}
-        stroke={done ? "var(--color-brand)" : "currentColor"}
-        strokeWidth="1.5"
-        style={{ transition: "fill 200ms ease, stroke 200ms ease" }}
-      />
-      {/* A question mark where there's a question to answer, so the control
-          says what it will do before you press it. Once earned, both states
-          settle into the same tick. */}
-      {quiz && !done ? (
-        <path
-          d="M9.6 9.3a2.5 2.5 0 1 1 3.3 2.37c-.55.2-.9.72-.9 1.3v.4"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-        />
-      ) : (
-        /* Ghosted at rest, half-lit on hover, solid once done — so the control
-           reads as "there is a tick to earn here" before you touch it. */
-        <path
-          className="checkpoint-tick"
-          d="m8.4 12.15 2.45 2.45 4.75-5.2"
-          fill="none"
-          stroke={done ? "#fff" : "currentColor"}
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      )}
-      {quiz && !done && <circle cx="12" cy="16.1" r="0.95" fill="currentColor" />}
-    </svg>
-  );
-}
+/* The three answers, in the order they're offered: best first, so the common
+ * case is the shortest reach. Each carries its own hue — green is completion,
+ * as everywhere else in this app; amber is the hedge; red is the honest miss.
+ * All three are dark enough to read as 12.5px text on the page (5.2:1 or
+ * better against the content surface). */
+const ANSWERS: { id: Grasp; label: string; icon: MynaIconName; tone: string }[] = [
+  { id: "got", label: "Got it", icon: "check-circle", tone: "#17754d" },
+  { id: "almost", label: "Almost", icon: "question-circle", tone: "#96601f" },
+  { id: "not", label: "Not yet", icon: "x-circle", tone: "#a33b31" },
+];
 
-/* End-of-section checkpoint. One per section, so working your way down a step
- * fills its ring; the last one completes the step.
+/* End-of-section checkpoint — now a question rather than a tick.
  *
- * Where the section carries a comprehension check, the tick has to be earned
- * by answering it — clicking opens the question rather than granting the tick.
- * Sections without one keep the plain self-marked tick. Already-done
- * checkpoints untick directly, so progress stays the reader's to correct. */
+ * "Mark as done" only ever asked whether the reader had scrolled past. Asking
+ * whether the section landed costs the same one tap and returns something the
+ * dashboard can actually use: which steps are understood and which need
+ * another pass. Any of the three answers clears the checkpoint (see rate() —
+ * withholding progress from an honest "Not yet" would just teach everyone to
+ * press "Got it"); pressing the answer you already gave takes it back. */
 export function Checkpoint({
   lessonId,
   checkpointId,
   heading,
-  check,
 }: {
   lessonId: string;
   checkpointId: string;
   heading: string;
-  check?: Check;
 }) {
-  const { hydrated, isDone, toggle } = useProgress();
-  const [quizOpen, setQuizOpen] = useState(false);
+  const { hydrated, isDone, graspOf, toggle } = useProgress();
   // Before hydration the server HTML knows nothing, so everything renders
-  // unticked and settles once localStorage has been read.
+  // unanswered and settles once localStorage has been read.
   const done = hydrated && isDone(lessonId, checkpointId);
-  const gated = !!check && !done;
+  const chosen = hydrated ? graspOf(lessonId, checkpointId) : null;
 
   return (
     <div className="checkpoint-row">
       <span className="checkpoint-rule" aria-hidden="true" />
-      <button
-        type="button"
-        onClick={() => (gated ? setQuizOpen(true) : toggle(lessonId, checkpointId))}
-        aria-pressed={done}
-        aria-haspopup={gated ? "dialog" : undefined}
-        data-done={done ? "" : undefined}
-        className="checkpoint-btn squircle"
-      >
-        <CheckMark done={done} quiz={!!check} />
-        <span>{done ? "Done" : check ? "Check understanding" : "Mark as done"}</span>
-      </button>
-
-      {quizOpen && check && (
-        <CheckQuiz
-          check={check}
-          heading={heading}
-          onPass={(firstTry) => {
-            recordCheck(lessonId, firstTry);
-            toggle(lessonId, checkpointId);
-            setQuizOpen(false);
-          }}
-          onClose={() => setQuizOpen(false)}
-        />
-      )}
+      <div className="grasp-group" role="group" aria-label={`Did "${heading}" land?`} data-answered={chosen ?? undefined}>
+        <span className="grasp-ask">{chosen ? "You said" : "Did that land?"}</span>
+        {ANSWERS.map((a) => {
+          const active = chosen === a.id;
+          return (
+            <button
+              key={a.id}
+              type="button"
+              /* Pressing the current answer takes it back — the same
+                 second-press-undoes rule the tick had, so an answer stays the
+                 reader's to correct. */
+              onClick={() => (active ? toggle(lessonId, checkpointId) : rate(lessonId, checkpointId, a.id))}
+              aria-pressed={active}
+              data-active={active ? "" : undefined}
+              className="grasp-btn squircle"
+              style={{ "--grasp-tone": a.tone } as React.CSSProperties}
+            >
+              <MynaIcon name={active ? (`${a.icon}-solid` as MynaIconName) : a.icon} size={16} />
+              <span>{a.label}</span>
+            </button>
+          );
+        })}
+      </div>
+      {/* Marked done some other way (the step's "Mark all done"), so there is
+          no answer to show as pressed — say what happened rather than leaving
+          three untouched buttons under a finished section. */}
+      {done && !chosen && <span className="grasp-plain">Done</span>}
     </div>
   );
 }
 
 /* Closing panel of every step: the ring at full size, how far you've got, and
- * the way on. Complete the last checkpoint and this is what confirms it. */
+ * the way on. Answer the last checkpoint and this is what confirms it. */
 export function StepComplete({ lessonId }: { lessonId: string }) {
-  const { hydrated, doneCount, ratio, isComplete, completeAll, reset } = useProgress();
+  const { hydrated, doneCount, ratio, isComplete, completeAll, reset, grasp } = useProgress();
   const total = checkpointsFor(lessonId).length;
   if (!total) return null;
 
   const done = hydrated ? doneCount(lessonId) : 0;
   const complete = hydrated && isComplete(lessonId);
   const next = nextLessonId(lessonId);
-  const gated = hasChecks(lessonId);
+
+  /* What the reader said about this step, so the closer reports the sections
+   * that didn't land rather than only counting the ones that are finished. */
+  const answers = Object.values(grasp[lessonId] ?? {});
+  const shaky = answers.filter((g) => g !== "got").length;
 
   return (
     <div className="step-complete squircle" data-complete={complete ? "" : undefined}>
@@ -135,10 +106,10 @@ export function StepComplete({ lessonId }: { lessonId: string }) {
           </p>
           <p className="mt-0.5 text-[13.5px] leading-5 text-muted">
             {complete
-              ? "Every checkpoint on this step is ticked."
-              : gated
-                ? `${done} of ${total} checkpoints — answer each section's check to finish.`
-                : `${done} of ${total} checkpoints ticked.`}
+              ? shaky > 0
+                ? `Every section answered — ${shaky} you'd want another pass at.`
+                : "Every section here landed."
+              : `${done} of ${total} sections answered.`}
           </p>
         </div>
       </div>
@@ -149,14 +120,13 @@ export function StepComplete({ lessonId }: { lessonId: string }) {
             Reset step
           </button>
         ) : (
-          /* "Mark all done" would tick every checkpoint at once — which on a
-             step with comprehension checks is a button for skipping them, so
-             it only exists where the checkpoints are self-marked anyway. */
-          !gated && (
-            <button type="button" onClick={() => completeAll(lessonId)} className="step-complete-btn squircle">
-              Mark all done
-            </button>
-          )
+          /* Clears the remaining checkpoints without answering them — for a
+             step being revisited, where the reader doesn't want to re-answer
+             what they already know. It records progress, not understanding,
+             which is why the sections it clears stay out of the figures. */
+          <button type="button" onClick={() => completeAll(lessonId)} className="step-complete-btn squircle">
+            Mark rest done
+          </button>
         )}
         {next && (
           <Link href={pathForId(next)} className="step-complete-next squircle" data-primary={complete ? "" : undefined}>

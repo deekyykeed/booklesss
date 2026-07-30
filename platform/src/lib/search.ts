@@ -13,10 +13,10 @@ import { COURSE, breadcrumbFor, pathForId, type NavNode, type Section } from "./
  * for "price maker" lands on the paragraph that says it rather than at the
  * top of Monopoly.
  *
- * DELIBERATELY NOT INDEXED: `section.check`. Those are the comprehension
- * questions — indexing the options or the explanation would let a reader
- * search up the answer without reading the step, which is exactly what the
- * checks exist to prevent.
+ * DELIBERATELY NOT INDEXED: `section.check`. Those are the dormant
+ * comprehension questions (no longer rendered — see course.ts). If they are
+ * ever brought back, indexing the options or the explanation would let a
+ * reader search up an answer without reading the step, so keep them out.
  * ------------------------------------------------------------------ */
 
 export type Hit = {
