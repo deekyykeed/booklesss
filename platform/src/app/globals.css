@@ -797,26 +797,13 @@
    * one number wherever they look.
    * ------------------------------------------------------------------ */
 
-  /* The question lands at the END of the section, after a rule that runs out
-     of the text and into it — so it reads as the section closing, not as
-     another paragraph. On a phone the rule gives up its width first and the
-     answers wrap onto their own line rather than squeezing. */
+  /* The answer sits at the end of the section, set off by space above it
+     rather than a divider line. */
   .checkpoint-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-top: 18px;
-    flex-wrap: wrap;
+    margin-top: 20px;
   }
-  .checkpoint-rule {
-    height: 1px;
-    flex: 1;
-    min-width: 24px;
-    background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1));
-  }
-  /* The five buttons in a row. On desktop the rule's flex-1 pushes them to the
-     end of the line; on a phone the whole group wraps below the rule and the
-     pills wrap among themselves. */
+  /* The three buttons in a row, left-aligned under the text; they wrap on a
+     narrow phone rather than squeezing. */
   .grasp-group {
     display: flex;
     flex-wrap: wrap;

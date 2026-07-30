@@ -23,8 +23,10 @@ import { courseForNode } from "./courses";
  * syncing later is a write-through, not a rewrite.
  * ------------------------------------------------------------------ */
 
-const KEY = "booklesss:progress:v5";
-/** v4 asked the same question with three answers instead of five. */
+const KEY = "booklesss:progress:v6";
+/** v5 asked the same question with five answers instead of three. */
+const V5_KEY = "booklesss:progress:v5";
+/** v4 asked it with these same three answers. */
 const V4_KEY = "booklesss:progress:v4";
 /** v3 stored comprehension-check results (`quiz`) where v4 stores how well the
  *  reader says a section landed. The two aren't the same claim, so v3's records
@@ -55,20 +57,17 @@ export type StudyDay = {
   courseChecks?: Record<string, number>;
 };
 
-/** How well a section landed, in the reader's own words — five steps, best
- *  first, drawn as a signal ramp of five bars down to one. */
-export type Grasp = "got" | "mostly" | "half" | "barely" | "not";
+/** How well a section landed, in the reader's own words — three steps: got
+ *  it, sort of, not yet. Three because the middle has to mean something, and
+ *  finer gradations were more scale than a self-rating can honestly carry. */
+export type Grasp = "got" | "almost" | "not";
 
-export const GRASPS: Grasp[] = ["got", "mostly", "half", "barely", "not"];
+export const GRASPS: Grasp[] = ["got", "almost", "not"];
 
-/** What each answer is worth when a step's answers are averaged. Evenly
- *  spaced, because the scale is: nothing here claims that "mostly" is nearer
- *  to "got" than "half" is to "mostly". */
+/** What each answer is worth when a step's answers are averaged. */
 export const GRASP_WEIGHT: Record<Grasp, number> = {
   got: 1,
-  mostly: 0.75,
-  half: 0.5,
-  barely: 0.25,
+  almost: 0.5,
   not: 0,
 };
 
@@ -214,33 +213,42 @@ function read(scope: string | null): State {
       }
     }
 
-    /* Migrate v4 — the same question with three answers rather than five.
-     * Its answers map onto the new scale without inventing precision: "got"
-     * and "not" are the same claim at either end, and "almost" was the single
-     * hedge, which is "mostly" here. Nobody is credited with a finer answer
-     * than the one they actually gave. */
-    const v4 = localStorage.getItem(storageKey(scope, V4_KEY));
-    if (v4) {
-      const parsed = JSON.parse(v4);
-      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
-        const OLD: Record<string, Grasp> = { got: "got", almost: "mostly", not: "not" };
-        const raw = (parsed as { grasp?: unknown }).grasp;
-        const grasp: Record<string, Record<string, Grasp>> = {};
-        if (raw && typeof raw === "object" && !Array.isArray(raw)) {
-          for (const [lessonId, row] of Object.entries(raw)) {
-            if (!row || typeof row !== "object" || Array.isArray(row)) continue;
-            const next: Record<string, Grasp> = {};
-            for (const [id, g] of Object.entries(row)) if (typeof g === "string" && OLD[g]) next[id] = OLD[g];
-            if (Object.keys(next).length) grasp[lessonId] = next;
-          }
+    /* Migrate v5 (five answers) and v4 (these same three) — both carry a
+     * `grasp` map, only the vocabulary differs. Collapsing five to three keeps
+     * the poles and folds the middle three into "almost": coarsening an answer
+     * is honest, where inventing a finer one wouldn't be. v4's words already
+     * are the three, so its mapping is identity. */
+    const FROM5: Record<string, Grasp> = {
+      got: "got",
+      mostly: "almost",
+      half: "almost",
+      barely: "almost",
+      not: "not",
+    };
+    for (const [key, map] of [
+      [V5_KEY, FROM5],
+      [V4_KEY, { got: "got", almost: "almost", not: "not" } as Record<string, Grasp>],
+    ] as const) {
+      const older = localStorage.getItem(storageKey(scope, key));
+      if (!older) continue;
+      const parsed = JSON.parse(older);
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) continue;
+      const rawGrasp = (parsed as { grasp?: unknown }).grasp;
+      const grasp: Record<string, Record<string, Grasp>> = {};
+      if (rawGrasp && typeof rawGrasp === "object" && !Array.isArray(rawGrasp)) {
+        for (const [lessonId, row] of Object.entries(rawGrasp)) {
+          if (!row || typeof row !== "object" || Array.isArray(row)) continue;
+          const next: Record<string, Grasp> = {};
+          for (const [id, g] of Object.entries(row)) if (typeof g === "string" && map[g]) next[id] = map[g];
+          if (Object.keys(next).length) grasp[lessonId] = next;
         }
-        return {
-          done: cleanMap((parsed as { done?: unknown }).done),
-          days: cleanDays((parsed as { days?: unknown }).days),
-          touched: cleanDates((parsed as { touched?: unknown }).touched),
-          grasp,
-        };
       }
+      return {
+        done: cleanMap((parsed as { done?: unknown }).done),
+        days: cleanDays((parsed as { days?: unknown }).days),
+        touched: cleanDates((parsed as { touched?: unknown }).touched),
+        grasp,
+      };
     }
 
     /* Migrate v3 — everything but its `quiz` records. Those counted how many

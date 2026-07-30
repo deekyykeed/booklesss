@@ -161,7 +161,12 @@ export function overallPerformance(
    * carrying a single course. */
   const target = Math.max(1, DEFAULT_WEEKLY_CHECKS);
 
-  const weigh = (cov: number, con: number, vel: number) => 45 * cov + 30 * con + 25 * vel;
+  /* Effort-first weighting, at the owner's call: showing up (consistency) and
+   * this week's work (velocity) together are 75% of the number, and how much
+   * of the course is covered only 25%. A reader who turns up and works moves
+   * the score well before the library is anywhere near finished — the point
+   * being to reward the effort, not just the finished total. */
+  const weigh = (cov: number, con: number, vel: number) => 25 * cov + 40 * con + 35 * vel;
 
   const score = weigh(coverage, Math.min(1, weekDays / 5), Math.min(1, weekChecks / target));
   const coveragePrev = totalCheckpoints > 0 ? Math.min(1, Math.max(0, done - weekChecks) / totalCheckpoints) : 0;
@@ -179,4 +184,42 @@ export function overallPerformance(
     weekChecks,
     weekDays,
   };
+}
+
+/**
+ * The overall score recomputed for each of the last `span` days — the
+ * Performance tile's sparkline. Every point is the same effort-first formula
+ * overallPerformance uses, evaluated as the score stood that day:
+ *
+ *   coverage      cumulative checkpoints up to that day (today's total minus
+ *                 what was cleared after it — un-ticks aren't dated, so this is
+ *                 the checkpoint record, same basis the rest of the app uses)
+ *   consistency   study days in the seven ending that day
+ *   velocity      checkpoints in that same trailing week
+ *
+ * so the line ends exactly on today's number rather than being a proxy for it.
+ * Six extra days are read behind the window to fill each day's trailing week.
+ */
+export function overallScoreHistory(
+  days: Record<string, StudyDay>,
+  done: number,
+  totalCheckpoints: number,
+  span = 14,
+): number[] {
+  if (totalCheckpoints <= 0) return [];
+  const target = Math.max(1, DEFAULT_WEEKLY_CHECKS);
+  const padded = studyHistory(days, span + 6);
+  const start = padded.length - span; // first displayed day
+  const out: number[] = [];
+  for (let i = start; i < padded.length; i++) {
+    // Cumulative coverage: today's total, less everything cleared after this day.
+    let clearedAfter = 0;
+    for (let j = i + 1; j < padded.length; j++) clearedAfter += padded[j].checks;
+    const coverage = Math.min(1, Math.max(0, done - clearedAfter) / totalCheckpoints);
+    const seven = padded.slice(Math.max(0, i - 6), i + 1);
+    const weekDays = seven.filter((d) => d.secs >= STUDY_DAY_MIN_SECS || d.checks > 0).length;
+    const weekChecks = seven.reduce((n, d) => n + d.checks, 0);
+    out.push(25 * coverage + 40 * Math.min(1, weekDays / 5) + 35 * Math.min(1, weekChecks / target));
+  }
+  return out;
 }

@@ -37,15 +37,11 @@ const ICONS = [
   "calendar-solid",
   "cog",
   "cog-solid",
-  // the end-of-section answer: a confidence ramp, tick down to cross
+  // the end-of-section answer: got it / almost / not yet
   "check-circle",
   "check-circle-solid",
-  "smile",
-  "smile-solid",
   "circle-half",
   "circle-half-solid",
-  "sad",
-  "sad-solid",
   "x-circle",
   "x-circle-solid",
   // progress + the dashboard's stat tiles (check-circle above serves both)
