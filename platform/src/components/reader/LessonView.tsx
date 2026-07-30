@@ -206,7 +206,7 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
             {/* One checkpoint closes each section — working down the step is
                 what fills the ring. Where the section carries a check, the
                 tick is earned by answering it. */}
-            <Checkpoint lessonId={lessonId} checkpointId={s.id} heading={s.heading} check={s.check} />
+            <Checkpoint lessonId={lessonId} checkpointId={s.id} heading={s.heading} />
           </section>
         ))}
       </div>

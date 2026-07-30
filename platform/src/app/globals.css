@@ -647,37 +647,6 @@
   .course-resume:hover {
     background-color: #ffffff;
   }
-  /* The live mark: a green dot with a ring that blooms out of it and fades,
-     over and over — the universal "this is happening now". Dot and ring both
-     take the brand green; the ring is a ::before so the dot needs no extra
-     markup. transform/opacity only, so it stays on the compositor. */
-  .live-dot {
-    position: relative;
-    width: 7px;
-    height: 7px;
-    flex-shrink: 0;
-    border-radius: 9999px;
-    background-color: var(--color-brand);
-  }
-  .live-dot::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    border: 1.5px solid var(--color-brand);
-    animation: livePulse 1.3s cubic-bezier(0.16, 1, 0.3, 1) infinite;
-  }
-  @keyframes livePulse {
-    0% {
-      transform: scale(1);
-      opacity: 0.9;
-    }
-    70%,
-    100% {
-      transform: scale(2.8);
-      opacity: 0;
-    }
-  }
 
   /* The footer arrow leans into the door on hover — same spring the rest of
      the app eases with, transform-only. */
@@ -828,52 +797,75 @@
    * one number wherever they look.
    * ------------------------------------------------------------------ */
 
-  /* The tick lands at the END of the section, after a rule that runs out of
-     the text and into it — so it reads as the section closing, not as another
-     paragraph. */
+  /* The question lands at the END of the section, after a rule that runs out
+     of the text and into it — so it reads as the section closing, not as
+     another paragraph. On a phone the rule gives up its width first and the
+     answers wrap onto their own line rather than squeezing. */
   .checkpoint-row {
     display: flex;
     align-items: center;
     gap: 12px;
     margin-top: 18px;
+    flex-wrap: wrap;
   }
   .checkpoint-rule {
     height: 1px;
     flex: 1;
+    min-width: 24px;
     background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1));
   }
-  .checkpoint-btn {
+  .grasp-group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-wrap: wrap;
+  }
+  /* The question itself, in the muted voice the rest of the section furniture
+     speaks. It sits inside the group so it wraps with the answers. */
+  .grasp-ask {
+    margin-right: 6px;
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--color-placeholder);
+  }
+  .grasp-btn {
     display: inline-flex;
     flex-shrink: 0;
     align-items: center;
-    gap: 7px;
+    gap: 6px;
     height: 30px;
-    padding: 0 11px 0 7px;
+    padding: 0 10px 0 8px;
     border-radius: 15px;
     font-family: var(--font-sans);
     font-size: 12.5px;
     font-weight: 500;
     color: var(--color-muted);
-    transition: color 160ms ease, background-color 160ms ease;
+    transition: color 160ms ease, background-color 160ms ease, opacity 160ms ease;
   }
-  .checkpoint-btn:hover {
+  .grasp-btn:hover {
     background-color: rgba(0, 0, 0, 0.04);
-    color: var(--color-ink);
+    color: var(--grasp-tone);
   }
-  .checkpoint-btn[data-done] {
-    color: var(--color-brand-deep);
+  /* The answer given: its own hue, on a wash of the same, so the row reads at
+     a glance without a second glyph state to explain. */
+  .grasp-btn[data-active] {
+    color: var(--grasp-tone);
+    background-color: color-mix(in oklab, var(--grasp-tone) 10%, transparent);
   }
-  /* Ghosted at rest so the control advertises the tick you're about to earn,
-     half-lit on hover, solid once earned. */
-  .checkpoint-tick {
-    opacity: 0;
-    transition: opacity 160ms ease;
+  /* Once something is answered the other two recede — still there to change
+     your mind with, no longer competing with the answer you gave. */
+  .grasp-group[data-answered] .grasp-btn:not([data-active]) {
+    opacity: 0.45;
   }
-  .checkpoint-btn:hover .checkpoint-tick {
-    opacity: 0.4;
-  }
-  .checkpoint-btn[data-done] .checkpoint-tick {
+  .grasp-group[data-answered] .grasp-btn:not([data-active]):hover {
     opacity: 1;
+  }
+  .grasp-plain {
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--color-brand-deep);
   }
 
   /* Ring completion flourish. transform-box: fill-box is what makes

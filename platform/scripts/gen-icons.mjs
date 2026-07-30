@@ -37,8 +37,12 @@ const ICONS = [
   "calendar-solid",
   "cog",
   "cog-solid",
-  // progress + the dashboard's stat tiles
+  // the end-of-section answer, and progress + the dashboard's stat tiles
   "check",
+  "check-circle-solid",
+  "question-circle-solid",
+  "x-circle",
+  "x-circle-solid",
   "chart-bar-increasing",
   "check-circle",
   "clock-1",

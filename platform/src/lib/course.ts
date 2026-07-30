@@ -36,13 +36,14 @@ export type Block =
       note?: string;
     };
 
-/* A section's comprehension check. Answering it correctly is what ticks that
- * checkpoint — the point being that a step is completed by demonstrating the
- * idea, not by asserting you read it.
+/* A section's comprehension check.
  *
- * Optional on purpose: a section without one falls back to a plain "mark as
- * done" tick, so questions can be written gradually without the reader caring
- * which sections have them yet. */
+ * NOT RENDERED any more — the end-of-section control asks the reader how well
+ * the section landed instead (see Checkpoint.tsx). The type and the authored
+ * questions stay because the data still holds them, in Supabase and in
+ * course-data.json, and gen-course.mjs still carries them across a regenerate:
+ * dropping them would destroy written work to save nothing. Anything reading
+ * this back is reading dormant data. */
 export type Check = {
   question: string;
   /** Two to four choices; order is as authored. */
@@ -182,11 +183,6 @@ export function totalCheckpoints(): number {
   let n = 0;
   for (const id of courseIndex().idToPath.keys()) n += checkpointsFor(id).length;
   return n;
-}
-
-/** True when any of the lesson's sections carries a comprehension check. */
-export function hasChecks(lessonId: string): boolean {
-  return !!courseIndex().lessons.get(lessonId)?.sections.some((s) => s.check);
 }
 
 /** Every lesson id in reading order — the order they appear in the nav tree. */
