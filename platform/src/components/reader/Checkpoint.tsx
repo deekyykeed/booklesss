@@ -7,8 +7,8 @@ import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
 import { CompletionRing } from "./CompletionRing";
 
 /* The five answers, best first — a signal ramp of five bars down to one, each
- * over its own word so the reader never has to guess what a bar means. The
- * icon carries the scale at a glance, the label removes the ambiguity.
+ * a proper labelled button: the bar on the left, its word beside it. The icon
+ * carries the scale at a glance, the label removes the ambiguity.
  *
  * Hues run green to red across the ramp, evenly stepped, each dark enough to
  * hold at 5.2:1 or better on the content surface. Green is completion, the
@@ -31,9 +31,8 @@ const ANSWERS: { id: Grasp; label: string; icon: MynaIconName; tone: string }[] 
  * press the top of the scale); pressing the answer you already gave takes it
  * back.
  *
- * A one-line prompt sits above the scale so the buttons are answering a
- * question, not floating unlabelled — quiet, in the section furniture's own
- * muted voice, and it changes to a past-tense confirmation once answered. */
+ * The buttons carry their own words, so there's no prompt above them — a row
+ * of "Got it … Not yet" reads as a self-rating on its own. */
 export function Checkpoint({
   lessonId,
   checkpointId,
@@ -52,39 +51,34 @@ export function Checkpoint({
   return (
     <div className="checkpoint-row">
       <span className="checkpoint-rule" aria-hidden="true" />
-      <div className="grasp-block">
-        <p className="grasp-ask">
-          {done && !chosen ? "Marked done" : chosen ? "How much landed" : "How much of this landed?"}
-        </p>
-        <div
-          className="grasp-group"
-          role="radiogroup"
-          aria-label={`How much of "${heading}" landed?`}
-          data-answered={chosen ?? undefined}
-        >
-          {ANSWERS.map((a) => {
-            const active = chosen === a.id;
-            return (
-              <button
-                key={a.id}
-                type="button"
-                /* Pressing the current answer takes it back — the same
-                   second-press-undoes rule the tick had, so an answer stays the
-                   reader's to correct. */
-                onClick={() => (active ? toggle(lessonId, checkpointId) : rate(lessonId, checkpointId, a.id))}
-                role="radio"
-                aria-checked={active}
-                aria-label={a.label}
-                data-active={active ? "" : undefined}
-                className="grasp-btn squircle"
-                style={{ "--grasp-tone": a.tone } as React.CSSProperties}
-              >
-                <MynaIcon name={active ? (`${a.icon}-solid` as MynaIconName) : a.icon} size={18} />
-                <span className="grasp-label">{a.label}</span>
-              </button>
-            );
-          })}
-        </div>
+      <div
+        className="grasp-group"
+        role="radiogroup"
+        aria-label={`How much of "${heading}" landed?`}
+        data-answered={chosen ?? undefined}
+      >
+        {ANSWERS.map((a) => {
+          const active = chosen === a.id;
+          return (
+            <button
+              key={a.id}
+              type="button"
+              /* Pressing the current answer takes it back — the same
+                 second-press-undoes rule the tick had, so an answer stays the
+                 reader's to correct. */
+              onClick={() => (active ? toggle(lessonId, checkpointId) : rate(lessonId, checkpointId, a.id))}
+              role="radio"
+              aria-checked={active}
+              aria-label={a.label}
+              data-active={active ? "" : undefined}
+              className="grasp-btn squircle"
+              style={{ "--grasp-tone": a.tone } as React.CSSProperties}
+            >
+              <MynaIcon name={active ? (`${a.icon}-solid` as MynaIconName) : a.icon} size={17} />
+              <span className="grasp-label">{a.label}</span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
