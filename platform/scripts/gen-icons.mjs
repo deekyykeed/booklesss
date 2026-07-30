@@ -37,13 +37,13 @@ const ICONS = [
   "calendar-solid",
   "cog",
   "cog-solid",
-  // the end-of-section answer: got it / almost / not yet
-  "check-circle",
-  "check-circle-solid",
+  // the end-of-section answer: thumbs up / almost / thumbs down
+  "like",
+  "like-solid",
   "circle-half",
   "circle-half-solid",
-  "x-circle",
-  "x-circle-solid",
+  "dislike",
+  "dislike-solid",
   // progress + the dashboard's stat tiles (check-circle above serves both)
   "check",
   "chart-bar-increasing",
