@@ -147,7 +147,7 @@ export function OfflineTools() {
             <p className="mt-0.5 text-[13px] leading-5 text-muted">
               {savedAt
                 ? `All lessons saved to this device on ${savedAt}. They open with no connection.`
-                : "Save every lesson to this device and read them with no connection. About 2 MB."}
+                : "Save every lesson to this device and read them with no connection. About 700 KB of data."}
             </p>
           </div>
         </div>
