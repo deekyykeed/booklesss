@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { clerkEnabled } from "@/lib/clerk";
 import { clerkAppearance } from "@/lib/clerk-appearance";
 import { RegisterSW } from "@/components/RegisterSW";
+import { DesktopGate } from "@/components/DesktopGate";
 import { IdentityGate } from "@/components/identity/IdentityGate";
 import "./globals.css";
 
@@ -67,6 +68,9 @@ export default function RootLayout({
             than per-layout so a route added later can't quietly opt out of it;
             it skips the sign-in, offline and /workspace paths itself. */}
         <IdentityGate />
+        {/* Booklesss is a phone app — a wide viewport gets sent to its phone.
+            Mounted at the root for the same reason as the identity gate. */}
+        <DesktopGate />
         <RegisterSW />
       </body>
     </html>

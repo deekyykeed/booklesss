@@ -1439,3 +1439,69 @@
        it belongs to. */
   }
 }
+
+/* ---- desktop gate ---------------------------------------------------- *
+   Booklesss is a phone app; a wide viewport gets pointed at its phone.
+   Fixed and opaque rather than a blurred overlay: this is a redirection, not
+   a dialog over content the visitor is meant to keep reading. */
+.desktop-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--color-canvas);
+}
+.desktop-gate-card {
+  max-width: 420px;
+  text-align: center;
+}
+.desktop-gate-kicker {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+}
+.desktop-gate-title {
+  margin-top: 20px;
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+}
+.desktop-gate-body {
+  margin-top: 10px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-ink-2);
+}
+.desktop-gate-qr {
+  width: 188px;
+  height: 188px;
+  margin: 24px auto 0;
+  padding: 10px;
+  border: 1px solid var(--color-line);
+  border-radius: 24px;
+  background: #fff;
+}
+.desktop-gate-url {
+  margin-top: 12px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--color-muted);
+}
+.desktop-gate-pass {
+  margin-top: 28px;
+  font-size: 13px;
+  color: var(--color-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+.desktop-gate-pass:hover {
+  color: var(--color-ink);
+}

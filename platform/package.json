@@ -12,7 +12,8 @@
     "gen:icons": "node scripts/gen-icons.mjs",
     "gen:mingcute": "node scripts/gen-mingcute-icons.mjs",
     "gen:solar": "node scripts/gen-solar-icons.mjs",
-    "gen:avatars": "node scripts/gen-avatars.mjs"
+    "gen:avatars": "node scripts/gen-avatars.mjs",
+    "gen:qr": "node scripts/gen-qr.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.6.1",
@@ -35,6 +36,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
     "playwright": "^1.61.1",
+    "qrcode": "^1.5.4",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
