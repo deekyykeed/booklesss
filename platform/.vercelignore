@@ -1,7 +1,10 @@
+# NOTE: `*.png` used to be here, to keep a handful of scratch screenshots out
+# of the deploy. Those files are long gone, and the rule silently 404'd every
+# PWA home-screen icon in production while they served fine locally. Exclude
+# scratch files by name; never by extension.
 marketing
 node_modules
 .next
-*.png
 blob.mjs
 blob2.mjs
 perf.mjs
