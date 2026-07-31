@@ -18,5 +18,21 @@
     "rootIds": [
       "corporate-finance"
     ]
+  },
+  {
+    "slug": "strategic-management",
+    "title": "Strategic Management",
+    "subtitle": "How organisations set direction, choose where to compete, and make it happen — at ZCAS.",
+    "rootIds": [
+      "strategic-management"
+    ]
+  },
+  {
+    "slug": "treasury-management",
+    "title": "Treasury Management",
+    "subtitle": "Cash, working capital, risk and the systems that move money — BBF4302 at ZCAS.",
+    "rootIds": [
+      "treasury-management"
+    ]
   }
 ]

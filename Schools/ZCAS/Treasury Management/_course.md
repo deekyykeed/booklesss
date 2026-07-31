@@ -1,6 +1,53 @@
 # BBF4302 Treasury Management — Course Status
 
-**Last updated:** 2026-05-26
+**Last updated:** 2026-07-31
+
+---
+
+## ⚠️ Surface changed (2026-07-31) — TM is now on the reader
+
+Treasury Management is now authored for the **course reader**
+(`booklesss.vercel.app`), the same pivot Corporate Finance and Strategic
+Management made. The PDF/Slack material below is kept for provenance — do not
+post PDFs without checking with the owner.
+
+**Where reader content lives**
+
+| | |
+|---|---|
+| Authored source | `reader/course.mjs` (manifest) + `<lesson>/reader/<step>.mjs` |
+| Published to | Supabase `qxbcvmzjomfwxvbqzqds` — `courses → nav_nodes → lessons` |
+| Read by the app | `platform/src/lib/course-data.json` (generated, committed) |
+| Publish | `node --env-file=.env.local platform/scripts/seed-course.mjs <course.mjs>` then `npm run gen:course` |
+| House style | `.claude/skills/step-feedback/RULES.md` — read before writing a step |
+| URL | `/treasury-management/<lesson>/<step>` |
+
+**Reader step status — the course is complete: 10 steps, 57 sections, every
+section with a comprehension check.**
+
+| Lesson | Step | Slug | Written |
+|--------|------|------|---------|
+| 1 Treasury operations | Introduction to treasury | `intro-to-treasury` | ✅ 2026-07-31 |
+| 2 Working capital | Working capital & liquidity | `working-capital-and-liquidity` | ✅ 2026-07-31 |
+| | Inventory, EOQ & creditors | `inventory-and-creditors` | ✅ 2026-07-31 |
+| | Cash management & forecasting | `cash-management` | ✅ 2026-07-31 |
+| 3 Risk | Interest rate risk | `interest-rate-risk-management` | ✅ 2026-07-31 |
+| | Foreign exchange risk | `foreign-exchange-risk` | ✅ 2026-07-31 |
+| 4 Debt and investment | Debt management | `debt-management` | ✅ 2026-07-31 |
+| | Investment management | `investment-management` | ✅ 2026-07-31 |
+| 5 Systems and clearing | Clearing & settlement | `clearing-and-settlement` | ✅ 2026-07-31 |
+| | Treasury systems | `treasury-management-systems` | ✅ 2026-07-31 |
+
+Reader lesson slugs (middle URL segment): `treasury-operations`,
+`working-capital`, `treasury-risk`, `debt-and-investment`,
+`systems-and-clearing`. The risk-step slugs deliberately avoid Corporate
+Finance's `interest-rate-risk` / `currency-risk` (reader slugs are global).
+
+Corrections made while porting (recorded in the step file headers): the 4.1
+bond example now prices the 12% coupon at a 14% yield correctly (≈ ZMW 931,334,
+a discount — the PDF had K1,001,100 via a wrong final discount factor); the 2.3
+Miller-Orr workings state the daily rate cleanly as 0.025%; the 3.1 cap-vs-FRA
+comparison was recomputed on consistent 6-month figures.
 
 ---
 

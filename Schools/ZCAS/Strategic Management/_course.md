@@ -1,6 +1,42 @@
 # Strategic Management — Course Status
 
-**Last updated:** 2026-06-06
+**Last updated:** 2026-07-31
+
+---
+
+## ⚠️ Surface changed (2026-07-31) — SM is now on the reader
+
+Strategic Management is now authored for the **course reader**
+(`booklesss.vercel.app`), the same pivot Corporate Finance made. The PDF/Slack
+material below is kept for provenance — do not post PDFs without checking with
+the owner.
+
+**Where reader content lives**
+
+| | |
+|---|---|
+| Authored source | `reader/course.mjs` (manifest) + `<lesson>/reader/<step>.mjs` |
+| Published to | Supabase `qxbcvmzjomfwxvbqzqds` — `courses → nav_nodes → lessons` |
+| Read by the app | `platform/src/lib/course-data.json` (generated, committed) |
+| Publish | `npm run seed:course` (or `node --env-file=.env.local scripts/seed-course.mjs`) then `npm run gen:course` |
+| House style | `.claude/skills/step-feedback/RULES.md` — read before writing a step |
+| URL | `/strategic-management/<lesson>/<step>` |
+
+**Reader step status — the course is complete: 7 steps, 35 sections, every
+section with a comprehension check.** Written from the same lecture sources as
+the v2 PDFs.
+
+| Lesson | Step | Slug | Written |
+|--------|------|------|---------|
+| 1 Foundations | Introduction to strategy | `intro-to-strategy` | ✅ 2026-07-31 |
+| | Vision, mission and objectives | `mission-and-vision` | ✅ 2026-07-31 |
+| 2 Environment | The external environment | `external-environment` | ✅ 2026-07-31 |
+| | The internal environment | `internal-environment` | ✅ 2026-07-31 |
+| 3 Strategy | Corporate strategy | `corporate-strategy` | ✅ 2026-07-31 |
+| | Competitive strategy | `competitive-strategy` | ✅ 2026-07-31 |
+| | Strategy implementation | `strategy-implementation` | ✅ 2026-07-31 |
+
+**Reader lesson slugs** (the middle URL segment): `foundations`, `environment`, `strategy`.
 
 ---
 
