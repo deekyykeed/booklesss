@@ -14,7 +14,7 @@
   {
     "slug": "corporate-finance",
     "title": "Corporate Finance",
-    "subtitle": "Investment appraisal, cost of capital, valuation and risk — BAC4301 at ZCAS.",
+    "subtitle": "Investment appraisal, cost of capital, valuation and risk.",
     "rootIds": [
       "corporate-finance"
     ]
@@ -22,7 +22,7 @@
   {
     "slug": "strategic-management",
     "title": "Strategic Management",
-    "subtitle": "How organisations set direction, choose where to compete, and make it happen — at ZCAS.",
+    "subtitle": "How organisations set direction, choose where to compete, and make it happen.",
     "rootIds": [
       "strategic-management"
     ]
@@ -30,7 +30,7 @@
   {
     "slug": "treasury-management",
     "title": "Treasury Management",
-    "subtitle": "Cash, working capital, risk and the systems that move money — BBF4302 at ZCAS.",
+    "subtitle": "Cash, working capital, risk and the systems that move money.",
     "rootIds": [
       "treasury-management"
     ]

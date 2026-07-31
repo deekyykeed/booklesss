@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { clerkEnabled } from "@/lib/clerk";
 import { clerkAppearance } from "@/lib/clerk-appearance";
 import { RegisterSW } from "@/components/RegisterSW";
+import { IdentityGate } from "@/components/identity/IdentityGate";
 import "./globals.css";
 
 // The logo is an icon again, so Burbank is no longer loaded. Both it and
@@ -62,6 +63,10 @@ export default function RootLayout({
     >
       <body className="min-h-full bg-canvas text-ink">
         {children}
+        {/* Asks a first-time reader for a name and a face. Mounted here rather
+            than per-layout so a route added later can't quietly opt out of it;
+            it skips the sign-in, offline and /workspace paths itself. */}
+        <IdentityGate />
         <RegisterSW />
       </body>
     </html>

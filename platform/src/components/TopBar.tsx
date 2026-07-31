@@ -4,6 +4,7 @@ import { clerkEnabled } from "@/lib/clerk";
 import { Account as ClerkAccount } from "./Account";
 import { ClerkIsland } from "./ClerkIsland";
 import { CommandSearch } from "./CommandSearch";
+import { HeaderAvatar } from "./identity/HeaderAvatar";
 import { MobileMenuButton, MobileContextButton } from "./reader/MobileNav";
 
 /* Shared, fixed 48px header. Transparent so the blob backdrop shows through;
@@ -25,31 +26,17 @@ function CircleButton({ icon, label, className = "" }: { icon: MynaIconName; lab
   );
 }
 
-/* Same shell as the circle buttons beside it — white, one #d4d4d4 hairline,
- * the same three-layer shadow. It used to be a green disc, which made the one
- * control that isn't about progress the loudest thing in the header; green is
- * reserved for completion. */
-function Avatar() {
-  return (
-    <div
-      className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-full border border-[#d4d4d4] bg-white text-[11px] font-semibold text-ink-2 shadow-[0_0.6px_0.6px_-1.25px_rgba(0,0,0,0.18),0_2.3px_2.3px_-2.5px_rgba(0,0,0,0.16),0_10px_10px_-3.75px_rgba(0,0,0,0.06)]"
-      aria-label="Account"
-    >
-      DM
-    </div>
-  );
-}
-
 /* Account control. With Clerk configured this is the real thing — the user
- * menu once signed in, a sign-in button when not. Without keys it stays the
- * static placeholder avatar the header has always shown, so an unconfigured
- * clone looks unchanged. */
+ * menu once signed in, a sign-in button when not. With Clerk off it's the face
+ * and name the reader picked on their first visit (see identity/IdentityGate),
+ * in the same white 32px shell as the circle buttons beside it — green is
+ * reserved for completion, so the account control never wears it. */
 function Account() {
-  if (!clerkEnabled) return <Avatar />;
-  // If auth fails to load, fall back to the placeholder avatar rather than
-  // letting the header take the lesson down with it.
+  if (!clerkEnabled) return <HeaderAvatar />;
+  // If auth fails to load, fall back to the local avatar rather than letting
+  // the header take the lesson down with it.
   return (
-    <ClerkIsland fallback={<Avatar />}>
+    <ClerkIsland fallback={<HeaderAvatar />}>
       <ClerkAccount />
     </ClerkIsland>
   );
@@ -70,7 +57,11 @@ export function TopBar({
       <div className="flex min-w-0 items-center gap-5">
         {/* logo lockup: the wordmark IS the logo — no mark. Mobile adds the
             hamburger before it; desktop adds the org switcher after. */}
-        <div className="flex items-center gap-2.5 md:gap-2">
+        {/* The hamburger is a 32px tap target around a 16px glyph, so it
+            carries 8px of its own padding — a 10px gap on top of that left the
+            drawer icon floating away from the wordmark on a phone. 4px here
+            reads as the ~12px it actually looks like. */}
+        <div className="flex items-center gap-1 md:gap-2">
           <MobileMenuButton />
           {/* The lockup is the way home. The course navigator shows one course
               and its steps and nothing above them, so without this a student

@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-07-31 (session 24)
+**Last updated:** 2026-07-31 (session 25)
 
 ---
 
@@ -183,6 +183,101 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-07-31 (session 25 — step-feedback grows a debt ledger; the course-name wrapper stops repeating itself)
+
+Local session, run alongside an active parallel session in the same OneDrive
+tree. Shipped as `cc83e93` (scoped pathspec commit, pushed → deployed).
+
+**Done:**
+- **`step-feedback` extended from a one-direction loop to two.** It only ever
+  fixed the *next* step; steps already written kept whatever mistake had since
+  become a rule. New `DEBT.md` is the ledger of what promoted rules and found
+  errors owe to published steps — grepped by slug before any step is edited,
+  paid down in the same edit, boxes only tickable after actually opening the
+  file. Two new feedback sources beside the owner's review: **`study`** (the
+  owner studying for a real exam — stall / gap / error / **keep**, logged while
+  reading, not reconstructed after) and **`student`** (verbatim; two students
+  hitting the same stall is automatically a rule). New `error` tag. Registered
+  in `.claude/CLAUDE.md`, which had never listed the skill at all.
+- **The course-name wrapper is no longer drawn.** Every ZCAS course is authored
+  as one root node named after itself, so the sidebar's top row repeated the
+  course you had just clicked into, every unit sat an indent deeper than needed,
+  and the whole course collapsed to one row; the course home showed one heading
+  holding all ten steps under prose reading "the course runs one unit". A course
+  whose units are a single root labelled exactly as the course is now unwrapped
+  for display (`displayUnitIds` in `lib/courses.ts`) — the wrapper stays in the
+  tree for URLs and `courseForNode`, it just isn't rendered. Caught CF and SM
+  as well as TM (owner: "even through other courses"); Economics has five
+  genuine roots and is untouched by the test.
+- **Mingcute added as a second, narrow icon set** (owner's pick for the lesson
+  caret): `scripts/gen-mingcute-icons.mjs` → `src/components/icons/mingcute.tsx`,
+  same generate-don't-import pattern as MynaUI. Caret is `down-small-line`,
+  which rotated -90° is the set's "Right Small Line" — so one glyph covers both
+  states with no logic change.
+
+**What Worked:**
+- **Simulating the change against the real data when a build was impossible.**
+  A ~40-line node script reading `course-nav.json` + `course-index.json` proved
+  the sidebar's new top rows AND the indent arithmetic for all four courses
+  without `next build`. It caught the one non-obvious part: the active bar takes
+  its x from `depthOf()` (tree depth), so unwrapping needed `unitDepthOffset`
+  or every ZCAS step would draw its bar one indent right of its rail.
+- **`npx tsc --noEmit -p tsconfig.json`** as the verification of record while
+  `.next` is locked. It also cleanly attributed the only two errors to the
+  parallel session's in-flight `HeaderAvatar` refactor rather than to my files.
+- **Pathspec staging + reading `git status` back before committing** to separate
+  10 of my files from a parallel session mid-refactor. `git diff -- <file>` on
+  each shared file first, to check whose changes were actually in it — `course.ts`
+  had been theirs at session start and was 100% mine by the end, because they
+  committed in between.
+
+**Dead Ends (do not retry):**
+- **A PowerShell 5.1 here-string for `git commit -m`.** `@'…'@` is literal, but
+  double quotes *inside* the message break native-command argument parsing —
+  git received the message's words as pathspecs and failed with `error: pathspec
+  'course' did not match any file(s)`. Nothing was committed. Use
+  `git commit -F <file>` for any multi-line message.
+- **The documented `.next` EPERM recovery did not work this time.** `rm -rf
+  .next` ALSO failed (`Access to the path '00000005.meta' is denied`) with no
+  dev server listening on 3000–3200 and no node process holding the port — so
+  "kill node + rm -rf .next" (sessions 19/20/23) is not a reliable fix; OneDrive
+  itself was holding it. It never cleared during the session. **No build or dev
+  server ran at all.**
+
+**Flags:**
+- ⚠️ **`cc83e93` deployed without ever being seen rendered.** The sidebar and
+  caret changes are backed by a clean typecheck and the offline simulation, not
+  by looking at the app. Two things to check on the live site: the caret's
+  legibility (Mingcute's glyph is 5.2px across where MynaUI's was 9.0px), and
+  that the active-step bar sits *inside* its rail — one indent off is the
+  visible failure mode if `unitDepthOffset` is wrong.
+- **`platform/package.json` was deliberately NOT committed** — its hunks mix my
+  `gen:mingcute` + `@iconify-json/mingcute` with the parallel session's
+  `gen:solar`, `gen:avatars` and `@iconify-json/solar`. Harmless to the deploy
+  (mingcute is a devDependency and `mingcute.tsx` is generated + committed, so
+  nothing imports the set at build or runtime), but `npm run gen:mingcute` does
+  not exist in a fresh clone until they commit that file. Their commit will
+  carry my two lines with it.
+- ⚠️ **`linear-server` unauthorized again — 6th consecutive session.** The
+  backlog was not updated and the Next Session list below could not be
+  reconciled against it, so it may still list work already closed. BOO-24→37
+  outstanding since session 19.
+- The parallel session's `course-index.json` diff strips "— BAC4301 at ZCAS"
+  from every course subtitle — the same instinct as the owner's caret complaint,
+  arrived at independently.
+- `.claude/CLAUDE.md`'s "What This Project Is" still describes the Slack→PDF
+  pipeline as the core product. Increasingly wrong; the reader is the product.
+
+**Next Session:**
+- [ ] **Open the live site on a TM step** and check the two things above.
+- [ ] Start the TM study session — `LOG.md` and `RULES.md` are still 100% seeds;
+      nothing real has been logged yet.
+- [ ] Land `package.json`'s `gen:mingcute` once the parallel session commits.
+- [ ] File or clarify the `Booklesss Bucket/` webp (carried from session 24).
+- [ ] Authorize `linear-server`, reconcile BOO-24→37, prune this file's open list.
+
+---
 
 ### Session 2026-07-31 (session 24 — SM + TM written for the reader; all ZCAS courses live)
 
