@@ -311,6 +311,111 @@ const CONFIGS = {
       searchCTA(),
     ],
   }),
+
+  /* ------------------------------------------------------------------ *
+   * 2026-07-31 — five slots.
+   *
+   * The day the tick became a question. The multiple-choice quiz at the end of
+   * each section was deleted outright (CheckQuiz.tsx, 217 lines, gone) and
+   * replaced by a three-way self-rating; that one row was then redrawn seven
+   * times between 17:36 and 19:40. Overnight the dashboard tiles were rebuilt
+   * around effort, each with its own fortnight chart, and at 05:04 this morning
+   * the performance score was re-derived so that finishing a course can no
+   * longer cost you points.
+   *
+   * So: two real features and one design log, cut into five angles. Each slot
+   * has one sentence it has to prove and its own shots — no crop appears twice.
+   *
+   * Not one of them names a course or a school.
+   * ------------------------------------------------------------------ */
+
+  /* 1 — the question that replaced the tick. The day's headline: the biggest
+   * student-visible change, and the one every other slot hangs off. */
+  "f-answer": () => ({
+    slot: "1-morning",
+    slides: [
+      cover({ eyebrow: "Building in public", title: "The tick became<br>a question.", sub: "We took the quiz off the end of every section today. One question replaced it." }),
+      /* Two rows, both fully clear — the headline claims a pattern, so one
+       * crisp row and one ghost would not prove it. They sit 191 source px
+       * apart (532 in frame), which is what sets `top` and forces fadeBot down
+       * from the default: the second row has to land above 1520. */
+      feature({ img: img("f-check.png"), title: "Every section<br>ends the same way.", sub: "Did that land? Three answers, one tap, and you carry on.", top: 39, fadeBot: 400 }),
+      /* Framed so the paragraph above the row sits entirely in the solid part of
+       * the top fade. At the earlier `top` it landed mid-gradient and read as a
+       * half-erased sentence rather than as a dissolve. */
+      feature({ img: img("f-answered.png"), title: "Got it. Almost.<br>Not yet.", sub: "Press the one that is true. Press it again to take it back.", top: 67, fadeBot: 430 }),
+      cover({ eyebrow: "What we learnt", title: "A tick only proved<br>you scrolled.", sub: "Marking a section done never said whether any of it landed. The same one tap now returns something worth keeping.", subTop: 980 }),
+      searchCTA(),
+    ],
+  }),
+
+  /* 2 — what the answer is for. Not a second announcement of the same button:
+   * this slot is about the consequence, and its shots are the step's closing
+   * panel and the nav tree, neither of which appears in the morning post. */
+  "f-report": () => ({
+    slot: "2-midday",
+    slides: [
+      cover({ eyebrow: "Building in public", title: "The answer had<br>to be worth it.", sub: "So the end of a step now reports what you said, not just that you got there." }),
+      feature({ img: img("f-closer.png"), title: "It counts what<br>didn&rsquo;t land.", sub: "Every section answered — and the ones you&rsquo;d want another pass at.", top: 123 }),
+      feature({ img: img("f-nav.png"), title: "The tick is<br>still there.", sub: "Cleared steps stay marked. Answering one is what marks it.", top: 72, fadeTop: 1020, fadeBot: 430 }),
+      cover({ eyebrow: "In the works", title: "Then it feeds<br>the numbers.", sub: "What you said about each section is what the dashboard reads. That part shipped today too.", subTop: 1000 }),
+      searchCTA(),
+    ],
+  }),
+
+  /* 3 — the score, rebuilt at five in the morning. The honest version of the
+   * story is that the old one was broken in a specific way (it read velocity,
+   * so clearing the last section of a course starved it), and the fix is a
+   * weighting anyone can check. */
+  "f-score": () => ({
+    slot: "3-afternoon",
+    slides: [
+      cover({ eyebrow: "Building in public", title: "We rebuilt the<br>score. Again.", sub: "The old one quietly punished you for finishing. Two thirds of the new one is effort." }),
+      /* Low enough that the tile's own label clears the gradient. A stat whose
+       * heading is half-dissolved is a number without a name. */
+      feature({ img: img("f-perf.png"), shotLeft: 0, title: "Sixty-five parts<br>effort.", sub: "Thirty-five progress. Turn up, put the time in, the number moves.", top: 354, fadeBot: 430 }),
+      /* The two card titles sit 222 source px apart — 619 in frame — which is
+       * wider than the clear window, so one of them was always going to
+       * dissolve. The first is the one that has to be crisp; the second showing
+       * through underneath is what says there is more than one. */
+      feature({ img: img("f-cards.png"), title: "Same sum, per<br>subject.", sub: "Each scored on its own days, its own minutes, its own sections.", top: 264, fadeBot: 380 }),
+      cover({ eyebrow: "How it counts", title: "Five days a week,<br>two hours.", sub: "That is full marks on effort. Not every day and not all night — a bar a real week clears.", subTop: 1000 }),
+      searchCTA(),
+    ],
+  }),
+
+  /* 4 — the tiles. Where slot 3 explains one number, this one is about the row
+   * it sits in and what each of the other three is for. */
+  "f-tiles": () => ({
+    slot: "4-evening",
+    slides: [
+      cover({ eyebrow: "Building in public", title: "Four numbers,<br>four charts.", sub: "Every tile on the dashboard got its own fortnight of history today." }),
+      /* The four-tile block is 265 source px tall — 738 in frame — and the
+       * default clear window is only 690, so the tile labels were dissolving.
+       * Widening it at both ends (fadeTop 900, fadeBot 380) buys 820px, and the
+       * sub moves up to 600 to stay inside the smaller solid zone the narrower
+       * top fade leaves (0.8 x 900 = 720). */
+      feature({ img: img("f-tiles.png"), title: "Three of four<br>measure effort.", sub: "Only one counts how much is finished, at a quarter of the weight.", top: 465, fadeTop: 900, fadeBot: 380, subTop: 600 }),
+      feature({ img: img("f-streak.png"), shotLeft: 0, title: "The purest one<br>is the streak.", sub: "It moves when you turn up. It never asks whether you understood it.", top: 274, fadeBot: 430 }),
+      cover({ eyebrow: "In the works", title: "A tile earns<br>its place.", sub: "Or it comes off. Most of what was on this dashboard a week ago has already gone.", subTop: 1000 }),
+      searchCTA(),
+    ],
+  }),
+
+  /* 5 — the design log, and deliberately the softest of the five. One shot,
+   * because the six versions it describes were deleted as they were replaced
+   * and photographing them is not possible; the rest is written. That is the
+   * honest way to run this slot — a recycled crop from the morning post would
+   * read as padding and say nothing new. */
+  "f-versions": () => ({
+    slot: "5-night",
+    slides: [
+      cover({ eyebrow: "Building in public", title: "One button,<br>seven versions.", sub: "All of them tonight. This is the one that survived." }),
+      feature({ img: img("f-almost.png"), title: "Worst to best,<br>left to right.", sub: "So the thumbs-up lands where your eye finishes the row.", top: -79, fadeBot: 430 }),
+      cover({ eyebrow: "What it took", title: "Five answers,<br>then three.", sub: "A five-step scale. Then labels. Then pills. Then icons that meant something. Then back to three — because a middle option only helps if it means one thing.", subTop: 940 }),
+      searchCTA(),
+    ],
+  }),
 };
 
 const cfg = CONFIGS[POST]?.();

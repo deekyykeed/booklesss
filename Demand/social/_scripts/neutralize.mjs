@@ -140,7 +140,14 @@ export function transform({ map, reader, deep }) {
     if (h1) h1.textContent = reader.title;
     const lead = fc.querySelector("#overview p");
     if (lead) lead.textContent = reader.lead;
-    const callout = fc.querySelector("#overview .squircle");
+    /* `div.squircle`, not `.squircle`. The section's checkpoint row renders
+     * INSIDE #overview and its three answer buttons carry `squircle` too, so a
+     * bare `.squircle` matched the "Not yet" button and overwrote it with the
+     * callout text — stretching a button into a wide box of one unwrapped line
+     * and deleting one of the three answers from the shot. That is retouching
+     * the product, which is the one thing a capture may never do. The callout
+     * is the only DIV wearing the class. */
+    const callout = fc.querySelector("#overview div.squircle");
     if (callout) callout.textContent = reader.callout;
     const lis = fc.querySelectorAll("#key-ideas li");
     lis.forEach((li, i) => {
