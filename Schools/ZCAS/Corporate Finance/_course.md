@@ -1,6 +1,6 @@
 # BAC4301 Corporate Finance — Course Status
 
-**Last updated:** 2026-07-27
+**Last updated:** 2026-07-31
 
 ---
 
@@ -24,25 +24,77 @@ channels were never created, and the reader is the live product.
 | House style | `.claude/skills/step-feedback/RULES.md` — read before writing a step |
 | URL | `/corporate-finance/<lesson>/<step>` |
 
-**Reader step status — Lesson 1 Investment appraisal**
-
-| # | Step | Slug | Sections | Written |
-|---|------|------|----------|---------|
-| 1 | Free cash flows | `free-cash-flows` | 5 | ✅ 2026-07-27 |
-| 2 | NPV & discounted payback | `npv-and-payback` | 5 | ✅ 2026-07-27 |
-| 3 | IRR & MIRR | `irr-and-mirr` | 5 | ✅ 2026-07-27 |
-| 4 | Inflation & tax in appraisal | `inflation-and-tax` | — | ☐ |
-| 5 | Adjusted present value | `apv` | — | ☐ |
-| 6 | Capital rationing | `capital-rationing` | — | ☐ |
-| 7 | International project appraisal | `international-projects` | — | ☐ |
+**Reader step status — the course is complete: 25 steps, 125 sections.**
 
 Every section carries a comprehension check, so each step's checkpoint ring is
-earned by answering rather than self-marking.
+earned by answering rather than self-marking. Each step has 5 sections.
 
-**Source correction found:** the 2024 *Investment Appraisal Part 2* slide prints
-the year-5 discount factor at 14% as `0.477`. The correct factor is `0.519`,
-which is what the slide's own present value of 4,775 was calculated with. The
-reader step uses 0.519; the NPV of (554) is unaffected.
+| Lesson | # | Step | Slug | Written |
+|--------|---|------|------|---------|
+| 1 Investment appraisal | 1 | Free cash flows | `free-cash-flows` | ✅ 2026-07-27 |
+| | 2 | NPV & discounted payback | `npv-and-payback` | ✅ 2026-07-27 |
+| | 3 | IRR & MIRR | `irr-and-mirr` | ✅ 2026-07-27 |
+| | 4 | Inflation & tax in appraisal | `inflation-and-tax` | ✅ 2026-07-31 |
+| | 5 | Adjusted present value | `apv` | ✅ 2026-07-31 |
+| | 6 | Capital rationing | `capital-rationing` | ✅ 2026-07-31 |
+| | 7 | International project appraisal | `international-projects` | ✅ 2026-07-31 |
+| 2 Cost of capital | 1 | Cost of equity | `cost-of-equity` | ✅ 2026-07-31 |
+| | 2 | Cost of debt | `cost-of-debt` | ✅ 2026-07-31 |
+| | 3 | Credit spreads | `credit-spreads` | ✅ 2026-07-31 |
+| | 4 | WACC | `wacc` | ✅ 2026-07-31 |
+| | 5 | Gearing | `gearing` | ✅ 2026-07-31 |
+| | 6 | Capital structure theories | `capital-structure-theories` | ✅ 2026-07-31 |
+| 3 Valuation and M&A | 1 | Valuing a bond | `bond-valuation` | ✅ 2026-07-31 |
+| | 2 | Valuing a company | `company-valuation` | ✅ 2026-07-31 |
+| | 3 | Mergers & acquisitions | `mergers-and-acquisitions` | ✅ 2026-07-31 |
+| | 4 | Market efficiency | `market-efficiency` | ✅ 2026-07-31 |
+| 4 Risk management | 1 | Interest rate risk | `interest-rate-risk` | ✅ 2026-07-31 |
+| | 2 | The yield curve | `yield-curve` | ✅ 2026-07-31 |
+| | 3 | Bond duration | `bond-duration` | ✅ 2026-07-31 |
+| | 4 | Hedging interest rate risk | `hedging-interest-rate-risk` | ✅ 2026-07-31 |
+| | 5 | Currency risk | `currency-risk` | ✅ 2026-07-31 |
+| | 6 | Hedging currency risk | `currency-hedging` | ✅ 2026-07-31 |
+| 5 Dividend policy | 1 | Dividend theories | `dividend-theories` | ✅ 2026-07-31 |
+| | 2 | Policy in practice | `dividend-policy-in-practice` | ✅ 2026-07-31 |
+
+**Reader lesson slugs** (the middle URL segment): `investment-appraisal`,
+`cost-of-capital`, `valuation-and-ma`, `risk-management`, `dividend-policy`,
+all under the `corporate-finance` root node.
+
+### ⚠️ Supabase is one seed behind the app (2026-07-31)
+
+`course-data.json` and `course-index.json` in `platform/src/lib/` carry all 25
+steps and are what the deployed reader serves. **Supabase still holds only the
+first three**, because the cloud session that wrote these steps is blocked from
+reaching `*.supabase.co` by the egress policy — the same block that stops
+`linear-server` working in cloud sessions.
+
+So before the next `npm run gen:course`, run the seed from the local machine:
+
+```bash
+cd platform
+npm run seed:course "../Schools/ZCAS/Corporate Finance/reader/course.mjs"
+npm run gen:course
+```
+
+Running `gen:course` **first** would mirror the three-step Supabase tree back
+over the committed snapshot and drop 22 steps from the app. Seed, then generate.
+
+The seed also changes the nav tree's shape: Supabase currently has
+`investment-appraisal` as the course's root node, and the manifest wraps it in a
+`corporate-finance` root — so step URLs move from `/investment-appraisal/<step>`
+to `/corporate-finance/investment-appraisal/<step>`. Reader progress is keyed by
+step slug and section id, not by URL, so it survives the change.
+
+**Source corrections found:**
+
+- The 2024 *Investment Appraisal Part 2* slide prints the year-5 discount factor
+  at 14% as `0.477`. The correct factor is `0.519`, which is what the slide's own
+  present value of 4,775 was calculated with. The reader step uses 0.519; the
+  NPV of (554) is unaffected.
+- *Cost of Capital — Session 1* rounds the TC Co bond interpolation to `9.68%`.
+  1.73 ÷ 2.51 × 1% is 0.69%, so the yield to maturity is `9.69%`, which is what
+  the reader step uses.
 
 ---
 

@@ -10,15 +10,19 @@ Authored in `reader/`, one file per step. Published with
 `npm run seed:course` + `npm run gen:course` — see `_course.md`.
 House style: `.claude/skills/step-feedback/RULES.md`.
 
-| # | Step | File | Written |
-|---|------|------|---------|
-| 1 | Free cash flows | `reader/free-cash-flows.mjs` | ✅ |
-| 2 | NPV & discounted payback | `reader/npv-and-payback.mjs` | ✅ |
-| 3 | IRR & MIRR | `reader/irr-and-mirr.mjs` | ✅ |
-| 4 | Inflation & tax in appraisal | — | ☐ Part 2 slides 7–8 |
-| 5 | Adjusted present value | — | ☐ APV (2024) |
-| 6 | Capital rationing | — | ☐ Capital Rationing (2023) |
-| 7 | International project appraisal | — | ☐ NPV for International Projects (2023) |
+| # | Step | File | Sections | Written |
+|---|------|------|----------|---------|
+| 1 | Free cash flows | `reader/free-cash-flows.mjs` | 5 | ✅ 2026-07-27 |
+| 2 | NPV & discounted payback | `reader/npv-and-payback.mjs` | 5 | ✅ 2026-07-27 |
+| 3 | IRR & MIRR | `reader/irr-and-mirr.mjs` | 5 | ✅ 2026-07-27 |
+| 4 | Inflation & tax in appraisal | `reader/inflation-and-tax.mjs` | 5 | ✅ 2026-07-31 |
+| 5 | Adjusted present value | `reader/apv.mjs` | 5 | ✅ 2026-07-31 |
+| 6 | Capital rationing | `reader/capital-rationing.mjs` | 5 | ✅ 2026-07-31 |
+| 7 | International project appraisal | `reader/international-projects.mjs` | 5 | ✅ 2026-07-31 |
+
+The inflation-and-tax step runs on Project A from the BAC4301 **sample question
+paper** rather than on the Part 2 slides, which give the topic only two bullet
+slides — the sample paper works it at the depth the exam actually asks for.
 
 ## PDF steps (previous surface — superseded 2026-07-27)
 
