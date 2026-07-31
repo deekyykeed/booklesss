@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-07-31 (session 26)
+**Last updated:** 2026-07-31 (session 27)
 
 ---
 
@@ -124,12 +124,18 @@ the 6 legacy tables (`steps`, `profiles`, `step_feedback`, `outcome_ticks`,
 [[project_platform_reader_pivot]] + [[project_supabase_credentials]]. So ignore the
 old platform build-items below (step chrome, Clerk billing, `steps.content` JSONB,
 `avatar_url`, top-nav placeholder) — they belong to the deleted app. Current live open items:
-- [ ] **Content authoring UX** — editing a lesson = hand-editing the JSONB `sections`
-      blob in the Supabase dashboard (clunky). Build a small admin UI.
-- [ ] **Second course needs code** — the app is hardwired single-course
-      (`gen-course.mjs` `COURSE_SLUG="economics"` + the reader). Adding a course = data + feature work.
+- [x] ~~**Content authoring UX** — hand-editing the JSONB `sections` blob~~ →
+      ✅ solved a different way: lessons are authored as `.mjs` in the course
+      tree and published with `seed:course` → `gen:course`. No admin UI needed.
+- [x] ~~**Second course needs code** — the app is hardwired single-course~~ →
+      ✅ the registry is data-driven (`course-index.json` + `lib/courses.ts`);
+      **four** courses ship today. Adding one is a content change only.
 - [ ] **Auth + progress tracking** — the north-star spine (why the old user tables existed);
-      redesign fresh for the new lesson structure.
+      redesign fresh for the new lesson structure. **Still the biggest gap:**
+      progress is per-device `localStorage`, so a student's phone and laptop
+      keep separate progress, and signing in currently buys them nothing.
+      Clerk is now OFF (session 27) — bring it back as a *production*
+      instance, on a real domain, at the same time as server-side progress.
 - [ ] Optional: re-enable the build-time Supabase fetch ("triangle" — prebuild + Vercel
       env vars) if a non-dev edit-in-DB-and-it's-live CMS flow is ever wanted. Owner chose
       GitHub-only for now (Vercel builds only from the repo; publish via `npm run gen:course` + commit).
@@ -206,6 +212,101 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-07-31 (session 27 — the reader goes offline-first, installable, and 44% lighter)
+
+Local session. Goal was "make the app usable by first users." Five commits to
+`main`, each verified against production before moving on.
+
+**Done:**
+- **Corporate Finance synced into Supabase.** All 25 CF steps existed only in
+  the committed `course-data.json`; Supabase — the nominal source of truth —
+  still held the original 3, so any `npm run gen:course` would have silently
+  deleted 22 steps from the live reader. Seeding needed the **service-role
+  key** (RLS is public-read, so `seed-course.mjs` fell back to anon and every
+  write was rejected `42501`); now in `platform/.env.local` as
+  `SUPABASE_SERVICE_ROLE_KEY`. Content verified byte-identical before and
+  after — the 4,251-line diff was Postgres JSONB not preserving object key
+  order. (`637aacc`)
+- **Clerk turned off.** Production was running a Clerk **development**
+  instance (`pk_test_…` → `touched-drake-45.clerk.accounts.dev`): ~100-user
+  cap, and cross-domain cookies that break sessions on Safari/Brave/mobile.
+  Accounts bought a student nothing (nothing gated; progress is per-device
+  localStorage), so the four Clerk env vars were removed from Vercel and the
+  app fell back cleanly — `/sign-in` and `/sign-up` now 404.
+- **PWA: installable + readable offline** (`101f96b`). `public/sw.js` +
+  `app/manifest.ts` + generated icons + `/offline`. Nothing precached; hashed
+  assets cache-first, pages and RSC network-first (RSC cached separately —
+  same route, different body).
+- **"Save all lessons" + "Add to home screen"** on the dashboard. Saves every
+  page — dashboard and course overviews too, not just lessons. Install is a
+  real button only on Chrome/Android; iOS gets Share → Add to Home Screen
+  directions, since Safari has no install API.
+- **44% lighter first visit: 909 KB → 505 KB**, while lessons went 55 → 72.
+  - **Font subsetting** (`26c6a27`): Aptos 301 KB → 80 KB. New
+    `scripts/subset-fonts.py` derives the kept set from characters actually
+    in `course-data.json` plus the ranges the UI can produce.
+  - **Course prose out of the browser bundle** (`1826e45`): ten client
+    components import `lib/course.ts`, which dragged all 566 KB of lesson text
+    in to draw a sidebar. `gen-course.mjs` now also writes **`course-nav.json`
+    (28 KB)**; the server reads the prose via `lib/lesson-content.ts` and
+    search loads it as its own chunk when ⌘K first opens.
+- **Resume reading** (`ad93b35`): a step reopens where the reader stopped.
+  `lib/reading-position.ts`, per lesson in localStorage. Anchor links still
+  win; a different step still opens at the top; rewritten steps discard the
+  position.
+- **Manifest subtitles cleaned** — all three `reader/course.mjs` still said
+  "BAC4301 at ZCAS" etc. after session 26 stripped codes from Supabase and the
+  JSON. A routine re-seed would have reinstated them. Rule written into
+  `step-feedback/SKILL.md`.
+
+**What Worked:**
+- **Proving the round trip before writing to Supabase.** Simulating
+  manifest → seed → gen entirely in memory and diffing against the committed
+  snapshot showed it was byte-identical, so the reseed was known-safe rather
+  than hoped-safe. Same trick on the economics half caught that its **69
+  comprehension checks live only in the JSON**, rescued each run by
+  `carryOverChecks`.
+- **Measuring instead of estimating, repeatedly.** "About 2 MB" was the disk
+  figure, not the data figure (682 KB). "Does Save again re-download?" — no,
+  29 KB, 2%, because bodies come from the browser's HTTP cache. Each answer
+  was different from the reasonable guess.
+- **Playwright with `context.setOffline(true)`** as the actual proof of the
+  offline claim, run against **production**, not just localhost.
+- **Reading the bundle to find the waste.** Grepping the biggest chunk for
+  course prose found the 183 KB search index — bigger than the font win.
+
+**Dead Ends (do not retry):**
+- **`git commit --only -- <paths> -m "…"`** — options must come **before** the
+  `--`, or git reads the message as pathspecs. Write the message to a file and
+  use `-F` (already the documented rule; hit it anyway).
+- **Trusting a weak readiness check for a Vercel deploy.** Polling until "My
+  courses" appeared passed instantly — it was true on the old build too — so a
+  "verified" measurement was of the previous deploy. Poll for something only
+  the new build has.
+- **Windows/OneDrive EPERM on `.next`** during rebuild — recurred again.
+  `rm -rf .next` and rebuild.
+- **Bare `check("label")` in a hand-rolled test harness** — no pass argument
+  means `undefined`, which silently records a FAIL. Two "failures" were test
+  bugs, and one "pass" (`anchor wins`) was a false pass until retested with a
+  real section id.
+
+**Flags:**
+- ⚠️ **`linear-server` still unauthorized** — backlog not updated. Fifth
+  session running.
+- ⚠️ **`server-only` is not a declared dependency.** `lib/lesson-content.ts`
+  wants it as a build-time guard against the prose re-entering the client
+  bundle, but `platform/package.json` holds another session's Solar-icon
+  changes, so a runtime guard is used instead. Switch when that settles.
+- **Economics' 69 comprehension checks exist only in `course-data.json`**, not
+  Supabase — one deleted file from gone.
+- **Three sessions ran in this tree today (24, 25, 26) and one is still
+  active** — `layout.tsx` gained `IdentityGate`, plus a new `/workspace` route
+  and Solar icons returning. Committed by pathspec throughout.
+- **`Booklesss Bucket/` holds one unfiled image** (`original-ad19….webp`) —
+  left in place, destination unknown.
+- Something auto-committed part of this session's work as `7572eed
+  "Catch-up commit — work done outside session wrap"`.
 
 ### Session 2026-07-31 (session 26 — the app stops naming schools, and starts asking who's reading)
 

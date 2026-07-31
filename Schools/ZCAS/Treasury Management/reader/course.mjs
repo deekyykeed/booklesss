@@ -34,7 +34,7 @@ export default {
   slug: "treasury-management",
   title: "Treasury Management",
   // One line under the title on the home page's course card.
-  subtitle: "Cash, working capital, risk and the systems that move money — BBF4302 at ZCAS.",
+  subtitle: "Cash, working capital, risk and the systems that move money.",
   // Sits after strategic management in the sidebar.
   position: 3,
 

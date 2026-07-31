@@ -29,7 +29,7 @@ export default {
   slug: "strategic-management",
   title: "Strategic Management",
   // One line under the title on the home page's course card.
-  subtitle: "How organisations set direction, choose where to compete, and make it happen — at ZCAS.",
+  subtitle: "How organisations set direction, choose where to compete, and make it happen.",
   // Sits after corporate finance in the sidebar.
   position: 2,
 

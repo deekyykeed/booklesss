@@ -260,6 +260,16 @@ e.g. `Schools/ZCAS/Treasury Management/02-working-capital/reader/cash-management
 The loop: edit the `.mjs` → `npm run seed:course` → `npm run gen:course` →
 `next build` → commit → push (push to `main` deploys).
 
+**A fix applied only in Supabase, or only in the JSON, is not applied.** The
+`.mjs` is the authored source and `seed:course` replaces a course's rows
+wholesale from it — so the next re-seed reinstates whatever the file still
+says. This bites hardest on the things swept in bulk: when course codes and
+school names were stripped from Supabase and `course-index.json` (session 26),
+all three `reader/course.mjs` manifests still read "BAC4301 at ZCAS", and a
+routine re-seed would have put it straight back. Any content correction lands
+in **all three** places, or in the `.mjs` first and then flows out through the
+loop above.
+
 Two things that belong to this skill rather than the build:
 
 - **Corrections are recorded in the file's header comment** (rule **E-7**) — what
