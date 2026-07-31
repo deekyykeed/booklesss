@@ -676,6 +676,15 @@
     line-height: 1.2;
     color: var(--color-muted);
   }
+  /* The offline / install card. Same paper and corner as a stat tile, but
+     nothing sits behind it, so it needs neither the clipping nor the shadow —
+     it's a notice, not a figure. */
+  .dash-offline {
+    padding: 14px;
+    border: 1px solid var(--color-line);
+    border-radius: 28px;
+    background-color: #ffffff;
+  }
   .dash-stat-value {
     font-family: var(--font-display);
     /* Proportional figures, not tabular: at display size tabular-nums gives

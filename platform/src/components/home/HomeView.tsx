@@ -6,6 +6,7 @@ import { isStudyDay, studyHistory, useProgress } from "@/lib/progress";
 import { overallPerformance, overallScoreHistory, type Performance } from "@/lib/performance";
 import { MynaIcon } from "@/components/icons/myna";
 import { CourseCard } from "./CourseCard";
+import { OfflineTools } from "./OfflineTools";
 import { Spark } from "./Spark";
 import { courseTone } from "./tones";
 
@@ -272,6 +273,12 @@ export function HomeView({
               />
             );
           })}
+        </div>
+
+        {/* Under the courses on purpose: it's about the courses, and it must
+            not be the first thing between a reader and opening one. */}
+        <div className="mt-3">
+          <OfflineTools />
         </div>
       </section>
     </div>

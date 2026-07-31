@@ -17,7 +17,7 @@
  *   everything else same-origin network-first   same reasoning, no fallback page.
  *
  * Bump VERSION to evict every cache on the next visit. */
-const VERSION = "v1";
+const VERSION = "v2";
 const ASSETS = `booklesss-assets-${VERSION}`;
 const PAGES = `booklesss-pages-${VERSION}`;
 const DATA = `booklesss-rsc-${VERSION}`;
@@ -79,14 +79,53 @@ async function networkFirst(request, cacheName, fallback) {
     if (response.ok && response.type === "basic") cache.put(request, response.clone());
     return response;
   } catch {
-    const hit = await cache.match(request);
+    /* ignoreVary because a page can arrive here two ways: stored as the exact
+     * navigation request a reader made, or stored by URL alone by the
+     * save-everything pass below. Next sends a Vary on these, so a strict
+     * match would reject the second kind and claim the page isn't saved. */
+    const hit = await cache.match(request, { ignoreVary: true });
     if (hit) return hit;
     if (fallback) {
-      const offline = await cache.match(fallback);
+      const offline = await cache.match(fallback, { ignoreVary: true });
       if (offline) return offline;
     }
     throw new Error("offline and nothing cached");
   }
+}
+
+/* Saves every lesson in one pass, for a reader who wants the course on the bus.
+ * Explicitly triggered — never on first visit. The whole reader is ~1.5–2 MB,
+ * which is cheap on wifi and rude to spend on someone's mobile data uninvited.
+ *
+ * Four at a time: enough to finish quickly, few enough not to saturate a weak
+ * connection. Progress is reported per page so the UI can count up rather than
+ * show a spinner of unknown length. */
+async function saveAll(urls, client) {
+  const cache = await caches.open(PAGES);
+  const queue = [...urls];
+  const total = queue.length;
+  let done = 0;
+  let failed = 0;
+
+  const post = (type) => client?.postMessage({ type, done, total, failed });
+
+  const worker = async () => {
+    while (queue.length) {
+      const url = queue.shift();
+      try {
+        const response = await fetch(url, { credentials: "same-origin" });
+        if (response.ok && response.type === "basic") await cache.put(url, response.clone());
+        else failed++;
+      } catch {
+        failed++;
+      }
+      done++;
+      post("save-all-progress");
+    }
+  };
+
+  await Promise.all(Array.from({ length: 4 }, worker));
+  post("save-all-done");
 }
 
 self.addEventListener("fetch", (event) => {
@@ -122,7 +161,13 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(networkFirst(request, PAGES));
 });
 
-/* Lets the page activate a waiting worker without a second reload. */
 self.addEventListener("message", (event) => {
-  if (event.data === "skip-waiting") self.skipWaiting();
+  // Lets the page activate a waiting worker without a second reload.
+  if (event.data === "skip-waiting") {
+    self.skipWaiting();
+    return;
+  }
+  if (event.data?.type === "save-all" && Array.isArray(event.data.urls)) {
+    event.waitUntil(saveAll(event.data.urls, event.source));
+  }
 });

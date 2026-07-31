@@ -54,6 +54,7 @@ const ICONS = [
   "puzzle",
   "chart-bar",
   "credit-card",
+  "download", // the "add to home screen" prompt on the dashboard
 ];
 
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "components", "icons", "myna.tsx");
