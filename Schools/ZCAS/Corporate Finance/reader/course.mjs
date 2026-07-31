@@ -19,6 +19,32 @@
 import freeCashFlows from "../01-investment/reader/free-cash-flows.mjs";
 import npvAndPayback from "../01-investment/reader/npv-and-payback.mjs";
 import irrAndMirr from "../01-investment/reader/irr-and-mirr.mjs";
+import inflationAndTax from "../01-investment/reader/inflation-and-tax.mjs";
+import apv from "../01-investment/reader/apv.mjs";
+import capitalRationing from "../01-investment/reader/capital-rationing.mjs";
+import internationalProjects from "../01-investment/reader/international-projects.mjs";
+
+import costOfEquity from "../02-cost-of-capital/reader/cost-of-equity.mjs";
+import costOfDebt from "../02-cost-of-capital/reader/cost-of-debt.mjs";
+import creditSpreads from "../02-cost-of-capital/reader/credit-spreads.mjs";
+import wacc from "../02-cost-of-capital/reader/wacc.mjs";
+import gearing from "../02-cost-of-capital/reader/gearing.mjs";
+import capitalStructureTheories from "../02-cost-of-capital/reader/capital-structure-theories.mjs";
+
+import bondValuation from "../03-ma-valuation/reader/bond-valuation.mjs";
+import companyValuation from "../03-ma-valuation/reader/company-valuation.mjs";
+import mergersAndAcquisitions from "../03-ma-valuation/reader/mergers-and-acquisitions.mjs";
+import marketEfficiency from "../03-ma-valuation/reader/market-efficiency.mjs";
+
+import interestRateRisk from "../04-risk/reader/interest-rate-risk.mjs";
+import yieldCurve from "../04-risk/reader/yield-curve.mjs";
+import bondDuration from "../04-risk/reader/bond-duration.mjs";
+import hedgingInterestRateRisk from "../04-risk/reader/hedging-interest-rate-risk.mjs";
+import currencyRisk from "../04-risk/reader/currency-risk.mjs";
+import currencyHedging from "../04-risk/reader/currency-hedging.mjs";
+
+import dividendTheories from "../05-dividends/reader/dividend-theories.mjs";
+import dividendPolicyInPractice from "../05-dividends/reader/dividend-policy-in-practice.mjs";
 
 export default {
   slug: "corporate-finance",
@@ -44,11 +70,45 @@ export default {
             freeCashFlows,
             npvAndPayback,
             irrAndMirr,
-            // 4 — Inflation and tax           (Part 2, slides 7–8)
-            // 5 — Adjusted present value      (APV 2024)
-            // 6 — Capital rationing           (Capital Rationing 2023)
-            // 7 — International projects      (NPV for International Projects 2023)
+            inflationAndTax,
+            apv,
+            capitalRationing,
+            internationalProjects,
           ],
+        },
+        {
+          slug: "cost-of-capital",
+          label: "Cost of capital",
+          children: [
+            costOfEquity,
+            costOfDebt,
+            creditSpreads,
+            wacc,
+            gearing,
+            capitalStructureTheories,
+          ],
+        },
+        {
+          slug: "valuation-and-ma",
+          label: "Valuation and M&A",
+          children: [bondValuation, companyValuation, mergersAndAcquisitions, marketEfficiency],
+        },
+        {
+          slug: "risk-management",
+          label: "Risk management",
+          children: [
+            interestRateRisk,
+            yieldCurve,
+            bondDuration,
+            hedgingInterestRateRisk,
+            currencyRisk,
+            currencyHedging,
+          ],
+        },
+        {
+          slug: "dividend-policy",
+          label: "Dividend policy",
+          children: [dividendTheories, dividendPolicyInPractice],
         },
       ],
     },
