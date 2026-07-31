@@ -1,4 +1,4 @@
-import { COURSE, breadcrumbFor, pathForId, type NavNode, type Section } from "./course";
+import { COURSE, breadcrumbFor, pathForId, type Block, type Section } from "./course";
 
 /* ------------------------------------------------------------------ *
  * Course search.
@@ -57,11 +57,29 @@ function sectionText(s: Section): string {
   return parts.join(" ");
 }
 
-const INDEX: Record_[] = (() => {
+/* The index is built twice, on purpose.
+ *
+ * Lesson titles come from the nav tree, which is already loaded — so the
+ * palette opens with something in it and can match a lesson name before a
+ * single extra byte is fetched. Section-body matching needs the prose, which
+ * is 566 KB and used to ride along on every first visit for a feature most
+ * readers never open. loadSearchIndex() pulls it in the first time the palette
+ * is opened, and the index is rebuilt with sections included.
+ *
+ * A node whose sections carry no `blocks` is the nav tree, so section rows are
+ * simply skipped — which is what makes one builder serve both passes. */
+type IndexNode = {
+  id: string;
+  label: string;
+  lesson?: { title: string; kicker?: string; sections: { id: string; heading: string; blocks?: Block[] }[] };
+  children?: IndexNode[];
+};
+
+function buildIndex(nodes: IndexNode[]): Record_[] {
   const out: Record_[] = [];
   let order = 0;
 
-  const walk = (nodes: NavNode[]) => {
+  const walk = (nodes: IndexNode[]) => {
     for (const n of nodes) {
       if (n.lesson) {
         /* Just the immediate parent, not the whole trail. "Microeconomics /
@@ -85,7 +103,9 @@ const INDEX: Record_[] = (() => {
         });
 
         for (const s of n.lesson.sections) {
-          const raw = sectionText(s);
+          // Nav-only pass: no prose to index yet.
+          if (!s.blocks) continue;
+          const raw = sectionText(s as Section);
           out.push({
             kind: "section",
             label: s.heading,
@@ -104,9 +124,32 @@ const INDEX: Record_[] = (() => {
     }
   };
 
-  walk(COURSE);
+  walk(nodes);
   return out;
-})();
+}
+
+/* Starts as titles only; loadSearchIndex() replaces it with the full thing. */
+let INDEX: Record_[] = buildIndex(COURSE as unknown as IndexNode[]);
+let loaded = false;
+let loading: Promise<void> | null = null;
+
+/** Whether section bodies are searchable yet. */
+export function searchIndexReady(): boolean {
+  return loaded;
+}
+
+/**
+ * Pulls in the lesson prose and rebuilds the index with section bodies.
+ * Safe to call repeatedly and concurrently — the work happens once.
+ */
+export function loadSearchIndex(): Promise<void> {
+  if (loaded) return Promise.resolve();
+  loading ??= import("./course-data.json").then((mod) => {
+    INDEX = buildIndex(mod.default as unknown as IndexNode[]);
+    loaded = true;
+  });
+  return loading;
+}
 
 /** Lessons only, in course order — what the palette shows before you type. */
 export const BROWSE: Hit[] = INDEX.filter((r) => r.kind === "lesson").map((r) => ({

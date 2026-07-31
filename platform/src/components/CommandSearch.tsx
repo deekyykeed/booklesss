@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
-import { highlight, search } from "@/lib/search";
+import { highlight, loadSearchIndex, search, searchIndexReady } from "@/lib/search";
 import { scrollToSection } from "@/lib/scroll-to-section";
 import { MynaIcon } from "@/components/icons/myna";
 
@@ -56,7 +56,22 @@ export function CommandSearch() {
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
 
-  const results = useMemo(() => search(query), [query]);
+  /* The lesson prose isn't in the bundle — it's fetched the first time the
+     palette opens, then the index is rebuilt with section bodies. Until it
+     lands, typing still matches lesson titles, so the palette is never
+     unresponsive; it just gets deeper a moment later. `indexed` re-runs the
+     memo once that happens. */
+  const [indexed, setIndexed] = useState(searchIndexReady());
+  useEffect(() => {
+    if (!open || indexed) return;
+    let cancelled = false;
+    loadSearchIndex().then(() => !cancelled && setIndexed(true));
+    return () => {
+      cancelled = true;
+    };
+  }, [open, indexed]);
+
+  const results = useMemo(() => search(query), [query, indexed]);
 
   const close = useCallback(() => setOpen(false), []);
   const go = useCallback(

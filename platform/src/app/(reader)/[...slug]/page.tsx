@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { allLessonSlugs, courseIndex, lessonIdForSlug } from "@/lib/course";
+import { allLessonSlugs, lessonIdForSlug } from "@/lib/course";
+import { lessonContent } from "@/lib/lesson-content";
 import { LessonReader } from "@/components/reader/LessonReader";
 
 // Only real lesson paths are valid; everything else 404s.
@@ -14,6 +15,10 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
   const { slug } = await params;
   const id = lessonIdForSlug(slug ?? []);
   if (!id) notFound();
-  const lesson = courseIndex().lessons.get(id)!;
+  /* Read from the full content here, not from the nav tree — the nav has no
+     prose. This is the only place the whole course is loaded, and it happens
+     at build time, once per page. */
+  const lesson = lessonContent(id);
+  if (!lesson) notFound();
   return <LessonReader lesson={lesson} lessonId={id} />;
 }

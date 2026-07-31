@@ -15,6 +15,14 @@ const OUT = join(LIB, "course-data.json");
  * tree alone can't say where one course ends and the next begins — this is
  * what the home page and the course dashboards read to tell them apart. */
 const INDEX_OUT = join(LIB, "course-index.json");
+/* The same tree with every section's `blocks` removed.
+ *
+ * course-data.json carries all the prose, and ten client components import
+ * lib/course.ts for labels, paths and checkpoint ids — which dragged the whole
+ * course into the browser bundle, ~183 KB over the wire on a first visit, to
+ * render a sidebar. The nav file is what the client reads; the prose is loaded
+ * by the server for the page being read, and on demand by search. */
+const NAV_OUT = join(LIB, "course-nav.json");
 
 async function generate() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -85,12 +93,46 @@ async function generate() {
   const carried = carryOverChecks(tree);
   writeFileSync(OUT, JSON.stringify(tree, null, 2) + "\n");
   writeFileSync(INDEX_OUT, JSON.stringify(index, null, 2) + "\n");
+  writeFileSync(NAV_OUT, JSON.stringify(stripBlocks(tree), null, 2) + "\n");
+
+  const full = JSON.stringify(tree).length;
+  const nav = JSON.stringify(stripBlocks(tree)).length;
   console.log(
     `gen-course: wrote course-data.json — ${courses.length} course(s) ` +
       `(${courses.map((c) => c.slug).join(", ")}), ${nodesRes.data.length} nodes, ` +
       `${lessonsRes.data.length} lessons` +
       (carried ? `, ${carried} comprehension check(s) carried over from the previous snapshot` : ""),
   );
+  console.log(
+    `gen-course: wrote course-nav.json — ${(nav / 1024).toFixed(0)} KB of nav ` +
+      `against ${(full / 1024).toFixed(0)} KB of content ` +
+      `(${(100 - (nav / full) * 100).toFixed(0)}% of the tree is prose the browser doesn't need up front)`,
+  );
+}
+
+/* The nav tree: identical to the full one but for each section keeping only
+ * what the browser needs without the prose — its id (checkpoints are section
+ * ids) and its heading (the "on this page" list).
+ *
+ * `check` is dropped too. The comprehension questions are dormant — nothing
+ * renders them since the end-of-section control became a self-rating — and
+ * they are the bulk of what's left once the prose goes. They stay in
+ * course-data.json and in Supabase, so nothing authored is lost; they simply
+ * stop being shipped to a browser that has no use for them. */
+function stripBlocks(nodes) {
+  return nodes.map((n) => {
+    const out = { id: n.id, label: n.label };
+    if (n.defaultOpen) out.defaultOpen = true;
+    if (n.lesson) {
+      out.lesson = {
+        title: n.lesson.title,
+        ...(n.lesson.kicker ? { kicker: n.lesson.kicker } : {}),
+        sections: n.lesson.sections.map((s) => ({ id: s.id, heading: s.heading })),
+      };
+    }
+    if (n.children) out.children = stripBlocks(n.children);
+    return out;
+  });
 }
 
 /* Section comprehension checks (`section.check`) drive the checkpoints — a

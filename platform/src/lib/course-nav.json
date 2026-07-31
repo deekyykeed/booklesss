@@ -1,0 +1,2048 @@
+[
+  {
+    "id": "getting-started",
+    "label": "Getting started",
+    "defaultOpen": true,
+    "children": [
+      {
+        "id": "what-is-economics",
+        "label": "What is Economics",
+        "lesson": {
+          "title": "What is Economics",
+          "kicker": "Getting started",
+          "sections": [
+            {
+              "id": "overview",
+              "heading": "Overview"
+            },
+            {
+              "id": "key-ideas",
+              "heading": "Key ideas"
+            },
+            {
+              "id": "in-practice",
+              "heading": "In practice"
+            },
+            {
+              "id": "summary",
+              "heading": "Summary"
+            },
+            {
+              "id": "try-it",
+              "heading": "Try it yourself"
+            }
+          ]
+        }
+      },
+      {
+        "id": "how-to-use",
+        "label": "How to use this course",
+        "lesson": {
+          "title": "How to use this course",
+          "kicker": "Getting started",
+          "sections": [
+            {
+              "id": "overview",
+              "heading": "Overview"
+            },
+            {
+              "id": "key-ideas",
+              "heading": "Key ideas"
+            }
+          ]
+        }
+      },
+      {
+        "id": "glossary",
+        "label": "Key terms & glossary",
+        "lesson": {
+          "title": "Key terms & glossary",
+          "kicker": "Getting started",
+          "sections": [
+            {
+              "id": "overview",
+              "heading": "Overview"
+            },
+            {
+              "id": "key-ideas",
+              "heading": "Key ideas"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "microeconomics",
+    "label": "Microeconomics",
+    "children": [
+      {
+        "id": "supply-demand",
+        "label": "Supply & demand",
+        "children": [
+          {
+            "id": "law-of-demand",
+            "label": "The law of demand",
+            "lesson": {
+              "title": "The law of demand",
+              "kicker": "Supply & demand",
+              "sections": [
+                {
+                  "id": "overview",
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "heading": "Key ideas"
+                },
+                {
+                  "id": "in-practice",
+                  "heading": "In practice"
+                },
+                {
+                  "id": "summary",
+                  "heading": "Summary"
+                }
+              ]
+            }
+          },
+          {
+            "id": "law-of-supply",
+            "label": "The law of supply",
+            "lesson": {
+              "title": "The law of supply",
+              "kicker": "Supply & demand",
+              "sections": [
+                {
+                  "id": "overview",
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "equilibrium",
+            "label": "Market equilibrium",
+            "lesson": {
+              "title": "Market equilibrium",
+              "kicker": "Supply & demand",
+              "sections": [
+                {
+                  "id": "overview",
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "elasticity",
+            "label": "Elasticity",
+            "children": [
+              {
+                "id": "ped",
+                "label": "Price elasticity of demand",
+                "lesson": {
+                  "title": "Price elasticity of demand",
+                  "kicker": "Elasticity",
+                  "sections": [
+                    {
+                      "id": "overview",
+                      "heading": "Overview"
+                    },
+                    {
+                      "id": "key-ideas",
+                      "heading": "Key ideas"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "yed",
+                "label": "Income elasticity",
+                "lesson": {
+                  "title": "Income elasticity of demand",
+                  "kicker": "Elasticity",
+                  "sections": [
+                    {
+                      "id": "overview",
+                      "heading": "Overview"
+                    },
+                    {
+                      "id": "key-ideas",
+                      "heading": "Key ideas"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "xed",
+                "label": "Cross-price elasticity",
+                "lesson": {
+                  "title": "Cross-price elasticity",
+                  "kicker": "Elasticity",
+                  "sections": [
+                    {
+                      "id": "overview",
+                      "heading": "Overview"
+                    },
+                    {
+                      "id": "key-ideas",
+                      "heading": "Key ideas"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "consumer-choice",
+        "label": "Consumer choice",
+        "children": [
+          {
+            "id": "utility",
+            "label": "Utility & marginal utility",
+            "lesson": {
+              "title": "Utility & marginal utility",
+              "kicker": "Consumer choice",
+              "sections": [
+                {
+                  "id": "overview",
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "indifference",
+            "label": "Indifference curves",
+            "lesson": {
+              "title": "Indifference curves",
+              "kicker": "Consumer choice",
+              "sections": [
+                {
+                  "id": "overview",
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "budget",
+            "label": "Budget constraints",
+            "lesson": {
+              "title": "Budget constraints",
+              "kicker": "Consumer choice",
+              "sections": [
+                {
+                  "id": "overview",
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "firms",
+        "label": "Firms & production",
+        "children": [
+          {
+            "id": "costs",
+            "label": "Costs of production",
+            "lesson": {
+              "title": "Costs of production",
+              "kicker": "Firms & production",
+              "sections": [
+                {
+                  "id": "overview",
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "revenue-profit",
+            "label": "Revenue & profit",
+            "lesson": {
+              "title": "Revenue & profit",
+              "kicker": "Firms & production",
+              "sections": [
+                {
+                  "id": "overview",
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "economies-scale",
+            "label": "Economies of scale",
+            "lesson": {
+              "title": "Economies of scale",
+              "kicker": "Firms & production",
+              "sections": [
+                {
+                  "id": "overview",
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "market-structures",
+        "label": "Market structures",
+        "children": [
+          {
+            "id": "perfect-competition",
+            "label": "Perfect competition",
+            "lesson": {
+              "title": "Perfect competition",
+              "kicker": "Market structures",
+              "sections": [
+                {
+                  "id": "overview",
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "monopoly",
+            "label": "Monopoly",
+            "lesson": {
+              "title": "Monopoly",
+              "kicker": "Market structures",
+              "sections": [
+                {
+                  "id": "overview",
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "oligopoly",
+            "label": "Oligopoly & game theory",
+            "lesson": {
+              "title": "Oligopoly & game theory",
+              "kicker": "Market structures",
+              "sections": [
+                {
+                  "id": "overview",
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "macroeconomics",
+    "label": "Macroeconomics",
+    "children": [
+      {
+        "id": "measuring",
+        "label": "Measuring the economy",
+        "children": [
+          {
+            "id": "gdp",
+            "label": "Gross Domestic Product",
+            "lesson": {
+              "title": "Gross Domestic Product (GDP)",
+              "kicker": "Measuring the economy",
+              "sections": [
+                {
+                  "id": "overview",
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "heading": "Key ideas"
+                },
+                {
+                  "id": "in-practice",
+                  "heading": "In practice"
+                },
+                {
+                  "id": "summary",
+                  "heading": "Summary"
+                }
+              ]
+            }
+          },
+          {
+            "id": "inflation",
+            "label": "Inflation & the CPI",
+            "lesson": {
+              "title": "Inflation & the CPI",
+              "kicker": "Measuring the economy",
+              "sections": [
+                {
+                  "id": "overview",
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "unemployment",
+            "label": "Unemployment",
+            "lesson": {
+              "title": "Unemployment",
+              "kicker": "Measuring the economy",
+              "sections": [
+                {
+                  "id": "overview",
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "policy",
+        "label": "Policy",
+        "children": [
+          {
+            "id": "fiscal",
+            "label": "Fiscal policy",
+            "lesson": {
+              "title": "Fiscal policy",
+              "kicker": "Policy",
+              "sections": [
+                {
+                  "id": "overview",
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "monetary",
+            "label": "Monetary policy",
+            "lesson": {
+              "title": "Monetary policy",
+              "kicker": "Policy",
+              "sections": [
+                {
+                  "id": "overview",
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "trade",
+        "label": "International trade",
+        "children": [
+          {
+            "id": "comparative-advantage",
+            "label": "Comparative advantage",
+            "lesson": {
+              "title": "Comparative advantage",
+              "kicker": "International trade",
+              "sections": [
+                {
+                  "id": "overview",
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          },
+          {
+            "id": "exchange-rates",
+            "label": "Exchange rates",
+            "lesson": {
+              "title": "Exchange rates",
+              "kicker": "International trade",
+              "sections": [
+                {
+                  "id": "overview",
+                  "heading": "Overview"
+                },
+                {
+                  "id": "key-ideas",
+                  "heading": "Key ideas"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "behavioral",
+    "label": "Behavioral economics",
+    "children": [
+      {
+        "id": "biases",
+        "label": "Cognitive biases",
+        "lesson": {
+          "title": "Cognitive biases",
+          "kicker": "Behavioral economics",
+          "sections": [
+            {
+              "id": "overview",
+              "heading": "Overview"
+            },
+            {
+              "id": "key-ideas",
+              "heading": "Key ideas"
+            }
+          ]
+        }
+      },
+      {
+        "id": "nudges",
+        "label": "Nudges & choice architecture",
+        "lesson": {
+          "title": "Nudges & choice architecture",
+          "kicker": "Behavioral economics",
+          "sections": [
+            {
+              "id": "overview",
+              "heading": "Overview"
+            },
+            {
+              "id": "key-ideas",
+              "heading": "Key ideas"
+            }
+          ]
+        }
+      },
+      {
+        "id": "prisoners-dilemma",
+        "label": "The prisoner's dilemma",
+        "lesson": {
+          "title": "The prisoner's dilemma",
+          "kicker": "Behavioral economics",
+          "sections": [
+            {
+              "id": "overview",
+              "heading": "Overview"
+            },
+            {
+              "id": "key-ideas",
+              "heading": "Key ideas"
+            },
+            {
+              "id": "in-practice",
+              "heading": "In practice"
+            },
+            {
+              "id": "summary",
+              "heading": "Summary"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "resources",
+    "label": "Resources",
+    "children": [
+      {
+        "id": "formula-sheet",
+        "label": "Formula sheet",
+        "lesson": {
+          "title": "Formula sheet",
+          "kicker": "Resources",
+          "sections": [
+            {
+              "id": "overview",
+              "heading": "Overview"
+            },
+            {
+              "id": "key-ideas",
+              "heading": "Key ideas"
+            }
+          ]
+        }
+      },
+      {
+        "id": "practice",
+        "label": "Practice problems",
+        "lesson": {
+          "title": "Practice problems",
+          "kicker": "Resources",
+          "sections": [
+            {
+              "id": "overview",
+              "heading": "Overview"
+            },
+            {
+              "id": "key-ideas",
+              "heading": "Key ideas"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "corporate-finance",
+    "label": "Corporate Finance",
+    "defaultOpen": true,
+    "children": [
+      {
+        "id": "investment-appraisal",
+        "label": "Investment appraisal",
+        "children": [
+          {
+            "id": "free-cash-flows",
+            "label": "Free cash flows",
+            "lesson": {
+              "title": "Free cash flows",
+              "kicker": "Investment appraisal",
+              "sections": [
+                {
+                  "id": "what-it-is",
+                  "heading": "What free cash flow is"
+                },
+                {
+                  "id": "to-the-firm",
+                  "heading": "Building free cash flow to the firm"
+                },
+                {
+                  "id": "to-equity",
+                  "heading": "From the firm to equity"
+                },
+                {
+                  "id": "which-measure",
+                  "heading": "Choosing between the two measures"
+                },
+                {
+                  "id": "worked-example",
+                  "heading": "Worked example"
+                }
+              ]
+            }
+          },
+          {
+            "id": "npv-and-payback",
+            "label": "NPV & discounted payback",
+            "lesson": {
+              "title": "NPV and discounted payback",
+              "kicker": "Investment appraisal",
+              "sections": [
+                {
+                  "id": "time-value",
+                  "heading": "Why a future kwacha is worth less"
+                },
+                {
+                  "id": "npv",
+                  "heading": "Net present value"
+                },
+                {
+                  "id": "npv-worked",
+                  "heading": "Working an NPV"
+                },
+                {
+                  "id": "discounted-payback",
+                  "heading": "Discounted payback period"
+                },
+                {
+                  "id": "choosing",
+                  "heading": "What each test is good for"
+                }
+              ]
+            }
+          },
+          {
+            "id": "irr-and-mirr",
+            "label": "IRR & MIRR",
+            "lesson": {
+              "title": "IRR and MIRR",
+              "kicker": "Investment appraisal",
+              "sections": [
+                {
+                  "id": "irr",
+                  "heading": "The internal rate of return"
+                },
+                {
+                  "id": "interpolation",
+                  "heading": "Finding IRR by interpolation"
+                },
+                {
+                  "id": "irr-problems",
+                  "heading": "Where IRR misleads"
+                },
+                {
+                  "id": "mirr",
+                  "heading": "The modified internal rate of return"
+                },
+                {
+                  "id": "mirr-worked",
+                  "heading": "Working a MIRR"
+                }
+              ]
+            }
+          },
+          {
+            "id": "inflation-and-tax",
+            "label": "Inflation & tax",
+            "lesson": {
+              "title": "Inflation and tax in appraisal",
+              "kicker": "Investment appraisal",
+              "sections": [
+                {
+                  "id": "money-and-real",
+                  "heading": "Money cash flows and real cash flows"
+                },
+                {
+                  "id": "specific-inflation",
+                  "heading": "When prices inflate at different rates"
+                },
+                {
+                  "id": "tax-on-operating-flows",
+                  "heading": "Tax on the operating cash flows"
+                },
+                {
+                  "id": "capital-allowances",
+                  "heading": "Capital allowances and the tax saved"
+                },
+                {
+                  "id": "worked-example",
+                  "heading": "Working it end to end"
+                }
+              ]
+            }
+          },
+          {
+            "id": "apv",
+            "label": "Adjusted present value",
+            "lesson": {
+              "title": "Adjusted present value",
+              "kicker": "Investment appraisal",
+              "sections": [
+                {
+                  "id": "why-apv",
+                  "heading": "Splitting the project from the way it is funded"
+                },
+                {
+                  "id": "base-case",
+                  "heading": "The base case NPV"
+                },
+                {
+                  "id": "financing-side-effects",
+                  "heading": "The financing side effects"
+                },
+                {
+                  "id": "interest-tax-shield",
+                  "heading": "The interest tax shield"
+                },
+                {
+                  "id": "worked-example",
+                  "heading": "Working an APV"
+                }
+              ]
+            }
+          },
+          {
+            "id": "capital-rationing",
+            "label": "Capital rationing",
+            "lesson": {
+              "title": "Capital rationing",
+              "kicker": "Investment appraisal",
+              "sections": [
+                {
+                  "id": "what-it-is",
+                  "heading": "When there is not enough money for everything"
+                },
+                {
+                  "id": "soft-and-hard",
+                  "heading": "Soft and hard rationing"
+                },
+                {
+                  "id": "profitability-index",
+                  "heading": "Ranking by profitability index"
+                },
+                {
+                  "id": "indivisible",
+                  "heading": "When projects cannot be split"
+                },
+                {
+                  "id": "multi-period",
+                  "heading": "Rationing across several years"
+                }
+              ]
+            }
+          },
+          {
+            "id": "international-projects",
+            "label": "International projects",
+            "lesson": {
+              "title": "International project appraisal",
+              "kicker": "Investment appraisal",
+              "sections": [
+                {
+                  "id": "two-approaches",
+                  "heading": "Two routes to the same answer"
+                },
+                {
+                  "id": "forecasting-rates",
+                  "heading": "Forecasting the exchange rate"
+                },
+                {
+                  "id": "foreign-cost-of-capital",
+                  "heading": "The foreign cost of capital"
+                },
+                {
+                  "id": "worked-example",
+                  "heading": "Working it by converting the cash flows"
+                },
+                {
+                  "id": "second-approach",
+                  "heading": "Working it by converting the NPV"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "cost-of-capital",
+        "label": "Cost of capital",
+        "children": [
+          {
+            "id": "cost-of-equity",
+            "label": "Cost of equity",
+            "lesson": {
+              "title": "The cost of equity",
+              "kicker": "Cost of capital",
+              "sections": [
+                {
+                  "id": "what-it-is",
+                  "heading": "A cost that nobody invoices"
+                },
+                {
+                  "id": "capm",
+                  "heading": "The capital asset pricing model"
+                },
+                {
+                  "id": "beta",
+                  "heading": "Where beta comes from"
+                },
+                {
+                  "id": "dividend-valuation-model",
+                  "heading": "The dividend valuation model"
+                },
+                {
+                  "id": "choosing",
+                  "heading": "Choosing between the two models"
+                }
+              ]
+            }
+          },
+          {
+            "id": "cost-of-debt",
+            "label": "Cost of debt",
+            "lesson": {
+              "title": "The cost of debt and preference shares",
+              "kicker": "Cost of capital",
+              "sections": [
+                {
+                  "id": "why-cheaper",
+                  "heading": "Why debt costs less"
+                },
+                {
+                  "id": "loans-and-preference",
+                  "heading": "Bank loans and preference shares"
+                },
+                {
+                  "id": "irredeemable-bonds",
+                  "heading": "Irredeemable bonds"
+                },
+                {
+                  "id": "redeemable-bonds",
+                  "heading": "Redeemable bonds and yield to maturity"
+                },
+                {
+                  "id": "picking-the-method",
+                  "heading": "Picking the right method"
+                }
+              ]
+            }
+          },
+          {
+            "id": "credit-spreads",
+            "label": "Credit spreads",
+            "lesson": {
+              "title": "Credit spreads and the cost of debt",
+              "kicker": "Cost of capital",
+              "sections": [
+                {
+                  "id": "credit-risk",
+                  "heading": "What a lender charges for the chance of not being repaid"
+                },
+                {
+                  "id": "reading-the-table",
+                  "heading": "Reading the spread table"
+                },
+                {
+                  "id": "interpolating",
+                  "heading": "When the maturity is not in the table"
+                },
+                {
+                  "id": "cost-of-debt-capital",
+                  "heading": "From yield to cost of debt"
+                },
+                {
+                  "id": "what-moves-a-spread",
+                  "heading": "What moves a spread, and what that costs"
+                }
+              ]
+            }
+          },
+          {
+            "id": "wacc",
+            "label": "WACC",
+            "lesson": {
+              "title": "The weighted average cost of capital",
+              "kicker": "Cost of capital",
+              "sections": [
+                {
+                  "id": "the-idea",
+                  "heading": "One rate for money from several places"
+                },
+                {
+                  "id": "market-values",
+                  "heading": "Weighting by market value"
+                },
+                {
+                  "id": "worked-example",
+                  "heading": "Working a full WACC"
+                },
+                {
+                  "id": "wacc-from-a-rating",
+                  "heading": "Building a WACC from a credit rating"
+                },
+                {
+                  "id": "when-wacc-works",
+                  "heading": "When WACC is the right rate"
+                }
+              ]
+            }
+          },
+          {
+            "id": "gearing",
+            "label": "Gearing",
+            "lesson": {
+              "title": "Operating and financial gearing",
+              "kicker": "Cost of capital",
+              "sections": [
+                {
+                  "id": "operating-gearing",
+                  "heading": "Fixed costs amplify a change in sales"
+                },
+                {
+                  "id": "financial-gearing",
+                  "heading": "Measuring financial gearing"
+                },
+                {
+                  "id": "interest-cover",
+                  "heading": "Interest cover"
+                },
+                {
+                  "id": "book-and-market",
+                  "heading": "Book values and market values give different answers"
+                },
+                {
+                  "id": "managing-gearing",
+                  "heading": "Managing the level of gearing"
+                }
+              ]
+            }
+          },
+          {
+            "id": "capital-structure-theories",
+            "label": "Capital structure theories",
+            "lesson": {
+              "title": "Capital structure theories",
+              "kicker": "Cost of capital",
+              "sections": [
+                {
+                  "id": "the-question",
+                  "heading": "Can the funding mix make a company more valuable?"
+                },
+                {
+                  "id": "traditional-view",
+                  "heading": "The traditional view"
+                },
+                {
+                  "id": "mm-irrelevance",
+                  "heading": "Modigliani and Miller without tax"
+                },
+                {
+                  "id": "mm-with-tax",
+                  "heading": "Adding tax, and then distress"
+                },
+                {
+                  "id": "pecking-order",
+                  "heading": "The pecking order"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "valuation-and-ma",
+        "label": "Valuation and M&A",
+        "children": [
+          {
+            "id": "bond-valuation",
+            "label": "Valuing a bond",
+            "lesson": {
+              "title": "Valuing a bond",
+              "kicker": "Valuation and M&A",
+              "sections": [
+                {
+                  "id": "features",
+                  "heading": "What a bond is and what its terms mean"
+                },
+                {
+                  "id": "pricing-principle",
+                  "heading": "The one rule that prices every bond"
+                },
+                {
+                  "id": "zero-coupon",
+                  "heading": "Zero coupon bonds"
+                },
+                {
+                  "id": "irredeemable",
+                  "heading": "Irredeemable bonds"
+                },
+                {
+                  "id": "redeemable",
+                  "heading": "Redeemable bonds"
+                }
+              ]
+            }
+          },
+          {
+            "id": "company-valuation",
+            "label": "Valuing a company",
+            "lesson": {
+              "title": "Valuing a company",
+              "kicker": "Valuation and M&A",
+              "sections": [
+                {
+                  "id": "two-approaches",
+                  "heading": "What a company is worth depends on who is asking"
+                },
+                {
+                  "id": "market-capitalisation",
+                  "heading": "Market capitalisation"
+                },
+                {
+                  "id": "asset-based",
+                  "heading": "Asset-based valuations"
+                },
+                {
+                  "id": "pe-basis",
+                  "heading": "The price/earnings basis"
+                },
+                {
+                  "id": "dividend-growth",
+                  "heading": "The dividend growth model, and comparing the answers"
+                }
+              ]
+            }
+          },
+          {
+            "id": "mergers-and-acquisitions",
+            "label": "Mergers & acquisitions",
+            "lesson": {
+              "title": "Mergers and acquisitions",
+              "kicker": "Valuation and M&A",
+              "sections": [
+                {
+                  "id": "what-they-are",
+                  "heading": "Mergers, acquisitions and the three shapes they take"
+                },
+                {
+                  "id": "why",
+                  "heading": "Why companies do it"
+                },
+                {
+                  "id": "post-acquisition-eps",
+                  "heading": "What happens to earnings per share"
+                },
+                {
+                  "id": "financing-the-bid",
+                  "heading": "Paying for it"
+                },
+                {
+                  "id": "defences",
+                  "heading": "Defending against a hostile bid"
+                }
+              ]
+            }
+          },
+          {
+            "id": "market-efficiency",
+            "label": "Market efficiency",
+            "lesson": {
+              "title": "The efficient market hypothesis",
+              "kicker": "Valuation and M&A",
+              "sections": [
+                {
+                  "id": "what-it-means",
+                  "heading": "What an efficient market is"
+                },
+                {
+                  "id": "weak-form",
+                  "heading": "Weak form efficiency"
+                },
+                {
+                  "id": "semi-strong-form",
+                  "heading": "Semi-strong form efficiency"
+                },
+                {
+                  "id": "strong-form",
+                  "heading": "Strong form efficiency"
+                },
+                {
+                  "id": "implications",
+                  "heading": "What it means for the company, not the investor"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "risk-management",
+        "label": "Risk management",
+        "children": [
+          {
+            "id": "interest-rate-risk",
+            "label": "Interest rate risk",
+            "lesson": {
+              "title": "Interest rate risk, spot and forward rates",
+              "kicker": "Risk management",
+              "sections": [
+                {
+                  "id": "exposure",
+                  "heading": "What a change in rates costs"
+                },
+                {
+                  "id": "spot-and-forward",
+                  "heading": "Spot rates and forward rates"
+                },
+                {
+                  "id": "deriving-spot-rates",
+                  "heading": "Getting spot rates out of bond prices"
+                },
+                {
+                  "id": "linking",
+                  "heading": "Linking spot rates to forward rates"
+                },
+                {
+                  "id": "pricing-with-spot-rates",
+                  "heading": "Pricing a bond off the spot curve"
+                }
+              ]
+            }
+          },
+          {
+            "id": "yield-curve",
+            "label": "The yield curve",
+            "lesson": {
+              "title": "The term structure of interest rates",
+              "kicker": "Risk management",
+              "sections": [
+                {
+                  "id": "term-structure",
+                  "heading": "One market, many rates"
+                },
+                {
+                  "id": "expectations",
+                  "heading": "Expectations theory"
+                },
+                {
+                  "id": "liquidity-preference",
+                  "heading": "Liquidity preference"
+                },
+                {
+                  "id": "market-segmentation",
+                  "heading": "Market segmentation"
+                },
+                {
+                  "id": "reading-the-shape",
+                  "heading": "Reading the shape"
+                }
+              ]
+            }
+          },
+          {
+            "id": "bond-duration",
+            "label": "Bond duration",
+            "lesson": {
+              "title": "Bond duration",
+              "kicker": "Risk management",
+              "sections": [
+                {
+                  "id": "what-it-is",
+                  "heading": "How long you really wait for a bond"
+                },
+                {
+                  "id": "calculating",
+                  "heading": "Calculating duration"
+                },
+                {
+                  "id": "price-sensitivity",
+                  "heading": "Turning duration into a price change"
+                },
+                {
+                  "id": "what-drives-it",
+                  "heading": "What makes duration long or short"
+                },
+                {
+                  "id": "using-it",
+                  "heading": "Using duration to manage risk"
+                }
+              ]
+            }
+          },
+          {
+            "id": "hedging-interest-rate-risk",
+            "label": "Hedging interest rate risk",
+            "lesson": {
+              "title": "Hedging interest rate risk",
+              "kicker": "Risk management",
+              "sections": [
+                {
+                  "id": "internal-hedging",
+                  "heading": "What a company can do without buying anything"
+                },
+                {
+                  "id": "forward-rate-agreements",
+                  "heading": "Forward rate agreements"
+                },
+                {
+                  "id": "interest-rate-guarantees",
+                  "heading": "Interest rate guarantees"
+                },
+                {
+                  "id": "interest-rate-futures",
+                  "heading": "Interest rate futures"
+                },
+                {
+                  "id": "interest-rate-swaps",
+                  "heading": "Interest rate swaps"
+                }
+              ]
+            }
+          },
+          {
+            "id": "currency-risk",
+            "label": "Currency risk",
+            "lesson": {
+              "title": "Currency risk",
+              "kicker": "Risk management",
+              "sections": [
+                {
+                  "id": "what-it-is",
+                  "heading": "Gains and losses that come from the rate, not the trade"
+                },
+                {
+                  "id": "three-types",
+                  "heading": "Three kinds of currency exposure"
+                },
+                {
+                  "id": "interest-rate-parity",
+                  "heading": "Interest rate parity"
+                },
+                {
+                  "id": "purchasing-power-parity",
+                  "heading": "Purchasing power parity"
+                },
+                {
+                  "id": "internal-hedging",
+                  "heading": "Hedging without a contract"
+                }
+              ]
+            }
+          },
+          {
+            "id": "currency-hedging",
+            "label": "Hedging currency risk",
+            "lesson": {
+              "title": "Hedging currency risk",
+              "kicker": "Risk management",
+              "sections": [
+                {
+                  "id": "forward-contracts",
+                  "heading": "Forward contracts"
+                },
+                {
+                  "id": "money-market-hedging",
+                  "heading": "Money market hedging"
+                },
+                {
+                  "id": "comparing",
+                  "heading": "Comparing the hedges"
+                },
+                {
+                  "id": "futures",
+                  "heading": "Currency futures"
+                },
+                {
+                  "id": "options",
+                  "heading": "Currency options"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "dividend-policy",
+        "label": "Dividend policy",
+        "children": [
+          {
+            "id": "dividend-theories",
+            "label": "Dividend theories",
+            "lesson": {
+              "title": "Theories of dividend policy",
+              "kicker": "Dividend policy",
+              "sections": [
+                {
+                  "id": "the-decision",
+                  "heading": "Paying a dividend is a financing decision"
+                },
+                {
+                  "id": "relevance",
+                  "heading": "Relevance theory"
+                },
+                {
+                  "id": "irrelevance",
+                  "heading": "Irrelevance theory"
+                },
+                {
+                  "id": "residual",
+                  "heading": "Residual theory"
+                },
+                {
+                  "id": "comparing",
+                  "heading": "Which of them to work from"
+                }
+              ]
+            }
+          },
+          {
+            "id": "dividend-policy-in-practice",
+            "label": "Policy in practice",
+            "lesson": {
+              "title": "Dividend policy in practice",
+              "kicker": "Dividend policy",
+              "sections": [
+                {
+                  "id": "practical-influences",
+                  "heading": "What actually constrains the payout"
+                },
+                {
+                  "id": "dividend-capacity",
+                  "heading": "Dividend capacity"
+                },
+                {
+                  "id": "the-policies",
+                  "heading": "Four policies a company can adopt"
+                },
+                {
+                  "id": "alternatives",
+                  "heading": "Alternatives to a cash dividend"
+                },
+                {
+                  "id": "advising",
+                  "heading": "Advising a company on its dividend"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "strategic-management",
+    "label": "Strategic Management",
+    "defaultOpen": true,
+    "children": [
+      {
+        "id": "foundations",
+        "label": "Foundations",
+        "children": [
+          {
+            "id": "intro-to-strategy",
+            "label": "Introduction to strategy",
+            "lesson": {
+              "title": "Introduction to corporate strategy",
+              "kicker": "Foundations",
+              "sections": [
+                {
+                  "id": "what-strategy-is",
+                  "heading": "What strategy is"
+                },
+                {
+                  "id": "three-levels",
+                  "heading": "The three levels of strategy"
+                },
+                {
+                  "id": "five-ps",
+                  "heading": "Mintzberg's five Ps of strategy"
+                },
+                {
+                  "id": "the-process",
+                  "heading": "The strategic management process"
+                },
+                {
+                  "id": "competitive-advantage",
+                  "heading": "Competitive advantage and the generic strategies"
+                }
+              ]
+            }
+          },
+          {
+            "id": "mission-and-vision",
+            "label": "Vision, mission and objectives",
+            "lesson": {
+              "title": "Vision, mission and objectives",
+              "kicker": "Foundations",
+              "sections": [
+                {
+                  "id": "four-components",
+                  "heading": "The four components of direction"
+                },
+                {
+                  "id": "vision",
+                  "heading": "Strategic vision"
+                },
+                {
+                  "id": "mission",
+                  "heading": "Mission — and how it differs from vision"
+                },
+                {
+                  "id": "values-and-objectives",
+                  "heading": "Core values and the two kinds of objective"
+                },
+                {
+                  "id": "setting-objectives",
+                  "heading": "Setting objectives well"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "environment",
+        "label": "Environment",
+        "children": [
+          {
+            "id": "external-environment",
+            "label": "The external environment",
+            "lesson": {
+              "title": "The external environment",
+              "kicker": "Environment",
+              "sections": [
+                {
+                  "id": "two-layers",
+                  "heading": "Two layers of the outside world"
+                },
+                {
+                  "id": "pestel",
+                  "heading": "PESTEL — mapping the macro environment"
+                },
+                {
+                  "id": "pestel-in-zambia",
+                  "heading": "PESTEL applied — the Zambian record"
+                },
+                {
+                  "id": "five-forces",
+                  "heading": "Porter's Five Forces"
+                },
+                {
+                  "id": "forces-applied",
+                  "heading": "The forces at work in Zambia"
+                }
+              ]
+            }
+          },
+          {
+            "id": "internal-environment",
+            "label": "The internal environment",
+            "lesson": {
+              "title": "The internal environment",
+              "kicker": "Environment",
+              "sections": [
+                {
+                  "id": "looking-inward",
+                  "heading": "Looking inward after looking out"
+                },
+                {
+                  "id": "swot",
+                  "heading": "SWOT — the internal half"
+                },
+                {
+                  "id": "value-chain",
+                  "heading": "Porter's value chain"
+                },
+                {
+                  "id": "vrio",
+                  "heading": "The VRIO framework"
+                },
+                {
+                  "id": "vrio-applied",
+                  "heading": "VRIO applied — two Zambian tests"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "strategy",
+        "label": "Strategy",
+        "children": [
+          {
+            "id": "corporate-strategy",
+            "label": "Corporate strategy",
+            "lesson": {
+              "title": "Corporate strategy",
+              "kicker": "Strategy",
+              "sections": [
+                {
+                  "id": "where-strategy-happens",
+                  "heading": "Where strategy-making happens"
+                },
+                {
+                  "id": "four-directions",
+                  "heading": "The four corporate directions"
+                },
+                {
+                  "id": "growth-paths",
+                  "heading": "How organisations grow — four paths"
+                },
+                {
+                  "id": "diversification",
+                  "heading": "Diversification — and its three tests"
+                },
+                {
+                  "id": "bcg-matrix",
+                  "heading": "The BCG matrix — allocating capital across the portfolio"
+                }
+              ]
+            }
+          },
+          {
+            "id": "competitive-strategy",
+            "label": "Competitive strategy",
+            "lesson": {
+              "title": "Competitive strategy",
+              "kicker": "Strategy",
+              "sections": [
+                {
+                  "id": "portfolio-to-battlefield",
+                  "heading": "From portfolio to battlefield"
+                },
+                {
+                  "id": "generic-strategies",
+                  "heading": "The generic strategies"
+                },
+                {
+                  "id": "achieving-positions",
+                  "heading": "Achieving and defending each position"
+                },
+                {
+                  "id": "offensive-strategies",
+                  "heading": "Offensive strategies — going on the attack"
+                },
+                {
+                  "id": "defensive-strategies",
+                  "heading": "Defensive strategies — holding your ground"
+                }
+              ]
+            }
+          },
+          {
+            "id": "strategy-implementation",
+            "label": "Strategy implementation",
+            "lesson": {
+              "title": "Strategy implementation",
+              "kicker": "Strategy",
+              "sections": [
+                {
+                  "id": "execution-problem",
+                  "heading": "The execution problem"
+                },
+                {
+                  "id": "mckinsey-7s",
+                  "heading": "The McKinsey 7-S framework"
+                },
+                {
+                  "id": "balanced-scorecard",
+                  "heading": "The balanced scorecard as strategy's dashboard"
+                },
+                {
+                  "id": "change-management",
+                  "heading": "Change management — the human side"
+                },
+                {
+                  "id": "structure",
+                  "heading": "Structure follows strategy"
+                },
+                {
+                  "id": "strategic-control",
+                  "heading": "Strategic control — monitoring and adapting"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "treasury-management",
+    "label": "Treasury Management",
+    "defaultOpen": true,
+    "children": [
+      {
+        "id": "treasury-operations",
+        "label": "Treasury operations",
+        "children": [
+          {
+            "id": "intro-to-treasury",
+            "label": "Introduction to treasury",
+            "lesson": {
+              "title": "Introduction to treasury management",
+              "kicker": "Treasury operations",
+              "sections": [
+                {
+                  "id": "what-treasury-is",
+                  "heading": "What treasury is"
+                },
+                {
+                  "id": "eleven-functions",
+                  "heading": "The eleven functions of treasury"
+                },
+                {
+                  "id": "task-levels",
+                  "heading": "Strategic, tactical and operational"
+                },
+                {
+                  "id": "cost-vs-profit-centre",
+                  "heading": "Cost centre or profit centre"
+                },
+                {
+                  "id": "controls",
+                  "heading": "Treasury controls"
+                },
+                {
+                  "id": "centralisation",
+                  "heading": "Centralised, decentralised and hybrid"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "working-capital",
+        "label": "Working capital",
+        "children": [
+          {
+            "id": "working-capital-and-liquidity",
+            "label": "Working capital & liquidity",
+            "lesson": {
+              "title": "Working capital and liquidity management",
+              "kicker": "Working capital",
+              "sections": [
+                {
+                  "id": "what-working-capital-is",
+                  "heading": "What working capital is"
+                },
+                {
+                  "id": "working-capital-policy",
+                  "heading": "Working capital policy"
+                },
+                {
+                  "id": "cash-conversion-cycle",
+                  "heading": "The cash conversion cycle"
+                },
+                {
+                  "id": "debtor-management",
+                  "heading": "Debtor management and cash discounts"
+                },
+                {
+                  "id": "factoring",
+                  "heading": "Factoring and invoice discounting"
+                }
+              ]
+            }
+          },
+          {
+            "id": "inventory-and-creditors",
+            "label": "Inventory, EOQ & creditors",
+            "lesson": {
+              "title": "Inventory management, EOQ and creditor management",
+              "kicker": "Working capital",
+              "sections": [
+                {
+                  "id": "what-inventory-is",
+                  "heading": "What inventory is"
+                },
+                {
+                  "id": "inventory-financing",
+                  "heading": "Financing the inventory"
+                },
+                {
+                  "id": "jit",
+                  "heading": "Just-in-time purchasing"
+                },
+                {
+                  "id": "eoq",
+                  "heading": "The economic order quantity"
+                },
+                {
+                  "id": "creditor-management",
+                  "heading": "Creditor management"
+                }
+              ]
+            }
+          },
+          {
+            "id": "cash-management",
+            "label": "Cash management & forecasting",
+            "lesson": {
+              "title": "Cash management and cash flow forecasting",
+              "kicker": "Working capital",
+              "sections": [
+                {
+                  "id": "why-cash-management",
+                  "heading": "Why cash management matters"
+                },
+                {
+                  "id": "baumol",
+                  "heading": "The Baumol model"
+                },
+                {
+                  "id": "miller-orr",
+                  "heading": "The Miller-Orr model"
+                },
+                {
+                  "id": "forecasting",
+                  "heading": "Cash flow forecasting"
+                },
+                {
+                  "id": "surpluses-and-overdrafts",
+                  "heading": "Investing surpluses, borrowing shortfalls"
+                },
+                {
+                  "id": "cash-concentration",
+                  "heading": "Cash concentration"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "treasury-risk",
+        "label": "Risk",
+        "children": [
+          {
+            "id": "interest-rate-risk-management",
+            "label": "Interest rate risk",
+            "lesson": {
+              "title": "Interest rate risk management",
+              "kicker": "Risk",
+              "sections": [
+                {
+                  "id": "what-it-is",
+                  "heading": "What interest rate risk is"
+                },
+                {
+                  "id": "measuring",
+                  "heading": "Measuring the exposure"
+                },
+                {
+                  "id": "fras",
+                  "heading": "Forward rate agreements"
+                },
+                {
+                  "id": "swaps",
+                  "heading": "Interest rate swaps"
+                },
+                {
+                  "id": "futures",
+                  "heading": "Interest rate futures"
+                },
+                {
+                  "id": "options",
+                  "heading": "Caps, floors and collars"
+                }
+              ]
+            }
+          },
+          {
+            "id": "foreign-exchange-risk",
+            "label": "Foreign exchange risk",
+            "lesson": {
+              "title": "Foreign exchange risk management",
+              "kicker": "Risk",
+              "sections": [
+                {
+                  "id": "three-exposures",
+                  "heading": "The three FX exposures"
+                },
+                {
+                  "id": "quotations",
+                  "heading": "Quotations, spreads and cross rates"
+                },
+                {
+                  "id": "forward-rates",
+                  "heading": "Forward rates"
+                },
+                {
+                  "id": "operational-hedges",
+                  "heading": "Hedging without instruments"
+                },
+                {
+                  "id": "forwards-and-futures",
+                  "heading": "Hedging with forwards and futures"
+                },
+                {
+                  "id": "currency-options",
+                  "heading": "Currency options — and choosing between the tools"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "debt-and-investment",
+        "label": "Debt and investment",
+        "children": [
+          {
+            "id": "debt-management",
+            "label": "Debt management",
+            "lesson": {
+              "title": "Debt management",
+              "kicker": "Debt and investment",
+              "sections": [
+                {
+                  "id": "the-function",
+                  "heading": "The debt management function"
+                },
+                {
+                  "id": "sources",
+                  "heading": "The sources of debt"
+                },
+                {
+                  "id": "matching",
+                  "heading": "Short against long — the matching principle"
+                },
+                {
+                  "id": "covenants",
+                  "heading": "Loan covenants"
+                },
+                {
+                  "id": "bond-pricing",
+                  "heading": "Pricing a bond"
+                },
+                {
+                  "id": "credit-ratings",
+                  "heading": "Credit ratings"
+                }
+              ]
+            }
+          },
+          {
+            "id": "investment-management",
+            "label": "Investment management",
+            "lesson": {
+              "title": "Investment management",
+              "kicker": "Debt and investment",
+              "sections": [
+                {
+                  "id": "objectives",
+                  "heading": "Safety, liquidity, yield — in that order"
+                },
+                {
+                  "id": "policy",
+                  "heading": "The investment policy statement"
+                },
+                {
+                  "id": "instruments",
+                  "heading": "The instruments"
+                },
+                {
+                  "id": "credit-and-diversification",
+                  "heading": "Credit risk and diversification"
+                },
+                {
+                  "id": "portfolio-construction",
+                  "heading": "Constructing the portfolio"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "systems-and-clearing",
+        "label": "Systems and clearing",
+        "children": [
+          {
+            "id": "clearing-and-settlement",
+            "label": "Clearing & settlement",
+            "lesson": {
+              "title": "Clearing and settlement systems",
+              "kicker": "Systems and clearing",
+              "sections": [
+                {
+                  "id": "clearing-vs-settlement",
+                  "heading": "Clearing against settlement"
+                },
+                {
+                  "id": "herstatt",
+                  "heading": "Settlement risk and Herstatt"
+                },
+                {
+                  "id": "gross-vs-net",
+                  "heading": "Gross settlement against net"
+                },
+                {
+                  "id": "swift",
+                  "heading": "SWIFT — the messaging layer"
+                },
+                {
+                  "id": "cls-and-dvp",
+                  "heading": "CLS, PvP and DvP — engineering the risk away"
+                },
+                {
+                  "id": "zambia-systems",
+                  "heading": "Zambia's payment systems — and the operational rules"
+                }
+              ]
+            }
+          },
+          {
+            "id": "treasury-management-systems",
+            "label": "Treasury systems",
+            "lesson": {
+              "title": "Treasury management systems",
+              "kicker": "Systems and clearing",
+              "sections": [
+                {
+                  "id": "what-a-tms-is",
+                  "heading": "What a TMS is"
+                },
+                {
+                  "id": "core-functions",
+                  "heading": "The five core functions"
+                },
+                {
+                  "id": "offices",
+                  "heading": "Front, middle and back office"
+                },
+                {
+                  "id": "cash-positioning",
+                  "heading": "Cash positioning and connectivity"
+                },
+                {
+                  "id": "build-vs-buy",
+                  "heading": "Choosing and implementing a TMS"
+                },
+                {
+                  "id": "policy-and-roi",
+                  "heading": "Policy enforcement, and what the system is worth"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

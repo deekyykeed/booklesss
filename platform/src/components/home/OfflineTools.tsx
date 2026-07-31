@@ -4,14 +4,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { MynaIcon } from "@/components/icons/myna";
 import { allLessonSlugs } from "@/lib/course";
 import { COURSES } from "@/lib/courses";
+import { loadSearchIndex } from "@/lib/search";
 
 /* The two things a reader can do with the service worker, in one card:
  * install the reader to the home screen, and save every lesson for reading
  * with no connection.
  *
- * Both are deliberately opt-in. The whole course is only ~1.5–2 MB, but that
- * is still someone's mobile data, and spending it uninvited is exactly the
- * kind of thing that makes a student uninstall an app. */
+ * Both are deliberately opt-in. Saving every page costs well under a megabyte,
+ * but it is still someone's mobile data, and spending it uninvited is exactly
+ * the kind of thing that makes a student uninstall an app. */
 
 /** Chrome/Edge/Android only — the spec isn't implemented in Safari at all. */
 type InstallPromptEvent = Event & {
@@ -111,6 +112,13 @@ export function OfflineTools() {
   const saveEverything = useCallback(() => {
     const worker = workerRef.current ?? navigator.serviceWorker?.controller;
     if (!worker) return;
+
+    /* Search loads the lesson prose as its own chunk, only when the palette is
+     * first opened. A reader who saves for offline without ever having
+     * searched would have every page but no index — so pull it now, while
+     * there's still a connection. It's a hashed static asset, which the worker
+     * caches on sight. */
+    loadSearchIndex().catch(() => {});
     /* Every page a reader can reach, not just the lessons — landing on a
      * dashboard that isn't saved would mean opening the app offline to a
      * dead screen with the lessons sitting right there behind it. */

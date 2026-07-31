@@ -5,7 +5,15 @@
  * Everything below (types + the routing/lookup index) is unchanged from when the
  * tree was an inline literal; only its source moved. */
 
-import courseData from "./course-data.json";
+/* The NAV tree, not the content — headings and ids, no prose.
+ *
+ * Ten client components import this module for labels, paths and checkpoint
+ * ids, so whatever it imports ships to the browser. Importing the full course
+ * put 566 KB of lesson text (~183 KB over the wire) into the first visit to
+ * draw a sidebar. The prose now loads two other ways: the server reads
+ * course-data.json for the one page being rendered, and search pulls it in on
+ * demand (see lesson-content.ts and search.ts). */
+import courseNav from "./course-nav.json";
 
 /* A column in a `table` block. Numeric columns align right so figures stack by
  * their digits — the whole reason a working is a table and not a list. */
@@ -57,21 +65,27 @@ export type Check = {
 export type Section = { id: string; heading: string; blocks: Block[]; check?: Check };
 export type Lesson = { title: string; kicker?: string; sections: Section[] };
 
+/* What the nav tree holds for a section: enough to route to it, list it under
+ * "on this page", and count it as a checkpoint — but not to read it. The
+ * reader gets the full `Lesson` as a prop from the server. */
+export type NavSection = { id: string; heading: string };
+export type NavLesson = { title: string; kicker?: string; sections: NavSection[] };
+
 export type NavNode = {
   id: string;
   label: string;
   children?: NavNode[];
-  lesson?: Lesson;
+  lesson?: NavLesson;
   defaultOpen?: boolean;
 };
 
-export const COURSE: NavNode[] = courseData as unknown as NavNode[];
+export const COURSE: NavNode[] = courseNav as unknown as NavNode[];
 
 /* ---- routing / lookup index (built once) ---------------------------- */
 export const DEFAULT_LESSON = "what-is-economics";
 
 type CourseIndex = {
-  lessons: Map<string, Lesson>;
+  lessons: Map<string, NavLesson>;
   labels: Map<string, string>;
   parents: Map<string, string | null>;
   depths: Map<string, number>;
@@ -84,7 +98,7 @@ let cached: CourseIndex | null = null;
 
 export function courseIndex(): CourseIndex {
   if (cached) return cached;
-  const lessons = new Map<string, Lesson>();
+  const lessons = new Map<string, NavLesson>();
   const labels = new Map<string, string>();
   const parents = new Map<string, string | null>();
   const depths = new Map<string, number>();
