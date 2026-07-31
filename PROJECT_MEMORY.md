@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-07-29 (session 23)
+**Last updated:** 2026-07-31 (session 24)
 
 ---
 
@@ -158,13 +158,13 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 - [ ] Create the 8 BBA Slack channels + `#bba-updates` (folder slugs = channel slugs) → update `Operations/workspace.md` before posting any BBA content.
 
 - [ ] Add NLM audio + video links to Steps 3.1, 3.2, 3.3 ADDED VALUE boxes (NLMs not yet created)
-- [ ] Re-upload SM 2.1 and 2.2 to Slack — PDFs moved to flat paths this session, old Slack uploads are stale
-- [ ] Post Lesson 1 to Slack: Step 1.1 → #sm-foundations, Step 1.2 → #sm-foundations
-- [ ] Re-upload SM Step 1.2 to Slack (video overview link added to ADDED VALUE box session 2026-06-05) — get new file link, update workspace.md
-- [ ] Remove `STEP_LINKS` / `step_ref()` from SM 1.1 and 1.2 build scripts — approach abandoned (see dead end below). Keep references as plain text.
+- [ ] ~~Re-upload SM 2.1 and 2.2 to Slack~~ → ⚠️ SUPERSEDED 2026-07-31: SM is now on the reader (session 24); Slack-PDF posting parked with BOO-7
+- [ ] ~~Post Lesson 1 to Slack: Step 1.1 → #sm-foundations, Step 1.2 → #sm-foundations~~ → ⚠️ SUPERSEDED 2026-07-31 (reader)
+- [ ] ~~Re-upload SM Step 1.2 to Slack~~ → ⚠️ SUPERSEDED 2026-07-31 (reader)
+- [ ] Remove `STEP_LINKS` / `step_ref()` from SM 1.1 and 1.2 build scripts — approach abandoned (see dead end below). Keep references as plain text. (Low value now the reader is the surface.)
 - [ ] ~~Rebuild SM steps 2.1–3.2 to v2 standard~~ ✅ DONE 2026-06-06
 - [ ] Strip the Slack invite link from CF **Step 1.1**'s `community_closer()` — still there, not actioned
-- [ ] Roll the v2 standard across remaining CF steps: **1.3, 2.1, 2.2, 3.1, 3.2, 4.1, 4.2, 5.1**
+- [ ] ~~Roll the v2 standard across remaining CF steps: 1.3, 2.1, 2.2, 3.1, 3.2, 4.1, 4.2, 5.1~~ → ⚠️ SUPERSEDED: CF fully rewritten for the reader (25 steps, 2026-07-31)
 - [ ] Extract a shared brand module (`booklesss_brand.py`) so CF rebuilds aren't ~600 lines of copy-paste each
 - [ ] Create CF Slack channels (`#cf-updates`, `#cf-investment`, etc.) → update workspace.md
 - [ ] Draft outreach messages to potential collaborators — raised end of previous session, not actioned
@@ -183,6 +183,71 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-07-31 (session 24 — SM + TM written for the reader; all ZCAS courses live)
+
+Local session. The reader now carries **all four courses**: economics,
+Corporate Finance, and — new this session — **Strategic Management (7 steps,
+35 sections)** and **Treasury Management (10 steps, 57 sections)**, every
+section with a comprehension check. Commit `08f6c7f`, pushed → deployed.
+
+**Done:**
+- Session opened with a catch-up commit (`7572eed`) of PWA/offline work done
+  outside wrap (sw.js, `OfflineTools.tsx`).
+- Authored `reader/course.mjs` + per-lesson `reader/<step>.mjs` for SM and TM
+  (same layout as CF), mined from the existing PDF build scripts + lecture
+  decks, to `.claude/skills/step-feedback/RULES.md`.
+- Seeded both to Supabase (`seed-course.mjs`), ran `gen:course`, full
+  `next build` passed (84 pages). `_course.md` trackers updated for both
+  courses (reader is the live surface; PDF/Slack sections kept for provenance).
+- **Content corrections** (recorded in step-file headers): TM 4.1 bond example
+  now prices 12% coupon at 14% yield correctly (≈ZMW 931,334, a discount — the
+  PDF said K1,001,100 via a wrong final discount factor); TM 2.3 Miller-Orr
+  daily rate stated cleanly (0.025%); TM 3.1 cap-vs-FRA recomputed on
+  consistent 6-month figures.
+
+**What Worked:**
+- **Slug inventory before writing.** Reader slugs are global across courses;
+  TM's risk steps were named `interest-rate-risk-management` /
+  `foreign-exchange-risk` up front to dodge CF's `interest-rate-risk` /
+  `currency-risk`. seed-course.mjs would have refused otherwise.
+- Mining the ~600-line PDF build scripts (content starts ~line 320–440) instead
+  of re-deriving from the raw PPTX/PDFs — the content was already authored and
+  example-rich; the job was re-voicing to the reader rules, not research.
+- `--dry-run` on seed-course.mjs after each course to validate slugs/checks
+  before any write.
+
+**Dead Ends (do not retry):**
+- **`table.total` is the total row's CELLS (`string[]`), not a row index.**
+  Passing `total: 5` fails silently — `Number.length` is undefined, the tfoot
+  just doesn't render, and the build stays green. Check
+  `platform/src/components/reader/LessonView.tsx` for block prop shapes before
+  authoring; the seed validator does not validate block internals.
+
+**Flags:**
+- ⚠️ **`linear-server` unauthorized again** (5th session running) — the Linear
+  backlog was NOT updated. The reader-content work isn't tracked there anyway,
+  but BOO-24→37 reconciliation is still pending since session 19.
+- **Parallel session in the tree at wrap time:** Solar icons being re-added
+  (`gen-solar-icons.mjs`, `solar.tsx`, `@iconify-json/solar` in package.json,
+  +41 lines in `gen-course.mjs`) — left uncommitted for that session per the
+  session-23 rule; note it contradicts the 2026-07-30 "Solar is gone" ruling in
+  CLAUDE.md, so CLAUDE.md's icon section may need updating once it lands.
+- **`Booklesss Bucket/`** (new drop folder) holds one webp: a dark-UI
+  kanban/project-dashboard design reference. Preserved in git, not filed —
+  destination unclear (design inspiration, not a brand asset).
+- Reader steps are now the **editable source**: edit `.mjs` → `seed:course` →
+  `gen:course` → commit. PDFs for SM/TM are provenance only.
+
+**Next Session:**
+- [ ] File or clarify the `Booklesss Bucket/` design reference.
+- [ ] Update CLAUDE.md (project overview + icon section) if the Solar
+      re-introduction lands — and the "What This Project Is" section still
+      describes the Slack-PDF pipeline as the core product.
+- [ ] Authorize `linear-server` and reconcile BOO-24→37.
+- [ ] Owner review of the 17 new steps → log reactions via step-feedback.
+
+---
 
 ### Session 2026-07-29 (session 23 — daily-post skill + two days of build-in-public carousels)
 
