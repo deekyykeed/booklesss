@@ -102,12 +102,8 @@ export function CourseCard({
             title={
               time.perf
                 ? `performance score, ${time.perf.delta >= 0 ? "up" : "down"} ${Math.abs(time.perf.delta)} this week — ` +
-                  `${Math.round(time.perf.parts.coverage * 100)}% covered, ` +
-                  `${time.perf.weekDays} study day${time.perf.weekDays === 1 ? "" : "s"} and ` +
-                  `${time.perf.weekChecks} checkpoint${time.perf.weekChecks === 1 ? "" : "s"} this week` +
-                  (time.perf.parts.schedule !== null
-                    ? `, on schedule ${Math.round(time.perf.parts.schedule * 100)}%`
-                    : "")
+                  `mostly effort (${time.perf.weekDays} study day${time.perf.weekDays === 1 ? "" : "s"} and ` +
+                  `${time.perf.weekMins}m this week), plus ${Math.round(time.perf.parts.coverage * 100)}% covered`
                 : "performance score"
             }
           >
