@@ -274,6 +274,12 @@ Two things that belong to this skill rather than the build:
 
 - Facts about the course content (those go in the course's `_course.md`).
 - Bugs in the reader app (those are code, not style).
+- **Reactions to the app's chrome rather than to a step** — the sidebar, the
+  header, icons, navigation, the course home. The test is whether the reaction
+  would change how a step is *written*. "This table should be a formula" is a
+  step rule; "the caret is too small" is app design, and belongs in the code and
+  the session log. Both arrive in the same breath during a study session, so
+  split them as they come rather than filing everything here.
 - Anything already in `.claude/CLAUDE.md` — that file outranks this one, and
   duplicating it means two places to update. `RULES.md` may *sharpen* a
   CLAUDE.md rule for reader steps specifically; it must never contradict it.
