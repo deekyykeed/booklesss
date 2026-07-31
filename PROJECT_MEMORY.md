@@ -244,6 +244,19 @@ tree. Shipped as `cc83e93` (scoped pathspec commit, pushed → deployed).
   "kill node + rm -rf .next" (sessions 19/20/23) is not a reliable fix; OneDrive
   itself was holding it. It never cleared during the session. **No build or dev
   server ran at all.**
+- **🚨 `git add <paths>` then a bare `git commit` is NOT a scoped commit when a
+  parallel session shares the tree.** The wrap commit `c7d59a2` was meant to be
+  `PROJECT_MEMORY.md` alone; `git status` confirmed only that file staged. The
+  parallel session staged its own files into the shared index in the seconds
+  between that check and the commit, and a bare `git commit` takes whatever is
+  in the index *at commit time* — so their identity work (`identity/*`,
+  `gen-avatars.mjs`, `identity.tsx`, plus `TopBar.tsx`, `layout.tsx`,
+  `LessonView.tsx`, `package.json`, `course-index.json`) was committed and
+  pushed to main, i.e. deployed, without their sign-off. The index is shared
+  state; verifying it is not the same as controlling it. **Use
+  `git commit --only -- <paths>`**, which snapshots exactly those paths whatever
+  the index holds. Session 23 had already learned this and it was still done the
+  racy way.
 
 **Flags:**
 - ⚠️ **`cc83e93` deployed without ever being seen rendered.** The sidebar and
@@ -252,13 +265,19 @@ tree. Shipped as `cc83e93` (scoped pathspec commit, pushed → deployed).
   legibility (Mingcute's glyph is 5.2px across where MynaUI's was 9.0px), and
   that the active-step bar sits *inside* its rail — one indent off is the
   visible failure mode if `unitDepthOffset` is wrong.
-- **`platform/package.json` was deliberately NOT committed** — its hunks mix my
-  `gen:mingcute` + `@iconify-json/mingcute` with the parallel session's
-  `gen:solar`, `gen:avatars` and `@iconify-json/solar`. Harmless to the deploy
-  (mingcute is a devDependency and `mingcute.tsx` is generated + committed, so
-  nothing imports the set at build or runtime), but `npm run gen:mingcute` does
-  not exist in a fresh clone until they commit that file. Their commit will
-  carry my two lines with it.
+- **`platform/package.json`** was deliberately left out of `cc83e93` (its hunks
+  mix my `gen:mingcute` + `@iconify-json/mingcute` with the parallel session's
+  `gen:solar`, `gen:avatars`, `@iconify-json/solar`) — but then went in with
+  `c7d59a2` via the index race above. Net effect: `gen:mingcute` IS on main now.
+  One loose end from it — **`"gen:solar": "node scripts/gen-solar-icons.mjs"` is
+  on main while `gen-solar-icons.mjs` and `icons/solar.tsx` are still
+  uncommitted**, so that one npm script points at a missing file. Nothing in the
+  build touches it; it only fails if run.
+- **Checked before reporting: the pushed tree has no dangling imports.**
+  `git grep` over `c7d59a2` finds nothing importing `icons/solar`,
+  `components/workspace` or `app/workspace` (all still untracked), so the
+  deploy should build. Not verified against a real build — see the EPERM dead
+  end.
 - ⚠️ **`linear-server` unauthorized again — 6th consecutive session.** The
   backlog was not updated and the Next Session list below could not be
   reconciled against it, so it may still list work already closed. BOO-24→37
@@ -270,6 +289,8 @@ tree. Shipped as `cc83e93` (scoped pathspec commit, pushed → deployed).
   pipeline as the core product. Increasingly wrong; the reader is the product.
 
 **Next Session:**
+- [ ] **Tell the parallel session their identity work is on main** (`c7d59a2`) —
+      they did not push it and may not expect it to be live.
 - [ ] **Open the live site on a TM step** and check the two things above.
 - [ ] Start the TM study session — `LOG.md` and `RULES.md` are still 100% seeds;
       nothing real has been logged yet.
