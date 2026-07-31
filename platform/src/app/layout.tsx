@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Familjen_Grotesk } from "next/font/google";
 import localFont from "next/font/local";
 import { ClerkProvider } from "@clerk/nextjs";
 import { clerkEnabled } from "@/lib/clerk";
 import { clerkAppearance } from "@/lib/clerk-appearance";
+import { RegisterSW } from "@/components/RegisterSW";
 import "./globals.css";
 
 // The logo is an icon again, so Burbank is no longer loaded. Both it and
@@ -42,7 +43,14 @@ const aptos = localFont({
 export const metadata: Metadata = {
   title: "Booklesss",
   description: "Learn without the textbook — courses, lessons, and steps.",
+  // iOS ignores the web manifest's icons and reads this instead.
+  appleWebApp: { capable: true, title: "Booklesss", statusBarStyle: "default" },
+  icons: { apple: "/icons/apple-touch-icon.png" },
 };
+
+/* Paints the phone's browser chrome to match the app rather than leaving a
+ * white bar above a canvas-grey page. Same value as the manifest's. */
+export const viewport: Viewport = { themeColor: "#f5f5f5" };
 
 export default function RootLayout({
   children,
@@ -52,7 +60,10 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${familjen.variable} ${aptos.variable} h-full`}
     >
-      <body className="min-h-full bg-canvas text-ink">{children}</body>
+      <body className="min-h-full bg-canvas text-ink">
+        {children}
+        <RegisterSW />
+      </body>
     </html>
   );
 
