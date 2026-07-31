@@ -10,6 +10,7 @@ import {
   ancestorsOf,
   courseIndex,
   depthOf,
+  nodeById,
   pathForId,
   lessonIdForSlug,
   type NavNode,
@@ -19,6 +20,7 @@ import { courseForNode } from "@/lib/courses";
 import { useProgress } from "@/lib/progress";
 import { CompletionRing } from "./CompletionRing";
 import { MynaIcon } from "@/components/icons/myna";
+import { MingcuteIcon } from "@/components/icons/mingcute";
 
 const STEP = 18;
 const RAIL = 2;
@@ -102,12 +104,20 @@ const setResizeHint = (on: boolean) =>
 const useIso = typeof document !== "undefined" ? useLayoutEffect : useEffect;
 
 /* One glyph, rotated rather than swapped for a second one, so the arrow turns
- * as the group opens instead of cutting to a different mark. */
+ * as the group opens instead of cutting to a different mark.
+ *
+ * Mingcute rather than MynaUI — the owner's pick for this one caret (the set's
+ * "Down Small Line", which rotated is its "Right Small Line"). It is a much
+ * smaller mark inside the same 24-grid than MynaUI's chevron: 5.7 units across
+ * where MynaUI's is 12. Hence the larger box and the lighter stroke — 22px at
+ * 1.5 keeps the drawn glyph legible and its weight in step with the MynaUI
+ * icons it sits beside, which would otherwise read as two different sets. */
 function Chevron({ open, active }: { open: boolean; active?: boolean }) {
   return (
-    <MynaIcon
-      name="chevron-down"
-      size={18}
+    <MingcuteIcon
+      name="down-small-line"
+      size={22}
+      strokeWidth={1.5}
       className={
         "shrink-0 transition-transform duration-200 " +
         (active ? "text-ink " : "step-dim ") +
@@ -308,7 +318,6 @@ export function Sidebar() {
   const listRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLAnchorElement>(null);
   const m = useFollow([activeId, openIds], () => ({ container: listRef.current, active: activeRef.current }));
-  const barX = barLeftFor(depthOf(activeId) - 1);
   const barH = BAR_H;
 
   // Slide the bar within a folder; fade it in when the folder (parent) changes.
@@ -412,12 +421,26 @@ export function Sidebar() {
    * course, so without this the rail lists Corporate Finance's units beneath
    * Economics' — a student reading one course has no use for another's steps.
    * Falls back to the whole tree if no course claims the node, which is better
-   * than an empty rail. */
+   * than an empty rail.
+   *
+   * `displayUnitIds`, not `unitIds`: a course authored under a folder named
+   * after itself is listed by that folder's children instead, so the top of the
+   * rail is the first real unit rather than the course name a student has
+   * already chosen. See lib/courses.ts. */
   const course = useMemo(() => courseForNode(activeId), [activeId]);
-  const units = useMemo(
-    () => (course ? COURSE.filter((n) => course.unitIds.includes(n.id)) : COURSE),
-    [course],
-  );
+  const units = useMemo(() => {
+    if (!course) return COURSE;
+    const byId = course.displayUnitIds
+      .map((id) => nodeById(id))
+      .filter((n): n is NavNode => n !== null);
+    return byId.length ? byId : COURSE;
+  }, [course]);
+
+  /* The active bar sits in the rail of the folder holding the active row, so
+   * its x comes from the row's depth AS DRAWN — tree depth less whatever the
+   * unwrapping hid. Miss the offset and every step in a wrapped course draws
+   * its bar one indent right of the rail it belongs to. */
+  const barX = barLeftFor(depthOf(activeId) - 1 - (course?.unitDepthOffset ?? 0));
 
   const activeAncestors = useMemo(() => new Set(ancestorsOf(activeId)), [activeId]);
   const ctx: Ctx = { openIds, activeId, activeAncestors, activeRef, toggle, onSelect };

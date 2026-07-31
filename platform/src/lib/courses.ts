@@ -1,4 +1,4 @@
-import { ancestorsOf, checkpointsFor, lessonsUnder } from "./course";
+import { ancestorsOf, checkpointsFor, childIdsOf, labelFor, lessonsUnder } from "./course";
 import courseIndexData from "./course-index.json";
 
 /* ------------------------------------------------------------------ *
@@ -30,19 +30,50 @@ export type CourseMeta = {
   title: string;
   /** One line under the title on the home page. */
   subtitle: string;
-  /** Nav node ids forming this course's units. */
+  /** Nav node ids forming this course's units, as authored. Routing and
+   *  ownership questions use these — they are the real top of the tree. */
   unitIds: string[];
+  /** The units to LIST in the UI. Same as unitIds unless the course was
+   *  authored under a wrapper named after itself, in which case it is that
+   *  wrapper's children. See the note below. */
+  displayUnitIds: string[];
+  /** Tree levels hidden by that unwrapping: 0 normally, 1 when wrapped. Any
+   *  UI that indents by `depthOf()` must subtract this or it indents by a
+   *  level it isn't drawing. */
+  unitDepthOffset: number;
   lessonIds: string[];
   totalCheckpoints: number;
 };
 
+/* A course authored as ONE root node named after the course — the shape every
+ * ZCAS course uses — makes the reader repeat itself: you click Treasury
+ * Management, and the first row of its step list is "Treasury Management",
+ * with all five units folded inside a folder you can collapse to nothing.
+ * Nobody reading a course needs to be told which course they opened.
+ *
+ * So a wrapper is unwrapped for display: its children become the units. It
+ * stays in the tree — it namespaces the URLs (/treasury-management/…) and it
+ * is what courseForNode() matches on — it simply isn't drawn.
+ *
+ * A course with several genuine roots (Economics) has no wrapper and is
+ * untouched: the test is one root, labelled exactly as the course. */
+function unwrap(rootIds: string[], title: string): { ids: string[]; offset: number } {
+  if (rootIds.length !== 1) return { ids: rootIds, offset: 0 };
+  const children = childIdsOf(rootIds[0]);
+  if (!children.length || labelFor(rootIds[0]) !== title) return { ids: rootIds, offset: 0 };
+  return { ids: children, offset: 1 };
+}
+
 function build({ slug, title, subtitle, rootIds }: CourseIndexEntry): CourseMeta {
   const lessonIds = rootIds.flatMap((id) => lessonsUnder(id));
+  const { ids: displayUnitIds, offset } = unwrap(rootIds, title);
   return {
     slug,
     title,
     subtitle,
     unitIds: rootIds,
+    displayUnitIds,
+    unitDepthOffset: offset,
     lessonIds,
     totalCheckpoints: lessonIds.reduce((n, id) => n + checkpointsFor(id).length, 0),
   };

@@ -133,7 +133,7 @@ Each step cover has an accent-bordered "ADDED VALUE" panel listing companion res
 3–4 page PDF teasers for WhatsApp marketing. File name format: `[Hook Title] - Booklesss.pdf`. Use Zambian companies (Zanaco, Zambeef, ZESCO, First Quantum) and ZMW currency in examples. Check `Operations/pricing-strategy.md` for the current offer before writing any pricing or deadline into a lead magnet.
 
 ### Skills (Claude Code Extensions)
-Custom skills in `.claude/skills/`. Three cover the course pipeline, one covers
+Custom skills in `.claude/skills/`. Four cover the course pipeline, one covers
 the daily socials:
 - **`daily-post`** — PUBLISH. The build-in-public social pipeline: read what
   actually shipped from the git log, pick the story, capture the reader's mobile
@@ -142,6 +142,7 @@ the daily socials:
   written back. Output lands in `Demand/social/posts/<week>/<day>/`.
 - **`lesson-skill`** — PLAN. Course architecture: takes a course's raw source, groups topics into lessons by mental frame (lesson = one Slack channel = noise isolation), sets steps-per-lesson by source depth, and emits `_course.md`, the folder scaffold, the channel map, and the course outline PDF. Runs before any writing.
 - **`step-skill`** — WRITE + DESIGN. The PDF design system (colors, typography, callout specs) *and* the lesson-writing process (source → ReportLab script → PDF). Invoke for all PDF content — lesson steps, lead magnets, business documents. (Absorbed the former `booklesss-write` skill.)
+- **`step-feedback`** — IMPROVE. The feedback loop for **reader** steps (not PDFs). Read `RULES.md` before writing or editing any step, and grep `DEBT.md` for that step's slug — anything owed gets paid in the same edit. Invoke it after any reaction, from the owner reviewing, the owner **studying for a real exam**, or a student: reactions land in `LOG.md`, generalise into `RULES.md` (forward: fixes the next step), and open a `DEBT.md` item (backward: fixes the steps already written).
 - **`design-system`** — Web/UI only (Framer, landing pages). Not for PDF work.
 
 ### Platform Icons (Next.js)
@@ -152,7 +153,11 @@ All icons in `platform/` come from the **MynaUI** set (by Praveen Juge) via the 
 
 **That module is generated.** Adding an icon = add the name to `ICONS` in `platform/scripts/gen-icons.mjs`, run `npm run gen:icons`, done. Only the paths actually drawn are inlined, which is why it works in client components — importing the 2,650-icon set into one would ship the lot to the browser. Never hand-edit the generated file; unknown names fail the generator loudly rather than rendering nothing.
 
-**Two exceptions, both deliberate:** the composer's attachment chips use **Streamline Ultimate Colors (Free)** file-type badges (`reader/file-icons.tsx`) and the course cards use **Streamline Plump** gradient marks (`home/plump-glyphs.tsx`, `home/course-glyphs.tsx`). Both are multicolour on purpose — the colour is what carries the meaning — so they keep their own fills rather than following `currentColor`. CC BY 4.0, attribution still owed (as with MynaUI). Everything monochrome is MynaUI.
+**Three exceptions, all deliberate:**
+- The composer's attachment chips use **Streamline Ultimate Colors (Free)** file-type badges (`reader/file-icons.tsx`) and the course cards use **Streamline Plump** gradient marks (`home/plump-glyphs.tsx`, `home/course-glyphs.tsx`). Both are multicolour on purpose — the colour is what carries the meaning — so they keep their own fills rather than following `currentColor`. CC BY 4.0, attribution still owed (as with MynaUI).
+- The reader sidebar's **lesson caret** is **Mingcute** (owner's pick, 2026-07-31): `<MingcuteIcon name="down-small-line" />` from `platform/src/components/icons/mingcute.tsx`, generated the same way (`ICONS` in `scripts/gen-mingcute-icons.mjs` → `npm run gen:mingcute`). Mingcute's grid draws a much smaller mark than MynaUI's at the same size and strokes it at 2 rather than 1.5, so anything borrowed from it needs its `size`/`strokeWidth` set against the MynaUI icons beside it. Keep this set narrow — MynaUI is still the system.
+
+Everything else monochrome is MynaUI.
 
 **Never** hardcode Framer CDN URLs for icons — always inline SVG so icons respond to `color` CSS.
 

@@ -172,8 +172,8 @@ export function checkpointsFor(lessonId: string): string[] {
   return courseIndex().lessons.get(lessonId)?.sections.map((s) => s.id) ?? [];
 }
 
-/** Every lesson id beneath a nav node, in reading order. */
-export function lessonsUnder(nodeId: string): string[] {
+/** A nav node by id, anywhere in the tree. */
+export function nodeById(nodeId: string): NavNode | null {
   const find = (list: NavNode[]): NavNode | null => {
     for (const n of list) {
       if (n.id === nodeId) return n;
@@ -182,12 +182,22 @@ export function lessonsUnder(nodeId: string): string[] {
     }
     return null;
   };
+  return find(COURSE);
+}
+
+/** Immediate child ids of a nav node — empty for a leaf. */
+export function childIdsOf(nodeId: string): string[] {
+  return nodeById(nodeId)?.children?.map((c) => c.id) ?? [];
+}
+
+/** Every lesson id beneath a nav node, in reading order. */
+export function lessonsUnder(nodeId: string): string[] {
   const out: string[] = [];
   const collect = (n: NavNode) => {
     if (n.lesson) out.push(n.id);
     n.children?.forEach(collect);
   };
-  const node = find(COURSE);
+  const node = nodeById(nodeId);
   if (node) collect(node);
   return out;
 }

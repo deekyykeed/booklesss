@@ -31,9 +31,11 @@ export function StudentDashboard({ course }: { course: CourseMeta }) {
 
   // Course shape is static; only the progress numbers move. Scoped to this
   // course's own units, so a second course never counts towards the first.
+  // `displayUnitIds` so a course authored under a folder named after itself
+  // lists its real units here, not one heading repeating the title above it.
   const units = useMemo(
     () =>
-      course.unitIds
+      course.displayUnitIds
         .map((id) => ({ id, label: labelFor(id), lessons: lessonsUnder(id) }))
         .filter((u) => u.lessons.length > 0),
     [course],
