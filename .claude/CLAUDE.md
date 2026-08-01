@@ -4,10 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Project Is
 
-**Booklesss** is a Slack-based edtech platform delivering branded PDF study materials for Zambian university finance/business courses. The core pipeline: source material (PPTX/PDF) → Python ReportLab script → PDF → posted to Slack channels. No web framework, no database — just Python scripts and structured content.
+**Booklesss** is an edtech product for Zambian university finance/business courses. **The course reader at `booklesss.vercel.app` is the product** (`platform/`, Next.js 16 + Supabase): a student reads steps there, ticks checkpoints and says how each section landed. Steps are authored as `.mjs` beside the lesson they belong to and published with `npm run seed:course` → `npm run gen:course`.
 
-**Active courses:** Strategic Management (ZCAS), Treasury Management BBF4302 (ZCAS), Corporate Finance BAC4301 (ZCAS — channels not yet created; do not post until channels exist), BBA 1110 (UNZA)
-**Platform:** Slack — **workspace situation unresolved** (three workspaces exist; the public invite link points to `bookless10`, whose Pro trial has expired, but SM PDFs were uploaded to `booklesss20` — see the warning at the top of `Operations/workspace.md`). Confirm the target workspace with the owner before posting content or writing the invite link into anything. | Website: `booklesss.framer.ai`
+The original pipeline — source material (PPTX/PDF) → Python ReportLab script → PDF → posted to Slack — still exists and still builds. It is now **provenance and marketing**: lead magnets, business documents, and the PDFs the reader steps were mined from. Slack-as-the-paid-product was dropped (Linear BOO-7, MSA §3.4); do not rebuild paid Slack channels.
+
+**On the reader:** economics, Corporate Finance (25 steps), Strategic Management (7), Treasury Management (12 — Treasury operations was split into three on 2026-08-01). Also on disk: BBA 1110 (UNZA), PDFs only. **Course codes and school names never appear anywhere a student sees** — see the memory index.
+**Slack:** free community only; **workspace situation unresolved** (three workspaces; the public invite link points to `bookless10`, whose Pro trial expired, while SM PDFs went to `booklesss20` — see the top of `Operations/workspace.md`). Confirm the target workspace with the owner before posting anything or writing the invite link anywhere. | Website: `booklesss.framer.ai`
 **Founding rate deadline:** April 18, 2026 — **this date has passed.** Do not reference it in new marketing content; ask the owner what offer replaces it.
 
 ## Commands

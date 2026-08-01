@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-07-31 (session 27)
+**Last updated:** 2026-08-01 (session 28)
 
 ---
 
@@ -92,6 +92,25 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
+**From session 28 (2026-08-01):**
+- [ ] **Verify the reader on a real phone.** Everything this session is backed
+      by a clean build and by grepping the built HTML, not by looking at it:
+      the definition popup's arrow and its flip-above branch, the source strip
+      scrolling off both edges, the new section divider, the checkpoint row with
+      the note control at its far end.
+- [ ] **Confirm Investopedia URLs by hand.** It 403s curl, Node fetch and
+      WebFetch and the search index refuses the domain, so no URL can be checked
+      from a session here. Its favicon and name are already bundled: paste URLs
+      you have opened and they can go straight in. Rule C-7 records this.
+- [ ] **Nothing sends the section notes anywhere.** `lib/step-notes.ts` collects
+      them per device under one key with `allNotes()` ready; decide where they
+      go when accounts return.
+- [ ] Pay down **D-1/D-2/D-3** on contact: 41 of 44 steps still have no bold, no
+      tappable terms, no sources and 154 em dashes between them. `seed:course`
+      now reports the em-dash count every run, so the number is the progress bar.
+- [ ] The three split TM steps are the only ones split. **S-8 across the other
+      four TM lessons and the other two courses** is the expensive part of D-3.
+
 **⚠️ Two machines are working this repo through OneDrive (session 26).** `.git`
 itself is inside the synced folder, so the other machine's index and commits
 land in this working copy mid-session — staged files were swallowed into a
@@ -103,7 +122,7 @@ committed anything. Until that is resolved, stage and commit in one command.
       quoting slip). Fixing it needs `--amend` + force-push, so only do it when
       the other machine is definitely idle. Cosmetic; safe to leave.
 - [ ] **File this session in Linear** — `linear-server` wasn't authorized, so
-      nothing from session 26 is on the board.
+      nothing from sessions 23–28 is on the board. **Eighth session running.**
 
 **Identity + `/workspace` follow-ups (session 26):**
 - [ ] Identity is device-local only. `Identity.id` exists for a future sync;
@@ -212,6 +231,74 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-01 (session 28 — one skill, one step split three ways, and a reader that shows its sources)
+
+Local session, run alongside a parallel session in the same OneDrive tree (that
+one shipped Saturday's social posts, `d35a2dd`). 17 commits to `main`.
+
+**Done:**
+- **Five skills became three.** `lesson-skill` + `step-skill` + `step-feedback`
+  are now one **`step-skill`** covering plan → write → improve, with
+  `RULES.md`/`DEBT.md`/`LOG.md` moved across intact and the two bulky halves
+  demoted to `reference/planning.md` and `reference/pdf.md` so they load only
+  when needed. Every `House style:` header in the 40 reader steps repointed.
+- **A RANK procedure**, which the owner asked for and which did not exist: walk
+  every rule, verdict plus evidence, score = passed ÷ applicable. The engagement
+  pass covers one failure mode, not the rule set.
+- **Six rules promoted from owner feedback**, all measured before rewriting:
+  W-8 bold, W-9 write to a future founder, W-10 the possessive (was 1 `your`
+  per 57 words, now ~1 per 200), W-11 no em dashes (60 removed), W-12 sentence
+  length (longest 46 → 34), plus E-8 tap-to-define and C-7 sources.
+- **TM 1.1 split into three steps** (S-8). Six sections was a climb; three
+  two-section steps let a reader finish. Coverage identical, first part keeps
+  its slug. 12 TM steps now.
+- **Reader gained three inline marks** (`**bold**`, `[[term|definition]]`,
+  `[label](url)`), a portalled definition popup, a per-section source strip with
+  real site favicons, and a section-note control asking how the writing read.
+- **Seven source sites**, every URL checked for a 200 first.
+- **The closing card is gone** — "Mark rest done" asked readers to declare
+  sections finished they had not read. The foot of a step is now just the way on.
+
+**What Worked:**
+- **Measuring the thing before rewriting it.** "Too many *your*" and "sentences
+  too long" are both unfalsifiable until counted; counting turned each into a
+  rule with a test (1-in-90 words, 35 words) instead of a matter of taste.
+- **Grepping the built HTML rather than trusting the source.** This is how the
+  two links silently swallowed by `**bold**` were found, and how every claim in
+  this session was checked. `re.sub(r"<script[\s\S]*?</script>","")` first —
+  Next's RSC payload contains the raw authored text and will match anything.
+- **Turning a repeated silent failure into a validator.** Nesting bit twice, so
+  `seed-course.mjs` now refuses to write on a link inside bold, a link inside a
+  term, or a mark in a table cell — and *warns* on em dashes without blocking,
+  because gating publishes on known debt would stop every course shipping.
+- **`curl -o /dev/null -w '%{http_code}'` over every URL before shipping it.**
+  Four of twelve CFI URLs guessed from plausible patterns were dead.
+
+**Dead Ends (do not retry):**
+- **`position: fixed` inside the reader.** `.content-frame` takes a transform
+  for the mobile drawer and the chrome uses `backdrop-filter`; either makes an
+  ancestor the containing block, so measured and fixed coordinates disagree by
+  however much that ancestor is offset. That is why the popup was near the word
+  in some places and two lines off in others. **Portal to `document.body`.**
+- **Investopedia is unreachable from a Claude session.** 403 to curl, to Node
+  fetch and to WebFetch, and WebSearch refuses the domain. Its `favicon.ico` is
+  fetchable (use `apple-touch-icon.png` — the ico is 14.7 KB, over the cap).
+- **Fading the avatar's rim to transparent.** Meant to reveal the ring, it drew
+  a white gap that read as a detached border. The art must meet the border
+  exactly: `inset-0` is the *inner* box, so 32px art in a 30px box is clipped.
+- **A bash heredoc containing apostrophes** (`haven't`, `don't`) for a Python
+  script — the tool's shell mis-parses it. Write the script to a file and run it.
+- **Lowering the content cards to 85%** while leaving the surface at 72%. Wrong
+  half of the pair: the cards looked pasted on *because* they were whiter than
+  the panel under them. Surface → 0.62, cards stay solid white.
+
+**Flags:**
+- ⚠️ **`linear-server` unauthorized — eighth session running.** Nothing filed.
+- ⚠️ **None of this session's UI was seen on a phone**, only built and grepped.
+- **A parallel session committed my in-flight work as `7e1eda0`** and pushed it
+  mid-edit, with three dead URLs and no em-dash pass. Superseded by `65a17f8`.
+- `Booklesss Bucket/` still holds the one unfiled webp (carried since s24).
 
 ### Session 2026-07-31 (session 27 — the reader goes offline-first, installable, and 44% lighter)
 

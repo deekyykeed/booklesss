@@ -115,6 +115,23 @@ when course codes and school names were stripped from Supabase and
 read "BAC4301 at ZCAS", and a routine re-seed would have put it straight back.
 Any correction lands in the `.mjs` first and flows out through the loop.
 
+**`seed:course` blocks on what the renderer would silently swallow.** The inline
+marks do not nest and the parser walks a string once, so a link written inside
+`**bold**` renders the words and drops the source with no error anywhere. That
+shipped twice before the check existed. It now refuses to write on a link or
+term inside bold, a link inside a term definition, or a mark in a table cell,
+and it *warns* on em dashes without blocking, since every older step has them.
+
+**Check the built HTML, not the source, before saying a step is right.** The
+source says what you meant; the page says what a reader gets, and the gap
+between them is where every silent failure this skill has hit lives. Strip
+`<script>` blocks first — Next's RSC payload carries the raw authored text, so a
+grep for `**` or `](https` matches it and tells you nothing:
+
+```python
+body = re.sub(r"<script[\s\S]*?</script>", "", html)   # then grep `body`
+```
+
 Two things that belong to this skill rather than the build:
 
 - **Corrections are recorded in the file's header comment** (rule **E-7**) — what
