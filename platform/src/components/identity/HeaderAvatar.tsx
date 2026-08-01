@@ -26,9 +26,11 @@ export function HeaderAvatar() {
       title={`${identity.name} — change your details`}
       aria-label={`${identity.name}. Change your details`}
     >
-      {/* The art is a full-bleed disc, so it fills the shell rather than
-          sitting inside it. */}
-      {identity.avatar ? <Avatar id={identity.avatar} size={32} /> : initials(identity.name)}
+      {/* Inside the shell, not filling it. The art is a full-bleed disc, so at
+          32px it covered the white, the border and the shadow — a solid blob
+          beside two light circles. Sized down it reads as what it is: an icon
+          in the same button chrome as its neighbours. */}
+      {identity.avatar ? <Avatar id={identity.avatar} size={24} /> : initials(identity.name)}
     </button>
   );
 }
