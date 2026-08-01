@@ -1,10 +1,8 @@
 "use client";
 
-import { checkpointsFor, type Column, type Lesson } from "@/lib/course";
-import { useProgress } from "@/lib/progress";
+import { type Column, type Lesson } from "@/lib/course";
 import { CodePlayground } from "./CodePlayground";
 import { Checkpoint, StepComplete } from "./Checkpoint";
-import { CompletionRing } from "./CompletionRing";
 
 /* A display equation, set apart from the prose. `where` names each symbol
  * directly beneath it — the formula and its legend have to be readable in one
@@ -118,48 +116,14 @@ function DataTable({
   );
 }
 
-/* Ring + count above the step — the same numbers the sidebar and the right
- * panel show, at the top of what they describe.
- *
- * It says "sections" because a bare "0/6" over a page nobody has read yet is a
- * riddle: six of what, and is more better? The panel's copy of this sits under
- * a heading that already answers that; this one stands alone and has to say it
- * itself. "Sections" is the word the dashboard and the step footer use for the
- * same thing, so all three agree. */
-function StepProgressBadge({ lessonId }: { lessonId: string }) {
-  const { hydrated, doneCount, ratio } = useProgress();
-  const total = checkpointsFor(lessonId).length;
-  if (!total) return null;
-  const done = hydrated ? doneCount(lessonId) : 0;
-
-  return (
-    <span className="flex shrink-0 items-center gap-1.5 text-muted">
-      <CompletionRing
-        value={hydrated ? ratio(lessonId) : 0}
-        size={15}
-        stroke={2}
-        label={`${done} of ${total} checkpoints complete`}
-      />
-      <span className="font-sans text-xs font-medium">
-        <span className="tabular-nums">
-          {done}/{total}
-        </span>{" "}
-        sections
-      </span>
-    </span>
-  );
-}
-
 // Content column. Base font is Aptos (font-content); headings use Familjen.
 export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: string }) {
-  /* No trail above the title. The sidebar already says where you are, and a
-   * reader who opened this step knows what they opened — the crumbs were
-   * spending a line to repeat it. Only the progress badge stays. */
+  /* Nothing above the title. The crumbs went first — the sidebar already says
+   * where you are — and the section count followed: it sat over an unread page
+   * scoring you 0/6 before you had read a word. The sidebar and the right panel
+   * still carry the same numbers for anyone who wants them. */
   return (
     <div className="font-content">
-      <div className="mb-2 flex items-center justify-end gap-3">
-        <StepProgressBadge lessonId={lessonId} />
-      </div>
       <h1 className="font-display text-[30px] font-medium leading-[1.2] tracking-[-0.02em] text-ink">{lesson.title}</h1>
 
       <div className="mt-8 flex flex-col gap-10">
