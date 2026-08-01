@@ -91,6 +91,26 @@ Ids are stable. A withdrawn rule is struck through, never deleted.
   and keep the serious, plain voice; what has to go is the sentence that keeps
   qualifying itself after the point has landed. Test: no sentence over 35 words,
   and the average well under 25.
+- **W-13** **A section's first sentence must land on a beginner.** The reader
+  arriving at it knows only what the step has already taught them, and at the
+  step's very first sentence that is nothing at all. Three specific bans:
+  - **No word they have not met.** "Take one exposure and…" asks a first-year to
+    already own *exposure*. Show the thing, then name it: the miller's wheat
+    payment first, the word *exposure* after it.
+  - **No count or pointer they cannot resolve.** "…pass through all three
+    levels" before a single level has been named; "as we saw above" in an opening.
+    Referring **back** to a section the reader has already read is fine, and
+    normal. Referring **forward**, or to something never explained, is not.
+  - **No narrating the teaching device.** "Take one X and watch it…", "Let's walk
+    through…", "Consider the following…". These announce a demonstration instead
+    of starting it, and the seam of the technique shows. The device is usually
+    right; saying it out loud is what costs. Delete the announcement and begin at
+    the case.
+
+  Test: read each section's first sentence **alone and cold**. If it contains a
+  term, a number or a reference the reader could not already hold, rewrite it.
+  This is the rule that keeps the course beginner-friendly at the exact moment a
+  beginner decides whether to keep reading.
 
 ## E — Page elements
 

@@ -14139,7 +14139,7 @@
                   },
                   "blocks": [
                     {
-                      "text": "Take one exposure and watch it pass through all three levels. A Zambian miller buys wheat in US dollars and sells flour in kwacha, so every consignment carries [currency risk](https://corporatefinanceinstitute.com/resources/derivatives/hedging/).",
+                      "text": "A Zambian miller orders wheat in January, in US dollars, and pays for it in March. If the kwacha weakens over those two months the same shipment costs more, and the flour was already priced in kwacha. That gap is [currency risk](https://corporatefinanceinstitute.com/resources/derivatives/hedging/), and the money at risk on a single shipment is an exposure. Three different people will each do something about this one exposure, and no two of them are doing the same job.",
                       "type": "p"
                     },
                     {

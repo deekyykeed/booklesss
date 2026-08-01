@@ -11,6 +11,14 @@
  * seams: what treasury is, how the work divides, how it is governed. Coverage
  * is identical; nothing was cut. The first part keeps the original
  * `intro-to-treasury` slug because that URL is already linked to.
+ *
+ * 2026-08-01 opening rewritten (rule W-13). It read "Take one exposure and
+ * watch it pass through all three levels" — a stage direction announcing the
+ * teaching device, built on a word the reader had not met (`exposure`) and a
+ * count they could not yet resolve (`all three levels`, before any level is
+ * named). The device itself is right and is kept; only the narration of it is
+ * gone. The miller now arrives first, the risk is shown before it is named,
+ * and `exposure` is defined in the sentence that introduces it.
  */
 
 export default {
@@ -27,7 +35,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Take one exposure and watch it pass through all three levels. A Zambian miller buys wheat in US dollars and sells flour in kwacha, so every consignment carries [currency risk](https://corporatefinanceinstitute.com/resources/derivatives/hedging/).",
+          text: "A Zambian miller orders wheat in January, in US dollars, and pays for it in March. If the kwacha weakens over those two months the same shipment costs more, and the flour was already priced in kwacha. That gap is [currency risk](https://corporatefinanceinstitute.com/resources/derivatives/hedging/), and the money at risk on a single shipment is an exposure. Three different people will each do something about this one exposure, and no two of them are doing the same job.",
         },
         {
           type: "p",

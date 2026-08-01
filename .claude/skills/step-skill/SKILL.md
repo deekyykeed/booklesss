@@ -420,8 +420,8 @@ not worth reading — and because nothing is *wrong*, a normal review returns
 course-agnostic: it asks nothing about treasury or strategy, so it runs on any
 step in any course.
 
-Six checks, in order. Each has a rule behind it, so a failure is a defect with an
-id, not an opinion.
+Seven checks, in order. Each has a rule behind it, so a failure is a defect with
+an id, not an opinion.
 
 | # | Check | Fails when | Rule |
 |---|-------|-----------|------|
@@ -431,6 +431,7 @@ id, not an opinion.
 | 4 | **Table load** — count definitional tables (a list of types/levels/functions, not a working) | Three or more, each in the same `p → table → p` sandwich | **S-7** |
 | 5 | **Rhythm** — read the block types down the page: `p p p p` | Any section is three consecutive long `p` blocks | **W-7** |
 | 6 | **The abstraction ladder** — does any idea stay abstract from start to finish? | A classification is taught as its categories and never as one case moving through them | **C-3**, **C-5** |
+| 7 | **The cold open** — read each section's first sentence alone, with nothing above it | It uses a word, a count or a pointer the reader cannot yet hold ("one exposure", "all three levels"), or narrates the device instead of starting it ("Take one X and watch it…") | **W-13** |
 
 **The moves that fix them.** These are what the TM 1.1 rewrite actually did, in
 the order they were worth doing:
@@ -452,6 +453,14 @@ the order they were worth doing:
   pressure. Find the split before the table, state it after.
 - **Break the grey.** An `h2` splitting a two-part section, a callout, one short
   sentence alone. Cheap, and it is half of what "boring" actually meant.
+- **Delete the announcement and start at the case.** The fix for a cold open is
+  almost always a deletion, not a rewrite: "Take one exposure and watch it pass
+  through all three levels. A Zambian miller buys wheat in US dollars…" loses its
+  first sentence and starts at the miller. The demonstration was never the
+  problem. Saying *"I am about to demonstrate"* was, and it took the reader's
+  first sentence with it. Where the deleted sentence was carrying a term the
+  reader needed, show the thing first and name it after: the wheat payment, then
+  the word *exposure*.
 
 **What the pass must not do.** Coverage is not negotiable — **C-2** outranks all
 of this. The rewrite kept every section, every syllabus list and every figure; it

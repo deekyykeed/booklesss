@@ -63,6 +63,7 @@ unchecked ones get ticked off by someone assuming the list was audited.
 | D-1 | Engagement pass — every step written before the hook rules | 2026-08-01 | open · 3/44 |
 | D-2 | Emphasis, ownership voice, tap-to-define — every step written before W-8/W-9/E-8 | 2026-08-01 | open · 3/44 |
 | D-3 | Possessive budget, sentence length, step splitting, source links — W-10/W-12/S-8/C-7 | 2026-08-01 | open · 3/44 |
+| D-4 | Cold opens — W-13, section openings a beginner cannot hold | 2026-08-01 | open · 44/44 scanned, 1 fixed, jargon half unchecked |
 
 ---
 
@@ -202,6 +203,46 @@ steps and both are paid on contact, so a step opened for one gets the other.
 - [ ] strategic-management/strategy/competitive-strategy
 - [ ] strategic-management/strategy/corporate-strategy
 - [ ] strategic-management/strategy/strategy-implementation
+
+### D-4 · cold opens: a section opening a beginner cannot hold · opened 2026-08-01
+**Source:** owner review 2026-08-01 (TM `treasury-levels-and-mandate`) — "this
+sentence [doesn't] start well… can you make sure steps a friendly for beginners
+and not confusing."
+**Rule:** W-13
+**Why it can't wait for a rewrite:** the first sentence of a section is where a
+beginner decides whether to keep reading, and a sentence that uses a word or a
+count they cannot yet hold spends that moment. It is also invisible to every
+other check: the step is accurate, covered and correctly structured, and only
+fails when read cold.
+
+**Applies to: all three courses — this is the rare item that was scanned
+in full before it was opened.** All **218 section openings across all 44 steps**
+were checked mechanically for the two patterns W-13 can be tested for by
+machine: device-narration (`Take…`, `Consider…`, `Let's…`, `Imagine…`) and
+unresolvable counts or pointers (`all three levels`, `as we saw`, `earlier`).
+
+- **One real defect, now fixed** — this step.
+- Two flagged and cleared by reading them: `internal-environment` §4 ("all four
+  tests") points **back** at the VRIO section immediately above it, which W-13
+  permits; `yield-curve` §2 tripped the scan on the idiom "over and above".
+- **The third ban is NOT scanned.** "No word the reader has not met" needs
+  judgement about what a first-year knows, and no machine check was run for it.
+  So every step below is unchecked for undefined jargon in its openings, and
+  that half gets done on contact, the same way D-1 and D-2 are paid.
+
+Re-run the scan after writing any new step:
+
+```bash
+node .claude/skills/step-skill/tools/cold-open-scan.mjs Schools
+```
+
+It prints every flag with its sentence and exits on the count. The baseline is
+**2 of 218, both false positives** and both named in the script's header — which
+is the whole value of it: at two, a third hit is worth reading.
+
+- [x] treasury-management/treasury-operations/treasury-levels-and-mandate — 2026-08-01 (rewritten)
+- [ ] the other 43 steps — machine-clean on device-narration and unresolvable
+      references; **not** checked for undefined jargon in their openings
 
 ### D-3 · possessive budget, sentence length, step splitting, source links · opened 2026-08-01
 **Source:** owner review 2026-08-01 (TM 1.1) — "we're using *your* too many

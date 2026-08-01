@@ -22,6 +22,32 @@ Quote actual words. A student's phrasing is never rewritten into the owner's.
 
 ---
 
+### 2026-08-01 · treasury-management/treasury-operations/treasury-levels-and-mandate · owner
+- `writing` — of the step's opening sentence, "Take one exposure and watch it
+  pass through all three levels": **"this sentence [doesn't] start well"**, and
+  **"can you make sure steps a friendly for beginners and not confusing"**.
+  Three separate faults in one sentence, which is why it read badly rather than
+  merely oddly: it uses **exposure** as a countable noun to a reader who has
+  never met the word; it says **"all three levels"** before a single level has
+  been named, so the count cannot be resolved; and it is a **stage direction**
+  ("Take one X and watch it…") announcing the demonstration instead of starting
+  it. The demonstration itself is the right move and is the one the engagement
+  pass prescribes ("one case through the whole ladder") — the defect was
+  narrating it. Fixed by deleting the announcement: the miller now arrives in
+  the first sentence, the risk is shown before it is named, and *exposure* is
+  defined in the sentence that introduces it.
+  New **W-13**, plus a seventh check in the engagement pass ("the cold open").
+- Scoped before opening the debt rather than after: all **218 section openings
+  across the 44 published steps** were scanned for device-narration and
+  unresolvable references. **One real defect** — this one. `vrio-applied`
+  ("all four tests") refers back to the VRIO section immediately before it,
+  which W-13 explicitly permits, and `yield-curve` tripped the scan on the
+  idiom "over and above". So the rule is new but the house was already mostly
+  keeping it.
+→ promoted: **W-13** · debt: **D-4**
+
+---
+
 ### 2026-08-01 · treasury-management/treasury-operations/intro-to-treasury · owner
 - `writing` — "we're using *your* too many times, you need to reduce that."
   W-10 had been applied to every noun rather than where it lands. Measured
