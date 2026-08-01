@@ -853,16 +853,17 @@
 
   /* The answer sits at the end of the section, set off by space above it
      rather than a divider line.
-     The note button and the two answers used to be pushed to opposite ends by
-     `justify-between`, which worked while each was a labelled pill: the words
-     told you they were different questions. Bare marks at opposite ends of a
-     390px row just read as a layout bug, so they are grouped from the left the
-     way the reference does it, and the seam between the two kinds is carried
-     by a wider gap instead. */
+
+     The note button sits hard left and the two answers hard right (owner's
+     call, 2026-08-02). They were briefly grouped together on the left, on the
+     argument that bare marks at opposite ends of a 390px row read as a layout
+     bug. The owner's reading is the better one: the full width IS the
+     separation, and it is the only thing left saying these are two different
+     questions now that no pill or label does. Asking "how did that read?" is
+     not one of the answers to "what will you do with this section?", and
+     sitting them together implied it was. */
   .checkpoint-row {
     margin-top: 20px;
-    /* the note button, then a beat, then the answer pair */
-    column-gap: 18px;
   }
   /* Bare marks in a row, aligned to the right edge of the reading column
      (owner's call, 2026-08-01, against the way Claude draws its own message
@@ -872,7 +873,7 @@
   .grasp-group {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-start;
+    justify-content: flex-end;
     gap: 10px;
   }
   /* No pill, no border, no fill: a hairline glyph sitting on the page.

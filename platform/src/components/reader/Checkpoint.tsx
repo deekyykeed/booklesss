@@ -67,7 +67,7 @@ export function Checkpoint({
        reader wants to do about the section (left) and how it read (right).
        Pushed apart rather than sat together, so neither looks like an option
        in the other's set. */
-    <div className="checkpoint-row flex flex-wrap items-center gap-3">
+    <div className="checkpoint-row flex flex-wrap items-center justify-between gap-3">
       <SectionNote lessonId={lessonId} sectionId={checkpointId} />
       <div
         className="grasp-group"

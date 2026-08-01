@@ -24,8 +24,12 @@ const ICONS = [
   "zap",
   "menu",
   "sidebar",
-  "chat",
-  "chat-solid",
+  /* The section-note button. A plain bubble reads as "open a chat", and there
+     is no conversation here; the dots say there are words inside it, which is
+     what "tell us how that read" actually is. Swapped from "chat" on
+     2026-08-02 — it was that button's only use. */
+  "chat-dots",
+  "chat-dots-solid",
   "external-link",
   "chevron-down",
   "chevron-right",

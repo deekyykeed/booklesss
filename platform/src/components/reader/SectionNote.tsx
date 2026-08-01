@@ -63,7 +63,7 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
         data-active={chosen ? "" : undefined}
         style={{ "--grasp-tone": "#5b5b66" } as React.CSSProperties}
       >
-        <MynaIcon name={chosen ? "chat-solid" : "chat"} size={20} strokeWidth={1.2} />
+        <MynaIcon name={chosen ? "chat-dots-solid" : "chat-dots"} size={20} strokeWidth={1.2} />
         <span className="grasp-label">{label ?? "How did that read?"}</span>
       </button>
 
