@@ -442,6 +442,33 @@ export function addStudySeconds(secs: number, course?: string, lessonId?: string
 }
 
 /** Namespaces storage to a user. Pass null when signed out. */
+/**
+ * Erases every trace of studying on this device — the current record and every
+ * older version still sitting beside it.
+ *
+ * Settings' "forget this device" is the only caller, and it reloads straight
+ * after: this drops the stored copy, but every ring and tile on the page is
+ * still holding the numbers that were read from it.
+ *
+ * Scoped keys go too. A reader who signed in at some point has their progress
+ * under a scope suffix, and leaving that behind would mean "erase everything"
+ * quietly kept a copy.
+ */
+export function clearProgress(): void {
+  try {
+    for (const key of Object.keys(localStorage)) {
+      if (key === KEY || key.startsWith(`${KEY}:`)) localStorage.removeItem(key);
+      for (const old of [V5_KEY, V4_KEY, V3_KEY, V2_KEY, V1_KEY]) {
+        if (key === old || key.startsWith(`${old}:`)) localStorage.removeItem(key);
+      }
+    }
+  } catch {
+    /* private mode — nothing was persisted to clear */
+  }
+  snapshot = { scope: snapshot.scope, state: EMPTY_STATE, hydrated: true };
+  emit();
+}
+
 export function setProgressScope(scope: string | null) {
   if (snapshot.hydrated && snapshot.scope === scope) return;
   load(scope);

@@ -176,6 +176,19 @@ export function saveIdentity(input: {
   return next;
 }
 
+/** Erases the identity from this device. Used by Settings' "forget this
+ *  device", which pairs it with clearProgress() and a reload — every store on
+ *  the page is holding a copy of what this just deleted. */
+export function clearIdentity(): void {
+  try {
+    window.localStorage.removeItem(KEY);
+  } catch {
+    // Storage blocked: nothing was stored to remove.
+  }
+  invalidate();
+  emit();
+}
+
 /** Up to two letters for the fallback monogram — "Deeky Mvula" -> "DM". */
 export function initials(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);

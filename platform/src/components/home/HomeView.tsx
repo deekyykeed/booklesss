@@ -6,7 +6,7 @@ import { useIdentity } from "@/lib/identity";
 import { isStudyDay, studyHistory, useProgress } from "@/lib/progress";
 import { overallPerformance, overallScoreHistory, type Performance } from "@/lib/performance";
 import { MynaIcon } from "@/components/icons/myna";
-import { EDIT_EVENT } from "@/components/identity/IdentityGate";
+import { SETTINGS_EVENT } from "@/components/identity/pickers";
 import { CourseCard } from "./CourseCard";
 import { OfflineTools } from "./OfflineTools";
 import { Spark } from "./Spark";
@@ -261,14 +261,14 @@ export function HomeView({
       {/* ---- the courses themselves ---- */}
       <section id="courses" className="mt-8 scroll-mt-20 pb-10">
         {/* The list is what they picked at sign-up, so the way to change it
-            sits on the list itself — reopening the same form on its course
-            section. Without this the answer would be unchangeable. */}
+            sits on the list itself — opening Settings with its course row
+            already unfolded. */}
         <div className="flex items-center justify-between gap-3">
           <h2 className="dash-heading">My courses</h2>
           <button
             type="button"
             onClick={() =>
-              window.dispatchEvent(new CustomEvent(EDIT_EVENT, { detail: { step: "courses" } }))
+              window.dispatchEvent(new CustomEvent(SETTINGS_EVENT, { detail: { step: "courses" } }))
             }
             className="text-[13px] font-medium text-muted transition-colors hover:text-ink"
           >
