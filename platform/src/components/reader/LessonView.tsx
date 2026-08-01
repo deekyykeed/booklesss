@@ -1,52 +1,11 @@
 "use client";
 
-import { type Column, type Lesson } from "@/lib/course";
-import { runs } from "@/lib/emphasis";
+import { type Column, type Lesson, type Section } from "@/lib/course";
+import { links, runs } from "@/lib/emphasis";
 import { CodePlayground } from "./CodePlayground";
 import { Checkpoint, StepComplete } from "./Checkpoint";
 import { Term } from "./Term";
-import { faviconFor } from "./favicons";
-import { MynaIcon } from "@/components/icons/myna";
-
-/* The site's mark, at the end of the sentence it backs and just before the full
- * stop. The marked phrase itself is left completely alone: no underline, no
- * colour, no weight.
- *
- * Marking the phrase competed with the two marks that carry meaning. Bold says
- * "remember this" and a ruled term says "tap me"; a third underline in the same
- * paragraph turned prose into a field of decorated words and none of the three
- * read as anything in particular. A favicon at the end of the sentence says
- * where the claim came from without touching the sentence, and scanning a step
- * for them shows how much of it is externally backed.
- *
- * A host with no mark falls back to a plain link glyph. Dropping the link
- * entirely would lose it silently, since nothing in the prose is styled now. */
-function SourceMark({ href }: { href: string }) {
-  const icon = faviconFor(href);
-  let host = href;
-  try {
-    host = new URL(href).hostname.replace(/^www\./, "");
-  } catch {
-    /* an unparseable href is the step's problem; the label just falls back */
-  }
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={`Source: ${host}`}
-      title={host}
-      className="ml-[3px] inline-block align-middle opacity-80 transition-opacity hover:opacity-100"
-    >
-      {icon ? (
-        /* eslint-disable-next-line @next/next/no-img-element */
-        <img src={icon} alt="" aria-hidden="true" className="h-[17px] w-[17px] translate-y-[-2px] rounded-[3px]" />
-      ) : (
-        <MynaIcon name="external-link" size={14} className="translate-y-[-1px] text-muted" />
-      )}
-    </a>
-  );
-}
+import { SourceStrip } from "./SourceStrip";
 
 /* Step prose with its three inline marks: `**bold**`, `[[term|definition]]`
  * and `[label](url)`.
@@ -55,64 +14,36 @@ function SourceMark({ href }: { href: string }) {
  * they skim the step the night before the exam, so it is set in ink against the
  * #4a4a52 body rather than just heavier, which at 18px is barely a difference.
  *
- * Rendering is sentence by sentence rather than run by run, because a source
- * mark belongs to its sentence rather than to the words it was authored on. So
- * the runs are buffered until a sentence ends, and any marks collected along
- * the way are emitted between the last word and the full stop. A terminator
- * only counts when whitespace or the end of the block follows it, which keeps
- * "0.025%" and "ZMW 1,001,100." from splitting a sentence mid-figure. */
+ * A source link renders as **nothing at all** here: the words appear exactly as
+ * written, and the site turns up in the strip under the section instead. The
+ * brackets in the .mjs are there to record which claim rests on which source,
+ * not to decorate the sentence. */
 function Rich({ text }: { text: string }) {
-  const out: React.ReactNode[] = [];
-  let buf: React.ReactNode[] = [];
-  let marks: string[] = [];
-  let k = 0;
+  return (
+    <>
+      {runs(text).map((r, i) =>
+        r.define ? (
+          <Term key={i} term={r.text} definition={r.define} />
+        ) : r.bold ? (
+          <strong key={i} className="font-semibold text-ink">
+            {r.text}
+          </strong>
+        ) : (
+          <span key={i}>{r.text}</span>
+        ),
+      )}
+    </>
+  );
+}
 
-  const flush = (tail: string) => {
-    if (!buf.length && !marks.length && !tail) return;
-    out.push(
-      <span key={k++}>
-        {buf}
-        {marks.map((h, i) => (
-          <SourceMark key={i} href={h} />
-        ))}
-        {tail}
-      </span>,
-    );
-    buf = [];
-    marks = [];
-  };
-
-  for (const r of runs(text)) {
-    if (r.define) {
-      buf.push(<Term key={k++} term={r.text} definition={r.define} />);
-      continue;
-    }
-    if (r.href) {
-      // The words stay exactly as written; only the mark is added, later.
-      buf.push(<span key={k++}>{r.text}</span>);
-      marks.push(r.href);
-      continue;
-    }
-    // Plain or bold text can carry the sentence end, so it is split on one.
-    const parts = r.text.split(/([.!?](?=\s|$))/);
-    for (let i = 0; i < parts.length; i += 2) {
-      const body = parts[i];
-      const term = parts[i + 1];
-      if (body)
-        buf.push(
-          r.bold ? (
-            <strong key={k++} className="font-semibold text-ink">
-              {body}
-            </strong>
-          ) : (
-            <span key={k++}>{body}</span>
-          ),
-        );
-      if (term !== undefined) flush(term);
-    }
+/** Every source URL in a section, in the order the reader meets them. */
+function sourcesIn(section: Section): string[] {
+  const out: string[] = [];
+  for (const b of section.blocks) {
+    if (b.type === "p" || b.type === "callout" || b.type === "h2") out.push(...links(b.text));
+    else if (b.type === "ul") for (const it of b.items) out.push(...links(it));
   }
-  flush("");
-  return <>{out}</>;
+  return out;
 }
 
 /* A display equation, set apart from the prose. `where` names each symbol
@@ -276,6 +207,9 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
                 );
               })}
             </div>
+            {/* Sources sit between the reading and the checkpoint: after the
+                idea is finished, before the reader is asked to mark it done. */}
+            <SourceStrip urls={sourcesIn(s)} />
             {/* One checkpoint closes each section — working down the step is
                 what fills the ring. Where the section carries a check, the
                 tick is earned by answering it. */}

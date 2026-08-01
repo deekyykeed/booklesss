@@ -31,11 +31,11 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Your company can have a [profitable year](https://corporatefinanceinstitute.com/resources/accounting/cash-flow-vs-net-income/) and still fail to pay the staff at the end of it. The [[income statement|The report of what your business earned and spent over a period: revenue minus costs, ending in profit. It counts sales when they are made, not when the cash arrives, which is exactly why it can show a profit while your account is empty.]] says the year went well. The bank balance on the 28th says there is not enough to run payroll. **Profit is worked out over twelve months and rests on judgement; cash is a fact on a Friday afternoon.** The Friday decides whether anyone gets paid.",
+          text: "Your company can have a [profitable year](https://corporatefinanceinstitute.com/resources/accounting/cash-flow-vs-net-income/) and still fail to pay the staff at the end of it. The [[income statement|The report of what your business earned and spent over a period: revenue minus costs, ending in profit. It counts sales when they are made, not when the cash arrives, which is exactly why it can show a profit while your account is empty.]] says the year went well. [The bank balance on the 28th](https://www.accountingcoach.com/cash-flow-statement/explanation) says there is not enough to run payroll. **Profit is worked out over twelve months and rests on judgement; cash is a fact on a Friday afternoon.** The Friday decides whether anyone gets paid.",
         },
         {
           type: "p",
-          text: "[Treasury](https://corporatefinanceinstitute.com/resources/career-map/sell-side/capital-markets/treasury-management/) is the function that lives on the cash side of that gap. Its job is to **put your money in the right account, in the right currency, on the day it is needed**. Cash that is not needed yet earns something instead of sitting idle. Every risk that comes with holding and moving it is treasury's to find and reduce: a kwacha that moves against you, a rate that resets, a bank that changes its terms.",
+          text: "[Treasury](https://corporatefinanceinstitute.com/resources/career-map/sell-side/capital-markets/treasury-management/) is the function that lives on the cash side of that gap. Its job is to **put your money in the right account, in the right currency, on the day it is needed**. [Cash that is not needed yet](https://www.accountingcoach.com/working-capital/explanation) earns something instead of sitting idle. Every risk that comes with holding and moving it is treasury's to find and reduce: a kwacha that moves against you, a rate that resets, a bank that changes its terms.",
         },
         {
           type: "callout",

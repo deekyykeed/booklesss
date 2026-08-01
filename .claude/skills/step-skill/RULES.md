@@ -215,23 +215,35 @@ text, so a mark written into one shows its own syntax.
   reader can neither open them nor be sent to them. The teachers are the trusted
   public sites: **Investopedia**, **Corporate Finance Institute**, **ACCA**,
   **AccountingCoach** and their equivalents.
-  - **No "read further" box.** A block of links at the foot of a section is
-    furniture: it arrives after the reader has finished the idea, and it turns
-    the source into a chore. (The `sources` block type existed for one
-    afternoon and was removed.)
-  - **The marked phrase is not styled at all** — no underline, no colour, no
-    weight. The site's favicon appears instead at **the end of that sentence,
-    just before the full stop**, and is the thing you click. Marking the words
-    competed with the two marks that carry meaning: bold says "remember this"
-    and a ruled term says "tap me", and a third decorated phrase in the same
-    paragraph left none of the three reading as anything in particular.
-  - So **what the mark really selects is the sentence**. Put the link in the
-    sentence whose claim the source actually backs; which words inside it carry
-    the brackets no longer shows on screen. Prefer the phrase the source backs
-    anyway, because it is what a later reader of the `.mjs` will check against.
-  - **Two per section, roughly**, and **never two in one sentence** — two
-    favicons stack side by side before the same full stop and read as clutter.
-    This used to be a style preference; now it is visible.
+  - **The link renders as nothing in the prose.** No underline, no colour, no
+    weight, no mark at the end of the sentence. The sites turn up instead in a
+    **source strip at the foot of the section**, between the last block and the
+    checkpoint: one round chip per site, its favicon and its name, on a single
+    line that scrolls sideways if there are more than fit. Three arrangements
+    were tried before this one — a "read further" box (furniture, arriving
+    after the reader had finished), an underlined phrase (competing with bold
+    and with tappable terms), and a favicon at the end of each sentence (still
+    punctuation inside the reading line). The strip leaves the sentence alone
+    and still shows, at a glance, what a section rests on.
+  - **The brackets are a record, not decoration.** Since nothing shows in the
+    prose, put them on the phrase the source actually backs: that is what the
+    next person editing the `.mjs` will check the link against.
+  - **One chip per site, per section** — the strip dedupes, so two Investopedia
+    pages under one section show as one chip and only the first is reachable.
+    If both genuinely matter, put them in different sections.
+  - **Two or three sites per section.** More reads as a bibliography.
+  - **Vary the sites.** A step sourced entirely from one place looks like it was
+    written from one place. Investopedia, Corporate Finance Institute, ACCA and
+    AccountingCoach each explain a different kind of thing best.
+  - A new site needs its mark: add a link, run **`npm run gen:favicons`**, and
+    add its display name to `NAMES` in that script if the domain doesn't
+    shorten to something a reader would say out loud.
+  - ⚠️ **Investopedia cannot be link-checked from a Claude session.** It returns
+    403 to curl, to Node fetch and to the web tools alike, so its URLs can be
+    neither verified nor read here. Its favicon is bundled and ready. Either
+    the owner confirms a URL by opening it, or the step uses a site that can be
+    checked. Do not ship an Investopedia URL on the grounds that the pattern
+    looks right — four of twelve CFI URLs guessed that way were dead.
   - Deep-link the **specific page**, never a site home page or a search result.
   - Link the idea the section just taught, not a tangent. If a section has no
     good outside page, it gets no link. A filler link costs more trust than the

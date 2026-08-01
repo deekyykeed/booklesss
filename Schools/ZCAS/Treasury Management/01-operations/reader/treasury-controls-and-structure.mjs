@@ -61,7 +61,7 @@ export default {
         },
         {
           type: "p",
-          text: "**The six interlock.** Segregation means no single person can complete a fraud alone. [Limits and approvals](https://corporatefinanceinstitute.com/resources/career-map/sell-side/risk-management/financial-controls/) bound what any one decision is allowed to lose. Audits catch what slips past both. Automation shrinks the space where human error and temptation operate at all. Naming a control is worth little on its own. **The useful skill is saying which failure each one prevents.** That is how you work out which ones you can survive without while you are still small.",
+          text: "**The six interlock.** Segregation means no single person can complete a fraud alone. [Limits and approvals](https://corporatefinanceinstitute.com/resources/career-map/sell-side/risk-management/financial-controls/) bound what any one decision is allowed to lose. [Audits](https://www.accountingcoach.com/accounts-payable/explanation) catch what slips past both. Automation shrinks the space where human error and temptation operate at all. Naming a control is worth little on its own. **The useful skill is saying which failure each one prevents.** That is how you work out which ones you can survive without while you are still small.",
         },
       ],
       check: {

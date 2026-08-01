@@ -15,6 +15,9 @@ import { planLabel, usePlan } from "@/lib/plan";
  * same circle can carry how much of their plan's period is spent. With no plan
  * to report — which is every reader while Clerk is off — it is a plain grey
  * ring, exactly the border it replaced. */
+/** The 32px button, less its 1px border on each side. */
+const AVATAR_PX = 30;
+
 export function HeaderAvatar() {
   const { identity } = useIdentity();
   const plan = usePlan();
@@ -27,7 +30,9 @@ export function HeaderAvatar() {
   const shell =
     "relative grid h-8 w-8 shrink-0 place-items-center rounded-full border border-[#d4d4d4] bg-white text-[11px] font-semibold text-ink-2 shadow-[0_0.6px_0.6px_-1.25px_rgba(0,0,0,0.18),0_2.3px_2.3px_-2.5px_rgba(0,0,0,0.16),0_10px_10px_-3.75px_rgba(0,0,0,0.06)]";
 
-  const ring = <PlanRing used={plan?.used ?? null} daysLeft={plan?.daysLeft} />;
+  /* Sized to the inner circle, like the art, so the arc traces the border
+     rather than a circle 1px outside it. */
+  const ring = <PlanRing used={plan?.used ?? null} daysLeft={plan?.daysLeft} size={AVATAR_PX} />;
 
   /* Before the store has read localStorage there is no name to draw, and
    * guessing one would flash the wrong monogram at a returning reader. */
@@ -50,28 +55,28 @@ export function HeaderAvatar() {
       title={`${tip} — settings`}
       aria-label={`${tip}. Open settings`}
     >
-      {ring}
-      {/* Full-bleed, softened at the rim. Sizing the art down to 20px left a
-          white moat that read as a mistake rather than as breathing room; the
-          face is the thing being shown, so it gets the whole button.
-          A radial mask fades the last few pixels to nothing, which keeps the
-          disc from butting hard against the ring and stops the heavy fill
-          shouting over the line icons beside it — the same restraint the small
-          size was buying, without the moat. Solid to 74% of the radius, gone by
-          the rim, so the ring reads clean all the way round. */}
+      {/* The art fills the border's inner circle exactly, and nothing fades.
+          Two earlier attempts both left a gap the eye reads as a detached
+          border: sizing the art to 20px drew a white moat, and a radial mask
+          that went transparent at the rim drew a thinner version of the same
+          moat between the disc and the border.
+          The mask existed to keep the ring visible when the ring was an SVG
+          stroke under the art. The button carries a real 1px border now, which
+          sits outside the art entirely, so the art can meet it edge to edge.
+          AVATAR_PX is the button's 32px box less that 1px border on each side.
+          Tailwind sets border-box, so `inset-0` is already that inner circle;
+          the number has to match it or the disc is clipped off-centre. */}
       {identity.avatar ? (
-        <span
-          className="pointer-events-none absolute inset-0 grid place-items-center overflow-hidden rounded-full"
-          style={{
-            WebkitMaskImage: "radial-gradient(circle at 50% 50%, #000 74%, transparent 97%)",
-            maskImage: "radial-gradient(circle at 50% 50%, #000 74%, transparent 97%)",
-          }}
-        >
-          <Avatar id={identity.avatar} size={32} />
+        <span className="pointer-events-none absolute inset-0 grid place-items-center overflow-hidden rounded-full">
+          <Avatar id={identity.avatar} size={AVATAR_PX} />
         </span>
       ) : (
         initials(identity.name)
       )}
+      {/* After the art, not before it. Both are absolutely positioned over the
+          same box, so the later one paints on top; drawn first, the spend arc
+          was hidden behind the face. */}
+      {ring}
     </button>
   );
 }
