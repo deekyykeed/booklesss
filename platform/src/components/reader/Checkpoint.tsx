@@ -6,32 +6,35 @@ import { rate, useProgress, type Grasp } from "@/lib/progress";
 import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
 import { CompletionRing } from "./CompletionRing";
 
-/* The three answers, worst to best left-to-right so the thumbs-up lands on
- * the right where the eye finishes: a thumbs-down for not yet, a half-circle
- * for partly, a thumbs-up for understood. Each is a proper labelled button,
- * the icon beside its word.
+/* Two answers: "Later" and "Got it".
  *
- * Red to amber to green, each dark enough to hold at 5.2:1 or better on the
- * content surface. Green is completion, the same thing it means everywhere
- * else here. */
+ * It was three, worst-to-best ("Not yet", "Almost", "Got it"), and the owner's
+ * objection to "Not yet" is the right one: it asks the reader to grade
+ * themselves and then leaves them with nothing to do about the grade. "Later"
+ * is a decision instead of a verdict, and it is the one the reader actually
+ * has: come back to this, or move on. "Almost" went with it, because the
+ * moment the scale stops being a self-rating a midpoint means nothing.
+ *
+ * `Grasp` still carries "almost" and progress.tsx still weights it at 0.5, so
+ * ratings already saved on a device keep counting. Nothing writes it any more.
+ *
+ * Amber then green, each dark enough to hold 5.2:1 on the content surface.
+ * Green is completion, the same thing it means everywhere else here. */
 const ANSWERS: { id: Grasp; label: string; icon: MynaIconName; tone: string }[] = [
-  { id: "not", label: "Not yet", icon: "dislike", tone: "#a33b31" },
-  { id: "almost", label: "Almost", icon: "circle-half", tone: "#96601f" },
+  { id: "not", label: "Later", icon: "clipboard", tone: "#96601f" },
   { id: "got", label: "Got it", icon: "like", tone: "#17754d" },
 ];
 
 /* End-of-section checkpoint — a scale rather than a tick.
  *
  * "Mark as done" only ever asked whether the reader had scrolled past. Asking
- * how much of the section landed costs the same one tap and returns something
- * the dashboard can use: which steps are understood and which need another
- * pass. Any of the five answers clears the checkpoint (see rate() —
- * withholding progress from an honest "Not yet" would just teach everyone to
- * press the top of the scale); pressing the answer you already gave takes it
- * back.
+ * what they want to do about the section costs the same one tap and returns
+ * something the dashboard can use: which steps are understood and which are
+ * waiting to be come back to. Either answer clears the checkpoint (see rate():
+ * withholding progress from an honest "Later" would just teach everyone to
+ * press the good one); pressing the answer you already gave takes it back.
  *
- * The buttons carry their own words, so there's no prompt above them — a row
- * of "Got it … Not yet" reads as a self-rating on its own. */
+ * The buttons carry their own words, so there is no prompt above them. */
 export function Checkpoint({
   lessonId,
   checkpointId,

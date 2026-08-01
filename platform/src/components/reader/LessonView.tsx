@@ -171,14 +171,36 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
       <div className="mt-8 flex flex-col gap-10">
         {lesson.sections.map((s, i) => (
           <section key={s.id} id={s.id} className="scroll-mt-24">
-            {i > 0 && <h2 className="mb-4 text-[19px] font-semibold tracking-[-0.01em] text-ink">{s.heading}</h2>}
+            {/* A new section has to announce itself. Its heading used to be
+                19px semibold, the same as the `h2` block used *inside* a
+                section, so arriving at a new idea looked exactly like arriving
+                at a sub-point of the old one, and the sources strip above it
+                made the seam blurrier still.
+                Now: a rule across the column, real space either side of it, and
+                the heading in the display face at 24px. The in-section `h2`
+                stays 19px sans, so the two are no longer interchangeable. */}
+            {i > 0 && (
+              <>
+                <hr className="mb-8 mt-2 border-0 border-t border-[#e7e7e6]" />
+                <h2 className="mb-5 font-display text-[24px] font-medium leading-[1.25] tracking-[-0.015em] text-ink">
+                  {s.heading}
+                </h2>
+              </>
+            )}
             <div className="flex flex-col gap-5">
               {s.blocks.map((b, j) => {
                 if (b.type === "p") return <p key={j} className="text-[18px] leading-[30px] text-[#4a4a52]"><Rich text={b.text} /></p>;
                 if (b.type === "h2") return <h2 key={j} className="text-[19px] font-semibold text-ink">{b.text}</h2>;
                 if (b.type === "callout")
                   return (
-                    <div key={j} className="squircle rounded-3xl border border-[#e7e7e6] bg-white px-5 py-4 text-[16.5px] leading-[27px] text-[#4a4a52]">
+                    /* Lifted off the page with a shadow: the callout is the one
+                       sentence in a section meant to survive when the rest is
+                       forgotten, and a plain outlined box sat too flat against
+                       prose that already has boxes in it. */
+                    <div
+                      key={j}
+                      className="squircle rounded-3xl border border-[#e7e7e6] bg-white px-5 py-4 text-[16.5px] leading-[27px] text-[#4a4a52] shadow-[0_1px_2px_-1px_rgba(0,0,0,0.08),0_8px_16px_-6px_rgba(0,0,0,0.10),0_20px_32px_-16px_rgba(0,0,0,0.10)]"
+                    >
                       <Rich text={b.text} />
                     </div>
                   );

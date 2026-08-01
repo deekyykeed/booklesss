@@ -34,40 +34,38 @@ export function SourceStrip({ urls }: { urls: string[] }) {
   if (!chips.length) return null;
 
   return (
-    <div className="mt-6">
-      <div
-        /* The scroller is its own element so the fade and the border stay put
-           while the chips move under them. data-no-swipe stops a sideways drag
-           here from opening the reader's drawer (see MobileNav). */
-        data-no-swipe
-        className="no-scrollbar squircle flex items-center gap-2 overflow-x-auto rounded-full border border-[#e7e7e6] bg-white px-2.5 py-2"
-      >
-        <span className="shrink-0 pl-1 pr-0.5 text-[12px] font-semibold uppercase tracking-[0.06em] text-muted">
-          Sources
-        </span>
-        {chips.map((c) => (
-          <a
-            key={c.name}
-            href={c.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            title={`Open ${c.name} in a new tab`}
-            className="squircle flex shrink-0 items-center gap-2 rounded-full border border-[#e7e7e6] py-1 pl-1 pr-3 text-[14px] leading-5 text-ink transition-colors hover:border-[#c9c9c6] hover:bg-[#fafafa]"
-          >
-            {/* Round, whatever shape the site's own mark is. Most favicons are
-                squares with their own padding, so a circular crop of one reads
-                as a logo rather than as a pasted-in tile. */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={c.icon}
-              alt=""
-              aria-hidden="true"
-              className="h-[22px] w-[22px] shrink-0 rounded-full bg-white object-cover"
-            />
-            <span className="whitespace-nowrap">{c.name}</span>
-          </a>
-        ))}
-      </div>
+    /* No wrapper box. A bordered container around a row of bordered chips was
+       two frames doing one job, and it fenced the sources off as a widget
+       rather than letting them sit under the section as a footnote does. The
+       chips carry their own edges; the row just scrolls.
+       data-no-swipe stops a sideways drag here from opening the reader's
+       drawer instead of moving the chips (see MobileNav). */
+    <div data-no-swipe className="no-scrollbar -mx-1 mt-6 flex items-center gap-2 overflow-x-auto px-1 py-0.5">
+      {chips.map((c) => (
+        <a
+          key={c.name}
+          href={c.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          title={`Open ${c.name} in a new tab`}
+          /* Genuinely round, so no `squircle`: the superellipse mask is a
+             subtle flattening that reads as a wobble on a full pill, where it
+             is exactly right on a large card. */
+          className="flex shrink-0 items-center gap-2 rounded-full border border-[#e7e7e6] bg-white py-1 pl-1 pr-3.5 text-[14px] leading-5 text-ink transition-colors hover:border-[#c9c9c6] hover:bg-[#fafafa]"
+        >
+          {/* Round, whatever shape the site's own mark is. Most favicons are
+              squares with their own padding, so a circular crop of one reads
+              as a logo rather than as a pasted-in tile. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={c.icon}
+            alt=""
+            aria-hidden="true"
+            className="h-[22px] w-[22px] shrink-0 rounded-full bg-white object-cover"
+          />
+          <span className="whitespace-nowrap">{c.name}</span>
+        </a>
+      ))}
     </div>
   );
 }
