@@ -97,9 +97,9 @@ export function Term({ term, definition }: { term: string; definition: string })
           id={id}
           role="tooltip"
           style={{ left: pos?.left ?? 0, top: pos?.top ?? 0, width: pos?.width ?? 340 }}
-          className="squircle fixed z-50 rounded-2xl border border-[#e0e0e0] bg-white px-4 py-3 text-left text-[16px] font-normal leading-[25px] text-[#3f3f47] shadow-[0_2px_4px_-1px_rgba(0,0,0,0.08),0_12px_20px_-6px_rgba(0,0,0,0.16),0_28px_48px_-16px_rgba(0,0,0,0.22)]"
+          className="squircle fixed z-50 rounded-3xl border border-[#e0e0e0] bg-white px-4 py-3 text-left text-[17px] font-normal leading-[27px] text-[#3f3f47] shadow-[0_2px_4px_-1px_rgba(0,0,0,0.08),0_12px_20px_-6px_rgba(0,0,0,0.16),0_28px_48px_-16px_rgba(0,0,0,0.22)]"
         >
-          <span className="mb-1 block text-[15px] font-semibold text-ink">{term}</span>
+          <span className="mb-1 block text-[16px] font-semibold text-ink">{term}</span>
           {definition}
         </span>
       )}

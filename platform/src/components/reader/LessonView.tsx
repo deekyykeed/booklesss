@@ -5,21 +5,33 @@ import { runs } from "@/lib/emphasis";
 import { CodePlayground } from "./CodePlayground";
 import { Checkpoint, StepComplete } from "./Checkpoint";
 import { Term } from "./Term";
-import { Sources } from "./Sources";
 
-/* Step prose with its two inline marks: `**bold**` and `[[term|definition]]`.
+/* Step prose with its three inline marks: `**bold**`, `[[term|definition]]`
+ * and `[label](url)`.
  *
- * Emphasis is the reader's recall handle — the phrase they'll find again when
- * they skim the step the night before the exam — so it is set in ink against
- * the #4a4a52 body rather than just heavier, which at 18px is barely a
- * difference. Defined terms take the dotted underline instead; two coloured
- * inline marks in one paragraph and neither one means anything. */
+ * Emphasis is the reader's recall handle, the phrase they'll find again when
+ * they skim the step the night before the exam, so it is set in ink against the
+ * #4a4a52 body rather than just heavier, which at 18px is barely a difference.
+ *
+ * The three marks have to stay distinguishable at a glance, and there is only
+ * so much room: bold takes weight and ink, a defined term takes a plain rule
+ * under it, a source link takes a rule plus the body's one accent. */
 function Rich({ text }: { text: string }) {
   return (
     <>
       {runs(text).map((r, i) =>
         r.define ? (
           <Term key={i} term={r.text} definition={r.define} />
+        ) : r.href ? (
+          <a
+            key={i}
+            href={r.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-ink underline decoration-[#a9a9b2] decoration-1 underline-offset-2 transition-colors hover:decoration-ink"
+          >
+            {r.text}
+          </a>
         ) : r.bold ? (
           <strong key={i} className="font-semibold text-ink">
             {r.text}
@@ -37,7 +49,7 @@ function Rich({ text }: { text: string }) {
  * look, so they share a card rather than sitting as separate blocks. */
 function Formula({ text, where }: { text: string; where?: string[] }) {
   return (
-    <div className="squircle rounded-2xl border border-[#e7e7e6] bg-white px-4 py-4">
+    <div className="squircle rounded-3xl border border-[#e7e7e6] bg-white px-5 py-5">
       <p className="text-center font-display text-[17.5px] leading-8 tracking-[-0.01em] text-ink">{text}</p>
       {where?.length ? (
         <div className="mt-3 flex flex-col gap-1.5 border-t border-[#f0efee] pt-3">
@@ -45,9 +57,9 @@ function Formula({ text, where }: { text: string; where?: string[] }) {
             // "r = the cost of capital" → the symbol carries the display face,
             // so the eye can jump from the equation straight to its definition.
             const at = w.indexOf("=");
-            if (at < 1) return <p key={i} className="text-[14px] leading-6 text-muted">{w}</p>;
+            if (at < 1) return <p key={i} className="text-[15px] leading-[25px] text-muted">{w}</p>;
             return (
-              <p key={i} className="text-[14px] leading-6 text-muted">
+              <p key={i} className="text-[15px] leading-[25px] text-muted">
                 <span className="font-display text-ink">{w.slice(0, at).trim()}</span>
                 {" = "}
                 {w.slice(at + 1).trim()}
@@ -83,8 +95,8 @@ function DataTable({
   return (
     <figure className="flex flex-col gap-2">
       {/* Wide workings scroll inside their own box; the page never does. */}
-      <div className="no-scrollbar squircle overflow-x-auto rounded-3xl border border-[#e7e7e6] bg-white">
-        <table className="w-full border-collapse text-[14.5px]">
+      <div className="no-scrollbar squircle overflow-x-auto rounded-[32px] border border-[#e7e7e6] bg-white">
+        <table className="w-full border-collapse text-[15.5px]">
           <thead>
             <tr className="bg-[#f7f7f6]">
               {columns.map((c, i) => (
@@ -164,11 +176,10 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
                 if (b.type === "h2") return <h2 key={j} className="text-[19px] font-semibold text-ink">{b.text}</h2>;
                 if (b.type === "callout")
                   return (
-                    <div key={j} className="squircle rounded-2xl border border-[#e7e7e6] bg-white px-4 py-3 text-[14.5px] leading-6 text-[#4a4a52]">
+                    <div key={j} className="squircle rounded-3xl border border-[#e7e7e6] bg-white px-5 py-4 text-[16.5px] leading-[27px] text-[#4a4a52]">
                       <Rich text={b.text} />
                     </div>
                   );
-                if (b.type === "sources") return <Sources key={j} items={b.items} />;
                 if (b.type === "playground") return <CodePlayground key={j} code={b.code} />;
                 if (b.type === "formula") return <Formula key={j} text={b.text} where={b.where} />;
                 if (b.type === "table")

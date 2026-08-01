@@ -24,9 +24,14 @@
  *        Third-party examples (the miller, the mining group) stay "the".
  *   W-11 no em dashes anywhere in the step
  *   E-8  [[term|definition]] tap-to-define for jargon the source assumes
- *   C-7  a `sources` block per section, linking where the idea is taught
- *        properly. The school material sets the syllabus; these are the
- *        teachers. Every URL checked for a 200 before it went in.
+ *   C-7  inline `[phrase](url)` links on the words a claim comes from, out to
+ *        where the idea is taught properly. The school material sets the
+ *        syllabus; these are the teachers. Twelve links, every one checked for
+ *        a 200 before it went in, which caught four I had guessed wrong.
+ *        These began as a "read further" box at the foot of each section and
+ *        were moved inline the same day: a box arrives after the reader has
+ *        finished the idea, so the source becomes a chore rather than part of
+ *        the sentence.
  * Wording changed, coverage did not: "the exam asks you to sort tasks" became
  * the decision the reader will make on a Tuesday, and the closing lines of the
  * functions and controls sections hand over the judgement, not the mark scheme.
@@ -46,11 +51,11 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Your company can have a profitable year and still fail to pay your staff at the end of it. Your [[income statement|The report of what your business earned and spent over a period: revenue minus costs, ending in profit. It counts sales when they are made, not when the cash arrives, which is exactly why it can show a profit while your account is empty.]] says the year went well. Your bank balance on the 28th says there is not enough in the account to run payroll. **Profit is worked out over twelve months and rests on judgement; cash is a fact on a Friday afternoon.** It is the Friday that decides whether your people get paid.",
+          text: "Your company can have a [profitable year](https://corporatefinanceinstitute.com/resources/accounting/cash-flow-vs-net-income/) and still fail to pay your staff at the end of it. Your [[income statement|The report of what your business earned and spent over a period: revenue minus costs, ending in profit. It counts sales when they are made, not when the cash arrives, which is exactly why it can show a profit while your account is empty.]] says the year went well. Your bank balance on the 28th says there is not enough in the account to run payroll. **Profit is worked out over twelve months and rests on judgement; cash is a fact on a Friday afternoon.** It is the Friday that decides whether your people get paid.",
         },
         {
           type: "p",
-          text: "Treasury is the function that lives on the cash side of that gap. Its job is to **protect your financial assets, manage your liabilities, and put your money in the right account, in the right currency, on the day it is needed**, while the cash you don't need yet earns something instead of sitting idle. Every risk that comes with holding and moving that money is treasury's to find and reduce: a kwacha that moves against you, a rate that resets, a bank that changes its terms.",
+          text: "[Treasury](https://corporatefinanceinstitute.com/resources/career-map/sell-side/capital-markets/treasury-management/) is the function that lives on the cash side of that gap. Its job is to **protect your financial assets, manage your liabilities, and put your money in the right account, in the right currency, on the day it is needed**, while the cash you don't need yet earns something instead of sitting idle. Every risk that comes with holding and moving that money is treasury's to find and reduce: a kwacha that moves against you, a rate that resets, a bank that changes its terms.",
         },
         {
           type: "callout",
@@ -71,23 +76,6 @@ export default {
         {
           type: "p",
           text: "Treasury sits underneath all three. It funds the working capital your investment decision creates, manages the risks your financing decision leaves open, and holds the cash your dividend policy has promised to pay out.",
-        },
-        {
-          type: "sources",
-          items: [
-            {
-              label: "Treasury Management",
-              url: "https://corporatefinanceinstitute.com/resources/career-map/sell-side/capital-markets/treasury-management/",
-              site: "Corporate Finance Institute",
-              note: "The clearest short overview of what the function owns.",
-            },
-            {
-              label: "Cash Flow vs Net Income",
-              url: "https://corporatefinanceinstitute.com/resources/accounting/cash-flow-vs-net-income/",
-              site: "Corporate Finance Institute",
-              note: "Why a profitable year and an empty account are not a contradiction.",
-            },
-          ],
         },
       ],
       check: {
@@ -133,28 +121,11 @@ export default {
         },
         {
           type: "p",
-          text: "The list is not eleven flat items. **The first five are the operating core, and they run in order:** forecast the cash, manage the [[working capital|The money tied up in running your business day to day: stock on your shelf and invoices your customers haven't paid yet, less the invoices you haven't paid your suppliers. It is cash you own but cannot spend.]] that consumes it, keep enough on hand to trade, invest what is left, and manage the risks sitting on top of all of it. **The last six point outward:** to management, the [[rating agencies|Firms like Moody's, S&P and Fitch that score how likely a borrower is to repay. The score sets the interest rate every future borrowing carries, so a downgrade costs real money.]], the banks, the investors, the customers you grant credit to, and a catch-all for M&A support and insurance. In a small company you will do most of these yourself before you can afford anyone to do them for you.",
+          text: "The list is not eleven flat items. **The first five are the operating core, and they run in order:** [forecast the cash](https://corporatefinanceinstitute.com/resources/financial-modeling/forecasting-cash-flow/), manage the [[working capital|The money tied up in running your business day to day: stock on your shelf and invoices your customers haven't paid yet, less the invoices you haven't paid your suppliers. It is cash you own but cannot spend.]] that consumes it, [keep enough on hand to trade](https://corporatefinanceinstitute.com/resources/accounting/cash-management/), invest what is left, and manage the risks sitting on top of all of it. **The last six point outward:** to management, the [[rating agencies|Firms like Moody's, S&P and Fitch that score how likely a borrower is to repay. The score sets the interest rate every future borrowing carries, so a downgrade costs real money.]], the banks, the investors, the customers you grant credit to, and a catch-all for M&A support and insurance. In a small company you will do most of these yourself before you can afford anyone to do them for you.",
         },
         {
           type: "callout",
           text: "Recover the list from the five/six split: **five functions that move the money, six that manage the people and institutions who let it move.** Eleven flat items will not survive pressure; the split will.",
-        },
-        {
-          type: "sources",
-          items: [
-            {
-              label: "Cash Management",
-              url: "https://corporatefinanceinstitute.com/resources/accounting/cash-management/",
-              site: "Corporate Finance Institute",
-              note: "The third function on the list, which is where most of the day goes.",
-            },
-            {
-              label: "Forecasting Cash Flow",
-              url: "https://corporatefinanceinstitute.com/resources/financial-modeling/forecasting-cash-flow/",
-              site: "Corporate Finance Institute",
-              note: "How the first function on the list is actually built.",
-            },
-          ],
         },
       ],
       check: {
@@ -179,11 +150,11 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Take one exposure and watch it pass through all three levels. A Zambian miller buys wheat in US dollars and sells flour in kwacha, so every consignment carries currency risk.",
+          text: "Take one exposure and watch it pass through all three levels. A Zambian miller buys wheat in US dollars and sells flour in kwacha, so every consignment carries [currency risk](https://corporatefinanceinstitute.com/resources/derivatives/hedging/).",
         },
         {
           type: "p",
-          text: "The board decides the company will cover at least 70% of its dollar purchases and will never trade currency for profit. That is policy, it holds for years, and it is **strategic**. The treasurer then looks at the next two quarters of wheat orders and covers the March and June exposures with [[forward contracts|An agreement to buy or sell a set amount of currency on a set future date at a price fixed today. It removes the uncertainty: you know in January what March's dollars will cost you.]], a decision about specific exposures over months, which is **tactical**. On the morning a forward matures, someone instructs the bank, checks the funds landed and files the confirmation. That is **operational**.",
+          text: "The board decides the company will cover at least 70% of its dollar purchases and will never trade currency for profit. That is policy, it holds for years, and it is **strategic**. The treasurer then looks at the next two quarters of wheat orders and covers the March and June exposures with [[forward contracts|An agreement to buy or sell a set amount of currency on a set future date at a price fixed today. It removes the uncertainty: you know in January what March's dollars will cost you.]], a decision about specific exposures over months, which is **tactical**. On the morning a [forward](https://corporatefinanceinstitute.com/resources/derivatives/forward-contract/) matures, someone instructs the bank, checks the funds landed and files the confirmation. That is **operational**.",
         },
         {
           type: "p",
@@ -214,23 +185,6 @@ export default {
           type: "callout",
           text: "Classify by time horizon: **strategic = long-term policy, tactical = medium-term decisions, operational = daily execution.**",
         },
-        {
-          type: "sources",
-          items: [
-            {
-              label: "Forward Contract",
-              url: "https://corporatefinanceinstitute.com/resources/derivatives/forward-contract/",
-              site: "Corporate Finance Institute",
-              note: "The instrument the tactical example turns on, with its mechanics.",
-            },
-            {
-              label: "Hedging",
-              url: "https://corporatefinanceinstitute.com/resources/derivatives/hedging/",
-              site: "Corporate Finance Institute",
-              note: "Why you give up upside to remove downside, worked through.",
-            },
-          ],
-        },
       ],
       check: {
         question:
@@ -254,7 +208,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "On 26 February 1995 Barings Bank collapsed. It was 233 years old. Days later it was sold to ING for **one pound**. One trader in Singapore, Nick Leeson, had built losses of around **£827 million** on futures positions and buried them in an [[error account|A holding account for trades that fail to settle cleanly, meant to be cleared and reconciled daily by someone other than the dealer. Left unchecked it becomes a place to park losses.]] numbered 88888 that nobody else reconciled, for roughly three years. **He dealt the trades and he settled them:** he was the [[front office|The dealers, the people who actually strike trades. The back office confirms, settles and records them. Keeping the two apart is the single most important treasury control.]] and the back office at the same time.",
+          text: "On 26 February 1995 Barings Bank collapsed. It was 233 years old. Days later it was sold to ING for **one pound**. One trader in Singapore, [Nick Leeson](https://corporatefinanceinstitute.com/resources/career-map/sell-side/capital-markets/rogue-trader/), had built losses of around **£827 million** on futures positions and buried them in an [[error account|A holding account for trades that fail to settle cleanly, meant to be cleared and reconciled daily by someone other than the dealer. Left unchecked it becomes a place to park losses.]] numbered 88888 that nobody else reconciled, for roughly three years. **He dealt the trades and he settled them:** he was the [[front office|The dealers, the people who actually strike trades. The back office confirms, settles and records them. Keeping the two apart is the single most important treasury control.]] and the back office at the same time.",
         },
         {
           type: "p",
@@ -263,7 +217,7 @@ export default {
         { type: "h2", text: "Treasury as a cost centre" },
         {
           type: "p",
-          text: "Most companies run treasury as a **cost centre**, a support function that is not expected to generate profit, only to control what it spends. That is the safe framing and it has one real weakness: **management starts asking what treasury costs rather than what it saves**, and the function gets starved of budget, staff and systems until something it was supposed to be watching goes wrong. If you are the one setting the budget, that is your weakness to avoid, not the treasurer's.",
+          text: "Most companies run treasury as a **cost centre**, a [support function that is not expected to generate profit](https://corporatefinanceinstitute.com/resources/accounting/cost-structure/), only to control what it spends. That is the safe framing and it has one real weakness: **management starts asking what treasury costs rather than what it saves**, and the function gets starved of budget, staff and systems until something it was supposed to be watching goes wrong. If you are the one setting the budget, that is your weakness to avoid, not the treasurer's.",
         },
         { type: "h2", text: "Treasury as a profit centre" },
         {
@@ -273,23 +227,6 @@ export default {
         {
           type: "callout",
           text: "A profit centre is not forbidden, and plenty of firms run one well. What Barings shows is that **the moment profit becomes the measure, the controls in the next section stop being paperwork.** They become the only thing standing between your company and a trader with a losing position to hide.",
-        },
-        {
-          type: "sources",
-          items: [
-            {
-              label: "Cost Structure",
-              url: "https://corporatefinanceinstitute.com/resources/accounting/cost-structure/",
-              site: "Corporate Finance Institute",
-              note: "How costs get allocated to a unit, which is what a cost centre is.",
-            },
-            {
-              label: "Rogue Trader",
-              url: "https://corporatefinanceinstitute.com/resources/career-map/sell-side/capital-markets/rogue-trader/",
-              site: "Corporate Finance Institute",
-              note: "Leeson in context, alongside the others who did the same thing.",
-            },
-          ],
         },
       ],
       check: {
@@ -314,7 +251,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Leeson dealt his own trades and then settled them himself. That one fact is the first control on this list, and **its absence is why an £827 million hole stayed invisible for three years.** Treasury moves the largest sums in your company, so six controls are non-negotiable. They are cheap to put in on day one and expensive to retrofit after you have hired the person they constrain.",
+          text: "Leeson dealt his own trades and then settled them himself. That one fact is the first control on this list, and **its absence is why an £827 million hole stayed invisible for three years.** Treasury moves the largest sums in your company, so [six controls](https://corporatefinanceinstitute.com/resources/accounting/internal-controls/) are non-negotiable. They are cheap to put in on day one and expensive to retrofit after you have hired the person they constrain.",
         },
         {
           type: "table",
@@ -348,24 +285,7 @@ export default {
         },
         {
           type: "p",
-          text: "**The six interlock.** Segregation means no single person can complete a fraud alone. Limits and approvals bound what any one decision is allowed to lose. Audits catch what slips past both. Automation shrinks the space where human error and temptation operate at all. Naming a control is worth very little on its own. **The useful skill is saying which failure each one prevents**, because that is how you work out which ones you can survive without while you are still small.",
-        },
-        {
-          type: "sources",
-          items: [
-            {
-              label: "Internal Controls",
-              url: "https://corporatefinanceinstitute.com/resources/accounting/internal-controls/",
-              site: "Corporate Finance Institute",
-              note: "Segregation of duties in context, the control Barings didn't have.",
-            },
-            {
-              label: "Financial Controls",
-              url: "https://corporatefinanceinstitute.com/resources/career-map/sell-side/risk-management/financial-controls/",
-              site: "Corporate Finance Institute",
-              note: "How authority gets delegated and limits get set, in practice.",
-            },
-          ],
+          text: "**The six interlock.** Segregation means no single person can complete a fraud alone. [Limits and approvals](https://corporatefinanceinstitute.com/resources/career-map/sell-side/risk-management/financial-controls/) bound what any one decision is allowed to lose. Audits catch what slips past both. Automation shrinks the space where human error and temptation operate at all. Naming a control is worth very little on its own. **The useful skill is saying which failure each one prevents**, because that is how you work out which ones you can survive without while you are still small.",
         },
       ],
       check: {
@@ -390,7 +310,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "The last structural choice is geographic, and it is the one you will face the first time your business crosses a border. A Zambian mining group with operations in four countries has to decide where treasury actually sits: **one desk in Lusaka, four desks in four capitals, or something between the two.**",
+          text: "The last [structural choice](https://corporatefinanceinstitute.com/resources/accounting/corporate-structure/) is geographic, and it is the one you will face the first time your business crosses a border. A Zambian [mining group with operations in four countries](https://corporatefinanceinstitute.com/resources/economics/multinational-corporation/) has to decide where treasury actually sits: **one desk in Lusaka, four desks in four capitals, or something between the two.**",
         },
         {
           type: "p",
@@ -428,23 +348,6 @@ export default {
         {
           type: "p",
           text: "**The hybrid model keeps winning, and technology is the reason.** A treasury management system lets a subsidiary enter its own data into a platform head office watches in real time, giving central oversight without taking the local team's hands off the wheel. What such a system does, and what it costs you to run, is a question this course comes back to.",
-        },
-        {
-          type: "sources",
-          items: [
-            {
-              label: "Corporate Structure",
-              url: "https://corporatefinanceinstitute.com/resources/accounting/corporate-structure/",
-              site: "Corporate Finance Institute",
-              note: "Centralised against decentralised as a general design choice.",
-            },
-            {
-              label: "Multinational Corporation",
-              url: "https://corporatefinanceinstitute.com/resources/economics/multinational-corporation/",
-              site: "Corporate Finance Institute",
-              note: "Why a group crossing borders acquires these problems at all.",
-            },
-          ],
         },
       ],
       check: {

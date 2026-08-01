@@ -94,11 +94,13 @@ correctness problem, not a taste problem.
 | `formula` | A display equation, with its symbols named underneath. |
 | `table` | Anything with columns — workings, comparisons, waterfalls. |
 | `playground` | Runnable code. Not used in finance courses. |
-| `sources` | Where this idea is taught properly, off Booklesss. |
 
-Two inline marks exist inside `p`, `ul` and `callout` text, and no others.
-`**bold**` (**W-8**) and `[[term|definition]]` (**E-8**). There is no italic, no
-link and no nesting — anything else is typed literally on screen.
+Three inline marks exist inside `p`, `ul` and `callout` text, and no others:
+`**bold**` (**W-8**), `[[term|definition]]` (**E-8**) and `[label](url)`
+(**C-7**). There is no italic and **no nesting**, so a link cannot sit inside
+bold and a term cannot sit inside a link. Anything else is typed literally on
+screen. Note that table cells are **not** run through this: a cell is plain
+text, so a mark written into one shows its own syntax.
 
 - **E-1** A financial waterfall (FCF build-up, NPV workings, cumulative payback)
   is a `table` with right-aligned amounts — never a `ul` of "Revenue X, Costs
@@ -177,20 +179,28 @@ link and no nesting — anything else is typed literally on screen.
   actually did. One line of "Barings is the exam case" wastes the only thing in
   the section a student will still have in the exam hall. Two or three sentences
   is enough; it must have facts in it.
-- **C-7** Link out to where the idea is **taught properly**, in a `sources`
-  block. The lecture decks and textbooks a step is built from set what gets
-  covered — they are the syllabus, not the teacher, and a reader can neither
-  open them nor be sent to them. The teachers are the trusted public sites:
-  **Investopedia**, **Corporate Finance Institute**, **ACCA**, **AccountingCoach**
-  and their equivalents. Rules for the block:
-  - **Two per section, at the end of the section it belongs to** — not one list
-    of twelve at the foot of the step, which nobody opens.
+- **C-7** *(revised 2026-08-01)* Link out to where the idea is **taught
+  properly**, as an **inline link on the words the claim comes from**:
+  `[the phrase](https://…)`. The lecture decks and textbooks a step is built
+  from set what gets covered. They are the syllabus, not the teacher, and a
+  reader can neither open them nor be sent to them. The teachers are the trusted
+  public sites: **Investopedia**, **Corporate Finance Institute**, **ACCA**,
+  **AccountingCoach** and their equivalents.
+  - **No "read further" box.** A block of links at the foot of a section is
+    furniture: it arrives after the reader has finished the idea, and it turns
+    the source into a chore. Mark the words the claim came from instead, where
+    the reader is already looking. (The `sources` block type existed for one
+    afternoon and was removed.)
+  - **Two per section, roughly**, and never two in the same sentence.
+  - Link the **phrase the source backs**, not a bare word and not a whole
+    bolded sentence. "so [six controls](…) are non-negotiable" reads as a
+    citation; "click [here](…)" reads as an advert.
   - Deep-link the **specific page**, never a site home page or a search result.
-  - Every item carries a `note` saying what that link is good for, so a reader
-    picks one instead of opening all of them.
   - Link the idea the section just taught, not a tangent. If a section has no
-    good outside page, it gets no block — a filler link costs more trust than
-    the empty space.
+    good outside page, it gets no link. A filler link costs more trust than the
+    empty space.
+  - A link cannot sit inside `**bold**` or `[[term|…]]`; the marks don't nest.
+    Pick a different phrase in the same sentence.
   - **Open the link before writing it in.** A dead or paywalled URL in a study
     step is worse than no link: the reader is at 11pm with an exam coming.
     `curl -o /dev/null -w '%{http_code}'` is enough for most sites. **Some

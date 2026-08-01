@@ -42,15 +42,6 @@ export type Block =
       subtotals?: number[];
       total?: string[];
       note?: string;
-    }
-  /* Where to go next on this idea, from somewhere that teaches it for a living
-   * — Investopedia, Corporate Finance Institute, ACCA. The lecture decks and
-   * textbooks behind a step set what gets covered, but they are not linkable
-   * and not what a reader should be sent to; these are. `note` says what the
-   * link is good for, so a reader picks one rather than opening all four. */
-  | {
-      type: "sources";
-      items: { label: string; url: string; site?: string; note?: string }[];
     };
 
 /* A section's comprehension check.
