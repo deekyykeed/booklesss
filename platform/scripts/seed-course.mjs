@@ -37,8 +37,59 @@ const manifest = (await import(pathToFileURL(resolve(target)).href)).default;
  * A bad tree written half-way leaves the course broken in production, so
  * everything that can be checked offline is checked first. */
 
-const problems = [];
+const problems = []; // block the write
+const warnings = []; // reported, never block
 const seen = new Map(); // slug -> where it was found
+
+/* The inline marks a step's prose can carry (RULES.md W-8, E-8, C-7):
+ *   **bold**  [[term|definition]]  [label](url)
+ * They do NOT nest, and the renderer's parser walks the string once, so a link
+ * written inside bold is simply not seen: the words render, the source silently
+ * never appears in the section's strip. That failed twice before this check
+ * existed, both times found by grepping built HTML rather than by anything
+ * saying so. An em dash is checked here too (W-11) for the same reason: it is
+ * invisible in review and countable in a script. */
+const EM_DASH = "—";
+
+function markProblems(blocks) {
+  const out = [];
+  const texts = [];
+  for (const b of blocks) {
+    if (typeof b?.text === "string") texts.push(b.text);
+    if (Array.isArray(b?.items)) texts.push(...b.items.filter((i) => typeof i === "string"));
+    // Table cells are plain text in the reader, so a mark in one shows as syntax.
+    for (const row of b?.rows ?? []) for (const cell of row ?? []) {
+      if (typeof cell === "string" && /\*\*|\]\(https?:|\[\[/.test(cell))
+        out.push(`a table cell carries an inline mark, which renders as raw text: "${cell.slice(0, 50)}"`);
+    }
+  }
+  for (const t of texts) {
+    const bolds = t.match(/\*\*(.+?)\*\*/g) ?? [];
+    for (const b of bolds)
+      if (/\]\(https?:/.test(b) || /\[\[/.test(b))
+        out.push(`a link or term sits inside bold and will not render: "${b.slice(0, 60)}"`);
+    const terms = t.match(/\[\[([^\]|]+)\|([^\]]+)\]\]/g) ?? [];
+    for (const d of terms)
+      if (/\]\(https?:/.test(d)) out.push(`a link sits inside a term definition: "${d.slice(0, 60)}"`);
+  }
+  return out;
+}
+
+/* W-11, reported but not enforced. Every step written before 2026-08-01 is full
+ * of em dashes and that is tracked as debt (DEBT.md D-3), paid on contact
+ * rather than in one sweep. Blocking the seed on it would mean no course could
+ * be published until all 44 steps were rewritten. */
+function emDashWarnings(blocks) {
+  const out = [];
+  for (const b of blocks) {
+    const texts = [];
+    if (typeof b?.text === "string") texts.push(b.text);
+    if (Array.isArray(b?.items)) texts.push(...b.items.filter((i) => typeof i === "string"));
+    for (const row of b?.rows ?? []) for (const cell of row ?? []) if (typeof cell === "string") texts.push(cell);
+    for (const t of texts) if (t.includes(EM_DASH)) out.push(`em dash: "${t.slice(0, 55)}…"`);
+  }
+  return out;
+}
 
 /** Depth-first walk yielding { node, parentSlug, position }. Parents come
  *  before their children, which is also the order they must be inserted in. */
@@ -70,6 +121,8 @@ for (const { node } of flat) {
       else ids.add(s.id);
       if (!s.heading) problems.push(`${node.slug}/${s.id}: no heading`);
       if (!s.blocks?.length) problems.push(`${node.slug}/${s.id}: no blocks`);
+      for (const p of markProblems(s.blocks ?? [])) problems.push(`${node.slug}/${s.id}: ${p}`);
+      for (const w of emDashWarnings(s.blocks ?? [])) warnings.push(`${node.slug}/${s.id}: ${w}`);
       // A check that points at a missing option would silently mark every
       // answer wrong, so the reader could never clear the checkpoint.
       if (s.check) {
@@ -87,6 +140,17 @@ if (problems.length) {
   console.error(`seed-course: ${problems.length} problem(s) — nothing was written\n`);
   for (const p of problems) console.error("  • " + p);
   process.exit(1);
+}
+
+/* Reported every run, never blocking: this is the shape of the outstanding
+ * house-style debt, and watching the count shrink is how progress on it shows.
+ * Blocking here would mean no course could be published until all 44 steps had
+ * been rewritten, which is the opposite of paying debt on contact. */
+if (warnings.length) {
+  console.warn(`seed-course: ${warnings.length} house-style warning(s), not blocking (DEBT.md D-3):`);
+  for (const w of warnings.slice(0, 6)) console.warn("  · " + w);
+  if (warnings.length > 6) console.warn(`  · …and ${warnings.length - 6} more`);
+  console.warn("");
 }
 
 const steps = flat.filter((f) => f.node.sections).length;

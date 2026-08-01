@@ -35,7 +35,7 @@ export default {
         },
         {
           type: "p",
-          text: "[Treasury](https://corporatefinanceinstitute.com/resources/career-map/sell-side/capital-markets/treasury-management/) is the function that lives on the cash side of that gap. Its job is to **put your money in the right account, in the right currency, on the day it is needed**. [Cash that is not needed yet](https://www.accountingcoach.com/working-capital/explanation) earns something instead of sitting idle. Every risk that comes with holding and moving it is treasury's to find and reduce: a kwacha that moves against you, a rate that resets, a bank that changes its terms.",
+          text: "[Treasury](https://corporatefinanceinstitute.com/resources/career-map/sell-side/capital-markets/treasury-management/) is the function that lives on the cash side of that gap. Its job is to **put your money in the right account, in the right currency, on the day it is needed**. [Cash that is not needed yet](https://www.accountingcoach.com/working-capital/explanation) earns something instead of sitting idle. Every risk that comes with holding and moving it is [treasury's to find and reduce](https://careernavigator.accaglobal.com/gb/en/job-profiles/proficient/treasury-professional.selector.Leader.html): a kwacha that moves against you, a rate that resets, a bank that changes its terms.",
         },
         {
           type: "callout",
@@ -80,7 +80,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Before lunch, your treasurer might release a dollar payment to a supplier, [roll a deposit that matured this morning](https://corporatefinanceinstitute.com/resources/accounting/cash-management/), and take a call from the bank about an overdraft rate. Then approve a credit limit and send you the group cash forecast. **Five different jobs, one desk.** When you hire for that desk, this is what you are buying.",
+          text: "Before lunch, your treasurer might release a dollar payment to a supplier, [roll a deposit that matured this morning](https://corporatefinanceinstitute.com/resources/accounting/cash-management/), and take a call from the bank about an overdraft rate. Then approve a credit limit and send you the group cash forecast. **Five different jobs, one desk.** When you hire for that desk, [this is what you are buying](https://treasury-management.com/articles/functions-of-a-corporate-treasury).",
         },
         {
           type: "table",

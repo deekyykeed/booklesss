@@ -86,7 +86,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "The last [structural choice](https://corporatefinanceinstitute.com/resources/accounting/corporate-structure/) is geographic. You face it the first time your business crosses a border. A Zambian [mining group with operations in four countries](https://corporatefinanceinstitute.com/resources/economics/multinational-corporation/) has to decide where treasury actually sits: **one desk in Lusaka, four desks in four capitals, or something between the two.**",
+          text: "The last [structural choice](https://corporatefinanceinstitute.com/resources/accounting/corporate-structure/) is geographic. You face it the first time your business crosses a border. A Zambian [mining group with operations in four countries](https://corporatefinanceinstitute.com/resources/economics/multinational-corporation/) has to decide [where treasury actually sits](https://treasurytoday.com/banking/organising-a-centralised-treasury/): **one desk in Lusaka, four desks in four capitals, or something between the two.**",
         },
         {
           type: "p",
@@ -123,7 +123,7 @@ export default {
         },
         {
           type: "p",
-          text: "**The hybrid model keeps winning, and technology is the reason.** A treasury management system lets a subsidiary enter its own data into a platform head office watches in real time. Central oversight, without taking the local team's hands off the wheel. What such a system costs to run is a question this course comes back to.",
+          text: "**The hybrid model keeps winning, and technology is the reason.** [A treasury management system](https://www.jpmorgan.com/insights/treasury/treasury-management/treasury-improved-control) lets a subsidiary enter its own data into a platform head office watches in real time. Central oversight, without taking the local team's hands off the wheel. What such a system costs to run is a question this course comes back to.",
         },
       ],
       check: {

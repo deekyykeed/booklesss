@@ -43,9 +43,12 @@ const NAMES = {
   "bankofzambia.zm": "Bank of Zambia",
   "www.bankofzambia.zm": "Bank of Zambia",
   "ft.com": "Financial Times",
-  "www.ft.com": "Financial Times",
   "reuters.com": "Reuters",
-  "www.reuters.com": "Reuters",
+  "careernavigator.accaglobal.com": "ACCA",
+  "treasury-management.com": "Treasury Management International",
+  "treasurytoday.com": "Treasury Today",
+  "fia.org": "FIA",
+  "jpmorgan.com": "J.P. Morgan",
 };
 
 /* Hosts to fetch even when nothing links to them yet, so a step can be written
