@@ -1,6 +1,6 @@
 import { ancestorsOf, checkpointsFor, childIdsOf, labelFor, lessonsUnder } from "./course";
 import courseIndexData from "./course-index.json";
-import { SCHOOLS, type SchoolId } from "./schools";
+import { OTHER_SCHOOL, SCHOOLS, type SchoolChoice } from "./schools";
 
 /* ------------------------------------------------------------------ *
  * The student's course list.
@@ -120,7 +120,11 @@ const CLAIMED = new Set(SCHOOLS.flatMap((s) => s.courseSlugs));
  * new course that nobody could enrol in until someone edited lib/schools would
  * look like a broken deploy rather than a missing line.
  */
-export function coursesForSchool(id: SchoolId | null | undefined): CourseMeta[] {
+export function coursesForSchool(id: SchoolChoice | null | undefined): CourseMeta[] {
+  // A university we don't teach at yet: we have no idea what's on their
+  // syllabus, so the honest answer is the whole library rather than an empty
+  // screen. Half of finance is finance wherever it's taught.
+  if (id === OTHER_SCHOOL) return COURSES;
   const school = SCHOOLS.find((s) => s.id === id);
   return COURSES.filter((c) => school?.courseSlugs.includes(c.slug) || !CLAIMED.has(c.slug));
 }

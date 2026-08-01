@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { resolveAvatar, type AvatarId } from "@/components/identity/avatars";
-import { isSchoolId, type SchoolId } from "@/lib/schools";
+import { isSchoolChoice, OTHER_SCHOOL, type SchoolChoice } from "@/lib/schools";
 
 /* ------------------------------------------------------------------ *
  * Who is reading — a name, a face, a school and the courses they're taking,
@@ -40,7 +40,11 @@ export type Identity = {
   avatar: AvatarId;
   /** Where they study. `null` on records written before the form asked, and on
    *  any record naming a school this build no longer carries. */
-  school: SchoolId | null;
+  school: SchoolChoice | null;
+  /** The university they typed when theirs wasn't on the list. Set only
+   *  alongside `school: "other"` — a demand signal for where to go next, and
+   *  the only free text this app stores about anybody. */
+  schoolName: string | null;
   /** Course slugs they're taking, as in course-index.json. Empty means "not
    *  answered yet" — the gate reads it that way and asks. */
   courses: string[];
@@ -70,7 +74,8 @@ function load(): Identity | null {
       // The avatar set has changed once already (Plump → Kameleon), so a
       // stored id is only kept if this build still draws it.
       avatar: resolveAvatar(v.avatar),
-      school: isSchoolId(v.school) ? v.school : null,
+      school: isSchoolChoice(v.school) ? v.school : null,
+      schoolName: typeof v.schoolName === "string" && v.schoolName.trim() ? v.schoolName.trim() : null,
       // Course slugs are validated where they're used (lib/courses), not here:
       // this module loads on every page and has no business pulling the course
       // tree in to check a list of strings.
@@ -141,7 +146,8 @@ export function useIdentity(): Snapshot {
 export function saveIdentity(input: {
   name: string;
   avatar: AvatarId;
-  school: SchoolId | null;
+  school: SchoolChoice | null;
+  schoolName: string | null;
   courses: string[];
 }): Identity {
   const prev = load();
@@ -149,6 +155,9 @@ export function saveIdentity(input: {
     name: input.name.trim(),
     avatar: input.avatar,
     school: input.school,
+    // Only "other" carries a typed name; picking a listed school later must
+    // not leave the old one behind to be read as their university.
+    schoolName: input.school === OTHER_SCHOOL ? (input.schoolName?.trim() || null) : null,
     // Deduplicated so a double tap in the picker can't enrol anyone twice.
     courses: [...new Set(input.courses)],
     id: prev?.id ?? newId(),

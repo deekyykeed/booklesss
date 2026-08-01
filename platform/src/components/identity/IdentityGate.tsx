@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { AVATARS, Avatar, resolveAvatar, type AvatarId } from "./avatars";
 import { MynaIcon } from "@/components/icons/myna";
 import { coursesForSchool } from "@/lib/courses";
-import { schoolById, searchSchools, type SchoolId } from "@/lib/schools";
+import { OTHER_SCHOOL, SCHOOLS, schoolById, searchSchools, type SchoolChoice } from "@/lib/schools";
 import { saveIdentity, useIdentity } from "@/lib/identity";
 
 /* First visit, once: who is reading, where they study, and what they're taking.
@@ -66,7 +66,8 @@ export function IdentityGate() {
    * was. Cancelling and saving both just clear the drafts. */
   const [nameDraft, setNameDraft] = useState<string | null>(null);
   const [avatarDraft, setAvatarDraft] = useState<AvatarId | null>(null);
-  const [schoolDraft, setSchoolDraft] = useState<SchoolId | null>(null);
+  const [schoolDraft, setSchoolDraft] = useState<SchoolChoice | null>(null);
+  const [schoolNameDraft, setSchoolNameDraft] = useState<string | null>(null);
   const [coursesDraft, setCoursesDraft] = useState<string[] | null>(null);
   const [stepDraft, setStepDraft] = useState<Step | null>(null);
   /* Reopened from the header, on an identity that already exists. */
@@ -79,7 +80,10 @@ export function IdentityGate() {
   const name = nameDraft ?? identity?.name ?? "";
   const avatar = avatarDraft ?? resolveAvatar(identity?.avatar);
   const school = schoolDraft ?? identity?.school ?? null;
+  const schoolName = schoolNameDraft ?? identity?.schoolName ?? "";
   const courses = coursesDraft ?? identity?.courses ?? [];
+  /* Their university isn't one of ours — the one answer that carries text. */
+  const other = school === OTHER_SCHOOL;
 
   /* An identity is stale, not absent, when it was written before this form
    * asked about school and courses. Those readers keep their name and face and
@@ -91,6 +95,7 @@ export function IdentityGate() {
     setNameDraft(null);
     setAvatarDraft(null);
     setSchoolDraft(null);
+    setSchoolNameDraft(null);
     setCoursesDraft(null);
     setStepDraft(null);
     setSchoolQuery("");
@@ -146,8 +151,11 @@ export function IdentityGate() {
    * time. `at()` is the test both render paths share. */
   const at = (s: Step) => editing || step === s;
 
-  const pickSchool = (id: SchoolId) => {
+  const pickSchool = (id: SchoolChoice) => {
     setSchoolDraft(id);
+    /* Picking a listed school drops whatever they had typed under "another
+     * university" — leaving it would save a name for a school we do carry. */
+    if (id !== OTHER_SCHOOL) setSchoolNameDraft("");
     /* The search has done its job — leaving the query in place would hide the
      * schools either side of the one they picked, so a change of mind means
      * clearing a box first. */
@@ -165,7 +173,8 @@ export function IdentityGate() {
   /* Each screen has one thing it needs before it will move on. */
   const answered: Record<Step, boolean> = {
     who: name.trim().length > 0,
-    school: school !== null,
+    // "Another university" isn't an answer on its own — it's the promise of one.
+    school: school !== null && (!other || schoolName.trim().length > 0),
     courses: courses.length > 0,
   };
   const ready = editing ? STEPS.every((s) => answered[s]) : answered[step];
@@ -177,7 +186,7 @@ export function IdentityGate() {
       setStepDraft(STEPS[STEPS.indexOf(step) + 1]);
       return;
     }
-    saveIdentity({ name, avatar, school, courses });
+    saveIdentity({ name, avatar, school, schoolName, courses });
     setEditing(false);
     clear();
   };
@@ -207,7 +216,10 @@ export function IdentityGate() {
 
   return (
     <div
-      className="fixed inset-0 z-[100] grid place-items-center overflow-y-auto bg-black/25 p-4 backdrop-blur-[2px]"
+      /* Top-anchored on a phone, centred once there is room. Centring a tall
+         dialog on a short screen puts its first question under the browser
+         chrome and its last under the keyboard. */
+      className="fixed inset-0 z-[100] grid items-start justify-items-center overflow-y-auto bg-black/25 p-4 backdrop-blur-[2px] sm:items-center"
       role="dialog"
       aria-modal="true"
       aria-labelledby="identity-title"
@@ -293,18 +305,22 @@ export function IdentityGate() {
             <legend className={editing ? "mb-1.5 text-[13px] font-medium text-ink-2" : "sr-only"}>
               Your school
             </legend>
-            {/* Type it rather than scroll for it. Two schools don't need this;
-                the twentieth will, and a student who knows their own
-                university's name should never be reading past someone else's
-                to find it. */}
-            <Search
-              value={schoolQuery}
-              onChange={setSchoolQuery}
-              placeholder="Search universities"
-              label="Search universities"
-              autoFocus={!editing}
-            />
-            <div className="mt-2 flex max-h-[38dvh] flex-col gap-2 overflow-y-auto">
+            {/* No search field until the list outgrows the screen. A box that
+                opens the keyboard the moment the step does covers the very
+                list it is filtering — and with a handful of universities there
+                is nothing to filter. Past the threshold it appears, and it
+                still doesn't take focus on its own. */}
+            {SCHOOLS.length > SEARCHABLE && (
+              <div className="mb-2">
+                <Search
+                  value={schoolQuery}
+                  onChange={setSchoolQuery}
+                  placeholder="Search universities"
+                  label="Search universities"
+                />
+              </div>
+            )}
+            <div className="flex max-h-[38dvh] flex-col gap-2 overflow-y-auto">
               {schoolMatches.map((s) => {
                 const on = s.id === school;
                 return (
@@ -326,15 +342,46 @@ export function IdentityGate() {
                   </button>
                 );
               })}
-              {/* Says why, not just that nothing matched: the library is only
-                  on a few campuses, and that's the honest reason. */}
-              {schoolMatches.length === 0 && (
-                <p className="px-0.5 py-2 text-[13px] leading-5 text-muted">
-                  Nothing matches “{schoolQuery.trim()}”. Booklesss is only on a few campuses so far —
-                  clear the search to see them.
-                </p>
-              )}
+              {/* The last row, always. Booklesss is on a few campuses; every
+                  other student who lands here is currently being asked to
+                  claim one that isn't theirs, and their answer is the best
+                  evidence there is for which campus to build next. */}
+              <button
+                type="button"
+                onClick={() => pickSchool(OTHER_SCHOOL)}
+                aria-pressed={other}
+                className={
+                  "squircle flex items-center gap-3 rounded-xl border px-3.5 py-3 text-left transition-colors " +
+                  (other ? "border-ink bg-active" : "border-[#e7e7e6] bg-white hover:bg-[#fafafa]")
+                }
+              >
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[15px] font-medium leading-tight text-ink">
+                    Another university
+                  </span>
+                  <span className="mt-0.5 block truncate text-[13px] leading-5 text-muted">
+                    Tell us where you study
+                  </span>
+                </span>
+                <Tick on={other} />
+              </button>
             </div>
+
+            {/* Revealed by that row rather than sitting there: the keyboard
+                comes up when they've asked for it, under a field that is now
+                the last thing on screen. */}
+            {other && (
+              <input
+                autoFocus
+                value={schoolName}
+                onChange={(e) => setSchoolNameDraft(e.target.value)}
+                placeholder="Which university?"
+                aria-label="Your university"
+                maxLength={80}
+                autoComplete="organization"
+                className="squircle mt-2 h-11 w-full rounded-xl border border-[#e7e7e6] bg-white px-3.5 text-[15px] text-ink outline-none transition-colors placeholder:text-[#a3a3a3] focus:border-ink"
+              />
+            )}
           </fieldset>
         )}
 
@@ -349,6 +396,15 @@ export function IdentityGate() {
               <p className="text-[13px] leading-5 text-muted">Pick a school first.</p>
             ) : (
               <>
+                {/* Their university isn't one we teach at, so there is no
+                    syllabus to narrow this down to. Say so, rather than let
+                    them wonder why another school's courses are on offer. */}
+                {other && (
+                  <p className="mb-2 text-[13px] leading-5 text-muted">
+                    We’re not at {schoolName.trim() || "your university"} yet — here’s everything we
+                    have. Plenty of it is the same material.
+                  </p>
+                )}
                 {/* Scoped to the school already picked, and only once the list
                     is long enough to be worth searching — a search box over
                     three courses is furniture. */}
