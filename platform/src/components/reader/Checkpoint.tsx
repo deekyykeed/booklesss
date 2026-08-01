@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { checkpointsFor, labelFor, nextLessonId, pathForId } from "@/lib/course";
+import { labelFor, nextLessonId, pathForId } from "@/lib/course";
 import { rate, useProgress, type Grasp } from "@/lib/progress";
 import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
-import { CompletionRing } from "./CompletionRing";
 
 /* Two answers: "Later" and "Got it".
  *
@@ -85,75 +84,35 @@ export function Checkpoint({
   );
 }
 
-/* Closing panel of every step: the ring at full size, how far you've got, and
- * the way on. Answer the last checkpoint and this is what confirms it. */
+/* The foot of a step. */
 export function StepComplete({ lessonId }: { lessonId: string }) {
-  const { hydrated, doneCount, ratio, isComplete, completeAll, reset, grasp } = useProgress();
-  const total = checkpointsFor(lessonId).length;
-  if (!total) return null;
-
-  const done = hydrated ? doneCount(lessonId) : 0;
-  const complete = hydrated && isComplete(lessonId);
   const next = nextLessonId(lessonId);
-
-  /* What the reader said about this step, so the closer reports the sections
-   * that didn't land rather than only counting the ones that are finished. */
-  const answers = Object.values(grasp[lessonId] ?? {});
-  const shaky = answers.filter((g) => g !== "got").length;
+  /* No closing card. It carried a ring, a progress count, a "Keep going"
+   * heading and a "Mark rest done" button, and every one of those was the page
+   * talking about itself. "Keep going" congratulates a reader who has not
+   * finished; the count repeats what the sidebar already shows; and "Mark rest
+   * done" asks someone to declare sections finished that they have not read,
+   * which is the one thing the checkpoints exist to record honestly.
+   *
+   * What is left is the only thing the reader wanted at the foot of a step:
+   * the way on. With no next step the page simply stops. */
+  if (!next) return null;
 
   return (
-    <div className="step-complete squircle" data-complete={complete ? "" : undefined}>
-      <div className="flex items-center gap-4">
-        <CompletionRing
-          value={hydrated ? ratio(lessonId) : 0}
-          size={44}
-          stroke={3.5}
-          className="text-ink"
-          label={`${done} of ${total} checkpoints complete`}
+    <Link
+      href={pathForId(next)}
+      className="mt-14 flex items-center gap-2 text-[17px] font-medium text-ink transition-colors hover:text-muted"
+    >
+      <span className="truncate">{labelFor(next)}</span>
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0">
+        <path
+          d="M5 12h13m0 0-5.5-5.5M18 12l-5.5 5.5"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
-        <div className="min-w-0 flex-1">
-          <p className="font-display text-[17px] font-semibold leading-tight text-ink">
-            {complete ? "Step complete" : "Keep going"}
-          </p>
-          <p className="mt-0.5 text-[13.5px] leading-5 text-muted">
-            {complete
-              ? shaky > 0
-                ? `Every section answered — ${shaky} you'd want another pass at.`
-                : "Every section here landed."
-              : `${done} of ${total} sections answered.`}
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        {complete ? (
-          <button type="button" onClick={() => reset(lessonId)} className="step-complete-btn squircle">
-            Reset step
-          </button>
-        ) : (
-          /* Clears the remaining checkpoints without answering them — for a
-             step being revisited, where the reader doesn't want to re-answer
-             what they already know. It records progress, not understanding,
-             which is why the sections it clears stay out of the figures. */
-          <button type="button" onClick={() => completeAll(lessonId)} className="step-complete-btn squircle">
-            Mark rest done
-          </button>
-        )}
-        {next && (
-          <Link href={pathForId(next)} className="step-complete-next squircle" data-primary={complete ? "" : undefined}>
-            <span className="truncate">Next · {labelFor(next)}</span>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0">
-              <path
-                d="M5 12h13m0 0-5.5-5.5M18 12l-5.5 5.5"
-                stroke="currentColor"
-                strokeWidth="1.7"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Link>
-        )}
-      </div>
-    </div>
+      </svg>
+    </Link>
   );
 }

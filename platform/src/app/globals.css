@@ -430,7 +430,12 @@
   .content-surface {
     position: relative;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.72);
+    /* 0.62 (was 0.72, and 0.55 before that). The cards on this surface came
+       down from solid white to 0.85 at the same time; both were needed, since
+       the cards only looked like pasted-on paper because they were whiter than
+       the panel under them. Below about 0.55 the blobs start competing with
+       the text for attention at 18px. */
+    background-color: rgba(255, 255, 255, 0.62);
     -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
     overflow-y: auto;

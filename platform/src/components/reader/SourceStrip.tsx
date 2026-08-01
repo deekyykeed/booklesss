@@ -38,9 +38,26 @@ export function SourceStrip({ urls }: { urls: string[] }) {
        two frames doing one job, and it fenced the sources off as a widget
        rather than letting them sit under the section as a footnote does. The
        chips carry their own edges; the row just scrolls.
+
+       Full-bleed: the negative margins cancel the reading column's own padding
+       (px-4, md:px-6 in LessonReader) and the matching padding puts the first
+       chip back on the text's left edge. So the scroll box runs to the edge of
+       the surface rather than stopping short inside the column, and a chip
+       being scrolled away disappears off the page instead of being cut off at
+       a boundary the reader can see. `.content-surface` is overflow-x hidden,
+       so this never gives the page itself a horizontal scrollbar.
+
        data-no-swipe stops a sideways drag here from opening the reader's
        drawer instead of moving the chips (see MobileNav). */
-    <div data-no-swipe className="no-scrollbar -mx-1 mt-6 flex items-center gap-2 overflow-x-auto px-1 py-0.5">
+    <div className="mt-6">
+      {/* Named, because a bare row of logos under a section is a puzzle: it
+          could be a partner list or a set of tools. One quiet word settles it.
+          It sits outside the scroller so it stays put while the chips move. */}
+      <p className="mb-2 text-[12px] font-semibold uppercase tracking-[0.06em] text-muted">Sources</p>
+      <div
+        data-no-swipe
+        className="no-scrollbar -mx-4 flex items-center gap-2 overflow-x-auto px-4 py-0.5 md:-mx-6 md:px-6"
+      >
       {chips.map((c) => (
         <a
           key={c.name}
@@ -63,9 +80,10 @@ export function SourceStrip({ urls }: { urls: string[] }) {
             aria-hidden="true"
             className="h-[22px] w-[22px] shrink-0 rounded-full bg-white object-cover"
           />
-          <span className="whitespace-nowrap">{c.name}</span>
-        </a>
-      ))}
+            <span className="whitespace-nowrap">{c.name}</span>
+          </a>
+        ))}
+      </div>
     </div>
   );
 }

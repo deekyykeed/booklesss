@@ -51,7 +51,7 @@ function sourcesIn(section: Section): string[] {
  * look, so they share a card rather than sitting as separate blocks. */
 function Formula({ text, where }: { text: string; where?: string[] }) {
   return (
-    <div className="squircle rounded-3xl border border-[#e7e7e6] bg-white/85 px-5 py-5">
+    <div className="squircle rounded-3xl border border-[#e7e7e6] bg-white px-5 py-5">
       <p className="text-center font-display text-[17.5px] leading-8 tracking-[-0.01em] text-ink">{text}</p>
       {where?.length ? (
         <div className="mt-3 flex flex-col gap-1.5 border-t border-[#f0efee] pt-3">
@@ -97,16 +97,21 @@ function DataTable({
   return (
     <figure className="flex flex-col gap-2">
       {/* Wide workings scroll inside their own box; the page never does. */}
-      <div className="no-scrollbar squircle overflow-x-auto rounded-[32px] border border-[#e7e7e6] bg-white/85">
+      {/* Lifted like the callout, and given room to breathe. A flat outlined
+          box with tight rows read as a spreadsheet pasted into the page. */}
+      <div className="no-scrollbar squircle overflow-x-auto rounded-[32px] border border-[#e7e7e6] bg-white shadow-[0_1px_2px_-1px_rgba(0,0,0,0.10),0_10px_20px_-8px_rgba(0,0,0,0.16),0_30px_46px_-22px_rgba(0,0,0,0.18)]">
         <table className="w-full border-collapse text-[15.5px]">
           <thead>
-            <tr className="bg-[#f7f7f6]">
+            {/* The header is the only band of colour, so it carries the weight:
+                ink rather than muted, and a rule under it heavy enough to read
+                as the top of the working rather than as another row line. */}
+            <tr className="border-b border-[#e0e0dd] bg-[#f7f7f6]">
               {columns.map((c, i) => (
                 <th
                   key={i}
                   scope="col"
                   className={
-                    "whitespace-nowrap px-3.5 py-2.5 font-sans text-[12px] font-semibold uppercase tracking-[0.05em] text-muted " +
+                    "whitespace-nowrap px-4 py-3 font-sans text-[12px] font-semibold uppercase tracking-[0.06em] text-ink " +
                     (c.align === "right" ? "text-right" : "text-left")
                   }
                 >
@@ -121,13 +126,22 @@ function DataTable({
               // and set in ink so the eye can find the line the sum lands on.
               const sub = carried.has(i);
               return (
-                <tr key={i} className={sub ? "border-t border-[#c9c9c6]" : "border-t border-[#f0efee]"}>
+                <tr
+                  key={i}
+                  className={
+                    "transition-colors hover:bg-[#fafaf9] " +
+                    (sub ? "border-t border-[#c9c9c6]" : "border-t border-[#f0efee]")
+                  }
+                >
                   {r.map((v, j) => (
                     <td
                       key={j}
                       className={
-                        "px-3.5 py-2 leading-6 " +
+                        "px-4 py-3 leading-[26px] " +
                         (sub ? "font-semibold text-ink " : "text-[#39393f] ") +
+                        /* The first column is the row's name, so it holds the
+                           eye while the rest of the row is read across. */
+                        (j === 0 && !sub ? "font-medium text-ink " : "") +
                         cell(j)
                       }
                     >
@@ -199,7 +213,7 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
                        prose that already has boxes in it. */
                     <div
                       key={j}
-                      className="squircle rounded-3xl border border-[#e7e7e6] bg-white/85 px-5 py-4 text-[16.5px] leading-[27px] text-[#4a4a52] shadow-[0_1px_2px_-1px_rgba(0,0,0,0.08),0_8px_16px_-6px_rgba(0,0,0,0.10),0_20px_32px_-16px_rgba(0,0,0,0.10)]"
+                      className="squircle rounded-3xl border border-[#e7e7e6] bg-white px-5 py-4 text-[16.5px] leading-[27px] text-[#4a4a52] shadow-[0_1px_2px_-1px_rgba(0,0,0,0.10),0_10px_20px_-8px_rgba(0,0,0,0.16),0_30px_46px_-22px_rgba(0,0,0,0.18)]"
                     >
                       <Rich text={b.text} />
                     </div>
