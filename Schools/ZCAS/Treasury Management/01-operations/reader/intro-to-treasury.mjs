@@ -4,6 +4,16 @@
  *         build_lesson_1_1_tm.py (PDF).
  *
  * House style: .claude/skills/step-feedback/RULES.md
+ *
+ * 2026-08-01 — engagement rewrite (owner, study session: "boring"). Syllabus
+ * coverage is unchanged: same six sections, same eleven functions, same three
+ * levels, same six controls, same three structures. What changed is the way in.
+ * The step now opens on the profitable-company-misses-payroll problem instead
+ * of a definition; Barings is told as the story it is, with its date and its
+ * figures, rather than a one-line callout; the three levels are worked through
+ * one running exposure (a miller buying wheat in USD); and centralisation is
+ * argued on a Zambian mining group rather than in the abstract. See RULES.md
+ * W-3 (revised), W-6, W-7, C-5, C-6, S-7.
  */
 
 export default {
@@ -20,23 +30,31 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Treasury is the financial centre of an organisation. Its core job is to protect the company's financial assets, manage its liabilities, and make sure cash is available when it is needed. Day to day that means keeping suppliers paid, meeting debt obligations, and making sure surplus cash earns rather than sits idle — and it carries a major role in identifying and reducing financial risk.",
+          text: "A company can have a profitable year and still fail to pay its staff at the end of it. The income statement says the year went well. The bank balance on the 28th says there is not enough in the account to run payroll. Profit is worked out over twelve months and rests on judgement; cash is a fact on a Friday afternoon.",
         },
         {
           type: "p",
-          text: "Treasury executes; it does not set strategy. Senior management decides the capital structure, the dividend, the risk appetite — the treasury team carries those decisions out. Keeping that division clear matters, because the function operates inside the three broad decision areas of finance.",
+          text: "Treasury is the function that lives on the cash side of that gap. Its job is to protect the company's financial assets, manage its liabilities, and put money in the right account, in the right currency, on the day it is needed — while the cash that is not needed yet earns something instead of sitting idle. Every risk that comes with holding and moving that money — a kwacha that moves against you, a rate that resets, a bank that changes its terms — is treasury's to find and reduce.",
+        },
+        {
+          type: "callout",
+          text: "Profit is an opinion formed over a year. Cash is a fact on a Friday. Treasury owns the Friday.",
+        },
+        {
+          type: "p",
+          text: "Treasury executes; it does not set strategy. If the board decides to fund a new plant with 40% debt, treasury gets no vote — it goes out and raises the debt, negotiates the terms, and then lives with the rate risk for the next ten years. Keeping that line clear matters, because the function works inside the three decisions that make up corporate finance.",
         },
         {
           type: "ul",
           items: [
-            "The investment decision — how the company deploys its resources: long-term projects, working capital, internal or external investments.",
-            "The financing decision — how it raises the money: the mix of debt and equity, the cost of funds, capital structure, hedging.",
-            "Dividend policy — what happens to profits: how much is paid out and how much retained to fund growth.",
+            "The investment decision — where the money goes: long-term projects, working capital, investments inside or outside the business.",
+            "The financing decision — where the money comes from: the mix of debt and equity, the cost of those funds, and the hedging that mix forces on you.",
+            "Dividend policy — what happens to the profit: how much is paid out to shareholders and how much is kept to fund growth.",
           ],
         },
         {
           type: "p",
-          text: "Everything in the rest of this course is treasury working inside those three decisions — funding the working capital the investment decision creates, managing the risks the financing decision leaves open, and keeping the cash flowing that dividend policy promises out.",
+          text: "Treasury sits underneath all three. It funds the working capital the investment decision creates, manages the risks the financing decision leaves open, and holds the cash that dividend policy has promised to pay out.",
         },
       ],
       check: {
@@ -61,7 +79,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "The treasurer's responsibilities go well beyond holding cash. The syllabus lists eleven, and exam questions ask for them by name.",
+          text: "Before lunch, a corporate treasurer might release a dollar payment to a supplier, roll a deposit that matured this morning, take a call from the bank about an overdraft rate, approve a credit limit for a new customer, and send the group cash forecast to the CFO. Five different jobs, one desk. The syllabus cuts the work into eleven functions, and exam questions ask for them by name.",
         },
         {
           type: "table",
@@ -82,7 +100,11 @@ export default {
         },
         {
           type: "p",
-          text: "Notice the shape of the list: the first five are the operating core — forecast the cash, manage the working capital that consumes it, keep enough on hand, invest the rest, and manage the risks around all of it. The remaining six are the relationships that make the core possible: with management, agencies, banks, investors and customers. The course follows the same shape — working capital first, then risk, then debt and investment, then the systems that hold it together.",
+          text: "The list is not eleven flat items. The first five are the operating core, and they run in order: forecast the cash, manage the working capital that consumes it, keep enough on hand to trade, invest what is left, and manage the risks sitting on top of all of it. The last six point outward — to management, the rating agencies, the banks, the investors, the customers you grant credit to, and a catch-all for M&A support and insurance.",
+        },
+        {
+          type: "callout",
+          text: "Recover the list from the five/six split: five functions that move the money, six that manage the people and institutions who let it move. Eleven flat items will not survive exam pressure; the split will.",
         },
       ],
       check: {
@@ -107,7 +129,15 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Treasury work happens at three levels, and the exam asks you to classify tasks between them. The clean test is the time horizon.",
+          text: "Take one exposure and watch it pass through all three levels. A Zambian miller buys wheat in US dollars and sells flour in kwacha, so every consignment carries currency risk.",
+        },
+        {
+          type: "p",
+          text: "The board decides the company will cover at least 70% of its dollar purchases and will never trade currency for profit. That is policy, it holds for years, and it is strategic. The treasurer then looks at the next two quarters of wheat orders and covers the March and June exposures with forward contracts — a decision about specific exposures over months, which is tactical. On the morning a forward matures, someone instructs the bank, checks the funds landed and files the confirmation. That is operational.",
+        },
+        {
+          type: "p",
+          text: "Same risk, three different jobs, three different people. The exam asks you to sort tasks between them, and the sorting is done on the time horizon, not on how important the task sounds.",
         },
         {
           type: "table",
@@ -157,15 +187,25 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "How a company classifies its treasury changes how the function is managed and measured. Most treat it as a cost centre: a support function not expected to generate profit, just to manage costs. The risk of that framing is that management fixates on what treasury costs rather than what it contributes — and starves the function of budget and staff.",
+          text: "On 26 February 1995 Barings Bank collapsed. It was 233 years old. Days later it was sold to ING for one pound. One trader in Singapore, Nick Leeson, had built losses of around £827 million on futures positions and buried them in an error account numbered 88888 that nobody else reconciled — for roughly three years. He dealt the trades and he settled them: he was the front office and the back office at the same time.",
         },
         {
           type: "p",
-          text: "Companies heavily involved in global finance, FX trading or commodities sometimes run treasury as a profit centre, actively generating income through trading, hedging, or pricing its services to internal business units. That brings real advantages — business units pay market rates, so cost transparency improves, and the treasurer is incentivised to operate efficiently — and real dangers: the temptation to speculate, internal disputes over charges, and higher administration costs.",
+          text: "Leeson was not employed to make money by taking positions. He was there to arbitrage small price differences at almost no risk. Why he was able to go so much further than that is the subject of this section: what a company decides its treasury function is actually for.",
+        },
+        { type: "h2", text: "Treasury as a cost centre" },
+        {
+          type: "p",
+          text: "Most companies run treasury as a cost centre — a support function that is not expected to generate profit, only to control what it spends. That is the safe framing and it has one real weakness. Management starts asking what treasury costs rather than what it saves, and the function gets starved of budget, staff and systems until something it was supposed to be watching goes wrong.",
+        },
+        { type: "h2", text: "Treasury as a profit centre" },
+        {
+          type: "p",
+          text: "Companies deep in global finance, currency or commodities sometimes run treasury as a profit centre, earning income by trading, hedging, and charging internal business units market rates for its services. The advantages are real: units paying a real price find out what treasury actually costs the group, and the treasurer has a reason to run the desk efficiently. So are the dangers — the pull towards speculation, arguments over internal charges, and higher administration costs.",
         },
         {
           type: "callout",
-          text: "Nick Leeson at Barings Bank (1995) is the exam case: treasury-style operations run for profit with no oversight, losses hidden in a secret account, and a 233-year-old bank destroyed. Profit-centre thinking without controls is catastrophic.",
+          text: "A profit centre is not forbidden, and plenty of firms run one well. What Barings shows is that the moment profit becomes the measure, the controls in the next section stop being paperwork and become the only thing standing between the company and a trader with a losing position to hide.",
         },
       ],
       check: {
@@ -190,7 +230,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Treasury handles the company's largest sums, so controls are non-negotiable. Six to know, and the first is the one Barings lacked.",
+          text: "Leeson dealt his own trades and then settled them himself. That one fact is the first control on this list, and its absence is why an £827 million hole stayed invisible for three years. Treasury moves the largest sums in the company, so six controls are non-negotiable.",
         },
         {
           type: "table",
@@ -224,7 +264,7 @@ export default {
         },
         {
           type: "p",
-          text: "The controls interlock. Segregation means no single person can complete a fraud alone; limits and approvals bound what any one decision can lose; audits catch what slips through; automation shrinks the space where human error and temptation operate. An exam answer that names one control should say what failure it prevents.",
+          text: "The six interlock. Segregation means no single person can complete a fraud alone. Limits and approvals bound what any one decision is allowed to lose. Audits catch what slips past both. Automation shrinks the space where human error and temptation operate at all. In an exam, naming a control earns very little on its own — name it and say which failure it prevents.",
         },
       ],
       check: {
@@ -249,7 +289,11 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "The last structural choice is geographic: where does treasury sit in a company with many units or countries?",
+          text: "The last structural choice is geographic. A Zambian mining group with operations in four countries has to decide where treasury actually sits: one desk in Lusaka, four desks in four capitals, or something between the two.",
+        },
+        {
+          type: "p",
+          text: "The Lusaka desk can see every kwacha and every dollar the group holds at once, negotiate one set of terms across all its banks, and net exposures between subsidiaries before hedging anything. What it cannot see from Lusaka is that a payment out of one of those countries clears on a different cycle, or that a local regulator wants a filing nobody at head office has heard of. That trade-off — control against local knowledge — is the whole argument.",
         },
         {
           type: "table",
@@ -282,7 +326,7 @@ export default {
         },
         {
           type: "p",
-          text: "The hybrid model is increasingly common, and technology is the reason: a modern treasury management system lets local teams input data centrally, giving head office oversight without removing local responsiveness. The systems that make that possible are where this course ends — the final step is the TMS itself.",
+          text: "The hybrid model keeps winning, and technology is the reason. A treasury management system lets a subsidiary enter its own data into a platform head office watches in real time — central oversight without taking the local team's hands off the wheel. What such a system does, and what it costs to run, is a question this course comes back to.",
         },
       ],
       check: {
