@@ -1,0 +1,254 @@
+"use client";
+
+import { AVATARS, Avatar, type AvatarId } from "./avatars";
+import { MynaIcon } from "@/components/icons/myna";
+import type { CourseMeta } from "@/lib/courses";
+import { OTHER_SCHOOL, SCHOOLS, searchSchools, type SchoolChoice } from "@/lib/schools";
+
+/* The three questions this app asks about a student — which face, which
+ * university, which courses — as pieces both places that ask them can share.
+ *
+ * They are asked twice in two different shapes: once on a first visit, one
+ * screen at a time (IdentityGate), and thereafter as rows in Settings that
+ * open onto the same lists. Keeping the lists here is what stops those two
+ * drifting into different answers to the same question.
+ *
+ * The event that opens Settings lives here too, so the header button and the
+ * home page can fire it without importing the sheet itself. */
+
+/** Fired by the header avatar and the home page's Change button. `detail.tab`
+ *  picks which tab of Settings opens. */
+export const SETTINGS_EVENT = "booklesss:edit-identity";
+
+/** Above this many rows, a list gets a search field. Below it the whole list
+ *  is on screen already and a search box is furniture — worse than furniture
+ *  on a phone, where it opens the keyboard over the list it filters. */
+export const SEARCHABLE = 6;
+
+/** The selected mark on a school or course row. Keeps its space when off, so
+ *  nothing shifts sideways as rows are tapped. */
+export function Tick({ on }: { on: boolean }) {
+  return (
+    <span className={"shrink-0 " + (on ? "text-ink" : "text-[#d4d4d4]")}>
+      <MynaIcon name={on ? "check-circle-solid" : "circle"} size={20} />
+    </span>
+  );
+}
+
+const FIELD =
+  "squircle h-11 w-full rounded-xl border border-[#e7e7e6] bg-white px-3.5 text-[15px] text-ink outline-none transition-colors placeholder:text-[#a3a3a3] focus:border-ink";
+
+const ROW =
+  "squircle flex items-center gap-3 rounded-xl border px-3.5 py-3 text-left transition-colors ";
+const rowTone = (on: boolean) =>
+  ROW + (on ? "border-ink bg-active" : "border-[#e7e7e6] bg-white hover:bg-[#fafafa]");
+
+/** The search field above a list. Same shell as the text fields, with the
+ *  glyph inset and a clear button once there's something to clear — on a
+ *  phone, backspacing a university's name is nobody's idea of a good time.
+ *
+ *  type="text", not "search": Safari draws its own clear button on a search
+ *  input, in its own place, and two of them is worse than either. */
+export function Search({
+  value,
+  onChange,
+  placeholder,
+  label,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
+  /** For screen readers — the field has no visible label of its own. */
+  label: string;
+}) {
+  return (
+    <div className="relative">
+      <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#a3a3a3]">
+        <MynaIcon name="search" size={17} />
+      </span>
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        aria-label={label}
+        autoComplete="off"
+        autoCorrect="off"
+        spellCheck={false}
+        /* Enter belongs to the form's own button, not to submitting a search
+           that has already filtered as they typed. */
+        onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
+        className={FIELD + " pl-10 pr-10"}
+      />
+      {value && (
+        <button
+          type="button"
+          onClick={() => onChange("")}
+          aria-label="Clear search"
+          className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-muted transition-colors hover:bg-[#f4f4f3] hover:text-ink"
+        >
+          <MynaIcon name="x" size={16} />
+        </button>
+      )}
+    </div>
+  );
+}
+
+/** Twelve faces. The art is a finished disc, so the tile is round and the
+ *  chosen one is ringed rather than boxed. */
+export function AvatarGrid({
+  value,
+  onChange,
+}: {
+  value: AvatarId;
+  onChange: (id: AvatarId) => void;
+}) {
+  return (
+    <div className="grid grid-cols-6 gap-2">
+      {AVATARS.map((a) => {
+        const on = a.id === value;
+        return (
+          <button
+            key={a.id}
+            type="button"
+            onClick={() => onChange(a.id)}
+            aria-label={a.label}
+            aria-pressed={on}
+            title={a.label}
+            className={
+              "grid aspect-square place-items-center rounded-full transition-all " +
+              (on ? "ring-2 ring-ink ring-offset-2 ring-offset-white" : "opacity-70 hover:opacity-100")
+            }
+          >
+            <Avatar id={a.id} size={34} />
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/** The universities, plus the row for everyone else. */
+export function SchoolPicker({
+  school,
+  schoolName,
+  query,
+  onQuery,
+  onPick,
+  onName,
+}: {
+  school: SchoolChoice | null;
+  /** What they typed when theirs wasn't listed. */
+  schoolName: string;
+  query: string;
+  onQuery: (v: string) => void;
+  onPick: (id: SchoolChoice) => void;
+  onName: (v: string) => void;
+}) {
+  const other = school === OTHER_SCHOOL;
+  const matches = searchSchools(query);
+
+  return (
+    <>
+      {SCHOOLS.length > SEARCHABLE && (
+        <div className="mb-2">
+          <Search value={query} onChange={onQuery} placeholder="Search universities" label="Search universities" />
+        </div>
+      )}
+      <div className="flex max-h-[38dvh] flex-col gap-2 overflow-y-auto">
+        {matches.map((s) => {
+          const on = s.id === school;
+          return (
+            <button key={s.id} type="button" onClick={() => onPick(s.id)} aria-pressed={on} className={rowTone(on)}>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[15px] font-medium leading-tight text-ink">{s.name}</span>
+                <span className="mt-0.5 block truncate text-[13px] leading-5 text-muted">{s.full}</span>
+              </span>
+              <Tick on={on} />
+            </button>
+          );
+        })}
+        {/* The last row, always. Booklesss is on a few campuses; every other
+            student who lands here would otherwise be asked to claim one that
+            isn't theirs, and their answer is the best evidence there is for
+            which campus to build next. */}
+        <button type="button" onClick={() => onPick(OTHER_SCHOOL)} aria-pressed={other} className={rowTone(other)}>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[15px] font-medium leading-tight text-ink">Another university</span>
+            <span className="mt-0.5 block truncate text-[13px] leading-5 text-muted">Tell us where you study</span>
+          </span>
+          <Tick on={other} />
+        </button>
+      </div>
+
+      {/* Revealed by that row rather than sitting there: the keyboard comes up
+          when they've asked for it, under a field that is now the last thing
+          on screen. */}
+      {other && (
+        <input
+          autoFocus
+          value={schoolName}
+          onChange={(e) => onName(e.target.value)}
+          placeholder="Which university?"
+          aria-label="Your university"
+          maxLength={80}
+          autoComplete="organization"
+          className={FIELD + " mt-2"}
+        />
+      )}
+    </>
+  );
+}
+
+/** The courses on offer for whichever school is picked. */
+export function CoursePicker({
+  offered,
+  courses,
+  query,
+  onQuery,
+  onToggle,
+  note,
+}: {
+  offered: CourseMeta[];
+  /** Slugs currently chosen. */
+  courses: string[];
+  query: string;
+  onQuery: (v: string) => void;
+  onToggle: (slug: string) => void;
+  /** One line above the list, when the school needs explaining. */
+  note?: string;
+}) {
+  const q = query.trim().toLowerCase();
+  const matches = q
+    ? offered.filter((c) => `${c.title} ${c.subtitle}`.toLowerCase().includes(q))
+    : offered;
+  const searchable = offered.length > SEARCHABLE;
+
+  return (
+    <>
+      {note && <p className="mb-2 text-[13px] leading-5 text-muted">{note}</p>}
+      {searchable && (
+        <div className="mb-2">
+          <Search value={query} onChange={onQuery} placeholder="Search your courses" label="Search courses" />
+        </div>
+      )}
+      <div className="flex max-h-[42dvh] flex-col gap-2 overflow-y-auto">
+        {matches.map((c) => {
+          const on = courses.includes(c.slug);
+          return (
+            <button key={c.slug} type="button" onClick={() => onToggle(c.slug)} aria-pressed={on} className={rowTone(on)}>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[15px] font-medium leading-tight text-ink">{c.title}</span>
+                <span className="mt-0.5 block text-[13px] leading-5 text-muted">{c.subtitle}</span>
+              </span>
+              <Tick on={on} />
+            </button>
+          );
+        })}
+        {matches.length === 0 && (
+          <p className="px-0.5 py-2 text-[13px] leading-5 text-muted">No course matches “{query.trim()}”.</p>
+        )}
+      </div>
+    </>
+  );
+}

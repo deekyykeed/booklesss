@@ -1,15 +1,15 @@
 "use client";
 
 import { Avatar } from "./avatars";
-import { EDIT_EVENT } from "./IdentityGate";
+import { SETTINGS_EVENT } from "./pickers";
 import { PlanRing } from "./PlanRing";
 import { initials, useIdentity } from "@/lib/identity";
 import { planLabel, usePlan } from "@/lib/plan";
 
 /* The header's account control while Clerk is off: the face the reader picked,
  * in the same 32px shell the circle buttons beside it wear. Clicking it
- * reopens the form — the only way to fix a typo in a name that is never asked
- * for twice, or to change school and courses.
+ * opens Settings — the only way back to a name, a university and a course list
+ * the app never asks about twice.
  *
  * The shell's hairline is drawn by PlanRing rather than by a CSS border, so the
  * same circle can carry how much of their plan's period is spent. With no plan
@@ -40,10 +40,10 @@ export function HeaderAvatar() {
   return (
     <button
       type="button"
-      onClick={() => window.dispatchEvent(new Event(EDIT_EVENT))}
+      onClick={() => window.dispatchEvent(new Event(SETTINGS_EVENT))}
       className={`${shell} transition-opacity hover:opacity-80`}
-      title={`${tip} — change your details`}
-      aria-label={`${tip}. Change your details`}
+      title={`${tip} — settings`}
+      aria-label={`${tip}. Open settings`}
     >
       {ring}
       {/* Inside the shell, not filling it. The art is a full-bleed disc, so at

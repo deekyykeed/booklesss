@@ -7,6 +7,7 @@ import { clerkAppearance } from "@/lib/clerk-appearance";
 import { RegisterSW } from "@/components/RegisterSW";
 import { DesktopGate } from "@/components/DesktopGate";
 import { IdentityGate } from "@/components/identity/IdentityGate";
+import { SettingsSheet } from "@/components/identity/SettingsSheet";
 import "./globals.css";
 
 // The logo is an icon again, so Burbank is no longer loaded. Both it and
@@ -77,6 +78,7 @@ export default function RootLayout({
             than per-layout so a route added later can't quietly opt out of it;
             it skips the sign-in, offline and /workspace paths itself. */}
         <IdentityGate />
+        <SettingsSheet />
         {/* Booklesss is a phone app — a wide viewport gets sent to its phone.
             Mounted at the root for the same reason as the identity gate. */}
         <DesktopGate />
