@@ -24,6 +24,8 @@ const ICONS = [
   "zap",
   "menu",
   "sidebar",
+  "chat",
+  "chat-solid",
   "external-link",
   "chevron-down",
   "chevron-right",

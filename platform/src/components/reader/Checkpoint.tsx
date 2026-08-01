@@ -4,6 +4,7 @@ import Link from "next/link";
 import { labelFor, nextLessonId, pathForId } from "@/lib/course";
 import { rate, useProgress, type Grasp } from "@/lib/progress";
 import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
+import { SectionNote } from "./SectionNote";
 
 /* Two answers: "Later" and "Got it".
  *
@@ -50,7 +51,12 @@ export function Checkpoint({
   const chosen = hydrated ? graspOf(lessonId, checkpointId) : null;
 
   return (
-    <div className="checkpoint-row">
+    /* Two controls at opposite ends, asking two different questions: what the
+       reader wants to do about the section (left) and how it read (right).
+       Pushed apart rather than sat together, so neither looks like an option
+       in the other's set. */
+    <div className="checkpoint-row flex flex-wrap items-center justify-between gap-3">
+      <SectionNote lessonId={lessonId} sectionId={checkpointId} />
       <div
         className="grasp-group"
         role="radiogroup"

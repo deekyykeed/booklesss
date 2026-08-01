@@ -56,7 +56,7 @@ export function SourceStrip({ urls }: { urls: string[] }) {
       <p className="mb-2 text-[12px] font-semibold uppercase tracking-[0.06em] text-muted">Sources</p>
       <div
         data-no-swipe
-        className="no-scrollbar -mx-4 flex items-center gap-2 overflow-x-auto px-4 py-0.5 md:-mx-6 md:px-6"
+        className="no-scrollbar bleed-x flex items-center gap-2 overflow-x-auto py-0.5"
       >
       {chips.map((c) => (
         <a

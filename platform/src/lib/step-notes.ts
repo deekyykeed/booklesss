@@ -1,0 +1,74 @@
+/* What a reader thought of a section, in their own taps.
+ *
+ * The checkpoint already asks what they want to DO about a section ("Later" or
+ * "Got it"). This asks the different question: how the writing landed. They are
+ * not the same thing, and the second one is the one the step can act on — a
+ * reader who understood a section and had to read it three times to get there
+ * has told us something no completion figure will.
+ *
+ * Device-local, like progress. There is no account and no endpoint yet, so this
+ * is a collection point rather than a pipeline: the notes accumulate under one
+ * key, and `allNotes()` hands the lot over whenever there is somewhere to send
+ * them. Storing them now costs nothing and means the first weeks of reading are
+ * not lost when that endpoint arrives.
+ *
+ * The options map onto the rules in .claude/skills/step-skill/RULES.md, so a
+ * tally points at a specific rule rather than at a mood:
+ *   hard      → W-3 / W-12   the writing, or a sentence doing two jobs
+ *   long      → S-8 / W-2    the step, or the section, is too much at once
+ *   example   → C-5 / C-3    definition end to end, nothing concrete
+ *   wrong     → E-7          a figure or a method looks wrong: urgent
+ *   clear     → the "keep" signal, so a rewrite doesn't delete what worked
+ */
+
+export type NoteId = "hard" | "long" | "example" | "wrong" | "clear";
+
+export const NOTES: { id: NoteId; label: string }[] = [
+  { id: "clear", label: "Clear" },
+  { id: "hard", label: "Hard to follow" },
+  { id: "long", label: "Too long" },
+  { id: "example", label: "Needs an example" },
+  { id: "wrong", label: "Something looks wrong" },
+];
+
+const KEY = "booklesss:step-notes:v1";
+
+/** noteId, by section id, by lesson id. */
+type Store = Record<string, Record<string, NoteId>>;
+
+function read(): Store {
+  if (typeof localStorage === "undefined") return {};
+  try {
+    return JSON.parse(localStorage.getItem(KEY) ?? "{}") as Store;
+  } catch {
+    return {}; // private mode, or someone else's key
+  }
+}
+
+function write(s: Store) {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(s));
+  } catch {
+    /* out of quota or private mode: losing a note is not worth a crash */
+  }
+}
+
+export function noteFor(lessonId: string, sectionId: string): NoteId | null {
+  return read()[lessonId]?.[sectionId] ?? null;
+}
+
+/** Set a note, or clear it by passing the one already stored. */
+export function setNote(lessonId: string, sectionId: string, note: NoteId | null) {
+  const s = read();
+  const forLesson = { ...(s[lessonId] ?? {}) };
+  if (note === null) delete forLesson[sectionId];
+  else forLesson[sectionId] = note;
+  s[lessonId] = forLesson;
+  write(s);
+}
+
+/** Everything collected on this device, for whenever there is somewhere to
+ *  send it. */
+export function allNotes(): Store {
+  return read();
+}

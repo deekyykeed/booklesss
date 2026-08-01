@@ -119,7 +119,8 @@ export function CourseCard({
         {/* The button IS the progress bar: full width, one word, its fill
             showing how far through the course they are. Pressing it opens
             the step they'd resume; the aria-label still names that step.
-            The card's other surfaces go to the course home. */}
+            It is also the card's only link — the rest of the card is a
+            display, not a target. */}
         <Link
           href={pathForId(next)}
           className="course-resume squircle relative z-10 mt-3 flex items-center justify-between gap-3 overflow-hidden px-2.5 py-1.5"
@@ -157,12 +158,14 @@ export function CourseCard({
         </Link>
       </div>
 
-      {/* The card's quiet surfaces open the course itself. Stretched over the
-          card, under the button — so the button wins its own clicks and the
-          rest of the card is still one big target. */}
-      <Link href={`/${course.slug}`} className="absolute inset-0 z-0" aria-label={course.title}>
-        <span className="sr-only">{course.title}</span>
-      </Link>
+      {/* No stretched link over the card. It used to open the course home, so
+          the whole card was one big target and the Resume button was a smaller
+          target sitting inside it doing something different: two destinations
+          in one shape, where a tap that missed the button by a few pixels went
+          somewhere the reader did not choose.
+          The button is the card's only action now. It goes to the step they
+          are actually on, which is what the card is for; the course home is
+          still a tap away in the sidebar. */}
     </div>
   );
 }

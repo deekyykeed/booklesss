@@ -100,6 +100,22 @@
     corner-shape: superellipse(2.4);
   }
 
+  /* A row that escapes its column and runs to the edges of the screen, with
+     the padding put back so its first item still lines up with the text.
+     Percentages in margin and padding both resolve against the PARENT's width
+     (an element's own margins don't change that), so `50% - 50vw` is exactly
+     the distance from the column edge to the screen edge and `50vw - 50%` puts
+     the content back where it started.
+     Negative margins the width of the column's padding were not enough: they
+     escape the padding but not the column, so on a wide screen the row stopped
+     at the 720px text measure and a chip scrolling away was visibly clipped
+     mid-page. Here the only thing that clips it is the surface itself, which
+     on a phone is the edge of the screen. */
+  .bleed-x {
+    margin-inline: calc(50% - 50vw);
+    padding-inline: calc(50vw - 50%);
+  }
+
   @keyframes indFade {
     from {
       opacity: 0;
@@ -630,10 +646,13 @@
     border-radius: 32px;
     background-color: #ffffff;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 12px -4px rgba(0, 0, 0, 0.1);
-    /* The card is the link — the hover says so without shouting. */
     transition: box-shadow 0.2s ease, border-color 0.2s ease;
   }
-  .course-card:hover {
+  /* The card lifts only when the pointer is over the one thing that is
+     clickable. It used to lift on hovering anywhere, which was honest when the
+     whole card was a link and is a lie now that only the button is: a card that
+     responds to your pointer is telling you to press it. */
+  .course-card:has(.course-resume:hover) {
     border-color: var(--color-line-2);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 20px -6px rgba(0, 0, 0, 0.16);
   }
@@ -648,7 +667,6 @@
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 3px 8px -2px rgba(0, 0, 0, 0.08);
     transition: background-color 0.2s ease, border-color 0.2s ease;
   }
-  .course-card:hover .course-resume,
   .course-resume:hover {
     background-color: #ffffff;
   }
@@ -658,7 +676,7 @@
   .course-card .card-arrow {
     transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .course-card:hover .card-arrow {
+  .course-card:has(.course-resume:hover) .card-arrow {
     transform: translateX(3px);
   }
   /* Label, the number large, then one measured line carrying the stat's mark.
