@@ -60,8 +60,9 @@ unchecked ones get ticked off by someone assuming the list was audited.
 
 | Item | What | Opened | State |
 |------|------|--------|-------|
-| D-1 | Engagement pass — every step written before the hook rules | 2026-08-01 | open · 1/42 |
-| D-2 | Emphasis, ownership voice, tap-to-define — every step written before W-8/W-9/E-8 | 2026-08-01 | open · 1/42 |
+| D-1 | Engagement pass — every step written before the hook rules | 2026-08-01 | open · 3/44 |
+| D-2 | Emphasis, ownership voice, tap-to-define — every step written before W-8/W-9/E-8 | 2026-08-01 | open · 3/44 |
+| D-3 | Possessive budget, sentence length, step splitting, source links — W-10/W-12/S-8/C-7 | 2026-08-01 | open · 3/44 |
 
 ---
 
@@ -74,7 +75,7 @@ step is boring… spice it up, keep it engaging with a proper hook."
 **Why it can't wait for a rewrite:** every step in all three courses was written
 to the old W-3, which asked for the definition first and got a textbook opening
 every time. This is not a defect in one step; it is the house voice as it stood.
-**Applies to:** all three courses — **1 of 42 steps checked** (TM 1.1 rewritten;
+**Applies to:** all three courses — **3 of 44 steps checked** (TM 1.1 rewritten, then split into three;
 `cash-management`, `npv-and-payback`, `intro-to-strategy` had their openings read
 but nothing else, and are NOT ticked).
 
@@ -83,7 +84,9 @@ step in front of you, in the same edit that touches it for any other reason.
 Do not batch-rewrite steps nobody is reading yet; this is debt paid on contact.
 
 **Treasury Management**
-- [x] treasury-management/operations/intro-to-treasury — 2026-08-01 (rewritten)
+- [x] treasury-management/treasury-operations/intro-to-treasury — 2026-08-01 (rewritten)
+- [x] treasury-management/treasury-operations/treasury-levels-and-mandate — 2026-08-01 (split from it, carries the rewrite)
+- [x] treasury-management/treasury-operations/treasury-controls-and-structure — 2026-08-01 (split from it, carries the rewrite)
 - [ ] treasury-management/working-capital/working-capital-and-liquidity
 - [ ] treasury-management/working-capital/cash-management
 - [ ] treasury-management/working-capital/inventory-and-creditors
@@ -143,16 +146,86 @@ before today has no bold at all, no tappable terms, and addresses an exam
 candidate rather than someone who will run this — so the reader gets a wall of
 even-weight prose with the jargon unexplained. Nothing is *wrong* on screen,
 which is exactly why it would never surface on its own.
-**Applies to:** all three courses — **1 of 42 steps checked** (TM 1.1 is the
-reference implementation; nothing else has been opened).
+**Applies to:** all three courses — **3 of 44 steps checked** (the three TM
+operations steps are the reference implementation; nothing else has been
+opened. 44 not 42 because S-8 split TM 1.1 into three).
 
 Pay it with the **rank** procedure in `SKILL.md` — score the step against
 RULES, then fix what scored red, in the same edit that touches it for any other
-reason. **D-1 and D-2 are paid together:** both are debts against the same 42
+reason. **D-1 and D-2 are paid together:** both are debts against the same
 steps and both are paid on contact, so a step opened for one gets the other.
 
 **Treasury Management**
-- [x] treasury-management/operations/intro-to-treasury — 2026-08-01 (reference step)
+- [x] treasury-management/treasury-operations/intro-to-treasury — 2026-08-01
+- [x] treasury-management/treasury-operations/treasury-levels-and-mandate — 2026-08-01 (new, split from 1.1)
+- [x] treasury-management/treasury-operations/treasury-controls-and-structure — 2026-08-01 (new, split from 1.1)
+- [ ] treasury-management/working-capital/working-capital-and-liquidity
+- [ ] treasury-management/working-capital/cash-management
+- [ ] treasury-management/working-capital/inventory-and-creditors
+- [ ] treasury-management/risk/foreign-exchange-risk
+- [ ] treasury-management/risk/interest-rate-risk-management
+- [ ] treasury-management/investment/debt-management
+- [ ] treasury-management/investment/investment-management
+- [ ] treasury-management/systems/clearing-and-settlement
+- [ ] treasury-management/systems/treasury-management-systems
+**Corporate Finance**
+- [ ] corporate-finance/investment/npv-and-payback
+- [ ] corporate-finance/investment/irr-and-mirr
+- [ ] corporate-finance/investment/free-cash-flows
+- [ ] corporate-finance/investment/inflation-and-tax
+- [ ] corporate-finance/investment/capital-rationing
+- [ ] corporate-finance/investment/apv
+- [ ] corporate-finance/investment/international-projects
+- [ ] corporate-finance/cost-of-capital/cost-of-equity
+- [ ] corporate-finance/cost-of-capital/cost-of-debt
+- [ ] corporate-finance/cost-of-capital/wacc
+- [ ] corporate-finance/cost-of-capital/gearing
+- [ ] corporate-finance/cost-of-capital/capital-structure-theories
+- [ ] corporate-finance/cost-of-capital/credit-spreads
+- [ ] corporate-finance/ma-valuation/company-valuation
+- [ ] corporate-finance/ma-valuation/bond-valuation
+- [ ] corporate-finance/ma-valuation/market-efficiency
+- [ ] corporate-finance/ma-valuation/mergers-and-acquisitions
+- [ ] corporate-finance/risk/interest-rate-risk
+- [ ] corporate-finance/risk/hedging-interest-rate-risk
+- [ ] corporate-finance/risk/yield-curve
+- [ ] corporate-finance/risk/bond-duration
+- [ ] corporate-finance/risk/currency-risk
+- [ ] corporate-finance/risk/currency-hedging
+- [ ] corporate-finance/dividends/dividend-theories
+- [ ] corporate-finance/dividends/dividend-policy-in-practice
+**Strategic Management**
+- [ ] strategic-management/foundations/intro-to-strategy
+- [ ] strategic-management/foundations/mission-and-vision
+- [ ] strategic-management/environment/external-environment
+- [ ] strategic-management/environment/internal-environment
+- [ ] strategic-management/strategy/competitive-strategy
+- [ ] strategic-management/strategy/corporate-strategy
+- [ ] strategic-management/strategy/strategy-implementation
+
+### D-3 · possessive budget, sentence length, step splitting, source links · opened 2026-08-01
+**Source:** owner review 2026-08-01 (TM 1.1) — "we're using *your* too many
+times"; "reduce the length in these other sentences, the user wouldn't want to
+be reading forever"; "take advantage of nesting steps, it helps the step from
+being way too long to read".
+**Rules:** W-10 (revised, now a budget), W-12 (sentence length), S-8 (split long
+steps), C-7 (revised, inline links rather than a box)
+**Why it can't wait for a rewrite:** every other step is still one long climb
+with no outbound links at all. S-8 is the expensive one: splitting changes URLs
+and the course tree, so it is worth doing deliberately per lesson rather than
+opportunistically. W-10 and W-12 are cheap and mechanical, and both have a
+countable test.
+**Applies to:** all three courses — **3 of 44 steps checked** (the three TM
+operations steps; nothing else opened).
+
+Measure before rewriting, because the eye is a bad judge of both:
+`your` per total words (over 1-in-90 is a tic) and the longest sentence
+(over 35 words splits). Section count over four is the S-8 signal.
+
+**Treasury Management**
+- [x] treasury-management/treasury-operations/intro-to-treasury — 2026-08-01
+- [x] treasury-management/treasury-operations/treasury-levels-and-mandate — 2026-08-01 (new, split from 1.1)
+- [x] treasury-management/treasury-operations/treasury-controls-and-structure — 2026-08-01 (new, split from 1.1)
 - [ ] treasury-management/working-capital/working-capital-and-liquidity
 - [ ] treasury-management/working-capital/cash-management
 - [ ] treasury-management/working-capital/inventory-and-creditors

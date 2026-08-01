@@ -1691,9 +1691,9 @@
         "children": [
           {
             "id": "intro-to-treasury",
-            "label": "Introduction to treasury",
+            "label": "What treasury is",
             "lesson": {
-              "title": "Introduction to treasury management",
+              "title": "What treasury is and what it does",
               "kicker": "Treasury operations",
               "sections": [
                 {
@@ -1703,7 +1703,17 @@
                 {
                   "id": "eleven-functions",
                   "heading": "The eleven functions of treasury"
-                },
+                }
+              ]
+            }
+          },
+          {
+            "id": "treasury-levels-and-mandate",
+            "label": "Levels and mandate",
+            "lesson": {
+              "title": "How treasury work divides, and what it is for",
+              "kicker": "Treasury operations",
+              "sections": [
                 {
                   "id": "task-levels",
                   "heading": "Strategic, tactical and operational"
@@ -1711,7 +1721,17 @@
                 {
                   "id": "cost-vs-profit-centre",
                   "heading": "Cost centre or profit centre"
-                },
+                }
+              ]
+            }
+          },
+          {
+            "id": "treasury-controls-and-structure",
+            "label": "Controls and structure",
+            "lesson": {
+              "title": "Keeping treasury honest, and where it sits",
+              "kicker": "Treasury operations",
+              "sections": [
                 {
                   "id": "controls",
                   "heading": "Treasury controls"

@@ -15,7 +15,12 @@
  * `currency-risk` slugs. seed-course.mjs checks and refuses on collision.
  */
 
+/* Treasury operations was one six-section step until 2026-08-01; it is three
+ * now (rule S-8). The first keeps the `intro-to-treasury` slug, so the URL that
+ * was already linked to still opens the course. */
 import introToTreasury from "../01-operations/reader/intro-to-treasury.mjs";
+import treasuryLevelsAndMandate from "../01-operations/reader/treasury-levels-and-mandate.mjs";
+import treasuryControlsAndStructure from "../01-operations/reader/treasury-controls-and-structure.mjs";
 
 import workingCapitalAndLiquidity from "../02-working-capital/reader/working-capital-and-liquidity.mjs";
 import inventoryAndCreditors from "../02-working-capital/reader/inventory-and-creditors.mjs";
@@ -50,7 +55,7 @@ export default {
         {
           slug: "treasury-operations",
           label: "Treasury operations",
-          children: [introToTreasury],
+          children: [introToTreasury, treasuryLevelsAndMandate, treasuryControlsAndStructure],
         },
         {
           slug: "working-capital",

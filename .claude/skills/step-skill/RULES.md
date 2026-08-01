@@ -58,15 +58,19 @@ Ids are stable. A withdrawn rule is struck through, never deleted.
   them, what they can survive without while small, what they are buying when
   they hire. Exam framing is allowed where it is genuinely the point (a method
   the paper demands by name), but it is never the default voice.
-- **W-10** Carry W-9 down to the **possessive**. Where a sentence is about the
-  reader's own business, it is *your* — "keeping **your** suppliers paid", not
-  "keeping suppliers paid"; your payroll, your bank, your treasurer, your money.
-  One word, and it moves the reader from watching a company to running one.
+- **W-10** *(revised 2026-08-01)* Carry W-9 down to the **possessive**, but
+  **sparingly**. Where a sentence turns on the reader owning the thing, it is
+  *your*: "keeping **your** suppliers paid", not "keeping suppliers paid". Used
+  once or twice in a section it hands over the material. Used in every sentence
+  it becomes a tic, and the reader stops hearing it. **Budget: about one per
+  paragraph, and never twice in a sentence.** The first mention in a passage
+  earns it; after that "the" is fine, because ownership has already been
+  established and the reader has not forgotten.
   **The exception is a worked example about somebody else**: a Zambian miller,
-  a mining group, Barings. Those stay "the" — turning them possessive makes
+  a mining group, Barings. Those stay "the". Turning them possessive makes
   nonsense of the example and costs the word its meaning everywhere else.
-  Test: every "the company / the business / the firm" in the prose is either
-  the reader's (make it *your*) or a named third party (leave it).
+  Test: count `your` against total words. Above roughly one per 90 words it is
+  a tic, not a voice.
 - **W-11** **No em dashes.** Not one, anywhere in a step: not in prose, not in
   a definition, not in a table cell, not in a check option. `.claude/CLAUDE.md`
   allows one per document; reader steps allow none. An em dash is almost always
@@ -79,6 +83,14 @@ Ids are stable. A withdrawn rule is struck through, never deleted.
   Rewrite the sentence rather than swapping the character in. "Its job is to
   protect your assets — while idle cash earns" becomes "…protect your assets,
   while idle cash earns". Test: `grep -c "—"` returns 0 before the step ships.
+- **W-12** **Land the point and stop.** A sentence that runs past about 30 words
+  has usually done two jobs, and the second one is where the reader's attention
+  goes. Split it. Three clauses stacked behind a colon is a list pretending to
+  be prose; make it a `ul`, or cut to the ones that matter.
+  This is not an instruction to write short and choppy. Vary the length (**W-7**)
+  and keep the serious, plain voice; what has to go is the sentence that keeps
+  qualifying itself after the point has landed. Test: no sentence over 35 words,
+  and the average well under 25.
 
 ## E — Page elements
 
@@ -156,6 +168,23 @@ text, so a mark written into one shows its own syntax.
   it, and a handle for using it after: the split to recover it from, a worked
   classification, or the exam-technique line. A table dropped between two
   paragraphs of prose is the slide retyped.
+- **S-8** **Split a long step into parts rather than making the reader climb
+  it.** A step is the unit a reader finishes in one sitting, and finishing is
+  what keeps them going: three steps done in an evening beats one step
+  abandoned two thirds through. The nav tree nests, so a topic too big for one
+  step becomes several under the same lesson node, each with its own slug, its
+  own checkpoints and its own end.
+  - **Target 2 to 4 sections per step.** At five, look hard for the seam. At
+    six or more there is definitely one.
+  - Split on a **conceptual seam**, not at the halfway word count. Each part
+    must be a thing a reader can hold on its own and name afterwards: *what
+    treasury is* / *how the work divides* / *how it is governed*. A part that
+    only makes sense with the previous one open is not a part, it is a page
+    break.
+  - Keep the original slug on the **first** part. It is the one that is linked
+    to, and a URL that already exists should keep meaning what it meant.
+  - Order the parts so each one's ending sets up the next (**W-3** still
+    applies: every part opens on something at stake, not on a recap).
 
 ## C — Content
 

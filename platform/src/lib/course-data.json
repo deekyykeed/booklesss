@@ -13964,9 +13964,9 @@
         "children": [
           {
             "id": "intro-to-treasury",
-            "label": "Introduction to treasury",
+            "label": "What treasury is",
             "lesson": {
-              "title": "Introduction to treasury management",
+              "title": "What treasury is and what it does",
               "kicker": "Treasury operations",
               "sections": [
                 {
@@ -13984,11 +13984,11 @@
                   },
                   "blocks": [
                     {
-                      "text": "Your company can have a [profitable year](https://corporatefinanceinstitute.com/resources/accounting/cash-flow-vs-net-income/) and still fail to pay your staff at the end of it. Your [[income statement|The report of what your business earned and spent over a period: revenue minus costs, ending in profit. It counts sales when they are made, not when the cash arrives, which is exactly why it can show a profit while your account is empty.]] says the year went well. Your bank balance on the 28th says there is not enough in the account to run payroll. **Profit is worked out over twelve months and rests on judgement; cash is a fact on a Friday afternoon.** It is the Friday that decides whether your people get paid.",
+                      "text": "Your company can have a [profitable year](https://corporatefinanceinstitute.com/resources/accounting/cash-flow-vs-net-income/) and still fail to pay the staff at the end of it. The [[income statement|The report of what your business earned and spent over a period: revenue minus costs, ending in profit. It counts sales when they are made, not when the cash arrives, which is exactly why it can show a profit while your account is empty.]] says the year went well. The bank balance on the 28th says there is not enough to run payroll. **Profit is worked out over twelve months and rests on judgement; cash is a fact on a Friday afternoon.** The Friday decides whether anyone gets paid.",
                       "type": "p"
                     },
                     {
-                      "text": "[Treasury](https://corporatefinanceinstitute.com/resources/career-map/sell-side/capital-markets/treasury-management/) is the function that lives on the cash side of that gap. Its job is to **protect your financial assets, manage your liabilities, and put your money in the right account, in the right currency, on the day it is needed**, while the cash you don't need yet earns something instead of sitting idle. Every risk that comes with holding and moving that money is treasury's to find and reduce: a kwacha that moves against you, a rate that resets, a bank that changes its terms.",
+                      "text": "[Treasury](https://corporatefinanceinstitute.com/resources/career-map/sell-side/capital-markets/treasury-management/) is the function that lives on the cash side of that gap. Its job is to **put your money in the right account, in the right currency, on the day it is needed**. Cash that is not needed yet earns something instead of sitting idle. Every risk that comes with holding and moving it is treasury's to find and reduce: a kwacha that moves against you, a rate that resets, a bank that changes its terms.",
                       "type": "p"
                     },
                     {
@@ -13996,19 +13996,19 @@
                       "type": "callout"
                     },
                     {
-                      "text": "**Treasury executes; it does not set strategy.** If your board decides to fund a new plant with 40% debt, treasury gets no vote. It goes out and raises the debt, negotiates the terms, and then lives with the rate risk for the next ten years. Keeping that line clear matters, because the function works inside the three decisions that make up corporate finance.",
+                      "text": "**Treasury executes; it does not set strategy.** If your board decides to fund a new plant with 40% debt, treasury gets no vote. It raises the debt, negotiates the terms, then lives with the rate risk for ten years. That line matters, because treasury works inside the three decisions that make up corporate finance.",
                       "type": "p"
                     },
                     {
                       "type": "ul",
                       "items": [
-                        "**The investment decision.** Where your money goes: long-term projects, working capital, investments inside or outside your business.",
+                        "**The investment decision.** Where the money goes: long-term projects, working capital, investments inside or outside the business.",
                         "**The financing decision.** Where the money comes from: the mix of debt and equity, the cost of those funds, and the [[hedging|Taking a second position that moves the opposite way to a risk you already carry, so the two cancel out. You give up some upside to remove the downside. It is insurance, not a bet.]] that mix forces on you.",
                         "**Dividend policy.** What happens to the profit: how much is paid out to shareholders and how much is kept to fund growth."
                       ]
                     },
                     {
-                      "text": "Treasury sits underneath all three. It funds the working capital your investment decision creates, manages the risks your financing decision leaves open, and holds the cash your dividend policy has promised to pay out.",
+                      "text": "Treasury sits underneath all three. It funds the working capital the first creates, manages the risks the second leaves open, and holds the cash the third has promised to pay out.",
                       "type": "p"
                     }
                   ],
@@ -14029,7 +14029,7 @@
                   },
                   "blocks": [
                     {
-                      "text": "Before lunch, your treasurer might release a dollar payment to one of your suppliers, roll a deposit that matured this morning, take a call from your bank about an overdraft rate, approve a credit limit for a new customer, and send you the group cash forecast. **Five different jobs, one desk.** When you are the one hiring for that desk, or sitting at it, this is the list of what you are actually buying: eleven functions, each with a name worth knowing.",
+                      "text": "Before lunch, your treasurer might release a dollar payment to a supplier, roll a deposit that matured this morning, and take a call from the bank about an overdraft rate. Then approve a credit limit and send you the group cash forecast. **Five different jobs, one desk.** When you hire for that desk, this is what you are buying.",
                       "type": "p"
                     },
                     {
@@ -14104,7 +14104,7 @@
                       ]
                     },
                     {
-                      "text": "The list is not eleven flat items. **The first five are the operating core, and they run in order:** [forecast the cash](https://corporatefinanceinstitute.com/resources/financial-modeling/forecasting-cash-flow/), manage the [[working capital|The money tied up in running your business day to day: stock on your shelf and invoices your customers haven't paid yet, less the invoices you haven't paid your suppliers. It is cash you own but cannot spend.]] that consumes it, [keep enough on hand to trade](https://corporatefinanceinstitute.com/resources/accounting/cash-management/), invest what is left, and manage the risks sitting on top of all of it. **The last six point outward:** to management, the [[rating agencies|Firms like Moody's, S&P and Fitch that score how likely a borrower is to repay. The score sets the interest rate every future borrowing carries, so a downgrade costs real money.]], the banks, the investors, the customers you grant credit to, and a catch-all for M&A support and insurance. In a small company you will do most of these yourself before you can afford anyone to do them for you.",
+                      "text": "The list is not eleven flat items. **The first five are the operating core, and they run in order.** [Forecast the cash](https://corporatefinanceinstitute.com/resources/financial-modeling/forecasting-cash-flow/), manage the [[working capital|The money tied up in running a business day to day: stock on the shelf and invoices customers have not paid yet, less the invoices you have not paid your suppliers. It is cash you own but cannot spend.]] that consumes it, [keep enough on hand to trade](https://corporatefinanceinstitute.com/resources/accounting/cash-management/), invest what is left, and manage the risks on top. **The last six point outward:** to management, the [[rating agencies|Firms like Moody's, S&P and Fitch that score how likely a borrower is to repay. The score sets the interest rate every future borrowing carries, so a downgrade costs real money.]], the banks, the investors, the customers you grant credit to, and a catch-all for M&A support and insurance. In a small company you do most of these yourself, long before you can afford anyone else to.",
                       "type": "p"
                     },
                     {
@@ -14113,7 +14113,17 @@
                     }
                   ],
                   "heading": "The eleven functions of treasury"
-                },
+                }
+              ]
+            }
+          },
+          {
+            "id": "treasury-levels-and-mandate",
+            "label": "Levels and mandate",
+            "lesson": {
+              "title": "How treasury work divides, and what it is for",
+              "kicker": "Treasury operations",
+              "sections": [
                 {
                   "id": "task-levels",
                   "check": {
@@ -14137,7 +14147,7 @@
                       "type": "p"
                     },
                     {
-                      "text": "Same risk, three different jobs, three different people. **You sort tasks by time horizon, not by how important they sound.** That is the call you will be making the first time you decide what to keep on your own desk and what to hand to someone else.",
+                      "text": "Same risk, three different jobs, three different people. **You sort tasks by time horizon, not by how important they sound.** That is the call you make the first time you decide what stays on your desk.",
                       "type": "p"
                     },
                     {
@@ -14197,7 +14207,7 @@
                       "type": "p"
                     },
                     {
-                      "text": "Leeson was not employed to make money by taking positions. He was there to [[arbitrage|Buying and selling the same thing in two markets at once to pocket a small price difference, with almost no risk because both legs are locked in together. It stops being arbitrage the moment one leg is left open.]] small price differences at almost no risk. Why he was able to go so much further than that is the subject of this section, and it is a decision you make about your own business, usually without noticing: **what you decide your treasury function is actually for.**",
+                      "text": "Leeson was not employed to make money by taking positions. He was there to [[arbitrage|Buying and selling the same thing in two markets at once to pocket a small price difference, with almost no risk because both legs are locked in together. It stops being arbitrage the moment one leg is left open.]] small price differences at almost no risk. Why he got so much further than that is this section's subject. It turns on a decision most owners make without noticing: **what you decide treasury is actually for.**",
                       "type": "p"
                     },
                     {
@@ -14205,7 +14215,7 @@
                       "type": "h2"
                     },
                     {
-                      "text": "Most companies run treasury as a **cost centre**, a [support function that is not expected to generate profit](https://corporatefinanceinstitute.com/resources/accounting/cost-structure/), only to control what it spends. That is the safe framing and it has one real weakness: **management starts asking what treasury costs rather than what it saves**, and the function gets starved of budget, staff and systems until something it was supposed to be watching goes wrong. If you are the one setting the budget, that is your weakness to avoid, not the treasurer's.",
+                      "text": "Most companies run treasury as a **cost centre**, a [support function that is not expected to generate profit](https://corporatefinanceinstitute.com/resources/accounting/cost-structure/), only to control what it spends. That is the safe framing, and it has one real weakness. **Management starts asking what treasury costs rather than what it saves.** The function gets starved of budget, staff and systems until something it was watching goes wrong. If you set the budget, that failure is yours, not the treasurer's.",
                       "type": "p"
                     },
                     {
@@ -14213,7 +14223,7 @@
                       "type": "h2"
                     },
                     {
-                      "text": "Companies deep in global finance, currency or commodities sometimes run treasury as a **profit centre**, earning income by trading, hedging, and charging internal business units market rates for its services. The advantages are real: units paying a real price find out what treasury actually costs the group, and the treasurer has a reason to run the desk efficiently. So are the dangers, and the first of them is **the pull towards speculation**, followed by arguments over internal charges and higher administration costs.",
+                      "text": "Companies deep in global finance, currency or commodities sometimes run treasury as a **profit centre**, earning income by trading, hedging, and charging internal business units market rates for its services. The advantages are real. Units paying a real price learn what treasury costs the group, and the treasurer has a reason to run the desk efficiently. So are the dangers: **the pull towards speculation**, arguments over internal charges, higher administration costs.",
                       "type": "p"
                     },
                     {
@@ -14222,7 +14232,17 @@
                     }
                   ],
                   "heading": "Cost centre or profit centre"
-                },
+                }
+              ]
+            }
+          },
+          {
+            "id": "treasury-controls-and-structure",
+            "label": "Controls and structure",
+            "lesson": {
+              "title": "Keeping treasury honest, and where it sits",
+              "kicker": "Treasury operations",
+              "sections": [
                 {
                   "id": "controls",
                   "check": {
@@ -14238,7 +14258,7 @@
                   },
                   "blocks": [
                     {
-                      "text": "Leeson dealt his own trades and then settled them himself. That one fact is the first control on this list, and **its absence is why an £827 million hole stayed invisible for three years.** Treasury moves the largest sums in your company, so [six controls](https://corporatefinanceinstitute.com/resources/accounting/internal-controls/) are non-negotiable. They are cheap to put in on day one and expensive to retrofit after you have hired the person they constrain.",
+                      "text": "Leeson dealt his own trades and then settled them himself. That one fact is the first control on this list, and **its absence is why an £827 million hole stayed invisible for three years.** Treasury moves the largest sums in the business, so [six controls](https://corporatefinanceinstitute.com/resources/accounting/internal-controls/) are non-negotiable. They are cheap on day one and expensive to retrofit after you have hired the person they constrain.",
                       "type": "p"
                     },
                     {
@@ -14279,7 +14299,7 @@
                       ]
                     },
                     {
-                      "text": "**The six interlock.** Segregation means no single person can complete a fraud alone. [Limits and approvals](https://corporatefinanceinstitute.com/resources/career-map/sell-side/risk-management/financial-controls/) bound what any one decision is allowed to lose. Audits catch what slips past both. Automation shrinks the space where human error and temptation operate at all. Naming a control is worth very little on its own. **The useful skill is saying which failure each one prevents**, because that is how you work out which ones you can survive without while you are still small.",
+                      "text": "**The six interlock.** Segregation means no single person can complete a fraud alone. [Limits and approvals](https://corporatefinanceinstitute.com/resources/career-map/sell-side/risk-management/financial-controls/) bound what any one decision is allowed to lose. Audits catch what slips past both. Automation shrinks the space where human error and temptation operate at all. Naming a control is worth little on its own. **The useful skill is saying which failure each one prevents.** That is how you work out which ones you can survive without while you are still small.",
                       "type": "p"
                     }
                   ],
@@ -14300,11 +14320,11 @@
                   },
                   "blocks": [
                     {
-                      "text": "The last [structural choice](https://corporatefinanceinstitute.com/resources/accounting/corporate-structure/) is geographic, and it is the one you will face the first time your business crosses a border. A Zambian [mining group with operations in four countries](https://corporatefinanceinstitute.com/resources/economics/multinational-corporation/) has to decide where treasury actually sits: **one desk in Lusaka, four desks in four capitals, or something between the two.**",
+                      "text": "The last [structural choice](https://corporatefinanceinstitute.com/resources/accounting/corporate-structure/) is geographic. You face it the first time your business crosses a border. A Zambian [mining group with operations in four countries](https://corporatefinanceinstitute.com/resources/economics/multinational-corporation/) has to decide where treasury actually sits: **one desk in Lusaka, four desks in four capitals, or something between the two.**",
                       "type": "p"
                     },
                     {
-                      "text": "The Lusaka desk can see every kwacha and every dollar the group holds at once, negotiate one set of terms across all its banks, and [[net|Offsetting what one part of the group owes against what another is owed, so only the difference is hedged or paid. Two subsidiaries on opposite sides of the same currency cancel each other out for free.]] exposures between subsidiaries before hedging anything. What it cannot see from Lusaka is that a payment out of one of those countries clears on a different cycle, or that a local regulator wants a filing nobody at head office has heard of. **That trade-off, control against local knowledge, is the whole argument.**",
+                      "text": "The Lusaka desk can see every kwacha and every dollar the group holds at once, negotiate one set of terms across all its banks, and [[net|Offsetting what one part of the group owes against what another is owed, so only the difference is hedged or paid. Two subsidiaries on opposite sides of the same currency cancel each other out for free.]] exposures between subsidiaries before hedging anything. What it cannot see is that a payment out of one of those countries clears on a different cycle, or that a local regulator wants a filing nobody at head office has heard of. **That trade-off, control against local knowledge, is the whole argument.**",
                       "type": "p"
                     },
                     {
@@ -14345,7 +14365,7 @@
                       ]
                     },
                     {
-                      "text": "**The hybrid model keeps winning, and technology is the reason.** A treasury management system lets a subsidiary enter its own data into a platform head office watches in real time, giving central oversight without taking the local team's hands off the wheel. What such a system does, and what it costs you to run, is a question this course comes back to.",
+                      "text": "**The hybrid model keeps winning, and technology is the reason.** A treasury management system lets a subsidiary enter its own data into a platform head office watches in real time. Central oversight, without taking the local team's hands off the wheel. What such a system costs to run is a question this course comes back to.",
                       "type": "p"
                     }
                   ],

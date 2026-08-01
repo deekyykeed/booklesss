@@ -22,6 +22,40 @@ Quote actual words. A student's phrasing is never rewritten into the owner's.
 
 ---
 
+### 2026-08-01 · treasury-management/treasury-operations/intro-to-treasury · owner
+- `writing` — "we're using *your* too many times, you need to reduce that."
+  W-10 had been applied to every noun rather than where it lands. Measured
+  before rewriting: **29 in 1,657 words, one per 57**. Now roughly one per 200.
+  W-10 revised with a budget rather than left as an instruction to use it.
+- `writing` — "reduce the [length] in these other sentences… the user wouldn't
+  want to be reading forever, just drive the point home." Six sentences were 35
+  words or more; longest was 46. Now no sentence over 34 and the average is 14.
+  New **W-12**.
+- `structure` — "take advantage of nesting steps… it helps the step from being
+  way too long to read… we can complete many steps in a short period rather
+  than staying on one step for a long time." The real insight is that
+  **finishing is the thing that keeps a reader going**, so the step, not the
+  section, is the unit to keep short. TM 1.1's six sections became three steps
+  of two, split on conceptual seams (what treasury is / how the work divides /
+  how it is governed). Coverage identical, nothing cut. New **S-8**.
+- `element` — the source links should carry "a favicon of the website where you
+  got the info from… I'd like to see this spread around the step, meaning a lot
+  of information is gotten from the websites." Built as a build-time favicon
+  inliner rather than a favicon service: the app ships `default-src 'self'`, so
+  a remote icon URL is blocked, and a service would hand every reader's page
+  views to a third party.
+→ promoted: **W-10** (revised), **W-12**, **S-8** · debt: **D-3**
+
+Also fixed, all app chrome rather than step rules: the term underline was a
+`border-b` on a button, so it sat at the foot of the button box a whole line
+below the word; the popup flipped above on an unmeasured height of zero, which
+is why it sometimes landed on top of the word it defines; it now carries an
+arrow that tracks the word rather than the card; and the header avatar got a
+real 1px border back, because `PlanRing` was drawing it as an SVG stroke that
+read thinner than the border on the search button beside it.
+
+---
+
 ### 2026-08-01 · treasury-management/operations/intro-to-treasury · owner
 - `writing` — "instead of saying something like 'Day to day that means keeping
   suppliers paid' we say 'Day to day that means keeping **your** suppliers

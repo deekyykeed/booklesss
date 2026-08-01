@@ -22,12 +22,21 @@ post PDFs without checking with the owner.
 | House style | `.claude/skills/step-skill/RULES.md` — read before writing a step |
 | URL | `/treasury-management/<lesson>/<step>` |
 
-**Reader step status — the course is complete: 10 steps, 57 sections, every
+**Reader step status — the course is complete: 12 steps, 57 sections, every
 section with a comprehension check.**
+
+> **2026-08-01:** Treasury operations was one six-section step and is now three
+> two-section steps (rule **S-8** — a reader who finishes three short steps has
+> learned more than one who abandons a long one two thirds through). Coverage is
+> unchanged, nothing was cut, and the first part keeps the `intro-to-treasury`
+> slug so the existing URL still opens the course. The other four lessons have
+> not been split; that debt is **D-3**.
 
 | Lesson | Step | Slug | Written |
 |--------|------|------|---------|
-| 1 Treasury operations | Introduction to treasury | `intro-to-treasury` | ✅ 2026-07-31 |
+| 1 Treasury operations | What treasury is and what it does | `intro-to-treasury` | ✅ 2026-07-31, split 2026-08-01 |
+| | How treasury work divides, and what it is for | `treasury-levels-and-mandate` | ✅ 2026-08-01 |
+| | Keeping treasury honest, and where it sits | `treasury-controls-and-structure` | ✅ 2026-08-01 |
 | 2 Working capital | Working capital & liquidity | `working-capital-and-liquidity` | ✅ 2026-07-31 |
 | | Inventory, EOQ & creditors | `inventory-and-creditors` | ✅ 2026-07-31 |
 | | Cash management & forecasting | `cash-management` | ✅ 2026-07-31 |
