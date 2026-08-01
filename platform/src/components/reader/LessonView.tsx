@@ -51,7 +51,7 @@ function sourcesIn(section: Section): string[] {
  * look, so they share a card rather than sitting as separate blocks. */
 function Formula({ text, where }: { text: string; where?: string[] }) {
   return (
-    <div className="squircle rounded-3xl border border-[#e7e7e6] bg-white px-5 py-5">
+    <div className="squircle rounded-3xl border border-[#e7e7e6] bg-white px-5 py-5 shadow-lift">
       <p className="text-center font-display text-[17.5px] leading-8 tracking-[-0.01em] text-ink">{text}</p>
       {where?.length ? (
         <div className="mt-3 flex flex-col gap-1.5 border-t border-[#f0efee] pt-3">
@@ -99,7 +99,7 @@ function DataTable({
       {/* Wide workings scroll inside their own box; the page never does. */}
       {/* Lifted like the callout, and given room to breathe. A flat outlined
           box with tight rows read as a spreadsheet pasted into the page. */}
-      <div className="no-scrollbar squircle overflow-x-auto rounded-[32px] border border-[#e7e7e6] bg-white shadow-[0_1px_2px_-1px_rgba(0,0,0,0.10),0_10px_20px_-8px_rgba(0,0,0,0.16),0_30px_46px_-22px_rgba(0,0,0,0.18)]">
+      <div className="no-scrollbar squircle overflow-x-auto rounded-[32px] border border-[#e7e7e6] bg-white shadow-lift">
         <table className="w-full border-collapse text-[15.5px]">
           <thead>
             {/* The header is the only band of colour, so it carries the weight:
@@ -213,7 +213,7 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
                        prose that already has boxes in it. */
                     <div
                       key={j}
-                      className="squircle rounded-3xl border border-[#e7e7e6] bg-white px-5 py-4 text-[16.5px] leading-[27px] text-[#4a4a52] shadow-[0_1px_2px_-1px_rgba(0,0,0,0.10),0_10px_20px_-8px_rgba(0,0,0,0.16),0_30px_46px_-22px_rgba(0,0,0,0.18)]"
+                      className="squircle rounded-3xl border border-[#e7e7e6] bg-white px-5 py-4 text-[16.5px] leading-[27px] text-[#4a4a52] shadow-lift"
                     >
                       <Rich text={b.text} />
                     </div>

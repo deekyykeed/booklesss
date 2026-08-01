@@ -26,6 +26,21 @@
   --color-danger: #8d2525;          /* red inline link           */
   --color-btn: #0b0b0b;             /* solid black button        */
 
+  /* Two steps of lift, and only two.
+   *
+   * `lift` raises a block of content off the reading surface — a table, a
+   * callout, a formula. `chip` is the hairline a control wants so it reads as
+   * pressable rather than drawn on: source chips, the checkpoint buttons.
+   *
+   * Both are deliberately quiet. What these replace was three layers ending at
+   * 46px of blur at 18% black, which on a phone put a visible dark halo under
+   * every table and callout — the shadow arrived before the content did. Depth
+   * here is meant to say "this is its own object", not to cast a shadow.
+   */
+  --shadow-lift: 0 1px 2px -1px rgb(0 0 0 / 0.05), 0 6px 14px -8px rgb(0 0 0 / 0.07),
+    0 16px 28px -18px rgb(0 0 0 / 0.09);
+  --shadow-chip: 0 1px 1px -0.5px rgb(0 0 0 / 0.04), 0 2px 5px -2px rgb(0 0 0 / 0.06);
+
   --header-h: 48px;
   --sidebar-docs: 265px;
   --rightbar-w: 300px;
@@ -855,6 +870,10 @@
     border-radius: 999px;
     border: 1px solid var(--color-line-2);
     background-color: #ffffff;
+    /* The same hairline lift the source chips above them carry — these are the
+       other row of controls at the foot of a section, and a shadow on one row
+       but not the other read as one of them being disabled. */
+    box-shadow: var(--shadow-chip);
     /* Muted, not placeholder grey: the low end of the ramp is a single small
        bar, and at #b2b2b2 that button reads as empty rather than as the
        bottom of a scale. */

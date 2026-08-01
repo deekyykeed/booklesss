@@ -68,7 +68,7 @@ export function SourceStrip({ urls }: { urls: string[] }) {
           /* Genuinely round, so no `squircle`: the superellipse mask is a
              subtle flattening that reads as a wobble on a full pill, where it
              is exactly right on a large card. */
-          className="flex shrink-0 items-center gap-2 rounded-full border border-[#e7e7e6] bg-white py-1 pl-1 pr-3.5 text-[14px] leading-5 text-ink transition-colors hover:border-[#c9c9c6] hover:bg-[#fafafa]"
+          className="flex shrink-0 items-center gap-2 rounded-full border border-[#e7e7e6] bg-white py-1 pl-1 pr-3.5 text-[14px] leading-5 text-ink shadow-chip transition-colors hover:border-[#c9c9c6] hover:bg-[#fafafa]"
         >
           {/* Round, whatever shape the site's own mark is. Most favicons are
               squares with their own padding, so a circular crop of one reads
