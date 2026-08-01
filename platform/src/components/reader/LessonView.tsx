@@ -5,6 +5,7 @@ import { runs } from "@/lib/emphasis";
 import { CodePlayground } from "./CodePlayground";
 import { Checkpoint, StepComplete } from "./Checkpoint";
 import { Term } from "./Term";
+import { Sources } from "./Sources";
 
 /* Step prose with its two inline marks: `**bold**` and `[[term|definition]]`.
  *
@@ -167,6 +168,7 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
                       <Rich text={b.text} />
                     </div>
                   );
+                if (b.type === "sources") return <Sources key={j} items={b.items} />;
                 if (b.type === "playground") return <CodePlayground key={j} code={b.code} />;
                 if (b.type === "formula") return <Formula key={j} text={b.text} where={b.where} />;
                 if (b.type === "table")

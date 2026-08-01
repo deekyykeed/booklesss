@@ -15,13 +15,19 @@
  * argued on a Zambian mining group rather than in the abstract. See RULES.md
  * W-3 (revised), W-6, W-7, C-5, C-6, S-7.
  *
- * 2026-08-01 — emphasis + ownership pass. This step is the reference for
- * W-8 (bold the phrase worth carrying out of a section, 1–3 per section) and
- * W-9 (write to the reader as someone who will run this, not someone revising
- * it). Wording changed, coverage did not: "the exam asks you to sort tasks"
- * became the decision the reader will make on a Tuesday, and the closing lines
- * of the functions and controls sections now hand over the judgement rather
- * than the mark scheme.
+ * 2026-08-01 — emphasis, ownership and sources pass. This step is the
+ * reference implementation for five rules:
+ *   W-8  bold what should stick, 1–3 per section
+ *   W-9  write to someone who will run this, not someone revising it
+ *   W-10 carry that down to the possessive — your suppliers, your payroll.
+ *        Third-party examples (the miller, the mining group) stay "the".
+ *   E-8  [[term|definition]] tap-to-define for jargon the source assumes
+ *   C-7  a `sources` block per section, linking where the idea is taught
+ *        properly (Investopedia, CFI) — the school material sets the syllabus,
+ *        these are the teachers
+ * Wording changed, coverage did not: "the exam asks you to sort tasks" became
+ * the decision the reader will make on a Tuesday, and the closing lines of the
+ * functions and controls sections hand over the judgement, not the mark scheme.
  */
 
 export default {
@@ -38,11 +44,11 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Your company can have a profitable year and still fail to pay its staff at the end of it. The [[income statement|The report of what a business earned and spent over a period — revenue minus costs, ending in profit. It counts sales when they are made, not when the cash arrives, which is exactly why it can show a profit while the account is empty.]] says the year went well. The bank balance on the 28th says there is not enough in the account to run payroll. **Profit is worked out over twelve months and rests on judgement; cash is a fact on a Friday afternoon** — and it is the Friday that decides whether anyone gets paid.",
+          text: "Your company can have a profitable year and still fail to pay your staff at the end of it. Your [[income statement|The report of what your business earned and spent over a period — revenue minus costs, ending in profit. It counts sales when they are made, not when the cash arrives, which is exactly why it can show a profit while your account is empty.]] says the year went well. Your bank balance on the 28th says there is not enough in the account to run payroll. **Profit is worked out over twelve months and rests on judgement; cash is a fact on a Friday afternoon** — and it is the Friday that decides whether your people get paid.",
         },
         {
           type: "p",
-          text: "Treasury is the function that lives on the cash side of that gap. Its job is to **protect the company's financial assets, manage its liabilities, and put money in the right account, in the right currency, on the day it is needed** — while the cash that is not needed yet earns something instead of sitting idle. Every risk that comes with holding and moving that money — a kwacha that moves against you, a rate that resets, a bank that changes its terms — is treasury's to find and reduce.",
+          text: "Treasury is the function that lives on the cash side of that gap. Its job is to **protect your financial assets, manage your liabilities, and put your money in the right account, in the right currency, on the day it is needed** — while the cash you don't need yet earns something instead of sitting idle. Every risk that comes with holding and moving that money — a kwacha that moves against you, a rate that resets, a bank that changes its terms — is treasury's to find and reduce.",
         },
         {
           type: "callout",
@@ -55,14 +61,31 @@ export default {
         {
           type: "ul",
           items: [
-            "**The investment decision** — where the money goes: long-term projects, working capital, investments inside or outside the business.",
+            "**The investment decision** — where your money goes: long-term projects, working capital, investments inside or outside your business.",
             "**The financing decision** — where the money comes from: the mix of debt and equity, the cost of those funds, and the [[hedging|Taking a second position that moves the opposite way to a risk you already carry, so the two cancel out. You give up some upside to remove the downside — it is insurance, not a bet.]] that mix forces on you.",
             "**Dividend policy** — what happens to the profit: how much is paid out to shareholders and how much is kept to fund growth.",
           ],
         },
         {
           type: "p",
-          text: "Treasury sits underneath all three. It funds the working capital the investment decision creates, manages the risks the financing decision leaves open, and holds the cash that dividend policy has promised to pay out.",
+          text: "Treasury sits underneath all three. It funds the working capital your investment decision creates, manages the risks your financing decision leaves open, and holds the cash your dividend policy has promised to pay out.",
+        },
+        {
+          type: "sources",
+          items: [
+            {
+              label: "Treasury Management",
+              url: "https://corporatefinanceinstitute.com/resources/career-map/sell-side/capital-markets/treasury-management/",
+              site: "Corporate Finance Institute",
+              note: "The clearest short overview of what the function owns.",
+            },
+            {
+              label: "Cash Flow vs. Profit",
+              url: "https://www.investopedia.com/ask/answers/030915/what-difference-between-cash-flow-and-profit.asp",
+              site: "Investopedia",
+              note: "Why a profitable year and an empty account are not a contradiction.",
+            },
+          ],
         },
       ],
       check: {
@@ -87,7 +110,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Before lunch, a corporate treasurer might release a dollar payment to a supplier, roll a deposit that matured this morning, take a call from the bank about an overdraft rate, approve a credit limit for a new customer, and send the group cash forecast to the CFO. **Five different jobs, one desk.** When you are the one hiring for that desk, or sitting at it, this is the list of what you are actually buying — eleven functions, each with a name worth knowing.",
+          text: "Before lunch, your treasurer might release a dollar payment to one of your suppliers, roll a deposit that matured this morning, take a call from your bank about an overdraft rate, approve a credit limit for a new customer, and send you the group cash forecast. **Five different jobs, one desk.** When you are the one hiring for that desk, or sitting at it, this is the list of what you are actually buying — eleven functions, each with a name worth knowing.",
         },
         {
           type: "table",
@@ -108,7 +131,7 @@ export default {
         },
         {
           type: "p",
-          text: "The list is not eleven flat items. **The first five are the operating core, and they run in order:** forecast the cash, manage the [[working capital|The money tied up in running the business day to day — stock on the shelf and invoices customers haven't paid yet, less the invoices you haven't paid your suppliers. It is cash you own but cannot spend.]] that consumes it, keep enough on hand to trade, invest what is left, and manage the risks sitting on top of all of it. **The last six point outward** — to management, the [[rating agencies|Firms like Moody's, S&P and Fitch that score how likely a borrower is to repay. The score sets the interest rate every future borrowing carries, so a downgrade costs real money.]], the banks, the investors, the customers you grant credit to, and a catch-all for M&A support and insurance. In a small company you will do most of these yourself before you can afford anyone to do them for you.",
+          text: "The list is not eleven flat items. **The first five are the operating core, and they run in order:** forecast the cash, manage the [[working capital|The money tied up in running your business day to day — stock on your shelf and invoices your customers haven't paid yet, less the invoices you haven't paid your suppliers. It is cash you own but cannot spend.]] that consumes it, keep enough on hand to trade, invest what is left, and manage the risks sitting on top of all of it. **The last six point outward** — to management, the [[rating agencies|Firms like Moody's, S&P and Fitch that score how likely a borrower is to repay. The score sets the interest rate every future borrowing carries, so a downgrade costs real money.]], the banks, the investors, the customers you grant credit to, and a catch-all for M&A support and insurance. In a small company you will do most of these yourself before you can afford anyone to do them for you.",
         },
         {
           type: "callout",
@@ -171,6 +194,23 @@ export default {
         {
           type: "callout",
           text: "Classify by time horizon: **strategic = long-term policy, tactical = medium-term decisions, operational = daily execution.**",
+        },
+        {
+          type: "sources",
+          items: [
+            {
+              label: "Forward Contract",
+              url: "https://www.investopedia.com/terms/f/forwardcontract.asp",
+              site: "Investopedia",
+              note: "The instrument the tactical example turns on, with its mechanics.",
+            },
+            {
+              label: "Hedging",
+              url: "https://corporatefinanceinstitute.com/resources/derivatives/hedging/",
+              site: "Corporate Finance Institute",
+              note: "Why you give up upside to remove downside, worked through.",
+            },
+          ],
         },
       ],
       check: {
@@ -273,6 +313,23 @@ export default {
         {
           type: "p",
           text: "**The six interlock.** Segregation means no single person can complete a fraud alone. Limits and approvals bound what any one decision is allowed to lose. Audits catch what slips past both. Automation shrinks the space where human error and temptation operate at all. Naming a control is worth very little on its own — **the useful skill is saying which failure each one prevents**, because that is how you work out which ones you can survive without while you are still small.",
+        },
+        {
+          type: "sources",
+          items: [
+            {
+              label: "Segregation of Duties",
+              url: "https://corporatefinanceinstitute.com/resources/accounting/segregation-of-duties/",
+              site: "Corporate Finance Institute",
+              note: "The control Barings didn't have, and how it is set up in practice.",
+            },
+            {
+              label: "The Collapse of Barings Bank",
+              url: "https://www.investopedia.com/articles/stocks/09/barings-collapse.asp",
+              site: "Investopedia",
+              note: "The full story, if the summary here left you wanting it.",
+            },
+          ],
         },
       ],
       check: {

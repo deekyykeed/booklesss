@@ -36,13 +36,18 @@ Ids are stable. A withdrawn rule is struck through, never deleted.
   regardless of what they say. Break them — a short sentence on its own, a
   table, a callout, an `h2`. Test: no section is three consecutive `p` blocks of
   50+ words.
-- **W-8** Bold the phrase worth carrying out of the section, with `**…**`.
-  **One to three per section**, never a whole sentence of a paragraph and never
-  two in the same sentence. It marks the thing a reader skimming the step the
-  night before an exam must land on: the rule, the distinction, the figure that
-  decides the case — not a term being defined (**W-5** already handles those)
-  and not a heading in disguise. A section with nothing worth bolding is a
-  section with nothing to carry; that is the finding, not a licence to skip.
+- **W-8** *(revised 2026-08-01)* Bold the thing worth carrying out of the
+  section, with `**…**`. **One to three per section**, never two in the same
+  sentence. It marks what a reader skimming the step the night before an exam
+  must land on: the rule, the distinction, the figure that decides the case —
+  not a term being defined (**W-5** already handles those) and not a heading in
+  disguise. A section with nothing worth bolding is a section with nothing to
+  carry; that is the finding, not a licence to skip.
+  **A whole sentence can be bolded when the whole sentence is the point** —
+  "Treasury executes; it does not set strategy." Bolding a fragment of it would
+  break the idea in half. What is banned is bolding a full sentence *by
+  default*, or a long one that is merely relevant: if half of it could go and
+  the point would survive, bold the half.
   Test: read only the bold in a step end to end — it should be a usable summary,
   and it should not be half the words on screen.
 - **W-9** Write to the reader as someone who will **run** this, not someone
@@ -53,6 +58,15 @@ Ids are stable. A withdrawn rule is struck through, never deleted.
   them, what they can survive without while small, what they are buying when
   they hire. Exam framing is allowed where it is genuinely the point (a method
   the paper demands by name), but it is never the default voice.
+- **W-10** Carry W-9 down to the **possessive**. Where a sentence is about the
+  reader's own business, it is *your* — "keeping **your** suppliers paid", not
+  "keeping suppliers paid"; your payroll, your bank, your treasurer, your money.
+  One word, and it moves the reader from watching a company to running one.
+  **The exception is a worked example about somebody else**: a Zambian miller,
+  a mining group, Barings. Those stay "the" — turning them possessive makes
+  nonsense of the example and costs the word its meaning everywhere else.
+  Test: every "the company / the business / the firm" in the prose is either
+  the reader's (make it *your*) or a named third party (leave it).
 
 ## E — Page elements
 
@@ -68,6 +82,7 @@ correctness problem, not a taste problem.
 | `formula` | A display equation, with its symbols named underneath. |
 | `table` | Anything with columns — workings, comparisons, waterfalls. |
 | `playground` | Runnable code. Not used in finance courses. |
+| `sources` | Where this idea is taught properly, off Booklesss. |
 
 Two inline marks exist inside `p`, `ul` and `callout` text, and no others.
 `**bold**` (**W-8**) and `[[term|definition]]` (**E-8**). There is no italic, no
@@ -150,6 +165,23 @@ link and no nesting — anything else is typed literally on screen.
   actually did. One line of "Barings is the exam case" wastes the only thing in
   the section a student will still have in the exam hall. Two or three sentences
   is enough; it must have facts in it.
+- **C-7** Link out to where the idea is **taught properly**, in a `sources`
+  block. The lecture decks and textbooks a step is built from set what gets
+  covered — they are the syllabus, not the teacher, and a reader can neither
+  open them nor be sent to them. The teachers are the trusted public sites:
+  **Investopedia**, **Corporate Finance Institute**, **ACCA**, **AccountingCoach**
+  and their equivalents. Rules for the block:
+  - **Two per section, at the end of the section it belongs to** — not one list
+    of twelve at the foot of the step, which nobody opens.
+  - Deep-link the **specific page**, never a site home page or a search result.
+  - Every item carries a `note` saying what that link is good for, so a reader
+    picks one instead of opening all of them.
+  - Link the idea the section just taught, not a tangent. If a section has no
+    good outside page, it gets no block — a filler link costs more trust than
+    the empty space.
+  - **Open the link before writing it in.** A dead or paywalled URL in a study
+    step is worse than no link: the reader is at 11pm with an exam coming.
+  - Never link a competitor's paid course, and never a school's material.
 
 ---
 

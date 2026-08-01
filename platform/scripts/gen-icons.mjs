@@ -24,6 +24,7 @@ const ICONS = [
   "zap",
   "menu",
   "sidebar",
+  "external-link",
   "chevron-down",
   "chevron-right",
   // home rail destinations
