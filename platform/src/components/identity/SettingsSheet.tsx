@@ -145,8 +145,15 @@ export function SettingsSheet() {
   const schoolValue = school === OTHER_SCHOOL ? identity.schoolName || "Another university" : schoolById(school)?.name ?? "Not set";
 
   return (
+    /* Tapping the dimmed area closes it, which is what everyone tries first;
+       the X and Escape were the only ways out. `target === currentTarget` so a
+       drag that starts inside the panel and releases over the backdrop, or a
+       tap on any child, doesn't count as tapping outside. */
     <div
       className="fixed inset-0 z-[100] grid items-start justify-items-center overflow-y-auto bg-black/25 p-4 backdrop-blur-[2px] sm:items-center"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) setOpen(false);
+      }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="settings-title"

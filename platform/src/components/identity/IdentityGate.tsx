@@ -138,7 +138,13 @@ export function IdentityGate() {
     <div
       /* Top-anchored on a phone, centred once there is room. Centring a tall
          dialog on a short screen puts its first question under the browser
-         chrome and its last under the keyboard. */
+         chrome and its last under the keyboard.
+
+         Deliberately NOT dismissible by tapping the backdrop, unlike
+         SettingsSheet. This is the first-visit form, not a panel: a stray tap
+         while reaching for the name field would drop the reader into the app
+         unnamed, with no obvious way back to the question. Settings is
+         re-openable from the header; this is not. */
       className="fixed inset-0 z-[100] grid items-start justify-items-center overflow-y-auto bg-black/25 p-4 backdrop-blur-[2px] sm:items-center"
       role="dialog"
       aria-modal="true"
