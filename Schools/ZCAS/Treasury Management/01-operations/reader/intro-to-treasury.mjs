@@ -80,7 +80,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Before lunch, your treasurer might release a dollar payment to a supplier, roll a deposit that matured this morning, and take a call from the bank about an overdraft rate. Then approve a credit limit and send you the group cash forecast. **Five different jobs, one desk.** When you hire for that desk, this is what you are buying.",
+          text: "Before lunch, your treasurer might release a dollar payment to a supplier, [roll a deposit that matured this morning](https://corporatefinanceinstitute.com/resources/accounting/cash-management/), and take a call from the bank about an overdraft rate. Then approve a credit limit and send you the group cash forecast. **Five different jobs, one desk.** When you hire for that desk, this is what you are buying.",
         },
         {
           type: "table",
@@ -101,7 +101,7 @@ export default {
         },
         {
           type: "p",
-          text: "The list is not eleven flat items. **The first five are the operating core, and they run in order.** [Forecast the cash](https://corporatefinanceinstitute.com/resources/financial-modeling/forecasting-cash-flow/), manage the [[working capital|The money tied up in running a business day to day: stock on the shelf and invoices customers have not paid yet, less the invoices you have not paid your suppliers. It is cash you own but cannot spend.]] that consumes it, [keep enough on hand to trade](https://corporatefinanceinstitute.com/resources/accounting/cash-management/), invest what is left, and manage the risks on top. **The last six point outward:** to management, the [[rating agencies|Firms like Moody's, S&P and Fitch that score how likely a borrower is to repay. The score sets the interest rate every future borrowing carries, so a downgrade costs real money.]], the banks, the investors, the customers you grant credit to, and a catch-all for M&A support and insurance. In a small company you do most of these yourself, long before you can afford anyone else to.",
+          text: "The list is not eleven flat items. **The first five are the operating core, and they run in order.** [Forecast the cash](https://corporatefinanceinstitute.com/resources/financial-modeling/forecasting-cash-flow/), manage the [[working capital|The money tied up in running a business day to day: stock on the shelf and invoices customers have not paid yet, less the invoices you have not paid your suppliers. It is cash you own but cannot spend.]] that consumes it, keep enough on hand to trade, invest what is left, and manage the risks on top. **The last six point outward:** to management, the [[rating agencies|Firms like Moody's, S&P and Fitch that score how likely a borrower is to repay. The score sets the interest rate every future borrowing carries, so a downgrade costs real money.]], the banks, the investors, the customers you grant credit to, and a catch-all for M&A support and insurance. In a small company you do most of these yourself, long before you can afford anyone else to.",
         },
         {
           type: "callout",

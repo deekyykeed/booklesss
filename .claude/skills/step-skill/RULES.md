@@ -217,13 +217,21 @@ text, so a mark written into one shows its own syntax.
   **AccountingCoach** and their equivalents.
   - **No "read further" box.** A block of links at the foot of a section is
     furniture: it arrives after the reader has finished the idea, and it turns
-    the source into a chore. Mark the words the claim came from instead, where
-    the reader is already looking. (The `sources` block type existed for one
+    the source into a chore. (The `sources` block type existed for one
     afternoon and was removed.)
-  - **Two per section, roughly**, and never two in the same sentence.
-  - Link the **phrase the source backs**, not a bare word and not a whole
-    bolded sentence. "so [six controls](…) are non-negotiable" reads as a
-    citation; "click [here](…)" reads as an advert.
+  - **The marked phrase is not styled at all** — no underline, no colour, no
+    weight. The site's favicon appears instead at **the end of that sentence,
+    just before the full stop**, and is the thing you click. Marking the words
+    competed with the two marks that carry meaning: bold says "remember this"
+    and a ruled term says "tap me", and a third decorated phrase in the same
+    paragraph left none of the three reading as anything in particular.
+  - So **what the mark really selects is the sentence**. Put the link in the
+    sentence whose claim the source actually backs; which words inside it carry
+    the brackets no longer shows on screen. Prefer the phrase the source backs
+    anyway, because it is what a later reader of the `.mjs` will check against.
+  - **Two per section, roughly**, and **never two in one sentence** — two
+    favicons stack side by side before the same full stop and read as clutter.
+    This used to be a style preference; now it is visible.
   - Deep-link the **specific page**, never a site home page or a search result.
   - Link the idea the section just taught, not a tangent. If a section has no
     good outside page, it gets no link. A filler link costs more trust than the

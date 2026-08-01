@@ -6,30 +6,43 @@ import { CodePlayground } from "./CodePlayground";
 import { Checkpoint, StepComplete } from "./Checkpoint";
 import { Term } from "./Term";
 import { faviconFor } from "./favicons";
+import { MynaIcon } from "@/components/icons/myna";
 
-/* A source link: the phrase the claim rests on, with the site's own mark after
- * it. The mark is the point — a reader scrolling a step should be able to see
- * how much of it is backed by somewhere that teaches this for a living, without
- * reading a single URL. Inlined at build time (scripts/gen-favicons.mjs);
- * a site with no mark renders as a plain link rather than a meaningless glyph. */
-function SourceLink({ href, children }: { href: string; children: React.ReactNode }) {
+/* The site's mark, at the end of the sentence it backs and just before the full
+ * stop. The marked phrase itself is left completely alone: no underline, no
+ * colour, no weight.
+ *
+ * Marking the phrase competed with the two marks that carry meaning. Bold says
+ * "remember this" and a ruled term says "tap me"; a third underline in the same
+ * paragraph turned prose into a field of decorated words and none of the three
+ * read as anything in particular. A favicon at the end of the sentence says
+ * where the claim came from without touching the sentence, and scanning a step
+ * for them shows how much of it is externally backed.
+ *
+ * A host with no mark falls back to a plain link glyph. Dropping the link
+ * entirely would lose it silently, since nothing in the prose is styled now. */
+function SourceMark({ href }: { href: string }) {
   const icon = faviconFor(href);
+  let host = href;
+  try {
+    host = new URL(href).hostname.replace(/^www\./, "");
+  } catch {
+    /* an unparseable href is the step's problem; the label just falls back */
+  }
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="font-medium text-ink underline decoration-[#a9a9b2] decoration-1 underline-offset-2 transition-colors hover:decoration-ink"
+      aria-label={`Source: ${host}`}
+      title={host}
+      className="ml-[3px] inline-block align-middle opacity-80 transition-opacity hover:opacity-100"
     >
-      {children}
-      {icon && (
+      {icon ? (
         /* eslint-disable-next-line @next/next/no-img-element */
-        <img
-          src={icon}
-          alt=""
-          aria-hidden="true"
-          className="ml-[3px] inline-block h-[15px] w-[15px] translate-y-[-1px] rounded-[3px] align-middle"
-        />
+        <img src={icon} alt="" aria-hidden="true" className="h-[17px] w-[17px] translate-y-[-2px] rounded-[3px]" />
+      ) : (
+        <MynaIcon name="external-link" size={14} className="translate-y-[-1px] text-muted" />
       )}
     </a>
   );
@@ -42,29 +55,64 @@ function SourceLink({ href, children }: { href: string; children: React.ReactNod
  * they skim the step the night before the exam, so it is set in ink against the
  * #4a4a52 body rather than just heavier, which at 18px is barely a difference.
  *
- * The three marks have to stay distinguishable at a glance, and there is only
- * so much room: bold takes weight and ink, a defined term takes a plain rule
- * under it, a source link takes a rule plus the body's one accent. */
+ * Rendering is sentence by sentence rather than run by run, because a source
+ * mark belongs to its sentence rather than to the words it was authored on. So
+ * the runs are buffered until a sentence ends, and any marks collected along
+ * the way are emitted between the last word and the full stop. A terminator
+ * only counts when whitespace or the end of the block follows it, which keeps
+ * "0.025%" and "ZMW 1,001,100." from splitting a sentence mid-figure. */
 function Rich({ text }: { text: string }) {
-  return (
-    <>
-      {runs(text).map((r, i) =>
-        r.define ? (
-          <Term key={i} term={r.text} definition={r.define} />
-        ) : r.href ? (
-          <SourceLink key={i} href={r.href}>
-            {r.text}
-          </SourceLink>
-        ) : r.bold ? (
-          <strong key={i} className="font-semibold text-ink">
-            {r.text}
-          </strong>
-        ) : (
-          <span key={i}>{r.text}</span>
-        ),
-      )}
-    </>
-  );
+  const out: React.ReactNode[] = [];
+  let buf: React.ReactNode[] = [];
+  let marks: string[] = [];
+  let k = 0;
+
+  const flush = (tail: string) => {
+    if (!buf.length && !marks.length && !tail) return;
+    out.push(
+      <span key={k++}>
+        {buf}
+        {marks.map((h, i) => (
+          <SourceMark key={i} href={h} />
+        ))}
+        {tail}
+      </span>,
+    );
+    buf = [];
+    marks = [];
+  };
+
+  for (const r of runs(text)) {
+    if (r.define) {
+      buf.push(<Term key={k++} term={r.text} definition={r.define} />);
+      continue;
+    }
+    if (r.href) {
+      // The words stay exactly as written; only the mark is added, later.
+      buf.push(<span key={k++}>{r.text}</span>);
+      marks.push(r.href);
+      continue;
+    }
+    // Plain or bold text can carry the sentence end, so it is split on one.
+    const parts = r.text.split(/([.!?](?=\s|$))/);
+    for (let i = 0; i < parts.length; i += 2) {
+      const body = parts[i];
+      const term = parts[i + 1];
+      if (body)
+        buf.push(
+          r.bold ? (
+            <strong key={k++} className="font-semibold text-ink">
+              {body}
+            </strong>
+          ) : (
+            <span key={k++}>{body}</span>
+          ),
+        );
+      if (term !== undefined) flush(term);
+    }
+  }
+  flush("");
+  return <>{out}</>;
 }
 
 /* A display equation, set apart from the prose. `where` names each symbol
