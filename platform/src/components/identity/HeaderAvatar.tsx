@@ -19,8 +19,13 @@ export function HeaderAvatar() {
   const { identity } = useIdentity();
   const plan = usePlan();
 
+  /* Same shell as the circle buttons beside it, border included. PlanRing draws
+     the spend arc over the top; it used to draw the hairline too, but an SVG
+     stroke on the 32px box reads thinner than a real 1px CSS border, so the
+     avatar looked borderless next to search. The border is the button's now,
+     and the ring only draws when there is a plan to report. */
   const shell =
-    "relative grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white text-[11px] font-semibold text-ink-2 shadow-[0_0.6px_0.6px_-1.25px_rgba(0,0,0,0.18),0_2.3px_2.3px_-2.5px_rgba(0,0,0,0.16),0_10px_10px_-3.75px_rgba(0,0,0,0.06)]";
+    "relative grid h-8 w-8 shrink-0 place-items-center rounded-full border border-[#d4d4d4] bg-white text-[11px] font-semibold text-ink-2 shadow-[0_0.6px_0.6px_-1.25px_rgba(0,0,0,0.18),0_2.3px_2.3px_-2.5px_rgba(0,0,0,0.16),0_10px_10px_-3.75px_rgba(0,0,0,0.06)]";
 
   const ring = <PlanRing used={plan?.used ?? null} daysLeft={plan?.daysLeft} />;
 

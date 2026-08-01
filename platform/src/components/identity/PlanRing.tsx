@@ -30,7 +30,6 @@ const URGENT_DAYS = 3;
 
 export function PlanRing({ used, daysLeft, size = 32 }: Props) {
   const c = size / 2;
-  const track = 1;
   const arc = 2;
   // One radius for both, so the thicker arc sits centred on the hairline.
   const r = c - arc / 2;
@@ -48,7 +47,9 @@ export function PlanRing({ used, daysLeft, size = 32 }: Props) {
       aria-hidden="true"
       focusable="false"
     >
-      <circle cx={c} cy={c} r={r} stroke="var(--color-line-2)" strokeWidth={track} />
+      {/* No track any more: the button draws its own 1px border, the same one
+          the circle buttons beside it wear. An SVG stroke doubling it read as
+          a soft grey smudge rather than a hairline. */}
       {used !== null && (
         <circle
           cx={c}

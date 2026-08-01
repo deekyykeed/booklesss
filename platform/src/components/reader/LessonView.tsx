@@ -5,6 +5,35 @@ import { runs } from "@/lib/emphasis";
 import { CodePlayground } from "./CodePlayground";
 import { Checkpoint, StepComplete } from "./Checkpoint";
 import { Term } from "./Term";
+import { faviconFor } from "./favicons";
+
+/* A source link: the phrase the claim rests on, with the site's own mark after
+ * it. The mark is the point — a reader scrolling a step should be able to see
+ * how much of it is backed by somewhere that teaches this for a living, without
+ * reading a single URL. Inlined at build time (scripts/gen-favicons.mjs);
+ * a site with no mark renders as a plain link rather than a meaningless glyph. */
+function SourceLink({ href, children }: { href: string; children: React.ReactNode }) {
+  const icon = faviconFor(href);
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="font-medium text-ink underline decoration-[#a9a9b2] decoration-1 underline-offset-2 transition-colors hover:decoration-ink"
+    >
+      {children}
+      {icon && (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+          src={icon}
+          alt=""
+          aria-hidden="true"
+          className="ml-[3px] inline-block h-[15px] w-[15px] translate-y-[-1px] rounded-[3px] align-middle"
+        />
+      )}
+    </a>
+  );
+}
 
 /* Step prose with its three inline marks: `**bold**`, `[[term|definition]]`
  * and `[label](url)`.
@@ -23,15 +52,9 @@ function Rich({ text }: { text: string }) {
         r.define ? (
           <Term key={i} term={r.text} definition={r.define} />
         ) : r.href ? (
-          <a
-            key={i}
-            href={r.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-medium text-ink underline decoration-[#a9a9b2] decoration-1 underline-offset-2 transition-colors hover:decoration-ink"
-          >
+          <SourceLink key={i} href={r.href}>
             {r.text}
-          </a>
+          </SourceLink>
         ) : r.bold ? (
           <strong key={i} className="font-semibold text-ink">
             {r.text}
