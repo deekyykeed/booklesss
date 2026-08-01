@@ -1,57 +1,63 @@
 // Regenerates src/components/identity/avatars.tsx from
-// @iconify-json/streamline-plump-color.
+// @iconify-json/streamline-kameleon-color.
 //   npm run gen:avatars
 //
 // The twelve profile pictures a student picks from on first visit. There is no
 // upload — these are the whole set, so they have to read as twelve different
-// people at 40px, which is why each one is recoloured into its own hue rather
-// than shipped in Plump's stock blue.
+// people at 32px.
 //
-// Same generation trick as gen-icons.mjs (the set is 1,000 icons and this runs
-// in a client component), and the same two-layer recolour as
-// components/home/plump-glyphs.tsx: every Plump icon is drawn in exactly two
-// flat colours — #8fbffa light, #2859c5 dark — plus white, so swapping those
-// two for a gradient pair restyles the whole glyph without touching a path.
+// Kameleon draws each icon as a finished badge: a full-bleed 48px disc in one
+// of the set's four flat colours with the subject sitting on it. So unlike the
+// Plump avatars this replaced, nothing is recoloured here — the disc IS the
+// avatar, and the table below only picks which twelve and in what order.
+//
+// Four disc colours across twelve avatars means each colour comes up three
+// times, so the order alternates them: at six columns the picker reads as a
+// checkerboard rather than four bands of one hue, and no two neighbours are
+// the same colour.
+//
+// Same generation trick as gen-icons.mjs: only the twelve chosen icons are
+// inlined, because the set is 400 icons and this renders in a client
+// component.
 import { getIconData, iconToSVG } from "@iconify/utils";
-import plump from "@iconify-json/streamline-plump-color/icons.json" with { type: "json" };
+import kameleon from "@iconify-json/streamline-kameleon-color/icons.json" with { type: "json" };
 import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-/* id · icon · label · [pale, hue] · [hue, shadow]
+/* id · icon · label
  *
  * `label` is what a screen reader says and what the picker's tooltip shows, so
- * it names the thing, not the colour. No two share a hue family — colour is
- * doing as much identifying work here as the shape is. */
+ * it names the thing, not the colour. */
 const AVATARS = [
-  ["alien", "alien", "Alien", ["#a7e3b4", "#5cc177"], ["#3faa5c", "#25683a"]],
-  ["laugh", "smiley-laughing-1", "Laughing face", ["#f7d9a0", "#eab24f"], ["#d99a2b", "#8a611a"]],
-  ["sparks", "smiley-sparks", "Sparkling face", ["#cdc2f5", "#9a86e6"], ["#7a63d6", "#4a3aa7"]],
-  ["dog", "dog-1", "Dog", ["#e6c4a5", "#c99a6d"], ["#a97a4d", "#6d4c2e"]],
-  ["fish", "fish", "Fish", ["#a8e0dc", "#5cbdb6"], ["#3aa39b", "#226460"]],
-  ["paw", "pet-paw", "Paw print", ["#f5bcc4", "#e0808f"], ["#c85f70", "#7d3944"]],
-  ["strawberry", "strawberry", "Strawberry", ["#f6b3ac", "#e3705f"], ["#c9503e", "#7a3025"]],
-  ["icecream", "ice-cream-2", "Ice cream", ["#f7c8e2", "#e58cc0"], ["#cc6aa4", "#7c3f63"]],
-  ["coffee", "coffee-mug", "Coffee", ["#e8cbb2", "#c99a72"], ["#a87a50", "#6b4c30"]],
-  ["gameboy", "gameboy", "Handheld console", ["#b3d3f7", "#6aa4e8"], ["#2a78d6", "#1a4c88"]],
-  ["music", "music-note-2", "Music note", ["#bcc8f5", "#8195e6"], ["#5c74d6", "#37469f"]],
-  ["palette", "paint-palette", "Paint palette", ["#f8cba6", "#eda45c"], ["#d9812f", "#8a521c"]],
+  ["astronaut", "astronaut", "Astronaut"], //      cyan
+  ["robot", "robot", "Robot"], //                  teal
+  ["smiley", "love-smiley", "Smiling face"], //    red
+  ["peace", "peace", "Peace sign"], //             amber
+  ["ladybug", "ladybug", "Ladybird"], //           cyan
+  ["butterfly", "butterfly", "Butterfly"], //      teal
+  ["ufo", "ufo", "Flying saucer"], //              red
+  ["party", "party-poppers", "Party popper"], //   amber
+  ["rainbow", "rainbow", "Rainbow"], //            cyan
+  ["strawberry", "strawberry", "Strawberry"], //   teal
+  ["dice", "dices", "Dice"], //                    red
+  ["skate", "skate", "Ice skate"], //              amber
 ];
 
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "components", "identity", "avatars.tsx");
 
-const rows = AVATARS.map(([id, icon, label, light, dark]) => {
-  const data = getIconData(plump, icon);
-  if (!data) throw new Error(`Unknown Plump icon: "${icon}"`);
+const rows = AVATARS.map(([id, icon, label]) => {
+  const data = getIconData(kameleon, icon);
+  if (!data) throw new Error(`Unknown Kameleon icon: "${icon}"`);
   const body = iconToSVG(data, { height: 48, width: 48 }).body;
-  return { id, label, light, dark, body };
+  return { id, label, body };
 });
 
 const union = rows.map((r) => `  | "${r.id}"`).join("\n");
 const entries = rows
   .map(
     (r) =>
-      `  {\n    id: "${r.id}",\n    label: "${r.label}",\n    light: ["${r.light[0]}", "${r.light[1]}"],\n    dark: ["${r.dark[0]}", "${r.dark[1]}"],\n    body:\n      '${r.body.replace(/'/g, "\\'")}',\n  },`,
+      `  {\n    id: "${r.id}",\n    label: "${r.label}",\n    body:\n      '${r.body.replace(/'/g, "\\'")}',\n  },`,
   )
   .join("\n");
 
@@ -59,17 +65,15 @@ writeFileSync(
   OUT,
   `/* AUTO-GENERATED by scripts/gen-avatars.mjs — do not edit by hand.
  *
- * Streamline "Plump" free set (CC BY 4.0, attribution owed — same as the
- * composer's file-type badges and the dashboard's stat marks). Each icon is
- * recoloured into its own hue: Plump draws in two flat colours plus white, so
- * the two are swapped for gradient pairs at render.
+ * Streamline "Kameleon Colors" free set (CC BY 4.0, attribution owed — as with
+ * the composer's file-type badges and the dashboard's stat marks). Each icon is
+ * a complete circular badge, drawn in the set's own colours: a full-bleed disc
+ * plus its subject. Nothing here is recoloured.
  *
- * Add or repaint an avatar in the script's AVATARS table and rerun
+ * Add or swap an avatar in the script's AVATARS table and rerun
  * \`npm run gen:avatars\`.
  */
 "use client";
-
-import { useId } from "react";
 
 export type AvatarId =
 ${union};
@@ -77,8 +81,6 @@ ${union};
 type Entry = {
   id: AvatarId;
   label: string;
-  light: [string, string];
-  dark: [string, string];
   body: string;
 };
 
@@ -92,24 +94,19 @@ const BY_ID = new Map(AVATARS.map((a) => [a.id, a]));
 /** The one a student gets before they have chosen. */
 export const DEFAULT_AVATAR: AvatarId = "${rows[0].id}";
 
+/** An id this build still draws. A stored id can outlive its entry — the set
+ *  was Plump before it was Kameleon — so anything unknown resolves to the
+ *  default rather than leaving a picker with nothing selected. */
+export function resolveAvatar(id: AvatarId | string | null | undefined): AvatarId {
+  return BY_ID.has(id as AvatarId) ? (id as AvatarId) : DEFAULT_AVATAR;
+}
+
 /**
- * One avatar, inlined as SVG. Unknown ids fall back to the default rather than
- * rendering an empty box — a stored id can outlive its entry in the table.
+ * One avatar, inlined as SVG. The art is a full-bleed disc, so it needs no
+ * shell of its own — anything round it is the caller's border, not the icon's.
  */
 export function Avatar({ id, size = 40 }: { id: AvatarId | string; size?: number }) {
-  const key = useId().replace(/[^a-zA-Z0-9_-]/g, "");
-  const a = BY_ID.get(id as AvatarId) ?? BY_ID.get(DEFAULT_AVATAR)!;
-
-  const html =
-    '<defs>' +
-    '<linearGradient id="' + key + 'l" x1="0" y1="0" x2="1" y2="1">' +
-    '<stop offset="0" stop-color="' + a.light[0] + '"/><stop offset="1" stop-color="' + a.light[1] + '"/>' +
-    '</linearGradient>' +
-    '<linearGradient id="' + key + 'd" x1="0" y1="0" x2="1" y2="1">' +
-    '<stop offset="0" stop-color="' + a.dark[0] + '"/><stop offset="1" stop-color="' + a.dark[1] + '"/>' +
-    '</linearGradient>' +
-    '</defs>' +
-    a.body.replaceAll("#8fbffa", "url(#" + key + "l)").replaceAll("#2859c5", "url(#" + key + "d)");
+  const a = BY_ID.get(resolveAvatar(id))!;
 
   return (
     <svg
@@ -120,14 +117,14 @@ export function Avatar({ id, size = 40 }: { id: AvatarId | string; size?: number
       role="img"
       aria-label={a.label}
       className="shrink-0"
-      dangerouslySetInnerHTML={{ __html: html }}
+      dangerouslySetInnerHTML={{ __html: a.body }}
     />
   );
 }
 
 /** The label for an id — for alt text and tooltips outside the picker. */
 export function avatarLabel(id: AvatarId | string): string {
-  return (BY_ID.get(id as AvatarId) ?? BY_ID.get(DEFAULT_AVATAR)!).label;
+  return BY_ID.get(resolveAvatar(id))!.label;
 }
 `,
   "utf8",

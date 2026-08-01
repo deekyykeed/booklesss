@@ -29,6 +29,7 @@
     "@iconify-json/mynaui": "^1.2.19",
     "@iconify-json/solar": "^1.2.5",
     "@iconify-json/streamline-freehand": "^1.2.1",
+    "@iconify-json/streamline-kameleon-color": "^1.2.2",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

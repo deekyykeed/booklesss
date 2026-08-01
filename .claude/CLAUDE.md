@@ -153,8 +153,9 @@ All icons in `platform/` come from the **MynaUI** set (by Praveen Juge) via the 
 
 **That module is generated.** Adding an icon = add the name to `ICONS` in `platform/scripts/gen-icons.mjs`, run `npm run gen:icons`, done. Only the paths actually drawn are inlined, which is why it works in client components — importing the 2,650-icon set into one would ship the lot to the browser. Never hand-edit the generated file; unknown names fail the generator loudly rather than rendering nothing.
 
-**Three exceptions, all deliberate:**
+**Four exceptions, all deliberate:**
 - The composer's attachment chips use **Streamline Ultimate Colors (Free)** file-type badges (`reader/file-icons.tsx`) and the course cards use **Streamline Plump** gradient marks (`home/plump-glyphs.tsx`, `home/course-glyphs.tsx`). Both are multicolour on purpose — the colour is what carries the meaning — so they keep their own fills rather than following `currentColor`. CC BY 4.0, attribution still owed (as with MynaUI).
+- The twelve **profile pictures** are **Streamline Kameleon Colors (Free)** (owner's pick, 2026-08-01), generated into `platform/src/components/identity/avatars.tsx` (`AVATARS` in `scripts/gen-avatars.mjs` → `npm run gen:avatars`). Each is a finished badge — a full-bleed coloured disc with its subject on it — so nothing is recoloured and nothing needs a shell drawn round it. The set has only four disc colours, so the table's order alternates them. Replaced the Plump avatars, whose two-colour recolour trick doesn't apply here.
 - The reader sidebar's **lesson caret** is **Mingcute** (owner's pick, 2026-07-31): `<MingcuteIcon name="down-small-line" />` from `platform/src/components/icons/mingcute.tsx`, generated the same way (`ICONS` in `scripts/gen-mingcute-icons.mjs` → `npm run gen:mingcute`). Mingcute's grid draws a much smaller mark than MynaUI's at the same size and strokes it at 2 rather than 1.5, so anything borrowed from it needs its `size`/`strokeWidth` set against the MynaUI icons beside it. Keep this set narrow — MynaUI is still the system.
 
 Everything else monochrome is MynaUI.

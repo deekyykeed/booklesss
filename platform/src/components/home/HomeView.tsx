@@ -1,10 +1,12 @@
 "use client";
 
 import { useMemo } from "react";
-import { COURSES } from "@/lib/courses";
+import { enrolledCourses } from "@/lib/courses";
+import { useIdentity } from "@/lib/identity";
 import { isStudyDay, studyHistory, useProgress } from "@/lib/progress";
 import { overallPerformance, overallScoreHistory, type Performance } from "@/lib/performance";
 import { MynaIcon } from "@/components/icons/myna";
+import { EDIT_EVENT } from "@/components/identity/IdentityGate";
 import { CourseCard } from "./CourseCard";
 import { OfflineTools } from "./OfflineTools";
 import { Spark } from "./Spark";
@@ -74,15 +76,21 @@ export function HomeView({
   afterGreeting?: React.ReactNode;
 }) {
   const { hydrated, doneCount, isComplete, streak, bestStreak, daysStudied, studiedToday, days } = useProgress();
+  const { identity } = useIdentity();
+
+  /* The courses this student said they're taking — everything below is about
+   * these and nothing else. Coverage over a library half of which belongs to
+   * another school would be a number nobody could act on. */
+  const mine = useMemo(() => enrolledCourses(identity?.courses), [identity?.courses]);
 
   const totals = useMemo(() => {
-    const lessons = COURSES.flatMap((c) => c.lessonIds);
+    const lessons = mine.flatMap((c) => c.lessonIds);
     return {
       lessons,
       steps: lessons.length,
-      checks: COURSES.reduce((n, c) => n + c.totalCheckpoints, 0),
+      checks: mine.reduce((n, c) => n + c.totalCheckpoints, 0),
     };
-  }, []);
+  }, [mine]);
 
   const done = useMemo(() => {
     if (!hydrated) return { checks: 0, steps: 0 };
@@ -161,7 +169,9 @@ export function HomeView({
     <div className="mx-auto w-full max-w-[900px] px-4 py-10 md:px-6">
       <h1 className="font-display text-[30px] font-medium leading-[1.2] tracking-[-0.02em] text-ink">
         {hydrated ? timeGreeting() : "Welcome back"}
-        {name ? `, ${name}` : ""}
+        {/* The name they typed into the form beats the one Clerk inferred from
+            an email address — they chose one of them. */}
+        {identity?.name || name ? `, ${identity?.name ?? name}` : ""}
       </h1>
       <p className="mt-1.5 text-[14px] leading-6 text-muted">{line}</p>
       {afterGreeting}
@@ -250,9 +260,23 @@ export function HomeView({
 
       {/* ---- the courses themselves ---- */}
       <section id="courses" className="mt-8 scroll-mt-20 pb-10">
-        <h2 className="dash-heading">My courses</h2>
+        {/* The list is what they picked at sign-up, so the way to change it
+            sits on the list itself — reopening the same form on its course
+            section. Without this the answer would be unchangeable. */}
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="dash-heading">My courses</h2>
+          <button
+            type="button"
+            onClick={() =>
+              window.dispatchEvent(new CustomEvent(EDIT_EVENT, { detail: { step: "courses" } }))
+            }
+            className="text-[13px] font-medium text-muted transition-colors hover:text-ink"
+          >
+            Change
+          </button>
+        </div>
         <div className="mt-2.5 grid gap-3 md:grid-cols-2">
-          {COURSES.map((c) => {
+          {mine.map((c) => {
             const cDone = hydrated ? c.lessonIds.reduce((n, id) => n + doneCount(id), 0) : 0;
             const cSteps = hydrated ? c.lessonIds.filter((id) => isComplete(id)).length : 0;
             /* Where the button lands: the step they've started but not

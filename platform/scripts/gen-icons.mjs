@@ -46,6 +46,10 @@ const ICONS = [
   "dislike-solid",
   // progress + the dashboard's stat tiles (check-circle above serves both)
   "check",
+  // the sign-up form's school and course rows: an empty ring, filled once
+  // picked — a checkbox in the app's own hand
+  "circle",
+  "check-circle-solid",
   "chart-bar-increasing",
   "clock-1",
   "target",

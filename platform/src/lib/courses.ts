@@ -1,5 +1,6 @@
 import { ancestorsOf, checkpointsFor, childIdsOf, labelFor, lessonsUnder } from "./course";
 import courseIndexData from "./course-index.json";
+import { SCHOOLS, type SchoolId } from "./schools";
 
 /* ------------------------------------------------------------------ *
  * The student's course list.
@@ -97,6 +98,46 @@ export function courseForNode(nodeId: string): CourseMeta | undefined {
   // ancestorsOf is nearest-first, so the last entry is the top-level node.
   const root = ancestorsOf(nodeId).at(-1) ?? nodeId;
   return COURSES.find((c) => c.unitIds.includes(root));
+}
+
+/* ---- what a particular student sees --------------------------------- *
+ *
+ * The library is one list; a student is at one school taking a handful of its
+ * courses. These two joins are what turn the first into the second, and they
+ * are the only place course slugs from a school table or from localStorage are
+ * matched against courses that actually exist.
+ * -------------------------------------------------------------------- */
+
+/** Every course slug some school claims. */
+const CLAIMED = new Set(SCHOOLS.flatMap((s) => s.courseSlugs));
+
+/**
+ * The courses a school teaches — what the sign-up form offers once a school is
+ * picked.
+ *
+ * A course no school has claimed is offered to everyone. That is the safe way
+ * round: seeding a course is a content change (see the note at the top), and a
+ * new course that nobody could enrol in until someone edited lib/schools would
+ * look like a broken deploy rather than a missing line.
+ */
+export function coursesForSchool(id: SchoolId | null | undefined): CourseMeta[] {
+  const school = SCHOOLS.find((s) => s.id === id);
+  return COURSES.filter((c) => school?.courseSlugs.includes(c.slug) || !CLAIMED.has(c.slug));
+}
+
+/**
+ * The courses a student is taking, in library order.
+ *
+ * An empty or unrecognisable list falls back to the whole library rather than
+ * an empty dashboard: it means the question hasn't been answered yet, or the
+ * answer was written by a build whose slugs have since changed, and neither is
+ * a reason to hide every course from someone who came here to study.
+ */
+export function enrolledCourses(slugs: string[] | undefined): CourseMeta[] {
+  if (!slugs?.length) return COURSES;
+  const want = new Set(slugs);
+  const mine = COURSES.filter((c) => want.has(c.slug));
+  return mine.length ? mine : COURSES;
 }
 
 /** Every lesson across every course, for whole-library totals. */
