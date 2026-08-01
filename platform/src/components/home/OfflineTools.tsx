@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MynaIcon } from "@/components/icons/myna";
-import { allLessonSlugs } from "@/lib/course";
-import { COURSES } from "@/lib/courses";
+import { pathForId } from "@/lib/course";
+import { enrolledCourses } from "@/lib/courses";
+import { useIdentity } from "@/lib/identity";
 import { loadSearchIndex } from "@/lib/search";
 
 /* The two things a reader can do with the service worker, in one card:
@@ -41,6 +42,10 @@ function isIos() {
 }
 
 export function OfflineTools() {
+  const { identity } = useIdentity();
+  /* What "every lesson" means for this student: the courses they're taking. */
+  const mine = useMemo(() => enrolledCourses(identity?.courses), [identity?.courses]);
+
   const [installEvent, setInstallEvent] = useState<InstallPromptEvent | null>(null);
   const [ios, setIos] = useState(false);
   const [showIosHelp, setShowIosHelp] = useState(false);
@@ -121,17 +126,20 @@ export function OfflineTools() {
     loadSearchIndex().catch(() => {});
     /* Every page a reader can reach, not just the lessons — landing on a
      * dashboard that isn't saved would mean opening the app offline to a
-     * dead screen with the lessons sitting right there behind it. */
+     * dead screen with the lessons sitting right there behind it.
+     *
+     * Their own courses only. This is someone's mobile data, and a course
+     * their school doesn't teach isn't a page they will ever open offline. */
     const urls = [
       "/", // the dashboard
-      ...COURSES.map((c) => `/${c.slug}`), // each course overview
-      ...allLessonSlugs().map((slug) => "/" + slug.join("/")),
+      ...mine.map((c) => `/${c.slug}`), // each of their course overviews
+      ...mine.flatMap((c) => c.lessonIds.map((id) => pathForId(id))),
       "/offline",
     ];
     setProgress({ done: 0, total: urls.length });
     setSaving(true);
     worker.postMessage({ type: "save-all", urls });
-  }, []);
+  }, [mine]);
 
   const dismiss = () => {
     localStorage.setItem(DISMISSED, "1");
@@ -154,8 +162,10 @@ export function OfflineTools() {
             <p className="text-[14px] font-medium text-ink">Study without data</p>
             <p className="mt-0.5 text-[13px] leading-5 text-muted">
               {savedAt
-                ? `All lessons saved to this device on ${savedAt}. They open with no connection.`
-                : "Save every lesson to this device and read them with no connection. About 700 KB of data."}
+                ? `Your lessons were saved to this device on ${savedAt}. They open with no connection.`
+                : /* No fixed figure any more: what gets saved is their courses,
+                     so the total depends on how many they're taking. */
+                  "Save every lesson in your courses to this device and read them with no connection. Well under a megabyte of data."}
             </p>
           </div>
         </div>

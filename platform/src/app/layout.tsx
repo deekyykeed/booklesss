@@ -45,9 +45,11 @@ const aptos = localFont({
 export const metadata: Metadata = {
   title: "Booklesss",
   description: "Learn without the textbook — courses, lessons, and steps.",
-  // iOS ignores the web manifest's icons and reads this instead.
+  // iOS ignores the web manifest's icons and reads its own link, which
+  // src/app/apple-icon.png supplies on its own — as favicon.ico and icon.svg
+  // beside it do for the tab. Naming any of them in an `icons` field here
+  // would take over from the file convention and drop the rest.
   appleWebApp: { capable: true, title: "Booklesss", statusBarStyle: "default" },
-  icons: { apple: "/icons/apple-touch-icon.png" },
 };
 
 /* Paints the phone's browser chrome to match the app rather than leaving a

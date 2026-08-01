@@ -1,16 +1,23 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { DEFAULT_AVATAR, type AvatarId } from "@/components/identity/avatars";
+import { resolveAvatar, type AvatarId } from "@/components/identity/avatars";
+import { isSchoolId, type SchoolId } from "@/lib/schools";
 
 /* ------------------------------------------------------------------ *
- * Who is reading — a name and a face, asked once and kept on the device.
+ * Who is reading — a name, a face, a school and the courses they're taking,
+ * asked once and kept on the device.
  *
  * With Clerk switched off there is no account to hang a student off, and a
  * reader who has just landed on a lesson is the worst possible moment to ask
- * for an email. So the app asks for the two things it actually needs to
- * address someone — what to call them, and which face is theirs — and stores
- * them locally.
+ * for an email. So the app asks for the things it actually needs to address
+ * someone and show them their own dashboard — never an email, never a
+ * password — and stores them locally.
+ *
+ * School and courses earn their place by changing what the reader sees: a
+ * student at ZCAS taking two courses gets those two on their home page, their
+ * progress measured against those two, and no scrolling past a course they
+ * will never open. Nothing else in the app is gated on them.
  *
  * Same store shape as progress.tsx and for the same reason: localStorage is an
  * external mutable store that doesn't exist during SSR, so this is a
@@ -31,6 +38,12 @@ export type Identity = {
   /** What to call them. Trimmed, never empty — the popup won't submit blank. */
   name: string;
   avatar: AvatarId;
+  /** Where they study. `null` on records written before the form asked, and on
+   *  any record naming a school this build no longer carries. */
+  school: SchoolId | null;
+  /** Course slugs they're taking, as in course-index.json. Empty means "not
+   *  answered yet" — the gate reads it that way and asks. */
+  courses: string[];
   /** Random, per device. See the note above. */
   id: string;
   /** ISO date the identity was created, for a later "member since". */
@@ -54,7 +67,14 @@ function load(): Identity | null {
     if (!v || typeof v.name !== "string" || !v.name.trim()) return null;
     cache = {
       name: v.name.trim(),
-      avatar: (v.avatar as AvatarId) ?? DEFAULT_AVATAR,
+      // The avatar set has changed once already (Plump → Kameleon), so a
+      // stored id is only kept if this build still draws it.
+      avatar: resolveAvatar(v.avatar),
+      school: isSchoolId(v.school) ? v.school : null,
+      // Course slugs are validated where they're used (lib/courses), not here:
+      // this module loads on every page and has no business pulling the course
+      // tree in to check a list of strings.
+      courses: Array.isArray(v.courses) ? v.courses.filter((c) => typeof c === "string") : [],
       id: typeof v.id === "string" ? v.id : newId(),
       since: typeof v.since === "string" ? v.since : new Date().toISOString(),
     };
@@ -117,12 +137,20 @@ export function useIdentity(): Snapshot {
   return useSyncExternalStore(subscribe, getSnapshot, () => EMPTY);
 }
 
-/** Saves a name and a face. Keeps `id` and `since` across later edits. */
-export function saveIdentity(name: string, avatar: AvatarId): Identity {
+/** Saves everything the form asked. Keeps `id` and `since` across later edits. */
+export function saveIdentity(input: {
+  name: string;
+  avatar: AvatarId;
+  school: SchoolId | null;
+  courses: string[];
+}): Identity {
   const prev = load();
   const next: Identity = {
-    name: name.trim(),
-    avatar,
+    name: input.name.trim(),
+    avatar: input.avatar,
+    school: input.school,
+    // Deduplicated so a double tap in the picker can't enrol anyone twice.
+    courses: [...new Set(input.courses)],
     id: prev?.id ?? newId(),
     since: prev?.since ?? new Date().toISOString(),
   };

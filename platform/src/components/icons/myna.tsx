@@ -33,6 +33,9 @@ export type MynaIconName =
   | "dislike"
   | "dislike-solid"
   | "check"
+  | "circle"
+  | "check-circle-solid"
+  | "x"
   | "chart-bar-increasing"
   | "clock-1"
   | "target"
@@ -95,6 +98,12 @@ const BODIES: Record<MynaIconName, string> = {
     '<path fill="currentColor" d="M14.193 20.928a1.62 1.62 0 0 1-1.415.822c-1.005 0-1.773-.38-2.282-1.048c-.477-.628-.664-1.43-.723-2.189c-.106-1.37.188-2.908.404-3.868h-5.25c-.661 0-1.117-.389-1.364-.882c-.225-.446-.301-1.004-.312-1.556c-.021-1.124.23-2.564.607-3.956c.38-1.4.902-2.813 1.459-3.893c.276-.536.577-1.02.894-1.383c.28-.321.725-.725 1.304-.725h12.521c.935 0 1.714.748 1.714 1.697v9.385c0 .628-.349 1.199-.898 1.493m0 0c-.39.21-.773.402-1.148.591c-.68.343-1.335.673-1.973 1.07c-.958.596-1.746 1.27-2.258 2.176l-1.28 2.266"/>',
   "check":
     '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m6 13.626l1.606 1.722c.886.95 1.329 1.424 1.825 1.574c.436.131.9.096 1.315-.1c.473-.224.852-.761 1.612-1.836L18 7"/>',
+  "circle":
+    '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0"/>',
+  "check-circle-solid":
+    '<path fill="currentColor" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75s-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12m13.523-3.308a.75.75 0 0 0-1.048.169l-3.597 4.981a.25.25 0 0 1-.391.018l-1.506-1.72a.75.75 0 1 0-1.129.987l1.506 1.721a1.75 1.75 0 0 0 2.736-.128l3.597-4.98a.75.75 0 0 0-.168-1.048"/>',
+  "x":
+    '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18 6L6 18M6 6l12 12"/>',
   "chart-bar-increasing":
     '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21H9.4c-2.24 0-3.36 0-4.216-.436a4 4 0 0 1-1.748-1.748C3 17.96 3 16.84 3 14.6V3m4 4.5h5m-5 9h10M7 12h7"/>',
   "clock-1":

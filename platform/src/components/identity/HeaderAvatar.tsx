@@ -6,8 +6,8 @@ import { initials, useIdentity } from "@/lib/identity";
 
 /* The header's account control while Clerk is off: the face the reader picked,
  * in the same 32px shell the circle buttons beside it wear. Clicking it
- * reopens the picker — the only way to fix a typo in a name that is never
- * asked for twice. */
+ * reopens the form — the only way to fix a typo in a name that is never asked
+ * for twice, or to change school and courses. */
 export function HeaderAvatar() {
   const { identity } = useIdentity();
 
@@ -23,10 +23,12 @@ export function HeaderAvatar() {
       type="button"
       onClick={() => window.dispatchEvent(new Event(EDIT_EVENT))}
       className={`${shell} transition-opacity hover:opacity-80`}
-      title={`${identity.name} — change name or picture`}
-      aria-label={`${identity.name}. Change name or picture`}
+      title={`${identity.name} — change your details`}
+      aria-label={`${identity.name}. Change your details`}
     >
-      {identity.avatar ? <Avatar id={identity.avatar} size={26} /> : initials(identity.name)}
+      {/* The art is a full-bleed disc, so it fills the shell rather than
+          sitting inside it. */}
+      {identity.avatar ? <Avatar id={identity.avatar} size={32} /> : initials(identity.name)}
     </button>
   );
 }
