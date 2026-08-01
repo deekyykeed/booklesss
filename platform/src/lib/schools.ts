@@ -25,25 +25,53 @@ export type School = {
   name: string;
   /** The full name, one line under it. */
   full: string;
+  /** Anything else a student might type looking for it: the old name, the
+   *  campus, a common misspelling. Searched, never shown. */
+  aka?: string[];
   /** Course slugs this school teaches, as they appear in course-index.json. */
   courseSlugs: string[];
 };
 
-/** In the order the picker draws them. */
+/** In the order the picker draws them.
+ *
+ *  Only schools whose courses the library actually carries belong here. A
+ *  school listed with nothing to teach is a dead end: the student picks it,
+ *  the next screen has nothing to offer, and the form can't be finished. When
+ *  a campus is worth capturing before its courses exist, that wants its own
+ *  answer ("we're not there yet — tell us where you are"), not a row here. */
 export const SCHOOLS: School[] = [
   {
     id: "zcas",
     name: "ZCAS",
     full: "Zambia Centre for Accountancy Studies",
+    aka: ["ZCAS University", "Zcasu", "Accountancy"],
     courseSlugs: ["strategic-management", "treasury-management", "corporate-finance"],
   },
   {
     id: "unza",
     name: "UNZA",
     full: "University of Zambia",
+    aka: ["Great East Road", "Ridgeway"],
     courseSlugs: ["economics"],
   },
 ];
+
+/**
+ * Schools matching what someone typed, in list order.
+ *
+ * Plain case-insensitive substring over the name, the full name and the aka
+ * list — "zam", "unza" and "great east" all find UNZA. Nothing fuzzier, and
+ * deliberately no ranking: the list is short enough to read, and a student who
+ * types their own university's initials should see it, not a cleverly scored
+ * near-miss above it. An empty query is everything.
+ */
+export function searchSchools(query: string): School[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return SCHOOLS;
+  return SCHOOLS.filter((s) =>
+    [s.name, s.full, ...(s.aka ?? [])].some((t) => t.toLowerCase().includes(q)),
+  );
+}
 
 /** The school a stored id refers to, or undefined if it names one we dropped. */
 export function schoolById(id: SchoolId | string | null | undefined): School | undefined {

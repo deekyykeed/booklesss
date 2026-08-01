@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { AVATARS, Avatar, resolveAvatar, type AvatarId } from "./avatars";
 import { MynaIcon } from "@/components/icons/myna";
 import { coursesForSchool } from "@/lib/courses";
-import { SCHOOLS, type SchoolId } from "@/lib/schools";
+import { schoolById, searchSchools, type SchoolId } from "@/lib/schools";
 import { saveIdentity, useIdentity } from "@/lib/identity";
 
 /* First visit, once: who is reading, where they study, and what they're taking.
@@ -51,6 +51,10 @@ export const EDIT_EVENT = "booklesss:edit-identity";
 const STEPS = ["who", "school", "courses"] as const;
 type Step = (typeof STEPS)[number];
 
+/** Above this many courses on offer, the course list gets a search field too.
+ *  Below it, the whole list is on screen and a search box is furniture. */
+const SEARCHABLE = 6;
+
 export function IdentityGate() {
   const { identity, hydrated } = useIdentity();
   const pathname = usePathname();
@@ -67,6 +71,10 @@ export function IdentityGate() {
   const [stepDraft, setStepDraft] = useState<Step | null>(null);
   /* Reopened from the header, on an identity that already exists. */
   const [editing, setEditing] = useState(false);
+  /* What's been typed into the two search fields. Not drafts — nothing here is
+   * stored, and both are cleared the moment their answer is given. */
+  const [schoolQuery, setSchoolQuery] = useState("");
+  const [courseQuery, setCourseQuery] = useState("");
 
   const name = nameDraft ?? identity?.name ?? "";
   const avatar = avatarDraft ?? resolveAvatar(identity?.avatar);
@@ -85,6 +93,8 @@ export function IdentityGate() {
     setSchoolDraft(null);
     setCoursesDraft(null);
     setStepDraft(null);
+    setSchoolQuery("");
+    setCourseQuery("");
   };
 
   useEffect(() => {
@@ -119,8 +129,16 @@ export function IdentityGate() {
     document.getElementById(`identity-${stepDraft}`)?.scrollIntoView({ block: "start" });
   }, [open, editing, stepDraft]);
 
-  /* What this school teaches — the course step's whole list. */
+  /* What this school teaches — the course step's whole list — and what's left
+   * of it once they've typed. Both searches are plain substring matches over
+   * short lists, so they run on every keystroke without a debounce. */
   const offered = useMemo(() => coursesForSchool(school), [school]);
+  const schoolMatches = useMemo(() => searchSchools(schoolQuery), [schoolQuery]);
+  const courseMatches = useMemo(() => {
+    const q = courseQuery.trim().toLowerCase();
+    if (!q) return offered;
+    return offered.filter((c) => `${c.title} ${c.subtitle}`.toLowerCase().includes(q));
+  }, [offered, courseQuery]);
 
   if (!open) return null;
 
@@ -130,6 +148,11 @@ export function IdentityGate() {
 
   const pickSchool = (id: SchoolId) => {
     setSchoolDraft(id);
+    /* The search has done its job — leaving the query in place would hide the
+     * schools either side of the one they picked, so a change of mind means
+     * clearing a box first. */
+    setSchoolQuery("");
+    setCourseQuery("");
     /* Courses belong to a school. Keeping a ZCAS pick after a switch to UNZA
      * would enrol someone in a course their school doesn't teach. */
     const keep = new Set(coursesForSchool(id).map((c) => c.slug));
@@ -270,8 +293,19 @@ export function IdentityGate() {
             <legend className={editing ? "mb-1.5 text-[13px] font-medium text-ink-2" : "sr-only"}>
               Your school
             </legend>
-            <div className="flex flex-col gap-2">
-              {SCHOOLS.map((s) => {
+            {/* Type it rather than scroll for it. Two schools don't need this;
+                the twentieth will, and a student who knows their own
+                university's name should never be reading past someone else's
+                to find it. */}
+            <Search
+              value={schoolQuery}
+              onChange={setSchoolQuery}
+              placeholder="Search universities"
+              label="Search universities"
+              autoFocus={!editing}
+            />
+            <div className="mt-2 flex max-h-[38dvh] flex-col gap-2 overflow-y-auto">
+              {schoolMatches.map((s) => {
                 const on = s.id === school;
                 return (
                   <button
@@ -292,6 +326,14 @@ export function IdentityGate() {
                   </button>
                 );
               })}
+              {/* Says why, not just that nothing matched: the library is only
+                  on a few campuses, and that's the honest reason. */}
+              {schoolMatches.length === 0 && (
+                <p className="px-0.5 py-2 text-[13px] leading-5 text-muted">
+                  Nothing matches “{schoolQuery.trim()}”. Booklesss is only on a few campuses so far —
+                  clear the search to see them.
+                </p>
+              )}
             </div>
           </fieldset>
         )}
@@ -306,29 +348,54 @@ export function IdentityGate() {
                  at once and the school above may have just been cleared. */
               <p className="text-[13px] leading-5 text-muted">Pick a school first.</p>
             ) : (
-              <div className="flex max-h-[42dvh] flex-col gap-2 overflow-y-auto">
-                {offered.map((c) => {
-                  const on = courses.includes(c.slug);
-                  return (
-                    <button
-                      key={c.slug}
-                      type="button"
-                      onClick={() => toggleCourse(c.slug)}
-                      aria-pressed={on}
-                      className={
-                        "squircle flex items-center gap-3 rounded-xl border px-3.5 py-3 text-left transition-colors " +
-                        (on ? "border-ink bg-active" : "border-[#e7e7e6] bg-white hover:bg-[#fafafa]")
-                      }
-                    >
-                      <span className="min-w-0 flex-1">
-                        <span className="block text-[15px] font-medium leading-tight text-ink">{c.title}</span>
-                        <span className="mt-0.5 block text-[13px] leading-5 text-muted">{c.subtitle}</span>
-                      </span>
-                      <Tick on={on} />
-                    </button>
-                  );
-                })}
-              </div>
+              <>
+                {/* Scoped to the school already picked, and only once the list
+                    is long enough to be worth searching — a search box over
+                    three courses is furniture. */}
+                {offered.length > SEARCHABLE && (
+                  <Search
+                    value={courseQuery}
+                    onChange={setCourseQuery}
+                    placeholder="Search your courses"
+                    label="Search courses"
+                  />
+                )}
+                <div
+                  className={
+                    "flex max-h-[42dvh] flex-col gap-2 overflow-y-auto " +
+                    (offered.length > SEARCHABLE ? "mt-2" : "")
+                  }
+                >
+                  {courseMatches.map((c) => {
+                    const on = courses.includes(c.slug);
+                    return (
+                      <button
+                        key={c.slug}
+                        type="button"
+                        onClick={() => toggleCourse(c.slug)}
+                        aria-pressed={on}
+                        className={
+                          "squircle flex items-center gap-3 rounded-xl border px-3.5 py-3 text-left transition-colors " +
+                          (on ? "border-ink bg-active" : "border-[#e7e7e6] bg-white hover:bg-[#fafafa]")
+                        }
+                      >
+                        <span className="min-w-0 flex-1">
+                          <span className="block text-[15px] font-medium leading-tight text-ink">{c.title}</span>
+                          <span className="mt-0.5 block text-[13px] leading-5 text-muted">{c.subtitle}</span>
+                        </span>
+                        <Tick on={on} />
+                      </button>
+                    );
+                  })}
+                  {/* A course they can't find is a course their school doesn't
+                      teach — say which school, since that is the fix. */}
+                  {courseMatches.length === 0 && (
+                    <p className="px-0.5 py-2 text-[13px] leading-5 text-muted">
+                      No {schoolById(school)?.name ?? "course"} course matches “{courseQuery.trim()}”.
+                    </p>
+                  )}
+                </div>
+              </>
             )}
           </fieldset>
         )}
@@ -363,6 +430,61 @@ export function IdentityGate() {
           )
         )}
       </form>
+    </div>
+  );
+}
+
+/** The search field above a list of schools or courses. Same shell as the name
+ *  field, with the glyph inset and a clear button once there's something to
+ *  clear — on a phone, backspacing a university's name is nobody's idea of a
+ *  good time.
+ *
+ *  type="text", not "search": Safari draws its own clear button on a search
+ *  input, in its own place, and two of them is worse than either. */
+function Search({
+  value,
+  onChange,
+  placeholder,
+  label,
+  autoFocus,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
+  /** For screen readers — the field has no visible label of its own. */
+  label: string;
+  autoFocus?: boolean;
+}) {
+  return (
+    <div className="relative">
+      <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#a3a3a3]">
+        <MynaIcon name="search" size={17} />
+      </span>
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        aria-label={label}
+        autoFocus={autoFocus}
+        autoComplete="off"
+        autoCorrect="off"
+        spellCheck={false}
+        /* Enter belongs to the form's own button, not to submitting a search
+           that has already filtered as they typed. */
+        onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
+        className="squircle h-11 w-full rounded-xl border border-[#e7e7e6] bg-white pl-10 pr-10 text-[15px] text-ink outline-none transition-colors placeholder:text-[#a3a3a3] focus:border-ink"
+      />
+      {value && (
+        <button
+          type="button"
+          onClick={() => onChange("")}
+          aria-label="Clear search"
+          className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-muted transition-colors hover:bg-[#f4f4f3] hover:text-ink"
+        >
+          <MynaIcon name="x" size={16} />
+        </button>
+      )}
     </div>
   );
 }

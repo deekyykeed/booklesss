@@ -50,6 +50,7 @@ const ICONS = [
   // picked — a checkbox in the app's own hand
   "circle",
   "check-circle-solid",
+  "x", // clears its search field
   "chart-bar-increasing",
   "clock-1",
   "target",
