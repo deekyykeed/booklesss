@@ -5,7 +5,7 @@
  * figures. The book-versus-market comparison uses the figures from the March
  * 2023 practice question solution, which the sample paper repeats.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

@@ -5,7 +5,7 @@
  * original figures. The single-period sections build the profitability index
  * the lecture assumes, and which Step 2 pointed forward to.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

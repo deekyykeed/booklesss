@@ -5,7 +5,7 @@
  * the lecture's own at its original figures; the falling-rate case is the same
  * activity worked in the other direction.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

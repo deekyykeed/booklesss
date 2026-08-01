@@ -1,351 +1,404 @@
 ---
 name: step-skill
 description: >
-  The Booklesss PDF design system — produces any branded PDF in the house style
-  (cream paper, course accent, Parastoo serif titles, per-page header/footer).
-  Use this skill whenever the user wants to create, generate, or export any
-  Booklesss PDF. Triggers: "write the PDF", "generate the lesson PDF", "create a
-  lead magnet", "make an invoice", "send a quote", "build a receipt", "one-pager",
-  "marketing PDF", "export to PDF". The skill is a shared brand
-  foundation (fonts, palette, page geometry, reusable flowables, the page-break
-  rule, writing style) plus a set of document profiles that sit on top of it —
-  lesson notes, lead magnets, and business documents (quotes / invoices /
-  proposals / receipts). Any new document type uses the same foundation with its
-  own structure. Always generate by running a Python/ReportLab script via Bash —
-  never a GUI library. PDFs carry no marketing links or external URLs in the body.
+  The one skill for Booklesss course content — planning a course's lessons,
+  writing and rewriting reader steps, and running the feedback loop that improves
+  them. READ IT BEFORE writing, editing, or regenerating any step, so the house
+  rules are applied and that step's outstanding debt is paid in the same edit.
+  Covers three jobs: PLAN (group a course's topics into lessons and steps, scaffold
+  the folders, emit _course.md) — triggers "plan the lessons", "structure this
+  course", "how many steps does X need", "promote [course] into Booklesss";
+  WRITE (author a reader step as .mjs, or any branded PDF — lesson notes, lead
+  magnets, invoices, quotes) — triggers "write step X", "write the PDF", "create a
+  lead magnet", "make an invoice", "one-pager", "export to PDF"; IMPROVE (log a
+  reaction, promote it to a rule, open revision debt, run the engagement pass) —
+  triggers "study session", "studying [course]", "feedback on this step", "this
+  step is boring", "spice it up", "make it engaging", "a student said", "log that",
+  "that's a rule", "this number is wrong", "why did you write it like that".
+  Carries RULES.md (house style), DEBT.md (what published steps owe), LOG.md
+  (every reaction). Not for social posts (daily-post) or web/UI (design-system).
 ---
 
 # step-skill
 
-The shared design system for **every** Booklesss PDF. Think of it in two layers:
+Everything to do with a Booklesss step lives here — deciding it should exist,
+writing it, and making it better once someone has read it.
 
-1. **Foundation** — the brand: fonts, palette, page geometry, reusable
-   components, header/footer, the page-break rule, writing style. Identical
-   across every document.
-2. **Document profile** — the structure for a specific output: a lesson, a lead
-   magnet, an invoice, a quote, a one-pager. Profiles pick from the foundation;
-   they never redefine the brand.
+```
+[ PLAN ]              [ WRITE ]                  [ IMPROVE ]
+ what the lessons  →   the step itself       →    what the reading taught
+ and steps are        (.mjs reader / PDF)         (rules + debt)
+       ▲                                                 │
+       └───────────────── the loop closes ───────────────┘
+```
 
-> Building a kind of document not listed here (statement, certificate, etc.)?
-> Use the foundation as-is and add a new profile. Don't fork the brand.
+The three used to be three skills. They are one because they share a state: the
+rules that govern writing are produced by the improving, and the debt produced by
+the improving is paid during the writing. Split apart, that state gets read by
+whichever skill happened to be invoked.
 
-**Reference implementations**
-- Lesson (most complete): [`Schools/ZCAS/Corporate Finance/01-investment/sources/build_cf_1_1_investment-fundamentals.py`](../../../Schools/ZCAS/Corporate%20Finance/01-investment/sources/build_cf_1_1_investment-fundamentals.py)
+## The files
 
-When this doc and a reference script disagree, the script wins — update this doc.
+| File | What it is | When it's touched |
+|------|-----------|-------------------|
+| `RULES.md` | The **active** house style for reader steps. | Read in full before writing. Appended/edited when feedback generalises. |
+| `DEBT.md` | Rules and corrections owed to steps **already written**. | Grepped before editing any step. Opened when a rule or error invalidates published content. |
+| `LOG.md` | Every reaction, dated, sourced, tied to its step. | Appended after every reaction. Never edited or pruned. |
+| `reference/planning.md` | Course architecture: lessons, channels, `_course.md`, the outline PDF. | Read when planning or restructuring a course. |
+| `reference/pdf.md` | The PDF design system — fonts, palette, geometry, flowables, document profiles. | Read when the output is a PDF. |
+
+Load a `reference/` file only for the job in hand. `RULES.md` and `DEBT.md` are
+not optional for any step edit.
 
 ---
 
-# Layer 1 — Foundation (every PDF)
+# PLAN — what the lessons and steps are
 
-## Fonts — vendored, self-contained
+Read **`reference/planning.md`**. The doctrine in one line: a **lesson is one
+mental frame**, a course is `Course → Lessons → Steps`, and the number of lessons
+follows the material rather than a round target.
 
-Fonts live in `_dev/fonts/` and are committed, so the build runs identically on
-any machine. **Never hardcode Windows or Linux system-font paths.**
-
-```python
-FONT_DIR = os.path.join(os.path.dirname(__file__), "..", "fonts")
-
-def _reg(name, filename):
-    pdfmetrics.registerFont(TTFont(name, os.path.join(FONT_DIR, filename)))
-
-_reg("Body",            "Aptos.ttf")
-_reg("Body-Bold",       "Aptos-Bold.ttf")
-_reg("Body-Italic",     "Aptos-Italic.ttf")
-_reg("Body-BoldItalic", "Aptos-Bold-Italic.ttf")
-pdfmetrics.registerFontFamily("Body", normal="Body", bold="Body-Bold",
-                              italic="Body-Italic", boldItalic="Body-BoldItalic")
-_reg("Display-Bold",    "parkinsans-v3-latin-700.ttf")  # geometric sans, sparing use
-_reg("Title",           "Parastoo.ttf")                 # serif title (website hero font)
-_reg("Title-Bold",      "Parastoo-Bold.ttf")
-pdfmetrics.registerFontFamily("Title", normal="Title", bold="Title-Bold",
-                              italic="Title", boldItalic="Title-Bold")
-```
-
-| Role | Font | Used for |
-|------|------|----------|
-| `Title` / `Title-Bold` | Parastoo (serif) | Document title, H2 headings |
-| `Body` family | Aptos | Body text, bullets, tables, captions, line items |
-| `Display-Bold` | Parkinsans | Reserve / optional display use |
-
-## Brand assets
-
-In `_dev/brand/`, loaded via `ImageReader` (guard each with `os.path.exists`):
-
-| File | Use |
-|------|-----|
-| `booklesss-logo-black.png` | Logo on cream / light surfaces (header) |
-| `booklesss-logo-white.png` | Logo on dark surfaces |
-| `booklesss-mark-black.png` | Diamond glyph — the `LogoTriple` motif (light bg) |
-| `booklesss-mark-white.png` | Diamond glyph for dark bg |
-| `grain.png` | Subtle paper grain drawn over the page fill |
-
-If the mark asset is missing, fall back to the vector `TripleDiamond` flowable.
-
-## Palette
-
-The house brand is cream paper and black type. No colour accents.
-
-```python
-C_COVER      = colors.HexColor("#FFFDE8")  # warm cream — cover / first page
-C_PAGE       = colors.HexColor("#FFFEF2")  # cream — interior pages (website bg)
-TITLE_DARK   = colors.HexColor("#121212")  # title
-HEADING_DARK = colors.HexColor("#3D3D3D")  # H2 / H3 headings
-C_INK        = colors.HexColor("#16201A")  # body text
-C_STEEL      = colors.HexColor("#5F6B65")  # secondary labels
-C_MIST       = colors.HexColor("#6E6A5E")  # eyebrow / sub / meta
-C_RULE       = colors.HexColor("#E0DACB")  # warm rule / table dividers
-BG_PANEL     = colors.HexColor("#F5F0E8")  # pale warm panel (totals / calc blocks)
-BG_CALLOUT   = colors.HexColor("#F5F0E8")  # warm callout / note box
-```
-
-**Rules that hold for every document:**
-- No colour accents. Eyebrows, hairlines, rules, and left-bar boxes all use
-  `C_RULE` (warm grey) or `TITLE_DARK` (near-black). Body is always `C_INK`.
-- Cream + grain is the default surface. A business document meant to be printed
-  in bulk may use plain white for legibility — keep the logo and black type.
-
-### Course distinction (lesson PDFs only)
-
-All courses use cream `#FFFDE8` cover. Strategic Management uses cardinal red
-`#DC2626` for section eyebrows only — every other course is cream + black
-throughout. No navy, no green, no amber anywhere.
-
-## Page geometry
-
-```python
-W, H      = A4
-MX        = 2.2 * cm          # side margins
-MY        = 2.0 * cm          # top / bottom margins
-CONTENT_W = W - 2 * MX
-```
-
-Two page templates on one `BaseDocTemplate`:
-- `cover` — frame fills the page; `onPage=cover_bg`.
-- `body` — frame inset for header/footer; `onPage=page_bg`, `onPageEnd=body_page`.
-
-Switch from cover to body with `NextPageTemplate("body")` then `PageBreak()`.
-A short one-page document (a single-page invoice) can run on the body template
-alone — no separate cover.
-
-## Type scale (ParagraphStyle)
-
-| Style | Font | Size | Leading | Notes |
-|-------|------|------|---------|-------|
-| `cover_title` | Title-Bold | 42 | 46 | centred |
-| `cover_step` | Body-Bold | 9 | 13 | centred, `HEADING_DARK` |
-| `cover_sub` | Body | 11.5 | 17 | centred, `C_MIST` |
-| `eyebrow` | Body-Bold | 7 | 10 | `C_JADE`, ALL CAPS, `keepWithNext=1` |
-| `h2` | Title-Bold | 17 | 20 | `HEADING_DARK`, `keepWithNext=1` |
-| `h3` | Body-Bold | 11 | 15 | `C_STEEL`, `keepWithNext=1` |
-| `body` | Body | 10.5 | 17 | `C_INK` |
-| `bullet` | Body | 10.5 | 17 | `leftIndent=14` |
-| `fact` | Body-Bold | 10 | 16 | `C_JADE_DK` (key fact / total box) |
-| `formula` / `formula_r` | Body-Bold | 10 | 16 | `C_JADE_DK`, L / R aligned |
-| `th` / `td` | Body-Bold / Body | 9 | 13 | table header / cell |
-| `discuss_q` | Body-Italic | 10 | 16 | lesson discussion question |
-| `outcome` | Body | 10 | 16 | numbered list |
-| `community` / `community_link` | Body / Body-Bold | 9.5 | 15 | lesson closer |
-
-Body leading is ~1.6×. Never cramp it.
-
-## ⚠️ Page-break rule (required, every document)
-
-Headers must never be orphaned at the foot of a page, separated from the content
-they introduce. Enforced with `keepWithNext`:
-
-1. `eyebrow`, `h2`, `h3` styles set **`keepWithNext=1`**.
-2. The `hairline()` flowable sets **`hr.keepWithNext = 1`** after construction.
-
-This chains eyebrow → H2 → rule → first paragraph so the block stays together
-across a page break. Any new heading-like style must also set `keepWithNext=1`.
-
-```python
-def hairline():
-    hr = HRFlowable(width="100%", thickness=0.5, color=C_JADE,
-                    spaceAfter=10, spaceBefore=4)
-    hr.keepWithNext = 1   # keep the rule with the H2 above and first line below
-    return hr
-```
-
-Use `KeepTogether([...])` for any block that must not split internally — boxes,
-totals, worked examples, a line-item group. Every helper box below already does.
-
-## Reusable components
-
-All defined in the reference script. Build a document by appending these to
-`story[]`. They are document-type-agnostic — a `calc_table` works just as well
-for an FCF waterfall as for an invoice total.
-
-| Helper | Returns | Purpose |
-|--------|---------|---------|
-| `section(eyebrow, heading)` | list | Spacer + eyebrow tag + H2 + hairline. Opens a block. |
-| `body(text)` | Paragraph | Body paragraph. HTML markup ok (`<b>`, `<i>`, `<link>`). |
-| `bullet(text)` | Paragraph | Indented `•` bullet. |
-| `h3(text)` | Paragraph | Sub-heading. |
-| `hairline()` | HRFlowable | 0.5pt jade rule, `keepWithNext`. |
-| `fact(text)` | KeepTogether | Jade-tinted left-bar box — a takeaway, total, or key figure. |
-| `callout(text)` | KeepTogether | Jade callout box; `\n` → `<br/>`. Notes, terms, payment details. |
-| `formula_box(lines)` | KeepTogether | Pale-jade panel, left bar; one line per item. |
-| `calc_table(rows, title=None)` | KeepTogether | Right-aligned money column. Rows `(label, value)` or `(label, value, True)` for a jade rule above (subtotal / total). |
-| `table_std(data, col_widths)` | KeepTogether | Standard table; row 0 is the header (jade underline). Line items, key terms, anything tabular. **`col_widths` must sum to `CONTENT_W` exactly — never leave unused width.** |
-| `discussion_q(text)` | KeepTogether | Italic question box *(lesson profile)*. |
-| `resources_box(items)` | KeepTogether | Cover resource panel. `items` = list of `(label, url)` tuples. Red-bordered box labelled **ADDED VALUE**, with the Booklesss diamond mark as the bullet and a clickable underlined label per item. Add to cover when a step has companion resources (NotebookLM audio, past papers, etc.). Falls back to `▸` if the mark asset is missing. |
-
-### Cover motif flowables
-- `LogoTriple(img)` — centred trio of the real diamond mark. Use when the mark
-  asset loads.
-- `TripleDiamond()` — vector `◇◆◇` fallback.
-
-### Canvas callbacks (per page)
-- `cover_bg` — cream fill + grain, top brand row: logo (left), document/course
-  label (right), warm hairline under.
-- `page_bg` — cream fill + grain for interior pages.
-- `body_page` — course-accent rule under a running header (title left, version/date right)
-  and a warm rule above the footer (`Booklesss | booklesss.framer.ai` / label / `Page N`).
-  The footer URL must be clickable — use `canvas.linkURL` over the drawn text:
-  ```python
-  _footer_left = "Booklesss | booklesss.framer.ai"
-  canvas.drawString(MX, MY - 14, _footer_left)
-  _tw = canvas.stringWidth(_footer_left, "Body", 7.5)
-  canvas.linkURL("https://booklesss.framer.ai", (MX, MY - 16, MX + _tw, MY - 8))
-  ```
-
-## Writing style (every document)
-
-- Plain English. Direct, peer-to-peer. No textbook or chatbot voice.
-- ZMW currency and Zambian companies in examples (Zanaco, Zambeef, ZESCO, First
-  Quantum, Mutengo).
-- **Banned words:** tapestry, nuance, multifaceted, robust, delve, foster,
-  Furthermore, It's worth noting, landscape, journey, empower, leverage (verb),
-  game-changer, seamless, holistic, synergy.
-- One em dash per document maximum. No forced rule-of-three. No emoji in body.
-- Real calculated values — no round fake numbers. The humanizer is built in;
-  don't run a separate pass.
-
-## File naming & locations
-
-Filenames are the public title (Slack and email show them). Human-readable,
-title case, ` - ` separator, no slugs, no underscores, no version numbers, no
-course codes in the name.
-
-| Type | Format | Example |
-|------|--------|---------|
-| Lesson | `Step [X.Y] - [Full Title].pdf` | `Step 1.1 - Investment Fundamentals.pdf` |
-| Lead magnet | `[Hook Title] - Booklesss.pdf` | `3 Questions Your CF Exam Will Ask - Booklesss.pdf` |
-| Invoice | `Invoice [No] - [Client].pdf` | `Invoice 0042 - Zanaco.pdf` |
-| Quote | `Quote [No] - [Client].pdf` | `Quote 0042 - Zanaco.pdf` |
-
-Build scripts live next to their content: lesson scripts in the lesson's
-`sources/` folder (`Schools/[School]/[Course]/[lesson]/sources/build_[...].py`),
-outputting to the sibling `steps/`; ops scripts in `Operations/`; marketing
-scripts in `Demand/`.
-
-## How to generate (every document)
-
-1. Copy the reference script (or the closest profile) and rename it.
-2. Keep the foundation intact: fonts, palette, geometry, header/footer,
-   `keepWithNext` rule.
-3. Apply the document profile's structure (below).
-4. Write content directly into `build()` as `story[]` appends — no markdown
-   intermediates.
-5. Run via Bash and confirm the output path:
-
-```bash
-python3 "Schools/[School]/[Course]/[lesson]/sources/build_[...].py"
-```
-
-Open the PDF and check: headers not orphaned at page feet, boxes/tables not split
-awkwardly, totals aligned.
-
-**Table column-width rule (enforced on every PDF):**
-- `col_widths` must always sum to exactly `CONTENT_W` — tables must span the full
-  text area, no narrower.
-- Header text must never wrap. At 9pt Body-Bold Aptos, budget ~5.5pt per character
-  plus 16pt cell padding (8px each side). Minimum column width =
-  `ceil(header_chars × 5.5) + 16`, rounded up to the nearest 5pt.
-  Quick reference: "Priority" (8 chars) → min 60pt; "Variable" (8 chars) → min 60pt;
-  "Description" (11 chars) → min 76pt; "Role" (4 chars) → fine at any reasonable width.
-- When distributing widths, set all fixed columns first, then assign the remainder to
-  the widest data column using `CONTENT_W - sum(fixed_cols)`. Never hardcode all
-  four widths independently and hope they add up.
+Output is the architecture, not content: `_course.md`, the folder scaffold, and
+the course outline. Confirm the structure with the owner before scaffolding — it
+is the cheap moment to change it.
 
 ---
 
-# Layer 2 — Document profiles
+# WRITE — the step itself
 
-## Profile: Lesson notes
+## Which surface
 
-Full study document given to paying students inside Slack.
+**Reader steps are the product.** A step is authored as a `.mjs` file in the
+course tree and read at `booklesss.vercel.app`. PDFs still exist — lead magnets,
+invoices, quotes, and the older lesson PDFs kept as provenance — but a new lesson
+step is written for the reader unless the owner asks for a PDF.
 
-1. **Cover** — `LogoTriple` motif, `STEP X.Y · TOPIC` eyebrow, Parastoo title,
-   one-sentence subtitle, course meta. Then `NextPageTemplate("body")` + break.
-2. **Orientation** — a "Start here" section framing the reader's perspective for
-   this step (one or two short paragraphs). **Do not list the full course skeleton
-   here** — no 10-step map.
-3. **4–7 content sections** — each `section("CONCEPT 0X", "Title")`, then body,
-   `h3` parts, `formula_box` / `calc_table` / `table_std`, closing `fact()`.
-4. **Two discussion questions** — `discussion_q(...)`, embedded mid-content. Real
-   questions, no "discuss below", no CTA dressed as a question.
-5. **Key Terms** — `section("REFERENCE", "Key Terms")` + two-column `table_std`.
-6. **Learning Outcomes** — `section("OUTCOMES", ...)` + numbered `outcome` lines.
+| Output | Where | How |
+|--------|-------|-----|
+| Reader step | `Schools/<School>/<Course>/<lesson>/reader/<step-slug>.mjs` | below |
+| Any PDF | `.../sources/build_*.py` → sibling `steps/` | `reference/pdf.md` |
 
-**No explicit CTA or community closer section.** The reader already has the PDF —
-they're in the workspace. Don't pitch the platform, don't label a "what's next" block.
-Instead, guide naturally through the content:
-- Weave a hint toward the next step into the body at the point where it's
-  genuinely relevant (e.g. after the stage that the next step covers in depth).
-  Write it as a continuation of the idea, not a signpost.
-- No "students", no "Next:", no labelled pointers.
-- One or two touches is enough — the content should make the reader want to continue,
-  not tell them to.
+## Before writing OR rewriting — two things, in order, every time
 
-No workspace invite links in the body. Workspace is `bookless10.slack.com`.
-(CF Slack channels are not yet created — do not post CF content until they exist.)
+1. **Read `RULES.md` in full.** It is short by design; read all of it, not a
+   grep. Write so every rule holds. Don't re-derive a style decision a rule
+   already settles, and don't "improve" on a rule because this step feels like an
+   exception — if it genuinely is one, say so to the owner rather than quietly
+   departing.
 
-**Step cross-references are plain text.** When the content mentions another step
-(e.g. "Step 2.1"), write it as plain text — never as a link to a Slack file URL.
-Slack regenerates file IDs on every upload, so embedded links go stale immediately
-(PROJECT_MEMORY dead end, 2026-06-04). If an older script carries a `STEP_LINKS`
-dict and `step_ref()` helper, remove them when touching that script. Permanent
-external links (NotebookLM overviews in the ADDED VALUE box) are fine.
+2. **Grep `DEBT.md` for this step's slug.** Every open box against it is applied
+   in this edit and ticked. Not optional, not a follow-up task — the step is
+   open, the fix is known, it gets fixed now. If nothing is owed, say so in one
+   clause and move on.
 
-## Profile: Lead magnet
+If a rule and the source material conflict (a lecture uses a banned term, say),
+follow the rule and note the substitution.
 
-3–4 page teaser used as a free marketing handout. Save in `Demand/` alongside the
-other marketing assets (script + output PDF together).
+Before calling the edit done, run the **engagement pass** below. Six checks, a
+minute, and it catches the failure the other two don't: a step that breaks no
+rule and still isn't worth reading.
 
-- 2–3 genuinely useful concepts, ZMW + Zambian companies. Tease, don't give the
-  whole lesson.
-- **First-page preview:** the title must sit in the top ~20% of page 1 — the cover
-  frame uses a small top padding (`topPadding = MY + 30`), not a large fraction of
-  page height, or a generated thumbnail comes out blank.
-- **Offer/deadline:** check `Operations/pricing-strategy.md` for the current
-  rate and any live deadline before writing one in. The founding rate deadline
-  (April 18, 2026) has passed — do not use founding language.
+## How a step actually ships
 
-## Profile: Business document (quote / invoice / proposal / receipt)
+The editable source is the `.mjs`, not Supabase and not the generated JSON:
 
-Same foundation, no lesson furniture (no discussion questions, no community
-closer, no course accent). Build from the foundation components:
+```
+edit the .mjs → npm run seed:course → npm run gen:course → next build → commit → push
+```
 
-- **Header block** — logo (`booklesss-logo-black.png`), document type + number,
-  issue date, and (for invoices) due date. The `cover_bg` brand row already gives
-  you logo-left / label-right; reuse it or place a `table_std` header row.
-- **From / To** — two short blocks: Booklesss details and the client's, as plain
-  `body` paragraphs or a two-column `table_std`.
-- **Line items** — `table_std` with columns like
-  `["Description", "Qty", "Unit (ZMW)", "Amount (ZMW)"]`. Right-align money.
-- **Totals** — `calc_table` with `(label, value, True)` on the subtotal/total
-  rows to draw the jade rule. Subtotal → tax/VAT → **Total** in `fact()` weight.
-- **Payment details / notes** — `callout(...)`: bank details, payment terms,
-  thank-you line. One block, jade left bar.
-- **Footer** — the standard `body_page` footer carries
-  `Booklesss | booklesss.framer.ai` and page number; that's enough.
+**A fix applied only in Supabase, or only in the JSON, is not applied.**
+`seed:course` replaces a course's rows wholesale from the `.mjs`, so the next
+re-seed reinstates whatever the file still says. This bit hardest on bulk sweeps:
+when course codes and school names were stripped from Supabase and
+`course-index.json` (session 26), all three `reader/course.mjs` manifests still
+read "BAC4301 at ZCAS", and a routine re-seed would have put it straight back.
+Any correction lands in the `.mjs` first and flows out through the loop.
 
-A single-page invoice can skip the cover template and run on `body` alone. Use
-plain white body fill instead of cream if the client will print it.
+Two things that belong to this skill rather than the build:
 
-When the user asks for a quote or invoice, confirm the inputs you don't have:
-client name, line items + amounts, invoice/quote number, dates, and payment
-details. Don't invent figures.
+- **Corrections are recorded in the file's header comment** (rule **E-7**) — what
+  was wrong, what it is now, where the error came from. A corrected figure with
+  no note reads as a typo to the next person holding the ZCAS slide.
+- **Tick the `DEBT.md` boxes in the same commit as the fix.** A ledger updated
+  later is a ledger nobody trusts.
+
+## PDFs
+
+Read **`reference/pdf.md`** — the shared brand foundation (fonts, palette, page
+geometry, reusable flowables, the `keepWithNext` page-break rule, table column
+widths) plus a profile per document type: lesson notes, lead magnet, business
+document. Always generate by running a Python/ReportLab script via Bash, never a
+GUI library. PDFs carry no marketing links or external URLs in the body.
+
+---
+
+# IMPROVE — the feedback loop
+
+A step is written once and read many times — by the owner reviewing it, by the
+owner studying it for a real exam, and by students. Every one of those readings
+knows something the writing didn't. Without a loop that feedback is spent once:
+the next step repeats the mistake and the step that caused it stays wrong.
+
+The loop runs in **two time directions**:
+
+```
+                          ┌──── forward: fix the NEXT step ────► RULES.md
+ owner review  ─┐         │
+ study session ─┼─► LOG ──┤
+ student        ─┘        │
+                          └──── backward: fix steps ALREADY written ──► DEBT.md
+                                                    │
+   write / rewrite a step ◄── read RULES + pay this step's DEBT ◄──┘
+```
+
+Most feedback systems only do the forward half. The backward half is why
+`DEBT.md` exists: a rule promoted on step 9 leaves steps 1–8 quietly breaking it,
+and nobody remembers which. The ledger remembers.
+
+## Sources of feedback
+
+All three carry equal weight. What differs is what they're good at seeing.
+
+| Source | Tag | What it catches that the others miss |
+|--------|-----|--------------------------------------|
+| Owner reviewing | `owner` | Voice, house style, whether it looks like Booklesss |
+| Owner studying (real exam prep) | `study` | Whether it actually *teaches* — where reading stalls, what the lecture covers that the step doesn't |
+| A student | `student` | Where a reader who doesn't already know the answer gets lost |
+
+A `study` or `student` note that says "I didn't understand this" outranks any
+style preference. Steps exist to be understood; everything else is downstream.
+
+## After the owner reacts
+
+Every reaction gets logged, even a one-word one. Do this in the same turn the
+owner gives it — not batched at wrap.
+
+### 1. Classify
+
+Every piece of feedback is about one of five things. Tag it:
+
+| Tag | Covers |
+|-----|--------|
+| `writing` | Voice, tone, sentence length, how an idea is explained, what to cut |
+| `element` | Which block type does which job; how a formula, table, callout, list should look and when to reach for it |
+| `structure` | Section count and order, what earns its own section, checkpoint/check questions, step splitting |
+| `content` | What must be covered, what depth, which examples, exam-relevance |
+| `error` | A number, definition, method or check answer that is **wrong** |
+
+Feedback often carries two tags. Log it under both.
+
+An `error` is never a matter of taste and never waits: it opens a `DEBT.md` item
+the same turn, and if the step is live the fix ships before the session moves on.
+
+### 2. Log it
+
+Append to `LOG.md`, newest at the top of the entries. Every entry carries its
+**source** (`owner` · `study` · `student <who>`) — where a note came from is
+half its meaning:
+
+```markdown
+### 2026-07-27 · corporate-finance/investment-appraisal/free-cash-flows · owner
+- `writing` — "too much throat-clearing before the definition." Cut the opening
+  paragraph; lead with what FCF is.
+- `element` — the FCF waterfall should be a `table`, not a `ul`. Amounts must
+  right-align and the total needs a rule above it.
+→ promoted: **W-4**, **E-2** · debt: **D-3**
+```
+
+Rules of logging:
+- Quote or closely paraphrase the **actual words**. Their phrasing carries the
+  intent; a tidied-up summary loses it. A student's words especially are never
+  rewritten into the owner's framing — "I got lost at the second table" is data,
+  "the second table needs work" is a guess about it.
+- Always name the step it was about, by its reader path, and the source.
+- End with `→ promoted:` and the rule ids, or `→ one-off`; and `debt:` with the
+  `D-` ids if steps already written are affected.
+
+### 3. Decide whether it generalises
+
+Promote to `RULES.md` when the feedback would apply to a step the owner hasn't
+seen yet. Keep it in `LOG.md` only when it is genuinely local to this step's
+subject matter.
+
+Ask: *"if I write the next step and ignore this, will the owner say it again?"*
+If yes, it's a rule.
+
+Signals it's a rule:
+- The owner says "always", "never", "from now on", "again".
+- It's the **second** time the same note has come up — check `LOG.md` before
+  deciding. Two occurrences of a one-off make a rule; say so when promoting it.
+- It's about the medium (a block type, section length) rather than the topic.
+
+### 4. Promote it
+
+Add to the right section of `RULES.md` with the next free id in that section's
+series (`W-` writing, `E-` element, `S-` structure, `C-` content). One rule per
+line, imperative, testable. A rule you can't check a draft against is a wish, not
+a rule.
+
+Good: **E-2** — Financial waterfalls use `table` with right-aligned amounts and a
+rule above the total. Never a `ul`.
+
+Bad: ~~**E-2** — Tables should look good and be easy to read.~~
+
+When new feedback contradicts an existing rule, **edit that rule in place** and
+add `(revised YYYY-MM-DD)`. Do not leave both standing. When a rule is withdrawn
+entirely, strike it through rather than deleting — a rule that was tried and
+dropped is worth knowing about.
+
+### 5. Open the debt
+
+**Ask the question that makes feedback compound: which already-written steps does
+this break?**
+
+Every promoted rule and every `error` gets checked against what's already
+published. If any step written before today would now be wrong, open a `D-` item
+in `DEBT.md` naming those steps (see that file for the format and the honesty
+rules on scoping). If nothing published is affected — a rule about a block type
+no earlier step used, say — write `debt: none` in the log entry rather than
+leaving it silent, so a future reader knows the question was asked.
+
+This is the step that gets skipped. Skipping it is how a course ends up with ten
+steps written to five different standards.
+
+### 6. Confirm to the owner
+
+One line, no ceremony: which rules were added or changed, what debt was opened
+against which steps, and what will be different next step. If nothing was
+promoted, say that too — silently logging feedback the owner expected to become a
+rule is the failure mode this loop exists to prevent.
+
+## During a study session
+
+The owner studies these courses for real exams. That reading is the single best
+source of feedback the project has: it is the only time someone who needs the
+step to work is using it for its actual purpose, with the lecture and the past
+papers in reach.
+
+Run the session as studying, not as reviewing. Read to learn, and log the places
+learning breaks.
+
+**What to capture** — five kinds, all worth logging:
+
+| | What it is | Where it goes |
+|---|---|---|
+| **Stall** | You re-read a paragraph, or went to the slides/textbook to understand the step | `LOG.md`, tagged `writing` or `structure` — the step failed at its job |
+| **Flat** | You understood every word and felt nothing. You skimmed, or read on out of duty | `LOG.md` `writing`/`content` — run the **engagement pass** below |
+| **Gap** | The lecture, tutorial or past paper needs something the step doesn't carry | `LOG.md` `content` **+ a `DEBT.md` item** |
+| **Error** | A number, definition, method or check answer is wrong | `LOG.md` `error` **+ a `DEBT.md` item, fixed immediately** |
+| **Keep** | Something that made it click | `LOG.md`, tagged — so a later rewrite doesn't destroy it |
+
+**Flat is the one that hides.** A stall announces itself — you know when you've
+read a paragraph twice. Boredom doesn't: you get to the end of the step, nothing
+was wrong, and nothing stuck either, so there is nothing obvious to report. It
+gets logged as "fine" and the next nine steps are written the same way. If you
+skimmed, that is the finding. Log it before you rationalise it.
+
+**Keep is not optional.** A log of only complaints turns every rewrite into a
+gamble: the rewrite fixes the stall and quietly deletes the analogy that was
+carrying the section. Name what worked and why.
+
+**Rules of the study session:**
+
+- Log **while studying**, step by step — not reconstructed at the end. What you
+  reconstruct afterwards is what you remember, and what you remember is not what
+  confused you; the whole point is the friction you'd normally push through.
+- Say where it broke, not how to fix it. "I couldn't tell which rate went in the
+  denominator" is the finding. The fix is a separate decision, made with the
+  rules in hand.
+- **A stall is a defect even if the step is technically correct.** Resist
+  "actually it does say that, two lines up" — if you missed it while studying, a
+  student misses it too.
+- Every session ends with the debt written down before anything is rewritten.
+  Studying and rewriting in the same pass means the fix gets designed by whoever
+  is currently annoyed, and the same insight never reaches the other nine steps.
+
+## When a student reacts
+
+Student feedback arrives from three places: replies in the course's Slack
+channel, wrong answers on the reader's section checks, and DMs. All of it counts.
+
+- Log it **verbatim**, with the student's name in the source (`student · Chanda`).
+  Their words are the evidence; a cleaned-up version is already an interpretation.
+- **Two students hitting the same stall is automatically a rule** — no judgement
+  call needed. One student is a data point, two is a pattern, and you will not
+  get a third if the second one gives up.
+- A student naming a **wrong answer or a wrong number** is treated as true until
+  checked, and checked the same session. They are reading it in an exam week.
+- Do not defend the step to the student, and do not log the defence. "It's
+  explained in section 3" is not feedback about the feedback.
+- Where a student's confusion is genuinely about the subject and not the step —
+  they'd have been lost in the lecture too — that's still `content`: the step is
+  where they came for help.
+
+---
+
+# The engagement pass
+
+For **Flat**. A step can be accurate, complete, correctly structured and still
+not worth reading — and because nothing is *wrong*, a normal review returns
+"looks good". This is the fixed procedure for that, and it is deliberately
+course-agnostic: it asks nothing about treasury or strategy, so it runs on any
+step in any course.
+
+Six checks, in order. Each has a rule behind it, so a failure is a defect with an
+id, not an opinion.
+
+| # | Check | Fails when | Rule |
+|---|-------|-----------|------|
+| 1 | **The first screen** — cover everything below the opening paragraph. Would a student with a free evening read on? | It opens "X is the …" — a category definition with nothing at stake | **W-6**, **W-3** |
+| 2 | **Concrete anchors** — count the named companies, figures, dates and real decisions per section | Any section is definition end to end | **C-5**, **C-1** |
+| 3 | **The buried lead** — what is the most interesting thing in this step? Where is it? | It's a callout in section 4, or a subordinate clause | **C-6** |
+| 4 | **Table load** — count definitional tables (a list of types/levels/functions, not a working) | Three or more, each in the same `p → table → p` sandwich | **S-7** |
+| 5 | **Rhythm** — read the block types down the page: `p p p p` | Any section is three consecutive long `p` blocks | **W-7** |
+| 6 | **The abstraction ladder** — does any idea stay abstract from start to finish? | A classification is taught as its categories and never as one case moving through them | **C-3**, **C-5** |
+
+**The moves that fix them.** These are what the TM 1.1 rewrite actually did, in
+the order they were worth doing:
+
+- **Promote the buried lead.** The most alive thing in the step opens the section
+  it belongs to. Barings was one line in a callout; told properly — the date, the
+  £827m, the account number, the one pound — it now opens the section it was
+  hiding in, and section 5 gets to start "Leeson dealt his own trades and then
+  settled them himself."
+- **Find the stake.** Every finance topic has a way it hurts someone. Treasury's
+  is that a profitable company can still miss payroll on the 28th. Open there,
+  then define. The definition lands harder because there is now a hole for it.
+- **One case through the whole ladder.** A three-row classification table is
+  inert. Take one concrete thing — a miller buying wheat in USD — and walk it
+  through all three levels, then show the table as the summary of what the reader
+  just watched. The table stops being the lesson and becomes the recall handle.
+- **Give a list a shape.** Eleven functions is unmemorable; "five that move the
+  money, six that manage the people who let it move" is recoverable under exam
+  pressure. Find the split before the table, state it after.
+- **Break the grey.** An `h2` splitting a two-part section, a callout, one short
+  sentence alone. Cheap, and it is half of what "boring" actually meant.
+
+**What the pass must not do.** Coverage is not negotiable — **C-2** outranks all
+of this. The rewrite kept every section, every syllabus list and every figure; it
+changed the way in, not what is taught. If an engagement fix would cut examinable
+content, the fix is wrong. Equally, engaging is not longer: the TM 1.1 rewrite
+added roughly a hundred words to a 300-line step, most of them the Barings facts.
+
+**Where the pass runs.** On contact, not in a batch. A step nobody is reading
+does not get rewritten for style — but any step opened for any reason gets its
+`D-` box paid at the same time. Batch-rewriting the whole course means forty
+steps redesigned by whoever is currently annoyed, with no reader having asked for
+any of it.
+
+---
+
+# What does NOT belong here
+
+- Facts about a course's content — those go in that course's `_course.md`.
+- Bugs in the reader app — those are code, not style.
+- **Reactions to the app's chrome rather than to a step** — the sidebar, the
+  header, icons, navigation, the course home. The test is whether the reaction
+  would change how a step is *written*. "This table should be a formula" is a
+  step rule; "the caret is too small" is app design, and belongs in the code and
+  the session log. Both arrive in the same breath during a study session, so
+  split them as they come rather than filing everything here.
+- Social posts — that's `daily-post`. Web and UI design — that's `design-system`.
+- Anything already in `.claude/CLAUDE.md` — that file outranks this one, and
+  duplicating it means two places to update. `RULES.md` may *sharpen* a CLAUDE.md
+  rule for reader steps specifically; it must never contradict it.

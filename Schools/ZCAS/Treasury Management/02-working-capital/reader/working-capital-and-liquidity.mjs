@@ -4,7 +4,7 @@
  *         build_tm_2_1_working-capital.py (PDF). Worked figures kept at the
  *         lecture's originals (Zanaco Distributors CCC; 2/10 net 30; Mutengo).
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

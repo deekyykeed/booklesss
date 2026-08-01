@@ -2,7 +2,7 @@
  *
  * Source: 3. External Environment.pdf; build_sm_2_1_external-environment.py (v2 PDF).
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

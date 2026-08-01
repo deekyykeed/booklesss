@@ -4,7 +4,7 @@
  * Hedging Methods (2025), slides 20–25. The sample term structure is the
  * lecture's own set of rates.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

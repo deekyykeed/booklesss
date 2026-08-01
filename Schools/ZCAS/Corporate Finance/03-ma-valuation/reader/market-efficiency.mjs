@@ -5,7 +5,7 @@
  * valuation and acquisition work earlier in this lesson, which is where the
  * hypothesis actually bites in an exam answer.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

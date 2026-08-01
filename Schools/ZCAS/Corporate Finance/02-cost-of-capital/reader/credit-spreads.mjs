@@ -5,7 +5,7 @@
  * at their original figures; the spread table is the one printed both in the
  * lecture and on the sample question paper.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

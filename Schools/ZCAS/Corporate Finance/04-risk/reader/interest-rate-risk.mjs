@@ -4,7 +4,7 @@
  * Hedging Methods (2025), slides 2–13 and 16–18. Activities 1 and 2 are the
  * lecture's own at their original figures.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

@@ -8,7 +8,7 @@
  *         lecture's final answers (spread 7,400; upper limit 8,400; return
  *         point 3,467).
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

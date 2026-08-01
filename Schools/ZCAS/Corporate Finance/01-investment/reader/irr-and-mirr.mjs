@@ -9,7 +9,7 @@
  * factor is 0.519, which is what the slide's own present value of 4,775 was
  * calculated with. 0.519 is used here. The NPV of (554) is unaffected.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

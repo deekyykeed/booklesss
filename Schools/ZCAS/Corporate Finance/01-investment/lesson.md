@@ -8,7 +8,7 @@
 
 Authored in `reader/`, one file per step. Published with
 `npm run seed:course` + `npm run gen:course` — see `_course.md`.
-House style: `.claude/skills/step-feedback/RULES.md`.
+House style: `.claude/skills/step-skill/RULES.md`.
 
 | # | Step | File | Sections | Written |
 |---|------|------|----------|---------|

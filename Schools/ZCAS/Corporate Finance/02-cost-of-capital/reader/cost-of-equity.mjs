@@ -4,7 +4,7 @@
  * (2025), slides 2, 8–26. Activities 3, 4 and 5 are the lecture's own, at their
  * original figures.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

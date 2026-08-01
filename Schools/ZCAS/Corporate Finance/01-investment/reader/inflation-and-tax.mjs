@@ -6,7 +6,7 @@
  * question paper (Section A, 18 marks) at its original figures — money-term
  * prices, tax at 30% one year in arrears, 20% reducing-balance allowances.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

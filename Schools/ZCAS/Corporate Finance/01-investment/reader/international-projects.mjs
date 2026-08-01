@@ -5,7 +5,7 @@
  * Appraisal (BC Co in the US), which is worked here at its original figures
  * by both of the two approaches the lecture sets out.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

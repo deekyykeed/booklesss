@@ -5,7 +5,7 @@
  * the lecture's own at their original figures; the currency label is written
  * ZMW throughout in line with the house style, and the figures are unchanged.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

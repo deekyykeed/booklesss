@@ -49,7 +49,7 @@ Keep this open. Work top-to-bottom. Every item you skip today is a conversion yo
 ### Content pipeline
 - [ ] Which steps are written and ready? Which are missing? (each course's `_course.md`)
 - [ ] Write the next step if needed → **step-skill** in a Claude Code session
-- [ ] New course to structure? → **lesson-skill**
+- [ ] New course to structure? → **step-skill**
 - [ ] Any step ready to post to Slack? → post it, then mark it in `_course.md`
 
 ### Marketing
@@ -151,7 +151,7 @@ Source of truth: `Operations/pricing-strategy.md`.
 
 | Task | How |
 |------|-----|
-| Plan/structure a course | **lesson-skill** (Claude Code) |
+| Plan/structure a course | **step-skill** (Claude Code) |
 | Write a step / any branded PDF | **step-skill** (Claude Code) |
 | Web/landing page work | **design-system** (Claude Code) |
 | Rebuild an existing PDF | `python3` the `build_*.py` next to it |

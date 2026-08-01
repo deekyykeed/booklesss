@@ -8,7 +8,7 @@
  * the sums of its rounded per-year present values, and those are the figures
  * used here so the step and the slide agree line for line.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

@@ -2,7 +2,7 @@
  *
  * Source: 2. Mission and Vision.pdf; build_sm_1_2_mission-and-vision.py (v2 PDF).
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

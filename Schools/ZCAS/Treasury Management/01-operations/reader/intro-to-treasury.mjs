@@ -3,7 +3,7 @@
  * Source: 06_Introduction to Treasury Management PPTX; Treasury controls.pdf;
  *         build_lesson_1_1_tm.py (PDF).
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  *
  * 2026-08-01 — engagement rewrite (owner, study session: "boring"). Syllabus
  * coverage is unchanged: same six sections, same eleven functions, same three

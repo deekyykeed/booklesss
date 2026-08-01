@@ -4,7 +4,7 @@
  *         (PDF). Portfolio worked example kept at the lecture's figures
  *         (ZMW 5m across four tranches, blended 13.4%).
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

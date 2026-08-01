@@ -7,7 +7,7 @@
  * so the step and the slide can be read side by side. The payable worked
  * example is written in kwacha, since the lectures only work a receivable.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

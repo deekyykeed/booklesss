@@ -2,7 +2,7 @@
  *
  * Source: 1. Introduction to Corporate Strategy.pdf; build_sm_1_1_intro-to-strategy.py (v2 PDF).
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

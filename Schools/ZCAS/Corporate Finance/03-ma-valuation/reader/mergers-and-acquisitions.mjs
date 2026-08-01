@@ -5,7 +5,7 @@
  * figures are unchanged and its company labels kept so the step and the slide
  * can be read side by side, with the currency written ZMW per the house style.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

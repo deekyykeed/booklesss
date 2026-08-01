@@ -1,31 +1,17 @@
----
-name: lesson-skill
-description: >
-  Plans the lesson architecture of a Booklesss course — the PLAN phase that runs
-  before any writing. Use whenever the user wants to structure, re-structure, or
-  set up the lessons of a course; decide how many lessons or steps a course needs;
-  group topics into lessons/channels; promote a course out of _pipeline/ into
-  Booklesss; or generate a course outline. Triggers on: "plan the lessons", "how
-  should we split this into lessons", "how many lessons/steps does X need", "set up
-  the [course] structure", "structure this course", "what lessons does this need",
-  "promote [course] into Booklesss", "make the course outline", "lay out the course".
-  Output is the lesson/step architecture: _course.md, the folder scaffold, the Slack
-  channel map, and the course outline PDF. It does NOT write step content — once the
-  plan exists, step-skill writes each step.
----
+# Reference — course planning
 
-# lesson-skill
+*Part of `step-skill`. Read this when deciding what a course's lessons and steps
+are; writing them is `SKILL.md`.*
 
-The **PLAN** phase of the Booklesss pipeline:
+The **PLAN** phase:
 
 ```
-[ PLAN ]        →  [ WRITE + DESIGN ]  →  [ WRAP ]
- lesson-skill       step-skill            wrap-session
- (this skill)       (one PDF per step)    (session open/close)
+[ PLAN ]        →  [ WRITE ]        →  [ IMPROVE ]
+ this file         SKILL.md            SKILL.md + RULES/DEBT/LOG
 ```
 
-This skill decides **what the lessons and steps are**. It never writes step
-content — that is step-skill. Hand off once the structure is agreed.
+This decides **what the lessons and steps are**. It does not write step content.
+Move on once the structure is agreed.
 
 ---
 

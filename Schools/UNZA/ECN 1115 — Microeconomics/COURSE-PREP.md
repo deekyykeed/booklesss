@@ -1,7 +1,7 @@
 # ECN 1115: Microeconomics — Course Prep (PROPOSED)
 
 **Status:** proposal — not yet scaffolded. Confirm the structure below, then run
-`lesson-skill` to emit `_course.md`, the lesson folders, the channel map, and the
+`step-skill` to emit `_course.md`, the lesson folders, the channel map, and the
 course outline PDF.
 
 **Last updated:** 2026-07-15 (prepared in a cloud session — see the source-material
@@ -21,7 +21,7 @@ clone has none of it. What CLAUDE.md says exists locally:
 | `Schools/UNZA/_pipeline/_video-archive/` | MIT 14.01SC microeconomics lecture videos (+ ECO 155 macro) |
 
 **Before the structure is final, run this on the local machine** and paste the
-output into a session (it is the depth inventory lesson-skill needs):
+output into a session (it is the depth inventory step-skill needs):
 
 ```bash
 python3 - <<'PY'
@@ -125,7 +125,7 @@ All worked examples in ZMW with local companies, per house rules:
 1. Owner syncs/confirms `_pipeline/ECN 1115/` source + runs the inventory above.
 2. Confirm or amend the lesson table (this file), the `mic` course code, and the
    official course title.
-3. `lesson-skill` emits `_course.md`, folder scaffold, channel map, outline PDF.
+3. `step-skill` emits `_course.md`, folder scaffold, channel map, outline PDF.
 4. `step-skill` writes steps one at a time, starting 1.1.
 5. Platform side is already able to take it: publish rows with
    `course_code='mic'` via the generator's `--emit-json` — no schema change

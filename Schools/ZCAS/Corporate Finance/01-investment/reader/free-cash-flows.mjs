@@ -2,7 +2,7 @@
  *
  * Source: 01_Investment_Appraisal/Lectures/Investment Appraisal Part 1 —
  * Free Cash Flows (2024), 10 slides. Written for the reader, not lifted from
- * the PDF step. House style: .claude/skills/step-feedback/RULES.md
+ * the PDF step. House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

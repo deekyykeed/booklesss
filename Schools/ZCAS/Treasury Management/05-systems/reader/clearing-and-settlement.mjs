@@ -3,7 +3,7 @@
  * Source: 13_Clearing and Settlement Systems PPTX;
  *         build_tm_5_1_clearing-settlement.py (PDF).
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

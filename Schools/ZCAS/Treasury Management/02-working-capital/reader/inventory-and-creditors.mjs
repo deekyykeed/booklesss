@@ -4,7 +4,7 @@
  *         build_tm_2_2_inventory-management.py (PDF). EOQ worked example kept at
  *         the lecture's figures (XYZ Ltd, 500 units).
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

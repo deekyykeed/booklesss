@@ -8,7 +8,7 @@
  * 931,340, a discount, which is also what the theory requires when yield >
  * coupon. The workings below use the corrected figures.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

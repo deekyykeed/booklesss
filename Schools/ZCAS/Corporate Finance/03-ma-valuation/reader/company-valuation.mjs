@@ -7,7 +7,7 @@
  * The lecture rounds HP Co's growth rate to 9.5% and carries that through to a
  * share price of 751n; those are the figures used here.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

@@ -21,7 +21,7 @@ This file is the map. Read top to bottom and you know the state of the business,
 | See what happened in past work sessions | `PROJECT_MEMORY.md` |
 | Rebuild any PDF | run the `build_*.py` script next to it (`python3 "path/to/build_x.py"`) |
 
-Project rules for AI sessions live in `.claude/CLAUDE.md`. Three skills drive the pipeline: **lesson-skill** (plan a course), **step-skill** (write a PDF), **design-system** (web only).
+Project rules for AI sessions live in `.claude/CLAUDE.md`. Three skills: **step-skill** (plan, write and improve any step — reader or PDF), **daily-post** (socials), **design-system** (web only).
 
 ---
 
@@ -75,7 +75,7 @@ Revenue and members to date: **zero recorded.** `revenue-log.md` and `leads.md` 
 2. **Convert** — free month in one channel → day-25 WhatsApp follow-up → K360 or K600.
 3. **Retain** — daily posting cadence, replies, weekly quiz + Sunday leaderboard (`Operations/daily-checklist.md`).
 4. **Log everything** — `leads.md`, `groups.md`, `revenue-log.md`, `monthly-tracker.md`. Empty logs mean flying blind; the checklist tells you when to write to each.
-5. **Expand** — promote the next `_pipeline/` course with lesson-skill once the current four are earning.
+5. **Expand** — promote the next `_pipeline/` course with step-skill once the current four are earning.
 
 Scaling beyond yourself: the role designs (campus reps, community host, course authors — all variable-cost, milestone-gated) are in `Operations/Roles for Growth - Booklesss.pdf` and the revenue split in `Operations/Revenue Model - Booklesss.pdf`.
 

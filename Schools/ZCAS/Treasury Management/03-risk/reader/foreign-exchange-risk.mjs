@@ -5,7 +5,7 @@
  *         figures (USD/ZMW 12.50 forward calculation; USD 500,000 forward
  *         hedge; XYZ Ltd futures hedge at 42 contracts).
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

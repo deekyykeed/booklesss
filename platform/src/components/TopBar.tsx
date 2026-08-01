@@ -5,7 +5,7 @@ import { Account as ClerkAccount } from "./Account";
 import { ClerkIsland } from "./ClerkIsland";
 import { CommandSearch } from "./CommandSearch";
 import { HeaderAvatar } from "./identity/HeaderAvatar";
-import { MobileMenuButton, MobileContextButton } from "./reader/MobileNav";
+import { MobileMenuButton } from "./reader/MobileNav";
 
 /* Shared, fixed 48px header. Transparent so the blob backdrop shows through;
  * the only boxy element is the 1px #dfdfdf bottom hairline. px-16, space-between. */
@@ -102,8 +102,9 @@ export function TopBar({
           Feedback
         </button>
         <div className="flex items-center gap-2">
-          {/* Opens the right (step context) drawer — mirror of the left hamburger */}
-          <MobileContextButton />
+          {/* No button for the right (step context) drawer. It was a third
+              control in a three-control bar, and the swipe already opens it —
+              swipe left from anywhere in the step. */}
           <CommandSearch />
           {/* Help + advisor are desktop-only; mobile keeps just search + profile */}
           <CircleButton icon="question-circle" label="Help" className="hidden md:grid" />

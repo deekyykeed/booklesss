@@ -19,7 +19,7 @@ the owner.
 | Published to | Supabase `qxbcvmzjomfwxvbqzqds` — `courses → nav_nodes → lessons` |
 | Read by the app | `platform/src/lib/course-data.json` (generated, committed) |
 | Publish | `npm run seed:course` (or `node --env-file=.env.local scripts/seed-course.mjs`) then `npm run gen:course` |
-| House style | `.claude/skills/step-feedback/RULES.md` — read before writing a step |
+| House style | `.claude/skills/step-skill/RULES.md` — read before writing a step |
 | URL | `/strategic-management/<lesson>/<step>` |
 
 **Reader step status — the course is complete: 7 steps, 35 sections, every

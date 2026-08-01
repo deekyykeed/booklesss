@@ -5,7 +5,7 @@
  * their original figures; MP Co carries over from the credit spreads step,
  * where its post-tax cost of debt was worked out.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

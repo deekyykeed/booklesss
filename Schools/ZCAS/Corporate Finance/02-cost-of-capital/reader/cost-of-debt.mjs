@@ -7,7 +7,7 @@
  * NB the lecture rounds the interpolation to 9.68%; 1.73 ÷ 2.51 × 1% is 0.69%,
  * so the YTM is 9.69%. That figure is used here.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

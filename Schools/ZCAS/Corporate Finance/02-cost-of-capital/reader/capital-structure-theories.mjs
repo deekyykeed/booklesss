@@ -3,7 +3,7 @@
  * Source: 02_Cost_of_Capital_and_Capital_Structure/Capital Structure and
  * Gearing (2025), slides 12–22.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

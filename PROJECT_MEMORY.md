@@ -501,7 +501,7 @@ section with a comprehension check. Commit `08f6c7f`, pushed → deployed.
   outside wrap (sw.js, `OfflineTools.tsx`).
 - Authored `reader/course.mjs` + per-lesson `reader/<step>.mjs` for SM and TM
   (same layout as CF), mined from the existing PDF build scripts + lecture
-  decks, to `.claude/skills/step-feedback/RULES.md`.
+  decks, to `.claude/skills/step-skill/RULES.md`.
 - Seeded both to Supabase (`seed-course.mjs`), ran `gen:course`, full
   `next build` passed (84 pages). `_course.md` trackers updated for both
   courses (reader is the live surface; PDF/Slack sections kept for provenance).

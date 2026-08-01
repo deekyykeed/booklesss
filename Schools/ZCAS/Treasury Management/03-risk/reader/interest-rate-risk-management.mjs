@@ -7,7 +7,7 @@
  *         on the same 6-month, ZMW 1m loan (FRA 7.5%; cap 7.5% strike,
  *         ZMW 1,500 premium).
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

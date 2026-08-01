@@ -4,7 +4,7 @@
  *         build_tm_5_2_treasury-systems.py (PDF). Course capstone — the TMS is
  *         where every earlier step's machinery runs.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

@@ -2,7 +2,7 @@
  *
  * Source: 4. Corporate Internal Environment.pdf; build_sm_2_2_internal-environment.py (v2 PDF).
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

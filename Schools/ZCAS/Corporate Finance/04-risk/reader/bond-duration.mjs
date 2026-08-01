@@ -5,7 +5,7 @@
  * Debt Securities — Bonds (2024), slides 22–27. Activity 6 / the ERS bond is
  * the lecture's own at its original figures.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

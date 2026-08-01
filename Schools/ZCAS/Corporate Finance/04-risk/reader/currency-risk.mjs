@@ -4,7 +4,7 @@
  * Exchange Rate Risk (2025), slides 2–16. Activities 1, 2 and 3 are the
  * lecture's own at their original figures.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

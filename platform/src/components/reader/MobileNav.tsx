@@ -305,26 +305,10 @@ export function MobileMenuButton() {
   );
 }
 
-/* Opens the right (step context) drawer — the panel glyph, mirroring the
- * collapse control the same panel wears on desktop. Mobile only; sits in the
- * header's right cluster. */
-export function MobileContextButton() {
-  const { toggleRight, side, hasRightPanel } = useReaderShell();
-  const open = side === "right";
-  // Nothing to toggle on the dashboard or the parked pages.
-  if (!hasRightPanel) return null;
-  return (
-    <button
-      type="button"
-      onClick={toggleRight}
-      aria-label={open ? "Close step context" : "Open step context"}
-      aria-expanded={open}
-      className="grid h-8 w-8 place-items-center rounded-lg text-ink transition-colors hover:bg-active xl:hidden"
-    >
-      <MynaIcon name="sidebar" size={18} />
-    </button>
-  );
-}
+/* The right (step context) drawer has no header button (removed 2026-08-01 —
+ * three controls in a phone header was one too many). Below xl it opens by
+ * swiping left, handled by the gesture code above; `toggleRight` stays on the
+ * context for the desktop rail and for anything that wants to open it directly. */
 
 /* Transparent full-area tap target over the content sliver while a drawer is
  * open — closes on tap. No dim, matching the plain-slide look. Mobile only. */

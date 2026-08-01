@@ -3,7 +3,7 @@
  * Source: 5. Strategic Management Module.pdf Unit 9; 8. Competitive Strategy.pdf;
  *         build_sm_3_2_competitive-strategy.py (v2 PDF).
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

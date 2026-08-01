@@ -3,7 +3,7 @@
  * Source: 01_Investment_Appraisal/Lectures/Investment Appraisal Part 2 —
  * Sessions Using Free Cash Flows (2024), slides 1–6. Activity 1 is the
  * lecture's own worked example, kept at its original figures.
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

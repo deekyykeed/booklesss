@@ -3,7 +3,7 @@
  * Source: 5. Strategic Management Module.pdf Units 2–3, 8;
  *         build_sm_3_1_corporate-strategy.py (v2 PDF).
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

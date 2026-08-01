@@ -2,7 +2,7 @@
  *
  * Source: 05_Dividend_Policy/Dividend Policy (2025), slides 2–11.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {

@@ -4,7 +4,7 @@
  * capacity ties back to the free cash flow to equity working in Lesson 1,
  * which is what the lecture means by the practical measure of capacity.
  *
- * House style: .claude/skills/step-feedback/RULES.md
+ * House style: .claude/skills/step-skill/RULES.md
  */
 
 export default {
