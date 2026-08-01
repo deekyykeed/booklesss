@@ -51,7 +51,7 @@ function sourcesIn(section: Section): string[] {
  * look, so they share a card rather than sitting as separate blocks. */
 function Formula({ text, where }: { text: string; where?: string[] }) {
   return (
-    <div className="squircle rounded-3xl border border-[#e7e7e6] bg-white px-5 py-5">
+    <div className="squircle rounded-3xl border border-[#e7e7e6] bg-white/85 px-5 py-5">
       <p className="text-center font-display text-[17.5px] leading-8 tracking-[-0.01em] text-ink">{text}</p>
       {where?.length ? (
         <div className="mt-3 flex flex-col gap-1.5 border-t border-[#f0efee] pt-3">
@@ -97,7 +97,7 @@ function DataTable({
   return (
     <figure className="flex flex-col gap-2">
       {/* Wide workings scroll inside their own box; the page never does. */}
-      <div className="no-scrollbar squircle overflow-x-auto rounded-[32px] border border-[#e7e7e6] bg-white">
+      <div className="no-scrollbar squircle overflow-x-auto rounded-[32px] border border-[#e7e7e6] bg-white/85">
         <table className="w-full border-collapse text-[15.5px]">
           <thead>
             <tr className="bg-[#f7f7f6]">
@@ -199,7 +199,7 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
                        prose that already has boxes in it. */
                     <div
                       key={j}
-                      className="squircle rounded-3xl border border-[#e7e7e6] bg-white px-5 py-4 text-[16.5px] leading-[27px] text-[#4a4a52] shadow-[0_1px_2px_-1px_rgba(0,0,0,0.08),0_8px_16px_-6px_rgba(0,0,0,0.10),0_20px_32px_-16px_rgba(0,0,0,0.10)]"
+                      className="squircle rounded-3xl border border-[#e7e7e6] bg-white/85 px-5 py-4 text-[16.5px] leading-[27px] text-[#4a4a52] shadow-[0_1px_2px_-1px_rgba(0,0,0,0.08),0_8px_16px_-6px_rgba(0,0,0,0.10),0_20px_32px_-16px_rgba(0,0,0,0.10)]"
                     >
                       <Rich text={b.text} />
                     </div>
