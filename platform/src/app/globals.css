@@ -36,9 +36,16 @@
    * 46px of blur at 18% black, which on a phone put a visible dark halo under
    * every table and callout — the shadow arrived before the content did. Depth
    * here is meant to say "this is its own object", not to cast a shadow.
+   *
+   * Cut twice (2026-08-01). Halving the old values still left a visible band
+   * under the bottom edge of every card, because the culprit is not the alpha
+   * on its own — it is a WIDE layer. A 28px blur spreads grey across enough
+   * pixels to read as a smudge even at 9%. So the third layer is gone rather
+   * than reduced again, and nothing here blurs past 10px. Two cards stacked
+   * with a 12px gap is the case that exposes it: if their shadows meet in the
+   * gap, the shadow is still too big.
    */
-  --shadow-lift: 0 1px 2px -1px rgb(0 0 0 / 0.05), 0 6px 14px -8px rgb(0 0 0 / 0.07),
-    0 16px 28px -18px rgb(0 0 0 / 0.09);
+  --shadow-lift: 0 1px 2px -1px rgb(0 0 0 / 0.04), 0 4px 10px -6px rgb(0 0 0 / 0.05);
   --shadow-chip: 0 1px 1px -0.5px rgb(0 0 0 / 0.04), 0 2px 5px -2px rgb(0 0 0 / 0.06);
 
   --header-h: 48px;
@@ -845,62 +852,72 @@
    * ------------------------------------------------------------------ */
 
   /* The answer sits at the end of the section, set off by space above it
-     rather than a divider line. */
+     rather than a divider line.
+     The note button and the two answers used to be pushed to opposite ends by
+     `justify-between`, which worked while each was a labelled pill: the words
+     told you they were different questions. Bare marks at opposite ends of a
+     390px row just read as a layout bug, so they are grouped from the left the
+     way the reference does it, and the seam between the two kinds is carried
+     by a wider gap instead. */
   .checkpoint-row {
     margin-top: 20px;
+    /* the note button, then a beat, then the answer pair */
+    column-gap: 18px;
   }
-  /* The three buttons in a row, aligned to the right edge of the reading
-     column; they wrap on a narrow phone rather than squeezing. */
+  /* Bare marks in a row, aligned to the right edge of the reading column
+     (owner's call, 2026-08-01, against the way Claude draws its own message
+     actions). Generous gap: with no pill to bound each button, the space
+     between them is the only thing separating one control from the next, so it
+     has to be wider than the padding it replaced. */
   .grasp-group {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 6px;
+    justify-content: flex-start;
+    gap: 10px;
   }
-  /* A proper labelled button: the signal bar on the left, its word beside it,
-     side by side in a pill. White with a hairline — controls sitting on the
-     page, not coloured chips competing with the text above them. */
+  /* No pill, no border, no fill: a hairline glyph sitting on the page.
+     The button is still 34px square even though the mark is 20px — the tap
+     target does not shrink just because the decoration went. */
   .grasp-btn {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
     flex-shrink: 0;
     height: 34px;
-    padding: 0 13px 0 11px;
+    width: 34px;
     border-radius: 999px;
-    border: 1px solid var(--color-line-2);
-    background-color: #ffffff;
-    /* The same hairline lift the source chips above them carry — these are the
-       other row of controls at the foot of a section, and a shadow on one row
-       but not the other read as one of them being disabled. */
-    box-shadow: var(--shadow-chip);
-    /* Muted, not placeholder grey: the low end of the ramp is a single small
-       bar, and at #b2b2b2 that button reads as empty rather than as the
-       bottom of a scale. */
-    color: var(--color-muted);
-    transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease, opacity 160ms ease;
+    border: 0;
+    background: none;
+    box-shadow: none;
+    /* Lighter than --color-muted, which is the reading text's grey: these are
+       controls beside prose, and at the text's own weight they competed with
+       it. They come up to their own hue on hover and when chosen. */
+    color: #9a9aa2;
+    transition: color 160ms ease, opacity 160ms ease;
   }
+  /* The words are gone from the screen but not from the page. Every one of
+     these buttons carries its own aria-label and a title, so a screen reader
+     still hears "Later" and a mouse still gets the tooltip; only the sighted
+     tap-only reader loses the word, which is what was asked for. */
   .grasp-label {
-    font-size: 12.5px;
-    font-weight: 500;
-    line-height: 1;
-    letter-spacing: -0.01em;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
     white-space: nowrap;
+    border: 0;
   }
   .grasp-btn:hover {
     color: var(--grasp-tone);
-    border-color: var(--grasp-tone);
   }
-  /* The answer given: its hue on the border, glyph and label, over the
-     faintest wash of the same — enough to read as chosen at a glance without a
-     solid block of colour landing in the reading column. */
+  /* The answer given: its hue, and the glyph swaps to its solid twin in the
+     component. With no pill left to tint, weight and colour are the whole
+     signal, so the solid mark is doing more work than it used to. */
   .grasp-btn[data-active] {
     color: var(--grasp-tone);
-    border-color: var(--grasp-tone);
-    background-color: color-mix(in oklab, var(--grasp-tone) 8%, #ffffff);
-  }
-  .grasp-btn[data-active] .grasp-label {
-    font-weight: 600;
   }
   /* Once something is answered the rest recede — still there to change your
      mind with, no longer competing with the answer you gave. */

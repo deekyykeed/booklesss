@@ -55,7 +55,7 @@ export function Checkpoint({
        reader wants to do about the section (left) and how it read (right).
        Pushed apart rather than sat together, so neither looks like an option
        in the other's set. */
-    <div className="checkpoint-row flex flex-wrap items-center justify-between gap-3">
+    <div className="checkpoint-row flex flex-wrap items-center gap-3">
       <SectionNote lessonId={lessonId} sectionId={checkpointId} />
       <div
         className="grasp-group"
@@ -76,11 +76,21 @@ export function Checkpoint({
               role="radio"
               aria-checked={active}
               aria-label={a.label}
+              /* The label is off-screen now (see .grasp-label), so the tooltip
+                 is the only way a mouse reader recovers the word. */
+              title={a.label}
               data-active={active ? "" : undefined}
               className="grasp-btn squircle"
               style={{ "--grasp-tone": a.tone } as React.CSSProperties}
             >
-              <MynaIcon name={active ? (`${a.icon}-solid` as MynaIconName) : a.icon} size={17} />
+              {/* Bigger and thinner than the app's 17px/1.5 chrome: with the
+                  pill gone the mark is the whole control, and MynaUI's default
+                  weight reads as heavy once nothing is bounding it. */}
+              <MynaIcon
+                name={active ? (`${a.icon}-solid` as MynaIconName) : a.icon}
+                size={20}
+                strokeWidth={1.2}
+              />
               <span className="grasp-label">{a.label}</span>
             </button>
           );

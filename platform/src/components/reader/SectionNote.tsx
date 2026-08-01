@@ -55,11 +55,15 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-label={label ? `You said: ${label}. Change it` : "How did that read?"}
+        /* The label is off-screen now (see .grasp-label), so the tooltip is the
+           only way a mouse reader recovers the word — and here it carries the
+           answer already given, which the bare glyph cannot say on its own. */
+        title={label ? `You said: ${label}. Change it` : "How did that read?"}
         className="grasp-btn squircle"
         data-active={chosen ? "" : undefined}
         style={{ "--grasp-tone": "#5b5b66" } as React.CSSProperties}
       >
-        <MynaIcon name={chosen ? "chat-solid" : "chat"} size={17} />
+        <MynaIcon name={chosen ? "chat-solid" : "chat"} size={20} strokeWidth={1.2} />
         <span className="grasp-label">{label ?? "How did that read?"}</span>
       </button>
 
