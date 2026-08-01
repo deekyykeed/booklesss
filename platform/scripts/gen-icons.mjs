@@ -40,7 +40,15 @@ const ICONS = [
   "calendar-solid",
   "cog",
   "cog-solid",
-  // the end-of-section answer: thumbs up / almost / thumbs down
+  /* The end-of-section answer, once the row lost its labels (2026-08-02):
+     a bookmark to come back to it, a ticked circle to clear it. Both are
+     decisions about what happens next, which is what that control asks. The
+     older thumbs pair is kept because /old-home still draws it, but it is not
+     the checkpoint's any more — a thumb rates the content, and rating the
+     content is the job of the note button beside it. */
+  "bookmark",
+  "bookmark-solid",
+  "check-circle",
   "like",
   "like-solid",
   "circle-half",

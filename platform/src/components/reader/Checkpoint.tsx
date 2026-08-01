@@ -19,10 +19,22 @@ import { SectionNote } from "./SectionNote";
  * ratings already saved on a device keep counting. Nothing writes it any more.
  *
  * Amber then green, each dark enough to hold 5.2:1 on the content surface.
- * Green is completion, the same thing it means everywhere else here. */
+ * Green is completion, the same thing it means everywhere else here.
+ *
+ * The marks changed on 2026-08-02, when the row lost its labels: a clipboard
+ * carrying the word "Later" was fine, and a bare clipboard says nothing. They
+ * are now a bookmark and a ticked circle, which are the two decisions in the
+ * reader's own hand — come back to this, or clear it.
+ *
+ * Not a thumbs pair, which was the first instinct. A thumb rates the material,
+ * and this control does not ask what the reader thought of the section; the
+ * note button sitting beside it does, and its menu already holds "Hard to
+ * follow", "Too long", "Needs an example" and "Something looks wrong". A
+ * thumbs-down here would be a second, blunter version of the button next to it
+ * — and it would put back the self-grading that "Not yet" was dropped for. */
 const ANSWERS: { id: Grasp; label: string; icon: MynaIconName; tone: string }[] = [
-  { id: "not", label: "Later", icon: "clipboard", tone: "#96601f" },
-  { id: "got", label: "Got it", icon: "like", tone: "#17754d" },
+  { id: "not", label: "Later", icon: "bookmark", tone: "#96601f" },
+  { id: "got", label: "Got it", icon: "check-circle", tone: "#17754d" },
 ];
 
 /* End-of-section checkpoint — a scale rather than a tick.
