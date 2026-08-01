@@ -125,6 +125,7 @@ correctness problem, not a taste problem.
 | `callout` | One boxed sentence that must survive when everything else is forgotten. |
 | `formula` | A display equation, with its symbols named underneath. |
 | `table` | Anything with columns — workings, comparisons, waterfalls. |
+| `cards` | A short set of *kinds* — levels, types, structures — one card each, with a mark. |
 | `playground` | Runnable code. Not used in finance courses. |
 
 Three inline marks exist inside `p`, `ul` and `callout` text, and no others:
@@ -165,6 +166,30 @@ text, so a mark written into one shows its own syntax.
   **three to eight per step**: dotted underlines every other line make a
   paragraph unreadable, and a step with none has probably not been read by
   anyone who didn't already know the subject.
+- **E-9** **A short set of *kinds* is `cards`, not a `table`.** A table exists so
+  figures line up. A list of levels, types, structures or roles has nothing to
+  line up, so a table gives it none of the benefit and all of the cost: on a
+  390px phone the last column wraps one word per line and then clips. The three
+  treasury levels shipped exactly that way, with "bank communications" reading
+  on screen as "communicatior".
+  Each card carries a **Freehand Duotone mark**, a **title** (the thing named),
+  a **lead** (its one defining property) and **text** (what it looks like in
+  practice). One tone per card, cycled.
+  - **Two to four items.** At five it is a `ul`, or it stays a table. Five cards
+    is a scroll, and the set stops being holdable in one look.
+  - **The marks must share an axis.** Pick them so the row teaches the
+    distinction the section teaches: chess, calendar, clipboard-and-clock is
+    long game / months / today, which is the *time horizon* that section is
+    about. Three unrelated pictures are decoration, and decoration is worse
+    than the table was.
+  - Names come from `reader/card-glyphs.tsx`, and **`seed:course` refuses an
+    unknown one** rather than rendering a blank space. Adding a glyph means
+    fetching it from the Streamline MCP into that module — keep the set small,
+    since it is imported by a client component and ships to every reader.
+  - **A working stays a table.** If any cell holds a figure, E-1 and E-6 govern
+    it and this rule does not apply. Run
+    `node .claude/skills/step-skill/tools/table-scan.mjs Schools` to see which
+    tables are which without opening 44 files.
 
 ## S — Structure
 
@@ -183,11 +208,14 @@ text, so a mark written into one shows its own syntax.
   why the right answer is right, in one or two sentences.
 - **S-6** *(inherited)* No course skeleton inside a step. Don't list the other
   steps; the sidebar already does that.
-- **S-7** A definitional table — a list of functions, levels, structures, types —
-  never carries a section alone. It gets a reason the list has that shape before
-  it, and a handle for using it after: the split to recover it from, a worked
-  classification, or the exam-technique line. A table dropped between two
-  paragraphs of prose is the slide retyped.
+- **S-7** *(revised 2026-08-01)* A definitional set — a list of functions,
+  levels, structures, types — never carries a section alone. It gets a reason
+  the list has that shape before it, and a handle for using it after: the split
+  to recover it from, a worked classification, or the exam-technique line. A
+  block dropped between two paragraphs of prose is the slide retyped.
+  This rule is about the *framing*; **E-9** decides the *shape* — two to four
+  kinds are `cards`, more than four stay a table or become a `ul`. A set can
+  satisfy one and break the other, so check both.
 - **S-8** **Split a long step into parts rather than making the reader climb
   it.** A step is the unit a reader finishes in one sitting, and finishing is
   what keeps them going: three steps done in an evening beats one step

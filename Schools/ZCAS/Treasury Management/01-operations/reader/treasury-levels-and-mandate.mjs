@@ -19,6 +19,15 @@
  * named). The device itself is right and is kept; only the narration of it is
  * gone. The miller now arrives first, the risk is shown before it is named,
  * and `exposure` is defined in the sentence that introduces it.
+ *
+ * 2026-08-01 the three levels became a `cards` block (rule E-9). They were a
+ * three-column table, which on a phone was the worst thing on the page: the
+ * Examples column wrapped one word per line and still clipped, so "bank
+ * communications" read as "communicatior". Nothing in the table lined up,
+ * which is the only reason to use one. Each level is now its own card with a
+ * Freehand Duotone mark on the time axis the section teaches: chess for the
+ * long game, a calendar for months, a clipboard and clock for daily work.
+ * Content is the lecture's, plus one closing line per card naming its horizon.
  */
 
 export default {
@@ -46,24 +55,26 @@ export default {
           text: "Same risk, three different jobs, three different people. **You sort tasks by time horizon, not by how important they sound.** That is the call you make the first time you decide what stays on your desk.",
         },
         {
-          type: "table",
-          columns: [{ label: "Level" }, { label: "Focus" }, { label: "Examples" }],
-          rows: [
-            [
-              "Strategic",
-              "Long-term policy",
-              "Capital structure, dividend policy, capital raising, investment returns",
-            ],
-            [
-              "Tactical",
-              "Medium-term decisions",
-              "Cash investment management, hedging currency or interest rate risk",
-            ],
-            [
-              "Operational",
-              "Daily execution",
-              "Transmitting cash, placing surplus funds, bank communications",
-            ],
+          type: "cards",
+          cards: [
+            {
+              icon: "chess",
+              title: "Strategic",
+              lead: "Long-term policy",
+              text: "Capital structure, dividend policy, capital raising, investment returns. Set once and held for years.",
+            },
+            {
+              icon: "calendar",
+              title: "Tactical",
+              lead: "Medium-term decisions",
+              text: "Cash investment management, hedging currency or interest rate risk. Decided over the coming months, inside the policy above.",
+            },
+            {
+              icon: "checklist",
+              title: "Operational",
+              lead: "Daily execution",
+              text: "Transmitting cash, placing surplus funds, bank communications. Done today, and done again tomorrow.",
+            },
           ],
         },
         {

@@ -14151,33 +14151,25 @@
                       "type": "p"
                     },
                     {
-                      "rows": [
-                        [
-                          "Strategic",
-                          "Long-term policy",
-                          "Capital structure, dividend policy, capital raising, investment returns"
-                        ],
-                        [
-                          "Tactical",
-                          "Medium-term decisions",
-                          "Cash investment management, hedging currency or interest rate risk"
-                        ],
-                        [
-                          "Operational",
-                          "Daily execution",
-                          "Transmitting cash, placing surplus funds, bank communications"
-                        ]
-                      ],
-                      "type": "table",
-                      "columns": [
+                      "type": "cards",
+                      "cards": [
                         {
-                          "label": "Level"
+                          "icon": "chess",
+                          "lead": "Long-term policy",
+                          "text": "Capital structure, dividend policy, capital raising, investment returns. Set once and held for years.",
+                          "title": "Strategic"
                         },
                         {
-                          "label": "Focus"
+                          "icon": "calendar",
+                          "lead": "Medium-term decisions",
+                          "text": "Cash investment management, hedging currency or interest rate risk. Decided over the coming months, inside the policy above.",
+                          "title": "Tactical"
                         },
                         {
-                          "label": "Examples"
+                          "icon": "checklist",
+                          "lead": "Daily execution",
+                          "text": "Transmitting cash, placing surplus funds, bank communications. Done today, and done again tomorrow.",
+                          "title": "Operational"
                         }
                       ]
                     },

@@ -51,12 +51,37 @@ const seen = new Map(); // slug -> where it was found
  * invisible in review and countable in a script. */
 const EM_DASH = "—";
 
+/* Every string a block can carry, wherever it lives on the block. A block type
+ * whose prose is not reachable from here is invisible to the mark and em-dash
+ * checks below — it looks clean because nothing looked at it. `cards` was
+ * exactly that on the day it was added, so this is now the one place that
+ * knows where text hides. */
+function blockTexts(b) {
+  const texts = [];
+  if (typeof b?.text === "string") texts.push(b.text);
+  if (Array.isArray(b?.items)) texts.push(...b.items.filter((i) => typeof i === "string"));
+  for (const c of b?.cards ?? []) {
+    for (const v of [c?.title, c?.lead, c?.text]) if (typeof v === "string") texts.push(v);
+  }
+  return texts;
+}
+
+/* The glyph names reader/card-glyphs.tsx actually draws. A `cards` block names
+ * its mark as a string, so a typo renders no icon and says nothing — caught
+ * here instead, where it blocks the write. Keep in step with CARD_GLYPHS. */
+const CARD_GLYPHS = ["chess", "calendar", "checklist"];
+
 function markProblems(blocks) {
   const out = [];
   const texts = [];
   for (const b of blocks) {
-    if (typeof b?.text === "string") texts.push(b.text);
-    if (Array.isArray(b?.items)) texts.push(...b.items.filter((i) => typeof i === "string"));
+    texts.push(...blockTexts(b));
+    for (const c of b?.cards ?? []) {
+      if (!CARD_GLYPHS.includes(c?.icon))
+        out.push(`a card names an unknown icon "${c?.icon}" (have: ${CARD_GLYPHS.join(", ")})`);
+      if (typeof c?.title !== "string" || !c.title.trim())
+        out.push("a card has no title");
+    }
     // Table cells are plain text in the reader, so a mark in one shows as syntax.
     for (const row of b?.rows ?? []) for (const cell of row ?? []) {
       if (typeof cell === "string" && /\*\*|\]\(https?:|\[\[/.test(cell))
@@ -82,9 +107,7 @@ function markProblems(blocks) {
 function emDashWarnings(blocks) {
   const out = [];
   for (const b of blocks) {
-    const texts = [];
-    if (typeof b?.text === "string") texts.push(b.text);
-    if (Array.isArray(b?.items)) texts.push(...b.items.filter((i) => typeof i === "string"));
+    const texts = blockTexts(b);
     for (const row of b?.rows ?? []) for (const cell of row ?? []) if (typeof cell === "string") texts.push(cell);
     for (const t of texts) if (t.includes(EM_DASH)) out.push(`em dash: "${t.slice(0, 55)}…"`);
   }

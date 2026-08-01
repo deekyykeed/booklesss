@@ -2,6 +2,7 @@
 
 import { type Column, type Lesson, type Section } from "@/lib/course";
 import { links, runs } from "@/lib/emphasis";
+import { CardGlyph, isCardGlyph } from "./card-glyphs";
 import { CodePlayground } from "./CodePlayground";
 import { Checkpoint, StepComplete } from "./Checkpoint";
 import { Term } from "./Term";
@@ -44,6 +45,58 @@ function sourcesIn(section: Section): string[] {
     else if (b.type === "ul") for (const it of b.items) out.push(...links(it));
   }
   return out;
+}
+
+/* A definitional set as cards rather than table rows.
+ *
+ * The three treasury levels were a three-column table, and on a phone that is
+ * the worst thing on the page: the Examples column wrapped one word per line
+ * and still clipped, so "bank communications" read as "communicatior". Nothing
+ * in it lines up, which is the only reason to reach for a table.
+ *
+ * One tone per card, cycled from the palette the dashboard stat tiles already
+ * use — those four were validated together for lightness, chroma and CVD
+ * separation, so borrowing them is cheaper and safer than inventing three more.
+ * The mark takes the tone, the rule under the title takes it at low alpha, and
+ * nothing else is coloured: the reading text stays the reading text. */
+const CARD_TONES = ["#eb6834", "#4a3aa7", "#17754d", "#2a78d6"];
+
+function Cards({ cards }: { cards: { icon: string; title: string; lead?: string; text: string }[] }) {
+  return (
+    <div className="flex flex-col gap-3">
+      {cards.map((c, i) => {
+        const tone = CARD_TONES[i % CARD_TONES.length];
+        return (
+          <div
+            key={i}
+            className="squircle rounded-3xl border border-[#e7e7e6] bg-white px-5 py-4 shadow-lift"
+          >
+            <div className="flex items-center gap-3">
+              {isCardGlyph(c.icon) ? <CardGlyph name={c.icon} size={28} tone={tone} /> : null}
+              <div className="min-w-0">
+                <p className="text-[17px] font-semibold leading-6 text-ink">{c.title}</p>
+                {c.lead ? (
+                  <p className="text-[14px] leading-5" style={{ color: tone }}>
+                    {c.lead}
+                  </p>
+                ) : null}
+              </div>
+            </div>
+            {/* The rule is the card's own hue at low alpha rather than the
+                house hairline: it ties the divider to the mark above it, and
+                three cards in a row then read as a set rather than as three
+                unrelated boxes that happen to be stacked. */}
+            <div
+              className="mt-3 border-t pt-3 text-[16.5px] leading-[27px] text-[#4a4a52]"
+              style={{ borderColor: `color-mix(in oklab, ${tone} 22%, #ffffff)` }}
+            >
+              <Rich text={c.text} />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 /* A display equation, set apart from the prose. `where` names each symbol
@@ -218,6 +271,7 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
                       <Rich text={b.text} />
                     </div>
                   );
+                if (b.type === "cards") return <Cards key={j} cards={b.cards} />;
                 if (b.type === "playground") return <CodePlayground key={j} code={b.code} />;
                 if (b.type === "formula") return <Formula key={j} text={b.text} where={b.where} />;
                 if (b.type === "table")

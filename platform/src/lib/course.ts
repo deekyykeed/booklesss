@@ -42,6 +42,26 @@ export type Block =
       subtotals?: number[];
       total?: string[];
       note?: string;
+    }
+  /* A short definitional set — levels, types, structures — as its own card each
+   * rather than as rows of a table. A table is for figures that must line up;
+   * a three-row list of kinds has nothing to line up and reads as a slide
+   * retyped, and on a phone its third column wraps one word at a time and
+   * clips. Cards give each item a mark, a name and room to breathe, and they
+   * stack instead of scrolling sideways. Two to four items; beyond that it is
+   * a table or a `ul`. See RULES.md E-9. */
+  | {
+      type: "cards";
+      cards: {
+        /** A Freehand Duotone mark — see reader/card-glyphs.tsx. */
+        icon: string;
+        /** The thing being named: "Strategic". */
+        title: string;
+        /** Its one-line defining property: "Long-term policy". */
+        lead?: string;
+        /** What it looks like in practice. Carries inline marks. */
+        text: string;
+      }[];
     };
 
 /* A section's comprehension check.

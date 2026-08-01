@@ -64,6 +64,7 @@ unchecked ones get ticked off by someone assuming the list was audited.
 | D-2 | Emphasis, ownership voice, tap-to-define — every step written before W-8/W-9/E-8 | 2026-08-01 | open · 3/44 |
 | D-3 | Possessive budget, sentence length, step splitting, source links — W-10/W-12/S-8/C-7 | 2026-08-01 | open · 3/44 |
 | D-4 | Cold opens — W-13, section openings a beginner cannot hold | 2026-08-01 | open · 44/44 scanned, 1 fixed, jargon half unchecked |
+| D-5 | Definitional tables that should be `cards` — E-9 | 2026-08-01 | open · 1/37 candidates converted |
 
 ---
 
@@ -203,6 +204,44 @@ steps and both are paid on contact, so a step opened for one gets the other.
 - [ ] strategic-management/strategy/competitive-strategy
 - [ ] strategic-management/strategy/corporate-strategy
 - [ ] strategic-management/strategy/strategy-implementation
+
+### D-5 · definitional tables that should be cards · opened 2026-08-01
+**Source:** owner review 2026-08-01 (TM `treasury-levels-and-mandate`) — "for a
+table like this id like to have this split into 3 different containers with
+freehand duotone icons… its more memorable than a boring table."
+**Rule:** E-9 (new), S-7 (revised)
+**Why it can't wait for a rewrite:** it is not only a memorability problem. A
+definitional table has nothing to line up, so on a 390px phone its last column
+wraps one word per line and then clips: this step shipped with "bank
+communications" reading as "communicatior". Every table below has the same
+shape, so every one of them is a legibility bug on a phone as well as a dull
+block on a laptop.
+
+**Applies to: scanned in full before opening.** All **156 tables across the 44
+steps** were classified by `tools/table-scan.mjs`:
+
+- **89 are workings** — figures that must line up. E-1 and E-6 govern them and
+  E-9 explicitly does not. Leave them alone.
+- **60 are definitional** — no figure in any cell.
+- **37 of those are genuine card candidates**: definitional AND 2 to 4 rows,
+  which is E-9's cap. **1 converted** (this step). The other 23 definitional
+  tables are too long for cards and want a `ul` or to stay as they are; they
+  are not part of this item.
+- **7 are mostly-prose** (a stray year or percentage). Each needs a human call
+  and none is counted above.
+
+Do not batch-convert. Each conversion needs its three or four marks chosen on
+a **shared axis** (E-9), and picking those is the whole job — a row of
+unrelated pictures is worse than the table it replaced. Paid on contact, like
+D-1 and D-2.
+
+```bash
+node .claude/skills/step-skill/tools/table-scan.mjs Schools   # CARDS? rows are the candidates
+```
+
+- [x] treasury-management/treasury-operations/treasury-levels-and-mandate §task-levels — 2026-08-01 (chess / calendar / checklist, on the time-horizon axis)
+- [ ] the other 36 candidates — listed by the scan above, not enumerated here
+      because the scan is the authoritative list and a copy of it would rot
 
 ### D-4 · cold opens: a section opening a beginner cannot hold · opened 2026-08-01
 **Source:** owner review 2026-08-01 (TM `treasury-levels-and-mandate`) — "this

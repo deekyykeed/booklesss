@@ -23,6 +23,31 @@ Quote actual words. A student's phrasing is never rewritten into the owner's.
 ---
 
 ### 2026-08-01 · treasury-management/treasury-operations/treasury-levels-and-mandate · owner
+- `element` — of the Level / Focus / Examples table: **"for a table like this
+  id like to have this split into 3 different containers with freehand duotone
+  icons"**, because **"its more memorable than a boring table"**.
+  Right on both counts, and it was worse than boring: a table earns its place
+  when figures line up, and nothing in this one lines up. On a 390px phone the
+  Examples column wrapped one word per line and still clipped, so "bank
+  communications" rendered as "communicatior" and "interest rate risk" as
+  "interest rate risl". The owner asked for memorable and the change also
+  fixed a legibility bug neither of us had named.
+  New `cards` block: one card per kind, each with a Freehand Duotone mark, a
+  title, a lead and its prose. Marks chosen on the axis the section teaches —
+  chess for the long game, a calendar for months, a clipboard and clock for
+  daily work, which is the time horizon the whole section is about. Three
+  unrelated pictures would have been decoration.
+  New **E-9**; **S-7** revised to hand the shape question to it.
+- Scoped by scanning rather than guessing: **156 tables across the 44 steps —
+  89 are workings and stay tables, 60 are definitional, and 37 of those are
+  short enough (2 to 4 rows) to become cards.** Tool committed as
+  `tools/table-scan.mjs`, since "which tables are the bad kind" is not a
+  question worth answering by hand twice.
+→ promoted: **E-9**, **S-7** (revised) · debt: **D-5**
+
+---
+
+### 2026-08-01 · treasury-management/treasury-operations/treasury-levels-and-mandate · owner
 - `writing` — of the step's opening sentence, "Take one exposure and watch it
   pass through all three levels": **"this sentence [doesn't] start well"**, and
   **"can you make sure steps a friendly for beginners and not confusing"**.
