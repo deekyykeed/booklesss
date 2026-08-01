@@ -19,6 +19,15 @@
 
 export type SchoolId = "zcas" | "unza";
 
+/** The answer for a university this list doesn't carry. Students at a campus
+ *  Booklesss isn't on yet type their own, rather than being told to pick one of
+ *  ours or go away — and what they type is the first thing that will say which
+ *  campus to build for next. */
+export const OTHER_SCHOOL = "other";
+
+/** What gets stored: one of ours, or theirs. */
+export type SchoolChoice = SchoolId | typeof OTHER_SCHOOL;
+
 export type School = {
   id: SchoolId;
   /** What students call it — what the picker shows. */
@@ -73,13 +82,14 @@ export function searchSchools(query: string): School[] {
   );
 }
 
-/** The school a stored id refers to, or undefined if it names one we dropped. */
-export function schoolById(id: SchoolId | string | null | undefined): School | undefined {
+/** The school a stored id refers to, or undefined for one we dropped — and for
+ *  OTHER_SCHOOL, which has no entry by definition. */
+export function schoolById(id: SchoolChoice | string | null | undefined): School | undefined {
   return SCHOOLS.find((s) => s.id === id);
 }
 
-/** Narrows a stored string back to a SchoolId — localStorage holds whatever it
+/** Narrows a stored string back to a choice — localStorage holds whatever it
  *  was last written with, including an id from a build that has since changed. */
-export function isSchoolId(v: unknown): v is SchoolId {
-  return typeof v === "string" && SCHOOLS.some((s) => s.id === v);
+export function isSchoolChoice(v: unknown): v is SchoolChoice {
+  return typeof v === "string" && (v === OTHER_SCHOOL || SCHOOLS.some((s) => s.id === v));
 }

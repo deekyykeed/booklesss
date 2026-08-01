@@ -52,9 +52,16 @@ export const metadata: Metadata = {
   appleWebApp: { capable: true, title: "Booklesss", statusBarStyle: "default" },
 };
 
-/* Paints the phone's browser chrome to match the app rather than leaving a
- * white bar above a canvas-grey page. Same value as the manifest's. */
-export const viewport: Viewport = { themeColor: "#f5f5f5" };
+/* themeColor paints the phone's browser chrome to match the app rather than
+ * leaving a white bar above a canvas-grey page — same value as the manifest's.
+ *
+ * interactiveWidget is what stops the on-screen keyboard covering whatever a
+ * student is typing into: by default the keyboard slides over the page and the
+ * viewport units don't notice, so a centred dialog sized in dvh stays where it
+ * was, half of it now behind the keys. "resizes-content" shrinks the viewport
+ * instead, so dvh means what it says and anything capped by it scrolls its own
+ * content up. */
+export const viewport: Viewport = { themeColor: "#f5f5f5", interactiveWidget: "resizes-content" };
 
 export default function RootLayout({
   children,
