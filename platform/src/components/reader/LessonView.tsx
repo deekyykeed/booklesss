@@ -118,8 +118,14 @@ function DataTable({
   );
 }
 
-/* Ring + count beside the step's kicker — the same numbers the sidebar and the
- * right panel show, at the top of what they describe. */
+/* Ring + count above the step — the same numbers the sidebar and the right
+ * panel show, at the top of what they describe.
+ *
+ * It says "sections" because a bare "0/6" over a page nobody has read yet is a
+ * riddle: six of what, and is more better? The panel's copy of this sits under
+ * a heading that already answers that; this one stands alone and has to say it
+ * itself. "Sections" is the word the dashboard and the step footer use for the
+ * same thing, so all three agree. */
 function StepProgressBadge({ lessonId }: { lessonId: string }) {
   const { hydrated, doneCount, ratio } = useProgress();
   const total = checkpointsFor(lessonId).length;
@@ -134,8 +140,11 @@ function StepProgressBadge({ lessonId }: { lessonId: string }) {
         stroke={2}
         label={`${done} of ${total} checkpoints complete`}
       />
-      <span className="font-sans text-xs font-medium tabular-nums">
-        {done}/{total}
+      <span className="font-sans text-xs font-medium">
+        <span className="tabular-nums">
+          {done}/{total}
+        </span>{" "}
+        sections
       </span>
     </span>
   );

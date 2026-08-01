@@ -48,9 +48,12 @@ export function HeaderAvatar() {
       {ring}
       {/* Inside the shell, not filling it. The art is a full-bleed disc, so at
           32px it covered the white, the border and the shadow — a solid blob
-          beside two light circles. Sized down it reads as what it is: an icon
-          in the same button chrome as its neighbours, with room for the ring. */}
-      {identity.avatar ? <Avatar id={identity.avatar} size={24} /> : initials(identity.name)}
+          beside two light circles.
+          At 20 the white reads as a gap rather than a seam: a filled disc
+          carries far more weight than the line glyphs beside it, so matching
+          their airiness means giving up more of the button than an icon
+          would, and it leaves the ring room to be a ring. */}
+      {identity.avatar ? <Avatar id={identity.avatar} size={20} /> : initials(identity.name)}
     </button>
   );
 }
