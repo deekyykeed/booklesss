@@ -638,7 +638,7 @@ export function RightPanel() {
           onPointerDown={onPointerDown}
           onKeyDown={onHandleKeyDown}
           onDoubleClick={() => commit(clampW(RIGHTBAR_DEFAULT))}
-          title="Drag to resize — double-click to reset"
+          title="Drag to resize. Double-click to reset"
           onPointerEnter={() => setResizeHint(true)}
           onPointerLeave={() => { if (!draggingRef.current) setResizeHint(false); }}
           onFocus={() => setResizeHint(true)}

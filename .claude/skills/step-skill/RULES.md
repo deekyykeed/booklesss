@@ -67,6 +67,18 @@ Ids are stable. A withdrawn rule is struck through, never deleted.
   nonsense of the example and costs the word its meaning everywhere else.
   Test: every "the company / the business / the firm" in the prose is either
   the reader's (make it *your*) or a named third party (leave it).
+- **W-11** **No em dashes.** Not one, anywhere in a step: not in prose, not in
+  a definition, not in a table cell, not in a check option. `.claude/CLAUDE.md`
+  allows one per document; reader steps allow none. An em dash is almost always
+  a sentence that hasn't decided what it is, and it is the single loudest tell
+  that a machine wrote the line. Replace it with the punctuation that says what
+  you actually meant:
+  - the clause explains or names what came before → **colon**
+  - it's an aside that could be cut → **comma pair**, or cut it
+  - it's a second thought that stands alone → **full stop**, new sentence
+  Rewrite the sentence rather than swapping the character in. "Its job is to
+  protect your assets — while idle cash earns" becomes "…protect your assets,
+  while idle cash earns". Test: `grep -c "—"` returns 0 before the step ships.
 
 ## E — Page elements
 
@@ -181,6 +193,12 @@ link and no nesting — anything else is typed literally on screen.
     the empty space.
   - **Open the link before writing it in.** A dead or paywalled URL in a study
     step is worse than no link: the reader is at 11pm with an exam coming.
+    `curl -o /dev/null -w '%{http_code}'` is enough for most sites. **Some
+    block automated requests** — Investopedia returns 403 to curl and refuses
+    Claude's fetcher entirely, so a 403 is not proof of a dead page and not
+    proof of a live one. Either open it in a browser yourself or use a source
+    that can be checked; do not ship an unverified URL on the grounds that the
+    pattern looks right.
   - Never link a competitor's paid course, and never a school's material.
 
 ---

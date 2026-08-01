@@ -46,14 +46,27 @@ export function HeaderAvatar() {
       aria-label={`${tip}. Open settings`}
     >
       {ring}
-      {/* Inside the shell, not filling it. The art is a full-bleed disc, so at
-          32px it covered the white, the border and the shadow — a solid blob
-          beside two light circles.
-          At 20 the white reads as a gap rather than a seam: a filled disc
-          carries far more weight than the line glyphs beside it, so matching
-          their airiness means giving up more of the button than an icon
-          would, and it leaves the ring room to be a ring. */}
-      {identity.avatar ? <Avatar id={identity.avatar} size={20} /> : initials(identity.name)}
+      {/* Full-bleed, softened at the rim. Sizing the art down to 20px left a
+          white moat that read as a mistake rather than as breathing room; the
+          face is the thing being shown, so it gets the whole button.
+          A radial mask fades the last few pixels to nothing, which keeps the
+          disc from butting hard against the ring and stops the heavy fill
+          shouting over the line icons beside it — the same restraint the small
+          size was buying, without the moat. Solid to 74% of the radius, gone by
+          the rim, so the ring reads clean all the way round. */}
+      {identity.avatar ? (
+        <span
+          className="pointer-events-none absolute inset-0 grid place-items-center overflow-hidden rounded-full"
+          style={{
+            WebkitMaskImage: "radial-gradient(circle at 50% 50%, #000 74%, transparent 97%)",
+            maskImage: "radial-gradient(circle at 50% 50%, #000 74%, transparent 97%)",
+          }}
+        >
+          <Avatar id={identity.avatar} size={32} />
+        </span>
+      ) : (
+        initials(identity.name)
+      )}
     </button>
   );
 }

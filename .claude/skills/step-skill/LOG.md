@@ -23,6 +23,35 @@ Quote actual words. A student's phrasing is never rewritten into the owner's.
 ---
 
 ### 2026-08-01 · treasury-management/operations/intro-to-treasury · owner
+- `writing` — "instead of saying something like 'Day to day that means keeping
+  suppliers paid' we say 'Day to day that means keeping **your** suppliers
+  paid'." W-9 had been applied at the level of the sentence's framing but not
+  the noun; the possessive is the word doing the work. Swept the step: "its
+  staff" → "your staff", "the bank balance" → "your bank balance", "the
+  business" → "your business" in the definitions too. Third-party worked
+  examples (the miller, the mining group, Barings) deliberately keep "the" —
+  making those possessive is nonsense and would cost the word its meaning.
+- `writing` — bold may cover a **whole sentence** where the whole sentence is
+  the point ("Treasury executes; it does not set strategy."). W-8 as first
+  written banned that outright, which was too strict; revised in place. What
+  stays banned is a full sentence bolded by default.
+- `content` — "including links to the sources where info is coming from is key…
+  the sources in file are just books and all from the school, those just guide
+  what the student is going to learn. But the real teachers are the trusted
+  websites such as investopedia, CFI, Accountancy and others." New `sources`
+  block type (`reader/Sources.tsx`), two links per section at the end of the
+  section, each with a note on what it's good for. Six links on TM 1.1, all
+  returning 200.
+→ promoted: **W-10**, **W-8** (revised), **C-7** · debt: **D-2** (extended)
+
+Note against C-7: **Investopedia could not be verified from this session** —
+it 403s curl and blocks Claude's fetcher outright. Three intended Investopedia
+links were swapped for CFI pages that could actually be checked rather than
+shipped on the assumption the URL pattern was right. Written into C-7.
+
+---
+
+### 2026-08-01 · treasury-management/operations/intro-to-treasury · owner
 - `writing` — "having words in bold is important to emphasize certain points
   that need to stick." Applied to TM 1.1 as the reference step, one to three
   bolded phrases per section, and made a rule so every later step is written
