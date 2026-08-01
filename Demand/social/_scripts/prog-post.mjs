@@ -84,6 +84,9 @@ body{font-family:PSans,system-ui,sans-serif;position:relative;-webkit-font-smoot
    dissolves into the light at the top (under the headline) and at the bottom
    (leaving the caption zone clear). No card, no border. */
 .shot{position:absolute;z-index:1;width:1120px}
+/* Image-only slide: the crop fills the frame exactly. A 9:16 source at 1080
+   wide is 1920 tall, so there is no edge to hide and nothing to align. */
+.plain-shot{position:absolute;inset:0;z-index:1;width:1080px;height:1920px;object-fit:cover;object-position:top center}
 .fade-top{position:absolute;top:0;left:0;right:0;z-index:2;background:linear-gradient(to bottom,
   ${BG} 0%, ${BG} 80%, rgba(246,246,249,0) 100%)}
 .fade-bot{position:absolute;bottom:0;left:0;right:0;z-index:2;background:linear-gradient(to top,
@@ -133,8 +136,23 @@ const feature = (o) => ({
 </div>`,
 });
 
+/* An app shot with NOTHING on it (owner's call, 2026-08-01).
+ *
+ * A `feature()` slide is a shot with a headline over it, so the top of the
+ * image dissolves into the background and the framing only has to be right
+ * where the copy isn't. This is the other thing: the crop IS the slide. The
+ * shot fills the frame edge to edge — 1080 wide, and a 9:16 source is then
+ * exactly 1920 tall — with no fade, no wordmark and no text, because every one
+ * of those is something drawn over the app rather than the app.
+ *
+ * Which means all the honesty rules land on the capture instead: what is in
+ * the crop is the whole post. There is no `top` to nudge and nothing to hide a
+ * bad edge behind, so a shot that arrives cut off is re-captured, not re-laid
+ * out here. */
+const plain = (o) => ({ bg: "plain", img: o.img, html: "" });
+
 // closing Google search CTA — DM (never comment), trimmed, bigger sub
-const searchCTA = () => ({ bg: "gradient", html: `<div class="layer">
+const searchCTA = () => ({ bg: "gradient", wordmark: true, html: `<div class="layer">
   <h1 class="safe" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:470px;font-size:100px;line-height:1.0">Search<br>booklesss.</h1>
   <p class="sub safe" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:760px;font-size:38px;line-height:1.35">Three s&rsquo;s. We&rsquo;re the first result on Google.</p>
   <div class="safe" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:890px;height:132px;background:#fff;border:1px solid #e6e6ea;border-radius:66px;box-shadow:0 2px 4px rgba(20,20,40,.05),0 18px 40px -14px rgba(20,20,50,.22);display:flex;align-items:center;gap:24px;padding:0 40px">
@@ -416,6 +434,84 @@ const CONFIGS = {
       searchCTA(),
     ],
   }),
+
+  /* ------------------------------------------------------------------ *
+   * 2026-08-01 — five slots, and not a word on any of them.
+   *
+   * Owner's call: today the posts are the app. No headline, no sub, no
+   * wordmark — an area of the interface enlarged to fill the frame, and the
+   * search CTA at the end of each carousel. Everything a copy slide would have
+   * said now lives in the caption in PLAN.md, where it can be read by someone
+   * who is already looking at the screenshot.
+   *
+   * The consequence is that the crop carries the whole post, so these configs
+   * are deliberately thin: no `top`, no fades, nothing to tune here. A slide
+   * that reads badly is a capture problem and gets fixed in cap-0801.mjs.
+   *
+   * Five slots, five parts of the app, no shot used twice.
+   * ------------------------------------------------------------------ */
+
+  /* 1 — the page you actually read on. */
+  "a-read": () => ({
+    slot: "1-morning",
+    slides: [
+      plain({ img: img("a-read-top.png") }),
+      plain({ img: img("a-list.png") }),
+      plain({ img: img("a-read-mid.png") }),
+      plain({ img: img("a-summary.png") }),
+      searchCTA(),
+    ],
+  }),
+
+  /* 2 — what a section asks you at the end of it, and what finishing looks
+   * like. Three states of the same feature, each on a different part of the
+   * step: unanswered, answered, and the panel that closes the step. */
+  "a-answer": () => ({
+    slot: "2-midday",
+    slides: [
+      plain({ img: img("a-check.png") }),
+      plain({ img: img("a-answered.png") }),
+      plain({ img: img("a-closer.png") }),
+      searchCTA(),
+    ],
+  }),
+
+  /* 3 — the home page: where you stand, in four numbers and two cards. */
+  "a-home": () => ({
+    slot: "3-afternoon",
+    slides: [
+      plain({ img: img("a-home-top.png") }),
+      plain({ img: img("a-tiles.png") }),
+      plain({ img: img("a-tiles-in.png") }),
+      plain({ img: img("a-cards.png") }),
+      searchCTA(),
+    ],
+  }),
+
+  /* 4 — the course around the step: its own page, its steps in reading order,
+   * and the drawer that gets you anywhere in it. */
+  "a-course": () => ({
+    slot: "4-evening",
+    slides: [
+      plain({ img: img("a-course-top.png") }),
+      plain({ img: img("a-course-list.png") }),
+      plain({ img: img("a-nav.png") }),
+      searchCTA(),
+    ],
+  }),
+
+  /* 5 — the first thing the app asks anybody. Shot on a device that has never
+   * answered it, so the form is real rather than re-opened from settings. The
+   * university step is not photographed: every option on it is a real school. */
+  "a-who": () => ({
+    slot: "5-night",
+    slides: [
+      plain({ img: img("a-who.png") }),
+      plain({ img: img("a-who-named.png") }),
+      plain({ img: img("a-courses.png") }),
+      searchCTA(),
+    ],
+  }),
 };
 
 const cfg = CONFIGS[POST]?.();
@@ -430,12 +526,18 @@ const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, de
 for (let i = 0; i < cfg.slides.length; i++) {
   const s = cfg.slides[i];
   const base =
-    s.bg === "shot"
-      ? `<img class="shot" src="${s.img}" style="top:${s.top}px;left:${s.shotLeft}px">
+    s.bg === "plain"
+      ? `<img class="plain-shot" src="${s.img}">`
+      : s.bg === "shot"
+        ? `<img class="shot" src="${s.img}" style="top:${s.top}px;left:${s.shotLeft}px">
          <div class="fade-top" style="height:${s.fadeTop}px"></div>
          <div class="fade-bot" style="height:${s.fadeBot}px"></div>`
-      : `<div class="gradient"></div>`;
-  const html = `<!doctype html><html><head><meta charset="utf-8"><style>${CSS}</style></head><body>${base}${s.html}${wordmark}<div class="grain"></div></body></html>`;
+        : `<div class="gradient"></div>`;
+  /* A plain slide is the app and nothing else — no wordmark stamped on it, and
+   * no grain, which on a screenshot reads as a dirty screen rather than as
+   * texture. The CTA that closes the carousel keeps both. */
+  const dressing = s.bg === "plain" ? "" : `${wordmark}<div class="grain"></div>`;
+  const html = `<!doctype html><html><head><meta charset="utf-8"><style>${CSS}</style></head><body>${base}${s.html}${dressing}</body></html>`;
   await page.setContent(html, { waitUntil: "load" });
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(200);

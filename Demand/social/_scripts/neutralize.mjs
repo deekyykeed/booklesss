@@ -17,18 +17,28 @@
 /* The two courses, as the posts show them. The slugs stay whatever the app
  * uses; only what a reader can see changes. */
 export const COURSE_TITLES = {
-  Economics: "Mathematics",
+  Economics: "Data & Statistics",
   "Corporate Finance": "Computer Science",
+  "Strategic Management": "Physics",
+  "Treasury Management": "Mathematics",
 };
 
 export const MAP = {
   /* ---- course identity (the part that carried the school's name) ---- */
-  Economics: "Mathematics",
+  Economics: "Data & Statistics",
   "Corporate Finance": "Computer Science",
+  "Strategic Management": "Physics",
+  "Treasury Management": "Mathematics",
   "Micro, macro and behavioural — the whole introductory course.":
-    "Algebra, functions, statistics and calculus — the whole first-year course.",
+    "Describing data, sampling and inference — the whole first-year course.",
   "Investment appraisal, cost of capital, valuation and risk — BAC4301 at ZCAS.":
     "Programming, data and how software actually works — from the ground up.",
+  "Investment appraisal, cost of capital, valuation and risk.":
+    "Programming, data and how software actually works — from the ground up.",
+  "How organisations set direction, choose where to compete, and make it happen.":
+    "Forces, motion and energy — the ideas the rest of the subject is built on.",
+  "Cash, working capital, risk and the systems that move money.":
+    "Algebra, functions, sequences and probability — the whole first-year course.",
 
   /* ---- course 1 → Mathematics ---- */
   "Getting started": "Getting started",
@@ -87,6 +97,37 @@ export const MAP = {
   "Free cash flows": "Your first program",
   "NPV & discounted payback": "Variables & data",
   "IRR & MIRR": "Loops & conditions",
+
+  /* ---- course 4 → Mathematics (added 2026-08-01) ----
+   * This is the course the reader shots are now taken on, because it is the
+   * one carrying the blocks the day's posts are about. Both the nav LABEL and
+   * the step TITLE are mapped where they differ — the drawer shows one and the
+   * page shows the other. Longer keys are applied first (see `transform`), so
+   * "Risk management" is safe to sit beside "Risk". */
+  "Treasury operations": "Foundations",
+  "Introduction to treasury": "Working with equations",
+  "Introduction to treasury management": "Working with equations",
+  "Working capital": "Functions",
+  "Working capital & liquidity": "Linear functions",
+  "Working capital and liquidity management": "Linear functions",
+  "Inventory, EOQ & creditors": "Quadratic functions",
+  "Inventory management, EOQ and creditor management": "Quadratic functions",
+  "Cash management & forecasting": "Exponential functions",
+  "Cash management and cash flow forecasting": "Exponential functions",
+  "Interest rate risk management": "Reading a graph",
+  "Interest rate risk": "Reading a graph",
+  "Foreign exchange risk management": "Gradients & areas",
+  "Foreign exchange risk": "Gradients & areas",
+  "Debt and investment": "Sequences",
+  "Debt management": "Arithmetic sequences",
+  "Investment management": "Geometric sequences",
+  "Systems and clearing": "Probability",
+  "Clearing & settlement": "Counting outcomes",
+  "Clearing and settlement systems": "Counting outcomes",
+  "Treasury systems": "Distributions",
+  "Treasury management systems": "Distributions",
+  "Risk management": "Rates of change",
+  Risk: "Graphs",
 };
 
 export const READER = {
@@ -115,6 +156,10 @@ export const BANNED = [
   "bbf4302",
   "bba 1110",
   "corporate finance",
+  "treasur",
+  "strategic manage",
+  "working capital",
+  "barings",
   "economics",
   "microeconom",
   "macroeconom",

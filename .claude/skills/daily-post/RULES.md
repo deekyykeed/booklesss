@@ -83,6 +83,35 @@ own distinct shots — not one feature announced five times, and never a padded
 slot. If a day only supports four honest posts, ship four and say so in
 `PLAN.md`.
 
+## Image-only days (owner's call, 2026-08-01)
+
+A day can be shot with **no copy on any slide** — every image an area of the
+app, enlarged, with nothing written over it. The owner asked for this on 1 Aug
+and it is now a supported mode, not a one-off.
+
+- **`plain({img})` in `prog-post.mjs`** is the slide type: the crop fills the
+  frame (1080 wide, so a 9:16 source is exactly 1920 tall), no fades, **no
+  wordmark and no grain**. Both of those are things drawn over the app, and
+  grain on a screenshot reads as a dirty screen rather than as texture.
+- **The search CTA still closes every carousel.** It is the only text in the
+  day and the only way anybody finds us; "no copy" means no headlines, not no
+  call to action.
+- **The caption carries the whole story** — it is read while the reader is
+  already looking at the screen, so it can be plainer and longer than a
+  headline. Write it in `PLAN.md` as usual.
+- **Crop areas, not controls.** "Zoom into the areas of the app, not into
+  specific icons and buttons" — a panel with the prose it belongs to, a row of
+  tiles with the line above it, a screen with its heading. The floor is about
+  300 CSS px wide; below that a crop stops being the interface and becomes a
+  picture of one button.
+- **Framing has nowhere to hide.** On a copy slide the top of the shot
+  dissolves under the headline; here the crop *is* the slide, top edge
+  included. A shot that arrives cut off gets re-captured — there is no `top` to
+  nudge and nothing to hide a bad edge behind.
+- **Crop in page space for anything near the foot of a page.** A viewport crop
+  of the step closer put it at the top of the frame with half a screen of empty
+  page under it. `area()` against a full-page screenshot fixes it.
+
 ## Copy
 
 - **Never a course or a school** — see the enforced rule above. ⚠️ The 27 Jul
@@ -228,7 +257,24 @@ must not carry anything important above ~830.
   around it — a crashed render worker ("Jest worker encountered N child process
   exceptions") keeps the port but hangs every request. Kill it and start clean.
 - **Windows EPERM on `.next`** when OneDrive or a running server holds a handle:
-  kill node, `rm -rf .next`, rebuild.
+  kill node, `rm -rf .next`, rebuild. A corrupted `.next/dev` shows up as every
+  route 500ing with `Cannot find module '../chunks/ssr/[turbopack]_runtime.js'`.
+- **`TaskStop` on a backgrounded `next dev` kills the wrapper, not the server.**
+  The port stays held and the next start dies with `EADDRINUSE`. Find the owner
+  (`Get-NetTCPConnection -LocalPort 3100 -State Listen`) and stop that PID.
+- **Check `git status` before blaming the app.** Two sessions share this working
+  tree, so the reader can be mid-refactor — a deleted component, a half-rewritten
+  module — and no amount of restarting fixes it. When that happens, capture from
+  a clean checkout instead of touching their work:
+  `git worktree add --detach C:/bkls-shot <commit>`, `npm ci` inside it, dev on
+  a second port, `BASE_URL=http://localhost:3101 node _scripts/cap-*.mjs`.
+  Two things that cost time there: the worktree path must be **short** (a long
+  one hits Windows' filename limit mid-checkout), and `node_modules` must be a
+  **real install** — Turbopack rejects a junction pointing outside the project
+  root ("Symlink [project]/node_modules is invalid").
+- **The app's content comes from Supabase via `npm run gen:course`,** so a
+  worktree pinned to an old commit still needs a regen to hold today's steps —
+  and will pick up whatever the other session last seeded.
 - **Derive the date from `new Date()`,** never hardcode `DAY`. A hardcoded date
   filed a whole day's posts under a phantom weekday folder.
 - **There is no posting connector.** The posts are a manual upload — always say
