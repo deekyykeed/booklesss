@@ -5,7 +5,7 @@ import { enrolledCourses } from "@/lib/courses";
 import { useIdentity } from "@/lib/identity";
 import { isStudyDay, studyHistory, useProgress } from "@/lib/progress";
 import { overallPerformance, overallScoreHistory, type Performance } from "@/lib/performance";
-import { MynaIcon } from "@/components/icons/myna";
+import { SolarIcon } from "@/components/icons/solar";
 import { SETTINGS_EVENT } from "@/components/identity/pickers";
 import { CourseCard } from "./CourseCard";
 import { OfflineTools } from "./OfflineTools";
@@ -196,7 +196,7 @@ export function HomeView({
                awarded when nothing has been measured yet. */
             value={perf && done.checks > 0 ? `${perf.score}%` : "–"}
             tone={TONE.score}
-            icon={<MynaIcon name="chart-bar-increasing" size={20} className="shrink-0" />}
+            icon={<SolarIcon name="chart-2-bold-duotone" size={20} className="shrink-0" />}
             series={perfSeries}
             foot={scoreFoot(perf, done.checks)}
           />
@@ -209,7 +209,7 @@ export function HomeView({
             value={`${streak}`}
             unit={streak === 1 ? "day" : "days"}
             tone={TONE.streak}
-            icon={<MynaIcon name="zap" size={20} className="shrink-0" />}
+            icon={<SolarIcon name="bolt-bold-duotone" size={20} className="shrink-0" />}
             series={charts.streak}
             foot={
               bestStreak > 0
@@ -225,7 +225,7 @@ export function HomeView({
             label="Coverage"
             value={done.checks > 0 ? `${coverage}%` : "–"}
             tone={TONE.coverage}
-            icon={<MynaIcon name="book-open" size={20} className="shrink-0" />}
+            icon={<SolarIcon name="notebook-minimalistic-bold-duotone" size={20} className="shrink-0" />}
             series={charts.coverage}
             foot={
               charts.weekChecks > 0
@@ -241,7 +241,7 @@ export function HomeView({
             label="Time this week"
             value={charts.secsWeek > 0 ? fmtTime(charts.secsWeek) : "–"}
             tone={TONE.time}
-            icon={<MynaIcon name="clock-1" size={20} className="shrink-0" />}
+            icon={<SolarIcon name="clock-circle-bold-duotone" size={20} className="shrink-0" />}
             series={charts.time}
             foot={
               minPrev > 0

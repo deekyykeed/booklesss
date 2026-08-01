@@ -6,9 +6,11 @@
 // below are resolved here, at author time, and only their path bodies land in
 // the generated module.
 //
-// Solar's Linear style is the one this project draws — every name here ends in
-// "-linear" (stroke, 1.5, currentColor). "-bold" is its filled twin, used only
-// where a mark has to read as ON (the favourited star).
+// Two Solar styles are drawn here. "-linear" (stroke, 1.5, currentColor) is the
+// /workspace rail's, with "-bold" as its filled twin where a mark has to read as
+// ON (the favourited star). "-bold-duotone" is the dashboard stat cards': one
+// filled shape plus a second at opacity .5, both currentColor — so a duotone
+// mark takes the tile's hue and shades itself.
 import { getIconData, iconToSVG } from "@iconify/utils";
 import solar from "@iconify-json/solar/icons.json" with { type: "json" };
 import { writeFileSync } from "node:fs";
@@ -33,6 +35,11 @@ const ICONS = [
   "alt-arrow-down-linear",
   "star-linear",
   "star-bold",
+  // dashboard stat cards — duotone, one per stat, drawn in the stat's own hue
+  "chart-2-bold-duotone", // Performance — bars stepping up
+  "bolt-bold-duotone", // Streak — the zap it replaces
+  "notebook-minimalistic-bold-duotone", // Coverage — an open book
+  "clock-circle-bold-duotone", // Time this week
 ];
 
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "components", "icons", "solar.tsx");
@@ -57,8 +64,9 @@ writeFileSync(
  * package at generation time. Add a name to ICONS in the script and rerun
  * \`npm run gen:solar\`.
  *
- * The rest of the app draws MynaUI (see myna.tsx) — Solar is scoped to the
- * /workspace surface, which was designed against a Solar-drawn reference.
+ * The rest of the app draws MynaUI (see myna.tsx). Solar is scoped to two
+ * surfaces: /workspace (Linear, designed against a Solar-drawn reference) and
+ * the dashboard's four stat cards (Duotone, the owner's pick).
  */
 
 import type { CSSProperties } from "react";
@@ -67,8 +75,9 @@ export type SolarIconName =
 ${union};
 
 /* Path bodies only — a 24-grid viewBox is added by the component. Linear icons
- * keep stroke="currentColor"; the -bold twins fill with it. Either way an icon
- * takes the colour of the text around it. */
+ * keep stroke="currentColor"; the -bold twins fill with it; -bold-duotone fills
+ * with it twice, the back layer at opacity .5. Every style takes the colour of
+ * the text around it. */
 const BODIES: Record<SolarIconName, string> = {
 ${entries}
 };
