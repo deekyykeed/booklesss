@@ -1,8 +1,35 @@
 "use client";
 
 import { type Column, type Lesson } from "@/lib/course";
+import { runs } from "@/lib/emphasis";
 import { CodePlayground } from "./CodePlayground";
 import { Checkpoint, StepComplete } from "./Checkpoint";
+import { Term } from "./Term";
+
+/* Step prose with its two inline marks: `**bold**` and `[[term|definition]]`.
+ *
+ * Emphasis is the reader's recall handle — the phrase they'll find again when
+ * they skim the step the night before the exam — so it is set in ink against
+ * the #4a4a52 body rather than just heavier, which at 18px is barely a
+ * difference. Defined terms take the dotted underline instead; two coloured
+ * inline marks in one paragraph and neither one means anything. */
+function Rich({ text }: { text: string }) {
+  return (
+    <>
+      {runs(text).map((r, i) =>
+        r.define ? (
+          <Term key={i} term={r.text} definition={r.define} />
+        ) : r.bold ? (
+          <strong key={i} className="font-semibold text-ink">
+            {r.text}
+          </strong>
+        ) : (
+          <span key={i}>{r.text}</span>
+        ),
+      )}
+    </>
+  );
+}
 
 /* A display equation, set apart from the prose. `where` names each symbol
  * directly beneath it — the formula and its legend have to be readable in one
@@ -132,12 +159,12 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
             {i > 0 && <h2 className="mb-4 text-[19px] font-semibold tracking-[-0.01em] text-ink">{s.heading}</h2>}
             <div className="flex flex-col gap-5">
               {s.blocks.map((b, j) => {
-                if (b.type === "p") return <p key={j} className="text-[18px] leading-[30px] text-[#4a4a52]">{b.text}</p>;
+                if (b.type === "p") return <p key={j} className="text-[18px] leading-[30px] text-[#4a4a52]"><Rich text={b.text} /></p>;
                 if (b.type === "h2") return <h2 key={j} className="text-[19px] font-semibold text-ink">{b.text}</h2>;
                 if (b.type === "callout")
                   return (
                     <div key={j} className="squircle rounded-2xl border border-[#e7e7e6] bg-white px-4 py-3 text-[14.5px] leading-6 text-[#4a4a52]">
-                      {b.text}
+                      <Rich text={b.text} />
                     </div>
                   );
                 if (b.type === "playground") return <CodePlayground key={j} code={b.code} />;
@@ -158,7 +185,7 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
                     {b.items.map((it, k) => (
                       <li key={k} className="flex gap-3 text-[18px] leading-[30px] text-[#4a4a52]">
                         <span className="mt-[11px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#cfcfd4]" />
-                        <span>{it}</span>
+                        <span><Rich text={it} /></span>
                       </li>
                     ))}
                   </ul>

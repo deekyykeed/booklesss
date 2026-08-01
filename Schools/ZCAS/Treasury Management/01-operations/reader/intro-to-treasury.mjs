@@ -14,6 +14,14 @@
  * one running exposure (a miller buying wheat in USD); and centralisation is
  * argued on a Zambian mining group rather than in the abstract. See RULES.md
  * W-3 (revised), W-6, W-7, C-5, C-6, S-7.
+ *
+ * 2026-08-01 — emphasis + ownership pass. This step is the reference for
+ * W-8 (bold the phrase worth carrying out of a section, 1–3 per section) and
+ * W-9 (write to the reader as someone who will run this, not someone revising
+ * it). Wording changed, coverage did not: "the exam asks you to sort tasks"
+ * became the decision the reader will make on a Tuesday, and the closing lines
+ * of the functions and controls sections now hand over the judgement rather
+ * than the mark scheme.
  */
 
 export default {
@@ -30,11 +38,11 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "A company can have a profitable year and still fail to pay its staff at the end of it. The income statement says the year went well. The bank balance on the 28th says there is not enough in the account to run payroll. Profit is worked out over twelve months and rests on judgement; cash is a fact on a Friday afternoon.",
+          text: "Your company can have a profitable year and still fail to pay its staff at the end of it. The [[income statement|The report of what a business earned and spent over a period — revenue minus costs, ending in profit. It counts sales when they are made, not when the cash arrives, which is exactly why it can show a profit while the account is empty.]] says the year went well. The bank balance on the 28th says there is not enough in the account to run payroll. **Profit is worked out over twelve months and rests on judgement; cash is a fact on a Friday afternoon** — and it is the Friday that decides whether anyone gets paid.",
         },
         {
           type: "p",
-          text: "Treasury is the function that lives on the cash side of that gap. Its job is to protect the company's financial assets, manage its liabilities, and put money in the right account, in the right currency, on the day it is needed — while the cash that is not needed yet earns something instead of sitting idle. Every risk that comes with holding and moving that money — a kwacha that moves against you, a rate that resets, a bank that changes its terms — is treasury's to find and reduce.",
+          text: "Treasury is the function that lives on the cash side of that gap. Its job is to **protect the company's financial assets, manage its liabilities, and put money in the right account, in the right currency, on the day it is needed** — while the cash that is not needed yet earns something instead of sitting idle. Every risk that comes with holding and moving that money — a kwacha that moves against you, a rate that resets, a bank that changes its terms — is treasury's to find and reduce.",
         },
         {
           type: "callout",
@@ -42,14 +50,14 @@ export default {
         },
         {
           type: "p",
-          text: "Treasury executes; it does not set strategy. If the board decides to fund a new plant with 40% debt, treasury gets no vote — it goes out and raises the debt, negotiates the terms, and then lives with the rate risk for the next ten years. Keeping that line clear matters, because the function works inside the three decisions that make up corporate finance.",
+          text: "**Treasury executes; it does not set strategy.** If your board decides to fund a new plant with 40% debt, treasury gets no vote — it goes out and raises the debt, negotiates the terms, and then lives with the rate risk for the next ten years. Keeping that line clear matters, because the function works inside the three decisions that make up corporate finance.",
         },
         {
           type: "ul",
           items: [
-            "The investment decision — where the money goes: long-term projects, working capital, investments inside or outside the business.",
-            "The financing decision — where the money comes from: the mix of debt and equity, the cost of those funds, and the hedging that mix forces on you.",
-            "Dividend policy — what happens to the profit: how much is paid out to shareholders and how much is kept to fund growth.",
+            "**The investment decision** — where the money goes: long-term projects, working capital, investments inside or outside the business.",
+            "**The financing decision** — where the money comes from: the mix of debt and equity, the cost of those funds, and the [[hedging|Taking a second position that moves the opposite way to a risk you already carry, so the two cancel out. You give up some upside to remove the downside — it is insurance, not a bet.]] that mix forces on you.",
+            "**Dividend policy** — what happens to the profit: how much is paid out to shareholders and how much is kept to fund growth.",
           ],
         },
         {
@@ -79,7 +87,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Before lunch, a corporate treasurer might release a dollar payment to a supplier, roll a deposit that matured this morning, take a call from the bank about an overdraft rate, approve a credit limit for a new customer, and send the group cash forecast to the CFO. Five different jobs, one desk. The syllabus cuts the work into eleven functions, and exam questions ask for them by name.",
+          text: "Before lunch, a corporate treasurer might release a dollar payment to a supplier, roll a deposit that matured this morning, take a call from the bank about an overdraft rate, approve a credit limit for a new customer, and send the group cash forecast to the CFO. **Five different jobs, one desk.** When you are the one hiring for that desk, or sitting at it, this is the list of what you are actually buying — eleven functions, each with a name worth knowing.",
         },
         {
           type: "table",
@@ -100,11 +108,11 @@ export default {
         },
         {
           type: "p",
-          text: "The list is not eleven flat items. The first five are the operating core, and they run in order: forecast the cash, manage the working capital that consumes it, keep enough on hand to trade, invest what is left, and manage the risks sitting on top of all of it. The last six point outward — to management, the rating agencies, the banks, the investors, the customers you grant credit to, and a catch-all for M&A support and insurance.",
+          text: "The list is not eleven flat items. **The first five are the operating core, and they run in order:** forecast the cash, manage the [[working capital|The money tied up in running the business day to day — stock on the shelf and invoices customers haven't paid yet, less the invoices you haven't paid your suppliers. It is cash you own but cannot spend.]] that consumes it, keep enough on hand to trade, invest what is left, and manage the risks sitting on top of all of it. **The last six point outward** — to management, the [[rating agencies|Firms like Moody's, S&P and Fitch that score how likely a borrower is to repay. The score sets the interest rate every future borrowing carries, so a downgrade costs real money.]], the banks, the investors, the customers you grant credit to, and a catch-all for M&A support and insurance. In a small company you will do most of these yourself before you can afford anyone to do them for you.",
         },
         {
           type: "callout",
-          text: "Recover the list from the five/six split: five functions that move the money, six that manage the people and institutions who let it move. Eleven flat items will not survive exam pressure; the split will.",
+          text: "Recover the list from the five/six split: **five functions that move the money, six that manage the people and institutions who let it move.** Eleven flat items will not survive pressure; the split will.",
         },
       ],
       check: {
@@ -133,11 +141,11 @@ export default {
         },
         {
           type: "p",
-          text: "The board decides the company will cover at least 70% of its dollar purchases and will never trade currency for profit. That is policy, it holds for years, and it is strategic. The treasurer then looks at the next two quarters of wheat orders and covers the March and June exposures with forward contracts — a decision about specific exposures over months, which is tactical. On the morning a forward matures, someone instructs the bank, checks the funds landed and files the confirmation. That is operational.",
+          text: "The board decides the company will cover at least 70% of its dollar purchases and will never trade currency for profit. That is policy, it holds for years, and it is **strategic**. The treasurer then looks at the next two quarters of wheat orders and covers the March and June exposures with [[forward contracts|An agreement to buy or sell a set amount of currency on a set future date at a price fixed today. It removes the uncertainty: you know in January what March's dollars will cost you.]] — a decision about specific exposures over months, which is **tactical**. On the morning a forward matures, someone instructs the bank, checks the funds landed and files the confirmation. That is **operational**.",
         },
         {
           type: "p",
-          text: "Same risk, three different jobs, three different people. The exam asks you to sort tasks between them, and the sorting is done on the time horizon, not on how important the task sounds.",
+          text: "Same risk, three different jobs, three different people. **You sort tasks by time horizon, not by how important they sound** — which is the call you will be making the first time you decide what to keep on your own desk and what to hand to someone else.",
         },
         {
           type: "table",
@@ -162,7 +170,7 @@ export default {
         },
         {
           type: "callout",
-          text: "Classify by time horizon: strategic = long-term policy, tactical = medium-term decisions, operational = daily execution.",
+          text: "Classify by time horizon: **strategic = long-term policy, tactical = medium-term decisions, operational = daily execution.**",
         },
       ],
       check: {
@@ -187,25 +195,25 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "On 26 February 1995 Barings Bank collapsed. It was 233 years old. Days later it was sold to ING for one pound. One trader in Singapore, Nick Leeson, had built losses of around £827 million on futures positions and buried them in an error account numbered 88888 that nobody else reconciled — for roughly three years. He dealt the trades and he settled them: he was the front office and the back office at the same time.",
+          text: "On 26 February 1995 Barings Bank collapsed. It was 233 years old. Days later it was sold to ING for **one pound**. One trader in Singapore, Nick Leeson, had built losses of around **£827 million** on futures positions and buried them in an [[error account|A holding account for trades that fail to settle cleanly, meant to be cleared and reconciled daily by someone other than the dealer. Left unchecked it becomes a place to park losses.]] numbered 88888 that nobody else reconciled — for roughly three years. **He dealt the trades and he settled them:** he was the [[front office|The dealers — the people who actually strike trades. The back office confirms, settles and records them. Keeping the two apart is the single most important treasury control.]] and the back office at the same time.",
         },
         {
           type: "p",
-          text: "Leeson was not employed to make money by taking positions. He was there to arbitrage small price differences at almost no risk. Why he was able to go so much further than that is the subject of this section: what a company decides its treasury function is actually for.",
+          text: "Leeson was not employed to make money by taking positions. He was there to [[arbitrage|Buying and selling the same thing in two markets at once to pocket a small price difference, with almost no risk because both legs are locked in together. It stops being arbitrage the moment one leg is left open.]] small price differences at almost no risk. Why he was able to go so much further than that is the subject of this section — and it is a decision you make about your own business, usually without noticing: **what you decide your treasury function is actually for.**",
         },
         { type: "h2", text: "Treasury as a cost centre" },
         {
           type: "p",
-          text: "Most companies run treasury as a cost centre — a support function that is not expected to generate profit, only to control what it spends. That is the safe framing and it has one real weakness. Management starts asking what treasury costs rather than what it saves, and the function gets starved of budget, staff and systems until something it was supposed to be watching goes wrong.",
+          text: "Most companies run treasury as a **cost centre** — a support function that is not expected to generate profit, only to control what it spends. That is the safe framing and it has one real weakness: **management starts asking what treasury costs rather than what it saves**, and the function gets starved of budget, staff and systems until something it was supposed to be watching goes wrong. If you are the one setting the budget, that is your weakness to avoid, not the treasurer's.",
         },
         { type: "h2", text: "Treasury as a profit centre" },
         {
           type: "p",
-          text: "Companies deep in global finance, currency or commodities sometimes run treasury as a profit centre, earning income by trading, hedging, and charging internal business units market rates for its services. The advantages are real: units paying a real price find out what treasury actually costs the group, and the treasurer has a reason to run the desk efficiently. So are the dangers — the pull towards speculation, arguments over internal charges, and higher administration costs.",
+          text: "Companies deep in global finance, currency or commodities sometimes run treasury as a **profit centre**, earning income by trading, hedging, and charging internal business units market rates for its services. The advantages are real: units paying a real price find out what treasury actually costs the group, and the treasurer has a reason to run the desk efficiently. So are the dangers — **the pull towards speculation**, arguments over internal charges, and higher administration costs.",
         },
         {
           type: "callout",
-          text: "A profit centre is not forbidden, and plenty of firms run one well. What Barings shows is that the moment profit becomes the measure, the controls in the next section stop being paperwork and become the only thing standing between the company and a trader with a losing position to hide.",
+          text: "A profit centre is not forbidden, and plenty of firms run one well. What Barings shows is that **the moment profit becomes the measure, the controls in the next section stop being paperwork** — they become the only thing standing between your company and a trader with a losing position to hide.",
         },
       ],
       check: {
@@ -230,7 +238,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Leeson dealt his own trades and then settled them himself. That one fact is the first control on this list, and its absence is why an £827 million hole stayed invisible for three years. Treasury moves the largest sums in the company, so six controls are non-negotiable.",
+          text: "Leeson dealt his own trades and then settled them himself. That one fact is the first control on this list, and **its absence is why an £827 million hole stayed invisible for three years.** Treasury moves the largest sums in your company, so six controls are non-negotiable — and they are cheap to put in on day one, expensive to retrofit after you have hired the person they constrain.",
         },
         {
           type: "table",
@@ -264,7 +272,7 @@ export default {
         },
         {
           type: "p",
-          text: "The six interlock. Segregation means no single person can complete a fraud alone. Limits and approvals bound what any one decision is allowed to lose. Audits catch what slips past both. Automation shrinks the space where human error and temptation operate at all. In an exam, naming a control earns very little on its own — name it and say which failure it prevents.",
+          text: "**The six interlock.** Segregation means no single person can complete a fraud alone. Limits and approvals bound what any one decision is allowed to lose. Audits catch what slips past both. Automation shrinks the space where human error and temptation operate at all. Naming a control is worth very little on its own — **the useful skill is saying which failure each one prevents**, because that is how you work out which ones you can survive without while you are still small.",
         },
       ],
       check: {
@@ -289,11 +297,11 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "The last structural choice is geographic. A Zambian mining group with operations in four countries has to decide where treasury actually sits: one desk in Lusaka, four desks in four capitals, or something between the two.",
+          text: "The last structural choice is geographic, and it is the one you will face the first time your business crosses a border. A Zambian mining group with operations in four countries has to decide where treasury actually sits: **one desk in Lusaka, four desks in four capitals, or something between the two.**",
         },
         {
           type: "p",
-          text: "The Lusaka desk can see every kwacha and every dollar the group holds at once, negotiate one set of terms across all its banks, and net exposures between subsidiaries before hedging anything. What it cannot see from Lusaka is that a payment out of one of those countries clears on a different cycle, or that a local regulator wants a filing nobody at head office has heard of. That trade-off — control against local knowledge — is the whole argument.",
+          text: "The Lusaka desk can see every kwacha and every dollar the group holds at once, negotiate one set of terms across all its banks, and [[net|Offsetting what one part of the group owes against what another is owed, so only the difference is hedged or paid. Two subsidiaries on opposite sides of the same currency cancel each other out for free.]] exposures between subsidiaries before hedging anything. What it cannot see from Lusaka is that a payment out of one of those countries clears on a different cycle, or that a local regulator wants a filing nobody at head office has heard of. **That trade-off — control against local knowledge — is the whole argument.**",
         },
         {
           type: "table",
@@ -326,7 +334,7 @@ export default {
         },
         {
           type: "p",
-          text: "The hybrid model keeps winning, and technology is the reason. A treasury management system lets a subsidiary enter its own data into a platform head office watches in real time — central oversight without taking the local team's hands off the wheel. What such a system does, and what it costs to run, is a question this course comes back to.",
+          text: "**The hybrid model keeps winning, and technology is the reason.** A treasury management system lets a subsidiary enter its own data into a platform head office watches in real time — central oversight without taking the local team's hands off the wheel. What such a system does, and what it costs you to run, is a question this course comes back to.",
         },
       ],
       check: {

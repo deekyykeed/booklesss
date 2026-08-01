@@ -94,9 +94,10 @@ step is written for the reader unless the owner asks for a PDF.
 If a rule and the source material conflict (a lecture uses a banned term, say),
 follow the rule and note the substitution.
 
-Before calling the edit done, run the **engagement pass** below. Six checks, a
-minute, and it catches the failure the other two don't: a step that breaks no
-rule and still isn't worth reading.
+Before calling the edit done, run the two passes below over what you wrote:
+**RANK** scores it rule by rule and tells you what is broken; the **engagement
+pass** catches the failure ranking can't — a step that breaks no rule and still
+isn't worth reading.
 
 ## How a step actually ships
 
@@ -330,6 +331,67 @@ channel, wrong answers on the reader's section checks, and DMs. All of it counts
 - Where a student's confusion is genuinely about the subject and not the step —
   they'd have been lost in the lecture too — that's still `content`: the step is
   where they came for help.
+
+---
+
+# RANK — score a step against the rules
+
+`RULES.md` is written so a draft can be **checked** against it, not just
+admired. This is how: open the step, walk every rule in order, and give each one
+a verdict with evidence. It turns "this step feels weaker than that one" into a
+number and a list of defects with ids.
+
+Run it when the owner asks how a step is doing, before shipping a rewrite, and
+as the first move on any step being paid down from `DEBT.md`.
+
+**One pass, rule by rule.** For each rule in `RULES.md` (W, E, S, C in order):
+
+| Verdict | Means |
+|---------|-------|
+| **Pass** | Held throughout, with a line quoted as proof |
+| **Weak** | Held in places, broke in others — name the section |
+| **Fail** | Broken, or absent where the rule requires presence |
+| **n/a** | The rule's trigger never occurs (no formula in the step → E-2 is n/a) |
+
+Rules that are easy to fake a pass on, and how to actually check them:
+
+- **W-6 / W-3** — cover everything below the first paragraph and read only that.
+  A pass means you'd keep reading, not that a hook technically exists.
+- **W-8** — read only the bold, end to end. It should be a usable summary. If it
+  reads as a random sample of the prose, or as half the words, that's a Fail
+  even though bold is present.
+- **W-9** — count the sentences that address an exam candidate versus an owner.
+  "The exam asks you to…" in a step with no other framing is a Fail.
+- **C-5** — count concrete anchors per section, don't estimate. A section with
+  zero is a Fail on its own, whatever the rest of the step scores.
+- **C-2** — check against the lecture, not against the step's own coherence. A
+  step can be internally perfect and still have dropped two syllabus topics.
+- **E-8** — count the tappable terms and ask whether a first-year would have
+  needed each one. Zero in a jargon-heavy step is a Fail.
+
+**Report it as a table**, worst first, then the score:
+
+```markdown
+### treasury-management/operations/intro-to-treasury — 21/23 (2 weak, 0 fail)
+| Rule | Verdict | Evidence |
+|------|---------|----------|
+| C-5  | Weak    | §2 "eleven functions" — table + prose, no figure or company |
+| W-7  | Weak    | §6 opens with three 50-word `p` blocks in a row |
+| W-8  | Pass    | bold-only read: profit/cash, executes-not-sets, five/six split |
+```
+
+Score is **passed ÷ applicable** — n/a rules leave the denominator, so a step
+with no tables isn't punished for having no table rules.
+
+**What the score is for, and what it is not.** It ranks steps against each
+other so the worst gets attention first. It is not a quality gate: a step can
+score 22/23 and still be flat, which is what the engagement pass below is for,
+and a single **C-2** or **error** failure outranks any score — a step missing
+examinable content is broken at 22/23.
+
+**Every Fail and Weak leaves the pass as one of two things**, never a note: a
+fix in this same edit, or a `D-` item in `DEBT.md` if it's a rule that breaks
+other steps too. A rank that produces neither was an opinion.
 
 ---
 

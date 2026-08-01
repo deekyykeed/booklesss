@@ -1,4 +1,5 @@
 import { COURSE, breadcrumbFor, pathForId, type Block, type Section } from "./course";
+import { plain } from "./emphasis";
 
 /* ------------------------------------------------------------------ *
  * Course search.
@@ -50,8 +51,10 @@ type Record_ = {
 function sectionText(s: Section): string {
   const parts: string[] = [];
   for (const b of s.blocks) {
-    if (b.type === "p" || b.type === "h2" || b.type === "callout") parts.push(b.text);
-    else if (b.type === "ul") parts.push(b.items.join(" "));
+    // plain() drops the `**` emphasis markers, so a query matches a bolded
+    // phrase and an excerpt never shows the reader a pair of asterisks.
+    if (b.type === "p" || b.type === "h2" || b.type === "callout") parts.push(plain(b.text));
+    else if (b.type === "ul") parts.push(b.items.map(plain).join(" "));
     else if (b.type === "playground") parts.push(b.code);
   }
   return parts.join(" ");

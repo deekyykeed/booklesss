@@ -22,6 +22,29 @@ Quote actual words. A student's phrasing is never rewritten into the owner's.
 
 ---
 
+### 2026-08-01 · treasury-management/operations/intro-to-treasury · owner
+- `writing` — "having words in bold is important to emphasize certain points
+  that need to stick." Applied to TM 1.1 as the reference step, one to three
+  bolded phrases per section, and made a rule so every later step is written
+  the same way and can be ranked against it.
+- `writing` — "id like to write to the student as they are the ones going to
+  experience this in future… im speaking to them more as a future founder,
+  deliberately giving them ownership." The step was still addressing an exam
+  candidate — "the exam asks you to sort tasks between them" — which is the
+  narrower of the two readers. Rewritten to land on the reader's own decision:
+  what stays on your desk, what you can survive without while small, what you
+  are buying when you hire. W-4 already asked for second person; this says who
+  the second person **is**.
+- `element` — "for certain words that are either key or not in the common
+  vocabulary i want to have a popup when tapped to define it." Built as the
+  `[[term|definition]]` inline mark (renderer: `lib/emphasis.ts` +
+  `reader/Term.tsx`); eight terms marked in TM 1.1 — income statement, hedging,
+  working capital, rating agencies, forward contracts, error account, front
+  office, arbitrage, net.
+→ promoted: **W-8**, **W-9**, **E-8** · debt: **D-2**
+
+---
+
 ### 2026-08-01 · treasury-management/operations/intro-to-treasury · study
 - `writing` — "the very first step is boring… spice it up, keep it engaging
   with a proper hook." Read correctly and felt nothing. The step opened on

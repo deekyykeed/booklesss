@@ -61,6 +61,7 @@ unchecked ones get ticked off by someone assuming the list was audited.
 | Item | What | Opened | State |
 |------|------|--------|-------|
 | D-1 | Engagement pass — every step written before the hook rules | 2026-08-01 | open · 1/42 |
+| D-2 | Emphasis, ownership voice, tap-to-define — every step written before W-8/W-9/E-8 | 2026-08-01 | open · 1/42 |
 
 ---
 
@@ -120,6 +121,73 @@ Do not batch-rewrite steps nobody is reading yet; this is debt paid on contact.
 - [ ] corporate-finance/dividends/dividend-theories
 - [ ] corporate-finance/dividends/dividend-policy-in-practice
 
+**Strategic Management**
+- [ ] strategic-management/foundations/intro-to-strategy
+- [ ] strategic-management/foundations/mission-and-vision
+- [ ] strategic-management/environment/external-environment
+- [ ] strategic-management/environment/internal-environment
+- [ ] strategic-management/strategy/competitive-strategy
+- [ ] strategic-management/strategy/corporate-strategy
+- [ ] strategic-management/strategy/strategy-implementation
+
+### D-2 · emphasis, ownership voice, tap-to-define · opened 2026-08-01
+**Source:** owner review 2026-08-01 (TM 1.1) — "having words in bold is
+important to emphasize certain points that need to stick"; "im speaking to them
+more as a future founder, deliberately giving them ownership"; "for certain
+words that are either key or not in the common vocabulary i want to have a
+popup when tapped to define it."
+**Rules:** W-8 (bold emphasis), W-9 (write to a future founder, not an exam
+candidate), E-8 (`[[term|definition]]` popups)
+**Why it can't wait for a rewrite:** all three marks are new. Every step written
+before today has no bold at all, no tappable terms, and addresses an exam
+candidate rather than someone who will run this — so the reader gets a wall of
+even-weight prose with the jargon unexplained. Nothing is *wrong* on screen,
+which is exactly why it would never surface on its own.
+**Applies to:** all three courses — **1 of 42 steps checked** (TM 1.1 is the
+reference implementation; nothing else has been opened).
+
+Pay it with the **rank** procedure in `SKILL.md` — score the step against
+RULES, then fix what scored red, in the same edit that touches it for any other
+reason. **D-1 and D-2 are paid together:** both are debts against the same 42
+steps and both are paid on contact, so a step opened for one gets the other.
+
+**Treasury Management**
+- [x] treasury-management/operations/intro-to-treasury — 2026-08-01 (reference step)
+- [ ] treasury-management/working-capital/working-capital-and-liquidity
+- [ ] treasury-management/working-capital/cash-management
+- [ ] treasury-management/working-capital/inventory-and-creditors
+- [ ] treasury-management/risk/foreign-exchange-risk
+- [ ] treasury-management/risk/interest-rate-risk-management
+- [ ] treasury-management/investment/debt-management
+- [ ] treasury-management/investment/investment-management
+- [ ] treasury-management/systems/clearing-and-settlement
+- [ ] treasury-management/systems/treasury-management-systems
+**Corporate Finance**
+- [ ] corporate-finance/investment/npv-and-payback
+- [ ] corporate-finance/investment/irr-and-mirr
+- [ ] corporate-finance/investment/free-cash-flows
+- [ ] corporate-finance/investment/inflation-and-tax
+- [ ] corporate-finance/investment/capital-rationing
+- [ ] corporate-finance/investment/apv
+- [ ] corporate-finance/investment/international-projects
+- [ ] corporate-finance/cost-of-capital/cost-of-equity
+- [ ] corporate-finance/cost-of-capital/cost-of-debt
+- [ ] corporate-finance/cost-of-capital/wacc
+- [ ] corporate-finance/cost-of-capital/gearing
+- [ ] corporate-finance/cost-of-capital/capital-structure-theories
+- [ ] corporate-finance/cost-of-capital/credit-spreads
+- [ ] corporate-finance/ma-valuation/company-valuation
+- [ ] corporate-finance/ma-valuation/bond-valuation
+- [ ] corporate-finance/ma-valuation/market-efficiency
+- [ ] corporate-finance/ma-valuation/mergers-and-acquisitions
+- [ ] corporate-finance/risk/interest-rate-risk
+- [ ] corporate-finance/risk/hedging-interest-rate-risk
+- [ ] corporate-finance/risk/yield-curve
+- [ ] corporate-finance/risk/bond-duration
+- [ ] corporate-finance/risk/currency-risk
+- [ ] corporate-finance/risk/currency-hedging
+- [ ] corporate-finance/dividends/dividend-theories
+- [ ] corporate-finance/dividends/dividend-policy-in-practice
 **Strategic Management**
 - [ ] strategic-management/foundations/intro-to-strategy
 - [ ] strategic-management/foundations/mission-and-vision

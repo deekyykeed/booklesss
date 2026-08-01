@@ -36,6 +36,23 @@ Ids are stable. A withdrawn rule is struck through, never deleted.
   regardless of what they say. Break them — a short sentence on its own, a
   table, a callout, an `h2`. Test: no section is three consecutive `p` blocks of
   50+ words.
+- **W-8** Bold the phrase worth carrying out of the section, with `**…**`.
+  **One to three per section**, never a whole sentence of a paragraph and never
+  two in the same sentence. It marks the thing a reader skimming the step the
+  night before an exam must land on: the rule, the distinction, the figure that
+  decides the case — not a term being defined (**W-5** already handles those)
+  and not a heading in disguise. A section with nothing worth bolding is a
+  section with nothing to carry; that is the finding, not a licence to skip.
+  Test: read only the bold in a step end to end — it should be a usable summary,
+  and it should not be half the words on screen.
+- **W-9** Write to the reader as someone who will **run** this, not someone
+  revising it. They are a future founder and the material is theirs to use, so
+  the sentence lands on their decision: "the first time you decide what to keep
+  on your own desk", not "the exam asks you to sort tasks between them". Hand
+  over the judgement rather than the mark scheme — say what the choice costs
+  them, what they can survive without while small, what they are buying when
+  they hire. Exam framing is allowed where it is genuinely the point (a method
+  the paper demands by name), but it is never the default voice.
 
 ## E — Page elements
 
@@ -51,6 +68,10 @@ correctness problem, not a taste problem.
 | `formula` | A display equation, with its symbols named underneath. |
 | `table` | Anything with columns — workings, comparisons, waterfalls. |
 | `playground` | Runnable code. Not used in finance courses. |
+
+Two inline marks exist inside `p`, `ul` and `callout` text, and no others.
+`**bold**` (**W-8**) and `[[term|definition]]` (**E-8**). There is no italic, no
+link and no nesting — anything else is typed literally on screen.
 
 - **E-1** A financial waterfall (FCF build-up, NPV workings, cumulative payback)
   is a `table` with right-aligned amounts — never a `ul` of "Revenue X, Costs
@@ -71,6 +92,18 @@ correctness problem, not a taste problem.
   lecture has one, at its original figures, so a student can hold the step and
   the slide side by side. Where a slide contains an arithmetic error, use the
   correct figure and record the correction in the file's header comment.
+- **E-8** A word that is **key or outside a first-year's vocabulary** gets a
+  tap-to-define popup: `[[term|definition]]`. This is for the jargon the source
+  material assumes and moves on from — *arbitrage*, *error account*, *front
+  office*, *netting*. It is **not** for the terms the step is teaching; those
+  are defined in the prose where the reader meets them (**W-5**), and a term
+  the step exists to explain must never be demoted to a popup. Definitions are
+  one or two sentences, in the house voice, and say why the word matters rather
+  than reciting a dictionary — the second sentence is usually the useful one
+  ("it stops being arbitrage the moment one leg is left open"). Budget roughly
+  **three to eight per step**: dotted underlines every other line make a
+  paragraph unreadable, and a step with none has probably not been read by
+  anyone who didn't already know the subject.
 
 ## S — Structure
 
