@@ -18,13 +18,24 @@ Ids are stable. A withdrawn rule is struck through, never deleted.
 - **W-2** *(inherited)* Make the point and stop. No padding, no restating the
   section heading as the first sentence, no summary paragraph that repeats what
   the reader just read.
-- **W-3** Lead a section with the thing itself, not with a warm-up. The first
-  sentence should be the definition, the rule, or the number — not "In this
-  section we will look at…".
+- **W-3** *(revised 2026-08-01)* Lead a section with the thing **in the flesh** —
+  a decision someone has to make, a figure, a named company, a dated case — and
+  let the definition follow it. "In this section we will look at…" was always
+  banned; so now is opening on "X is the function that…", which is a warm-up
+  wearing a definition's clothes. A reader will hold a definition once they have
+  something to hang it on, and not before.
 - **W-4** Second person, present tense. The reader is doing the analysis:
   "you discount each year's cash flow", not "the analyst discounts…".
 - **W-5** Define a term the first time it appears, in the same sentence, then
   use it plainly afterwards. No glossary detours mid-explanation.
+- **W-6** The step's first two sentences put something at stake — a failure, a
+  cost, a decision that could go either way, a number that surprises. The first
+  screen decides whether the rest gets read. Test: cover everything below the
+  first paragraph; would a student with a free evening keep going?
+- **W-7** Vary the rhythm. Three long paragraphs stacked in a row read as grey
+  regardless of what they say. Break them — a short sentence on its own, a
+  table, a callout, an `h2`. Test: no section is three consecutive `p` blocks of
+  50+ words.
 
 ## E — Page elements
 
@@ -78,6 +89,11 @@ correctness problem, not a taste problem.
   why the right answer is right, in one or two sentences.
 - **S-6** *(inherited)* No course skeleton inside a step. Don't list the other
   steps; the sidebar already does that.
+- **S-7** A definitional table — a list of functions, levels, structures, types —
+  never carries a section alone. It gets a reason the list has that shape before
+  it, and a handle for using it after: the split to recover it from, a worked
+  classification, or the exam-technique line. A table dropped between two
+  paragraphs of prose is the slide retyped.
 
 ## C — Content
 
@@ -92,8 +108,17 @@ correctness problem, not a taste problem.
 - **C-4** Keep the lecture's notation and method names (DPP, MIRR, PBIT) so the
   step and the exam paper speak the same language, even where a clearer term
   exists.
+- **C-5** Every section carries at least one concrete anchor — a named company,
+  a figure, a date, a decision with a wrong answer. A section that is definition
+  end to end is a slide. Note that this is how **C-1** gets dodged: a step with
+  no examples at all never technically breaks the ZMW/Zambian rule.
+- **C-6** Where the syllabus has a famous case — Barings, Enron, the 2008
+  collapse — tell it properly: the date, the figures, the person, what they
+  actually did. One line of "Barings is the exam case" wastes the only thing in
+  the section a student will still have in the exam hall. Two or three sentences
+  is enough; it must have facts in it.
 
 ---
 
-*No feedback logged yet — every rule above is a seed. The first review will
-start replacing them with the owner's actual preferences.*
+*Rules marked* (inherited) *are seeds from `.claude/CLAUDE.md`. Everything else
+came from a logged reaction — see `LOG.md` for the words that produced it.*

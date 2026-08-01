@@ -58,11 +58,73 @@ unchecked ones get ticked off by someone assuming the list was audited.
 
 ## Index
 
-*(no debt items yet — opened as the first study session and the first student
-reactions land)*
+| Item | What | Opened | State |
+|------|------|--------|-------|
+| D-1 | Engagement pass — every step written before the hook rules | 2026-08-01 | open · 1/42 |
 
 ---
 
 ## Items
 
-*(none)*
+### D-1 · engagement pass: hook, concrete anchors, case-telling, table framing · opened 2026-08-01
+**Source:** study session 2026-08-01 (TM 1.1) · owner · study — "the very first
+step is boring… spice it up, keep it engaging with a proper hook."
+**Rules:** W-3 (revised), W-6, W-7, C-5, C-6, S-7
+**Why it can't wait for a rewrite:** every step in all three courses was written
+to the old W-3, which asked for the definition first and got a textbook opening
+every time. This is not a defect in one step; it is the house voice as it stood.
+**Applies to:** all three courses — **1 of 42 steps checked** (TM 1.1 rewritten;
+`cash-management`, `npv-and-payback`, `intro-to-strategy` had their openings read
+but nothing else, and are NOT ticked).
+
+Pay it with the **engagement pass** in `SKILL.md` — six checks, run against the
+step in front of you, in the same edit that touches it for any other reason.
+Do not batch-rewrite steps nobody is reading yet; this is debt paid on contact.
+
+**Treasury Management**
+- [x] treasury-management/operations/intro-to-treasury — 2026-08-01 (rewritten)
+- [ ] treasury-management/working-capital/working-capital-and-liquidity
+- [ ] treasury-management/working-capital/cash-management
+- [ ] treasury-management/working-capital/inventory-and-creditors
+- [ ] treasury-management/risk/foreign-exchange-risk
+- [ ] treasury-management/risk/interest-rate-risk-management
+- [ ] treasury-management/investment/debt-management
+- [ ] treasury-management/investment/investment-management
+- [ ] treasury-management/systems/clearing-and-settlement
+- [ ] treasury-management/systems/treasury-management-systems
+
+**Corporate Finance**
+- [ ] corporate-finance/investment/npv-and-payback
+- [ ] corporate-finance/investment/irr-and-mirr
+- [ ] corporate-finance/investment/free-cash-flows
+- [ ] corporate-finance/investment/inflation-and-tax
+- [ ] corporate-finance/investment/capital-rationing
+- [ ] corporate-finance/investment/apv
+- [ ] corporate-finance/investment/international-projects
+- [ ] corporate-finance/cost-of-capital/cost-of-equity
+- [ ] corporate-finance/cost-of-capital/cost-of-debt
+- [ ] corporate-finance/cost-of-capital/wacc
+- [ ] corporate-finance/cost-of-capital/gearing
+- [ ] corporate-finance/cost-of-capital/capital-structure-theories
+- [ ] corporate-finance/cost-of-capital/credit-spreads
+- [ ] corporate-finance/ma-valuation/company-valuation
+- [ ] corporate-finance/ma-valuation/bond-valuation
+- [ ] corporate-finance/ma-valuation/market-efficiency
+- [ ] corporate-finance/ma-valuation/mergers-and-acquisitions
+- [ ] corporate-finance/risk/interest-rate-risk
+- [ ] corporate-finance/risk/hedging-interest-rate-risk
+- [ ] corporate-finance/risk/yield-curve
+- [ ] corporate-finance/risk/bond-duration
+- [ ] corporate-finance/risk/currency-risk
+- [ ] corporate-finance/risk/currency-hedging
+- [ ] corporate-finance/dividends/dividend-theories
+- [ ] corporate-finance/dividends/dividend-policy-in-practice
+
+**Strategic Management**
+- [ ] strategic-management/foundations/intro-to-strategy
+- [ ] strategic-management/foundations/mission-and-vision
+- [ ] strategic-management/environment/external-environment
+- [ ] strategic-management/environment/internal-environment
+- [ ] strategic-management/strategy/competitive-strategy
+- [ ] strategic-management/strategy/corporate-strategy
+- [ ] strategic-management/strategy/strategy-implementation

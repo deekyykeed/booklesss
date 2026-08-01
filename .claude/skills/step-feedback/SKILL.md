@@ -12,8 +12,12 @@ description: >
   doesn't", "this number is wrong") and AFTER any reaction — the owner's or a
   student's — to log it and, when it generalises, promote it to a rule.
   Triggers: "study session", "studying [course]", "feedback on this step",
-  "a student said", "log that", "remember that for the next step", "that's a
-  rule", "why did you write it like that". Applies to reader steps in platform/
+  "this step is boring", "spice it up", "it needs a proper hook", "make it
+  engaging", "a student said", "log that", "remember that for the next step",
+  "that's a rule", "why did you write it like that". Carries the ENGAGEMENT
+  PASS — the fixed six-check procedure for a step that is accurate, complete
+  and still not worth reading; it is course-agnostic and runs on any step in
+  any course. Applies to reader steps in platform/
   (Supabase courses → nav_nodes → lessons), not to PDFs — PDFs are step-skill.
 ---
 
@@ -81,6 +85,10 @@ Two things, in order, every time:
 
 If a rule and the step's source material conflict (e.g. a lecture uses a term
 the rules ban), follow the rule and note the substitution.
+
+Before calling the edit done, run the **engagement pass** below over what you
+wrote. It is six checks and takes a minute, and it catches the failure the other
+two do not: a step that breaks no rule and is still not worth reading.
 
 ---
 
@@ -201,9 +209,16 @@ learning breaks.
 | | What it is | Where it goes |
 |---|---|---|
 | **Stall** | You re-read a paragraph, or went to the slides/textbook to understand the step | `LOG.md`, tagged `writing` or `structure` — the step failed at its job |
+| **Flat** | You understood every word and felt nothing. You skimmed, or read on out of duty | `LOG.md` `writing`/`content` — run the **engagement pass** below |
 | **Gap** | The lecture, tutorial or past paper needs something the step doesn't carry | `LOG.md` `content` **+ a `DEBT.md` item** |
 | **Error** | A number, definition, method or check answer is wrong | `LOG.md` `error` **+ a `DEBT.md` item, fixed immediately** |
 | **Keep** | Something that made it click | `LOG.md`, tagged — so a later rewrite doesn't destroy it |
+
+**Flat is the one that hides.** A stall announces itself — you know when you've
+read a paragraph twice. Boredom doesn't: you get to the end of the step, nothing
+was wrong, and nothing stuck either, so there is nothing obvious to report. It
+gets logged as "fine" and the next nine steps are written the same way. If you
+skimmed, that is the finding. Log it before you rationalise it.
 
 **Keep is not optional.** A log of only complaints turns every rewrite into a
 gamble: the rewrite fixes the stall and quietly deletes the analogy that was
@@ -243,6 +258,63 @@ channel, wrong answers on the reader's section checks, and DMs. All of it counts
 - Where a student's confusion is genuinely about the subject and not the step —
   they'd have been lost in the lecture too — that's still `content`: the step is
   where they came for help.
+
+---
+
+## The engagement pass
+
+For **Flat**. A step can be accurate, complete, correctly structured and still
+not worth reading — and because nothing is *wrong*, a normal review returns
+"looks good". This is the fixed procedure for that, and it is deliberately
+course-agnostic: it asks nothing about treasury or strategy, so it runs on any
+step in any course.
+
+Six checks, in order. Each has a rule behind it, so a failure is a defect with
+an id, not an opinion.
+
+| # | Check | Fails when | Rule |
+|---|-------|-----------|------|
+| 1 | **The first screen** — cover everything below the opening paragraph. Would a student with a free evening read on? | It opens "X is the …" — a category definition with nothing at stake | **W-6**, **W-3** |
+| 2 | **Concrete anchors** — count the named companies, figures, dates and real decisions per section | Any section is definition end to end | **C-5**, **C-1** |
+| 3 | **The buried lead** — what is the most interesting thing in this step? Where is it? | It's a callout in section 4, or a subordinate clause | **C-6** |
+| 4 | **Table load** — count definitional tables (a list of types/levels/functions, not a working) | Three or more, each in the same `p → table → p` sandwich | **S-7** |
+| 5 | **Rhythm** — read the block types down the page: `p p p p` | Any section is three consecutive long `p` blocks | **W-7** |
+| 6 | **The abstraction ladder** — does any idea stay abstract from start to finish? | A classification is taught as its categories and never as one case moving through them | **C-3**, **C-5** |
+
+**The moves that fix them.** These are what the TM 1.1 rewrite actually did, in
+the order they were worth doing:
+
+- **Promote the buried lead.** The most alive thing in the step opens the
+  section it belongs to. Barings was one line in a callout; told properly — the
+  date, the £827m, the account number, the one pound — it now opens the section
+  it was hiding in, and section 5 gets to start "Leeson dealt his own trades and
+  then settled them himself."
+- **Find the stake.** Every finance topic has a way it hurts someone. Treasury's
+  is that a profitable company can still miss payroll on the 28th. Open there,
+  then define. The definition lands harder because there is now a hole for it.
+- **One case through the whole ladder.** A three-row classification table is
+  inert. Take one concrete thing — a miller buying wheat in USD — and walk it
+  through all three levels, then show the table as the summary of what the
+  reader just watched. The table stops being the lesson and becomes the recall
+  handle.
+- **Give a list a shape.** Eleven functions is unmemorable; "five that move the
+  money, six that manage the people who let it move" is recoverable under exam
+  pressure. Find the split before the table, state it after.
+- **Break the grey.** An `h2` splitting a two-part section, a callout, one short
+  sentence alone. Cheap, and it is half of what "boring" actually meant.
+
+**What the pass must not do.** Coverage is not negotiable — **C-2** outranks all
+of this. The rewrite kept every section, every syllabus list and every figure;
+it changed the way in, not what is taught. If an engagement fix would cut
+examinable content, the fix is wrong. Equally, engaging is not longer: the TM 1.1
+rewrite added roughly a hundred words to a 300-line step, most of them the
+Barings facts.
+
+**Where the pass runs.** On contact, not in a batch. A step nobody is reading
+does not get rewritten for style — but any step opened for any reason gets its
+`D-` box paid at the same time (Direction 1). Batch-rewriting the whole course
+means forty steps redesigned by whoever is currently annoyed, with no reader
+having asked for any of it.
 
 ---
 
