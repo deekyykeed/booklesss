@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { enrolledCourses } from "@/lib/courses";
 import { useIdentity } from "@/lib/identity";
 import { isStudyDay, studyHistory, useProgress } from "@/lib/progress";
@@ -8,6 +8,7 @@ import { overallPerformance, overallScoreHistory, type Performance } from "@/lib
 import { SolarIcon } from "@/components/icons/solar";
 import { SETTINGS_EVENT } from "@/components/identity/pickers";
 import { CourseCard } from "./CourseCard";
+import { pickGreeting, rememberGreeting } from "./greeting";
 import { OfflineTools } from "./OfflineTools";
 import { Spark } from "./Spark";
 import { courseTone } from "./tones";
@@ -58,12 +59,14 @@ function scoreFoot(perf: Performance | null, cleared: number): { lead: string; t
   return { lead: "Level", tail: "with last week", good: true };
 }
 
-function timeGreeting(): string {
-  const h = new Date().getHours();
-  if (h < 5) return "Still up";
-  if (h < 12) return "Good morning";
-  if (h < 18) return "Good afternoon";
-  return "Good evening";
+/** One greeting per visit, held for the life of the mount so it doesn't
+ *  change under the reader when progress re-renders the page. Picked in the
+ *  initialiser rather than an effect: it is only ever read after `hydrated`,
+ *  so the server's value is never rendered and can't mismatch. */
+function useGreeting(): string {
+  const [line] = useState(pickGreeting);
+  useEffect(() => rememberGreeting(line), [line]);
+  return line;
 }
 
 export function HomeView({
@@ -77,6 +80,7 @@ export function HomeView({
 }) {
   const { hydrated, doneCount, isComplete, streak, bestStreak, daysStudied, studiedToday, days } = useProgress();
   const { identity } = useIdentity();
+  const greeting = useGreeting();
 
   /* The courses this student said they're taking — everything below is about
    * these and nothing else. Coverage over a library half of which belongs to
@@ -166,9 +170,12 @@ export function HomeView({
           : `${done.checks} sections done across ${daysStudied} day${daysStudied === 1 ? "" : "s"}.`;
 
   return (
-    <div className="mx-auto w-full max-w-[900px] px-4 py-10 md:px-6">
+    /* Extra room above the greeting: it sat tight under the chrome, and the
+       first thing on the page reads better with air over it than the rest of
+       the page does between its sections. Bottom padding is unchanged. */
+    <div className="mx-auto w-full max-w-[900px] px-4 pb-10 pt-16 md:px-6 md:pt-24">
       <h1 className="font-display text-[30px] font-medium leading-[1.2] tracking-[-0.02em] text-ink">
-        {hydrated ? timeGreeting() : "Welcome back"}
+        {hydrated ? greeting : "Welcome back"}
         {/* The name they typed into the form beats the one Clerk inferred from
             an email address — they chose one of them. */}
         {identity?.name || name ? `, ${identity?.name ?? name}` : ""}
