@@ -109,7 +109,9 @@ returning `{ slot, slides }`, built from three slide types:
 |---|---|
 | `cover({eyebrow, title, sub})` | Text on the brand gradient. Opens the post and marks the "in the works" beat. |
 | `feature({img, title, sub, top, fadeTop, fadeBot, shotLeft})` | A full-bleed app shot with the headline over it. |
-| `searchCTA()` | The closing Google search-bar slide. Always last, never edited. |
+| `plain({img})` | The crop alone, filling the frame — no copy, no wordmark, no grain. |
+| `dmCTA()` | The closing slide: DM me "link". Always last on a new post. |
+| `searchCTA()` | The retired Google slide. Kept so already-posted days still re-render as posted — never used on a new day, never edited. |
 
 ```bash
 cd Demand/social
@@ -120,6 +122,11 @@ POST=<config-name> node _scripts/prog-post.mjs      # writes into today's folder
 is most of the work — the arithmetic is in RULES.md. Set `shotLeft: 0` on any
 slide built from a tight macro crop. Render, **read the PNGs back**, adjust,
 re-render. Two or three passes is normal.
+
+On a `plain()` day the framing is all in the capture instead, and the choice of
+**page-level or component-level** crops is the first decision of the day — see
+"Image-only days" and "Component days" in RULES.md. A day about what the app
+*is* wants areas; a day about what *changed* usually wants components.
 
 The render refuses to write a slide whose text leaves the safe area, naming the
 line and how far over it went. Treat that as the copy being too long for the

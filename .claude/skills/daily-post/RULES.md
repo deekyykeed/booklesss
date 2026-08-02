@@ -93,17 +93,11 @@ and it is now a supported mode, not a one-off.
   frame (1080 wide, so a 9:16 source is exactly 1920 tall), no fades, **no
   wordmark and no grain**. Both of those are things drawn over the app, and
   grain on a screenshot reads as a dirty screen rather than as texture.
-- **The search CTA still closes every carousel.** It is the only text in the
-  day and the only way anybody finds us; "no copy" means no headlines, not no
-  call to action.
+- **The CTA still closes every carousel.** It is the only text in the day;
+  "no copy" means no headlines, not no call to action. (Which CTA: see Copy.)
 - **The caption carries the whole story** — it is read while the reader is
   already looking at the screen, so it can be plainer and longer than a
   headline. Write it in `PLAN.md` as usual.
-- **Crop areas, not controls.** "Zoom into the areas of the app, not into
-  specific icons and buttons" — a panel with the prose it belongs to, a row of
-  tiles with the line above it, a screen with its heading. The floor is about
-  300 CSS px wide; below that a crop stops being the interface and becomes a
-  picture of one button.
 - **Framing has nowhere to hide.** On a copy slide the top of the shot
   dissolves under the headline; here the crop *is* the slide, top edge
   included. A shot that arrives cut off gets re-captured — there is no `top` to
@@ -112,16 +106,67 @@ and it is now a supported mode, not a one-off.
   of the step closer put it at the top of the frame with half a screen of empty
   page under it. `area()` against a full-page screenshot fixes it.
 
+## Component days (owner's call, 2026-08-02)
+
+A stricter version of the image-only day: **one component per slide** — a
+single control, card set or tile, cropped to its own edges and enlarged, rather
+than an area of a page. It **supersedes** the 1 Aug "crop areas, not controls,
+nothing below 300px" instruction, which was right for a day about what the app
+*is* and wrong for a day about what *changed in it*. Both modes are live; pick
+by what the day shipped. `part()` in `cap-0802.mjs` is the reference helper.
+
+- **Size the crop from the component, not from a number.** `pad` either side,
+  so one value frames a 34px button and a 370px card sensibly and nothing
+  silently reframes when the app's layout moves. A fixed width picked in
+  advance is what put a 215px box round a 168px stat tile (photographing the
+  column beside it) and a 300px box round a 370px card (cutting it in half).
+  A *negative* pad is the tool for bleeding a tile's neighbour out of frame.
+- **"Wider than the crop" needs a threshold, not a comparison.** Left-aligning
+  whenever `element > crop` treats a deliberate 5px bleed as a pan and slides
+  the whole subject sideways — which cut the duotone mark off a stat tile's
+  corner. Within ~15% is a bleed; beyond it is a pan.
+- **A macro works for a LEFT-aligned control and fails for a right-aligned
+  one.** The crop's left edge lands on the reading column's left edge, so the
+  lines above the control are whole and only their ends are cut, which is what
+  a line does anyway. Crop a right-aligned control at the same zoom and the
+  left edge falls mid-paragraph, slicing every line mid-word — "ing new this
+  week." — which reads as a broken image, not a close-up. Frame right-aligned
+  controls at column width instead.
+- **Check the component can survive a 9:16 box before planning slides around
+  it.** Do the arithmetic: a crop tall enough to clear the blank band above and
+  below the checkpoint marks works out 42px wide, narrower than the two 34px
+  marks it is supposed to contain — so no honest macro of them exists, and
+  lifting them clear of the prose only pushes them under the feed's own header.
+  Same trap the other way: a card 184px tall inside a 665px frame at its own
+  width photographs its neighbours too, so "one card close in" comes out
+  identical to the wide shot. The 28px mark on it was the only part small
+  enough for the frame to actually be about.
+- **A component slide still obeys the covered zones.** No safe-area check runs
+  on a `plain()` slide because there is no text to measure, so it is on the
+  capture: keep the subject between ~16% and ~73% of the crop's height, or the
+  feed's account header sits on it.
+- **Three states of one control are three slides; three crops of one card set
+  are one.** The distinct-shot rule is about padding, and a control answered
+  two different ways is a genuine difference. Vary what is *around* it too —
+  the same row shot on three different sections reads as three shots; shot
+  three times on one section reads as one posted thrice.
+
 ## Copy
 
 - **Never a course or a school** — see the enforced rule above. ⚠️ The 27 Jul
   carousels were written before it and break it ("Real ZCAS material", BAC4301);
   they need re-cutting before they go out.
-- **CTA is "Search booklesss — three s's — first result on Google", plus "Or DM
-  me 'link'".** Never "comment" — you cannot put a link in a comment, and DMs
-  convert better. (`feedback_marketing_cta_dm`, `feedback_marketing_cta_search`)
-- **Spell out the three s's.** "Booklesss" is misheard and mistyped otherwise.
-  No `.com`.
+- **The CTA is a DM, and only a DM** (owner's call, 2026-08-02). `dmCTA()` in
+  `prog-post.mjs`: "DM me 'link'", a composer, "No search, no sign-up." The
+  caption ends the same way — *DM me "link" and I'll send you the whole thing.*
+  Search asked for two steps before anyone reached anything, and the second was
+  a results page we neither control nor can see our ranking on; a DM is one
+  step, lands in a thread where the link can actually be sent, and produces a
+  person to talk to rather than a session. (`feedback_marketing_cta_dm`)
+  - **`searchCTA()` stays in the file, unused by new posts.** Every carousel
+    already rendered ends on it, and deleting it would silently change what was
+    posted the moment an old day is re-rendered. Do not edit it either.
+  - Never "comment" — you cannot put a link in a comment.
 - **Copy is about the product, not the syllabus.** The slides sell the reader —
   what it is like to study in it. The course content is the evidence, not the
   pitch.
@@ -183,6 +228,26 @@ and it is now a supported mode, not a one-off.
 - **`networkidle` is the wrong navigation wait against a dev server** — HMR holds
   a socket open and a recompile mid-navigation never settles, killing the run on
   a page that is fine. Wait for the DOM, then for a known element.
+- **Retry the relabel once after a navigation.** Arriving at a route the dev
+  server has not compiled yet means the first paint can be replaced a beat
+  later, and a transform running across that swap dies with *"execution context
+  was destroyed"* — the page working, not failing.
+- **Scroll to the top before any full-page screenshot.** Chrome renders
+  `position: sticky` elements wherever the page happens to be scrolled to, so
+  the reader's floating header lands as a band across the middle of any crop
+  taken further down — it sat straight through an open menu, over two of its
+  five options. Parking at y=0 puts it back where it belongs and where no crop
+  goes. Scroll *before* measuring: the document coordinates are the same either
+  way, but the banned-word scan compares against `window.scrollY` and would
+  otherwise be using two different origins.
+- **`nth` needs a selector that means what you think.** `.grasp-btn` is every
+  control in a checkpoint row — the note button *and* both answers — so
+  `nth: 1` was the second button of the first row, not the note button of the
+  second. `.grasp-btn[aria-expanded]` picks the note buttons only.
+- **Relabelling is case-sensitive, and a callout usually restates its block in
+  lower case.** The card set's own callout kept the original vocabulary at the
+  foot of the crop while the cards above it used the new one. Map both cases,
+  or crop the restatement out and check that you have.
 
 ## Framing (the `top` / `fadeTop` / `fadeBot` arithmetic)
 

@@ -163,6 +163,37 @@ const searchCTA = () => ({ bg: "gradient", wordmark: true, html: `<div class="la
   <p class="sub safe" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:1100px;font-size:40px;line-height:1.35;color:${INK}">Or DM me <b>&ldquo;link&rdquo;</b>. &#128071;</p>
 </div>` });
 
+/* Closing DM CTA — the whole call to action, as of 2026-08-02 (owner's call).
+ *
+ * The Google slide is gone from new posts. It asked for two steps before anyone
+ * reached anything: search, then pick us out of a results page we do not
+ * control and cannot see the ranking of. A DM is one step, it arrives in a
+ * thread where the link can actually be sent, and it is the only version of
+ * this that produces a person to talk to rather than a session.
+ *
+ * `searchCTA()` is kept, not deleted: every carousel already rendered ends on
+ * it, and re-rendering an old day would otherwise silently change what was
+ * posted. New days use this one.
+ *
+ * The composer is drawn rather than screenshotted — it is the one thing in
+ * these posts that is NOT the product, so there is nothing to photograph and
+ * no honesty rule in play. It borrows the search slide's geometry so the last
+ * slide of a carousel still sits where the eye expects it.
+ */
+const SEND = `<svg width="52" height="52" viewBox="0 0 24 24" fill="none">
+<circle cx="12" cy="12" r="11" fill="${INK}"/>
+<path d="M12 17V7m0 0-4 4m4-4 4 4" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+const dmCTA = () => ({ bg: "gradient", wordmark: true, html: `<div class="layer">
+  <h1 class="safe" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:470px;font-size:100px;line-height:1.0">DM me<br>&ldquo;link&rdquo;.</h1>
+  <p class="sub safe" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:760px;font-size:38px;line-height:1.35">One word. I&rsquo;ll send you the whole thing.</p>
+  <div class="safe" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:890px;height:132px;background:#fff;border:1px solid #e6e6ea;border-radius:66px;box-shadow:0 2px 4px rgba(20,20,40,.05),0 18px 40px -14px rgba(20,20,50,.22);display:flex;align-items:center;gap:24px;padding:0 30px 0 44px">
+    <span style="font-size:46px;color:${INK};letter-spacing:-.01em">link<span style="display:inline-block;width:3px;height:45px;background:#6C4CF0;margin-left:6px;vertical-align:-8px"></span></span>
+    <span style="margin-left:auto;display:flex;flex-shrink:0">${SEND}</span>
+  </div>
+  <p class="sub safe" style="position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:1100px;font-size:40px;line-height:1.35;color:${INK}">No search, no sign-up. &#128071;</p>
+</div>` });
+
 /* ---- posts ----
  * Each entry is a thunk so only the selected post's shots are read off disk. */
 const CONFIGS = {
@@ -510,6 +541,75 @@ const CONFIGS = {
       plain({ img: img("a-who-named.png") }),
       plain({ img: img("a-courses.png") }),
       searchCTA(),
+    ],
+  }),
+
+  /* ------------------------------------------------------------------ *
+   * 2026-08-02 — one component per slide, and a DM at the end.
+   *
+   * Two changes from yesterday, both the owner's:
+   *
+   *  1. COMPONENTS, NOT PAGES. Yesterday every slide was an area of the app —
+   *     a panel with its prose, a screen with its heading. Today each slide is
+   *     one control, one card set, one tile, cropped to its own edges and
+   *     enlarged. Which suits what the day actually shipped: nothing changed
+   *     shape at page level, four things changed at component level.
+   *  2. THE CTA IS A DM. No Google slide. See dmCTA() above for why.
+   *
+   * Still no copy on the shots themselves — the caption carries the story, the
+   * way it has since 1 Aug.
+   *
+   * Four slots, not five. The fifth honest angle would have been the shadow
+   * scale, and "we made the shadows smaller" is a craft note, not something a
+   * student can see. Padding it out is worse than posting four.
+   * ------------------------------------------------------------------ */
+
+  /* 1 — the two marks at the end of a section, in the three states a reader
+   * puts them through. Same control, different section each time, so the prose
+   * above changes and it does not read as one shot posted three times. */
+  "b-marks": () => ({
+    slot: "1-morning",
+    slides: [
+      plain({ img: img("b-row.png") }),
+      plain({ img: img("b-later.png") }),
+      plain({ img: img("b-got.png") }),
+      dmCTA(),
+    ],
+  }),
+
+  /* 2 — the other end of the same row: the button that asks how the writing
+   * read, its menu, and the button once it has been answered. */
+  "b-note": () => ({
+    slot: "2-midday",
+    slides: [
+      plain({ img: img("b-note.png") }),
+      plain({ img: img("b-menu.png") }),
+      plain({ img: img("b-noted.png") }),
+      dmCTA(),
+    ],
+  }),
+
+  /* 3 — the four tiles, one per slide, each with the mark it got back today. */
+  "b-tiles": () => ({
+    slot: "3-afternoon",
+    slides: [
+      plain({ img: img("b-tile-1.png") }),
+      plain({ img: img("b-tile-2.png") }),
+      plain({ img: img("b-tile-3.png") }),
+      plain({ img: img("b-tile-4.png") }),
+      dmCTA(),
+    ],
+  }),
+
+  /* 4 — the card set that replaced a table, then each of its three marks. */
+  "b-cards": () => ({
+    slot: "4-evening",
+    slides: [
+      plain({ img: img("b-cards.png") }),
+      plain({ img: img("b-glyph-1.png") }),
+      plain({ img: img("b-glyph-2.png") }),
+      plain({ img: img("b-glyph-3.png") }),
+      dmCTA(),
     ],
   }),
 };

@@ -37,9 +37,11 @@ is a carousel of individual 9:16 PNGs (`01.png … 05.png`), posted in order.
 **House style** (per direction, 2026-07-24): imagery is **un-boxed** — macro
 crops of the real UI that bleed off the frame, never a screenshot sitting in a
 rounded card. No swipe arrows, no page counters. Copy is about **Booklesss the
-product**, not the course content. Every carousel ends on a **Google search-bar
-CTA** ("search booklesss — three s's — first result"). Text/logo stay inside the
-social safe area (top ~300px, bottom ~340px, right ~150px clear).
+product**, not the course content. Every carousel ends on the **DM CTA**
+("DM me 'link'") — the Google search slide was retired 2026-08-02; `searchCTA()`
+survives in `prog-post.mjs` only so already-posted days re-render as posted.
+Text/logo stay inside the social safe area (top ~300px, bottom ~340px, right
+~150px clear).
 
 **All light.** Dark-background posts wait until the app ships a real dark mode —
 a light screenshot on a dark canvas doesn't sit right.

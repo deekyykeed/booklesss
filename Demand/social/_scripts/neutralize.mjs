@@ -128,6 +128,38 @@ export const MAP = {
   "Treasury management systems": "Distributions",
   "Risk management": "Rates of change",
   Risk: "Graphs",
+
+  /* ---- the `cards` block (added 2026-08-02) ----
+   * The three-card set is the thing one of today's posts is ABOUT, so unlike
+   * every other crop it has to survive at full size with its body text legible.
+   * Relabelled the same way as everything else here: the cards, their marks,
+   * their tones and the rules under their titles are the real component — only
+   * the words are placeholders, and they are placeholders about studying rather
+   * than about any subject, so the slide says what the block is for without
+   * saying whose course it came from.
+   *
+   * The heading is mapped as well as the three titles: `deep` applies longer
+   * keys first, so "Strategic, tactical and operational" is rewritten before
+   * the bare "Strategic" can get at it. */
+  "Strategic, tactical and operational": "Three ways to work through a lesson",
+  Strategic: "Plan",
+  Tactical: "Practise",
+  Operational: "Review",
+  "Long-term policy": "Before you start",
+  "Medium-term decisions": "While you read",
+  "Daily execution": "After you finish",
+  "Capital structure, dividend policy, capital raising, investment returns. Set once and held for years.":
+    "Skim the headings, the summary, and the question at the end of each section. Done once, before you read a word.",
+  "Cash investment management, hedging currency or interest rate risk. Decided over the coming months, inside the policy above.":
+    "Answer each section's question as you reach it, in your own words before you look. Done as you go, section by section.",
+  "Transmitting cash, placing surplus funds, bank communications. Done today, and done again tomorrow.":
+    "Come back to anything you marked for later, the same evening if you can. Done today, and done again tomorrow.",
+  /* The callout under the cards restates them in lower case, which the map's
+   * capitalised keys do not touch — so it sat at the foot of the crop still
+   * using the old vocabulary while the cards above it used the new one. */
+  "Classify by time horizon: ": "One pass each: ",
+  "strategic = long-term policy, tactical = medium-term decisions, operational = daily execution.":
+    "plan before you start, practise while you read, review after you finish.",
 };
 
 export const READER = {
