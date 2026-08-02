@@ -60,8 +60,11 @@ export function SourceStrip({ urls }: { urls: string[] }) {
        it, and the gap between the two belongs to that wrapper (see
        `BlockWithSources`) rather than to this component. */
     /* `font-container`: the chips are a note about the paragraph, not part of
-       the reading, so they take Satoshi while the prose stays Aptos. */
-    <div className="font-container">
+       the reading, so they take Satoshi while the prose stays Aptos.
+       `font-medium` (owner, 2026-08-02) — Satoshi's 500 is a real face here,
+       not a synthesised one, and at chip size the regular sat too light
+       against the prose it annotates. */
+    <div className="font-container font-medium">
       {/* No "SOURCES" heading. It was there because a bare row of logos at the
           foot of a section could have been a partner list or a set of tools,
           and one quiet word settled it. Now the strip sits directly under the

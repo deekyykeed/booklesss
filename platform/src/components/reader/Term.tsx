@@ -131,7 +131,7 @@ export function Term({ term, definition }: { term: string; definition: string })
             style={{ left: pos?.left ?? 0, top: pos?.top ?? -9999, width: pos?.width ?? 340 }}
             /* `font-container`, not `font-content`: this is a definition in a
                box, not a sentence of the step. See the note in layout.tsx. */
-            className="squircle fixed z-[120] rounded-3xl border border-[#e0e0e0] bg-white px-4 py-3 text-left font-container text-[17px] font-normal leading-[27px] text-[#3f3f47] shadow-[0_2px_4px_-1px_rgba(0,0,0,0.08),0_12px_20px_-6px_rgba(0,0,0,0.16),0_28px_48px_-16px_rgba(0,0,0,0.22)]"
+            className="squircle fixed z-[120] rounded-3xl border border-[#e0e0e0] bg-white px-4 py-3 text-left font-container text-[17px] font-medium leading-[27px] text-[#3f3f47] shadow-[0_2px_4px_-1px_rgba(0,0,0,0.08),0_12px_20px_-6px_rgba(0,0,0,0.16),0_28px_48px_-16px_rgba(0,0,0,0.22)]"
           >
             {/* A rotated square with two of its borders showing, sitting half
                 outside the card so the card's own fill hides its inner half.

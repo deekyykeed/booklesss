@@ -90,6 +90,35 @@ Eyebrow: `font-size: 0.65rem`, `letter-spacing: 0.18em`, `text-transform: upperc
 - **Full-height:** Always `min-height: 100dvh` — never `height: 100vh` (iOS Safari jump).
 - **Breathing room:** `py-24` to `py-32` between sections minimum.
 
+### Wide content on a narrow screen *(2026-08-02)*
+
+Anything that cannot fit a phone — a table, a chip row, a code block — scrolls
+**off the edge of the screen**, never inside a visible box. A bordered, rounded
+card with the scroll happening inside it draws a hard edge a few pixels short
+of the screen, so the column you are scrolling toward is cut off at a boundary
+you can see, and the thing reads as *held* rather than as *continuing*.
+
+- Use a full-bleed scroller: negative margin equal to the column's padding,
+  the same padding back on the inside, so narrow content still lines up with
+  the text and wide content slides out past it. (`.bleed-x` in the reader.)
+- Drop the border, radius and shadow from the scroller. Row hairlines are
+  enough to hold a table together.
+- On a touch device, mark it so a sideways drag scrolls the content rather
+  than opening whatever drawer the app has on that gesture.
+
+**A prose table must not be `width: 100%`.** That tells the auto layout to fit
+the container, so it squeezes every text cell toward its minimum: a four-column
+table on a 390px phone came out at ~150px a column, two words to a line, seven
+lines deep. Instead:
+
+- `width: max-content` with `min-width: 100%` — each column asks for the width
+  its text wants, and a small table still spans the column.
+- Cap **text** cells (`max-width: ~17rem`) so one long cell can't demand a
+  single enormous line; it wraps at a readable measure instead.
+- Set **numeric** cells `white-space: nowrap`. A figure broken across two lines
+  stops being a figure. Numeric columns then stay tight while prose columns
+  breathe, which is what you want from each.
+
 ---
 
 ## Component architecture
@@ -211,6 +240,39 @@ Lists and grids cascade: `animation-delay: calc(var(--index) * 80ms)`. Never ins
 - No AI copy clichés: "Elevate", "Seamless", "Unleash", "Next-Gen", "Revolutionize"
 - No broken Unsplash links — use `picsum.photos/seed/{context}/800/600`
 - No emojis in UI, code, markup, or alt text
+
+---
+
+## Reproducing a reference *(2026-08-02)*
+
+The owner sends screenshots of an interface and asks for it. Two rules, both
+learned the expensive way on the settings dialog.
+
+1. **"Copy this" means copy it.** The first pass adapted the reference to the
+   app — kept our headings, our radii, added a header band the reference did
+   not have — and every one of those was a defect. When a measured spec is
+   given (font sizes, weights, line heights, exact `rgb()` values, paddings),
+   those numbers are the brief. Write them down in the file as the spec and say
+   they are not to be changed without a new measurement.
+2. **Verify by reading computed styles back out of the DOM**, not by looking.
+   Render it, `getComputedStyle` the dialog, the heading, a tab, an input, and
+   print the values against the spec. Eyeballing a 15px heading against a 19px
+   one does not work; a table of measured-vs-specified does.
+
+**Where a replica lives:** its own route, bare, with no app chrome in the frame
+(`/workspace`, `/settings`). It is something to compare against the original,
+not a decision about the product — so it must never replace a working surface
+students depend on. Offer the swap; don't perform it.
+
+**Honour a spec that fights itself.** "No visible border" on a
+`rgba(255,255,255,0.5)` field over a white panel is literally true and
+invisible in practice. Use the device the spec uses elsewhere (a 1px inset
+ring) and note the substitution in the file rather than shipping a control
+nobody can find.
+
+**Don't build the parts that have nothing behind them.** A toggle copied from a
+notifications panel, in an app with no notifications, is a switch that does
+nothing. Either wire it to something real or say plainly that it was left out.
 
 ---
 

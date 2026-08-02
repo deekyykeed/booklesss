@@ -171,6 +171,23 @@ Most icons in `platform/` come from the **MynaUI** set (by Praveen Juge) via the
 
 Everything else monochrome is MynaUI.
 
+### Platform Fonts (Next.js)
+
+Four faces, all self-hosted from `_dev/fonts/` and subset by `python3 scripts/subset-fonts.py` (run it after any content change that could add a character — it derives the kept set from `course-data.json`):
+
+| Variable | Face | Where |
+|---|---|---|
+| `--font-sans` / `font-sans` | **Inter** | App chrome: header, sidebars, dashboard, settings |
+| `--font-display` / `font-display` | **Familjen Grotesk** | Headings, step titles, formulas |
+| `--font-content` / `font-content` | **Aptos** | **The reading** inside a step: prose, callouts, cards, table cells |
+| `--font-container` / `font-container` | **Satoshi** | **The containers** inside a step: source chips, the tap-to-define popup, the section-note menu, table column headings |
+
+**The `content` / `container` split is the owner's rule (2026-08-02)** and it is by *job*, not by element: a sentence someone reads is Aptos, and chrome that frames or annotates a sentence is Satoshi. The whole reading face was briefly swapped to Satoshi and that was too far. Satoshi is Fontshare / Indian Type Foundry (ITF Free Font Licence) and is on no device by default, which is why it is vendored rather than linked.
+
+**Container surfaces set `font-medium` (500)** — owner's call, same day. Satoshi ships a real 500 here, so it is not a synthesised weight, and at chip and popup size the regular sat too light beside the Aptos it annotates. Pair it as `font-container font-medium`. The one exception is a table's column heading, which stays `font-semibold` because it is a heading, not body.
+
+Everything else monochrome is MynaUI.
+
 **Never** hardcode Framer CDN URLs for icons — always inline SVG so icons respond to `color` CSS.
 
 ### Transcription

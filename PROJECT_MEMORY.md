@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-02 (session 30)
+**Last updated:** 2026-08-02 (session 31)
 
 ---
 
@@ -91,6 +91,36 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 31 (2026-08-02, reader + settings):**
+- [ ] **Decide whether callouts and cards are "containers".** The owner's rule
+      is that a step's *reading* is Aptos and what sits *in containers* is
+      Satoshi. Applied to source chips, the tap-to-define popup, the section
+      note menu and table column headings. **Callouts, cards and table cells
+      were left as Aptos** because they hold sentences rather than framing
+      them; that was my call, not theirs, and it is one word to change.
+- [ ] **`/settings` is a replica, not the app's settings.** It reproduces the
+      reference dialog whole (12 tabs, Voice, Notifications and all) on its own
+      bare route, the way `/workspace` does. The reader's real settings are
+      still the sheet behind the profile picture. **Decide whether it
+      graduates**; if it does, the working sheet's controls have to move into
+      it or students lose the only way to change their name, courses and to
+      wipe the device. Both gates now skip `/settings`.
+- [ ] **`Toggle` in `ReferenceSettings.tsx` is built to spec and unused.**
+      Nothing in the app is boolean; the reference's only switches are
+      notifications and there is no push, no email and no account. It is there
+      so the first real boolean doesn't get a switch invented on the day.
+- [ ] **No dark theme, so Appearance was left out of the real settings sheet.**
+      If dark mode is wanted it is a proper job, not a switch — the reader's
+      whole surface is a translucent white panel over a light canvas.
+- [ ] **Re-run `subset-fonts.py` after any content change that adds a
+      character.** It now carries **nine** faces (four Aptos + five Satoshi):
+      a character in the reading can appear in a definition popup too, so
+      subsetting one family without the other would eventually drop a glyph.
+- [ ] The **Motion** setting (Settings → Reading) forces reduced motion for
+      this app alone. If a new animation lands, add its selector to the
+      consolidated `:root[data-motion="reduced"]` list in `globals.css` — there
+      are six `prefers-reduced-motion` blocks it mirrors.
 
 **From session 30 (2026-08-02, socials):**
 - [ ] **Zoom the isolated component slides in harder.** Owner's note at the end
@@ -268,6 +298,92 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-02 (session 31 — the phone keeps winning, and "copy this" means copy it)
+
+Local session on `main`, run alongside the socials session above in the same
+OneDrive tree. Thirteen commits (`36f14e1` → `122c2c9`). Almost all of it came
+from the owner reading the live reader on a phone and sending shots back, the
+same loop that earned its place in session 29.
+
+**Done:**
+- **A greeting that changes.** Four fixed strings and three time bands became
+  six bands of eight lines, one picked per visit with the last excluded so it
+  can't repeat. Every line is a bare vocative phrase, because the name is
+  appended as `, Deeky` — anything ending in punctuation renders as
+  "Coffee first?, Deeky". Dropped down the page twice on request, ending at
+  `pt-28 md:pt-36`.
+- **Tables run off the page.** `bleed-x` instead of a bordered, rounded, lifted
+  card that clipped a scrolled-to column at a visible edge. Then the real
+  defect underneath it: `w-full` told the auto layout to fit the reading
+  column, squeezing prose cells to ~150px and seven lines. `w-max min-w-full`,
+  text cells capped at 17rem, numeric cells `whitespace-nowrap`.
+- **Sources moved under the paragraph that cites them**, one strip per citing
+  block instead of one per section, label removed, mark down to 16px. Dedupe is
+  now per block, so two pages from one site in different paragraphs are both
+  reachable.
+- **The checkpoint row changed marks four times in one day** — bookmark+tick →
+  Solar Duotone thumbs → MynaUI smile/sad, and the note button chat-dots →
+  Duotone bubble → info circle. It ended as three MynaUI hairlines, and the
+  reader draws no Solar at all.
+- **TM `treasury-controls-and-structure` reopened** (owner: "I don't get that
+  story you've started with"). Both section openings broke **W-13**, and the
+  S-8 split on 2026-08-01 is what broke them: it moved a Barings callback above
+  the seam, where it named a stranger and repeated the previous step's own
+  bolded punchline.
+- **Settings rebuilt twice** — once adapted, then to the owner's measured
+  readout of the reference dialog's computed styles. Plus `/settings`, the
+  reference reproduced whole on its own bare route.
+- **A real Motion setting** (`lib/motion.tsx`): the canvas runs six blob
+  animations continuously and the CSS honoured only the OS-level
+  `prefers-reduced-motion`. Now per-device, `data-motion` on `<html>`, applied
+  by an inline script before first paint.
+- **Satoshi vendored from Fontshare** and scoped: Aptos reads, Satoshi frames.
+  Container surfaces set `font-medium`; Satoshi ships a real 500, so nothing is
+  synthesised. Table column headings stay semibold, being headings.
+
+**What Worked:**
+- **Measuring instead of looking, every time it mattered.** Table columns
+  (150px/7 lines → 272px/4), the settings dialog read back out of the DOM
+  against the spec line by line, and `getComputedStyle().fontFamily` on the
+  popup that "hadn't changed" — it had, and only measuring could say so.
+- **`document.fonts.ready` plus computed `fontFamily`** as the proof a font
+  swap actually landed, rather than trusting that the CSS variable was edited.
+- **Freezing the clock inside the page** (`class FakeDate extends Date` in an
+  `addInitScript`) to shoot all six greeting bands without waiting a day.
+- **Reading the sibling steps before rewriting one.** Checking all six section
+  openings across the three split TM steps proved the other two were clean and
+  scoped the fix to one file.
+
+**Dead Ends (do not retry):**
+- **Interpreting a design reference instead of copying it.** The first settings
+  pass kept our headings, our radii and added a header band the reference did
+  not have. Every one was a defect. When a measured spec is given, the numbers
+  are the brief.
+- **`git commit --only` cannot introduce an untracked file** — `motion.tsx`
+  failed with "did not match any file(s) known to git". `git add` it by name
+  first. Already documented; hit anyway.
+- **Two `next dev` servers on one directory.** Next 16 refuses outright
+  ("Another next dev server is already running"), and a killed one can leave
+  the port held by a zombie that answers nothing — `EADDRINUSE` on a port
+  `curl` reports as dead. Build and `next start -p <fresh>` is the reliable
+  escape.
+- **A `while read` loop reading a heredoc of URLs is fine, but `sed -i` on a
+  scratch `.mjs` to change a selector is not** — two rounds of that produced a
+  script whose measurement and screenshot targeted different elements.
+- **Trusting a clean cold-open scan.** It passed "Leeson dealt his own
+  trades…", which is the exact defect the rule exists for: a proper noun is
+  neither device-narration nor an unresolvable count, so no pattern matched.
+
+**Flags:**
+- ⚠️ **`linear-server` unauthorized — 10th consecutive session.** Nothing filed.
+- ⚠️ **Callouts, cards and table cells were left in Aptos on my judgement**, not
+  the owner's instruction. See the Next Session list.
+- ⚠️ **`/settings` is a replica and is publicly reachable** (noindex, but not
+  gated). It is a copy of another product's dialog with that product's own
+  copy in it — fine as a scratchpad, wrong to leave up if the reader ever gets
+  real traffic.
+- `Booklesss Bucket/` still holds the one unfiled webp (7th session).
 
 ### Session 2026-08-02 (session 30 — one component, on nothing, and the brief moved three times)
 
