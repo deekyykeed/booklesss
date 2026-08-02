@@ -160,6 +160,23 @@ export const MAP = {
   "Classify by time horizon: ": "One pass each: ",
   "strategic = long-term policy, tactical = medium-term decisions, operational = daily execution.":
     "plan before you start, practise while you read, review after you finish.",
+
+  /* ---- tap-to-define, for the popup slides (added 2026-08-02) ----
+   * The popup is photographed on its own, so its heading and its definition are
+   * the entire slide — there is no surrounding page to crop away and nothing
+   * else in frame to carry the meaning. Both are relabelled, into the same
+   * neutral first-year register the reader placeholder uses.
+   *
+   * If one of these keys ever stops matching the source .mjs exactly, the
+   * capture does not quietly ship the original: "front office" carries the word
+   * treasury in its definition, so the banned-word scan throws on the element.
+   * That is deliberate — it is the one of the pair with a tripwire in it. */
+  "forward contracts": "a variable",
+  "An agreement to buy or sell a set amount of currency on a set future date at a price fixed today. It removes the uncertainty: you know in January what March's dollars will cost you.":
+    "A letter standing in for a number you do not know yet. Find what it stands for, put the number back, and the whole expression resolves.",
+  "front office": "a coefficient",
+  "The dealers, the people who actually strike trades. The back office confirms, settles and records them. Keeping the two apart is the single most important treasury control.":
+    "The number sitting directly in front of a letter, saying how many of it there are. In 5x the coefficient is 5, and in x on its own it is 1.",
 };
 
 export const READER = {

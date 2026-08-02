@@ -87,6 +87,30 @@ body{font-family:PSans,system-ui,sans-serif;position:relative;-webkit-font-smoot
 /* Image-only slide: the crop fills the frame exactly. A 9:16 source at 1080
    wide is 1920 tall, so there is no edge to hide and nothing to align. */
 .plain-shot{position:absolute;inset:0;z-index:1;width:1080px;height:1920px;object-fit:cover;object-position:top center}
+/* An isolated component, floating. The stage occupies the readable band only
+   (300-1400), so centring in it centres in what the viewer can actually see
+   rather than in the frame — the bottom 520px is the caption. The perspective
+   lives on the stage, not the image, or every slide would need its own
+   transform-origin to look like the same room. */
+/* Inset to the SAFE BOX, not to the frame. The right rail eats 232px and the
+   left margin only 96, so the readable region's centre is x=472 — centring on
+   the frame's 540 pushes every component 68px towards the share buttons, and
+   the widest ones straight under them. */
+.stage{position:absolute;left:${SAFE.left}px;right:${SAFE.right}px;top:${SAFE.top}px;height:${SAFE.bottom - SAFE.top}px;z-index:1;
+  display:flex;align-items:center;justify-content:center;perspective:2000px;perspective-origin:50% 45%}
+/* drop-shadow, not box-shadow: these PNGs are transparent outside the
+   component's own outline, and box-shadow would draw the shadow of their
+   rectangle — a hard oblong behind a pair of floating glyphs. drop-shadow
+   follows the alpha, so a rounded card casts a rounded shadow and two marks
+   cast two marks. Two layers, tight, per the app's own shadow scale. */
+.obj{max-width:none;transform-style:preserve-3d;
+  filter:drop-shadow(0 6px 10px rgba(24,24,45,.10)) drop-shadow(0 34px 52px rgba(24,24,45,.20))}
+/* A component with no surface — a bare glyph, an underlined word — takes a much
+   tighter shadow. drop-shadow traces the alpha, so on a thin flat mark the wide
+   layer above spreads grey through the gaps in the shape and reads as a smudge
+   rather than as lift. Same lesson the app's own shadow scale learned on 1 Aug:
+   the fault is blur WIDTH, not opacity. */
+.obj.flat{filter:drop-shadow(0 3px 4px rgba(24,24,45,.13)) drop-shadow(0 10px 16px rgba(24,24,45,.14))}
 .fade-top{position:absolute;top:0;left:0;right:0;z-index:2;background:linear-gradient(to bottom,
   ${BG} 0%, ${BG} 80%, rgba(246,246,249,0) 100%)}
 .fade-bot{position:absolute;bottom:0;left:0;right:0;z-index:2;background:linear-gradient(to top,
@@ -150,6 +174,40 @@ const feature = (o) => ({
  * bad edge behind, so a shot that arrives cut off is re-captured, not re-laid
  * out here. */
 const plain = (o) => ({ bg: "plain", img: o.img, html: "" });
+
+/* ONE COMPONENT, FLOATING, TILTED (owner's call, 2026-08-02, second pass).
+ *
+ * "Just literally remove everything else other than just that one component…
+ * then make it look good off the background. Maybe skew it a little bit so it
+ * looks like I'm looking at it in 3D space."
+ *
+ * So this is not a crop of the app, it is an OBJECT out of it: the capture
+ * writes the element alone with real transparency (see `isolate()` in
+ * cap-0802.mjs) and this places it on the brand gradient and turns it in
+ * perspective. Which is why the alpha matters — a rectangular screenshot tilted
+ * in 3D shows its own cut edges and reads as a photo of a photo.
+ *
+ * This is the one place the house "un-boxed, full-bleed, never a screenshot in
+ * a card" rule does not apply, and it is still obeyed in spirit: there is no
+ * card, no border, no device mockup. The component's own outline is the whole
+ * shape.
+ *
+ *  `w`    rendered width in the 1080 frame. Set it per component, not globally —
+ *         a 34px button and a 370px card both filling 700px would say they are
+ *         the same size, and one of them would be a 20x enlargement.
+ *  `tilt` [rotateY, rotateX, rotateZ] in degrees. Vary it down a carousel so
+ *         four states of one control do not read as one image reposted.
+ *  `flat` set it on a component with no surface of its own — a bare glyph, an
+ *         underlined word — so it takes the tight shadow instead of the card one.
+ */
+const object = (o) => {
+  const [ry, rx, rz] = o.tilt ?? [-15, 7, -1.5];
+  return {
+    bg: "object",
+    wordmark: true,
+    html: `<div class="stage"><img class="obj${o.flat ? " flat" : ""}" src="${o.img}" style="width:${o.w}px;transform:rotateY(${ry}deg) rotateX(${rx}deg) rotateZ(${rz}deg)"></div>`,
+  };
+};
 
 // closing Google search CTA — DM (never comment), trimmed, bigger sub
 const searchCTA = () => ({ bg: "gradient", wordmark: true, html: `<div class="layer">
@@ -545,70 +603,87 @@ const CONFIGS = {
   }),
 
   /* ------------------------------------------------------------------ *
-   * 2026-08-02 — one component per slide, and a DM at the end.
+   * 2026-08-02 — ONE COMPONENT PER CAROUSEL, and a DM at the end.
    *
-   * Two changes from yesterday, both the owner's:
+   * Three changes from yesterday, all the owner's:
    *
-   *  1. COMPONENTS, NOT PAGES. Yesterday every slide was an area of the app —
-   *     a panel with its prose, a screen with its heading. Today each slide is
-   *     one control, one card set, one tile, cropped to its own edges and
-   *     enlarged. Which suits what the day actually shipped: nothing changed
-   *     shape at page level, four things changed at component level.
-   *  2. THE CTA IS A DM. No Google slide. See dmCTA() above for why.
+   *  1. ONE COMPONENT PER *POST*, not per slide. A carousel is a single control
+   *     in three or four SCENARIOS — the checkpoint pair untouched, bookmarked,
+   *     ticked — rather than a tour of four different things.
+   *  2. NOTHING ELSE IN THE FRAME. "Just literally remove everything else other
+   *     than just that one component." So these are `object()` slides built
+   *     from transparent element screenshots, floated on the gradient and
+   *     turned in perspective — not crops of a page. The first pass today
+   *     cropped rectangles around components, which still photographed their
+   *     neighbours; a rectangle is not an isolation.
+   *  3. THE CTA IS A DM. No Google slide. See dmCTA() above for why.
    *
-   * Still no copy on the shots themselves — the caption carries the story, the
+   * Still no copy on the component slides — the caption carries the story, the
    * way it has since 1 Aug.
    *
-   * Four slots, not five. The fifth honest angle would have been the shadow
-   * scale, and "we made the shadows smaller" is a craft note, not something a
-   * student can see. Padding it out is worse than posting four.
+   * `w` per slide, and `tilt` varied down each carousel: four states of one
+   * control at one angle and one size read as one image reposted four times.
    * ------------------------------------------------------------------ */
 
-  /* 1 — the two marks at the end of a section, in the three states a reader
-   * puts them through. Same control, different section each time, so the prose
-   * above changes and it does not read as one shot posted three times. */
-  "b-marks": () => ({
+  /* 1 — the pair of marks that ends every section, in the three states a reader
+   * puts them through. Small components, so they are rendered large: the two
+   * glyphs are 78px in the app and 620px here, which is the point. */
+  "c-marks": () => ({
     slot: "1-morning",
     slides: [
-      plain({ img: img("b-row.png") }),
-      plain({ img: img("b-later.png") }),
-      plain({ img: img("b-got.png") }),
+      object({ img: img("c-marks-none.png"), w: 620, tilt: [-16, 8, -2], flat: true }),
+      object({ img: img("c-thumb-up.png"), w: 460, tilt: [14, 7, 1.5], flat: true }),
+      object({ img: img("c-thumb-down.png"), w: 460, tilt: [-11, -7, -1.5], flat: true }),
       dmCTA(),
     ],
   }),
 
-  /* 2 — the other end of the same row: the button that asks how the writing
-   * read, its menu, and the button once it has been answered. */
-  "b-note": () => ({
+  /* 2 — the note control: shut, open, and answered. The menu is the widest of
+   * the three so it is given less enlargement, or it would tower over the
+   * button it belongs to. */
+  "c-note": () => ({
     slot: "2-midday",
     slides: [
-      plain({ img: img("b-note.png") }),
-      plain({ img: img("b-menu.png") }),
-      plain({ img: img("b-noted.png") }),
+      object({ img: img("c-note-shut.png"), w: 440, tilt: [-14, 9, -2], flat: true }),
+      object({ img: img("c-note-menu.png"), w: 620, tilt: [15, 7, 1.5] }),
+      object({ img: img("c-note-said.png"), w: 460, tilt: [-11, -7, -1.5], flat: true }),
       dmCTA(),
     ],
   }),
 
-  /* 3 — the four tiles, one per slide, each with the mark it got back today. */
-  "b-tiles": () => ({
+  /* 3 — one tile, four numbers. Same component, four things it can be asked to
+   * say, alternating which way it turns so the set reads as a set. */
+  "c-tiles": () => ({
     slot: "3-afternoon",
     slides: [
-      plain({ img: img("b-tile-1.png") }),
-      plain({ img: img("b-tile-2.png") }),
-      plain({ img: img("b-tile-3.png") }),
-      plain({ img: img("b-tile-4.png") }),
+      object({ img: img("c-tile-perf.png"), w: 640, tilt: [-15, 7, -1.5] }),
+      object({ img: img("c-tile-coverage.png"), w: 640, tilt: [15, 7, 1.5] }),
+      object({ img: img("c-tile-streak.png"), w: 640, tilt: [-12, -6, -1.5] }),
+      object({ img: img("c-tile-time.png"), w: 640, tilt: [12, -6, 1.5] }),
       dmCTA(),
     ],
   }),
 
-  /* 4 — the card set that replaced a table, then each of its three marks. */
-  "b-cards": () => ({
+  /* 4 — one card, three kinds. The block that replaced a table last night. */
+  "c-cards": () => ({
     slot: "4-evening",
     slides: [
-      plain({ img: img("b-cards.png") }),
-      plain({ img: img("b-glyph-1.png") }),
-      plain({ img: img("b-glyph-2.png") }),
-      plain({ img: img("b-glyph-3.png") }),
+      object({ img: img("c-card-plan.png"), w: 660, tilt: [-14, 8, -1.5] }),
+      object({ img: img("c-card-practise.png"), w: 660, tilt: [14, 6, 1.5] }),
+      object({ img: img("c-card-review.png"), w: 660, tilt: [-10, -7, -1] }),
+      dmCTA(),
+    ],
+  }),
+
+  /* 5 — tap to define: the affordance, then twice what it opens. The word alone
+   * is a slide because a rule under a word is the entire invitation, and it is
+   * the part a reader has to notice before any of the rest happens. */
+  "c-term": () => ({
+    slot: "5-night",
+    slides: [
+      object({ img: img("c-term-word.png"), w: 560, tilt: [-13, 8, -2], flat: true }),
+      object({ img: img("c-term-a.png"), w: 660, tilt: [14, 7, 1.5] }),
+      object({ img: img("c-term-b.png"), w: 660, tilt: [-11, -6, -1.5] }),
       dmCTA(),
     ],
   }),
@@ -635,8 +710,12 @@ for (let i = 0; i < cfg.slides.length; i++) {
         : `<div class="gradient"></div>`;
   /* A plain slide is the app and nothing else — no wordmark stamped on it, and
    * no grain, which on a screenshot reads as a dirty screen rather than as
-   * texture. The CTA that closes the carousel keeps both. */
-  const dressing = s.bg === "plain" ? "" : `${wordmark}<div class="grain"></div>`;
+   * texture. An object slide keeps the wordmark, because its background is ours
+   * rather than the app's, but still refuses the grain: the grain layer sits
+   * above the stage and would fall across the component itself. The CTA keeps
+   * both. */
+  const dressing =
+    s.bg === "plain" ? "" : s.bg === "object" ? wordmark : `${wordmark}<div class="grain"></div>`;
   const html = `<!doctype html><html><head><meta charset="utf-8"><style>${CSS}</style></head><body>${base}${s.html}${dressing}</body></html>`;
   await page.setContent(html, { waitUntil: "load" });
   await page.evaluate(() => document.fonts.ready);
@@ -674,6 +753,33 @@ for (let i = 0; i < cfg.slides.length; i++) {
         over.join("\n  ") +
         `\nShorten the line, drop the font size, or move it up — do not widen the safe area.`,
     );
+  }
+
+  /* An object slide has no `.safe` text to measure, so the check above passes
+   * trivially and the component itself is what has to be kept out of the
+   * covered zones. `getBoundingClientRect` reports the box AFTER the 3D
+   * transform, which is the whole reason to measure rather than trust `w`: a
+   * rotateX on a tall card makes it taller than the number set in the config,
+   * and the overflow goes under the caption where nobody sees it. */
+  if (s.bg === "object") {
+    const spill = await page.evaluate((safe) => {
+      const el = document.querySelector(".obj");
+      if (!el) return ["no component on the slide"];
+      const r = el.getBoundingClientRect();
+      const bad = [];
+      if (r.top < safe.top) bad.push(`${Math.ceil(safe.top - r.top)}px above the top`);
+      if (r.bottom > safe.bottom) bad.push(`${Math.ceil(r.bottom - safe.bottom)}px below the bottom`);
+      if (r.left < safe.left) bad.push(`${Math.ceil(safe.left - r.left)}px past the left`);
+      if (r.right > 1080 - safe.right) bad.push(`${Math.ceil(r.right - (1080 - safe.right))}px under the right rail`);
+      return bad;
+    }, SAFE);
+    if (spill.length) {
+      throw new Error(
+        `slide ${i + 1} of "${POST}": the component leaves the safe area — ` +
+          spill.join(", ") +
+          `\nDrop its \`w\`, or ease the tilt. Do not widen the safe area.`,
+      );
+    }
   }
 
   /* The safe area only knows the frame's edges. On a shot slide there is a

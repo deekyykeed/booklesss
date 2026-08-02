@@ -108,48 +108,68 @@ and it is now a supported mode, not a one-off.
 
 ## Component days (owner's call, 2026-08-02)
 
-A stricter version of the image-only day: **one component per slide** — a
-single control, card set or tile, cropped to its own edges and enlarged, rather
-than an area of a page. It **supersedes** the 1 Aug "crop areas, not controls,
-nothing below 300px" instruction, which was right for a day about what the app
-*is* and wrong for a day about what *changed in it*. Both modes are live; pick
-by what the day shipped. `part()` in `cap-0802.mjs` is the reference helper.
+**One component per CAROUSEL, in three or four scenarios — and nothing else in
+the frame.** Not one component per slide, and not a tight crop: *"just literally
+remove everything else other than just that one component… then make it look
+good off the background. Maybe skew it a little so it looks like I'm looking at
+it in 3D space."*
 
-- **Size the crop from the component, not from a number.** `pad` either side,
-  so one value frames a 34px button and a 370px card sensibly and nothing
-  silently reframes when the app's layout moves. A fixed width picked in
-  advance is what put a 215px box round a 168px stat tile (photographing the
-  column beside it) and a 300px box round a 370px card (cutting it in half).
-  A *negative* pad is the tool for bleeding a tile's neighbour out of frame.
-- **"Wider than the crop" needs a threshold, not a comparison.** Left-aligning
-  whenever `element > crop` treats a deliberate 5px bleed as a pan and slides
-  the whole subject sideways — which cut the duotone mark off a stat tile's
-  corner. Within ~15% is a bleed; beyond it is a pan.
-- **A macro works for a LEFT-aligned control and fails for a right-aligned
-  one.** The crop's left edge lands on the reading column's left edge, so the
-  lines above the control are whole and only their ends are cut, which is what
-  a line does anyway. Crop a right-aligned control at the same zoom and the
-  left edge falls mid-paragraph, slicing every line mid-word — "ing new this
-  week." — which reads as a broken image, not a close-up. Frame right-aligned
-  controls at column width instead.
-- **Check the component can survive a 9:16 box before planning slides around
-  it.** Do the arithmetic: a crop tall enough to clear the blank band above and
-  below the checkpoint marks works out 42px wide, narrower than the two 34px
-  marks it is supposed to contain — so no honest macro of them exists, and
-  lifting them clear of the prose only pushes them under the feed's own header.
-  Same trap the other way: a card 184px tall inside a 665px frame at its own
-  width photographs its neighbours too, so "one card close in" comes out
-  identical to the wide shot. The 28px mark on it was the only part small
-  enough for the frame to actually be about.
-- **A component slide still obeys the covered zones.** No safe-area check runs
-  on a `plain()` slide because there is no text to measure, so it is on the
-  capture: keep the subject between ~16% and ~73% of the crop's height, or the
-  feed's account header sits on it.
-- **Three states of one control are three slides; three crops of one card set
-  are one.** The distinct-shot rule is about padding, and a control answered
-  two different ways is a genuine difference. Vary what is *around* it too —
-  the same row shot on three different sections reads as three shots; shot
-  three times on one section reads as one posted thrice.
+So the whole post is a single control in the states a reader puts it through —
+the answer marks untouched, thumbed up, thumbed down — each captured as an
+element with a transparent background, floated on the gradient and turned in
+perspective. `isolate()` in `cap-0802.mjs` and `object()` in `prog-post.mjs`.
+
+It supersedes the 1 Aug "crop areas, not controls" rule for days about what
+*changed*; the area mode is still right for days about what the app *is*.
+
+**A crop rectangle is not an isolation.** This was tried first and rejected: a
+9:16 box around a 131px stat tile still photographs the tile below it, so the
+slide is about a grid. Sizing the box off the component, thresholding the
+alignment, tuning the lift — all of it was work spent making a rectangle behave,
+and the answer was to stop cropping.
+
+- **An element screenshot is a clip of the page, not a render of the element.**
+  Everything painted underneath comes with it, and clearing the *ancestors'*
+  backgrounds is not enough because the thing painting is usually a sibling — a
+  page wash, a content surface. Hide everything and unhide the component:
+  `body *{visibility:hidden}` + `[data-iso],[data-iso] *{visibility:visible}`,
+  plus `html,body{background:transparent}` and `omitBackground`. `visibility`,
+  not `display`, so nothing reflows and the element keeps its real geometry.
+- **Pad the clip, and scroll into view before measuring.** A component's own
+  parts can sit outside its border box — the definition card's arrow is at
+  `top:-9px` and came out as a grey nub clipped along the card's edge. Take a
+  padded `page.screenshot({clip})` instead of `locator.screenshot()`; with
+  everything else hidden the padding can only pull in the component's own
+  overhang. But a page clip is measured against the VIEWPORT, so scroll first
+  or anything below the fold fails with *"clipped area is outside the resulting
+  image"* — `locator.screenshot()` had been doing that scroll for you.
+- **Transparency is what makes the tilt possible.** A rectangular screenshot
+  turned in 3D shows its own cut edges and reads as a photo of a photo.
+- **`drop-shadow`, never `box-shadow`.** box-shadow draws the shadow of the
+  PNG's *rectangle* — a hard oblong behind two floating glyphs. drop-shadow
+  traces the alpha.
+- **A component with no surface takes a much tighter shadow.** On a bare glyph
+  the wide layer spreads grey through the gaps in the shape and reads as a
+  smudge rather than lift — the same blur-width lesson the app's own shadow
+  scale learned on 1 Aug. `.obj.flat` exists for exactly this.
+- **Isolate the SQUARE thing, not the wide one.** The answer pair is 78×34 and
+  most of that width is the gap between the two marks, so enlarged to fit the
+  frame the glyphs stay small and the slide is two icons adrift. One 34×34 mark
+  fills the same frame with four times the presence. Shoot the pair once for
+  context, then each mark alone.
+- **The stage insets to the SAFE BOX, not the frame.** The right rail eats 232px
+  and the left margin 96, so the readable centre is x=472; centring on the
+  frame's 540 pushes every component towards the share buttons and the widest
+  ones straight under them.
+- **The component is measured after its transform.** `object()` slides carry no
+  text, so the `.safe` check passes trivially and the component itself is what
+  can spill. `getBoundingClientRect` on the transformed image is what catches
+  it — a rotateX makes a card taller than the `w` in its config.
+- **Vary `w` and `tilt` down a carousel.** Four states of one control at one
+  size and one angle read as one image reposted four times.
+- **Set `w` per component, not globally.** A 34px button and a 370px card both
+  rendered at 700px claim to be the same size, and one of them is a 20×
+  enlargement.
 
 ## Copy
 
@@ -324,13 +344,26 @@ must not carry anything important above ~830.
 - **Windows EPERM on `.next`** when OneDrive or a running server holds a handle:
   kill node, `rm -rf .next`, rebuild. A corrupted `.next/dev` shows up as every
   route 500ing with `Cannot find module '../chunks/ssr/[turbopack]_runtime.js'`.
+- **A stale `.next` 404s every route, including `/`.** Different symptom from
+  the 500 above and easy to misread as a broken app or a bad checkout: a dev
+  server killed mid-flight, or a worktree repinned to a different commit without
+  clearing its cache, leaves a route manifest that matches neither. `rm -rf
+  .next` and restart. **Repinning a worktree always needs it** — the cache was
+  built from other source.
 - **`TaskStop` on a backgrounded `next dev` kills the wrapper, not the server.**
   The port stays held and the next start dies with `EADDRINUSE`. Find the owner
   (`Get-NetTCPConnection -LocalPort 3100 -State Listen`) and stop that PID.
-- **Check `git status` before blaming the app.** Two sessions share this working
-  tree, so the reader can be mid-refactor — a deleted component, a half-rewritten
-  module — and no amount of restarting fixes it. When that happens, capture from
-  a clean checkout instead of touching their work:
+- **Check `git status` before blaming the app — and before trusting a shot.**
+  Two sessions share this working tree, so the reader can be mid-refactor and no
+  amount of restarting fixes it. The sharper risk is the quiet one: on 2 Aug the
+  parallel session was rewriting *the very control this day's morning carousel
+  was about*, and shooting the working tree would have published their
+  unfinished work. Then it landed a different version of that control while the
+  shots were being taken, so the finished carousel showed a component that no
+  longer existed. **Shoot from a worktree pinned to a named commit, re-check
+  `git log` before rendering, and write the commit into `PLAN.md`** so the post
+  can be dated against the app. When that happens, capture from a clean checkout
+  instead of touching their work:
   `git worktree add --detach C:/bkls-shot <commit>`, `npm ci` inside it, dev on
   a second port, `BASE_URL=http://localhost:3101 node _scripts/cap-*.mjs`.
   Two things that cost time there: the worktree path must be **short** (a long
