@@ -22,6 +22,28 @@ Quote actual words. A student's phrasing is never rewritten into the owner's.
 
 ---
 
+### 2026-08-02 · all steps · owner
+- `element` — of the source strip: **"the row of sources, put it under the
+  section that talks about them, so no more at the end with a divider and
+  all."** It collected at the foot of the section, between the last block and
+  the checkpoint, where it read as part of the checkpoint-and-divider furniture
+  rather than as a note on any particular claim. One strip per **citing block**
+  now, directly beneath it. A section with links in two paragraphs shows two.
+  Side effect worth having: dedupe is now per block, so two pages from the same
+  site in different paragraphs are both reachable, which the section-wide strip
+  could not do.
+- `element` — of the tables: **"the tables are not being given enough room, the
+  content is way too squished."** Correct, and it was the bleed change that
+  exposed it. The table was `w-full`, so the auto layout was told to fit the
+  reading column and squeezed every prose cell toward its minimum: "Stronger
+  controls, economies of scale…" came out two words a line over seven lines.
+  Now `w-max min-w-full`, with text cells capped at 17rem and numeric cells
+  `whitespace-nowrap`. Measured at 390px: the four-column structures table went
+  from ~150px columns and 7 lines to 272px columns and 4; the eight-column
+  spreads table is unchanged at ~70px per numeric column.
+→ promoted: **C-7** (revised: strip sits under the block, dedupe is per block) ·
+  debt: none — the strip is rendered by the app, so every step already has it
+
 ### 2026-08-02 · treasury-management/treasury-operations/treasury-controls-and-structure · owner
 - `writing` — **"I don't get that story that you've started with about lisond
   dealt and whatever. Can you change that up? Just make the step more relatable

@@ -282,21 +282,28 @@ text, so a mark written into one shows its own syntax.
   **AccountingCoach** and their equivalents.
   - **The link renders as nothing in the prose.** No underline, no colour, no
     weight, no mark at the end of the sentence. The sites turn up instead in a
-    **source strip at the foot of the section**, between the last block and the
-    checkpoint: one round chip per site, its favicon and its name, on a single
-    line that scrolls sideways if there are more than fit. Three arrangements
-    were tried before this one — a "read further" box (furniture, arriving
-    after the reader had finished), an underlined phrase (competing with bold
-    and with tappable terms), and a favicon at the end of each sentence (still
-    punctuation inside the reading line). The strip leaves the sentence alone
-    and still shows, at a glance, what a section rests on.
+    **source strip directly under the block that cites them** *(moved there
+    2026-08-02)*: one round chip per site, its favicon and its name, on a
+    single line that scrolls sideways if there are more than fit. Four
+    arrangements were tried before this one — a "read further" box (furniture,
+    arriving after the reader had finished), an underlined phrase (competing
+    with bold and with tappable terms), a favicon at the end of each sentence
+    (still punctuation inside the reading line), and one strip at the **foot of
+    the section** (owner: down beside the checkpoint and the divider it read as
+    page furniture, and by the end of a long section you had lost which claim
+    it belonged to). The strip leaves the sentence alone and still says, at a
+    glance, what *that paragraph* rests on.
   - **The brackets are a record, not decoration.** Since nothing shows in the
     prose, put them on the phrase the source actually backs: that is what the
     next person editing the `.mjs` will check the link against.
-  - **One chip per site, per section** — the strip dedupes, so two Investopedia
-    pages under one section show as one chip and only the first is reachable.
-    If both genuinely matter, put them in different sections.
-  - **Two or three sites per section.** More reads as a bibliography.
+  - **One chip per site, per block** *(was per section, 2026-08-02)* — the strip
+    dedupes within the block it sits under, so two Investopedia pages in the
+    same paragraph show as one chip and only the first is reachable. Two pages
+    in **different** paragraphs now each get their own strip and both are
+    reachable, which the old section-wide strip could not do.
+  - **Two or three sites per section**, spread across its blocks rather than
+    stacked on one. More reads as a bibliography, and four chips under a single
+    paragraph is the shape that made the old strip look like furniture.
   - **Vary the sites.** A step sourced entirely from one place looks like it was
     written from one place. Investopedia, Corporate Finance Institute, ACCA and
     AccountingCoach each explain a different kind of thing best.

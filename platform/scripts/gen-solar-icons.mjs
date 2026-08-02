@@ -43,6 +43,7 @@ const ICONS = [
   // section checkpoint — the two answers, drawn in each answer's own hue
   "like-bold-duotone", // Got it
   "dislike-bold-duotone", // Later
+  "chat-round-dots-bold-duotone", // "How did that read?" — the note button beside them
 ];
 
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "components", "icons", "solar.tsx");

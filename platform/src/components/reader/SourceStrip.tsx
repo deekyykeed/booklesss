@@ -11,9 +11,16 @@ import { siteFor } from "./favicons";
  * favicon at the end of each sentence was quieter but still put punctuation the
  * reader has to step over inside the reading line.
  *
- * So the sources sit below the section, above its checkpoint, as a single row
- * of chips. The sentence is untouched, and a reader can see at a glance both
- * how many outside sources a section rests on and who they are.
+ * So the sources sit as a single row of chips, directly under the block whose
+ * claims they back. The sentence is untouched, and a reader can see at a
+ * glance what that paragraph rests on and who it came from.
+ *
+ * They used to collect at the foot of the whole section, between the last
+ * block and the checkpoint. The owner's objection (2026-08-02): down there
+ * they read as part of the checkpoint and divider furniture rather than as a
+ * note on the paragraph, and by the end of a long section the reader had lost
+ * which claim they belonged to. One strip per citing block instead, so a
+ * section with links in two paragraphs shows two.
  *
  * One line, always. More chips than fit scroll sideways rather than wrapping,
  * because a block that grows a second row pushes the checkpoint around and
@@ -49,7 +56,10 @@ export function SourceStrip({ urls }: { urls: string[] }) {
 
        data-no-swipe stops a sideways drag here from opening the reader's
        drawer instead of moving the chips (see MobileNav). */
-    <div className="mt-6">
+    /* No top margin: the strip now sits directly under the block that cites
+       it, and the gap between the two belongs to that wrapper (see
+       `BlockWithSources`) rather than to this component. */
+    <div>
       {/* Named, because a bare row of logos under a section is a puzzle: it
           could be a partner list or a set of tools. One quiet word settles it.
           It sits outside the scroller so it stays put while the chips move. */}

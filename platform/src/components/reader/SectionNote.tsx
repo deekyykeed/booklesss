@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { MynaIcon } from "@/components/icons/myna";
+import { SolarIcon } from "@/components/icons/solar";
 import { NOTES, noteFor, setNote, type NoteId } from "@/lib/step-notes";
 
 /* "How did that read?" — the other end of the checkpoint row.
@@ -63,7 +64,12 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
         data-active={chosen ? "" : undefined}
         style={{ "--grasp-tone": "#5b5b66" } as React.CSSProperties}
       >
-        <MynaIcon name={chosen ? "chat-dots-solid" : "chat-dots"} size={20} strokeWidth={1.2} />
+        {/* Solar Duotone, to match the two answers on the other end of this
+            row. Duotone is filled, so there is no line/solid pair to swap on
+            `chosen` the way the MynaUI glyph had: the tone the button takes is
+            the whole signal, exactly as it is for the thumbs. 21px for the
+            same reason they are. */}
+        <SolarIcon name="chat-round-dots-bold-duotone" size={21} />
         <span className="grasp-label">{label ?? "How did that read?"}</span>
       </button>
 

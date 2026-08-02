@@ -1,6 +1,6 @@
 "use client";
 
-import { type Column, type Lesson, type Section } from "@/lib/course";
+import { type Block, type Column, type Lesson } from "@/lib/course";
 import { links, runs } from "@/lib/emphasis";
 import { CardGlyph, isCardGlyph } from "./card-glyphs";
 import { CodePlayground } from "./CodePlayground";
@@ -37,14 +37,11 @@ function Rich({ text }: { text: string }) {
   );
 }
 
-/** Every source URL in a section, in the order the reader meets them. */
-function sourcesIn(section: Section): string[] {
-  const out: string[] = [];
-  for (const b of section.blocks) {
-    if (b.type === "p" || b.type === "callout" || b.type === "h2") out.push(...links(b.text));
-    else if (b.type === "ul") for (const it of b.items) out.push(...links(it));
-  }
-  return out;
+/** Every source URL in one block, in the order the reader meets them. */
+function sourcesInBlock(b: Block): string[] {
+  if (b.type === "p" || b.type === "callout" || b.type === "h2") return links(b.text);
+  if (b.type === "ul") return b.items.flatMap((it) => links(it));
+  return [];
 }
 
 /* A definitional set as cards rather than table rows.
@@ -143,8 +140,14 @@ function DataTable({
   total?: string[];
   note?: string;
 }) {
+  /* Numeric columns stay tight and never wrap: a figure broken across two
+     lines stops being a figure. Text columns are capped at a readable measure
+     instead, so a prose cell wraps at about six words rather than at whatever
+     width is left over. See the table's own note on sizing. */
   const cell = (i: number) =>
-    columns[i]?.align === "right" ? "text-right tabular-nums" : "text-left";
+    columns[i]?.align === "right"
+      ? "text-right tabular-nums whitespace-nowrap"
+      : "text-left max-w-[17rem]";
   const carried = new Set(subtotals ?? []);
 
   return (
@@ -166,7 +169,15 @@ function DataTable({
           data-no-swipe so dragging the table sideways moves the table rather
           than opening the reader's drawer (see MobileNav). */}
       <div data-no-swipe className="no-scrollbar bleed-x overflow-x-auto">
-        <table className="w-full border-collapse text-[15.5px]">
+        {/* `w-max`, not `w-full`. At `width: 100%` the table is told to fit the
+            reading column, so the auto layout squeezes every prose cell down
+            towards its minimum and "Stronger controls, economies of scale…"
+            came out two words to a line over seven lines. Sizing to
+            `max-content` lets each column ask for the width its text wants;
+            the cap in `cell()` stops a long cell asking for one enormous line,
+            so it wraps at a readable measure instead. `min-w-full` keeps a
+            small table spanning the column rather than huddling at the left. */}
+        <table className="w-max min-w-full border-collapse text-[15.5px]">
           <thead>
             {/* The header is the only band of colour, so it carries the weight:
                 ink rather than muted, and a rule under it heavy enough to read
@@ -269,59 +280,76 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
             )}
             <div className="flex flex-col gap-5">
               {s.blocks.map((b, j) => {
-                if (b.type === "p") return <p key={j} className="text-[18px] leading-[30px] text-[#4a4a52]"><Rich text={b.text} /></p>;
-                if (b.type === "h2") return <h2 key={j} className="text-[19px] font-semibold text-ink">{b.text}</h2>;
-                if (b.type === "callout")
-                  return (
-                    /* Lifted off the page with a shadow: the callout is the one
-                       sentence in a section meant to survive when the rest is
-                       forgotten, and a plain outlined box sat too flat against
-                       prose that already has boxes in it. */
-                    <div
-                      key={j}
-                      className="squircle rounded-3xl border border-[#e7e7e6] bg-white px-5 py-4 text-[16.5px] leading-[27px] text-[#4a4a52] shadow-lift"
-                    >
-                      <Rich text={b.text} />
-                    </div>
-                  );
-                if (b.type === "cards") return <Cards key={j} cards={b.cards} />;
-                if (b.type === "playground") return <CodePlayground key={j} code={b.code} />;
-                if (b.type === "formula") return <Formula key={j} text={b.text} where={b.where} />;
-                if (b.type === "table")
-                  return (
-                    <DataTable
-                      key={j}
-                      columns={b.columns}
-                      rows={b.rows}
-                      subtotals={b.subtotals}
-                      total={b.total}
-                      note={b.note}
-                    />
-                  );
+                /* Each block draws its own sources under itself (see
+                   `BlockWithSources`), so the chips sit against the sentence
+                   they back. They used to collect at the foot of the section,
+                   where they read as part of the checkpoint furniture rather
+                   than as a note on the paragraph above. */
                 return (
-                  <ul key={j} className="flex flex-col gap-2.5">
-                    {b.items.map((it, k) => (
-                      <li key={k} className="flex gap-3 text-[18px] leading-[30px] text-[#4a4a52]">
-                        <span className="mt-[11px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#cfcfd4]" />
-                        <span><Rich text={it} /></span>
-                      </li>
-                    ))}
-                  </ul>
+                  <BlockWithSources key={j} urls={sourcesInBlock(b)}>
+                    {renderBlock(b)}
+                  </BlockWithSources>
                 );
               })}
             </div>
-            {/* Sources sit between the reading and the checkpoint: after the
-                idea is finished, before the reader is asked to mark it done. */}
-            <SourceStrip urls={sourcesIn(s)} />
             {/* One checkpoint closes each section — working down the step is
                 what fills the ring. Where the section carries a check, the
                 tick is earned by answering it. */}
             <Checkpoint lessonId={lessonId} checkpointId={s.id} heading={s.heading} />
           </section>
         ))}
+        <StepComplete lessonId={lessonId} />
       </div>
-
-      <StepComplete lessonId={lessonId} />
     </div>
+  );
+}
+
+/* A block, with any sources it cites shown directly beneath it. Renders the
+   block alone when it cites none, which is most of them. */
+function BlockWithSources({ urls, children }: { urls: string[]; children: React.ReactNode }) {
+  if (!urls.length) return <>{children}</>;
+  return (
+    <div className="flex flex-col gap-3">
+      {children}
+      <SourceStrip urls={urls} />
+    </div>
+  );
+}
+
+/** One block, drawn. The `key` is applied by the caller's wrapper. */
+function renderBlock(b: Block) {
+  if (b.type === "p") return <p className="text-[18px] leading-[30px] text-[#4a4a52]"><Rich text={b.text} /></p>;
+  if (b.type === "h2") return <h2 className="text-[19px] font-semibold text-ink">{b.text}</h2>;
+  if (b.type === "callout")
+    return (
+      /* Lifted off the page with a shadow: the callout is the one sentence in a
+         section meant to survive when the rest is forgotten, and a plain
+         outlined box sat too flat against prose that already has boxes in it. */
+      <div className="squircle rounded-3xl border border-[#e7e7e6] bg-white px-5 py-4 text-[16.5px] leading-[27px] text-[#4a4a52] shadow-lift">
+        <Rich text={b.text} />
+      </div>
+    );
+  if (b.type === "cards") return <Cards cards={b.cards} />;
+  if (b.type === "playground") return <CodePlayground code={b.code} />;
+  if (b.type === "formula") return <Formula text={b.text} where={b.where} />;
+  if (b.type === "table")
+    return (
+      <DataTable
+        columns={b.columns}
+        rows={b.rows}
+        subtotals={b.subtotals}
+        total={b.total}
+        note={b.note}
+      />
+    );
+  return (
+    <ul className="flex flex-col gap-2.5">
+      {b.items.map((it, k) => (
+        <li key={k} className="flex gap-3 text-[18px] leading-[30px] text-[#4a4a52]">
+          <span className="mt-[11px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#cfcfd4]" />
+          <span><Rich text={it} /></span>
+        </li>
+      ))}
+    </ul>
   );
 }
