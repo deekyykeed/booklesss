@@ -97,7 +97,7 @@ export function SourceStrip({ urls }: { urls: string[] }) {
             src={c.icon}
             alt=""
             aria-hidden="true"
-            className="h-[26px] w-[26px] shrink-0 rounded-full bg-white object-cover"
+            className="h-4 w-4 shrink-0 rounded-full bg-white object-cover"
           />
             <span className="whitespace-nowrap">{c.name}</span>
           </a>
