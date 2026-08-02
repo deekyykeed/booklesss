@@ -24,12 +24,15 @@ const ICONS = [
   "zap",
   "menu",
   "sidebar",
-  /* The section-note button. A plain bubble reads as "open a chat", and there
-     is no conversation here; the dots say there are words inside it, which is
-     what "tell us how that read" actually is. Swapped from "chat" on
-     2026-08-02 — it was that button's only use. */
-  "chat-dots",
-  "chat-dots-solid",
+  /* The section-note button, owner's pick 2026-08-02. Third mark on it that
+     day: "chat" → "chat-dots" → a Solar Duotone bubble → this. A bubble of any
+     kind promises a conversation, and there isn't one; the button opens a
+     short list of ways the section read. An "i" promises nothing and reads at
+     20px, which the bubble's dots barely did.
+     It also puts the row back on one set: two faces and this, all MynaUI
+     hairlines, after the Duotone bubble sat filled beside two outlines. */
+  "info-circle",
+  "info-circle-solid",
   "external-link",
   "chevron-down",
   "chevron-right",

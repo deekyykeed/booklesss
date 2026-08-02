@@ -40,12 +40,14 @@ const ICONS = [
   "bolt-bold-duotone", // Streak — the zap it replaces
   "notebook-minimalistic-bold-duotone", // Coverage — an open book
   "clock-circle-bold-duotone", // Time this week
-  // reader — the section note button ("How did that read?"). The two answers
-  // beside it were briefly Solar thumbs and are now MynaUI faces, so this is
-  // the only Solar mark in the reader; like/dislike were removed rather than
-  // left generated for nothing.
-  "chat-round-dots-bold-duotone",
 ];
+
+/* The reader draws no Solar at all. On 2026-08-02 it briefly had three marks
+   here — a Duotone thumbs pair on the checkpoint answers and a Duotone bubble
+   on the note button beside them — and the owner moved all three back to
+   MynaUI within the day (faces for the answers, an info circle for the note).
+   Solar is back to its two surfaces: /workspace in Linear, the dashboard stat
+   cards in Duotone. */
 
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "components", "icons", "solar.tsx");
 
