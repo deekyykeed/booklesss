@@ -173,7 +173,7 @@ export function HomeView({
     /* Extra room above the greeting: it sat tight under the chrome, and the
        first thing on the page reads better with air over it than the rest of
        the page does between its sections. Bottom padding is unchanged. */
-    <div className="mx-auto w-full max-w-[900px] px-4 pb-10 pt-16 md:px-6 md:pt-24">
+    <div className="mx-auto w-full max-w-[900px] px-4 pb-10 pt-28 md:px-6 md:pt-36">
       <h1 className="font-display text-[30px] font-medium leading-[1.2] tracking-[-0.02em] text-ink">
         {hydrated ? greeting : "Welcome back"}
         {/* The name they typed into the form beats the one Clerk inferred from
