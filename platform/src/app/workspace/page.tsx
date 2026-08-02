@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { WorkspaceSidebar } from "@/components/workspace/WorkspaceSidebar";
 
 export const metadata: Metadata = {
-  title: "Workspace — Booklesss",
+  title: "Workspace",
   description: "Dark workspace shell. The sidebar is built; the board is not.",
 };
 

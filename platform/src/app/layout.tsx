@@ -8,6 +8,7 @@ import { RegisterSW } from "@/components/RegisterSW";
 import { DesktopGate } from "@/components/DesktopGate";
 import { IdentityGate } from "@/components/identity/IdentityGate";
 import { SettingsSheet } from "@/components/identity/SettingsSheet";
+import { openGraph, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 // The logo is an icon again, so Burbank is no longer loaded. Both it and
@@ -71,14 +72,46 @@ const satoshi = localFont({
   display: "swap",
 });
 
+/* The origin every piece of metadata is made absolute against — og:image,
+ * og:url, canonical. A crawler arrives with no origin to resolve a relative
+ * path against, so this has to be a real host.
+ *
+ * It reads Vercel's own answer for what this project's production domain is,
+ * rather than hard-coding booklesss.app, because those two are not the same
+ * thing until the DNS is pointed. Before then the production host is
+ * booklesss.vercel.app, and a card advertising an image at booklesss.app would
+ * fetch nothing — the preview would come back with no picture, which is
+ * exactly the failure this work exists to fix. Adding the domain in Vercel
+ * changes this value on the next deploy with nothing to edit here.
+ *
+ * Server-only: this file is a server component, and the constant in
+ * lib/site.ts stays the canonical brand host for anything the browser reads. */
+const metadataOrigin = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : SITE_URL;
+
 export const metadata: Metadata = {
-  title: "Booklesss",
-  description: "Learn without the textbook: courses, lessons, and steps.",
+  metadataBase: new URL(metadataOrigin),
+  title: { default: SITE_NAME, template: `%s · ${SITE_NAME}` },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  /* Inherited by any page that doesn't declare its own openGraph. Pages that
+   * do declare one replace this wholesale rather than merging into it, so they
+   * all build theirs with openGraph() from lib/site.ts. */
+  openGraph: openGraph({
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    path: "/",
+  }),
+  /* X and LinkedIn read this; WhatsApp ignores it and uses og:* alone. Naming
+   * no image lets it fall back to the same opengraph-image each route
+   * generates, so there is one card to maintain rather than two. */
+  twitter: { card: "summary_large_image" },
   // iOS ignores the web manifest's icons and reads its own link, which
   // src/app/apple-icon.png supplies on its own — as favicon.ico and icon.svg
   // beside it do for the tab. Naming any of them in an `icons` field here
   // would take over from the file convention and drop the rest.
-  appleWebApp: { capable: true, title: "Booklesss", statusBarStyle: "default" },
+  appleWebApp: { capable: true, title: SITE_NAME, statusBarStyle: "default" },
 };
 
 /* themeColor paints the phone's browser chrome to match the app rather than

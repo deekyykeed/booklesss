@@ -92,6 +92,81 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
+**From session 32 (2026-08-02, the domain + shareable links) — DO THESE FIRST,
+they are the only things standing between here and a link in a WhatsApp group:**
+- [ ] **Add `booklesss.app` in Vercel → Settings → Domains** and set it as the
+      production domain, then point the registrar's DNS as Vercel instructs.
+      Nothing in the repo changes: `metadataBase` reads
+      `VERCEL_PROJECT_PRODUCTION_URL`, so the previews follow the production
+      host on the next deploy either way.
+- [ ] **Deploy.** Until this ships, no link previews at all — the tags don't
+      exist on the live site yet. After it ships they work on
+      `booklesss.vercel.app` immediately, so the domain is not a blocker to
+      testing, only to the link looking right.
+- [ ] **Test the preview by messaging yourself first, not the group.** WhatsApp
+      caches a preview against its URL and may never fetch it twice — a bad
+      first fetch is the one 40 people keep seeing.
+- [ ] **Then paste `https://booklesss.app/treasury-management`** into the TM
+      group. The card reads: Treasury Management · its subtitle · N steps.
+- [ ] **Turn Deployment Protection back on if wanted** — with a real custom
+      domain, Vercel's Standard Protection exempts production custom domains,
+      which is the exact thing that blocked students in July.
+- [ ] **The "Who's reading?" gate is the first thing a stranger from WhatsApp
+      meets** — name and avatar, before any course content. Nobody has watched
+      a real referred visitor hit it. If the first group drop converts badly,
+      this is the first suspect.
+- [ ] **Referral codes when Clerk comes back.** Format decided: `?r=deeky-7fq`,
+      name-based, readable in the URL and in the stats without a lookup table.
+      Deliberately not built at device level today — it would be replaced the
+      week accounts land. Seam is documented in `shareUrl()` in
+      `platform/src/lib/site.ts`; adding it there lights up every share surface
+      at once.
+- [ ] **Run `npm run gen:qr` if the domain ever changes** — the desktop gate's
+      QR is a static SVG encoding one URL.
+
+**ANONYMOUS BY DEFAULT — the owner's design, 2026-08-02, NOT YET BUILT.**
+Handed over deliberately: it is the next session's job, and it is specified
+here rather than half-built so nothing has to be undone.
+
+The idea: **nobody is asked anything.** A reader arriving from a WhatsApp link
+is assigned an avatar and a username on the spot, and **the username is simply
+the avatar's name** — the Astronaut is called Astronaut. Neither can be
+changed. When Clerk returns, signing up **connects an account to the icon and
+name the device already has**, so a student keeps the identity they have been
+reading under rather than starting again.
+
+Why it matters right now: today a stranger from a shared link meets
+**"Who's reading?"** — a name field and an avatar picker — before a single word
+of the course. That form is the whole reason this design exists.
+
+What it touches, and the traps in each:
+- `components/identity/IdentityGate.tsx` — becomes an assignment, not a
+  question. Nothing renders; it writes an identity if there isn't one.
+- `lib/identity.tsx` — the record already carries `name`, `avatar` and a random
+  per-device `id`, so the shape does not change. What changes is who writes it.
+  **`name` must stay a real field, not be derived at read time** — an account
+  connecting later needs the name that was actually shown.
+- `components/identity/SettingsSheet.tsx` — the name and avatar controls come
+  out. **Check what is left before deleting them**: courses, school and wipe-
+  this-device also live in that sheet, and they must survive.
+- **Collisions are certain and probably fine.** Two Astronauts in one course is
+  the cost of never asking. If it grates, the tiebreak is a number, not a form.
+
+**The avatar set has to grow first — two real blockers, both measured:**
+- `@iconify-json/streamline-kameleon-color` is **in `package.json` but not
+  installed** in `node_modules`. `npm run gen:avatars` fails until `npm i`.
+- **Twelve avatars is already 27.8KB of `avatars.tsx`, and it is a client
+  component** — about 2.3KB of path data each, shipped to every reader whether
+  they are that animal or not. "Pull all of them" at ~100 icons is ~250KB on
+  every first visit, for one picture each device will ever draw. **Do not
+  simply extend `AVATARS` and regenerate.** Once nobody picks an avatar there
+  is no picker, so a device needs exactly one: render it from its own file
+  (`next/dynamic` keyed on the id) or move the set to an SVG sprite in
+  `public/` and reference it. Same trap as `card-glyphs.tsx`, already logged.
+- The names are the usernames, so they are now **product copy, not alt text**.
+  Read the whole list before shipping it: an icon whose name is unflattering
+  in English or in Zambia becomes somebody's identity in a study group.
+
 **From session 31 (2026-08-02, reader + settings):**
 - [ ] **Decide whether callouts and cards are "containers".** The owner's rule
       is that a step's *reading* is Aptos and what sits *in containers* is

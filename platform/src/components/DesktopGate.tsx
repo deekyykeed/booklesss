@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { SITE_HOST } from "@/lib/site";
 
 /* Booklesss is a phone app. This is what a desktop visitor gets instead.
  *
@@ -77,13 +78,13 @@ export function DesktopGate() {
             the browser, and phones never download any of this. */}
         <img
           src="/install-qr.svg"
-          alt="QR code linking to booklesss.vercel.app"
+          alt={`QR code linking to ${SITE_HOST}`}
           className="desktop-gate-qr"
           width={188}
           height={188}
         />
 
-        <p className="desktop-gate-url">booklesss.vercel.app</p>
+        <p className="desktop-gate-url">{SITE_HOST}</p>
 
         <button type="button" onClick={pass} className="desktop-gate-pass">
           Continue on this computer

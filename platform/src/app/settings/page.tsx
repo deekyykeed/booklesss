@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ReferenceSettings } from "@/components/settings/ReferenceSettings";
 
 export const metadata: Metadata = {
-  title: "Settings · Booklesss",
+  title: "Settings",
   robots: { index: false, follow: false },
 };
 

@@ -171,6 +171,44 @@ Most icons in `platform/` come from the **MynaUI** set (by Praveen Juge) via the
 
 Everything else monochrome is MynaUI.
 
+### Domain, Link Previews and Sharing (Next.js)
+
+The domain is **`booklesss.app`** (bought 2026-08-02). The brand host is one
+constant, `SITE_URL` in `platform/src/lib/site.ts` — changing domain is that
+line. **`metadataBase` does not use it**: `layout.tsx` prefers Vercel's
+`VERCEL_PROJECT_PRODUCTION_URL`, so previews resolve against whatever the
+production host actually is (`booklesss.vercel.app` until the DNS is pointed)
+and switch to booklesss.app on the next deploy after the domain is added in
+Vercel. Nothing to edit when that happens.
+
+**Every page emits the four tags WhatsApp reads** — `og:title`,
+`og:description`, `og:url`, `og:image` — plus a canonical and a Twitter card.
+Pages build theirs with `openGraph()` from `lib/site.ts`, and they must:
+Next **replaces** a parent's `openGraph` wholesale rather than merging, so a
+page setting one field by hand silently drops siteName, type and locale.
+
+**Preview cards** are generated at build, one PNG per course and per step, from
+one template in `lib/og.tsx` — 1200×630, flat, Satoshi off the vendored TTFs in
+`platform/assets/`. They come from a **route handler**, `app/og/[...slug]/route.tsx`,
+not the `opengraph-image.tsx` file convention: Next refuses any file after a
+catch-all, and the reader is `(reader)/[...slug]`. Constraints the card is
+built to, from Meta's own docs: under **600KB** (WhatsApp drops it silently
+above that — ours are ~55KB), ≥300px wide, ratio no narrower than 4:1,
+`<head>` inside the first 300KB, description shown to ~80 characters. No SVG.
+A new course gets a correct card with no design work.
+
+**Sharing** is one control in the header — `ShareControl.tsx`, where a dead
+"Feedback" button used to be. It shares whatever page you are on (dashboard →
+the app, course page → that course, step → that step; resolved by
+`lib/share-target.ts`), opening the native share sheet on a phone and copying
+the link where there isn't one. Do not add a second share button to a page
+surface: the owner's rule (2026-08-02) is that there is exactly one place in
+the app where sharing can be got wrong.
+
+**Referral codes are deferred, not forgotten.** They wait for Clerk, so a
+referral can point at a person rather than a device. Format is decided —
+`?r=deeky-7fq` — and the seam is documented in `shareUrl()`.
+
 ### Platform Fonts (Next.js)
 
 Four faces, all self-hosted from `_dev/fonts/` and subset by `python3 scripts/subset-fonts.py` (run it after any content change that could add a character — it derives the kept set from `course-data.json`):

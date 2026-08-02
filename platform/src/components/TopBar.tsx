@@ -4,6 +4,7 @@ import { clerkEnabled } from "@/lib/clerk";
 import { Account as ClerkAccount } from "./Account";
 import { ClerkIsland } from "./ClerkIsland";
 import { CommandSearch } from "./CommandSearch";
+import { ShareControl } from "./ShareControl";
 import { HeaderAvatar } from "./identity/HeaderAvatar";
 import { MobileMenuButton } from "./reader/MobileNav";
 
@@ -98,9 +99,9 @@ export function TopBar({
 
       {/* right cluster */}
       <div className="flex items-center gap-[15px]">
-        <button type="button" className="text-xs text-ink-2 transition-colors hover:text-ink">
-          Feedback
-        </button>
+        {/* Was "Feedback", a button with no handler behind it. Sharing is what
+            a student actually does from here — see ShareControl.tsx. */}
+        <ShareControl />
         <div className="flex items-center gap-2">
           {/* No button for the right (step context) drawer. It was a third
               control in a three-control bar, and the swipe already opens it —

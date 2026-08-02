@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { clerkEnabled } from "@/lib/clerk";
 import { AuthShell } from "@/components/AuthShell";
 
-export const metadata = { title: "Sign up · Booklesss" };
+export const metadata = { title: "Sign up" };
 
 export default function SignUpPage() {
   if (!clerkEnabled) notFound();

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { clerkEnabled } from "@/lib/clerk";
 import { AuthShell } from "@/components/AuthShell";
 
-export const metadata = { title: "Sign in · Booklesss" };
+export const metadata = { title: "Sign in" };
 
 export default function SignInPage() {
   // Without keys there is no auth to sign into, so the route simply isn't there.

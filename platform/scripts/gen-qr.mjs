@@ -7,13 +7,13 @@
  * a QR library to every phone in order to draw a picture that never changes.
  * This way the desktop gate loads a static SVG and mobile downloads nothing.
  *
- * Change SITE and rerun when the reader gets a real domain. */
+ * Change SITE and rerun if the domain moves again. */
 import QRCode from "qrcode";
 import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-const SITE = "https://booklesss.vercel.app";
+const SITE = "https://booklesss.app";
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "public", "install-qr.svg");
 
 const svg = await QRCode.toString(SITE, {

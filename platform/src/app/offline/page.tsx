@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Offline · Booklesss" };
+export const metadata: Metadata = { title: "Offline" };
 
 /* Shown only when a reader opens a step they have never opened before while
  * they have no connection. Anything already read is served from the cache and
