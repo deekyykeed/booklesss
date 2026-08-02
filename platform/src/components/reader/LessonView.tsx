@@ -1,7 +1,8 @@
 "use client";
 
-import { type Block, type Column, type Lesson } from "@/lib/course";
+import { type Block, type CalloutKind, type Column, type Lesson } from "@/lib/course";
 import { links, runs } from "@/lib/emphasis";
+import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
 import { CardGlyph, isCardGlyph } from "./card-glyphs";
 import { CodePlayground } from "./CodePlayground";
 import { Checkpoint, StepComplete } from "./Checkpoint";
@@ -57,6 +58,24 @@ function sourcesInBlock(b: Block): string[] {
  * The mark takes the tone, the rule under the title takes it at low alpha, and
  * nothing else is coloured: the reading text stays the reading text. */
 const CARD_TONES = ["#eb6834", "#4a3aa7", "#17754d", "#2a78d6"];
+
+/* What each kind of callout calls itself, and the mark it wears. See
+ * CALLOUT_KINDS in lib/course.ts for the rule on adding one.
+ *
+ * Tones come from the same four the cards and the dashboard tiles use, which
+ * were validated together for lightness and for telling apart under colour
+ * blindness — "Watch out" borrows the checkpoint's amber instead, because that
+ * amber already means "careful, come back to this" everywhere else here.
+ *
+ * The word is doing the work and the mark makes it findable, not the other way
+ * round. A bare glyph at the top of a box cannot say "in the exam", and the
+ * label-less checkpoint row is already an open question on that score. */
+const CALLOUTS: Record<CalloutKind, { label: string; icon: MynaIconName; tone: string }> = {
+  key: { label: "Key point", icon: "key", tone: "#4a3aa7" },
+  warning: { label: "Watch out", icon: "danger-triangle", tone: "#96601f" },
+  example: { label: "Example", icon: "clipboard", tone: "#2a78d6" },
+  exam: { label: "In the exam", icon: "target", tone: "#eb6834" },
+};
 
 function Cards({ cards }: { cards: { icon: string; title: string; lead?: string; text: string }[] }) {
   return (
@@ -325,15 +344,30 @@ function BlockWithSources({ urls, children }: { urls: string[]; children: React.
 function renderBlock(b: Block) {
   if (b.type === "p") return <p className="text-[18px] leading-[30px] text-[#4a4a52]"><Rich text={b.text} /></p>;
   if (b.type === "h2") return <h2 className="text-[19px] font-semibold text-ink">{b.text}</h2>;
-  if (b.type === "callout")
+  if (b.type === "callout") {
+    const kind = CALLOUTS[b.kind ?? "key"];
     return (
       /* Lifted off the page with a shadow: the callout is the one sentence in a
          section meant to survive when the rest is forgotten, and a plain
          outlined box sat too flat against prose that already has boxes in it. */
-      <div className="squircle rounded-3xl border border-[#e7e7e6] bg-white px-5 py-4 text-[16.5px] leading-[27px] text-[#4a4a52] shadow-lift">
-        <Rich text={b.text} />
+      <div className="squircle rounded-3xl border border-[#e7e7e6] bg-white px-5 py-4 shadow-lift">
+        {/* What this container IS, top-left. `font-container` because it frames
+            the sentence rather than being one, and set in the kind's own hue —
+            the only coloured thing in the box, so the reading underneath stays
+            the reading. */}
+        <div
+          className="mb-2.5 flex items-center gap-1.5 font-container text-[11.5px] font-semibold uppercase tracking-[0.07em]"
+          style={{ color: kind.tone }}
+        >
+          <MynaIcon name={kind.icon} size={15} strokeWidth={1.7} />
+          <span>{kind.label}</span>
+        </div>
+        <div className="text-[16.5px] leading-[27px] text-[#4a4a52]">
+          <Rich text={b.text} />
+        </div>
       </div>
     );
+  }
   if (b.type === "cards") return <Cards cards={b.cards} />;
   if (b.type === "playground") return <CodePlayground code={b.code} />;
   if (b.type === "formula") return <Formula text={b.text} where={b.where} />;

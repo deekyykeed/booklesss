@@ -19,11 +19,29 @@ import courseNav from "./course-nav.json";
  * their digits — the whole reason a working is a table and not a list. */
 export type Column = { label: string; align?: "left" | "right" };
 
+/* What kind of container a callout is.
+ *
+ * A callout used to be one anonymous white box, so a sentence to remember and a
+ * mistake people keep making looked identical and the reader had to read both to
+ * find out which was which. Naming the kind puts a mark and a word at the
+ * top-left, which is the whole difference between "a box" and "a box that says
+ * what it is".
+ *
+ * `key` is the default: every callout written before kinds existed is one — the
+ * one sentence in a section meant to survive when the rest is forgotten, which
+ * is what the block was for.
+ *
+ * Adding a kind is three lines: a name here, a row in CALLOUTS in
+ * reader/LessonView.tsx, and the same name in CALLOUT_KINDS in
+ * scripts/seed-course.mjs so a typo is refused rather than silently drawn. */
+export const CALLOUT_KINDS = ["key", "warning", "example", "exam"] as const;
+export type CalloutKind = (typeof CALLOUT_KINDS)[number];
+
 export type Block =
   | { type: "p"; text: string }
   | { type: "h2"; text: string }
   | { type: "ul"; items: string[] }
-  | { type: "callout"; text: string }
+  | { type: "callout"; text: string; kind?: CalloutKind }
   | { type: "playground"; code: string }
   /* A display equation. Deliberately plain text rather than LaTeX: the finance
    * courses need ~20 formulas, none of which need a typesetting engine, and a

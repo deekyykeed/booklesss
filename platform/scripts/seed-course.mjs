@@ -71,11 +71,19 @@ function blockTexts(b) {
  * here instead, where it blocks the write. Keep in step with CARD_GLYPHS. */
 const CARD_GLYPHS = ["chess", "calendar", "checklist"];
 
+/* The callout kinds the reader can draw. Same reason as CARD_GLYPHS above: the
+ * kind is a bare string in the .mjs, so a typo would quietly fall back to the
+ * default and label a warning "Key point". Keep in step with CALLOUT_KINDS in
+ * src/lib/course.ts. */
+const CALLOUT_KINDS = ["key", "warning", "example", "exam"];
+
 function markProblems(blocks) {
   const out = [];
   const texts = [];
   for (const b of blocks) {
     texts.push(...blockTexts(b));
+    if (b?.type === "callout" && b.kind !== undefined && !CALLOUT_KINDS.includes(b.kind))
+      out.push(`a callout names an unknown kind "${b.kind}" (have: ${CALLOUT_KINDS.join(", ")})`);
     for (const c of b?.cards ?? []) {
       if (!CARD_GLYPHS.includes(c?.icon))
         out.push(`a card names an unknown icon "${c?.icon}" (have: ${CARD_GLYPHS.join(", ")})`);

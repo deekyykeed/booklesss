@@ -33,13 +33,11 @@ const ICONS = [
      hairlines, after the Duotone bubble sat filled beside two outlines. */
   "info-circle",
   "info-circle-solid",
-  /* The section-comment button, beside the note button. A bubble was rejected
-     for the NOTE button above because it promised a conversation that button
-     did not have — this one does: it opens a box you write in. Filled once the
-     section has a comment on it, the same line/solid rule as the rest of the
-     row. */
+  /* Marks a commented section in the right panel's comment list. It briefly sat
+     in the checkpoint row as a third button and the owner moved commenting into
+     the panel instead (2026-08-02), so there is no line/solid pair here any
+     more — nothing toggles, it just labels a row. */
   "message-dots",
-  "message-dots-solid",
   "external-link",
   "chevron-down",
   /* The Appearance segmented on /settings — system, light, dark. */
@@ -80,6 +78,15 @@ const ICONS = [
   "dislike-solid",
   // progress + the dashboard's stat tiles (check-circle above serves both)
   "check",
+  /* Callout kinds — the mark at the top-left of an in-text container, saying
+     what kind of container it is (see CALLOUTS in reader/LessonView.tsx).
+     `clipboard` and `target` are already listed above for the home rail and the
+     stat tiles; the dedupe below means naming them twice is safe and keeps each
+     use findable from where it is used. */
+  "key",
+  "danger-triangle",
+  "clipboard",
+  "target",
   // the sign-up form's school and course rows: an empty ring, filled once
   // picked — a checkbox in the app's own hand
   "circle",
@@ -94,6 +101,11 @@ const ICONS = [
   "chart-bar",
   "credit-card",
   "download", // the "add to home screen" prompt on the dashboard
+  /* Sharing a course or a step. `link` is what the button falls back to when
+     the device has no native share sheet — the action is then "copy the link",
+     and a share glyph would promise a sheet that isn't going to open. */
+  "share",
+  "link",
 ];
 
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "components", "icons", "myna.tsx");
