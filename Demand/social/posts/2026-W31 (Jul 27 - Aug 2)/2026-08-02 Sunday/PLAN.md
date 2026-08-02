@@ -2,17 +2,21 @@
 
 9:16, all light. Post each folder's images in order (`01 → 04/05`).
 
-**One component per carousel, and nothing else in the frame.**
+**One component per carousel, isolated, straight on.**
 
 Each post is a single control or card in three or four **scenarios** — the same
-thing, in the states a reader puts it through — rather than a tour of different
+thing in the states a reader puts it through — rather than a tour of different
 parts of the app. Every slide is that component **on its own**: captured as an
-element with a transparent background, floated on the brand gradient, and
-turned slightly in perspective so it sits in space rather than lying flat.
+element with a transparent background, set on the brand gradient, and given a
+shadow that traces its own outline.
 
-Nothing around it. No page, no neighbour, no crop rectangle. (The first pass
-today cropped tight boxes around components, which still photographed whatever
-was next to them — a rectangle around a stat tile is a picture of a grid.)
+Nothing around it. No page, no neighbour, no crop rectangle.
+
+**No skew.** These were turned in perspective first and it was wrong: the app is
+flat vector UI with hairline borders and 1px rules, and rotating that puts every
+one of those lines through a resampler — the card stops looking like a card and
+starts looking like a photograph of a screen at an angle. Depth comes from the
+shadow and the space around it. Everything sits square.
 
 **The call to action is a DM.** The Google search slide is retired: search asked
 for two steps before anyone reached anything, the second on a results page we
@@ -24,42 +28,44 @@ don't control. Every carousel closes on "DM me 'link'".
 | ☀️ Midday | ~11:00 | `2-midday/` | 4 | the button that asks how the writing read |
 | 🌤️ Afternoon | ~15:00 | `3-afternoon/` | 5 | one stat tile, four numbers |
 | 🌆 Evening | ~19:00 | `4-evening/` | 4 | one card, three kinds |
-| 🌙 Night | ~21:30 | `5-night/` | 4 | tap a word, get it defined |
+| 🌙 Night | ~21:30 | `5-night/` | 4 | one course card, three courses |
 
 **Every component is the real app, relabelled to a neutral curriculum.** No
 course name, school name or code appears anywhere; the capture scans the
-component before writing the PNG. Isolation makes that easier — a button's own
-box has no prose in it. The two exceptions are the card and the definition
-popup, whose text *is* their slide, so both carry placeholder copy: the card
-set is about how to work through a lesson, the definitions are first-year
-algebra. The component, its marks, its tones and its rules are the real thing;
-only the words are stand-ins.
+component before writing the PNG, and it earned its keep today — it refused a
+card shot whose selector had drifted onto the wrong element and caught the leak
+before it could be written. Two components carry placeholder copy because their
+text *is* their slide: the three kinds read as plan / practise / review, and the
+course cards as ordinary first-year subjects. Marks, tones, rules, sparklines
+and progress fills are all the real thing.
 
-The seeded reader is someone about a month in — a 3-day streak, 2h40 this week,
-70% performance, two courses on the go. The answered states were produced by
-clicking in the browser, so what the marks show is the app's own.
+The seeded reader is about a month in: a 3-day streak, 2h40 this week, 70%
+performance, two courses under way and a third signed up to and never opened.
+The answered states were produced by clicking in the browser.
 
-> ⚠️ **Shot from a clean worktree at `be15946`, not from the working tree.** A
-> parallel session was mid-refactor in the same folder — and it changed the
-> checkpoint marks *while these were being made*. What is shot here is what is
-> on `main`.
+> ⚠️ **Shot from a clean worktree at `9f6b997`, not from the working tree.** A
+> parallel session worked the same folder all day. The checkpoint answers were
+> redrawn **four times** while these were being made — three self-ratings, then
+> a bookmark and a tick, then thumbs, then faces — so anything shot earlier is
+> already wrong. What is here is `9f6b997`. **Check `git log` before posting**;
+> if that control has moved again, the morning carousel needs re-shooting.
 
 ---
 
 ### 🌅 Morning — `1-morning/` · The two answers
 **Post title:** One tap, and the section is decided
 
-**Slides:** both marks, untouched → thumb up, chosen → thumb down, chosen → DM
+**Slides:** both marks, untouched → the green face, chosen → the amber one → DM
 
 **Caption:**
-> Every section ends with two marks and no words 🛠️
+> Every section ends with two faces and no words 🛠️
 > Press one. It fills in and takes its colour, the other fades back but stays
-> there, and pressing the one you already picked takes it back.
-> This control has been redrawn three times in a day. It started as three
+> there, and pressing the one you already chose takes it back.
+> This control has been redrawn four times in a day. It started as three
 > self-ratings — Not yet, Almost, Got it — and grading yourself gives you
-> nothing to do about the grade. Then two decisions with words. Then two marks
-> without them. It's a thumbs pair now, because that's the one thing nobody has
-> to learn.
+> nothing to do about the grade. Then two decisions with words on them. Then two
+> marks without. It's a pair of faces now, because that's the one thing nobody
+> has to learn.
 > DM me "link" and I'll send you the whole thing. 👇
 > #buildinpublic #edtech #uidesign #studytok #zambia
 
@@ -118,32 +124,39 @@ clicking in the browser, so what the marks show is the app's own.
 
 ---
 
-### 🌙 Night — `5-night/` · Tap the word
-**Post title:** The definition costs one tap, and only if you need it
+### 🌙 Night — `5-night/` · One course card, three courses
+**Post title:** The button is the progress bar
 
-**Slides:** the word, ruled → what it opens → another one → DM
+**Slides:** months in → just begun → never opened → DM
 
 **Caption:**
-> A word you don't know shouldn't stop the sentence 🛠️
-> Anything with a rule under it can be tapped, and the meaning comes up beside
-> it. Tap away and it's gone.
-> The reason it isn't just brackets in the text: a definition in brackets is
-> read by everyone, including the person who already knew the word, and it
-> breaks the sentence for them every single time. A tap is only paid for by the
-> reader who needs it.
+> The busiest thing I've built, and it's one card 🛠️
+> A streak. Your score. A fortnight of your own reading drawn behind the text in
+> that course's colour. And one button, which does two jobs: it says the exact
+> step you'd go back to, and its fill is how far through you are. No separate
+> progress bar, because the thing you press and the thing that measures you may
+> as well be the same object.
+> Third slide is a course signed up to and never opened. 0%, no streak, and it
+> says Start instead of Resume. That's most people, most of the time, and the
+> card shouldn't pretend otherwise.
 > DM me "link" and I'll send you the whole thing. 👇
-> #buildinpublic #edtech #productdesign #studytok #zambia
+> #buildinpublic #edtech #uidesign #studygram #zambia
 
 ---
 
-*Regenerate: the app must be served from a clean checkout if another session is
-working the tree —* `git worktree add --detach C:/bkls-shot <commit>`, *dev on
-3101, then:*
+*Regenerate: serve the app from a clean checkout when another session is working
+the tree —* `git worktree add --detach C:/bkls-shot <commit>`, `rm -rf
+platform/.next`, *dev on 3101, then:*
 `BASE_URL=http://localhost:3101 node _scripts/cap-0802.mjs`
-*then* `POST=c-marks|c-note|c-tiles|c-cards|c-term node _scripts/prog-post.mjs`.
+*then* `POST=c-marks|c-note|c-tiles|c-cards|c-course node _scripts/prog-post.mjs`.
 *All default to today's date. No posting connector — upload manually.*
+
+> **Held back.** The tap-to-define popup is shot and configured (`POST=c-term`)
+> but not used today — three near-identical white cards of body text is the
+> dullest thing the app owns. It wants a slot where the *word* can be shown in
+> its sentence.
 
 > **Note for the next run.** Yesterday's midday caption describes the checkpoint
 > as three answers — "Not yet, Almost, Got it". That stopped being true at 20:23
-> on 1 Aug and has since changed twice more. If Saturday's carousel has not gone
-> out, the caption needs correcting first.
+> on 1 Aug and has changed three times since. If Saturday's carousel has not
+> gone out, fix the caption first.

@@ -140,12 +140,17 @@ for (let i = 0; i < MINUTES.length; i++) {
 
 const SEED = JSON.stringify({ done, days, touched, grasp });
 
+/* Three courses, not two. The third has no progress seeded against it, which is
+ * what gives the night carousel its third scenario: a card that has never been
+ * opened says "Start", draws an empty progress fill and reports no streak. That
+ * is a real state of the component, not a staged one — somebody signed up to a
+ * course and has not begun it, which is the commonest state there is. */
 const WHO = JSON.stringify({
   name: "Chanda",
   avatar: "astronaut",
   school: "zcas",
   schoolName: null,
-  courses: ["economics", "corporate-finance"],
+  courses: ["economics", "corporate-finance", "strategic-management"],
   id: "capture-device",
   since: "2026-07-04T09:00:00.000Z",
 });
@@ -315,10 +320,14 @@ await isolate("c-marks-got.png", ".grasp-group", { nth: 3, ...R });
  * two icons adrift. One 34x34 mark is square, so the same frame gives it four
  * times the presence.
  *
- * Both rows are answered by now, so `[data-active]` matches exactly two
- * buttons in document order: the row-2 thumb-down, then the row-3 thumb-up. */
-await isolate("c-thumb-down.png", ".grasp-btn[data-active]", { nth: 0, ...R });
-await isolate("c-thumb-up.png", ".grasp-btn[data-active]", { nth: 1, ...R });
+ * PICKED BY LABEL, NOT BY INDEX. `[data-active]` at nth 0 and 1 looks right and
+ * is not: the first two sections are answered by the SEED, so those indices are
+ * the seeded rows and the shots came out as the wrong answer under the right
+ * filename — a sad face filed as "thumb up". Ordering here depends on how much
+ * progress the seed carries, which is exactly the kind of thing that changes
+ * for an unrelated reason. The aria-label does not. */
+await isolate("c-answer-later.png", '.grasp-btn[data-active][aria-label="Later"]', { nth: 0, ...R });
+await isolate("c-answer-got.png", '.grasp-btn[data-active][aria-label="Got it"]', { nth: 0, ...R });
 
 /* ---------- 2. the note control, in three states ---------- *
  * `.grasp-btn[aria-expanded]` is the note button only — a bare `.grasp-btn` is
@@ -342,6 +351,18 @@ for (let i = 0; i < 4; i++) {
   await isolate(`c-tile-${TILES[i]}.png`, ".dash-stat", { nth: i });
 }
 
+/* ---------- 3b. one course card, three courses ---------- *
+ * The richest single component in the app and the one worth a carousel: a
+ * hand-drawn folder mark, a streak, a fortnight of this course's own reading
+ * drawn in its own hue, the title, the score, and a Resume button whose fill IS
+ * the progress bar. Three cards, three genuinely different states — well under
+ * way, just begun, and never opened. */
+await page.waitForSelector(".course-card", { timeout: 60000 });
+const COURSES = ["deep", "started", "fresh"];
+for (let i = 0; i < 3; i++) {
+  await isolate(`c-course-${COURSES[i]}.png`, ".course-card", { nth: i });
+}
+
 await ctx1.close();
 
 /* ---------- 4. one card, three kinds ---------- *
@@ -352,7 +373,14 @@ const ctx2 = await phone();
 page = await ctx2.newPage();
 await go("/treasury-management/treasury-operations/treasury-levels-and-mandate", ".checkpoint-row");
 
-const CARDS = "#task-levels .flex.flex-col.gap-3 > div";
+/* Selected by what a card HAS, not by the utility classes of the box it sits
+ * in. `.flex.flex-col.gap-3` was the cards' wrapper until the source strip
+ * moved under the paragraph and brought another one with it — after which the
+ * selector matched a 42px row of chips, and the banned-word scan caught the
+ * result before it could be written. The distinguishing feature is stable: a
+ * card carries a Freehand glyph, and the callout beside it wearing the same
+ * `rounded-3xl shadow-lift` classes does not. */
+const CARDS = "#task-levels div.rounded-3xl.shadow-lift:has(svg)";
 const KINDS = ["plan", "practise", "review"];
 for (let i = 0; i < 3; i++) {
   await isolate(`c-card-${KINDS[i]}.png`, CARDS, { nth: i });

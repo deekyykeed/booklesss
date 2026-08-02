@@ -115,9 +115,26 @@ good off the background. Maybe skew it a little so it looks like I'm looking at
 it in 3D space."*
 
 So the whole post is a single control in the states a reader puts it through —
-the answer marks untouched, thumbed up, thumbed down — each captured as an
-element with a transparent background, floated on the gradient and turned in
-perspective. `isolate()` in `cap-0802.mjs` and `object()` in `prog-post.mjs`.
+the answer marks untouched, then each answer chosen — captured as an element
+with a transparent background and set squarely on the gradient. `isolate()` in
+`cap-0802.mjs` and `object()` in `prog-post.mjs`.
+
+- **STRAIGHT. No skew, no perspective.** Tried on 2 Aug and rejected on sight:
+  *"the skewing thing doesn't work, it is very ugly."* The reason is worth
+  keeping — this is flat vector UI with hairline borders and 1px rules, and
+  rotating it runs every one of those lines through a resampler, so the card
+  stops looking like a card and starts looking like a photograph of a screen at
+  an angle. Depth comes from the shadow and the space around it.
+- **Pick components with something in them.** The other half of the same note:
+  *"you need to focus on more interesting bits."* Three near-identical white
+  cards of body text is the dullest thing the app owns. The course card is the
+  opposite — a hand-drawn folder mark, a streak, a fortnight of that course's
+  own reading drawn in its own hue behind the text, a score, and a Resume button
+  whose fill IS the progress bar. Before building a carousel round a component,
+  ask what is actually in the frame besides text.
+- **Prefer states that differ in kind, not in wording.** A course never opened
+  reads 0%, no streak, no curve and says *Start* — that is a different picture.
+  Two definitions of two different words are the same picture twice.
 
 It supersedes the 1 Aug "crop areas, not controls" rule for days about what
 *changed*; the area mode is still right for days about what the app *is*.
@@ -143,8 +160,19 @@ and the answer was to stop cropping.
   overhang. But a page clip is measured against the VIEWPORT, so scroll first
   or anything below the fold fails with *"clipped area is outside the resulting
   image"* — `locator.screenshot()` had been doing that scroll for you.
-- **Transparency is what makes the tilt possible.** A rectangular screenshot
-  turned in 3D shows its own cut edges and reads as a photo of a photo.
+- **Select a component by what it HAS, not by the utility classes around it.**
+  `#task-levels .flex.flex-col.gap-3 > div` was the card set until the source
+  strip moved under the paragraph and brought a second `flex flex-col gap-3`
+  with it — after which the same selector returned a 42px row of chips. Anchor
+  on something structural: `div.rounded-3xl.shadow-lift:has(svg)` picks the
+  cards and not the callout wearing their classes. (The banned-word scan caught
+  this one; it will not always be there to.)
+- **Index into a set only when nothing else identifies the member.** Picking the
+  answered marks as `[data-active]` nth 0 and 1 looks right and is not: the
+  first two sections are answered *by the seed*, so those indices are the seeded
+  rows, and the shots came out as the wrong answer under the right filename — a
+  sad face filed as "thumb up". Ordering there depends on how much progress the
+  seed happens to carry. `[aria-label="Got it"]` does not.
 - **`drop-shadow`, never `box-shadow`.** box-shadow draws the shadow of the
   PNG's *rectangle* — a hard oblong behind two floating glyphs. drop-shadow
   traces the alpha.
