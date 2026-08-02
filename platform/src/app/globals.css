@@ -272,6 +272,25 @@
     .bg-waves span { animation: none; }
   }
 
+  /* The in-app Motion switch (Settings → Reading), set by lib/motion.tsx.
+     The media query above is an operating-system setting; this is the same
+     thing chosen for this app alone, which is what a reader who wants the
+     canvas to hold still on their phone actually has access to.
+
+     One consolidated list rather than a second rule beside each of the six
+     prefers-reduced-motion blocks in this file, so there is a single place to
+     add a selector when a new animation lands. The attribute selector outranks
+     every target here, so placement in the file doesn't matter. */
+  :root[data-motion="reduced"] .bg-waves span,
+  :root[data-motion="reduced"] .lesson-fade,
+  :root[data-motion="reduced"] .account-skeleton,
+  :root[data-motion="reduced"] .ring-pop,
+  :root[data-motion="reduced"] .quiz-backdrop,
+  :root[data-motion="reduced"] .quiz-card,
+  :root[data-motion="reduced"] .voice-host[data-voice] .voice-glow > span {
+    animation: none;
+  }
+
   /* App shell. Desktop is a fixed-height frame: fixed header + sidebar with an
      internally-scrolling content surface. Mobile drops the height lock so the
      document itself scrolls — that's what lets the mobile browser collapse its

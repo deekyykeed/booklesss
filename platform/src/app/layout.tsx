@@ -72,6 +72,17 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${familjen.variable} ${aptos.variable} h-full`}
     >
+      <head>
+        {/* Sets data-motion before first paint, so a reader who asked for a
+            still page doesn't watch six blobs start drifting and then stop a
+            moment later when React hydrates. Inline and tiny for that reason:
+            anything imported would arrive too late to be worth running. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(localStorage.getItem("booklesss:motion:v1")==="reduced")document.documentElement.dataset.motion="reduced"}catch(e){}`,
+          }}
+        />
+      </head>
       <body className="min-h-full bg-canvas text-ink">
         {children}
         {/* Asks a first-time reader for a name and a face. Mounted here rather
