@@ -22,6 +22,33 @@ Quote actual words. A student's phrasing is never rewritten into the owner's.
 
 ---
 
+### 2026-08-02 · all courses · owner
+- `structure` — "it shouldnt waste an opportunity to put a folder within a line
+  of steps, nesting the steps up to 3 or 4 layers in." The sidebar tree already
+  nests recursively and almost nothing uses it: one group in one course reaches
+  depth 3, everything else is course → lesson → step. A run of siblings that
+  share a subject gets a named folder over it.
+  → promoted: **S-9** · debt: **D-6**
+- `content` — "the steps should be able reference each other and flow into one
+  another." A course is one argument told over forty steps, not forty handouts
+  in a shared folder. Pick the thread up in a clause, hand it on in the prose,
+  and re-state anything load-bearing so a step still stands up when it is the
+  first one someone opens.
+  → promoted: **C-8** · debt: **D-7**
+- `writing` — "the first sentence of a section or step is important." W-13
+  already banned what an opening must not do; this is the obligation it must
+  meet. Most-read sentence in the step, written last and hardest.
+  → promoted: **W-14** · debt: none (W-13's scan covers the ban list; the
+  obligation is a judgement call, paid on contact)
+- `writing` — "the language and way of writing needs to be readable and
+  understandable enough that we accomodate people at different levels." Repeat
+  students, first-years meeting it cold, and readers in their second or third
+  language all paid the same and all have to reach the end. Plain words around
+  the exact ones; depth in the detail, never in the difficulty of the prose.
+  → promoted: **W-15** · debt: **D-8**
+
+---
+
 ### 2026-08-02 · treasury-management (all steps) · owner
 - `structure` — on being told the nine remaining TM steps would get the quality
   pass now and the **S-8** splits later, because splitting changes URLs, the

@@ -432,8 +432,11 @@ not worth reading — and because nothing is *wrong*, a normal review returns
 course-agnostic: it asks nothing about treasury or strategy, so it runs on any
 step in any course.
 
-Seven checks, in order. Each has a rule behind it, so a failure is a defect with
-an id, not an opinion.
+Ten checks, in order. Each has a rule behind it, so a failure is a defect with
+an id, not an opinion. Checks 8–10 were added 2026-08-02: 7 and 8 are the two
+halves of an opening (readable, then worth reading) and must both pass, 9 is the
+one that catches what sentence-length limits miss, and 10 is the only check that
+looks outside the step it is run on.
 
 | # | Check | Fails when | Rule |
 |---|-------|-----------|------|
@@ -444,6 +447,9 @@ an id, not an opinion.
 | 5 | **Rhythm** — read the block types down the page: `p p p p` | Any section is three consecutive long `p` blocks | **W-7** |
 | 6 | **The abstraction ladder** — does any idea stay abstract from start to finish? | A classification is taught as its categories and never as one case moving through them | **C-3**, **C-5** |
 | 7 | **The cold open** — read each section's first sentence alone, with nothing above it | It uses a word, a count or a pointer the reader cannot yet hold ("one exposure", "all three levels"), or narrates the device instead of starting it ("Take one X and watch it…") | **W-13** |
+| 8 | **Is that opening worth reading?** — same sentences again, now asking what they earn rather than what they assume | It announces the topic instead of starting on something ("Working capital is an important area of…") — passing 7 and failing this is a legal sentence nobody wants to read | **W-14** |
+| 9 | **Read it aloud as a second-language first-year** | Any sentence you would stop and explain out loud; a short sentence still doing two jobs; an expensive ordinary word wrapped round a technical one | **W-15**, **W-12** |
+| 10 | **The two seams** — what does this step pick up, and what does it hand on? | It could be dropped into any position in the course without changing a word, or it leans on an earlier step without re-stating the fact it needs | **C-8** |
 
 **The moves that fix them.** These are what the TM 1.1 rewrite actually did, in
 the order they were worth doing:

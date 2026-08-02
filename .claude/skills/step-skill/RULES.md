@@ -122,6 +122,51 @@ Ids are stable. A withdrawn rule is struck through, never deleted.
   This is the rule that keeps the course beginner-friendly at the exact moment a
   beginner decides whether to keep reading.
 
+- **W-14** **The first sentence is the one that decides.** *(added 2026-08-02)*
+  W-13 is the list of things a first sentence must not do; this is the thing it
+  must do. It is the most-read sentence in the step and the only one every
+  reader is guaranteed to reach, so it gets written last and hardest, after the
+  section it opens exists and you know what the section actually turned out to
+  be about.
+  - **Spend the effort in proportion to the readership.** A step's opening
+    sentence is read by everyone who opens the step; the fourth paragraph of
+    section five is read by a fraction of them. Write in that order.
+  - **It must be worth reading on its own.** A concrete situation, a figure that
+    should not be true, a decision someone got wrong. Not a topic announcement:
+    "Working capital is an important area of treasury management" tells a reader
+    what the page is filed under, which the heading already did.
+  - **Every section opening carries the same weight, not just the step's.** A
+    reader who has scrolled through four sections is deciding whether to stay at
+    each seam. That is why this is a rule about sections and steps both.
+  - **Write it, then read it cold against W-13.** These two rules run together:
+    W-14 makes the sentence worth reading, W-13 makes it readable. A sentence
+    that passes one and fails the other is not finished.
+
+- **W-15** **Write so the weakest reader gets through and the strongest is not
+  bored.** *(added 2026-08-02)* The course is read by people at genuinely
+  different levels — a repeat student who has seen the material, a first-year
+  meeting it cold, someone studying in their second or third language. All of
+  them paid the same and all of them have to get to the end. That is a
+  constraint on the writing, not a reason to write two versions.
+  - **Plain words for the ordinary parts, exact words for the technical parts.**
+    The technical vocabulary is the thing being taught and must not be watered
+    down; everything carrying it should be the simplest available. "The firm
+    cannot pay its bills as they fall due" around *liquidity*, not "the entity
+    experiences an inability to discharge obligations".
+  - **One idea per sentence.** A sentence doing two jobs is where a reader at
+    the edge of their English drops out, and it is invisible to whoever wrote
+    it. This is what W-12's length limit is actually protecting.
+  - **The hard bit gets a concrete anchor, not a second abstract restatement.**
+    A reader who missed a definition is not helped by the same definition in
+    other words. They are helped by a number, a company and a consequence
+    (C-5).
+  - **Depth goes in the detail, not in the difficulty of the prose.** A stronger
+    reader is held by the worked example, the real case and the exam framing,
+    all of which a weaker reader can still follow. Complicated sentences hold
+    nobody.
+  - Test: read the step imagining a first-year with adequate but not fluent
+    English. Any sentence you would have to explain out loud is a rewrite.
+
 ## E — Page elements
 
 The block vocabulary. Each block exists for one job; using the wrong one is a
@@ -260,6 +305,29 @@ text, so a mark written into one shows its own syntax.
     moment to fix them, not a later reading. This is the fourth bullet of
     **W-13**, and splitting is the main thing that creates it.
 
+- **S-9** **Group a run of steps into a folder rather than leaving a flat
+  list.** *(added 2026-08-02)* The reader's sidebar tree is recursive —
+  `children` nests as deep as it is given — and most courses only use two
+  levels, so a lesson with nine steps under it renders as nine equal rows with
+  nothing telling the reader which three belong together. **Nest to three or
+  four levels wherever the material has that shape.** A course reaching only
+  depth 2 everywhere is usually an un-taken opportunity, not a flat subject.
+  - **Never waste a natural grouping.** If three consecutive steps share a
+    subject — the three working-capital components, the two hedging instruments
+    — that is a folder. The reader gets a name for the group, a collapsed row
+    instead of three, and somewhere to stop.
+  - **Three or four levels, not more.** Course → lesson → group → step is the
+    working ceiling. Past that the indentation eats the label on a 390px phone
+    and a reader cannot tell which level they are on.
+  - **A folder needs a real name, not a number.** "Working capital" groups
+    something; "Part 2" groups nothing and costs a row.
+  - **Do not create a folder for one step.** A group of one is a step wearing a
+    hat, and it adds a tap without adding a distinction.
+  - This runs with **S-8**: splitting a long step is what creates the run of
+    siblings that then wants a folder over it. Do both in the same pass — a
+    split that leaves five flat rows where there was one has moved the climb
+    from the page to the sidebar.
+
 ## C — Content
 
 - **C-1** *(inherited)* Every example uses ZMW and Zambian companies — Zanaco,
@@ -345,6 +413,35 @@ text, so a mark written into one shows its own syntax.
     that can be checked; do not ship an unverified URL on the grounds that the
     pattern looks right.
   - Never link a competitor's paid course, and never a school's material.
+
+- **C-8** **Steps refer to each other and run on from each other.** *(added
+  2026-08-02)* A course is one argument told over forty steps, not forty
+  handouts that happen to share a folder. A step should be visibly downstream of
+  what came before it and visibly pointed at what comes next, so a reader
+  finishing one has a reason to open the next rather than a decision to make.
+  - **Pick the thread up.** Where a step uses something an earlier step
+    established, say so in passing: *the same operating cycle from the last
+    step, now with the creditor side on it*. One clause. It tells the reader
+    their earlier work is being spent, not repeated.
+  - **Hand the thread on.** End on the question the next step answers, inside
+    the prose, at the point it becomes obvious. Never a labelled "Next:" row —
+    the reader already has a real link at the foot of the step, and a pointer
+    written into the content goes stale the moment the order changes.
+  - **A reference must survive being read alone.** This is the hard constraint
+    and it beats the other three. A reader arrives mid-course from a shared
+    link, a resumed position or the sidebar, so anything load-bearing has to be
+    re-stated in enough words to stand up here. "As we saw with Barings" is not
+    a reference, it is an assumption. Give the fact again in a clause and then
+    build on it.
+  - **Never in the opening sentence.** A callback across a step boundary is
+    banned there outright — see **W-13**'s fourth bullet, which exists because
+    exactly this was tried and the owner could not follow it.
+  - **Plain text, always.** A step reference is words, never a link to another
+    step's file — see `.claude/CLAUDE.md`. The reader's own navigation is what
+    moves someone between steps.
+  - This is a **flow** rule, not a summary rule. It does not license a "recap of
+    the last step" block, which is **S-6** all over again: the reader either
+    read it or can go back to it.
 
 ---
 

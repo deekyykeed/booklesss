@@ -65,6 +65,9 @@ unchecked ones get ticked off by someone assuming the list was audited.
 | D-3 | Possessive budget, sentence length, step splitting, source links — W-10/W-12/S-8/C-7 | 2026-08-01 | open · 21/53 (**all of TM**, S-8 included) |
 | D-4 | Cold opens — W-13, section openings a beginner cannot hold | 2026-08-01 | open · 21/53 read cold; the other 32 machine-clean only |
 | D-5 | Definitional tables that should be `cards` — E-9 | 2026-08-01 | open · 1/37 converted · **blocked on glyphs** |
+| D-6 | Flat nav trees that should carry a folder — S-9 | 2026-08-02 | open · 0/4 courses grouped |
+| D-7 | Steps that neither pick up nor hand on the thread — C-8 | 2026-08-02 | open · 0/53 checked |
+| D-8 | Prose written past the weakest reader — W-15 | 2026-08-02 | open · 0/53 checked |
 
 > **Counts moved from 44 to 53 on 2026-08-02.** The nine remaining Treasury
 > Management steps were split into eighteen (S-8), so the course is 21 steps and
@@ -440,3 +443,83 @@ runs no denser than 1 in 100 anywhere.
 - [ ] strategic-management/strategy/competitive-strategy
 - [ ] strategic-management/strategy/corporate-strategy
 - [ ] strategic-management/strategy/strategy-implementation
+
+---
+
+### D-6 · flat nav trees that should carry a folder · opened 2026-08-02
+**Source:** 2026-08-02 · owner — "it shouldnt waste an opportunity to put a
+folder within a line of steps, nesting the steps up to 3 or 4 layers in."
+**Rules:** S-9
+**Why it can't wait for a rewrite:** the sidebar tree has always nested
+recursively and the courses barely use it. Measured on the day the rule was
+written: of the eight top-level groups in `course-nav.json`, **one reaches depth
+3, four sit at depth 2, and three are depth 1** — a flat list of steps with no
+grouping at all. This is not a writing defect in any one step, it is the shape of
+every course, and it got worse the moment S-8 started splitting long steps: TM
+went from 12 steps to 21 without gaining a single folder, so the climb moved off
+the page and into the sidebar.
+
+**Cost of leaving it:** a reader opening TM sees a long column of equal rows and
+cannot tell which three belong together. The grouping exists in the material and
+only in the material.
+
+**How to pay it:** per course, not per step — this is one editing pass over
+`reader/course.mjs`, then `seed:course` → `gen:course`. Look for runs of
+consecutive siblings sharing a subject and put a named folder over each. Do it in
+the same pass as any S-8 split.
+
+- [ ] treasury-management (21 steps, 5 lessons — the worst case, and the one
+      S-8 just made worse)
+- [ ] corporate-finance (25 steps)
+- [ ] strategic-management (7 steps — may genuinely be flat at this size)
+- [ ] economics
+
+---
+
+### D-7 · steps that neither pick up nor hand on the thread · opened 2026-08-02
+**Source:** 2026-08-02 · owner — "the steps should be able reference each other
+and flow into one another."
+**Rules:** C-8
+**Why it can't wait for a rewrite:** every step in all three courses was written
+as a standalone unit, because that is what the brief was at the time and what
+W-13 pushes each opening towards. The result reads as a folder of handouts: a
+reader finishing one has no reason to open the next beyond the link being there.
+
+**The trap, and why this cannot be batched by find-and-replace:** C-8 and W-13
+pull against each other and both have to hold. A step must run on from the last
+one **and** stand up as the first one somebody opens. The fix is a clause in the
+body that re-states the fact it is leaning on, never a callback in the opening
+sentence and never a recap block (S-6). Getting that wrong is what produced the
+TM 1.3 opening the owner could not follow.
+
+**How to pay it:** on contact, per step. When touching a step for any reason,
+check two seams — does it pick up what the previous step left, and does it end
+pointed at the next question. Cheapest while a lesson's steps are open together.
+
+**Scope:** 53 steps, none checked. No scan can find this; it is a judgement at
+each seam.
+
+---
+
+### D-8 · prose written past the weakest reader · opened 2026-08-02
+**Source:** 2026-08-02 · owner — "the language and way of writing needs to be
+readable and understandable enough that we accomodate people at different
+levels."
+**Rules:** W-15 (and W-12, which is the measurable half of it)
+**Why it can't wait for a rewrite:** the steps are written to one implied
+reader — a first-year with fluent English who is meeting the material for the
+first time. The real readership is wider on both sides: repeat students who have
+seen it, and readers working in a second or third language. W-12 already caps
+sentence length and that pass has been run; W-15 is the part length does not
+catch, which is a short sentence carrying two ideas or an unnecessarily
+expensive word around a technical one.
+
+**How to pay it:** on contact, and specifically as a **read-aloud** pass. Any
+sentence you would have to stop and explain gets rewritten. Do not simplify the
+technical vocabulary — that is the thing being taught; simplify everything
+carrying it.
+
+**Partly measurable:** W-12's sentence-length count is a proxy and already
+reported. The rest is judgement.
+
+**Scope:** 53 steps, none checked.

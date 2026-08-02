@@ -92,17 +92,49 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
+**From session 34 (2026-08-02, reader chrome + the comments decision):**
+- [ ] **Look at the callout marks on a phone.** They are Solar Duotone at 22px
+      with **no word beside them** (owner's call). `target` now has to say "in
+      the exam" and `key` has to say "key point" on its own. The label survives
+      as `aria-label` and the hover tooltip, so a screen reader and a mouse are
+      fine — the loss is specific to a sighted, tap-only reader meeting the mark
+      cold. **This is the second label-less control in the reader**, after the
+      checkpoint row; if either needs words back, do both.
+- [ ] **Source chips were resized three times in one session** and ended at 11px
+      text / 12px favicon / `#f6f6f5` tint. Earlier the same day they were
+      *grown* on the argument that a 22px favicon was unrecognisable. That trade
+      is back at 12px: you can tell the sites apart by colour and not much else.
+- [ ] **Answer the six questions at the end of `platform/COMMENTS-PLAN.md`.**
+      Nothing about real comments can start until the identity model is picked.
+      Recommendation in the doc: **Supabase anonymous auth** — it keeps the
+      no-email rule, gives RLS a real `auth.uid()`, and is the same work that
+      unblocks server-side progress.
+- [ ] ⚠️ **Section ids move when a step is split, and comments key on them.**
+      Session 33 split nine TM steps into eighteen; every one of those changed
+      the ids a comment would have hung off. `seed:course` already compares the
+      old and new section lists on each publish, so it should **refuse to
+      publish, or warn**, when a section carrying comments disappears. Decide
+      this *before* the first real comment exists. Full write-up in §6 of
+      `COMMENTS-PLAN.md`.
+- [ ] **Comments are in the right panel, and on a phone that is a drawer behind
+      a button.** The owner chose this over the inline placement after hearing
+      the argument for inline. Worth revisiting once comments are real: being
+      behind a button is the difference between seeing that four people found a
+      section hard and never knowing.
+- [ ] **Four new step rules are unpaid.** `S-9` (nest the nav tree), `C-8`
+      (steps flow into each other), `W-14` (the opening must be worth reading),
+      `W-15` (readable at every level) → debt **D-6/D-7/D-8**. D-6 is the cheap
+      one and the most visible: measured on the day, of eight top-level groups
+      **one reaches depth 3, four sit at depth 2, three are flat**.
+
 **From session 32 (2026-08-02, the domain + shareable links) — DO THESE FIRST,
 they are the only things standing between here and a link in a WhatsApp group:**
-- [ ] **Add `booklesss.app` in Vercel → Settings → Domains** and set it as the
-      production domain, then point the registrar's DNS as Vercel instructs.
-      Nothing in the repo changes: `metadataBase` reads
-      `VERCEL_PROJECT_PRODUCTION_URL`, so the previews follow the production
-      host on the next deploy either way.
-- [ ] **Deploy.** Until this ships, no link previews at all — the tags don't
-      exist on the live site yet. After it ships they work on
-      `booklesss.vercel.app` immediately, so the domain is not a blocker to
-      testing, only to the link looking right.
+- [x] ~~**Add `booklesss.app` in Vercel → Settings → Domains**~~ → ✅ **done and
+      verified live 2026-08-02 (session 33).** `https://www.booklesss.app/treasury-management`
+      returns 200 with the full OG block, `og:image` at
+      `/og/treasury-management.png` returns 200 `image/png`, and the apex
+      308-redirects to `www`. **A link is shareable right now.**
+- [x] ~~**Deploy.**~~ → ✅ shipped; the tags are on the live site.
 - [ ] **Test the preview by messaging yourself first, not the group.** WhatsApp
       caches a preview against its URL and may never fetch it twice — a bad
       first fetch is the one 40 people keep seeing.
@@ -448,7 +480,90 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 
 ## Session Log
 
-### Session 2026-08-02 (session 33 — nine steps become eighteen, and a deferral becomes a rule)
+### Session 2026-08-02 (session 34 — the row keeps changing its mind, and a plan instead of a feature)
+
+Local session on `main`, run alongside session 33 in the same OneDrive tree —
+both machines editing the same files, which is most of what went wrong and is
+recorded below. Six commits of mine: `30f467c`, `71756e2`, `08d1d4b`, `57fdf08`,
+`e2b4d4d`, `059635f`, `cb3e8a9`.
+
+**Done:**
+- **A step opens with air above its title.** `py-10` gave the title 40px under
+  the surface top while the home greeting had 112px, so it sat almost against
+  the header. Now `pb-10 pt-24`.
+- **The checkpoint faces swapped** so the smiling face is the outermost mark on
+  the right, reading worst-to-best towards the edge.
+- **Comments: built inline, then moved to the right panel, then the whole thing
+  stopped and scoped instead.** The bubble sat in the checkpoint row for one
+  revision; the owner called it "that extra icon" and moved commenting under the
+  table of contents. The composer binds to whatever section the panel's
+  scroll-spy says is on screen, so it follows the reading and re-labels itself.
+- **`platform/COMMENTS-PLAN.md`** — the owner picked "scope the backend first"
+  over building more front. Identity model (recommending Supabase anonymous
+  auth), schema, RLS, rate limits in the database, moderation, a six-phase
+  order, and the section-id migration hazard.
+- **Callouts say what kind of container they are.** `CALLOUT_KINDS` in
+  `lib/course.ts`, `CALLOUTS` in `LessonView.tsx`, a `seed:course` guard that
+  refuses an unknown kind. Shipped as MynaUI hairline + word, then moved to
+  **Solar Duotone at 22px with the word removed** on the owner's call — the
+  reader's third Solar surface, and `CLAUDE.md` updated because it said flatly
+  "the reader draws no Solar".
+- **Source chips quietened, three times.** White pill with border and shadow at
+  15px → flat `#eeeeec` at 12.5px → 11px text, 12px favicon, `#f6f6f5`.
+- **Four rules promoted from the owner's wrap message**, with debt opened for
+  each: **S-9** nest the nav tree, **C-8** steps flow into each other, **W-14**
+  the opening must be worth reading, **W-15** readable at every level.
+  Engagement pass went from seven checks to ten.
+
+**What Worked:**
+- **Checking the live site instead of trusting the log.** "Can I share a link?"
+  was answered by fetching `www.booklesss.app` — 200, full OG block, and the
+  `og:image` itself 200 `image/png`. The "DO THESE FIRST" list in this file was
+  already done. Two minutes of fetching retired four checkboxes.
+- **Letting the linter find a real bug.** `react-hooks/set-state-in-effect`
+  rejected reading localStorage in an effect; fixing it properly meant moving
+  `step-comments.ts` onto `useSyncExternalStore` like `progress.tsx` and
+  `identity.tsx`. The version that would have shipped had a hydration flash.
+- **`git diff --stat` on each shared file before committing it**, to see whose
+  changes were actually in it. That is what caught `Checkpoint.tsx` carrying the
+  other session's `ShareButton` import.
+- **Splitting the commit around a blocker rather than waiting or barging.** The
+  callout work was cleanly mine and shipped; the comments work sat until the
+  other session's `ShareButton.tsx` was committed, then went up 20 minutes later.
+
+**Dead Ends (do not retry):**
+- **Deleting `.next` to test a build failure without checking for a running
+  build first.** The other session was mid-`next build` in the same directory;
+  its build died and had to be re-run. The failure I was chasing
+  (`ReferenceError: ShareButton is not defined` during prerender) was *caused*
+  by the two concurrent builds, not by any code — a plain retry passed. **Two
+  sessions cannot share one `.next`.** `next build` does hold a lock and says
+  so ("Another next build process is already running") — read that message
+  before touching the directory.
+- **Committing a shared file because your own diff in it is clean.**
+  `Checkpoint.tsx` typechecked and built fine with the other session's
+  `ShareButton` import in it, because `ShareButton.tsx` existed **on disk**. It
+  was untracked. Committing that file alone would have pushed an import to a
+  file not in the repo and failed the Vercel build. `git status` for untracked
+  dependencies, not just `git diff` for content.
+- **Starting a dev server to show the owner a change.** They were already
+  reading the live site on their phone. Push and let Vercel do it.
+- **Guessing which container "a container like this" meant.** Two edits went
+  into the callout before a screenshot showed the ask was about source chips.
+  One image would have saved both.
+
+**Flags:**
+- ⚠️ **`linear-server` unauthorized — 11th consecutive session.** Nothing filed;
+  the backlog could not be reconciled, so the briefing at session start was
+  labelled unreconciled.
+- ⚠️ **The reader now has two label-less controls** — the checkpoint row and the
+  callout marks — both on the owner's explicit call, both unproven on a real
+  first-time reader.
+- ⚠️ **Section ids move when steps split, and comments will key on them.**
+  Session 33 split nine TM steps into eighteen. See the Next Session list.
+- `Booklesss Bucket/` still holds the one unfiled webp (**9th session**).
+
+
 
 > Numbered 33, not 32, because a parallel session on the other machine claimed
 > 32 for the domain-and-sharing work while this one was running. Both are
