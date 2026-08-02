@@ -80,7 +80,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Fund a permanent part of your asset base with debt you have to renew every ninety days and you have chosen the cheapest money available and the most exposed. **That is a policy, whether or not anybody wrote it down.**",
+          text: "A permanent part of your asset base, funded with debt you have to renew every ninety days. That is the cheapest money on the table, and it is also the most fragile. **It is a policy too, whether or not anybody wrote it down.**",
         },
         {
           type: "p",

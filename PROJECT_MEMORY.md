@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-02 (session 31)
+**Last updated:** 2026-08-02 (session 33)
 
 ---
 
@@ -167,13 +167,57 @@ What it touches, and the traps in each:
   Read the whole list before shipping it: an icon whose name is unflattering
   in English or in Zambia becomes somebody's identity in a study group.
 
+**From session 33 (2026-08-02, Treasury Management end to end):**
+- [ ] **`gen-favicons.mjs` cannot take a 15.4KB `.ico`, and it costs a real
+      source.** The cap is 12KB and the Bank of Zambia publishes only a
+      multi-size `.ico`, so `siteFor()` returns null, no chip renders, and the
+      link is unreachable. `boz.zm/national-payment-systems.htm` is live,
+      verified and ideal for the Zambian payment systems section; it was cut
+      rather than shipped invisible. Fix by teaching the generator to pull one
+      frame out of an `.ico` and downscale it. **Do not raise MAX_BYTES** — that
+      lets every bloated icon into a client component.
+- [ ] **`inventory-and-creditors` is now inventory only.** Creditors moved to
+      `ordering-and-paying-suppliers` in the split and the slug stayed, because
+      S-8 keeps the existing URL on the first part. Title and sidebar label both
+      say "Inventory". Rename only if you are willing to break the old link.
+- [ ] **24 of ~60 plausible Corporate Finance Institute URLs are dead 404s.**
+      `/accounting/baumol-model/`, `/derivatives/forward-rate-agreement/`,
+      `/economics/settlement-risk/` and 21 others all look right and all 404.
+      **Curl every URL before writing it into a step** (C-7 says so; this is the
+      measurement behind it). The ~35 that verified are in the TM steps already.
+- [ ] **One file has been sitting in `Booklesss Bucket/` since 31 July** —
+      `original-ad190f2d228041cce3aba7da32fe7a94.webp`, 109KB, an image with an
+      opaque name. Not filed, because filing it anywhere would be a guess. Say
+      what it is and it takes ten seconds.
+- [ ] **Nothing has read the split steps on a phone.** The reader was verified on
+      a real phone at session 29 and found four defects a clean build called
+      fine. Eighteen steps have changed shape since. **The reading is different
+      now** — more, shorter steps and more sidebar rows in every lesson.
+- [ ] **Callouts and cards now set Satoshi Medium throughout** (owner's call at
+      the end of s33). It was checked in the built HTML but **not on a phone**,
+      and it changes the colour of every boxed sentence in all four courses at
+      once. If it reads heavy at phone size, the dial is the weight, not the
+      face.
+- [ ] **One sentence was caught by the owner reading it live, not by any check
+      that ran.** WC policy §2 opened "Fund a permanent part of your asset base
+      … and you have chosen the cheapest money available and the most exposed" —
+      an imperative finishing as a statement, with a pair that is not parallel
+      (a thing and a state). Fixed. **Nothing in the measure script, the seed
+      validator or the cold-open scan can see a sentence that parses and does
+      not mean anything.** The other three "and you have" constructions in the
+      course were checked by hand and are sound.
+
 **From session 31 (2026-08-02, reader + settings):**
-- [ ] **Decide whether callouts and cards are "containers".** The owner's rule
-      is that a step's *reading* is Aptos and what sits *in containers* is
-      Satoshi. Applied to source chips, the tap-to-define popup, the section
-      note menu and table column headings. **Callouts, cards and table cells
-      were left as Aptos** because they hold sentences rather than framing
-      them; that was my call, not theirs, and it is one word to change.
+- [x] ~~**Decide whether callouts and cards are "containers".**~~ → ✅ decided
+      2026-08-02 (s33), by the owner, reading it live: **"in the containers with
+      key point and that you've moved the font back to Aptos, keep it as Satoshi
+      Medium."** They are containers all the way through, body as well as label.
+      Leaving the bodies in Aptos was my call and it was wrong: **a box lifted
+      off the page to be remembered is not the reading**, and in the reading face
+      it read as one more paragraph that happened to have a border. Card titles
+      keep `font-semibold`; everything else in a container is
+      `font-container font-medium`. **Table cells stay Aptos** — they are still
+      the reading. Recorded in `.claude/CLAUDE.md`.
 - [ ] **`/settings` is a replica, not the app's settings.** It reproduces the
       reference dialog whole (12 tabs, Voice, Notifications and all) on its own
       bare route, the way `/workspace` does. The reader's real settings are
@@ -220,15 +264,22 @@ What it touches, and the traps in each:
       so a screen reader and a desktop hover are fine — it is the phone-only
       reader who has no way to find out. First real students are the test; if
       they hesitate, put the words back.
-- [ ] **Pay D-5 on contact.** 37 definitional tables across the three courses
-      are 2-4 rows and should be `cards`. One converted. Do NOT batch these:
-      the job is choosing three marks on a shared axis, and 37 rows of
-      unrelated pictures would be worse than the tables. Candidates:
+- [ ] **D-5 is BLOCKED, not just unpaid** → updated 2026-08-02 (s33). 37
+      definitional tables are 2-4 rows and should be `cards`, one converted. The
+      blocker is now known and it is not the tables: **`card-glyphs.tsx` holds
+      three marks and they are all one axis** (chess / calendar / checklist =
+      time horizon), so only time-horizon sets can convert. Four TM candidates
+      came up and none did; the working-capital policy tables are risk appetite.
+      **Unblocking needs the Streamline MCP** for a second and third axis (risk
+      appetite, cost-against-control would cover most of the 36). Candidates:
       `node .claude/skills/step-skill/tools/table-scan.mjs Schools`
-- [ ] **Pay D-4's unscanned half.** The cold-open scan is clean on
-      device-narration and unresolvable references (baseline 2 of 218, both
-      false positives), but "no word the reader has not met" needs judgement
-      and was never checked on the other 43 steps.
+- [x] ~~**Pay D-4's unscanned half** on all 44 steps~~ → **21 of 53 done**
+      2026-08-02 (s33): every TM section opening read cold by hand against all
+      four bans. **32 left (25 CF, 7 SM).** It found three real defects the
+      scanner passes clean, and all three were **created by the split** — a rate
+      derived in the other half, a pointer to "the previous step", a case told
+      in another lesson. That is the fourth ban's whole population: **splitting
+      is what makes it.**
 - [ ] `card-glyphs.tsx` is **35KB of path data in a client component**, so all
       three Freehand marks ship to every reader whether their step draws them
       or not. Fine at three; if the set grows, put it behind `next/dynamic`
@@ -247,24 +298,47 @@ What it touches, and the traps in each:
 - [ ] **Nothing sends the section notes anywhere.** `lib/step-notes.ts` collects
       them per device under one key with `allNotes()` ready; decide where they
       go when accounts return.
-- [ ] Pay down **D-1/D-2/D-3** on contact: 41 of 44 steps still have no bold, no
-      tappable terms, no sources and 154 em dashes between them. `seed:course`
-      now reports the em-dash count every run, so the number is the progress bar.
-- [ ] The three split TM steps are the only ones split. **S-8 across the other
-      four TM lessons and the other two courses** is the expensive part of D-3.
+- [ ] Pay down **D-1/D-2/D-3**: **all of Treasury Management is done** (2026-08-02,
+      s33 — 21 of 53 steps). **32 left: Corporate Finance 25, Strategic
+      Management 7.** They still have no bold, no tappable terms, no sources, and
+      the em dashes between them are what `seed:course` counts every run, so that
+      number is the progress bar. TM went 382 → 0.
+- [x] ~~S-8 across the other four TM lessons~~ → ✅ **the whole of TM is split**
+      (2026-08-02, s33): nine five- and six-section steps became eighteen of two
+      to four. **Section count unchanged at 57**, so nothing was cut, and every
+      original slug stayed on the first part so no URL broke. **S-8 now says
+      never defer a split** (owner's ruling, in `RULES.md` and `LOG.md`) — the
+      URL and manifest churn is the cost of the fix, not a reason to schedule it.
+      `DEBT.md` D-3's old "worth doing deliberately per lesson" line is struck.
+- [ ] **S-8 across Corporate Finance and Strategic Management** is what remains,
+      and it is now the larger half: 32 steps, none of them split.
 
 **⚠️ Two machines are working this repo through OneDrive (session 26).** `.git`
 itself is inside the synced folder, so the other machine's index and commits
 land in this working copy mid-session — staged files were swallowed into a
 commit whose message describes different work, and pushed before this session
 committed anything. Until that is resolved, stage and commit in one command.
+
+> **It happened again, visibly, on 2026-08-02 (s33), and there is now a working
+> answer.** The tree was clean at session start and by the end carried an entire
+> share / link-preview / OG feature that belonged to the other machine, which
+> committed and pushed `e2b4d4d` mid-session. **`git commit --only -- <paths>`
+> is the move** — it snapshots exactly the paths named whatever the shared index
+> holds, where `git add` then `git commit` is a race. Both sessions also
+> numbered themselves 32 in this file, and both edited it. **Read
+> `PROJECT_MEMORY.md` fresh before editing it, not from the copy you loaded at
+> the start of the session.**
+
 - [ ] **Move the repo out of OneDrive** (clone to a local path, sync via GitHub)
-      — or stop working it from two machines at once.
+      — or stop working it from two machines at once. **This is now the oldest
+      unfixed hazard in the file and it costs something every session.**
 - [ ] Commit `dc6098e` carries a stray `@` on its first and last line (a shell
       quoting slip). Fixing it needs `--amend` + force-push, so only do it when
       the other machine is definitely idle. Cosmetic; safe to leave.
-- [ ] **File this session in Linear** — `linear-server` wasn't authorized, so
-      nothing from sessions 23–28 is on the board. **Eighth session running.**
+- [ ] **File these sessions in Linear** — `linear-server` still unauthorized, so
+      nothing from sessions 23–33 is on the board. **Ninth session running.**
+      It needs an interactive session to run the OAuth flow; pick the
+      **Booklesss** workspace, not Khadzika.
 
 **Identity + `/workspace` follow-ups (session 26):**
 - [ ] Identity is device-local only. `Identity.id` exists for a future sync;
@@ -373,6 +447,91 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-02 (session 33 — nine steps become eighteen, and a deferral becomes a rule)
+
+> Numbered 33, not 32, because a parallel session on the other machine claimed
+> 32 for the domain-and-sharing work while this one was running. Both are
+> 2026-08-02. See the Flags below.
+
+**Done:**
+- Ran **step-skill** over the whole of Treasury Management. The three
+  `treasury-operations` steps were already paid; the other **nine were still
+  pre-rule** and are now eighteen. Course is **21 steps, 57 sections**. Pushed
+  as `8c4f54f`, so it is live.
+- **Split (S-8).** Every one of the nine was five or six sections. Section count
+  across the course is **unchanged at 57**, which is the proof the seams moved
+  and nothing was cut. Every original slug stayed on the first part of its pair,
+  so **no URL that existed has broken.**
+- **Paid D-1, D-2, D-3 and D-4 across all 21 steps.** 382 em dashes → 0 (W-11).
+  Longest sentence 91 words → 35 (W-12). 0 bold / 0 tappable terms / 0 source
+  links → **159 / 49 / 70**. Exam framing gone from every step that had it (W-9).
+- Corrections recorded in step headers (E-7): the **Miller-Orr working** printed
+  a garbled line with the cube root never evaluated (it is 2,466, so Z = 7,398,
+  and the lecture's 7,400 stands); the **TMS close** claimed the course was ten
+  steps and listed its lessons, wrong on the count and breaking S-6.
+- Updated `_course.md`, four `lesson.md` files, `reader/course.mjs`, and the
+  `DEBT.md` ledger (counts moved 44 → 53 steps).
+
+**What Worked:**
+- **The owner overruling a deferral mid-turn, and it going straight into the
+  skill.** I had decided to do the quality pass and schedule the S-8 splits
+  separately, because splitting churns URLs, the manifest and the debt lists.
+  The owner's answer: *"if a step is too long, that's a very big problem, and
+  splitting it is the only solution… you can split it and then deal with the
+  links changing and everything."* Written into **S-8's first bullet, "never
+  defer a split"**, before any more steps were touched.
+- **`seed-course.mjs` earned its keep.** It refused to write and listed **10
+  places** where a link or term sat inside `**bold**` and would have rendered as
+  raw syntax. That is a failure with no visible symptom until a student sees it.
+- **Measuring instead of eyeballing.** A throwaway script over every `.mjs`
+  (sections, em dashes, bold, terms, links, `your` density, longest sentence,
+  runs of three long `p` blocks) turned "this feels weaker" into a ranked table
+  and, at the end, into proof. It has to resolve the marks first: counting
+  `[[term|definition]]` raw made every sentence containing one look 40 words long.
+- **Verifying URLs before writing them in.** **24 of ~60 plausible CFI URLs are
+  dead 404s** (`/accounting/baumol-model/`, `/derivatives/forward-rate-agreement/`,
+  `/economics/settlement-risk/`). Guessing the pattern would have shipped a third
+  of the links broken.
+- **Re-reading every opening cold after the split.** Caught three cross-step
+  references *created by splitting* that `cold-open-scan.mjs` passes clean,
+  because none is a pattern a machine can match. This is D-4's fourth ban and
+  **every instance was made by a split**, exactly as the ledger predicted.
+- **Checking the built HTML with `<script>` stripped**, not the source. 21 pages,
+  no literal `**`, `[[` or `](http`, no em dashes.
+
+**Dead Ends (do not retry):**
+- **D-5 (tables → `cards`) cannot progress on the current glyph set.**
+  `card-glyphs.tsx` holds three marks and they are all one axis: chess, calendar,
+  checklist = time horizon. Four candidates came up in TM and none converted, the
+  working-capital policy tables being risk-appetite. E-9 is explicit that a row of
+  unrelated pictures is worse than the table, so **declining was correct.** It
+  needs the Streamline MCP for a second axis; that connector was unauthorized.
+- **The Bank of Zambia cannot be a source until `gen-favicons.mjs` can downscale
+  an `.ico`.** `boz.zm/national-payment-systems.htm` is live and ideal for the
+  Zambian payment systems section, but the bank publishes only a **15.4 KB
+  multi-size `.ico`** and the generator caps a mark at 12 KB. No favicon means
+  `siteFor()` returns null, means no chip, means the reader cannot reach it. The
+  link was cut rather than shipped invisible. Do not "fix" this by raising
+  MAX_BYTES — that lets every bloated ico into a client component.
+- **`bankofzambia.zm` does not resolve** (curl 000). The live domain is `boz.zm`.
+  `gen-favicons.mjs`'s NAMES table had the dead one; corrected.
+- Single-asterisk `*italic*` renders as literal asterisks — the reader has three
+  inline marks and italic is not one. Three had crept into new drafts and were
+  caught by grep, not by the seed validator, which does not check for it.
+
+**Flags:**
+- ⚠️ **Two sessions were live in this working tree at once, and it was visible.**
+  The tree was clean at session start; by the end it carried a whole share /
+  link-preview / OG feature that was not mine, and `.claude/CLAUDE.md` had grown a
+  section about the `booklesss.app` domain. The other session committed and pushed
+  as `e2b4d4d` mid-way. **Committed with `git commit --only -- <paths>`**, leaving
+  `StudentDashboard.tsx` dirty because it is theirs and mid-edit. `git add -A`
+  would have swept and deployed someone's half-finished work.
+- **Linear was unauthorized again — ninth session running.** Nothing from
+  sessions 23–32 is on the board.
+
+---
 
 ### Session 2026-08-02 (session 31 — the phone keeps winning, and "copy this" means copy it)
 
