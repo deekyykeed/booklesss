@@ -14,25 +14,35 @@ import { OTHER_SCHOOL, schoolById, type SchoolChoice } from "@/lib/schools";
 /* ------------------------------------------------------------------ *
  * Settings — what tapping the profile picture opens.
  *
- * The first visit asks its questions as a wizard, one screen at a time, and
- * that is the right shape for a form somebody is filling in once. Coming back
- * to change one answer is the opposite job: you know which thing you want, and
- * everything else should stay out of the way. So this is a settings sheet —
- * tabs across the top, one row per answer, each row opening onto the same
- * picker the wizard used.
+ * Built to a measured spec of Claude's own settings dialog (owner, 2026-08-02,
+ * read off its computed styles). Every number below is that spec, not a
+ * judgement, so treat them as fixed unless a newer measurement replaces them:
  *
- * Laid out against Claude's own settings dialog (owner's reference, 2026-08-02),
- * which is worth naming because three of its choices are what changed here:
+ *   dialog     12px radius, white, max-width 671px, 16px from the viewport,
+ *              layered shadow (a 1px border-like ring plus two soft drops)
+ *              rather than a border
+ *   base       14px / 20px, sans, INK
+ *   h2         22px / 28px, weight 580
+ *   tabs       14px / 20px, weight 500, padding 0 12px. Active is INK, inactive
+ *              is MUTED. No pill, no underline — colour is the whole signal.
+ *   h3         15px / 20px, weight 580
+ *   labels     14px / 20px, weight 400, 12px vertical padding
+ *   inputs     14px / weight 400, radius 8px, background rgba(255,255,255,.5),
+ *              padding 0 12px (single line) or 8px 12px (textarea)
+ *   helpers    14px / weight 400, MUTED — the same grey as an inactive tab
+ *   toggles    36×20, 2px padding, pill, track ACCENT when on
  *
- *   1. Section headings are BIG and sentence case ("Profile", "Reading"), not
- *      tiny uppercase eyebrows. An eyebrow is a label on a form; a heading is a
- *      place in a document, and a settings panel is read by scanning for the
- *      place, not by reading the labels.
- *   2. A row is a title with a grey sentence under it, not a bare label. The
- *      sentence is where a setting says what it costs you, which is the only
- *      thing that makes it answerable.
- *   3. The header is a band in its own colour with the tabs inside it, so the
- *      thing that stays put while you scroll looks like it stays put.
+ * Three colours do all of it: INK for anything primary, MUTED for anything
+ * de-emphasised, ACCENT only for a toggle that is on.
+ *
+ * Two places the spec is honoured rather than followed to the letter:
+ *   - The typeface is Anthropic Sans, which we don't have. The app's own sans
+ *     (Inter, via --font-sans) sits in the same slot in the same fallback
+ *     stack, so it takes the spec's place.
+ *   - "No visible border stroke" on the inputs is literally true, but a
+ *     half-transparent white field on a white panel is invisible, and the
+ *     reference clearly draws an edge. It is a 1px inset ring instead — the
+ *     same trick the spec describes for the dialog's own border.
  *
  * Nothing here has a Save button. Every change is written the moment it's made
  * (see save()), because all of it is one localStorage record — there is no
@@ -43,13 +53,16 @@ import { OTHER_SCHOOL, schoolById, type SchoolChoice } from "@/lib/schools";
  * keystroke, because an empty name is how the app decides nobody has
  * introduced themselves — saving mid-backspace would reopen the wizard over
  * the top of this sheet.
- *
- * What is deliberately NOT here, because the reference has it and this app has
- * nothing to put behind it: Appearance (there is no dark theme — one would be
- * a real piece of work, not a switch), Voice, and Notifications (no push, no
- * email, no account to send either to). A settings panel of switches that do
- * nothing is worse than a short one.
  * ------------------------------------------------------------------ */
+
+/** The reference palette, kept local: these are that dialog's colours, not
+ *  Booklesss tokens, and they should not leak into the rest of the app. */
+const INK = "rgb(11,11,11)";
+const MUTED = "rgb(137,135,129)";
+/** Only ever a toggle that is on. Nothing in this app is boolean yet. */
+const ACCENT = "rgb(42,120,214)";
+/** Stands in for the spec's "no border" on fields the eye still needs to find. */
+const RING = "inset 0 0 0 1px rgba(11,11,11,0.10)";
 
 const TABS = ["general", "plan", "privacy"] as const;
 type Tab = (typeof TABS)[number];
@@ -169,7 +182,9 @@ export function SettingsSheet() {
     /* Tapping the dimmed area closes it, which is what everyone tries first;
        the X and Escape were the only ways out. `target === currentTarget` so a
        drag that starts inside the panel and releases over the backdrop, or a
-       tap on any child, doesn't count as tapping outside. */
+       tap on any child, doesn't count as tapping outside.
+
+       p-4 is the spec's 16px inset from the viewport. */
     <div
       className="fixed inset-0 z-[100] grid items-start justify-items-center overflow-y-auto bg-black/25 p-4 backdrop-blur-[2px] sm:items-center"
       onClick={(e) => {
@@ -179,37 +194,60 @@ export function SettingsSheet() {
       aria-modal="true"
       aria-labelledby="settings-title"
     >
-      <div className="squircle flex max-h-[92dvh] w-full max-w-[440px] flex-col overflow-hidden rounded-[24px] border border-[#e7e7e6] bg-white shadow-[0_2px_4px_-2px_rgba(0,0,0,0.12),0_24px_48px_-12px_rgba(0,0,0,0.18)]">
-        {/* The header is its own band, a shade warmer than the panel, with the
-            tabs inside it and one rule along the bottom. Only the panel under
-            it scrolls, and the colour change is what makes that legible: a
-            white bar over a white sheet reads as page, not as chrome. */}
-        <div className="shrink-0 border-b border-[#ececeb] bg-[#fbfbfa] px-5 pb-3.5 pt-5">
-          <div className="flex items-center justify-between gap-3">
-            <h2 id="settings-title" className="font-display text-[24px] font-medium tracking-[-0.02em] text-ink">
+      {/* 12px radius, white, max-width 671, and a layered shadow standing in
+          for a border: a 1px ring plus two soft drops. No `squircle` here —
+          the reference draws a plain rounded rectangle. */}
+      <div
+        className="flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-[12px] bg-white"
+        style={{
+          maxWidth: 671,
+          fontFamily: "var(--font-sans)",
+          fontSize: 14,
+          lineHeight: "20px",
+          color: INK,
+          boxShadow:
+            "0 0 0 1px rgba(11,11,11,0.06), 0 8px 24px -8px rgba(0,0,0,0.10), 0 24px 48px -12px rgba(0,0,0,0.16)",
+        }}
+      >
+        {/* Title and tabs stay put; only the panel under them scrolls. */}
+        <div className="shrink-0 px-5 pt-5">
+          <div className="flex items-start justify-between gap-3">
+            <h2
+              id="settings-title"
+              style={{ fontSize: 22, fontWeight: 580, lineHeight: "28px", color: INK }}
+            >
               Settings
             </h2>
             <button
               type="button"
               onClick={() => setOpen(false)}
               aria-label="Close settings"
-              className="grid h-8 w-8 place-items-center rounded-full text-ink transition-colors hover:bg-[#efefed]"
+              className="grid h-7 w-7 place-items-center rounded-[8px] bg-transparent transition-colors hover:bg-[rgba(11,11,11,0.05)]"
+              style={{ color: INK }}
             >
-              <MynaIcon name="x" size={20} strokeWidth={1.6} />
+              <MynaIcon name="x" size={18} strokeWidth={1.6} />
             </button>
           </div>
 
-          <div className="mt-3.5 flex gap-1">
+          {/* Tabs scroll sideways rather than wrapping: the reference carries a
+              dozen of them on one line, and three that reflow onto two rows
+              would move the panel under them every time one is added. */}
+          <div role="tablist" className="no-scrollbar mt-3 flex overflow-x-auto">
             {TABS.map((t) => (
               <button
                 key={t}
                 type="button"
+                role="tab"
+                aria-selected={tab === t}
                 onClick={() => setTab(t)}
-                aria-pressed={tab === t}
-                className={
-                  "squircle rounded-xl px-3.5 py-1.5 text-[15px] transition-colors " +
-                  (tab === t ? "bg-[#eeeeec] font-semibold text-ink" : "text-muted hover:text-ink")
-                }
+                className="shrink-0 bg-transparent transition-colors"
+                style={{
+                  fontSize: 14,
+                  fontWeight: 500,
+                  lineHeight: "20px",
+                  padding: "0 12px",
+                  color: tab === t ? INK : MUTED,
+                }}
               >
                 {TAB_LABEL[t]}
               </button>
@@ -217,7 +255,7 @@ export function SettingsSheet() {
           </div>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-6">
+        <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-6 pt-1">
           {tab === "general" && (
             <>
               <Heading>Profile</Heading>
@@ -226,7 +264,7 @@ export function SettingsSheet() {
                 label="Picture"
                 onClick={() => setSection(section === "avatar" ? null : "avatar")}
                 expanded={section === "avatar"}
-                control={<Avatar id={identity.avatar} size={34} />}
+                control={<Avatar id={identity.avatar} size={28} />}
               />
               {section === "avatar" && (
                 <Panel>
@@ -246,7 +284,15 @@ export function SettingsSheet() {
                     onKeyDown={(e) => e.key === "Enter" && (e.target as HTMLInputElement).blur()}
                     maxLength={40}
                     aria-label="Your name"
-                    className="squircle h-11 w-[170px] rounded-xl border border-[#e0e0dd] bg-white px-3.5 text-[16px] text-ink outline-none transition-colors focus:border-ink"
+                    className="h-9 w-[180px] rounded-[8px] border-0 outline-none"
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 400,
+                      color: INK,
+                      background: "rgba(255,255,255,0.5)",
+                      padding: "0 12px",
+                      boxShadow: RING,
+                    }}
                   />
                 }
               />
@@ -341,27 +387,29 @@ export function SettingsSheet() {
           {tab === "privacy" && (
             <>
               <Heading>What this device knows</Heading>
-              <p className="text-[15px] leading-[26px] text-muted">
+              <Note>
                 Your name, picture, university, courses and everything you’ve read are kept in this
                 browser and nowhere else. There is no account, no email address and no password —
                 which also means clearing your browser data clears all of it, and another device
                 starts from nothing.
-              </p>
+              </Note>
 
               <Heading>Start over</Heading>
-              <p className="mb-3 text-[15px] leading-[26px] text-muted">
+              <Note>
                 Erases your details and every section you’ve marked, then starts the app fresh.
                 {confirmWipe ? " This can’t be undone." : ""}
-              </p>
+              </Note>
               <button
                 type="button"
                 onClick={forget}
-                className={
-                  "squircle w-full rounded-xl border px-3.5 py-3 text-left text-[15px] font-medium transition-colors " +
-                  (confirmWipe
-                    ? "border-danger bg-white text-danger"
-                    : "border-[#e0e0dd] bg-white text-ink hover:bg-[#fafafa]")
-                }
+                className="mt-3 w-full rounded-[8px] border-0 px-3 py-2.5 text-left transition-colors"
+                style={{
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: confirmWipe ? "var(--color-danger)" : INK,
+                  background: "rgba(255,255,255,0.5)",
+                  boxShadow: confirmWipe ? "inset 0 0 0 1px var(--color-danger)" : RING,
+                }}
               >
                 {confirmWipe ? "Tap again to erase everything" : "Forget this device"}
               </button>
@@ -373,31 +421,41 @@ export function SettingsSheet() {
   );
 }
 
-/** A place in the panel. Big and sentence case: this is what someone scans for
- *  when they open settings knowing roughly what they came to change. */
+/** Section heading. 15px / 580 / 20px, per the spec. */
 function Heading({ children }: { children: React.ReactNode }) {
-  return <h3 className="mb-1 mt-7 text-[19px] font-semibold tracking-[-0.01em] text-ink">{children}</h3>;
+  return (
+    <h3 className="mb-1 mt-5" style={{ fontSize: 15, fontWeight: 580, lineHeight: "20px", color: INK }}>
+      {children}
+    </h3>
+  );
+}
+
+/** Helper text: the same grey as an inactive tab, which is the spec's one rule
+ *  about secondary text — it is all the same grey, everywhere. */
+function Note({ children }: { children: React.ReactNode }) {
+  return (
+    <p style={{ fontSize: 14, fontWeight: 400, lineHeight: "20px", color: MUTED }}>{children}</p>
+  );
 }
 
 /** The right-hand side of a row when it only reports a value. */
 function Value({ children }: { children: React.ReactNode }) {
-  return <span className="text-[16px] text-ink">{children}</span>;
+  return <span style={{ fontSize: 14, fontWeight: 400, color: INK }}>{children}</span>;
 }
 
 /**
- * One setting: what it is on the left, the control on the right.
+ * One setting: what it is on the left, the control on the right. 14px regular
+ * label, 12px of padding above and below, per the spec.
  *
- * `note` is the grey sentence under the title, and it is the point of this
- * shape — "Motion" alone is a word, "the colours behind the page drift
- * constantly" is a thing you can have an opinion about. Rows that open onto a
- * picker are buttons and carry a caret; rows holding their own control are not,
- * because a button wrapping an input eats the input's taps.
+ * Rows that open onto a picker are buttons and carry a caret; rows holding
+ * their own control are not, because a button wrapping an input eats the
+ * input's taps.
  *
  * `stack` puts the control on its own line under the text. Side by side is
  * right for a short value ("ZCAS", "2 of 3"); it is wrong for a control wide
  * enough to squeeze the note into a column four words across, which is what a
- * two-option segmented does on a 390px phone. The reference dialog has this
- * exact problem on its own Motion row, so it is not a rule worth copying.
+ * two-option segmented does on a 390px phone. The reference has this exact
+ * problem on its own Motion row, so it is not worth copying.
  */
 function Row({
   label,
@@ -416,8 +474,14 @@ function Row({
 }) {
   const text = (
     <span className="min-w-0 flex-1">
-      <span className="block text-[16px] text-ink">{label}</span>
-      {note && <span className="mt-0.5 block text-[14px] leading-[22px] text-muted">{note}</span>}
+      <span className="block" style={{ fontSize: 14, fontWeight: 400, lineHeight: "20px", color: INK }}>
+        {label}
+      </span>
+      {note && (
+        <span className="mt-0.5 block" style={{ fontSize: 14, fontWeight: 400, lineHeight: "20px", color: MUTED }}>
+          {note}
+        </span>
+      )}
     </span>
   );
 
@@ -425,7 +489,7 @@ function Row({
     <span className="flex shrink-0 items-center gap-2">
       {control}
       {onClick && (
-        <span className={"shrink-0 text-muted transition-transform " + (expanded ? "rotate-180" : "")}>
+        <span className={"shrink-0 transition-transform " + (expanded ? "rotate-180" : "")} style={{ color: MUTED }}>
           <MynaIcon name="chevron-down" size={16} />
         </span>
       )}
@@ -433,7 +497,7 @@ function Row({
   );
 
   const body = stack ? (
-    <span className="flex w-full flex-col gap-3">
+    <span className="flex w-full flex-col gap-2.5">
       {text}
       <span className="flex justify-start">{right}</span>
     </span>
@@ -444,7 +508,7 @@ function Row({
     </>
   );
 
-  const className = "flex w-full items-center justify-between gap-4 border-b border-[#ececeb] py-4 text-left";
+  const className = "flex w-full items-center justify-between gap-4 py-3 text-left";
 
   return onClick ? (
     <button type="button" onClick={onClick} aria-expanded={expanded} className={className}>
@@ -455,8 +519,16 @@ function Row({
   );
 }
 
-/** Two or three mutually exclusive choices, shown at once. A white pill rides
- *  over a grey track, so the chosen one reads as raised rather than tinted. */
+/**
+ * Two or three mutually exclusive choices, shown at once.
+ *
+ * The spec measures toggles (36×20, pill, ACCENT when on) but not this, because
+ * the reference's only boolean rows are notifications — and this app has no
+ * push, no email and no account to send either to, so it has no boolean row to
+ * put a toggle on. Motion is a three-state idea collapsed to two (follow the
+ * device, or hold still here), which is a segmented, not a switch. Built in the
+ * same palette: INK for the choice made, MUTED for the one not.
+ */
 function Segmented<T extends string>({
   value,
   onChange,
@@ -469,7 +541,12 @@ function Segmented<T extends string>({
   label: string;
 }) {
   return (
-    <div role="radiogroup" aria-label={label} className="squircle flex rounded-xl bg-[#f0f0ee] p-[3px]">
+    <div
+      role="radiogroup"
+      aria-label={label}
+      className="flex rounded-[8px] p-[2px]"
+      style={{ background: "rgba(11,11,11,0.05)" }}
+    >
       {options.map((o) => {
         const on = o.id === value;
         return (
@@ -479,10 +556,15 @@ function Segmented<T extends string>({
             role="radio"
             aria-checked={on}
             onClick={() => onChange(o.id)}
-            className={
-              "squircle rounded-[9px] px-3 py-1.5 text-[15px] transition-colors " +
-              (on ? "bg-white font-medium text-ink shadow-chip" : "text-muted hover:text-ink")
-            }
+            className="rounded-[6px] border-0 px-3 py-1.5 transition-colors"
+            style={{
+              fontSize: 14,
+              fontWeight: 500,
+              lineHeight: "20px",
+              color: on ? INK : MUTED,
+              background: on ? "rgb(255,255,255)" : "transparent",
+              boxShadow: on ? "0 1px 2px rgba(11,11,11,0.10)" : "none",
+            }}
           >
             {o.label}
           </button>
@@ -492,7 +574,37 @@ function Segmented<T extends string>({
   );
 }
 
+/**
+ * A boolean, to the spec's measurements: 36×20, 2px padding, pill, ACCENT track
+ * when on. Nothing in the app is boolean yet — it is here so the first thing
+ * that is (a notification, once there is an account to send one to) doesn't
+ * get a switch invented for it on the day.
+ */
+export function Toggle({ on, onChange, label }: { on: boolean; onChange: (v: boolean) => void; label: string }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={on}
+      aria-label={label}
+      onClick={() => onChange(!on)}
+      className="shrink-0 rounded-full border-0 transition-colors"
+      style={{
+        width: 36,
+        height: 20,
+        padding: 2,
+        background: on ? ACCENT : "rgba(11,11,11,0.18)",
+      }}
+    >
+      <span
+        className="block rounded-full bg-white transition-transform"
+        style={{ width: 16, height: 16, transform: on ? "translateX(16px)" : "translateX(0)" }}
+      />
+    </button>
+  );
+}
+
 /** The list a row opens onto, indented under it. */
 function Panel({ children }: { children: React.ReactNode }) {
-  return <div className="border-b border-[#ececeb] py-3">{children}</div>;
+  return <div className="pb-3">{children}</div>;
 }
