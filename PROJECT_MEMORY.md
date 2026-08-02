@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-01 (session 28)
+**Last updated:** 2026-08-02 (session 29)
 
 ---
 
@@ -92,12 +92,33 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
-**From session 28 (2026-08-01):**
-- [ ] **Verify the reader on a real phone.** Everything this session is backed
-      by a clean build and by grepping the built HTML, not by looking at it:
-      the definition popup's arrow and its flip-above branch, the source strip
-      scrolling off both edges, the new section divider, the checkpoint row with
-      the note control at its far end.
+**From session 29 (2026-08-02):**
+- [ ] **The checkpoint icons carry no labels now.** A bookmark and a ticked
+      circle are legible; whether a first-time student knows *which* is "come
+      back" without a word is unproven. `aria-label` and `title` are both set,
+      so a screen reader and a desktop hover are fine — it is the phone-only
+      reader who has no way to find out. First real students are the test; if
+      they hesitate, put the words back.
+- [ ] **Pay D-5 on contact.** 37 definitional tables across the three courses
+      are 2-4 rows and should be `cards`. One converted. Do NOT batch these:
+      the job is choosing three marks on a shared axis, and 37 rows of
+      unrelated pictures would be worse than the tables. Candidates:
+      `node .claude/skills/step-skill/tools/table-scan.mjs Schools`
+- [ ] **Pay D-4's unscanned half.** The cold-open scan is clean on
+      device-narration and unresolvable references (baseline 2 of 218, both
+      false positives), but "no word the reader has not met" needs judgement
+      and was never checked on the other 43 steps.
+- [ ] `card-glyphs.tsx` is **35KB of path data in a client component**, so all
+      three Freehand marks ship to every reader whether their step draws them
+      or not. Fine at three; if the set grows, put it behind `next/dynamic`
+      keyed on whether the step has a `cards` block.
+- [x] ~~**Verify the reader on a real phone.**~~ → ✅ done 2026-08-02, by the
+      owner, and it earned its place: four defects that a clean build and a
+      grepped HTML had both called fine. The note menu opened 66px off the left
+      edge of a 390px screen with three of its five options cut in half; the
+      card shadows read as a dark band; the levels table clipped "bank
+      communications" to "communicatior"; and the step's opening sentence was
+      unreadable to a beginner. **None of these were findable from a build.**
 - [ ] **Confirm Investopedia URLs by hand.** It 403s curl, Node fetch and
       WebFetch and the search index refuses the domain, so no URL can be checked
       from a session here. Its favicon and name are already bundled: paste URLs
@@ -231,6 +252,94 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-02 (session 29 — the owner reads it on a phone, and the phone wins every argument)
+
+Local session, all on `main`, eight commits (`70192a3` → `a91a8a4`). The shape
+of it: the owner read the live reader on an actual phone and sent screenshots,
+and almost everything below came out of that rather than out of the backlog.
+
+**Done:**
+- **Dashboard stat marks back to Solar Duotone** (`70192a3`) — `chart-2`,
+  `bolt`, `notebook-minimalistic`, `clock-circle`, each drawn in its tile's own
+  hue. `CLAUDE.md` still said "Solar is gone", which had been wrong since
+  `/workspace` brought it back and would have had the next session strip this
+  out; it now names both Solar surfaces.
+- **A two-token shadow scale**, cut twice (`eda2a43`, then `2fa820c`).
+  `--shadow-lift` for a block of content, `--shadow-chip` for a control.
+  Applied to the table, callout and formula card; added to the source chips and
+  the checkpoint buttons, which had none.
+- **The section-note menu opened off the screen** (`c59b83d`). It was anchored
+  `right-0` while its button is the first child of a `justify-between` row, so
+  it sits on the LEFT at every width: on a 390px phone the menu started at
+  x=-66 and three of its five options were cut to their tails. Wrong on desktop
+  too, invisibly, because the overflow spilled into the sidebar gutter.
+- **TM `treasury-levels-and-mandate` rewritten twice** (`3cacc1b`, `f05206b`) —
+  the opening (rule W-13) and the levels table (rule E-9). Seeded, regenerated,
+  verified against built HTML with `<script>` stripped.
+- **New `cards` block type** — a short set of *kinds* as one card each with a
+  Freehand Duotone mark, replacing a table that had nothing to line up.
+  `reader/card-glyphs.tsx` generated from the SVGs by script; `seed-course.mjs`
+  taught where card text lives and made to refuse an unknown icon name.
+- **The checkpoint row lost its pills** (`2fa820c`, `90bdccb`, `a91a8a4`) —
+  bare hairline marks against a reference shot of Claude's own message actions.
+  Icons settled at `chat-dots` (note, far left) and `bookmark` + `check-circle`
+  (answers, far right).
+- **Skills:** `W-13` (cold opens), `E-9` (kinds are cards), `S-7` revised,
+  `D-4` and `D-5` opened, two scan tools committed. `design-system` got the
+  shadow and icon lessons. `feedback_just_do_it` memory extended to cover
+  pushing to `main` without asking.
+
+**What Worked:**
+- **The owner reading it on a real phone.** Four defects, none of which a clean
+  build, a passing typecheck or a grepped HTML had caught — one of them
+  (`right-0`) had been wrong on every screen since it was written and simply
+  never looked broken. This is now the cheapest bug-finding tool the project
+  has, and it costs one person five minutes.
+- **Contact sheets before naming an icon**, for the third time. `book-bold` is a
+  *closed* book; the Streamline preview URLs are hotlink-blocked so the sheet
+  has to be built from downloaded SVGs; and drawing candidates at the real 20px
+  in the real hues is what made chess/calendar/clipboard obviously right and
+  the thumbs pair obviously wrong.
+- **Breaking a new guard on purpose before trusting it.** Setting an icon to
+  `"chessss"` proved `seed:course` blocks the write and lists the valid names.
+  A guard that has never fired is a guess.
+- **Scanning to scope debt before opening it.** 218 section openings → *one*
+  real cold-open defect. 156 tables → 89 workings, 60 definitional, 37 genuine
+  card candidates. Both beat "applies to: all 44 steps, unchecked", and both
+  tools are committed so the next session re-runs rather than re-derives.
+- **Reading computed style instead of looking.** A mistyped `@theme` token
+  generates no utility at all, so the failure mode is a *silently removed*
+  shadow that looks like success.
+
+**Dead Ends (do not retry):**
+- **Halving shadow alphas.** The owner said harsh twice. The culprit is BLUR
+  WIDTH, not opacity: a 28px layer spreads grey over enough pixels to read as a
+  band even at 9%. Delete the wide layer; don't dim it. `design-system`'s old
+  "wide, diffused `0 20px 40px -15px`" rule was actively causing this and has
+  been corrected.
+- **Hotlinking Streamline preview PNGs** into a contact sheet — they render as
+  broken images. Download the SVGs through `download_asset` instead, which is
+  what you need for inlining anyway.
+- **`import` from a scratchpad script.** ESM resolves relative to the *file*,
+  so a script outside the repo cannot see `platform/node_modules`. Use
+  `createRequire(<platform>/package.json)`.
+- **Playwright `text=Strategic`** also matches the sidebar heading "Strategic,
+  tactical and operational"; and `getByRole("radio", {name})` hits every
+  section's checkpoint, so it needs `.first()`. Wait on the specific element.
+- **The desktop "Made for your phone" gate intercepts every click** until
+  "Continue on this computer" is pressed. Automated clicks time out against it
+  with no useful error.
+
+**Flags:**
+- ⚠️ **`linear-server` unauthorized — 8th consecutive session.** Nothing here is
+  on the board, and the backlog could not be reconciled.
+- ⚠️ **The checkpoint row now has no visible labels.** Raised before doing it
+  and the owner chose it; `aria-label` and `title` are set, so the loss is
+  specific to a sighted phone-only reader meeting it for the first time.
+- `Booklesss Bucket/` still holds the one unfiled webp (5th session).
+- The reader's four courses are live and public with **no gate, no payment path
+  and no analytics** — see the readiness answer at the top of this session.
 
 ### Session 2026-08-01 (session 28 — one skill, one step split three ways, and a reader that shows its sources)
 

@@ -106,6 +106,25 @@ Never place a card flatly on the background. Nest it:
 </div>
 ```
 
+### Icons
+- **Render candidates before naming one.** Icon names lie: `widget-4` is not a
+  2×2 grid, `calendar-minimalistic` has no dots, `book-bold` is a *closed* book
+  when you wanted an open one. One throwaway HTML page of candidates, screenshot
+  and actually looked at, beats any amount of reasoning from names.
+- **Draw them at the real size, in the real colours, on the real surface** —
+  20px on the page's own background, not 64px on white. Weight and legibility
+  are the decision, and both change with size.
+- **A set of icons must share an axis.** Three marks for three things have to
+  encode the distinction being taught: chess / calendar / clipboard-and-clock is
+  *time horizon*, which is what those three levels are. Three unrelated pictures
+  are decoration, and decoration is worse than the plain list it replaced.
+- **A bare icon has to survive without its label.** Once the words go, "clipboard"
+  no longer says *Later* and a thumb rates the content instead of recording a
+  decision. Before dropping labels, read each mark cold and ask what a stranger
+  would think it does. Keep `aria-label` and add `title` regardless.
+- Adding an icon means adding it to that set's generator (`ICONS` in
+  `scripts/gen-*.mjs`) and rerunning — never hand-edit a generated module.
+
 ### Buttons
 - Primary: flat fill, accent colour, no outer glow
 - Active state: `scale(0.98)` or `translateY(-1px)` — tactile push
@@ -116,12 +135,32 @@ Never place a card flatly on the background. Nest it:
 - Use ONLY when elevation communicates hierarchy
 - High-density: replace cards with `border-top` dividers or negative space instead
 - Border: `1px solid rgba(226,232,240,0.5)` — whisper, never harsh
-- Shadow: `0 20px 40px -15px rgba(0,0,0,0.05)` — wide, diffused, never dark
+- Shadow: see below. On a **reading surface** the wide ambient shadow this
+  section used to prescribe is wrong.
 
 ### Shadows
 - Tint shadows to the background hue — never generic grey
 - Never `shadow-md`, `shadow-lg`, `shadow-xl` defaults
-- Diffused ambient: `0 20px 40px -15px rgba(0,0,0,0.05)`
+- **Width is the thing that reads as harsh, not opacity.** *(2026-08-02, from
+  the reader.)* The owner called the step cards' shadow harsh twice. The first
+  fix halved every alpha and it was still wrong, because the culprit was a
+  `28px` blur: a wide layer spreads grey over enough pixels to read as a band
+  even at 9% black. What worked was **deleting the wide layer**, not dimming
+  it.
+- **Reading surfaces cap at ~10px of blur.** Two tokens carry the whole reader:
+  ```css
+  --shadow-lift: 0 1px 2px -1px rgb(0 0 0 / 0.04), 0 4px 10px -6px rgb(0 0 0 / 0.05);
+  --shadow-chip: 0 1px 1px -0.5px rgb(0 0 0 / 0.04), 0 2px 5px -2px rgb(0 0 0 / 0.06);
+  ```
+  `lift` raises a block of content, `chip` is the hairline a control wants.
+  Depth says "this is its own object"; it does not cast a shadow.
+- **The test:** two cards stacked with a 12px gap, viewed at 390px. If their
+  shadows meet in the gap, the shadow is still too big. Judge it on a phone —
+  a 40px ambient that looks refined on a 1440px hero is a smudge on a 390px
+  column, and the reader is on a phone.
+- A wide diffused ambient (`0 20px 40px -15px rgba(0,0,0,0.05)`) is still right
+  for a **marketing hero or a floating overlay** — something meant to look like
+  it hovers. It is wrong for anything a reader reads through.
 
 ---
 

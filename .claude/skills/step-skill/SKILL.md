@@ -122,6 +122,18 @@ shipped twice before the check existed. It now refuses to write on a link or
 term inside bold, a link inside a term definition, or a mark in a table cell,
 and it *warns* on em dashes without blocking, since every older step has them.
 
+**A new block type is invisible to that check until you teach it where its text
+lives.** The validator used to walk `b.text` and `b.items` only. `cards` keeps
+its prose in `b.cards[].title/lead/text`, so on the day it was added every card
+sailed past the very check that exists to catch a link inside bold — clean
+because nothing had looked at it. There is now one `blockTexts(b)` that knows
+every place prose hides, and both the mark check and the em-dash check read
+from it. **Adding a block type means extending that function in the same
+edit**, plus a guard for anything the block names by string (a `cards` icon that
+does not exist blocks the write and lists the valid names, rather than
+rendering a blank space). Prove the guard fires by breaking it on purpose
+before you trust it.
+
 **Check the built HTML, not the source, before saying a step is right.** The
 source says what you meant; the page says what a reader gets, and the gap
 between them is where every silent failure this skill has hit lives. Strip
