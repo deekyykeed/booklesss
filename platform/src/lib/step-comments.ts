@@ -28,24 +28,60 @@ export type Comment = {
 };
 
 /** Comment, by section id, by lesson id. */
-type Store = Record<string, Record<string, Comment>>;
+export type Store = Record<string, Record<string, Comment>>;
+
+/* Same store shape as progress.tsx and identity.tsx, and for the same reason:
+ * localStorage is an external mutable store that does not exist during SSR, so
+ * this is a useSyncExternalStore source rather than state-plus-an-effect.
+ *
+ * The parsed object is cached because useSyncExternalStore compares snapshots by
+ * identity — re-parsing the JSON on every read would hand back a new object each
+ * time and spin. `EMPTY` is a frozen constant so the server snapshot is stable
+ * too, which is what stops a hydration mismatch: the server renders "nobody has
+ * commented", and the real store swaps in after mount. */
+const EMPTY: Store = Object.freeze({});
+
+let cache: Store | null = null;
+const listeners = new Set<() => void>();
 
 function read(): Store {
-  if (typeof localStorage === "undefined") return {};
+  if (cache) return cache;
+  if (typeof localStorage === "undefined") return EMPTY;
   try {
-    return JSON.parse(localStorage.getItem(KEY) ?? "{}") as Store;
+    cache = JSON.parse(localStorage.getItem(KEY) ?? "{}") as Store;
   } catch {
-    return {}; // private mode, or someone else's key
+    cache = {}; // private mode, or someone else's key
   }
+  return cache;
 }
 
 function write(s: Store) {
+  cache = s;
   try {
     localStorage.setItem(KEY, JSON.stringify(s));
   } catch {
     /* out of quota or private mode: losing a comment is not worth a crash */
   }
+  for (const fn of listeners) fn();
 }
+
+export function subscribe(fn: () => void): () => void {
+  listeners.add(fn);
+  // Another tab writing the same key: drop the cache and re-read.
+  const onStorage = (e: StorageEvent) => {
+    if (e.key !== KEY) return;
+    cache = null;
+    fn();
+  };
+  window.addEventListener("storage", onStorage);
+  return () => {
+    listeners.delete(fn);
+    window.removeEventListener("storage", onStorage);
+  };
+}
+
+export const getSnapshot = (): Store => read();
+export const getServerSnapshot = (): Store => EMPTY;
 
 export function commentFor(lessonId: string, sectionId: string): Comment | null {
   return read()[lessonId]?.[sectionId] ?? null;

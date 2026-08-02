@@ -7,6 +7,7 @@ import { useReaderShell } from "./MobileNav";
 import { useFollow } from "./useFollow";
 import { useProgress } from "@/lib/progress";
 import { CompletionRing } from "./CompletionRing";
+import { StepComments } from "./SectionComment";
 import { checkpointsFor } from "@/lib/course";
 
 /* The AI tutor is not connected. There is no model, no endpoint — the composer
@@ -57,10 +58,26 @@ const RAIL_INSET = (ROW_H - BAR_H) / 2;
  * (published by the lesson route) so this persistent panel needn't know the
  * lesson. Picking a section smooth-scrolls the content; on mobile it also lets
  * the drawer slide back. */
-function TableOfContents({ sections, lessonId }: { sections: Section[]; lessonId: string | null }) {
+function TableOfContents({
+  sections,
+  lessonId,
+  activeId,
+  setActiveId,
+  goRef,
+}: {
+  sections: Section[];
+  lessonId: string | null;
+  /* Lifted to RightPanel: the comments block under this list binds its composer
+     to whatever section is on screen, so both halves of the panel have to read
+     the same scroll-spy rather than each running their own. */
+  activeId: string;
+  setActiveId: (id: string) => void;
+  /* Hands `go` back up so the comment list can jump to a section too, without
+     duplicating the smooth-scroll and close-the-drawer behaviour. */
+  goRef: React.MutableRefObject<((id: string) => void) | null>;
+}) {
   const { close } = useReaderShell();
   const { hydrated, isDone } = useProgress();
-  const [activeId, setActiveId] = useState(sections[0]?.id ?? "");
   const listRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLButtonElement>(null);
   const m = useFollow([activeId, sections], () => ({ container: listRef.current, active: activeRef.current }));
@@ -86,7 +103,7 @@ function TableOfContents({ sections, lessonId }: { sections: Section[]; lessonId
       if (el) io.observe(el);
     });
     return () => io.disconnect();
-  }, [sections]);
+  }, [sections, setActiveId]);
 
   const go = useCallback(
     (id: string) => {
@@ -94,8 +111,13 @@ function TableOfContents({ sections, lessonId }: { sections: Section[]; lessonId
       document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
       if (window.matchMedia("(max-width: 767px)").matches) window.setTimeout(close, 280);
     },
-    [close],
+    [close, setActiveId],
   );
+
+  // Published for the comments block below this list.
+  useEffect(() => {
+    goRef.current = go;
+  }, [go, goRef]);
 
   return (
     <div ref={listRef} className="relative">
@@ -519,6 +541,11 @@ function PanelProgress({ lessonId }: { lessonId: string }) {
 export function RightPanel() {
   const { rightCollapsed, toggleRightCollapsed, sections, lessonId } = useReaderShell();
 
+  /* Which section is on screen. Owned here rather than inside the TOC because
+     the comments block below it binds its composer to the same value. */
+  const [activeId, setActiveId] = useState("");
+  const goRef = useRef<((id: string) => void) | null>(null);
+
   /* ---------------- resize ---------------- */
   const widthRef = useRef(RIGHTBAR_DEFAULT);
   const [width, setWidth] = useState(RIGHTBAR_DEFAULT); // mirrors the ref for aria only
@@ -668,7 +695,26 @@ export function RightPanel() {
             turns beneath it. */}
         <div ref={scrollRef} className="no-scrollbar flex-1 overflow-y-auto px-3 pb-4">
           {sections && sections.length > 0 ? (
-            <TableOfContents sections={sections} lessonId={lessonId} />
+            <>
+              <TableOfContents
+                sections={sections}
+                lessonId={lessonId}
+                activeId={activeId}
+                setActiveId={setActiveId}
+                goRef={goRef}
+              />
+              {/* Comments sit under the section list, sharing its scroll-spy —
+                  the owner's placement, 2026-08-02. Needs a lesson to key on;
+                  the panel persists across routes, so lessonId can be null. */}
+              {lessonId && (
+                <StepComments
+                  lessonId={lessonId}
+                  sections={sections}
+                  activeId={activeId}
+                  onJump={(id) => goRef.current?.(id)}
+                />
+              )}
+            </>
           ) : (
             <p className="px-1 pt-1 text-[13px] text-placeholder">No sections</p>
           )}

@@ -1,12 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
 import { labelFor, nextLessonId, pathForId } from "@/lib/course";
 import { rate, useProgress, type Grasp } from "@/lib/progress";
 import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
-import { commentFor } from "@/lib/step-comments";
-import { CommentBox, CommentButton } from "./SectionComment";
 import { SectionNote } from "./SectionNote";
 
 /* Two answers: "Later" and "Got it".
@@ -71,39 +68,24 @@ export function Checkpoint({
   checkpointId: string;
   heading: string;
 }) {
-  const { hydrated, isDone, graspOf, toggle } = useProgress();
+  const { hydrated, graspOf, toggle } = useProgress();
   // Before hydration the server HTML knows nothing, so everything renders
   // unanswered and settles once localStorage has been read.
-  const done = hydrated && isDone(lessonId, checkpointId);
   const chosen = hydrated ? graspOf(lessonId, checkpointId) : null;
 
-  /* The comment box opens below the whole row, so its open state has to live
-     out here rather than inside the button — see SectionComment.tsx. Same
-     after-mount read as every other store: `hasComment` starts false and
-     settles once localStorage has been looked at. */
-  const [commentOpen, setCommentOpen] = useState(false);
-  const [hasComment, setHasComment] = useState(false);
-  const refreshComment = useCallback(
-    () => setHasComment(commentFor(lessonId, checkpointId) !== null),
-    [lessonId, checkpointId],
-  );
-  useEffect(refreshComment, [refreshComment]);
+  /* The comment control is NOT here. It sat beside the note button for one
+     revision and the owner moved it out (2026-08-02): commenting lives in the
+     right panel with the table of contents, and a third mark in this row was
+     the "extra icon" that made two clear controls read as a toolbar. This row
+     stays two questions, one at each end. */
 
   return (
-    <div>
-      {/* Two ends, asking two different things: what the reader wants to SAY
-          about the section (left — how it read, and their own words) and what
-          they want to DO about it (right). Pushed apart rather than sat
-          together, so neither looks like an option in the other's set. */}
+    <>
+      {/* Two ends, asking two different things: how the section READ (left) and
+          what the reader wants to DO about it (right). Pushed apart rather than
+          sat together, so neither looks like an option in the other's set. */}
       <div className="checkpoint-row flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-1.5">
-          <SectionNote lessonId={lessonId} sectionId={checkpointId} />
-          <CommentButton
-            hasComment={hasComment}
-            open={commentOpen}
-            onToggle={() => setCommentOpen((o) => !o)}
-          />
-        </div>
+        <SectionNote lessonId={lessonId} sectionId={checkpointId} />
         <div
           className="grasp-group"
           role="radiogroup"
@@ -144,19 +126,7 @@ export function Checkpoint({
           })}
         </div>
       </div>
-
-      {/* Below the row, in the flow — the page grows downward rather than a
-          card floating over the next section. */}
-      {commentOpen && (
-        <CommentBox
-          lessonId={lessonId}
-          sectionId={checkpointId}
-          heading={heading}
-          onClose={() => setCommentOpen(false)}
-          onSaved={refreshComment}
-        />
-      )}
-    </div>
+    </>
   );
 }
 
