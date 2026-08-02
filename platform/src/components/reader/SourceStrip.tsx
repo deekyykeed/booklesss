@@ -59,7 +59,9 @@ export function SourceStrip({ urls }: { urls: string[] }) {
     /* No top margin: the strip now sits directly under the block that cites
        it, and the gap between the two belongs to that wrapper (see
        `BlockWithSources`) rather than to this component. */
-    <div>
+    /* `font-container`: the chips are a note about the paragraph, not part of
+       the reading, so they take Satoshi while the prose stays Aptos. */
+    <div className="font-container">
       {/* No "SOURCES" heading. It was there because a bare row of logos at the
           foot of a section could have been a partner list or a set of tools,
           and one quiet word settled it. Now the strip sits directly under the

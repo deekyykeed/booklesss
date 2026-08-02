@@ -82,7 +82,8 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
            sidebar gutter rather than off the screen. */
         <div
           role="menu"
-          className="squircle absolute bottom-[calc(100%+8px)] left-0 z-30 flex w-[230px] max-w-[calc(100vw-24px)] flex-col gap-0.5 rounded-2xl border border-[#e0e0e0] bg-white p-1.5 shadow-[0_2px_4px_-1px_rgba(0,0,0,0.10),0_12px_24px_-8px_rgba(0,0,0,0.18)]"
+          /* `font-container` — a menu of options, not reading. */
+          className="squircle absolute bottom-[calc(100%+8px)] left-0 z-30 flex w-[230px] max-w-[calc(100vw-24px)] flex-col gap-0.5 rounded-2xl border border-[#e0e0e0] bg-white p-1.5 font-container shadow-[0_2px_4px_-1px_rgba(0,0,0,0.10),0_12px_24px_-8px_rgba(0,0,0,0.18)]"
         >
           {NOTES.map((n) => (
             <button

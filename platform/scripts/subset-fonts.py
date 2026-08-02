@@ -1,11 +1,12 @@
-"""Rebuilds the self-hosted reading-font woff2 files as content-driven subsets.
+"""Rebuilds the self-hosted step fonts as content-driven subsets.
 
     python3 scripts/subset-fonts.py
 
-The reading face is **Satoshi** (Fontshare / Indian Type Foundry, ITF Free Font
-Licence), owner's pick on 2026-08-02, replacing Aptos. Same treatment either
-way: a retail font ships far more of Unicode than a Zambian finance course
-renders, and the four Aptos weights had been 301 KB of a 909 KB first visit.
+A step uses two: **Aptos** for the reading, and **Satoshi** (Fontshare / Indian
+Type Foundry, ITF Free Font Licence, added 2026-08-02) for the containers
+inside it. Both get the same treatment, because a retail font ships far more of
+Unicode than a Zambian finance course renders: the four Aptos weights alone had
+been 301 KB of a 909 KB first visit.
 
 The kept set is not guessed. It is every character that actually appears in
 the course content, plus the ranges any UI could reasonably produce, so
@@ -28,10 +29,17 @@ SRC = ROOT / "_dev" / "fonts"
 OUT = PLATFORM / "src" / "fonts"
 CONTENT = PLATFORM / "src" / "lib" / "course-data.json"
 
-# Five faces, one more than Aptos had. The reader's tables set their first
-# column and their headers at medium and semibold, and Aptos carried only 400
-# and 700, so both were synthesised. 500 is real here; 600 still rounds up.
+# BOTH faces a step uses, and both must stay subset together — a character that
+# appears in the reading can appear in a definition popup too.
+#   Aptos    the reading: prose, callouts, cards, table cells
+#   Satoshi  the containers: source chips, popups, menus, column headings
+# Satoshi carries a 500 that Aptos does not, because the container chrome sets
+# labels at medium and a synthesised weight shows on a 12px uppercase heading.
 FACES = {
+    "Aptos.ttf": "aptos.woff2",
+    "Aptos-Bold.ttf": "aptos-bold.woff2",
+    "Aptos-Italic.ttf": "aptos-italic.woff2",
+    "Aptos-Bold-Italic.ttf": "aptos-bold-italic.woff2",
     "Satoshi-Regular.ttf": "satoshi.woff2",
     "Satoshi-Regular-Italic.ttf": "satoshi-italic.woff2",
     "Satoshi-Medium.ttf": "satoshi-medium.woff2",

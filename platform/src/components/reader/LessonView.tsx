@@ -188,12 +188,11 @@ function DataTable({
                   key={i}
                   scope="col"
                   className={
-                    /* No `font-sans` here any more (2026-08-02). The header was
-                       set in the UI face while every cell under it was the
-                       reading face, which is a seam inside one table; the
-                       owner's rule is that content inside a container on a
-                       step is the reading face. It inherits now. */
-                    "whitespace-nowrap px-4 py-3 text-[12px] font-semibold uppercase tracking-[0.06em] text-ink " +
+                    /* `font-container`, not `font-sans` and not the reading
+                       face. A column heading labels the table; it is not a
+                       sentence anyone reads, and it was the app's UI font
+                       (Inter) purely by inheritance rather than by choice. */
+                    "whitespace-nowrap px-4 py-3 font-container text-[12px] font-semibold uppercase tracking-[0.06em] text-ink " +
                     (c.align === "right" ? "text-right" : "text-left")
                   }
                 >
@@ -254,7 +253,8 @@ function DataTable({
   );
 }
 
-// Content column. Base font is Satoshi (font-content); headings use Familjen.
+// Content column. Reading is Aptos (font-content); the containers inside a
+// step take Satoshi (font-container). Headings use Familjen.
 export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: string }) {
   /* Nothing above the title. The crumbs went first — the sidebar already says
    * where you are — and the section count followed: it sat over an unread page

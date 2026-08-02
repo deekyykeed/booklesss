@@ -30,15 +30,33 @@ const familjen = Familjen_Grotesk({
   display: "swap",
 });
 
-// The reading face: everything inside a step — prose, tables, callouts, cards.
-// Satoshi (Fontshare / Indian Type Foundry), owner's pick 2026-08-02, replacing
-// Aptos. Self-hosted like Aptos was, and for a stronger reason: Aptos at least
-// ships with Office, while Satoshi is on no device by default, so a CDN link
-// would be a hard dependency on someone else's uptime for the one font the
-// course is actually read in.
-//
-// Five faces where Aptos had four. The reader's tables set their first column
-// medium and their headers semibold, and both were synthesised before.
+/* Two faces inside a step, and the split matters (owner, 2026-08-02).
+ *
+ *   READING is Aptos. The prose, the callouts, the cards, the cells of a
+ *   table — anything a student is actually reading a sentence of. It was
+ *   briefly swapped wholesale for Satoshi; that was too far.
+ *
+ *   CONTAINERS are Satoshi. The chrome inside a step that frames or annotates
+ *   rather than reads: the source chips, the tap-to-define popup, the section
+ *   note menu, the comprehension check dialog, a table's column headings.
+ *
+ * Both are self-hosted. Aptos at least ships with Office; Satoshi is on no
+ * device by default, so a CDN link would make the one font a course is read in
+ * a hard dependency on someone else's uptime. */
+const aptos = localFont({
+  src: [
+    { path: "../fonts/aptos.woff2", weight: "400", style: "normal" },
+    { path: "../fonts/aptos-italic.woff2", weight: "400", style: "italic" },
+    { path: "../fonts/aptos-bold.woff2", weight: "700", style: "normal" },
+    { path: "../fonts/aptos-bold-italic.woff2", weight: "700", style: "italic" },
+  ],
+  variable: "--font-aptos",
+  display: "swap",
+});
+
+// Satoshi (Fontshare / Indian Type Foundry, ITF Free Font Licence). Five faces:
+// the container chrome sets labels at medium and semibold, and a synthesised
+// weight on a 12px uppercase heading is exactly where it shows.
 // Source TTFs live in _dev/fonts/; run scripts/subset-fonts.py after any
 // content change that could introduce a new character.
 const satoshi = localFont({
@@ -80,7 +98,7 @@ export default function RootLayout({
   const document = (
     <html
       lang="en"
-      className={`${inter.variable} ${familjen.variable} ${satoshi.variable} h-full`}
+      className={`${inter.variable} ${familjen.variable} ${aptos.variable} ${satoshi.variable} h-full`}
     >
       <head>
         {/* Sets data-motion before first paint, so a reader who asked for a
