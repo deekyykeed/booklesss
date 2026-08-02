@@ -40,14 +40,28 @@ const ICONS = [
   "bolt-bold-duotone", // Streak — the zap it replaces
   "notebook-minimalistic-bold-duotone", // Coverage — an open book
   "clock-circle-bold-duotone", // Time this week
+  /* Callout kinds — the mark at the top-left of an in-text container, and now
+     the ONLY thing there: the owner dropped the word beside it (2026-08-02), so
+     each of these has to carry its kind alone. See CALLOUTS in
+     reader/LessonView.tsx. */
+  "key-bold-duotone", // Key point
+  "danger-triangle-bold-duotone", // Watch out
+  "clipboard-text-bold-duotone", // Example
+  "target-bold-duotone", // In the exam
 ];
 
-/* The reader draws no Solar at all. On 2026-08-02 it briefly had three marks
-   here — a Duotone thumbs pair on the checkpoint answers and a Duotone bubble
-   on the note button beside them — and the owner moved all three back to
-   MynaUI within the day (faces for the answers, an info circle for the note).
-   Solar is back to its two surfaces: /workspace in Linear, the dashboard stat
-   cards in Duotone. */
+/* The reader's THIRD Solar surface, and a deliberate one (owner, 2026-08-02).
+   Earlier the same day it had three Duotone marks in the checkpoint row — a
+   thumbs pair and a bubble — and all three were moved back to MynaUI, because
+   Duotone is filled and sat heavy in a row of hairline chrome.
+
+   A callout is the case that rule was drawing a line around, not an exception
+   to it: the mark sits alone on a container that gives it its own hue, which is
+   exactly where the dashboard tiles put theirs. It is not standing in a line of
+   outline icons.
+
+   Solar's surfaces are now: /workspace in Linear, the dashboard stat cards in
+   Duotone, and the reader's callout kinds in Duotone. */
 
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "components", "icons", "solar.tsx");
 

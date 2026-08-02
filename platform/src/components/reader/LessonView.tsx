@@ -2,7 +2,7 @@
 
 import { type Block, type CalloutKind, type Column, type Lesson } from "@/lib/course";
 import { links, runs } from "@/lib/emphasis";
-import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
+import { SolarIcon, type SolarIconName } from "@/components/icons/solar";
 import { CardGlyph, isCardGlyph } from "./card-glyphs";
 import { CodePlayground } from "./CodePlayground";
 import { Checkpoint, StepComplete } from "./Checkpoint";
@@ -59,22 +59,31 @@ function sourcesInBlock(b: Block): string[] {
  * nothing else is coloured: the reading text stays the reading text. */
 const CARD_TONES = ["#eb6834", "#4a3aa7", "#17754d", "#2a78d6"];
 
-/* What each kind of callout calls itself, and the mark it wears. See
- * CALLOUT_KINDS in lib/course.ts for the rule on adding one.
+/* What each kind of callout is, and the mark that says so. See CALLOUT_KINDS in
+ * lib/course.ts for the rule on adding one.
  *
  * Tones come from the same four the cards and the dashboard tiles use, which
  * were validated together for lightness and for telling apart under colour
  * blindness — "Watch out" borrows the checkpoint's amber instead, because that
  * amber already means "careful, come back to this" everywhere else here.
  *
- * The word is doing the work and the mark makes it findable, not the other way
- * round. A bare glyph at the top of a box cannot say "in the exam", and the
- * label-less checkpoint row is already an open question on that score. */
-const CALLOUTS: Record<CalloutKind, { label: string; icon: MynaIconName; tone: string }> = {
-  key: { label: "Key point", icon: "key", tone: "#4a3aa7" },
-  warning: { label: "Watch out", icon: "danger-triangle", tone: "#96601f" },
-  example: { label: "Example", icon: "clipboard", tone: "#2a78d6" },
-  exam: { label: "In the exam", icon: "target", tone: "#eb6834" },
+ * SOLAR DUOTONE, and the mark ALONE — no word beside it (owner, 2026-08-02).
+ * A `-bold-duotone` name draws two currentColor fills with the back one at
+ * opacity .5, so each mark shades itself out of its kind's hue with no second
+ * colour to pass. This is the reader's only Solar; the reasoning for allowing
+ * it here, after three Duotone marks were pulled out of the checkpoint row the
+ * same day, is in scripts/gen-solar-icons.mjs.
+ *
+ * `label` is still every bit as required — it is the accessible name and the
+ * hover tooltip. Dropping the visible word does not drop the word: a screen
+ * reader still hears "In the exam", and a mouse still gets it. What is lost is
+ * specific to a sighted, tap-only reader meeting a mark for the first time,
+ * which is the same open question the label-less checkpoint row carries. */
+const CALLOUTS: Record<CalloutKind, { label: string; icon: SolarIconName; tone: string }> = {
+  key: { label: "Key point", icon: "key-bold-duotone", tone: "#4a3aa7" },
+  warning: { label: "Watch out", icon: "danger-triangle-bold-duotone", tone: "#96601f" },
+  example: { label: "Example", icon: "clipboard-text-bold-duotone", tone: "#2a78d6" },
+  exam: { label: "In the exam", icon: "target-bold-duotone", tone: "#eb6834" },
 };
 
 function Cards({ cards }: { cards: { icon: string; title: string; lead?: string; text: string }[] }) {
@@ -90,9 +99,11 @@ function Cards({ cards }: { cards: { icon: string; title: string; lead?: string;
             <div className="flex items-center gap-3">
               {isCardGlyph(c.icon) ? <CardGlyph name={c.icon} size={28} tone={tone} /> : null}
               <div className="min-w-0">
-                <p className="text-[17px] font-semibold leading-6 text-ink">{c.title}</p>
+                <p className="font-container text-[17px] font-semibold leading-6 text-ink">
+                  {c.title}
+                </p>
                 {c.lead ? (
-                  <p className="text-[14px] leading-5" style={{ color: tone }}>
+                  <p className="font-container text-[14px] font-medium leading-5" style={{ color: tone }}>
                     {c.lead}
                   </p>
                 ) : null}
@@ -351,18 +362,24 @@ function renderBlock(b: Block) {
          section meant to survive when the rest is forgotten, and a plain
          outlined box sat too flat against prose that already has boxes in it. */
       <div className="squircle rounded-3xl border border-[#e7e7e6] bg-white px-5 py-4 shadow-lift">
-        {/* What this container IS, top-left. `font-container` because it frames
-            the sentence rather than being one, and set in the kind's own hue —
-            the only coloured thing in the box, so the reading underneath stays
-            the reading. */}
-        <div
-          className="mb-2.5 flex items-center gap-1.5 font-container text-[11.5px] font-semibold uppercase tracking-[0.07em]"
-          style={{ color: kind.tone }}
-        >
-          <MynaIcon name={kind.icon} size={15} strokeWidth={1.7} />
-          <span>{kind.label}</span>
+        {/* What this container IS, top-left — the mark and nothing else, drawn
+            in the kind's own hue. Bigger than the 15px it was beside a word:
+            with the word gone the mark is the whole label, so it has to be
+            read, not just noticed. The hue is the only colour in the box, so
+            the reading underneath stays the reading. */}
+        <div className="mb-2 flex" style={{ color: kind.tone }} title={kind.label}>
+          <SolarIcon name={kind.icon} size={22} />
+          {/* Off-screen, not absent: the mark has no text of its own, so this
+              is what a screen reader announces. Same trick as .grasp-label. */}
+          <span className="grasp-label">{kind.label}</span>
         </div>
-        <div className="text-[16.5px] leading-[27px] text-[#4a4a52]">
+        {/* Satoshi Medium, not the reading face. Owner's call 2026-08-02, which
+            settles the question left open on 2026-08-02: a callout IS a
+            container, so it wears the container face throughout rather than
+            only on its label. It is a sentence lifted out of the reading to be
+            remembered, and setting it in the reading face made it read as one
+            more paragraph in a box. */}
+        <div className="font-container text-[16.5px] font-medium leading-[27px] text-[#4a4a52]">
           <Rich text={b.text} />
         </div>
       </div>
