@@ -232,6 +232,15 @@ text, so a mark written into one shows its own syntax.
   abandoned two thirds through. The nav tree nests, so a topic too big for one
   step becomes several under the same lesson node, each with its own slug, its
   own checkpoints and its own end.
+  - **Never defer a split.** *(added 2026-08-02)* A step that is too long is a
+    defect, and the only fix for it is the split, so it happens in the edit that
+    finds it. Splitting changes URLs, the course manifest and the debt lists,
+    and **that churn is the cost of the fix, not a reason to schedule it for
+    later.** The owner's words: *"if a step is too long, that's a very big
+    problem, and splitting it is the only solution. If you have to split it, you
+    can split it and then deal with the links changing and everything."*
+    A step left long because the follow-on work was inconvenient is the reader
+    paying for the author's convenience.
   - **Target 2 to 4 sections per step.** At five, look hard for the seam. At
     six or more there is definitely one.
   - Split on a **conceptual seam**, not at the halfway word count. Each part

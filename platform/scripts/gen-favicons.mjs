@@ -40,8 +40,11 @@ const NAMES = {
   "accountingcoach.com": "AccountingCoach",
   "accaglobal.com": "ACCA",
   "www.accaglobal.com": "ACCA",
-  "bankofzambia.zm": "Bank of Zambia",
-  "www.bankofzambia.zm": "Bank of Zambia",
+  /* The bank's live domain is boz.zm; bankofzambia.zm no longer resolves. */
+  "boz.zm": "Bank of Zambia",
+  "www.boz.zm": "Bank of Zambia",
+  "bis.org": "Bank for International Settlements",
+  "www.bis.org": "Bank for International Settlements",
   "ft.com": "Financial Times",
   "reuters.com": "Reuters",
   "careernavigator.accaglobal.com": "ACCA",

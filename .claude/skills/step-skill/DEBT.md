@@ -60,11 +60,16 @@ unchecked ones get ticked off by someone assuming the list was audited.
 
 | Item | What | Opened | State |
 |------|------|--------|-------|
-| D-1 | Engagement pass — every step written before the hook rules | 2026-08-01 | open · 3/44 |
-| D-2 | Emphasis, ownership voice, tap-to-define — every step written before W-8/W-9/E-8 | 2026-08-01 | open · 3/44 |
-| D-3 | Possessive budget, sentence length, step splitting, source links — W-10/W-12/S-8/C-7 | 2026-08-01 | open · 3/44 |
-| D-4 | Cold opens — W-13, section openings a beginner cannot hold | 2026-08-01 | open · 44/44 scanned, 1 fixed, jargon half unchecked |
-| D-5 | Definitional tables that should be `cards` — E-9 | 2026-08-01 | open · 1/37 candidates converted |
+| D-1 | Engagement pass — every step written before the hook rules | 2026-08-01 | open · 21/53 (**all of TM**) |
+| D-2 | Emphasis, ownership voice, tap-to-define — every step written before W-8/W-9/E-8 | 2026-08-01 | open · 21/53 (**all of TM**) |
+| D-3 | Possessive budget, sentence length, step splitting, source links — W-10/W-12/S-8/C-7 | 2026-08-01 | open · 21/53 (**all of TM**, S-8 included) |
+| D-4 | Cold opens — W-13, section openings a beginner cannot hold | 2026-08-01 | open · 21/53 read cold; the other 32 machine-clean only |
+| D-5 | Definitional tables that should be `cards` — E-9 | 2026-08-01 | open · 1/37 converted · **blocked on glyphs** |
+
+> **Counts moved from 44 to 53 on 2026-08-02.** The nine remaining Treasury
+> Management steps were split into eighteen (S-8), so the course is 21 steps and
+> the three courses are 53. Corporate Finance (25) and Strategic Management (7)
+> are untouched and are the whole of what is left owing.
 
 ---
 
@@ -77,27 +82,38 @@ step is boring… spice it up, keep it engaging with a proper hook."
 **Why it can't wait for a rewrite:** every step in all three courses was written
 to the old W-3, which asked for the definition first and got a textbook opening
 every time. This is not a defect in one step; it is the house voice as it stood.
-**Applies to:** all three courses — **3 of 44 steps checked** (TM 1.1 rewritten, then split into three;
-`cash-management`, `npv-and-payback`, `intro-to-strategy` had their openings read
-but nothing else, and are NOT ticked).
+**Applies to:** all three courses — **21 of 53 steps checked.** All of Treasury
+Management is paid (2026-08-02). Corporate Finance and Strategic Management are
+untouched: `npv-and-payback` and `intro-to-strategy` had their openings read on
+2026-08-01 but nothing else, and are NOT ticked.
 
-Pay it with the **engagement pass** in `SKILL.md` — six checks, run against the
+Pay it with the **engagement pass** in `SKILL.md` — seven checks, run against the
 step in front of you, in the same edit that touches it for any other reason.
-Do not batch-rewrite steps nobody is reading yet; this is debt paid on contact.
 
-**Treasury Management**
-- [x] treasury-management/treasury-operations/intro-to-treasury — 2026-08-01 (rewritten)
-- [x] treasury-management/treasury-operations/treasury-levels-and-mandate — 2026-08-01 (split from it, carries the rewrite)
-- [x] treasury-management/treasury-operations/treasury-controls-and-structure — 2026-08-01 (split from it, carries the rewrite)
-- [ ] treasury-management/working-capital/working-capital-and-liquidity
-- [ ] treasury-management/working-capital/cash-management
-- [ ] treasury-management/working-capital/inventory-and-creditors
-- [ ] treasury-management/risk/foreign-exchange-risk
-- [ ] treasury-management/risk/interest-rate-risk-management
-- [ ] treasury-management/investment/debt-management
-- [ ] treasury-management/investment/investment-management
-- [ ] treasury-management/systems/clearing-and-settlement
-- [ ] treasury-management/systems/treasury-management-systems
+**Treasury Management — all 21 steps, closed 2026-08-02.** The owner asked for
+the whole course in one pass, which is the exception to "paid on contact", not a
+change to it: an owner asking for a course is contact.
+- [x] treasury-operations/intro-to-treasury — 2026-08-01 (rewritten)
+- [x] treasury-operations/treasury-levels-and-mandate — 2026-08-01
+- [x] treasury-operations/treasury-controls-and-structure — 2026-08-01
+- [x] working-capital/working-capital-and-liquidity — 2026-08-02
+- [x] working-capital/debtors-and-factoring — 2026-08-02 (new, split)
+- [x] working-capital/inventory-and-creditors — 2026-08-02
+- [x] working-capital/ordering-and-paying-suppliers — 2026-08-02 (new, split)
+- [x] working-capital/cash-management — 2026-08-02
+- [x] working-capital/cash-forecasting-and-surpluses — 2026-08-02 (new, split)
+- [x] treasury-risk/interest-rate-risk-management — 2026-08-02
+- [x] treasury-risk/interest-rate-hedging-instruments — 2026-08-02 (new, split)
+- [x] treasury-risk/foreign-exchange-risk — 2026-08-02
+- [x] treasury-risk/hedging-currency-risk — 2026-08-02 (new, split)
+- [x] debt-and-investment/debt-management — 2026-08-02
+- [x] debt-and-investment/the-price-of-debt — 2026-08-02 (new, split)
+- [x] debt-and-investment/investment-management — 2026-08-02
+- [x] debt-and-investment/building-the-portfolio — 2026-08-02 (new, split)
+- [x] systems-and-clearing/clearing-and-settlement — 2026-08-02
+- [x] systems-and-clearing/payment-systems-and-ccps — 2026-08-02 (new, split)
+- [x] systems-and-clearing/treasury-management-systems — 2026-08-02
+- [x] systems-and-clearing/choosing-and-running-a-tms — 2026-08-02 (new, split)
 
 **Corporate Finance**
 - [ ] corporate-finance/investment/npv-and-payback
@@ -148,28 +164,42 @@ before today has no bold at all, no tappable terms, and addresses an exam
 candidate rather than someone who will run this — so the reader gets a wall of
 even-weight prose with the jargon unexplained. Nothing is *wrong* on screen,
 which is exactly why it would never surface on its own.
-**Applies to:** all three courses — **3 of 44 steps checked** (the three TM
-operations steps are the reference implementation; nothing else has been
-opened. 44 not 42 because S-8 split TM 1.1 into three).
+**Applies to:** all three courses — **21 of 53 steps checked.** All of Treasury
+Management is paid (2026-08-02); nothing in Corporate Finance or Strategic
+Management has been opened.
 
 Pay it with the **rank** procedure in `SKILL.md` — score the step against
 RULES, then fix what scored red, in the same edit that touches it for any other
 reason. **D-1 and D-2 are paid together:** both are debts against the same
 steps and both are paid on contact, so a step opened for one gets the other.
 
-**Treasury Management**
-- [x] treasury-management/treasury-operations/intro-to-treasury — 2026-08-01
-- [x] treasury-management/treasury-operations/treasury-levels-and-mandate — 2026-08-01 (new, split from 1.1)
-- [x] treasury-management/treasury-operations/treasury-controls-and-structure — 2026-08-01 (new, split from 1.1)
-- [ ] treasury-management/working-capital/working-capital-and-liquidity
-- [ ] treasury-management/working-capital/cash-management
-- [ ] treasury-management/working-capital/inventory-and-creditors
-- [ ] treasury-management/risk/foreign-exchange-risk
-- [ ] treasury-management/risk/interest-rate-risk-management
-- [ ] treasury-management/investment/debt-management
-- [ ] treasury-management/investment/investment-management
-- [ ] treasury-management/systems/clearing-and-settlement
-- [ ] treasury-management/systems/treasury-management-systems
+**Treasury Management — all 21 steps, closed 2026-08-02.** Measured before and
+after: the nine unpaid steps carried 0 bold, 0 tappable terms and 0 source links
+between them. The eighteen steps they became carry **159 bold, 49 terms and 70
+links across 51 sections.** Exam framing ("the exam asks you to…") is gone from
+every step that carried it.
+- [x] treasury-operations/intro-to-treasury — 2026-08-01
+- [x] treasury-operations/treasury-levels-and-mandate — 2026-08-01
+- [x] treasury-operations/treasury-controls-and-structure — 2026-08-01
+- [x] working-capital/working-capital-and-liquidity — 2026-08-02
+- [x] working-capital/debtors-and-factoring — 2026-08-02
+- [x] working-capital/inventory-and-creditors — 2026-08-02
+- [x] working-capital/ordering-and-paying-suppliers — 2026-08-02
+- [x] working-capital/cash-management — 2026-08-02
+- [x] working-capital/cash-forecasting-and-surpluses — 2026-08-02
+- [x] treasury-risk/interest-rate-risk-management — 2026-08-02
+- [x] treasury-risk/interest-rate-hedging-instruments — 2026-08-02
+- [x] treasury-risk/foreign-exchange-risk — 2026-08-02
+- [x] treasury-risk/hedging-currency-risk — 2026-08-02
+- [x] debt-and-investment/debt-management — 2026-08-02
+- [x] debt-and-investment/the-price-of-debt — 2026-08-02
+- [x] debt-and-investment/investment-management — 2026-08-02
+- [x] debt-and-investment/building-the-portfolio — 2026-08-02
+- [x] systems-and-clearing/clearing-and-settlement — 2026-08-02
+- [x] systems-and-clearing/payment-systems-and-ccps — 2026-08-02
+- [x] systems-and-clearing/treasury-management-systems — 2026-08-02
+- [x] systems-and-clearing/choosing-and-running-a-tms — 2026-08-02
+
 **Corporate Finance**
 - [ ] corporate-finance/investment/npv-and-payback
 - [ ] corporate-finance/investment/irr-and-mirr
@@ -243,6 +273,20 @@ node .claude/skills/step-skill/tools/table-scan.mjs Schools   # CARDS? rows are 
 - [ ] the other 36 candidates — listed by the scan above, not enumerated here
       because the scan is the authoritative list and a copy of it would rot
 
+⚠️ **Blocked, and this is the real constraint** *(2026-08-02)*. Converting a
+table needs three or four marks on a shared axis, and `card-glyphs.tsx` carries
+exactly three: chess, calendar, checklist. **They are one axis — time horizon —
+so the only sets convertible today are sets about time.** The TM pass hit four
+candidates and converted none: the working capital policy tables (aggressive /
+conservative / moderate) are a risk-appetite axis, and the factoring comparison
+is five rows and over E-9's cap anyway. Declining was correct, since E-9 says a
+row of unrelated pictures is worse than the table it replaced.
+
+**Unblocking this needs the Streamline MCP**, which was unauthorized in the
+2026-08-02 session, to fetch Freehand Duotone marks for a second and third axis
+(risk appetite, and cost-against-control would cover most of the remaining 36).
+Until then D-5 progresses one table at a time and only for time-horizon sets.
+
 ### D-4 · cold opens: a section opening a beginner cannot hold · opened 2026-08-01
 **Source:** owner review 2026-08-01 (TM `treasury-levels-and-mandate`) — "this
 sentence [doesn't] start well… can you make sure steps a friendly for beginners
@@ -294,9 +338,18 @@ is the whole value of it: at two, a third hit is worth reading.
 - [x] treasury-management/treasury-operations/treasury-levels-and-mandate — 2026-08-01 (rewritten)
 - [x] treasury-management/treasury-operations/treasury-controls-and-structure — 2026-08-02 (both section openings rewritten; the fourth ban came from it)
 - [x] treasury-management/treasury-operations/intro-to-treasury — 2026-08-02 (both openings read cold, clean: "Your company can have a profitable year and still fail to pay the staff", "Before lunch, your treasurer might…")
-- [ ] the other 41 steps — machine-clean on device-narration and unresolvable
-      references; **not** checked for undefined jargon, and **not** checked for
-      names introduced in a different step
+- [x] **the other 18 Treasury Management steps** — 2026-08-02. All 51 section
+      openings read cold, by hand, against all four bans. The split made this
+      urgent rather than optional and it caught three real cross-boundary
+      references that the scan cannot see: `hedging-currency-risk` opened on a
+      forward rate derived in the other half, its §5 pointed at "the FRA in the
+      previous step", and `the-price-of-debt` explained a rate gap by naming a
+      swap example told in a different lesson. All three are rewritten to stand
+      alone. This is the fourth ban's population exactly as predicted: **every
+      one was created by a split.**
+- [ ] the other 32 steps (25 CF, 7 SM) — machine-clean on device-narration and
+      unresolvable references; **not** checked for undefined jargon, and **not**
+      checked for names introduced in a different step
 
 ### D-3 · possessive budget, sentence length, step splitting, source links · opened 2026-08-01
 **Source:** owner review 2026-08-01 (TM 1.1) — "we're using *your* too many
@@ -306,30 +359,53 @@ being way too long to read".
 **Rules:** W-10 (revised, now a budget), W-12 (sentence length), S-8 (split long
 steps), C-7 (revised, inline links rather than a box)
 **Why it can't wait for a rewrite:** every other step is still one long climb
-with no outbound links at all. S-8 is the expensive one: splitting changes URLs
-and the course tree, so it is worth doing deliberately per lesson rather than
-opportunistically. W-10 and W-12 are cheap and mechanical, and both have a
-countable test.
-**Applies to:** all three courses — **3 of 44 steps checked** (the three TM
-operations steps; nothing else opened).
+with no outbound links at all. W-10 and W-12 are cheap and mechanical, and both
+have a countable test.
 
-Measure before rewriting, because the eye is a bad judge of both:
-`your` per total words (over 1-in-90 is a tic) and the longest sentence
-(over 35 words splits). Section count over four is the S-8 signal.
+⚠️ **This item used to say S-8 was "worth doing deliberately per lesson rather
+than opportunistically", because splitting changes URLs and the course tree.
+That sentence was wrong and it is withdrawn** *(2026-08-02, owner)*. It hardened
+into a reason never to split at all: nine TM steps sat at five and six sections
+for a day because the follow-on work looked expensive. The owner's ruling is in
+`LOG.md` and the rule is now S-8's first bullet — **never defer a split.** The
+URL churn is part of the fix.
 
-**Treasury Management**
-- [x] treasury-management/treasury-operations/intro-to-treasury — 2026-08-01
-- [x] treasury-management/treasury-operations/treasury-levels-and-mandate — 2026-08-01 (new, split from 1.1)
-- [x] treasury-management/treasury-operations/treasury-controls-and-structure — 2026-08-01 (new, split from 1.1)
-- [ ] treasury-management/working-capital/working-capital-and-liquidity
-- [ ] treasury-management/working-capital/cash-management
-- [ ] treasury-management/working-capital/inventory-and-creditors
-- [ ] treasury-management/risk/foreign-exchange-risk
-- [ ] treasury-management/risk/interest-rate-risk-management
-- [ ] treasury-management/investment/debt-management
-- [ ] treasury-management/investment/investment-management
-- [ ] treasury-management/systems/clearing-and-settlement
-- [ ] treasury-management/systems/treasury-management-systems
+**Applies to:** all three courses — **21 of 53 steps checked.** All of Treasury
+Management is paid including its S-8 splits (2026-08-02); nothing in Corporate
+Finance or Strategic Management has been opened.
+
+Measure before rewriting, because the eye is a bad judge of all three:
+`your` per total words (over 1-in-90 is a tic), the longest sentence (over 35
+words splits), and the section count (five means look for the seam, six means
+there is one).
+
+**Treasury Management — all 21 steps, closed 2026-08-02.** The nine remaining
+steps were five- and six-section climbs; they are eighteen steps of two to four
+sections now, every original slug kept on the first part of its pair so no
+existing URL broke. Longest sentence in the course is now 35 words, and `your`
+runs no denser than 1 in 100 anywhere.
+- [x] treasury-operations/intro-to-treasury — 2026-08-01
+- [x] treasury-operations/treasury-levels-and-mandate — 2026-08-01
+- [x] treasury-operations/treasury-controls-and-structure — 2026-08-01
+- [x] working-capital/working-capital-and-liquidity — 2026-08-02 (split → debtors-and-factoring)
+- [x] working-capital/debtors-and-factoring — 2026-08-02
+- [x] working-capital/inventory-and-creditors — 2026-08-02 (split → ordering-and-paying-suppliers)
+- [x] working-capital/ordering-and-paying-suppliers — 2026-08-02
+- [x] working-capital/cash-management — 2026-08-02 (split → cash-forecasting-and-surpluses)
+- [x] working-capital/cash-forecasting-and-surpluses — 2026-08-02
+- [x] treasury-risk/interest-rate-risk-management — 2026-08-02 (split → interest-rate-hedging-instruments)
+- [x] treasury-risk/interest-rate-hedging-instruments — 2026-08-02
+- [x] treasury-risk/foreign-exchange-risk — 2026-08-02 (split → hedging-currency-risk)
+- [x] treasury-risk/hedging-currency-risk — 2026-08-02
+- [x] debt-and-investment/debt-management — 2026-08-02 (split → the-price-of-debt)
+- [x] debt-and-investment/the-price-of-debt — 2026-08-02
+- [x] debt-and-investment/investment-management — 2026-08-02 (split → building-the-portfolio)
+- [x] debt-and-investment/building-the-portfolio — 2026-08-02
+- [x] systems-and-clearing/clearing-and-settlement — 2026-08-02 (split → payment-systems-and-ccps)
+- [x] systems-and-clearing/payment-systems-and-ccps — 2026-08-02
+- [x] systems-and-clearing/treasury-management-systems — 2026-08-02 (split → choosing-and-running-a-tms)
+- [x] systems-and-clearing/choosing-and-running-a-tms — 2026-08-02
+
 **Corporate Finance**
 - [ ] corporate-finance/investment/npv-and-payback
 - [ ] corporate-finance/investment/irr-and-mirr

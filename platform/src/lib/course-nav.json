@@ -1751,9 +1751,9 @@
         "children": [
           {
             "id": "working-capital-and-liquidity",
-            "label": "Working capital & liquidity",
+            "label": "Working capital",
             "lesson": {
-              "title": "Working capital and liquidity management",
+              "title": "Working capital, and how much of it to run",
               "kicker": "Working capital",
               "sections": [
                 {
@@ -1767,7 +1767,17 @@
                 {
                   "id": "cash-conversion-cycle",
                   "heading": "The cash conversion cycle"
-                },
+                }
+              ]
+            }
+          },
+          {
+            "id": "debtors-and-factoring",
+            "label": "Debtors & factoring",
+            "lesson": {
+              "title": "Getting the cash in",
+              "kicker": "Working capital",
+              "sections": [
                 {
                   "id": "debtor-management",
                   "heading": "Debtor management and cash discounts"
@@ -1781,9 +1791,9 @@
           },
           {
             "id": "inventory-and-creditors",
-            "label": "Inventory, EOQ & creditors",
+            "label": "Inventory",
             "lesson": {
-              "title": "Inventory management, EOQ and creditor management",
+              "title": "Inventory, and how it is financed",
               "kicker": "Working capital",
               "sections": [
                 {
@@ -1797,7 +1807,17 @@
                 {
                   "id": "jit",
                   "heading": "Just-in-time purchasing"
-                },
+                }
+              ]
+            }
+          },
+          {
+            "id": "ordering-and-paying-suppliers",
+            "label": "EOQ & creditors",
+            "lesson": {
+              "title": "How much to order, and when to pay",
+              "kicker": "Working capital",
+              "sections": [
                 {
                   "id": "eoq",
                   "heading": "The economic order quantity"
@@ -1811,9 +1831,9 @@
           },
           {
             "id": "cash-management",
-            "label": "Cash management & forecasting",
+            "label": "Cash management",
             "lesson": {
-              "title": "Cash management and cash flow forecasting",
+              "title": "Deciding how much cash to hold",
               "kicker": "Working capital",
               "sections": [
                 {
@@ -1827,7 +1847,17 @@
                 {
                   "id": "miller-orr",
                   "heading": "The Miller-Orr model"
-                },
+                }
+              ]
+            }
+          },
+          {
+            "id": "cash-forecasting-and-surpluses",
+            "label": "Forecasting & surpluses",
+            "lesson": {
+              "title": "Forecasting the cash, and putting it to work",
+              "kicker": "Working capital",
+              "sections": [
                 {
                   "id": "forecasting",
                   "heading": "Cash flow forecasting"
@@ -1853,7 +1883,7 @@
             "id": "interest-rate-risk-management",
             "label": "Interest rate risk",
             "lesson": {
-              "title": "Interest rate risk management",
+              "title": "Interest rate risk, and how to measure it",
               "kicker": "Risk",
               "sections": [
                 {
@@ -1863,7 +1893,17 @@
                 {
                   "id": "measuring",
                   "heading": "Measuring the exposure"
-                },
+                }
+              ]
+            }
+          },
+          {
+            "id": "interest-rate-hedging-instruments",
+            "label": "Covering the risk",
+            "lesson": {
+              "title": "Covering interest rate risk",
+              "kicker": "Risk",
+              "sections": [
                 {
                   "id": "fras",
                   "heading": "Forward rate agreements"
@@ -1887,7 +1927,7 @@
             "id": "foreign-exchange-risk",
             "label": "Foreign exchange risk",
             "lesson": {
-              "title": "Foreign exchange risk management",
+              "title": "Currency risk, and how rates are quoted",
               "kicker": "Risk",
               "sections": [
                 {
@@ -1901,7 +1941,17 @@
                 {
                   "id": "forward-rates",
                   "heading": "Forward rates"
-                },
+                }
+              ]
+            }
+          },
+          {
+            "id": "hedging-currency-risk",
+            "label": "Hedging currency risk",
+            "lesson": {
+              "title": "Hedging currency risk",
+              "kicker": "Risk",
+              "sections": [
                 {
                   "id": "operational-hedges",
                   "heading": "Hedging without instruments"
@@ -1912,7 +1962,7 @@
                 },
                 {
                   "id": "currency-options",
-                  "heading": "Currency options — and choosing between the tools"
+                  "heading": "Currency options, and choosing between the tools"
                 }
               ]
             }
@@ -1927,7 +1977,7 @@
             "id": "debt-management",
             "label": "Debt management",
             "lesson": {
-              "title": "Debt management",
+              "title": "Where debt comes from, and how long it should run",
               "kicker": "Debt and investment",
               "sections": [
                 {
@@ -1940,8 +1990,18 @@
                 },
                 {
                   "id": "matching",
-                  "heading": "Short against long — the matching principle"
-                },
+                  "heading": "Short against long, and the matching principle"
+                }
+              ]
+            }
+          },
+          {
+            "id": "the-price-of-debt",
+            "label": "The price of debt",
+            "lesson": {
+              "title": "What debt costs, and what it demands",
+              "kicker": "Debt and investment",
+              "sections": [
                 {
                   "id": "covenants",
                   "heading": "Loan covenants"
@@ -1959,19 +2019,29 @@
           },
           {
             "id": "investment-management",
-            "label": "Investment management",
+            "label": "Investing surplus cash",
             "lesson": {
-              "title": "Investment management",
+              "title": "The rules for investing surplus cash",
               "kicker": "Debt and investment",
               "sections": [
                 {
                   "id": "objectives",
-                  "heading": "Safety, liquidity, yield — in that order"
+                  "heading": "Safety, liquidity, yield, in that order"
                 },
                 {
                   "id": "policy",
                   "heading": "The investment policy statement"
-                },
+                }
+              ]
+            }
+          },
+          {
+            "id": "building-the-portfolio",
+            "label": "Building the portfolio",
+            "lesson": {
+              "title": "Instruments, credit risk and the portfolio",
+              "kicker": "Debt and investment",
+              "sections": [
                 {
                   "id": "instruments",
                   "heading": "The instruments"
@@ -1997,7 +2067,7 @@
             "id": "clearing-and-settlement",
             "label": "Clearing & settlement",
             "lesson": {
-              "title": "Clearing and settlement systems",
+              "title": "Clearing, settlement, and the risk in between",
               "kicker": "Systems and clearing",
               "sections": [
                 {
@@ -2011,18 +2081,28 @@
                 {
                   "id": "gross-vs-net",
                   "heading": "Gross settlement against net"
-                },
+                }
+              ]
+            }
+          },
+          {
+            "id": "payment-systems-and-ccps",
+            "label": "Payment systems",
+            "lesson": {
+              "title": "The systems that carry a payment",
+              "kicker": "Systems and clearing",
+              "sections": [
                 {
                   "id": "swift",
-                  "heading": "SWIFT — the messaging layer"
+                  "heading": "SWIFT, the messaging layer"
                 },
                 {
                   "id": "cls-and-dvp",
-                  "heading": "CLS, PvP and DvP — engineering the risk away"
+                  "heading": "Settling both legs at once"
                 },
                 {
                   "id": "zambia-systems",
-                  "heading": "Zambia's payment systems — and the operational rules"
+                  "heading": "Zambia's payment systems, and the operational rules"
                 }
               ]
             }
@@ -2031,7 +2111,7 @@
             "id": "treasury-management-systems",
             "label": "Treasury systems",
             "lesson": {
-              "title": "Treasury management systems",
+              "title": "What a treasury system is, and how it is built",
               "kicker": "Systems and clearing",
               "sections": [
                 {
@@ -2045,14 +2125,24 @@
                 {
                   "id": "offices",
                   "heading": "Front, middle and back office"
-                },
+                }
+              ]
+            }
+          },
+          {
+            "id": "choosing-and-running-a-tms",
+            "label": "Choosing and running one",
+            "lesson": {
+              "title": "Choosing a treasury system, and living with it",
+              "kicker": "Systems and clearing",
+              "sections": [
                 {
                   "id": "cash-positioning",
                   "heading": "Cash positioning and connectivity"
                 },
                 {
                   "id": "build-vs-buy",
-                  "heading": "Choosing and implementing a TMS"
+                  "heading": "Choosing and implementing one"
                 },
                 {
                   "id": "policy-and-roi",

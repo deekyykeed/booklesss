@@ -1,15 +1,34 @@
-/* TM · Lesson 5 Systems · Step 1 — Clearing and settlement systems
+/* TM · Lesson 5 Systems · Step 1a — Clearing, settlement, and the risk in between
  *
  * Source: 13_Clearing and Settlement Systems PPTX;
  *         build_tm_5_1_clearing-settlement.py (PDF).
  *
  * House style: .claude/skills/step-skill/RULES.md
+ *
+ * 2026-08-02 split (rule S-8). This was one six-section step. The seam is
+ * between the risk (what clearing and settlement are, why the gap between them
+ * is dangerous, and the two designs for closing a day's payments) and the
+ * plumbing that carries it (SWIFT, central counterparties, Zambia's systems).
+ * Coverage is identical; nothing was cut. This part keeps the
+ * `clearing-and-settlement` slug; the second half is `payment-systems-and-ccps`.
+ *
+ * 2026-08-02 quality pass, paying D-1, D-2, D-3 and D-4's jargon half.
+ *
+ * Engagement (D-1): Herstatt was the buried lead. It was the second paragraph
+ * of §2, behind a definition of settlement risk, and it is the one thing in the
+ * step a reader will still have in an exam hall. It now opens that section with
+ * its date and what actually happened (C-6), and the definition follows it.
+ * §3's netting arithmetic was the last sentence of the section and is now the
+ * first, because the 180-against-20 figure is what makes the trade-off land.
+ *
+ * Emphasis (D-2): 0 bold, 0 tappable terms and 0 source links across the
+ * original six sections became 12, 7 and 9. 52 em dashes became 0 (W-11).
  */
 
 export default {
   slug: "clearing-and-settlement",
   label: "Clearing & settlement",
-  title: "Clearing and settlement systems",
+  title: "Clearing, settlement, and the risk in between",
   kicker: "Systems and clearing",
 
   sections: [
@@ -20,29 +39,33 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Clearing is every step involved in transferring ownership of funds except the last one: validating payment details, matching sender and receiver accounts, preparing the settlement instructions. Settlement is that last step — the moment funds actually move, accounts are debited and credited, and the transaction becomes final and irrevocable.",
+          text: "Your customer's bank confirms the payment went out at 09:40. Your account shows nothing. Both of those are true at the same time, and until one more thing happens, **you have not been paid.**",
         },
         {
           type: "p",
-          text: "People use the words interchangeably; treasury cannot, because the difference is where the risk lives. Until settlement completes, either party can fail and leave the other exposed. Everything in this step — the systems, the acronyms, the infrastructure — exists to shrink or eliminate that window.",
+          text: "[Clearing](https://corporatefinanceinstitute.com/resources/economics/clearing-house/) is every step in transferring money except the last one: validating the payment details, matching sender and receiver accounts, preparing the settlement instructions. Settlement is that last step, when funds actually move, accounts are debited and credited, and the transaction reaches [[finality|The point after which a payment cannot be reversed, even if the payer goes under an hour later. Before it, what you hold is a claim on somebody; after it, you hold money.]].",
+        },
+        {
+          type: "p",
+          text: "People use the two words interchangeably. **You cannot, because the difference is where the risk lives.** Until settlement completes, either side can fail and leave the other holding nothing, and every system in this lesson exists to shrink that window or close it.",
         },
         {
           type: "callout",
-          text: "Risk exists during clearing and ends at settlement. A payment that has cleared but not settled is a promise, not money.",
+          text: "Risk exists during clearing and ends at settlement. **A payment that has cleared but not settled is a promise, not money.**",
         },
       ],
       check: {
         question:
-          "A customer's payment instruction has been validated, matched and queued — but the accounts are not yet debited and credited. Has the company been paid?",
+          "A customer's payment instruction has been validated, matched and queued, but the accounts are not yet debited and credited. Has the company been paid?",
         options: [
-          "No — the payment has cleared but not settled; until settlement it is a promise that fails if the payer's bank does",
-          "Yes — validation makes the payment final",
+          "No, because the payment has cleared but not settled, and until settlement it is a promise that fails if the payer's bank does",
+          "Yes, because validation makes the payment final",
           "Yes, provided the instruction was sent by SWIFT",
           "It depends on the payment's size",
         ],
         answer: 0,
         explain:
-          "Clearing is preparation; settlement is the transfer. The exposure between the two is precisely the settlement risk the rest of this step's systems are built to manage — which is why treasury books nothing as received until it settles.",
+          "Clearing is preparation and settlement is the transfer. The exposure between the two is precisely the settlement risk the rest of this lesson's systems are built to manage, which is why treasury books nothing as received until it settles.",
       },
     },
 
@@ -53,29 +76,30 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Settlement risk is sharpest in foreign exchange, because an FX deal settles in two countries at two different times. Trade euros for dollars and the euro leg settles in Frankfurt during European hours while the dollar leg waits for New York, six hours behind. Fail in that gap and one party has paid away its currency and will never receive the other side.",
+          text: "On 26 June 1974 the German authorities withdrew the banking licence of Bankhaus Herstatt and shut it at the end of the Frankfurt business day. Banks around the world had already paid Herstatt their deutsche marks that morning. **New York was still open, the dollars owed back were never delivered, and the counterparties lost the entire principal.** Fifty years later the risk still carries the bank's name.",
+        },
+        { type: "h2", text: "What the failure actually was" },
+        {
+          type: "p",
+          text: "[Settlement risk](https://www.bis.org/cpmi/publ/d00b.htm) is the risk that you deliver your side of a deal and never receive the other. It is sharpest in foreign exchange, because **an FX deal settles in two countries at two different times.** Trade euros for dollars and the euro leg settles in Frankfurt during European hours while the dollar leg waits for New York, six hours behind.",
         },
         {
           type: "p",
-          text: "The risk carries the name of the bank that proved it. Herstatt Bank, a German lender, collapsed in 1974 after receiving deutsche marks on its FX deals but before delivering the dollars owed back. Counterparties who had irrevocably paid marks got nothing — a one-bank failure that exposed a structural flaw in global payments and set regulators building the safer settlement infrastructure this lesson describes.",
-        },
-        {
-          type: "p",
-          text: "Fifty years on, the term is still the working name for cross-currency settlement exposure — and the reason nearly every major FX trade now settles through the CLS system later in this step.",
+          text: "Note what kind of loss that is. This is not a rate moving against you by a few percent. It is [[principal risk|Losing the whole amount rather than a change in its value. A currency move costs you part of a trade; a settlement failure costs you all of the leg you already paid away.]], the full amount you paid away, and it is why the systems in the next step were built rather than merely improved.",
         },
       ],
       check: {
         question:
           "Why is settlement risk worse in FX than in a domestic payment?",
         options: [
-          "The two legs settle in different countries at different times, so one party can pay hours before the other — and fail in between",
+          "The two legs settle in different countries at different times, so one party can pay hours before the other and fail in between",
           "FX amounts are always larger than domestic ones",
           "Exchange rates can move during settlement",
           "Foreign banks are inherently less trustworthy",
         ],
         answer: 0,
         explain:
-          "The time-zone gap is the mechanism: each currency settles in its home system during its own hours, so the legs cannot naturally happen together. Herstatt's counterparties lost principal in exactly that window — a timing exposure, not a size or rate one.",
+          "The time-zone gap is the mechanism. Each currency settles in its home system during its own hours, so the legs cannot naturally happen together. Herstatt's counterparties lost principal in exactly that window, which is a timing exposure rather than a size or rate one.",
       },
     },
 
@@ -86,7 +110,11 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "There are two basic ways to settle a day's payments between banks, and the trade-off between them is risk against cost.",
+          text: "Bank A owes Bank B ZMW 100 million today, and Bank B owes Bank A ZMW 80 million. Settle each payment as it arrives and ZMW 180 million has to move. Wait until the evening and [net them](https://corporatefinanceinstitute.com/resources/economics/netting/), and **ZMW 20 million moves instead.**",
+        },
+        {
+          type: "p",
+          text: "That saving is the entire case for net settlement, and the cost of it is that every payment sitting in the net is unsettled exposure until the evening run. So there are two designs, and the choice between them is risk against cost.",
         },
         {
           type: "table",
@@ -94,170 +122,44 @@ export default {
           rows: [
             [
               "How it works",
-              "Each payment settled individually, in full, in real time — final immediately",
+              "Each payment settled individually, in full, in real time, and final immediately",
               "Payments accumulate through the day and offset; only net differences settle at day's end",
             ],
             [
               "Used for",
-              "High-value, time-critical payments — securities trades, large corporate transfers",
-              "Routine, lower-value payments — payroll, utilities, interbank retail",
+              "High-value, time-critical payments: securities trades, large corporate transfers",
+              "Routine, lower-value payments: payroll, utilities, interbank retail",
             ],
-            ["Cost", "High — every transaction settles and is charged", "Low — most flows cancel out"],
+            ["Cost", "High, since every transaction settles and is charged", "Low, since most flows cancel out"],
             [
               "Liquidity needed",
-              "High — funds must be positioned for each payment",
-              "Low — only the net moves",
+              "High, because funds must be positioned for each payment",
+              "Low, because only the net moves",
             ],
             [
               "Risk",
-              "Low — nothing sits unsettled",
-              "Higher — unsettled positions accumulate until day's end",
+              "Low, since nothing sits unsettled",
+              "Higher, since unsettled positions accumulate until day's end",
             ],
           ],
         },
         {
           type: "p",
-          text: "The netting arithmetic is what makes DNS cheap: if Bank A owes Bank B ZMW 100 million and Bank B owes Bank A ZMW 80 million, only ZMW 20 million actually moves. But every payment waiting in that net is exposure until the evening run — so the rule follows the amounts. High values must settle gross, where the overnight exposure would be intolerable; low values can wait for the net, where the cost saving outweighs the risk.",
+          text: "**The routing rule follows the amount, not the preference.** High values settle gross, because a day of unsettled exposure on them would be intolerable. Low values wait for the net, because there the saved cost and saved [[intraday liquidity|The cash a bank has to have sitting available during the day to make each payment as it goes out. Real-time settlement is expensive partly because it forces every bank to hold more of it.]] are worth more than the risk.",
         },
       ],
       check: {
         question:
           "A company must transfer ZMW 45 million to complete a securities purchase today, with finality. Which settlement route, and why?",
         options: [
-          "RTGS — a high-value, time-critical payment needs individual, immediate, final settlement",
-          "Deferred net settlement — cheaper is always better",
+          "RTGS, because a high-value, time-critical payment needs individual, immediate, final settlement",
+          "Deferred net settlement, because cheaper is always better",
           "A cheque, since paper is legally final",
           "Split it into 45 payments of ZMW 1 million through DNS",
         ],
         answer: 0,
         explain:
-          "Size and urgency are the routing rule. A DNS payment isn't final until the evening run — an unacceptable window on ZMW 45 million — and splitting it just multiplies unsettled exposure. RTGS costs more per transaction precisely because it removes that window.",
-      },
-    },
-
-    /* ---------------------------------------------------------------- */
-    {
-      id: "swift",
-      heading: "SWIFT — the messaging layer",
-      blocks: [
-        {
-          type: "p",
-          text: "SWIFT — the Society for Worldwide Interbank Financial Telecommunications — is the secure, standardised messaging network banks use to exchange payment instructions. The point to hold onto: SWIFT moves no money. It carries the messages that tell banks to move money through the settlement systems.",
-        },
-        {
-          type: "table",
-          columns: [{ label: "Message" }, { label: "Use" }, { label: "Example" }],
-          rows: [
-            ["MT103", "Customer credit transfer", "A company instructs its bank to pay a supplier"],
-            ["MT202", "Bank-to-bank transfer", "Banks settle with each other — the RTGS workhorse"],
-            ["MT300", "FX trade confirmation", "Two banks confirm a currency deal's terms"],
-            ["MT320", "Securities settlement instruction", "Settling a bond or share trade"],
-          ],
-        },
-        {
-          type: "p",
-          text: "Large corporates connect to SWIFT directly through their banks — initiating payments, confirming FX deals, instructing securities settlements from their own treasury systems. Smaller firms instruct their bank, which translates into SWIFT messages. Either way the properties are the same: one worldwide format, encryption and digital signatures against fraud, membership covering most banks including all the major Zambian ones, and a timestamped log of every message — the audit trail that settles disputes.",
-        },
-      ],
-      check: {
-        question:
-          "A treasurer says a supplier \"has been paid — the MT103 went out this morning\". What has actually happened?",
-        options: [
-          "An instruction has been transmitted — SWIFT carries messages, and the money itself moves only when the payment settles in the banking system",
-          "The funds arrived the moment the message was sent",
-          "The payment is final because MT103s are irrevocable cash",
-          "Nothing — MT103 is only a trade confirmation",
-        ],
-        answer: 0,
-        explain:
-          "SWIFT is the messaging layer, not the settlement layer. The MT103 tells the banks what to do; whether value has moved depends on the settlement system behind it and its cut-offs. Treating an instruction as a payment is exactly the confusion the clearing/settlement distinction exists to prevent.",
-      },
-    },
-
-    /* ---------------------------------------------------------------- */
-    {
-      id: "cls-and-dvp",
-      heading: "CLS, PvP and DvP — engineering the risk away",
-      blocks: [
-        {
-          type: "p",
-          text: "CLS Bank was created to close the Herstatt gap. It stands in the middle of every FX trade settled through it: both banks pre-fund accounts at CLS in their currencies, and CLS then settles both legs at the same instant — debiting one side's euros and crediting its dollars simultaneously. Neither party can ever have paid without being paid. The principle is payment versus payment (PvP): the exchange happens atomically or not at all. Nearly all major FX flows settle this way now, and a treasurer trading FX should insist on it.",
-        },
-        {
-          type: "p",
-          text: "Securities trades have the same timing problem — securities can move before cash, or cash before securities, a failure the market calls a fail — and the same cure. Delivery versus payment (DvP) puts a central securities depository or central counterparty between buyer and seller and transfers the securities and the cash at the same moment; if either side cannot complete, neither transfer happens.",
-        },
-        {
-          type: "p",
-          text: "Both are instances of one idea: the central counterparty (CCP). For every trade the CCP becomes the buyer to the seller and the seller to the buyer, so each party faces only the CCP — regulated, well-capitalised, protected by daily mark-to-market, margin collection and a default fund — instead of each other's credit. CLS does it for FX, clearing houses like LCH for derivatives, national depositories for securities.",
-        },
-      ],
-      check: {
-        question:
-          "How exactly does CLS eliminate Herstatt risk?",
-        options: [
-          "Both pre-funded legs settle simultaneously — payment versus payment — so no one can pay out without receiving in the same instant",
-          "CLS insures each party against the other's failure",
-          "CLS settles everything in dollars, removing the second currency",
-          "CLS forces both banks to settle during New York hours only",
-        ],
-        answer: 0,
-        explain:
-          "Herstatt risk was a timing gap; CLS closes the gap rather than insuring it. Atomic settlement of both legs means the failure scenario — paid one side, lost the other — cannot occur. That is engineering the risk out of the structure, which is stronger than compensating for it.",
-      },
-    },
-
-    /* ---------------------------------------------------------------- */
-    {
-      id: "zambia-systems",
-      heading: "Zambia's payment systems — and the operational rules",
-      blocks: [
-        {
-          type: "p",
-          text: "The Bank of Zambia oversees the country's systemically important payment systems, and the three main ones map exactly onto the gross/net distinction.",
-        },
-        {
-          type: "table",
-          columns: [{ label: "System" }, { label: "Type" }, { label: "Use" }],
-          rows: [
-            [
-              "ZIPSS",
-              "Real-time gross settlement",
-              "High-value, urgent payments — VAT, securities, large transfers; pre-funded, immediate finality, no amount limits",
-            ],
-            [
-              "EFT",
-              "Deferred net settlement",
-              "Routine payments — salaries, utilities, taxes, loan disbursements; batched daily, credited same day",
-            ],
-            [
-              "CIC",
-              "Cheque image clearing",
-              "Cheques cleared as scanned images (truncation) — T+1 instead of the old T+3",
-            ],
-          ],
-        },
-        {
-          type: "p",
-          text: "The routing rule for a Zambian treasury follows directly: ZIPSS for urgent, high-value payments; EFT for the routine payroll-and-suppliers run; cheques only where unavoidable, since even at T+1 they are the slowest and riskiest instrument. Settlement conventions like T+1 and T+2 are simply the market's agreed clearing time — trades must be validated, matched and routed, which is why securities settle a day or two after dealing, and why your cash from a sale is not spendable the moment you hit sell. Systems penalise fails — the party that doesn't deliver on time pays interest or fines.",
-        },
-        {
-          type: "p",
-          text: "Two operational details complete the picture. Every system has a cut-off time: an instruction submitted after it settles the next day, so a payment promised for this afternoon must be submitted before the bank's cut-off — often noon — or the promise is broken. And banks offer daylight overdrafts: an account may swing negative intraday against payments due, provided collections restore it by close of business — a fee-bearing facility, because the bank carries intraday risk while the account is short.",
-        },
-      ],
-      check: {
-        question:
-          "At 14:30 a treasurer submits a large VAT payment due today; the bank's ZIPSS cut-off was 13:00. What happens?",
-        options: [
-          "The payment settles tomorrow — after cut-off, same-day settlement is gone regardless of the system's speed",
-          "It settles today anyway, since ZIPSS is real-time",
-          "It reroutes automatically through EFT and arrives today",
-          "It fails permanently and must be re-keyed next week",
-        ],
-        answer: 0,
-        explain:
-          "Real-time settlement operates inside the day's window, and the cut-off is the window's edge. Missing it doesn't break the payment — it delays finality to the next day, breaking the promise attached to it. Knowing each system's cut-offs is a core operational treasury duty for exactly this reason.",
+          "Size and urgency are the routing rule. A DNS payment is not final until the evening run, which is an unacceptable window on ZMW 45 million, and splitting it only multiplies unsettled exposure. RTGS costs more per transaction precisely because it removes that window.",
       },
     },
   ],

@@ -1,6 +1,6 @@
 # BBF4302 Treasury Management — Course Status
 
-**Last updated:** 2026-07-31
+**Last updated:** 2026-08-02
 
 ---
 
@@ -22,41 +22,71 @@ post PDFs without checking with the owner.
 | House style | `.claude/skills/step-skill/RULES.md` — read before writing a step |
 | URL | `/treasury-management/<lesson>/<step>` |
 
-**Reader step status — the course is complete: 12 steps, 57 sections, every
-section with a comprehension check.**
+**Reader step status — the course is complete: 21 steps, 57 sections, every
+section with a comprehension check.** The section count is unchanged from the
+12-step version, which is the proof that the split moved the seams and cut
+nothing.
 
-> **2026-08-01:** Treasury operations was one six-section step and is now three
-> two-section steps (rule **S-8** — a reader who finishes three short steps has
-> learned more than one who abandons a long one two thirds through). Coverage is
-> unchanged, nothing was cut, and the first part keeps the `intro-to-treasury`
-> slug so the existing URL still opens the course. The other four lessons have
-> not been split; that debt is **D-3**.
+> **2026-08-02 — the whole course was split and re-passed.** Every step is now
+> two to four sections (rule **S-8**): a reader who finishes three short steps
+> has learned more than one who abandons a long one two thirds through.
+> **Coverage is identical and nothing was cut.** Every original slug is kept on
+> the first part of its pair, so no URL that existed has broken.
+>
+> The same pass paid **D-1, D-2, D-3 and D-4** across all 21 steps: 382 em
+> dashes went to zero (**W-11**), and the nine unpaid steps' 0 bold / 0 tappable
+> terms / 0 source links became 159 bold, 49 terms and 70 verified outbound
+> links. **D-5 (tables → `cards`) is the one thing still owed** and it is
+> blocked on the glyph set, not on the steps.
 
 | Lesson | Step | Slug | Written |
 |--------|------|------|---------|
-| 1 Treasury operations | What treasury is and what it does | `intro-to-treasury` | ✅ 2026-07-31, split 2026-08-01 |
+| 1 Treasury operations | What treasury is and what it does | `intro-to-treasury` | ✅ 2026-08-01 |
 | | How treasury work divides, and what it is for | `treasury-levels-and-mandate` | ✅ 2026-08-01 |
 | | Keeping treasury honest, and where it sits | `treasury-controls-and-structure` | ✅ 2026-08-01 |
-| 2 Working capital | Working capital & liquidity | `working-capital-and-liquidity` | ✅ 2026-07-31 |
-| | Inventory, EOQ & creditors | `inventory-and-creditors` | ✅ 2026-07-31 |
-| | Cash management & forecasting | `cash-management` | ✅ 2026-07-31 |
-| 3 Risk | Interest rate risk | `interest-rate-risk-management` | ✅ 2026-07-31 |
-| | Foreign exchange risk | `foreign-exchange-risk` | ✅ 2026-07-31 |
-| 4 Debt and investment | Debt management | `debt-management` | ✅ 2026-07-31 |
-| | Investment management | `investment-management` | ✅ 2026-07-31 |
-| 5 Systems and clearing | Clearing & settlement | `clearing-and-settlement` | ✅ 2026-07-31 |
-| | Treasury systems | `treasury-management-systems` | ✅ 2026-07-31 |
+| 2 Working capital | Working capital, and how much of it to run | `working-capital-and-liquidity` | ✅ 2026-08-02 |
+| | Getting the cash in | `debtors-and-factoring` | ✅ 2026-08-02 |
+| | Inventory, and how it is financed | `inventory-and-creditors` | ✅ 2026-08-02 |
+| | How much to order, and when to pay | `ordering-and-paying-suppliers` | ✅ 2026-08-02 |
+| | Deciding how much cash to hold | `cash-management` | ✅ 2026-08-02 |
+| | Forecasting the cash, and putting it to work | `cash-forecasting-and-surpluses` | ✅ 2026-08-02 |
+| 3 Risk | Interest rate risk, and how to measure it | `interest-rate-risk-management` | ✅ 2026-08-02 |
+| | Covering interest rate risk | `interest-rate-hedging-instruments` | ✅ 2026-08-02 |
+| | Currency risk, and how rates are quoted | `foreign-exchange-risk` | ✅ 2026-08-02 |
+| | Hedging currency risk | `hedging-currency-risk` | ✅ 2026-08-02 |
+| 4 Debt and investment | Where debt comes from, and how long it should run | `debt-management` | ✅ 2026-08-02 |
+| | What debt costs, and what it demands | `the-price-of-debt` | ✅ 2026-08-02 |
+| | The rules for investing surplus cash | `investment-management` | ✅ 2026-08-02 |
+| | Instruments, credit risk and the portfolio | `building-the-portfolio` | ✅ 2026-08-02 |
+| 5 Systems and clearing | Clearing, settlement, and the risk in between | `clearing-and-settlement` | ✅ 2026-08-02 |
+| | The systems that carry a payment | `payment-systems-and-ccps` | ✅ 2026-08-02 |
+| | What a treasury system is, and how it is built | `treasury-management-systems` | ✅ 2026-08-02 |
+| | Choosing a treasury system, and living with it | `choosing-and-running-a-tms` | ✅ 2026-08-02 |
 
 Reader lesson slugs (middle URL segment): `treasury-operations`,
 `working-capital`, `treasury-risk`, `debt-and-investment`,
-`systems-and-clearing`. The risk-step slugs deliberately avoid Corporate
-Finance's `interest-rate-risk` / `currency-risk` (reader slugs are global).
+`systems-and-clearing`. Step slugs are global across every course, so the risk
+steps deliberately avoid Corporate Finance's `interest-rate-risk`,
+`hedging-interest-rate-risk` and `currency-risk`.
 
-Corrections made while porting (recorded in the step file headers): the 4.1
-bond example now prices the 12% coupon at a 14% yield correctly (≈ ZMW 931,334,
-a discount — the PDF had K1,001,100 via a wrong final discount factor); the 2.3
-Miller-Orr workings state the daily rate cleanly as 0.025%; the 3.1 cap-vs-FRA
-comparison was recomputed on consistent 6-month figures.
+> ⚠️ **`inventory-and-creditors` now covers inventory only.** Creditors moved to
+> `ordering-and-paying-suppliers` in the split, and the slug stayed put because
+> S-8 keeps the existing URL on the first part. A working link beats a tidy one;
+> the step's title and sidebar label both say "Inventory".
+
+Corrections recorded in the step file headers: the 4.1 bond example prices the
+12% coupon at a 14% yield correctly (ZMW 931,334, a discount; the PDF had
+K1,001,100 via a wrong final discount factor); the 2.3 Miller-Orr workings state
+the daily rate cleanly as 0.025% and now evaluate the cube root instead of
+printing a garbled line; the 3.1 cap-vs-FRA comparison was recomputed on
+consistent 6-month figures; and the 5.2 close no longer claims the course is ten
+steps or lists its lessons.
+
+**One source was cut rather than shipped broken:** the Bank of Zambia's national
+payment systems page (`boz.zm`, live and verified) is linked from nothing,
+because `gen-favicons.mjs` caps a mark at 12 KB and the bank publishes only a
+15.4 KB multi-size `.ico`. No favicon means no chip, and a source with no chip is
+one the reader cannot reach. Restore it if that generator learns to downscale.
 
 ---
 

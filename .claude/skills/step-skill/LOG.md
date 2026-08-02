@@ -22,6 +22,23 @@ Quote actual words. A student's phrasing is never rewritten into the owner's.
 
 ---
 
+### 2026-08-02 · treasury-management (all steps) · owner
+- `structure` — on being told the nine remaining TM steps would get the quality
+  pass now and the **S-8** splits later, because splitting changes URLs, the
+  course manifest and the debt lists: **"It's not a problem to split. If a step
+  is too long, that's a very big problem, and we need to split it. And splitting
+  it is the only solution. So meaning, if you have to split it, you can split it
+  and then deal with the links changing and everything."** Also: **"you can add
+  it in the skill"**, so this is a rule and not a one-off ruling on this course.
+  My deferral was wrong in both directions: it treated the follow-on work as the
+  expensive thing when the expensive thing is a reader abandoning a six-section
+  step, and `DEBT.md` D-3's own note that S-8 is "worth doing deliberately per
+  lesson" had hardened into a reason never to do it at all. Splitting now happens
+  in the edit that finds the length, and the URL churn is done in the same edit.
+→ promoted: **S-8** (new first bullet, "Never defer a split") · debt: **D-3**
+  (the S-8 half now closes as the nine TM steps are split, rather than being
+  carried)
+
 ### 2026-08-02 · all steps · owner
 - `element` — of the source strip: **"the row of sources, put it under the
   section that talks about them, so no more at the end with a divider and
