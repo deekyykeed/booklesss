@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { labelFor, nextLessonId, pathForId } from "@/lib/course";
 import { rate, useProgress, type Grasp } from "@/lib/progress";
-import { SolarIcon, type SolarIconName } from "@/components/icons/solar";
+import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
 import { SectionNote } from "./SectionNote";
 
 /* Two answers: "Later" and "Got it".
@@ -21,28 +21,27 @@ import { SectionNote } from "./SectionNote";
  * Amber then green, each dark enough to hold 5.2:1 on the content surface.
  * Green is completion, the same thing it means everywhere else here.
  *
- * The marks changed twice on 2026-08-02. First the row lost its labels, and a
- * clipboard carrying the word "Later" became a bare clipboard saying nothing,
- * so it became a bookmark and a ticked circle. Then the owner called for a
- * thumbs pair, which is where it now sits — up for "Got it", down for "Later".
+ * The marks went through four pairs on 2026-08-02, all owner-led. The row lost
+ * its labels, so a clipboard carrying the word "Later" became a bare clipboard
+ * saying nothing; that gave a bookmark and a ticked circle; then a Solar
+ * Duotone thumbs pair; and now a smiling face and a sad one, MynaUI's own,
+ * picked off a search of the set.
  *
- * Worth knowing why that was argued against first, in case it comes back
- * round: a thumb ordinarily rates the material, and the note button beside
- * this one already asks that ("Hard to follow", "Too long", "Needs an
- * example", "Something looks wrong"). The reading here is the other one — a
- * thumb is also the most universally understood yes/no on a phone, and needing
- * no word at all is exactly what a label-less row wants. Owner's call, taken
- * knowingly.
+ * A face is the right answer to the question this control actually asks. The
+ * bookmark and tick described what happens next, which is a step removed from
+ * "how did that land", and the thumbs read as a verdict on the writing rather
+ * than on the reader's grasp of it. A face is neither: it is how you feel
+ * about the section you just read, needs no word, and is understood by anyone.
  *
- * Solar Duotone rather than MynaUI, also the owner's pick, which makes the
- * reader the third Solar surface after /workspace and the dashboard stat
- * cards. Duotone fills with currentColor twice (back layer at opacity .5), so
- * the mark shades itself out of whatever hue the button is set to and there is
- * no separate solid twin to swap in when answered — the colour is the whole
- * signal. */
-const ANSWERS: { id: Grasp; label: string; icon: SolarIconName; tone: string }[] = [
-  { id: "got", label: "Got it", icon: "like-bold-duotone", tone: "#17754d" },
-  { id: "not", label: "Later", icon: "dislike-bold-duotone", tone: "#96601f" },
+ * Round rather than the square or ghost variants of the same pair, because at
+ * 20px on a phone the square's corners and the ghost's tail are noise.
+ *
+ * Back on MynaUI, so the line/solid swap on `active` returns: the answer given
+ * fills in, which is a second signal beside the colour and the one the rest of
+ * the app's chrome already uses for "this is the current one". */
+const ANSWERS: { id: Grasp; label: string; icon: MynaIconName; tone: string }[] = [
+  { id: "got", label: "Got it", icon: "smile", tone: "#17754d" },
+  { id: "not", label: "Later", icon: "sad", tone: "#96601f" },
 ];
 
 /* End-of-section checkpoint — a scale rather than a tick.
@@ -103,11 +102,14 @@ export function Checkpoint({
               className="grasp-btn squircle"
               style={{ "--grasp-tone": a.tone } as React.CSSProperties}
             >
-              {/* 21px. A duotone mark is filled, so it carries more weight per
-                  pixel than the hairline it replaced — this is a shade smaller
-                  than the 22px it would take as an outline, and it still fills
-                  the 34px tap target properly. */}
-              <SolarIcon name={a.icon} size={21} />
+              {/* Bigger and thinner than the app's 17px/1.5 chrome: with the
+                  pill gone the mark is the whole control, and MynaUI's default
+                  weight reads as heavy once nothing is bounding it. */}
+              <MynaIcon
+                name={active ? (`${a.icon}-solid` as MynaIconName) : a.icon}
+                size={20}
+                strokeWidth={1.2}
+              />
               <span className="grasp-label">{a.label}</span>
             </button>
           );
