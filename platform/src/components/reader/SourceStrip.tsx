@@ -60,10 +60,13 @@ export function SourceStrip({ urls }: { urls: string[] }) {
        it, and the gap between the two belongs to that wrapper (see
        `BlockWithSources`) rather than to this component. */
     <div>
-      {/* Named, because a bare row of logos under a section is a puzzle: it
-          could be a partner list or a set of tools. One quiet word settles it.
-          It sits outside the scroller so it stays put while the chips move. */}
-      <p className="mb-2 text-[12px] font-semibold uppercase tracking-[0.06em] text-muted">Sources</p>
+      {/* No "SOURCES" heading. It was there because a bare row of logos at the
+          foot of a section could have been a partner list or a set of tools,
+          and one quiet word settled it. Now the strip sits directly under the
+          paragraph it belongs to, and that position says what the word was
+          saying: a named site under a claim reads as where the claim came
+          from. The label was the second piece of furniture in a component
+          whose whole point is not being furniture. */}
       <div
         data-no-swipe
         className="no-scrollbar bleed-x flex items-center gap-2.5 overflow-x-auto py-1"

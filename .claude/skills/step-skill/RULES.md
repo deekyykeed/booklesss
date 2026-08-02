@@ -293,6 +293,11 @@ text, so a mark written into one shows its own syntax.
     page furniture, and by the end of a long section you had lost which claim
     it belonged to). The strip leaves the sentence alone and still says, at a
     glance, what *that paragraph* rests on.
+    **No "SOURCES" heading over it** *(removed 2026-08-02, same reading)*. The
+    word was there because a bare row of logos at a section's foot could have
+    been a partner list; sitting under the paragraph, the position already says
+    it. A label on a component whose whole point is not being furniture was the
+    furniture.
   - **The brackets are a record, not decoration.** Since nothing shows in the
     prose, put them on the phrase the source actually backs: that is what the
     next person editing the `.mjs` will check the link against.
