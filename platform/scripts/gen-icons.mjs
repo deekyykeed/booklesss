@@ -35,6 +35,10 @@ const ICONS = [
   "info-circle-solid",
   "external-link",
   "chevron-down",
+  /* The Appearance segmented on /settings — system, light, dark. */
+  "monitor",
+  "sun",
+  "moon",
   "chevron-right",
   // home rail destinations
   "layout-dashboard",

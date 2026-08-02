@@ -38,7 +38,7 @@ export function LessonReader({ lesson, lessonId }: { lesson: Lesson; lessonId: s
    * previous lesson's scroll position. Instant rather than smooth throughout:
    * a step being opened shouldn't animate past content nobody asked to see.
    *
-   * Restoring waits a frame. The reading column is static HTML, but Aptos can
+   * Restoring waits a frame. The reading column is static HTML, but Satoshi can
    * land a beat later and reflow it, and restoring against a shorter document
    * would clamp the offset to a wrong place. */
   useEffect(() => {

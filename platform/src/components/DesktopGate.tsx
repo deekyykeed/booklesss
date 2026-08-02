@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 /* Booklesss is a phone app. This is what a desktop visitor gets instead.
@@ -25,10 +26,19 @@ import { useEffect, useState } from "react";
 const PASSED = "booklesss-desktop-pass";
 const MOBILE_MAX = 1024;
 
+/** The design scratchpads are desktop surfaces on purpose: /workspace replicates
+ *  a wide project nav, and /settings is the reference settings dialog at its own
+ *  671px. Sending either of them to a phone defeats the only reason they exist,
+ *  which is to be compared against the shot they came from. */
+const SKIP = ["/workspace", "/settings"];
+
 export function DesktopGate() {
+  const pathname = usePathname();
   const [show, setShow] = useState(false);
+  const skip = SKIP.some((p) => pathname === p || pathname.startsWith(p + "/"));
 
   useEffect(() => {
+    if (skip) return;
     if (localStorage.getItem(PASSED) === "1") return;
 
     const installed =
@@ -42,9 +52,11 @@ export function DesktopGate() {
     // Someone resizing a window down to phone width should be let straight in.
     mq.addEventListener("change", apply);
     return () => mq.removeEventListener("change", apply);
-  }, []);
+    // `skip` is in here so navigating from a scratchpad back into the app
+    // re-arms the gate rather than leaving it off for the rest of the session.
+  }, [skip]);
 
-  if (!show) return null;
+  if (skip || !show) return null;
 
   const pass = () => {
     localStorage.setItem(PASSED, "1");

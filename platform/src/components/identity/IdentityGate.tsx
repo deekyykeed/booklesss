@@ -40,9 +40,10 @@ import { saveIdentity, useIdentity } from "@/lib/identity";
  * never sees this flash on screen before it disappears. */
 
 /** Surfaces that aren't the app: the sign-in screens Clerk owns when it's on,
- *  the offline fallback, and the /workspace design scratchpad. Asking a
+ *  the offline fallback, and the two design scratchpads (/workspace, and
+ *  /settings, which is the reference settings dialog reproduced). Asking a
  *  student's name over any of them is asking in the wrong place. */
-const SKIP = ["/sign-in", "/sign-up", "/offline", "/workspace"];
+const SKIP = ["/sign-in", "/sign-up", "/offline", "/workspace", "/settings"];
 
 const STEPS = ["who", "school", "courses"] as const;
 type Step = (typeof STEPS)[number];

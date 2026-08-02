@@ -1,10 +1,11 @@
-"""Rebuilds the self-hosted Aptos woff2 files as content-driven subsets.
+"""Rebuilds the self-hosted reading-font woff2 files as content-driven subsets.
 
     python3 scripts/subset-fonts.py
 
-Aptos ships ~1,090 mapped codepoints — Cyrillic, Greek, the lot. The four
-weights were 301 KB of a 909 KB first visit, a third of it, for a Zambian
-finance course that renders none of that.
+The reading face is **Satoshi** (Fontshare / Indian Type Foundry, ITF Free Font
+Licence), owner's pick on 2026-08-02, replacing Aptos. Same treatment either
+way: a retail font ships far more of Unicode than a Zambian finance course
+renders, and the four Aptos weights had been 301 KB of a 909 KB first visit.
 
 The kept set is not guessed. It is every character that actually appears in
 the course content, plus the ranges any UI could reasonably produce, so
@@ -27,11 +28,15 @@ SRC = ROOT / "_dev" / "fonts"
 OUT = PLATFORM / "src" / "fonts"
 CONTENT = PLATFORM / "src" / "lib" / "course-data.json"
 
+# Five faces, one more than Aptos had. The reader's tables set their first
+# column and their headers at medium and semibold, and Aptos carried only 400
+# and 700, so both were synthesised. 500 is real here; 600 still rounds up.
 FACES = {
-    "Aptos.ttf": "aptos.woff2",
-    "Aptos-Bold.ttf": "aptos-bold.woff2",
-    "Aptos-Italic.ttf": "aptos-italic.woff2",
-    "Aptos-Bold-Italic.ttf": "aptos-bold-italic.woff2",
+    "Satoshi-Regular.ttf": "satoshi.woff2",
+    "Satoshi-Regular-Italic.ttf": "satoshi-italic.woff2",
+    "Satoshi-Medium.ttf": "satoshi-medium.woff2",
+    "Satoshi-Bold.ttf": "satoshi-bold.woff2",
+    "Satoshi-Bold-Italic.ttf": "satoshi-bold-italic.woff2",
 }
 
 # Kept whatever the content says, so a student typing into the composer, or a
@@ -100,8 +105,16 @@ def main() -> None:
 
     print(f"\n  characters in the course content : {before_content}")
     print(f"  codepoints kept in the subset    : {len(keep)}")
-    print(f"  total {total_before/1024:.0f} KB -> {total_after/1024:.0f} KB "
-          f"({(1 - total_after/total_before) * 100:.0f}% smaller)")
+    if total_before:
+        print(f"  total {total_before/1024:.0f} KB -> {total_after/1024:.0f} KB "
+              f"({(1 - total_after/total_before) * 100:.0f}% smaller)")
+    else:
+        # First run under a new set of face names: there is nothing to compare
+        # against, so report the size rather than dividing by zero. This was a
+        # real crash the day Aptos was swapped for Satoshi.
+        source_kb = sum((SRC / t).stat().st_size for t in FACES) / 1024
+        print(f"  total {total_after/1024:.0f} KB written "
+              f"(from {source_kb:.0f} KB of source TTF)")
 
 
 if __name__ == "__main__":

@@ -30,16 +30,26 @@ const familjen = Familjen_Grotesk({
   display: "swap",
 });
 
-// Content text is Aptos — self-hosted so every device gets it, not just
-// Windows machines that ship it with Office. Source TTFs live in _dev/fonts/.
-const aptos = localFont({
+// The reading face: everything inside a step — prose, tables, callouts, cards.
+// Satoshi (Fontshare / Indian Type Foundry), owner's pick 2026-08-02, replacing
+// Aptos. Self-hosted like Aptos was, and for a stronger reason: Aptos at least
+// ships with Office, while Satoshi is on no device by default, so a CDN link
+// would be a hard dependency on someone else's uptime for the one font the
+// course is actually read in.
+//
+// Five faces where Aptos had four. The reader's tables set their first column
+// medium and their headers semibold, and both were synthesised before.
+// Source TTFs live in _dev/fonts/; run scripts/subset-fonts.py after any
+// content change that could introduce a new character.
+const satoshi = localFont({
   src: [
-    { path: "../fonts/aptos.woff2", weight: "400", style: "normal" },
-    { path: "../fonts/aptos-italic.woff2", weight: "400", style: "italic" },
-    { path: "../fonts/aptos-bold.woff2", weight: "700", style: "normal" },
-    { path: "../fonts/aptos-bold-italic.woff2", weight: "700", style: "italic" },
+    { path: "../fonts/satoshi.woff2", weight: "400", style: "normal" },
+    { path: "../fonts/satoshi-italic.woff2", weight: "400", style: "italic" },
+    { path: "../fonts/satoshi-medium.woff2", weight: "500", style: "normal" },
+    { path: "../fonts/satoshi-bold.woff2", weight: "700", style: "normal" },
+    { path: "../fonts/satoshi-bold-italic.woff2", weight: "700", style: "italic" },
   ],
-  variable: "--font-aptos",
+  variable: "--font-satoshi",
   display: "swap",
 });
 
@@ -70,7 +80,7 @@ export default function RootLayout({
   const document = (
     <html
       lang="en"
-      className={`${inter.variable} ${familjen.variable} ${aptos.variable} h-full`}
+      className={`${inter.variable} ${familjen.variable} ${satoshi.variable} h-full`}
     >
       <head>
         {/* Sets data-motion before first paint, so a reader who asked for a
