@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-02 (session 29)
+**Last updated:** 2026-08-02 (session 30)
 
 ---
 
@@ -91,6 +91,22 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 30 (2026-08-02, socials):**
+- [ ] **Zoom the isolated component slides in harder.** Owner's note at the end
+      of the day: they sit around 620px inside a 752×1100 safe box and read
+      timid. Rule is in `daily-post/RULES.md`; the day's images were left as
+      shot, so the next set is where it shows.
+- [ ] **Saturday's midday caption is wrong.** It describes the checkpoint as
+      "Not yet, Almost, Got it", which stopped being true at 20:23 on 1 Aug and
+      has changed three times since. Fix before that carousel goes out.
+- [ ] **The tap-to-define popup is shot and configured but unused** (`POST=c-term`).
+      It wants a slot where the *word* can be shown in its sentence — three
+      near-identical white cards of body text was the reason it was pulled.
+- [ ] **Re-check the reader before posting Sunday's set.** Captures are pinned
+      at `9f6b997`; main has since moved to `0ea67fb`, which changes the reading
+      face to Satoshi. The component shots are mostly chrome, but the card and
+      popup carry body type.
 
 **From session 29 (2026-08-02):**
 - [ ] **The checkpoint icons carry no labels now.** A bookmark and a ticked
@@ -252,6 +268,69 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-02 (session 30 — one component, on nothing, and the brief moved three times)
+
+Socials-only session, run alongside an active parallel session in the same
+OneDrive tree. Three commits to `main` (`0c4a63d`, `4b789ed`, `e4fa2cd`), plus
+a shadow pass left uncommitted at the time of writing.
+
+**Done:**
+- **Sunday's five carousels**, rebuilt three times as the brief changed under
+  them: page-area crops → tight crops round each component → **isolated
+  components** floated on the gradient. Only the last is what shipped.
+- **The CTA is now a DM and only a DM.** `dmCTA()` replaces the Google search
+  slide on every new post; `searchCTA()` is kept, unused and uneditable, so
+  already-posted days re-render as they were posted.
+- **`isolate()`** — captures one element as a transparent PNG by hiding
+  everything else on the page, then a padded viewport clip so parts standing
+  outside the border box (a popover's arrow) survive. **`object()`** places it
+  on the gradient with an alpha-tracing shadow.
+- **Night switched from the definition popup to the course card** on the
+  owner's "focus on more interesting bits" — three real states (months in, just
+  begun, never opened) instead of three paraphrases of the same white card.
+- **Skew added, then removed** on the owner's verdict; shadow halved twice.
+- **Skills/memory:** `daily-post/RULES.md` gained the component-days section,
+  the no-skew rule, the selector rules and the zoom/shadow notes;
+  `feedback_marketing_cta_dm` rewritten to DM-only and
+  `feedback_marketing_cta_search` narrowed to spoken/print.
+
+**What Worked:**
+- **The banned-word scan earning its keep.** The card selector had drifted onto
+  a row of source chips after the parallel session moved the source strip, and
+  the scan refused to write the PNG rather than shipping treasury copy. A guard
+  that fires on a real leak, not a drill.
+- **Selecting by what an element IS, not where it sits.**
+  `div.rounded-3xl.shadow-lift:has(svg)` for the cards and
+  `[aria-label="Got it"]` for an answer both survive a layout change; utility
+  classes and nth-indices do not.
+- **Shooting from a worktree pinned to a named commit**, and writing that commit
+  into `PLAN.md`. The only reason the day is coherent at all.
+- **Re-rendering is server-free.** `prog-post.mjs` reads PNGs off disk, so the
+  shadow and zoom notes cost one command each, no capture, no dev server.
+
+**Dead Ends (do not retry):**
+- **3D skew on app UI.** "Very ugly", and correctly so: flat vector with
+  hairline borders and 1px rules, every one of which goes through a resampler.
+- **A crop rectangle as an isolation.** A 9:16 box round a 131px tile still
+  photographs the tile below it. Sizing, thresholding and lifting the box was
+  all work spent making the wrong idea behave.
+- **Clearing ancestors' backgrounds for a transparent capture.** The thing
+  painting behind is usually a sibling. Hide everything, unhide the subject.
+- **`locator.screenshot()`** for anything with parts outside its border box —
+  and a padded `page.screenshot({clip})` needs an explicit scroll first, because
+  the clip is viewport-relative.
+- **Indexing `[data-active]`** when the seed pre-answers rows: nth 0/1 were the
+  seeded sections, so a sad face shipped under the filename "thumb up".
+- **A stale `.next` 404s every route including `/`** — not the documented 500.
+  Killing a dev server mid-flight or repinning a worktree both cause it.
+
+**Flags:**
+- ⚠️ **`linear-server` unauthorized — 10th consecutive session.** Nothing filed.
+- ⚠️ **The checkpoint answers were redrawn FOUR times during this session** by
+  the parallel session (three self-ratings → bookmark+tick → thumbs → faces).
+  Captures are pinned at `9f6b997`; main is now `0ea67fb`.
+- `Booklesss Bucket/` still holds the one unfiled webp (7th session).
 
 ### Session 2026-08-02 (session 29 — the owner reads it on a phone, and the phone wins every argument)
 

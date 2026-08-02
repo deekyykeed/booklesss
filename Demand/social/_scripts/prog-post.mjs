@@ -101,14 +101,19 @@ body{font-family:PSans,system-ui,sans-serif;position:relative;-webkit-font-smoot
    rectangle — a hard oblong behind a pair of floating glyphs. drop-shadow
    follows the alpha, so a rounded card casts a rounded shadow and two marks
    cast two marks. Two layers, tight, per the app's own shadow scale. */
+   Halved twice over on 2 Aug — the owner's word was "harsh", the same word the
+   app's own shadows got on 1 Aug, and the same fix applies: the fault is blur
+   WIDTH, not opacity. A 52px layer spreads grey over enough of the gradient to
+   read as a bruise round the component however faint it is set. Cut the layer
+   down rather than dimming it. */
 .obj{max-width:none;
-  filter:drop-shadow(0 6px 10px rgba(24,24,45,.10)) drop-shadow(0 34px 52px rgba(24,24,45,.20))}
+  filter:drop-shadow(0 3px 5px rgba(24,24,45,.07)) drop-shadow(0 14px 20px rgba(24,24,45,.10))}
 /* A component with no surface — a bare glyph, an underlined word — takes a much
    tighter shadow. drop-shadow traces the alpha, so on a thin flat mark the wide
    layer above spreads grey through the gaps in the shape and reads as a smudge
    rather than as lift. Same lesson the app's own shadow scale learned on 1 Aug:
    the fault is blur WIDTH, not opacity. */
-.obj.flat{filter:drop-shadow(0 3px 4px rgba(24,24,45,.13)) drop-shadow(0 10px 16px rgba(24,24,45,.14))}
+.obj.flat{filter:drop-shadow(0 2px 3px rgba(24,24,45,.09)) drop-shadow(0 6px 9px rgba(24,24,45,.10))}
 .fade-top{position:absolute;top:0;left:0;right:0;z-index:2;background:linear-gradient(to bottom,
   ${BG} 0%, ${BG} 80%, rgba(246,246,249,0) 100%)}
 .fade-bot{position:absolute;bottom:0;left:0;right:0;z-index:2;background:linear-gradient(to top,

@@ -198,6 +198,18 @@ and the answer was to stop cropping.
 - **Set `w` per component, not globally.** A 34px button and a 370px card both
   rendered at 700px claim to be the same size, and one of them is a 20×
   enlargement.
+- **Fill the safe box. Go closer than feels right** (owner, 2 Aug: *"next time
+  zoom in more while still keeping within the safe zone"*). The 2 Aug set sat
+  around 620px inside a 752×1100 box and reads timid — a component floating in
+  the middle of a lot of gradient. Start at the safe width and come down only
+  until the check passes: the box is the limit, not a target to stay clear of.
+  `isolate()` shoots at `deviceScaleFactor: 8`, so there are pixels for it.
+- **Shadow: cut the layer, never dim it.** Third time this lesson has been
+  learned on this project (the app's shadow scale on 1 Aug, then twice here).
+  The owner's word both times was *harsh*, and both times the culprit was blur
+  WIDTH — a 52px layer spreads grey over enough of the gradient to read as a
+  bruise round the component however faint the alpha is set. Halve the blur
+  before touching the opacity.
 
 ## Copy
 
