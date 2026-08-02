@@ -106,6 +106,16 @@ Ids are stable. A withdrawn rule is struck through, never deleted.
     of starting it, and the seam of the technique shows. The device is usually
     right; saying it out loud is what costs. Delete the announcement and begin at
     the case.
+  - **No name the step has not itself introduced.** *(added 2026-08-02)* A
+    person, company or case told in a **different** step is a stranger here.
+    "Leeson dealt his own trades and then settled them himself" opened TM 1.3,
+    and Barings is told properly in TM 1.2, one step earlier; the owner's
+    reaction was "I don't get that story you've started with". Referring back
+    **within** a step is fine and normal. Referring back **across a step
+    boundary** is not, because the step is the unit a reader arrives at: from
+    the sidebar, from a resumed position, from a shared link. Either tell the
+    case again with enough facts to stand alone, or open on something else and
+    reach it second.
 
   Test: read each section's first sentence **alone and cold**. If it contains a
   term, a number or a reference the reader could not already hold, rewrite it.
@@ -233,6 +243,13 @@ text, so a mark written into one shows its own syntax.
     to, and a URL that already exists should keep meaning what it meant.
   - Order the parts so each one's ending sets up the next (**W-3** still
     applies: every part opens on something at stake, not on a recap).
+  - **Re-read every part's openings after splitting, cold.** *(added
+    2026-08-02)* A split silently orphans backward references across each new
+    seam: a name, a count or a callback that was fine three sections down is a
+    stranger at the top of its own step. Both of TM 1.3's section openings broke
+    this way, and both had been correct before the split. The split is the
+    moment to fix them, not a later reading. This is the fourth bullet of
+    **W-13**, and splitting is the main thing that creates it.
 
 ## C — Content
 

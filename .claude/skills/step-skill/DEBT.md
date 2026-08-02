@@ -268,6 +268,18 @@ unresolvable counts or pointers (`all three levels`, `as we saw`, `earlier`).
   judgement about what a first-year knows, and no machine check was run for it.
   So every step below is unchecked for undefined jargon in its openings, and
   that half gets done on contact, the same way D-1 and D-2 are paid.
+- **⚠️ The fourth ban is not scannable either, and the scan gave false comfort.**
+  *(2026-08-02)* W-13 gained "no name the step has not itself introduced" after
+  the owner hit it on `treasury-controls-and-structure`: it opened "Leeson dealt
+  his own trades…", a man introduced one step earlier. **The scan passed that
+  sentence** — it is not device-narration and "Leeson" is not a count or a
+  pointer, so no pattern matched. A clean run of the tool therefore means only
+  that two of the four bans hold, and the baseline of "2 of 218, both false
+  positives" should not be read as "openings are fine".
+  A proper noun is greppable, but knowing whether *this step* introduced it
+  needs a human. **Highest-risk population: any step produced by an S-8 split**,
+  because splitting is what strands a reference above the seam. Three steps
+  exist from splits so far, and two of the two defects found were in them.
 
 Re-run the scan after writing any new step:
 
@@ -280,8 +292,11 @@ It prints every flag with its sentence and exits on the count. The baseline is
 is the whole value of it: at two, a third hit is worth reading.
 
 - [x] treasury-management/treasury-operations/treasury-levels-and-mandate — 2026-08-01 (rewritten)
-- [ ] the other 43 steps — machine-clean on device-narration and unresolvable
-      references; **not** checked for undefined jargon in their openings
+- [x] treasury-management/treasury-operations/treasury-controls-and-structure — 2026-08-02 (both section openings rewritten; the fourth ban came from it)
+- [x] treasury-management/treasury-operations/intro-to-treasury — 2026-08-02 (both openings read cold, clean: "Your company can have a profitable year and still fail to pay the staff", "Before lunch, your treasurer might…")
+- [ ] the other 41 steps — machine-clean on device-narration and unresolvable
+      references; **not** checked for undefined jargon, and **not** checked for
+      names introduced in a different step
 
 ### D-3 · possessive budget, sentence length, step splitting, source links · opened 2026-08-01
 **Source:** owner review 2026-08-01 (TM 1.1) — "we're using *your* too many

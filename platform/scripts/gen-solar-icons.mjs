@@ -40,6 +40,9 @@ const ICONS = [
   "bolt-bold-duotone", // Streak — the zap it replaces
   "notebook-minimalistic-bold-duotone", // Coverage — an open book
   "clock-circle-bold-duotone", // Time this week
+  // section checkpoint — the two answers, drawn in each answer's own hue
+  "like-bold-duotone", // Got it
+  "dislike-bold-duotone", // Later
 ];
 
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "components", "icons", "solar.tsx");

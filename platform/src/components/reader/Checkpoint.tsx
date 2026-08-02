@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { labelFor, nextLessonId, pathForId } from "@/lib/course";
 import { rate, useProgress, type Grasp } from "@/lib/progress";
-import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
+import { SolarIcon, type SolarIconName } from "@/components/icons/solar";
 import { SectionNote } from "./SectionNote";
 
 /* Two answers: "Later" and "Got it".
@@ -21,20 +21,28 @@ import { SectionNote } from "./SectionNote";
  * Amber then green, each dark enough to hold 5.2:1 on the content surface.
  * Green is completion, the same thing it means everywhere else here.
  *
- * The marks changed on 2026-08-02, when the row lost its labels: a clipboard
- * carrying the word "Later" was fine, and a bare clipboard says nothing. They
- * are now a bookmark and a ticked circle, which are the two decisions in the
- * reader's own hand — come back to this, or clear it.
+ * The marks changed twice on 2026-08-02. First the row lost its labels, and a
+ * clipboard carrying the word "Later" became a bare clipboard saying nothing,
+ * so it became a bookmark and a ticked circle. Then the owner called for a
+ * thumbs pair, which is where it now sits — up for "Got it", down for "Later".
  *
- * Not a thumbs pair, which was the first instinct. A thumb rates the material,
- * and this control does not ask what the reader thought of the section; the
- * note button sitting beside it does, and its menu already holds "Hard to
- * follow", "Too long", "Needs an example" and "Something looks wrong". A
- * thumbs-down here would be a second, blunter version of the button next to it
- * — and it would put back the self-grading that "Not yet" was dropped for. */
-const ANSWERS: { id: Grasp; label: string; icon: MynaIconName; tone: string }[] = [
-  { id: "not", label: "Later", icon: "bookmark", tone: "#96601f" },
-  { id: "got", label: "Got it", icon: "check-circle", tone: "#17754d" },
+ * Worth knowing why that was argued against first, in case it comes back
+ * round: a thumb ordinarily rates the material, and the note button beside
+ * this one already asks that ("Hard to follow", "Too long", "Needs an
+ * example", "Something looks wrong"). The reading here is the other one — a
+ * thumb is also the most universally understood yes/no on a phone, and needing
+ * no word at all is exactly what a label-less row wants. Owner's call, taken
+ * knowingly.
+ *
+ * Solar Duotone rather than MynaUI, also the owner's pick, which makes the
+ * reader the third Solar surface after /workspace and the dashboard stat
+ * cards. Duotone fills with currentColor twice (back layer at opacity .5), so
+ * the mark shades itself out of whatever hue the button is set to and there is
+ * no separate solid twin to swap in when answered — the colour is the whole
+ * signal. */
+const ANSWERS: { id: Grasp; label: string; icon: SolarIconName; tone: string }[] = [
+  { id: "got", label: "Got it", icon: "like-bold-duotone", tone: "#17754d" },
+  { id: "not", label: "Later", icon: "dislike-bold-duotone", tone: "#96601f" },
 ];
 
 /* End-of-section checkpoint — a scale rather than a tick.
@@ -95,14 +103,11 @@ export function Checkpoint({
               className="grasp-btn squircle"
               style={{ "--grasp-tone": a.tone } as React.CSSProperties}
             >
-              {/* Bigger and thinner than the app's 17px/1.5 chrome: with the
-                  pill gone the mark is the whole control, and MynaUI's default
-                  weight reads as heavy once nothing is bounding it. */}
-              <MynaIcon
-                name={active ? (`${a.icon}-solid` as MynaIconName) : a.icon}
-                size={20}
-                strokeWidth={1.2}
-              />
+              {/* 21px. A duotone mark is filled, so it carries more weight per
+                  pixel than the hairline it replaced — this is a shade smaller
+                  than the 22px it would take as an outline, and it still fills
+                  the 34px tap target properly. */}
+              <SolarIcon name={a.icon} size={21} />
               <span className="grasp-label">{a.label}</span>
             </button>
           );

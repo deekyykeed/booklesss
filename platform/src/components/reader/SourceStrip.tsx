@@ -56,7 +56,7 @@ export function SourceStrip({ urls }: { urls: string[] }) {
       <p className="mb-2 text-[12px] font-semibold uppercase tracking-[0.06em] text-muted">Sources</p>
       <div
         data-no-swipe
-        className="no-scrollbar bleed-x flex items-center gap-2 overflow-x-auto py-0.5"
+        className="no-scrollbar bleed-x flex items-center gap-2.5 overflow-x-auto py-1"
       >
       {chips.map((c) => (
         <a
@@ -68,7 +68,13 @@ export function SourceStrip({ urls }: { urls: string[] }) {
           /* Genuinely round, so no `squircle`: the superellipse mask is a
              subtle flattening that reads as a wobble on a full pill, where it
              is exactly right on a large card. */
-          className="flex shrink-0 items-center gap-2 rounded-full border border-[#e7e7e6] bg-white py-1 pl-1 pr-3.5 text-[14px] leading-5 text-ink shadow-chip transition-colors hover:border-[#c9c9c6] hover:bg-[#fafafa]"
+          /* Grown on 2026-08-02: at 22px/14px in a py-1 pill these read as
+             tokens rather than as sites you could go to — too tight to look
+             like a real thing to tap, and too small for the favicon to be
+             recognisable, which is the whole point of showing a logo instead
+             of a domain. The mark now sets at 26px and the pill has room
+             around it. */
+          className="flex shrink-0 items-center gap-2.5 rounded-full border border-[#e7e7e6] bg-white py-1.5 pl-1.5 pr-4 text-[15px] leading-5 text-ink shadow-chip transition-colors hover:border-[#c9c9c6] hover:bg-[#fafafa]"
         >
           {/* Round, whatever shape the site's own mark is. Most favicons are
               squares with their own padding, so a circular crop of one reads
@@ -78,7 +84,7 @@ export function SourceStrip({ urls }: { urls: string[] }) {
             src={c.icon}
             alt=""
             aria-hidden="true"
-            className="h-[22px] w-[22px] shrink-0 rounded-full bg-white object-cover"
+            className="h-[26px] w-[26px] shrink-0 rounded-full bg-white object-cover"
           />
             <span className="whitespace-nowrap">{c.name}</span>
           </a>

@@ -11,6 +11,19 @@
  * seams: what treasury is, how the work divides, how it is governed. Coverage
  * is identical; nothing was cut. The first part keeps the original
  * `intro-to-treasury` slug because that URL is already linked to.
+ *
+ * 2026-08-02 opening rewritten (rule W-13), owner: "I don't get that story
+ * you've started with." Both sections opened on something the reader could not
+ * hold cold. §1 began "Leeson dealt his own trades and then settled them
+ * himself" — a name introduced in the PREVIOUS step, and very nearly that
+ * step's own bolded punchline repeated without its facts. §2 began "The last
+ * structural choice is geographic", where "the last" counted a list this step
+ * never made. Both were correct while this was one six-section step; the S-8
+ * split left the references pointing at text that is no longer above them.
+ * §1 now opens on one person in a Lusaka office paying the suppliers and
+ * reconciling the same payments, and reaches Barings second, with the figures
+ * carried so it stands on its own. Coverage unchanged: same six controls, same
+ * three structures, same checks.
  */
 
 export default {
@@ -27,7 +40,15 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Leeson dealt his own trades and then settled them himself. That one fact is the first control on this list, and **its absence is why an £827 million hole stayed invisible for three years.** Treasury moves the largest sums in the business, so [six controls](https://corporatefinanceinstitute.com/resources/accounting/internal-controls/) are non-negotiable. They are cheap on day one and expensive to retrofit after you have hired the person they constrain.",
+          text: "A small company in Lusaka has one person who pays the suppliers, and the same person ticks those payments off against the bank statement at month end. Nothing has gone wrong yet. Nobody else ever looks, so the only thing keeping the money in that account is one employee's honesty.",
+        },
+        {
+          type: "p",
+          text: "Barings Bank ran the same loop at a different scale. Nick Leeson struck the trades in Singapore and then confirmed and settled them himself, so there was nobody the hidden losses could be caught by. **£827 million, three years, and a 233-year-old bank sold for one pound.** The hole in it was the hole in the Lusaka office: nobody independent standing between doing the deal and recording it.",
+        },
+        {
+          type: "p",
+          text: "Treasury moves the largest sums in the business, so [six controls](https://corporatefinanceinstitute.com/resources/accounting/internal-controls/) are not negotiable. They cost almost nothing to put in on day one, and a great deal to retrofit once you have already hired the person they constrain.",
         },
         {
           type: "table",
@@ -61,7 +82,7 @@ export default {
         },
         {
           type: "p",
-          text: "**The six interlock.** Segregation means no single person can complete a fraud alone. [Limits and approvals](https://corporatefinanceinstitute.com/resources/career-map/sell-side/risk-management/financial-controls/) bound what any one decision is allowed to lose. [Audits](https://www.accountingcoach.com/accounts-payable/explanation) catch what slips past both. Automation shrinks the space where human error and temptation operate at all. Naming a control is worth little on its own. **The useful skill is saying which failure each one prevents.** That is how you work out which ones you can survive without while you are still small.",
+          text: "**The six interlock.** Segregation means no single person can complete a fraud alone. [Limits and approvals](https://corporatefinanceinstitute.com/resources/career-map/sell-side/risk-management/financial-controls/) bound what any one decision is allowed to lose. [Audits](https://www.accountingcoach.com/accounts-payable/explanation) catch what slips past both. [[Straight-through processing|Routing a payment or trade from instruction to settlement with no manual re-keying at any stage. Fewer hands means fewer errors, and fewer chances for someone to alter something on the way through.]] shrinks the space where human error and temptation operate at all. Naming a control is worth little on its own. **The useful skill is saying which failure each one prevents.** That is how you work out which ones you can survive without while you are still small.",
         },
       ],
       check: {
@@ -86,7 +107,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "The last [structural choice](https://corporatefinanceinstitute.com/resources/accounting/corporate-structure/) is geographic. You face it the first time your business crosses a border. A Zambian [mining group with operations in four countries](https://corporatefinanceinstitute.com/resources/economics/multinational-corporation/) has to decide [where treasury actually sits](https://treasurytoday.com/banking/organising-a-centralised-treasury/): **one desk in Lusaka, four desks in four capitals, or something between the two.**",
+          text: "A [Zambian mining group with pits in four countries](https://corporatefinanceinstitute.com/resources/economics/multinational-corporation/) has to decide [where the money is actually managed from](https://treasurytoday.com/banking/organising-a-centralised-treasury/): **one desk in Lusaka, four desks in four capitals, or something between the two.** You face this the first time the business crosses a border.",
         },
         {
           type: "p",

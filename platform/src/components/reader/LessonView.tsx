@@ -149,10 +149,23 @@ function DataTable({
 
   return (
     <figure className="flex flex-col gap-2">
-      {/* Wide workings scroll inside their own box; the page never does. */}
-      {/* Lifted like the callout, and given room to breathe. A flat outlined
-          box with tight rows read as a spreadsheet pasted into the page. */}
-      <div className="no-scrollbar squircle overflow-x-auto rounded-[32px] border border-[#e7e7e6] bg-white shadow-lift">
+      {/* A wide working runs OFF THE PAGE, not inside a box.
+
+          It used to be a rounded, bordered, lifted card with the scroll
+          happening inside it, and the owner's objection is the right one: the
+          card draws a hard edge a few pixels from the screen edge, so a column
+          being scrolled to is cut off at a boundary the reader can see, and
+          the table reads as held rather than continuing. A working on paper
+          runs to the edge of the paper.
+
+          `bleed-x` cancels the reading column's padding and puts it back
+          inside, so a narrow table still lines up with the prose while a wide
+          one slides out past the text and off the screen. Same treatment the
+          source chips already use.
+
+          data-no-swipe so dragging the table sideways moves the table rather
+          than opening the reader's drawer (see MobileNav). */}
+      <div data-no-swipe className="no-scrollbar bleed-x overflow-x-auto">
         <table className="w-full border-collapse text-[15.5px]">
           <thead>
             {/* The header is the only band of colour, so it carries the weight:

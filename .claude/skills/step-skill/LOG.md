@@ -22,6 +22,27 @@ Quote actual words. A student's phrasing is never rewritten into the owner's.
 
 ---
 
+### 2026-08-02 · treasury-management/treasury-operations/treasury-controls-and-structure · owner
+- `writing` — **"I don't get that story that you've started with about lisond
+  dealt and whatever. Can you change that up? Just make the step more relatable
+  and easy to follow."**
+  The step opened "Leeson dealt his own trades and then settled them himself."
+  Barings is told properly one step earlier, in `treasury-levels-and-mandate`,
+  where that same sentence is also the bolded punchline. So step 1.3 opened by
+  repeating the previous step's payoff to a reader who, arriving at this step,
+  has met neither the man nor the bank. §2 had the same shape: "The last
+  structural choice is geographic" counts a list this step never makes.
+  Both were correct while this was one six-section step. **The S-8 split on
+  2026-08-01 is what broke them** — it moved the references above the seam and
+  left them pointing at text that is no longer there.
+  §1 now opens on one person in a Lusaka office who pays the suppliers and
+  reconciles those same payments, and reaches Barings in the second paragraph
+  with its figures carried so it stands alone. §2 opens on the mining group.
+  Coverage unchanged: same six controls, same three structures, same checks.
+→ promoted: **W-13** (fourth ban: no name the step has not itself introduced),
+  **S-8** (re-read every part's openings, cold, after splitting) ·
+  debt: **D-4** (widened — the scan cannot see this)
+
 ### 2026-08-01 · treasury-management/treasury-operations/treasury-levels-and-mandate · owner
 - `element` — of the Level / Focus / Examples table: **"for a table like this
   id like to have this split into 3 different containers with freehand duotone
