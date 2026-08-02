@@ -33,6 +33,13 @@ const ICONS = [
      hairlines, after the Duotone bubble sat filled beside two outlines. */
   "info-circle",
   "info-circle-solid",
+  /* The section-comment button, beside the note button. A bubble was rejected
+     for the NOTE button above because it promised a conversation that button
+     did not have — this one does: it opens a box you write in. Filled once the
+     section has a comment on it, the same line/solid rule as the rest of the
+     row. */
+  "message-dots",
+  "message-dots-solid",
   "external-link",
   "chevron-down",
   /* The Appearance segmented on /settings — system, light, dark. */

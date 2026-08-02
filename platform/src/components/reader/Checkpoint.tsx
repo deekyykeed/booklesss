@@ -1,9 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
 import { labelFor, nextLessonId, pathForId } from "@/lib/course";
 import { rate, useProgress, type Grasp } from "@/lib/progress";
 import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
+import { commentFor } from "@/lib/step-comments";
+import { CommentBox, CommentButton } from "./SectionComment";
 import { SectionNote } from "./SectionNote";
 
 /* Two answers: "Later" and "Got it".
@@ -38,10 +41,15 @@ import { SectionNote } from "./SectionNote";
  *
  * Back on MynaUI, so the line/solid swap on `active` returns: the answer given
  * fills in, which is a second signal beside the colour and the one the rest of
- * the app's chrome already uses for "this is the current one". */
+ * the app's chrome already uses for "this is the current one".
+ *
+ * ORDER: "Later" then "Got it", so the smiling face is the outermost mark on
+ * the right (owner, 2026-08-02). It reads worst-to-best towards the edge, and
+ * it puts the answer most readers are reaching for under the thumb that is
+ * already there. */
 const ANSWERS: { id: Grasp; label: string; icon: MynaIconName; tone: string }[] = [
-  { id: "got", label: "Got it", icon: "smile", tone: "#17754d" },
   { id: "not", label: "Later", icon: "sad", tone: "#96601f" },
+  { id: "got", label: "Got it", icon: "smile", tone: "#17754d" },
 ];
 
 /* End-of-section checkpoint — a scale rather than a tick.
@@ -69,52 +77,85 @@ export function Checkpoint({
   const done = hydrated && isDone(lessonId, checkpointId);
   const chosen = hydrated ? graspOf(lessonId, checkpointId) : null;
 
+  /* The comment box opens below the whole row, so its open state has to live
+     out here rather than inside the button — see SectionComment.tsx. Same
+     after-mount read as every other store: `hasComment` starts false and
+     settles once localStorage has been looked at. */
+  const [commentOpen, setCommentOpen] = useState(false);
+  const [hasComment, setHasComment] = useState(false);
+  const refreshComment = useCallback(
+    () => setHasComment(commentFor(lessonId, checkpointId) !== null),
+    [lessonId, checkpointId],
+  );
+  useEffect(refreshComment, [refreshComment]);
+
   return (
-    /* Two controls at opposite ends, asking two different questions: what the
-       reader wants to do about the section (left) and how it read (right).
-       Pushed apart rather than sat together, so neither looks like an option
-       in the other's set. */
-    <div className="checkpoint-row flex flex-wrap items-center justify-between gap-3">
-      <SectionNote lessonId={lessonId} sectionId={checkpointId} />
-      <div
-        className="grasp-group"
-        role="radiogroup"
-        aria-label={`How much of "${heading}" landed?`}
-        data-answered={chosen ?? undefined}
-      >
-        {ANSWERS.map((a) => {
-          const active = chosen === a.id;
-          return (
-            <button
-              key={a.id}
-              type="button"
-              /* Pressing the current answer takes it back — the same
-                 second-press-undoes rule the tick had, so an answer stays the
-                 reader's to correct. */
-              onClick={() => (active ? toggle(lessonId, checkpointId) : rate(lessonId, checkpointId, a.id))}
-              role="radio"
-              aria-checked={active}
-              aria-label={a.label}
-              /* The label is off-screen now (see .grasp-label), so the tooltip
-                 is the only way a mouse reader recovers the word. */
-              title={a.label}
-              data-active={active ? "" : undefined}
-              className="grasp-btn squircle"
-              style={{ "--grasp-tone": a.tone } as React.CSSProperties}
-            >
-              {/* Bigger and thinner than the app's 17px/1.5 chrome: with the
-                  pill gone the mark is the whole control, and MynaUI's default
-                  weight reads as heavy once nothing is bounding it. */}
-              <MynaIcon
-                name={active ? (`${a.icon}-solid` as MynaIconName) : a.icon}
-                size={20}
-                strokeWidth={1.2}
-              />
-              <span className="grasp-label">{a.label}</span>
-            </button>
-          );
-        })}
+    <div>
+      {/* Two ends, asking two different things: what the reader wants to SAY
+          about the section (left — how it read, and their own words) and what
+          they want to DO about it (right). Pushed apart rather than sat
+          together, so neither looks like an option in the other's set. */}
+      <div className="checkpoint-row flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-1.5">
+          <SectionNote lessonId={lessonId} sectionId={checkpointId} />
+          <CommentButton
+            hasComment={hasComment}
+            open={commentOpen}
+            onToggle={() => setCommentOpen((o) => !o)}
+          />
+        </div>
+        <div
+          className="grasp-group"
+          role="radiogroup"
+          aria-label={`How much of "${heading}" landed?`}
+          data-answered={chosen ?? undefined}
+        >
+          {ANSWERS.map((a) => {
+            const active = chosen === a.id;
+            return (
+              <button
+                key={a.id}
+                type="button"
+                /* Pressing the current answer takes it back — the same
+                   second-press-undoes rule the tick had, so an answer stays the
+                   reader's to correct. */
+                onClick={() => (active ? toggle(lessonId, checkpointId) : rate(lessonId, checkpointId, a.id))}
+                role="radio"
+                aria-checked={active}
+                aria-label={a.label}
+                /* The label is off-screen now (see .grasp-label), so the tooltip
+                   is the only way a mouse reader recovers the word. */
+                title={a.label}
+                data-active={active ? "" : undefined}
+                className="grasp-btn squircle"
+                style={{ "--grasp-tone": a.tone } as React.CSSProperties}
+              >
+                {/* Bigger and thinner than the app's 17px/1.5 chrome: with the
+                    pill gone the mark is the whole control, and MynaUI's default
+                    weight reads as heavy once nothing is bounding it. */}
+                <MynaIcon
+                  name={active ? (`${a.icon}-solid` as MynaIconName) : a.icon}
+                  size={20}
+                  strokeWidth={1.2}
+                />
+                <span className="grasp-label">{a.label}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
+
+      {/* Below the row, in the flow — the page grows downward rather than a
+          card floating over the next section. */}
+      {commentOpen && (
+        <CommentBox
+          lessonId={lessonId}
+          sectionId={checkpointId}
+          heading={heading}
+          onClose={() => setCommentOpen(false)}
+          onSaved={refreshComment}
+        />
+      )}
     </div>
   );
 }
