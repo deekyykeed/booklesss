@@ -101,7 +101,10 @@ export function LessonReader({ lesson, lessonId }: { lesson: Lesson; lessonId: s
     // maxWidth inline rather than a Tailwind arbitrary class — the scanner has
     // silently dropped several of those. px-4 (16px) so the content sits close to
     // the surface edges on mobile.
-    <div key={pathname} className="lesson-fade mx-auto px-4 py-10 md:px-6" style={{ maxWidth: 720 }}>
+    // pt-24 (96px), not the pb-10 it used to share: the title started 40px under
+    // the surface top, which put it almost against the header, while the home
+    // greeting has 112px. A step should open with air above its name too.
+    <div key={pathname} className="lesson-fade mx-auto px-4 pb-10 pt-24 md:px-6" style={{ maxWidth: 720 }}>
       <div className="min-w-0 pb-[40vh]">
         <LessonView lesson={lesson} lessonId={lessonId} />
       </div>
