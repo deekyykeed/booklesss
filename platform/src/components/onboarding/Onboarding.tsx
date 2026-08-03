@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { clerkEnabled } from "@/lib/clerk";
 import { useInstall } from "@/lib/install";
-import { closeOnboarding, useOnboarding, type OnboardingReason } from "@/lib/onboarding";
+import { closeOnboarding, setOnboardingMode, useOnboarding, type OnboardingReason } from "@/lib/onboarding";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { Button } from "@/components/ui/Button";
 import { MynaIcon } from "@/components/icons/myna";
@@ -41,7 +41,7 @@ import { MynaIcon } from "@/components/icons/myna";
 const SAYS: Record<OnboardingReason, { title: string; why: string }> = {
   checkpoint: {
     title: "Keep your answers",
-    why: "Save this one, and everything else you tick, so it's here on any phone you sign in on.",
+    why: "Answering checkpoints needs an account, so what you tick is yours on any phone you sign in on.",
   },
   "next-step": {
     title: "Carry on",
@@ -54,9 +54,12 @@ const SAYS: Record<OnboardingReason, { title: string; why: string }> = {
 };
 
 export function Onboarding() {
-  const { open, reason, after } = useOnboarding();
+  /* `mode` is store state, not local: each opening starts on the form the
+     caller asked for — the header's "Sign in" opens onto sign-in, a gate onto
+     sign-up — and a local copy would need an effect to follow that. The
+     toggle at the bottom writes back through setOnboardingMode. */
+  const { open, reason, after, mode } = useOnboarding();
   const { isSignedIn } = useAuth();
-  const [mode, setMode] = useState<"sign-up" | "sign-in">("sign-up");
   const { canInstall, showIosHelp, install } = useInstall();
 
   // Signing in is what the sheet is for, so getting one closes it.
@@ -106,7 +109,7 @@ export function Onboarding() {
           {mode === "sign-up" ? "Already have an account? " : "New here? "}
           <button
             type="button"
-            onClick={() => setMode(mode === "sign-up" ? "sign-in" : "sign-up")}
+            onClick={() => setOnboardingMode(mode === "sign-up" ? "sign-in" : "sign-up")}
             className="text-ink underline underline-offset-2"
           >
             {mode === "sign-up" ? "Sign in" : "Create one"}

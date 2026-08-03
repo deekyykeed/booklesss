@@ -52,21 +52,6 @@ const ANSWERS: { id: Grasp; label: string; icon: MynaIconName; tone: string }[] 
   { id: "got", label: "Got it", icon: "smile", tone: "#17754d" },
 ];
 
-/* Whether the sheet has already been raised by a checkpoint on this page load.
- *
- * ONE ASK PER VISIT, not one per answer. A step carries five to nine
- * checkpoints and a reader clears them in a run; a sheet on each is a reader
- * who stops answering, which costs the app the honest record the checkpoints
- * exist to collect. The first answer is the moment the app first has something
- * worth saving, so it is the moment worth spending.
- *
- * Deliberately NOT persisted. A module variable resets on reload, which is the
- * behaviour wanted: someone who came back a week later has forgotten the sheet
- * and is a better prospect than they were, and one ask a visit is not a nag.
- * Writing it to localStorage would mean asking exactly once, ever, per device.
- */
-let askedThisVisit = false;
-
 /* End-of-section checkpoint — a scale rather than a tick.
  *
  * "Mark as done" only ever asked whether the reader had scrolled past. Asking
@@ -119,18 +104,22 @@ export function Checkpoint({
                 /* Pressing the current answer takes it back — the same
                    second-press-undoes rule the tick had, so an answer stays the
                    reader's to correct. */
-                /* THE ANSWER LANDS FIRST, THEN THE ASK. Taking the tap and
-                   showing a sign-up instead would lose the one thing the
-                   reader just told us, and they would have to find their place
-                   again to say it twice. It is saved on the device either way;
-                   the sheet is an offer to keep it, not a toll on giving it. */
+                /* SIGNED OUT, THE TAP DOES NOT LAND (owner, 2026-08-03, off
+                   the live app: "shouldn't be able to use these feedback
+                   icons if I'm not signed in"). The first cut recorded the
+                   answer and then offered to keep it, and the owner's tap
+                   stuck while the header still said Sign in — an answered
+                   checkpoint next to a signed-out header reads as a control
+                   that ignored the rule. So the ask replaces the answer, and
+                   it asks on every tap: the tap did nothing, so there is
+                   nothing to nag about, only the same door each time. */
                 onClick={() => {
+                  if (needsAccount()) {
+                    requireAccount("checkpoint");
+                    return;
+                  }
                   if (active) toggle(lessonId, checkpointId);
                   else rate(lessonId, checkpointId, a.id);
-                  if (!askedThisVisit && needsAccount()) {
-                    askedThisVisit = true;
-                    requireAccount("checkpoint");
-                  }
                 }}
                 role="radio"
                 aria-checked={active}

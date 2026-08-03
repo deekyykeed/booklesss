@@ -1,6 +1,7 @@
 "use client";
 
-import { SignInButton, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
+import { requireAccount } from "@/lib/onboarding";
 import { HomeView } from "./HomeView";
 
 // Derived from the hook rather than imported from @clerk/types, which isn't a
@@ -45,11 +46,16 @@ function displayName(user: ClerkUser): string | undefined {
 function SignInPrompt() {
   return (
     <p className="mt-2 text-[13.5px] leading-5 text-muted">
-      <SignInButton mode="modal">
-        <button type="button" className="font-medium text-ink underline underline-offset-2 hover:opacity-70">
-          Sign in
-        </button>
-      </SignInButton>{" "}
+      {/* Our sheet, not Clerk's modal — same reason as the header button
+          (see Account.tsx): Clerk's dialog wears Clerk's dress and the
+          dashboard's logo, neither of which is this app. */}
+      <button
+        type="button"
+        onClick={() => requireAccount("manual", null, "sign-in")}
+        className="font-medium text-ink underline underline-offset-2 hover:opacity-70"
+      >
+        Sign in
+      </button>{" "}
       to keep your progress across devices.
     </p>
   );

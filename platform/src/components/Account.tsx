@@ -1,6 +1,7 @@
 "use client";
 
-import { ClerkFailed, ClerkLoaded, ClerkLoading, Show, SignInButton, UserButton } from "@clerk/nextjs";
+import { ClerkFailed, ClerkLoaded, ClerkLoading, Show, UserButton } from "@clerk/nextjs";
+import { requireAccount } from "@/lib/onboarding";
 import { CoursesGlyph, DashboardGlyph } from "./home/plump-glyphs";
 
 /* Deliberately a CLIENT component.
@@ -44,14 +45,19 @@ export function Account() {
           </UserButton>
         </Show>
         <Show when="signed-out">
-          <SignInButton mode="modal">
-            <button
-              type="button"
-              className="squircle h-8 rounded-full border border-[#d4d4d4] bg-white px-3 text-xs font-medium text-ink-2 shadow-[0_0.6px_0.6px_-1.25px_rgba(0,0,0,0.18),0_2.3px_2.3px_-2.5px_rgba(0,0,0,0.16)] transition-colors hover:text-ink"
-            >
-              Sign in
-            </button>
-          </SignInButton>
+          {/* OUR sheet, not Clerk's modal. <SignInButton mode="modal"> opened
+              Clerk's own dialog, which wears whatever logo the Clerk dashboard
+              holds — the retired diamond, when the owner met it live
+              (2026-08-03) — plus "Secured by Clerk". The sheet is the same two
+              fields in the app's own dress, opened onto sign-in because that
+              is what this button says. */}
+          <button
+            type="button"
+            onClick={() => requireAccount("manual", null, "sign-in")}
+            className="squircle h-8 rounded-full border border-[#d4d4d4] bg-white px-3 text-xs font-medium text-ink-2 shadow-[0_0.6px_0.6px_-1.25px_rgba(0,0,0,0.18),0_2.3px_2.3px_-2.5px_rgba(0,0,0,0.16)] transition-colors hover:text-ink"
+          >
+            Sign in
+          </button>
         </Show>
       </ClerkLoaded>
 
