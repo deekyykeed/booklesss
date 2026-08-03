@@ -295,6 +295,7 @@
   :root[data-motion="reduced"] .ring-pop,
   :root[data-motion="reduced"] .quiz-backdrop,
   :root[data-motion="reduced"] .quiz-card,
+  :root[data-motion="reduced"] .note-menu,
   :root[data-motion="reduced"] .voice-host[data-voice] .voice-glow > span {
     animation: none;
   }
@@ -1003,6 +1004,39 @@
     backdrop-filter: blur(6px);
     animation: quizFade 160ms ease both;
   }
+  /* The section-note menu. It appeared with no transition at all — it was
+     simply there, which on a phone reads as a glitch rather than as something
+     opening. It now grows out of the edge nearest the button, so the direction
+     matches whichever way the menu flipped (see SectionNote.tsx).
+
+     transform-origin does the work: the menu scales up from the corner it is
+     anchored by, so an upward menu rises off the button and a downward one
+     drops from it. Scaling from the centre would make both look like they
+     arrived from nowhere. */
+  .note-menu {
+    animation: noteMenuIn 160ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .note-menu[data-drop="up"] {
+    transform-origin: left bottom;
+  }
+  .note-menu[data-drop="down"] {
+    transform-origin: left top;
+  }
+  @keyframes noteMenuIn {
+    from {
+      opacity: 0;
+      transform: scale(0.94) translateY(var(--note-menu-from, 4px));
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+  /* Up rises, down drops — the 4px of travel goes the other way. */
+  .note-menu[data-drop="down"] {
+    --note-menu-from: -4px;
+  }
+
   @keyframes quizFade {
     from { opacity: 0; }
     to { opacity: 1; }

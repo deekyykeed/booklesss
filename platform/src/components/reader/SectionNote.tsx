@@ -1,8 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { MynaIcon } from "@/components/icons/myna";
 import { NOTES, noteFor, setNote, type NoteId } from "@/lib/step-notes";
+
+// useLayoutEffect on the client, useEffect on the server (avoids the SSR
+// warning). Same helper the sidebar uses for its own measuring.
+const useIso = typeof document !== "undefined" ? useLayoutEffect : useEffect;
+
+/** The fixed header, which is what a menu opening upward runs into. */
+const HEADER_H = 48;
+/** Breathing room between the menu and the edge it is avoiding. */
+const EDGE = 12;
 
 /* "How did that read?" — the other end of the checkpoint row.
  *
@@ -17,11 +26,42 @@ import { NOTES, noteFor, setNote, type NoteId } from "@/lib/step-notes";
 export function SectionNote({ lessonId, sectionId }: { lessonId: string; sectionId: string }) {
   const [open, setOpen] = useState(false);
   const [chosen, setChosen] = useState<NoteId | null>(null);
+  /* Which way the menu opens. Up is the default and the common case; it flips
+     down only when up would put it behind the header. */
+  const [drop, setDrop] = useState<"up" | "down">("up");
   const wrap = useRef<HTMLDivElement>(null);
+  const menu = useRef<HTMLDivElement>(null);
 
   // localStorage is read after mount: the server render knows nothing, and
   // guessing would flash someone else's answer.
   useEffect(() => setChosen(noteFor(lessonId, sectionId)), [lessonId, sectionId]);
+
+  /* Flip the menu below the button when there isn't room above it.
+   *
+   * The menu was hard-coded to open upward, on the reasoning that the button
+   * sits near the bottom of a section and a downward menu would land on the
+   * next section's first line. True most of the time — but a reader who has
+   * scrolled so the checkpoint row sits just under the header gets a menu that
+   * opens straight into it and loses its top options behind the bar. That is
+   * the second time this menu has been clipped by an edge it didn't measure
+   * (the first ran off the left of a 390px phone), so this measures rather
+   * than guesses.
+   *
+   * Measured in a LAYOUT effect, so the flip is decided before the browser
+   * paints and the menu never appears in the wrong place first. Measuring the
+   * real element rather than estimating from NOTES.length means adding or
+   * rewording an option can't silently break it. */
+  useIso(() => {
+    if (!open) return;
+    const btn = wrap.current?.getBoundingClientRect();
+    const box = menu.current?.getBoundingClientRect();
+    if (!btn || !box) return;
+    const roomAbove = btn.top - HEADER_H;
+    const roomBelow = window.innerHeight - btn.bottom;
+    // Only give up "up" if down is genuinely better — near a short viewport
+    // neither fits, and up is still the least bad.
+    setDrop(roomAbove < box.height + EDGE && roomBelow > roomAbove ? "down" : "up");
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -71,8 +111,10 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
       </button>
 
       {open && (
-        /* Opens upward, because the button sits near the bottom of a section
-           and a menu dropping down would land on the next section's first line.
+        /* Opens upward by default, because the button sits near the bottom of a
+           section and a menu dropping down would land on the next section's
+           first line. It flips below when up would run into the header — see
+           the layout effect above, which measures rather than assumes.
 
            Aligned to the button's LEFT edge, not its right. This button is the
            first child of the checkpoint row's `justify-between`, so it is on the
@@ -81,10 +123,15 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
            desktop the same overflow was invisible because it spilled into the
            sidebar gutter rather than off the screen. */
         <div
+          ref={menu}
           role="menu"
+          data-drop={drop}
           /* `font-container` — a menu of options, not reading. Medium, like
              every other container surface. */
-          className="squircle absolute bottom-[calc(100%+8px)] left-0 z-30 flex w-[230px] max-w-[calc(100vw-24px)] flex-col gap-0.5 rounded-2xl border border-[#e0e0e0] bg-white p-1.5 font-container font-medium shadow-[0_2px_4px_-1px_rgba(0,0,0,0.10),0_12px_24px_-8px_rgba(0,0,0,0.18)]"
+          className={
+            "note-menu squircle absolute left-0 z-30 flex w-[230px] max-w-[calc(100vw-24px)] flex-col gap-0.5 rounded-2xl border border-[#e0e0e0] bg-white p-1.5 font-container font-medium shadow-[0_2px_4px_-1px_rgba(0,0,0,0.10),0_12px_24px_-8px_rgba(0,0,0,0.18)] " +
+            (drop === "up" ? "bottom-[calc(100%+8px)]" : "top-[calc(100%+8px)]")
+          }
         >
           {NOTES.map((n) => (
             <button
