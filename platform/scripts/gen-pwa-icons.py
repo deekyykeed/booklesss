@@ -74,7 +74,16 @@ FONT = Path(__file__).resolve().parents[1] / "assets" / "FamiljenGrotesk-Bold.tt
 INK = "#0b0b0b"      # --color-btn, the app's solid black
 PAPER = "#ffffff"
 WORDMARK = "Bklsss"  # the logo, in full
-MARK = "B"           # its first letter, for the two places the full word can't fit
+MARK = "B"           # its first letter, for the one place the full word can't fit
+
+# Letter-spacing, as a fraction of the em. Negative closes the gaps up (owner,
+# 2026-08-03: "reduce the space between the letters so its shorter"), and on an
+# icon that is not only a look — a shorter mark is bound by width at a larger
+# scale, so the same tile draws the word bigger. Familjen Grotesk sets fairly
+# open by default; -0.06 reads as a lockup rather than as running text.
+# Applied identically to the PNGs and to icon.svg, or the tab and the home
+# screen would carry visibly different logos.
+TRACKING_EM = -0.06
 
 # Android's maskable safe zone is the centre 80%; a circular crop is the
 # worst case, so the glyph is kept well inside it.
@@ -87,31 +96,41 @@ SIZES_ICO = [16, 32, 48, 64]
 SVG_BOX = 64         # icon.svg's viewBox; scale-free, so the number is arbitrary
 
 
-def draw(size: int, *, text: str, coverage: float) -> Image.Image:
-    """One square icon: black tile, white `text` occupying `coverage` of the
-    width. Used for both the wordmark and the single letter — the only
-    difference is which string comes in and how wide it ends up."""
-    img = Image.new("RGB", (size, size), INK)
-    d = ImageDraw.Draw(img)
+def ink_layer(text: str, pt: int = 320) -> Image.Image:
+    """`text` as a tight greyscale mask of nothing but its ink, tracked.
 
-    # Fit by measurement rather than by a guessed point size — a font's cap
-    # height is not a fixed fraction of its em, and a six-letter string is
-    # bound by width where a single letter is bound by height.
-    target = size * coverage
-    pt = int(target * 1.4)
-    while pt > 4:
-        font = ImageFont.truetype(str(FONT), pt)
-        box = d.textbbox((0, 0), text, font=font)
-        if (box[2] - box[0]) <= target and (box[3] - box[1]) <= target:
-            break
-        pt -= 1
-
+    Drawn glyph by glyph rather than with one `d.text(...)` call, because
+    Pillow has no letter-spacing: the only way to close the gaps is to place
+    each character at its own pen position. Rendered once at a large point size
+    and scaled down by the caller, so every icon comes off the same master."""
     font = ImageFont.truetype(str(FONT), pt)
-    box = d.textbbox((0, 0), text, font=font)
-    # Centre on the ink, not on the font's line box, which carries leading.
-    x = (size - (box[2] - box[0])) / 2 - box[0]
-    y = (size - (box[3] - box[1])) / 2 - box[1]
-    d.text((x, y), text, font=font, fill=PAPER)
+    tracking = TRACKING_EM * pt
+
+    advance = sum(font.getlength(c) for c in text) + tracking * (len(text) - 1)
+    layer = Image.new("L", (int(advance + pt * 2), int(pt * 2.5)), 0)
+    d = ImageDraw.Draw(layer)
+
+    x = pt * 0.5
+    for ch in text:
+        d.text((x, pt * 0.5), ch, font=font, fill=255)
+        x += font.getlength(ch) + tracking
+
+    # Crop to the ink itself. Centring on the font's line box instead would
+    # hang the mark low, because that box carries ascender and descender room
+    # this string never uses.
+    return layer.crop(layer.getbbox())
+
+
+def draw(size: int, *, text: str, coverage: float) -> Image.Image:
+    """One square icon: black tile, white `text` fitted into `coverage` of it."""
+    img = Image.new("RGB", (size, size), INK)
+
+    target = size * coverage
+    ink = ink_layer(text)
+    scale = min(target / ink.width, target / ink.height)
+    ink = ink.resize((max(1, round(ink.width * scale)), max(1, round(ink.height * scale))), Image.LANCZOS)
+
+    img.paste(PAPER, ((size - ink.width) // 2, (size - ink.height) // 2), ink)
     return img
 
 
@@ -135,6 +154,9 @@ def outline(text: str) -> tuple[str, tuple[float, float, float, float]]:
     font = TTFont(FONT)
     glyphs = font.getGlyphSet()
     cmap = font.getBestCmap()
+
+    # Same tracking as the PNGs, converted from ems into this font's own units.
+    tracking = TRACKING_EM * font["head"].unitsPerEm
 
     commands: list[str] = []
     x = 0.0
@@ -162,7 +184,7 @@ def outline(text: str) -> tuple[str, tuple[float, float, float, float]]:
             glyph.draw(TransformPen(pen, (1, 0, 0, 1, x, 0)))
             commands.append(pen.getCommands())
 
-        x += glyph.width
+        x += glyph.width + tracking
 
     return "".join(commands), (x0, y0, x1, y1)
 
