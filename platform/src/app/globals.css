@@ -578,7 +578,11 @@
   .step-selector {
     border-width: 1px; /* the .step rows carry a 2px transparent border; the chip is thinner */
     border-color: var(--color-line);
-    border-radius: 12px;
+    /* 16px, matching the .step row it sits inside — owner's call 2026-08-03.
+       It was 12px on the reasoning that the chip should read tighter than its
+       row; against a 16px row with superellipse corners that read as a
+       mismatch rather than as a deliberate inset. */
+    border-radius: 16px;
     background-color: rgba(255, 255, 255, 0.85);
     -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
