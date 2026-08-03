@@ -161,6 +161,28 @@ export const MAP = {
   "strategic = long-term policy, tactical = medium-term decisions, operational = daily execution.":
     "plan before you start, practise while you read, review after you finish.",
 
+  /* ---- the `cards` block on its second axis (added 2026-08-03) ----
+   * One object at three fill levels, for a set whose distinction is HOW MUCH
+   * BUFFER YOU HOLD. Same treatment as the three-kind set above: the mark, the
+   * tone, the rule and — the point of this one — the proportion of the glyph
+   * the card's own hue fills are all the real component; only the words are
+   * placeholders. The two leads that are already subject-free ("Somewhere in
+   * between", "Keep the tank full") are left alone.
+   *
+   * The titles have to go: aggressive / moderate / conservative is the
+   * vocabulary of one syllabus, and a post may not carry it even when no word
+   * in it is on the banned list. */
+  Aggressive: "Tight",
+  Moderate: "Steady",
+  Conservative: "Roomy",
+  "Run it lean": "Cut it fine",
+  "Minimal safety stock, lean inventory, tight cash buffers. The return is higher because less capital sits idle, and the risk is higher because a bad week has nothing to absorb it.":
+    "One pass the night before, and nothing held back for a second look. You cover the ground in the least time, and one bad evening takes the whole plan with it.",
+  "Balanced between the two extremes, and middle ground on both counts. It is where most companies actually sit, usually without having chosen it.":
+    "A few sessions across the week, with a little room either side. It is where most people actually end up, usually without having chosen it.",
+  "Large safety stocks and generous cash buffers. The return is lower because more capital is tied up, and the risk is lower because you are rarely caught short.":
+    "Start early, leave slack, and go back over anything that did not stick. It costs more evenings, and almost nothing can go wrong that you cannot absorb.",
+
   /* ---- tap-to-define, for the popup slides (added 2026-08-02) ----
    * The popup is photographed on its own, so its heading and its definition are
    * the entire slide — there is no surrounding page to crop away and nothing

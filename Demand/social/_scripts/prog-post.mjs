@@ -714,6 +714,153 @@ const CONFIGS = {
     ],
   }),
 
+  /* ------------------------------------------------------------------ *
+   * 2026-08-03 — five slots.
+   *
+   * The day the reader's list stopped being a list. Nine steps became eighteen
+   * on 2 Aug and nothing was added to hold them, so a lesson rendered as six
+   * equal rows; today every course's nav grew a level of folders, every step's
+   * name was made to match the row you tap to reach it, the `cards` block got a
+   * second and third axis of marks, and the logo lost its glyph across the
+   * header, the tab icon and the card a shared link unfurls into.
+   *
+   * Four of the five keep the 2 Aug mode — one component per carousel, in the
+   * states a reader puts it through, isolated on the gradient. The midday slot
+   * is the exception and has to be: its claim is that two DIFFERENT screens now
+   * say the same word, which no single component can carry.
+   *
+   * Shot from a worktree pinned to 07b5255, not from the working tree — the
+   * other machine on this OneDrive folder committed four times while these were
+   * being taken, and deleted a file mid-run.
+   * ------------------------------------------------------------------ */
+
+  /* 1 — the tree that grew folders. One component, three depths: the course
+   * shut, a lesson opened onto the folders inside it, and one of those opened
+   * onto its steps. The component gets taller down the carousel, which is the
+   * whole argument made without a word. */
+  "d-tree": () => ({
+    slot: "1-morning",
+    slides: [
+      object({ img: img("n-closed.png"), w: 750 }),
+      object({ img: img("n-open.png"), w: 750 }),
+      object({ img: img("n-deep.png"), w: 750 }),
+      dmCTA(),
+    ],
+  }),
+
+  /* 2 — a step has one name.
+   *
+   * The only `feature()` slot of the day, and the exception is earned: the
+   * claim is that the row you tap and the page you arrive at now read the same
+   * words, and one isolated component cannot show two screens agreeing. So:
+   * the drawer, then the page, with the headline making the pair explicit.
+   *
+   * `top` for each is solved rather than guessed — the tapped row sits 207
+   * source px down a 300-wide crop (x3.73), the title 68 px down a 402-wide one
+   * (x2.79), and both have to land in the clear window at 1000-1360. */
+  "d-name": () => ({
+    slot: "2-midday",
+    slides: [
+      cover({
+        eyebrow: "Building in public",
+        title: "You tapped one<br>name. You got<br>another.",
+        size: 92,
+        sub: "Every step in the reader was renamed today so that stops happening.",
+        subTop: 1040,
+      }),
+      feature({
+        img: img("s-drawer.png"),
+        shotLeft: 0,
+        title: "This is what<br>you press.",
+        sub: "One row, in the folder it belongs to.",
+        top: 228,
+        fadeBot: 430,
+      }),
+      feature({
+        img: img("s-page.png"),
+        shotLeft: 0,
+        title: "And this is<br>where you land.",
+        sub: "Same words. No wondering whether you opened the right thing.",
+        top: 780,
+        fadeBot: 400,
+      }),
+      cover({
+        eyebrow: "What it took",
+        title: "A script that<br>checks it.",
+        sub: "Sixty-odd steps, each with two names written by hand. A rule nobody can keep by eye is a rule that needs a machine, so it got one.",
+        subTop: 960,
+      }),
+      dmCTA(),
+    ],
+  }),
+
+  /* 3 — one card, three fill levels.
+   *
+   * Until this morning the card marks drew exactly one question — how far ahead
+   * is this? — so any set that was not about time stayed a table, and 37 of
+   * them did. This is the second axis: one object at three charges, the card's
+   * own hue filling the mark in proportion, and the first one drawing no fill
+   * at all because that is the point being made. */
+  "d-cards": () => ({
+    slot: "3-afternoon",
+    slides: [
+      object({ img: img("b-card-lean.png"), w: 750 }),
+      object({ img: img("b-card-middle.png"), w: 750 }),
+      object({ img: img("b-card-full.png"), w: 750 }),
+      dmCTA(),
+    ],
+  }),
+
+  /* 4 — the link, and what it turns into.
+   *
+   * One control in two states, then the thing it produces. The card is the only
+   * one in the set that names no course — every other is a course's or a step's
+   * own title, which a post may not carry — and it is also the honest one to
+   * show, because it is what a stranger meets first. */
+  "d-link": () => ({
+    slot: "4-evening",
+    slides: [
+      object({ img: img("g-share.png"), w: 660, flat: true }),
+      object({ img: img("g-share-done.png"), w: 730, flat: true }),
+      object({ img: img("g-og.png"), w: 750 }),
+      dmCTA(),
+    ],
+  }),
+
+  /* 5 — the logo is the word.
+   *
+   * The softest of the five, which is what this slot is for: a design log
+   * rather than a feature. The lockup lost its glyph — 32px of folded square
+   * that arrived as a dark speck ahead of the word — and the tab icon became
+   * the same word on its own tile, so it survives a dark browser chrome and a
+   * search result. */
+  "d-word": () => ({
+    slot: "5-night",
+    slides: [
+      /* The tile only. The header lockup was shot too and does not go here: it
+       * is the word in black on a light ground, which is exactly what the
+       * poster's own corner stamp is, so the slide came back reading as the
+       * stamp accidentally printed twice at two sizes. The tile is the same
+       * decision in a form that cannot be confused with it — and it is the half
+       * that actually changed today. */
+      object({ img: img("g-favicon.png"), w: 750 }),
+      cover({
+        eyebrow: "What we learnt",
+        title: "A mark you have<br>to enlarge is<br>not a mark.",
+        size: 88,
+        sub: "Ours was 32 pixels wide in a browser tab. Nobody read it as a shape, so it read as a smudge in front of the name. The name was doing the work already.",
+        subTop: 990,
+      }),
+      cover({
+        eyebrow: "In the works",
+        title: "One word,<br>everywhere.",
+        sub: "The header, the tab, the card a shared link turns into. Every surface saying the same thing is worth more than a clever mark on one of them.",
+        subTop: 1000,
+      }),
+      dmCTA(),
+    ],
+  }),
+
   /* Tap to define: the affordance, then twice what it opens. The word alone is
    * a slide because a rule under a word is the entire invitation. Held back
    * from 2 Aug night — see `c-course` — but shot and ready. */

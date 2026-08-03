@@ -204,6 +204,13 @@ and the answer was to stop cropping.
   the middle of a lot of gradient. Start at the safe width and come down only
   until the check passes: the box is the limit, not a target to stay clear of.
   `isolate()` shoots at `deviceScaleFactor: 8`, so there are pixels for it.
+- **Isolate the LIST, not the scroller it sits in.** The sidebar's `nav` is a
+  fixed-height overflow container, so isolating it returned the same 283×766 box
+  for all three states of the tree — three slides of identical extent, each with
+  a screen of empty space under it. The inner list (`nav > div.relative.flex`)
+  is the component, and it came back 178 / 310 / 374 tall. **A component whose
+  height is the story has to be measured, not assumed:** print the css size the
+  isolate reports and check the three numbers differ.
 - **Shadow: cut the layer, never dim it.** Third time this lesson has been
   learned on this project (the app's shadow scale on 1 Aug, then twice here).
   The owner's word both times was *harsh*, and both times the culprit was blur
@@ -304,6 +311,42 @@ and the answer was to stop cropping.
   control in a checkpoint row — the note button *and* both answers — so
   `nth: 1` was the second button of the first row, not the note button of the
   second. `.grasp-btn[aria-expanded]` picks the note buttons only.
+- **Relabel by POSITION when one string has to become two different words.** The
+  string map is a text-node swap, so it cannot tell a folder from a step that
+  happens to carry the same label — and after the nav grew folders, one lesson
+  had exactly that. Both rows came out reading the same neutral name, which
+  flattens the tree in the one photograph that is about the tree having levels.
+  Walk `a.step, button.step` in order and write an array of labels onto them
+  instead (`NAV_MATHS` / `NAV_CS` in `cap-0803.mjs`). The order is stable
+  because every row stays mounted whether its folder is open or shut. Run it
+  AFTER the string map, and keep the map — it still covers the rest of the page.
+- **Paragraphs are not the only text in a step.** A relabel that rewrites
+  `section p` leaves the callouts and the list items untouched, and both carry
+  prose. Three separate passes are needed (`p`, `div.squircle`'s longest leaf,
+  `li span:last-child`) and the scan will keep failing until all three are
+  written — it took three runs to find that out, one word at a time.
+- **The scan tests every element whose box TOUCHES the crop, so write past the
+  fold.** A bullet clipped by one line at the bottom edge is still in the
+  photograph. Relabelling only what you can see leaves the next block live;
+  supply about twice as many replacement lines as the crop shows.
+- **Print the offending SENTENCE, not just the banned word.** Most hits are a
+  substring inside a longer word — "irrelevance" carries `irr` — so a bare
+  "banned words: irr, npv" sends you hunting down a page by eye. The debug
+  branch in `cap-0803.mjs`'s `shot()` prints the ancestor chain and the text,
+  and it found in one run what two runs of guessing had not.
+- **`:has-text()` is Playwright's, not CSS.** It works in a locator and throws
+  inside `page.evaluate`, where `querySelectorAll` needs valid CSS — which is
+  where `isolate()` resolves its selector. Anchor on a class or an attribute.
+- **Grant `clipboard-write` on the context** to photograph a copy-to-clipboard
+  control's confirmed state. Headless Chromium has no `navigator.share`, so the
+  share button takes its copy path, and without the permission the write is
+  silently refused and the button never changes. The shot comes back looking
+  correct — it is just the unpressed state under the pressed state's filename.
+- **Show an SVG in an `<img>`, don't visit it as a document.** Chromium lays a
+  standalone SVG out against the whole page box, so an element screenshot of it
+  is the icon marooned in two screens of white. `setContent` with an
+  `<img src="…/icon.svg" style="width:960px">` gives the file's own aspect and
+  nothing else. It is still the app's asset, served by the app.
 - **Relabelling is case-sensitive, and a callout usually restates its block in
   lower case.** The card set's own callout kept the original vocabulary at the
   foot of the crop while the cards above it used the new one. Map both cases,
@@ -389,6 +432,13 @@ does.
 - **No swipe arrows, no page counters.**
 - **One distinct shot per slide.** Repeating a crop across slides reads as
   padding.
+- **The wordmark cannot be the subject of a slide it is also stamped on.** Every
+  slide carries "Bklsss" at 31px in the top-left corner, so a slide whose
+  component IS the header lockup — the same word, black, on a light ground —
+  comes back looking like the stamp printed twice at two sizes rather than like
+  a logo shown large. The tab icon works because it brings its own black tile
+  and cannot be mistaken for the stamp. If a post is about the logo, show the
+  surfaces that differ in kind, not the one that matches the corner.
 - **Text and logo stay in the social safe area** — the numbers, and the check
   that enforces them, are at the top of this file.
 - **Never draw a UI element. Take the original from the app.** If a screen looks
@@ -438,6 +488,20 @@ does.
   one hits Windows' filename limit mid-checkout), and `node_modules` must be a
   **real install** — Turbopack rejects a junction pointing outside the project
   root ("Symlink [project]/node_modules is invalid").
+- **Never put deleted code back into the shared working tree to photograph it.**
+  A feature that shipped and was pulled the same day is a good build-in-public
+  story, and `git show <commit>:<path> > <path>` looks like a cheap way to shoot
+  it. It is not: on 3 Aug the other machine committed over the restored files
+  and deleted them **mid-capture**, and worse, it could as easily have committed
+  them — pushing a reverted feature back into production. Repin the shooting
+  worktree to the commit instead. **Repinning is cheap once the worktree exists**
+  (`git checkout --detach <sha>` + `rm -rf platform/.next` + restart the dev
+  server; `node_modules` survives if `package.json` has not moved between the
+  two commits — check with `git diff --stat A B -- platform/package.json`).
+- **Guard a section on the SERVED app, not on `PLATFORM`.** `paths.mjs` resolves
+  `PLATFORM` to the shared tree, so an `fs.existsSync` guard for a file that only
+  exists at the pinned commit is always false while the shot is being taken from
+  a worktree. It skips the section and says so, which reads like a decision.
 - **The app's content comes from Supabase via `npm run gen:course`,** so a
   worktree pinned to an old commit still needs a regen to hold today's steps —
   and will pick up whatever the other session last seeded.
