@@ -188,14 +188,29 @@ Next **replaces** a parent's `openGraph` wholesale rather than merging, so a
 page setting one field by hand silently drops siteName, type and locale.
 
 **Preview cards** are generated at build, one PNG per course and per step, from
-one template in `lib/og.tsx` — 1200×630, flat, Satoshi off the vendored TTFs in
-`platform/assets/`. They come from a **route handler**, `app/og/[...slug]/route.tsx`,
-not the `opengraph-image.tsx` file convention: Next refuses any file after a
-catch-all, and the reader is `(reader)/[...slug]`. Constraints the card is
-built to, from Meta's own docs: under **600KB** (WhatsApp drops it silently
-above that — ours are ~55KB), ≥300px wide, ratio no narrower than 4:1,
-`<head>` inside the first 300KB, description shown to ~80 characters. No SVG.
-A new course gets a correct card with no design work.
+one template in `lib/og.tsx` — 1200×630. They come from a **route handler**,
+`app/og/[...slug]/route.tsx`, not the `opengraph-image.tsx` file convention:
+Next refuses any file after a catch-all, and the reader is `(reader)/[...slug]`.
+Constraints the card is built to, from Meta's own docs: under **600KB**
+(WhatsApp drops it silently above that — ours are ~115KB), ≥300px wide, ratio
+no narrower than 4:1, `<head>` inside the first 300KB, description shown to ~80
+characters. No SVG. A new course gets a correct card with no design work.
+
+**The card wears the social posters' look** (owner's call, 2026-08-03), so a
+link preview and a carousel slide are recognisably the same object: the brand
+gradient off `prog-post.mjs`, the **"Bklsss" wordmark with no glyph**, a purple
+eyebrow, a Familjen Grotesk title and a Satoshi subtitle. Un-boxed — the white
+panel inside a grey canvas is gone, because WhatsApp draws its own bubble round
+the image and a bordered card inside that is a card inside a card. The wordmark
+is suppressed on `/og/home.png` alone, where the title is already the name.
+
+**Familjen Grotesk had to be vendored to get here.** `next/font/google` serves
+it as woff2 and Satori reads only ttf/otf/woff, so `platform/assets/FamiljenGrotesk-Medium.ttf`
+is the latin subset the app already ships, **instanced at wght 500** with
+fontTools and re-flavoured to a plain TTF (the exact command is in `lib/og.tsx`).
+Instanced rather than handed over as a variable font: Satori does not reliably
+apply a `wght` axis, so a variable file renders at its default 400 whatever the
+CSS asks for.
 
 **Sharing** is one control in the header — `ShareControl.tsx`, where a dead
 "Feedback" button used to be. It shares whatever page you are on (dashboard →

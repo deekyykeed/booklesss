@@ -18,61 +18,70 @@ import { OG_DIMENSIONS, SITE_HOST, SITE_NAME } from "./site";
  * preview and nobody has to open a design tool.
  * ------------------------------------------------------------------ */
 
-/* Satoshi, because the card is a container, not a reading: it frames a title
- * the way a source chip or the define popup frames a sentence (the owner's
- * font rule, 2026-08-02). Familjen Grotesk — the app's display face — comes
- * from next/font/google as woff2, and Satori reads only ttf/otf/woff, so the
- * display face isn't available here without vendoring a second copy of it.
+/* Two faces, and they do the two jobs the social posters split them into: the
+ * title is DISPLAY and everything around it is chrome.
  *
- * These are the same TTFs _dev/fonts/ holds for the PDF scripts, copied into
- * platform/assets/ so the build never reaches outside its own root — Vercel
- * builds from platform/, and a file above it may not be there at all. */
+ * Familjen Grotesk is the app's display face, and it took a conversion to get
+ * here. next/font/google serves it as woff2 and Satori reads only ttf/otf/woff,
+ * so `assets/FamiljenGrotesk-Medium.ttf` is the latin subset the app already
+ * ships, instanced at wght 500 and re-flavoured to a plain TTF:
+ *
+ *   python3 -c "from fontTools.ttLib import TTFont; from fontTools.varLib \
+ *     import instancer; f=TTFont('Demand/social/_source/fonts/familjen-grotesk.woff2'); \
+ *     instancer.instantiateVariableFont(f,{'wght':500},inplace=True); \
+ *     f.flavor=None; f.save('platform/assets/FamiljenGrotesk-Medium.ttf')"
+ *
+ * INSTANCED, not handed over as a variable font — Satori's variable-axis
+ * support does not reliably apply a wght, so a variable file renders at its
+ * default 400 whatever the CSS asks for. Pinning the axis in the file is what
+ * makes the weight survive.
+ *
+ * Satoshi stays for the eyebrow, subtitle and footer: those frame the title
+ * rather than being it, which is the owner's content/container rule (2026-08-02)
+ * applied to a card instead of a step. Same TTFs _dev/fonts/ holds for the PDF
+ * scripts, copied into platform/assets/ so the build never reaches outside its
+ * own root — Vercel builds from platform/, and a file above it may not be there. */
 const FONT_DIR = join(process.cwd(), "assets");
 
 async function faces() {
-  const [bold, medium] = await Promise.all([
+  const [bold, medium, display] = await Promise.all([
     readFile(join(FONT_DIR, "Satoshi-Bold.ttf")),
     readFile(join(FONT_DIR, "Satoshi-Medium.ttf")),
+    readFile(join(FONT_DIR, "FamiljenGrotesk-Medium.ttf")),
   ]);
   return [
     { name: "Satoshi", data: medium, weight: 500 as const, style: "normal" as const },
     { name: "Satoshi", data: bold, weight: 700 as const, style: "normal" as const },
+    { name: "Display", data: display, weight: 500 as const, style: "normal" as const },
   ];
-}
-
-/* The mark, inlined rather than fetched. An <img> pointed at our own /icon.svg
- * would mean the build making an HTTP request to a server that isn't running
- * yet; reading the file and handing Satori a data URI has neither the network
- * nor the ordering problem. */
-async function markDataUri() {
-  const svg = await readFile(join(process.cwd(), "src/app/icon.svg"), "utf8");
-  return `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
 }
 
 /* ---- fitting the title ---------------------------------------------- *
  *
  * The card is a fixed 630px and the type inside it isn't, so a long title
  * pushes the footer off the bottom — "Foreign exchange risk management" did
- * exactly that, clipping booklesss.app against the panel's edge. Since a new
+ * exactly that, clipping booklesss.app against the card's edge. Since a new
  * step can be named anything, the fit is computed rather than tuned:
  *
- *   630 − 2×48 outer − 2×56 panel padding      = 422 of content
- *   − 52 wordmark − 63 footer − 24 gap          = 283
- *   − 45 eyebrow − 96 two lines of subtitle     = 142 for the title
+ *   630 − 2×64 padding                          = 502 of content
+ *   − 44 wordmark − 32 footer − 48 gaps         = 378
+ *   − 38 eyebrow − 96 two lines of subtitle     = 244 for the title
  *
- * A title is therefore allowed 142px: one line at any size the length picks,
- * or two lines only if each is under ~67px. Satoshi Bold averages a shade
- * over half its point size per character at these widths, which is what
- * CHAR_W is; it only has to be right enough to catch the wrap.
+ * A title is therefore allowed 244px: one line at any size the length picks,
+ * two lines under ~78, or three under ~46. Familjen Grotesk at 500 averages
+ * about 0.46 of its point size per character at these widths — narrower than
+ * the Satoshi this used to be set in, which is why the sizes went up rather
+ * than down when the face changed. CHAR_W only has to be right enough to
+ * catch the wrap.
  * --------------------------------------------------------------------- */
-const CONTENT_W = 976;
-const CHAR_W = 0.52;
+const CONTENT_W = 1056;
+const CHAR_W = 0.46;
 
 function titleSize(title: string) {
-  const base = title.length <= 18 ? 88 : title.length <= 30 ? 74 : title.length <= 44 ? 60 : 50;
+  const base = title.length <= 18 ? 92 : title.length <= 30 ? 78 : title.length <= 44 ? 64 : 54;
   const lines = Math.ceil(title.length / Math.floor(CONTENT_W / (CHAR_W * base)));
-  if (lines >= 3) return Math.min(base, 44);
-  if (lines === 2) return Math.min(base, 66);
+  if (lines >= 3) return Math.min(base, 46);
+  if (lines === 2) return Math.min(base, 78);
   return base;
 }
 
@@ -84,10 +93,30 @@ function clamp(text: string, max: number) {
   return `${cut.slice(0, word > 0 ? word : max).replace(/[,;:]$/, "")}…`;
 }
 
-const INK = "#171717";
-const MUTED = "#707070";
-const LINE = "#dfdfdf";
-const CANVAS = "#f5f5f5";
+/* Palette and background are lifted straight off the social posters
+ * (`prog-post.mjs`), so a link preview and a carousel slide are recognisably
+ * the same object. Un-boxed, like the posts: the old version sat a white panel
+ * with a hairline border inside a grey canvas, which is a card inside a card
+ * once WhatsApp draws its own bubble round it. */
+const INK = "#0D0D0F";
+const MUTED = "#5F5F68";
+const EYE = "#6C4CF0";
+
+/* The poster's four layers, re-sized for a 1200×630 landscape instead of a
+ * 1080×1920 portrait — the radii are in px, so carrying them across unchanged
+ * would put the purple wash off the top of a card a third the height. */
+const CANVAS =
+  "radial-gradient(1100px 620px at 92% 4%, rgba(139,124,255,.30), transparent 60%)," +
+  "radial-gradient(900px 560px at -6% 88%, rgba(96,166,255,.24), transparent 62%)," +
+  "radial-gradient(820px 460px at 62% 108%, rgba(255,176,124,.18), transparent 60%)," +
+  "linear-gradient(#FCFCFD,#F2F3F6)";
+
+/* THE LOGO IS THE WORD (owner's call, 2026-08-03) — no glyph beside it. Same
+ * decision as the posts, and the same reason: the mark is too small at this
+ * scale to read as a shape, so it arrived as a speck ahead of the word. The
+ * footer still carries the real host, so the abbreviation never has to be
+ * decoded by a stranger — "Bklsss" and "booklesss.app" are on the same card. */
+const WORDMARK = "Bklsss";
 
 export async function shareCard({
   eyebrow,
@@ -102,7 +131,7 @@ export async function shareCard({
   /** Bottom-right counter — "12 steps". Optional. */
   meta?: string;
 }) {
-  const [fonts, mark] = await Promise.all([faces(), markDataUri()]);
+  const fonts = await faces();
 
   return new ImageResponse(
     (
@@ -111,87 +140,76 @@ export async function shareCard({
           width: "100%",
           height: "100%",
           display: "flex",
-          padding: 48,
-          background: CANVAS,
+          flexDirection: "column",
+          justifyContent: "space-between",
+          padding: "64px 72px",
+          backgroundImage: CANVAS,
           fontFamily: "Satoshi",
         }}
       >
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            background: "#ffffff",
-            border: `1px solid ${LINE}`,
-            borderRadius: 32,
-            padding: 56,
-          }}
-        >
-          {/* Wordmark */}
-          <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={mark} width={52} height={52} alt="" style={{ borderRadius: 12 }} />
-            <span style={{ fontSize: 30, fontWeight: 700, color: INK, letterSpacing: -0.4 }}>
-              {SITE_NAME}
-            </span>
-          </div>
+        {/* The logo — the word, on its own. 40px here against 31px on a
+            1080-wide poster: the card is a third the height, so the same
+            optical weight needs more points.
 
-          {/* The thing being shared. The bottom margin is what keeps a
-              two-line subtitle off the footer rule: space-between pins the
-              footer, so a taller middle would otherwise grow into it. */}
-          <div style={{ display: "flex", flexDirection: "column", marginBottom: 24 }}>
-            {eyebrow ? (
-              <span
-                style={{
-                  fontSize: 24,
-                  fontWeight: 500,
-                  color: MUTED,
-                  letterSpacing: 2.4,
-                  textTransform: "uppercase",
-                  marginBottom: 16,
-                }}
-              >
-                {clamp(eyebrow, 46)}
-              </span>
-            ) : null}
+            Suppressed on the brand card, where the title is already the name.
+            "Bklsss" stacked over "Booklesss" is the same word spelled two ways
+            on one card, which reads as a typo rather than as a lockup — and
+            there the 92px title is doing the logo's job anyway. An empty span
+            rather than nothing, so `space-between` still has three children to
+            distribute and the title does not jump to the top of the card. */}
+        <span style={{ fontSize: 40, fontWeight: 700, color: INK, letterSpacing: -1 }}>
+          {title === SITE_NAME ? "" : WORDMARK}
+        </span>
+
+        {/* The thing being shared. `space-between` pins the footer, so this
+            block's own bottom margin is what stops a two-line subtitle from
+            growing down into it. */}
+        <div style={{ display: "flex", flexDirection: "column", marginBottom: 8 }}>
+          {eyebrow ? (
             <span
               style={{
-                fontSize: titleSize(title),
+                fontSize: 22,
                 fontWeight: 700,
-                color: INK,
-                lineHeight: 1.05,
-                letterSpacing: -1.5,
+                color: EYE,
+                letterSpacing: 3.5,
+                textTransform: "uppercase",
+                marginBottom: 16,
               }}
             >
-              {clamp(title, 62)}
+              {clamp(eyebrow, 46)}
             </span>
-            <span
-              style={{
-                fontSize: 30,
-                fontWeight: 500,
-                color: MUTED,
-                lineHeight: 1.3,
-                marginTop: 18,
-              }}
-            >
-              {clamp(subtitle, 118)}
-            </span>
-          </div>
-
-          {/* Footer */}
-          <div
+          ) : null}
+          <span
             style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              borderTop: `1px solid ${LINE}`,
-              paddingTop: 28,
+              fontFamily: "Display",
+              fontSize: titleSize(title),
+              fontWeight: 500,
+              color: INK,
+              lineHeight: 1.02,
+              letterSpacing: -2.2,
             }}
           >
-            <span style={{ fontSize: 26, fontWeight: 700, color: INK }}>{SITE_HOST}</span>
-            {meta ? <span style={{ fontSize: 26, fontWeight: 500, color: MUTED }}>{meta}</span> : null}
-          </div>
+            {clamp(title, 62)}
+          </span>
+          <span
+            style={{
+              fontSize: 28,
+              fontWeight: 500,
+              color: MUTED,
+              lineHeight: 1.35,
+              marginTop: 20,
+            }}
+          >
+            {clamp(subtitle, 118)}
+          </span>
+        </div>
+
+        {/* Footer — no rule above it. A hairline is the kind of furniture the
+            un-boxed house style spends its budget avoiding, and at this size
+            the gap already separates it. */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <span style={{ fontSize: 26, fontWeight: 700, color: INK }}>{SITE_HOST}</span>
+          {meta ? <span style={{ fontSize: 26, fontWeight: 500, color: MUTED }}>{meta}</span> : null}
         </div>
       </div>
     ),
