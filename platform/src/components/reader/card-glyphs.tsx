@@ -8,8 +8,8 @@
  * (#020202) takes the app ink, the accent layer (#0c6fff) takes the card's
  * own hue, so a row of cards reads as one family in three colours.
  *
- * Same family as the dashboard's course marks (home/course-glyphs.tsx), and
- * the same rule applies: Freehand belongs to cards and course marks only.
+ * Freehand belongs to cards and course marks only — the same rule the
+ * dashboard's course marks follow (home/plump-glyphs.tsx).
  * The sidebars speak MynaUI Line/Solid exclusively and nothing Freehand may
  * leak into one.
  *

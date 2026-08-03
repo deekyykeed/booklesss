@@ -48,9 +48,10 @@ type ReaderShell = {
 
 const Ctx = createContext<ReaderShell | null>(null);
 
-/* No-op fallback for surfaces that render chrome without the provider (the
- * parked /old-home and /page scratch pages). There the controls are simply
- * inert rather than a crash. */
+/* No-op fallback for any surface that renders the reader chrome without the
+ * provider. Nothing does since the /old-home and /page scratch pages were
+ * deleted (2026-08-03), but a page added outside the reader tree gets inert
+ * controls rather than a crash. */
 const NOOP: ReaderShell = {
   side: null,
   toggleLeft: () => {},

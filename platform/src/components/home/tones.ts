@@ -2,8 +2,8 @@
  * wherever it appears on the home page. */
 
 /** One hue per course, carried by the card's gradient, mark and sparkline.
- *  Keyed by slug like CourseGlyph; a new course gets the fallback the day it's
- *  seeded, and picking its colour is a one-line change here.
+ *  Keyed by slug, like the card glyphs; a new course gets the fallback the day
+ *  it's seeded, and picking its colour is a one-line change here.
  *
  *  None may be the brand green: green means completion everywhere in this app,
  *  so a course wearing it would read as a finished one. (Corporate Finance was
