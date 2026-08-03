@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-03 (session 39)
+**Last updated:** 2026-08-04 (session 40)
 
 ---
 
@@ -91,6 +91,94 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 40 (2026-08-03 into 04, the sign-up flow rebuilt on Clerk).
+Numbered 40 because 39 was taken by the brand session and a third, parallel
+Clerk/auth session wrote the block below this one - three sessions in one
+tree tonight.**
+- [ ] WARNING **NOBODY HAS EVER COMPLETED A SIGN-UP, maybe.** The owner reached
+      the dashboard signed in as deekymvula@gmail.com, but Clerk's Users tab
+      still read "No users yet" when he looked. **Refresh that tab first
+      thing.** If it is still empty the sign-up never landed server-side, and
+      that is the most important item here - everything below assumes accounts
+      work.
+- [ ] WARNING **The onboarding questions should come from Supabase, not from
+      `lib/schools.ts`.** Owner's call, and the data is already there:
+      `pipeline_programmes` (60), `pipeline_subjects` (357),
+      `pipeline_programme_subjects` (979), `pipeline_schools` (4 - these are
+      ZCAS FACULTIES, not universities; do not confuse them with the
+      university list in `lib/schools.ts`, which uses the same word).
+      Flow the owner wants: **university then programme, and their subjects
+      are known**. Awarding bodies: ZCAS University 49, Greenwich 7, NCC 4 -
+      so it is **ZCAS-only data**, and a UNZA student would reach the
+      programme step with nothing to pick.
+      **The number that decides the design: 4 of 357 subjects are `live`**
+      (347 `todo`, 6 `on_disk`). Pick Bachelor of Accounting and 32 subjects
+      are known, about 2 exist. Decide how that is framed before building it -
+      empty product, or honest roadmap.
+      Recommended shape: generate a static `programmes.json` at build like
+      `course-index.json`, so it works offline and needs no client-side
+      Supabase call.
+- [ ] **Step 1 still names ZCAS and UNZA and now shows their crests**, against
+      the standing "no school names anywhere a student sees" rule. Flagged
+      three times; the owner asked for the logos each time, so treat it as
+      overridden **for the picker only**, never for course content.
+- [ ] **The 20s Turnstile watchdog died with `AuthForm`.** Clerk's own card has
+      no equivalent, and email+password is currently the only door (Google is
+      off - see the block below). If a student reports sign-up hanging, that is
+      the cause, and Clerk's bot-protection setting is the dial.
+- [ ] **`CourseSetup` on the dashboard is a second asker**, for anyone who signs
+      up from a mid-step gate rather than the front door. It only fires when
+      `coursesChosen` is false so the two never both appear - but if onboarding
+      moves to programmes, this has to move with it or it will keep asking the
+      old question.
+- [ ] **`Brand/booklesss-google-consent-120.png` is built and unused.** Do not
+      upload it while Google sign-in is off; it only matters once item 1 of the
+      block below is undone.
+
+**From the Clerk/auth session (2026-08-03, after the s39 wrap — number assigned
+at wrap). The one real debt here is item 1: it is a WORKAROUND, not a decision.**
+- [ ] ⚠️ **GOOGLE SIGN-IN IS DISABLED IN PRODUCTION CLERK — RE-ENABLE IT.**
+      Owner turned it off to get past Google's branding-verification wall
+      ("its a work around / need to fix this up later"). Verified live:
+      `clerk.booklesss.app/v1/environment` reports `oauth_google enabled=False`,
+      leaving **email + password as the only door into the app**.
+      **The thing that was actually blocking verification is now fixed** (see
+      item 2), so re-enabling should just work: Clerk → Production → SSO
+      connections → Google on, then Google Cloud → Branding → **Verify again**
+      → **Publish branding within 7 days** (an unpublished pass reverts to
+      "Need to re-verify", which is probably what happened before).
+      **Do NOT delete the OAuth client** in Google Cloud meanwhile — it costs
+      nothing and deleting it restarts verification from zero. And still
+      **never upload a logo to Google's consent screen.**
+- [x] ~~Google branding verification keeps failing~~ → ✅ **cause found and
+      fixed 2026-08-03.** Google's rule (support.google.com/cloud/answer/13807376):
+      *"Your app homepage URL must be static and cannot redirect to a different
+      URL or domain."* All three branding links were the apex, and Vercel had
+      `booklesss.app` **308-redirecting to `www`** — so the configured URL was
+      never the URL in the browser. **Vercel's primary domain was flipped: the
+      apex now serves Production and `www` 308s to it.** Measured after:
+      `/`, `/privacy`, `/terms` all 200 on the apex, `<title>Booklesss</title>`,
+      no loop. This also makes the DNS agree with `SITE_HOST` in `lib/site.ts`,
+      which had declared the apex canonical all along.
+- [ ] **Redeploy production.** `metadataBase` in `app/layout.tsx` reads Vercel's
+      `VERCEL_PROJECT_PRODUCTION_URL`, which is baked at build time, so OG
+      images and canonicals still resolve against `www` until the next build.
+- [ ] **The real-phone sign-up test is now MORE urgent, not less.** The s38 item
+      below asks for email/password *and* Google — the Google half is impossible
+      until item 1 is undone, and email+password is now the only path anyone
+      has. It is also the path with the Turnstile history (`signUp.password()`
+      hanging silently), and the 20s watchdog that used to cover it **was
+      deleted with `AuthForm`** in the Clerk-card rewrite. Nobody has ever
+      completed a sign-up on this app.
+- [ ] **`#f2f2f1` Google-button tint in `globals.css` is dead CSS** while Google
+      is off. Three lines, deliberately left in place because it comes straight
+      back with item 1.
+- [ ] **Four Clerk commits (`a636c3c` → `d3ebbe5`) landed after the s39 wrap and
+      were never logged** — a parallel Fable session. They deleted `AuthForm`,
+      the custom onboarding sheet and `/sso-callback`, and made `ClerkGate.tsx`
+      the only component that opens Clerk. Any note above referring to the
+      custom sheet or its watchdog is describing files that no longer exist.
 
 **From session 39 (2026-08-03, the brand/PDF session) — all cheap, none
 blocking.**
@@ -637,6 +725,85 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-03 into 04 (session 40 - sign-up becomes Clerk's, the account carries the student, and the front door is rebuilt twice)
+
+Local session on `main`, alongside the brand session (39) and a third
+Clerk/auth session, all in the same OneDrive tree. Twelve commits,
+`a636c3c` to `4e74f01`.
+
+**Done:**
+- **Every auth surface is Clerk's own**, logo hidden in the appearance
+  (`logoBox: display none`). `AuthForm`, the custom onboarding sheet, its CSS
+  and `/sso-callback` are deleted - about 900 lines. `ClerkGate.tsx` is now the
+  one component that opens Clerk, same pattern as `AccountSignal`.
+- **The account carries the student**: `unsafeMetadata.identity` holds name,
+  avatar, `since`, courses and `coursesChosen`; `AccountSignal` reconciles both
+  directions, so a second device greets the same person instead of rolling a
+  new one.
+- **`coursesChosen` fixes a real ambiguity**: `courses: []` meant both "not
+  asked" and "the whole library", which is why nothing ever asked. The owner
+  hit it as production user #1 - a dashboard headed ALL COURSES.
+- **Onboarding** (`/onboarding`): three questions, one per screen, saved on each
+  advance, on the app's blob and frost backdrop, with a green checkmark
+  stepper. School cannot be skipped (owner: "how do we add their courses and
+  stuff if we have missing info on them").
+- **The study target is real**: onboarding asks days x minutes and
+  `lib/performance` measures against it, retiring the invented 5-days /
+  120-minutes constants it had carried since the dashboard shipped.
+- **`/home` became `/dashboard`**, with a permanent redirect because the PWA's
+  installed `start_url` was `/home`; and it now requires an account.
+- **Real university crests**, cropped from each university's own site and
+  inlined as data URIs, since CSP blocks remote images.
+- Landing rebuilt to the owner's reference, then rebuilt again when he reversed
+  the order: account first, questions second.
+
+**What Worked:**
+- **Measuring instead of eyeballing.** `getComputedStyle` found that Clerk
+  draws field edges as a BOX-SHADOW RING, not a border - the appearance
+  object's `border` left `border-width: 0px`, and even `boxShadow` there lost
+  to Clerk's own rule. Only `!important` in `globals.css` won, because Clerk
+  injects its stylesheet after ours.
+- **Blocking Clerk at the network** (`context.route` abort) to test
+  `/onboarding`, which redirects a signed-out visitor by design - aborting
+  leaves `isLoaded` false, so the page renders and can be driven.
+- **Reading `node_modules` for the API shape**: `options` (not `layout`) is
+  where `privacyPageUrl` and `termsPageUrl` live in this Clerk version.
+- **Auditing colour by enumerating every painted background** rather than
+  looking - that is what proved the "cream" was warm off-greys (#e7e7e6,
+  #f4f4f3, #fafafa) and not a cream variable at all.
+- **Fetching logos from a university's own HTML** when its favicon is useless:
+  ZCAS's favicon is a broken crop of a wordmark, but the crest sits inside a
+  2991x1370 lockup and crops out cleanly.
+
+**Dead Ends (do not retry):**
+- **Styling Clerk's inputs or social buttons through `clerk-appearance.ts`.**
+  Measured twice; both `border` and `boxShadow` are overridden there. Those two
+  rules live in `globals.css` with `!important` and a note saying why.
+- **`layout: {...}` on the ClerkProvider appearance** - this version calls it
+  `options`, and `layout` is a type error.
+- **A frosted/blob backdrop without `z-index: 10` on the content.** `.bg-waves`
+  is `position: fixed; z-index: 0`, so static content paints UNDER it - this
+  blanked the landing's headline and header on production until it was caught.
+  `.content-frame` already documents the fix.
+- **Tally as the onboarding form.** Its API is free and capable (webhooks,
+  hidden fields, redirect-with-answers), but these answers are application
+  state the dashboard reads immediately, so it would mean a webhook endpoint, a
+  race on redirect, the course list maintained in two places, and a
+  third-party iframe in the signup path. Right tool for surveys and lead
+  capture; wrong for this.
+- **Building a commit message file with printf and double-quoted arguments** -
+  backticks inside them execute, and one commit landed with a hole in it. Fixed
+  in the wrap-session skill: use a quoted heredoc.
+
+**Flags:**
+- WARNING Clerk's Users tab read "No users yet" while the owner was signed in.
+- WARNING Google sign-in disabled in production - see the parallel session's
+  block at the top of Next Session.
+- `linear-server` unauthorized, **14th consecutive session**. Nothing filed.
+- `Booklesss Bucket/` webp - 12th session unfiled.
+- OneDrive `.next` EPERM struck three more times; cleared with `rm -rf .next`
+  after confirming no node process was running, as documented.
 
 ### Session 2026-08-03 (session 39 — the diamond is retired, the brand folder is one place, and the front door shows the app)
 

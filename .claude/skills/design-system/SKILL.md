@@ -248,6 +248,45 @@ Lists and grids cascade: `animation-delay: calc(var(--index) * 80ms)`. Never ins
 The owner sends screenshots of an interface and asks for it. Two rules, both
 learned the expensive way on the settings dialog.
 
+**Copy its LAYOUT; keep the app's OWN COLOURS.** *(2026-08-03, the landing
+page — six rounds of correction.)* A reference's structure is what the owner
+is pointing at: the stacking, the order, the proportions. Its palette is not.
+Building the landing in the reference's cream (`#FAF9F5`, `#F0EEE6`) put a
+page next to the app that read as a different product, and the owner's verdict
+was *"I already have colours that look good on my app — why aren't I using
+these even for the website?"*
+
+The failure is quieter than it sounds, because it does not arrive as one wrong
+colour. It arrives as a drift of near-misses picked up one at a time —
+`#e7e7e6` for a border, `#f4f4f3` for a fill, `#a3a3a3` for a placeholder —
+each defensible alone and collectively a different **temperature** from the
+app's neutral greys. Nobody can point at the culprit, which is why the
+complaint comes out as "it looks cream" when no cream exists in the file.
+
+So: **any colour written as a hex in a component is a bug unless it is a
+brand-specific one-off with a comment saying why.** Reach for the `@theme`
+tokens in `globals.css` — the app's own canvas, line, ink, muted, active.
+Audit it by enumerating what is actually painted rather than by looking:
+
+```js
+[...new Set([...document.querySelectorAll("body *")]
+  .map(e => getComputedStyle(e).backgroundColor)
+  .filter(c => c !== "rgba(0, 0, 0, 0)"))]
+```
+
+Every value that comes back should be a token you can name. Anything else is
+the drift.
+
+**A third-party component's own CSS may beat the appearance API it gives you.**
+*(2026-08-03, Clerk.)* Setting `border` on Clerk's field left
+`border-width: 0px` because it draws that edge as a box-shadow ring; setting
+`boxShadow` through the same API measured unchanged, because Clerk injects its
+stylesheet *after* the app's. The fix was a plain class selector in
+`globals.css` with `!important`, and the lesson is the method: when a styling
+prop appears to do nothing, read the computed style back before trying a
+different value. Two rounds were spent changing values that were never
+reaching the element.
+
 1. **"Copy this" means copy it.** The first pass adapted the reference to the
    app — kept our headings, our radii, added a header band the reference did
    not have — and every one of those was a defect. When a measured spec is
