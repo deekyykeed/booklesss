@@ -102,6 +102,12 @@ export function LandingAuth() {
         signInUrl="/sign-in"
         forceRedirectUrl="/home"
         signInForceRedirectUrl="/home"
+        /* No "Create your account" header HERE (owner, 2026-08-03: "remove
+           that create your account text and stuff") — the page's headline
+           right above the card already does that job. Landing-only: the
+           modal and the /sign-in and /sign-up routes keep their titles,
+           because there the card is alone on the surface. */
+        appearance={{ elements: { header: { display: "none" } } }}
         unsafeMetadata={{
           ...(referredBy ? { referredBy } : {}),
           ...(identity ? { identity } : {}),

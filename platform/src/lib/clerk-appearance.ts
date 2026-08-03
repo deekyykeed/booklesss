@@ -28,11 +28,23 @@ const CIRCLE_SHADOW =
 const CARD_SHADOW = "0 1px 1px -0.5px rgba(0,0,0,0.06), 0 12px 32px -8px rgba(0,0,0,0.16)";
 
 export const clerkAppearance: Appearance = {
+  /* Sanctioned "items inside the card": the legal pair in the card's own
+     footer. This restores the privacy link the landing card carried before
+     it became Clerk's component — and Google's OAuth review wants it near
+     the form, not only in the page footer. */
+  options: {
+    privacyPageUrl: "/privacy",
+    termsPageUrl: "/terms",
+  },
   variables: {
     colorPrimary: "#0b0b0b", // --color-btn: actions are black in this app
     colorForeground: "#171717", // --color-ink
-    colorMutedForeground: "#707070", // --color-muted
-    colorBorder: "#dfdfdf", // --color-line
+    /* WARM, not zinc (owner, 2026-08-03: "the colors on this look off").
+       The landing is a cream page (#FAF9F5) and Clerk's cool greys sat in
+       it like a different app — every grey below leans toward the page's
+       own warmth instead. */
+    colorMutedForeground: "#6E6B63",
+    colorBorder: "#E4E1D8",
     colorBackground: "#ffffff",
     colorDanger: "#8d2525", // --color-danger
     colorSuccess: "#17754d", // brand green, darkened to stay readable
@@ -48,16 +60,26 @@ export const clerkAppearance: Appearance = {
 
     /* ---- shared card surfaces (sign-in / sign-up, modal and page) ---- */
     cardBox: {
-      // The dashboard's cards sit at 28px now; Clerk's card joins the family.
-      borderRadius: "24px",
-      border: "1px solid var(--color-line)",
-      boxShadow: CARD_SHADOW,
+      // 28px like the landing's own cards, warm hairline, warm-tinted shadow
+      // (the design system's rule: tint shadows to the ground's hue).
+      borderRadius: "28px",
+      border: "1px solid rgba(30,30,29,0.10)",
+      boxShadow: "0 1px 1px -0.5px rgba(60,50,30,0.05), 0 20px 40px -15px rgba(60,50,30,0.10)",
       overflow: "hidden",
     },
     card: {
       backgroundColor: "#ffffff",
       boxShadow: "none",
     },
+    /* Clerk paints this band grey by default, which is the single loudest
+       "different app" tell inside a warm page — one card, one colour. */
+    footer: {
+      background: "#ffffff",
+    },
+    dividerLine: { backgroundColor: "rgba(30,30,29,0.10)" },
+    dividerText: { color: "#6E6B63" },
+    // The reference's black button carries no glyph.
+    buttonArrowIcon: { display: "none" },
     // Titles use the display face, like every heading in the reader.
     headerTitle: {
       fontFamily: "var(--font-familjen), var(--font-inter), sans-serif",
@@ -68,26 +90,29 @@ export const clerkAppearance: Appearance = {
     headerSubtitle: {
       color: "var(--color-muted)",
     },
+    /* Pills, like every control on the landing (and the reference): the
+       Download button, the Google button and the fields are one family. */
     formButtonPrimary: {
       backgroundColor: "var(--color-btn)",
       color: "#ffffff",
-      borderRadius: "10px",
-      fontSize: "13.5px",
+      borderRadius: "999px",
+      fontSize: "15px",
       fontWeight: 500,
       textTransform: "none",
       boxShadow: "none",
       "&:hover": { backgroundColor: "#000000" },
     },
     socialButtonsBlockButton: {
-      border: "1px solid var(--color-line)",
-      borderRadius: "10px",
+      border: "1px solid #E4E1D8",
+      borderRadius: "999px",
       backgroundColor: "#ffffff",
       color: "var(--color-ink)",
-      "&:hover": { borderColor: "var(--color-line-2)" },
+      "&:hover": { borderColor: "rgba(30,30,29,0.28)" },
     },
     formFieldInput: {
-      borderRadius: "10px",
-      border: "1px solid var(--color-line)",
+      borderRadius: "999px",
+      border: "1px solid #E4E1D8",
+      padding: "0.625rem 1.25rem",
     },
     footerActionLink: {
       color: "var(--color-ink)",
