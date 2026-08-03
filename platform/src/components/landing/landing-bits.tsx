@@ -6,7 +6,6 @@ import { SignUp } from "@clerk/nextjs";
 import { useSignedIn } from "@/lib/account";
 import { clerkEnabled } from "@/lib/clerk";
 import { accountIdentity } from "@/lib/identity";
-import { useInstall } from "@/lib/install";
 import { useProgress } from "@/lib/progress";
 import { referrer } from "@/lib/referral";
 
@@ -34,47 +33,10 @@ export function ToApp() {
   return null;
 }
 
-/** The reference's "Get the app" card: the app icon, one line of what the
- *  app on your phone buys you, and a black Download button. Ours installs
- *  the PWA. Rendered only when this device can actually act on it — a
- *  button that does nothing is worse than no card, and the pitch below
- *  covers the reviewer who runs no JavaScript. */
-export function GetAppCard() {
-  const { canInstall, showIosHelp, install } = useInstall();
-  if (!canInstall && !showIosHelp) return null;
-
-  return (
-    <section className="rounded-[28px] bg-white p-6 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.08)]">
-      <div className="flex items-center gap-4">
-        {/* The PWA's own tile — the wordmark on black, served from the app
-            icon route, so the card shows exactly what lands on their home
-            screen. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/apple-icon.png" alt="" className="h-12 w-12 rounded-xl" />
-        <h2 className="font-display text-[24px] font-medium tracking-[-0.01em] text-ink">
-          Get the app
-        </h2>
-      </div>
-      <p className="mt-3 text-[16px] leading-6 text-ink-2">
-        Your course on your phone — pick up a step whenever you have a minute.
-      </p>
-      {canInstall ? (
-        <button
-          type="button"
-          onClick={install}
-          className="mt-5 flex h-14 w-full items-center justify-center rounded-full bg-ink text-[16px] font-medium text-white transition-opacity hover:opacity-85"
-        >
-          Download
-        </button>
-      ) : (
-        <p className="mt-5 text-center text-[14px] leading-5 text-muted">
-          To install: tap <span className="text-ink">Share</span>, then{" "}
-          <span className="text-ink">Add to Home Screen</span>.
-        </p>
-      )}
-    </section>
-  );
-}
+/* The reference's "Get the app" card lived here and was removed by the owner
+ * (2026-08-03). The install prompt survives on the dashboard, in
+ * components/home/OfflineTools — a better moment for it in any case, since a
+ * stranger at the front door has not read a word yet. */
 
 /** Clerk's own sign-up card, inline where the reference puts its auth card
  *  (owner, 2026-08-03, off the live landing: "see this bit — just make it

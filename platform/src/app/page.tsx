@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { openGraph, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
 import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
-import { GetAppCard, LandingAuth, ToApp } from "@/components/landing/landing-bits";
+import { LandingAuth, ToApp } from "@/components/landing/landing-bits";
 
 /* ------------------------------------------------------------------ *
  * The front door. A real landing page, not the app.
@@ -17,12 +17,13 @@ import { GetAppCard, LandingAuth, ToApp } from "@/components/landing/landing-bit
  * THE LOOK IS A REFERENCE, SUPPLIED BY THE OWNER (2026-08-03, four phone
  * screenshots of Claude's own mobile login page: "I would like my whole
  * homepage to literally look like this, as simple as could be"). One narrow
- * column, in the APP'S own colours: wordmark header, a big display headline, a "Get
- * the app" card, the auth card (Google / OR / email), a "Meet Booklesss"
- * section, then feature sections over hairlines, each with a screenshot in a
- * warm panel. Per the design system's rule on references, the reference is
- * the brief — centred and stacked wins over the usual variance dials — with
- * the app's own faces standing in for the reference's serif.
+ * column, in the APP'S own colours: wordmark header, a big display headline,
+ * Clerk's own sign-up card, a "Meet Booklesss" section, then feature sections
+ * over hairlines, each with a screenshot in a panel. Per the design system's
+ * rule on references, the reference is the brief — centred and stacked wins
+ * over the usual variance dials — with the app's own faces standing in for
+ * the reference's serif. The reference's "Get the app" card was dropped by
+ * the owner; installing lives on the dashboard.
  *
  * SERVER-RENDERED ON PURPOSE. The pitch — name, purpose, privacy link — is
  * in the static HTML, because the reviewer that failed us may never run
@@ -118,11 +119,13 @@ export default function LandingPage() {
           Your whole course, in steps you can actually read
         </h1>
 
-        {/* ---- the two cards: install, then Clerk's own sign-up form ---- */}
-        <div className="flex flex-col gap-5">
-          <GetAppCard />
-          <LandingAuth />
-        </div>
+        {/* ---- the one card: Clerk's own sign-up form ----
+             The reference's "Get the app" card sat above this until the owner
+             took it out (2026-08-03). The install prompt still lives on the
+             dashboard (components/home/OfflineTools), which is the better
+             moment for it anyway: a stranger at the front door has no reason
+             to install an app they have not read a word of. */}
+        <LandingAuth />
 
         {/* ---- what this is (static, for anyone who scrolls — and for the
                 reviewer who runs no JavaScript) ---- */}
