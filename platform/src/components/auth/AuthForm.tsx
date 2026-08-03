@@ -52,6 +52,21 @@ function say(error: { longMessage?: string; message?: string } | null | undefine
   );
 }
 
+/* Clerk's calls can simply never come back. The bot-protection challenge
+ * (Cloudflare Turnstile, inside signUp.password) resolves silently on a
+ * normal phone, but when it can't — a blocked network, a browser it distrusts
+ * — the promise neither resolves nor rejects, and the button reads
+ * "One moment…" until the end of time. Measured, not supposed: 30+ seconds
+ * with no settle, no error, no request. A student on a patchy connection gets
+ * the same wall, so every await here races a clock and stuck gets a message
+ * instead of silence. */
+const STUCK = Symbol("stuck");
+const STUCK_AFTER_MS = 20000;
+
+function withTimeout<T>(p: Promise<T>): Promise<T | typeof STUCK> {
+  return Promise.race([p, new Promise<typeof STUCK>((r) => setTimeout(() => r(STUCK), STUCK_AFTER_MS))]);
+}
+
 /**
  * `redirectTo` is where to land once the session is live. The /sign-in and
  * /sign-up ROUTES have nowhere to return to, so they take the default and go
@@ -79,7 +94,12 @@ export function AuthForm({
   const [sending, setSending] = useState(false);
 
   const isUp = mode === "sign-up";
-  const busy = sending || (isUp ? upFetch : inFetch) === "fetching";
+  /* `!error` matters: a call that hit the STUCK clock never settles, so the
+     resource's fetchStatus can read "fetching" forever afterwards — and a
+     button still saying "One moment…" under "try again" is a locked door
+     behind an apology. Once an error is showing, the form is usable; a
+     resubmit simply starts a fresh attempt. */
+  const busy = sending || (!error && (isUp ? upFetch : inFetch) === "fetching");
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -89,17 +109,27 @@ export function AuthForm({
 
     try {
       // Step one: hand over the credentials.
-      const attempt = isUp
-        ? await signUp.password({ emailAddress: email, password })
-        : await signIn.password({ identifier: email, password });
+      const attempt = await withTimeout(
+        isUp
+          ? signUp.password({ emailAddress: email, password })
+          : signIn.password({ identifier: email, password }),
+      );
 
+      if (attempt === STUCK) {
+        setError("This is taking too long. Check your connection and try again.");
+        return;
+      }
       if (attempt.error) {
         setError(say(attempt.error));
         return;
       }
 
       // Step two: turn the completed attempt into a live session.
-      const done = isUp ? await signUp.finalize() : await signIn.finalize();
+      const done = await withTimeout(isUp ? signUp.finalize() : signIn.finalize());
+      if (done === STUCK) {
+        setError("This is taking too long. Check your connection and try again.");
+        return;
+      }
       if (done.error) {
         setError(say(done.error));
         return;

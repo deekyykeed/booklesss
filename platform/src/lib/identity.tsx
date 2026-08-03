@@ -269,6 +269,14 @@ export function clearIdentity(): void {
   emit();
 }
 
+/** The ISO date this device was first given an identity — the app's only
+ *  record of "have you been here before". For plain-function callers (the
+ *  greeting picks once at mount, outside React); returns null on the server
+ *  and on a device that hasn't been assigned yet. */
+export function identitySince(): string | null {
+  return load()?.since ?? null;
+}
+
 /** Up to two letters for the fallback monogram — "Deeky Mvula" -> "DM". */
 export function initials(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);

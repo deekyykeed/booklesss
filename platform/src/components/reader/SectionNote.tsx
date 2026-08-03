@@ -2,6 +2,8 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { MynaIcon } from "@/components/icons/myna";
+import { needsAccount } from "@/lib/account";
+import { requireAccount } from "@/lib/onboarding";
 import { NOTES, noteFor, setNote, type NoteId } from "@/lib/step-notes";
 
 // useLayoutEffect on the client, useEffect on the server (avoids the SSR
@@ -92,7 +94,17 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
     <div ref={wrap} className="relative">
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
+        /* Gated the same way as the two faces beside it (owner's rule,
+           2026-08-03: feedback controls are signed-in controls). Opening a
+           menu of verdicts a signed-out reader cannot give would be the same
+           broken promise one tap later. */
+        onClick={() => {
+          if (needsAccount()) {
+            requireAccount("note");
+            return;
+          }
+          setOpen((o) => !o);
+        }}
         aria-expanded={open}
         aria-label={label ? `You said: ${label}. Change it` : "How did that read?"}
         /* The label is off-screen now (see .grasp-label), so the tooltip is the

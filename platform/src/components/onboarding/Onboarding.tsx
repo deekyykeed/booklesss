@@ -43,6 +43,14 @@ const SAYS: Record<OnboardingReason, { title: string; why: string }> = {
     title: "Keep your answers",
     why: "Answering checkpoints needs an account, so what you tick is yours on any phone you sign in on.",
   },
+  note: {
+    title: "Tell us how it read",
+    why: "Rating a section needs an account, so your say is counted once and kept.",
+  },
+  comment: {
+    title: "Keep your comment",
+    why: "Commenting needs an account. What you've typed is still here — sign in and save it.",
+  },
   "next-step": {
     title: "Carry on",
     why: "Create an account to keep reading, and pick up where you left off next time.",

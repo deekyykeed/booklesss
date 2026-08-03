@@ -261,7 +261,11 @@ export function HomeView({
             instead of always ending ", Deeky". See greeting.ts.
             The name they typed into the form beats the one Clerk inferred from
             an email address; they chose one of them. */}
-        {hydrated ? renderGreeting(greeting, identity?.name ?? name) : "Welcome back"}
+        {/* The placeholder is "Welcome", not "Welcome back" — before hydration
+            nothing knows whether this device has ever been here, and the one
+            greeting that must never flash at a stranger is a claim to know
+            them (rule 3 in greeting.ts). */}
+        {hydrated ? renderGreeting(greeting, identity?.name ?? name) : "Welcome"}
       </h1>
       <p className="mt-1.5 text-[14px] leading-6 text-muted">{line}</p>
       {afterGreeting}

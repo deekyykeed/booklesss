@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { Section } from "@/lib/course";
 import { MynaIcon } from "@/components/icons/myna";
+import { needsAccount } from "@/lib/account";
+import { requireAccount } from "@/lib/onboarding";
 import {
   getServerSnapshot,
   getSnapshot,
@@ -80,6 +82,15 @@ export function StepComments({
   const activeHeading = sections.find((s) => s.id === activeId)?.heading ?? "this section";
 
   const save = () => {
+    /* Same gate as every other recording control (owner's rule, 2026-08-03),
+       applied at Save rather than at the textarea: typing costs the reader
+       nothing and the draft survives the sheet — the component stays mounted
+       under it — so what they wrote is still here to save once signed in.
+       The sheet's copy says exactly that. */
+    if (needsAccount()) {
+      requireAccount("comment");
+      return;
+    }
     setComment(lessonId, activeId, text);
     setDraft(null);
   };

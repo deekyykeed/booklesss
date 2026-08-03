@@ -20,7 +20,7 @@ import { useSyncExternalStore } from "react";
  * the time the sheet resolves.
  * ------------------------------------------------------------------ */
 
-export type OnboardingReason = "checkpoint" | "next-step" | "manual";
+export type OnboardingReason = "checkpoint" | "note" | "comment" | "next-step" | "manual";
 
 /** Which form the sheet opens on. It can be flipped from inside either way —
  *  this is only the opening state, so a "Sign in" button opens onto sign-in
