@@ -10,7 +10,7 @@
 
 export default {
   slug: "market-efficiency",
-  label: "Market efficiency",
+  label: "The efficient market hypothesis",
   title: "The efficient market hypothesis",
   kicker: "Valuation and M&A",
 

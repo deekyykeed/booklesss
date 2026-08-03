@@ -10,7 +10,7 @@
 
 export default {
   slug: "mergers-and-acquisitions",
-  label: "Mergers & acquisitions",
+  label: "Mergers and acquisitions",
   title: "Mergers and acquisitions",
   kicker: "Valuation and M&A",
 

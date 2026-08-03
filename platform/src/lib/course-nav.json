@@ -694,184 +694,196 @@
             }
           },
           {
-            "id": "npv-and-payback",
-            "label": "NPV & discounted payback",
-            "lesson": {
-              "title": "NPV and discounted payback",
-              "kicker": "Investment appraisal",
-              "sections": [
-                {
-                  "id": "time-value",
-                  "heading": "Why a future kwacha is worth less"
-                },
-                {
-                  "id": "npv",
-                  "heading": "Net present value"
-                },
-                {
-                  "id": "npv-worked",
-                  "heading": "Working an NPV"
-                },
-                {
-                  "id": "discounted-payback",
-                  "heading": "Discounted payback period"
-                },
-                {
-                  "id": "choosing",
-                  "heading": "What each test is good for"
+            "id": "the-methods",
+            "label": "The methods",
+            "children": [
+              {
+                "id": "npv-and-payback",
+                "label": "NPV and discounted payback",
+                "lesson": {
+                  "title": "NPV and discounted payback",
+                  "kicker": "Investment appraisal",
+                  "sections": [
+                    {
+                      "id": "time-value",
+                      "heading": "Why a future kwacha is worth less"
+                    },
+                    {
+                      "id": "npv",
+                      "heading": "Net present value"
+                    },
+                    {
+                      "id": "npv-worked",
+                      "heading": "Working an NPV"
+                    },
+                    {
+                      "id": "discounted-payback",
+                      "heading": "Discounted payback period"
+                    },
+                    {
+                      "id": "choosing",
+                      "heading": "What each test is good for"
+                    }
+                  ]
                 }
-              ]
-            }
+              },
+              {
+                "id": "irr-and-mirr",
+                "label": "IRR and MIRR",
+                "lesson": {
+                  "title": "IRR and MIRR",
+                  "kicker": "Investment appraisal",
+                  "sections": [
+                    {
+                      "id": "irr",
+                      "heading": "The internal rate of return"
+                    },
+                    {
+                      "id": "interpolation",
+                      "heading": "Finding IRR by interpolation"
+                    },
+                    {
+                      "id": "irr-problems",
+                      "heading": "Where IRR misleads"
+                    },
+                    {
+                      "id": "mirr",
+                      "heading": "The modified internal rate of return"
+                    },
+                    {
+                      "id": "mirr-worked",
+                      "heading": "Working a MIRR"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "apv",
+                "label": "Adjusted present value",
+                "lesson": {
+                  "title": "Adjusted present value",
+                  "kicker": "Investment appraisal",
+                  "sections": [
+                    {
+                      "id": "why-apv",
+                      "heading": "Splitting the project from the way it is funded"
+                    },
+                    {
+                      "id": "base-case",
+                      "heading": "The base case NPV"
+                    },
+                    {
+                      "id": "financing-side-effects",
+                      "heading": "The financing side effects"
+                    },
+                    {
+                      "id": "interest-tax-shield",
+                      "heading": "The interest tax shield"
+                    },
+                    {
+                      "id": "worked-example",
+                      "heading": "Working an APV"
+                    }
+                  ]
+                }
+              }
+            ]
           },
           {
-            "id": "irr-and-mirr",
-            "label": "IRR & MIRR",
-            "lesson": {
-              "title": "IRR and MIRR",
-              "kicker": "Investment appraisal",
-              "sections": [
-                {
-                  "id": "irr",
-                  "heading": "The internal rate of return"
-                },
-                {
-                  "id": "interpolation",
-                  "heading": "Finding IRR by interpolation"
-                },
-                {
-                  "id": "irr-problems",
-                  "heading": "Where IRR misleads"
-                },
-                {
-                  "id": "mirr",
-                  "heading": "The modified internal rate of return"
-                },
-                {
-                  "id": "mirr-worked",
-                  "heading": "Working a MIRR"
+            "id": "harder-cases",
+            "label": "Harder cases",
+            "children": [
+              {
+                "id": "inflation-and-tax",
+                "label": "Inflation and tax in appraisal",
+                "lesson": {
+                  "title": "Inflation and tax in appraisal",
+                  "kicker": "Investment appraisal",
+                  "sections": [
+                    {
+                      "id": "money-and-real",
+                      "heading": "Money cash flows and real cash flows"
+                    },
+                    {
+                      "id": "specific-inflation",
+                      "heading": "When prices inflate at different rates"
+                    },
+                    {
+                      "id": "tax-on-operating-flows",
+                      "heading": "Tax on the operating cash flows"
+                    },
+                    {
+                      "id": "capital-allowances",
+                      "heading": "Capital allowances and the tax saved"
+                    },
+                    {
+                      "id": "worked-example",
+                      "heading": "Working it end to end"
+                    }
+                  ]
                 }
-              ]
-            }
-          },
-          {
-            "id": "inflation-and-tax",
-            "label": "Inflation & tax",
-            "lesson": {
-              "title": "Inflation and tax in appraisal",
-              "kicker": "Investment appraisal",
-              "sections": [
-                {
-                  "id": "money-and-real",
-                  "heading": "Money cash flows and real cash flows"
-                },
-                {
-                  "id": "specific-inflation",
-                  "heading": "When prices inflate at different rates"
-                },
-                {
-                  "id": "tax-on-operating-flows",
-                  "heading": "Tax on the operating cash flows"
-                },
-                {
-                  "id": "capital-allowances",
-                  "heading": "Capital allowances and the tax saved"
-                },
-                {
-                  "id": "worked-example",
-                  "heading": "Working it end to end"
+              },
+              {
+                "id": "capital-rationing",
+                "label": "Capital rationing",
+                "lesson": {
+                  "title": "Capital rationing",
+                  "kicker": "Investment appraisal",
+                  "sections": [
+                    {
+                      "id": "what-it-is",
+                      "heading": "When there is not enough money for everything"
+                    },
+                    {
+                      "id": "soft-and-hard",
+                      "heading": "Soft and hard rationing"
+                    },
+                    {
+                      "id": "profitability-index",
+                      "heading": "Ranking by profitability index"
+                    },
+                    {
+                      "id": "indivisible",
+                      "heading": "When projects cannot be split"
+                    },
+                    {
+                      "id": "multi-period",
+                      "heading": "Rationing across several years"
+                    }
+                  ]
                 }
-              ]
-            }
-          },
-          {
-            "id": "apv",
-            "label": "Adjusted present value",
-            "lesson": {
-              "title": "Adjusted present value",
-              "kicker": "Investment appraisal",
-              "sections": [
-                {
-                  "id": "why-apv",
-                  "heading": "Splitting the project from the way it is funded"
-                },
-                {
-                  "id": "base-case",
-                  "heading": "The base case NPV"
-                },
-                {
-                  "id": "financing-side-effects",
-                  "heading": "The financing side effects"
-                },
-                {
-                  "id": "interest-tax-shield",
-                  "heading": "The interest tax shield"
-                },
-                {
-                  "id": "worked-example",
-                  "heading": "Working an APV"
+              },
+              {
+                "id": "international-projects",
+                "label": "International project appraisal",
+                "lesson": {
+                  "title": "International project appraisal",
+                  "kicker": "Investment appraisal",
+                  "sections": [
+                    {
+                      "id": "two-approaches",
+                      "heading": "Two routes to the same answer"
+                    },
+                    {
+                      "id": "forecasting-rates",
+                      "heading": "Forecasting the exchange rate"
+                    },
+                    {
+                      "id": "foreign-cost-of-capital",
+                      "heading": "The foreign cost of capital"
+                    },
+                    {
+                      "id": "worked-example",
+                      "heading": "Working it by converting the cash flows"
+                    },
+                    {
+                      "id": "second-approach",
+                      "heading": "Working it by converting the NPV"
+                    }
+                  ]
                 }
-              ]
-            }
-          },
-          {
-            "id": "capital-rationing",
-            "label": "Capital rationing",
-            "lesson": {
-              "title": "Capital rationing",
-              "kicker": "Investment appraisal",
-              "sections": [
-                {
-                  "id": "what-it-is",
-                  "heading": "When there is not enough money for everything"
-                },
-                {
-                  "id": "soft-and-hard",
-                  "heading": "Soft and hard rationing"
-                },
-                {
-                  "id": "profitability-index",
-                  "heading": "Ranking by profitability index"
-                },
-                {
-                  "id": "indivisible",
-                  "heading": "When projects cannot be split"
-                },
-                {
-                  "id": "multi-period",
-                  "heading": "Rationing across several years"
-                }
-              ]
-            }
-          },
-          {
-            "id": "international-projects",
-            "label": "International projects",
-            "lesson": {
-              "title": "International project appraisal",
-              "kicker": "Investment appraisal",
-              "sections": [
-                {
-                  "id": "two-approaches",
-                  "heading": "Two routes to the same answer"
-                },
-                {
-                  "id": "forecasting-rates",
-                  "heading": "Forecasting the exchange rate"
-                },
-                {
-                  "id": "foreign-cost-of-capital",
-                  "heading": "The foreign cost of capital"
-                },
-                {
-                  "id": "worked-example",
-                  "heading": "Working it by converting the cash flows"
-                },
-                {
-                  "id": "second-approach",
-                  "heading": "Working it by converting the NPV"
-                }
-              ]
-            }
+              }
+            ]
           }
         ]
       },
@@ -880,94 +892,100 @@
         "label": "Cost of capital",
         "children": [
           {
-            "id": "cost-of-equity",
-            "label": "Cost of equity",
-            "lesson": {
-              "title": "The cost of equity",
-              "kicker": "Cost of capital",
-              "sections": [
-                {
-                  "id": "what-it-is",
-                  "heading": "A cost that nobody invoices"
-                },
-                {
-                  "id": "capm",
-                  "heading": "The capital asset pricing model"
-                },
-                {
-                  "id": "beta",
-                  "heading": "Where beta comes from"
-                },
-                {
-                  "id": "dividend-valuation-model",
-                  "heading": "The dividend valuation model"
-                },
-                {
-                  "id": "choosing",
-                  "heading": "Choosing between the two models"
+            "id": "equity-and-debt",
+            "label": "Equity and debt",
+            "children": [
+              {
+                "id": "cost-of-equity",
+                "label": "The cost of equity",
+                "lesson": {
+                  "title": "The cost of equity",
+                  "kicker": "Cost of capital",
+                  "sections": [
+                    {
+                      "id": "what-it-is",
+                      "heading": "A cost that nobody invoices"
+                    },
+                    {
+                      "id": "capm",
+                      "heading": "The capital asset pricing model"
+                    },
+                    {
+                      "id": "beta",
+                      "heading": "Where beta comes from"
+                    },
+                    {
+                      "id": "dividend-valuation-model",
+                      "heading": "The dividend valuation model"
+                    },
+                    {
+                      "id": "choosing",
+                      "heading": "Choosing between the two models"
+                    }
+                  ]
                 }
-              ]
-            }
-          },
-          {
-            "id": "cost-of-debt",
-            "label": "Cost of debt",
-            "lesson": {
-              "title": "The cost of debt and preference shares",
-              "kicker": "Cost of capital",
-              "sections": [
-                {
-                  "id": "why-cheaper",
-                  "heading": "Why debt costs less"
-                },
-                {
-                  "id": "loans-and-preference",
-                  "heading": "Bank loans and preference shares"
-                },
-                {
-                  "id": "irredeemable-bonds",
-                  "heading": "Irredeemable bonds"
-                },
-                {
-                  "id": "redeemable-bonds",
-                  "heading": "Redeemable bonds and yield to maturity"
-                },
-                {
-                  "id": "picking-the-method",
-                  "heading": "Picking the right method"
+              },
+              {
+                "id": "cost-of-debt",
+                "label": "Cost of debt",
+                "lesson": {
+                  "title": "The cost of debt and preference shares",
+                  "kicker": "Cost of capital",
+                  "sections": [
+                    {
+                      "id": "why-cheaper",
+                      "heading": "Why debt costs less"
+                    },
+                    {
+                      "id": "loans-and-preference",
+                      "heading": "Bank loans and preference shares"
+                    },
+                    {
+                      "id": "irredeemable-bonds",
+                      "heading": "Irredeemable bonds"
+                    },
+                    {
+                      "id": "redeemable-bonds",
+                      "heading": "Redeemable bonds and yield to maturity"
+                    },
+                    {
+                      "id": "picking-the-method",
+                      "heading": "Picking the right method"
+                    }
+                  ]
                 }
-              ]
-            }
-          },
-          {
-            "id": "credit-spreads",
-            "label": "Credit spreads",
-            "lesson": {
-              "title": "Credit spreads and the cost of debt",
-              "kicker": "Cost of capital",
-              "sections": [
-                {
-                  "id": "credit-risk",
-                  "heading": "What a lender charges for the chance of not being repaid"
-                },
-                {
-                  "id": "reading-the-table",
-                  "heading": "Reading the spread table"
-                },
-                {
-                  "id": "interpolating",
-                  "heading": "When the maturity is not in the table"
-                },
-                {
-                  "id": "cost-of-debt-capital",
-                  "heading": "From yield to cost of debt"
-                },
-                {
-                  "id": "what-moves-a-spread",
-                  "heading": "What moves a spread, and what that costs"
+              },
+              {
+                "id": "credit-spreads",
+                "label": "Credit spreads",
+                "lesson": {
+                  "title": "Credit spreads and the cost of debt",
+                  "kicker": "Cost of capital",
+                  "sections": [
+                    {
+                      "id": "credit-risk",
+                      "heading": "What a lender charges for the chance of not being repaid"
+                    },
+                    {
+                      "id": "reading-the-table",
+                      "heading": "Reading the spread table"
+                    },
+                    {
+                      "id": "interpolating",
+                      "heading": "When the maturity is not in the table"
+                    },
+                    {
+                      "id": "cost-of-debt-capital",
+                      "heading": "From yield to cost of debt"
+                    },
+                    {
+                      "id": "what-moves-a-spread",
+                      "heading": "What moves a spread, and what that costs"
+                    }
+                  ]
                 }
-              ]
-            }
+              }
+            ]
           },
           {
             "id": "wacc",
@@ -1000,64 +1018,70 @@
             }
           },
           {
-            "id": "gearing",
-            "label": "Gearing",
-            "lesson": {
-              "title": "Operating and financial gearing",
-              "kicker": "Cost of capital",
-              "sections": [
-                {
-                  "id": "operating-gearing",
-                  "heading": "Fixed costs amplify a change in sales"
-                },
-                {
-                  "id": "financial-gearing",
-                  "heading": "Measuring financial gearing"
-                },
-                {
-                  "id": "interest-cover",
-                  "heading": "Interest cover"
-                },
-                {
-                  "id": "book-and-market",
-                  "heading": "Book values and market values give different answers"
-                },
-                {
-                  "id": "managing-gearing",
-                  "heading": "Managing the level of gearing"
+            "id": "capital-structure",
+            "label": "Capital structure",
+            "children": [
+              {
+                "id": "gearing",
+                "label": "Operating and financial gearing",
+                "lesson": {
+                  "title": "Operating and financial gearing",
+                  "kicker": "Cost of capital",
+                  "sections": [
+                    {
+                      "id": "operating-gearing",
+                      "heading": "Fixed costs amplify a change in sales"
+                    },
+                    {
+                      "id": "financial-gearing",
+                      "heading": "Measuring financial gearing"
+                    },
+                    {
+                      "id": "interest-cover",
+                      "heading": "Interest cover"
+                    },
+                    {
+                      "id": "book-and-market",
+                      "heading": "Book values and market values give different answers"
+                    },
+                    {
+                      "id": "managing-gearing",
+                      "heading": "Managing the level of gearing"
+                    }
+                  ]
                 }
-              ]
-            }
-          },
-          {
-            "id": "capital-structure-theories",
-            "label": "Capital structure theories",
-            "lesson": {
-              "title": "Capital structure theories",
-              "kicker": "Cost of capital",
-              "sections": [
-                {
-                  "id": "the-question",
-                  "heading": "Can the funding mix make a company more valuable?"
-                },
-                {
-                  "id": "traditional-view",
-                  "heading": "The traditional view"
-                },
-                {
-                  "id": "mm-irrelevance",
-                  "heading": "Modigliani and Miller without tax"
-                },
-                {
-                  "id": "mm-with-tax",
-                  "heading": "Adding tax, and then distress"
-                },
-                {
-                  "id": "pecking-order",
-                  "heading": "The pecking order"
+              },
+              {
+                "id": "capital-structure-theories",
+                "label": "Capital structure theories",
+                "lesson": {
+                  "title": "Capital structure theories",
+                  "kicker": "Cost of capital",
+                  "sections": [
+                    {
+                      "id": "the-question",
+                      "heading": "Can the funding mix make a company more valuable?"
+                    },
+                    {
+                      "id": "traditional-view",
+                      "heading": "The traditional view"
+                    },
+                    {
+                      "id": "mm-irrelevance",
+                      "heading": "Modigliani and Miller without tax"
+                    },
+                    {
+                      "id": "mm-with-tax",
+                      "heading": "Adding tax, and then distress"
+                    },
+                    {
+                      "id": "pecking-order",
+                      "heading": "The pecking order"
+                    }
+                  ]
                 }
-              ]
-            }
+              }
+            ]
           }
         ]
       },
@@ -1066,68 +1090,74 @@
         "label": "Valuation and M&A",
         "children": [
           {
-            "id": "bond-valuation",
-            "label": "Valuing a bond",
-            "lesson": {
-              "title": "Valuing a bond",
-              "kicker": "Valuation and M&A",
-              "sections": [
-                {
-                  "id": "features",
-                  "heading": "What a bond is and what its terms mean"
-                },
-                {
-                  "id": "pricing-principle",
-                  "heading": "The one rule that prices every bond"
-                },
-                {
-                  "id": "zero-coupon",
-                  "heading": "Zero coupon bonds"
-                },
-                {
-                  "id": "irredeemable",
-                  "heading": "Irredeemable bonds"
-                },
-                {
-                  "id": "redeemable",
-                  "heading": "Redeemable bonds"
+            "id": "valuation",
+            "label": "Valuation",
+            "children": [
+              {
+                "id": "bond-valuation",
+                "label": "Valuing a bond",
+                "lesson": {
+                  "title": "Valuing a bond",
+                  "kicker": "Valuation and M&A",
+                  "sections": [
+                    {
+                      "id": "features",
+                      "heading": "What a bond is and what its terms mean"
+                    },
+                    {
+                      "id": "pricing-principle",
+                      "heading": "The one rule that prices every bond"
+                    },
+                    {
+                      "id": "zero-coupon",
+                      "heading": "Zero coupon bonds"
+                    },
+                    {
+                      "id": "irredeemable",
+                      "heading": "Irredeemable bonds"
+                    },
+                    {
+                      "id": "redeemable",
+                      "heading": "Redeemable bonds"
+                    }
+                  ]
                 }
-              ]
-            }
-          },
-          {
-            "id": "company-valuation",
-            "label": "Valuing a company",
-            "lesson": {
-              "title": "Valuing a company",
-              "kicker": "Valuation and M&A",
-              "sections": [
-                {
-                  "id": "two-approaches",
-                  "heading": "What a company is worth depends on who is asking"
-                },
-                {
-                  "id": "market-capitalisation",
-                  "heading": "Market capitalisation"
-                },
-                {
-                  "id": "asset-based",
-                  "heading": "Asset-based valuations"
-                },
-                {
-                  "id": "pe-basis",
-                  "heading": "The price/earnings basis"
-                },
-                {
-                  "id": "dividend-growth",
-                  "heading": "The dividend growth model, and comparing the answers"
+              },
+              {
+                "id": "company-valuation",
+                "label": "Valuing a company",
+                "lesson": {
+                  "title": "Valuing a company",
+                  "kicker": "Valuation and M&A",
+                  "sections": [
+                    {
+                      "id": "two-approaches",
+                      "heading": "What a company is worth depends on who is asking"
+                    },
+                    {
+                      "id": "market-capitalisation",
+                      "heading": "Market capitalisation"
+                    },
+                    {
+                      "id": "asset-based",
+                      "heading": "Asset-based valuations"
+                    },
+                    {
+                      "id": "pe-basis",
+                      "heading": "The price/earnings basis"
+                    },
+                    {
+                      "id": "dividend-growth",
+                      "heading": "The dividend growth model, and comparing the answers"
+                    }
+                  ]
                 }
-              ]
-            }
+              }
+            ]
           },
           {
             "id": "mergers-and-acquisitions",
-            "label": "Mergers & acquisitions",
+            "label": "Mergers and acquisitions",
             "lesson": {
               "title": "Mergers and acquisitions",
               "kicker": "Valuation and M&A",
@@ -1157,7 +1187,7 @@
           },
           {
             "id": "market-efficiency",
-            "label": "Market efficiency",
+            "label": "The efficient market hypothesis",
             "lesson": {
               "title": "The efficient market hypothesis",
               "kicker": "Valuation and M&A",
@@ -1192,184 +1222,196 @@
         "label": "Risk management",
         "children": [
           {
-            "id": "interest-rate-risk",
-            "label": "Interest rate risk",
-            "lesson": {
-              "title": "Interest rate risk, spot and forward rates",
-              "kicker": "Risk management",
-              "sections": [
-                {
-                  "id": "exposure",
-                  "heading": "What a change in rates costs"
-                },
-                {
-                  "id": "spot-and-forward",
-                  "heading": "Spot rates and forward rates"
-                },
-                {
-                  "id": "deriving-spot-rates",
-                  "heading": "Getting spot rates out of bond prices"
-                },
-                {
-                  "id": "linking",
-                  "heading": "Linking spot rates to forward rates"
-                },
-                {
-                  "id": "pricing-with-spot-rates",
-                  "heading": "Pricing a bond off the spot curve"
+            "id": "rates-and-bonds",
+            "label": "Interest rates and bonds",
+            "children": [
+              {
+                "id": "interest-rate-risk",
+                "label": "Interest rate risk",
+                "lesson": {
+                  "title": "Interest rate risk, spot and forward rates",
+                  "kicker": "Risk management",
+                  "sections": [
+                    {
+                      "id": "exposure",
+                      "heading": "What a change in rates costs"
+                    },
+                    {
+                      "id": "spot-and-forward",
+                      "heading": "Spot rates and forward rates"
+                    },
+                    {
+                      "id": "deriving-spot-rates",
+                      "heading": "Getting spot rates out of bond prices"
+                    },
+                    {
+                      "id": "linking",
+                      "heading": "Linking spot rates to forward rates"
+                    },
+                    {
+                      "id": "pricing-with-spot-rates",
+                      "heading": "Pricing a bond off the spot curve"
+                    }
+                  ]
                 }
-              ]
-            }
+              },
+              {
+                "id": "yield-curve",
+                "label": "The term structure",
+                "lesson": {
+                  "title": "The term structure of interest rates",
+                  "kicker": "Risk management",
+                  "sections": [
+                    {
+                      "id": "term-structure",
+                      "heading": "One market, many rates"
+                    },
+                    {
+                      "id": "expectations",
+                      "heading": "Expectations theory"
+                    },
+                    {
+                      "id": "liquidity-preference",
+                      "heading": "Liquidity preference"
+                    },
+                    {
+                      "id": "market-segmentation",
+                      "heading": "Market segmentation"
+                    },
+                    {
+                      "id": "reading-the-shape",
+                      "heading": "Reading the shape"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "bond-duration",
+                "label": "Bond duration",
+                "lesson": {
+                  "title": "Bond duration",
+                  "kicker": "Risk management",
+                  "sections": [
+                    {
+                      "id": "what-it-is",
+                      "heading": "How long you really wait for a bond"
+                    },
+                    {
+                      "id": "calculating",
+                      "heading": "Calculating duration"
+                    },
+                    {
+                      "id": "price-sensitivity",
+                      "heading": "Turning duration into a price change"
+                    },
+                    {
+                      "id": "what-drives-it",
+                      "heading": "What makes duration long or short"
+                    },
+                    {
+                      "id": "using-it",
+                      "heading": "Using duration to manage risk"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "hedging-interest-rate-risk",
+                "label": "Hedging interest rate risk",
+                "lesson": {
+                  "title": "Hedging interest rate risk",
+                  "kicker": "Risk management",
+                  "sections": [
+                    {
+                      "id": "internal-hedging",
+                      "heading": "What a company can do without buying anything"
+                    },
+                    {
+                      "id": "forward-rate-agreements",
+                      "heading": "Forward rate agreements"
+                    },
+                    {
+                      "id": "interest-rate-guarantees",
+                      "heading": "Interest rate guarantees"
+                    },
+                    {
+                      "id": "interest-rate-futures",
+                      "heading": "Interest rate futures"
+                    },
+                    {
+                      "id": "interest-rate-swaps",
+                      "heading": "Interest rate swaps"
+                    }
+                  ]
+                }
+              }
+            ]
           },
           {
-            "id": "yield-curve",
-            "label": "The yield curve",
-            "lesson": {
-              "title": "The term structure of interest rates",
-              "kicker": "Risk management",
-              "sections": [
-                {
-                  "id": "term-structure",
-                  "heading": "One market, many rates"
-                },
-                {
-                  "id": "expectations",
-                  "heading": "Expectations theory"
-                },
-                {
-                  "id": "liquidity-preference",
-                  "heading": "Liquidity preference"
-                },
-                {
-                  "id": "market-segmentation",
-                  "heading": "Market segmentation"
-                },
-                {
-                  "id": "reading-the-shape",
-                  "heading": "Reading the shape"
+            "id": "currency-exposure",
+            "label": "Currency",
+            "children": [
+              {
+                "id": "currency-risk",
+                "label": "Currency risk",
+                "lesson": {
+                  "title": "Currency risk",
+                  "kicker": "Risk management",
+                  "sections": [
+                    {
+                      "id": "what-it-is",
+                      "heading": "Gains and losses that come from the rate, not the trade"
+                    },
+                    {
+                      "id": "three-types",
+                      "heading": "Three kinds of currency exposure"
+                    },
+                    {
+                      "id": "interest-rate-parity",
+                      "heading": "Interest rate parity"
+                    },
+                    {
+                      "id": "purchasing-power-parity",
+                      "heading": "Purchasing power parity"
+                    },
+                    {
+                      "id": "internal-hedging",
+                      "heading": "Hedging without a contract"
+                    }
+                  ]
                 }
-              ]
-            }
-          },
-          {
-            "id": "bond-duration",
-            "label": "Bond duration",
-            "lesson": {
-              "title": "Bond duration",
-              "kicker": "Risk management",
-              "sections": [
-                {
-                  "id": "what-it-is",
-                  "heading": "How long you really wait for a bond"
-                },
-                {
-                  "id": "calculating",
-                  "heading": "Calculating duration"
-                },
-                {
-                  "id": "price-sensitivity",
-                  "heading": "Turning duration into a price change"
-                },
-                {
-                  "id": "what-drives-it",
-                  "heading": "What makes duration long or short"
-                },
-                {
-                  "id": "using-it",
-                  "heading": "Using duration to manage risk"
+              },
+              {
+                "id": "currency-hedging",
+                "label": "Hedging currency risk",
+                "lesson": {
+                  "title": "Hedging currency risk",
+                  "kicker": "Risk management",
+                  "sections": [
+                    {
+                      "id": "forward-contracts",
+                      "heading": "Forward contracts"
+                    },
+                    {
+                      "id": "money-market-hedging",
+                      "heading": "Money market hedging"
+                    },
+                    {
+                      "id": "comparing",
+                      "heading": "Comparing the hedges"
+                    },
+                    {
+                      "id": "futures",
+                      "heading": "Currency futures"
+                    },
+                    {
+                      "id": "options",
+                      "heading": "Currency options"
+                    }
+                  ]
                 }
-              ]
-            }
-          },
-          {
-            "id": "hedging-interest-rate-risk",
-            "label": "Hedging interest rate risk",
-            "lesson": {
-              "title": "Hedging interest rate risk",
-              "kicker": "Risk management",
-              "sections": [
-                {
-                  "id": "internal-hedging",
-                  "heading": "What a company can do without buying anything"
-                },
-                {
-                  "id": "forward-rate-agreements",
-                  "heading": "Forward rate agreements"
-                },
-                {
-                  "id": "interest-rate-guarantees",
-                  "heading": "Interest rate guarantees"
-                },
-                {
-                  "id": "interest-rate-futures",
-                  "heading": "Interest rate futures"
-                },
-                {
-                  "id": "interest-rate-swaps",
-                  "heading": "Interest rate swaps"
-                }
-              ]
-            }
-          },
-          {
-            "id": "currency-risk",
-            "label": "Currency risk",
-            "lesson": {
-              "title": "Currency risk",
-              "kicker": "Risk management",
-              "sections": [
-                {
-                  "id": "what-it-is",
-                  "heading": "Gains and losses that come from the rate, not the trade"
-                },
-                {
-                  "id": "three-types",
-                  "heading": "Three kinds of currency exposure"
-                },
-                {
-                  "id": "interest-rate-parity",
-                  "heading": "Interest rate parity"
-                },
-                {
-                  "id": "purchasing-power-parity",
-                  "heading": "Purchasing power parity"
-                },
-                {
-                  "id": "internal-hedging",
-                  "heading": "Hedging without a contract"
-                }
-              ]
-            }
-          },
-          {
-            "id": "currency-hedging",
-            "label": "Hedging currency risk",
-            "lesson": {
-              "title": "Hedging currency risk",
-              "kicker": "Risk management",
-              "sections": [
-                {
-                  "id": "forward-contracts",
-                  "heading": "Forward contracts"
-                },
-                {
-                  "id": "money-market-hedging",
-                  "heading": "Money market hedging"
-                },
-                {
-                  "id": "comparing",
-                  "heading": "Comparing the hedges"
-                },
-                {
-                  "id": "futures",
-                  "heading": "Currency futures"
-                },
-                {
-                  "id": "options",
-                  "heading": "Currency options"
-                }
-              ]
-            }
+              }
+            ]
           }
         ]
       },
@@ -1379,7 +1421,7 @@
         "children": [
           {
             "id": "dividend-theories",
-            "label": "Dividend theories",
+            "label": "Theories of dividend policy",
             "lesson": {
               "title": "Theories of dividend policy",
               "kicker": "Dividend policy",
@@ -1409,7 +1451,7 @@
           },
           {
             "id": "dividend-policy-in-practice",
-            "label": "Policy in practice",
+            "label": "Dividend policy in practice",
             "lesson": {
               "title": "Dividend policy in practice",
               "kicker": "Dividend policy",

@@ -9,7 +9,7 @@
 
 export default {
   slug: "dividend-policy-in-practice",
-  label: "Policy in practice",
+  label: "Dividend policy in practice",
   title: "Dividend policy in practice",
   kicker: "Dividend policy",
 

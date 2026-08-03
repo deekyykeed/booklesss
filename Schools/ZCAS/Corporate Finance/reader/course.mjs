@@ -1,4 +1,4 @@
-/* BAC4301 Corporate Finance — reader course manifest.
+/* Corporate Finance — reader course manifest.
  *
  * The authored source of truth for this course on the reader
  * (booklesss.vercel.app). Each step is its own file inside the lesson folder it
@@ -13,7 +13,21 @@
  * `slug` values must be unique across EVERY course in the reader — the nav
  * index keys lessons by slug alone, so a collision with the economics course
  * would make one of them unreachable. seed-course.mjs checks this and refuses
- * to write if it finds one.
+ * to write if it finds one. That applies to the grouping nodes below too.
+ *
+ * 2026-08-03 — the lessons grew a grouping level (rule S-9, debt D-6), the same
+ * pass Treasury Management had the same day. Investment appraisal and Cost of
+ * capital were seven and six equal rows; both are three now.
+ *
+ * ⚠️ THIS CHANGED EVERY GROUPED STEP'S URL. A lesson's path is built from its
+ * full ancestor trail (`courseIndex()` in `platform/src/lib/course.ts`), so a
+ * folder inserts a segment:
+ *
+ *   /corporate-finance/risk-management/yield-curve
+ *   /corporate-finance/risk-management/rates-and-bonds/yield-curve
+ *
+ * 21 of the 25 steps moved. No step `slug` changed (S-8), only the path it sits
+ * at, and nothing in the repo referenced the old paths. See DEBT.md D-6.
  */
 
 import freeCashFlows from "../01-investment/reader/free-cash-flows.mjs";
@@ -67,44 +81,75 @@ export default {
           slug: "investment-appraisal",
           label: "Investment appraisal",
           children: [
+            /* What you discount, before any method touches it. */
             freeCashFlows,
-            npvAndPayback,
-            irrAndMirr,
-            inflationAndTax,
-            apv,
-            capitalRationing,
-            internationalProjects,
+            {
+              slug: "the-methods",
+              label: "The methods",
+              children: [npvAndPayback, irrAndMirr, apv],
+            },
+            {
+              slug: "harder-cases",
+              label: "Harder cases",
+              children: [inflationAndTax, capitalRationing, internationalProjects],
+            },
           ],
         },
         {
           slug: "cost-of-capital",
           label: "Cost of capital",
           children: [
-            costOfEquity,
-            costOfDebt,
-            creditSpreads,
+            {
+              slug: "equity-and-debt",
+              label: "Equity and debt",
+              children: [costOfEquity, costOfDebt, creditSpreads],
+            },
+            /* The one that combines them, so it sits between the two groups. */
             wacc,
-            gearing,
-            capitalStructureTheories,
+            {
+              slug: "capital-structure",
+              label: "Capital structure",
+              children: [gearing, capitalStructureTheories],
+            },
           ],
         },
         {
           slug: "valuation-and-ma",
           label: "Valuation and M&A",
-          children: [bondValuation, companyValuation, mergersAndAcquisitions, marketEfficiency],
+          children: [
+            {
+              slug: "valuation",
+              label: "Valuation",
+              children: [bondValuation, companyValuation],
+            },
+            /* Neither of these pairs with the other: one is a transaction, the
+             * other is whether the price was ever right. Both stay flat. */
+            mergersAndAcquisitions,
+            marketEfficiency,
+          ],
         },
         {
           slug: "risk-management",
           label: "Risk management",
           children: [
-            interestRateRisk,
-            yieldCurve,
-            bondDuration,
-            hedgingInterestRateRisk,
-            currencyRisk,
-            currencyHedging,
+            /* `rates-and-bonds` / `currency-exposure` rather than the obvious
+             * `interest-rates` / `currency`: Treasury Management's Risk lesson
+             * took those two on 2026-08-03 and slugs are unique across every
+             * course in the reader. */
+            {
+              slug: "rates-and-bonds",
+              label: "Interest rates and bonds",
+              children: [interestRateRisk, yieldCurve, bondDuration, hedgingInterestRateRisk],
+            },
+            {
+              slug: "currency-exposure",
+              label: "Currency",
+              children: [currencyRisk, currencyHedging],
+            },
           ],
         },
+        /* Two steps. A folder over both would be a second name for the lesson
+         * (S-9: a group of one is a step wearing a hat). Stays flat. */
         {
           slug: "dividend-policy",
           label: "Dividend policy",

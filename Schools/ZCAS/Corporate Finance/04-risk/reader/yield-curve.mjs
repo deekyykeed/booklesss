@@ -9,7 +9,7 @@
 
 export default {
   slug: "yield-curve",
-  label: "The yield curve",
+  label: "The term structure",
   title: "The term structure of interest rates",
   kicker: "Risk management",
 

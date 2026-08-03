@@ -86,28 +86,36 @@ export default {
           type: "p",
           text: "There are two decisions and they are separate. The investment decision asks how much [[safety stock|The extra inventory or cash buffer held above the minimum the business needs to operate. It buys you protection against a bad week, and it costs you whatever that money would have earned.]] and cash buffer to hold above the operating minimum.",
         },
+        /* Was a 3x4 table. Nothing in it lined up, so on a phone the last two
+         * columns wrapped a word per line (E-9). As cards the three read as a
+         * spectrum instead of a list: the marks are one battery at three fill
+         * levels, and the accent layer is the charge, so the card's own hue
+         * shows how much buffer the policy keeps. Ordered lean to full rather
+         * than in the table's old order, because that is the trade-off the
+         * section closes on. Return and risk moved into each card's text; the
+         * table kept them apart, which is what let the reader miss that they
+         * move together. */
         {
-          type: "table",
-          columns: [
-            { label: "Policy" },
-            { label: "What it means" },
-            { label: "Return" },
-            { label: "Risk" },
-          ],
-          rows: [
-            [
-              "Aggressive",
-              "Minimal safety stock, lean inventory, tight cash buffers",
-              "Higher, since less capital is idle",
-              "Higher, since it cannot absorb demand spikes",
-            ],
-            [
-              "Conservative",
-              "Large safety stocks and generous cash buffers",
-              "Lower, since more capital is tied up",
-              "Lower, since it is rarely caught short",
-            ],
-            ["Moderate", "Balanced between the two extremes", "Middle ground", "Middle ground"],
+          type: "cards",
+          cards: [
+            {
+              icon: "batteryEmpty",
+              title: "Aggressive",
+              lead: "Run it lean",
+              text: "Minimal safety stock, lean inventory, tight cash buffers. The return is higher because less capital sits idle, and the risk is higher because a bad week has nothing to absorb it.",
+            },
+            {
+              icon: "batteryLow",
+              title: "Moderate",
+              lead: "Somewhere in between",
+              text: "Balanced between the two extremes, and middle ground on both counts. It is where most companies actually sit, usually without having chosen it.",
+            },
+            {
+              icon: "batteryFull",
+              title: "Conservative",
+              lead: "Keep the tank full",
+              text: "Large safety stocks and generous cash buffers. The return is lower because more capital is tied up, and the risk is lower because you are rarely caught short.",
+            },
           ],
         },
         {

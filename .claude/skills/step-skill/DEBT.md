@@ -65,10 +65,11 @@ unchecked ones get ticked off by someone assuming the list was audited.
 | D-3 | Possessive budget, sentence length, step splitting, source links — W-10/W-12/S-8/C-7 | 2026-08-01 | open · 21/53 (**all of TM**, S-8 included) |
 | D-4 | Cold opens — W-13, section openings a beginner cannot hold | 2026-08-01 | open · 21/53 read cold; the other 32 machine-clean only |
 | D-5 | Definitional tables that should be `cards` — E-9 | 2026-08-01 | open · 1/37 converted · **blocked on glyphs** |
-| D-6 | Flat nav trees that should carry a folder — S-9 | 2026-08-02 | open · **1/4 courses grouped** (TM done 2026-08-03) |
+| D-6 | Flat nav trees that should carry a folder — S-9 | 2026-08-02 | open · **2/4 courses grouped** (TM + CF done 2026-08-03) |
 | D-7 | Steps that neither pick up nor hand on the thread — C-8 | 2026-08-02 | open · 0/53 checked |
 | D-8 | Prose written past the weakest reader — W-15 | 2026-08-02 | open · 0/53 checked |
-| D-9 | Steps whose sidebar label is a different name from their page title — S-10 | 2026-08-03 | open · **11 of 53 left** (TM's 15 fixed 2026-08-03) |
+| D-9 | Steps whose sidebar label is a different name from their page title — S-10 | 2026-08-03 | **closed 2026-08-03** · 0 of 53 authored steps; economics' 2 are not reachable from a `.mjs` |
+| D-10 | Em dashes in step prose — W-11 | 2026-08-03 | open · **790 in 32 of 53** (CF 449, SM 341, **TM 0**) |
 
 > **Counts moved from 44 to 53 on 2026-08-02.** The nine remaining Treasury
 > Management steps were split into eighteen (S-8), so the course is 21 steps and
@@ -274,22 +275,47 @@ node .claude/skills/step-skill/tools/table-scan.mjs Schools   # CARDS? rows are 
 ```
 
 - [x] treasury-management/treasury-operations/treasury-levels-and-mandate §task-levels — 2026-08-01 (chess / calendar / checklist, on the time-horizon axis)
-- [ ] the other 36 candidates — listed by the scan above, not enumerated here
+- [x] treasury-management/working-capital/working-capital-and-liquidity
+      §working-capital-policy, **the investment table** — 2026-08-03
+      (batteryEmpty / batteryLow / batteryFull, on the reserve-level axis).
+      Reordered lean → full rather than keeping the table's order, because the
+      spectrum is what the section closes on, and return and risk moved into
+      each card's own text: the table kept them in separate columns, which is
+      what let a reader miss that they move together.
+- [ ] the same section's **financing table** stays a table. Its axis is funding
+      maturity, not reserve level, and putting a second card row directly under
+      the first would replace two tables with a wall. The contrast is doing work.
+- [ ] the other 35 candidates — listed by the scan above, not enumerated here
       because the scan is the authoritative list and a copy of it would rot
 
-⚠️ **Blocked, and this is the real constraint** *(2026-08-02)*. Converting a
-table needs three or four marks on a shared axis, and `card-glyphs.tsx` carries
-exactly three: chess, calendar, checklist. **They are one axis — time horizon —
-so the only sets convertible today are sets about time.** The TM pass hit four
-candidates and converted none: the working capital policy tables (aggressive /
-conservative / moderate) are a risk-appetite axis, and the factoring comparison
-is five rows and over E-9's cap anyway. Declining was correct, since E-9 says a
-row of unrelated pictures is worse than the table it replaced.
+~~⚠️ **Blocked, and this is the real constraint** *(2026-08-02)*.~~
+**UNBLOCKED 2026-08-03, and it was never really blocked.** The note below stood
+for two days and said the fix needed the Streamline MCP, "which was unauthorized
+in the 2026-08-02 session". Nobody checked it again. The owner, when it was
+raised as a blocker a third time: *"the streamline connector has been up all
+this time."* A recorded blocker is a claim with a date on it, not a standing
+fact — **re-test it before repeating it**, especially when repeating it is what
+stops the work.
 
-**Unblocking this needs the Streamline MCP**, which was unauthorized in the
-2026-08-02 session, to fetch Freehand Duotone marks for a second and third axis
-(risk appetite, and cost-against-control would cover most of the remaining 36).
-Until then D-5 progresses one table at a time and only for time-horizon sets.
+The original constraint was real: `card-glyphs.tsx` carried three marks on one
+axis (chess / calendar / checklist = time horizon), so only sets about time
+could convert. There are now **six**, and the second axis is **reserve level** —
+`batteryEmpty`, `batteryLow`, `batteryFull`, one object at three fill levels.
+These are a better fit for E-9 than the first three: the accent layer on a
+Freehand battery is the charge itself, so the card's own hue fills the mark in
+proportion, and the empty one draws no tone at all. The distinction is in the
+picture rather than beside it.
+
+**`card-glyphs.tsx` is now 48KB** (was 35KB), still a client component shipped
+to every reader. Its own header says to move the set behind `next/dynamic` once
+it grows "past a handful". Six is that handful. **The seventh glyph is the one
+that should do the `next/dynamic` work first.**
+
+`seed-course.mjs` used to hold a **retyped copy** of the glyph names with a
+"keep in step with CARD_GLYPHS" comment. Adding three glyphs and not the copy
+made the guard reject marks the reader draws perfectly well — the same silent
+drift the guard exists to stop, pointed the other way. It now reads the names
+out of `card-glyphs.tsx`. Nothing to keep in step any more.
 
 ### D-4 · cold opens: a section opening a beginner cannot hold · opened 2026-08-01
 **Source:** owner review 2026-08-01 (TM `treasury-levels-and-mandate`) — "this
@@ -477,7 +503,16 @@ the same pass as any S-8 split.
       clearing gains "Payments and clearing" and "Treasury systems". Treasury
       operations stays flat — three steps, three separate frames, no pair.
       Course → lesson → group → step is depth 4, S-9's stated ceiling.
-- [ ] corporate-finance (25 steps)
+- [x] corporate-finance (25 steps) → **done 2026-08-03.** Investment appraisal
+      was seven equal rows and Cost of capital six; both are three now.
+      Investment appraisal gains "The methods" (NPV/payback, IRR/MIRR, APV) and
+      "Harder cases" (inflation and tax, rationing, international), with free
+      cash flows staying flat above them because it is the input the methods
+      run on. Cost of capital gains "Equity and debt" and "Capital structure"
+      with WACC flat between them, which is where it belongs: it is the one
+      that combines the two. Valuation and M&A gains "Valuation" only, and Risk
+      management gains "Interest rates and bonds" and "Currency". Dividend
+      policy is two steps and stays flat.
 - [ ] strategic-management (7 steps — may genuinely be flat at this size)
 - [ ] economics
 
@@ -550,6 +585,53 @@ reported. The rest is judgement.
 
 ---
 
+### D-10 · em dashes in step prose · opened 2026-08-03
+**Source:** measured 2026-08-03, not reported by anyone. `seed-course.mjs` has
+warned on em dashes since the check was written and has never blocked, so the
+warnings scrolled past on every publish and nobody counted them.
+**Rule:** W-11
+**Why it can't wait for a rewrite:** W-11 is the bluntest rule in the file —
+*"not one, anywhere in a step"* — and it is the one this skill says is the
+loudest tell that a machine wrote the line. It is also the only rule with no
+judgement in it at all, so a step either passes or does not.
+
+**Measured 2026-08-03, first run of `em-dash-scan.mjs`: 790 in 32 of 53 steps.**
+
+| Course | Em dashes |
+|---|---|
+| Corporate Finance | 449 |
+| Strategic Management | 341 |
+| **Treasury Management** | **0** |
+
+**TM's zero is the finding.** It is not luck and it is not that TM was written
+differently: all 21 TM steps were rewritten after W-11 existed, during D-1
+through D-4, and the em dashes went out with everything else. The other two
+courses have never had a pass since the rule was written. So this is not 53
+steps of debt, it is **the exact set of steps that predate the rule**, and it
+says what the rewrites were actually worth.
+
+**How to pay it: not with a find-and-replace.** W-11 lists the three cases and
+says rewrite the sentence rather than swapping the character, because an em dash
+is usually a sentence that has not decided what it is. Substituting a comma
+leaves the undecided sentence in place and removes the evidence.
+- the clause explains or names what came before → **colon**
+- an aside that could be cut → **comma pair**, or cut it
+- a second thought that stands alone → **full stop**, new sentence
+
+```bash
+node .claude/skills/step-skill/tools/em-dash-scan.mjs Schools
+```
+
+- [x] treasury-management — 0 of 21, clean before this item existed
+- [ ] corporate-finance — **449** across 25 steps
+- [ ] strategic-management — **341** across 7 steps. The worst five steps in the
+      project are all SM: internal-environment (61), corporate-strategy (56),
+      strategy-implementation (56), competitive-strategy (50), intro-to-strategy
+      (47). At 7 steps and ~49 each this is the densest, and the cheapest course
+      to clear.
+
+---
+
 ### D-9 · sidebar label and page title are two different names · opened 2026-08-03
 **Source:** 2026-08-03 · owner — "one thing i notice as im reading is the titles
 of the steps are different from what i actually find on the page."
@@ -597,8 +679,14 @@ title must never renumber a slug, or the shared links break (**S-8**).
       "Debtors & factoring" → "Getting the cash in", "EOQ & creditors" → "How to
       order, and when to pay". No `slug` was touched. `label-scan` on the course
       exits 0; 16 allowed trims remain and were eyeballed.
-- [ ] corporate-finance — **11 of 25**: 1 RENAMED (`yield-curve`), 3 REWORDED,
-      3 PUNCT (the `&` labels), 4 JOIN
+- [x] corporate-finance — **11 of 25** (1 RENAMED, 3 REWORDED, 3 PUNCT, 4 JOIN)
+      → **0, fixed 2026-08-03.** Eight of the eleven had a title that already
+      fits a sidebar row, so the two strings simply collapsed into one. The
+      RENAMED one is `yield-curve`, the case in the owner's original complaint:
+      tapping "The yield curve" landed on "The term structure of interest
+      rates". The label is now "The term structure" — a trim of the title
+      rather than a retitle, because S-10 says shorten the label and leave the
+      better of the two names alone. The slug is still `yield-curve`.
 - [x] strategic-management — **0 of 7**, clean. Its one hit,
       `intro-to-strategy`, is an allowed trim
 - [ ] economics — 2 of 30, and not reachable from a `.mjs`; fix in

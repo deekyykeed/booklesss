@@ -7,7 +7,7 @@
 
 export default {
   slug: "dividend-theories",
-  label: "Dividend theories",
+  label: "Theories of dividend policy",
   title: "Theories of dividend policy",
   kicker: "Dividend policy",
 

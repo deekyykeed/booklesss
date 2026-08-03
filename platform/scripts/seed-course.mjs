@@ -18,8 +18,9 @@
  * never touched.
  */
 import { createClient } from "@supabase/supabase-js";
-import { pathToFileURL } from "node:url";
-import { resolve } from "node:path";
+import { pathToFileURL, fileURLToPath } from "node:url";
+import { resolve, join, dirname } from "node:path";
+import { readFileSync } from "node:fs";
 
 const SLUG_RE = /^[a-z0-9-]{1,80}$/;
 
@@ -68,8 +69,24 @@ function blockTexts(b) {
 
 /* The glyph names reader/card-glyphs.tsx actually draws. A `cards` block names
  * its mark as a string, so a typo renders no icon and says nothing — caught
- * here instead, where it blocks the write. Keep in step with CARD_GLYPHS. */
-const CARD_GLYPHS = ["chess", "calendar", "checklist"];
+ * here instead, where it blocks the write.
+ *
+ * READ OUT OF THE MODULE, not retyped. This was a hand-kept copy of the list
+ * with a "keep in step with CARD_GLYPHS" comment on it, and on 2026-08-03 three
+ * glyphs were added and the copy wasn't — so the guard rejected marks that the
+ * reader could draw perfectly well, which is the same class of silent drift the
+ * guard exists to stop, pointed the other way. The file is .tsx and cannot be
+ * imported here, so the keys are matched out of its source. */
+const CARD_GLYPHS = (() => {
+  const src = readFileSync(
+    join(dirname(fileURLToPath(import.meta.url)), "../src/components/reader/card-glyphs.tsx"),
+    "utf8",
+  );
+  const body = src.slice(src.indexOf("export const CARD_GLYPHS"));
+  const names = [...body.matchAll(/^ {2}([A-Za-z][A-Za-z0-9]*): \(\{ size/gm)].map((m) => m[1]);
+  if (!names.length) throw new Error("seed-course: could not read any names out of card-glyphs.tsx");
+  return names;
+})();
 
 /* The callout kinds the reader can draw. Same reason as CARD_GLYPHS above: the
  * kind is a bare string in the .mjs, so a typo would quietly fall back to the

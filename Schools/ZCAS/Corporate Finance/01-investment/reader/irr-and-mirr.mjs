@@ -14,7 +14,7 @@
 
 export default {
   slug: "irr-and-mirr",
-  label: "IRR & MIRR",
+  label: "IRR and MIRR",
   title: "IRR and MIRR",
   kicker: "Investment appraisal",
 

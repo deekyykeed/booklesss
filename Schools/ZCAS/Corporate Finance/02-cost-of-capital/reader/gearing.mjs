@@ -10,7 +10,7 @@
 
 export default {
   slug: "gearing",
-  label: "Gearing",
+  label: "Operating and financial gearing",
   title: "Operating and financial gearing",
   kicker: "Cost of capital",
 

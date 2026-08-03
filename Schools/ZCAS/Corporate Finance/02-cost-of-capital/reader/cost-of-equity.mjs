@@ -9,7 +9,7 @@
 
 export default {
   slug: "cost-of-equity",
-  label: "Cost of equity",
+  label: "The cost of equity",
   title: "The cost of equity",
   kicker: "Cost of capital",
 

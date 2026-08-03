@@ -10,7 +10,7 @@
 
 export default {
   slug: "international-projects",
-  label: "International projects",
+  label: "International project appraisal",
   title: "International project appraisal",
   kicker: "Investment appraisal",
 

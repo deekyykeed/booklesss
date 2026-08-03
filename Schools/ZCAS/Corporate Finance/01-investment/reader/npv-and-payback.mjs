@@ -8,7 +8,7 @@
 
 export default {
   slug: "npv-and-payback",
-  label: "NPV & discounted payback",
+  label: "NPV and discounted payback",
   title: "NPV and discounted payback",
   kicker: "Investment appraisal",
 

@@ -11,7 +11,7 @@
 
 export default {
   slug: "inflation-and-tax",
-  label: "Inflation & tax",
+  label: "Inflation and tax in appraisal",
   title: "Inflation and tax in appraisal",
   kicker: "Investment appraisal",
 

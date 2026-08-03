@@ -59,6 +59,20 @@ priority in any case, and so it must be fixed or improved no questions asked."*
 - **What still gets said out loud, after the fact:** what moved, how many, and
   what would have to change if it were done again later under different
   conditions. That is a record, and the next pass needs it.
+- **Never offer a menu for work you could just do.** *(added later the same
+  day, after it happened twice)* Presenting two or three options and waiting is
+  the same failure wearing a helpful face: the step stays unimproved, and the
+  owner has to reconstruct enough context to answer something the ledger had
+  already decided. *"can you be more autonomouse and stop looping me into
+  things you could have solved without me."*
+- **Re-test a recorded blocker before you repeat it.** A `DEBT.md` note saying
+  something is blocked is **a claim with a date on it, not a standing fact**.
+  D-5 said it needed the Streamline MCP, "unauthorized in the 2026-08-02
+  session"; the connector had been up the whole time, and two days of "blocked"
+  cost one tool call to disprove. Anything that stops the work earns thirty
+  seconds of checking before it is passed on — and when it turns out to be
+  stale, **say so in the ledger** so the next reader knows the note was tested
+  rather than copied.
 - **The one thing this does not license** is skipping the checks that tell you
   the fix *worked* — the scans, the built HTML, the re-run. Shipping without
   asking is not shipping without looking.
@@ -211,9 +225,18 @@ Three things that belong to this skill rather than the build:
 
   ```bash
   node .claude/skills/step-skill/tools/label-scan.mjs Schools      # S-10 · D-9
+  node .claude/skills/step-skill/tools/em-dash-scan.mjs Schools    # W-11 · D-10
   node .claude/skills/step-skill/tools/cold-open-scan.mjs Schools  # W-13 · D-4
   node .claude/skills/step-skill/tools/table-scan.mjs Schools      # E-9  · D-5
   ```
+
+  Point any of them at one course's folder to scan just that course.
+  `em-dash-scan` is the newest and has no judgement in it at all — the character
+  is there or it is not. It exists because `seed-course.mjs` has always *warned*
+  on em dashes without blocking, so the warnings scrolled past on every publish
+  and nobody counted them. First run: **790 in 32 of 53 steps**, and **Treasury
+  Management had none**, because its 21 steps were rewritten after W-11 existed
+  and the other two courses never were.
 
   `label-scan` is the cheapest of the three and the only one with no false
   positives to argue with: it compares each step's `label` against its `title`,

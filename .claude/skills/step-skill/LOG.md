@@ -22,6 +22,22 @@ Quote actual words. A student's phrasing is never rewritten into the owner's.
 
 ---
 
+### 2026-08-03 · all courses · owner
+- `structure` — "the streamline connector has been up all this time / can you be
+  more autonomouse and stop looping me into things you could have solved without
+  me". **Second time in one session**, which by this file's own rule makes it a
+  rule rather than a one-off. The first was about asking permission for
+  downstream churn; this is about asking at all when the answer was available.
+  D-5 had carried *"blocked, needs the Streamline MCP, which was unauthorized in
+  the 2026-08-02 session"* for two days. The connector was live the whole time.
+  Nobody re-tested it, I read the note, believed it, and offered the owner a
+  choice about work I could simply have done. **A recorded blocker is a claim
+  with a date on it, not a standing fact.** Checking took one tool call and the
+  glyph set went from three marks to six.
+  → promoted: SKILL.md — "Improve the step. Deal with the consequences." gains
+  the re-test rule and the ban on offering a menu · debt: **D-5 unblocked** (one
+  table converted the same day)
+
 ### 2026-08-03 · treasury-management · owner
 - `structure` — "the step skill should never have to orry about any live breaks
   or whatever / a step being improved is the main priority in any case / and so
