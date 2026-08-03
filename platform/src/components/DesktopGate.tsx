@@ -53,15 +53,24 @@ const PHONE_MAX_SHORT_SIDE = 600;
  *  a wide project nav, and /settings is the reference settings dialog at its own
  *  671px. Sending either of them to a phone defeats the only reason they exist,
  *  which is to be compared against the shot they came from. */
-/* /privacy and /terms are here because Google's OAuth reviewers read them on
- * a desktop — a legal page behind a "use your phone" wall is a page that
- * fails the app's verification. /sso-callback passes through mid-OAuth. */
+/* /privacy, /terms and "/" are here because Google's OAuth reviewers read
+ * them on a desktop — the first verification attempt failed with "your home
+ * page does not explain the purpose of your app", and its purpose was behind
+ * a "use your phone" wall. The home page carries the landing intro now (see
+ * HomeView), so it must be readable anywhere; READING a course stays
+ * phone-only, so every other route keeps the gate. /sso-callback passes
+ * through mid-OAuth. */
 const SKIP = ["/workspace", "/settings", "/privacy", "/terms", "/sso-callback"];
+
+/** Exact paths that skip the gate — "/" can't go in SKIP, whose prefix rule
+ *  would exempt every route in the app. */
+const SKIP_EXACT = ["/"];
 
 export function DesktopGate() {
   const pathname = usePathname();
   const [show, setShow] = useState(false);
-  const skip = SKIP.some((p) => pathname === p || pathname.startsWith(p + "/"));
+  const skip =
+    SKIP_EXACT.includes(pathname) || SKIP.some((p) => pathname === p || pathname.startsWith(p + "/"));
 
   useEffect(() => {
     if (skip) return;

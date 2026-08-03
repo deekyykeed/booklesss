@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useSignedIn } from "@/lib/account";
 import { enrolledCourses } from "@/lib/courses";
 import { useIdentity } from "@/lib/identity";
 import { isStudyDay, studyHistory, useProgress } from "@/lib/progress";
@@ -149,6 +151,7 @@ export function HomeView({
 }) {
   const { hydrated, doneCount, isComplete, streak, bestStreak, daysStudied, studiedToday, days } = useProgress();
   const { identity } = useIdentity();
+  const signedIn = useSignedIn();
   const greeting = useGreeting();
 
   /* The courses this student said they're taking — everything below is about
@@ -250,25 +253,62 @@ export function HomeView({
           ? `${streak}-day streak going. Do a section today to keep it.`
           : `${done.checks} sections done across ${daysStudied} day${daysStudied === 1 ? "" : "s"}.`;
 
+  /* The landing intro shows to a visitor the app doesn't know: signed out,
+     nothing studied. It exists because "/" must explain itself to someone
+     who has never heard of Booklesss — Google's OAuth reviewers rejected the
+     app for exactly this (2026-08-03: "your home page does not explain the
+     purpose of your app", and the consent-screen name "Booklesss" appearing
+     nowhere on it — the header wordmark reads "Bklsss"). The moment either a
+     session or any studying exists, the reader has answered "what is this"
+     for themselves and the page goes back to being their dashboard. */
+  const intro = hydrated && signedIn !== true && done.checks === 0 && daysStudied === 0;
+
   return (
     /* Extra room above the greeting: it sat tight under the chrome, and the
        first thing on the page reads better with air over it than the rest of
        the page does between its sections. Bottom padding is unchanged. */
     <div className="mx-auto w-full max-w-[900px] px-4 pb-10 pt-28 md:px-6 md:pt-36">
-      <h1 className="font-display text-[30px] font-medium leading-[1.2] tracking-[-0.02em] text-ink">
-        {/* The name is no longer appended here. Each greeting decides where it
-            goes — front, back, or not at all — so the line reads as written
-            instead of always ending ", Deeky". See greeting.ts.
-            The name they typed into the form beats the one Clerk inferred from
-            an email address; they chose one of them. */}
-        {/* The placeholder is "Welcome", not "Welcome back" — before hydration
-            nothing knows whether this device has ever been here, and the one
-            greeting that must never flash at a stranger is a claim to know
-            them (rule 3 in greeting.ts). */}
-        {hydrated ? renderGreeting(greeting, identity?.name ?? name) : "Welcome"}
-      </h1>
-      <p className="mt-1.5 text-[14px] leading-6 text-muted">{line}</p>
-      {afterGreeting}
+      {intro && (
+        <section className="mb-12">
+          <h1 className="font-display text-[34px] font-semibold leading-[1.15] tracking-[-0.02em] text-ink">
+            Booklesss
+          </h1>
+          <p className="mt-3 max-w-[560px] text-[16px] leading-7 text-ink-2">
+            Study notes for university courses, rewritten as short steps you read on your phone.
+            Each step ends in checkpoints that mark what landed, your dashboard shows the studying
+            adding up, and an account carries it to any device. The first step is free — open a
+            course below and read it.
+          </p>
+          <a
+            href="#courses"
+            className="squircle mt-5 inline-flex h-11 items-center rounded-xl bg-ink px-5 text-[15px] font-medium text-white transition-opacity hover:opacity-85"
+          >
+            Start reading
+          </a>
+        </section>
+      )}
+
+      {/* The greeting stands down while the intro is up: a stranger being told
+          what Booklesss is doesn't also need welcoming by name in the next
+          breath, and two openings is one too many. */}
+      {!intro && (
+        <>
+          <h1 className="font-display text-[30px] font-medium leading-[1.2] tracking-[-0.02em] text-ink">
+            {/* The name is no longer appended here. Each greeting decides where it
+                goes — front, back, or not at all — so the line reads as written
+                instead of always ending ", Deeky". See greeting.ts.
+                The name they typed into the form beats the one Clerk inferred from
+                an email address; they chose one of them. */}
+            {/* The placeholder is "Welcome", not "Welcome back" — before hydration
+                nothing knows whether this device has ever been here, and the one
+                greeting that must never flash at a stranger is a claim to know
+                them (rule 3 in greeting.ts). */}
+            {hydrated ? renderGreeting(greeting, identity?.name ?? name) : "Welcome"}
+          </h1>
+          <p className="mt-1.5 text-[14px] leading-6 text-muted">{line}</p>
+          {afterGreeting}
+        </>
+      )}
 
       {/* ---- how the studying is going ---- */}
       <section className="mt-6">
@@ -403,6 +443,19 @@ export function HomeView({
           <OfflineTools />
         </div>
       </section>
+
+      {/* The quiet legal line. On the home page rather than only in Google's
+          consent screen, because a page asking people to read and pay should
+          say where its rules are without being asked. */}
+      <footer className="mt-4 flex items-center gap-4 border-t border-line pt-5 text-[12.5px] text-muted">
+        <span>Booklesss</span>
+        <Link href="/privacy" className="transition-colors hover:text-ink">
+          Privacy
+        </Link>
+        <Link href="/terms" className="transition-colors hover:text-ink">
+          Terms
+        </Link>
+      </footer>
     </div>
   );
 }
