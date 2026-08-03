@@ -210,11 +210,19 @@ def main() -> None:
         draw(size, text=WORDMARK, coverage=0.78).save(p)
         written.append(p)
 
-    # Cropped to a circle by Android at worst, which would take the ends off a
-    # wide mark — so this one is the letter, drawn well inside the safe zone.
+    # Also the wordmark, and this one matters most: when a PWA is installed,
+    # Android's launcher PREFERS the maskable icon, so whatever is here is what
+    # sits on the home screen. An earlier pass put the bare "B" here on the
+    # assumption that a circular crop takes the ends off anything wide — wrong,
+    # and the geometry says so. A rectangle inscribed in a circle can be nearly
+    # the full diameter across provided it is short: at the wordmark's ~3.25:1
+    # ratio, 0.72 of the canvas is 369x113px, whose diagonal is 386px, inside
+    # the 410px safe circle (the centre 80% of 512). Keep this under 0.74 —
+    # past that the corners of the word leave the circle and a round launcher
+    # icon clips the first and last "s".
     for size in SIZES_MASKABLE:
         p = OUT / f"icon-maskable-{size}.png"
-        draw(size, text=MARK, coverage=0.44).save(p)
+        draw(size, text=WORDMARK, coverage=0.72).save(p)
         written.append(p)
 
     p = APP / "apple-icon.png"
