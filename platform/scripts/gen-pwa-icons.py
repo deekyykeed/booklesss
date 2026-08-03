@@ -21,12 +21,23 @@ physically cannot give it:
 Everywhere with room (icon.svg, apple-icon, the 192/512 "any" icons) is the
 full wordmark.
 
-DARK / LIGHT. icon.svg carries no background and swaps its fill on
-`prefers-color-scheme`, so the wordmark is near-black on a light tab strip and
-near-white on a dark one. Firefox and Safari honour that; Chrome's support for
-media queries inside an SVG favicon is unreliable, which is exactly what the
-.ico fallback is for — it keeps its solid black tile, so it reads on either.
-A theme-responsive .ico is not possible: the format has no media queries.
+DARK / LIGHT — settled, and not the way it first looks. Every icon here sits on
+its own black tile, and none of them carries a `prefers-color-scheme` rule.
+
+A transparent favicon that swaps ink colour on the OS theme was tried first and
+is wrong, because `prefers-color-scheme` reports the OS theme and NOT the
+colour of the surface the icon is drawn on. Those disagree all the time:
+Google's search results put a favicon on a white card whatever the phone is
+set to, so a dark-mode white wordmark disappears; a dark tab strip under a
+light OS theme loses a black one the same way. Owner, 2026-08-03, on seeing it:
+"I may need a black background so that's readable on Google and vice versa."
+
+A tile solves both, and everywhere else besides — the Android task switcher,
+the bookmark bar, the history list, "add to home screen". It also makes
+icon.svg and favicon.ico the same picture, so nothing depends on whether a
+given browser honours media queries inside an SVG.
+
+Do not "improve" this back to a transparent mark.
 
 Four shapes are emitted, and the differences matter:
   * "any"      — drawn edge to edge; the OS rounds the corners itself.
@@ -190,30 +201,42 @@ def outline(text: str) -> tuple[str, tuple[float, float, float, float]]:
 
 
 def svg_mark() -> str:
-    """The wordmark as a standalone SVG, with no background and a fill that
-    follows the browser's colour scheme — see the module docstring for which
-    browsers honour that and what covers the rest."""
+    """The wordmark as a standalone SVG, on its own black tile.
+
+    THE TILE IS THE POINT, and it is why this file carries no
+    `prefers-color-scheme` rule any more. A transparent favicon takes the
+    colour of whatever is behind it, and `prefers-color-scheme` does not tell
+    you what that is — it reports the OS theme, which disagrees with the actual
+    surface constantly:
+
+      * Google's search results draw a favicon on a WHITE card whatever the
+        phone's theme is. In dark mode a transparent mark is white ink, so it
+        vanishes.
+      * A dark tab strip under a light OS theme is the same failure the other
+        way round: black ink on near-black chrome.
+
+    A mark that brings its own background reads in both, and in the Android
+    task switcher, the bookmark bar and the history list besides. It also makes
+    this file and favicon.ico the same picture, so there is no longer a
+    browser-support caveat to hedge about."""
     path, (x0, y0, x1, y1) = outline(WORDMARK)
 
     w, h = x1 - x0, y1 - y0
-    # A wide viewBox rather than a square one: a browser fits the whole box
-    # into its square icon slot, so a square box would surround the wordmark
-    # with dead space and draw it smaller still.
-    pad = h * 0.18
-    box_w, box_h = w + pad * 2, h + pad * 2
+    # Generous side padding, because this is now a tile rather than loose ink —
+    # the wordmark should not touch its own edges. Vertical padding is larger
+    # so the tile is not a letterbox slot.
+    pad_x, pad_y = h * 0.34, h * 0.46
+    box_w, box_h = w + pad_x * 2, h + pad_y * 2
 
     # Font units are y-up and sit anywhere on the em; SVG is y-down. Flip Y and
     # bring the ink's own bounding box to the origin.
-    tx = pad - x0
-    ty = pad + y1
+    tx = pad_x - x0
+    ty = pad_y + y1
 
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {box_w:.0f} {box_h:.0f}">'
-        "<style>"
-        f"path{{fill:{INK}}}"
-        f"@media(prefers-color-scheme:dark){{path{{fill:{PAPER}}}}}"
-        "</style>"
-        f'<path transform="translate({tx:.2f} {ty:.2f}) scale(1 -1)" d="{path}"/>'
+        f'<rect width="{box_w:.0f}" height="{box_h:.0f}" fill="{INK}"/>'
+        f'<path fill="{PAPER}" transform="translate({tx:.2f} {ty:.2f}) scale(1 -1)" d="{path}"/>'
         "</svg>\n"
     )
 
