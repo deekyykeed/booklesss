@@ -196,14 +196,19 @@ export async function shareCard({
               {clamp(eyebrow, 40)}
             </span>
           ) : null}
+          {/* 700, not the 500 the app sets its headings in (owner's call,
+              2026-08-03). A card is seen at half size across a chat list, not
+              read at arm's length on a page, and Medium goes thin and grey at
+              that reduction — the title has to hold its own weight against a
+              gradient before anyone has decided whether to tap it. */}
           <span
             style={{
               fontFamily: "Display",
               fontSize: titleSize(title),
-              fontWeight: 500,
+              fontWeight: 700,
               color: INK,
               lineHeight: 1.02,
-              letterSpacing: -2.6,
+              letterSpacing: -2.4,
             }}
           >
             {clamp(title, 62)}
