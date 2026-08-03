@@ -13,7 +13,28 @@
  * `slug` values must be unique across EVERY course in the reader — note the
  * risk steps deliberately avoid Corporate Finance's `interest-rate-risk`,
  * `hedging-interest-rate-risk` and `currency-risk` slugs. seed-course.mjs
- * checks and refuses on collision.
+ * checks and refuses on collision. That applies to the grouping nodes below
+ * too, which is why "Cash" carries the slug `managing-cash`.
+ *
+ * 2026-08-03 — the lessons grew a grouping level (rule S-9, debt D-6). The S-8
+ * splits took this course from 12 steps to 21 without adding a single folder,
+ * so Working capital rendered as six equal rows with nothing saying which
+ * belonged together. Four of the five lessons now group their siblings by
+ * subject; Treasury operations stays flat because its three steps are three
+ * separate frames.
+ *
+ * ⚠️ THIS CHANGED EVERY GROUPED STEP'S URL. A lesson's path is built from every
+ * ancestor node (`courseIndex()` in `platform/src/lib/course.ts` walks the full
+ * trail), so a folder inserts a segment:
+ *
+ *   /treasury-management/working-capital/cash-management
+ *   /treasury-management/working-capital/managing-cash/cash-management
+ *
+ * The owner accepted that on 2026-08-03: no step link had been shared into a
+ * group yet, and the course-level URL — the one that has been shared — is the
+ * root node and is untouched. The step `slug` values themselves did not change
+ * (S-8), only the path they sit at. Do not repeat this casually once links are
+ * circulating: 18 of the 21 steps moved.
  */
 
 /* Treasury operations was one six-section step until 2026-08-01; it is three
@@ -65,6 +86,9 @@ export default {
       label: "Treasury Management",
       defaultOpen: true,
       children: [
+        /* Three separate frames — what treasury is, how its work divides, how it
+         * is governed. No two of them pair, so this lesson stays flat (S-9: do
+         * not create a folder for one step). */
         {
           slug: "treasury-operations",
           label: "Treasury operations",
@@ -76,35 +100,64 @@ export default {
           children: [
             workingCapitalAndLiquidity,
             debtorsAndFactoring,
-            inventoryAndCreditors,
-            orderingAndPayingSuppliers,
-            cashManagement,
-            cashForecastingAndSurpluses,
+            {
+              slug: "inventory-and-suppliers",
+              label: "Inventory and suppliers",
+              children: [inventoryAndCreditors, orderingAndPayingSuppliers],
+            },
+            {
+              slug: "managing-cash",
+              label: "Cash",
+              children: [cashManagement, cashForecastingAndSurpluses],
+            },
           ],
         },
         {
           slug: "treasury-risk",
           label: "Risk",
           children: [
-            interestRateRiskManagement,
-            interestRateHedgingInstruments,
-            foreignExchangeRisk,
-            hedgingCurrencyRisk,
+            {
+              slug: "interest-rates",
+              label: "Interest rates",
+              children: [interestRateRiskManagement, interestRateHedgingInstruments],
+            },
+            {
+              slug: "currency",
+              label: "Currency",
+              children: [foreignExchangeRisk, hedgingCurrencyRisk],
+            },
           ],
         },
         {
           slug: "debt-and-investment",
           label: "Debt and investment",
-          children: [debtManagement, thePriceOfDebt, investmentManagement, buildingThePortfolio],
+          children: [
+            {
+              slug: "debt",
+              label: "Debt",
+              children: [debtManagement, thePriceOfDebt],
+            },
+            {
+              slug: "investing",
+              label: "Investing",
+              children: [investmentManagement, buildingThePortfolio],
+            },
+          ],
         },
         {
           slug: "systems-and-clearing",
           label: "Systems and clearing",
           children: [
-            clearingAndSettlement,
-            paymentSystemsAndCcps,
-            treasuryManagementSystems,
-            choosingAndRunningATms,
+            {
+              slug: "payments-and-clearing",
+              label: "Payments and clearing",
+              children: [clearingAndSettlement, paymentSystemsAndCcps],
+            },
+            {
+              slug: "treasury-systems",
+              label: "Treasury systems",
+              children: [treasuryManagementSystems, choosingAndRunningATms],
+            },
           ],
         },
       ],

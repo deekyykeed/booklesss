@@ -21,7 +21,7 @@
 
 export default {
   slug: "building-the-portfolio",
-  label: "Building the portfolio",
+  label: "Credit risk and the portfolio",
   title: "Instruments, credit risk and the portfolio",
   kicker: "Debt and investment",
 

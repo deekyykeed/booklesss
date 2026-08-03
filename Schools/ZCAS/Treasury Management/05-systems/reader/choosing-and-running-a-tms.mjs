@@ -26,7 +26,7 @@
 
 export default {
   slug: "choosing-and-running-a-tms",
-  label: "Choosing and running one",
+  label: "Choosing a treasury system",
   title: "Choosing a treasury system, and living with it",
   kicker: "Systems and clearing",
 

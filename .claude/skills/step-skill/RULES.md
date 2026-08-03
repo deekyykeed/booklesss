@@ -288,6 +288,10 @@ text, so a mark written into one shows its own syntax.
     can split it and then deal with the links changing and everything."*
     A step left long because the follow-on work was inconvenient is the reader
     paying for the author's convenience.
+    **This is not special to splitting** *(generalised 2026-08-03)* — every fix
+    worth making can send a downstream bill, and none of them is a reason to
+    stop or to ask. See "Improve the step. Deal with the consequences." at the
+    top of `SKILL.md`.
   - **Target 2 to 4 sections per step.** At five, look hard for the seam. At
     six or more there is definitely one.
   - Split on a **conceptual seam**, not at the halfway word count. Each part

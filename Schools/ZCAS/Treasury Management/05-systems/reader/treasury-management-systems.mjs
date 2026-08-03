@@ -31,7 +31,7 @@
 
 export default {
   slug: "treasury-management-systems",
-  label: "Treasury systems",
+  label: "What a treasury system is",
   title: "What a treasury system is, and how it is built",
   kicker: "Systems and clearing",
 

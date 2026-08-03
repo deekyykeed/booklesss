@@ -29,7 +29,7 @@
 
 export default {
   slug: "cash-management",
-  label: "Cash management",
+  label: "Deciding how much cash to hold",
   title: "Deciding how much cash to hold",
   kicker: "Working capital",
 

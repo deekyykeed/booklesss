@@ -18,7 +18,7 @@
 
 export default {
   slug: "debtors-and-factoring",
-  label: "Debtors & factoring",
+  label: "Getting the cash in",
   title: "Getting the cash in",
   kicker: "Working capital",
 

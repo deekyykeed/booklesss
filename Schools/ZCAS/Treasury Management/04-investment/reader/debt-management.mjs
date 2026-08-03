@@ -25,7 +25,7 @@
 
 export default {
   slug: "debt-management",
-  label: "Debt management",
+  label: "Where debt comes from",
   title: "Where debt comes from, and how long it should run",
   kicker: "Debt and investment",
 

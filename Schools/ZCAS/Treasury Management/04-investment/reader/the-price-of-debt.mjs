@@ -23,7 +23,7 @@
 
 export default {
   slug: "the-price-of-debt",
-  label: "The price of debt",
+  label: "What debt costs",
   title: "What debt costs, and what it demands",
   kicker: "Debt and investment",
 

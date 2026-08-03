@@ -30,7 +30,7 @@
 
 export default {
   slug: "foreign-exchange-risk",
-  label: "Foreign exchange risk",
+  label: "Currency risk",
   title: "Currency risk, and how rates are quoted",
   kicker: "Risk",
 

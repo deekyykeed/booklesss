@@ -27,7 +27,7 @@
 
 export default {
   slug: "clearing-and-settlement",
-  label: "Clearing & settlement",
+  label: "Clearing and settlement",
   title: "Clearing, settlement, and the risk in between",
   kicker: "Systems and clearing",
 

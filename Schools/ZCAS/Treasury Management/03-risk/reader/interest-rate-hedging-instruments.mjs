@@ -25,7 +25,7 @@
 
 export default {
   slug: "interest-rate-hedging-instruments",
-  label: "Covering the risk",
+  label: "Covering interest rate risk",
   title: "Covering interest rate risk",
   kicker: "Risk",
 

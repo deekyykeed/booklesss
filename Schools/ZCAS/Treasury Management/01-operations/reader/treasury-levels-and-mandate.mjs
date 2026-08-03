@@ -32,7 +32,7 @@
 
 export default {
   slug: "treasury-levels-and-mandate",
-  label: "Levels and mandate",
+  label: "How treasury work divides",
   title: "How treasury work divides, and what it is for",
   kicker: "Treasury operations",
 

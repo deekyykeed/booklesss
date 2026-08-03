@@ -37,6 +37,32 @@ rules that govern writing are produced by the improving, and the debt produced b
 the improving is paid during the writing. Split apart, that state gets read by
 whichever skill happened to be invoked.
 
+## Improve the step. Deal with the consequences.
+
+*(owner, 2026-08-03)* **A step that can be improved gets improved, and nothing
+downstream is a reason to stop and ask.** Not a URL that moves, not a manifest
+that has to be re-seeded, not a debt list that has to be renumbered, not a link
+someone may have saved. The owner's words: *"the step skill should never have to
+[w]orry about any live breaks or whatever — a step being improved is the main
+priority in any case, and so it must be fixed or improved no questions asked."*
+
+- **The churn is the price of the fix, not a decision about it.** This was
+  already **S-8**'s "never defer a split"; it is written here because that
+  bullet reads as if splitting were the only fix that sends a bill. It is not.
+  Adding a nav folder repathed 18 of 21 TM steps. That is the same kind of bill
+  and it gets paid the same way.
+- **Do not put it to the owner as a choice.** A three-way question about
+  breaking URLs spends their attention on something the ledger had already
+  decided, and the step sits unimproved until they answer. If the consequence is
+  large, **do it and say what it cost** — in the file's header comment, in
+  `DEBT.md`, and in the confirmation. Reporting is not the same as asking.
+- **What still gets said out loud, after the fact:** what moved, how many, and
+  what would have to change if it were done again later under different
+  conditions. That is a record, and the next pass needs it.
+- **The one thing this does not license** is skipping the checks that tell you
+  the fix *worked* — the scans, the built HTML, the re-run. Shipping without
+  asking is not shipping without looking.
+
 ## This skill belongs to no course and no school
 
 *(owner, 2026-08-03)* It is the house style for **every** Booklesss course —

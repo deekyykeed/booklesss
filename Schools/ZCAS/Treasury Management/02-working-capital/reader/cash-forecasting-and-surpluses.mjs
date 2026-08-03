@@ -17,7 +17,7 @@
 
 export default {
   slug: "cash-forecasting-and-surpluses",
-  label: "Forecasting & surpluses",
+  label: "Forecasting the cash",
   title: "Forecasting the cash, and putting it to work",
   kicker: "Working capital",
 

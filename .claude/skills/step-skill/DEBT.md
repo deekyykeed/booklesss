@@ -65,10 +65,10 @@ unchecked ones get ticked off by someone assuming the list was audited.
 | D-3 | Possessive budget, sentence length, step splitting, source links — W-10/W-12/S-8/C-7 | 2026-08-01 | open · 21/53 (**all of TM**, S-8 included) |
 | D-4 | Cold opens — W-13, section openings a beginner cannot hold | 2026-08-01 | open · 21/53 read cold; the other 32 machine-clean only |
 | D-5 | Definitional tables that should be `cards` — E-9 | 2026-08-01 | open · 1/37 converted · **blocked on glyphs** |
-| D-6 | Flat nav trees that should carry a folder — S-9 | 2026-08-02 | open · 0/4 courses grouped |
+| D-6 | Flat nav trees that should carry a folder — S-9 | 2026-08-02 | open · **1/4 courses grouped** (TM done 2026-08-03) |
 | D-7 | Steps that neither pick up nor hand on the thread — C-8 | 2026-08-02 | open · 0/53 checked |
 | D-8 | Prose written past the weakest reader — W-15 | 2026-08-02 | open · 0/53 checked |
-| D-9 | Steps whose sidebar label is a different name from their page title — S-10 | 2026-08-03 | open · 26/53 defective, 0 fixed |
+| D-9 | Steps whose sidebar label is a different name from their page title — S-10 | 2026-08-03 | open · **11 of 53 left** (TM's 15 fixed 2026-08-03) |
 
 > **Counts moved from 44 to 53 on 2026-08-02.** The nine remaining Treasury
 > Management steps were split into eighteen (S-8), so the course is 21 steps and
@@ -469,11 +469,34 @@ only in the material.
 consecutive siblings sharing a subject and put a named folder over each. Do it in
 the same pass as any S-8 split.
 
-- [ ] treasury-management (21 steps, 5 lessons — the worst case, and the one
-      S-8 just made worse)
+- [x] treasury-management (21 steps, 5 lessons — the worst case, and the one
+      S-8 just made worse) → **done 2026-08-03.** Four of the five lessons now
+      group their siblings: Working capital gains "Inventory and suppliers" and
+      "Cash" (six equal rows become four), Risk gains "Interest rates" and
+      "Currency", Debt and investment gains "Debt" and "Investing", Systems and
+      clearing gains "Payments and clearing" and "Treasury systems". Treasury
+      operations stays flat — three steps, three separate frames, no pair.
+      Course → lesson → group → step is depth 4, S-9's stated ceiling.
 - [ ] corporate-finance (25 steps)
 - [ ] strategic-management (7 steps — may genuinely be flat at this size)
 - [ ] economics
+
+**⚠️ A grouping node changes the URL of every step beneath it.** `courseIndex()`
+in `platform/src/lib/course.ts` builds a lesson's path from its full ancestor
+trail, so a folder inserts a segment and the old path 404s:
+
+```text
+/treasury-management/working-capital/cash-management
+/treasury-management/working-capital/managing-cash/cash-management
+```
+
+18 of TM's 21 steps moved on 2026-08-03. Nothing in the repo referenced the old
+paths (checked) and no TM step link had been shared into a group, so the cost
+was zero on the day. It will not always be.
+
+**This is a thing to record, not a thing to ask about** — see "Improve the step.
+Deal with the consequences." in `SKILL.md`. The remaining three courses get the
+same pass; do it, and say what moved.
 
 ---
 
@@ -566,8 +589,14 @@ node .claude/skills/step-skill/tools/label-scan.mjs Schools
 **Watch the URL.** `slug` is not touched by any of this — renaming a label or a
 title must never renumber a slug, or the shared links break (**S-8**).
 
-- [ ] treasury-management — **15 defects of 21 steps**, the bulk of it: 4 RENAMED,
-      9 REWORDED, 1 JOIN, 1 `&`
+- [x] treasury-management — **15 defects of 21 steps** (4 RENAMED, 9 REWORDED,
+      1 JOIN, 1 `&`) → **0, fixed 2026-08-03.** Every label is now a trim of its
+      own title, or identical to it where the title fits a row. The four
+      outright renames were the S-8 seams: "Controls and structure" → "Keeping
+      treasury honest", "Levels and mandate" → "How treasury work divides",
+      "Debtors & factoring" → "Getting the cash in", "EOQ & creditors" → "How to
+      order, and when to pay". No `slug` was touched. `label-scan` on the course
+      exits 0; 16 allowed trims remain and were eyeballed.
 - [ ] corporate-finance — **11 of 25**: 1 RENAMED (`yield-curve`), 3 REWORDED,
       3 PUNCT (the `&` labels), 4 JOIN
 - [x] strategic-management — **0 of 7**, clean. Its one hit,

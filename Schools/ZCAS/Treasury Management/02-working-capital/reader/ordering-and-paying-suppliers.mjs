@@ -19,7 +19,7 @@
 
 export default {
   slug: "ordering-and-paying-suppliers",
-  label: "EOQ & creditors",
+  label: "How to order, and when to pay",
   title: "How much to order, and when to pay",
   kicker: "Working capital",
 

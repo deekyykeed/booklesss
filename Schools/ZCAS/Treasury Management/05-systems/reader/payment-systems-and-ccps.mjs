@@ -29,7 +29,7 @@
 
 export default {
   slug: "payment-systems-and-ccps",
-  label: "Payment systems",
+  label: "The systems that carry a payment",
   title: "The systems that carry a payment",
   kicker: "Systems and clearing",
 

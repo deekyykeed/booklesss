@@ -22,6 +22,24 @@ Quote actual words. A student's phrasing is never rewritten into the owner's.
 
 ---
 
+### 2026-08-03 · treasury-management · owner
+- `structure` — "the step skill should never have to orry about any live breaks
+  or whatever / a step being improved is the main priority in any case / and so
+  it must be fixed or impproved no questions asked." Said in reply to my stopping
+  mid-pass to ask permission: paying **D-6** on TM meant inserting a grouping
+  node, and a lesson's URL is built from every ancestor, so 18 of 21 step paths
+  moved. I put that to the owner as a three-way choice. Wrong move. The fix was
+  already known, already cheap and already owed; the URL churn is what the fix
+  costs, not a reason to stop and ask whether to do it. Asking spends the
+  owner's attention on a decision the ledger had made, and a step left unimproved
+  while it waits for an answer is the reader paying for my caution.
+  This is **S-8's "never defer a split" generalised to the whole skill** — that
+  bullet already said the churn from a split is the cost of the fix. It was
+  written as if splitting were the only fix with a downstream bill.
+  → promoted: **SKILL.md · "Improve the step. Deal with the consequences."**,
+  and S-8's bullet now points at it · debt: none (no step is wrong because of it;
+  it changes how the next pass behaves)
+
 ### 2026-08-03 · all courses · owner
 - `structure` — "one thing i notice as im reading is the titles of the steps are
   different from what i actually find on the page." A step exports `label` and

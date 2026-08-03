@@ -28,7 +28,7 @@
 
 export default {
   slug: "treasury-controls-and-structure",
-  label: "Controls and structure",
+  label: "Keeping treasury honest",
   title: "Keeping treasury honest, and where it sits",
   kicker: "Treasury operations",
 
