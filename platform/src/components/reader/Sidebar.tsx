@@ -21,6 +21,7 @@ import { useProgress } from "@/lib/progress";
 import { CompletionRing } from "./CompletionRing";
 import { MynaIcon } from "@/components/icons/myna";
 import { MingcuteIcon } from "@/components/icons/mingcute";
+import { MusicBar } from "./MusicBar";
 
 const STEP = 18;
 const RAIL = 2;
@@ -650,6 +651,11 @@ export function Sidebar() {
           ))}
         </div>
       </nav>
+      {/* Below the step tree and above the collapse control — the last thing in
+          the column, so it never pushes navigation down. It is in the sidebar
+          because the sidebar is layout-level and stays mounted between steps;
+          see MusicBar.tsx for why moving it would stop the music. */}
+      <MusicBar />
       <div className="p-2">
         <button
           type="button"
