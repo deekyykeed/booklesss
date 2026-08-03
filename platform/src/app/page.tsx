@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { openGraph, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
 import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
-import { AuthCard, GetAppCard, ToApp } from "@/components/landing/landing-bits";
+import { GetAppCard, LandingAuth, ToApp } from "@/components/landing/landing-bits";
 
 /* ------------------------------------------------------------------ *
  * The front door. A real landing page, not the app.
@@ -117,10 +117,10 @@ export default function LandingPage() {
           Your whole course, in steps you can actually read
         </h1>
 
-        {/* ---- the two cards ---- */}
+        {/* ---- the two cards: install, then Clerk's own sign-up form ---- */}
         <div className="flex flex-col gap-5">
           <GetAppCard />
-          <AuthCard />
+          <LandingAuth />
         </div>
 
         {/* ---- what this is (static, for anyone who scrolls — and for the
