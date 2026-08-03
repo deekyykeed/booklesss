@@ -103,12 +103,31 @@ export function Spark({
                 <feDropShadow dx="0" dy="1" stdDeviation="1.3" floodColor={tone} floodOpacity="0.45" />
               </filter>
             </defs>
-            <path d={area} fill={`url(#${id})`} />
-            <path d={line} fill="none" stroke={`url(#${id}s)`} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+            {/* The line draws itself in on first paint, and the wash and head
+                follow it — owner's ask, 2026-08-03: the curve should travel
+                its own path rather than being there already.
+
+                `pathLength="1"` is what makes that cheap: it renormalises the
+                path's length to 1 whatever its real geometry, so the dash
+                animation is a plain CSS keyframe from 1 to 0 and nothing has
+                to call getTotalLength() or re-measure when the width changes. */}
+            <path className="spark-area" d={area} fill={`url(#${id})`} />
+            <path
+              className="spark-line"
+              pathLength="1"
+              d={line}
+              fill="none"
+              stroke={`url(#${id}s)`}
+              strokeWidth="2"
+              strokeLinejoin="round"
+              strokeLinecap="round"
+            />
             {/* Today: a white head ringed in the line's main colour, lifted
                 off the card by a shadow in the same hue — an open point where
-                the line has got to, not a plug on the end. */}
+                the line has got to, not a plug on the end. It waits for the
+                line to reach it. */}
             <circle
+              className="spark-head"
               cx={pts[pts.length - 1].x}
               cy={pts[pts.length - 1].y}
               r="3.5"

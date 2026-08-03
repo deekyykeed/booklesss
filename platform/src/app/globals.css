@@ -710,10 +710,86 @@
     border-color: var(--color-line-2);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 20px -6px rgba(0, 0, 0, 0.16);
   }
+  /* ---------------------------------------------------------------- *
+   * .btn — the app's one button, generalised out of .course-resume.
+   *
+   * The owner's call (2026-08-03): the course card's resume button is the look
+   * they want everywhere, "especially for the onboarding stuff", and it should
+   * be a component that can be restyled per scenario. So the paper-button look
+   * lives here once and every variant is a swap of four custom properties,
+   * never a second block of shadows to keep in sync.
+   *
+   * To add a variant: set the four --btn-* on a [data-variant] rule. To theme
+   * for dark later: set them under the dark selector. Nothing else moves.
+   * There is no dark theme in this app yet, so none is guessed at here — the
+   * point of the variables is that adding one is a swap rather than a rewrite.
+   * ---------------------------------------------------------------- */
+  .btn {
+    --btn-bg: rgba(255, 255, 255, 0.6);
+    --btn-bg-hover: #ffffff;
+    --btn-border: var(--color-line);
+    --btn-fg: var(--color-ink);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid var(--btn-border);
+    border-radius: 18px;
+    background-color: var(--btn-bg);
+    color: var(--btn-fg);
+    font-weight: 500;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 3px 8px -2px rgba(0, 0, 0, 0.08);
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn:hover:not(:disabled) {
+    background-color: var(--btn-bg-hover);
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  /* The main action in a flow — the app's solid black, the same value the
+     header's circle buttons and the icon tiles use. */
+  .btn[data-variant="primary"] {
+    --btn-bg: var(--color-btn);
+    --btn-bg-hover: #000000;
+    --btn-border: var(--color-btn);
+    --btn-fg: #ffffff;
+  }
+  /* No paper at all: for the third action in a row, where a bordered button
+     would read as loud as the one that matters. */
+  .btn[data-variant="ghost"] {
+    --btn-bg: transparent;
+    --btn-bg-hover: var(--color-active);
+    --btn-border: transparent;
+    --btn-fg: var(--color-muted);
+    box-shadow: none;
+  }
+  .btn[data-size="sm"] {
+    padding: 6px 12px;
+    border-radius: 14px;
+    font-size: 13.5px;
+  }
+  .btn[data-size="md"] {
+    padding: 9px 16px;
+    font-size: 14.5px;
+  }
+  .btn[data-size="lg"] {
+    padding: 13px 20px;
+    border-radius: 22px;
+    font-size: 15.5px;
+  }
+  .btn[data-block] {
+    display: flex;
+    width: 100%;
+  }
+
   /* The resume button, which is also the course's progress bar: a squircle
      the width of the card, its inline fill showing how far through the
      course the reader is. Radius is the card's own, stepped down for the
-     inset. */
+     inset. Kept as its own class rather than folded into .btn: it carries a
+     progress fill and a full-width layout that no other button wants. */
   .course-resume {
     border: 1px solid var(--color-line);
     border-radius: 18px;
@@ -1035,6 +1111,60 @@
   /* Up rises, down drops — the 4px of travel goes the other way. */
   .note-menu[data-drop="down"] {
     --note-menu-from: -4px;
+  }
+
+  /* ---------------------------------------------------------------- *
+   * The sparkline drawing itself in, on the stat tiles and the course cards.
+   * Owner's ask, 2026-08-03: the line should travel its path on first open
+   * rather than simply being there, and the figures should climb to their
+   * value. Kept brisk on purpose — the ask was "quickly, so it doesn't waste
+   * time"; this is atmosphere behind a number, not a performance.
+   *
+   * The dash trick depends on `pathLength="1"` being set on the path (see
+   * Spark.tsx), which renormalises any geometry to a length of 1. Without it
+   * these numbers mean nothing.
+   *
+   * THE BASE STATE IS THE FINISHED STATE, and the animation is the opt-in.
+   * Written the other way round first and it was a bug waiting to happen: an
+   * `animation: none` override — which is exactly what the reduced-motion rule
+   * does — would have left stroke-dashoffset at 1 and hidden every chart in
+   * the app. Motion that switches off must never take the content with it.
+   * ---------------------------------------------------------------- */
+  .spark-line {
+    stroke-dashoffset: 0;
+  }
+  .spark-area,
+  .spark-head {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :root:not([data-motion="reduced"]) .spark-line {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: sparkDraw 700ms cubic-bezier(0.33, 1, 0.68, 1) forwards;
+    }
+    /* The wash fills in under the line rather than arriving with it, so the
+       line reads as the thing doing the travelling. */
+    :root:not([data-motion="reduced"]) .spark-area {
+      opacity: 0;
+      animation: sparkFade 700ms ease-out 120ms forwards;
+    }
+    /* Waits for the line to arrive, then lands. */
+    :root:not([data-motion="reduced"]) .spark-head {
+      opacity: 0;
+      animation: sparkFade 220ms ease-out 620ms forwards;
+    }
+  }
+  @keyframes sparkDraw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes sparkFade {
+    to {
+      opacity: 1;
+    }
   }
 
   @keyframes quizFade {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { enrolledCourses } from "@/lib/courses";
 import { useIdentity } from "@/lib/identity";
 import { isStudyDay, studyHistory, useProgress } from "@/lib/progress";
@@ -72,6 +72,60 @@ function growth(now: number, prev: number, unstarted: string): Foot {
   if (pct > 0) return { lead: `+${pct}%`, tail: "on last week", good: true };
   if (pct < 0) return { lead: `${pct}%`, tail: "on last week", good: false };
   return { lead: "Level", tail: "with last week", good: true };
+}
+
+/**
+ * Counts a figure up to its value on first paint.
+ *
+ * Owner's ask, 2026-08-03, alongside the sparkline drawing itself in: the
+ * numbers should climb from zero "but quickly, so that it doesn't waste time".
+ * 600ms with an ease-out, so nearly all of the distance is covered in the
+ * first third and it never reads as a wait.
+ *
+ * Runs ONCE, when the store first hydrates — not whenever the value changes.
+ * Re-running on change would replay the whole climb every time a checkpoint
+ * ticked, which turns a flourish into a distraction while someone is working.
+ *
+ * Honours the app's Motion setting and the OS preference: with either set to
+ * reduced it returns the final value immediately, so nothing is hidden or
+ * delayed, only the travel is skipped.
+ */
+function useCountUp(target: number, run: boolean, ms = 600): number {
+  /* Progress 0..1, NOT the number itself. Holding the value here would freeze
+     it at whatever the target was when the climb finished: the effect runs
+     once, so a checkpoint cleared a minute later would never reach the tile.
+     Scaling the live target by the progress means that once progress is 1 the
+     tile simply tracks the real figure again. */
+  const [p, setP] = useState(0);
+  const started = useRef(false);
+
+  useEffect(() => {
+    if (!run || started.current) return;
+    started.current = true;
+
+    /* Reduced motion is a duration of zero rather than an early `setP(1)`:
+       setting state synchronously in an effect body is what the lint rule
+       forbids, and going through the same frame means one code path instead
+       of two. The cost is a single frame before the number lands, which is
+       not travel — it is imperceptible. */
+    const reduced =
+      document.documentElement.dataset.motion === "reduced" ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const dur = reduced ? 0 : ms;
+
+    let raf = 0;
+    const t0 = performance.now();
+    const tick = (t: number) => {
+      const x = dur <= 0 ? 1 : Math.min(1, (t - t0) / dur);
+      // easeOutCubic — fast off the mark, settles onto the number.
+      setP(1 - Math.pow(1 - x, 3));
+      if (x < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [run, ms]);
+
+  return target * p;
 }
 
 /** One greeting per visit, held for the life of the mount so it doesn't
@@ -170,6 +224,18 @@ export function HomeView({
   );
 
   const coverage = totals.checks ? Math.round((done.checks / totals.checks) * 100) : 0;
+
+  /* Each tile's figure climbing to its value on first paint. One hook per
+     tile rather than one for all four: they hold different units, and a
+     single shared progress would make them look mechanically locked together
+     rather than four things settling. They all start on `hydrated`, so they
+     still travel as a set. */
+  const climb = {
+    score: useCountUp(perf?.score ?? 0, hydrated),
+    streak: useCountUp(streak, hydrated),
+    coverage: useCountUp(coverage, hydrated),
+    secs: useCountUp(charts.secsWeek, hydrated),
+  };
   const minWeek = Math.round(charts.secsWeek / 60);
   const minPrev = Math.round(charts.secsPrev / 60);
 
@@ -218,7 +284,7 @@ export function HomeView({
             label="Performance"
             /* A dash until something is cleared: a confident 0% reads as a mark
                awarded when nothing has been measured yet. */
-            value={perf && done.checks > 0 ? `${perf.score}%` : "–"}
+            value={perf && done.checks > 0 ? `${Math.round(climb.score)}%` : "–"}
             tone={TONE.score}
             icon={<SolarIcon name="chart-2-bold-duotone" size={20} className="shrink-0" />}
             series={perfSeries}
@@ -234,7 +300,7 @@ export function HomeView({
           <Stat
             hydrated={hydrated}
             label="Streak"
-            value={`${streak}`}
+            value={`${Math.round(climb.streak)}`}
             unit={streak === 1 ? "day" : "days"}
             tone={TONE.streak}
             icon={<SolarIcon name="bolt-bold-duotone" size={20} className="shrink-0" />}
@@ -251,7 +317,7 @@ export function HomeView({
           <Stat
             hydrated={hydrated}
             label="Coverage"
-            value={done.checks > 0 ? `${coverage}%` : "–"}
+            value={done.checks > 0 ? `${Math.round(climb.coverage)}%` : "–"}
             tone={TONE.coverage}
             icon={<SolarIcon name="notebook-minimalistic-bold-duotone" size={20} className="shrink-0" />}
             series={charts.coverage}
@@ -265,7 +331,7 @@ export function HomeView({
           <Stat
             hydrated={hydrated}
             label="Time this week"
-            value={charts.secsWeek > 0 ? fmtTime(charts.secsWeek) : "–"}
+            value={charts.secsWeek > 0 ? fmtTime(climb.secs) : "–"}
             tone={TONE.time}
             icon={<SolarIcon name="clock-circle-bold-duotone" size={20} className="shrink-0" />}
             series={charts.time}
