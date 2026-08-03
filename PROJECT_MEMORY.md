@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-03 (session 37)
+**Last updated:** 2026-08-03 (session 38)
 
 ---
 
@@ -92,20 +92,47 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
+**From session 38 (2026-08-03, the app went launch-shaped) — the first two are
+the ones only a human with a phone and an inbox can do.**
+- [ ] ⚠️ **Sign up on the live site once, on a real phone.** Person icon →
+      sheet → email/password, AND once more with **Continue with Google**.
+      Either creates production user #1. If Google errors: `invalid_client`
+      = ID/secret swapped in Clerk (the `GOCSPX-` one is the SECRET);
+      `redirect_uri_mismatch` = the Clerk callback URI missing in the Google
+      client. Automation cannot test this — Turnstile blocks it by design.
+- [ ] ⚠️ **Google branding re-verification is in flight** (Proceed pressed
+      after the landing shipped). Watch deekymvula@gmail.com. The landing at
+      "/" now satisfies the written rules (static, names Booklesss, explains
+      it, links /privacy, no sign-in needed) — if it fails again, bring the
+      exact wording back to a session.
+- [ ] ⚠️ **NEVER add a logo on Google's consent screen** — uploading one is
+      what triggers Google's brand-verification review. The **Clerk dashboard
+      logo is separate and safe**: it still wears the retired diamond
+      (Customization → Logo) and Clerk's emails carry it — swap to the
+      wordmark.
+- [ ] **Enable Google on the DEV Clerk instance** (Dashboard → Development →
+      SSO connections → Add → Google; shared credentials, one click) so
+      Continue with Google stops erroring in local testing.
+- [ ] **Referral rewards are read manually**: Clerk dashboard → Users → a
+      user → metadata → `referredBy`. Counting/leaderboard needs a Supabase
+      table — the same server table the unique-avatar claim wants, so build
+      them together.
+- [ ] **The landing at "/" is deliberately minimal.** The owner mused about a
+      fuller scrolling landing ("scroll through some things") — screenshots
+      of the reader, maybe the posters' motion. Iterate when the marketing
+      push starts; the Google-compliance part is done.
+- [ ] **If a student reports sign-up stuck**, the 20s watchdog now shows
+      "taking too long" — but the underlying cause would be Turnstile vs
+      their connectivity. The dial is Clerk's bot-protection setting.
+
 **From session 37 (2026-08-03, Clerk is live and the app has an onboarding
-sheet) — the first item is the one that makes today's work do anything.**
-- [ ] ⚠️ **Nothing opens the onboarding sheet.** It is built, styled and mounted
-      in `layout.tsx`, and `requireAccount(reason, after)` exists in
-      `lib/onboarding.ts` — **and is called from nowhere.** Two triggers, both
-      the owner's spec: a checkpoint answer tapped while signed out, and the
-      gate on moving to the next step. Until those exist a student arriving
-      from a WhatsApp link still meets nothing.
-- [ ] ⚠️ **Sign up on the live site once, on a phone.** `booklesss.app/sign-up`
-      returns 200. The owner reports the Production instance inherited the
-      Development settings; **that is unverified by anything but the dashboard.**
-      If the form asks for a verification code, a username or a first name, one
-      of the four settings did not copy. This also ticks Clerk's own "create
-      your first user in production".
+sheet):**
+- [x] ~~⚠️ Nothing opens the onboarding sheet~~ → ✅ **done in s38, and wider
+      than spec'd**: checkpoint faces, note menu, comment Save, next-step
+      foot, sidebar, course rows and home cards all gate through it; plus
+      the one-free-step-per-device rule (`lib/account`).
+- [x] ~~⚠️ Sign up on the live site once~~ → carried to the s38 item above
+      (now includes Google).
 - [ ] **Unique avatars are UNBLOCKED and were the one thing that needed a
       server.** Clerk now gives every student a real user id, so the claim is a
       Supabase table with a unique constraint on `avatar_id` — two students
@@ -144,11 +171,13 @@ shareable NOW; these are the follow-ups.**
       `https://booklesss.app/treasury-management?v=3` first, look at it, then
       share the clean URL to the group. **A bad first fetch is the one 40 people
       keep seeing.**
-- [ ] **Decide which logo wins.** "Bklsss", no glyph, is now on the social posts
-      AND the link-preview cards. `Brand/` still holds the serif
-      "Booklesss" + diamond and ~19 PDF build scripts still draw it. **Two
-      identities are live.** Either propagate the wordmark to the PDFs or state
-      that documents keep the serif — right now it is undecided, not designed.
+- [x] ~~**Decide which logo wins.**~~ → ✅ **decided and executed 2026-08-03,
+      across both sessions: the wordmark won.** The owner ("I'm not even using
+      this logo anymore — eradicate it from the project"): s38 removed the
+      diamond's last app surface (Clerk's modal, replaced by our sheet); the
+      brand session retired it from `Brand/` and the socials. Remaining
+      diamond: the **Clerk dashboard logo** (see the s38 item above) and any
+      PDF build scripts not yet migrated — rebuild before circulating any PDF.
 - [ ] **The og:description for a COURSE is still the course subtitle**, which
       never says "study notes" — only the home page's does, and the card's
       footer. If the group drop converts badly, that line is worth a look.
@@ -579,6 +608,104 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-03 (session 38 — nobody is asked anything, every action is a door, and "/" becomes a front porch)
+
+Local session on `main`, alongside the brand/social session (which took
+585d092, a1f7ed4, 8108e9f, 178ecce). Eight commits, c915326 → 0bcbe5a.
+The app went from "inert onboarding sheet" to launch-shaped in one day.
+
+**Done:**
+- **Anonymous by default is BUILT.** "Who's reading?" is gone; a device is
+  assigned an avatar and its name silently (`assignIdentity`,
+  `AVATAR_NAMES` in lib/identity — names are product copy, kept out of the
+  generated avatars.tsx). Settings reports identity instead of editing it;
+  wipe reassigns a new person.
+- **Every recording control is gated signed-out** (owner, off the live app):
+  checkpoint faces, section-note menu, comment Save — the tap does nothing
+  and raises the sheet, every time. Comment drafts survive the sheet.
+- **One free step per device** (owner's call): first step opened = the claim
+  (`lib/account`: freeStep/claimFreeStep/gateStepLink). In-app navigation to
+  any other step asks, from ALL doors — step foot, sidebar, course rows,
+  home cards. Direct/shared links always read. Wipe clears the claim.
+- **requireAccount() finally has callers**, and the sheet: reason-specific
+  copy (never the word "Onboarding"), mode in the store (header Sign in
+  opens sign-in), restyled to the measured spec of Claude's own sign-in
+  card (448/32px/rgb(249,249,247)/4-layer shadow, labels hidden).
+- **Clerk's modal is gone** — both `SignInButton mode="modal"` call sites
+  now open our sheet, which killed the diamond + "Secured by Clerk" in-app.
+  Header Sign in is a round person icon (MynaUI `user`).
+- **Continue with Google**: `sso()` via new /sso-callback route; Google
+  configured in prod Clerk (owner caught pasting ID/secret SWAPPED — the
+  GOCSPX- one is the SECRET); Search Console domain verified via TXT I
+  added with `npx vercel dns add` (CLI is authed as the owner).
+- **Referrals CLOSED THE LOOP** (were "wait for Clerk"): signed-in shares
+  carry `?r=<name-hash>` (emitted in shareUrl, code published by
+  AccountSignal), arriving device keeps FIRST referrer sanitised, sign-up
+  (password AND Google) writes `unsafeMetadata.referredBy`. Rewarding =
+  read it off users in the Clerk dashboard.
+- **Greeting rule 3**: a line may not presume a past ("Back at it" met a
+  stranger). Bands split anyone/returning; returning opens when
+  identity.since is a previous day (`identitySince()`).
+- **AuthForm watchdog**: Turnstile can hang signUp.password() FOREVER
+  (measured 30s+, no settle); every Clerk await now races a 20s clock and
+  the button revives once an error shows (fetchStatus never resettles).
+- **/privacy and /terms** written to what the app actually does; desktop
+  gate skips them (+ /sso-callback) for Google's reviewers.
+- **"/" is a real landing page; the dashboard moved to /home** after
+  Google's branding review failed twice (home must be static, explain the
+  app, link privacy, need no sign-in). Poster gradient + eyebrow + full
+  "Booklesss" name server-rendered; ToApp redirect sends signed-in/studied
+  devices past the door; all in-app home links, manifest start_url,
+  phone-only rule follow to /home.
+- Full-flow audit (Playwright, phone profile): all arrivals, Settings,
+  wipe, 404, offline, desktop gate, console errors — clean.
+- `coursesForSchool(null)` returned [] once nobody was asked their school —
+  Settings' course list opened onto NOTHING. null now = whole library.
+- Onboarding sheet's `after` bug: `requireAccount` was never called, so
+  nobody had noticed `redirectTo=""` → router.push(""). null = stay put.
+
+**What Worked:**
+- **Playwright as the audit instrument**: fresh contexts = fresh devices;
+  MutationObserver in an addInitScript catches every greeting frame
+  (observe `document`, not documentElement — init scripts run before <html>
+  exists); seeded localStorage must match the real store shape or the test
+  lies (StudyDay needs checks/secs/steps).
+- **Blocking Clerk at the network** (context.route abort) proves the
+  fail-soft path AND the un-gated recording path in one test.
+- **The signals API from node_modules again**: sso params, unsafeMetadata
+  on SignUpFutureAdditionalParams, NullableSignUpSignal.
+- **`npx vercel dns add`** — domain plumbing without leaving the session.
+- Reading Google's ACTUAL homepage rules (support.google.com/cloud/answer/
+  13807376) instead of guessing: "static URL", "without log-in", "link to
+  privacy policy" — settled the landing-page question in one fetch.
+
+**Dead Ends (do not retry):**
+- **Testing real sign-up headlessly (or even headed) against Clerk +
+  Turnstile.** The captcha never resolves for automation — signUp.password
+  hangs silently, no error, no request. Only a real phone proves sign-up.
+- **A state-conditional intro on the dashboard as the Google fix.** Built
+  it, verified it, Google's rules made it moot the same hour: the home URL
+  must be STATIC. Superseded by the real landing at "/".
+- **`module.exports`-era Clerk knowledge generally** — errors returned not
+  thrown, strategy is a literal type ("oauth_google" as const), fetchStatus
+  stays "fetching" after a hung call.
+- Putting the referral-code holder in lib/account ("use client") — site.ts
+  is imported by server metadata code; the holder lives in plain-module
+  lib/referral instead.
+
+**Flags:**
+- ⚠️ **Google branding re-verification in flight** (Proceed pressed; the
+  landing now live over-satisfies both complaints). Watch the email.
+- ⚠️ **NEVER add a logo on Google's consent screen** — uploading one
+  triggers brand verification review. Clerk dashboard logo (still the
+  diamond) is separate and safe to swap.
+- ⚠️ **The real phone sign-up test is still the one unverified thing** —
+  email/password or Google, either creates production user #1.
+- `linear-server` unauthorized, 13th consecutive session. Nothing filed.
+- `Booklesss Bucket/` webp — 11th session.
+- OneDrive `.next` EPERM struck twice more; rm -rf .next after checking no
+  node process, as documented in wrap-session.
 
 ### Session 2026-08-03 (session 37 — the app grows a front door, and the icon stops being a letter)
 
