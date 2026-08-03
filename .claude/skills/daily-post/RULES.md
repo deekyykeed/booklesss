@@ -502,6 +502,17 @@ Rare, but it has its own shape — `brand` in `prog-post.mjs` is the reference.
 
 ## Operational gotchas
 
+- **Rendering a post DELETES whatever is in that slot first, and the PNGs are
+  gitignored — so a mis-aimed `POST=` is unrecoverable.** `prog-post.mjs` does
+  `fs.rmSync(OUT, {recursive: true})` before writing. On 3 Aug a new config
+  declared `slot: "4-evening"` on a day whose evening was already rendered, and
+  the share-control set was gone the moment the script ran; git could not help,
+  because `posts/**/*.png` is ignored. It was re-renderable only because its
+  config was still in the file.
+  **Read the day's `PLAN.md` before choosing a slot**, and if the slot is taken,
+  decide deliberately whether the new post supersedes it — then say so in
+  `PLAN.md`. This is also the reason a rendered config is never deleted from
+  `prog-post.mjs` (same rule as `searchCTA()`): it is the only backup a post has.
 - **A "server already running" error is not proof of a healthy server.** Next
   refuses a second `dev` in the same directory regardless of port. Check the
   claimed PID and port are actually serving (`curl` a route) before working

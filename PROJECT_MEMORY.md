@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-03 (session 38)
+**Last updated:** 2026-08-03 (session 39)
 
 ---
 
@@ -92,6 +92,32 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
+**From session 39 (2026-08-03, the brand/PDF session) — all cheap, none
+blocking.**
+- [ ] **13 MynaUI icon names ship to every reader and are drawn nowhere**:
+      `users`, `puzzle`, `chart-bar`, `credit-card`, `bookmark(+solid)`,
+      `check-circle`, `like(+solid)`, `dislike(+solid)`, `circle-half(+solid)`.
+      Held back only because `Checkpoint.tsx` was being edited by the parallel
+      session at the time; it has landed, so this is now safe. Remove from
+      `ICONS` in `platform/scripts/gen-icons.mjs`, `npm run gen:icons`.
+      **Check `Checkpoint.tsx`'s `ANSWERS` first** — it composes `-solid` names
+      at runtime, so a name can be used without appearing as a literal.
+- [ ] ⚠️ **17 Treasury/CF step scripts cannot build on this machine.** They
+      register `/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf`, a Linux
+      path. Pre-existing and untouched today, but it means those steps' PDFs
+      are frozen. One path constant per script; the sibling SM/CF scripts show
+      the `_ROOT`/`_dev/fonts` pattern to copy.
+- [ ] **`_dev/step-generator/` looks dead but is not orphaned.** The HTML step
+      pipeline it feeds has no output folder any more (`platform/public/steps`
+      is gone), yet four `content_*.py` files across TM, ECN and Operations
+      still import it. Decide: delete both halves, or keep as provenance.
+- [ ] **`Demand/sources/build_money_flyer.py` was deleted**, so if the money
+      flyer is ever wanted back it needs re-creating **and** its missing source
+      image (`Zambia_BOZ_500_kwacha_*.jpg`, never in the repo).
+- [ ] **`TopBar`'s `breadcrumb` prop is now dead** — its only caller was the
+      deleted `/page` scratch route. `breadcrumbSlot` is the live one. Left
+      alone because `TopBar.tsx` was mid-edit by the other session.
+
 **From session 38 (2026-08-03, the app went launch-shaped) — the first two are
 the ones only a human with a phone and an inbox can do.**
 - [ ] ⚠️ **Sign up on the live site once, on a real phone.** Person icon →
@@ -117,10 +143,13 @@ the ones only a human with a phone and an inbox can do.**
       user → metadata → `referredBy`. Counting/leaderboard needs a Supabase
       table — the same server table the unique-avatar claim wants, so build
       them together.
-- [ ] **The landing at "/" is deliberately minimal.** The owner mused about a
-      fuller scrolling landing ("scroll through some things") — screenshots
-      of the reader, maybe the posters' motion. Iterate when the marketing
-      push starts; the Google-compliance part is done.
+- [x] ~~The landing at "/" is deliberately minimal~~ → ✅ **done in s39.** Four
+      real-app screenshots in phone bezels, alternating with the copy, shot by
+      `platform/scripts/cap-landing.mjs`. The course grid and the `/home` link
+      are gone: **every button opens the sign-up sheet and nothing else does**
+      (owner: *"the only link i expect there is signing up"*). Privacy/terms/
+      contact stay in the footer and are marked load-bearing in the source —
+      removing them is what failed Google's review.
 - [ ] **If a student reports sign-up stuck**, the 20s watchdog now shows
       "taking too long" — but the underlying cause would be Turnstile vs
       their connectivity. The dial is Clerk's bot-protection setting.
@@ -608,6 +637,94 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-03 (session 39 — the diamond is retired, the brand folder is one place, and the front door shows the app)
+
+Numbered 39, not 38: this ran in parallel with the session below, which wrapped
+first and claimed 38. Its numbering is left alone. Five commits — 585d092,
+a1f7ed4, 8108e9f, 178ecce, ad03e8a — plus the landing rewrite on top of theirs.
+
+**Done:**
+- **The two-identity question is CLOSED.** Owner: *"no more of this diamond
+  square shape, whatever it is. Take it off."* The serif "Booklesss" lockup and
+  the ◇ diamond are gone from disk and out of **all 33 PDF build scripts** —
+  cover motif, inline bullet, `LogoTriple`/`TripleDiamond` classes, `MARK_*`
+  constants. **The grain went with them** (owner, same breath), including the
+  layer the Remotion video project laid over every scene.
+- **`Brand/` is the brand folder.** `_dev/brand/` moved up rather than being
+  copied — one home, no drift — and every script, generator and doc that named
+  the old path was repointed (~30 files).
+- **The logo exists as a file for the first time.** It had lived only as
+  live-rendered text inside `prog-post.mjs` and `og.tsx`.
+  `Brand/build_brand.py` draws the wordmark and the app icon from Familjen
+  Grotesk's own outlines: SVG (no resolution) + PNG at 192/512/1024. Owner's
+  constraint was ≥192px and no quality loss when enlarged; **nothing in
+  `Brand/` is an upscale of anything else.**
+- **Dead code removed.** `/old-home` and `/page` were **live routes on
+  booklesss.app** (the first still rendering `orgName="Partnr"`), plus the four
+  components only they used, two unreferenced glyph modules, 56MB of stale QA
+  renders and two `__pycache__` dirs.
+- **`Demand/carousels/` and the money flyer deleted** at the owner's request —
+  a second PDF-carousel pipeline untouched since 12 July, superseded by
+  `Demand/social/`, printing a school name on its first slide; the flyer's
+  build had been failing on a missing source image.
+- **Social:** tonight's carousel (`POST=brand`) is the shipped brand files
+  rather than a screenshot of them, and **16 no-copy brand plates**
+  (`logo-variants.mjs`) — owner: *"i dont add text like this anymore."*
+- **The landing page shows the product.** Four real-app screenshots in phone
+  bezels, alternating; the course grid and the `/home` link are gone and every
+  button opens the sign-up sheet. Closes the s38 "fuller scrolling landing"
+  item.
+
+**Four pre-existing bugs found by verifying, all fixed:**
+- Both Corporate Finance scripts read `_ROOT` **without ever defining it** —
+  neither had built in some time.
+- `build_ops_growth_roles.py` climbed one level too many for its fonts and
+  wrote its PDF outside the repo.
+- The SM study pill wrote into a nested `Schools/ZCAS/schools/ZCAS/` duplicate,
+  so every rebuild landed where nothing reads.
+- The ADDED VALUE bullet was `▸` (U+25B8), **which Aptos does not carry** — it
+  set as tofu the moment the diamond image it fell back from was deleted. Now
+  `•` (U+2022). Aptos also lacks `►`, `◆`, `‣`.
+
+**What Worked:**
+- **The Grep tool, never `grep`/`find` via bash.** On this OneDrive tree a bash
+  `grep -r` over the repo hits the 120s timeout; the same search through the
+  Grep tool returns in a second. This cost three timeouts before the lesson
+  landed.
+- **Dry-run transformer, then `--apply`, with a leftover-reference report.**
+  Rewriting 33 build scripts by regex found three *different* shapes of the
+  same cover-motif call — a one-line conditional, an if/else block, and a named
+  flowable dropped into a story list. Printing "class removed but call site
+  not" per file is what caught shapes 2 and 3 before they shipped as NameErrors.
+- **PyMuPDF is installed now**, so rendering a PDF page to PNG for visual QA
+  works. This clears the s24 dead end. It caught the tofu bullet, which no
+  amount of code review would have.
+- **`git commit --only -- <paths>`** all session, never `git add -A` — the tree
+  had a second session writing to it continuously.
+- **Reading the shipped file's own spec rather than guessing.** The wordmark's
+  tracking came off `og.tsx` (−0.031em) and the icon's off `gen-pwa-icons.py`
+  (−0.06em); they differ on purpose and copying one to both would have been
+  invisible and wrong.
+
+**Dead Ends (do not retry):**
+- **`npm run build` fails `EBUSY` / `EPERM` on `.next` because OneDrive holds
+  it**, and it fails *identically* on retry. `TaskStop` on the dev server does
+  **not** kill its workers — `tasklist //FI "IMAGENAME eq node.exe"` still
+  showed four. Kill the PIDs, `rm -rf .next`, then build. Retrying without that
+  is pure delay.
+- **`prog-post.mjs` wipes its target slot folder before rendering**
+  (`fs.rmSync`), and the PNGs are **gitignored**, so a mis-aimed `POST=` is
+  unrecoverable from git. It cost 4-evening's share-control set, which had to be
+  re-rendered from its config. Check `PLAN.md` for what occupies a slot first.
+- **Nine `Demand/sources/build_*.py` were cp1252 on disk**, so Python 3 refused
+  to compile them at all — they had been unrunnable. Normalised to UTF-8.
+  Any tool that rewrites files in this repo must read/write per-file encoding
+  or it will mangle them.
+- **17 Treasury/CF step scripts still fail on a hardcoded Linux path** to
+  `/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf`. Pre-existing, untouched,
+  and unrelated to today — but it means those steps' PDFs cannot be rebuilt on
+  this machine.
 
 ### Session 2026-08-03 (session 38 — nobody is asked anything, every action is a door, and "/" becomes a front porch)
 

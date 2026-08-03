@@ -60,13 +60,21 @@ In `Brand/`, loaded via `ImageReader` (guard each with `os.path.exists`):
 
 | File | Use |
 |------|-----|
-| `booklesss-logo-black.png` | Logo on cream / light surfaces (header) |
-| `booklesss-logo-white.png` | Logo on dark surfaces |
-| `booklesss-mark-black.png` | Diamond glyph — the `LogoTriple` motif (light bg) |
-| `booklesss-mark-white.png` | Diamond glyph for dark bg |
-| `grain.png` | Subtle paper grain drawn over the page fill |
+| `booklesss-wordmark-black.png` | The logo, on cream / light surfaces (header) |
+| `booklesss-wordmark-white.png` | The logo, on dark surfaces |
 
-If the mark asset is missing, fall back to the vector `TripleDiamond` flowable.
+**That is the whole list.** The serif "Booklesss" lockup, the ◇ diamond and
+`grain.png` were **retired on 2026-08-03** (owner: *"no more of this diamond
+square shape — take it off"*, and *"get rid of the grain"*). They are gone from
+disk and out of all 33 build scripts, along with the `LogoTriple` and
+`TripleDiamond` flowables and the cover motif they drew.
+
+**Do not reintroduce any of them**, and do not copy a cover from an old PDF that
+still shows them — the file is the stale thing, not the rule. A new script draws
+the wordmark top-left and nothing else; there is no centred motif any more.
+
+`Brand/build_brand.py` regenerates the wordmark and the app icon from the font
+at any size, so nothing here is ever an upscale.
 
 ## Palette
 
@@ -176,17 +184,30 @@ for an FCF waterfall as for an invoice total.
 | `calc_table(rows, title=None)` | KeepTogether | Right-aligned money column. Rows `(label, value)` or `(label, value, True)` for a jade rule above (subtotal / total). |
 | `table_std(data, col_widths)` | KeepTogether | Standard table; row 0 is the header (jade underline). Line items, key terms, anything tabular. **`col_widths` must sum to `CONTENT_W` exactly — never leave unused width.** |
 | `discussion_q(text)` | KeepTogether | Italic question box *(lesson profile)*. |
-| `resources_box(items)` | KeepTogether | Cover resource panel. `items` = list of `(label, url)` tuples. Red-bordered box labelled **ADDED VALUE**, with the Booklesss diamond mark as the bullet and a clickable underlined label per item. Add to cover when a step has companion resources (NotebookLM audio, past papers, etc.). Falls back to `▸` if the mark asset is missing. |
+| `resources_box(items)` | KeepTogether | Cover resource panel. `items` = list of `(label, url)` tuples. Red-bordered box labelled **ADDED VALUE**, `•` bullets, clickable underlined label per item. Add to cover when a step has companion resources (NotebookLM audio, past papers, etc.). |
+
+### Glyphs Aptos does not have
+
+**Check before typing a symbol into a script** — a missing glyph renders as a
+tofu box, which no code review catches and only a rendered page shows.
+
+| Safe | Tofu |
+|------|------|
+| `•` U+2022, `·` U+00B7, `→` U+2192, `—` U+2014, `¹²³⁵`, `√`, `×`, `−` | `▸` U+25B8, `►` U+25BA, `◆` U+25C6, `‣` U+2023 |
+
+`▸` was the ADDED VALUE bullet's fallback for months and never showed, because
+the diamond image in front of it always loaded. Deleting the image on
+2026-08-03 revealed it as tofu on every cover at once.
 
 ### Cover motif flowables
-- `LogoTriple(img)` — centred trio of the real diamond mark. Use when the mark
-  asset loads.
-- `TripleDiamond()` — vector `◇◆◇` fallback.
+
+**Gone.** `LogoTriple` and `TripleDiamond` drew the retired ◇◆◇ and were removed
+from all 33 scripts on 2026-08-03. A cover opens on its eyebrow now.
 
 ### Canvas callbacks (per page)
-- `cover_bg` — cream fill + grain, top brand row: logo (left), document/course
-  label (right), warm hairline under.
-- `page_bg` — cream fill + grain for interior pages.
+- `cover_bg` — cream fill (no grain), top brand row: wordmark (left),
+  document/course label (right), warm hairline under.
+- `page_bg` — cream fill for interior pages.
 - `body_page` — course-accent rule under a running header (title left, version/date right)
   and a warm rule above the footer (`Booklesss | booklesss.framer.ai` / label / `Page N`).
   The footer URL must be clickable — use `canvas.linkURL` over the drawn text:
