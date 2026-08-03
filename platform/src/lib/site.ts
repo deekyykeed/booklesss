@@ -27,8 +27,16 @@ export const SITE_HOST = "booklesss.app";
 export const SITE_URL = `https://${SITE_HOST}`;
 export const SITE_NAME = "Booklesss";
 
-/** What a shared link says when nothing more specific is known. */
-export const SITE_DESCRIPTION = "Your whole course, in order, on your phone.";
+/**
+ * What a shared link says when nothing more specific is known.
+ *
+ * Leads with the category (owner's call, 2026-08-03). The line used to open
+ * "Your whole course…", which describes the shape of the thing without ever
+ * saying what it is — a stranger meeting this cold in a WhatsApp group could
+ * not tell notes from a timetable app. 58 characters, so it survives the ~80
+ * WhatsApp shows. The card carries the same word; see KIND in lib/og.tsx.
+ */
+export const SITE_DESCRIPTION = "Study notes for your whole course, in order, on your phone.";
 
 /** WhatsApp truncates the description at roughly this many characters. */
 export const SHARE_DESCRIPTION_MAX = 80;

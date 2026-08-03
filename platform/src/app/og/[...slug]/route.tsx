@@ -2,7 +2,7 @@ import { allLessonSlugs, lessonIdForSlug } from "@/lib/course";
 import { COURSES, courseBySlug } from "@/lib/courses";
 import { shareCard } from "@/lib/og";
 import { stepShare } from "@/lib/share";
-import { OG_HOME_SLUG, SITE_DESCRIPTION, SITE_NAME, shareText } from "@/lib/site";
+import { OG_HOME_SLUG, SITE_NAME } from "@/lib/site";
 
 /* ------------------------------------------------------------------ *
  * Every link preview image the site serves: /og/<something>.png
@@ -54,7 +54,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
   const slug = [...raw.slice(0, -1), (raw[raw.length - 1] ?? "").replace(/\.png$/, "")];
 
   if (slug.length === 1 && slug[0] === OG_HOME_SLUG) {
-    return shareCard({ title: SITE_NAME, subtitle: SITE_DESCRIPTION });
+    return shareCard({ title: SITE_NAME });
   }
 
   /* A step is tried before a course because it is the more specific match: a
@@ -64,12 +64,12 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
   const lessonId = lessonIdForSlug(slug);
   const step = lessonId ? stepShare(lessonId) : null;
   if (step) {
-    return shareCard({ eyebrow: step.eyebrow, title: step.title, subtitle: step.blurb });
+    return shareCard({ eyebrow: step.eyebrow, title: step.title });
   }
 
   const course = slug.length === 1 ? courseBySlug(slug[0]) : undefined;
   if (course) {
-    return shareCard({ title: course.title, subtitle: shareText(course.subtitle, 96) });
+    return shareCard({ title: course.title });
   }
 
   // Unreachable with dynamicParams = false; here so the handler has one exit

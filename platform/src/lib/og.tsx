@@ -56,32 +56,38 @@ async function faces() {
   ];
 }
 
-/* ---- fitting the title ---------------------------------------------- *
+/* ---- SIZED FOR THE THUMBNAIL, NOT FOR THE FILE ---------------------- *
  *
- * The card is a fixed 630px and the type inside it isn't, so a long title
- * pushes the footer off the bottom — "Foreign exchange risk management" did
- * exactly that, clipping booklesss.app against the card's edge. Since a new
- * step can be named anything, the fit is computed rather than tuned:
+ * The card is 1200×630 and WhatsApp draws it at roughly HALF that in a chat —
+ * about 600px across on a phone. Everything on it therefore has to survive a
+ * 50% reduction, which the first version did not: at 28px the subtitle came out
+ * around 14px on the device and could not be read at all.
  *
- *   630 − 2×64 padding                          = 502 of content
- *   − 44 wordmark − 32 footer − 48 gaps         = 378
- *   − 38 eyebrow − 96 two lines of subtitle     = 244 for the title
+ * The other half of the same lesson is that WhatsApp prints its OWN title,
+ * description and domain in the bubble UNDER the image. Anything the card
+ * repeats is said twice, in a place where it is smaller and harder to read the
+ * second time. So the card carries the title, and the caption carries the prose
+ * — the subtitle came off entirely on 2026-08-03 and that is what paid for the
+ * bigger type everywhere else.
  *
- * A title is therefore allowed 244px: one line at any size the length picks,
- * two lines under ~78, or three under ~46. Familjen Grotesk at 500 averages
- * about 0.46 of its point size per character at these widths — narrower than
- * the Satoshi this used to be set in, which is why the sizes went up rather
- * than down when the face changed. CHAR_W only has to be right enough to
- * catch the wrap.
+ * The fit, with the subtitle gone:
+ *
+ *   630 − 2×64 padding                     = 502 of content
+ *   − 56 wordmark − 38 footer − ~40 gaps   = 368
+ *   − 50 eyebrow and its margin            = 318 for the title
+ *
+ * One line at any size the length picks, two under ~100, three under ~62.
+ * Familjen Grotesk at 500 averages about 0.46 of its point size per character
+ * at these widths; CHAR_W only has to be right enough to catch the wrap.
  * --------------------------------------------------------------------- */
 const CONTENT_W = 1056;
 const CHAR_W = 0.46;
 
 function titleSize(title: string) {
-  const base = title.length <= 18 ? 92 : title.length <= 30 ? 78 : title.length <= 44 ? 64 : 54;
+  const base = title.length <= 18 ? 118 : title.length <= 30 ? 100 : title.length <= 44 ? 82 : 66;
   const lines = Math.ceil(title.length / Math.floor(CONTENT_W / (CHAR_W * base)));
-  if (lines >= 3) return Math.min(base, 46);
-  if (lines === 2) return Math.min(base, 78);
+  if (lines >= 3) return Math.min(base, 62);
+  if (lines === 2) return Math.min(base, 100);
   return base;
 }
 
@@ -118,15 +124,22 @@ const CANVAS =
  * decoded by a stranger — "Bklsss" and "booklesss.app" are on the same card. */
 const WORDMARK = "Bklsss";
 
+/* WHAT THE THING ACTUALLY IS (owner's call, 2026-08-03).
+ *
+ * The first card said the brand, the course and the step, and nowhere did it
+ * say what any of that was — a stranger in a WhatsApp group had no way to tell
+ * a set of study notes from a blog, a shop or a podcast. This line is the only
+ * words on the card that are the same on every card, which is exactly why it
+ * can carry the category: everything else is the specific thing being shared. */
+const KIND = "Study notes";
+
 export async function shareCard({
   eyebrow,
   title,
-  subtitle,
 }: {
   /** Small caps line above the title: the course a step belongs to. */
   eyebrow?: string;
   title: string;
-  subtitle: string;
 }) {
   const fonts = await faces();
 
@@ -157,31 +170,30 @@ export async function shareCard({
         <span
           style={{
             fontFamily: "Display",
-            fontSize: 44,
+            fontSize: 52,
             fontWeight: 700,
             color: INK,
-            letterSpacing: -1.4,
+            letterSpacing: -1.6,
           }}
         >
           {title === SITE_NAME ? "" : WORDMARK}
         </span>
 
-        {/* The thing being shared. `space-between` pins the footer, so this
-            block's own bottom margin is what stops a two-line subtitle from
-            growing down into it. */}
+        {/* The thing being shared — an eyebrow and the title, and that is all.
+            The prose that used to sit under it is WhatsApp's job now. */}
         <div style={{ display: "flex", flexDirection: "column", marginBottom: 8 }}>
           {eyebrow ? (
             <span
               style={{
-                fontSize: 22,
+                fontSize: 30,
                 fontWeight: 700,
                 color: EYE,
-                letterSpacing: 3.5,
+                letterSpacing: 4,
                 textTransform: "uppercase",
-                marginBottom: 16,
+                marginBottom: 20,
               }}
             >
-              {clamp(eyebrow, 46)}
+              {clamp(eyebrow, 40)}
             </span>
           ) : null}
           <span
@@ -191,33 +203,29 @@ export async function shareCard({
               fontWeight: 500,
               color: INK,
               lineHeight: 1.02,
-              letterSpacing: -2.2,
+              letterSpacing: -2.6,
             }}
           >
             {clamp(title, 62)}
           </span>
-          <span
-            style={{
-              fontSize: 28,
-              fontWeight: 500,
-              color: MUTED,
-              lineHeight: 1.35,
-              marginTop: 20,
-            }}
-          >
-            {clamp(subtitle, 118)}
-          </span>
         </div>
 
-        {/* Footer — the host, and nothing else.
+        {/* Footer — what it is, then where it is.
          *
          * The step / course counter that used to sit on the right came off on
          * 2026-08-03 (owner's call). It was the only number on the card and it
          * aged badly: a count is true on the day the card is built and a course
          * grows, so a cached preview would go on claiming "21 steps" long after
-         * there were more. The host is the one line that cannot go stale. */}
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <span style={{ fontSize: 26, fontWeight: 700, color: INK }}>{SITE_HOST}</span>
+         * there were more.
+         *
+         * "Study notes" leads and takes the ink, because it is the one thing on
+         * the card a stranger does not already know — the host is repeated by
+         * WhatsApp's own bubble two lines below, so it can afford to be the
+         * quieter half. */}
+        <div style={{ display: "flex", alignItems: "center", fontSize: 32 }}>
+          <span style={{ fontWeight: 700, color: INK }}>{KIND}</span>
+          <span style={{ fontWeight: 500, color: MUTED, padding: "0 14px" }}>·</span>
+          <span style={{ fontWeight: 500, color: MUTED }}>{SITE_HOST}</span>
         </div>
       </div>
     ),
