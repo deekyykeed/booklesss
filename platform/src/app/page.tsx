@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { openGraph, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
 import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
-import { LandingAuth, ToApp } from "@/components/landing/landing-bits";
+import { LandingStart, ToApp } from "@/components/landing/landing-bits";
 
 /* ------------------------------------------------------------------ *
  * The front door. A real landing page, not the app.
@@ -119,13 +119,18 @@ export default function LandingPage() {
           Your whole course, in steps you can actually read
         </h1>
 
-        {/* ---- the one card: Clerk's own sign-up form ----
-             The reference's "Get the app" card sat above this until the owner
-             took it out (2026-08-03). The install prompt still lives on the
-             dashboard (components/home/OfflineTools), which is the better
-             moment for it anyway: a stranger at the front door has no reason
-             to install an app they have not read a word of. */}
-        <LandingAuth />
+        {/* ---- the one action ----
+             Signing up moved to /onboarding (owner, 2026-08-03): four steps,
+             the questions first and Clerk's card last, so an account is never
+             created knowing nothing about the person it belongs to. */}
+        <div className="flex flex-col items-center gap-3 pb-4">
+          <LandingStart className="squircle inline-flex h-14 w-full max-w-[320px] items-center justify-center rounded-full bg-ink text-[16px] font-medium text-white transition-opacity hover:opacity-85">
+            Get started
+          </LandingStart>
+          <p className="text-[13.5px] text-muted">
+            Free to start. Takes about a minute.
+          </p>
+        </div>
 
         {/* ---- what this is (static, for anyone who scrolls — and for the
                 reviewer who runs no JavaScript) ---- */}

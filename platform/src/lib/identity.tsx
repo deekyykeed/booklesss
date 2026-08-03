@@ -81,6 +81,22 @@ export const AVATAR_NAMES: Record<AvatarId, string> = {
   skate: "Skater",
 };
 
+/** Days a week, and minutes on each of those days. */
+export type StudyTarget = { days: number; minutes: number };
+
+/** Held to the ranges the onboarding step offers, because this arrives from
+ *  localStorage and from account metadata, both of which a stranger can
+ *  write. A target of 0 days would divide the dashboard by zero. */
+export function parseTarget(v: unknown): StudyTarget | null {
+  if (!v || typeof v !== "object") return null;
+  const o = v as Record<string, unknown>;
+  const days = Math.round(Number(o.days));
+  const minutes = Math.round(Number(o.minutes));
+  if (!Number.isFinite(days) || !Number.isFinite(minutes)) return null;
+  if (days < 1 || days > 7 || minutes < 5 || minutes > 480) return null;
+  return { days, minutes };
+}
+
 export type Identity = {
   /** What to call them: the name of the avatar they were assigned. Trimmed,
    *  never empty — a record without one is treated as no record at all. */
@@ -111,6 +127,21 @@ export type Identity = {
    * when they pick "everything" — which is a real answer, not a skip.
    */
   coursesChosen: boolean;
+  /**
+   * What the student said they'd do in a week: study days, and minutes on
+   * each of them. Null until they say.
+   *
+   * Before this, the dashboard measured everyone against 5 days and 120
+   * minutes — numbers nobody chose, invented in lib/performance and marked
+   * there as owed. A score against a target the student set is a promise they
+   * made; a score against ours is an opinion they never asked for.
+   *
+   * Stored as both raw halves rather than one weekly figure: "20 minutes most
+   * days" and "an hour twice a week" are different habits that a single
+   * number would flatten, and the north star needs the absolutes to compare
+   * students at all.
+   */
+  target: StudyTarget | null;
   /** Random, per device. See the note above. */
   id: string;
   /** ISO date the identity was created, for a later "member since". */
@@ -148,6 +179,7 @@ function load(): Identity | null {
          than interrogating a reader who has already told us. */
       coursesChosen:
         v.coursesChosen === true || (Array.isArray(v.courses) && v.courses.length > 0),
+      target: parseTarget(v.target),
       id: typeof v.id === "string" ? v.id : newId(),
       since: typeof v.since === "string" ? v.since : new Date().toISOString(),
     };
@@ -217,9 +249,12 @@ export function saveIdentity(input: {
   school: SchoolChoice | null;
   schoolName: string | null;
   courses: string[];
-  /** Only the setup sheet passes this — everywhere else, choosing any course
-   *  is itself the answer, and an already-asked device stays asked. */
+  /** Only the setup sheet and onboarding pass this — everywhere else,
+   *  choosing any course is itself the answer, and an already-asked device
+   *  stays asked. */
   coursesChosen?: boolean;
+  /** Omit to keep what is stored; null clears it. */
+  target?: StudyTarget | null;
 }): Identity {
   const prev = load();
   const next: Identity = {
@@ -232,6 +267,8 @@ export function saveIdentity(input: {
     // Deduplicated so a double tap in the picker can't enrol anyone twice.
     courses: [...new Set(input.courses)],
     coursesChosen: input.coursesChosen ?? prev?.coursesChosen ?? input.courses.length > 0,
+    // `undefined` keeps whatever is stored; an explicit null clears it.
+    target: input.target === undefined ? (prev?.target ?? null) : parseTarget(input.target),
     id: prev?.id ?? newId(),
     since: prev?.since ?? new Date().toISOString(),
   };
@@ -247,6 +284,33 @@ export function saveIdentity(input: {
  * makes it an answer rather than a silence is `coursesChosen`, which this
  * always sets. See the field's note.
  */
+/**
+ * Everything the onboarding flow collects, written as one answer.
+ *
+ * The flow saves after every step rather than at the end, so a student who
+ * closes the tab on question three keeps what they said — and the sign-up
+ * card at the end reads this straight off the device (see ClerkGate and the
+ * onboarding page), which is how the answers reach the account.
+ */
+export function saveOnboarding(input: {
+  school: SchoolChoice | null;
+  schoolName: string | null;
+  courses: string[];
+  target: StudyTarget | null;
+}): Identity {
+  const prev = assignIdentity();
+  return saveIdentity({
+    name: prev.name,
+    avatar: prev.avatar,
+    school: input.school,
+    schoolName: input.schoolName,
+    courses: input.courses,
+    // Reaching the courses step at all is being asked — "everything" included.
+    coursesChosen: true,
+    target: input.target,
+  });
+}
+
 export function chooseCourses(slugs: string[]): Identity {
   /* assignIdentity rather than `load()`, because a record with no name is
      treated as no record at all — writing one here would erase the reader
@@ -300,6 +364,9 @@ export type AccountIdentity = {
    *  side. School stays device-local; courses are what the dashboard is. */
   courses: string[];
   coursesChosen: boolean;
+  /** The promise the dashboard scores them against — theirs, not ours, so it
+   *  has to travel with the account rather than sit on one phone. */
+  target: StudyTarget | null;
 };
 
 /** The device's identity shaped for account metadata, or null before any has
@@ -308,7 +375,14 @@ export type AccountIdentity = {
 export function accountIdentity(): AccountIdentity | null {
   const v = load();
   return v
-    ? { name: v.name, avatar: v.avatar, since: v.since, courses: v.courses, coursesChosen: v.coursesChosen }
+    ? {
+        name: v.name,
+        avatar: v.avatar,
+        since: v.since,
+        courses: v.courses,
+        coursesChosen: v.coursesChosen,
+        target: v.target,
+      }
     : null;
 }
 
@@ -332,6 +406,7 @@ export function parseAccountIdentity(v: unknown): AccountIdentity | null {
     // stored record — this only guarantees the shape.
     courses: Array.isArray(o.courses) ? o.courses.filter((c): c is string => typeof c === "string") : [],
     coursesChosen: o.coursesChosen === true,
+    target: parseTarget(o.target),
   };
 }
 
@@ -354,6 +429,8 @@ export function adoptIdentity(acct: AccountIdentity): Identity {
     schoolName: prev?.schoolName ?? null,
     courses: takeCourses ? acct.courses : (prev?.courses ?? []),
     coursesChosen: takeCourses || (prev?.coursesChosen ?? false),
+    // Same rule as courses: the account wins where it has an answer.
+    target: acct.target ?? prev?.target ?? null,
     id: prev?.id ?? newId(),
     since: acct.since,
   };
@@ -393,6 +470,7 @@ export function assignIdentity(): Identity {
     // setup sheet knows to ask once there is an account to hang it on.
     courses: [],
     coursesChosen: false,
+    target: null,
   });
 }
 

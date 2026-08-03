@@ -8,10 +8,11 @@ import { STUDY_DAY_MIN_SECS, studyHistory, type StudyDay } from "./progress";
  *
  *   progress  coverage — sections cleared ÷ all sections. Cumulative and
  *             permanent: finishing a course banks its 35 points for good.
- *   effort    ½ consistency + ½ intensity, both over the last 7 days:
- *               consistency  study days ÷ 5   (5 of 7 is full marks — showing
- *                            up most days, not every day)
- *               intensity    minutes read ÷ 120  (about two hours a week)
+ *   effort    ½ consistency + ½ intensity, both over the last 7 days, both
+ *             measured against the target THE STUDENT SET at onboarding:
+ *               consistency  study days ÷ the days they promised
+ *               intensity    minutes read ÷ (their days × their minutes)
+ *             Someone who never said gets the fallbacks below.
  *
  * Effort is the larger share, so a reader who turns up and puts in the time
  * scores well long before the course is finished. And effort is measured only
@@ -25,6 +26,18 @@ import { STUDY_DAY_MIN_SECS, studyHistory, type StudyDay } from "./progress";
  * intensity from StudyClock's seconds (the same figure the Time tile shows).
  * ------------------------------------------------------------------ */
 
+/* THE TARGET IS THE STUDENT'S OWN, when they have set one.
+ *
+ * Onboarding asks how many days a week and how many minutes a day, and the
+ * answer is stored on the identity and carried on the account. What follows
+ * are the FALLBACKS, used only for somebody who has never been asked — a
+ * reader who arrived on a shared link and never made an account.
+ *
+ * They were the whole story until 2026-08-03, and the file said so: everyone
+ * was scored against five days and two hours a week, which nobody chose. A
+ * score against a promise the student made means something; the same number
+ * against ours is an opinion they never asked for. */
+
 /** Minutes of reading in a week that earn full intensity — roughly two solid
  *  sessions. Reading time is what StudyClock banks, and it undercounts on
  *  purpose, so this is a floor a real week clears, not a stretch. */
@@ -33,6 +46,17 @@ const WEEKLY_MINUTES_TARGET = 120;
 /** Study days in a week that earn full consistency. Five of seven, so a day
  *  off doesn't read as falling behind. */
 const WEEKLY_DAYS_TARGET = 5;
+
+/** What a week is measured against: days, and total minutes across them. */
+export type WeeklyTarget = { days: number; minutes: number };
+
+/** The student's promise as a week's worth, or the fallbacks above.
+ *  `minutes` is per study day in what they answered, so a week is the two
+ *  multiplied — the figure `blend` compares the week's reading against. */
+export function weeklyTarget(target: { days: number; minutes: number } | null | undefined): WeeklyTarget {
+  if (!target) return { days: WEEKLY_DAYS_TARGET, minutes: WEEKLY_MINUTES_TARGET };
+  return { days: target.days, minutes: target.days * target.minutes };
+}
 
 export type Performance = {
   /** 0..100, rounded. */
@@ -53,9 +77,9 @@ export type Performance = {
 };
 
 /** The shared blend — progress a third, effort two thirds. */
-function blend(coverage: number, weekDays: number, weekMins: number) {
-  const consistency = Math.min(1, weekDays / WEEKLY_DAYS_TARGET);
-  const intensity = Math.min(1, weekMins / WEEKLY_MINUTES_TARGET);
+function blend(coverage: number, weekDays: number, weekMins: number, aim: WeeklyTarget) {
+  const consistency = Math.min(1, weekDays / aim.days);
+  const intensity = Math.min(1, weekMins / aim.minutes);
   const effort = (consistency + intensity) / 2;
   return { consistency, intensity, effort, score: 35 * coverage + 65 * effort };
 }
@@ -69,7 +93,9 @@ export function coursePerformance(
   slug: string,
   done: number,
   totalCheckpoints: number,
+  target?: { days: number; minutes: number } | null,
 ): Performance {
+  const aim = weeklyTarget(target);
   const coverage = totalCheckpoints > 0 ? Math.min(1, done / totalCheckpoints) : 0;
 
   /* The fortnight the card's curve draws: newest 7 are this week, the older 7
@@ -86,12 +112,12 @@ export function coursePerformance(
 
   const weekDays = daysOf(week);
   const weekMins = minsOf(week);
-  const cur = blend(coverage, weekDays, weekMins);
+  const cur = blend(coverage, weekDays, weekMins, aim);
 
   // Coverage as it stood a week ago: today's, less what was cleared this week.
   const clearedThisWeek = week.reduce((n, d) => n + (d.courseChecks?.[slug] ?? 0), 0);
   const coveragePrev = totalCheckpoints > 0 ? Math.min(1, Math.max(0, done - clearedThisWeek) / totalCheckpoints) : 0;
-  const prv = blend(coveragePrev, daysOf(prev), minsOf(prev));
+  const prv = blend(coveragePrev, daysOf(prev), minsOf(prev), aim);
 
   return {
     score: Math.round(cur.score),
@@ -112,7 +138,9 @@ export function overallPerformance(
   days: Record<string, StudyDay>,
   done: number,
   totalCheckpoints: number,
+  target?: { days: number; minutes: number } | null,
 ): Performance {
+  const aim = weeklyTarget(target);
   const coverage = totalCheckpoints > 0 ? Math.min(1, done / totalCheckpoints) : 0;
 
   const fortnight = studyHistory(days, 14);
@@ -125,11 +153,11 @@ export function overallPerformance(
 
   const weekDays = daysOf(week);
   const weekMins = minsOf(week);
-  const cur = blend(coverage, weekDays, weekMins);
+  const cur = blend(coverage, weekDays, weekMins, aim);
 
   const clearedThisWeek = week.reduce((n, d) => n + d.checks, 0);
   const coveragePrev = totalCheckpoints > 0 ? Math.min(1, Math.max(0, done - clearedThisWeek) / totalCheckpoints) : 0;
-  const prv = blend(coveragePrev, daysOf(prev), minsOf(prev));
+  const prv = blend(coveragePrev, daysOf(prev), minsOf(prev), aim);
 
   return {
     score: Math.round(cur.score),
@@ -154,7 +182,9 @@ export function overallScoreHistory(
   done: number,
   totalCheckpoints: number,
   span = 14,
+  target?: { days: number; minutes: number } | null,
 ): number[] {
+  const aim = weeklyTarget(target);
   if (totalCheckpoints <= 0) return [];
   const padded = studyHistory(days, span + 6);
   const start = padded.length - span;
@@ -166,7 +196,7 @@ export function overallScoreHistory(
     const seven = padded.slice(Math.max(0, i - 6), i + 1);
     const weekDays = seven.filter((d) => d.secs >= STUDY_DAY_MIN_SECS || d.checks > 0).length;
     const weekMins = seven.reduce((n, d) => n + d.secs, 0) / 60;
-    out.push(blend(coverage, weekDays, weekMins).score);
+    out.push(blend(coverage, weekDays, weekMins, aim).score);
   }
   return out;
 }

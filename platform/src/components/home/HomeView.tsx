@@ -185,8 +185,8 @@ export function HomeView({
    * recomputed as it stood seven days ago, so the movement is a comparison
    * rather than a guess. */
   const perf = useMemo(
-    () => (hydrated ? overallPerformance(days, done.checks, totals.checks) : null),
-    [hydrated, days, done.checks, totals.checks],
+    () => (hydrated ? overallPerformance(days, done.checks, totals.checks, identity?.target) : null),
+    [hydrated, days, done.checks, totals.checks, identity?.target],
   );
 
   /* One 14-day series per tile — the mini chart each carries — plus the
@@ -221,8 +221,8 @@ export function HomeView({
   }, [days, totals.checks, done.checks]);
 
   const perfSeries = useMemo(
-    () => (hydrated ? overallScoreHistory(days, done.checks, totals.checks) : []),
-    [hydrated, days, done.checks, totals.checks],
+    () => (hydrated ? overallScoreHistory(days, done.checks, totals.checks, 14, identity?.target) : []),
+    [hydrated, days, done.checks, totals.checks, identity?.target],
   );
 
   const coverage = totals.checks ? Math.round((done.checks / totals.checks) * 100) : 0;

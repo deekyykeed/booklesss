@@ -1,13 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { SignUp } from "@clerk/nextjs";
 import { useSignedIn } from "@/lib/account";
-import { clerkEnabled } from "@/lib/clerk";
-import { accountIdentity } from "@/lib/identity";
 import { useProgress } from "@/lib/progress";
-import { referrer } from "@/lib/referral";
 
 /* The landing page's client pieces. The page itself is a server component so
  * its whole pitch — name, purpose, privacy link — is in the static HTML,
@@ -38,43 +35,20 @@ export function ToApp() {
  * components/home/OfflineTools — a better moment for it in any case, since a
  * stranger at the front door has not read a word yet. */
 
-/** Clerk's own sign-up card, inline where the reference puts its auth card
- *  (owner, 2026-08-03, off the live landing: "see this bit — just make it
- *  the clerk component"). The real form, not buttons that open a modal.
+/** The front door's action: start the questions.
  *
- *  `routing="hash"` because the component is not on its dedicated route —
- *  Clerk's sub-steps (verification, the OAuth callback) run in the URL
- *  fragment right here on "/". unsafeMetadata carries the same pair
- *  ClerkGate sends: who sent this device, and who it has been reading as —
- *  read after mount, because both live in localStorage and the server
- *  renders this card as a held space. */
-export function LandingAuth() {
-  const [ready, setReady] = useState(false);
-  useEffect(() => setReady(true), []);
-
-  if (!clerkEnabled) return null;
-  if (!ready) return <div className="min-h-[420px]" aria-hidden="true" />;
-
-  const referredBy = referrer();
-  const identity = accountIdentity();
+ *  Clerk's sign-up card sat here inline until the owner moved the whole ask
+ *  to /onboarding (2026-08-03) — questions first, account last, so no account
+ *  is ever created knowing nothing about who it belongs to. The card the
+ *  reader eventually meets is still Clerk's; it is now the last of four
+ *  steps rather than the first thing on the page.
+ *
+ *  A plain <Link>, so it works before hydration and a reviewer running no
+ *  JavaScript still sees a real destination. */
+export function LandingStart({ className, children }: { className?: string; children: React.ReactNode }) {
   return (
-    <div className="flex min-h-[420px] justify-center">
-      <SignUp
-        routing="hash"
-        signInUrl="/sign-in"
-        forceRedirectUrl="/home"
-        signInForceRedirectUrl="/home"
-        /* No "Create your account" header HERE (owner, 2026-08-03: "remove
-           that create your account text and stuff") — the page's headline
-           right above the card already does that job. Landing-only: the
-           modal and the /sign-in and /sign-up routes keep their titles,
-           because there the card is alone on the surface. */
-        appearance={{ elements: { header: { display: "none" } } }}
-        unsafeMetadata={{
-          ...(referredBy ? { referredBy } : {}),
-          ...(identity ? { identity } : {}),
-        }}
-      />
-    </div>
+    <Link href="/onboarding" className={className}>
+      {children}
+    </Link>
   );
 }
