@@ -42,3 +42,6 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# scratch downloads (logo fetches etc.)
+.tmp-logos/
