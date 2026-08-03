@@ -37,8 +37,12 @@ const WEEKLY_DAYS_TARGET = 5;
 export type Performance = {
   /** 0..100, rounded. */
   score: number;
-  /** Points moved since a week ago: the same score with every window shifted
-   *  back seven days. Positive is climbing. */
+  /** The same score as it stood a week ago — every window shifted back seven
+   *  days. Exposed rather than left to be derived as `score - delta`, because
+   *  the tile reports growth as a percentage OF this number and a caller
+   *  reconstructing it would be reimplementing the rounding. */
+  prev: number;
+  /** Points moved since a week ago. Positive is climbing. */
   delta: number;
   /** Each part 0..1, so the number can be explained. */
   parts: { coverage: number; consistency: number; intensity: number; effort: number };
@@ -91,6 +95,7 @@ export function coursePerformance(
 
   return {
     score: Math.round(cur.score),
+    prev: Math.round(prv.score),
     delta: Math.round(cur.score) - Math.round(prv.score),
     parts: { coverage, consistency: cur.consistency, intensity: cur.intensity, effort: cur.effort },
     weekDays,
@@ -128,6 +133,7 @@ export function overallPerformance(
 
   return {
     score: Math.round(cur.score),
+    prev: Math.round(prv.score),
     delta: Math.round(cur.score) - Math.round(prv.score),
     parts: { coverage, consistency: cur.consistency, intensity: cur.intensity, effort: cur.effort },
     weekDays,

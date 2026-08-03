@@ -4,11 +4,11 @@ import { useEffect, useMemo, useState } from "react";
 import { enrolledCourses } from "@/lib/courses";
 import { useIdentity } from "@/lib/identity";
 import { isStudyDay, studyHistory, useProgress } from "@/lib/progress";
-import { overallPerformance, overallScoreHistory, type Performance } from "@/lib/performance";
+import { overallPerformance, overallScoreHistory } from "@/lib/performance";
 import { SolarIcon } from "@/components/icons/solar";
 import { SETTINGS_EVENT } from "@/components/identity/pickers";
 import { CourseCard } from "./CourseCard";
-import { pickGreeting, rememberGreeting } from "./greeting";
+import { pickGreeting, rememberGreeting, renderGreeting, type Greeting } from "./greeting";
 import { OfflineTools } from "./OfflineTools";
 import { Spark } from "./Spark";
 import { courseTone } from "./tones";
@@ -49,13 +49,28 @@ function fmtTime(secs: number): string {
 
 /* Course hues live in tones.ts, shared by each course's card and its mark. */
 
-/** The score tile's footer: where the number has moved to, in points. A score
- *  nobody has earned yet says so rather than reporting a flat week — with
- *  nothing cleared there is no previous score to have moved from. */
-function scoreFoot(perf: Performance | null, cleared: number): { lead: string; tail: string; good: boolean } {
-  if (!perf || cleared === 0) return { lead: "Not started", tail: "nothing yet", good: false };
-  if (perf.delta > 0) return { lead: `+${perf.delta} pts`, tail: "on last week", good: true };
-  if (perf.delta < 0) return { lead: `${perf.delta} pts`, tail: "on last week", good: false };
+type Foot = { lead: string; tail: string; good: boolean };
+
+/**
+ * How far a figure has moved since last week, as a share of last week — not as
+ * a difference.
+ *
+ * Owner's call, 2026-08-03, and it was right: the footers used to read
+ * "+59 pts" and "+16 this week", and neither says anything a reader can size.
+ * A point is an invented unit, and sixteen cleared checkpoints means nothing
+ * without knowing whether the total was twenty or two hundred. A percentage of
+ * last week is self-scaling: "+19%" is the same size of statement whatever the
+ * numbers behind it.
+ *
+ * The one case a percentage genuinely cannot express is growth from zero — it
+ * is not "infinite improvement", it is a first week, so it says so.
+ */
+function growth(now: number, prev: number, unstarted: string): Foot {
+  if (now <= 0 && prev <= 0) return { lead: "Not started", tail: unstarted, good: false };
+  if (prev <= 0) return { lead: "First week", tail: "on the board", good: true };
+  const pct = Math.round(((now - prev) / prev) * 100);
+  if (pct > 0) return { lead: `+${pct}%`, tail: "on last week", good: true };
+  if (pct < 0) return { lead: `${pct}%`, tail: "on last week", good: false };
   return { lead: "Level", tail: "with last week", good: true };
 }
 
@@ -63,10 +78,10 @@ function scoreFoot(perf: Performance | null, cleared: number): { lead: string; t
  *  change under the reader when progress re-renders the page. Picked in the
  *  initialiser rather than an effect: it is only ever read after `hydrated`,
  *  so the server's value is never rendered and can't mismatch. */
-function useGreeting(): string {
-  const [line] = useState(pickGreeting);
-  useEffect(() => rememberGreeting(line), [line]);
-  return line;
+function useGreeting(): Greeting {
+  const [g] = useState(pickGreeting);
+  useEffect(() => rememberGreeting(g), [g]);
+  return g;
 }
 
 export function HomeView({
@@ -175,10 +190,12 @@ export function HomeView({
        the page does between its sections. Bottom padding is unchanged. */
     <div className="mx-auto w-full max-w-[900px] px-4 pb-10 pt-28 md:px-6 md:pt-36">
       <h1 className="font-display text-[30px] font-medium leading-[1.2] tracking-[-0.02em] text-ink">
-        {hydrated ? greeting : "Welcome back"}
-        {/* The name they typed into the form beats the one Clerk inferred from
-            an email address — they chose one of them. */}
-        {identity?.name || name ? `, ${identity?.name ?? name}` : ""}
+        {/* The name is no longer appended here. Each greeting decides where it
+            goes — front, back, or not at all — so the line reads as written
+            instead of always ending ", Deeky". See greeting.ts.
+            The name they typed into the form beats the one Clerk inferred from
+            an email address; they chose one of them. */}
+        {hydrated ? renderGreeting(greeting, identity?.name ?? name) : "Welcome back"}
       </h1>
       <p className="mt-1.5 text-[14px] leading-6 text-muted">{line}</p>
       {afterGreeting}
@@ -205,7 +222,11 @@ export function HomeView({
             tone={TONE.score}
             icon={<SolarIcon name="chart-2-bold-duotone" size={20} className="shrink-0" />}
             series={perfSeries}
-            foot={scoreFoot(perf, done.checks)}
+            foot={
+              perf && done.checks > 0
+                ? growth(perf.score, perf.prev, "nothing yet")
+                : { lead: "Not started", tail: "nothing yet", good: false }
+            }
           />
           {/* 2. Streak — the purest reward for turning up: it moves on effort
               alone and never touches whether anything was understood. The chart
@@ -234,11 +255,9 @@ export function HomeView({
             tone={TONE.coverage}
             icon={<SolarIcon name="notebook-minimalistic-bold-duotone" size={20} className="shrink-0" />}
             series={charts.coverage}
-            foot={
-              charts.weekChecks > 0
-                ? { lead: `+${charts.weekChecks}`, tail: "this week", good: true }
-                : { lead: "None", tail: "added this week", good: false }
-            }
+            /* Growth on the raw counts, which is identical to growth on the
+               percentages — same denominator top and bottom, so it cancels. */
+            foot={growth(done.checks, done.checks - charts.weekChecks, "added yet")}
           />
           {/* 4. Time this week — the clock's own measurement, surfaced at last.
               It undercounts on purpose (see StudyClock), so the number is only
