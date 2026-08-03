@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { SignUp } from "@clerk/nextjs";
 import { useSignedIn } from "@/lib/account";
+import { clerkEnabled } from "@/lib/clerk";
+import { accountIdentity } from "@/lib/identity";
 import { useProgress } from "@/lib/progress";
+import { referrer } from "@/lib/referral";
 
 /* The landing page's client pieces. The page itself is a server component so
  * its whole pitch — name, purpose, privacy link — is in the static HTML,
@@ -35,20 +38,45 @@ export function ToApp() {
  * components/home/OfflineTools — a better moment for it in any case, since a
  * stranger at the front door has not read a word yet. */
 
-/** The front door's action: start the questions.
+/** Clerk's own sign-up card, inline on the front door.
  *
- *  Clerk's sign-up card sat here inline until the owner moved the whole ask
- *  to /onboarding (2026-08-03) — questions first, account last, so no account
- *  is ever created knowing nothing about who it belongs to. The card the
- *  reader eventually meets is still Clerk's; it is now the last of four
- *  steps rather than the first thing on the page.
+ *  THE ACCOUNT COMES FIRST (owner, 2026-08-03: "after email address and sign
+ *  up they go to this page and start filling in a bunch of details … add back
+ *  the clerk thing on the home page"). The questions moved to /onboarding and
+ *  this card sends them there — an email is the thing worth having early, and
+ *  a student who has just made an account will answer three questions where a
+ *  stranger might not have started at all.
  *
- *  A plain <Link>, so it works before hydration and a reviewer running no
- *  JavaScript still sees a real destination. */
-export function LandingStart({ className, children }: { className?: string; children: React.ReactNode }) {
+ *  `routing="hash"` because the card is not on its dedicated route: Clerk's
+ *  sub-steps run in the URL fragment right here on "/". unsafeMetadata carries
+ *  who referred this device and who it has been reading as — read after mount,
+ *  since both live in localStorage and the server renders a held space. */
+export function LandingAuth() {
+  const [ready, setReady] = useState(false);
+  useEffect(() => setReady(true), []);
+
+  if (!clerkEnabled) return null;
+  if (!ready) return <div className="min-h-[420px]" aria-hidden="true" />;
+
+  const referredBy = referrer();
+  const identity = accountIdentity();
   return (
-    <Link href="/onboarding" className={className}>
-      {children}
-    </Link>
+    <div className="flex min-h-[420px] justify-center">
+      <SignUp
+        routing="hash"
+        signInUrl="/sign-in"
+        /* New accounts go and answer the three questions. Someone who flips to
+           "Sign in" already has answers, so they go straight to the app. */
+        forceRedirectUrl="/onboarding"
+        signInForceRedirectUrl="/home"
+        /* No header: the page's headline right above already says what this
+           is, and Clerk's own title would be the second one on screen. */
+        appearance={{ elements: { header: { display: "none" } } }}
+        unsafeMetadata={{
+          ...(referredBy ? { referredBy } : {}),
+          ...(identity ? { identity } : {}),
+        }}
+      />
+    </div>
   );
 }

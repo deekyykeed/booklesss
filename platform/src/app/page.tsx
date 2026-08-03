@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { openGraph, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
 import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
-import { LandingStart, ToApp } from "@/components/landing/landing-bits";
+import { LandingAuth, ToApp } from "@/components/landing/landing-bits";
 
 /* ------------------------------------------------------------------ *
  * The front door. A real landing page, not the app.
@@ -114,23 +114,25 @@ export default function LandingPage() {
       </header>
 
       <main className="mx-auto w-full max-w-[560px] px-5 pb-4">
-        {/* ---- the headline, as the reference sets it: huge, centred ---- */}
-        <h1 className="px-2 pb-10 pt-8 text-center font-display text-[40px] font-medium leading-[1.08] tracking-[-0.02em] text-ink md:text-[52px]">
-          Your whole course, in steps you can actually read
+        {/* ---- the headline ----
+             THE PROMISE, NOT THE MECHANISM (owner, 2026-08-03: "make the main
+             title more bold and hooking, but short still — look at the main
+             thing the person desires for us to do for them"). It used to say
+             "Your whole course, in steps you can actually read", which
+             describes the product. Nobody wants steps; they want to pass. The
+             line under it is where the mechanism goes, and it is also what
+             Google's reviewers read to learn what this app does. */}
+        <h1 className="px-2 pt-8 text-center font-display text-[48px] font-bold leading-[0.98] tracking-[-0.035em] text-ink md:text-[68px]">
+          Everything you need to pass
         </h1>
+        <p className="mx-auto mt-4 max-w-[380px] px-2 pb-10 text-center text-[17px] leading-7 text-ink-2">
+          Your whole course, rewritten as short steps you can read on your phone.
+        </p>
 
-        {/* ---- the one action ----
-             Signing up moved to /onboarding (owner, 2026-08-03): four steps,
-             the questions first and Clerk's card last, so an account is never
-             created knowing nothing about the person it belongs to. */}
-        <div className="flex flex-col items-center gap-3 pb-4">
-          <LandingStart className="squircle inline-flex h-14 w-full max-w-[320px] items-center justify-center rounded-full bg-ink text-[16px] font-medium text-white transition-opacity hover:opacity-85">
-            Get started
-          </LandingStart>
-          <p className="text-[13.5px] text-muted">
-            Free to start. Takes about a minute.
-          </p>
-        </div>
+        {/* ---- the account, then the questions ----
+             Sign up here; Clerk sends new accounts to /onboarding for the
+             three questions that make the dashboard theirs. */}
+        <LandingAuth />
 
         {/* ---- what this is (static, for anyone who scrolls — and for the
                 reviewer who runs no JavaScript) ---- */}

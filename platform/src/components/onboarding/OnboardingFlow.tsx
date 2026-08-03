@@ -2,43 +2,41 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { SignUp } from "@clerk/nextjs";
 import { useSignedIn } from "@/lib/account";
-import { clerkEnabled } from "@/lib/clerk";
 import { coursesForSchool } from "@/lib/courses";
-import { accountIdentity, saveOnboarding, type StudyTarget } from "@/lib/identity";
-import { referrer } from "@/lib/referral";
+import { saveOnboarding, type StudyTarget } from "@/lib/identity";
 import { OTHER_SCHOOL, type SchoolChoice } from "@/lib/schools";
 import { CoursePicker, SchoolPicker } from "@/components/identity/pickers";
 import { Button } from "@/components/ui/Button";
 
 /* ------------------------------------------------------------------ *
- * Onboarding — the questions first, the account last.
+ * Onboarding — three questions, asked straight after the account is made.
  *
  * The owner's design (2026-08-03): "a page where I pick up all this
- * information and at the end the user signs up … instead of a list of
- * questions the user will fill it like a form, answering one question at a
- * time", with a progress bar at the top.
+ * information … instead of a list of questions the user will fill it like a
+ * form, answering one question at a time", with a progress bar at the top —
+ * and, settled the same evening, "after email address and sign up they go to
+ * this page and start filling in a bunch of details".
  *
- * THIS INVERTS THE ORDER, and the inversion is the point. Signing up first
- * and asking afterwards put the work after the commitment, which is how a
- * dashboard headed ALL COURSES got in front of production user #1. Asking
- * first means every account is created already knowing who it belongs to —
- * the answers ride into Clerk as unsafeMetadata on the very card that makes
- * the user, so there is no window where an account exists and knows nothing.
+ * SO THE ACCOUNT COMES FIRST and this page comes second. The email is the
+ * thing worth having early, and somebody who has just made an account will
+ * answer three questions where a stranger might never have started. Clerk's
+ * card on "/" sends new accounts here; sign-INS go straight to the app,
+ * because they answered this the first time.
  *
  * IT DOES NOT BREAK "NOBODY IS ASKED ANYTHING". That rule protects the
  * stranger who taps a WhatsApp link to READ — they still land in the reader,
  * still get an assigned name and face, still never meet a form. This page is
  * only ever reached by someone who chose to make an account.
  *
- * EVERY STEP SAVES. `saveOnboarding` is called on each advance rather than
- * once at the end, so closing the tab on question three keeps what was said,
- * and the sign-up card reads the answers straight off the device.
+ * EVERY STEP SAVES, on each advance rather than once at the end, so closing
+ * the tab on question three keeps what was said. AccountSignal then carries
+ * the answers up onto the account, which is what makes them follow the
+ * student to a second device.
  *
- * The card is Clerk's geometry — same 24px radius, same width, same black
- * button — because the last step IS Clerk's card, and the four screens should
- * read as one flow rather than as our form and then their form.
+ * The cards wear Clerk's geometry — same 24px radius, same width, same black
+ * button — so arriving here from Clerk's card reads as the next step of one
+ * flow rather than as a different application.
  * ------------------------------------------------------------------ */
 
 /* The offer for "how many days a week", and "how many minutes when you sit
@@ -48,8 +46,8 @@ import { Button } from "@/components/ui/Button";
 const DAY_CHOICES = [2, 3, 4, 5, 6, 7];
 const MINUTE_CHOICES = [15, 30, 45, 60, 90, 120];
 
-type Step = "school" | "courses" | "target" | "account";
-const ORDER: Step[] = ["school", "courses", "target", "account"];
+type Step = "school" | "courses" | "target";
+const ORDER: Step[] = ["school", "courses", "target"];
 
 export function OnboardingFlow() {
   const router = useRouter();
@@ -62,10 +60,13 @@ export function OnboardingFlow() {
   const [target, setTarget] = useState<StudyTarget>({ days: 4, minutes: 30 });
   const [query, setQuery] = useState("");
 
-  /* Someone who already has an account has nothing to onboard — they came
-     here from a stale link or the back button. */
+  /* This page is for somebody who has just made an account. Anyone who lands
+     here without one came from a stale link — send them to the front door,
+     where the sign-up card is. `=== false` rather than falsy: null means Clerk
+     has not reported yet, and bouncing a student mid-handshake would throw
+     away the answers they are about to give. */
   useEffect(() => {
-    if (signedIn === true) router.replace("/home");
+    if (signedIn === false) router.replace("/");
   }, [signedIn, router]);
 
   /* Which courses to offer. A school narrows the list; "not listed" and no
@@ -74,20 +75,29 @@ export function OnboardingFlow() {
   const offered = useMemo(() => coursesForSchool(school), [school]);
 
   const index = ORDER.indexOf(step);
-  /* The bar counts answers behind you, so it starts empty on the first
-     question and fills as you go — landing full on the sign-up card, which
-     is the step you are being carried to rather than one more question. */
-  const pct = Math.round((index / (ORDER.length - 1)) * 100);
+  /* Fills as each question is answered, so the last one completes the bar
+     rather than leaving it short of the end. */
+  const pct = Math.round(((index + 1) / ORDER.length) * 100);
 
   /** Save everything answered so far, then move. */
   function go(next: Step) {
+    save();
+    setStep(next);
+  }
+
+  function save() {
     saveOnboarding({
       school,
       schoolName: school === OTHER_SCHOOL ? schoolName.trim() || null : null,
       courses,
       target,
     });
-    setStep(next);
+  }
+
+  /** The last answer, and into the app. */
+  function finish() {
+    save();
+    router.replace("/home");
   }
 
   function back() {
@@ -115,7 +125,7 @@ export function OnboardingFlow() {
           <span className="text-[12px] font-medium tracking-[0.1em] text-muted">
             STEP {index + 1} OF {ORDER.length}
           </span>
-          {index > 0 && step !== "account" && (
+          {index > 0 && (
             <button
               type="button"
               onClick={back}
@@ -237,13 +247,11 @@ export function OnboardingFlow() {
               </span>
               . You can change it later.
             </p>
-            <Button variant="primary" size="lg" block className="mt-5" onClick={() => go("account")}>
-              Continue
+            <Button variant="primary" size="lg" block className="mt-5" onClick={finish}>
+              Start studying
             </Button>
           </Card>
         )}
-
-        {step === "account" && <AccountStep courses={courses} />}
       </div>
     </div>
   );
@@ -301,59 +309,6 @@ function Choices({
             </button>
           );
         })}
-      </div>
-    </div>
-  );
-}
-
-/** The last step: Clerk's own card, carrying everything answered.
- *
- *  The metadata is read from the device rather than from this component's
- *  state, because `saveOnboarding` has already written it — one source, and
- *  it survives a reload on this very step. */
-function AccountStep({ courses }: { courses: string[] }) {
-  const [ready, setReady] = useState(false);
-  useEffect(() => setReady(true), []);
-
-  if (!clerkEnabled) {
-    return (
-      <Card title="Almost there" why="Accounts aren't switched on in this environment.">
-        <p className="text-[14px] leading-5 text-muted">
-          Your answers are saved on this device.
-        </p>
-      </Card>
-    );
-  }
-  if (!ready) return <div className="min-h-[420px]" aria-hidden="true" />;
-
-  const referredBy = referrer();
-  const identity = accountIdentity();
-  return (
-    <div>
-      <div className="mb-4 px-1 text-center">
-        <h1 className="font-display text-[22px] font-medium leading-tight tracking-[-0.01em] text-ink">
-          Last thing — make it yours
-        </h1>
-        <p className="mt-1.5 text-[14px] leading-5 text-muted">
-          {courses.length
-            ? `Your ${courses.length} course${courses.length > 1 ? "s" : ""} and your plan are ready. Create an account to keep them.`
-            : "Your plan is ready. Create an account to keep it, on any phone you sign in on."}
-        </p>
-      </div>
-      <div className="flex justify-center">
-        <SignUp
-          routing="hash"
-          signInUrl="/sign-in"
-          forceRedirectUrl="/home"
-          signInForceRedirectUrl="/home"
-          /* No header: the line above says where they are, and Clerk's own
-             "Create your account" would be the second title on one screen. */
-          appearance={{ elements: { header: { display: "none" } } }}
-          unsafeMetadata={{
-            ...(referredBy ? { referredBy } : {}),
-            ...(identity ? { identity } : {}),
-          }}
-        />
       </div>
     </div>
   );
