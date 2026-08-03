@@ -113,33 +113,33 @@ export default {
           type: "p",
           text: "The Lusaka desk can see every kwacha and every dollar the group holds at once, negotiate one set of terms across all its banks, and [[net|Offsetting what one part of the group owes against what another is owed, so only the difference is hedged or paid. Two subsidiaries on opposite sides of the same currency cancel each other out for free.]] exposures between subsidiaries before hedging anything. What it cannot see is that a payment out of one of those countries clears on a different cycle, or that a local regulator wants a filing nobody at head office has heard of. **That trade-off, control against local knowledge, is the whole argument.**",
         },
+        /* Was a 3x4 table (E-9, D-5). Four columns of prose and nothing to line
+         * up, so on a 390px phone the last two wrapped a word per line. The
+         * marks are three node-and-link diagrams on one axis, where the
+         * decisions sit: one centre, many centres, centres inside regions. The
+         * advantage and disadvantage columns are now one sentence each inside
+         * the card, which is also how the section argues them. */
         {
-          type: "table",
-          columns: [
-            { label: "Structure" },
-            { label: "How it works" },
-            { label: "Advantage" },
-            { label: "Disadvantage" },
-          ],
-          rows: [
-            [
-              "Centralised",
-              "All operations run from HQ",
-              "Stronger controls, economies of scale, lower costs, tax advantages for multinationals",
-              "Field offices lose autonomy; local knowledge not captured",
-            ],
-            [
-              "Decentralised",
-              "Subsidiaries run their own treasury under group guidelines",
-              "Local staff know local banking, regulation, language and customs",
-              "Duplication of effort and resources across units",
-            ],
-            [
-              "Hybrid",
-              "Regional centres: centralised within regions, decentralised across them",
-              "Central control with local knowledge",
-              "More complex to set up and manage",
-            ],
+          type: "cards",
+          cards: [
+            {
+              icon: "oneCentre",
+              title: "Centralised",
+              lead: "All of it run from head office",
+              text: "Stronger controls, economies of scale, lower costs, and tax advantages for a group operating in several countries. What it gives up is local knowledge: the field offices lose their autonomy, and what they know never reaches the desk deciding.",
+            },
+            {
+              icon: "manyCentres",
+              title: "Decentralised",
+              lead: "Each subsidiary runs its own",
+              text: "Local staff know the local banking, the regulator, the language and the customs, and they act on that without asking. What it costs is the same work done several times over in several places.",
+            },
+            {
+              icon: "centresInRegions",
+              title: "Hybrid",
+              lead: "Regional centres",
+              text: "Centralised inside a region and decentralised across them, so the control and the local knowledge sit in the same structure. What it costs is complexity: it is the hardest of the three to set up and to run.",
+            },
           ],
         },
         {

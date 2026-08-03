@@ -14370,39 +14370,25 @@
                       "type": "p"
                     },
                     {
-                      "rows": [
-                        [
-                          "Centralised",
-                          "All operations run from HQ",
-                          "Stronger controls, economies of scale, lower costs, tax advantages for multinationals",
-                          "Field offices lose autonomy; local knowledge not captured"
-                        ],
-                        [
-                          "Decentralised",
-                          "Subsidiaries run their own treasury under group guidelines",
-                          "Local staff know local banking, regulation, language and customs",
-                          "Duplication of effort and resources across units"
-                        ],
-                        [
-                          "Hybrid",
-                          "Regional centres: centralised within regions, decentralised across them",
-                          "Central control with local knowledge",
-                          "More complex to set up and manage"
-                        ]
-                      ],
-                      "type": "table",
-                      "columns": [
+                      "type": "cards",
+                      "cards": [
                         {
-                          "label": "Structure"
+                          "icon": "oneCentre",
+                          "lead": "All of it run from head office",
+                          "text": "Stronger controls, economies of scale, lower costs, and tax advantages for a group operating in several countries. What it gives up is local knowledge: the field offices lose their autonomy, and what they know never reaches the desk deciding.",
+                          "title": "Centralised"
                         },
                         {
-                          "label": "How it works"
+                          "icon": "manyCentres",
+                          "lead": "Each subsidiary runs its own",
+                          "text": "Local staff know the local banking, the regulator, the language and the customs, and they act on that without asking. What it costs is the same work done several times over in several places.",
+                          "title": "Decentralised"
                         },
                         {
-                          "label": "Advantage"
-                        },
-                        {
-                          "label": "Disadvantage"
+                          "icon": "centresInRegions",
+                          "lead": "Regional centres",
+                          "text": "Centralised inside a region and decentralised across them, so the control and the local knowledge sit in the same structure. What it costs is complexity: it is the hardest of the three to set up and to run.",
+                          "title": "Hybrid"
                         }
                       ]
                     },
@@ -16498,37 +16484,23 @@
                           "type": "p"
                         },
                         {
-                          "text": "The matching principle is one line: borrow for as long as you need the thing you are buying. Short-term assets financed short, long-term assets financed long. The reasons sit in the two columns below.",
+                          "text": "The matching principle is one line: borrow for as long as you need the thing you are buying. Short-term assets financed short, long-term assets financed long. Each side has a case for it and a price attached.",
                           "type": "p"
                         },
                         {
-                          "rows": [
-                            [
-                              "Used for",
-                              "Working capital, seasonal needs, temporary shortfalls",
-                              "Capital expenditure, fixed assets"
-                            ],
-                            [
-                              "For it",
-                              "Cheaper, since the yield curve usually slopes up. Flexible, and it matches working capital's rhythm",
-                              "Certainty: funds locked for the term, no refinancing risk, and it matches the asset's life"
-                            ],
-                            [
-                              "Against it",
-                              "Refinancing risk at every maturity, rates may have risen at renewal, and overdrafts are cancellable at will",
-                              "Costs more, early repayment is penalised, and the commitment may outlive the need"
-                            ]
-                          ],
-                          "type": "table",
-                          "columns": [
+                          "type": "cards",
+                          "cards": [
                             {
-                              "label": ""
+                              "icon": "calendar",
+                              "lead": "Working capital, seasonal needs, temporary shortfalls",
+                              "text": "Cheaper, because the yield curve usually slopes up, and flexible enough to follow working capital's rhythm. What you carry is refinancing risk at every maturity, a rate that may have risen by renewal, and an overdraft the bank can cancel at will.",
+                              "title": "Short-term debt"
                             },
                             {
-                              "label": "Short-term debt"
-                            },
-                            {
-                              "label": "Long-term debt"
+                              "icon": "chess",
+                              "lead": "Capital expenditure and fixed assets",
+                              "text": "Funds locked for the term, so there is no refinancing risk and the borrowing lasts as long as the asset does. What you pay for that is a higher rate, a penalty for repaying early, and a commitment that may outlive the need.",
+                              "title": "Long-term debt"
                             }
                           ]
                         },

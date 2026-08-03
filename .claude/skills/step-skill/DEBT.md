@@ -64,7 +64,7 @@ unchecked ones get ticked off by someone assuming the list was audited.
 | D-2 | Emphasis, ownership voice, tap-to-define — every step written before W-8/W-9/E-8 | 2026-08-01 | open · 21/53 (**all of TM**) |
 | D-3 | Possessive budget, sentence length, step splitting, source links — W-10/W-12/S-8/C-7 | 2026-08-01 | open · 21/53 (**all of TM**, S-8 included) |
 | D-4 | Cold opens — W-13, section openings a beginner cannot hold | 2026-08-01 | open · 21/53 read cold; the other 32 machine-clean only |
-| D-5 | Definitional tables that should be `cards` — E-9 | 2026-08-01 | open · 1/37 converted · **blocked on glyphs** |
+| D-5 | Definitional tables that should be `cards` — E-9 | 2026-08-01 | open · **4/37 converted, unblocked 2026-08-03** · TM done bar one deliberate keep |
 | D-6 | Flat nav trees that should carry a folder — S-9 | 2026-08-02 | open · **2/4 courses grouped** (TM + CF done 2026-08-03) |
 | D-7 | Steps that neither pick up nor hand on the thread — C-8 | 2026-08-02 | open · 0/53 checked |
 | D-8 | Prose written past the weakest reader — W-15 | 2026-08-02 | open · 0/53 checked |
@@ -282,11 +282,26 @@ node .claude/skills/step-skill/tools/table-scan.mjs Schools   # CARDS? rows are 
       spectrum is what the section closes on, and return and risk moved into
       each card's own text: the table kept them in separate columns, which is
       what let a reader miss that they move together.
+- [x] treasury-management/treasury-operations/treasury-controls-and-structure
+      §centralisation — 2026-08-03 (oneCentre / manyCentres / centresInRegions,
+      on the how-the-control-is-wired axis). Four columns of prose became three
+      cards; the advantage and disadvantage columns are one sentence each now,
+      which is how the section argues them anyway.
+- [x] treasury-management/debt-and-investment/debt/debt-management §matching —
+      2026-08-03 (calendar / chess, the existing time-horizon axis, no new
+      glyphs). This one was a **comparison matrix**, not a list of kinds: the
+      two things being compared were the *columns* and the rows were the
+      questions asked of each. As two cards each is read whole instead of
+      across. Worth noticing when scanning — `table-scan` cannot tell a matrix
+      from a set, so check which way the table actually runs before converting.
 - [ ] the same section's **financing table** stays a table. Its axis is funding
       maturity, not reserve level, and putting a second card row directly under
       the first would replace two tables with a wall. The contrast is doing work.
-- [ ] the other 35 candidates — listed by the scan above, not enumerated here
-      because the scan is the authoritative list and a copy of it would rot
+      **This is the only CARDS? candidate left in Treasury Management**, and it
+      is a decision rather than an omission.
+- [ ] the other 33 candidates — all in Corporate Finance and Strategic
+      Management. Listed by the scan above, not enumerated here because the scan
+      is the authoritative list and a copy of it would rot.
 
 ~~⚠️ **Blocked, and this is the real constraint** *(2026-08-02)*.~~
 **UNBLOCKED 2026-08-03, and it was never really blocked.** The note below stood
@@ -306,10 +321,23 @@ Freehand battery is the charge itself, so the card's own hue fills the mark in
 proportion, and the empty one draws no tone at all. The distinction is in the
 picture rather than beside it.
 
-**`card-glyphs.tsx` is now 48KB** (was 35KB), still a client component shipped
-to every reader. Its own header says to move the set behind `next/dynamic` once
-it grows "past a handful". Six is that handful. **The seventh glyph is the one
-that should do the `next/dynamic` work first.**
+**A third axis followed the same day: how the control is wired** — `oneCentre`,
+`manyCentres`, `centresInRegions`, three node-and-link diagrams from one family.
+Named for the arrangement rather than the picture, because the next set that
+wants this axis will not be about treasury structure.
+
+**On the size, now measured rather than feared.** `card-glyphs.tsx` went 35KB →
+48KB → **79.7KB raw, 27.3KB gzipped**, at nine glyphs. Its header warned that
+the set ships "to every reader whether their step draws it or not" and to move
+it behind `next/dynamic` past a handful. Half right, and worth stating
+precisely: the paths land in the **reader** chunk, not a global one (the home
+page does not reference it), so the cost is on step pages only, and it is
+**+11KB gzipped for the six glyphs added today**. That was judged worth paying
+against the thing it fixes, which is a real legibility bug on a 390px phone and
+not decoration. It is not free, though, and the ratio gets worse with every
+axis: **the tenth glyph should do the `next/dynamic` split first** — one file
+per glyph, lazily keyed on the name, so a step drawing three cards fetches
+three marks instead of nine.
 
 `seed-course.mjs` used to hold a **retyped copy** of the glyph names with a
 "keep in step with CARD_GLYPHS" comment. Adding three glyphs and not the copy

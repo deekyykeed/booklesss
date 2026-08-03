@@ -150,27 +150,28 @@ export default {
         },
         {
           type: "p",
-          text: "The matching principle is one line: borrow for as long as you need the thing you are buying. Short-term assets financed short, long-term assets financed long. The reasons sit in the two columns below.",
+          text: "The matching principle is one line: borrow for as long as you need the thing you are buying. Short-term assets financed short, long-term assets financed long. Each side has a case for it and a price attached.",
         },
+        /* Was a 3x3 comparison matrix (E-9, D-5). The two kinds being compared
+         * were the columns, not the rows, so as cards each one is read whole
+         * instead of across: what it is for, what it buys, what it costs. The
+         * marks are the time-horizon axis the section is actually about, a
+         * calendar against the long game. */
         {
-          type: "table",
-          columns: [{ label: "" }, { label: "Short-term debt" }, { label: "Long-term debt" }],
-          rows: [
-            [
-              "Used for",
-              "Working capital, seasonal needs, temporary shortfalls",
-              "Capital expenditure, fixed assets",
-            ],
-            [
-              "For it",
-              "Cheaper, since the yield curve usually slopes up. Flexible, and it matches working capital's rhythm",
-              "Certainty: funds locked for the term, no refinancing risk, and it matches the asset's life",
-            ],
-            [
-              "Against it",
-              "Refinancing risk at every maturity, rates may have risen at renewal, and overdrafts are cancellable at will",
-              "Costs more, early repayment is penalised, and the commitment may outlive the need",
-            ],
+          type: "cards",
+          cards: [
+            {
+              icon: "calendar",
+              title: "Short-term debt",
+              lead: "Working capital, seasonal needs, temporary shortfalls",
+              text: "Cheaper, because the yield curve usually slopes up, and flexible enough to follow working capital's rhythm. What you carry is refinancing risk at every maturity, a rate that may have risen by renewal, and an overdraft the bank can cancel at will.",
+            },
+            {
+              icon: "chess",
+              title: "Long-term debt",
+              lead: "Capital expenditure and fixed assets",
+              text: "Funds locked for the term, so there is no refinancing risk and the borrowing lasts as long as the asset does. What you pay for that is a higher rate, a penalty for repaying early, and a commitment that may outlive the need.",
+            },
           ],
         },
         {
