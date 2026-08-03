@@ -125,7 +125,7 @@ Step 1.1 built. Steps 1.2–8.1 (8 steps) still to write with step-skill. Create
 |---------|-------|-----------|--------|-------|-------|
 | WhatsApp Groups | — | — | — | — | See `Operations/groups.md` |
 | Personal status | — | — | — | — | — |
-| Money flyer (print) | `Demand/Booklesss_Money_Flyer.pdf` | — | — | — | QR → booklesss.framer.ai |
+| Social carousels | `Demand/social/posts/<week>/<day>/` | 2026-08-03 | — | — | Five slots a day; DM CTA |
 | Video (to film) | Scripts + cue cards in `Demand/` | — | — | — | Full + short versions ready |
 
 ---

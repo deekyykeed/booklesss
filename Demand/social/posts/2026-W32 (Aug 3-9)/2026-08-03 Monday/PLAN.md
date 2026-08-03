@@ -24,7 +24,7 @@ copy over them.
 | ☀️ Midday | ~11:00 | `2-midday/` | 5 | the row you tap, and the page you land on |
 | 🌤️ Afternoon | ~15:00 | `3-afternoon/` | 4 | one card, three fill levels |
 | 🌆 Evening | ~19:00 | `4-evening/` | 4 | the share control, and the card it makes |
-| 🌙 Night | ~21:30 | `5-night/` | 4 | the logo is the word |
+| 🌙 Night | ~21:30 | `5-night/` | 5 | the logo, as the logo |
 
 **Every shot is the real app, relabelled to a neutral curriculum.** No course
 name, school name or code appears anywhere; the capture scans the exact crop
@@ -125,10 +125,26 @@ enforces it → DM
 
 ---
 
-### 🌙 Night — `5-night/` · The logo is the word
-**Post title:** A mark you have to enlarge is not a mark
+### 🌙 Night — `5-night/` · The logo, as the logo (`POST=brand`)
+**Post title:** New logo. Same three s's.
 
-**Slides:** the tab icon → what we learnt → what it's for → DM
+**Slides:** the announcement → the wordmark → the app icon → why it changed → DM
+
+**The only carousel here not shot from the app.** Its subject is a brand asset,
+so slides 2 and 3 are the shipped files out of `Brand/` — the wordmark and the
+icon, placed on the gradient at 700 and 720px. They can go that big because
+both are generated from the font's own outlines and have no resolution to run
+out of.
+
+Both logo slides **suppress the corner wordmark** (`wordmark: false`, added to
+`object()` today). The mark at 31px in the corner over the same mark at 700px in
+the middle is one word twice on one slide, and it reads as a mistake rather than
+a lockup — the same call `og.tsx` makes on the home card.
+
+**The retired lockup is deliberately not shown.** It only ever existed at
+239×62, so any slide big enough to read it would be a blurry enlargement, and
+that lands as poor craft rather than as the point. The caption carries the
+before; the slides carry the after.
 
 **Caption:**
 > The logo had a glyph this morning. It doesn't now 🛠️
@@ -137,10 +153,17 @@ enforces it → DM
 > straight past it to the word.
 > A mark that has to be enlarged before it's legible isn't doing a mark's job,
 > and at tab size there's nowhere to enlarge it to. So the word is the whole
-> logo now: in the header, on the tab, and on the card a shared link turns into.
-> Every surface saying the same thing beats a clever mark on one of them.
+> logo now — header, tab, app icon, and the card a shared link turns into.
+> It's drawn from the font's own outlines rather than saved as a picture, which
+> means it's sharp at any size, on anything, forever. The old one wasn't: it
+> lived at 239 pixels wide and turned to mush the moment you needed it bigger.
 > DM me "link" and I'll send you the whole thing. 👇
 > #buildinpublic #branding #logodesign #edtech #zambia
+
+> **Supersedes `d-word`**, which held this slot with the same story told from
+> the app's chrome — the favicon tile, shot from a browser. A logo post is
+> better made of the logo than of a screenshot containing it. `d-word` stays in
+> `prog-post.mjs` unrendered, for the reason `searchCTA()` stays.
 
 ---
 
@@ -149,7 +172,9 @@ from a pinned worktree:*
 `git worktree add --detach C:/bkls-shot 07b5255`, `rm -rf platform/.next`,
 `npx next dev -p 3101`, *then:*
 `BASE_URL=http://localhost:3101 node _scripts/cap-0803.mjs`
-*then* `POST=d-tree|d-name|d-cards|d-link|d-word node _scripts/prog-post.mjs`.
+*then* `POST=d-tree|d-name|d-cards|d-link|brand node _scripts/prog-post.mjs`.
+*`brand` needs no capture and no dev server — its images come from `Brand/`,
+copied into `_source/feature-capture/` as `brand-wordmark.png` / `brand-icon.png`.*
 *All default to today's date. No posting connector — upload manually.*
 
 > **Held back.** `g-header.png` — the app header's own lockup — is captured and

@@ -421,9 +421,33 @@ does.
 - **The same wordmark is on the link-preview cards** (`platform/src/lib/og.tsx`,
   same day), so a WhatsApp preview and a carousel slide are recognisably the
   same object. Change one and look at the other.
-- `Brand/` still holds the serif "Booklesss" with the diamond, and ~19 PDF
-  build scripts still draw it. **Two identities are live** until the owner says
-  which one wins — do not propagate the wordmark to the PDFs without asking.
+- **The question of two identities is closed** (owner, 2026-08-03, same day,
+  later): *"no more of this diamond square shape, whatever it is. Take it off."*
+  The serif "Booklesss" and the diamond are gone from disk and out of all 33 PDF
+  build scripts; the grain went with them. `Brand/` now holds only the wordmark
+  and the icon. There is one identity. Nothing needs asking before using it.
+
+### A post about the logo itself
+
+Rare, but it has its own shape — `brand` in `prog-post.mjs` is the reference.
+
+- **Use the shipped files, not a screenshot containing them.** The subject is a
+  brand asset, so the slide is that asset: copy the PNGs out of `Brand/` into
+  `_source/feature-capture/` and place them with `object()`. No dev server and
+  no capture script is involved. This is the one carousel that legitimately has
+  nothing to photograph.
+- **It can go bigger than a component day.** Everything in `Brand/` is drawn
+  from the font's outlines, so 700–720px on a 1080 frame is still vector-sharp.
+  A UI component is a raster and cannot.
+- **Suppress the corner wordmark on any slide whose subject IS the wordmark** —
+  `object({ …, wordmark: false })`. The mark at 31px in the corner over the same
+  mark at 700px in the middle is one word twice, which reads as a mistake rather
+  than a lockup. The icon slide keeps the stamp: a tile is a different object,
+  and the corner mark gives it scale.
+- **Never show a retired asset you can only show badly.** The old lockup existed
+  only at 239×62, so a slide big enough to read it would be a blurry
+  enlargement — which lands as poor craft, not as the argument being made. The
+  caption carries the before; the slides carry the after.
 
 ## House style
 

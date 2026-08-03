@@ -222,7 +222,8 @@ const plain = (o) => ({ bg: "plain", img: o.img, html: "" });
  */
 const object = (o) => ({
   bg: "object",
-  wordmark: true,
+  // `false` only when the component IS the logo — see the dressing note below.
+  wordmark: o.wordmark !== false,
   html: `<div class="stage"><img class="obj${o.flat ? " flat" : ""}" src="${o.img}" style="width:${o.w}px"></div>`,
 });
 
@@ -873,6 +874,55 @@ const CONFIGS = {
       dmCTA(),
     ],
   }),
+
+  /* THE LOGO ITSELF — the one post whose subject is not the app.
+   *
+   * The serif "Booklesss" and its diamond were retired on 3 Aug and the logo
+   * became the word. That is a real, visible change and worth a post, but it
+   * needs handling differently from a feature day: there is nothing to
+   * screenshot, because the subject is a brand asset rather than a screen.
+   *
+   * So the components here come straight out of `Brand/` — the wordmark and
+   * the app icon, the actual shipped files, not a re-drawing of them. Both are
+   * generated from the font's own outlines, so at 720px on a 1080 frame they
+   * are still vector-sharp; this is the one carousel that can afford to go
+   * that big.
+   *
+   * The two logo slides suppress the corner wordmark. The mark at 31px in the
+   * corner over the same mark at 720px in the middle is the same word twice on
+   * one slide, which reads as a mistake. The icon slide keeps it — that one is
+   * a tile, a different object, and the corner mark gives it scale.
+   *
+   * The old lockup is deliberately NOT shown. It only ever existed at 239x62,
+   * so any slide big enough to read it would be a blurry enlargement — which
+   * would land as poor craft rather than as the point being made. The caption
+   * carries the before; the slides carry the after.
+   *
+   * SUPERSEDES `d-word`, which held 5-night with the same story told from the
+   * app's chrome — the favicon tile, shot from a browser. This one shows the
+   * shipped brand files themselves, at a size the app can never give them, and
+   * a logo post is better made of the logo than of a screenshot containing it.
+   * `d-word` is kept below, unrendered, for the reason `searchCTA()` is kept. */
+  brand: () => ({
+    slot: "5-night",
+    slides: [
+      cover({
+        eyebrow: "Building in public",
+        title: "New logo.<br>Same three s&rsquo;s.",
+        sub: "The mark is gone. The logo is the word now &mdash; and it&rsquo;s sharp at any size.",
+      }),
+      object({ img: img("brand-wordmark.png"), w: 700, flat: true, wordmark: false }),
+      object({ img: img("brand-icon.png"), w: 720 }),
+      cover({
+        eyebrow: "Why it changed",
+        title: "A logo you<br>can&rsquo;t read<br>isn&rsquo;t a logo.",
+        sub: "The old mark was a speck at the size anyone actually saw it. So it went.",
+        size: 92,
+        subTop: 1080,
+      }),
+      dmCTA(),
+    ],
+  }),
 };
 
 const cfg = CONFIGS[POST]?.();
@@ -899,9 +949,19 @@ for (let i = 0; i < cfg.slides.length; i++) {
    * texture. An object slide keeps the wordmark, because its background is ours
    * rather than the app's, but still refuses the grain: the grain layer sits
    * above the stage and would fall across the component itself. The CTA keeps
-   * both. */
+   * both.
+   *
+   * A slide may opt out of the corner wordmark with `wordmark: false`. The one
+   * case is a slide whose SUBJECT is the logo: the mark 31px in the corner and
+   * the same mark 700px in the middle is one word twice, which reads as a
+   * mistake rather than as a lockup. Same call `og.tsx` makes on the home
+   * card. */
   const dressing =
-    s.bg === "plain" ? "" : s.bg === "object" ? wordmark : `${wordmark}<div class="grain"></div>`;
+    s.bg === "plain" || s.wordmark === false
+      ? ""
+      : s.bg === "object"
+        ? wordmark
+        : `${wordmark}<div class="grain"></div>`;
   const html = `<!doctype html><html><head><meta charset="utf-8"><style>${CSS}</style></head><body>${base}${s.html}${dressing}</body></html>`;
   await page.setContent(html, { waitUntil: "load" });
   await page.evaluate(() => document.fonts.ready);

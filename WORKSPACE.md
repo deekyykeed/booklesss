@@ -31,9 +31,8 @@ Booklesss/
 │
 ├── Demand/                ← marketing & demand-side content (see below)
 │   ├── social/            ← ★ daily social carousels — the posting command centre
-│   ├── carousels/         ← ReportLab PDF carousels (a different, older pipeline)
-│   ├── sources/           ← build scripts for the pitch/flyer PDFs
-│   └── *.pdf              ← pitch decks, flyers, video-script PDFs
+│   ├── sources/           ← build scripts for the pitch/video-script PDFs
+│   └── *.pdf              ← pitch decks, video-script PDFs
 │
 ├── Operations/            ← running the business: pricing, leads, revenue, checklist
 │   ├── sources/           ← build scripts for the ops PDFs (revenue model, roles)
