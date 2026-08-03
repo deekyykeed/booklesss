@@ -1761,3 +1761,39 @@
 /* The onboarding sheet's CSS lived here until 2026-08-03, when the custom
    sheet was retired for Clerk's own modal ("use clerk stuff") — its styling
    now comes from lib/clerk-appearance.ts. */
+
+/* ------------------------------------------------------------------ *
+ * Two Clerk colours that lib/clerk-appearance.ts CANNOT set, measured
+ * 2026-08-03 (owner: "the text boxes are barely visible when unfocused …
+ * the sign in with google button is also too white").
+ *
+ * Both are edges Clerk draws as a BOX-SHADOW RING rather than a border, and
+ * its own rule beats the appearance object: setting `border` there leaves
+ * `border-width: 0px`, and setting `boxShadow` there was measured still
+ * rendering Clerk's own `#dfdfdf` at 0.11 alpha — a ring you cannot see on
+ * white. `colorRing` can't fix it either; that variable is rendered at 15%
+ * opacity by design.
+ *
+ * `!important` is load-bearing and measured too: Clerk injects its own
+ * stylesheet AFTER this one, so a plain class selector ties on specificity
+ * and loses on order — the ring measured unchanged without it.
+ *
+ * EVERYTHING ELSE STAYS IN clerk-appearance.ts — this is the exception for
+ * properties that file demonstrably cannot reach, not a second home for
+ * Clerk styling.
+ * ------------------------------------------------------------------ */
+.cl-formFieldInput {
+  box-shadow: 0 0 0 1px #b0b0b0 !important;
+}
+.cl-formFieldInput:focus,
+.cl-formFieldInput:focus-visible {
+  box-shadow: 0 0 0 1px #171717 !important;
+}
+/* A tint, so the button is not white-on-white. */
+.cl-socialButtonsBlockButton {
+  background-color: #f2f2f1 !important;
+  box-shadow: 0 0 0 1px #cfcfcf !important;
+}
+.cl-socialButtonsBlockButton:hover {
+  background-color: #ebebe9 !important;
+}

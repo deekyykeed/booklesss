@@ -17,7 +17,7 @@ import { GetAppCard, LandingAuth, ToApp } from "@/components/landing/landing-bit
  * THE LOOK IS A REFERENCE, SUPPLIED BY THE OWNER (2026-08-03, four phone
  * screenshots of Claude's own mobile login page: "I would like my whole
  * homepage to literally look like this, as simple as could be"). One narrow
- * column on a warm ground: wordmark header, a big display headline, a "Get
+ * column, in the APP'S own colours: wordmark header, a big display headline, a "Get
  * the app" card, the auth card (Google / OR / email), a "Meet Booklesss"
  * section, then feature sections over hairlines, each with a screenshot in a
  * warm panel. Per the design system's rule on references, the reference is
@@ -44,11 +44,12 @@ export const metadata: Metadata = {
   openGraph: openGraph({ title: SITE_NAME, description: SITE_DESCRIPTION, path: "/" }),
 };
 
-/* The reference's ground: a warm cream, flat — the poster gradient stayed on
- * the OG card and the socials, where it came from. */
-const BG = "#FAF9F5";
-const PANEL = "#F0EEE6";
-const RULE = "rgba(30,30,29,0.10)";
+/* THE APP'S OWN GROUND, not the reference's cream (owner, 2026-08-03: "use
+ * my app default coloring styles for the website — that warm color should
+ * go"). The layout stays the reference's; the colours are the app's tokens:
+ * canvas grey, white cards, the app's hairline. */
+const PANEL = "#ececeb";
+const RULE = "var(--color-line)";
 
 const SHOTS = {
   reader: { src: "/landing/reader.png", w: 1206, h: 2622 },
@@ -90,7 +91,7 @@ function Feature({
           width={s.w}
           height={s.h}
           sizes="(max-width: 640px) 90vw, 480px"
-          className="h-full w-full rounded-t-[14px] border border-black/5 object-cover object-top shadow-[0_2px_12px_rgba(60,50,30,0.10)]"
+          className="h-full w-full rounded-t-[14px] border border-black/5 object-cover object-top shadow-[0_2px_12px_rgba(0,0,0,0.10)]"
         />
       </div>
     </section>
@@ -99,7 +100,7 @@ function Feature({
 
 export default function LandingPage() {
   return (
-    <div className="min-h-dvh" style={{ backgroundColor: BG }}>
+    <div className="min-h-dvh bg-canvas">
       <ToApp />
 
       {/* The wordmark, and nothing beside it. The page's actions live in the

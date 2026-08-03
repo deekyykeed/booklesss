@@ -44,7 +44,7 @@ export function GetAppCard() {
   if (!canInstall && !showIosHelp) return null;
 
   return (
-    <section className="rounded-[28px] bg-white p-6 shadow-[0_20px_40px_-15px_rgba(60,50,30,0.08)]">
+    <section className="rounded-[28px] bg-white p-6 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.08)]">
       <div className="flex items-center gap-4">
         {/* The PWA's own tile — the wordmark on black, served from the app
             icon route, so the card shows exactly what lands on their home
