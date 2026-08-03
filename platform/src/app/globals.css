@@ -1749,14 +1749,11 @@
   font-weight: 500;
   color: var(--color-muted);
 }
-.desktop-gate-pass {
+/* Replaced .desktop-gate-pass, which underlined itself like a link because it
+   was one — a way out of the gate. There is no way out now (2026-08-03), so
+   this is a plain note: same position, no affordance. */
+.desktop-gate-note {
   margin-top: 28px;
   font-size: 13px;
   color: var(--color-muted);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: color 0.15s ease;
-}
-.desktop-gate-pass:hover {
-  color: var(--color-ink);
 }

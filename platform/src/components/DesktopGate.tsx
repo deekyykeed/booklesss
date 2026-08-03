@@ -4,28 +4,50 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SITE_HOST } from "@/lib/site";
 
-/* Booklesss is a phone app. This is what a desktop visitor gets instead.
+/* Booklesss is a phone app. Anything that isn't a phone gets this instead.
  *
- * The reader is built to be installed to a home screen and read on the way to
- * class — that's the product, and a laptop isn't where it happens. Rather than
- * maintain a desktop experience nobody uses, wide viewports get pointed at
- * their phone.
+ * HARDENED 2026-08-03 on the owner's call. It used to block above 1024px and
+ * offer a "Continue on this computer" button that was remembered forever. Both
+ * were too soft:
  *
- * There is a way past it, deliberately. A hard block would be wrong twice
- * over: the owner writes and checks content on a desktop, and a student on a
- * campus lab machine with no phone to hand is still a student who wants to
- * read. So the escape is a plain link, it's remembered, and it doesn't nag
- * again on that machine.
+ *   - 1024 lets EVERY TABLET through. An iPad is 768 portrait and 1024
+ *     landscape, so the one class of device the gate most needed to catch
+ *     walked straight past it.
+ *   - The escape button meant anyone could opt into a layout that, in the
+ *     owner's words, "will not look good and it will look very scrappy". While
+ *     the app is still being built there is nothing on the other side of that
+ *     button worth showing.
  *
- * Only the width is tested, not the user agent. UA sniffing is a losing game —
- * tablets, desktop-mode browsers and Windows touch laptops all lie — and the
- * honest question here is "is this a small screen being held in a hand",
- * which is what the media query answers. An installed PWA is let through on
- * any size: if they took the trouble to install it, they've understood the
- * pitch. */
+ * SO THE TEST IS NOW THE SHORTER SIDE OF THE VIEWPORT, not the width.
+ * `(min-width: N) and (min-height: N)` is true only when BOTH dimensions
+ * exceed N, which is the same as saying the shorter side does. That one
+ * expression gets the orientation problem right for free:
+ *
+ *   phone portrait    430 x 932   -> height passes, let in
+ *   phone landscape   932 x 430   -> height passes, let in  (rotating is fine)
+ *   iPad portrait     768 x 1024  -> both exceed, blocked
+ *   iPad landscape    1024 x 768  -> both exceed, blocked
+ *
+ * Testing width alone cannot do this: any threshold low enough to catch an
+ * iPad portrait also catches a phone held sideways.
+ *
+ * Still no user-agent sniffing. Tablets, desktop-mode browsers and Windows
+ * touch laptops all lie about what they are; the viewport does not.
+ *
+ * THE WAY THROUGH IS NO LONGER A BUTTON. The owner writes and checks content
+ * on a desktop, so an escape has to exist — but it is now a URL nobody
+ * stumbles onto (`?desktop=1`), not a control offered to every visitor. */
 
-const PASSED = "booklesss-desktop-pass";
-const MOBILE_MAX = 1024;
+/* Deliberately a new key: anyone who pressed the old "Continue" button had
+ * their pass stored under the previous name, and those passes should not
+ * survive a decision to stop letting people through. */
+const PASSED = "booklesss-desktop-pass-2";
+/** Grants the pass on this device. Not linked from anywhere; for the owner. */
+const PASS_PARAM = "desktop";
+
+/** Largest shorter-side, in px, still treated as a phone. A large foldable
+ *  opened flat is the only real device this turns away. */
+const PHONE_MAX_SHORT_SIDE = 600;
 
 /** The design scratchpads are desktop surfaces on purpose: /workspace replicates
  *  a wide project nav, and /settings is the reference settings dialog at its own
@@ -40,17 +62,26 @@ export function DesktopGate() {
 
   useEffect(() => {
     if (skip) return;
+
+    // `?desktop=1` grants the pass and stores it, so the owner does it once
+    // per machine rather than on every navigation.
+    if (new URLSearchParams(window.location.search).get(PASS_PARAM) === "1") {
+      localStorage.setItem(PASSED, "1");
+      return;
+    }
     if (localStorage.getItem(PASSED) === "1") return;
 
-    const installed =
-      window.matchMedia("(display-mode: standalone)").matches ||
-      (navigator as Navigator & { standalone?: boolean }).standalone === true;
-    if (installed) return;
-
-    const mq = window.matchMedia(`(min-width: ${MOBILE_MAX + 1}px)`);
+    /* Both dimensions over the limit means the SHORTER side is over it, which
+       is the only orientation-proof way to ask "is this a phone". A desktop-
+       installed PWA is caught by this too, and should be: installing it
+       doesn't make a 1400px window look any better. */
+    const mq = window.matchMedia(
+      `(min-width: ${PHONE_MAX_SHORT_SIDE + 1}px) and (min-height: ${PHONE_MAX_SHORT_SIDE + 1}px)`,
+    );
     const apply = () => setShow(mq.matches);
     apply();
-    // Someone resizing a window down to phone width should be let straight in.
+    // Someone resizing a window down to phone size should be let straight in,
+    // and rotating a phone should never trip it.
     mq.addEventListener("change", apply);
     return () => mq.removeEventListener("change", apply);
     // `skip` is in here so navigating from a scratchpad back into the app
@@ -58,11 +89,6 @@ export function DesktopGate() {
   }, [skip]);
 
   if (skip || !show) return null;
-
-  const pass = () => {
-    localStorage.setItem(PASSED, "1");
-    setShow(false);
-  };
 
   return (
     <div className="desktop-gate">
@@ -86,9 +112,10 @@ export function DesktopGate() {
 
         <p className="desktop-gate-url">{SITE_HOST}</p>
 
-        <button type="button" onClick={pass} className="desktop-gate-pass">
-          Continue on this computer
-        </button>
+        {/* Where "Continue on this computer" used to be. It is a statement
+            now rather than a control: there is no bigger-screen layout to
+            continue to, and offering the choice implied there was. */}
+        <p className="desktop-gate-note">Phones only for now, while we build.</p>
       </div>
     </div>
   );
