@@ -54,11 +54,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
   const slug = [...raw.slice(0, -1), (raw[raw.length - 1] ?? "").replace(/\.png$/, "")];
 
   if (slug.length === 1 && slug[0] === OG_HOME_SLUG) {
-    return shareCard({
-      title: SITE_NAME,
-      subtitle: SITE_DESCRIPTION,
-      meta: `${COURSES.length} courses`,
-    });
+    return shareCard({ title: SITE_NAME, subtitle: SITE_DESCRIPTION });
   }
 
   /* A step is tried before a course because it is the more specific match: a
@@ -73,12 +69,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
 
   const course = slug.length === 1 ? courseBySlug(slug[0]) : undefined;
   if (course) {
-    const steps = course.lessonIds.length;
-    return shareCard({
-      title: course.title,
-      subtitle: shareText(course.subtitle, 96),
-      meta: `${steps} step${steps === 1 ? "" : "s"}`,
-    });
+    return shareCard({ title: course.title, subtitle: shareText(course.subtitle, 96) });
   }
 
   // Unreachable with dynamicParams = false; here so the handler has one exit

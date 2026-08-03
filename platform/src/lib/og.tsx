@@ -122,14 +122,11 @@ export async function shareCard({
   eyebrow,
   title,
   subtitle,
-  meta,
 }: {
   /** Small caps line above the title: the course a step belongs to. */
   eyebrow?: string;
   title: string;
   subtitle: string;
-  /** Bottom-right counter — "12 steps". Optional. */
-  meta?: string;
 }) {
   const fonts = await faces();
 
@@ -157,7 +154,15 @@ export async function shareCard({
             there the 92px title is doing the logo's job anyway. An empty span
             rather than nothing, so `space-between` still has three children to
             distribute and the title does not jump to the top of the card. */}
-        <span style={{ fontSize: 40, fontWeight: 700, color: INK, letterSpacing: -1 }}>
+        <span
+          style={{
+            fontFamily: "Display",
+            fontSize: 44,
+            fontWeight: 700,
+            color: INK,
+            letterSpacing: -1.4,
+          }}
+        >
           {title === SITE_NAME ? "" : WORDMARK}
         </span>
 
@@ -204,12 +209,15 @@ export async function shareCard({
           </span>
         </div>
 
-        {/* Footer — no rule above it. A hairline is the kind of furniture the
-            un-boxed house style spends its budget avoiding, and at this size
-            the gap already separates it. */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        {/* Footer — the host, and nothing else.
+         *
+         * The step / course counter that used to sit on the right came off on
+         * 2026-08-03 (owner's call). It was the only number on the card and it
+         * aged badly: a count is true on the day the card is built and a course
+         * grows, so a cached preview would go on claiming "21 steps" long after
+         * there were more. The host is the one line that cannot go stale. */}
+        <div style={{ display: "flex", alignItems: "center" }}>
           <span style={{ fontSize: 26, fontWeight: 700, color: INK }}>{SITE_HOST}</span>
-          {meta ? <span style={{ fontSize: 26, fontWeight: 500, color: MUTED }}>{meta}</span> : null}
         </div>
       </div>
     ),
