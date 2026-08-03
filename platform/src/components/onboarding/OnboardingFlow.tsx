@@ -138,7 +138,7 @@ export function OnboardingFlow() {
         {step === "school" && (
           <Card
             title="Where do you study?"
-            why="So we can put the right courses in front of you. Not on the list? Tell us — that's how we pick the next campus to build for."
+            why="So we show you the right courses."
           >
             {/* TICK AND GO (owner, 2026-08-03: "I just tick a university and I
                 get taken to a new question"). One tap is the whole answer, so
@@ -189,7 +189,7 @@ export function OnboardingFlow() {
         {step === "courses" && (
           <Card
             title="Which courses are you taking?"
-            why="Your dashboard, your streak and your coverage all count these. You can change them any time."
+            why="Your dashboard counts only these."
           >
             <CoursePicker
               offered={offered}
@@ -231,7 +231,7 @@ export function OnboardingFlow() {
         {step === "target" && (
           <Card
             title="How much studying are you aiming for?"
-            why="This is the only number your dashboard scores you against — so answer it honestly, not hopefully."
+            why="The only number we score you against."
           >
             <Choices
               label="Days a week"
@@ -269,58 +269,73 @@ export function OnboardingFlow() {
 }
 
 /**
- * Progress as a line of nodes, one per question, each ticked once answered
- * (owner, 2026-08-03: "use a horizontal line with check marks for form
- * progress — pick a better colour for it too").
+ * Progress as a labelled line of nodes — the owner's reference (2026-08-03):
+ * a name over each step, a filled tick behind you, a ring where you are, an
+ * empty node ahead, and the connector filled only as far as you have got.
+ *
+ * THE LABELS ARE WHAT MAKE THE TICKS MEAN ANYTHING. Without them this is
+ * three dots, and "I don't see the checkmarks" is the fair reading of three
+ * dots — nothing names what was completed. With SCHOOL / COURSES / PLAN over
+ * them, a tick is visibly a question answered.
+ *
+ * NOTE THE FIRST SCREEN HAS NO TICK, and should not: nothing is finished when
+ * you arrive. The reference behaves the same way — its own first row is one
+ * ring and two empty nodes.
  *
  * GREEN, AND NOT AS A PREFERENCE. Green is what completion means everywhere
  * else in this app — the coverage tile, the checkpoint ticks, the course-card
  * rings — so a ticked step in any other colour would be the one green thing
  * that isn't progress. `--color-brand-deep` rather than the brighter
  * `--color-brand`, because this sits on a near-white frosted surface where
- * the light green fails contrast.
- *
- * The connector fills only up to the step you have finished, so the line is
- * itself a bar: it says how far along you are before you have read a word of
- * it. The current node is ringed rather than filled, because a filled circle
- * on the step you are still answering claims it is done.
+ * the light green fails contrast. (The reference is blue; blue in this app is
+ * already the Time tile.)
  */
+const STEP_LABELS: Record<Step, string> = {
+  school: "School",
+  courses: "Courses",
+  target: "Plan",
+};
+
 function Stepper({ index }: { index: number }) {
+  const GREEN = "var(--color-brand-deep)";
   return (
-    <ol className="flex items-center" aria-label={`Step ${index + 1} of ${ORDER.length}`}>
+    <ol className="flex items-start" aria-label={`Step ${index + 1} of ${ORDER.length}`}>
       {ORDER.map((s, i) => {
         const done = i < index;
         const now = i === index;
+        const lit = done || now;
         return (
-          <li key={s} className={"flex items-center " + (i === 0 ? "" : "flex-1")}>
-            {/* The connector, before every node but the first. Filled when the
-                step behind it is answered. */}
+          <li
+            key={s}
+            className={"flex min-w-0 items-start " + (i === 0 ? "shrink-0" : "flex-1")}
+          >
+            {/* The connector sits at the nodes' centre line, so it has to be
+                nudged down past the label above them. */}
             {i > 0 && (
               <span
                 aria-hidden="true"
-                className="mx-1.5 h-[2px] flex-1 rounded-full transition-colors duration-500"
-                style={{ backgroundColor: done || now ? "var(--color-brand-deep)" : "var(--color-line)" }}
+                className="mt-[28px] h-[2px] flex-1 rounded-full transition-colors duration-500"
+                style={{ backgroundColor: lit ? GREEN : "var(--color-line)" }}
               />
             )}
-            <span
-              aria-current={now ? "step" : undefined}
-              className="grid h-6 w-6 shrink-0 place-items-center rounded-full transition-colors duration-300"
-              style={{
-                backgroundColor: done ? "var(--color-brand-deep)" : "transparent",
-                boxShadow: done
-                  ? "none"
-                  : `inset 0 0 0 2px ${now ? "var(--color-brand-deep)" : "var(--color-line)"}`,
-              }}
-            >
-              {done ? (
-                <MynaIcon name="check" size={14} className="text-white" strokeWidth={3} />
-              ) : (
-                <span
-                  className="h-1.5 w-1.5 rounded-full"
-                  style={{ backgroundColor: now ? "var(--color-brand-deep)" : "transparent" }}
-                />
-              )}
-            </span>
+            <div className="flex flex-col items-center gap-1.5 px-1.5">
+              <span
+                className="text-[10px] font-semibold uppercase tracking-[0.07em] transition-colors duration-300"
+                style={{ color: lit ? GREEN : "var(--color-placeholder)" }}
+              >
+                {STEP_LABELS[s]}
+              </span>
+              <span
+                aria-current={now ? "step" : undefined}
+                className="grid h-5 w-5 shrink-0 place-items-center rounded-full transition-colors duration-300"
+                style={{
+                  backgroundColor: done ? GREEN : "#ffffff",
+                  boxShadow: done ? "none" : `inset 0 0 0 2px ${now ? GREEN : "var(--color-line)"}`,
+                }}
+              >
+                {done && <MynaIcon name="check" size={11} strokeWidth={3.5} className="text-white" />}
+              </span>
+            </div>
           </li>
         );
       })}
@@ -344,11 +359,11 @@ function Stepper({ index }: { index: number }) {
 function Card({ title, why, children }: { title: string; why: string; children: React.ReactNode }) {
   return (
     <section>
-      <h1 className="font-display text-[30px] font-bold leading-[1.1] tracking-[-0.02em] text-ink">
+      <h1 className="font-display text-[23px] font-bold leading-[1.15] tracking-[-0.02em] text-ink">
         {title}
       </h1>
-      <p className="mt-2 text-[15px] leading-6 text-muted">{why}</p>
-      <div className="mt-6">{children}</div>
+      <p className="mt-1.5 text-[13.5px] leading-5 text-muted">{why}</p>
+      <div className="mt-5">{children}</div>
     </section>
   );
 }

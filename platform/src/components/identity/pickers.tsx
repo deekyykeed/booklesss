@@ -3,6 +3,7 @@
 import { MynaIcon } from "@/components/icons/myna";
 import type { CourseMeta } from "@/lib/courses";
 import { OTHER_SCHOOL, SCHOOLS, searchSchools, type SchoolChoice } from "@/lib/schools";
+import { SCHOOL_CRESTS } from "./school-crests";
 
 /* The two things this app still asks a student — which university, which
  * courses — as the lists that ask them.
@@ -47,27 +48,36 @@ const ROW =
 const rowTone = (on: boolean) =>
   ROW + (on ? "border-ink bg-active" : "border-line bg-white hover:bg-active");
 
-/** The tighter row the school list uses: one line, less height, so three
- *  universities read as a list rather than as three cards (owner, 2026-08-03:
- *  "simple list not taking up too much space"). */
+/** NO BOX (owner, 2026-08-03: "remove the containers around the options,
+ *  that's what I'm saying looks ugly"). A bordered card per option, three deep,
+ *  was the heaviest thing on a page whose whole job is to ask one short
+ *  question — and the row is already legible without one, because the tick and
+ *  the crest mark it. Selection shows in the tick and the weight of the name,
+ *  not in a frame drawn round it. */
 const SCHOOL_ROW =
-  "squircle flex items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors ";
-const schoolTone = (on: boolean) =>
-  SCHOOL_ROW + (on ? "border-ink bg-active" : "border-line bg-white hover:bg-active");
+  "flex w-full items-center gap-3 rounded-xl px-1 py-2.5 text-left transition-colors ";
+const schoolTone = (on: boolean) => SCHOOL_ROW + (on ? "" : "hover:bg-active/60");
 
 /**
- * A school's mark: its first letter on a disc in its own tint.
+ * A school's mark: its own crest where we have one, else a monogram disc.
  *
- * Deliberately not a crest — see the `tone` field in lib/schools for why a
- * real university logo is the one image this app must not draw. One letter
- * reads at 28px where two do not, and the tint is what actually tells the
- * rows apart at a glance.
+ * The crests are real, inlined at build (see ./school-crests). A student
+ * scanning for their university recognises the shield long before they read
+ * "ZCAS" — which is the entire reason this row has a mark at all.
+ *
+ * The monogram survives as the fallback for any school added later whose logo
+ * has not been fetched yet, so a new row is never blank.
  */
-function SchoolMark({ letter, tone }: { letter: string; tone: string }) {
+function SchoolMark({ id, letter, tone }: { id?: string; letter: string; tone: string }) {
+  const crest = id ? SCHOOL_CRESTS[id] : undefined;
+  if (crest) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={crest} alt="" aria-hidden="true" className="h-8 w-8 shrink-0 object-contain" />;
+  }
   return (
     <span
       aria-hidden="true"
-      className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-[13px] font-semibold text-white"
+      className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-[13px] font-semibold text-white"
       style={{ backgroundColor: tone }}
     >
       {letter}
@@ -170,9 +180,11 @@ export function SchoolPicker({
                "UNZA" is to somebody who doesn't know. */
             <button key={s.id} type="button" onClick={() => onPick(s.id)} aria-pressed={on} className={schoolTone(on)}>
               <Tick on={on} />
-              <SchoolMark letter={s.name.slice(0, 1)} tone={s.tone} />
+              <SchoolMark id={s.id} letter={s.name.slice(0, 1)} tone={s.tone} />
               <span className="min-w-0 flex-1 truncate">
-                <span className="text-[15px] font-medium leading-tight text-ink">{s.name}</span>
+                <span className={"text-[15px] leading-tight text-ink " + (on ? "font-semibold" : "font-medium")}>
+                  {s.name}
+                </span>
                 <span className="ml-2 text-[13px] leading-5 text-muted">{s.full}</span>
               </span>
             </button>
