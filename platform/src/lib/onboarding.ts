@@ -3,71 +3,71 @@
 import { useSyncExternalStore } from "react";
 
 /* ------------------------------------------------------------------ *
- * Whether the onboarding sheet is open, and what asked for it.
+ * Ask for an account — by opening CLERK'S OWN modal.
  *
- * A module store rather than context, for the same reason `progress` and
- * `identity` are: the thing that needs to open this is a checkpoint button
- * halfway down a step or a "next step" link in the footer, and neither wants
- * a provider threaded to it. Any component calls `requireAccount()` and the
- * sheet appears.
+ * The custom sheet and AuthForm this store used to drive are gone (owner,
+ * 2026-08-03: "use clerk stuff just remove the logo") — Clerk's prebuilt
+ * sign-up/sign-in card, opened as a modal, is the one auth surface. The logo
+ * slot is hidden in lib/clerk-appearance so the card wears no logo at all.
  *
- * `reason` is what the sheet says at the top. A student who tapped a
- * checkpoint and one who hit the end of a step are being interrupted for
- * different purposes, and a sheet that explains itself is one they will finish.
+ * The store outlives the sheet it was built for, because its reason does:
+ * the things that ask are a checkpoint button halfway down a step and the
+ * next-step gate in lib/account — plain handlers with no ClerkProvider above
+ * them, on builds that may have no Clerk keys at all. So `requireAccount()`
+ * stays the one call every gate makes, and exactly one component inside the
+ * provider (components/auth/ClerkGate) consumes the ask and opens the modal.
  *
- * `after` is where to go once they're in — the next step, usually. Held here
- * rather than passed through the sheet's props because the caller is gone by
- * the time the sheet resolves.
+ * `reason` no longer chooses the words on the card — Clerk's card says
+ * Clerk's words — but the call sites still know why they asked, and keeping
+ * the reason in the ask is what lets any later surface (a toast, analytics,
+ * a reopened sheet) say it again without re-plumbing every gate.
  * ------------------------------------------------------------------ */
 
 export type OnboardingReason = "checkpoint" | "note" | "comment" | "next-step" | "manual";
 
-/** Which form the sheet opens on. It can be flipped from inside either way —
+/** Which card the modal opens on. It can be flipped from inside either way —
  *  this is only the opening state, so a "Sign in" button opens onto sign-in
  *  rather than making an existing student find the toggle. */
 export type OnboardingMode = "sign-up" | "sign-in";
 
-type State = { open: boolean; reason: OnboardingReason; after: string | null; mode: OnboardingMode };
+/** One ask. `seq` makes every call distinct, so asking again after the reader
+ *  closed the modal reopens it — equality on the rest of the fields must not
+ *  swallow the second tap. */
+export type AccountAsk = {
+  seq: number;
+  reason: OnboardingReason;
+  /** Where to land once the session is live; null means stay on this page. */
+  after: string | null;
+  mode: OnboardingMode;
+  /** An email the reader already typed (the landing card asks for one), so
+   *  the modal opens with it filled in rather than asking twice. */
+  email: string | null;
+};
 
-let state: State = { open: false, reason: "manual", after: null, mode: "sign-up" };
+const IDLE: AccountAsk = { seq: 0, reason: "manual", after: null, mode: "sign-up", email: null };
+let ask: AccountAsk = IDLE;
 const listeners = new Set<() => void>();
 
-function set(next: State) {
-  state = next;
-  for (const l of listeners) l();
-}
-
-/** Open the sheet. Call this instead of navigating to /sign-up or /sign-in —
- *  and instead of Clerk's own modal, which wears Clerk's branding and the
- *  dashboard's logo rather than this app's. */
+/** Ask for an account. Call this instead of navigating to /sign-up or
+ *  /sign-in — the modal opens over whatever the reader was doing, which is
+ *  the whole point: nobody loses their place as a reward for signing up. */
 export function requireAccount(
   reason: OnboardingReason = "manual",
   after: string | null = null,
   mode: OnboardingMode = "sign-up",
-) {
-  set({ open: true, reason, after, mode });
-}
-
-export function closeOnboarding() {
-  set({ ...state, open: false });
-}
-
-/** The sheet's own toggle — "Already have an account?" / "New here?". Lives in
- *  the store with the rest of the sheet's state so opening it needs no effect
- *  to reset a local copy. */
-export function setOnboardingMode(mode: OnboardingMode) {
-  set({ ...state, mode });
+  email: string | null = null,
+): void {
+  ask = { seq: ask.seq + 1, reason, after, mode, email };
+  for (const l of listeners) l();
 }
 
 const subscribe = (l: () => void) => {
   listeners.add(l);
   return () => listeners.delete(l);
 };
-const snapshot = () => state;
-/* The server has no sheet open, and this object is stable, so the server
- * snapshot can be a constant — returning a fresh object here would loop. */
-const SERVER: State = { open: false, reason: "manual", after: null, mode: "sign-up" };
+const snapshot = () => ask;
 
-export function useOnboarding(): State {
-  return useSyncExternalStore(subscribe, snapshot, () => SERVER);
+/** ClerkGate's feed. Nothing else should need this. */
+export function useAccountAsk(): AccountAsk {
+  return useSyncExternalStore(subscribe, snapshot, () => IDLE);
 }

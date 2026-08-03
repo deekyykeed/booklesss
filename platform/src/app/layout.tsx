@@ -8,7 +8,7 @@ import { RegisterSW } from "@/components/RegisterSW";
 import { DesktopGate } from "@/components/DesktopGate";
 import { IdentityAssignment } from "@/components/identity/IdentityAssignment";
 import { AccountSignal } from "@/components/auth/AccountSignal";
-import { Onboarding } from "@/components/onboarding/Onboarding";
+import { ClerkGate } from "@/components/auth/ClerkGate";
 import { SettingsSheet } from "@/components/identity/SettingsSheet";
 import { openGraph, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
@@ -152,13 +152,6 @@ export default function RootLayout({
             nobody is asked. Mounted here rather than per-layout so a route
             added later can't quietly land a reader with no identity. */}
         <IdentityAssignment />
-        {/* Opened on demand by requireAccount() — a checkpoint answer, or the
-            gate on moving to the next step. Mounted here rather than in the
-            reader layout because the dashboard and course pages need it too,
-            and because a sheet that unmounts on navigation loses whatever the
-            student had typed into it. Renders nothing until asked for, and
-            nothing at all without Clerk keys. */}
-        <Onboarding />
         <SettingsSheet />
         {/* Booklesss is a phone app — a wide viewport gets sent to its phone.
             Mounted at the root for the same reason as the identity assignment. */}
@@ -179,8 +172,12 @@ export default function RootLayout({
       {/* Publishes "is anybody signed in" to lib/account, so the checkpoint row
           and the next-step link can gate on it without importing Clerk — they
           render on builds with no provider, where its hooks throw. Inside the
-          provider branch on purpose: it is the one component that needs it. */}
+          provider branch on purpose: these are the only components that touch
+          Clerk. ClerkGate turns every requireAccount() ask — a checkpoint
+          answer, the next-step gate, the landing card — into Clerk's own
+          modal, so no gate needs the provider above it. */}
       <AccountSignal />
+      <ClerkGate />
     </ClerkProvider>
   );
 }

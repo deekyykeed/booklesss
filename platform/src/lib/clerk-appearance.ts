@@ -40,6 +40,12 @@ export const clerkAppearance: Appearance = {
     fontFamily: "var(--font-inter), ui-sans-serif, system-ui, sans-serif",
   },
   elements: {
+    /* No logo on any Clerk card (owner, 2026-08-03: "use clerk stuff just
+       remove the logo"). The slot would show the DASHBOARD's logo — still the
+       retired diamond — and hiding the slot beats depending on what the
+       dashboard happens to hold. */
+    logoBox: { display: "none" },
+
     /* ---- shared card surfaces (sign-in / sign-up, modal and page) ---- */
     cardBox: {
       // The dashboard's cards sit at 28px now; Clerk's card joins the family.

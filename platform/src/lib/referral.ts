@@ -16,7 +16,7 @@
  *      the person whose link opened this app first is the one who brought
  *      the reader in, and a later link must not quietly take that over.
  *   3. Sign-up copies it onto the new account as unsafeMetadata.referredBy
- *      (see AuthForm), so every account permanently records who sent them.
+ *      (see ClerkGate), so every account permanently records who sent them.
  *
  * Counting and rewarding stays HUMAN for now, which is the right size for a
  * business currently rewarding people over WhatsApp and mobile money: the

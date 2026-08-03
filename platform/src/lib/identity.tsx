@@ -211,6 +211,11 @@ export function saveIdentity(input: {
     id: prev?.id ?? newId(),
     since: prev?.since ?? new Date().toISOString(),
   };
+  persist(next);
+  return next;
+}
+
+function persist(next: Identity): void {
   cache = next;
   read = true;
   snapshot = { identity: next, hydrated: true };
@@ -221,6 +226,69 @@ export function saveIdentity(input: {
     // again next visit. Better than blocking the reader on a failed write.
   }
   emit();
+}
+
+/* ------------------------------------------------------------------ *
+ * The identity, on the account.
+ *
+ * Signing up CONNECTS the account to the identity this device already has —
+ * the promise at the top of this file. What travels is the person-facing
+ * part: the name, the face, and the day they first arrived. School, courses
+ * and `id` stay on the device; the first two are reading preferences rather
+ * than who somebody is, and the third exists precisely to tell devices apart.
+ *
+ * AccountSignal is the only caller of the reconcile pair: it writes
+ * accountIdentity() up to a bare account, and adopts the account's identity
+ * down onto any device this person signs in on — so the Astronaut is the
+ * Astronaut on their laptop too, not a freshly rolled stranger.
+ * ------------------------------------------------------------------ */
+
+export type AccountIdentity = { name: string; avatar: AvatarId; since: string };
+
+/** The device's identity shaped for account metadata, or null before any has
+ *  been assigned. A plain accessor, not a hook — ClerkGate builds sign-up
+ *  metadata inside an event's effect, and AccountSignal heals outside render. */
+export function accountIdentity(): AccountIdentity | null {
+  const v = load();
+  return v ? { name: v.name, avatar: v.avatar, since: v.since } : null;
+}
+
+/** Account metadata is `unsafeMetadata` — any signed-in browser can write it —
+ *  so what comes back is stranger input, held to the same bar as a stored
+ *  localStorage record: no usable name means no identity at all, an avatar id
+ *  is only kept if this build still draws it, a date has to parse. */
+export function parseAccountIdentity(v: unknown): AccountIdentity | null {
+  if (!v || typeof v !== "object") return null;
+  const o = v as Record<string, unknown>;
+  const name = typeof o.name === "string" ? o.name.trim().slice(0, 40) : "";
+  if (!name) return null;
+  return {
+    name,
+    avatar: resolveAvatar(typeof o.avatar === "string" ? o.avatar : null),
+    since:
+      typeof o.since === "string" && !Number.isNaN(Date.parse(o.since))
+        ? o.since
+        : new Date().toISOString(),
+  };
+}
+
+/** The account's identity lands on this device. Sign-in on a new phone is the
+ *  same person arriving, so the account wins over the placeholder the device
+ *  rolled for itself. Keeps the device's school, courses and `id`; takes the
+ *  account's `since`, because "member since" is about the person, not the
+ *  phone they happen to be holding. */
+export function adoptIdentity(acct: AccountIdentity): Identity {
+  const prev = load();
+  const next: Identity = {
+    name: acct.name,
+    avatar: acct.avatar,
+    school: prev?.school ?? null,
+    schoolName: prev?.schoolName ?? null,
+    courses: prev?.courses ?? [],
+    id: prev?.id ?? newId(),
+    since: acct.since,
+  };
+  persist(next);
   return next;
 }
 
