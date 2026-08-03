@@ -28,11 +28,16 @@ export function ToApp() {
   return null;
 }
 
-/** The landing's Sign in — the same sheet as everywhere else, landing the
- *  reader on their dashboard once they're in. */
-export function LandingSignIn({ className, children }: { className?: string; children: React.ReactNode }) {
+/** The landing page's only action (owner, 2026-08-03: "the only link i expect
+ *  there is signing up — nothing to the course or whatever").
+ *
+ *  Sign-up rather than sign-in, and no second button beside it, because the
+ *  sheet carries its own "Already have an account?" toggle — a returning
+ *  reader is one tap from where they need to be without the front door having
+ *  to offer two doors. Lands them on the dashboard once they're through. */
+export function LandingSignUp({ className, children }: { className?: string; children: React.ReactNode }) {
   return (
-    <button type="button" onClick={() => requireAccount("manual", "/home", "sign-in")} className={className}>
+    <button type="button" onClick={() => requireAccount("manual", "/home", "sign-up")} className={className}>
       {children}
     </button>
   );
