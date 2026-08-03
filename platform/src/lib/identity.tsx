@@ -1,23 +1,35 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { resolveAvatar, type AvatarId } from "@/components/identity/avatars";
+import { AVATARS, resolveAvatar, type AvatarId } from "@/components/identity/avatars";
 import { isSchoolChoice, OTHER_SCHOOL, type SchoolChoice } from "@/lib/schools";
 
 /* ------------------------------------------------------------------ *
- * Who is reading — a name, a face, a school and the courses they're taking,
- * asked once and kept on the device.
+ * Who is reading — a name and a face, ASSIGNED rather than asked, plus a
+ * school and courses they may narrow later. All of it kept on the device.
  *
- * With Clerk switched off there is no account to hang a student off, and a
- * reader who has just landed on a lesson is the worst possible moment to ask
- * for an email. So the app asks for the things it actually needs to address
- * someone and show them their own dashboard — never an email, never a
- * password — and stores them locally.
+ * ANONYMOUS BY DEFAULT (owner, 2026-08-02). Nobody is asked anything. A reader
+ * arriving from a WhatsApp link is given an avatar and a username on the spot,
+ * and the username IS the avatar's name — the Astronaut is called Astronaut.
+ * Neither can be changed.
  *
- * School and courses earn their place by changing what the reader sees: a
- * student at ZCAS taking two courses gets those two on their home page, their
- * progress measured against those two, and no scrolling past a course they
- * will never open. Nothing else in the app is gated on them.
+ * The reason is the first three seconds. A student tapping a link in a study
+ * group has come for a lesson, and what used to meet them was a form: a name
+ * field, twelve faces, every university, every course. Whatever that form
+ * collected, it collected it from the people who got through it, and the ones
+ * who didn't were never counted.
+ *
+ * School and courses are no longer asked either. They still earn their place
+ * once someone cares — set them in Settings and the home page lists those
+ * courses and measures progress against them — but an unanswered pair is a
+ * legitimate, permanent state now, not a form left half-finished. `courses: []`
+ * means "the whole library", and enrolledCourses() has always read it that way.
+ *
+ * When accounts land, signing up CONNECTS to the identity the device already
+ * has, so a student keeps the name they have been reading under rather than
+ * starting again. That is why `name` is a real stored field and not derived
+ * from `avatar` at read time: an account connecting later needs the name that
+ * was actually on screen, even if this build's naming table has moved on.
  *
  * Same store shape as progress.tsx and for the same reason: localStorage is an
  * external mutable store that doesn't exist during SSR, so this is a
@@ -34,19 +46,55 @@ import { isSchoolChoice, OTHER_SCHOOL, type SchoolChoice } from "@/lib/schools";
 
 const KEY = "booklesss:identity:v1";
 
+/**
+ * The username each avatar carries.
+ *
+ * PRODUCT COPY, not alt text — this is what a study group calls somebody, what
+ * the greeting says every morning, and what will sit beside their comments.
+ * Read the whole list before changing it: a word that is merely odd in English
+ * can be unflattering in Zambia, and this one becomes a person.
+ *
+ * Deliberately NOT in avatars.tsx, which is generated from an icon set: a name
+ * here is a decision about people, an entry there is metadata about a drawing,
+ * and `npm run gen:avatars` would quietly overwrite the first with the second.
+ * Kept as a total Record so adding a thirteenth avatar without naming it is a
+ * type error rather than a student called "undefined".
+ *
+ * Each name says what the picture shows, because the tie between the two is
+ * the whole idea — a Rainbow whose picture is a robot is a username, not an
+ * identity. Where the icon's own label is a description rather than a name
+ * ("Party popper", "Flying saucer", "Ice skate"), the name is the shortest
+ * thing you could actually call someone.
+ */
+export const AVATAR_NAMES: Record<AvatarId, string> = {
+  astronaut: "Astronaut",
+  robot: "Robot",
+  smiley: "Smiley",
+  peace: "Peace",
+  ladybug: "Ladybird",
+  butterfly: "Butterfly",
+  ufo: "Saucer",
+  party: "Confetti",
+  rainbow: "Rainbow",
+  strawberry: "Strawberry",
+  dice: "Dice",
+  skate: "Skater",
+};
+
 export type Identity = {
-  /** What to call them. Trimmed, never empty — the popup won't submit blank. */
+  /** What to call them: the name of the avatar they were assigned. Trimmed,
+   *  never empty — a record without one is treated as no record at all. */
   name: string;
   avatar: AvatarId;
-  /** Where they study. `null` on records written before the form asked, and on
-   *  any record naming a school this build no longer carries. */
+  /** Where they study. `null` until they set it in Settings, which most never
+   *  will, and on any record naming a school this build no longer carries. */
   school: SchoolChoice | null;
   /** The university they typed when theirs wasn't on the list. Set only
    *  alongside `school: "other"` — a demand signal for where to go next, and
    *  the only free text this app stores about anybody. */
   schoolName: string | null;
-  /** Course slugs they're taking, as in course-index.json. Empty means "not
-   *  answered yet" — the gate reads it that way and asks. */
+  /** Course slugs they're taking, as in course-index.json. Empty is the normal
+   *  state and means "all of them" — nobody is asked to choose. */
   courses: string[];
   /** Random, per device. See the note above. */
   id: string;
@@ -174,6 +222,38 @@ export function saveIdentity(input: {
   }
   emit();
   return next;
+}
+
+/**
+ * Gives this device an identity, if it doesn't have one. Returns whatever it
+ * is now, assigned or already there.
+ *
+ * This is what replaced the first-visit form. It runs on mount, on whatever
+ * page the reader happened to land on, and shows nothing: by the time the
+ * greeting renders there is a name to put in it, and the reader was never
+ * asked for one.
+ *
+ * Collisions are certain and are the cost of never asking — two Astronauts in
+ * one course is fine. If it ever grates, the tiebreak is a number, not a form.
+ *
+ * Idempotent on purpose. React runs effects twice in development, two tabs can
+ * open at once, and a re-render must not reroll somebody's face; so an existing
+ * record always wins and nothing here overwrites one.
+ */
+export function assignIdentity(): Identity {
+  const existing = load();
+  if (existing) return existing;
+
+  const avatar = AVATARS[Math.floor(Math.random() * AVATARS.length)].id;
+  return saveIdentity({
+    name: AVATAR_NAMES[avatar],
+    avatar,
+    // Not asked, and not a gap to be filled in later by anything but the
+    // reader themselves, in Settings. Empty courses reads as the whole library.
+    school: null,
+    schoolName: null,
+    courses: [],
+  });
 }
 
 /** Erases the identity from this device. Used by Settings' "forget this

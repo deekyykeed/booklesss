@@ -112,19 +112,27 @@ export function courseForNode(nodeId: string): CourseMeta | undefined {
 const CLAIMED = new Set(SCHOOLS.flatMap((s) => s.courseSlugs));
 
 /**
- * The courses a school teaches — what the sign-up form offers once a school is
- * picked.
+ * The courses a school teaches — what the Settings course list offers.
  *
  * A course no school has claimed is offered to everyone. That is the safe way
  * round: seeding a course is a content change (see the note at the top), and a
  * new course that nobody could enrol in until someone edited lib/schools would
  * look like a broken deploy rather than a missing line.
+ *
+ * NO SCHOOL AND "another university" ARE THE SAME ANSWER: the whole library.
+ * Nobody is asked where they study any more (see lib/identity), so `null` is
+ * the state almost every reader is in — and it used to fall through to the
+ * filter below, where every course we publish is claimed by some school, and
+ * the list came back EMPTY. A student tapping "Courses" met nothing at all.
+ * The old first-visit form made a school compulsory before it would show
+ * courses, which is exactly why that hole was invisible until the form went.
  */
 export function coursesForSchool(id: SchoolChoice | null | undefined): CourseMeta[] {
-  // A university we don't teach at yet: we have no idea what's on their
-  // syllabus, so the honest answer is the whole library rather than an empty
-  // screen. Half of finance is finance wherever it's taught.
-  if (id === OTHER_SCHOOL) return COURSES;
+  // We don't know their syllabus — either because they told us their
+  // university isn't one of ours, or because we never asked. Both times the
+  // honest answer is everything rather than an empty screen. Half of finance
+  // is finance wherever it's taught.
+  if (id === OTHER_SCHOOL || id == null) return COURSES;
   const school = SCHOOLS.find((s) => s.id === id);
   return COURSES.filter((c) => school?.courseSlugs.includes(c.slug) || !CLAIMED.has(c.slug));
 }

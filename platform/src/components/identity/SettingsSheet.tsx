@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Avatar, resolveAvatar, type AvatarId } from "./avatars";
-import { AvatarGrid, CoursePicker, SchoolPicker, SETTINGS_EVENT } from "./pickers";
+import { CoursePicker, SchoolPicker, SETTINGS_EVENT } from "./pickers";
 import { MynaIcon } from "@/components/icons/myna";
 import { coursesForSchool } from "@/lib/courses";
 import { clearIdentity, saveIdentity, useIdentity } from "@/lib/identity";
@@ -49,10 +49,12 @@ import { OTHER_SCHOOL, schoolById, type SchoolChoice } from "@/lib/schools";
  * request to fail, nothing to roll back, and a Save button on a sheet with an
  * X in the corner is a trap for anyone who taps the X.
  *
- * The name field is the one exception: it commits on blur rather than on every
- * keystroke, because an empty name is how the app decides nobody has
- * introduced themselves — saving mid-backspace would reopen the wizard over
- * the top of this sheet.
+ * THE NAME AND THE PICTURE ARE NOT SETTINGS (owner, 2026-08-02). They are
+ * assigned on the first visit and neither can be changed — see lib/identity.
+ * Profile reports them instead of offering them, because a reader who has
+ * never been asked their name still deserves to be told what they are called
+ * before they meet it in a greeting. The picker rows that used to be here (an
+ * avatar grid and a name field) went with the first-visit form.
  * ------------------------------------------------------------------ */
 
 /** The reference palette, kept local: these are that dialog's colours, not
@@ -74,7 +76,7 @@ const TAB_LABEL: Record<Tab, string> = {
 };
 
 /** Which row of General is expanded. Only one at a time — this is a phone. */
-type Open = "avatar" | "school" | "courses" | null;
+type Open = "school" | "courses" | null;
 
 export function SettingsSheet() {
   const { identity } = useIdentity();
@@ -84,8 +86,6 @@ export function SettingsSheet() {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<Tab>("general");
   const [section, setSection] = useState<Open>(null);
-  /* Only the name is held here, and only while it's being typed. */
-  const [draftName, setDraftName] = useState<string | null>(null);
   const [schoolQuery, setSchoolQuery] = useState("");
   const [courseQuery, setCourseQuery] = useState("");
   const [confirmWipe, setConfirmWipe] = useState(false);
@@ -97,7 +97,6 @@ export function SettingsSheet() {
       /* The home page's Change button asks for courses by name — open that row
          rather than making them find it. */
       setSection(at?.step === "courses" ? "courses" : null);
-      setDraftName(null);
       setConfirmWipe(false);
       setOpen(true);
     };
@@ -148,20 +147,17 @@ export function SettingsSheet() {
     setCourseQuery("");
   };
 
-  const toggleCourse = (slug: string) => {
-    const next = identity.courses.includes(slug)
-      ? identity.courses.filter((s) => s !== slug)
-      : [...identity.courses, slug];
-    /* The last course can't be given up here. An empty list is how the app
-       reads "never asked", so saving one would reopen the wizard. */
-    if (next.length) save({ courses: next });
-  };
-
-  const commitName = () => {
-    const v = (draftName ?? "").trim();
-    if (v && v !== identity.name) save({ name: v });
-    setDraftName(null);
-  };
+  /* Untick the last course and you are back to the whole library, which is
+     where everybody starts — enrolledCourses() has always read an empty list
+     that way. It used to be blocked here, because empty meant "never answered"
+     and saving one reopened the first-visit form. Nothing is asked now, so
+     empty is just the default, and a reader is allowed to return to it. */
+  const toggleCourse = (slug: string) =>
+    save({
+      courses: identity.courses.includes(slug)
+        ? identity.courses.filter((s) => s !== slug)
+        : [...identity.courses, slug],
+    });
 
   const forget = () => {
     if (!confirmWipe) {
@@ -260,40 +256,18 @@ export function SettingsSheet() {
             <>
               <Heading>Profile</Heading>
 
+              {/* Reported, not offered. Both were assigned on the first visit
+                  and neither is editable — so this row's whole job is to be
+                  the place a reader can find out what they are called, which
+                  is otherwise only ever glimpsed in a greeting. */}
               <Row
-                label="Picture"
-                onClick={() => setSection(section === "avatar" ? null : "avatar")}
-                expanded={section === "avatar"}
-                control={<Avatar id={identity.avatar} size={28} />}
-              />
-              {section === "avatar" && (
-                <Panel>
-                  <AvatarGrid value={resolveAvatar(identity.avatar)} onChange={(id) => save({ avatar: id })} />
-                </Panel>
-              )}
-
-              {/* The one control that isn't a row opening a list — a name is
-                  typed, so the field is the row. */}
-              <Row
-                label="Your name"
+                label="You're reading as"
+                note="Given to this device, and the same every time you come back."
                 control={
-                  <input
-                    value={draftName ?? identity.name}
-                    onChange={(e) => setDraftName(e.target.value)}
-                    onBlur={commitName}
-                    onKeyDown={(e) => e.key === "Enter" && (e.target as HTMLInputElement).blur()}
-                    maxLength={40}
-                    aria-label="Your name"
-                    className="h-9 w-[180px] rounded-[8px] border-0 outline-none"
-                    style={{
-                      fontSize: 14,
-                      fontWeight: 400,
-                      color: INK,
-                      background: "rgba(255,255,255,0.5)",
-                      padding: "0 12px",
-                      boxShadow: RING,
-                    }}
-                  />
+                  <span className="flex items-center gap-2">
+                    <Avatar id={identity.avatar} size={28} />
+                    <Value>{identity.name}</Value>
+                  </span>
                 }
               />
 
@@ -321,12 +295,12 @@ export function SettingsSheet() {
 
               <Row
                 label="Courses"
-                note="Your dashboard shows these and nothing else. One has to stay."
+                note="Pick some and your dashboard shows those and nothing else. Pick none and it shows everything."
                 onClick={() => setSection(section === "courses" ? null : "courses")}
                 expanded={section === "courses"}
                 control={
                   <Value>
-                    {identity.courses.length} of {offered.length}
+                    {identity.courses.length ? `${identity.courses.length} of ${offered.length}` : "All"}
                   </Value>
                 }
               />
@@ -388,15 +362,17 @@ export function SettingsSheet() {
             <>
               <Heading>What this device knows</Heading>
               <Note>
-                Your name, picture, university, courses and everything you’ve read are kept in this
-                browser and nowhere else. There is no account, no email address and no password —
-                which also means clearing your browser data clears all of it, and another device
-                starts from nothing.
+                Your name and picture were given to this device, not asked for. They, your
+                university, your courses and everything you’ve read are kept in this browser and
+                nowhere else. There is no account, no email address and no password — which also
+                means clearing your browser data clears all of it, and another device starts from
+                nothing.
               </Note>
 
               <Heading>Start over</Heading>
               <Note>
-                Erases your details and every section you’ve marked, then starts the app fresh.
+                Erases everything above and every section you’ve marked. You’ll come back as
+                somebody else — a new name and picture are given out on the next visit.
                 {confirmWipe ? " This can’t be undone." : ""}
               </Note>
               <button

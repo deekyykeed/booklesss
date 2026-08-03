@@ -29,8 +29,9 @@ function CircleButton({ icon, label, className = "" }: { icon: MynaIconName; lab
 
 /* Account control. With Clerk configured this is the real thing — the user
  * menu once signed in, a sign-in button when not. With Clerk off it's the face
- * and name the reader picked on their first visit (see identity/IdentityGate),
- * in the same white 32px shell as the circle buttons beside it — green is
+ * and name this device was given on its first visit (see
+ * identity/IdentityAssignment), in the same white 32px shell as the circle
+ * buttons beside it — green is
  * reserved for completion, so the account control never wears it. */
 function Account() {
   if (!clerkEnabled) return <HeaderAvatar />;

@@ -52,7 +52,23 @@ function say(error: { longMessage?: string; message?: string } | null | undefine
   );
 }
 
-export function AuthForm({ mode, redirectTo = "/" }: { mode: "sign-in" | "sign-up"; redirectTo?: string }) {
+/**
+ * `redirectTo` is where to land once the session is live. The /sign-in and
+ * /sign-up ROUTES have nowhere to return to, so they take the default and go
+ * to the dashboard.
+ *
+ * null means STAY PUT, and it is what the onboarding sheet passes when the ask
+ * came from a checkpoint: the reader is halfway down a step, the sheet closes
+ * itself the moment they are signed in, and navigating anywhere at that point
+ * would take away the page they were reading as a reward for signing up.
+ */
+export function AuthForm({
+  mode,
+  redirectTo = "/",
+}: {
+  mode: "sign-in" | "sign-up";
+  redirectTo?: string | null;
+}) {
   const router = useRouter();
   const { signUp, fetchStatus: upFetch } = useSignUp();
   const { signIn, fetchStatus: inFetch } = useSignIn();
@@ -89,7 +105,8 @@ export function AuthForm({ mode, redirectTo = "/" }: { mode: "sign-in" | "sign-u
         return;
       }
 
-      router.push(redirectTo);
+      // See the note on the prop: null is "leave them where they are".
+      if (redirectTo) router.push(redirectTo);
     } finally {
       setSending(false);
     }

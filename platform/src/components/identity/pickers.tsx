@@ -1,17 +1,21 @@
 "use client";
 
-import { AVATARS, Avatar, type AvatarId } from "./avatars";
 import { MynaIcon } from "@/components/icons/myna";
 import type { CourseMeta } from "@/lib/courses";
 import { OTHER_SCHOOL, SCHOOLS, searchSchools, type SchoolChoice } from "@/lib/schools";
 
-/* The three questions this app asks about a student — which face, which
- * university, which courses — as pieces both places that ask them can share.
+/* The two things this app still asks a student — which university, which
+ * courses — as the lists that ask them.
  *
- * They are asked twice in two different shapes: once on a first visit, one
- * screen at a time (IdentityGate), and thereafter as rows in Settings that
- * open onto the same lists. Keeping the lists here is what stops those two
- * drifting into different answers to the same question.
+ * There used to be a third, an avatar grid, and there used to be two places
+ * asking: a first-visit form and these same lists as rows in Settings. The
+ * form is gone (see identity/IdentityAssignment) and the face is assigned, so
+ * this is now one set of lists with one caller. It stays a module of its own
+ * anyway — a picker is a picker whether one sheet opens it or three.
+ *
+ * Neither question is asked unprompted any more. A reader who never opens
+ * Settings never sees either, and gets the whole library, which is a perfectly
+ * good answer.
  *
  * The event that opens Settings lives here too, so the header button and the
  * home page can fire it without importing the sheet itself. */
@@ -94,39 +98,11 @@ export function Search({
   );
 }
 
-/** Twelve faces. The art is a finished disc, so the tile is round and the
- *  chosen one is ringed rather than boxed. */
-export function AvatarGrid({
-  value,
-  onChange,
-}: {
-  value: AvatarId;
-  onChange: (id: AvatarId) => void;
-}) {
-  return (
-    <div className="grid grid-cols-6 gap-2">
-      {AVATARS.map((a) => {
-        const on = a.id === value;
-        return (
-          <button
-            key={a.id}
-            type="button"
-            onClick={() => onChange(a.id)}
-            aria-label={a.label}
-            aria-pressed={on}
-            title={a.label}
-            className={
-              "grid aspect-square place-items-center rounded-full transition-all " +
-              (on ? "ring-2 ring-ink ring-offset-2 ring-offset-white" : "opacity-70 hover:opacity-100")
-            }
-          >
-            <Avatar id={a.id} size={34} />
-          </button>
-        );
-      })}
-    </div>
-  );
-}
+/* AvatarGrid — twelve faces in a six-column grid, the chosen one ringed — was
+ * here until 2026-08-03. Nobody picks a face any more, so there was no caller
+ * left: it was deleted rather than left for a future picker to find, because a
+ * picker sitting in the tree is an invitation to ask the question again. If
+ * choosing ever comes back, so does thirty lines of grid. */
 
 /** The universities, plus the row for everyone else. */
 export function SchoolPicker({

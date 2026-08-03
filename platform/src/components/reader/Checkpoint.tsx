@@ -1,8 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { labelFor, nextLessonId, pathForId } from "@/lib/course";
 import { rate, useProgress, type Grasp } from "@/lib/progress";
+import { gateStepLink, needsAccount } from "@/lib/account";
+import { requireAccount } from "@/lib/onboarding";
 import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
 import { SectionNote } from "./SectionNote";
 
@@ -48,6 +51,21 @@ const ANSWERS: { id: Grasp; label: string; icon: MynaIconName; tone: string }[] 
   { id: "not", label: "Later", icon: "sad", tone: "#96601f" },
   { id: "got", label: "Got it", icon: "smile", tone: "#17754d" },
 ];
+
+/* Whether the sheet has already been raised by a checkpoint on this page load.
+ *
+ * ONE ASK PER VISIT, not one per answer. A step carries five to nine
+ * checkpoints and a reader clears them in a run; a sheet on each is a reader
+ * who stops answering, which costs the app the honest record the checkpoints
+ * exist to collect. The first answer is the moment the app first has something
+ * worth saving, so it is the moment worth spending.
+ *
+ * Deliberately NOT persisted. A module variable resets on reload, which is the
+ * behaviour wanted: someone who came back a week later has forgotten the sheet
+ * and is a better prospect than they were, and one ask a visit is not a nag.
+ * Writing it to localStorage would mean asking exactly once, ever, per device.
+ */
+let askedThisVisit = false;
 
 /* End-of-section checkpoint — a scale rather than a tick.
  *
@@ -101,7 +119,19 @@ export function Checkpoint({
                 /* Pressing the current answer takes it back — the same
                    second-press-undoes rule the tick had, so an answer stays the
                    reader's to correct. */
-                onClick={() => (active ? toggle(lessonId, checkpointId) : rate(lessonId, checkpointId, a.id))}
+                /* THE ANSWER LANDS FIRST, THEN THE ASK. Taking the tap and
+                   showing a sign-up instead would lose the one thing the
+                   reader just told us, and they would have to find their place
+                   again to say it twice. It is saved on the device either way;
+                   the sheet is an offer to keep it, not a toll on giving it. */
+                onClick={() => {
+                  if (active) toggle(lessonId, checkpointId);
+                  else rate(lessonId, checkpointId, a.id);
+                  if (!askedThisVisit && needsAccount()) {
+                    askedThisVisit = true;
+                    requireAccount("checkpoint");
+                  }
+                }}
                 role="radio"
                 aria-checked={active}
                 aria-label={a.label}
@@ -130,9 +160,31 @@ export function Checkpoint({
   );
 }
 
-/* The foot of a step. */
+/* The foot of a step, and the app's one real gate.
+ *
+ * A reader from a WhatsApp link gets the step they were sent, whole: no form
+ * on arrival, no wall mid-read, checkpoints they can answer. Moving to the
+ * NEXT step is where an account is asked for, because that is the first moment
+ * the reader has shown the app is worth something to them, and the first
+ * moment it can honestly say what an account is for — carrying this on.
+ *
+ * It stays a real <Link>: the href is the true destination, so the browser
+ * shows it on hover, it opens in a new tab from a long-press, and a crawler
+ * follows it. The gate is on the plain left-click only, which is the one the
+ * sheet can actually serve.
+ *
+ * `after` carries the destination into the sheet, so signing up lands on the
+ * step they were reaching for rather than back at the top of the app.
+ *
+ * ONE FREE STEP IS A GUESS. It is the owner's spec as stated, and it is also
+ * the whole funnel in one number — a WhatsApp reader meets this at the end of
+ * their first step. If the group drop converts badly this is the first dial to
+ * turn, and turning it means counting steps read on the device rather than
+ * changing this file's shape. Left as it is rather than invented differently.
+ */
 export function StepComplete({ lessonId }: { lessonId: string }) {
   const next = nextLessonId(lessonId);
+  const router = useRouter();
   /* No closing card. It carried a ring, a progress count, a "Keep going"
    * heading and a "Mark rest done" button, and every one of those was the page
    * talking about itself. "Keep going" congratulates a reader who has not
@@ -144,9 +196,17 @@ export function StepComplete({ lessonId }: { lessonId: string }) {
    * the way on. With no next step the page simply stops. */
   if (!next) return null;
 
+  const href = pathForId(next);
+
   return (
     <Link
-      href={pathForId(next)}
+      href={href}
+      onClick={(e) => {
+        /* Prefetched when the gate takes the click, so the moment they finish
+           signing up the step is already there — the sheet's whole promise is
+           that they carry on. */
+        if (gateStepLink(e, href)) router.prefetch(href);
+      }}
       className="mt-14 flex items-center gap-2 text-[17px] font-medium text-ink transition-colors hover:text-muted"
     >
       <span className="truncate">{labelFor(next)}</span>

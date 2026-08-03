@@ -16,6 +16,7 @@ import {
   type NavNode,
 } from "@/lib/course";
 import { useFollow } from "./useFollow";
+import { gateStepLink } from "@/lib/account";
 import { courseForNode } from "@/lib/courses";
 import { useProgress } from "@/lib/progress";
 import { CompletionRing } from "./CompletionRing";
@@ -265,11 +266,19 @@ function Row({ node, depth, ctx }: { node: NavNode; depth: number; ctx: Ctx }) {
   }
 
   const active = ctx.activeId === node.id;
+  const href = pathForId(node.id);
   return (
     <Link
-      href={pathForId(node.id)}
+      href={href}
       ref={active ? ctx.activeRef : undefined}
-      onClick={() => ctx.onSelect(node.id)}
+      /* The same gate the next-step link carries, because this is the other
+         way to the next step and a gate on only one of them is a suggestion.
+         Tapping the step you are already ON is not leaving it, so it never
+         asks. See lib/account. */
+      onClick={(e) => {
+        if (!active && gateStepLink(e, href)) return;
+        ctx.onSelect(node.id);
+      }}
       style={{ paddingLeft: pad }}
       className={
         "step relative z-[2] text-left text-sm font-semibold transition-colors " +

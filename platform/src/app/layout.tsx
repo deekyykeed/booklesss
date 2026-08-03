@@ -6,7 +6,8 @@ import { clerkEnabled } from "@/lib/clerk";
 import { clerkAppearance } from "@/lib/clerk-appearance";
 import { RegisterSW } from "@/components/RegisterSW";
 import { DesktopGate } from "@/components/DesktopGate";
-import { IdentityGate } from "@/components/identity/IdentityGate";
+import { IdentityAssignment } from "@/components/identity/IdentityAssignment";
+import { AccountSignal } from "@/components/auth/AccountSignal";
 import { Onboarding } from "@/components/onboarding/Onboarding";
 import { SettingsSheet } from "@/components/identity/SettingsSheet";
 import { openGraph, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
@@ -147,10 +148,10 @@ export default function RootLayout({
       </head>
       <body className="min-h-full bg-canvas text-ink">
         {children}
-        {/* Asks a first-time reader for a name and a face. Mounted here rather
-            than per-layout so a route added later can't quietly opt out of it;
-            it skips the sign-in, offline and /workspace paths itself. */}
-        <IdentityGate />
+        {/* Gives a first-time device an avatar and its name. Renders nothing —
+            nobody is asked. Mounted here rather than per-layout so a route
+            added later can't quietly land a reader with no identity. */}
+        <IdentityAssignment />
         {/* Opened on demand by requireAccount() — a checkpoint answer, or the
             gate on moving to the next step. Mounted here rather than in the
             reader layout because the dashboard and course pages need it too,
@@ -160,7 +161,7 @@ export default function RootLayout({
         <Onboarding />
         <SettingsSheet />
         {/* Booklesss is a phone app — a wide viewport gets sent to its phone.
-            Mounted at the root for the same reason as the identity gate. */}
+            Mounted at the root for the same reason as the identity assignment. */}
         <DesktopGate />
         <RegisterSW />
       </body>
@@ -173,6 +174,13 @@ export default function RootLayout({
 
   return (
     // One appearance for every Clerk surface — see lib/clerk-appearance.ts.
-    <ClerkProvider appearance={clerkAppearance}>{document}</ClerkProvider>
+    <ClerkProvider appearance={clerkAppearance}>
+      {document}
+      {/* Publishes "is anybody signed in" to lib/account, so the checkpoint row
+          and the next-step link can gate on it without importing Clerk — they
+          render on builds with no provider, where its hooks throw. Inside the
+          provider branch on purpose: it is the one component that needs it. */}
+      <AccountSignal />
+    </ClerkProvider>
   );
 }

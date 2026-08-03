@@ -24,15 +24,33 @@ import { MynaIcon } from "@/components/icons/myna";
  * WHY it appeared, because a sheet that interrupts without explaining itself
  * is one people close.
  *
- * Dismissible, unlike IdentityGate. That gate is the first-visit "who's
- * reading" and refuses to be skipped; this one interrupts someone mid-read,
- * and a student who would rather keep reading should be able to.
+ * Dismissible, and now the ONLY thing in the app that ever interrupts a
+ * reader. The first-visit "who's reading?" form that used to sit in front of
+ * this is gone — a name and a face are assigned silently — so this sheet is no
+ * longer the second interruption of a first visit but the first, and it earns
+ * that by arriving at a moment the student created, not on arrival.
  * ------------------------------------------------------------------ */
 
-const WHY: Record<OnboardingReason, string> = {
-  checkpoint: "Save this answer, and everything else you tick, to your account.",
-  "next-step": "Create an account to carry on to the next step.",
-  manual: "Your progress follows you to any phone or laptop you sign in on.",
+/* What the sheet says, per the thing that raised it: a heading naming what the
+ * reader gets, and a line saying why they are being stopped.
+ *
+ * The heading was "Onboarding" for every reason, which is OUR word for this
+ * sheet and not a thing anybody would say to a student — it named the
+ * mechanism to the one person who has no use for its name. A heading has to be
+ * about them: what they keep, or where they are going. */
+const SAYS: Record<OnboardingReason, { title: string; why: string }> = {
+  checkpoint: {
+    title: "Keep your answers",
+    why: "Save this one, and everything else you tick, so it's here on any phone you sign in on.",
+  },
+  "next-step": {
+    title: "Carry on",
+    why: "Create an account to keep reading, and pick up where you left off next time.",
+  },
+  manual: {
+    title: "Take this with you",
+    why: "Your progress follows you to any phone or laptop you sign in on.",
+  },
 };
 
 export function Onboarding() {
@@ -62,9 +80,9 @@ export function Onboarding() {
         <div className="flex items-start justify-between gap-3">
           <div>
             <h2 id="onboarding-title" className="font-display text-[22px] font-medium leading-tight text-ink">
-              Onboarding
+              {SAYS[reason].title}
             </h2>
-            <p className="mt-1 text-[14px] leading-5 text-muted">{WHY[reason]}</p>
+            <p className="mt-1 text-[14px] leading-5 text-muted">{SAYS[reason].why}</p>
           </div>
           <button
             type="button"
@@ -77,7 +95,11 @@ export function Onboarding() {
         </div>
 
         <div className="mt-5">
-          <AuthForm mode={mode} redirectTo={after ?? ""} />
+          {/* `after` is null for a checkpoint ask, and null means stay on this
+              step — see AuthForm. It used to pass "" here, which would have
+              been router.push(""); nothing had ever called requireAccount(),
+              so nothing had ever run it. */}
+          <AuthForm mode={mode} redirectTo={after} />
         </div>
 
         <p className="mt-4 text-center text-[13.5px] text-muted">

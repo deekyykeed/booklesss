@@ -352,11 +352,13 @@ export function HomeView({
 
       {/* ---- the courses themselves ---- */}
       <section id="courses" className="mt-8 scroll-mt-20 pb-10">
-        {/* The list is what they picked at sign-up, so the way to change it
-            sits on the list itself — opening Settings with its course row
-            already unfolded. */}
+        {/* Nobody is asked which courses they take, so this is the whole
+            library until someone narrows it — and it says which of the two it
+            is, because "My courses" over every course we publish is a claim
+            the reader never made. Narrowing sits on the list itself: Settings,
+            opened with its course row already unfolded. */}
         <div className="flex items-center justify-between gap-3">
-          <h2 className="dash-heading">My courses</h2>
+          <h2 className="dash-heading">{identity?.courses.length ? "My courses" : "All courses"}</h2>
           <button
             type="button"
             onClick={() =>
