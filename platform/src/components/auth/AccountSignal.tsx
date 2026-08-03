@@ -61,13 +61,25 @@ export function AccountSignal() {
     if (!user || !hydrated) return;
     const acct = parseAccountIdentity(user.unsafeMetadata?.identity);
     if (acct) {
+      /* Courses are compared too, so answering on the phone reaches the
+         laptop — and so this effect settles: adopt makes the two equal, and
+         the healing write below re-runs it with the metadata present, which
+         compares equal and stops. */
+      const sameCourses =
+        identity?.coursesChosen === acct.coursesChosen &&
+        identity?.courses.length === acct.courses.length &&
+        identity.courses.every((s, i) => s === acct.courses[i]);
       if (
         !identity ||
         identity.name !== acct.name ||
         identity.avatar !== acct.avatar ||
-        identity.since !== acct.since
+        identity.since !== acct.since ||
+        (acct.coursesChosen && !sameCourses)
       ) {
         adoptIdentity(acct);
+      } else if (identity.coursesChosen && !acct.coursesChosen) {
+        // Answered on this device against an account that hasn't got it yet.
+        user.updateMetadata({ unsafeMetadata: { identity: accountIdentity() } }).catch(() => {});
       }
     } else {
       const mine = accountIdentity();

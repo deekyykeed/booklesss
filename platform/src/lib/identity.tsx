@@ -93,9 +93,24 @@ export type Identity = {
    *  alongside `school: "other"` — a demand signal for where to go next, and
    *  the only free text this app stores about anybody. */
   schoolName: string | null;
-  /** Course slugs they're taking, as in course-index.json. Empty is the normal
-   *  state and means "all of them" — nobody is asked to choose. */
+  /** Course slugs they're taking, as in course-index.json. Empty means "all of
+   *  them" — see `coursesChosen` for why that is not the same as unanswered. */
   courses: string[];
+  /**
+   * Whether anyone has actually been ASKED which courses they take.
+   *
+   * `courses: []` cannot carry this on its own, and that ambiguity is the bug
+   * the owner hit (2026-08-03: "I should not have been allowed to get here
+   * without picking my courses"). Empty meant both "I haven't said" and "I
+   * want the whole library", so `enrolledCourses` read it as everything and
+   * nothing ever asked. Gate the ask on empty alone and a reader who genuinely
+   * wants all four courses gets asked forever.
+   *
+   * So the answer is stored separately from the choice. False on a device that
+   * has only ever read anonymously; true the moment somebody picks, INCLUDING
+   * when they pick "everything" — which is a real answer, not a skip.
+   */
+  coursesChosen: boolean;
   /** Random, per device. See the note above. */
   id: string;
   /** ISO date the identity was created, for a later "member since". */
@@ -128,6 +143,11 @@ function load(): Identity | null {
       // this module loads on every page and has no business pulling the course
       // tree in to check a list of strings.
       courses: Array.isArray(v.courses) ? v.courses.filter((c) => typeof c === "string") : [],
+      /* A record written before this field existed, but carrying courses, was
+         plainly answered by someone in Settings — treat it as asked rather
+         than interrogating a reader who has already told us. */
+      coursesChosen:
+        v.coursesChosen === true || (Array.isArray(v.courses) && v.courses.length > 0),
       id: typeof v.id === "string" ? v.id : newId(),
       since: typeof v.since === "string" ? v.since : new Date().toISOString(),
     };
@@ -197,6 +217,9 @@ export function saveIdentity(input: {
   school: SchoolChoice | null;
   schoolName: string | null;
   courses: string[];
+  /** Only the setup sheet passes this — everywhere else, choosing any course
+   *  is itself the answer, and an already-asked device stays asked. */
+  coursesChosen?: boolean;
 }): Identity {
   const prev = load();
   const next: Identity = {
@@ -208,11 +231,36 @@ export function saveIdentity(input: {
     schoolName: input.school === OTHER_SCHOOL ? (input.schoolName?.trim() || null) : null,
     // Deduplicated so a double tap in the picker can't enrol anyone twice.
     courses: [...new Set(input.courses)],
+    coursesChosen: input.coursesChosen ?? prev?.coursesChosen ?? input.courses.length > 0,
     id: prev?.id ?? newId(),
     since: prev?.since ?? new Date().toISOString(),
   };
   persist(next);
   return next;
+}
+
+/**
+ * The answer to "which courses are you taking?" — the one question the app
+ * asks, and only of someone who has made an account.
+ *
+ * An empty list is a legitimate answer here and means the whole library; what
+ * makes it an answer rather than a silence is `coursesChosen`, which this
+ * always sets. See the field's note.
+ */
+export function chooseCourses(slugs: string[]): Identity {
+  /* assignIdentity rather than `load()`, because a record with no name is
+     treated as no record at all — writing one here would erase the reader
+     instead of enrolling them. It returns the existing identity untouched
+     whenever there is one, which is every real case. */
+  const prev = assignIdentity();
+  return saveIdentity({
+    name: prev.name,
+    avatar: prev.avatar,
+    school: prev.school,
+    schoolName: prev.schoolName,
+    courses: slugs,
+    coursesChosen: true,
+  });
 }
 
 function persist(next: Identity): void {
@@ -243,14 +291,25 @@ function persist(next: Identity): void {
  * Astronaut on their laptop too, not a freshly rolled stranger.
  * ------------------------------------------------------------------ */
 
-export type AccountIdentity = { name: string; avatar: AvatarId; since: string };
+export type AccountIdentity = {
+  name: string;
+  avatar: AvatarId;
+  since: string;
+  /** Carried so a second device does not ask a question this person has
+   *  already answered — the same bug as never asking, seen from the other
+   *  side. School stays device-local; courses are what the dashboard is. */
+  courses: string[];
+  coursesChosen: boolean;
+};
 
 /** The device's identity shaped for account metadata, or null before any has
  *  been assigned. A plain accessor, not a hook — ClerkGate builds sign-up
  *  metadata inside an event's effect, and AccountSignal heals outside render. */
 export function accountIdentity(): AccountIdentity | null {
   const v = load();
-  return v ? { name: v.name, avatar: v.avatar, since: v.since } : null;
+  return v
+    ? { name: v.name, avatar: v.avatar, since: v.since, courses: v.courses, coursesChosen: v.coursesChosen }
+    : null;
 }
 
 /** Account metadata is `unsafeMetadata` — any signed-in browser can write it —
@@ -269,6 +328,10 @@ export function parseAccountIdentity(v: unknown): AccountIdentity | null {
       typeof o.since === "string" && !Number.isNaN(Date.parse(o.since))
         ? o.since
         : new Date().toISOString(),
+    // Slugs are validated where they're used (lib/courses), as they are on the
+    // stored record — this only guarantees the shape.
+    courses: Array.isArray(o.courses) ? o.courses.filter((c): c is string => typeof c === "string") : [],
+    coursesChosen: o.coursesChosen === true,
   };
 }
 
@@ -279,12 +342,18 @@ export function parseAccountIdentity(v: unknown): AccountIdentity | null {
  *  phone they happen to be holding. */
 export function adoptIdentity(acct: AccountIdentity): Identity {
   const prev = load();
+  /* Courses follow the ACCOUNT once it has an answer, so signing in on a
+     laptop shows the same four cards as the phone. An account that has never
+     answered leaves whatever this device has — including an answer this
+     device made moments ago, which AccountSignal then writes upward. */
+  const takeCourses = acct.coursesChosen;
   const next: Identity = {
     name: acct.name,
     avatar: acct.avatar,
     school: prev?.school ?? null,
     schoolName: prev?.schoolName ?? null,
-    courses: prev?.courses ?? [],
+    courses: takeCourses ? acct.courses : (prev?.courses ?? []),
+    coursesChosen: takeCourses || (prev?.coursesChosen ?? false),
     id: prev?.id ?? newId(),
     since: acct.since,
   };
@@ -320,7 +389,10 @@ export function assignIdentity(): Identity {
     // reader themselves, in Settings. Empty courses reads as the whole library.
     school: null,
     schoolName: null,
+    // Nothing asked yet — the whole library, and marked as unanswered so the
+    // setup sheet knows to ask once there is an account to hang it on.
     courses: [],
+    coursesChosen: false,
   });
 }
 

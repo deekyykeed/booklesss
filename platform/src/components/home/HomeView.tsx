@@ -9,6 +9,7 @@ import { overallPerformance, overallScoreHistory } from "@/lib/performance";
 import { SolarIcon } from "@/components/icons/solar";
 import { SETTINGS_EVENT } from "@/components/identity/pickers";
 import { CourseCard } from "./CourseCard";
+import { CourseSetup } from "./CourseSetup";
 import { pickGreeting, rememberGreeting, renderGreeting, type Greeting } from "./greeting";
 import { OfflineTools } from "./OfflineTools";
 import { Spark } from "./Spark";
@@ -360,13 +361,19 @@ export function HomeView({
         </div>
       </section>
 
+      {/* Asks a signed-in reader which courses they take, once, and renders
+          nothing for everybody else. Mounted here because the dashboard is
+          where the answer matters and where an unanswered account inevitably
+          lands — see the note in CourseSetup for why it is not a redirect. */}
+      <CourseSetup />
+
       {/* ---- the courses themselves ---- */}
       <section id="courses" className="mt-8 scroll-mt-20 pb-10">
-        {/* Nobody is asked which courses they take, so this is the whole
-            library until someone narrows it — and it says which of the two it
-            is, because "My courses" over every course we publish is a claim
-            the reader never made. Narrowing sits on the list itself: Settings,
-            opened with its course row already unfolded. */}
+        {/* A reader who has not answered sees the whole library — anonymous
+            reading asks nothing — so this says which of the two it is,
+            because "My courses" over every course we publish is a claim they
+            never made. Narrowing sits on the list itself: Settings, opened
+            with its course row already unfolded. */}
         <div className="flex items-center justify-between gap-3">
           <h2 className="dash-heading">{identity?.courses.length ? "My courses" : "All courses"}</h2>
           <button
