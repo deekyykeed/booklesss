@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-02 (session 33)
+**Last updated:** 2026-08-03 (session 35)
 
 ---
 
@@ -92,6 +92,36 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
+**From session 35 (2026-08-03) — read the steps. The tooling is done.**
+- [ ] ⚠️ **D-11: read the first screen of every step, cold, as a stranger.**
+      **1 of 83 done.** Three questions per step: is there anything here I have
+      not been given (a symbol, an abbreviation, a name)? does the opening face
+      the same way as the title? would I keep reading? This exists because
+      Treasury Management scored 21 of 21 steps at 5/5 with every scanner clean,
+      and the first step the owner opened was unreadable in its first sentence.
+      **Start with TM precisely because its numbers are clean.**
+- [ ] **D-10: em dashes. SM first — 341 across only 7 steps** is the densest and
+      cheapest course to clear; CF is 449 across 25. TM is 0.
+      `node .claude/skills/step-skill/tools/em-dash-scan.mjs Schools`
+      **Not a find-and-replace** — W-11 says rewrite the sentence, because an em
+      dash is usually a sentence that has not decided what it is.
+- [ ] **D-6 on Strategic Management** (7 steps, may genuinely be flat) and
+      economics. Remember a folder repaths every step beneath it.
+- [ ] **D-5: 33 card candidates left**, all in CF and SM. Three axes exist now
+      (time horizon, reserve level, how the control is wired); a fourth needs
+      fetching. `table-scan` cannot tell a comparison matrix from a set of kinds
+      — check which way the table runs before converting.
+- [ ] **`card-glyphs.tsx` is 27.3KB gzipped at nine glyphs**, in the reader
+      chunk. **The tenth glyph does the `next/dynamic` split first**: one file
+      per glyph, lazily keyed on the name.
+- [ ] **TM and CF step URLs changed today** (18 of 21, 21 of 25). Nothing in the
+      repo pointed at the old ones and nothing had been shared, but any link you
+      personally saved or sent before 3 Aug is dead.
+- [ ] **C-8 / D-7 is the last unscored rule with real teeth** — steps neither
+      pick up nor hand on the thread, 0 of 53 checked. TM's 21 seams are the
+      obvious first pass, and it is what separates a course from a folder of
+      handouts.
+
 **From session 34 (2026-08-02, reader chrome + the comments decision):**
 - [ ] **Look at the callout marks on a phone.** They are Solar Duotone at 22px
       with **no word beside them** (owner's call). `target` now has to say "in
@@ -121,11 +151,11 @@ Slack channel post → login-gated web step link → read. The platform is now o
       the argument for inline. Worth revisiting once comments are real: being
       behind a button is the difference between seeing that four people found a
       section hard and never knowing.
-- [ ] **Four new step rules are unpaid.** `S-9` (nest the nav tree), `C-8`
-      (steps flow into each other), `W-14` (the opening must be worth reading),
-      `W-15` (readable at every level) → debt **D-6/D-7/D-8**. D-6 is the cheap
-      one and the most visible: measured on the day, of eight top-level groups
-      **one reaches depth 3, four sit at depth 2, three are flat**.
+- [~] **Four new step rules** — `S-9`, `C-8`, `W-14`, `W-15` → **D-6/D-7/D-8**.
+      **S-9/D-6 is now 2 of 4 courses** (TM and CF grouped 2026-08-03); SM and
+      economics remain. **W-14 is paid on TM** via D-1/D-4. **C-8/D-7 and
+      W-15/D-8 are untouched on all 53 steps** and are the two rules keeping TM
+      at 95% rather than 100%.
 
 **From session 32 (2026-08-02, the domain + shareable links) — DO THESE FIRST,
 they are the only things standing between here and a link in a WhatsApp group:**
@@ -200,14 +230,13 @@ What it touches, and the traps in each:
   in English or in Zambia becomes somebody's identity in a study group.
 
 **From session 33 (2026-08-02, Treasury Management end to end):**
-- [ ] **`gen-favicons.mjs` cannot take a 15.4KB `.ico`, and it costs a real
-      source.** The cap is 12KB and the Bank of Zambia publishes only a
-      multi-size `.ico`, so `siteFor()` returns null, no chip renders, and the
-      link is unreachable. `boz.zm/national-payment-systems.htm` is live,
-      verified and ideal for the Zambian payment systems section; it was cut
-      rather than shipped invisible. Fix by teaching the generator to pull one
-      frame out of an `.ico` and downscale it. **Do not raise MAX_BYTES** — that
-      lets every bloated icon into a client component.
+- [x] ~~**`gen-favicons.mjs` cannot take a 15.4KB `.ico`**~~ → ✅ **fixed
+      2026-08-03 (s35).** The cap was right and the measurement was wrong: a
+      multi-size `.ico` is three frames, and BoZ's 32px one is 4.3KB. The
+      generator now parses the icon directory, picks the frame nearest 32px and
+      rewraps it as a single-frame `.ico`. `MAX_BYTES` untouched.
+      `boz.zm/national-payment-systems.htm` is now a live source with a chip in
+      `payment-systems-and-ccps`.
 - [ ] **`inventory-and-creditors` is now inventory only.** Creditors moved to
       `ordering-and-paying-suppliers` in the split and the slug stayed, because
       S-8 keeps the existing URL on the first part. Title and sidebar label both
@@ -296,7 +325,13 @@ What it touches, and the traps in each:
       so a screen reader and a desktop hover are fine — it is the phone-only
       reader who has no way to find out. First real students are the test; if
       they hesitate, put the words back.
-- [ ] **D-5 is BLOCKED, not just unpaid** → updated 2026-08-02 (s33). 37
+- [x] ~~**D-5 is BLOCKED, not just unpaid**~~ → ✅ **unblocked 2026-08-03 (s35),
+      and it never was.** The blocker was "needs the Streamline MCP, unauthorized
+      in the 2026-08-02 session"; the connector had been up the whole time and
+      nobody re-tested it. Glyph set is now nine marks on three axes and TM's
+      conversions are done. **A recorded blocker is a claim with a date on it,
+      not a standing fact.** Original note kept below for the measurement:
+- [ ] ~~**D-5 is BLOCKED**~~ *(historical)* 37
       definitional tables are 2-4 rows and should be `cards`, one converted. The
       blocker is now known and it is not the tables: **`card-glyphs.tsx` holds
       three marks and they are all one axis** (chess / calendar / checklist =
@@ -479,6 +514,77 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-03 (session 35 — Treasury Management measured, repaired, and then actually read)
+
+Local session on `main`, run alongside a second session in the same OneDrive
+tree all day (that one did the OG card, the PWA icons, `MusicBar`, and the
+social scripts). Four commits of mine: `23884d6`, `43c4f8b`, `c2a4d91`,
+`483e82c`, plus the wrap.
+
+**Done:**
+- **D-9 closed across every authored step.** Label vs title was 26 defects of
+  53; it is 0. TM's 15 and CF's 11 were fixed, and `tools/label-scan.mjs` gates
+  it. Four of TM's five outright renames were made by the S-8 splits.
+- **D-6: TM and CF nav trees grew a grouping level.** TM's Working capital went
+  from six equal rows to four; CF's Investment appraisal from seven to three.
+  **This changed 18 of 21 TM step URLs and 21 of 25 CF ones** — the path is
+  built from every ancestor node. Nothing in the repo referenced the old paths
+  and no step link had been shared, so the cost was zero on the day.
+- **D-5 unblocked, and it was never really blocked.** The ledger said it needed
+  the Streamline MCP, "unauthorized in the 2026-08-02 session". The connector had
+  been up the whole time. Glyph set went 3 → 9 across three axes; three TM tables
+  became cards.
+- **D-10 opened**: em dashes, measured for the first time. 790 in 32 of 53 steps
+  — CF 449, SM 341, **TM 0**. TM's zero is the proof the rewrites were worth it.
+- **TM ranked, then repaired: 35/42 (83%) → 40/42 (95%)**, and every step to
+  **5/5**. W-8 was one mistake made 55 times: bolding list-item labels, which are
+  terms being defined and headings in disguise, the two things the rule excludes.
+- **`gen-favicons.mjs` now extracts one frame from a multi-size `.ico`** and
+  rewraps it, so Bank of Zambia went 15.4KB → 4.3KB and became a usable source.
+  The 12KB cap was right; the measurement was wrong. Closes a session-33 item.
+- **`seed-course.mjs` reads glyph names out of `card-glyphs.tsx`** instead of a
+  retyped copy that had to be kept in step, and had not been.
+- **D-11 opened, and it is the important one.** See Flags.
+
+**What Worked:**
+- **Writing the scanner before the fix.** `label-scan`, `em-dash-scan` and the
+  new `tools/rank.mjs` each turned an argument into a number and an exit code.
+  The rank tool found the worst step in the course in one run.
+- **Re-testing a recorded blocker instead of repeating it.** One tool call
+  disproved two days of "blocked on the Streamline MCP".
+- **Reading the `.ico` header rather than raising the cap.** A 15.4KB icon is
+  three frames; the 32px one is 4.3KB. Parse, pick, rewrap — no dependency.
+- **`git commit --only -- <paths>` every time.** The other session had files in
+  flight all day (`og.tsx`, `MusicBar.tsx`, `Demand/social/_scripts/`) and none
+  of them ended up in one of my commits.
+
+**Dead Ends (do not retry):**
+- **Trusting a clean scan as evidence a course is good.** TM hit 21 of 21 steps
+  at 5/5 with every scanner clean, and the first step the owner opened began
+  `Terms of "2/10 net 30" look like a small courtesy` — notation never given, in
+  a step whose title faces the other way. **`2/10` contains a digit, so it passed
+  the C-5 anchor check.** Every measurable rule is a proxy and proxies pass where
+  readers do not.
+- **Reporting a course "fixed" after measuring it.** I had read parts of about
+  eight of 21 steps. The owner's question — *"so youve read through the course nd
+  fixed it?"* — was the check that caught it.
+- **Offering the owner a menu instead of doing the work.** Twice: a three-way
+  choice about URL churn, then again on D-5. Both were decisions the ledger had
+  already made. Now a rule in `SKILL.md`.
+- **`acca-global.com` is a lookalike domain.** It returns 200, never redirects
+  to ACCA, and the real `accaglobal.com` paths 404. Curl the URL you are actually
+  going to ship, and check where it lands.
+- **Retrying a `next build` EPERM.** The wrap skill says a build failure in a
+  shared tree is usually a concurrent build, so retry first. Today it was a
+  **OneDrive file lock** on `.next`, with no node process running, and retrying
+  failed identically three times. Owner cleared it. See the skill note below.
+
+**Flags:**
+- ⚠️ **D-11 — 82 of 83 first screens have never been read cold.** This is the
+  session's real finding: the tooling got good enough to make a bad course look
+  finished. TM is the place to start *because* its numbers are clean.
+- ⚠️ **`linear-server` unauthorized — 12th consecutive session.** Nothing filed.
 
 ### Session 2026-08-02 (session 34 — the row keeps changing its mind, and a plan instead of a feature)
 

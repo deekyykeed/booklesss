@@ -22,6 +22,40 @@ Quote actual words. A student's phrasing is never rewritten into the owner's.
 
 ---
 
+### 2026-08-03 · treasury-management/working-capital/debtors-and-factoring · owner
+- `writing` — "there is another mostake in the forst sentence / there is no hook,
+  it looks like you jump staright into explaining the step without making sure
+  the reader has context / eg i see Terms of 2/10 met 30 look like a small… / i
+  dont even know what 2/10 means in this context." Two faults in one sentence.
+  **The notation was never given** — `2/10 net 30` was explained four blocks
+  later — and **the opening faced the wrong way**: the step is *Getting the cash
+  in*, money owed TO you, and it opened on a discount YOU take from YOUR
+  supplier, so the reader had to reverse the whole frame before paragraph three
+  told them which side they were on. Rewritten to one customer, one invoice, one
+  number, with the notation named in the sentence that first uses it and the 37%
+  kept as the payoff rather than the premise.
+  **This step had just scored 5/5 and passed every scanner.** `2/10` contains a
+  digit, so the unreadable opening satisfied C-5's concrete-anchor check. That is
+  the finding, not the sentence.
+  → promoted: **W-16** (clear and direct for an average reader) · debt: **D-11**
+
+- `structure` — "one of the things to add to the step skill is this ranking as
+  well / if steps fall below they need to be rewritten and made better", and
+  "all this stuff needs to go through the step skill next time as its the
+  ultimate determinant of the whole business." Ranking becomes a gate rather
+  than a report: below 5/5 is a rewrite in the same pass, and the skill is the
+  thing every piece of course content passes through.
+  → promoted: SKILL.md — "This skill is the gate" + "The gate: 5/5, or it gets
+  rewritten" · tool: `tools/rank.mjs` · debt: **D-11**
+
+- `writing` — "so youve read through the course nd fixed it?" Asked after I
+  reported the course repaired. **The honest answer was no.** I measured it and
+  fixed what the measurements flagged, having read parts of about eight of the
+  21 steps. The question found the gap before the next reader did, and the
+  `2/10` sentence above is what was sitting in it.
+  → one-off, but it is the reason **D-11** is scoped to reading rather than
+  scanning
+
 ### 2026-08-03 · all courses · owner
 - `structure` — "the streamline connector has been up all this time / can you be
   more autonomouse and stop looping me into things you could have solved without

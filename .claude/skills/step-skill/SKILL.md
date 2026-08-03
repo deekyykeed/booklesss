@@ -37,6 +37,29 @@ rules that govern writing are produced by the improving, and the debt produced b
 the improving is paid during the writing. Split apart, that state gets read by
 whichever skill happened to be invoked.
 
+## This skill is the gate. Everything goes through it.
+
+*(owner, 2026-08-03)* **"all this stuff needs to go through the step skill next
+time, as it's the ultimate determinant of the whole business."**
+
+The steps are the product. Not the reader app, not the socials, not the domain —
+those carry a student to a step and away from it again. What decides whether
+Booklesss is worth paying for is whether the step they land on teaches them
+something. So this file is not a reference to consult when convenient; it is the
+gate every piece of course content passes through, and it outranks convenience,
+momentum and the fact that something already shipped.
+
+In practice:
+
+- **No step is written, edited, split, re-seeded or published without this skill
+  open.** Including a one-line fix, and including work that started somewhere
+  else and only turned out to touch a step.
+- **RANK before you call anything done** (below). A step below 5/5 is rewritten,
+  not noted.
+- **Anything learned about steps lands here**, in `RULES.md`, `DEBT.md` or
+  `LOG.md`, in the same session it is learned. A lesson recorded only in a
+  session log is a lesson the next session will not read.
+
 ## Improve the step. Deal with the consequences.
 
 *(owner, 2026-08-03)* **A step that can be improved gets improved, and nothing
@@ -457,6 +480,42 @@ channel, wrong answers on the reader's section checks, and DMs. All of it counts
 ---
 
 # RANK — score a step against the rules
+
+## The gate: 5/5, or it gets rewritten
+
+*(owner, 2026-08-03 — "if steps fall below they need to be rewritten and made
+better")* Ranking is not a report. It is the check that runs before a step is
+called done, and **a step that scores below the bar is rewritten in that same
+pass.** Not logged, not queued, not left for a session that has more time.
+
+```bash
+node .claude/skills/step-skill/tools/rank.mjs "Schools/<School>/<Course>"          # what is below 5
+node .claude/skills/step-skill/tools/rank.mjs "Schools/<School>/<Course>" --steps  # every step
+```
+
+Five rules vary per step and are the score out of 5 — **W-8** bold budget,
+**E-8** tappable terms, **C-1** a Zambian anchor, **C-5** an anchor in every
+section, **C-7** a source under every claim. Exit code is the number of steps
+under 5, so it gates a script.
+
+**Then rank the course** against all of `RULES.md`, rule by rule with evidence,
+using the table below. Report it as a percentage: **passed ÷ applicable**, where
+*weak counts as not passed*. Treasury Management scored **35/42 (83%)** on its
+first run and **40/42 (95%)** after the repair; the two left are the two no
+script can see.
+
+**⚠️ A high score is not a reading, and this is the trap the number sets.** On
+2026-08-03 Treasury Management reached 21 of 21 steps at 5/5 and every scanner
+clean, and the owner opened the first step they clicked and found it began
+`Terms of "2/10 net 30" look like a small courtesy` — notation the reader had
+not been given, in a step whose own title faces the other way. It passed **C-5**
+because `2/10` contains a digit. **Everything a scanner scores is a proxy for
+something a reader would notice, and the proxy passes in ways the reader does
+not.** So the rank tells you which step to open first. It never tells you a step
+is good. **Read the first screen of every step you touch, cold, as a stranger**
+(**W-16**), and treat the score as the floor rather than the finish.
+
+
 
 `RULES.md` is written so a draft can be **checked** against it, not just
 admired. This is how: open the step, walk every rule in order, and give each one

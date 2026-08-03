@@ -70,6 +70,7 @@ unchecked ones get ticked off by someone assuming the list was audited.
 | D-8 | Prose written past the weakest reader — W-15 | 2026-08-02 | open · 0/53 checked |
 | D-9 | Steps whose sidebar label is a different name from their page title — S-10 | 2026-08-03 | **closed 2026-08-03** · 0 of 53 authored steps; economics' 2 are not reachable from a `.mjs` |
 | D-10 | Em dashes in step prose — W-11 | 2026-08-03 | open · **790 in 32 of 53** (CF 449, SM 341, **TM 0**) |
+| D-11 | First screens nobody has read cold — W-16 | 2026-08-03 | open · **1 of 83 read** · no scan can see it |
 
 > **Counts moved from 44 to 53 on 2026-08-02.** The nine remaining Treasury
 > Management steps were split into eighteen (S-8), so the course is 21 steps and
@@ -610,6 +611,44 @@ carrying it.
 reported. The rest is judgement.
 
 **Scope:** 53 steps, none checked.
+
+---
+
+### D-11 · first screens nobody has read cold · opened 2026-08-03
+**Source:** 2026-08-03 · owner, reading the live reader — "there is no hook, it
+looks like you jump staright into explaining the step without making sure the
+reader has context … i dont even know what 2/10 means in this context."
+**Rules:** W-16 (new), W-13, W-5
+**Why it can't wait for a rewrite:** the step it was found in had **just scored
+5/5 with every scanner clean**. `debtors-and-factoring` opened on
+`Terms of "2/10 net 30" look like a small courtesy`: notation never given, in a
+step whose own title faces the other way (*Getting the cash in* is money owed TO
+you; the sentence was about a discount YOU take from YOUR supplier).
+
+**This is a hole in the method, not in one step.** `2/10` contains a digit, so
+the unreadable opening satisfied C-5's concrete-anchor test. Every measurable
+rule is a proxy, and a proxy passes in ways a reader does not. The course was
+reported as repaired on the strength of measurements after roughly eight of its
+21 steps had actually been read.
+
+**How to pay it:** open each step and **read its first screen cold, as a
+stranger**, before anything else. Three questions, in order:
+1. Is there anything here I have not been given — a symbol, an abbreviation, a
+   number, a name (**W-13**, **W-16**)?
+2. Does the opening face the same way as the title?
+3. Would I keep reading (**W-6**, **W-14**)?
+
+No scan can do this. `tools/rank.mjs` tells you which step to open first; it
+never tells you a step is good.
+
+- [x] treasury-management/working-capital/debtors-and-factoring — 2026-08-03, rewritten
+- [ ] **the other 20 Treasury Management steps** — 21 of 21 score 5/5 and none
+      of the first screens has been read cold since. TM is the course to start
+      on precisely because its numbers are clean: whatever is wrong there is
+      invisible to every tool in this folder.
+- [ ] corporate-finance — 25 steps
+- [ ] strategic-management — 7 steps
+- [ ] economics — 30 steps
 
 ---
 

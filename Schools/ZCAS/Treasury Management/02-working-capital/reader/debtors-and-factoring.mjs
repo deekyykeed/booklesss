@@ -14,6 +14,24 @@
  * buried lead of the original step, sitting four paragraphs into §4. It opens
  * this step now, because a number that surprising is what makes a reader
  * believe the arithmetic is worth following.
+ *
+ * 2026-08-03 — the opening was rewritten, twice wrong. Owner reading it live:
+ * "there is no hook, it looks like you jump straight into explaining the step
+ * … i dont even know what 2/10 means in this context."
+ *
+ *   1. It opened on **notation nobody had been given** — `Terms of "2/10 net 30"
+ *      look like a small courtesy` — and the notation was not explained until
+ *      four blocks later. That is W-13's first ban, and W-5.
+ *   2. Worse, it opened **facing the wrong way**. This step is about money owed
+ *      TO you, and the first sentence was about a discount YOU take from YOUR
+ *      supplier. The reader had to turn the whole thing round before the third
+ *      paragraph told them which side they were on.
+ *
+ * It now opens on one customer, one invoice and one number, names the notation
+ * in the sentence that first uses it, and keeps the 37% as the payoff rather
+ * than the premise. NOTE FOR SCANNERS: `2/10 net 30` contains a digit, so the
+ * old opening passed the C-5 anchor check while being unreadable. A measurement
+ * is not a reading.
  */
 
 export default {
@@ -30,11 +48,15 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Terms of \"2/10 net 30\" look like a small courtesy from a supplier. **Turning the discount down is borrowing from them at over 37% a year,** and almost nobody who does it knows that is what they did.",
+          text: "A customer owes you ZMW 120,000 and will pay on day 30. You can have the money on day 10 instead, if you take ZMW 2,400 off the bill. Twenty days earlier, for two per cent.",
         },
         {
           type: "p",
-          text: "Credit runs in both directions, and this section is about the side where you set the terms. Extending credit to a customer ties up cash, so the target is the level of credit and the discount terms that make the most profit, **not the fewest days outstanding.** A business with no bad debts is usually a business turning away good customers.",
+          text: "Written down, that offer is \"2/10 net 30\": two per cent off if the invoice is settled inside ten days, the full amount by day thirty. It reads like a small courtesy. **Priced as what it actually is, a loan, those twenty days are worth over 37% a year.**",
+        },
+        {
+          type: "p",
+          text: "Selling on credit means waiting to be paid, and waiting costs money. This section is about the side of that where you set the terms: how much credit to give, to whom, and what to offer for early payment. The aim is the terms that make the most profit, **not the fewest days outstanding.** A business with no bad debts is usually a business turning away good customers.",
         },
         { type: "h2", text: "Knowing who deserves credit" },
         {
@@ -44,7 +66,7 @@ export default {
         { type: "h2", text: "Pricing early payment" },
         {
           type: "p",
-          text: "Discount terms put a price on being paid early. \"2/10 net 30\" means take 2% off by paying within 10 days, or pay in full by day 30. For the buyer that is a borrowing decision and it has a formula.",
+          text: "You have seen that offer from the side that makes it. The customer receiving it sees something else: a choice between paying early at a discount or keeping the cash twenty days longer. That is a borrowing decision, and it has a formula that prices the same twenty days from either side of the invoice.",
         },
         {
           type: "formula",

@@ -167,6 +167,31 @@ Ids are stable. A withdrawn rule is struck through, never deleted.
   - Test: read the step imagining a first-year with adequate but not fluent
     English. Any sentence you would have to explain out loud is a rewrite.
 
+- **W-16** **Write it clear and direct, for an average reader.** *(added
+  2026-08-03)* W-15 says the weakest reader must get through; this is the
+  sentence-level version of it, and it is the one that gets broken while every
+  measurable rule passes.
+  - **Never open on notation, jargon or an abbreviation the reader has not been
+    given.** `Terms of "2/10 net 30" look like a small courtesy` opened a step
+    while `2/10 net 30` was not explained until four blocks later. The owner:
+    *"i dont even know what 2/10 means in this context."* If a term must appear
+    early, **say what it means in the same sentence** (**W-5**) or show the
+    thing first and name it after (**W-13**).
+  - **Give the reader the situation before the technique.** A step that starts
+    explaining is a step that assumed context the reader does not have. One
+    customer, one invoice, one number, and then the method.
+  - **Face the right way.** Check that the opening is about the same thing the
+    step is about. *Getting the cash in* is money owed **to** you, and it opened
+    on a discount **you** take from **your supplier** — the opposite direction,
+    so the reader had to turn the whole thing round before paragraph three told
+    them which side they were on. Read the title, then read the first sentence,
+    and make sure they are facing the same way.
+  - **Prefer the plain word every time the technical one is not the point.**
+    "waiting to be paid" over "receivables ageing", unless ageing is the thing
+    being taught.
+  - Test: hand the first screen to someone who has not done the course. If they
+    have to ask what a symbol, abbreviation or number means, it is a rewrite.
+
 ## E — Page elements
 
 The block vocabulary. Each block exists for one job; using the wrong one is a
