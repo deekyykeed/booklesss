@@ -83,6 +83,27 @@ own distinct shots — not one feature announced five times, and never a padded
 slot. If a day only supports four honest posts, ship four and say so in
 `PLAN.md`.
 
+## No copy on a plate (owner's call, 2026-08-03)
+
+*"i dont add text like this anymore — dont add any text."* Said of a `cover()`
+slide carrying an eyebrow, a three-line headline and a sub.
+
+This is **not** the same as the image-only rule below, which is about slides
+being app crops. It is about the copy itself: a plate that exists to show a
+thing does not get a caption written on it.
+
+- **No headline, no eyebrow, no sub, no corner wordmark, no CTA slide.**
+- **The CTA moves to the caption**, which is where words still belong and where
+  a link can actually be acted on. Every no-copy set still ends its caption with
+  *DM me "link"*.
+- `logo-variants.mjs` is the reference implementation — its own renderer rather
+  than a `prog-post.mjs` config, because every slide type that file owns carries
+  either copy or the corner stamp.
+- **The safe box still binds anything meant to be read.** It stops binding when
+  the subject is enlarged past the frame: a letterform at 2400px is texture, not
+  a word, and has nothing to keep clear of a share button. Declare that
+  explicitly (`safe: false`) rather than deleting the check.
+
 ## Image-only days (owner's call, 2026-08-01)
 
 A day can be shot with **no copy on any slide** — every image an area of the

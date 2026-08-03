@@ -167,6 +167,36 @@ before; the slides carry the after.
 
 ---
 
+### 🎨 Brand plates — `6-logo/` · 16 stills, no slot
+
+**Not a carousel and not tied to a time.** Sixteen standalone 9:16 posters that
+are nothing but the logo — post them singly whenever there's a gap, or pick four
+and run them as a set. `node _scripts/logo-variants.mjs`.
+
+**No text on any of them** (owner, 2026-08-03: *"i dont add text like this
+anymore — dont add any text"*). No headline, no eyebrow, no corner stamp, no
+CTA slide. **The CTA lives in the caption** — that is the one place words still
+belong, and it is where every one of these should carry *DM me "link"*.
+
+| | Plate | |
+|---|---|---|
+| 01–04 | `mark-light` `mark-dark` `mark-cream` `mark-purple` | the logo on each ground it's allowed |
+| 05–06 | `name-light` `name-dark` | the name in full |
+| 07 | `both` | the two forms stacked, optically matched |
+| 08–09 | `icon` `icon-round` | the app icon, square and rounded |
+| 10 | `outline` | the wordmark as its own edge |
+| 11–12 | `macro-b` `macro-sss` | letterforms past the frame — texture, not a word |
+| 13 | `bleed` | wider than the frame, cropped by it |
+| 14 | `vertical` | one letter per line |
+| 15 | `field` | the mark repeated, low contrast — brand paper |
+| 16 | `knockout` | the word cut out of black, gradient showing through |
+
+The safe box is enforced on everything meant to be *read*; 11, 12, 13 and 15 opt
+out, because a letterform enlarged past the frame has nothing to keep clear of a
+share button.
+
+---
+
 *Regenerate — the working tree is shared with another machine, so serve the app
 from a pinned worktree:*
 `git worktree add --detach C:/bkls-shot 07b5255`, `rm -rf platform/.next`,
