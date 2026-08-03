@@ -22,6 +22,18 @@ Quote actual words. A student's phrasing is never rewritten into the owner's.
 
 ---
 
+### 2026-08-03 · all courses · owner
+- `structure` — "one thing i notice as im reading is the titles of the steps are
+  different from what i actually find on the page." A step exports `label` and
+  `title` on adjacent lines and they had drifted into two different names for the
+  same step: tap "The yield curve", land on "The term structure of interest
+  rates". The label is also the browser tab, the search result and the WhatsApp
+  preview card, so the mismatch is the first thing a referred reader meets.
+  Measured at **26 defects of 53** — TM 15 of 21, CF 11 of 25, SM clean. Four of
+  the five outright renames are TM and all four were made by the S-8 splits: a
+  split writes two new titles at the seam and nobody went back for the labels.
+  → promoted: **S-10** · debt: **D-9** · tool: `tools/label-scan.mjs`
+
 ### 2026-08-02 · all courses · owner
 - `structure` — "it shouldnt waste an opportunity to put a folder within a line
   of steps, nesting the steps up to 3 or 4 layers in." The sidebar tree already

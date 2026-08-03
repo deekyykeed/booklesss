@@ -144,13 +144,30 @@ grep for `**` or `](https` matches it and tells you nothing:
 body = re.sub(r"<script[\s\S]*?</script>", "", html)   # then grep `body`
 ```
 
-Two things that belong to this skill rather than the build:
+Three things that belong to this skill rather than the build:
 
 - **Corrections are recorded in the file's header comment** (rule **E-7**) — what
   was wrong, what it is now, where the error came from. A corrected figure with
   no note reads as a typo to the next person holding the ZCAS slide.
 - **Tick the `DEBT.md` boxes in the same commit as the fix.** A ledger updated
   later is a ledger nobody trusts.
+- **Run the scans before `seed:course`.** They cover the rules a regex can
+  actually judge, and each exits on its hit count. `seed:course` does not check
+  any of this — it checks what the *renderer* would swallow, which is a
+  different question.
+
+  ```bash
+  node .claude/skills/step-skill/tools/label-scan.mjs Schools      # S-10 · D-9
+  node .claude/skills/step-skill/tools/cold-open-scan.mjs Schools  # W-13 · D-4
+  node .claude/skills/step-skill/tools/table-scan.mjs Schools      # E-9  · D-5
+  ```
+
+  `label-scan` is the cheapest of the three and the only one with no false
+  positives to argue with: it compares each step's `label` against its `title`,
+  which are the name the step is **tapped** under and the name it **lands** on.
+  Run it after any S-8 split — splitting is what creates the mismatch, because
+  it writes two new titles at the seam and leaves the old topic name in the
+  labels.
 
 ## PDFs
 

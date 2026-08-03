@@ -328,6 +328,51 @@ text, so a mark written into one shows its own syntax.
     split that leaves five flat rows where there was one has moved the climb
     from the page to the sidebar.
 
+- **S-10** **A step has one name. `label` is `title`, shortened — never a
+  second name for it.** *(added 2026-08-03)* Every step exports both, on
+  adjacent lines, and they are not two fields for two purposes:
+
+  | | what the reader sees |
+  |---|---|
+  | `label` | what they **tap** — the sidebar row, command search, the browser tab, the native share sheet, and the WhatsApp preview card |
+  | `title` | what they **land on** — the `<h1>` at the top of the page |
+
+  So the label is the name the step travels under and the title is the name it
+  answers to. When they disagree the reader taps *"The yield curve"* and
+  arrives at *"The term structure of interest rates"*, with no way to tell they
+  got the right step — and if they were sent the link, the card in the group
+  chat said one thing and the page says another. The owner, reading the reader:
+  *"the titles of the steps are different from what I actually find on the
+  page."*
+  - **Default to making them identical.** If the title fits a sidebar row —
+    about 32 characters, past which a phone truncates it — there is no reason
+    for two strings. Write the title, copy it into the label, move on.
+  - **Where the title is too long for a row, the label is the title cut down,
+    not rewritten.** Every word of the label appears in the title, in the
+    title's order. *"Inventory, and how it is financed"* → **"Inventory"** ✓.
+    *"Theories of dividend policy"* → **"Dividend theories"** ✗ — same words
+    reordered is still a different string to read.
+  - **The only allowed substitution is an abbreviation the title spells out**,
+    and only where it is the one the exam uses (**C-4**): "WACC" over "The
+    weighted average cost of capital", "GDP", "NPV". A student who knows the
+    abbreviation recognises the title instantly; that is the test.
+  - **No `&` in a label.** No title uses one, so it is a second spelling for no
+    gain. The reader's word is "and".
+  - **When they differ, shorten the label — do not lengthen the title.** The
+    title is the sentence at the top of the page doing the work of naming the
+    idea; the label is the handle. Rewriting a good title to match a lazy label
+    fixes the mismatch by damaging the better of the two.
+  - **Splitting is what breaks this.** *(measured 2026-08-03)* Four of the five
+    outright renames in the baseline, and nine of the twelve reorderings, are in
+    Treasury Management, and every one of them dates from the S-8 splits: a
+    split invents two new titles at the seam, both written to say what that half
+    is *about*, and the labels were left carrying the old topic name — "Debtors
+    & factoring" over a page headed "Getting the cash in". **When you split a
+    step under S-8, name both halves in both fields in the same edit.**
+  - Measurable: `node .claude/skills/step-skill/tools/label-scan.mjs Schools`
+    classifies every step and exits on the defect count. Baseline 2026-08-03 is
+    **26 of 53** (debt **D-9**).
+
 ## C — Content
 
 - **C-1** *(inherited)* Every example uses ZMW and Zambian companies — Zanaco,

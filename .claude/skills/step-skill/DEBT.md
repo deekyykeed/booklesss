@@ -68,6 +68,7 @@ unchecked ones get ticked off by someone assuming the list was audited.
 | D-6 | Flat nav trees that should carry a folder — S-9 | 2026-08-02 | open · 0/4 courses grouped |
 | D-7 | Steps that neither pick up nor hand on the thread — C-8 | 2026-08-02 | open · 0/53 checked |
 | D-8 | Prose written past the weakest reader — W-15 | 2026-08-02 | open · 0/53 checked |
+| D-9 | Steps whose sidebar label is a different name from their page title — S-10 | 2026-08-03 | open · 26/53 defective, 0 fixed |
 
 > **Counts moved from 44 to 53 on 2026-08-02.** The nine remaining Treasury
 > Management steps were split into eighteen (S-8), so the course is 21 steps and
@@ -523,3 +524,53 @@ carrying it.
 reported. The rest is judgement.
 
 **Scope:** 53 steps, none checked.
+
+---
+
+### D-9 · sidebar label and page title are two different names · opened 2026-08-03
+**Source:** 2026-08-03 · owner — "one thing i notice as im reading is the titles
+of the steps are different from what i actually find on the page."
+**Rules:** S-10
+**Why it can't wait for a rewrite:** a reader taps **"The yield curve"** and
+lands on a page headed **"The term structure of interest rates"**. Nothing on
+the page confirms they opened what they chose. The same string is also the
+browser tab, the command-search result, the native share sheet's title and the
+**WhatsApp preview card** — `share-target.ts` uses `labelFor()`, the `<h1>` uses
+`lesson.title` — so a link dropped in a study group advertises one name and
+opens another. That is the first impression of every shared step.
+
+**Measured 2026-08-03, first run of `label-scan.mjs`: 26 defects of 53 authored
+steps** — 5 RENAMED (no word in common), 12 REWORDED (same words, reordered),
+3 PUNCT, 5 JOIN (a needless trim of a title that already fits), plus one `&`
+inside an otherwise fine trim. Economics is not scannable — its 30 steps have no
+`.mjs` source and live only in `course-data.json` — and 2 of them differ.
+
+**Where it came from, and why the fix belongs with S-8:** 4 of the 5 RENAMED and
+9 of the 12 REWORDED are Treasury Management, and all of those date from the
+2026-08-02 splits. A split writes two new titles at the seam, each saying what
+its half is *about* — "Getting the cash in", "How much to order, and when to
+pay" — and the labels were left carrying the old topic names, "Debtors &
+factoring" and "EOQ & creditors". Nothing checked, because until now nothing
+compared the two fields. The fifth rename, CF's `yield-curve`, predates the
+splits and is the proof this can happen without one.
+
+**How to pay it:** cheap and mechanical, per step, and it is two adjacent lines
+in the step's own `.mjs`. Run the scan, and for each hit either copy the title
+into the label or trim the label to the title's own words in order. Re-run;
+exit code is the remaining count. Then `seed:course` → `gen:course`.
+
+```bash
+node .claude/skills/step-skill/tools/label-scan.mjs Schools
+```
+
+**Watch the URL.** `slug` is not touched by any of this — renaming a label or a
+title must never renumber a slug, or the shared links break (**S-8**).
+
+- [ ] treasury-management — **15 defects of 21 steps**, the bulk of it: 4 RENAMED,
+      9 REWORDED, 1 JOIN, 1 `&`
+- [ ] corporate-finance — **11 of 25**: 1 RENAMED (`yield-curve`), 3 REWORDED,
+      3 PUNCT (the `&` labels), 4 JOIN
+- [x] strategic-management — **0 of 7**, clean. Its one hit,
+      `intro-to-strategy`, is an allowed trim
+- [ ] economics — 2 of 30, and not reachable from a `.mjs`; fix in
+      `course-data.json` or leave until the course is authored properly
