@@ -611,7 +611,7 @@ export function Sidebar() {
       {/* Way out of the course, above the step tree — the dashboard is a level
           up from whatever step they're reading. */}
       <div className="p-2 pb-0">
-        <Link href="/home" onClick={() => closeMobileNav()} className="home-nav squircle">
+        <Link href="/dashboard" onClick={() => closeMobileNav()} className="home-nav squircle">
           <DashboardGlyph />
           <span className="min-w-0 flex-1 truncate">Dashboard</span>
         </Link>

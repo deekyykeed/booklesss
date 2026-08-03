@@ -11,7 +11,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Booklesss",
     short_name: "Booklesss",
     description: "Learn without the textbook: courses, lessons, and steps.",
-    start_url: "/home",
+    start_url: "/dashboard",
     display: "standalone",
     background_color: "#f5f5f5", // --color-canvas, so the splash matches the app
     theme_color: "#f5f5f5",

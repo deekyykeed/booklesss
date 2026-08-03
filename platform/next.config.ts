@@ -1,6 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  /* /home became /dashboard on 2026-08-03 (owner: "rename it to dashboard,
+   * not home"). This redirect is not tidiness — it is the installed app:
+   * the PWA manifest's start_url was /home, and a phone that already added
+   * Booklesss to its home screen keeps the old start_url until the manifest
+   * is re-fetched. Without this, tapping the installed icon opens a 404.
+   * Permanent, so browsers and the CDN stop asking. */
+  async redirects() {
+    return [{ source: "/home", destination: "/dashboard", permanent: true }];
+  },
   async headers() {
     return [
       {

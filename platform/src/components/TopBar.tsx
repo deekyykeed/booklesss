@@ -68,7 +68,7 @@ export function TopBar({
           {/* The lockup is the way home. The course navigator shows one course
               and its steps and nothing above them, so without this a student
               who opened a lesson has no route back to the dashboard. */}
-          <Link href="/home" className="flex items-center gap-2.5 transition-opacity hover:opacity-70 md:gap-2">
+          <Link href="/dashboard" className="flex items-center gap-2.5 transition-opacity hover:opacity-70 md:gap-2">
             {/* The wordmark is the whole logo, so it gets logo scale — 22px
                 against the 48px bar — rather than nav-label scale. On phones it
                 shares the bar with the hamburger and the header controls, so it

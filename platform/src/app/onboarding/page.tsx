@@ -35,7 +35,7 @@ export default function OnboardingPage() {
           <span key={i} />
         ))}
       </div>
-      <main className="relative min-h-dvh bg-white/[0.62] backdrop-blur-[16px]">
+      <main className="relative z-10 min-h-dvh bg-white/[0.62] backdrop-blur-[16px]">
         <OnboardingFlow />
       </main>
     </>

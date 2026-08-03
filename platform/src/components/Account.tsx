@@ -38,8 +38,8 @@ export function Account() {
               then Clerk's own account and sign-out rows. */}
           <UserButton>
             <UserButton.MenuItems>
-              <UserButton.Link href="/home" label="Dashboard" labelIcon={<DashboardGlyph size={16} />} />
-              <UserButton.Link href="/home#courses" label="My courses" labelIcon={<CoursesGlyph size={16} />} />
+              <UserButton.Link href="/dashboard" label="Dashboard" labelIcon={<DashboardGlyph size={16} />} />
+              <UserButton.Link href="/dashboard#courses" label="My courses" labelIcon={<CoursesGlyph size={16} />} />
               <UserButton.Action label="manageAccount" />
               <UserButton.Action label="signOut" />
             </UserButton.MenuItems>

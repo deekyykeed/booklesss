@@ -27,7 +27,7 @@ export function ToApp() {
   const { hydrated, daysStudied } = useProgress();
 
   useEffect(() => {
-    if (signedIn === true || (hydrated && daysStudied > 0)) router.replace("/home");
+    if (signedIn === true || (hydrated && daysStudied > 0)) router.replace("/dashboard");
   }, [signedIn, hydrated, daysStudied, router]);
 
   return null;
@@ -68,7 +68,7 @@ export function LandingAuth() {
         /* New accounts go and answer the three questions. Someone who flips to
            "Sign in" already has answers, so they go straight to the app. */
         forceRedirectUrl="/onboarding"
-        signInForceRedirectUrl="/home"
+        signInForceRedirectUrl="/dashboard"
         /* No header: the page's headline right above already says what this
            is, and Clerk's own title would be the second one on screen. */
         appearance={{ elements: { header: { display: "none" } } }}

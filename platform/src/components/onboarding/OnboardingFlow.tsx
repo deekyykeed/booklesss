@@ -109,7 +109,7 @@ export function OnboardingFlow() {
   /** The last answer, and into the app. */
   function finish() {
     save();
-    router.replace("/home");
+    router.replace("/dashboard");
   }
 
   function back() {

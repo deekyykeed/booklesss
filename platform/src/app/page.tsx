@@ -12,7 +12,7 @@ import { LandingAuth, ToApp } from "@/components/landing/landing-bits";
  * rejected the branding twice: the home page has to be a static URL that
  * names the app, fully describes what it does, links the privacy policy, and
  * is readable without signing in — none of which a dashboard is. The
- * dashboard lives at /home.
+ * dashboard lives at /dashboard.
  *
  * THE LOOK IS A REFERENCE, SUPPLIED BY THE OWNER (2026-08-03, four phone
  * screenshots of Claude's own mobile login page: "I would like my whole
@@ -115,13 +115,13 @@ export default function LandingPage() {
       {/* The wordmark, and nothing beside it. The page's actions live in the
           two cards; a returning reader is caught by ToApp or by the auth
           card's own sign-in toggle inside the modal. */}
-      <header className="mx-auto w-full max-w-[560px] px-5 py-6">
+      <header className="relative z-10 mx-auto w-full max-w-[560px] px-5 py-6">
         <span className="font-display text-[22px] font-bold leading-none tracking-tight text-ink">
           Booklesss
         </span>
       </header>
 
-      <main className="mx-auto w-full max-w-[560px] px-5 pb-4">
+      <main className="relative z-10 mx-auto w-full max-w-[560px] px-5 pb-4">
         {/* ---- the headline ----
              THE PROMISE, NOT THE MECHANISM (owner, 2026-08-03: "make the main
              title more bold and hooking, but short still — look at the main

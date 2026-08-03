@@ -260,7 +260,7 @@ export function HomeView({
        No landing intro here any more: this page briefly carried one for
        signed-out strangers (the Google OAuth branding fix), and it moved to
        the real landing at "/" the same day when the dashboard moved to
-       /home. This page is only ever the student's own home now. */
+       /dashboard. This page is only ever the student's own home now. */
     <div className="mx-auto w-full max-w-[900px] px-4 pb-10 pt-28 md:px-6 md:pt-36">
       <h1 className="font-display text-[30px] font-medium leading-[1.2] tracking-[-0.02em] text-ink">
         {/* The name is no longer appended here. Each greeting decides where it
