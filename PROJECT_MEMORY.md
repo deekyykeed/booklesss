@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-03 (session 36)
+**Last updated:** 2026-08-03 (session 37)
 
 ---
 
@@ -91,6 +91,50 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 37 (2026-08-03, Clerk is live and the app has an onboarding
+sheet) — the first item is the one that makes today's work do anything.**
+- [ ] ⚠️ **Nothing opens the onboarding sheet.** It is built, styled and mounted
+      in `layout.tsx`, and `requireAccount(reason, after)` exists in
+      `lib/onboarding.ts` — **and is called from nowhere.** Two triggers, both
+      the owner's spec: a checkpoint answer tapped while signed out, and the
+      gate on moving to the next step. Until those exist a student arriving
+      from a WhatsApp link still meets nothing.
+- [ ] ⚠️ **Sign up on the live site once, on a phone.** `booklesss.app/sign-up`
+      returns 200. The owner reports the Production instance inherited the
+      Development settings; **that is unverified by anything but the dashboard.**
+      If the form asks for a verification code, a username or a first name, one
+      of the four settings did not copy. This also ticks Clerk's own "create
+      your first user in production".
+- [ ] **Unique avatars are UNBLOCKED and were the one thing that needed a
+      server.** Clerk now gives every student a real user id, so the claim is a
+      Supabase table with a unique constraint on `avatar_id` — two students
+      tapping the same face cannot both get it. This is the piece the whole
+      anonymous-identity design was waiting on.
+- [ ] **Do NOT pull the full Kameleon set by extending `AVATARS`.** Twelve
+      avatars is already 27.8KB in a client component; ~100 ships ~250KB to
+      every reader for one picture each. `next/dynamic` keyed on the id, or an
+      SVG sprite in `public/`, comes first. Same trap as `card-glyphs.tsx`.
+- [ ] **`useInstall()` in `lib/install.ts` is a second copy** of the install
+      logic that `components/home/OfflineTools.tsx` still carries. It was
+      extracted for the onboarding sheet rather than by refactoring a working
+      file. Move OfflineTools onto the hook next time it is opened anyway.
+- [ ] **"Performance" measures attendance, not performance.** Checkpoints have
+      right and wrong answers and `progress.tsx` records only a count of
+      cleared. Recording accuracy is small — the check already knows the right
+      answer — and it is lost forever until it exists.
+- [ ] **The study targets are still invented** (5 days, 120 minutes, hardcoded
+      in `lib/performance.ts`). Owner's design: ask for days and minutes at
+      onboarding, then measure against *their* number, and switch the rolling
+      7-day window to a calendar week so a plan can be reconciled against it.
+      Store the raw days and minutes alongside the score — a self-set target is
+      not comparable between students, and the north star needs absolutes.
+- [ ] **D-9: 11 label/title mismatches left, all Corporate Finance.**
+      `node .claude/skills/step-skill/tools/label-scan.mjs Schools`
+- [ ] **Study music is parked at `25f00b1`**, waiting on royalty-free tracks.
+      ~22MB for ten at 96kbps mono, cached once by the service worker — which
+      makes it *less* data than Spotify for anyone who studies twice. Spotify
+      itself is a dead end (see below).
 
 **From session 36 (2026-08-03, the link preview + the wordmark) — the link is
 shareable NOW; these are the follow-ups.**
@@ -535,6 +579,87 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-03 (session 37 — the app grows a front door, and the icon stops being a letter)
+
+Local session on `main`, alongside sessions 35/36 in the same OneDrive tree.
+Numbered 37 because those two claimed 35 and 36 while this one ran. Twelve
+commits, `1148bc3` → `1add284`.
+
+**Done:**
+- **Clerk is live in production.** Production instance created, DNS verified
+  (`clerk.booklesss.app`), live keys in Vercel, `booklesss.app/sign-up` returns
+  200. Configured for the smallest possible ask: **email + password, "Verify at
+  sign-up" OFF**, no username, no first/last name, no social, Client Trust off.
+- **Sign-in is our markup, not Clerk's.** `components/auth/AuthForm.tsx` drives
+  the headless hooks; `<SignIn />` and `<SignUp />` are gone from both routes.
+- **An onboarding sheet** (`components/onboarding/Onboarding.tsx`) opened by
+  `requireAccount(reason, after)`, mounted in the root layout, carrying the
+  install button. **Nothing calls it yet** — see Next Session.
+- **The favicon became the wordmark.** "Bklsss" in Familjen Grotesk Bold at
+  −6% tracking, on its own black tile, across tab / PWA / maskable / apple.
+  Only the 16px `.ico` frame keeps the "B".
+- **`<Button>`** extracted from `.course-resume` — four custom properties, so a
+  variant is a CSS rule, never a change to the component.
+- **The desktop gate actually blocks tablets now.** It tested width > 1024,
+  which let every iPad through. Now the **shorter side** > 600, and the
+  "Continue on this computer" escape is gone.
+- **S-10 + `label-scan.mjs` + D-9**: a step's sidebar label and page title had
+  drifted into two different names, 26 of 53 steps. Also **de-coupled step-skill
+  from any course or school** — three rules named ZCAS.
+- Stat tiles: sparkline draws itself in, figures count up. Footers report
+  **% growth on last week**, not points. Greetings rewritten and the name now
+  moves (front, back, or absent). Note menu flips below the header. Callout
+  mark 22→18px. Step selector 12→16px.
+
+**What Worked:**
+- **Reading `node_modules` instead of trusting the API I remembered.** Clerk 7
+  returns *signals*: `signUp.password()` not `create()`, `finalize()` not
+  `setActive()`, and **errors are returned, not thrown** — a `try/catch` round
+  it catches nothing and every failure looks like success. Three wrong
+  assumptions, all caught by opening `signUpFuture.d.mts`.
+- **Simulating the thing rather than reasoning about it.** Rendering the
+  maskable icon through circle / squircle / teardrop crops in Pillow disproved
+  my own claim that a wide wordmark gets clipped, and rendering the favicon at
+  true 16/32/48px settled the legibility argument in one image.
+- **Measuring, again.** The label/title divergence was invisible until a script
+  compared two adjacent fields across 53 files.
+- **`curl` on the live site to answer "is it live".** Twice — once to show
+  `/sign-up` was 404 in production, once to confirm it had become 200.
+
+**Dead Ends (do not retry):**
+- **A transparent, theme-responsive SVG favicon.** `prefers-color-scheme`
+  reports the **OS theme, not the colour of the surface the icon is drawn on**.
+  Google draws favicons on a white card whatever the phone is set to, so dark
+  mode painted a white wordmark onto white. The mark carries its own tile now,
+  and the generator says "do not improve this back to a transparent mark".
+- **Assuming a wide mark cannot survive a round crop.** It can: a 3.25:1
+  wordmark inscribed in the 80% safe circle is 369×113px, diagonal 386 inside
+  410. That wrong assumption had put the bare "B" on the maskable icon — which
+  is the one Android *prefers*, so the home screen would have shown a letter.
+- **Hand-rolling an SVG path translator.** `SVGPathPen` emits `H`/`V` shorthand
+  as well as `M/L/C/Q`, so "every other number is an x" corrupts them. Use
+  fontTools' `TransformPen` and let the pen do it.
+- **Animation-first CSS.** The sparkline's draw-in was written with
+  `stroke-dashoffset: 1` as the base state; the reduced-motion rule is
+  `animation: none`, which would have left every chart in the app **invisible**.
+  Base state must be the finished state, animation the opt-in.
+- **Spotify for study music.** Embeds play 30-second previews unless the
+  listener is signed in *with Premium*; the Web Playback SDK is Premium-only by
+  design. An anonymous app in Zambia can use neither. Built, then removed the
+  same day (parked at `25f00b1`).
+
+**Flags:**
+- ⚠️ **The onboarding sheet is inert** — mounted, styled, and triggered by
+  nothing.
+- ⚠️ **OneDrive resurrected files this session had deleted.** `MusicBar.tsx`,
+  `lib/music.ts` and the `import` line in `Sidebar.tsx` came back as untracked
+  ~30 minutes after the deletion was committed and pushed. `main` was always
+  correct; the working tree was not, and it would have broken the next local
+  build. **A new manifestation of the known hazard** — now written into
+  `wrap-session`.
+- ⚠️ **`linear-server` unauthorized — 12th consecutive session.** Nothing filed.
+- `Booklesss Bucket/` still holds the one unfiled webp (**10th session**).
 
 ### Session 2026-08-03 (session 36 — the logo loses its mark, and the link preview learns to say what it is)
 
