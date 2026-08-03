@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { assignIdentity } from "@/lib/identity";
+import { captureReferrer } from "@/lib/referral";
 
 /* Gives a new device its avatar and its name, and renders nothing at all.
  *
@@ -33,6 +34,9 @@ import { assignIdentity } from "@/lib/identity";
 export function IdentityAssignment() {
   useEffect(() => {
     assignIdentity();
+    /* Same moment, same reasoning: the first thing the app learns about an
+       arriving device. `?r=` on the URL is who sent them — see lib/referral. */
+    captureReferrer();
   }, []);
 
   return null;

@@ -61,6 +61,20 @@ const SAYS: Record<OnboardingReason, { title: string; why: string }> = {
   },
 };
 
+/* What the sheet says. The gated reasons keep their own words — the sheet
+ * interrupted, so it explains itself. "manual" is the reader tapping Sign in
+ * themselves (owner, 2026-08-03, meeting "Take this with you" over that tap:
+ * "why does sign up say this") — nobody who just asked to sign in needs the
+ * ask justified, so the title is simply the thing they asked for, and it
+ * follows the toggle when they flip the form. */
+function says(reason: OnboardingReason, mode: "sign-up" | "sign-in"): { title: string; why: string } {
+  if (reason !== "manual") return SAYS[reason];
+  return {
+    title: mode === "sign-in" ? "Sign in" : "Create your account",
+    why: SAYS.manual.why,
+  };
+}
+
 export function Onboarding() {
   /* `mode` is store state, not local: each opening starts on the form the
      caller asked for — the header's "Sign in" opens onto sign-in, a gate onto
@@ -88,21 +102,23 @@ export function Onboarding() {
   return (
     <div className="onboarding-scrim" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
       <div className="onboarding-sheet squircle">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <h2 id="onboarding-title" className="font-display text-[22px] font-medium leading-tight text-ink">
-              {SAYS[reason].title}
-            </h2>
-            <p className="mt-1 text-[14px] leading-5 text-muted">{SAYS[reason].why}</p>
-          </div>
+        {/* Centred, like the reference card. The X floats clear of the title
+            rather than sharing a row with it, so the title can centre. */}
+        <div className="relative">
           <button
             type="button"
             onClick={closeOnboarding}
             aria-label="Close"
-            className="squircle -mr-1 -mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-full text-muted hover:bg-active hover:text-ink"
+            className="squircle absolute -right-2 -top-2 grid h-8 w-8 shrink-0 place-items-center rounded-full text-muted hover:bg-active hover:text-ink"
           >
             <MynaIcon name="x" size={18} />
           </button>
+          <div className="px-6 text-center">
+            <h2 id="onboarding-title" className="font-display text-[22px] font-medium leading-tight text-ink">
+              {says(reason, mode).title}
+            </h2>
+            <p className="mt-1.5 text-[14px] leading-5 text-muted">{says(reason, mode).why}</p>
+          </div>
         </div>
 
         <div className="mt-5">

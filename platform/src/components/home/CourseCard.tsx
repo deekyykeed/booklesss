@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
+import { gateStepLink } from "@/lib/account";
 import type { CourseMeta } from "@/lib/courses";
 import { labelFor, pathForId } from "@/lib/course";
 import { courseStreak, studyHistory, type StudyDay } from "@/lib/progress";
@@ -123,6 +124,9 @@ export function CourseCard({
             display, not a target. */}
         <Link
           href={pathForId(next)}
+          /* The free-step gate (lib/account): a fresh device's first Start is
+             free, a second course's Start on a signed-out device asks. */
+          onClick={(e) => gateStepLink(e, pathForId(next))}
           className="course-resume squircle relative z-10 mt-3 flex items-center justify-between gap-3 overflow-hidden px-2.5 py-1.5"
           aria-label={`${started ? "Resume" : "Start"} ${course.title} — ${hydrated ? labelFor(next) : ""}`}
         >

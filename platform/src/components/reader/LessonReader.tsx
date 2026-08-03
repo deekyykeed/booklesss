@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import type { Lesson } from "@/lib/course";
 import { LessonView } from "./LessonView";
 import { useReaderShell } from "./MobileNav";
+import { claimFreeStep } from "@/lib/account";
 import { scrollToSection } from "@/lib/scroll-to-section";
 import { restorePosition, savePosition } from "@/lib/reading-position";
 
@@ -22,6 +23,14 @@ export function LessonReader({ lesson, lessonId }: { lesson: Lesson; lessonId: s
     setLesson(lessonId, lesson.sections);
     return () => setLesson(null, null);
   }, [lesson, lessonId, setLesson]);
+
+  /* The first step this device ever opens becomes its one signed-out step —
+   * see lib/account. Claimed from the reader because "opened a step" is the
+   * event being counted, wherever the reader came from: a shared link, a
+   * course row, a home card. First claim wins; everything after is inert. */
+  useEffect(() => {
+    claimFreeStep(pathname);
+  }, [pathname]);
 
   /* Where the step opens, in priority order:
    *

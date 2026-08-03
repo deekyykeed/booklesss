@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Avatar, resolveAvatar, type AvatarId } from "./avatars";
 import { CoursePicker, SchoolPicker, SETTINGS_EVENT } from "./pickers";
 import { MynaIcon } from "@/components/icons/myna";
+import { clearFreeStep } from "@/lib/account";
 import { coursesForSchool } from "@/lib/courses";
 import { clearIdentity, saveIdentity, useIdentity } from "@/lib/identity";
 import { useMotion } from "@/lib/motion";
@@ -166,9 +167,11 @@ export function SettingsSheet() {
     }
     clearProgress();
     clearIdentity();
+    /* Somebody new gets a first step to claim again, too. */
+    clearFreeStep();
     /* Reload rather than re-render: every store on the page is now holding
        something that no longer exists, and a fresh page is the honest way to
-       land back on the first-visit form. */
+       start over as somebody new. */
     window.location.href = "/";
   };
 

@@ -2,6 +2,7 @@
 
 import { ClerkFailed, ClerkLoaded, ClerkLoading, Show, UserButton } from "@clerk/nextjs";
 import { requireAccount } from "@/lib/onboarding";
+import { MynaIcon } from "@/components/icons/myna";
 import { CoursesGlyph, DashboardGlyph } from "./home/plump-glyphs";
 
 /* Deliberately a CLIENT component.
@@ -50,13 +51,20 @@ export function Account() {
               holds — the retired diamond, when the owner met it live
               (2026-08-03) — plus "Secured by Clerk". The sheet is the same two
               fields in the app's own dress, opened onto sign-in because that
-              is what this button says. */}
+              is what this button means.
+
+              A person in a circle, not the word (owner, same day): the
+              signed-out slot matches the 32px circle buttons beside it, and
+              signing in swaps the placeholder person for your own face —
+              the shape stays, the person becomes real. */}
           <button
             type="button"
             onClick={() => requireAccount("manual", null, "sign-in")}
-            className="squircle h-8 rounded-full border border-[#d4d4d4] bg-white px-3 text-xs font-medium text-ink-2 shadow-[0_0.6px_0.6px_-1.25px_rgba(0,0,0,0.18),0_2.3px_2.3px_-2.5px_rgba(0,0,0,0.16)] transition-colors hover:text-ink"
+            aria-label="Sign in"
+            title="Sign in"
+            className="grid h-8 w-8 place-items-center rounded-full border border-[#d4d4d4] bg-white text-muted shadow-[0_0.6px_0.6px_-1.25px_rgba(0,0,0,0.18),0_2.3px_2.3px_-2.5px_rgba(0,0,0,0.16),0_10px_10px_-3.75px_rgba(0,0,0,0.06)] transition-colors hover:text-ink"
           >
-            Sign in
+            <MynaIcon name="user" size={17} strokeWidth={1.5} />
           </button>
         </Show>
       </ClerkLoaded>

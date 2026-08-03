@@ -8,6 +8,7 @@ import {
   lessonsUnder,
   pathForId,
 } from "@/lib/course";
+import { gateStepLink } from "@/lib/account";
 import type { CourseMeta } from "@/lib/courses";
 import { useProgress } from "@/lib/progress";
 import { CompletionRing } from "@/components/reader/CompletionRing";
@@ -69,7 +70,11 @@ export function StudentDashboard({ course }: { course: CourseMeta }) {
         {next && (
           <p>
             {begun ? "Pick up where you left off with " : "Start with "}
-            <Link href={pathForId(next)} className="font-medium text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-ink">
+            <Link
+              href={pathForId(next)}
+              onClick={(e) => gateStepLink(e, pathForId(next))}
+              className="font-medium text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-ink"
+            >
               {labelFor(next)}
             </Link>
             {hydrated && doneCount(next) > 0
@@ -94,7 +99,14 @@ export function StudentDashboard({ course }: { course: CourseMeta }) {
               <ul className="mt-2 flex flex-col gap-1">
                 {u.lessons.map((id) => (
                   <li key={id}>
-                    <Link href={pathForId(id)} className="dash-row squircle">
+                    {/* Same gate as the sidebar and the step footer — this
+                        list is the widest door to every step, and the free-
+                        step rule (lib/account) has to hold at all of them. */}
+                    <Link
+                      href={pathForId(id)}
+                      onClick={(e) => gateStepLink(e, pathForId(id))}
+                      className="dash-row squircle"
+                    >
                       <CompletionRing
                         value={hydrated ? ratio(id) : 0}
                         size={15}

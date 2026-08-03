@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
-import { useAuth } from "@clerk/nextjs";
+import { useAuth, useUser } from "@clerk/nextjs";
 import { setSignedIn } from "@/lib/account";
+import { referralCode, setMyReferralCode } from "@/lib/referral";
 
 /* The one component in the reader that asks Clerk whether anybody is signed
  * in, and it renders nothing. It copies the answer into lib/account, which is
@@ -20,10 +21,20 @@ import { setSignedIn } from "@/lib/account";
  * account they already have. */
 export function AccountSignal() {
   const { isLoaded, isSignedIn } = useAuth();
+  const { user } = useUser();
 
   useEffect(() => {
     setSignedIn(isLoaded ? !!isSignedIn : null);
   }, [isLoaded, isSignedIn]);
+
+  /* The signed-in student's own share code, published the same way, so
+     shareUrl() — a plain function with no React above it — can append
+     `?r=<code>` to every link this person shares. See lib/referral. */
+  useEffect(() => {
+    setMyReferralCode(
+      user ? referralCode(user.firstName ?? user.primaryEmailAddress?.emailAddress?.split("@")[0], user.id) : null,
+    );
+  }, [user]);
 
   return null;
 }

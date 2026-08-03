@@ -3,6 +3,7 @@
 import { useSignIn, useSignUp } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { referrer } from "@/lib/referral";
 import { Button } from "@/components/ui/Button";
 
 /* ------------------------------------------------------------------ *
@@ -108,10 +109,22 @@ export function AuthForm({
     setError(null);
 
     try {
+      /* Who sent them rides on the account itself: the `?r=` code this device
+         arrived under (lib/referral) is copied into unsafeMetadata at the one
+         moment a person is created from a visit. The owner reads it off the
+         user in the Clerk dashboard and rewards the sharer — no server table,
+         no extra round trip. Absent for sign-IN on purpose: an account that
+         already exists was already attributed. */
+      const referredBy = isUp ? referrer() : null;
+
       // Step one: hand over the credentials.
       const attempt = await withTimeout(
         isUp
-          ? signUp.password({ emailAddress: email, password })
+          ? signUp.password({
+              emailAddress: email,
+              password,
+              ...(referredBy ? { unsafeMetadata: { referredBy } } : {}),
+            })
           : signIn.password({ identifier: email, password }),
       );
 
@@ -144,11 +157,16 @@ export function AuthForm({
 
   return (
     <form onSubmit={submit} className="flex w-full flex-col gap-3">
-      <label className="flex flex-col gap-1.5">
-        <span className="text-[13px] font-medium text-muted">Email</span>
+      {/* Labels are for screen readers only and the placeholder carries the
+          prompt — the reference card (Claude's own sign-in, measured
+          2026-08-03) hides its labels, and at two fields there is nothing a
+          visible label says that the placeholder doesn't. */}
+      <label>
+        <span className="sr-only">Email</span>
         <input
           type="email"
           name="email"
+          placeholder="Enter your email"
           autoComplete="username"
           required
           inputMode="email"
@@ -156,15 +174,16 @@ export function AuthForm({
           autoCorrect="off"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="squircle rounded-2xl border border-line bg-white px-3.5 py-3 text-[15px] text-ink outline-none focus:border-line-2"
+          className="squircle w-full rounded-2xl border border-[rgba(30,30,29,0.15)] bg-white px-3.5 py-3 text-[15px] text-ink outline-none placeholder:text-placeholder focus:border-[rgba(30,30,29,0.35)]"
         />
       </label>
 
-      <label className="flex flex-col gap-1.5">
-        <span className="text-[13px] font-medium text-muted">Password</span>
+      <label>
+        <span className="sr-only">Password</span>
         <input
           type="password"
           name="password"
+          placeholder="Password"
           autoComplete={isUp ? "new-password" : "current-password"}
           required
           /* Clerk's own minimum. Stating it here means the phone rejects a
@@ -172,7 +191,7 @@ export function AuthForm({
           minLength={8}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="squircle rounded-2xl border border-line bg-white px-3.5 py-3 text-[15px] text-ink outline-none focus:border-line-2"
+          className="squircle w-full rounded-2xl border border-[rgba(30,30,29,0.15)] bg-white px-3.5 py-3 text-[15px] text-ink outline-none placeholder:text-placeholder focus:border-[rgba(30,30,29,0.35)]"
         />
       </label>
 

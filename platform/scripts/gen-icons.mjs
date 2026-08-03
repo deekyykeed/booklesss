@@ -95,6 +95,9 @@ const ICONS = [
   "chart-bar-increasing",
   "clock-1",
   "target",
+  // the header's signed-out account button — a person, where the pill that
+  // said "Sign in" used to be (owner, 2026-08-03)
+  "user",
   // the parked /old-home scratch rail
   "users",
   "puzzle",

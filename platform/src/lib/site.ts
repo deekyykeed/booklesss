@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getMyReferralCode } from "@/lib/referral";
 
 /* ------------------------------------------------------------------ *
  * The site's identity on the open web.
@@ -69,19 +70,20 @@ export function shareText(text: string, max = SHARE_DESCRIPTION_MAX): string {
  * the domain's DNS has propagated, is a link that opens. Only localhost falls
  * back to the canonical host — nobody wants to be sent http://localhost:3000.
  *
- * REFERRALS GO HERE. The decision (2026-08-02) is a name-based code —
- * `?r=deeky-7fq`: readable in the URL, readable in the stats without a lookup
- * table, and enough for the landing page to say who sent it. It is NOT emitted
- * yet, deliberately: with Clerk off there is no account for a referral to
- * point at and no conversion to attribute it to, so a device-level scheme
- * built today is one that gets replaced the week accounts land. When they do,
- * append the code here and every share surface picks it up at once.
+ * REFERRALS ARE EMITTED HERE — the seam this comment used to reserve
+ * (2026-08-02, "when accounts land, append the code here"). Accounts landed
+ * 2026-08-03: a signed-in student's links carry `?r=<their-code>`, published
+ * into lib/account by AccountSignal because this is a plain function with no
+ * React above it. Signed out, links stay clean — a referral has to point at
+ * a person. Capture and attribution live in lib/referral.
  */
 export function shareUrl(path: string): string {
   if (typeof window === "undefined") return `${SITE_URL}${path}`;
   const { origin } = window.location;
   const local = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:|$)/.test(origin);
-  return `${local ? SITE_URL : origin}${path === "/" ? "" : path}`;
+  const base = `${local ? SITE_URL : origin}${path === "/" ? "" : path}`;
+  const code = getMyReferralCode();
+  return code ? `${base}?r=${code}` : base;
 }
 
 /** The path segment the brand card sits at: /og/home.png */
