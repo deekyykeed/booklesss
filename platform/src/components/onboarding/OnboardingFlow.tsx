@@ -8,6 +8,7 @@ import { saveOnboarding, type StudyTarget } from "@/lib/identity";
 import { OTHER_SCHOOL, type SchoolChoice } from "@/lib/schools";
 import { CoursePicker, SchoolPicker } from "@/components/identity/pickers";
 import { Button } from "@/components/ui/Button";
+import { MynaIcon } from "@/components/icons/myna";
 
 /* ------------------------------------------------------------------ *
  * Onboarding — three questions, asked straight after the account is made.
@@ -83,9 +84,6 @@ export function OnboardingFlow() {
   const offered = useMemo(() => coursesForSchool(school), [school]);
 
   const index = ORDER.indexOf(step);
-  /* Fills as each question is answered, so the last one completes the bar
-     rather than leaving it short of the end. */
-  const pct = Math.round(((index + 1) / ORDER.length) * 100);
 
   /** Save everything answered so far, then move. */
   function go(next: Step) {
@@ -120,25 +118,10 @@ export function OnboardingFlow() {
 
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-[440px] flex-col px-5 pb-10">
-      {/* ---- the progress bar, at the top (owner's ask) ---- */}
+      {/* ---- progress: a line with a check on every step done ---- */}
       <div className="pt-6">
-        <div
-          className="h-1.5 w-full overflow-hidden rounded-full bg-line"
-          role="progressbar"
-          aria-valuenow={index + 1}
-          aria-valuemin={1}
-          aria-valuemax={ORDER.length}
-          aria-label={`Step ${index + 1} of ${ORDER.length}`}
-        >
-          <div
-            className="h-full rounded-full bg-ink transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
-            style={{ width: `${Math.max(pct, 4)}%` }}
-          />
-        </div>
-        <div className="mt-2.5 flex items-center justify-between">
-          <span className="text-[12px] font-medium tracking-[0.1em] text-muted">
-            STEP {index + 1} OF {ORDER.length}
-          </span>
+        <Stepper index={index} />
+        <div className="mt-3 flex items-center justify-end">
           {index > 0 && (
             <button
               type="button"
@@ -155,7 +138,7 @@ export function OnboardingFlow() {
         {step === "school" && (
           <Card
             title="Where do you study?"
-            why="It decides which courses you get to choose from. Skip it and you get the whole library."
+            why="So we can put the right courses in front of you. Not on the list? Tell us — that's how we pick the next campus to build for."
           >
             {/* TICK AND GO (owner, 2026-08-03: "I just tick a university and I
                 get taken to a new question"). One tap is the whole answer, so
@@ -180,28 +163,26 @@ export function OnboardingFlow() {
               }}
               onName={setSchoolName}
             />
+            {/* THERE IS NO SKIP ON THIS QUESTION (owner, 2026-08-03: "the
+                student cannot skip this — why would they not add the school?
+                How do we add their courses and stuff if we have missing info
+                on them?"). He is right: an unanswered school is the one gap
+                the next question cannot work around, since it is what decides
+                which courses are even offered. "Another university" is the
+                answer for everyone we don't carry yet — an answer, not a
+                skip, which is why it insists on a name. */}
             {school === OTHER_SCHOOL && (
               <Button
                 variant="primary"
                 size="lg"
                 block
                 className="mt-4"
+                disabled={!schoolName.trim()}
                 onClick={() => go("courses")}
               >
-                Continue
+                {schoolName.trim() ? "Continue" : "Type your university"}
               </Button>
             )}
-            <button
-              type="button"
-              onClick={() => {
-                setSchool(null);
-                save({ school: null });
-                setStep("courses");
-              }}
-              className="mt-4 block w-full text-center text-[13.5px] font-medium text-muted transition-colors hover:text-ink"
-            >
-              Skip this
-            </button>
           </Card>
         )}
 
@@ -284,6 +265,66 @@ export function OnboardingFlow() {
         )}
       </div>
     </div>
+  );
+}
+
+/**
+ * Progress as a line of nodes, one per question, each ticked once answered
+ * (owner, 2026-08-03: "use a horizontal line with check marks for form
+ * progress — pick a better colour for it too").
+ *
+ * GREEN, AND NOT AS A PREFERENCE. Green is what completion means everywhere
+ * else in this app — the coverage tile, the checkpoint ticks, the course-card
+ * rings — so a ticked step in any other colour would be the one green thing
+ * that isn't progress. `--color-brand-deep` rather than the brighter
+ * `--color-brand`, because this sits on a near-white frosted surface where
+ * the light green fails contrast.
+ *
+ * The connector fills only up to the step you have finished, so the line is
+ * itself a bar: it says how far along you are before you have read a word of
+ * it. The current node is ringed rather than filled, because a filled circle
+ * on the step you are still answering claims it is done.
+ */
+function Stepper({ index }: { index: number }) {
+  return (
+    <ol className="flex items-center" aria-label={`Step ${index + 1} of ${ORDER.length}`}>
+      {ORDER.map((s, i) => {
+        const done = i < index;
+        const now = i === index;
+        return (
+          <li key={s} className={"flex items-center " + (i === 0 ? "" : "flex-1")}>
+            {/* The connector, before every node but the first. Filled when the
+                step behind it is answered. */}
+            {i > 0 && (
+              <span
+                aria-hidden="true"
+                className="mx-1.5 h-[2px] flex-1 rounded-full transition-colors duration-500"
+                style={{ backgroundColor: done || now ? "var(--color-brand-deep)" : "var(--color-line)" }}
+              />
+            )}
+            <span
+              aria-current={now ? "step" : undefined}
+              className="grid h-6 w-6 shrink-0 place-items-center rounded-full transition-colors duration-300"
+              style={{
+                backgroundColor: done ? "var(--color-brand-deep)" : "transparent",
+                boxShadow: done
+                  ? "none"
+                  : `inset 0 0 0 2px ${now ? "var(--color-brand-deep)" : "var(--color-line)"}`,
+              }}
+            >
+              {done ? (
+                <MynaIcon name="check" size={14} className="text-white" strokeWidth={3} />
+              ) : (
+                <span
+                  className="h-1.5 w-1.5 rounded-full"
+                  style={{ backgroundColor: now ? "var(--color-brand-deep)" : "transparent" }}
+                />
+              )}
+            </span>
+          </li>
+        );
+      })}
+    </ol>
   );
 }
 
