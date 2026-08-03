@@ -366,9 +366,14 @@ function renderBlock(b: Block) {
             in the kind's own hue. Bigger than the 15px it was beside a word:
             with the word gone the mark is the whole label, so it has to be
             read, not just noticed. The hue is the only colour in the box, so
-            the reading underneath stays the reading. */}
+            the reading underneath stays the reading.
+            18px, not the 22px it shipped at on 2026-08-02 — owner reading it on
+            a phone: "icon is too [big], reduce its size". Duotone is a filled
+            mark, so it carries far more weight per pixel than the hairlines
+            elsewhere in the reader, and at 22px it out-shouted the sentence it
+            is there to label. */}
         <div className="mb-2 flex" style={{ color: kind.tone }} title={kind.label}>
-          <SolarIcon name={kind.icon} size={22} />
+          <SolarIcon name={kind.icon} size={18} />
           {/* Off-screen, not absent: the mark has no text of its own, so this
               is what a screen reader announces. Same trick as .grasp-label. */}
           <span className="grasp-label">{kind.label}</span>
