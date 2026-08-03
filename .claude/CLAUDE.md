@@ -254,6 +254,39 @@ Everything else monochrome is MynaUI.
 ### Transcription
 `tools/transcribe.py` uses OpenAI Whisper (`small.en` model). Outputs `[video-name]_transcript.md` alongside the source video. Skips files already transcribed. Source video collection is in `Schools/UNZA/_pipeline/_video-archive/` (ECO 155 macroeconomics, MIT 14.01SC microeconomics).
 
+### Course Pipeline (Supabase, internal)
+
+Everything ZCAS teaches, scraped 2026-08-04 from `zcasu.edu.zm/all-programmes/`
+and held in the Booklesss Supabase project as a **ranked backlog of courses to
+build**. Four tables, a real hierarchy:
+
+```text
+pipeline_schools (4) → pipeline_programmes (60) → pipeline_programme_subjects (979) → pipeline_subjects (357)
+```
+
+`pipeline_subjects` is the unit of work: **one row per distinct course, deduped
+across programmes.** 48% of courses are taught in 2+ programmes, so the queue is
+ranked by **reach** (`programme_count`) — building one course can serve twenty
+programmes. **349 teachable courses, 4 live, 345 to build.** The join table is
+where the codes, years and semesters live.
+
+Query it through the views, not the tables: **`pipeline_queue`** (the build
+queue), **`pipeline_curriculum`** (the full school→programme→course tree, drills
+both ways), **`pipeline_school_summary`**.
+
+**These tables are INTERNAL.** They carry course codes and school names, which
+must never reach a student (see the memory index). Unlike `courses`/`lessons`,
+which are public-read, all four have **RLS enabled with no policies** —
+service-role only — and both views are `security_invoker = true` so they cannot
+bypass it. Supabase's "RLS enabled, no policy" advisor INFO on these is the
+intent, not a gap. **Do not add a public read policy.**
+
+Re-scrape with `python3 tools/scrape_zcas_programmes.py` (`--refresh` to ignore
+cached pages). Two known source-side faults, both flagged in the data rather
+than worked around: **19 programmes publish no curriculum** (their pages
+reference tables that don't exist, so reach counts are understated) and **7
+University of Greenwich links 404** (`link_status='dead-404'`).
+
 ## Project Tracking (Linear)
 
 This project's Linear workspace is **Booklesss** (team: `Booklesss`, team id `3e290b53-b6cc-4f93-8ad4-03c0fc04a4c1`), reached via the **`linear-server`** MCP connection (tools prefixed `mcp__linear-server__*`).

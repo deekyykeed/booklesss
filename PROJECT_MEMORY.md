@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-04 (session 40)
+**Last updated:** 2026-08-04 (session 41)
 
 ---
 
@@ -91,6 +91,36 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 41 (2026-08-04, the ZCAS course pipeline). Nothing here blocks —
+the pipeline is queryable as it stands.**
+- [ ] **19 of the 60 programmes published no curriculum** and contribute zero
+      courses. Their pages say *"The course structure is as shown in Tables 1 to
+      4 below"* and then print no tables — a gap on ZCAS's site, not a parsing
+      failure (checked the raw HTML: no `<table>` element at all). Includes
+      **Bachelor of Business Administration, BA Economics, BA Human Resource
+      Management**. Consequence: reach counts are **understated**, and a student
+      on one of those programmes cannot be placed at all. Backfilling needs a
+      prospectus or student timetables — the website will not give it up.
+- [ ] **7 University of Greenwich programme links are dead (404) on ZCAS's own
+      index** — flagged `link_status='dead-404'`, zero courses each. Nothing to
+      fix our side.
+- [ ] **Offered but NOT built: `guess_placement(codes text[])`** — ranked
+      programme candidates from a student's course codes. The signal was measured
+      first and is real: **56% of codes pin exactly one programme, 80% narrow to
+      ≤3**, and the year sits in the code digit. Owner hadn't answered when the
+      session wrapped. **Caveat to carry**: within the accounting/finance cluster
+      year 1 is near-identical (six programmes share the same seven year-1
+      courses), so a first-year there resolves to the *cluster*, not a programme.
+- [ ] **The 6 `on_disk` courses are an approximate mapping**, not verified
+      equivalence — UNZA `_pipeline/` material matched to ZCAS titles by hand
+      (ECN 1115→Introduction to Microeconomics, GMS 1035→Introduction to
+      Management, HRM 1015→Human Resource Management & Development, …). Confirm
+      the syllabi actually align before treating any as a head start.
+- [ ] **8 rows are `kind='project'`** (dissertations, industrial attachment,
+      progress reports) and are excluded from the 345-course build queue as
+      assessment milestones rather than readable content. Owner has not ruled on
+      this — flip `kind` if they should count.
 
 **From session 40 (2026-08-03 into 04, the sign-up flow rebuilt on Clerk).
 Numbered 40 because 39 was taken by the brand session and a third, parallel
@@ -725,6 +755,78 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-04 (session 41 — every ZCAS programme scraped, and the course backlog becomes a ranked queue)
+
+Numbered 41: session 40 (the Clerk sign-up session) wrapped and pushed
+`50bf780` partway through this one. Its numbering is left alone.
+
+**Done:**
+- **Scraped all 60 programmes** from `zcasu.edu.zm/all-programmes/` and the 979
+  course rows inside them, into four new **internal** Supabase tables:
+  `pipeline_schools` (4) → `pipeline_programmes` (60) →
+  `pipeline_programme_subjects` (979, carries code/year/semester) →
+  `pipeline_subjects` (357). Three views on top: `pipeline_curriculum` (the full
+  school→programme→course tree), `pipeline_queue` (the build queue),
+  `pipeline_school_summary`.
+- **The headline number: 345 courses left to build.** 349 distinct teachable
+  courses, minus the 4 already live. The 979 figure is those same courses
+  counted once per programme — **48% are taught in 2+ programmes**, so the queue
+  is ranked by *reach*, not by programme. Building Academic Writing once serves
+  21 programmes. Top of queue: Academic Writing (21), Innovation and
+  Entrepreneurship (16), Research Methods (16), Principles of Accounting (15).
+- **RLS on with NO policies on all four tables** — deliberately unlike
+  `courses`/`lessons`, which are public-read. These carry course codes and school
+  names, which `feedback_no_school_or_course_codes` says must never reach a
+  student. Service-role only. The three "RLS enabled, no policy" advisor INFOs
+  are that intent, not a gap. Both views are `security_invoker = true` so they
+  cannot bypass it.
+- **Persisted the scraper** as `tools/scrape_zcas_programmes.py` — it was
+  scratchpad-only and would have died with the session. Re-run reproduces the
+  numbers exactly (60/979/357/349/7/19).
+- Measured, on the owner's idea of inferring where a student is: **56% of course
+  codes pin exactly one programme, 80% narrow to ≤3**, and the year is in the
+  code digit. Offered `guess_placement()`; not built — see Next Session.
+
+**What Worked:**
+- **Fetching the raw HTML rather than trusting WebFetch's summary.** WebFetch
+  reported 66 programmes and "NO MODULE LIST"; the real page has 60 unique
+  programmes (the School of Law section re-lists four already under Social
+  Sciences) and 41 of them *do* carry module tables. The markdown conversion had
+  dropped the tables entirely. Every count in this session came from parsing raw
+  HTML, and the first three numbers I'd have reported from WebFetch were wrong.
+- **Deduping courses across programmes before counting anything.** The naive
+  answer to "how many courses" is 979; the answer that matters is 349. The whole
+  value of the pipeline is in that collapse.
+- **Normalising titles before deduping.** ZCAS types course titles by hand per
+  programme, so the same course arrives as `Modelling`/`Modeling`,
+  `Entrepreneurship`/`Entreprenuership`, `ICT`/`IT Skills`,
+  `Intelligence`/`Inteligence`. Nine merges; without them reach splits and the
+  priority ranking is wrong. The `FIX` dict in the tool is the accumulated list.
+- **Deriving `programme_count`/`priority` in SQL from the link table after
+  seeding** rather than trusting the values Python computed — which is exactly
+  how the seeding bug below got caught.
+- **`--only` and a stable `seq` column** for seeding: the join table references
+  programmes/subjects by integer `seq`, not by 40-char slugs, which made 979 rows
+  transmittable through the MCP tool at all.
+
+**Dead Ends (do not retry):**
+- **No local Postgres client** — `psycopg2`, `psycopg`, `psql` and even
+  `requests` are all absent, so there is no path to bulk-load Supabase from
+  disk. Everything has to go through `mcp__claude_ai_Supabase__execute_sql` as
+  inline SQL, which is why the seed was chunked. Don't spend time looking for a
+  faster route next time.
+- **Two generators, two different normalisers.** `seed3.py` carried its own copy
+  of `norm()` while `subjects.py` had the improved one; 34 join rows silently
+  vanished for exactly the merged/typo'd titles, and the counts still *looked*
+  plausible (945 vs 979). Caught only by re-deriving reach in SQL and finding 5
+  mismatches and 9 orphans. **One normaliser, imported — never a second copy.**
+- **The 7 Greenwich pages are 404, not slow.** They were retried with backoff
+  across two rounds before I checked the status code. `curl -w '%{http_code}'`
+  first.
+- **`--out` defaulting under `_dev/tmp/`** means the scrape output is gitignored,
+  which is correct — but the 60 cached pages then take ~3 minutes to re-fetch on
+  a fresh clone because the dead links each burn their full retry budget.
 
 ### Session 2026-08-03 into 04 (session 40 - sign-up becomes Clerk's, the account carries the student, and the front door is rebuilt twice)
 
