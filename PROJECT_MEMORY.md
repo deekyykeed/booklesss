@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-03 (session 35)
+**Last updated:** 2026-08-03 (session 36)
 
 ---
 
@@ -91,6 +91,27 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 36 (2026-08-03, the link preview + the wordmark) — the link is
+shareable NOW; these are the follow-ups.**
+- [ ] ⚠️ **Test the preview by messaging yourself, with a cache-buster.** WhatsApp
+      caches a preview against its URL and may never fetch it twice, so every
+      link already sent today still shows an older card. Send
+      `https://booklesss.app/treasury-management?v=3` first, look at it, then
+      share the clean URL to the group. **A bad first fetch is the one 40 people
+      keep seeing.**
+- [ ] **Decide which logo wins.** "Bklsss", no glyph, is now on the social posts
+      AND the link-preview cards. `_dev/brand/` still holds the serif
+      "Booklesss" + diamond and ~19 PDF build scripts still draw it. **Two
+      identities are live.** Either propagate the wordmark to the PDFs or state
+      that documents keep the serif — right now it is undecided, not designed.
+- [ ] **The og:description for a COURSE is still the course subtitle**, which
+      never says "study notes" — only the home page's does, and the card's
+      footer. If the group drop converts badly, that line is worth a look.
+- [x] ~~School logos on the preview card~~ → **decided against, 2026-08-03.**
+      Contradicts the standing "no school names anywhere a student sees" rule
+      and reads as an endorsement Booklesss does not have. Do not re-raise
+      without the owner reopening it.
 
 **From session 35 (2026-08-03) — read the steps. The tooling is done.**
 - [ ] ⚠️ **D-11: read the first screen of every step, cold, as a stranger.**
@@ -514,6 +535,61 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-03 (session 36 — the logo loses its mark, and the link preview learns to say what it is)
+
+Numbered 36 because session 35 was claimed by the parallel session in this same
+OneDrive tree while this one was running; theirs is left alone. Commits:
+`abdfb71`, `8136a57`, `8074bab`, `e419bfe`, `01fc253`.
+
+**Done:**
+- **The logo is the word.** "Bklsss", no glyph, at 31/700 on the social posters
+  (`prog-post.mjs`) and 44→52/700 on the link-preview cards. The 32px mark was
+  too small to read as a shape at post scale and arrived as a speck.
+- **The WhatsApp preview card was rebuilt around the poster look** — brand
+  gradient, Familjen Grotesk title, purple eyebrow, un-boxed. Then rebuilt
+  AGAIN off a real screenshot of it in a chat (see below).
+- **"Study notes" is now on every card and in the site description.** The card
+  said the brand, the course and the step, and nowhere what any of it was.
+- Fixed a stray `*/` in `prog-post.mjs`'s CSS that was breaking the `.obj`
+  selector — every object slide rendered on 2 Aug shipped with no drop shadow.
+- Decided AGAINST school logos on the card (owner's call, after the conflict
+  with the no-schools rule was raised).
+
+**What Worked:**
+- **Asking the owner for a real screenshot of the preview in WhatsApp was worth
+  more than any amount of local rendering.** The card looked finished at 1200px
+  and was wrong twice over on a phone: WhatsApp draws it at ~50%, so a 28px
+  subtitle landed at ~14px and could not be read — and WhatsApp prints its OWN
+  title, description and domain UNDER the image, so the card was repeating the
+  caption in a place where it was smaller. Cutting the duplicated subtitle is
+  what paid for making everything else big. **Design the card against the
+  thumbnail, not against the file.**
+- **Verifying a deploy by byte size.** `curl -w "%{size_download}"` against the
+  live og URL, compared to the local render, proves the new card is serving
+  without eyeballing anything — an OG image is a static file so the sizes match
+  exactly. Faster and more certain than reading Vercel's dashboard.
+- **fontTools instancing to get a Google font into Satori.** `next/font/google`
+  serves woff2 and Satori reads only ttf/otf/woff. Instancing the variable font
+  at a fixed weight and clearing `flavor` produces a TTF Satori accepts.
+
+**Dead Ends (do not retry):**
+- **Registering ONE weight of a face and asking Satori for another.** Satori
+  picks a face by exact weight and does NOT synthesise — `fontWeight: 700`
+  against a 500-only registration renders silently at 500. Both weights need
+  their own instanced file. This is why the wordmark first came out the same
+  weight as the title beneath it.
+- **A wordmark at 36px on a `feature()` poster slide.** The h1 sits at y=360 and
+  the logo at y=316, so at 36 they nearly touch and the logo reads as a kicker
+  on the headline. 31/700 is the split — weight separates a logotype from a
+  heading, not size.
+- **"Bklsss" over "Booklesss" on the brand card.** The same name spelled two
+  ways on one card reads as a typo. The wordmark is suppressed where the title
+  is already the name.
+- **`git fetch origin 2>&1 | Out-Null` in PowerShell 5.1** — redirecting a
+  native command's stderr wraps each line in an ErrorRecord and fails the whole
+  statement with exit 255, even though the fetch succeeded. Don't redirect
+  stderr on git in PS.
 
 ### Session 2026-08-03 (session 35 — Treasury Management measured, repaired, and then actually read)
 

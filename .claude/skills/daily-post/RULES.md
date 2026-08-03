@@ -418,9 +418,12 @@ does.
   - **31/700 is the split**: small enough to stay clear of the h1, heavy enough
     that the weight — not the size — is what separates it from everything else
     on the slide. A logotype differs from a heading by texture, not by scale.
-- This is the **posts only**. `_dev/brand/` still holds the serif "Booklesss"
-  with the diamond, and the PDF build scripts still draw it. Two identities are
-  live until the owner says which one wins.
+- **The same wordmark is on the link-preview cards** (`platform/src/lib/og.tsx`,
+  same day), so a WhatsApp preview and a carousel slide are recognisably the
+  same object. Change one and look at the other.
+- `_dev/brand/` still holds the serif "Booklesss" with the diamond, and ~19 PDF
+  build scripts still draw it. **Two identities are live** until the owner says
+  which one wins — do not propagate the wordmark to the PDFs without asking.
 
 ## House style
 
