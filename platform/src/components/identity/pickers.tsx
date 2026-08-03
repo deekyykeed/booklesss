@@ -43,10 +43,11 @@ export function Tick({ on }: { on: boolean }) {
 const FIELD =
   "squircle h-11 w-full rounded-xl border border-line bg-white px-3.5 text-[15px] text-ink outline-none transition-colors placeholder:text-placeholder focus:border-ink";
 
+/** Course rows carry no box either — same call as the school list, same day.
+ *  The tick and the weight of the title carry selection. */
 const ROW =
-  "squircle flex items-center gap-3 rounded-xl border px-3.5 py-3 text-left transition-colors ";
-const rowTone = (on: boolean) =>
-  ROW + (on ? "border-ink bg-active" : "border-line bg-white hover:bg-active");
+  "flex w-full items-center gap-3 rounded-xl px-1 py-2.5 text-left transition-colors ";
+const rowTone = (on: boolean) => ROW + (on ? "" : "hover:bg-active/60");
 
 /** NO BOX (owner, 2026-08-03: "remove the containers around the options,
  *  that's what I'm saying looks ugly"). A bordered card per option, three deep,
@@ -261,11 +262,13 @@ export function CoursePicker({
           const on = courses.includes(c.slug);
           return (
             <button key={c.slug} type="button" onClick={() => onToggle(c.slug)} aria-pressed={on} className={rowTone(on)}>
-              <span className="min-w-0 flex-1">
-                <span className="block text-[15px] font-medium leading-tight text-ink">{c.title}</span>
-                <span className="mt-0.5 block text-[13px] leading-5 text-muted">{c.subtitle}</span>
-              </span>
               <Tick on={on} />
+              <span className="min-w-0 flex-1">
+                <span className={"block text-[15px] leading-tight text-ink " + (on ? "font-semibold" : "font-medium")}>
+                  {c.title}
+                </span>
+                <span className="mt-0.5 block truncate text-[13px] leading-5 text-muted">{c.subtitle}</span>
+              </span>
             </button>
           );
         })}
