@@ -198,17 +198,19 @@ text, so a mark written into one shows its own syntax.
 - **E-3** One `callout` per section, at most. It carries the single sentence
   that closes the loop on that section. More than one and none of them land.
 - **E-4** Negative amounts render in brackets — `(24,000)` — not with a minus
-  sign. This is the convention the ZCAS lectures and every exam script use.
+  sign. This is the accounting convention every lecture and exam script this
+  skill has met uses.
 - **E-5** Money is `ZMW` with thousands separators. State the unit in the
   column header (`ZMW'000`) rather than repeating it in every cell.
 - **E-6** Carried subtotals in a working go in `subtotals` (row indices), and
   the figure the working was building towards goes in `total`. Both get a rule
   above them and are set in ink — the way a working is ruled off on paper. Never
   fake a subtotal by bolding text inside a cell.
-- **E-7** Steps run on the ZCAS lecture's own worked examples wherever the
-  lecture has one, at its original figures, so a student can hold the step and
-  the slide side by side. Where a slide contains an arithmetic error, use the
-  correct figure and record the correction in the file's header comment.
+- **E-7** Steps run on **the course's own lecture material** — whatever was
+  handed to this course — using its worked examples wherever it has one, at
+  their original figures, so a student can hold the step and the slide side by
+  side. Where a slide contains an arithmetic error, use the correct figure and
+  record the correction in the file's header comment.
 - **E-8** A word that is **key or outside a first-year's vocabulary** gets a
   tap-to-define popup: `[[term|definition]]`. This is for the jargon the source
   material assumes and moves on from — *arbitrage*, *error account*, *front
@@ -377,9 +379,11 @@ text, so a mark written into one shows its own syntax.
 
 - **C-1** *(inherited)* Every example uses ZMW and Zambian companies — Zanaco,
   Zambeef, ZESCO, First Quantum, Airtel Zambia, LuSE-listed names.
-- **C-2** Cover what the ZCAS lecture covers, at the depth the lecture and its
-  practice questions demand. The step is exam preparation; an idea the lecturer
-  spent four slides on cannot become one sentence.
+- **C-2** Cover what **this course's** lecture covers, at the depth that lecture
+  and its practice questions demand. The step is exam preparation for the paper
+  the reader is actually sitting; an idea the lecturer spent four slides on
+  cannot become one sentence. The syllabus is set by whoever teaches the course,
+  not by this skill — read the material in the lesson folder and follow it.
 - **C-3** Where the lecture works a numeric example, the step works one too —
   with the arithmetic visible, so the reader can follow each line rather than
   trusting the answer.

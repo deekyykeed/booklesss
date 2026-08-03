@@ -37,6 +37,33 @@ rules that govern writing are produced by the improving, and the debt produced b
 the improving is paid during the writing. Split apart, that state gets read by
 whichever skill happened to be invoked.
 
+## This skill belongs to no course and no school
+
+*(owner, 2026-08-03)* It is the house style for **every** Booklesss course —
+the four on the reader today, the thirteen UNZA courses still in `_pipeline/`,
+and whatever is promoted next. So:
+
+- **No rule names a school.** Not ZCAS, not UNZA. A rule that says "cover what
+  the ZCAS lecture covers" is simply false the day a UNZA course is written
+  against it, and it will be read as true. Rules say **"this course's lecture"**
+  and **"the material in the lesson folder"** — the source is whatever was
+  handed to the course being written.
+- **No rule names a course.** Nothing about how a step is written follows from
+  it being Treasury Management rather than Microeconomics.
+- **Naming a course as *evidence* is different, and it is required.** "TM 1.1's
+  rewrite cut it to 35 words", "26 of 53 steps failed the label scan" — that is
+  the measurement a rule rests on, and stripping it would leave assertions
+  nobody can check. The test: does the course name appear in the **instruction**
+  (couples the skill) or in the **proof** (justifies it)?
+- **The tools take a path and walk whatever is under it.** They do not know what
+  a course is. `label-scan.mjs Schools` scans everything; point it at one
+  course's folder and it scans that.
+- **`DEBT.md` is the exception, by design.** A ledger of what *published* steps
+  owe has to name them. That is a record of specific work, not a rule.
+
+What is *not* course- or school-specific and stays: ZMW and Zambian companies
+(**C-1**), because that is the product, not a course.
+
 ## The files
 
 | File | What it is | When it's touched |
@@ -148,7 +175,7 @@ Three things that belong to this skill rather than the build:
 
 - **Corrections are recorded in the file's header comment** (rule **E-7**) — what
   was wrong, what it is now, where the error came from. A corrected figure with
-  no note reads as a typo to the next person holding the ZCAS slide.
+  no note reads as a typo to the next person holding the lecture slide.
 - **Tick the `DEBT.md` boxes in the same commit as the fix.** A ledger updated
   later is a ledger nobody trusts.
 - **Run the scans before `seed:course`.** They cover the rules a regex can
