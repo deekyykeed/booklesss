@@ -61,6 +61,17 @@ TRACK_ICON = -0.06       # see the module docstring
 ICON_SIZES = [192, 512, 1024]
 LOGO_HEIGHT = 512        # ink height in px; the width follows the aspect (~3.96:1)
 
+# Google's OAuth consent screen, asked for 2026-08-03. Its own named output
+# rather than a fourth ICON_SIZE, because 120 is below the PWA floor above and
+# would read as an app icon we ship: this file exists for one upload field.
+# Google's spec: square, 120x120, JPG/PNG/BMP, under 1MB.
+#
+# READ THE STANDING RULE BEFORE UPLOADING IT. Putting a logo on the consent
+# screen is what puts the app INTO Google's brand-verification review — the
+# app has been through that twice already. Generating the file is free; the
+# upload is the decision.
+CONSENT_SIZE = 120
+
 
 def outline(track_em: float) -> tuple[str, tuple[float, float, float, float]]:
     """The word as one SVG path in font units, plus the bounds of its ink.
@@ -190,6 +201,12 @@ def main() -> None:
         p = HERE / f"booklesss-icon-{size}.png"
         icon_png(size).save(p)
         written.append(p.name)
+
+    # Google's consent screen — see CONSENT_SIZE. Rendered from the outlines at
+    # 120 like every other size here, not resized down from 192.
+    p = HERE / "booklesss-google-consent-120.png"
+    icon_png(CONSENT_SIZE).save(p)
+    written.append(p.name)
 
     for name in written:
         p = HERE / name
