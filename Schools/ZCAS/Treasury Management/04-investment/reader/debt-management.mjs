@@ -37,7 +37,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Short money is cheaper. **It is cheaper because the lender only has to be there for ninety days,** and the day you most need them to still be there is precisely the day they least want to be.",
+          text: "Short money is cheaper. A ninety-day facility at 26% against a five-year loan at 32% is six points a year you keep. **It is cheaper because the lender only has to be there for ninety days,** and the day you most need them to still be there is precisely the day they least want to be.",
         },
         {
           type: "p",

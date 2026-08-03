@@ -44,7 +44,7 @@ export default {
         { type: "h2", text: "Pricing early payment" },
         {
           type: "p",
-          text: "Discount terms put a price on being paid early. \"2/10 net 30\" means take 2% off by paying within 10 days, or pay in full by day 30. **For the buyer that is a borrowing decision and it has a formula.**",
+          text: "Discount terms put a price on being paid early. \"2/10 net 30\" means take 2% off by paying within 10 days, or pay in full by day 30. For the buyer that is a borrowing decision and it has a formula.",
         },
         {
           type: "formula",

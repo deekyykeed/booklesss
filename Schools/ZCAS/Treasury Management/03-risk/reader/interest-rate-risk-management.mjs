@@ -52,15 +52,15 @@ export default {
         {
           type: "ul",
           items: [
-            "**Repricing risk.** Assets and liabilities reset on different dates, so a 5-year loan funding a 3-year investment leaves a gap after year three.",
-            "**Yield curve risk.** The shape of the [term structure](https://corporatefinanceinstitute.com/resources/fixed-income/interest-rate-risk/) changes, and it hits you differently depending on whether you borrow long or short.",
-            "**Basis risk.** The reference rates on the two sides move differently: a loan on [[LIBOR|The London benchmark most older loan and swap examples are built on, including this course's. It was phased out in 2023 in favour of rates like SOFR and SONIA, and the arithmetic is identical whichever benchmark a loan is pegged to.]] plus 2% funding an asset priced off prime.",
-            "**Options risk.** Somebody holds an embedded right and will use it: borrowers refinance when rates fall, and lenders cannot claim the same benefit when rates rise.",
+            "Repricing risk. Assets and liabilities reset on different dates, so a 5-year loan funding a 3-year investment leaves a gap after year three.",
+            "Yield curve risk. The shape of the [term structure](https://corporatefinanceinstitute.com/resources/fixed-income/interest-rate-risk/) changes, and it hits you differently depending on whether you borrow long or short.",
+            "Basis risk. The reference rates on the two sides move differently: a loan on [[LIBOR|The London benchmark most older loan and swap examples are built on, including this course's. It was phased out in 2023 in favour of rates like SOFR and SONIA, and the arithmetic is identical whichever benchmark a loan is pegged to.]] plus 2% funding an asset priced off prime.",
+            "Options risk. Somebody holds an embedded right and will use it: borrowers refinance when rates fall, and lenders cannot claim the same benefit when rates rise.",
           ],
         },
         {
           type: "p",
-          text: "In Zambia the whole chain runs through the MPC. Corporate borrowing tracks the policy rate with a spread, with prime lending typically 3–5% above it, so a rise reaches floating-rate borrowers and every new fixed-rate loan quickly. **Watching the MPC statement is not analysis, it is your early warning,** and what follows it is a decision: hedge, or carry it.",
+          text: "In Zambia the whole chain runs through the [[MPC|The Bank of Zambia's Monetary Policy Committee. It meets quarterly and sets the policy rate, which is the number every other lending rate in the country is quoted against.]]. Corporate borrowing tracks the policy rate with a spread, with prime lending typically 3–5% above it, so a rise reaches floating-rate borrowers and every new fixed-rate loan quickly. **Watching the MPC statement is not analysis, it is your early warning,** and what follows it is a decision: hedge, or carry it.",
         },
       ],
       check: {

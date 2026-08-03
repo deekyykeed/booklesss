@@ -61,7 +61,7 @@ export default {
         },
         {
           type: "p",
-          text: "The three rows are one answer in three shapes, and each is used by a different person. **The quantity goes on the purchase order and the frequency goes in the buyer's diary.** The 15 days is the one that checks the plan: it tells you whether the supplier's [[lead time|The gap between placing an order and the goods arriving. An order size the arithmetic loves is worthless if the supplier cannot deliver inside the interval it implies.]] actually fits.",
+          text: "The three rows are one answer in three shapes, and each is used by a different person. The quantity goes on the purchase order and the frequency goes in the buyer's diary. The 15 days is the one that checks the plan: it tells you whether the supplier's [[lead time|The gap between placing an order and the goods arriving. An order size the arithmetic loves is worthless if the supplier cannot deliver inside the interval it implies.]] actually fits.",
         },
         {
           type: "p",

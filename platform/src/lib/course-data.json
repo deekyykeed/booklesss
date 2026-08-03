@@ -14044,9 +14044,9 @@
                     {
                       "type": "ul",
                       "items": [
-                        "**The investment decision.** Where the money goes: long-term projects, working capital, investments inside or outside the business.",
-                        "**The financing decision.** Where the money comes from: the mix of debt and equity, the cost of those funds, and the [[hedging|Taking a second position that moves the opposite way to a risk you already carry, so the two cancel out. You give up some upside to remove the downside. It is insurance, not a bet.]] that mix forces on you.",
-                        "**Dividend policy.** What happens to the profit: how much is paid out to shareholders and how much is kept to fund growth."
+                        "The investment decision. Where the money goes: long-term projects, working capital, investments inside or outside the business.",
+                        "The financing decision. Where the money comes from: the mix of debt and equity, the cost of those funds, and the [[hedging|Taking a second position that moves the opposite way to a risk you already carry, so the two cancel out. You give up some upside to remove the downside. It is insurance, not a bet.]] that mix forces on you.",
+                        "Dividend policy. What happens to the profit: how much is paid out to shareholders and how much is kept to fund growth."
                       ]
                     },
                     {
@@ -14146,7 +14146,7 @@
                       ]
                     },
                     {
-                      "text": "The list is not eleven flat items. **The first five are the operating core, and they run in order.** [Forecast the cash](https://corporatefinanceinstitute.com/resources/financial-modeling/forecasting-cash-flow/), manage the [[working capital|The money tied up in running a business day to day: stock on the shelf and invoices customers have not paid yet, less the invoices you have not paid your suppliers. It is cash you own but cannot spend.]] that consumes it, keep enough on hand to trade, invest what is left, and manage the risks on top. **The last six point outward:** to management, the [[rating agencies|Firms like Moody's, S&P and Fitch that score how likely a borrower is to repay. The score sets the interest rate every future borrowing carries, so a downgrade costs real money.]], the banks, the investors, the customers you grant credit to, and a catch-all for M&A support and insurance. In a small company you do most of these yourself, long before you can afford anyone else to.",
+                      "text": "The list is not eleven flat items. **The first five are the operating core, and they run in order.** [Forecast the cash](https://corporatefinanceinstitute.com/resources/financial-modeling/forecasting-cash-flow/), manage the [[working capital|The money tied up in running a business day to day: stock on the shelf and invoices customers have not paid yet, less the invoices you have not paid your suppliers. It is cash you own but cannot spend.]] that consumes it, keep enough on hand to trade, invest what is left, and manage the risks on top. The last six point outward: to management, the [[rating agencies|Firms like Moody's, S&P and Fitch that score how likely a borrower is to repay. The score sets the interest rate every future borrowing carries, so a downgrade costs real money.]], the banks, the investors, the customers you grant credit to, and a catch-all for M&A support and insurance. In a small company you do most of these yourself, long before you can afford anyone else to.",
                       "type": "p"
                     },
                     {
@@ -14185,7 +14185,7 @@
                       "type": "p"
                     },
                     {
-                      "text": "The board decides the company will cover at least 70% of its dollar purchases and will never trade currency for profit. That is [policy](https://treasury-management.com/articles/how-to-write-a-robust-treasury-policy-and-limit-unwanted-outcomes), it holds for years, and it is **strategic**. The treasurer then looks at the next two quarters of wheat orders and covers the March and June exposures with [[forward contracts|An agreement to buy or sell a set amount of currency on a set future date at a price fixed today. It removes the uncertainty: you know in January what March's dollars will cost you.]], a [decision about specific exposures over months](https://treasurytoday.com/risk-management/question-answered-hedging-strategies/), which is **tactical**. On the morning a [forward](https://corporatefinanceinstitute.com/resources/derivatives/forward-contract/) matures, someone instructs the bank, checks the funds landed and files the confirmation. That is **operational**.",
+                      "text": "The board decides the company will cover at least 70% of its dollar purchases and will never trade currency for profit. That is [policy](https://treasury-management.com/articles/how-to-write-a-robust-treasury-policy-and-limit-unwanted-outcomes), it holds for years, and it is strategic. The treasurer then looks at the next two quarters of wheat orders and covers the March and June exposures with [[forward contracts|An agreement to buy or sell a set amount of currency on a set future date at a price fixed today. It removes the uncertainty: you know in January what March's dollars will cost you.]], a [decision about specific exposures over months](https://treasurytoday.com/risk-management/question-answered-hedging-strategies/), which is tactical. On the morning a [forward](https://corporatefinanceinstitute.com/resources/derivatives/forward-contract/) matures, someone instructs the bank, checks the funds landed and files the confirmation. That is operational.",
                       "type": "p"
                     },
                     {
@@ -14237,11 +14237,11 @@
                   },
                   "blocks": [
                     {
-                      "text": "On [26 February 1995 Barings Bank collapsed](https://www.fia.org/marketvoice/articles/25-years-ago-barings-offers-hard-lesson-risk-controls). It was 233 years old. Days later it was sold to ING for **one pound**. One trader in Singapore, [Nick Leeson](https://corporatefinanceinstitute.com/resources/career-map/sell-side/capital-markets/rogue-trader/), had built losses of around **£827 million** on futures positions and buried them in an [[error account|A holding account for trades that fail to settle cleanly, meant to be cleared and reconciled daily by someone other than the dealer. Left unchecked it becomes a place to park losses.]] numbered 88888 that nobody else reconciled, for roughly three years. **He dealt the trades and he settled them:** he was the [[front office|The dealers, the people who actually strike trades. The back office confirms, settles and records them. Keeping the two apart is the single most important treasury control.]] and the back office at the same time.",
+                      "text": "On [26 February 1995 Barings Bank collapsed](https://www.fia.org/marketvoice/articles/25-years-ago-barings-offers-hard-lesson-risk-controls). It was 233 years old. Days later it was sold to ING for one pound. One trader in Singapore, [Nick Leeson](https://corporatefinanceinstitute.com/resources/career-map/sell-side/capital-markets/rogue-trader/), had built losses of around **£827 million** on futures positions and buried them in an [[error account|A holding account for trades that fail to settle cleanly, meant to be cleared and reconciled daily by someone other than the dealer. Left unchecked it becomes a place to park losses.]] numbered 88888 that nobody else reconciled, for roughly three years. **He dealt the trades and he settled them:** he was the [[front office|The dealers, the people who actually strike trades. The back office confirms, settles and records them. Keeping the two apart is the single most important treasury control.]] and the back office at the same time.",
                       "type": "p"
                     },
                     {
-                      "text": "Leeson was not employed to make money by taking positions. He was there to [[arbitrage|Buying and selling the same thing in two markets at once to pocket a small price difference, with almost no risk because both legs are locked in together. It stops being arbitrage the moment one leg is left open.]] small price differences at almost no risk. Why he got so much further than that is this section's subject. It turns on a decision most owners make without noticing: **what you decide treasury is actually for.**",
+                      "text": "Leeson was not employed to make money by taking positions. He was there to [[arbitrage|Buying and selling the same thing in two markets at once to pocket a small price difference, with almost no risk because both legs are locked in together. It stops being arbitrage the moment one leg is left open.]] small price differences at almost no risk. Why he got so much further than that is this section's subject. It turns on a decision most owners make without noticing: what you decide treasury is actually for.",
                       "type": "p"
                     },
                     {
@@ -14249,7 +14249,7 @@
                       "type": "h2"
                     },
                     {
-                      "text": "Most companies run treasury as a **cost centre**, a [support function that is not expected to generate profit](https://corporatefinanceinstitute.com/resources/accounting/cost-structure/), only to control what it spends. That is the safe framing, and it has one real weakness. **Management starts asking what treasury costs rather than what it saves.** The function gets starved of budget, staff and systems until something it was watching goes wrong. If you set the budget, that failure is yours, not the treasurer's.",
+                      "text": "Most companies run treasury as a cost centre, a [support function that is not expected to generate profit](https://corporatefinanceinstitute.com/resources/accounting/cost-structure/), only to control what it spends. That is the safe framing, and it has one real weakness. Management starts asking what treasury costs rather than what it saves. The function gets starved of budget, staff and systems until something it was watching goes wrong. If you set the budget, that failure is yours, not the treasurer's.",
                       "type": "p"
                     },
                     {
@@ -14257,7 +14257,7 @@
                       "type": "h2"
                     },
                     {
-                      "text": "Companies deep in global finance, currency or commodities sometimes run treasury as a **profit centre**, earning income by trading, hedging, and charging internal business units market rates for its services. The advantages are real. Units paying a real price learn what treasury costs the group, and the treasurer has a reason to run the desk efficiently. So are the dangers: **the pull towards speculation**, arguments over internal charges, higher administration costs.",
+                      "text": "Companies deep in global finance, currency or commodities sometimes run treasury as a profit centre, earning income by trading, hedging, and charging internal business units market rates for its services. The advantages are real. Units paying a real price learn what treasury costs the group, and the treasurer has a reason to run the desk efficiently. So are the dangers: the pull towards speculation, arguments over internal charges, higher administration costs.",
                       "type": "p"
                     },
                     {
@@ -14292,7 +14292,7 @@
                   },
                   "blocks": [
                     {
-                      "text": "A small company in Lusaka has one person who pays the suppliers, and the same person ticks those payments off against the bank statement at month end. Nothing has gone wrong yet. Nobody else ever looks, so the only thing keeping the money in that account is one employee's honesty.",
+                      "text": "A small company in Lusaka has one person who pays the suppliers, and the same person does the [[reconciliation|Checking your own record of what moved against the bank's record of what moved, so anything sitting in one and not the other gets found. It only works as a control when the person doing it is not the person who made the payments.]] at month end. Nothing has gone wrong yet. Nobody else ever looks, so the only thing keeping the money in that account is one employee's honesty.",
                       "type": "p"
                     },
                     {
@@ -14467,7 +14467,7 @@
                       "type": "p"
                     },
                     {
-                      "text": "There are two decisions and they are separate. The investment decision asks how much [[safety stock|The extra inventory or cash buffer held above the minimum the business needs to operate. It buys you protection against a bad week, and it costs you whatever that money would have earned.]] and cash buffer to hold above the operating minimum.",
+                      "text": "There are [two decisions and they are separate](https://corporatefinanceinstitute.com/resources/accounting/working-capital-management/). The investment decision asks how much [[safety stock|The extra inventory or cash buffer held above the minimum the business needs to operate. It buys you protection against a bad week, and it costs you whatever that money would have earned.]] and cash buffer to hold above the operating minimum. A distributor running on ZMW 3 million of stock and a ZMW 500,000 [[cash float|The working balance kept in the account to meet day-to-day payments, as opposed to money put to work. It looks like idle cash on the statement, and it is the thing standing between you and a missed payment.]] is answering it, whether or not anyone said so.",
                       "type": "p"
                     },
                     {
@@ -14674,7 +14674,7 @@
                       "type": "h2"
                     },
                     {
-                      "text": "Discount terms put a price on being paid early. \"2/10 net 30\" means take 2% off by paying within 10 days, or pay in full by day 30. **For the buyer that is a borrowing decision and it has a formula.**",
+                      "text": "Discount terms put a price on being paid early. \"2/10 net 30\" means take 2% off by paying within 10 days, or pay in full by day 30. For the buyer that is a borrowing decision and it has a formula.",
                       "type": "p"
                     },
                     {
@@ -14846,7 +14846,7 @@
                       },
                       "blocks": [
                         {
-                          "text": "**Inventory is cash you have turned into a shape you cannot spend.** That is why it is a treasury problem and not only an operations one: every unit in the warehouse is capital that has to be funded for as long as it sits there.",
+                          "text": "**Inventory is cash you have turned into a shape you cannot spend.** A depot holding ZMW 8 million of stock that shifts every sixty days is ZMW 8 million funded, every day of the year. That is why it is a treasury problem and not only an operations one: every unit in the warehouse is capital that has to be funded for as long as it sits there.",
                           "type": "p"
                         },
                         {
@@ -14922,9 +14922,9 @@
                         {
                           "type": "ul",
                           "items": [
-                            "**Collateralised loans.** The inventory is the collateral and the bank lends a set percentage of its value, typically 50 to 80%.",
-                            "**Asset-based loans.** The lender advances against what the stock is worth rather than what the company is worth, and takes physical possession of it if you default.",
-                            "**Floor planning.** For high-value durables like vehicles and heavy equipment, the lender finances each item by serial number and each loan is repaid when that item sells."
+                            "Collateralised loans. The inventory is the collateral and the bank lends a set percentage of its value, typically 50 to 80%.",
+                            "Asset-based loans. The lender advances against what the stock is worth rather than what the company is worth, and takes physical possession of it if you default.",
+                            "Floor planning. For high-value durables like vehicles and heavy equipment, the lender finances each item by serial number and each loan is repaid when that item sells."
                           ]
                         }
                       ],
@@ -15047,7 +15047,7 @@
                           ]
                         },
                         {
-                          "text": "The three rows are one answer in three shapes, and each is used by a different person. **The quantity goes on the purchase order and the frequency goes in the buyer's diary.** The 15 days is the one that checks the plan: it tells you whether the supplier's [[lead time|The gap between placing an order and the goods arriving. An order size the arithmetic loves is worthless if the supplier cannot deliver inside the interval it implies.]] actually fits.",
+                          "text": "The three rows are one answer in three shapes, and each is used by a different person. The quantity goes on the purchase order and the frequency goes in the buyer's diary. The 15 days is the one that checks the plan: it tells you whether the supplier's [[lead time|The gap between placing an order and the goods arriving. An order size the arithmetic loves is worthless if the supplier cannot deliver inside the interval it implies.]] actually fits.",
                           "type": "p"
                         },
                         {
@@ -15136,7 +15136,7 @@
                           "type": "p"
                         },
                         {
-                          "text": "Day to day it is two jobs at once: having enough available to meet what is due, and earning something on the part that is not needed yet. Banks pay more the longer you tie money up, and charge more on an overdraft than on a term loan, because flexibility is the thing you are buying. **Moving money between accounts is worth doing only when the interest gained beats the cost of the transfer,** which is the calculation the rest of this step formalises.",
+                          "text": "Day to day it is two jobs at once: having enough available to meet what is due, and earning something on the part that is not needed yet. Banks pay more the longer you tie money up, and charge more on an overdraft than on a term loan, because flexibility is the thing you are buying. Moving money between accounts is worth doing only when the interest gained beats the cost of the transfer, which is the calculation the rest of this step formalises.",
                           "type": "p"
                         },
                         {
@@ -15169,7 +15169,7 @@
                           "type": "p"
                         },
                         {
-                          "text": "Its assumptions are its boundaries, so check them before you use it. Disbursements have to be known and spread evenly, the [opportunity cost](https://corporatefinanceinstitute.com/resources/accounting/liquidity/) constant, and the transaction fee the same whatever amount you move. **A business with a lumpy, unpredictable month has already broken the first one.**",
+                          "text": "Its assumptions are its boundaries, so check them before you use it. [[Disbursements|Money going out: the payments a business makes, as opposed to the receipts coming in. Baumol assumes they arrive at a steady rate, which is the assumption most likely to be untrue in a real month.]] have to be known and spread evenly, the [opportunity cost](https://corporatefinanceinstitute.com/resources/accounting/liquidity/) constant, and the transaction fee the same whatever amount you move. **A business with a lumpy, unpredictable month has already broken the first one.**",
                           "type": "p"
                         },
                         {
@@ -15260,15 +15260,15 @@
                           "type": "p"
                         },
                         {
-                          "text": "Miller and Orr built for that. Their model is [[stochastic|Built on the assumption that the thing being modelled moves randomly rather than predictably. It does not try to say what tomorrow's balance will be, only how far it is likely to wander.]], so it gives you three control levels rather than one right balance.",
+                          "text": "Miller and Orr built for that. Their model is [[stochastic|Built on the assumption that the thing being modelled moves randomly rather than predictably. It does not try to say what tomorrow's balance will be, only how far it is likely to wander.]], so it gives you [three control levels rather than one right balance](https://corporatefinanceinstitute.com/resources/career-map/sell-side/capital-markets/miller-orr-model/).",
                           "type": "p"
                         },
                         {
                           "type": "ul",
                           "items": [
-                            "A **lower limit**, where you sell [[marketable securities|Short-term investments such as treasury bills that can be turned back into cash quickly and at a known price. They are where a treasury parks money it may need at short notice.]] to raise cash.",
-                            "An **upper limit**, where you buy securities to shed it.",
-                            "A **return point**, which is where you come back to after either move."
+                            "A lower limit, where you sell [[marketable securities|Short-term investments such as treasury bills that can be turned back into cash quickly and at a known price. They are where a treasury parks money it may need at short notice.]] to raise cash.",
+                            "An upper limit, where you buy securities to shed it.",
+                            "A return point, which is where you come back to after either move."
                           ]
                         },
                         {
@@ -15615,14 +15615,14 @@
                         {
                           "type": "ul",
                           "items": [
-                            "**Repricing risk.** Assets and liabilities reset on different dates, so a 5-year loan funding a 3-year investment leaves a gap after year three.",
-                            "**Yield curve risk.** The shape of the [term structure](https://corporatefinanceinstitute.com/resources/fixed-income/interest-rate-risk/) changes, and it hits you differently depending on whether you borrow long or short.",
-                            "**Basis risk.** The reference rates on the two sides move differently: a loan on [[LIBOR|The London benchmark most older loan and swap examples are built on, including this course's. It was phased out in 2023 in favour of rates like SOFR and SONIA, and the arithmetic is identical whichever benchmark a loan is pegged to.]] plus 2% funding an asset priced off prime.",
-                            "**Options risk.** Somebody holds an embedded right and will use it: borrowers refinance when rates fall, and lenders cannot claim the same benefit when rates rise."
+                            "Repricing risk. Assets and liabilities reset on different dates, so a 5-year loan funding a 3-year investment leaves a gap after year three.",
+                            "Yield curve risk. The shape of the [term structure](https://corporatefinanceinstitute.com/resources/fixed-income/interest-rate-risk/) changes, and it hits you differently depending on whether you borrow long or short.",
+                            "Basis risk. The reference rates on the two sides move differently: a loan on [[LIBOR|The London benchmark most older loan and swap examples are built on, including this course's. It was phased out in 2023 in favour of rates like SOFR and SONIA, and the arithmetic is identical whichever benchmark a loan is pegged to.]] plus 2% funding an asset priced off prime.",
+                            "Options risk. Somebody holds an embedded right and will use it: borrowers refinance when rates fall, and lenders cannot claim the same benefit when rates rise."
                           ]
                         },
                         {
-                          "text": "In Zambia the whole chain runs through the MPC. Corporate borrowing tracks the policy rate with a spread, with prime lending typically 3–5% above it, so a rise reaches floating-rate borrowers and every new fixed-rate loan quickly. **Watching the MPC statement is not analysis, it is your early warning,** and what follows it is a decision: hedge, or carry it.",
+                          "text": "In Zambia the whole chain runs through the [[MPC|The Bank of Zambia's Monetary Policy Committee. It meets quarterly and sets the policy rate, which is the number every other lending rate in the country is quoted against.]]. Corporate borrowing tracks the policy rate with a spread, with prime lending typically 3–5% above it, so a rise reaches floating-rate borrowers and every new fixed-rate loan quickly. **Watching the MPC statement is not analysis, it is your early warning,** and what follows it is a decision: hedge, or carry it.",
                           "type": "p"
                         }
                       ],
@@ -15843,7 +15843,7 @@
                           ]
                         },
                         {
-                          "text": "A swap runs for years, typically two to ten, on a [[notional|The principal a swap's interest is calculated on, which is never actually exchanged. A ZMW 50 million swap moves only the interest difference, so the number on the contract is far larger than anything at risk.]] that never moves. **It is the tool for changing what your debt is,** rather than for covering one reset: a floating borrower becomes effectively fixed without refinancing a single loan.",
+                          "text": "A swap runs for years, typically two to ten, on a [[notional|The principal a swap's interest is calculated on, which is never actually exchanged. A ZMW 50 million swap moves only the interest difference, so the number on the contract is far larger than anything at risk.]] that never moves. It is the tool for changing what your debt is, rather than for covering one reset: a floating borrower becomes effectively fixed without refinancing a single loan.",
                           "type": "p"
                         },
                         {
@@ -16061,11 +16061,11 @@
                           "type": "p"
                         },
                         {
-                          "text": "Banks always quote two [rates](https://corporatefinanceinstitute.com/resources/economics/exchange-rate/): the **bid**, at which they buy the currency from you, and the **ask** or offer, at which they sell it to you. On that quote the bank buys your dollars at 12.48 and sells you dollars at 12.52, and the 0.04 between them is its margin. **You always deal at whichever rate is worse for you.** That is the entire meaning of a spread.",
+                          "text": "Banks always quote two [rates](https://corporatefinanceinstitute.com/resources/economics/exchange-rate/): the bid, at which they buy the currency from you, and the ask or offer, at which they sell it to you. On that quote the bank buys your dollars at 12.48 and sells you dollars at 12.52, and the 0.04 between them is its margin. **You always deal at whichever rate is worse for you.** That is the entire meaning of a spread.",
                           "type": "p"
                         },
                         {
-                          "text": "Before any of the arithmetic, fix the direction. A quote of USD/ZMW 12.50 says one dollar costs 12.50 kwacha, and every rate can be stated the other way round as its reciprocal. **In this course USD/ZMW means kwacha per one dollar,** and reading it backwards is the cheapest mistake available.",
+                          "text": "Before any of the arithmetic, fix the direction. A quote of USD/ZMW 12.50 says one dollar costs 12.50 kwacha, so the dollar is the [[base currency|The currency being priced, always written first in the pair. USD/ZMW quotes the price of one US dollar, so the dollar is the base and the kwacha is what it is being priced in.]], and every rate can be stated the other way round as its reciprocal. **In this course USD/ZMW means kwacha per one dollar,** and reading it backwards is the cheapest mistake available.",
                           "type": "p"
                         },
                         {
@@ -16160,11 +16160,11 @@
                         {
                           "type": "ul",
                           "items": [
-                            "**Insist on kwacha payment.** The simplest move, and it shifts all the risk to the other side. A dominant firm can enforce it. A smaller one loses the deal to a rival who will take dollars.",
-                            "**Currency surcharges.** Invoice in kwacha with a clause adding a surcharge if the rate moves beyond an agreed band, so the risk is shared rather than held.",
-                            "**Leading and lagging.** Collect receivables early in currencies you expect to weaken and delay payables in them. Useful, and be honest about what it is: a position on the currency, wearing operational clothes.",
-                            "**Natural hedging.** Match currency inflows with outflows, so a firm earning dollars from exports sources its inputs in dollars and the two move together. The cheapest durable [hedge](https://corporatefinanceinstitute.com/resources/derivatives/hedging/) there is.",
-                            "**Netting.** Two companies owing each other dollars [settle only the difference](https://corporatefinanceinstitute.com/resources/economics/netting/). Groups run [multilateral netting](https://treasurytoday.com/cash-management/netting/) through one centre, collapsing intercompany flows and the conversion cost on every one of them."
+                            "Insist on kwacha payment. The simplest move, and it shifts all the risk to the other side. A dominant firm can enforce it. A smaller one loses the deal to a rival who will take dollars.",
+                            "Currency surcharges. Invoice in kwacha with a clause adding a surcharge if the rate moves beyond an agreed band, so the risk is shared rather than held.",
+                            "Leading and lagging. Collect receivables early in currencies you expect to weaken and delay payables in them. Useful, and be honest about what it is: a position on the currency, wearing operational clothes.",
+                            "Natural hedging. Match currency inflows with outflows, so a firm earning dollars from exports sources its inputs in dollars and the two move together. The cheapest durable [hedge](https://corporatefinanceinstitute.com/resources/derivatives/hedging/) there is.",
+                            "Netting. Two companies owing each other dollars [settle only the difference](https://corporatefinanceinstitute.com/resources/economics/netting/). Groups run [multilateral netting](https://treasurytoday.com/cash-management/netting/) through one centre, collapsing intercompany flows and the conversion cost on every one of them."
                           ]
                         },
                         {
@@ -16369,7 +16369,7 @@
                       },
                       "blocks": [
                         {
-                          "text": "Short money is cheaper. **It is cheaper because the lender only has to be there for ninety days,** and the day you most need them to still be there is precisely the day they least want to be.",
+                          "text": "Short money is cheaper. A ninety-day facility at 26% against a five-year loan at 32% is six points a year you keep. **It is cheaper because the lender only has to be there for ninety days,** and the day you most need them to still be there is precisely the day they least want to be.",
                           "type": "p"
                         },
                         {
@@ -16550,12 +16550,12 @@
                         {
                           "type": "ul",
                           "items": [
-                            "**Affirmative covenants** say what you must do: hold minimum working capital or current ratios, keep interest cover ([[PBIT|Profit before interest and tax. Lenders use it because it measures what the business earns before the debt is served, which is the number that tells them whether the debt can be served.]] over interest expense) above a floor, deliver statements on time, insure the financed assets, pay your taxes.",
-                            "**Restrictive covenants** say what you cannot do without consent: take on further debt beyond a set level, sell the financed assets, pay a dividend that breaks a gearing ratio, or change what the business does."
+                            "Affirmative covenants say what you must do: hold minimum working capital or current ratios, keep interest cover ([[PBIT|Profit before interest and tax. Lenders use it because it measures what the business earns before the debt is served, which is the number that tells them whether the debt can be served.]] over interest expense) above a floor, deliver statements on time, insure the financed assets, pay your taxes.",
+                            "Restrictive covenants say what you cannot do without consent: take on further debt beyond a set level, sell the financed assets, pay a dividend that breaks a gearing ratio, or change what the business does."
                           ]
                         },
                         {
-                          "text": "A breach can trigger default and give the lender the right to demand the money back immediately, **which turns a ratio slipping by four tenths into a cash crisis in a week.** That is why treasury watches [[covenant headroom|How far a ratio is from the level that would breach the loan. It is a number you can forecast months ahead, which is the whole point of tracking it: a breach seen early is a conversation, and a breach discovered late is a demand for repayment.]] as closely as it watches cash.",
+                          "text": "A breach can trigger default and give the lender the right to demand the money back immediately, **which turns interest cover slipping from 3.2 times to 2.8 into a cash crisis in a week.** That is why treasury watches [[covenant headroom|How far a ratio is from the level that would breach the loan. It is a number you can forecast months ahead, which is the whole point of tracking it: a breach seen early is a conversation, and a breach discovered late is a demand for repayment.]] as closely as it watches cash.",
                           "type": "p"
                         },
                         {
@@ -16779,7 +16779,7 @@
                       },
                       "blocks": [
                         {
-                          "text": "A payroll reserve put into a two-year corporate note paying four points more looks like a brilliant decision for twenty-three months. **The money is already yours,** which is what makes investing a surplus unlike every other decision in finance: you are not trying to win, you are trying not to lose something you already have.",
+                          "text": "A Lusaka distributor moves ZMW 4.2 million of payroll reserve into a two-year corporate note paying four points over the bank. For twenty-three months it is the cleverest thing anyone in that finance office has done. **The money is already yours,** which is what makes investing a surplus unlike every other decision in finance: you are not trying to win, you are trying not to lose something you already have.",
                           "type": "p"
                         },
                         {
@@ -16789,9 +16789,9 @@
                         {
                           "type": "ul",
                           "items": [
-                            "**Safety first.** Do not lose the [[principal|The original amount you put in, as opposed to the interest it earns. Losing interest is a bad year; losing principal is a failure of the function.]]. That rules out default risk, [credit risk](https://corporatefinanceinstitute.com/resources/commercial-lending/credit-risk/) and market risk you were not paid to take, and it accepts that the safest homes, government paper and bank deposits, pay the least.",
-                            "**Liquidity second.** The cash may be needed tomorrow for payroll or in three months for equipment, so the [maturities have to ladder to the need](https://corporatefinanceinstitute.com/resources/accounting/liquidity/) even when that costs yield.",
-                            "**Yield last.** It is the residual. You earn whatever the market gives on what is left once the first two are satisfied."
+                            "Safety first. Do not lose the [[principal|The original amount you put in, as opposed to the interest it earns. Losing interest is a bad year; losing principal is a failure of the function.]]. That rules out default risk, [credit risk](https://corporatefinanceinstitute.com/resources/commercial-lending/credit-risk/) and [[market risk|The risk that an instrument loses value because rates or prices moved, even though nobody defaulted. You can be paid to carry it, and on a payroll reserve you are not.]] you were not paid to take, and it accepts that the safest homes, Bank of Zambia paper and bank deposits, pay the least.",
+                            "Liquidity second. The cash may be needed tomorrow for payroll or in three months for equipment, so the [maturities have to ladder to the need](https://corporatefinanceinstitute.com/resources/accounting/liquidity/) even when that costs yield.",
+                            "Yield last. It is the residual. You earn whatever the market gives on what is left once the first two are satisfied."
                           ]
                         },
                         {
@@ -16835,7 +16835,7 @@
                             ],
                             [
                               "Counterparty limits",
-                              "Maximum exposure to any single bank or institution"
+                              "Maximum exposure to any single bank, such as no more than ZMW 5 million with one name"
                             ],
                             [
                               "Maturity limits",
@@ -16906,10 +16906,10 @@
                         {
                           "type": "ul",
                           "items": [
-                            "**Treasury bills**, issued by the Bank of Zambia for 91, 182 or 364 days at a discount to face value. The safest and most liquid kwacha investment there is.",
-                            "**Call deposits**, paying interest with near-instant access. You pay for that access in the rate.",
-                            "**Term deposits** of 30 to 120 days. Better rates for locked money, and penalties for getting it back early.",
-                            "**Money market funds**, [pooled and professionally managed](https://corporatefinanceinstitute.com/resources/economics/money-market/), withdrawable at [[net asset value|What one unit of the fund is worth today: everything the fund holds, valued at market, divided by the units in issue. You get the day's number, not a rate agreed in advance.]]. Still young in Zambia and growing."
+                            "Treasury bills, issued by the Bank of Zambia for 91, 182 or 364 days at a discount to face value. The safest and most liquid kwacha investment there is.",
+                            "Call deposits, paying interest with near-instant access. You pay for that access in the rate.",
+                            "Term deposits of 30 to 120 days. Better rates for locked money, and penalties for getting it back early.",
+                            "Money market funds, [pooled and professionally managed](https://corporatefinanceinstitute.com/resources/economics/money-market/), withdrawable at [[net asset value|What one unit of the fund is worth today: everything the fund holds, valued at market, divided by the units in issue. You get the day's number, not a rate agreed in advance.]]. Still young in Zambia and growing."
                           ]
                         },
                         {
@@ -16961,8 +16961,8 @@
                         {
                           "type": "ul",
                           "items": [
-                            "**Counterparty limits.** No more than a set share of investable cash with any one [[counterparty|Whoever is on the other side of the deal and owes you the money back: the bank holding your deposit, the company whose bond you bought. Their failure is your loss, however sound the instrument looked.]], say 20% with one bank. No corporate paper below a set rating. No single issuer above a fixed amount.",
-                            "**Diversification.** [Spread across instruments and issuers](https://corporatefinanceinstitute.com/resources/economics/diversification/). Half in T-bills, 30% in call deposits across three banks, 20% in short-dated corporate bonds is diversified. All of it in one bank's certificate of deposit is a single point of failure wearing a good rate."
+                            "Counterparty limits. No more than a set share of investable cash with any one [[counterparty|Whoever is on the other side of the deal and owes you the money back: the bank holding your deposit, the company whose bond you bought. Their failure is your loss, however sound the instrument looked.]], say 20% with one bank. No corporate paper below a set rating. No single issuer above a fixed amount.",
+                            "Diversification. [Spread across instruments and issuers](https://corporatefinanceinstitute.com/resources/economics/diversification/). Half in T-bills, 30% in call deposits across three banks, 20% in short-dated corporate bonds is diversified. All of it in one bank's certificate of deposit is a single point of failure wearing a good rate."
                           ]
                         },
                         {
@@ -16991,7 +16991,7 @@
                           "type": "p"
                         },
                         {
-                          "text": "Three standard shapes organise maturities. **Laddering** spreads equal amounts across 1, 3, 6 and 12 months and rolls each maturing rung out to the far end, so there is always cash arriving. A **bullet** puts everything on one future date to meet one known need. A **barbell** splits between very short and long, say 60% in 30-day deposits and 40% in 3-year bonds, taking liquidity and yield at once with a view on rates deciding the split.",
+                          "text": "Three standard shapes organise maturities. [Laddering spreads equal amounts](https://corporatefinanceinstitute.com/resources/fixed-income/bond-ladder/) across 1, 3, 6 and 12 months and rolls each maturing rung out to the far end, so there is always cash arriving. A bullet puts everything on one future date to meet one known need. A barbell splits between very short and long, say 60% in 30-day deposits and 40% in 3-year bonds, taking liquidity and yield at once with a view on rates deciding the split.",
                           "type": "p"
                         },
                         {
@@ -17337,7 +17337,7 @@
                           "type": "h2"
                         },
                         {
-                          "text": "Both are the [central counterparty](https://corporatefinanceinstitute.com/resources/derivatives/clearing-house/) at work. For every trade the counterparty becomes the buyer to the seller and the seller to the buyer, by [[novation|Legally replacing one contract with two: your trade with the other side is torn up and rewritten as your trade with the clearing house, and theirs with it. It is what lets you stop caring who was on the other end.]], so each side faces one regulated, well-capitalised institution instead of each other. It is protected by daily marking to market, margin collection and a [[default fund|A pot the clearing members pay into, used to absorb the losses if one of them fails and its own margin is not enough. It is why a clearing house can survive a member going under.]]. CLS does this for currencies, houses like LCH for derivatives, and national depositories for securities.",
+                          "text": "Both are the [central counterparty](https://corporatefinanceinstitute.com/resources/derivatives/clearing-house/) at work. For every trade the counterparty becomes the buyer to the seller and the seller to the buyer, by [[novation|Legally replacing one contract with two: your trade with the other side is torn up and rewritten as your trade with the clearing house, and theirs with it. It is what lets you stop caring who was on the other end.]], so each side faces one regulated, well-capitalised institution instead of each other. It is protected by daily [[marking to market|Revaluing an open position at today's price every day, and settling the difference in cash. It stops a loss quietly building over months, because it is collected the day it happens.]], margin collection and a [[default fund|A pot the clearing members pay into, used to absorb the losses if one of them fails and its own margin is not enough. It is why a clearing house can survive a member going under.]]. CLS does this for currencies, houses like LCH for derivatives, and national depositories for securities.",
                           "type": "p"
                         }
                       ],
@@ -17358,7 +17358,7 @@
                       },
                       "blocks": [
                         {
-                          "text": "Three systems move essentially all the money in this country, and choosing the wrong one costs you either a fee you did not need or a day you did not have. They map straight onto the gross and net designs.",
+                          "text": "[Three systems move essentially all the money in this country](https://www.boz.zm/national-payment-systems.htm), and choosing the wrong one costs you either a fee you did not need or a day you did not have. They map straight onto the gross and net designs.",
                           "type": "p"
                         },
                         {
@@ -17483,7 +17483,7 @@
                       },
                       "blocks": [
                         {
-                          "text": "At 09:14 a dealer agrees to sell two million US dollars in March at a rate fixed today. By 09:15 that one action has to be visible in five different places, and in a spreadsheet treasury it gets typed into five of them.",
+                          "text": "At 09:14 a dealer agrees to sell two million US dollars in March at a rate fixed today. By 09:15 that one action has to be [visible in five different places](https://corporatefinanceinstitute.com/resources/accounting/treasury-management/), and in a spreadsheet treasury it gets typed into five of them.",
                           "type": "p"
                         },
                         {
@@ -17555,9 +17555,9 @@
                         {
                           "type": "ul",
                           "items": [
-                            "**Front office**, the dealers' screens: pricing tools, comparative quotes, deal booking. Where positions are taken.",
-                            "**Middle office**, the risk and control layer: monitors positions, calculates risk, checks limits, enforces policy. Large deals can require its approval before they settle.",
-                            "**Back office**, operations: processes confirmations, reconciles trades to bank statements, manages settlement instructions, chases [[fails|A trade that did not settle when it should have, because cash or securities failed to arrive. Every fail is either an error or the first sign of a counterparty in trouble, so someone has to look at each one.]]."
+                            "Front office, the dealers' screens: pricing tools, comparative quotes, deal booking. Where positions are taken.",
+                            "Middle office, the risk and control layer: monitors positions, calculates risk, checks limits, enforces policy. Large deals can require its approval before they settle.",
+                            "Back office, operations: processes confirmations, reconciles trades to bank statements, manages settlement instructions, chases [[fails|A trade that did not settle when it should have, because cash or securities failed to arrive. Every fail is either an error or the first sign of a counterparty in trouble, so someone has to look at each one.]]."
                           ]
                         },
                         {
@@ -17646,7 +17646,7 @@
                       },
                       "blocks": [
                         {
-                          "text": "You can have a system that fits your company exactly. It costs millions, takes years, needs a standing IT team, and starts ageing the day the market changes. Almost everyone buys instead, from Kyriba, FIS, ION Treasury, SAP's own treasury module, or Temenos on the banking side.",
+                          "text": "You can have a system that fits your company exactly. It costs millions, takes years, needs a standing IT team, and starts ageing the day the market changes. [Almost everyone buys instead](https://corporatefinanceinstitute.com/resources/valuation/enterprise-resource-planning-erp/), from Kyriba, FIS, ION Treasury, SAP's own treasury module, or Temenos on the banking side.",
                           "type": "p"
                         },
                         {
@@ -17671,10 +17671,10 @@
                         {
                           "type": "ul",
                           "items": [
-                            "**Data migration.** History comes out of spreadsheets, and errors planted now surface for years.",
-                            "**Integration.** Every bank connection is its own small project, and this is the work that reliably overruns.",
-                            "**User adoption.** A team that lived in Excel resists, and a half-used system produces half-quality data.",
-                            "**Complexity.** Most firms use a fraction of the features in year one, and the switched-off parts become a problem when treasury's scope grows."
+                            "Data migration. History comes out of spreadsheets, and errors planted now surface for years.",
+                            "Integration. Every bank connection is its own small project, and this is the work that reliably overruns.",
+                            "User adoption. A team that lived in Excel resists, and a half-used system produces half-quality data.",
+                            "Complexity. Most firms use a fraction of the features in year one, and the switched-off parts become a problem when treasury's scope grows."
                           ]
                         },
                         {
@@ -17699,7 +17699,7 @@
                       },
                       "blocks": [
                         {
-                          "text": "A counterparty cap written in a policy document has never once stopped a deal. The same cap typed into the booking screen stops every one of them.",
+                          "text": "A ZMW 20 million counterparty cap written in a policy document has never once stopped a deal. The same cap [typed into the booking screen](https://corporatefinanceinstitute.com/resources/accounting/internal-controls/) stops every one of them, at 16:52 on a Friday, without asking anyone's permission.",
                           "type": "p"
                         },
                         {
@@ -17711,7 +17711,7 @@
                           "type": "h2"
                         },
                         {
-                          "text": "Five returns are quantifiable enough to put in a business case, and the last one is the one nobody gets credit for.",
+                          "text": "Five returns are quantifiable enough to put in a [[business case|The document that argues a system is worth buying, in money rather than in features. It is what a finance director approves, so a benefit you cannot put a number against will not survive the meeting.]], and the last one is the one nobody gets credit for.",
                           "type": "p"
                         },
                         {

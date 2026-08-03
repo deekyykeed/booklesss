@@ -35,7 +35,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "**Inventory is cash you have turned into a shape you cannot spend.** That is why it is a treasury problem and not only an operations one: every unit in the warehouse is capital that has to be funded for as long as it sits there.",
+          text: "**Inventory is cash you have turned into a shape you cannot spend.** A depot holding ZMW 8 million of stock that shifts every sixty days is ZMW 8 million funded, every day of the year. That is why it is a treasury problem and not only an operations one: every unit in the warehouse is capital that has to be funded for as long as it sits there.",
         },
         {
           type: "p",
@@ -104,9 +104,9 @@ export default {
         {
           type: "ul",
           items: [
-            "**Collateralised loans.** The inventory is the collateral and the bank lends a set percentage of its value, typically 50 to 80%.",
-            "**Asset-based loans.** The lender advances against what the stock is worth rather than what the company is worth, and takes physical possession of it if you default.",
-            "**Floor planning.** For high-value durables like vehicles and heavy equipment, the lender finances each item by serial number and each loan is repaid when that item sells.",
+            "Collateralised loans. The inventory is the collateral and the bank lends a set percentage of its value, typically 50 to 80%.",
+            "Asset-based loans. The lender advances against what the stock is worth rather than what the company is worth, and takes physical possession of it if you default.",
+            "Floor planning. For high-value durables like vehicles and heavy equipment, the lender finances each item by serial number and each loan is repaid when that item sells.",
           ],
         },
       ],

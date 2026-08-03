@@ -84,7 +84,7 @@ export default {
         },
         {
           type: "p",
-          text: "There are two decisions and they are separate. The investment decision asks how much [[safety stock|The extra inventory or cash buffer held above the minimum the business needs to operate. It buys you protection against a bad week, and it costs you whatever that money would have earned.]] and cash buffer to hold above the operating minimum.",
+          text: "There are [two decisions and they are separate](https://corporatefinanceinstitute.com/resources/accounting/working-capital-management/). The investment decision asks how much [[safety stock|The extra inventory or cash buffer held above the minimum the business needs to operate. It buys you protection against a bad week, and it costs you whatever that money would have earned.]] and cash buffer to hold above the operating minimum. A distributor running on ZMW 3 million of stock and a ZMW 500,000 [[cash float|The working balance kept in the account to meet day-to-day payments, as opposed to money put to work. It looks like idle cash on the statement, and it is the thing standing between you and a missed payment.]] is answering it, whether or not anyone said so.",
         },
         /* Was a 3x4 table. Nothing in it lined up, so on a phone the last two
          * columns wrapped a word per line (E-9). As cards the three read as a

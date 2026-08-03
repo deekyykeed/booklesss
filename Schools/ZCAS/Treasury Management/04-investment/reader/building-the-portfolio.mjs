@@ -42,10 +42,10 @@ export default {
         {
           type: "ul",
           items: [
-            "**Treasury bills**, issued by the Bank of Zambia for 91, 182 or 364 days at a discount to face value. The safest and most liquid kwacha investment there is.",
-            "**Call deposits**, paying interest with near-instant access. You pay for that access in the rate.",
-            "**Term deposits** of 30 to 120 days. Better rates for locked money, and penalties for getting it back early.",
-            "**Money market funds**, [pooled and professionally managed](https://corporatefinanceinstitute.com/resources/economics/money-market/), withdrawable at [[net asset value|What one unit of the fund is worth today: everything the fund holds, valued at market, divided by the units in issue. You get the day's number, not a rate agreed in advance.]]. Still young in Zambia and growing.",
+            "Treasury bills, issued by the Bank of Zambia for 91, 182 or 364 days at a discount to face value. The safest and most liquid kwacha investment there is.",
+            "Call deposits, paying interest with near-instant access. You pay for that access in the rate.",
+            "Term deposits of 30 to 120 days. Better rates for locked money, and penalties for getting it back early.",
+            "Money market funds, [pooled and professionally managed](https://corporatefinanceinstitute.com/resources/economics/money-market/), withdrawable at [[net asset value|What one unit of the fund is worth today: everything the fund holds, valued at market, divided by the units in issue. You get the day's number, not a rate agreed in advance.]]. Still young in Zambia and growing.",
           ],
         },
         { type: "h2", text: "Going out further" },
@@ -98,8 +98,8 @@ export default {
         {
           type: "ul",
           items: [
-            "**Counterparty limits.** No more than a set share of investable cash with any one [[counterparty|Whoever is on the other side of the deal and owes you the money back: the bank holding your deposit, the company whose bond you bought. Their failure is your loss, however sound the instrument looked.]], say 20% with one bank. No corporate paper below a set rating. No single issuer above a fixed amount.",
-            "**Diversification.** [Spread across instruments and issuers](https://corporatefinanceinstitute.com/resources/economics/diversification/). Half in T-bills, 30% in call deposits across three banks, 20% in short-dated corporate bonds is diversified. All of it in one bank's certificate of deposit is a single point of failure wearing a good rate.",
+            "Counterparty limits. No more than a set share of investable cash with any one [[counterparty|Whoever is on the other side of the deal and owes you the money back: the bank holding your deposit, the company whose bond you bought. Their failure is your loss, however sound the instrument looked.]], say 20% with one bank. No corporate paper below a set rating. No single issuer above a fixed amount.",
+            "Diversification. [Spread across instruments and issuers](https://corporatefinanceinstitute.com/resources/economics/diversification/). Half in T-bills, 30% in call deposits across three banks, 20% in short-dated corporate bonds is diversified. All of it in one bank's certificate of deposit is a single point of failure wearing a good rate.",
           ],
         },
         {
@@ -133,7 +133,7 @@ export default {
         },
         {
           type: "p",
-          text: "Three standard shapes organise maturities. **Laddering** spreads equal amounts across 1, 3, 6 and 12 months and rolls each maturing rung out to the far end, so there is always cash arriving. A **bullet** puts everything on one future date to meet one known need. A **barbell** splits between very short and long, say 60% in 30-day deposits and 40% in 3-year bonds, taking liquidity and yield at once with a view on rates deciding the split.",
+          text: "Three standard shapes organise maturities. [Laddering spreads equal amounts](https://corporatefinanceinstitute.com/resources/fixed-income/bond-ladder/) across 1, 3, 6 and 12 months and rolls each maturing rung out to the far end, so there is always cash arriving. A bullet puts everything on one future date to meet one known need. A barbell splits between very short and long, say 60% in 30-day deposits and 40% in 3-year bonds, taking liquidity and yield at once with a view on rates deciding the split.",
         },
         {
           type: "p",

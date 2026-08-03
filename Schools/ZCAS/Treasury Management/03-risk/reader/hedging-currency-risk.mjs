@@ -41,11 +41,11 @@ export default {
         {
           type: "ul",
           items: [
-            "**Insist on kwacha payment.** The simplest move, and it shifts all the risk to the other side. A dominant firm can enforce it. A smaller one loses the deal to a rival who will take dollars.",
-            "**Currency surcharges.** Invoice in kwacha with a clause adding a surcharge if the rate moves beyond an agreed band, so the risk is shared rather than held.",
-            "**Leading and lagging.** Collect receivables early in currencies you expect to weaken and delay payables in them. Useful, and be honest about what it is: a position on the currency, wearing operational clothes.",
-            "**Natural hedging.** Match currency inflows with outflows, so a firm earning dollars from exports sources its inputs in dollars and the two move together. The cheapest durable [hedge](https://corporatefinanceinstitute.com/resources/derivatives/hedging/) there is.",
-            "**Netting.** Two companies owing each other dollars [settle only the difference](https://corporatefinanceinstitute.com/resources/economics/netting/). Groups run [multilateral netting](https://treasurytoday.com/cash-management/netting/) through one centre, collapsing intercompany flows and the conversion cost on every one of them.",
+            "Insist on kwacha payment. The simplest move, and it shifts all the risk to the other side. A dominant firm can enforce it. A smaller one loses the deal to a rival who will take dollars.",
+            "Currency surcharges. Invoice in kwacha with a clause adding a surcharge if the rate moves beyond an agreed band, so the risk is shared rather than held.",
+            "Leading and lagging. Collect receivables early in currencies you expect to weaken and delay payables in them. Useful, and be honest about what it is: a position on the currency, wearing operational clothes.",
+            "Natural hedging. Match currency inflows with outflows, so a firm earning dollars from exports sources its inputs in dollars and the two move together. The cheapest durable [hedge](https://corporatefinanceinstitute.com/resources/derivatives/hedging/) there is.",
+            "Netting. Two companies owing each other dollars [settle only the difference](https://corporatefinanceinstitute.com/resources/economics/netting/). Groups run [multilateral netting](https://treasurytoday.com/cash-management/netting/) through one centre, collapsing intercompany flows and the conversion cost on every one of them.",
           ],
         },
         {

@@ -40,7 +40,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "A small company in Lusaka has one person who pays the suppliers, and the same person ticks those payments off against the bank statement at month end. Nothing has gone wrong yet. Nobody else ever looks, so the only thing keeping the money in that account is one employee's honesty.",
+          text: "A small company in Lusaka has one person who pays the suppliers, and the same person does the [[reconciliation|Checking your own record of what moved against the bank's record of what moved, so anything sitting in one and not the other gets found. It only works as a control when the person doing it is not the person who made the payments.]] at month end. Nothing has gone wrong yet. Nobody else ever looks, so the only thing keeping the money in that account is one employee's honesty.",
         },
         {
           type: "p",

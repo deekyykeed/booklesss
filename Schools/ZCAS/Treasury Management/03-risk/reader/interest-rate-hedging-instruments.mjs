@@ -118,7 +118,7 @@ export default {
         },
         {
           type: "p",
-          text: "A swap runs for years, typically two to ten, on a [[notional|The principal a swap's interest is calculated on, which is never actually exchanged. A ZMW 50 million swap moves only the interest difference, so the number on the contract is far larger than anything at risk.]] that never moves. **It is the tool for changing what your debt is,** rather than for covering one reset: a floating borrower becomes effectively fixed without refinancing a single loan.",
+          text: "A swap runs for years, typically two to ten, on a [[notional|The principal a swap's interest is calculated on, which is never actually exchanged. A ZMW 50 million swap moves only the interest difference, so the number on the contract is far larger than anything at risk.]] that never moves. It is the tool for changing what your debt is, rather than for covering one reset: a floating borrower becomes effectively fixed without refinancing a single loan.",
         },
         {
           type: "callout",

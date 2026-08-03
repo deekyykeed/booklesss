@@ -49,7 +49,7 @@ export default {
         },
         {
           type: "p",
-          text: "Day to day it is two jobs at once: having enough available to meet what is due, and earning something on the part that is not needed yet. Banks pay more the longer you tie money up, and charge more on an overdraft than on a term loan, because flexibility is the thing you are buying. **Moving money between accounts is worth doing only when the interest gained beats the cost of the transfer,** which is the calculation the rest of this step formalises.",
+          text: "Day to day it is two jobs at once: having enough available to meet what is due, and earning something on the part that is not needed yet. Banks pay more the longer you tie money up, and charge more on an overdraft than on a term loan, because flexibility is the thing you are buying. Moving money between accounts is worth doing only when the interest gained beats the cost of the transfer, which is the calculation the rest of this step formalises.",
         },
         {
           type: "callout",
@@ -86,7 +86,7 @@ export default {
         },
         {
           type: "p",
-          text: "Its assumptions are its boundaries, so check them before you use it. Disbursements have to be known and spread evenly, the [opportunity cost](https://corporatefinanceinstitute.com/resources/accounting/liquidity/) constant, and the transaction fee the same whatever amount you move. **A business with a lumpy, unpredictable month has already broken the first one.**",
+          text: "Its assumptions are its boundaries, so check them before you use it. [[Disbursements|Money going out: the payments a business makes, as opposed to the receipts coming in. Baumol assumes they arrive at a steady rate, which is the assumption most likely to be untrue in a real month.]] have to be known and spread evenly, the [opportunity cost](https://corporatefinanceinstitute.com/resources/accounting/liquidity/) constant, and the transaction fee the same whatever amount you move. **A business with a lumpy, unpredictable month has already broken the first one.**",
         },
         {
           type: "formula",
@@ -146,14 +146,14 @@ export default {
         },
         {
           type: "p",
-          text: "Miller and Orr built for that. Their model is [[stochastic|Built on the assumption that the thing being modelled moves randomly rather than predictably. It does not try to say what tomorrow's balance will be, only how far it is likely to wander.]], so it gives you three control levels rather than one right balance.",
+          text: "Miller and Orr built for that. Their model is [[stochastic|Built on the assumption that the thing being modelled moves randomly rather than predictably. It does not try to say what tomorrow's balance will be, only how far it is likely to wander.]], so it gives you [three control levels rather than one right balance](https://corporatefinanceinstitute.com/resources/career-map/sell-side/capital-markets/miller-orr-model/).",
         },
         {
           type: "ul",
           items: [
-            "A **lower limit**, where you sell [[marketable securities|Short-term investments such as treasury bills that can be turned back into cash quickly and at a known price. They are where a treasury parks money it may need at short notice.]] to raise cash.",
-            "An **upper limit**, where you buy securities to shed it.",
-            "A **return point**, which is where you come back to after either move.",
+            "A lower limit, where you sell [[marketable securities|Short-term investments such as treasury bills that can be turned back into cash quickly and at a known price. They are where a treasury parks money it may need at short notice.]] to raise cash.",
+            "An upper limit, where you buy securities to shed it.",
+            "A return point, which is where you come back to after either move.",
           ],
         },
         {

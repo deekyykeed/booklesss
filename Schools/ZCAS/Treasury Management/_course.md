@@ -39,6 +39,41 @@ nothing.
 > links. **D-5 (tables → `cards`) is the one thing still owed** and it is
 > blocked on the glyph set, not on the steps.
 
+> **2026-08-03 — D-5 was not blocked, and the course is now clean on every
+> scanner.** The glyph set went from three marks on one axis to nine on three
+> (time horizon, reserve level, how the control is wired), so three of TM's four
+> card candidates converted: the working-capital policy table, the centralisation
+> table, and the short-against-long comparison. The fourth, the financing table
+> in `working-capital-and-liquidity`, **stays a table on purpose** — different
+> axis, and a second card row under the first would replace two tables with a
+> wall.
+>
+> Also this day: **D-9** (label vs title) 15 defects → 0, **D-6** (nav folders)
+> four of five lessons now group their steps, and **D-10** opened for em dashes,
+> where TM scores **0 against CF's 449 and SM's 341**.
+>
+> **Ranked against `RULES.md` on 2026-08-03: 35 of 42 (83%)**, then repaired the
+> same day to **40 of 42 (95%)**. The first run found 2 fails and 5 weaks. Five
+> of those seven were closed in one pass:
+>
+> | Rule | Was | Now |
+> |---|---|---|
+> | **W-8** bold 1–3 a section | Fail, 10 of 21 steps | **21 of 21** |
+> | **E-8** 3–8 tappable terms | Weak, 13 of 21 | **21 of 21** (67 terms) |
+> | **C-1** ZMW and Zambian firms | Weak, 19 of 21 | **21 of 21** |
+> | **C-5** an anchor in every section | Weak, 6 bare | **0 of 57 bare** |
+> | **C-7** a source under every claim | Weak, 7 bare | **0 bare**, 1.8 a section |
+>
+> **W-8 was one mistake made 55 times**: bolding the label of a list item —
+> "Repricing risk.", "Safety first.", "Front office", "Treasury bills" — which is
+> both a term being defined and a heading in disguise, the two things the rule
+> names. Unbolding them left the sentences that actually carry the point.
+>
+> **What is left is the two rules no scanner can judge**: **C-8** (steps neither
+> pick up nor hand on the thread, debt D-7, never run on any course) and **W-15**
+> (the read-aloud pass, debt D-8, never run). Both need someone reading, not
+> measuring.
+
 | Lesson | Step | Slug | Written |
 |--------|------|------|---------|
 | 1 Treasury operations | What treasury is and what it does | `intro-to-treasury` | ✅ 2026-08-01 |

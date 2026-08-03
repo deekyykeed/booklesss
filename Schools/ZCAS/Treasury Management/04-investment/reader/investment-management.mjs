@@ -31,7 +31,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "A payroll reserve put into a two-year corporate note paying four points more looks like a brilliant decision for twenty-three months. **The money is already yours,** which is what makes investing a surplus unlike every other decision in finance: you are not trying to win, you are trying not to lose something you already have.",
+          text: "A Lusaka distributor moves ZMW 4.2 million of payroll reserve into a two-year corporate note paying four points over the bank. For twenty-three months it is the cleverest thing anyone in that finance office has done. **The money is already yours,** which is what makes investing a surplus unlike every other decision in finance: you are not trying to win, you are trying not to lose something you already have.",
         },
         {
           type: "p",
@@ -40,9 +40,9 @@ export default {
         {
           type: "ul",
           items: [
-            "**Safety first.** Do not lose the [[principal|The original amount you put in, as opposed to the interest it earns. Losing interest is a bad year; losing principal is a failure of the function.]]. That rules out default risk, [credit risk](https://corporatefinanceinstitute.com/resources/commercial-lending/credit-risk/) and market risk you were not paid to take, and it accepts that the safest homes, government paper and bank deposits, pay the least.",
-            "**Liquidity second.** The cash may be needed tomorrow for payroll or in three months for equipment, so the [maturities have to ladder to the need](https://corporatefinanceinstitute.com/resources/accounting/liquidity/) even when that costs yield.",
-            "**Yield last.** It is the residual. You earn whatever the market gives on what is left once the first two are satisfied.",
+            "Safety first. Do not lose the [[principal|The original amount you put in, as opposed to the interest it earns. Losing interest is a bad year; losing principal is a failure of the function.]]. That rules out default risk, [credit risk](https://corporatefinanceinstitute.com/resources/commercial-lending/credit-risk/) and [[market risk|The risk that an instrument loses value because rates or prices moved, even though nobody defaulted. You can be paid to carry it, and on a payroll reserve you are not.]] you were not paid to take, and it accepts that the safest homes, Bank of Zambia paper and bank deposits, pay the least.",
+            "Liquidity second. The cash may be needed tomorrow for payroll or in three months for equipment, so the [maturities have to ladder to the need](https://corporatefinanceinstitute.com/resources/accounting/liquidity/) even when that costs yield.",
+            "Yield last. It is the residual. You earn whatever the market gives on what is left once the first two are satisfied.",
           ],
         },
         {
@@ -84,7 +84,7 @@ export default {
           rows: [
             ["Approved instruments", "What treasury may buy: T-bills only, or also CDs and corporate bonds"],
             ["Credit rating limits", "The minimum acceptable rating, such as nothing below BBB for corporates"],
-            ["Counterparty limits", "Maximum exposure to any single bank or institution"],
+            ["Counterparty limits", "Maximum exposure to any single bank, such as no more than ZMW 5 million with one name"],
             ["Maturity limits", "How far out money may be committed, such as nothing beyond a year for the operating reserve"],
             ["Diversification", "How risk is spread across issuers and instruments"],
             ["Reporting", "How performance reaches management and the board"],

@@ -85,7 +85,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "You can have a system that fits your company exactly. It costs millions, takes years, needs a standing IT team, and starts ageing the day the market changes. Almost everyone buys instead, from Kyriba, FIS, ION Treasury, SAP's own treasury module, or Temenos on the banking side.",
+          text: "You can have a system that fits your company exactly. It costs millions, takes years, needs a standing IT team, and starts ageing the day the market changes. [Almost everyone buys instead](https://corporatefinanceinstitute.com/resources/valuation/enterprise-resource-planning-erp/), from Kyriba, FIS, ION Treasury, SAP's own treasury module, or Temenos on the banking side.",
         },
         {
           type: "p",
@@ -106,10 +106,10 @@ export default {
         {
           type: "ul",
           items: [
-            "**Data migration.** History comes out of spreadsheets, and errors planted now surface for years.",
-            "**Integration.** Every bank connection is its own small project, and this is the work that reliably overruns.",
-            "**User adoption.** A team that lived in Excel resists, and a half-used system produces half-quality data.",
-            "**Complexity.** Most firms use a fraction of the features in year one, and the switched-off parts become a problem when treasury's scope grows.",
+            "Data migration. History comes out of spreadsheets, and errors planted now surface for years.",
+            "Integration. Every bank connection is its own small project, and this is the work that reliably overruns.",
+            "User adoption. A team that lived in Excel resists, and a half-used system produces half-quality data.",
+            "Complexity. Most firms use a fraction of the features in year one, and the switched-off parts become a problem when treasury's scope grows.",
           ],
         },
         {
@@ -139,7 +139,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "A counterparty cap written in a policy document has never once stopped a deal. The same cap typed into the booking screen stops every one of them.",
+          text: "A ZMW 20 million counterparty cap written in a policy document has never once stopped a deal. The same cap [typed into the booking screen](https://corporatefinanceinstitute.com/resources/accounting/internal-controls/) stops every one of them, at 16:52 on a Friday, without asking anyone's permission.",
         },
         {
           type: "p",
@@ -148,7 +148,7 @@ export default {
         { type: "h2", text: "What it is worth" },
         {
           type: "p",
-          text: "Five returns are quantifiable enough to put in a business case, and the last one is the one nobody gets credit for.",
+          text: "Five returns are quantifiable enough to put in a [[business case|The document that argues a system is worth buying, in money rather than in features. It is what a finance director approves, so a benefit you cannot put a number against will not survive the meeting.]], and the last one is the one nobody gets credit for.",
         },
         {
           type: "table",

@@ -113,13 +113,65 @@ async function candidates(host) {
 
 const MIME = { svg: "image/svg+xml", png: "image/png", ico: "image/x-icon", jpg: "image/jpeg" };
 
+/* An .ico is a container: a 6-byte header, then one 16-byte directory entry per
+ * frame, then the frames. A site that ships 16/32/48 in one file is three
+ * images' worth of bytes for one mark, which is how the Bank of Zambia's 15.4KB
+ * icon failed a 12KB cap meant to keep logos out — the cap was right and the
+ * measurement was wrong, because no single frame in it is over 1.2KB.
+ *
+ * This pulls out one frame and rewraps it as a valid single-frame .ico. The
+ * frames are usually BMP-encoded rather than PNG, so re-wrapping is the cheap
+ * move: decoding to PNG would need an encoder, and a one-frame ico renders in
+ * an <img> exactly the same way.
+ *
+ * Returns null for anything that is not a parseable icon, so a real oversized
+ * logo still fails the cap as before. DO NOT raise MAX_BYTES instead. */
+function shrinkIco(buf) {
+  if (buf.length < 22) return null;
+  if (buf.readUInt16LE(0) !== 0 || buf.readUInt16LE(2) !== 1) return null; // reserved, type=icon
+  const count = buf.readUInt16LE(4);
+  if (count < 1 || buf.length < 6 + count * 16) return null;
+
+  const entries = [];
+  for (let i = 0; i < count; i++) {
+    const o = 6 + i * 16;
+    const w = buf[o] || 256;
+    const size = buf.readUInt32LE(o + 8);
+    const offset = buf.readUInt32LE(o + 12);
+    if (offset + size > buf.length) return null;
+    entries.push({ w, size, offset, dir: buf.subarray(o, o + 16) });
+  }
+  /* 32px is the chip's drawing size. Prefer it, then the nearest thing that is
+   * not larger, so the mark is never upscaled into mush. */
+  entries.sort((a, b) => Math.abs(a.w - 32) - Math.abs(b.w - 32) || a.size - b.size);
+  const pick = entries[0];
+  if (!pick) return null;
+
+  const dir = Buffer.from(pick.dir);
+  dir.writeUInt32LE(pick.size, 8);
+  dir.writeUInt32LE(22, 12); // the single frame now starts right after one entry
+  return Buffer.concat([
+    Buffer.from([0, 0, 1, 0, 1, 0]),
+    dir,
+    buf.subarray(pick.offset, pick.offset + pick.size),
+  ]);
+}
+
 async function iconFor(host) {
   for (const url of await candidates(host)) {
     try {
       const res = await fetch(url, { headers: { "user-agent": UA } });
       if (!res.ok) continue;
-      const buf = Buffer.from(await res.arrayBuffer());
-      if (!buf.length || buf.length > MAX_BYTES) continue;
+      let buf = Buffer.from(await res.arrayBuffer());
+      if (!buf.length) continue;
+      if (buf.length > MAX_BYTES && buf.readUInt16LE?.(0) === 0) {
+        const one = shrinkIco(buf);
+        if (one && one.length <= MAX_BYTES) {
+          console.log(`  ${host}: ico ${(buf.length / 1024).toFixed(1)}KB → one frame ${(one.length / 1024).toFixed(1)}KB`);
+          buf = one;
+        }
+      }
+      if (buf.length > MAX_BYTES) continue;
       const ext = (/\.(svg|png|ico|jpg|jpeg)(\?|$)/i.exec(url)?.[1] ?? "ico").toLowerCase();
       const mime = res.headers.get("content-type")?.split(";")[0] || MIME[ext] || MIME.ico;
       if (!mime.startsWith("image/")) continue;

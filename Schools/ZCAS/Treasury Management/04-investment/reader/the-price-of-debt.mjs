@@ -44,13 +44,13 @@ export default {
         {
           type: "ul",
           items: [
-            "**Affirmative covenants** say what you must do: hold minimum working capital or current ratios, keep interest cover ([[PBIT|Profit before interest and tax. Lenders use it because it measures what the business earns before the debt is served, which is the number that tells them whether the debt can be served.]] over interest expense) above a floor, deliver statements on time, insure the financed assets, pay your taxes.",
-            "**Restrictive covenants** say what you cannot do without consent: take on further debt beyond a set level, sell the financed assets, pay a dividend that breaks a gearing ratio, or change what the business does.",
+            "Affirmative covenants say what you must do: hold minimum working capital or current ratios, keep interest cover ([[PBIT|Profit before interest and tax. Lenders use it because it measures what the business earns before the debt is served, which is the number that tells them whether the debt can be served.]] over interest expense) above a floor, deliver statements on time, insure the financed assets, pay your taxes.",
+            "Restrictive covenants say what you cannot do without consent: take on further debt beyond a set level, sell the financed assets, pay a dividend that breaks a gearing ratio, or change what the business does.",
           ],
         },
         {
           type: "p",
-          text: "A breach can trigger default and give the lender the right to demand the money back immediately, **which turns a ratio slipping by four tenths into a cash crisis in a week.** That is why treasury watches [[covenant headroom|How far a ratio is from the level that would breach the loan. It is a number you can forecast months ahead, which is the whole point of tracking it: a breach seen early is a conversation, and a breach discovered late is a demand for repayment.]] as closely as it watches cash.",
+          text: "A breach can trigger default and give the lender the right to demand the money back immediately, **which turns interest cover slipping from 3.2 times to 2.8 into a cash crisis in a week.** That is why treasury watches [[covenant headroom|How far a ratio is from the level that would breach the loan. It is a number you can forecast months ahead, which is the whole point of tracking it: a breach seen early is a conversation, and a breach discovered late is a demand for repayment.]] as closely as it watches cash.",
         },
         {
           type: "callout",

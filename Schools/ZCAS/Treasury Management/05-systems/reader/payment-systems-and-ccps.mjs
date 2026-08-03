@@ -101,7 +101,7 @@ export default {
         { type: "h2", text: "The idea underneath both" },
         {
           type: "p",
-          text: "Both are the [central counterparty](https://corporatefinanceinstitute.com/resources/derivatives/clearing-house/) at work. For every trade the counterparty becomes the buyer to the seller and the seller to the buyer, by [[novation|Legally replacing one contract with two: your trade with the other side is torn up and rewritten as your trade with the clearing house, and theirs with it. It is what lets you stop caring who was on the other end.]], so each side faces one regulated, well-capitalised institution instead of each other. It is protected by daily marking to market, margin collection and a [[default fund|A pot the clearing members pay into, used to absorb the losses if one of them fails and its own margin is not enough. It is why a clearing house can survive a member going under.]]. CLS does this for currencies, houses like LCH for derivatives, and national depositories for securities.",
+          text: "Both are the [central counterparty](https://corporatefinanceinstitute.com/resources/derivatives/clearing-house/) at work. For every trade the counterparty becomes the buyer to the seller and the seller to the buyer, by [[novation|Legally replacing one contract with two: your trade with the other side is torn up and rewritten as your trade with the clearing house, and theirs with it. It is what lets you stop caring who was on the other end.]], so each side faces one regulated, well-capitalised institution instead of each other. It is protected by daily [[marking to market|Revaluing an open position at today's price every day, and settling the difference in cash. It stops a loss quietly building over months, because it is collected the day it happens.]], margin collection and a [[default fund|A pot the clearing members pay into, used to absorb the losses if one of them fails and its own margin is not enough. It is why a clearing house can survive a member going under.]]. CLS does this for currencies, houses like LCH for derivatives, and national depositories for securities.",
         },
       ],
       check: {
@@ -126,7 +126,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Three systems move essentially all the money in this country, and choosing the wrong one costs you either a fee you did not need or a day you did not have. They map straight onto the gross and net designs.",
+          text: "[Three systems move essentially all the money in this country](https://www.boz.zm/national-payment-systems.htm), and choosing the wrong one costs you either a fee you did not need or a day you did not have. They map straight onto the gross and net designs.",
         },
         {
           type: "table",

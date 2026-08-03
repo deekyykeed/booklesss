@@ -48,9 +48,9 @@ export default {
         {
           type: "ul",
           items: [
-            "**The investment decision.** Where the money goes: long-term projects, working capital, investments inside or outside the business.",
-            "**The financing decision.** Where the money comes from: the mix of debt and equity, the cost of those funds, and the [[hedging|Taking a second position that moves the opposite way to a risk you already carry, so the two cancel out. You give up some upside to remove the downside. It is insurance, not a bet.]] that mix forces on you.",
-            "**Dividend policy.** What happens to the profit: how much is paid out to shareholders and how much is kept to fund growth.",
+            "The investment decision. Where the money goes: long-term projects, working capital, investments inside or outside the business.",
+            "The financing decision. Where the money comes from: the mix of debt and equity, the cost of those funds, and the [[hedging|Taking a second position that moves the opposite way to a risk you already carry, so the two cancel out. You give up some upside to remove the downside. It is insurance, not a bet.]] that mix forces on you.",
+            "Dividend policy. What happens to the profit: how much is paid out to shareholders and how much is kept to fund growth.",
           ],
         },
         {
@@ -101,7 +101,7 @@ export default {
         },
         {
           type: "p",
-          text: "The list is not eleven flat items. **The first five are the operating core, and they run in order.** [Forecast the cash](https://corporatefinanceinstitute.com/resources/financial-modeling/forecasting-cash-flow/), manage the [[working capital|The money tied up in running a business day to day: stock on the shelf and invoices customers have not paid yet, less the invoices you have not paid your suppliers. It is cash you own but cannot spend.]] that consumes it, keep enough on hand to trade, invest what is left, and manage the risks on top. **The last six point outward:** to management, the [[rating agencies|Firms like Moody's, S&P and Fitch that score how likely a borrower is to repay. The score sets the interest rate every future borrowing carries, so a downgrade costs real money.]], the banks, the investors, the customers you grant credit to, and a catch-all for M&A support and insurance. In a small company you do most of these yourself, long before you can afford anyone else to.",
+          text: "The list is not eleven flat items. **The first five are the operating core, and they run in order.** [Forecast the cash](https://corporatefinanceinstitute.com/resources/financial-modeling/forecasting-cash-flow/), manage the [[working capital|The money tied up in running a business day to day: stock on the shelf and invoices customers have not paid yet, less the invoices you have not paid your suppliers. It is cash you own but cannot spend.]] that consumes it, keep enough on hand to trade, invest what is left, and manage the risks on top. The last six point outward: to management, the [[rating agencies|Firms like Moody's, S&P and Fitch that score how likely a borrower is to repay. The score sets the interest rate every future borrowing carries, so a downgrade costs real money.]], the banks, the investors, the customers you grant credit to, and a catch-all for M&A support and insurance. In a small company you do most of these yourself, long before you can afford anyone else to.",
         },
         {
           type: "callout",

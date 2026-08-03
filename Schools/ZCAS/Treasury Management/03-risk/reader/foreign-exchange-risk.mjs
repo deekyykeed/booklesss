@@ -90,11 +90,11 @@ export default {
         },
         {
           type: "p",
-          text: "Banks always quote two [rates](https://corporatefinanceinstitute.com/resources/economics/exchange-rate/): the **bid**, at which they buy the currency from you, and the **ask** or offer, at which they sell it to you. On that quote the bank buys your dollars at 12.48 and sells you dollars at 12.52, and the 0.04 between them is its margin. **You always deal at whichever rate is worse for you.** That is the entire meaning of a spread.",
+          text: "Banks always quote two [rates](https://corporatefinanceinstitute.com/resources/economics/exchange-rate/): the bid, at which they buy the currency from you, and the ask or offer, at which they sell it to you. On that quote the bank buys your dollars at 12.48 and sells you dollars at 12.52, and the 0.04 between them is its margin. **You always deal at whichever rate is worse for you.** That is the entire meaning of a spread.",
         },
         {
           type: "p",
-          text: "Before any of the arithmetic, fix the direction. A quote of USD/ZMW 12.50 says one dollar costs 12.50 kwacha, and every rate can be stated the other way round as its reciprocal. **In this course USD/ZMW means kwacha per one dollar,** and reading it backwards is the cheapest mistake available.",
+          text: "Before any of the arithmetic, fix the direction. A quote of USD/ZMW 12.50 says one dollar costs 12.50 kwacha, so the dollar is the [[base currency|The currency being priced, always written first in the pair. USD/ZMW quotes the price of one US dollar, so the dollar is the base and the kwacha is what it is being priced in.]], and every rate can be stated the other way round as its reciprocal. **In this course USD/ZMW means kwacha per one dollar,** and reading it backwards is the cheapest mistake available.",
         },
         {
           type: "formula",

@@ -85,7 +85,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "At 09:14 a dealer agrees to sell two million US dollars in March at a rate fixed today. By 09:15 that one action has to be visible in five different places, and in a spreadsheet treasury it gets typed into five of them.",
+          text: "At 09:14 a dealer agrees to sell two million US dollars in March at a rate fixed today. By 09:15 that one action has to be [visible in five different places](https://corporatefinanceinstitute.com/resources/accounting/treasury-management/), and in a spreadsheet treasury it gets typed into five of them.",
         },
         {
           type: "p",
@@ -153,9 +153,9 @@ export default {
         {
           type: "ul",
           items: [
-            "**Front office**, the dealers' screens: pricing tools, comparative quotes, deal booking. Where positions are taken.",
-            "**Middle office**, the risk and control layer: monitors positions, calculates risk, checks limits, enforces policy. Large deals can require its approval before they settle.",
-            "**Back office**, operations: processes confirmations, reconciles trades to bank statements, manages settlement instructions, chases [[fails|A trade that did not settle when it should have, because cash or securities failed to arrive. Every fail is either an error or the first sign of a counterparty in trouble, so someone has to look at each one.]].",
+            "Front office, the dealers' screens: pricing tools, comparative quotes, deal booking. Where positions are taken.",
+            "Middle office, the risk and control layer: monitors positions, calculates risk, checks limits, enforces policy. Large deals can require its approval before they settle.",
+            "Back office, operations: processes confirmations, reconciles trades to bank statements, manages settlement instructions, chases [[fails|A trade that did not settle when it should have, because cash or securities failed to arrive. Every fail is either an error or the first sign of a counterparty in trouble, so someone has to look at each one.]].",
           ],
         },
         { type: "h2", text: "Why the software enforces it" },
