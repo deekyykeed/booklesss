@@ -35,13 +35,9 @@ pdfmetrics.registerFontFamily("Title", normal="Title", bold="Title-Bold",
                               italic="Title", boldItalic="Title-Bold")
 
 # -- BRAND ASSETS -----------------------------------------------------------
-BRAND_DIR   = os.path.join(os.path.dirname(__file__), "..", "..", "_dev", "brand")
-LOGO_BLACK  = os.path.join(BRAND_DIR, "booklesss-logo-black.png")
-MARK_BLACK  = os.path.join(BRAND_DIR, "booklesss-mark-black.png")
-GRAIN       = os.path.join(BRAND_DIR, "grain.png")
+BRAND_DIR   = os.path.join(os.path.dirname(__file__), "..", "..", "Brand")
+LOGO_BLACK  = os.path.join(BRAND_DIR, "booklesss-wordmark-black.png")
 _logo_black = ImageReader(LOGO_BLACK) if os.path.exists(LOGO_BLACK) else None
-_mark_black = ImageReader(MARK_BLACK) if os.path.exists(MARK_BLACK) else None
-_grain      = ImageReader(GRAIN)      if os.path.exists(GRAIN)      else None
 
 # -- PALETTE ----------------------------------------------------------------
 C_COVER      = colors.HexColor("#FFFDE8")
@@ -125,8 +121,6 @@ ST = make_styles()
 def _paint_paper(canvas, bg):
     canvas.setFillColor(bg)
     canvas.rect(0, 0, W, H, fill=1, stroke=0)
-    if _grain is not None:
-        canvas.drawImage(_grain, 0, 0, width=W, height=H, mask="auto")
 
 def cover_bg(canvas, doc):
     canvas.saveState()
@@ -275,72 +269,6 @@ def table_std(data, col_widths):
     ]))
     return KeepTogether([Spacer(1, 6), t, Spacer(1, 10)])
 
-# -- COVER MOTIF ------------------------------------------------------------
-class LogoTriple(Flowable):
-    def __init__(self, img, center=18, side=13.5, gap=8.25, side_alpha=0.3):
-        super().__init__()
-        self.img = img
-        self.center, self.side, self.gap = center, side, gap
-        self.side_alpha = side_alpha
-        self._h = center
-
-    def wrap(self, aw, ah):
-        self._aw = aw
-        return aw, self._h
-
-    def _draw_mark(self, x_center, size):
-        self.canv.drawImage(self.img, x_center - size / 2.0, self._h / 2.0 - size / 2.0,
-                            width=size, height=size, mask="auto", preserveAspectRatio=True)
-
-    def draw(self):
-        c = self.canv
-        mid = getattr(self, "_aw", self._h) / 2.0
-        step = self.center / 2.0 + self.gap + self.side / 2.0
-        c.saveState()
-        c.setFillAlpha(self.side_alpha)
-        self._draw_mark(mid - step, self.side)
-        self._draw_mark(mid + step, self.side)
-        c.restoreState()
-        self._draw_mark(mid, self.center)
-
-
-class TripleDiamond(Flowable):
-    def __init__(self, center_size=15, side_size=10, gap=13, color=None, stroke_width=1.3):
-        super().__init__()
-        self.cs, self.ss, self.gap = center_size, side_size, gap
-        self.color = color or HEADING_DARK
-        self.sw = stroke_width
-        self._h = center_size
-
-    def wrap(self, aw, ah):
-        self._aw = aw
-        return aw, self._h
-
-    def _diamond(self, cx, cy, s):
-        p = self.canv.beginPath()
-        p.moveTo(cx,       cy + s/2)
-        p.lineTo(cx + s/2, cy)
-        p.lineTo(cx,       cy - s/2)
-        p.lineTo(cx - s/2, cy)
-        p.close()
-        return p
-
-    def draw(self):
-        c = self.canv
-        c.saveState()
-        mid = getattr(self, "_aw", 100) / 2
-        cy = self._h / 2
-        step = self.cs / 2 + self.gap + self.ss / 2
-        c.setStrokeColor(self.color)
-        c.setLineWidth(self.sw)
-        c.setFillColor(colors.white)
-        c.drawPath(self._diamond(mid - step, cy, self.ss), stroke=1, fill=0)
-        c.drawPath(self._diamond(mid + step, cy, self.ss), stroke=1, fill=0)
-        c.setFillColor(self.color)
-        c.drawPath(self._diamond(mid, cy, self.cs), stroke=0, fill=1)
-        c.restoreState()
-
-
 # -- BUILD ------------------------------------------------------------------
 def build():
     doc = BaseDocTemplate(
@@ -361,13 +289,11 @@ def build():
         PageTemplate(id="body",  frames=[body_frame],  onPage=page_bg, onPageEnd=body_page),
     ])
 
-    motif = LogoTriple(_mark_black) if _mark_black else TripleDiamond()
     story = []
 
     # -- COVER -------------------------------------------------------------
     story += [
         Spacer(1, 60),
-        motif,
         Spacer(1, 32),
         Paragraph("BOOKLESSS � INTERNAL", ST["cover_step"]),
         Spacer(1, 8),

@@ -145,7 +145,7 @@ shareable NOW; these are the follow-ups.**
       share the clean URL to the group. **A bad first fetch is the one 40 people
       keep seeing.**
 - [ ] **Decide which logo wins.** "Bklsss", no glyph, is now on the social posts
-      AND the link-preview cards. `_dev/brand/` still holds the serif
+      AND the link-preview cards. `Brand/` still holds the serif
       "Booklesss" + diamond and ~19 PDF build scripts still draw it. **Two
       identities are live.** Either propagate the wordmark to the PDFs or state
       that documents keep the serif — right now it is undecided, not designed.
@@ -2547,7 +2547,7 @@ dashboard-click launch items (Speed Insights, Fluid compute, bot WAF).
   2. Recoloured Forest & Jade (dropped gold).
   3. **Final pivot — match booklesss.framer.ai:** cream paper + film grain every page, **black logo** top-left, centred **◇◆◇** motif, **Parastoo** serif title (#121212 / 42pt / 1.1) + serif headings (#3D3D3D / 1.2), jade kept as interior accent. Light/editorial — no dark cover.
   4. **Cover refined:** cover bg `#FFFDE8` (body pages stay `#FFFEF2`) via `_paint_paper(bg)`; grain regenerated coarser (~3px); ◇◆◇ rebuilt as `LogoTriple` — three copies of the **real** `booklesss-mark-black.png` at exact website dims (centre 24px, sides 18px, gap 11px → ×0.75 to pt), side marks at 0.3 opacity.
-- Brand assets: moved logos from Partnr Bucket → `_dev/brand/` (black + generated white wordmark + diamond mark); generated `grain.png`; created top-level `Booklesss Bucket/` drop zone.
+- Brand assets: moved logos from Partnr Bucket → `_dev/brand/` (black + generated white wordmark + diamond mark); generated `grain.png`; created top-level `Booklesss Bucket/` drop zone. *(Moved again to `Brand/` on 2026-08-03.)*
 - Researched Nano Banana (Gemini image API) — confirmed image-input editing (edit/compose/style-transfer); user chose `gemini-2.5-flash-image`.
 - Created a demo Slack canvas in `#all-booklesss-20` (note: connected workspace is `booklesss20.slack.com`, paid plan — differs from `bookless10` in workspace.md).
 

@@ -56,7 +56,7 @@ pdfmetrics.registerFontFamily("Title", normal="Title", bold="Title-Bold",
 
 ## Brand assets
 
-In `_dev/brand/`, loaded via `ImageReader` (guard each with `os.path.exists`):
+In `Brand/`, loaded via `ImageReader` (guard each with `os.path.exists`):
 
 | File | Use |
 |------|-----|

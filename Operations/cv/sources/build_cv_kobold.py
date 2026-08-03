@@ -18,8 +18,7 @@ import os
 
 _ROOT     = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 FONT_DIR  = os.path.join(_ROOT, "_dev", "fonts")
-BRAND_DIR = os.path.join(_ROOT, "_dev", "brand")
-GRAIN     = os.path.join(BRAND_DIR, "grain.png")
+BRAND_DIR = os.path.join(_ROOT, "Brand")
 _KHADZIKA = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "Khadzika"))
 OUT_PATH  = os.path.join(_KHADZIKA, "_Admin", "CV", "Dikhilani_Mvula_CV_KoBold.pdf")
 
@@ -37,7 +36,6 @@ pdfmetrics.registerFontFamily("Body",
 _reg("Title-Bold", "Parastoo-Bold.ttf")
 
 # ── BRAND ASSETS ──────────────────────────────────────────────────────────────
-_grain = ImageReader(GRAIN) if os.path.exists(GRAIN) else None
 
 # ── COLOURS ───────────────────────────────────────────────────────────────────
 C_BG    = colors.HexColor("#FFFEF2")   # cream
@@ -59,8 +57,6 @@ def page_bg(canvas, doc):
     canvas.saveState()
     canvas.setFillColor(C_BG)
     canvas.rect(0, 0, W, H, fill=1, stroke=0)
-    if _grain:
-        canvas.drawImage(_grain, 0, 0, width=W, height=H, mask="auto")
     canvas.restoreState()
 
 # ── STYLES ────────────────────────────────────────────────────────────────────

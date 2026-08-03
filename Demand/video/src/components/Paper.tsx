@@ -1,29 +1,15 @@
 import React from "react";
-import { AbsoluteFill, Img, staticFile } from "remotion";
+import { AbsoluteFill } from "remotion";
 import { C } from "../brand";
 
-/* The cream page every scene sits on, with the brand grain laid over it at a
- * low opacity so flat fills don't read as digital-flat on video. */
+/* The page every scene sits on. It used to carry a grain texture over the fill;
+ * the grain was retired with the serif identity on 2026-08-03 (owner: "get rid
+ * of the grain"), so this is now a flat colour and nothing else. */
 export const Paper: React.FC<{
   children?: React.ReactNode;
   background?: string;
-  grain?: number;
-}> = ({ children, background = C.cream, grain = 0.16 }) => {
+}> = ({ children, background = C.cream }) => {
   return (
-    <AbsoluteFill style={{ backgroundColor: background }}>
-      <AbsoluteFill
-        style={{
-          opacity: grain,
-          mixBlendMode: "multiply",
-          pointerEvents: "none",
-        }}
-      >
-        <Img
-          src={staticFile("brand/grain.png")}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
-      </AbsoluteFill>
-      {children}
-    </AbsoluteFill>
+    <AbsoluteFill style={{ backgroundColor: background }}>{children}</AbsoluteFill>
   );
 };

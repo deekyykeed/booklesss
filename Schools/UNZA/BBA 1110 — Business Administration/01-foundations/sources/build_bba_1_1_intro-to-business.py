@@ -37,14 +37,10 @@ pdfmetrics.registerFontFamily("Title", normal="Title", bold="Title-Bold",
                               italic="Title", boldItalic="Title-Bold")
 
 # ── BRAND ASSETS ───────────────────────────────────────────────────────────
-BRAND_DIR  = os.path.join(_ROOT, "_dev", "brand")
+BRAND_DIR  = os.path.join(_ROOT, "Brand")
 # dark charcoal cover → use the WHITE brand assets
-LOGO_WHITE = os.path.join(BRAND_DIR, "booklesss-logo-white.png")
-MARK_WHITE = os.path.join(BRAND_DIR, "booklesss-mark-white.png")
-GRAIN      = os.path.join(BRAND_DIR, "grain.png")
+LOGO_WHITE = os.path.join(BRAND_DIR, "booklesss-wordmark-white.png")
 _logo_white = ImageReader(LOGO_WHITE) if os.path.exists(LOGO_WHITE) else None
-_mark_white = ImageReader(MARK_WHITE) if os.path.exists(MARK_WHITE) else None
-_grain      = ImageReader(GRAIN)      if os.path.exists(GRAIN)      else None
 
 # ── COLOURS — BBA: dark charcoal cover + amber gold accent ─────────────────
 C_COVER      = colors.HexColor("#1C2526")   # dark slate-charcoal — cover
@@ -146,8 +142,6 @@ ST = make_styles()
 def _paint_paper(canvas, bg):
     canvas.setFillColor(bg)
     canvas.rect(0, 0, W, H, fill=1, stroke=0)
-    if _grain is not None:
-        canvas.drawImage(_grain, 0, 0, width=W, height=H, mask="auto")
 
 def cover_bg(canvas, doc):
     canvas.saveState()
@@ -290,8 +284,7 @@ def resources_box(items):
     s_lnk = ParagraphStyle("res_lnk", fontName="Body-Bold", fontSize=9,
                             textColor=C_COVER_META, leading=15, alignment=TA_LEFT)
     rows = [[Paragraph("ADDED VALUE", s_hd)]]
-    _blt = (f'<img src="{MARK_WHITE}" width="8" height="8" valign="middle"/>'
-            if os.path.exists(MARK_WHITE) else "▸")
+    _blt = "•"
     for label, url in items:
         if url and url != "#":
             rows.append([Paragraph(
@@ -310,69 +303,6 @@ def resources_box(items):
         ("BOTTOMPADDING", (0,-1), (-1,-1), 10),
     ]))
     return KeepTogether([t, Spacer(1, 6)])
-
-
-class LogoTriple(Flowable):
-    """Centred trio of the real Booklesss mark PNG (centre solid, sides faded)."""
-    def __init__(self, img, center=18, side=13.5, gap=8.25, side_alpha=0.3):
-        super().__init__()
-        self.img = img
-        self.center, self.side, self.gap = center, side, gap
-        self.side_alpha = side_alpha
-        self._h = center
-
-    def wrap(self, aw, ah):
-        self._aw = aw
-        return aw, self._h
-
-    def _draw_mark(self, x_center, size):
-        self.canv.drawImage(self.img, x_center - size / 2.0, self._h / 2.0 - size / 2.0,
-                            width=size, height=size, mask="auto", preserveAspectRatio=True)
-
-    def draw(self):
-        c = self.canv
-        mid = getattr(self, "_aw", self._h) / 2.0
-        step = self.center / 2.0 + self.gap + self.side / 2.0
-        c.saveState()
-        c.setFillAlpha(self.side_alpha)
-        self._draw_mark(mid - step, self.side)
-        self._draw_mark(mid + step, self.side)
-        c.restoreState()
-        self._draw_mark(mid, self.center)
-
-
-class TripleDiamond(Flowable):
-    def __init__(self, center_size=15, side_size=10, gap=13,
-                 color=None, stroke_width=1.3):
-        super().__init__()
-        self.cs, self.ss, self.gap = center_size, side_size, gap
-        self.color = color or C_INK
-        self.sw = stroke_width
-        self._h = center_size
-
-    def wrap(self, aw, ah):
-        self._aw = aw
-        return aw, self._h
-
-    def _diamond(self, cx, cy, half, fill):
-        p = self.canv.beginPath()
-        p.moveTo(cx, cy + half); p.lineTo(cx + half, cy)
-        p.lineTo(cx, cy - half); p.lineTo(cx - half, cy); p.close()
-        self.canv.drawPath(p, stroke=1, fill=1 if fill else 0)
-
-    def draw(self):
-        c = self.canv
-        c.saveState()
-        c.setStrokeColor(self.color); c.setFillColor(self.color)
-        c.setLineWidth(self.sw)
-        cy = self._h / 2.0
-        mid = getattr(self, "_aw", self.cs) / 2.0
-        hs, hc = self.ss / 2.0, self.cs / 2.0
-        step = hc + self.gap + hs
-        self._diamond(mid - step, cy, hs, fill=False)
-        self._diamond(mid,        cy, hc, fill=True)
-        self._diamond(mid + step, cy, hs, fill=False)
-        c.restoreState()
 
 
 # ── BUILD ──────────────────────────────────────────────────────────────────
@@ -395,9 +325,6 @@ def build():
 
     # ── COVER ──────────────────────────────────────────────────────────────
     story.append(Spacer(1, 120))
-    story.append(LogoTriple(_mark_white) if _mark_white is not None
-                 else TripleDiamond(color=C_INK))
-    story.append(Spacer(1, 26))
     story.append(Paragraph("STEP 1.1 · FOUNDATIONS", ST["cover_step"]))
     story.append(Spacer(1, 12))
     story.append(Paragraph("Introduction to<br/>Business Administration", ST["cover_title"]))

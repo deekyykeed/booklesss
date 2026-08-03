@@ -421,7 +421,7 @@ does.
 - **The same wordmark is on the link-preview cards** (`platform/src/lib/og.tsx`,
   same day), so a WhatsApp preview and a carousel slide are recognisably the
   same object. Change one and look at the other.
-- `_dev/brand/` still holds the serif "Booklesss" with the diamond, and ~19 PDF
+- `Brand/` still holds the serif "Booklesss" with the diamond, and ~19 PDF
   build scripts still draw it. **Two identities are live** until the owner says
   which one wins — do not propagate the wordmark to the PDFs without asking.
 

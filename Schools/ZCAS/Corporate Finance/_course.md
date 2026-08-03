@@ -166,9 +166,9 @@ The Booklesss CF lesson standard, set on the Step 1.1 rebuild:
 - **No course skeleton in lesson PDFs:** the "START HERE" page frames the reader's perspective for *this* step only. Do not list the full 10-step course map inside the lesson — repeating it on every step is noise. The closer points only to the *next* step.
 - **FACT sentence:** every concept ends with a single gold-box sentence stated as fact, closing the loop so nothing leaks from memory.
 - **Calc layout:** financial waterfalls use `calc_table()` (right-aligned amounts, jade subtotal rules); pure equations use `formula_box()`.
-- **Palette — website match:** cream `#FFFEF2` paper (cover + every page) · near-black `#121212` cover title · `#3D3D3D` headings · jade `#2FB99A` / deep jade `#0E5E52` interior accents · warm grey `#6E6A5E` cover meta · pale-jade panels `#E9F0EA` / `#E7F3ED`. Subtle film grain (`_dev/brand/grain.png`) on every page.
+- **Palette — website match:** cream `#FFFEF2` paper (cover + every page) · near-black `#121212` cover title · `#3D3D3D` headings · jade `#2FB99A` / deep jade `#0E5E52` interior accents · warm grey `#6E6A5E` cover meta · pale-jade panels `#E9F0EA` / `#E7F3ED`. Subtle film grain (`Brand/grain.png`) on every page.
 - **Cover:** cream paper + grain, **black logo** top-left, centred **◇◆◇ triple-diamond** motif (vector `TripleDiamond`), **Parastoo** title (#121212, 42pt ≈ 56px, line-height 1.1), centred eyebrow + subtitle. Light/editorial — no dark slab to open on. Backgrounds drawn via `onPage`.
-- **Brand assets:** logos + grain in `_dev/brand/`; raw drop zone at top-level `Brand/`.
+- **Brand assets:** logos + grain in `Brand/`; raw drop zone at top-level `Brand/`.
 
 ---
 

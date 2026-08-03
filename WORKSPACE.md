@@ -103,8 +103,8 @@ fails later:
    `Schools/.../<lesson>/sources/build_*.py` resolves fonts/brand via `_ROOT`
    (5 levels up) and writes its PDF to the sibling `../steps/`. The lesson folder
    is the unit of truth — do not centralise these into `tools/` or anywhere else.
-2. **`_dev/fonts/` and `_dev/brand/`** are referenced by *every* PDF build script
-   (`_ROOT/_dev/fonts`, `_ROOT/_dev/brand`). Renaming `_dev/` or these subfolders
+2. **`_dev/fonts/` and `Brand/`** are referenced by *every* PDF build script
+   (`_ROOT/_dev/fonts`, `_ROOT/Brand`). Renaming `_dev/` or these subfolders
    breaks ~40 scripts. `tools/` is for *standalone* utilities only — not these.
 3. **`_dev/step-generator/`** is still referenced by some `content_*.py` files
    (TM 2.1/2.2, MIC 1.1). Leave it in `_dev/` unless those references are updated too.

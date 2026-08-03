@@ -48,8 +48,7 @@ Booklesss/
 │       └── _pipeline/                 ← 13 raw UNZA courses (LOCAL ONLY — gitignored)
 │
 ├── _dev/                             ← shared build assets (referenced by ALL build scripts)
-│   ├── brand/                         ← logo, mark, grain.png
-│   ├── fonts/                         ← Parastoo, Aptos, Parkinsans
+│   ├── fonts/                         ← Parastoo, Aptos, Parkinsans, Satoshi
 │   ├── step-generator/               ← Python HTML step generator (used by some content_*.py)
 │   └── tmp/                           ← scratch previews and text extracts (gitignored)
 │
@@ -59,11 +58,18 @@ Booklesss/
 ├── Demand/                            ← demand-side content
 │   └── social/                       ← daily 9:16 social carousels + generators (the posting hub)
 ├── platform/                         ← Next.js 16 course-reader app (booklesss.vercel.app)
-└── Brand/                            ← raw asset drop zone (logos, hero images)
+└── Brand/                            ← THE brand folder: logo, icon, mark, grain
 ```
 
+**Every brand asset lives in `Brand/`** (owner's call, 2026-08-03) — the logo,
+the app icon, the serif lockup, the diamond mark and `grain.png`. It used to be
+split between `_dev/brand/` and a `Brand/` drop zone that nothing read, which
+meant "the brand folder" named two places. There is one now, at the root where
+the owner looks for it, and `Brand/build_brand.py` regenerates the wordmark and
+icon from the font at any size.
+
 See [`WORKSPACE.md`](../WORKSPACE.md) for the full map, per-folder detail, and the
-**"do not move"** rules (lesson build scripts, `_dev/fonts`+`brand`, marketing generators).
+**"do not move"** rules (lesson build scripts, `Brand/`+`_dev/fonts`, marketing generators).
 
 ### Active Course Anatomy
 
