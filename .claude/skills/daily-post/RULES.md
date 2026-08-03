@@ -351,6 +351,34 @@ must not carry anything important above ~830.
 - **Instagram covers roughly the bottom 420px with the caption.** Anything below
   ~1500 is at risk, which is the real reason the bottom fade exists.
 
+## The logo
+
+**The logo is the word. No mark** (owner's call, 2026-08-03).
+
+The stamp in the corner of every slide used to be the folded-square glyph plus
+"Bklsss". The glyph rendered at 32px in a 1080-wide frame — too small to read as
+a shape, so it arrived as a dark speck ahead of the word and the eye went
+straight past it. A mark that has to be enlarged before it is legible is not
+doing a mark's job, and at post scale there is nowhere to enlarge it to.
+
+`wordmark` in `prog-post.mjs` is now `<span>Bklsss</span>` and nothing else.
+`LOGO()` is kept in the file for anything that wants the glyph alone; no post
+does.
+
+- **31px, weight 700** — not the old 27, and not bigger either. Both were tried
+  on 3 Aug against the course-card carousel:
+  - At **36/600** the word crowds the headline. A `feature()` slide puts its h1
+    at y=360 and the wordmark at y=316, so at 36px they nearly touch and the
+    logo reads as a kicker on the headline rather than as a stamp on the slide.
+  - At the old **27** the word alone sits there as a caption. The glyph used to
+    give the lockup its height; take it away and 27px has nothing holding it up.
+  - **31/700 is the split**: small enough to stay clear of the h1, heavy enough
+    that the weight — not the size — is what separates it from everything else
+    on the slide. A logotype differs from a heading by texture, not by scale.
+- This is the **posts only**. `_dev/brand/` still holds the serif "Booklesss"
+  with the diamond, and the PDF build scripts still draw it. Two identities are
+  live until the owner says which one wins.
+
 ## House style
 
 - **Un-boxed, full-bleed.** Macro crops of the real UI bleeding off the frame.

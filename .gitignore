@@ -23,3 +23,4 @@ __pycache__/
 # Each day's PLAN.md is text and IS tracked — that's the running order and captions.
 Demand/social/posts/**/*.png
 Demand/social/_source/feature-capture/*.png
+Demand/social/_preview/**/*.png

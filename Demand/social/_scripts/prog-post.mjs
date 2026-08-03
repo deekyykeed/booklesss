@@ -100,7 +100,7 @@ body{font-family:PSans,system-ui,sans-serif;position:relative;-webkit-font-smoot
    component's own outline, and box-shadow would draw the shadow of their
    rectangle — a hard oblong behind a pair of floating glyphs. drop-shadow
    follows the alpha, so a rounded card casts a rounded shadow and two marks
-   cast two marks. Two layers, tight, per the app's own shadow scale. */
+   cast two marks. Two layers, tight, per the app's own shadow scale.
    Halved twice over on 2 Aug — the owner's word was "harsh", the same word the
    app's own shadows got on 1 Aug, and the same fix applies: the fault is blur
    WIDTH, not opacity. A 52px layer spreads grey over enough of the gradient to
@@ -118,14 +118,24 @@ body{font-family:PSans,system-ui,sans-serif;position:relative;-webkit-font-smoot
   ${BG} 0%, ${BG} 80%, rgba(246,246,249,0) 100%)}
 .fade-bot{position:absolute;bottom:0;left:0;right:0;z-index:2;background:linear-gradient(to top,
   ${BG} 0%, ${BG} 30%, rgba(246,246,249,0) 100%)}
-.wm{position:absolute;left:${SAFE.left}px;top:${SAFE.top + 16}px;display:flex;align-items:center;gap:13px;z-index:7;color:${INK}}
-.wm span{font-size:27px;font-weight:600;letter-spacing:-.022em}
+.wm{position:absolute;left:${SAFE.left}px;top:${SAFE.top + 16}px;display:flex;align-items:center;z-index:7;color:${INK}}
+.wm span{font-size:31px;font-weight:700;letter-spacing:-.025em}
 .eyebrow{font-size:24px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:${EYE}}
 h1{font-family:PDisplay,PSans,sans-serif;font-weight:500;letter-spacing:-.035em;color:${INK}}
 .sub{letter-spacing:-.008em;color:${SUB}}
 `;
 
-const wordmark = `<div class="wm">${LOGO(32)}<span>Bklsss</span></div>`;
+/* THE LOGO IS THE WORD (owner's call, 2026-08-03). No mark.
+ *
+ * The lockup used to be the folded-square glyph plus "Bklsss". The glyph is
+ * 32px in a 1080 frame — too small to be read as a shape, so it arrived as a
+ * dark speck ahead of the word and the eye skipped it. A wordmark that has to
+ * be enlarged to be legible is not doing a mark's job.
+ *
+ * Set at 36px rather than the old 27: with the glyph gone the word has to hold
+ * the corner alone, and at 27 it sat there as a caption. `LOGO` is kept below
+ * for whatever wants the mark on its own; nothing in a post does. */
+const wordmark = `<div class="wm"><span>Bklsss</span></div>`;
 
 // text-only slide (cover / closer) — sits on the brand gradient
 const cover = (o) => ({ bg: "gradient", html: `<div class="layer">
