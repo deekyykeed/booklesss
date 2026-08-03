@@ -21,7 +21,6 @@ import { useProgress } from "@/lib/progress";
 import { CompletionRing } from "./CompletionRing";
 import { MynaIcon } from "@/components/icons/myna";
 import { MingcuteIcon } from "@/components/icons/mingcute";
-import { MusicBar } from "./MusicBar";
 
 const STEP = 18;
 const RAIL = 2;
@@ -651,11 +650,12 @@ export function Sidebar() {
           ))}
         </div>
       </nav>
-      {/* Below the step tree and above the collapse control — the last thing in
-          the column, so it never pushes navigation down. It is in the sidebar
-          because the sidebar is layout-level and stays mounted between steps;
-          see MusicBar.tsx for why moving it would stop the music. */}
-      <MusicBar />
+      {/* A study-music bar sat here for one commit (25f00b1, 2026-08-03) and was
+          pulled the same day: Spotify's embed only plays 30-second previews
+          unless the listener is signed in AND has Premium, and this app has no
+          accounts by design. When it comes back it will be self-hosted audio
+          with our own controls — restore the slot from that commit, which also
+          records why the player has to live in the layout rather than a page. */}
       <div className="p-2">
         <button
           type="button"
