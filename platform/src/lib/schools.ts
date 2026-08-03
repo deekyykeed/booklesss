@@ -39,6 +39,20 @@ export type School = {
   aka?: string[];
   /** Course slugs this school teaches, as they appear in course-index.json. */
   courseSlugs: string[];
+  /**
+   * The tint behind its monogram in the picker.
+   *
+   * A MONOGRAM, NOT A CREST. The owner asked for "a logo … and the name after
+   * it" (2026-08-03), and a university's real crest is the one mark that
+   * would make Booklesss look endorsed by it — which it is not, and which the
+   * standing no-affiliation rule exists to prevent. A letter on a tinted disc
+   * gives the row the same scannable anchor a logo would, owes nobody
+   * permission, and needs no asset to load on a Zambian connection.
+   *
+   * If real logos are ever licensed, this is where the field goes and the row
+   * swaps an <img> in for the letter — nothing else moves.
+   */
+  tone: string;
 };
 
 /** In the order the picker draws them.
@@ -55,6 +69,7 @@ export const SCHOOLS: School[] = [
     full: "Zambia Centre for Accountancy Studies",
     aka: ["ZCAS University", "Zcasu", "Accountancy"],
     courseSlugs: ["strategic-management", "treasury-management", "corporate-finance"],
+    tone: "#2a78d6",
   },
   {
     id: "unza",
@@ -62,6 +77,7 @@ export const SCHOOLS: School[] = [
     full: "University of Zambia",
     aka: ["Great East Road", "Ridgeway"],
     courseSlugs: ["economics"],
+    tone: "#17754d",
   },
 ];
 

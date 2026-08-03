@@ -47,6 +47,34 @@ const ROW =
 const rowTone = (on: boolean) =>
   ROW + (on ? "border-ink bg-active" : "border-[#e7e7e6] bg-white hover:bg-[#fafafa]");
 
+/** The tighter row the school list uses: one line, less height, so three
+ *  universities read as a list rather than as three cards (owner, 2026-08-03:
+ *  "simple list not taking up too much space"). */
+const SCHOOL_ROW =
+  "squircle flex items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors ";
+const schoolTone = (on: boolean) =>
+  SCHOOL_ROW + (on ? "border-ink bg-active" : "border-[#e7e7e6] bg-white hover:bg-[#fafafa]");
+
+/**
+ * A school's mark: its first letter on a disc in its own tint.
+ *
+ * Deliberately not a crest — see the `tone` field in lib/schools for why a
+ * real university logo is the one image this app must not draw. One letter
+ * reads at 28px where two do not, and the tint is what actually tells the
+ * rows apart at a glance.
+ */
+function SchoolMark({ letter, tone }: { letter: string; tone: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-[13px] font-semibold text-white"
+      style={{ backgroundColor: tone }}
+    >
+      {letter}
+    </span>
+  );
+}
+
 /** The search field above a list. Same shell as the text fields, with the
  *  glyph inset and a clear button once there's something to clear — on a
  *  phone, backspacing a university's name is nobody's idea of a good time.
@@ -135,12 +163,18 @@ export function SchoolPicker({
         {matches.map((s) => {
           const on = s.id === school;
           return (
-            <button key={s.id} type="button" onClick={() => onPick(s.id)} aria-pressed={on} className={rowTone(on)}>
-              <span className="min-w-0 flex-1">
-                <span className="block text-[15px] font-medium leading-tight text-ink">{s.name}</span>
-                <span className="mt-0.5 block truncate text-[13px] leading-5 text-muted">{s.full}</span>
-              </span>
+            /* Check, mark, name — in that order, one line (owner's layout,
+               2026-08-03). The tick leads because it is what the row is FOR;
+               the full name trails in muted and truncates, so the row stays
+               one line on a 390px screen and still says which university
+               "UNZA" is to somebody who doesn't know. */
+            <button key={s.id} type="button" onClick={() => onPick(s.id)} aria-pressed={on} className={schoolTone(on)}>
               <Tick on={on} />
+              <SchoolMark letter={s.name.slice(0, 1)} tone={s.tone} />
+              <span className="min-w-0 flex-1 truncate">
+                <span className="text-[15px] font-medium leading-tight text-ink">{s.name}</span>
+                <span className="ml-2 text-[13px] leading-5 text-muted">{s.full}</span>
+              </span>
             </button>
           );
         })}
@@ -148,12 +182,14 @@ export function SchoolPicker({
             student who lands here would otherwise be asked to claim one that
             isn't theirs, and their answer is the best evidence there is for
             which campus to build next. */}
-        <button type="button" onClick={() => onPick(OTHER_SCHOOL)} aria-pressed={other} className={rowTone(other)}>
-          <span className="min-w-0 flex-1">
-            <span className="block text-[15px] font-medium leading-tight text-ink">Another university</span>
-            <span className="mt-0.5 block truncate text-[13px] leading-5 text-muted">Tell us where you study</span>
-          </span>
+        <button type="button" onClick={() => onPick(OTHER_SCHOOL)} aria-pressed={other} className={schoolTone(other)}>
           <Tick on={other} />
+          {/* A neutral disc, so the row lines up with the ones above it rather
+              than starting where their names do. */}
+          <SchoolMark letter="+" tone="#8a8a86" />
+          <span className="min-w-0 flex-1 truncate">
+            <span className="text-[15px] font-medium leading-tight text-ink">Another university</span>
+          </span>
         </button>
       </div>
 

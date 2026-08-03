@@ -85,10 +85,16 @@ export function OnboardingFlow() {
     setStep(next);
   }
 
-  function save() {
+  /* `patch` exists for tap-to-advance: picking a university saves and moves in
+     the same handler, and React has not re-rendered with the new state by
+     then — reading `school` here would store the PREVIOUS answer. Passing the
+     picked value straight through is the difference between the flow working
+     and it silently recording one question behind. */
+  function save(patch?: { school?: SchoolChoice | null }) {
+    const s = patch && "school" in patch ? (patch.school ?? null) : school;
     saveOnboarding({
-      school,
-      schoolName: school === OTHER_SCHOOL ? schoolName.trim() || null : null,
+      school: s,
+      schoolName: s === OTHER_SCHOOL ? schoolName.trim() || null : null,
       courses,
       target,
     });
@@ -143,6 +149,12 @@ export function OnboardingFlow() {
             title="Where do you study?"
             why="It decides which courses you get to choose from. Skip it and you get the whole library."
           >
+            {/* TICK AND GO (owner, 2026-08-03: "I just tick a university and I
+                get taken to a new question"). One tap is the whole answer, so
+                there is no Continue under it — a button you must press after
+                you have already said the thing is a second ask.
+                "Another university" is the exception: it needs a name typed,
+                so it opens the field and keeps a Continue of its own. */}
             <SchoolPicker
               school={school}
               schoolName={schoolName}
@@ -153,25 +165,35 @@ export function OnboardingFlow() {
                 // A different school offers different courses; anything picked
                 // under the old one may not be on offer any more.
                 setCourses([]);
+                if (id !== OTHER_SCHOOL) {
+                  save({ school: id });
+                  setStep("courses");
+                }
               }}
               onName={setSchoolName}
             />
-            <div className="mt-5 flex flex-col gap-2">
-              <Button variant="primary" size="lg" block onClick={() => go("courses")}>
+            {school === OTHER_SCHOOL && (
+              <Button
+                variant="primary"
+                size="lg"
+                block
+                className="mt-4"
+                onClick={() => go("courses")}
+              >
                 Continue
               </Button>
-              <Button
-                variant="secondary"
-                size="md"
-                block
-                onClick={() => {
-                  setSchool(null);
-                  go("courses");
-                }}
-              >
-                Mine isn&apos;t listed
-              </Button>
-            </div>
+            )}
+            <button
+              type="button"
+              onClick={() => {
+                setSchool(null);
+                save({ school: null });
+                setStep("courses");
+              }}
+              className="mt-4 block w-full text-center text-[13.5px] font-medium text-muted transition-colors hover:text-ink"
+            >
+              Skip this
+            </button>
           </Card>
         )}
 
