@@ -7,6 +7,7 @@ import { clerkAppearance } from "@/lib/clerk-appearance";
 import { RegisterSW } from "@/components/RegisterSW";
 import { DesktopGate } from "@/components/DesktopGate";
 import { IdentityGate } from "@/components/identity/IdentityGate";
+import { Onboarding } from "@/components/onboarding/Onboarding";
 import { SettingsSheet } from "@/components/identity/SettingsSheet";
 import { openGraph, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
@@ -150,6 +151,13 @@ export default function RootLayout({
             than per-layout so a route added later can't quietly opt out of it;
             it skips the sign-in, offline and /workspace paths itself. */}
         <IdentityGate />
+        {/* Opened on demand by requireAccount() — a checkpoint answer, or the
+            gate on moving to the next step. Mounted here rather than in the
+            reader layout because the dashboard and course pages need it too,
+            and because a sheet that unmounts on navigation loses whatever the
+            student had typed into it. Renders nothing until asked for, and
+            nothing at all without Clerk keys. */}
+        <Onboarding />
         <SettingsSheet />
         {/* Booklesss is a phone app — a wide viewport gets sent to its phone.
             Mounted at the root for the same reason as the identity gate. */}
