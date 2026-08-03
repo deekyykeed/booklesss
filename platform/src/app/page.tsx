@@ -101,7 +101,15 @@ function Feature({
 
 export default function LandingPage() {
   return (
-    <div className="min-h-dvh bg-canvas">
+    <div className="relative min-h-dvh bg-white/[0.62] backdrop-blur-[16px]">
+      {/* The app's own backdrop, same as the dashboard and the reader — see
+          app/onboarding/page.tsx for what the two layers are. The front door
+          should look like the thing it is a door to. */}
+      <div className="bg-waves" aria-hidden="true">
+        {Array.from({ length: 6 }, (_, i) => (
+          <span key={i} />
+        ))}
+      </div>
       <ToApp />
 
       {/* The wordmark, and nothing beside it. The page's actions live in the

@@ -151,7 +151,7 @@ export function OnboardingFlow() {
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col justify-center py-8">
+      <div className="flex flex-1 flex-col pt-8 pb-8">
         {step === "school" && (
           <Card
             title="Where do you study?"
