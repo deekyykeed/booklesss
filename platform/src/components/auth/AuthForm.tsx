@@ -102,6 +102,44 @@ export function AuthForm({
      resubmit simply starts a fresh attempt. */
   const busy = sending || (!error && (isUp ? upFetch : inFetch) === "fetching");
 
+  /* Google, in one tap. The same signals API as the fields below —
+     `sso()` navigates away to Google and back through /sso-callback, so
+     unlike password() nothing here runs after success; only an error
+     returns. On sign-UP the referral rides along, same as password
+     sign-up: the account this creates should record who sent them.
+
+     `redirectUrl` is where the callback page finally lands the reader:
+     the sheet's `after` if a gate set one, else the page they are on now
+     — the navigation away and back is why "stay put" has to be spelled
+     out as a URL rather than simply not navigating. */
+  async function google() {
+    if (busy) return;
+    setSending(true);
+    setError(null);
+    try {
+      const redirectUrl = redirectTo ?? window.location.pathname;
+      const referredBy = isUp ? referrer() : null;
+      const params = {
+        strategy: "oauth_google" as const,
+        redirectUrl,
+        redirectCallbackUrl: "/sso-callback",
+      };
+      const attempt = await withTimeout(
+        isUp
+          ? signUp.sso({ ...params, ...(referredBy ? { unsafeMetadata: { referredBy } } : {}) })
+          : signIn.sso(params),
+      );
+      if (attempt === STUCK) {
+        setError("This is taking too long. Check your connection and try again.");
+        return;
+      }
+      if (attempt.error) setError(say(attempt.error));
+      // No success branch: the browser is already on its way to Google.
+    } finally {
+      setSending(false);
+    }
+  }
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (busy) return;
@@ -157,6 +195,45 @@ export function AuthForm({
 
   return (
     <form onSubmit={submit} className="flex w-full flex-col gap-3">
+      {/* Google first, exactly as the reference card orders it: the tap that
+          needs no typing goes above the fields that need a keyboard. The G
+          keeps its own four colours — a monochrome G is somebody else's
+          logo. */}
+      <button
+        type="button"
+        onClick={google}
+        disabled={busy}
+        className="squircle flex w-full items-center justify-center gap-2.5 rounded-2xl border border-[rgba(30,30,29,0.15)] bg-white px-3.5 py-3 text-[15px] font-medium text-ink transition-colors hover:bg-[#fafafa] disabled:opacity-50"
+      >
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+          <path
+            fill="#4285F4"
+            d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92a8.78 8.78 0 0 0 2.68-6.62Z"
+          />
+          <path
+            fill="#34A853"
+            d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18Z"
+          />
+          <path
+            fill="#FBBC05"
+            d="M3.97 10.72a5.41 5.41 0 0 1 0-3.44V4.95H.96a9 9 0 0 0 0 8.1l3.01-2.33Z"
+          />
+          <path
+            fill="#EA4335"
+            d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.59A9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58Z"
+          />
+        </svg>
+        Continue with Google
+      </button>
+
+      {/* The reference's divider, so the two ways in read as alternatives
+          rather than steps. */}
+      <div className="flex items-center gap-3" aria-hidden="true">
+        <span className="h-px flex-1 bg-[rgba(30,30,29,0.12)]" />
+        <span className="text-[11px] font-medium tracking-[0.08em] text-placeholder">OR</span>
+        <span className="h-px flex-1 bg-[rgba(30,30,29,0.12)]" />
+      </div>
+
       {/* Labels are for screen readers only and the placeholder carries the
           prompt — the reference card (Claude's own sign-in, measured
           2026-08-03) hides its labels, and at two fields there is nothing a

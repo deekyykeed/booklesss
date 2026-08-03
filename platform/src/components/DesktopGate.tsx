@@ -53,7 +53,10 @@ const PHONE_MAX_SHORT_SIDE = 600;
  *  a wide project nav, and /settings is the reference settings dialog at its own
  *  671px. Sending either of them to a phone defeats the only reason they exist,
  *  which is to be compared against the shot they came from. */
-const SKIP = ["/workspace", "/settings"];
+/* /privacy and /terms are here because Google's OAuth reviewers read them on
+ * a desktop — a legal page behind a "use your phone" wall is a page that
+ * fails the app's verification. /sso-callback passes through mid-OAuth. */
+const SKIP = ["/workspace", "/settings", "/privacy", "/terms", "/sso-callback"];
 
 export function DesktopGate() {
   const pathname = usePathname();
