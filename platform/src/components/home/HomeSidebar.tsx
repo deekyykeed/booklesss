@@ -28,8 +28,8 @@ type Item = {
 };
 
 const ITEMS: Item[] = [
-  { id: "dashboard", label: "Dashboard", href: "/", icon: "layout-dashboard" },
-  { id: "courses", label: "My courses", href: "/#courses", icon: "book-open" },
+  { id: "dashboard", label: "Dashboard", href: "/home", icon: "layout-dashboard" },
+  { id: "courses", label: "My courses", href: "/home#courses", icon: "book-open" },
   {
     id: "community",
     label: "Community",
