@@ -33,19 +33,19 @@ export const SEARCHABLE = 6;
  *  nothing shifts sideways as rows are tapped. */
 export function Tick({ on }: { on: boolean }) {
   return (
-    <span className={"shrink-0 " + (on ? "text-ink" : "text-[#d4d4d4]")}>
+    <span className={"shrink-0 " + (on ? "text-ink" : "text-line-2")}>
       <MynaIcon name={on ? "check-circle-solid" : "circle"} size={20} />
     </span>
   );
 }
 
 const FIELD =
-  "squircle h-11 w-full rounded-xl border border-[#e7e7e6] bg-white px-3.5 text-[15px] text-ink outline-none transition-colors placeholder:text-[#a3a3a3] focus:border-ink";
+  "squircle h-11 w-full rounded-xl border border-line bg-white px-3.5 text-[15px] text-ink outline-none transition-colors placeholder:text-placeholder focus:border-ink";
 
 const ROW =
   "squircle flex items-center gap-3 rounded-xl border px-3.5 py-3 text-left transition-colors ";
 const rowTone = (on: boolean) =>
-  ROW + (on ? "border-ink bg-active" : "border-[#e7e7e6] bg-white hover:bg-[#fafafa]");
+  ROW + (on ? "border-ink bg-active" : "border-line bg-white hover:bg-active");
 
 /** The tighter row the school list uses: one line, less height, so three
  *  universities read as a list rather than as three cards (owner, 2026-08-03:
@@ -53,7 +53,7 @@ const rowTone = (on: boolean) =>
 const SCHOOL_ROW =
   "squircle flex items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors ";
 const schoolTone = (on: boolean) =>
-  SCHOOL_ROW + (on ? "border-ink bg-active" : "border-[#e7e7e6] bg-white hover:bg-[#fafafa]");
+  SCHOOL_ROW + (on ? "border-ink bg-active" : "border-line bg-white hover:bg-active");
 
 /**
  * A school's mark: its first letter on a disc in its own tint.
@@ -95,7 +95,7 @@ export function Search({
 }) {
   return (
     <div className="relative">
-      <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#a3a3a3]">
+      <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-placeholder">
         <MynaIcon name="search" size={17} />
       </span>
       <input
@@ -117,7 +117,7 @@ export function Search({
           type="button"
           onClick={() => onChange("")}
           aria-label="Clear search"
-          className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-muted transition-colors hover:bg-[#f4f4f3] hover:text-ink"
+          className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-muted transition-colors hover:bg-active hover:text-ink"
         >
           <MynaIcon name="x" size={16} />
         </button>
@@ -186,7 +186,7 @@ export function SchoolPicker({
           <Tick on={other} />
           {/* A neutral disc, so the row lines up with the ones above it rather
               than starting where their names do. */}
-          <SchoolMark letter="+" tone="#8a8a86" />
+          <SchoolMark letter="+" tone="var(--color-muted)" />
           <span className="min-w-0 flex-1 truncate">
             <span className="text-[15px] font-medium leading-tight text-ink">Another university</span>
           </span>

@@ -34,9 +34,17 @@ import { Button } from "@/components/ui/Button";
  * the answers up onto the account, which is what makes them follow the
  * student to a second device.
  *
- * The cards wear Clerk's geometry — same 24px radius, same width, same black
- * button — so arriving here from Clerk's card reads as the next step of one
- * flow rather than as a different application.
+ * NO CONTAINER AROUND A QUESTION (owner, 2026-08-03: "remove that container
+ * around the questions … I don't need a whole container"). Each question is
+ * the page: a heading, a line under it, and the rows. The rows keep their own
+ * surface because they are the controls; a panel around them would be a card
+ * holding cards.
+ *
+ * EVERY COLOUR IS A TOKEN, none of them written here — same call, same day:
+ * "I already have colors that look good on my app, why aren't I using these
+ * even for the website." The warm off-greys these screens had picked up
+ * (#e7e7e6, #f4f4f3, #fafafa) read cream beside the app's neutral #f5f5f5,
+ * which is what made this page look like a different product.
  * ------------------------------------------------------------------ */
 
 /* The offer for "how many days a week", and "how many minutes when you sit
@@ -279,16 +287,27 @@ export function OnboardingFlow() {
   );
 }
 
-/** One question, on Clerk's card geometry — so the last step, which really is
- *  Clerk's card, is not a change of scenery. */
+/**
+ * One question, ON THE PAGE — no card around it (owner, 2026-08-03: "remove
+ * that container around the questions, I don't need a whole container").
+ *
+ * It wore Clerk's card geometry so the flow would match the sign-up card it
+ * used to end on. That card is now on the landing page instead, so the box
+ * was framing nothing: a white panel on a grey page, holding rows that are
+ * themselves white panels — a card inside a card, which is the thing the
+ * house style says not to draw.
+ *
+ * The rows keep their surface, because they are the controls. Everything
+ * around them is the page.
+ */
 function Card({ title, why, children }: { title: string; why: string; children: React.ReactNode }) {
   return (
-    <section className="squircle rounded-[24px] border border-line bg-white p-6 shadow-[0_1px_1px_-0.5px_rgba(0,0,0,0.06),0_12px_32px_-8px_rgba(0,0,0,0.16)]">
-      <h1 className="font-display text-[22px] font-medium leading-tight tracking-[-0.01em] text-ink">
+    <section>
+      <h1 className="font-display text-[30px] font-bold leading-[1.1] tracking-[-0.02em] text-ink">
         {title}
       </h1>
-      <p className="mt-1.5 text-[14px] leading-5 text-muted">{why}</p>
-      <div className="mt-5">{children}</div>
+      <p className="mt-2 text-[15px] leading-6 text-muted">{why}</p>
+      <div className="mt-6">{children}</div>
     </section>
   );
 }

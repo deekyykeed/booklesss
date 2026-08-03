@@ -49,7 +49,7 @@ export const metadata: Metadata = {
  * my app default coloring styles for the website — that warm color should
  * go"). The layout stays the reference's; the colours are the app's tokens:
  * canvas grey, white cards, the app's hairline. */
-const PANEL = "#ececeb";
+const PANEL = "var(--color-active)";
 const RULE = "var(--color-line)";
 
 const SHOTS = {
@@ -92,7 +92,7 @@ function Feature({
           width={s.w}
           height={s.h}
           sizes="(max-width: 640px) 90vw, 480px"
-          className="h-full w-full rounded-t-[14px] border border-black/5 object-cover object-top shadow-[0_2px_12px_rgba(0,0,0,0.10)]"
+          className="h-full w-full rounded-t-[14px] border border-black/5 object-cover object-top shadow-[var(--shadow-lift)]"
         />
       </div>
     </section>
