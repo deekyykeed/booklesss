@@ -37,7 +37,6 @@ import {
   TypedCoursePicker,
 } from "@/components/identity/pickers";
 import { Button } from "@/components/ui/Button";
-import { ViewportFit } from "@/components/ui/ViewportFit";
 
 /* ------------------------------------------------------------------ *
  * Onboarding — three questions, asked straight after the account is made.
@@ -647,10 +646,6 @@ export function OnboardingFlow() {
        room to spare, and without it the last course in a list can never be
        scrolled out from behind the button that confirms it. */
     <div className="mx-auto w-full max-w-[440px] px-4 pb-[calc(8rem+env(safe-area-inset-bottom))]">
-      {/* Publishes --vv-bottom. See the component: `bottom: 0` is measured
-          against a viewport edge that is below the glass while the URL bar is
-          showing, which is what sliced the button in half. */}
-      <ViewportFit />
       {/* No progress bar (owner, 2026-08-04: "remove the progress thing
           entirely"). It was three labelled nodes over three questions — a
           legend for a form you can finish in three taps, telling a student
@@ -1307,13 +1302,21 @@ function Card({
                Out at <body> there is no transformed ancestor to be captured by,
                and no future one can capture it either.
 
-               POSITIONED AGAINST A MEASURED EDGE. Both sticky and fixed resolve
-               `bottom: 0` against the LAYOUT viewport, which on Chrome Android
-               is sized for the state where the URL bar has scrolled away — so
-               while it is showing, "the bottom" is below the glass and the
-               button is cut in half. `--vv-bottom` carries the measured gap
-               between the two viewports (see ui/ViewportFit); this sits that far
-               up, which is the visible bottom in every state, keyboard included.
+               PLAIN `bottom: 0`, AND NOTHING CLEVER ON TOP OF IT. It briefly
+               carried a measured offset — `--vv-bottom`, the gap between the
+               layout and visual viewports, read off visualViewport — to answer
+               the earlier bug where the bar was sliced in half by the bottom of
+               the screen. That bug was real and this was the wrong fix for it,
+               because it was a bug about STICKY. Sticky is positioned in the
+               scrollport, which on Chrome Android is sized for the collapsed URL
+               bar; FIXED is anchored by the browser to the viewport you can
+               actually see, and the keyboard is handled by the layout viewport
+               shrinking (interactive-widget=resizes-content, set in layout.tsx).
+               Both cases were already answered, so the measurement was a second
+               correction applied on top of the browser's own — and with the
+               keyboard open the two stacked and threw the button 400px up the
+               page, over the field it belonged to (owner, with the screenshot:
+               "now having problems with these buttons").
 
                NOT A PINNED FRAME. The rejected version (same day: "the whole
                page should be scrollable") was h-dvh with a fixed head, a fixed
@@ -1321,9 +1324,8 @@ function Card({
                stands: one scroll, the whole document. Only the action floats,
                and the page reserves room so nothing hides behind it. */
             <div
-              className="fixed inset-x-0 z-20"
+              className="fixed inset-x-0 bottom-0 z-20"
               style={{
-                bottom: "var(--vv-bottom, 0px)",
                 background:
                   /* Opaque under the button, fading only above it. It was
                      0.94 across the whole bar and the rows behind still ghosted
