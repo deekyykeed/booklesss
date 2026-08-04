@@ -15,7 +15,7 @@ import {
   programmeLabel,
   programmesFor,
 } from "@/lib/programmes";
-import { CoursePicker, OptionRows, SchoolPicker } from "@/components/identity/pickers";
+import { CoursePicker, CurriculumPicker, OptionRows, SchoolPicker } from "@/components/identity/pickers";
 import { Button } from "@/components/ui/Button";
 
 /* ------------------------------------------------------------------ *
@@ -113,21 +113,19 @@ type Step = "school" | "programme" | "year" | "courses" | "target";
  * in those courses later."
  */
 function stepsFor(school: SchoolChoice | null): Step[] {
-  /* NO COURSE QUESTION WHERE WE ALREADY KNOW THE ANSWER (owner, 2026-08-04:
-     "you don't have to show that to the user right now — just get them finished
-     signing up, don't show the courses"). Programme plus year IS the course
-     list; putting it on screen to be confirmed is the manual picking this flow
-     exists to remove, and it is a screen of eight rows standing between someone
-     who just made an account and being finished.
+  /* THE COURSE STEP IS BACK. It came out this afternoon on "don't show the
+     courses — just get them finished signing up", and went back in the same
+     evening on "I keep missing the courses": a sign-up that never shows a
+     student a single course leaves them with no idea what they were enrolled
+     in, and the dashboard is too late to find out.
 
-     They are still set — the year step writes them — and they are still
-     editable, in Settings, which is where a student who is repeating a module
-     or taking one early goes. Onboarding's job is to get them in.
-
-     A university with no curriculum on file still has to ask, because nothing
-     else can answer it there. */
+     What changed is what the screen ASKS. It is not a picking chore any more —
+     the year step arrives with every one of that year's courses already ticked,
+     so the work is confirming, and unticking the one you dropped. That is the
+     version worth the extra tap; the one that made you build the list yourself
+     was not. */
   return hasProgrammes(school)
-    ? ["school", "programme", "year", "target"]
+    ? ["school", "programme", "year", "courses", "target"]
     : ["school", "courses", "target"];
 }
 
@@ -520,38 +518,72 @@ export function OnboardingFlow() {
               value={year}
               label={(y) => `Year ${y}`}
               onPick={(y) => {
-                /* THE STEP THAT ANSWERS THE COURSE QUESTION. Picking a year
-                   enrols them in that year's courses outright — no confirming
-                   screen after it (owner: "don't show the courses"). This is
-                   what the two questions above were for: three taps and their
-                   timetable is set.
+                /* THE PREDICTIVE STEP. Picking a year TICKS that year's courses
+                   and hands them to the next screen already filled in — the
+                   whole point of the two questions above. The student confirms
+                   a list instead of building one.
 
-                   `coursesChosen: true` is the load-bearing part. It is what
-                   `onboardingComplete` reads, and with the courses screen gone
-                   nothing else would ever set it — the student would finish the
-                   flow, reach the dashboard, and be sent straight back by the
-                   gate for a question they were never asked.
+                   `coursesChosen` is deliberately NOT set here. It is what
+                   `onboardingComplete` reads and what `firstGap` resumes on, so
+                   setting it would mark the course question answered before the
+                   student had seen it — and somebody who closed the tab on that
+                   screen would be resumed past it, never having laid eyes on
+                   their own courses. The screen that shows them is the screen
+                   that gets to say they were answered.
 
                    Only on a CHANGE of year, so coming Back and re-tapping the
-                   same year cannot wipe edits made in Settings since. */
+                   same year cannot wipe what they unticked after. */
                 const changed = y !== year;
                 const picks = changed ? coursesByYear(prog, y).thisYear.map((c) => c.slug) : curriculum;
                 const live = liveSlugsFor(prog, picks);
-                edit({ year: y, curriculum: picks, courses: live, coursesAnswered: true });
-                save({ year: y, curriculum: picks, courses: live, coursesChosen: true });
-                advanceAfterBeat("target");
+                edit({ year: y, curriculum: picks, courses: live });
+                save({ year: y, curriculum: picks, courses: live, coursesChosen: coursesAnswered });
+                advanceAfterBeat("courses");
               }}
             />
           </Card>
         )}
 
-        {/* The "These are your courses" confirmation screen stood here and is
-            gone (owner, 2026-08-04: "don't show the courses"). The year step
-            enrols them directly; see stepsFor. CurriculumPicker still exists in
-            identity/pickers and is where the owner's "add courses that are not
-            in the year they're in" ability lives — it belongs in Settings now,
-            which is the one thing this change leaves owing. */}
-        {step === "courses" && (
+        {step === "courses" && prog && (
+          <Card
+            title="These are your courses"
+            why="We've ticked your year already. Untick anything you dropped, and add from another year if you're taking it."
+            actions={
+              <Button
+                variant="primary"
+                size="lg"
+                block
+                disabled={curriculum.length === 0}
+                onClick={() => {
+                  edit({ coursesAnswered: true });
+                  save({ coursesChosen: true, curriculum, courses: liveSlugsFor(prog, curriculum) });
+                  goTo("target");
+                }}
+              >
+                {curriculum.length === 0
+                  ? "Pick at least one"
+                  : `Continue with ${curriculum.length} course${curriculum.length > 1 ? "s" : ""}`}
+              </Button>
+            }
+          >
+            <CurriculumPicker
+              thisYear={coursesByYear(prog, year).thisYear}
+              otherYears={coursesByYear(prog, year).otherYears}
+              year={year}
+              picked={curriculum}
+              onToggle={(slug) => {
+                const next = curriculum.includes(slug)
+                  ? curriculum.filter((s) => s !== slug)
+                  : [...curriculum, slug];
+                /* Both lists move together: `curriculum` is the demand signal
+                   and `courses` is what the dashboard may actually render. */
+                edit({ curriculum: next, courses: liveSlugsFor(prog, next) });
+              }}
+            />
+          </Card>
+        )}
+
+        {step === "courses" && !prog && (
           <Card
             title="Which courses are you taking?"
             why="Tick the ones you're taking this semester. Not sure yet? Take everything and narrow it down later."
