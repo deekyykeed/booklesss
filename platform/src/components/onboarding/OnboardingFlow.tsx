@@ -64,7 +64,9 @@ import { Button } from "@/components/ui/Button";
 
    Monday first, because a week that starts on Sunday is an American habit and
    nobody here plans against it. Index 0 = Monday throughout. */
-const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+/* Full names only. There was a short-form list beside this for the note under
+   each row; two columns took the width that note lived in, and an array kept
+   for nothing but its length is an array that will be read as meaning more. */
 const WEEKDAY_FULL = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const MINUTE_CHOICES = [30, 45, 60, 90, 120, 180];
@@ -660,7 +662,12 @@ export function OnboardingFlow() {
                 is what OptionRows' `values` is for. */}
             <Choices label="Which days?">
               <OptionRows
-                options={WEEKDAYS.map((d, i) => ({ id: i, title: WEEKDAY_FULL[i], note: d }))}
+                /* No short-form note under the name. It was there when a row
+                   had the whole width to itself and "Mon" under "Monday" was
+                   merely redundant; in a half-width cell it is a second line
+                   saying the same word again. */
+                options={WEEKDAY_FULL.map((full, i) => ({ id: i, title: full }))}
+                columns={2}
                 values={picked}
                 label={(i) => WEEKDAY_FULL[i]}
                 onPick={(i) =>
@@ -686,6 +693,7 @@ export function OnboardingFlow() {
                     title: n >= 60 ? `${Math.floor(n / 60)}h${n % 60 ? ` ${n % 60}m` : ""}` : `${n}m`,
                     note: n === RECOMMENDED_MINUTES ? "Recommended" : undefined,
                   }))}
+                  columns={2}
                   value={target.minutes}
                   label={(n) => `${n} minutes a day`}
                   onPick={(n) => edit({ target: { ...target, minutes: n } })}

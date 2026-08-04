@@ -850,6 +850,37 @@
    * Radius 18 rather than the size's own, so it matches .course-resume exactly
    * at any size. The arrow leans on hover with the same spring the card's does.
    * ---------------------------------------------------------------- */
+  /* ---------------------------------------------------------------- *
+   * The assigned face, behind Clerk's user button.
+   *
+   * Owner, 2026-08-04, first completed sign-up: "I have not gotten my user
+   * icon." Signed out the header draws the Kameleon face; signed in Clerk's
+   * <UserButton> takes over and, with no photo on an email-and-password
+   * account, falls back to initials. Making an account swapped a face for two
+   * grey letters.
+   *
+   * A BACKGROUND, NOT A REPLACEMENT, and that is the whole trick. Clerk renders
+   * an <img> only when the user really has a photo and initials otherwise, so
+   * painting the box behind both means the face shows through where the
+   * initials were and a real uploaded photo covers it completely. Nobody has to
+   * detect which case applies: upload a picture and you get your picture,
+   * upload nothing and you get your face.
+   *
+   * The initials themselves go transparent — they would otherwise sit on top of
+   * the face — and only inside this wrapper, so Clerk's avatars anywhere else
+   * are untouched.
+   * ---------------------------------------------------------------- */
+  .clerk-avatar-skin .cl-avatarBox {
+    background-image: var(--user-avatar, none);
+    background-size: cover;
+    background-position: center;
+  }
+  /* Only when a face is actually set: with no --user-avatar there is nothing
+     behind the letters and hiding them would leave an empty disc. */
+  .clerk-avatar-skin[style*="--user-avatar"] .cl-avatarBox {
+    color: transparent;
+  }
+
   .btn[data-arrow] {
     justify-content: space-between;
     border-radius: 18px;

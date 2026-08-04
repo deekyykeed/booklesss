@@ -5,6 +5,7 @@ import { Account as ClerkAccount } from "./Account";
 import { ClerkIsland } from "./ClerkIsland";
 import { CommandSearch } from "./CommandSearch";
 import { ShareControl } from "./ShareControl";
+import { ClerkAvatarSkin } from "./identity/ClerkAvatarSkin";
 import { HeaderAvatar } from "./identity/HeaderAvatar";
 import { MobileMenuButton } from "./reader/MobileNav";
 
@@ -38,9 +39,15 @@ function Account() {
   // If auth fails to load, fall back to the local avatar rather than letting
   // the header take the lesson down with it.
   return (
-    <ClerkIsland fallback={<HeaderAvatar />}>
-      <ClerkAccount />
-    </ClerkIsland>
+    /* ClerkAvatarSkin carries the student's assigned face down to Clerk's user
+       button as a CSS custom property — without it, signing up trades a face
+       for two grey initials. See the component, and .clerk-avatar-skin in
+       globals.css. */
+    <ClerkAvatarSkin>
+      <ClerkIsland fallback={<HeaderAvatar />}>
+        <ClerkAccount />
+      </ClerkIsland>
+    </ClerkAvatarSkin>
   );
 }
 

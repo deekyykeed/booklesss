@@ -393,6 +393,7 @@ export function OptionRows<T extends string | number>({
   values,
   onPick,
   label,
+  columns = 1,
 }: {
   options: { id: T; title: string; note?: string }[];
   /** Single-select: the one that is on. */
@@ -404,9 +405,22 @@ export function OptionRows<T extends string | number>({
   values?: T[];
   onPick: (id: T) => void;
   label: (id: T) => string;
+  /**
+   * Lay the rows out in two columns instead of one (owner, 2026-08-04: "for the
+   * days of the week, and for the times, we can have them in two columns, like
+   * a table with two columns").
+   *
+   * For the short answers only. Seven days and six lengths are one or two words
+   * each, and stacked they made the last question of the flow a long scroll of
+   * mostly empty rows; paired, the whole question is on screen at once. The
+   * university, programme and course lists stay single-column — their rows
+   * carry a full name and a crest, or a title and a semester, and half a phone
+   * is not enough width for either.
+   */
+  columns?: 1 | 2;
 }) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className={columns === 2 ? "grid grid-cols-2 gap-x-3 gap-y-2" : "flex flex-col gap-2"}>
       {options.map((o) => {
         const on = values ? values.includes(o.id) : o.id === value;
         return (

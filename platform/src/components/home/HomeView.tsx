@@ -265,13 +265,27 @@ export function HomeView({
         {/* The name is no longer appended here. Each greeting decides where it
             goes — front, back, or not at all — so the line reads as written
             instead of always ending ", Deeky". See greeting.ts.
-            The name they typed into the form beats the one Clerk inferred from
-            an email address; they chose one of them. */}
+
+            THE ACCOUNT'S NAME COMES FIRST (owner, 2026-08-04, on reaching the
+            dashboard after the first completed sign-up: "I don't see my
+            username that I would have used for Clerk"). This read
+            `identity?.name ?? name`, and identity.name is the name of the
+            AVATAR this device was assigned — "Astronaut", "Rainbow" — which is
+            never empty. So it always won, and the one thing it beat was the
+            student's real name. Somebody who has just handed over an email
+            address and typed who they are was greeted as a cartoon.
+
+            The assigned name is still the fallback, and still right for the
+            reader who never made an account: it is a name we gave them so the
+            app would not have to ask, not a name they chose. `name` is the
+            first rung of HomeViewWithUser's ladder — Clerk's firstName, then
+            fullName, then username, then the local part of the address — so
+            "no name at all" already means Clerk knows nothing about them. */}
         {/* The placeholder is "Welcome", not "Welcome back" — before hydration
             nothing knows whether this device has ever been here, and the one
             greeting that must never flash at a stranger is a claim to know
             them (rule 3 in greeting.ts). */}
-        {hydrated ? renderGreeting(greeting, identity?.name ?? name) : "Welcome"}
+        {hydrated ? renderGreeting(greeting, name ?? identity?.name) : "Welcome"}
       </h1>
       <p className="mt-1.5 text-[14px] leading-6 text-muted">{line}</p>
       {afterGreeting}
