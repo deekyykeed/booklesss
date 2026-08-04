@@ -43,6 +43,10 @@ const HEARD_FROM = new Set(["friend", "whatsapp-group", "tiktok", "facebook", "f
  */
 const USUAL_COURSES_PER_YEAR = 8;
 
+/** The owner's figure as stated — "the usual 4/semester" — for a student who
+ *  told us which half of the year they are in. */
+const USUAL_COURSES_PER_SEMESTER = 4;
+
 /**
  * Whether this student's course load looks like a retake.
  *
@@ -94,7 +98,7 @@ function code(v: unknown): string | null {
   return c.length >= 2 ? c : null;
 }
 
-type IndexedProgramme = { slug: string; courses: { year: number | null }[] };
+type IndexedProgramme = { slug: string; courses: { year: number | null; semester: number | null }[] };
 
 /**
  * How many courses this student's year normally runs.
@@ -108,11 +112,17 @@ function expectedCourses(
   university: string | null,
   programme: string | null,
   year: number | null,
+  semester: number | null,
 ): number | null {
   if (!year) return null;
   const list = (PROGRAMMES as Record<string, IndexedProgramme[]>)[university ?? ""];
-  const n = list?.find((p) => p.slug === programme)?.courses.filter((c) => c.year === year).length ?? 0;
-  return n || USUAL_COURSES_PER_YEAR;
+  const courses = list?.find((p) => p.slug === programme)?.courses ?? [];
+  /* Judged against the same span the student was asked to confirm. Comparing a
+     semester's four picks against a year's eight would mark every student on
+     earth as carrying a reduced load — which is the bug this argument exists to
+     prevent, and the reason the two conventions below are separate numbers. */
+  const n = courses.filter((c) => c.year === year && (!semester || c.semester === semester)).length;
+  return n || (semester ? USUAL_COURSES_PER_SEMESTER : USUAL_COURSES_PER_YEAR);
 }
 
 function str(v: unknown, max: number): string | null {
@@ -161,7 +171,8 @@ export async function POST(req: Request) {
     ? body.typedCourses.filter((t) => typeof t === "string" && isCourseTitle(t)).length
     : 0;
   const picked = Math.max(curriculum.length, typedCount);
-  const expected = expectedCourses(known, str(body.programme, 120), year);
+  const semester = body.semester === 1 || body.semester === 2 ? body.semester : null;
+  const expected = expectedCourses(known, str(body.programme, 120), year, semester);
 
   const row = {
     id: userId,
@@ -173,6 +184,7 @@ export async function POST(req: Request) {
     programme_slug: str(body.programme, 120) === "other" ? null : str(body.programme, 120),
     programme_other: str(body.programmeName, 160),
     year,
+    semester,
     curriculum,
     courses: slugs(body.courses),
     target_days: typeof target?.days === "number" ? target.days : null,

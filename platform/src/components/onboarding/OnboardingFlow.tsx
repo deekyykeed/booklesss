@@ -22,6 +22,8 @@ import {
   programmeBySlug,
   programmeLabel,
   programmesFor,
+  semestersFor,
+  type Programme,
 } from "@/lib/programmes";
 import {
   cleanTitle,
@@ -154,7 +156,7 @@ function useIsClient(): boolean {
   );
 }
 
-type Step = "school" | "programme" | "year" | "courses" | "whatsapp" | "target" | "heard";
+type Step = "school" | "programme" | "year" | "semester" | "courses" | "whatsapp" | "target" | "heard";
 
 /**
  * The questions, in order. Every student gets all five.
@@ -191,7 +193,16 @@ type Step = "school" | "programme" | "year" | "courses" | "whatsapp" | "target" 
  * already in it — their year's courses ticked, or what their classmates
  * reported offered — so the work is confirming, not building.
  */
-const ORDER: Step[] = ["school", "programme", "year", "courses", "whatsapp", "target", "heard"];
+const ORDER: Step[] = [
+  "school",
+  "programme",
+  "year",
+  "semester",
+  "courses",
+  "whatsapp",
+  "target",
+  "heard",
+];
 
 /* WHEN THE HARD STUFF GOES IN (owner, 2026-08-04: "ask what time of the day they
    usually find it easy to learn complex topics, whether they are a night owl or
@@ -250,6 +261,9 @@ type Draft = {
   /** What they typed when their degree isn't one we hold — see lib/identity. */
   programmeName: string;
   year: number | null;
+  /** Which half of the year — 1 or 2, null on a programme with no semesters
+   *  recorded, where the question is skipped entirely. */
+  semester: number | null;
   /** Curriculum slugs ticked — their real timetable, built or not. */
   curriculum: string[];
   /** Course titles typed, for a programme with nothing on file to tick. */
@@ -280,6 +294,7 @@ function asDraft(identity: Identity | null): Draft {
     programme: identity?.programme ?? null,
     programmeName: identity?.programmeName ?? "",
     year: identity?.year ?? null,
+    semester: identity?.semester ?? null,
     curriculum: identity?.curriculum ?? [],
     typedCourses: identity?.typedCourses ?? [],
     courses: identity?.courses ?? [],
@@ -298,17 +313,66 @@ function asDraft(identity: Identity | null): Draft {
   };
 }
 
+/**
+ * Whether this student is asked a given question at all.
+ *
+ * Two of the eight are data-dependent: a programme that publishes no years has
+ * no year to ask about, and one whose source never recorded semesters has no
+ * halves to choose between. Asking either would render a card with no options
+ * and no way forward.
+ *
+ * ONE PREDICATE, THREE CALLERS — `firstGap`, `stepAfter` and `back`. They used
+ * to disagree by construction: every screen named its own successor by hand,
+ * and the WhatsApp question was added to ORDER while the courses screen went on
+ * saying `advanceAfterBeat("target")`. So the question was in the flow, was
+ * required by `onboardingComplete`, and was never shown — a student finished,
+ * got bounced off the dashboard by the gate, and landed back in onboarding
+ * (owner, 2026-08-04: "after I pick who told me I go back to the start").
+ *
+ * A screen naming its own next step is a decision duplicated once per screen.
+ * This is the list; nothing else gets an opinion.
+ */
+function asks(step: Step, d: Draft, prog: Programme | undefined): boolean {
+  if (step === "year") return !prog || prog.years.length > 0;
+  if (step === "semester") return semestersFor(prog, d.year).length > 1;
+  return true;
+}
+
+/** The next question this student is actually asked, skipping any that do not
+ *  apply. The last one answers itself — `finish` leaves for the dashboard. */
+function stepAfter(from: Step, d: Draft, prog: Programme | undefined): Step {
+  for (let i = ORDER.indexOf(from) + 1; i < ORDER.length; i++) {
+    if (asks(ORDER[i], d, prog)) return ORDER[i];
+  }
+  return ORDER[ORDER.length - 1];
+}
+
+/** The previous one they were actually asked. Back has to skip exactly what
+ *  forward skipped, or it lands on a card with nothing in it. */
+function stepBefore(from: Step, d: Draft, prog: Programme | undefined): Step {
+  for (let i = ORDER.indexOf(from) - 1; i >= 0; i--) {
+    if (asks(ORDER[i], d, prog)) return ORDER[i];
+  }
+  return ORDER[0];
+}
+
 /** Which question to open on — the first without an answer, over whichever
  *  steps this student is actually being asked. Mirrors lib/identity's
- *  `firstUnanswered` and extends it over the two data-dependent ones. */
-function firstGap(d: Draft, steps: Step[]): Step {
+ *  `firstUnanswered` and extends it over the data-dependent ones. */
+function firstGap(d: Draft, steps: Step[], prog: Programme | undefined): Step {
   for (const s of steps) {
+    if (!asks(s, d, prog)) continue;
     if (s === "school" && (!d.school || (d.school === OTHER_SCHOOL && !d.schoolName.trim()))) return s;
     /* Same shape as the school question above it: picking "not listed" is not
        an answer on its own — the answer is what they then type. */
     if (s === "programme" && (!d.programme || (d.programme === OTHER_PROGRAMME && !d.programmeName.trim())))
       return s;
     if (s === "year" && !d.year) return s;
+    /* Skipped where the source never recorded semesters — asking "which half of
+       the year?" with nothing to put in either half is a card with no options
+       and no way forward, which is the same hole the year step already guards
+       against for programmes that publish no years. */
+    if (s === "semester" && !d.semester) return s;
     if (s === "courses" && !d.coursesAnswered) return s;
     /* Typed, not normalised: the field holds what they wrote and the save
        normalises it, so a resume has to judge the same thing the save would. */
@@ -355,6 +419,7 @@ export function OnboardingFlow() {
     programme,
     programmeName,
     year,
+    semester,
     curriculum,
     typedCourses,
     courses,
@@ -386,7 +451,7 @@ export function OnboardingFlow() {
    *  preserve — a worse trade than the lookup it saves. */
   const prog = programmeBySlug(school, programme);
 
-  const step = stepPick ?? (hydrated ? firstGap(d, ORDER) : "school");
+  const step = stepPick ?? (hydrated ? firstGap(d, ORDER, prog) : "school");
 
   /** Whether this student is on the typed path — no curriculum on file for
    *  their programme, so their answers are the curriculum. The majority case;
@@ -518,6 +583,7 @@ export function OnboardingFlow() {
     programme?: string | null;
     programmeName?: string | null;
     year?: number | null;
+    semester?: number | null;
     curriculum?: string[];
     typedCourses?: string[];
     studyWindow?: StudyWindow | null;
@@ -538,6 +604,7 @@ export function OnboardingFlow() {
          after "Mine isn't listed" reaches the record on the same write. */
       ...(patch.programmeName === undefined ? {} : { programmeName: patch.programmeName }),
       ...(patch.year === undefined ? {} : { year: patch.year }),
+      ...(patch.semester === undefined ? {} : { semester: patch.semester }),
       ...(patch.curriculum === undefined ? {} : { curriculum: patch.curriculum }),
       ...(patch.typedCourses === undefined ? {} : { typedCourses: patch.typedCourses }),
       ...(patch.studyWindow === undefined ? {} : { studyWindow: patch.studyWindow }),
@@ -583,7 +650,7 @@ export function OnboardingFlow() {
        Back would otherwise land on the previous question and then get dragged
        forward again by a timer the student can't see. */
     cancelAdvance();
-    goTo(ORDER[Math.max(0, index - 1)], "back");
+    goTo(stepBefore(step, d, prog), "back");
   }
 
   /* The pending tap-to-advance, so it can be called off. */
@@ -612,8 +679,15 @@ export function OnboardingFlow() {
     }, ANSWER_BEAT_MS);
   }
 
-  /** The common case: show the answer, then ask the next question. */
-  function advanceAfterBeat(next: Step) {
+  /** Show the answer, then move on to whatever this student is asked next.
+   *  Every screen uses this rather than naming a successor — see `asks`. */
+  function onward(patch?: Partial<Draft>, nextProg: Programme | undefined = prog) {
+    /* The programme is passed explicitly where the tap just changed it: `prog`
+       is derived from the draft React has not re-rendered with, so reading it
+       here would decide the next question against the PREVIOUS degree — which
+       is the same one-answer-behind bug the `patch` argument on `save` exists
+       to prevent. */
+    const next = stepAfter(step, { ...d, ...patch }, nextProg);
     afterBeat(() => goTo(next));
   }
 
@@ -701,7 +775,7 @@ export function OnboardingFlow() {
                        study, and `firstGap` — which still checks programme —
                        would have marched them back to it on their next visit
                        anyway. */
-                    advanceAfterBeat("programme");
+                    onward();
                   }}
                 >
                   {schoolName.trim() ? "Continue" : "Type your university"}
@@ -750,7 +824,7 @@ export function OnboardingFlow() {
                      curriculum for this university — it is a line to type
                      rather than a list to tap, and it is the answer that turns
                      an empty campus into one we know something about. */
-                  advanceAfterBeat("programme");
+                  onward();
                 } else {
                   /* "Another university" opens a field instead of advancing, so
                      a beat armed by a previous tap has to be called off — it
@@ -834,7 +908,7 @@ export function OnboardingFlow() {
                     ...(changed ? { curriculum: [], typedCourses: [], courses: [] } : {}),
                     coursesChosen: changed ? false : coursesAnswered,
                   });
-                  advanceAfterBeat("year");
+                  onward({ programme: String(slug) }, programmeBySlug(school, slug));
                 }}
               />
             )}
@@ -878,10 +952,16 @@ export function OnboardingFlow() {
               value={year}
               label={(y) => `Year ${y}`}
               onPick={(y) => {
-                /* THE PREDICTIVE STEP. Picking a year TICKS that year's courses
-                   and hands them to the next screen already filled in — the
-                   whole point of the two questions above. The student confirms
-                   a list instead of building one.
+                /* THE YEAR NO LONGER TICKS ANYTHING BY ITSELF. It used to tick
+                   the whole year, which is eight courses where a student sits
+                   four (owner, 2026-08-04: "don't like that we automatically
+                   tick all these courses"). The ticking moved one question down,
+                   to the semester, which is the granularity a timetable actually
+                   has.
+
+                   Where a programme records no semesters there is no next
+                   question to do it, so the year still ticks its own courses —
+                   the old behaviour, kept for the programmes that need it.
 
                    `coursesChosen` is deliberately NOT set here. It is what
                    `onboardingComplete` reads and what `firstGap` resumes on, so
@@ -894,11 +974,62 @@ export function OnboardingFlow() {
                    Only on a CHANGE of year, so coming Back and re-tapping the
                    same year cannot wipe what they unticked after. */
                 const changed = y !== year;
-                const picks = changed ? coursesByYear(prog, y).thisYear.map((c) => c.slug) : curriculum;
+                const hasHalves = semestersFor(prog, y).length > 1;
+                /* Changing year invalidates the semester under it, exactly as
+                   changing programme invalidates the year. */
+                const nextSem = changed ? null : semester;
+                const picks = changed
+                  ? hasHalves
+                    ? []
+                    : coursesByYear(prog, y).thisYear.map((c) => c.slug)
+                  : curriculum;
                 const live = prog ? liveSlugsFor(prog, picks) : builtFor(typedCourses);
-                edit({ year: y, curriculum: picks, courses: live });
-                save({ year: y, curriculum: picks, courses: live, coursesChosen: coursesAnswered });
-                advanceAfterBeat("courses");
+                edit({ year: y, semester: nextSem, curriculum: picks, courses: live });
+                save({
+                  year: y,
+                  semester: nextSem,
+                  curriculum: picks,
+                  courses: live,
+                  coursesChosen: coursesAnswered,
+                });
+                onward({ year: y, semester: nextSem });
+              }}
+            />
+          </Card>
+        )}
+
+        {step === "semester" && (
+          <Card
+            title="Which semester are you in?"
+            why="We'll tick that semester's courses for you. You can add the other half on the next screen."
+          >
+            <OptionRows
+              options={semestersFor(prog, year).map((n) => {
+                const count = prog?.courses.filter((c) => c.year === year && c.semester === n).length ?? 0;
+                return {
+                  id: n,
+                  title: `Semester ${n}`,
+                  ...(count ? { note: `${count} course${count === 1 ? "" : "s"}` } : {}),
+                };
+              })}
+              value={semester}
+              label={(n) => `Semester ${n}`}
+              onPick={(n) => {
+                /* THIS is the predictive step now. Picking the semester ticks
+                   ITS courses — four, not the year's eight — and hands them to
+                   the next screen already filled in, so the work there is
+                   confirming a list rather than building one.
+
+                   Only on a CHANGE, so coming Back and re-tapping the same
+                   semester cannot wipe what they unticked after. */
+                const changed = n !== semester;
+                const picks = changed
+                  ? coursesByYear(prog, year, n).thisYear.map((c) => c.slug)
+                  : curriculum;
+                const live = prog ? liveSlugsFor(prog, picks) : builtFor(typedCourses);
+                edit({ semester: n, curriculum: picks, courses: live });
+                save({ semester: n, curriculum: picks, courses: live, coursesChosen: coursesAnswered });
+                onward({ semester: n });
               }}
             />
           </Card>
@@ -907,7 +1038,11 @@ export function OnboardingFlow() {
         {step === "courses" && !typing && prog && (
           <Card
             title="These are your courses"
-            why="We've ticked your year already. Untick anything you dropped, and add from another year if you're taking it."
+            why={
+              semester
+                ? "We've ticked this semester already. Untick anything you dropped, and add from the rest of the degree if you're taking it."
+                : "We've ticked your year already. Untick anything you dropped, and add from another year if you're taking it."
+            }
             actions={
               <Button
                 variant="primary"
@@ -918,7 +1053,7 @@ export function OnboardingFlow() {
                 onClick={() => {
                   edit({ coursesAnswered: true });
                   save({ coursesChosen: true, curriculum, courses: liveSlugsFor(prog, curriculum) });
-                  advanceAfterBeat("target");
+                  onward();
                 }}
               >
                 {curriculum.length === 0
@@ -928,9 +1063,10 @@ export function OnboardingFlow() {
             }
           >
             <CurriculumPicker
-              thisYear={coursesByYear(prog, year).thisYear}
-              otherYears={coursesByYear(prog, year).otherYears}
+              thisYear={coursesByYear(prog, year, semester).thisYear}
+              otherYears={coursesByYear(prog, year, semester).otherYears}
               year={year}
+              semester={semester}
               picked={curriculum}
               onToggle={(slug) => {
                 const next = curriculum.includes(slug)
@@ -959,7 +1095,7 @@ export function OnboardingFlow() {
                   onClick={() => {
                     edit({ coursesAnswered: true });
                     save({ coursesChosen: true, typedCourses, courses: builtFor(typedCourses) });
-                    advanceAfterBeat("target");
+                    onward();
                   }}
                 >
                   {typedCourses.length === 0
@@ -978,7 +1114,7 @@ export function OnboardingFlow() {
                   onClick={() => {
                     edit({ typedCourses: [], courses: [], coursesAnswered: true });
                     save({ typedCourses: [], courses: [], coursesChosen: true });
-                    advanceAfterBeat("target");
+                    onward();
                   }}
                 >
                   I&rsquo;ll add these later
@@ -1012,7 +1148,7 @@ export function OnboardingFlow() {
                 disabled={picked.length === 0 || !studyWindow}
                 onClick={() => {
                   savePlan();
-                  advanceAfterBeat("heard");
+                  onward();
                 }}
               >
                 {picked.length === 0
@@ -1136,7 +1272,7 @@ export function OnboardingFlow() {
                 disabled={!phone}
                 onClick={() => {
                   save({ coursesChosen: coursesAnswered, whatsapp: phone });
-                  advanceAfterBeat("target");
+                  onward();
                 }}
               >
                 {phone ? "Continue" : "Enter your number"}

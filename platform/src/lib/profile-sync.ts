@@ -37,6 +37,7 @@ export function syncProfile(identity: Identity | null): void {
     programme: identity.programme,
     programmeName: identity.programmeName,
     year: identity.year,
+    semester: identity.semester,
     curriculum: identity.curriculum,
     courses: identity.courses,
     typedCourses: identity.typedCourses,

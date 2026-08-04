@@ -77,7 +77,25 @@ export function programmeBySlug(school: string | null | undefined, slug: string 
 }
 
 /** A year of a programme, and what it teaches. */
-export type YearGroup = { year: number | null; courses: ProgrammeCourse[] };
+export type YearGroup = {
+  year: number | null;
+  courses: ProgrammeCourse[];
+  /** What to head this block with, where "Year 3" is not the whole story — the
+   *  other half of the student's OWN year needs to say which half. */
+  label?: string;
+};
+
+/** Which semesters this programme actually publishes for a year. Read off the
+ *  data rather than assumed to be [1, 2]: a source that never recorded a
+ *  semester gives an empty list, and a year with only one is real. */
+export function semestersFor(programme: Programme | undefined, year: number | null | undefined): number[] {
+  if (!programme || !year) return [];
+  const seen = new Set<number>();
+  for (const c of programme.courses) {
+    if (c.year === year && typeof c.semester === "number") seen.add(c.semester);
+  }
+  return [...seen].sort((a, b) => a - b);
+}
 
 /**
  * A programme's courses split into the ones the student is taking now and the
@@ -99,11 +117,40 @@ export type YearGroup = { year: number | null; courses: ProgrammeCourse[] };
  *
  * Ascending, and the student's own year is not among them — it is `thisYear`.
  */
-export function coursesByYear(programme: Programme | undefined, year: number | null | undefined) {
+export function coursesByYear(
+  programme: Programme | undefined,
+  year: number | null | undefined,
+  /**
+   * Which half of that year they are in — and if given, it is the ONE group
+   * that gets ticked.
+   *
+   * Owner, 2026-08-04, looking at a whole year pre-ticked: "don't like that we
+   * automatically tick all these courses — what if I just tick the 4 in the
+   * semester they are going into? That might mean I ask them which semester."
+   *
+   * It fixes more than the ticking. A whole year is eight courses where a
+   * student is sitting four, so the dashboard listed twice the courses anyone
+   * was taking, the retake signal compared a picked count against 8 when the
+   * norm it is judged against is 4 a semester, and the demand ranking could not
+   * say which semester's courses to write first — every year-4 student appeared
+   * to want all eight at once.
+   *
+   * The other semester is not hidden, it is the FIRST of the other groups: it
+   * is the likeliest thing after their own, ahead of any other year.
+   *
+   * Undefined keeps the old whole-year behaviour, which is what a programme
+   * whose source never recorded semesters still gets.
+   */
+  semester?: number | null,
+) {
   if (!programme) return { thisYear: [], otherYears: [] as YearGroup[] };
   if (!year) return { thisYear: programme.courses, otherYears: [] as YearGroup[] };
 
-  const thisYear = programme.courses.filter((c) => c.year === year);
+  const inYear = programme.courses.filter((c) => c.year === year);
+  const thisYear = semester ? inYear.filter((c) => c.semester === semester) : inYear;
+  /* The rest of their own year, kept as a group of its own so it can be headed
+     with the semester it is rather than with the year both halves share. */
+  const otherHalf = semester ? inYear.filter((c) => c.semester !== semester) : [];
   const rest = new Map<number | null, ProgrammeCourse[]>();
   for (const c of programme.courses) {
     if (c.year === year) continue;
@@ -143,6 +190,19 @@ export function coursesByYear(programme: Programme | undefined, year: number | n
       return ba - bb || ka - kb;
     })
     .map(([y, courses]) => ({ year: y, courses }));
+
+  /* Their own year's other half goes FIRST, ahead of every other year — same
+     "nearest first" rule the years follow, one level down. A course headed
+     "Year 4" when the student is in year 4 would read as a mistake, so this
+     group carries its own label. */
+  if (otherHalf.length) {
+    const half = otherHalf[0].semester;
+    otherYears.unshift({
+      year,
+      courses: otherHalf,
+      label: half ? `Year ${year} · Semester ${half}` : `Year ${year} · rest of the year`,
+    });
+  }
 
   return { thisYear, otherYears };
 }

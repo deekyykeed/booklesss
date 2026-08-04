@@ -472,6 +472,7 @@ export function CurriculumPicker({
   thisYear,
   otherYears,
   year,
+  semester,
   picked,
   onToggle,
 }: {
@@ -481,6 +482,9 @@ export function CurriculumPicker({
    *  with nothing to say which is a first-year course and which a third. */
   otherYears: YearGroup[];
   year: number | null;
+  /** Which half of the year they said they are in, so the heading can say so.
+   *  Null on a programme whose source never recorded semesters. */
+  semester?: number | null;
   /** Curriculum slugs currently ticked. */
   picked: string[];
   onToggle: (slug: string) => void;
@@ -536,7 +540,18 @@ export function CurriculumPicker({
 
   return (
     <div className="flex flex-col gap-5">
-      {group("current", year ? `Year ${year} — yours` : "Your courses", thisYear)}
+      {/* The heading names the half they are in, because that is what the
+          ticks now mean — heading four ticked rows "Year 4" would read as the
+          whole year with half of it missing. */}
+      {group(
+        "current",
+        year
+          ? semester
+            ? `Year ${year} · Semester ${semester} — yours`
+            : `Year ${year} — yours`
+          : "Your courses",
+        thisYear,
+      )}
 
       {otherYears.length > 0 && (
         <>
@@ -553,13 +568,22 @@ export function CurriculumPicker({
           <div className="flex items-center gap-3 pt-1">
             <span className="h-px flex-1 bg-line" />
             <span className="font-display text-[11px] font-semibold uppercase tracking-wide text-muted">
-              From other years
+              {/* "From other years" was exactly right until the first block
+                  under it became the other half of the student's OWN year. */}
+              {otherYears[0]?.label ? "The rest of the degree" : "From other years"}
             </span>
             <span className="h-px flex-1 bg-line" />
           </div>
 
-          {otherYears.map((g) =>
-            group(String(g.year ?? "unplaced"), g.year ? `Year ${g.year}` : "Not placed in a year", g.courses),
+          {otherYears.map((g, i) =>
+            group(
+              /* The student's own year can now appear twice — their semester
+                 above, its other half in here — so the year alone is no longer
+                 a unique key. */
+              g.label ?? String(g.year ?? `unplaced-${i}`),
+              g.label ?? (g.year ? `Year ${g.year}` : "Not placed in a year"),
+              g.courses,
+            ),
           )}
         </>
       )}

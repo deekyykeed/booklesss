@@ -339,6 +339,27 @@ export type Identity = {
   programmeName: string | null;
   year: number | null;
   /**
+   * Which half of that year they are in — 1 or 2, null where we never asked.
+   *
+   * Owner, 2026-08-04, on a whole year arriving pre-ticked: "don't like that we
+   * automatically tick all these courses — what if I just tick the 4 in the
+   * semester they are going into?" A year is eight courses where a student sits
+   * four, so without this the record overstated everyone's load by double: the
+   * dashboard listed courses nobody was taking, the retake signal compared a
+   * count against 8 when the norm it is judged against is 4 a semester, and the
+   * demand ranking could not say which semester to write first.
+   *
+   * NOT part of `onboardingComplete`, on the same reasoning as `programme` and
+   * `year`: it makes the course question answerable in four taps instead of
+   * eight, it is not itself the record. A programme whose source never recorded
+   * semesters skips the question and keeps the whole-year behaviour.
+   *
+   * It has a shelf life. Once a campus academic calendar is on file (see
+   * lib/schools), today's date says which semester a student is in and the
+   * question can go.
+   */
+  semester: number | null;
+  /**
    * Every course they ticked off their own timetable, as curriculum slugs —
    * INCLUDING the ones nobody has written yet.
    *
@@ -485,6 +506,7 @@ function load(): Identity | null {
       // A year is 1..6 across every programme scraped (a masters starts at 5).
       // Anything else is a record from a build that meant something different.
       year: typeof v.year === "number" && v.year >= 1 && v.year <= 6 ? v.year : null,
+      semester: v.semester === 1 || v.semester === 2 ? v.semester : null,
       curriculum: Array.isArray(v.curriculum) ? v.curriculum.filter((c) => typeof c === "string") : [],
       typedCourses: Array.isArray(v.typedCourses)
         ? v.typedCourses.filter((c) => typeof c === "string")
@@ -572,6 +594,7 @@ export function saveIdentity(input: {
   programme?: string | null;
   programmeName?: string | null;
   year?: number | null;
+  semester?: number | null;
   curriculum?: string[];
   typedCourses?: string[];
 }): Identity {
@@ -611,6 +634,10 @@ export function saveIdentity(input: {
           ? (prev?.programmeName ?? null)
           : (input.programmeName?.trim() || null),
     year: input.year === undefined ? (prev?.year ?? null) : input.year,
+    semester:
+      input.semester === undefined
+        ? (prev?.semester ?? null)
+        : (input.semester === 1 || input.semester === 2 ? input.semester : null),
     curriculum: input.curriculum === undefined ? (prev?.curriculum ?? []) : [...new Set(input.curriculum)],
     typedCourses:
       input.typedCourses === undefined ? (prev?.typedCourses ?? []) : [...new Set(input.typedCourses)],
@@ -664,6 +691,7 @@ export function saveOnboarding(input: {
   programme?: string | null;
   programmeName?: string | null;
   year?: number | null;
+  semester?: number | null;
   curriculum?: string[];
   typedCourses?: string[];
 }): Identity {
@@ -682,6 +710,7 @@ export function saveOnboarding(input: {
     ...(input.programme === undefined ? {} : { programme: input.programme }),
     ...(input.programmeName === undefined ? {} : { programmeName: input.programmeName }),
     ...(input.year === undefined ? {} : { year: input.year }),
+    ...(input.semester === undefined ? {} : { semester: input.semester }),
     ...(input.curriculum === undefined ? {} : { curriculum: input.curriculum }),
     ...(input.typedCourses === undefined ? {} : { typedCourses: input.typedCourses }),
   });
@@ -768,6 +797,7 @@ export type AccountIdentity = {
   programme: string | null;
   programmeName: string | null;
   year: number | null;
+  semester: number | null;
   curriculum: string[];
   /** Travels for the same reason, and matters more: for a student at a
    *  university that publishes no curriculum this list IS their timetable, and
@@ -796,6 +826,7 @@ export function accountIdentity(): AccountIdentity | null {
         programme: v.programme,
         programmeName: v.programmeName,
         year: v.year,
+        semester: v.semester,
         curriculum: v.curriculum,
         typedCourses: v.typedCourses,
       }
@@ -838,6 +869,7 @@ export function parseAccountIdentity(v: unknown): AccountIdentity | null {
         ? o.programmeName.trim().slice(0, 160)
         : null,
     year: typeof o.year === "number" && o.year >= 1 && o.year <= 6 ? o.year : null,
+    semester: o.semester === 1 || o.semester === 2 ? o.semester : null,
     /* Capped. Every other field here is one value; this is a list a signed-in
        browser can write freely, and unsafeMetadata has a size limit that a
        student's real answer will never approach. The longest programme on file
@@ -910,6 +942,7 @@ function mergeAccount(acct: AccountIdentity, prev: Identity | null): Identity {
     programme: takeCourses ? acct.programme : (prev?.programme ?? null),
     programmeName: takeCourses ? acct.programmeName : (prev?.programmeName ?? null),
     year: takeCourses ? acct.year : (prev?.year ?? null),
+    semester: takeCourses ? acct.semester : (prev?.semester ?? null),
     curriculum: takeCourses ? acct.curriculum : (prev?.curriculum ?? []),
     typedCourses: takeCourses ? acct.typedCourses : (prev?.typedCourses ?? []),
     id: prev?.id ?? newId(),
@@ -943,6 +976,7 @@ export function matchesAccount(id: Identity | null, acct: AccountIdentity): bool
     id.programme === next.programme &&
     id.programmeName === next.programmeName &&
     id.year === next.year &&
+    id.semester === next.semester &&
     id.curriculum.length === next.curriculum.length &&
     id.curriculum.every((s, i) => s === next.curriculum[i]) &&
     id.typedCourses.length === next.typedCourses.length &&
