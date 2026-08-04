@@ -36,6 +36,7 @@ import {
   TypedCoursePicker,
 } from "@/components/identity/pickers";
 import { Button } from "@/components/ui/Button";
+import { ViewportFit } from "@/components/ui/ViewportFit";
 
 /* ------------------------------------------------------------------ *
  * Onboarding — three questions, asked straight after the account is made.
@@ -623,7 +624,15 @@ export function OnboardingFlow() {
        on it; a student who has just made an account with us does not need
        telling whose form this is. */
     /* 16px of page padding (owner, 2026-08-04), where it was 20. */
-    <div className="mx-auto w-full max-w-[440px] px-4 pb-[calc(2rem+env(safe-area-inset-bottom))]">
+    /* THE BAR IS FIXED NOW, so the page has to end above it rather than
+       underneath it: 8rem is its full height (24 fade + 44 button + 12) with
+       room to spare, and without it the last course in a list can never be
+       scrolled out from behind the button that confirms it. */
+    <div className="mx-auto w-full max-w-[440px] px-4 pb-[calc(8rem+env(safe-area-inset-bottom))]">
+      {/* Publishes --vv-bottom. See the component: `bottom: 0` is measured
+          against a viewport edge that is below the glass while the URL bar is
+          showing, which is what sliced the button in half. */}
+      <ViewportFit />
       {/* No progress bar (owner, 2026-08-04: "remove the progress thing
           entirely"). It was three labelled nodes over three questions — a
           legend for a form you can finish in three taps, telling a student
@@ -1262,28 +1271,48 @@ function Card({
            in the first three rows still had to scroll past thirty to say so. The
            screen asked them to confirm and then hid the confirmation.
 
-           STICKY, NOT A PINNED FRAME, and the distinction is the whole reason
-           this is allowed. The rejected version (same day: "the whole page
-           should be scrollable") was h-dvh with a fixed head, a fixed foot and
-           only the options scrolling between them — which turned a long answer
-           list into a small window inside a page that could not itself move.
-           This keeps one scroll over the whole document; the button simply never
-           leaves the viewport while there is page left under it, and settles
-           into its natural place at the end. Nothing else is pinned.
+           FIXED, AND POSITIONED AGAINST A MEASURED EDGE. It was `sticky
+           bottom-0`, which put half the button under the bottom of the screen
+           (owner, with a screenshot: "this happens to the button so it might
+           need to be fixed or use some dynamic way to measure the changing
+           viewport"). Both sticky and fixed resolve `bottom: 0` against the
+           LAYOUT viewport, and on Chrome Android that is sized for the state
+           where the URL bar has scrolled away — so while the bar is showing,
+           "the bottom" is a real edge that happens to be below the glass, and a
+           control pinned to it is cut by exactly the height of the browser
+           chrome. `dvh` does not help: it is the right number for a height, and
+           the positioning is still measured against the wrong box.
 
-           The bar bleeds past the page's 16px padding (-mx-4) and puts it back
-           inside (px-4), so the fade covers edge to edge rather than leaving two
-           stripes of un-faded list beside it. It fades rather than drawing a
-           border: a hairline would read as the bottom of the list, and the list
-           does not end there. */
+           So `--vv-bottom` carries the measured gap between the two viewports
+           (see ui/ViewportFit) and this sits that far up from the layout bottom
+           — which is the visible bottom, on every browser, in every state,
+           including with the keyboard open over the two questions that have a
+           text field.
+
+           NOT A PINNED FRAME. The rejected version (same day: "the whole page
+           should be scrollable") was h-dvh with a fixed head, a fixed foot and
+           only the options scrolling between them. That rule is untouched: one
+           scroll, the whole document. Only the action floats, and the page ends
+           above it so nothing can hide behind it.
+
+           It fades rather than drawing a border: a hairline would read as the
+           bottom of the list, and the list does not end there. */
         <div
-          className="sticky bottom-0 z-10 -mx-4 px-4 pt-6 pb-[calc(0.75rem+env(safe-area-inset-bottom))]"
+          className="fixed inset-x-0 z-20"
           style={{
+            bottom: "var(--vv-bottom, 0px)",
             background:
               "linear-gradient(to top, rgba(255,255,255,0.94) 0%, rgba(255,255,255,0.94) 68%, rgba(255,255,255,0) 100%)",
           }}
         >
-          {actions}
+          {/* The page's own column, repeated — a fixed element is out of the
+              layout, so it cannot inherit the width it is meant to line up
+              with. Same max-width and same 16px padding as the questions above
+              it, or the button would run the full width of the phone while
+              everything it belongs to stopped short. */}
+          <div className="mx-auto w-full max-w-[440px] px-4 pt-6 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+            {actions}
+          </div>
         </div>
       ) : null}
     </section>
