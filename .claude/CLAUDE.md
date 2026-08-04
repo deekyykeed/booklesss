@@ -370,6 +370,60 @@ taught?" is unanswerable from a per-user metadata blob you read one row at a
 time. With seven of ten universities publishing no curriculum, that question is
 how the curriculum gets built at all, which is why the Supabase copy exists.
 
+**THE MERGE NEEDS A CLOCK, AND `Identity.updatedAt` IS IT.** Three copies means
+two of them can disagree, and the rule "the account wins where it has an answer"
+is wrong in the ten minutes that matter most. Clerk's copy is a **snapshot of
+the device taken at sign-up** — ClerkGate writes `accountIdentity()` into
+`unsafeMetadata` when the account is created, which on a fresh visit is the
+placeholder the device rolled for itself. The student then answers ten
+questions, every answer newer than that snapshot, and a merge without a clock
+hands the snapshot straight back down. That shipped, and cost six sign-ups their
+name, face, programme, year and whole ticked curriculum (2026-08-05).
+
+So: where **both** copies hold an answer the **later** one wins; where only the
+account has one it still wins, which is the second-device case and the reason
+any of this exists. `updatedAt` is stamped by `saveIdentity` and **never by
+`persist`** — stamping on adopt would make every adopted record look freshly
+answered and the two copies would out-date each other forever. Name and face
+gate additionally on `nameChosen`, the way courses gate on `coursesChosen`: the
+field is never empty, so it cannot say on its own whether anybody was asked.
+
+`matchesAccount` and `accountBehind` are **one comparator** (`sameAnswers`)
+asked from two directions. They were two hand-written field lists and had
+already drifted — neither compared `target.weekdays`, so a student moving study
+days from Monday to Tuesday never had it travel. A field added to
+`AccountIdentity` and not added to `sameAnswers` silently stops travelling.
+
+### The auth surface is Clerk's own modal — do not rebuild it
+
+`ClerkGate` turns every `requireAccount()` into `clerk.openSignUp()` /
+`openSignIn()`, and the landing page carries Clerk's inline `<SignUp>`. That is
+the whole of it.
+
+**A custom form has now been written and thrown away twice** — 2026-08-03 ("use
+clerk stuff just remove the logo") and again on 2026-08-05, where it was built,
+failed twice on the owner's own phone during a live sign-up, and was reverted
+inside three hours ("not worked still, go back to the modal from clerk"). The
+second attempt is preserved at **21bed00** with everything learned:
+
+- Clerk 7's **Signals API** is not what tutorials show. `useSignUp()` returns
+  `{signUp, errors, fetchStatus}`; the call is `signUp.password(...)` not
+  `create()`; errors are **returned, not thrown** (a try/catch around them
+  catches nothing and every failure looks like success); the session is
+  activated by `finalize()`, not `setActive()`. Verify against
+  `node_modules/@clerk/shared/dist/types/signUpFuture.d.mts`, not from memory.
+- **`SignUp` is stateful and lives on the Clerk CLIENT.** A half-built attempt
+  survives a failed submit, a reload and a new tab. Once one exists,
+  `password()` updates it rather than creating a sign-up, and `email_address`
+  stops being an accepted parameter — which surfaces as *"email_address is not a
+  valid parameter for this request"* naming the wrong field and pointing at the
+  wrong dashboard page. `reset()` clears it and is free (no API call).
+- **Email verification must be read off `unverifiedFields`**, never assumed from
+  a dashboard setting the code cannot see.
+
+If it is ever attempted a third time, it needs a better reason than how it
+looks — and the modal is what ships in the meantime.
+
 **The browser never writes Supabase.** `lib/supabase-admin.ts` is `server-only`
 (importing it from a client component is a build error) and every write goes
 through `/api/profile`, which takes the user id **from the Clerk session, never

@@ -92,13 +92,37 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
-**From session 44 (2026-08-04 night, the auth flow finished end to end). Linear
-was unreachable this session — nothing below has a BOO issue yet, and raising
-them is the first item.**
-- [ ] ⚠️ **Raise BOO issues for session 44's work.** `linear-server` needs a
-      one-time OAuth and this session was non-interactive, so tonight's ten-step
-      onboarding, the Supabase `students` columns and the four bug fixes are
-      recorded in this file ONLY.
+**From session 45 (2026-08-05, ~01:00). Linear was unreachable AGAIN — two
+sessions running now with no issues raised. Everything below lives in this file
+only.**
+- [ ] ⚠️ **Raise BOO issues for sessions 44 AND 45.** `linear-server` needs a
+      one-time interactive OAuth; both sessions were non-interactive. Two
+      sessions of onboarding work, the identity merge fix and a reverted auth
+      form are recorded here ONLY.
+- [ ] ⚠️ **Walk the SHARED-LINK path before sharing anything.** It is the one
+      journey every WhatsApp link takes — stranger opens a step, reads free,
+      hits the gate on the second one — and it was never walked in 45. Five
+      minutes in a private tab. The owner asked "can I start sharing?" and this
+      is the honest precondition.
+- [ ] **Sidebar holds all 7 remaining lint errors** (45 cleared 17 → 7). Three
+      are the `nav` latch that decides `sameGroup` DURING render, and that
+      timing is the point — the selector must know whether it is sliding within
+      a folder or fading to a new one on the same render the lesson changes, and
+      `useFollow` re-renders several times over a ~360ms measure window. The fix
+      is React's "adjust state during render" pattern rather than a ref, plus
+      deriving the optimistic selector from a `{id, from}` pair. Needs the app
+      open, not a blind refactor.
+- [ ] **Consider dropping the Clerk `unsafeMetadata.identity` copy entirely.**
+      Three copies of the same answers exist; localStorage earns it (offline,
+      signed-out) and Supabase earns it (the only queryable one). Clerk's earns
+      it only for "a second device resumes with no network call" — but Supabase
+      answers that in one call on a page that already blocks on Clerk, it is
+      frontend-writable so it must be re-validated on read anyway, it is capped
+      at 8KB against a ~6KB worst case, and it is the copy that had no clock,
+      which is the bug 45 spent the morning on. Deleting it removes
+      `mergeAccount`/`matchesAccount`/`accountBehind`/`adoptIdentity`/
+      `parseAccountIdentity` — ~250 lines. Cost: `/api/profile` has only a POST
+      and would need a GET. Roughly an hour.
 - [ ] ⚠️ **The privacy policy does not mention the WhatsApp number.** The screen
       tells students it is "how we check in on you when you fall behind" — that
       promise has to exist in `/privacy` before real students reach it. It is now
@@ -119,7 +143,9 @@ them is the first item.**
       back to the icon's label — now with the trailing digit stripped, so
       "Certificate 2" is "Certificate" — but "Anvil" and "Nuclear mushroom" are
       still people. Worth a pass for anything unflattering in Zambia.
-- [ ] **Settings still contradicts onboarding.** It asks the old whole-library
+- [ ] **Settings still contradicts onboarding** (PARTLY closed in 45 — it can
+      now edit the name and face, which it could not before). It still asks the
+      old whole-library
       course question and writes `courses` without touching `curriculum`,
       `semester`, `programme` or any of tonight's fields. A student who onboarded
       predictively meets a dumber version of the same question, and there is
@@ -134,6 +160,11 @@ them is the first item.**
       collects the real name, and AccountSignal writes it onto the user. Once a
       few accounts carry a real `firstName`, turn Sign-up/Sign-in with username
       off so the modal loses the field.
+      **Stronger after 45:** the app now uses `user.username` for NOTHING. The
+      @handle built on 2026-08-04 was removed the same night (owner: "remove the
+      handle stuff"), so the only thing the setting still does is put a field in
+      Clerk's sign-up modal and let it ask for a username the app never reads.
+      There is nothing left to keep it on for.
 - [ ] **Merge or close `fix/landing-redirect-loop`.** Pushed, unmerged at the
       owner's request. Fixes a real loop: `ToApp` sent any device with
       `daysStudied > 0` to `/dashboard`, `RequireAccount` sent signed-out
@@ -855,6 +886,102 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-04 into 05 (session 45 — the account stops overwriting the student, and the custom auth form dies twice)
+
+**The bug the whole session hung on.** Six sign-ups in Supabase, all one device,
+all identical: name `Astronaut`, `programme` null, `curriculum []`, and a
+4-days/30-minutes target no build had offered since that morning. The owner:
+"i missed the part to pick my profile icon and my name" and "the courses that i
+picked are not the ones showing on the dashboard". He had missed nothing.
+
+`mergeAccount` had no way to tell which copy of a student was written last, so
+it always believed the account — and the account's copy is a SNAPSHOT OF THE
+DEVICE taken at sign-up, which on a fresh visit is the placeholder the device
+rolled for itself. Ten answers later, every one of them newer than that
+snapshot, the merge handed the snapshot back down over them. `name`/`avatar`
+were taken unconditionally; `programme`/`year`/`semester`/`curriculum` were
+gated on `coursesChosen`, which a stale complete record already had.
+
+**Fixed:** `Identity.updatedAt`, stamped by `saveIdentity` and nothing else (NOT
+by `persist`, or adopting would make a record look freshly answered and the two
+copies would out-date each other forever). Where both hold an answer the later
+wins; where only the account has one it still wins, which is the second-device
+case. Name and face additionally gate on `nameChosen`, the way courses always
+gated on `coursesChosen`. `matchesAccount`/`accountBehind` were two hand-kept
+field lists that had already drifted — neither compared `target.weekdays`, so
+moving study days Monday→Tuesday never travelled — and are now one comparator.
+
+**Verified against the database, not the screen.** After a clean run: name
+"Deeky Mvula", avatar `quill-paper`, programme `bachelor-of-accounting-and-finance`,
+year 4, semester 2, four curriculum slugs, two live courses, 7×90min, night,
+friend, whatsapp present. That is the proof; the screen agreeing with itself was
+not.
+
+**Also done**
+- The chosen avatar is uploaded as the Clerk profile image (`avatar-image.ts`
+  rasterises the SVG to a 256px PNG — Clerk rejects `image/svg+xml`).
+  `ClerkAvatarSkin` then stands down, which it did NOT at first: `hasImage`
+  turned true, so it stopped hiding Clerk's `<img>` while still painting the
+  same face as a background behind it. Two faces, different sizes.
+- **Settings can edit the name and face at last.** It was read-only, so the only
+  way to change either was "forget this device" — and it is the repair path for
+  any record carrying a name nobody typed.
+- **Lint: 17 errors → 7.** Refs written during render (StudyClock, MobileNav),
+  setState in effect bodies (SectionNote, OfflineTools, CommandSearch),
+  unescaped entities. `step-notes` grew a subscribe so SectionNote reads it
+  through `useSyncExternalStore` instead of copying it in after mount — it had
+  been drawing every section as unanswered for a frame. `useIsClient` had three
+  copies and is now `lib/is-client.ts`.
+- **The dashboard's home rail is parked** — four of its six rows were SOON
+  placeholders. `HomeSidebar.tsx` is untouched on disk; `hasLeftPanel={false}`
+  on the nav provider suppresses the hamburger and the swipe, `.no-leftbar`
+  reclaims the desktop gutter.
+- **Clerk's "Manage account" is out** of the user menu, replaced by a Settings
+  row that opens our own sheet (owner: "I'll use my own ui components from here
+  on out").
+- "Install the app", not "Add to home screen". Both offline buttons side by side
+  at every width.
+- The six test students were deleted from Supabase at the owner's request.
+  **Clerk users were NOT deleted** — Vercel marks the live `CLERK_SECRET_KEY`
+  sensitive and redacts it on `env pull`, so production Clerk is unreachable
+  from a session. That is a dashboard job.
+
+**What Worked**
+- **Reading `node_modules/@clerk/shared/dist/types/*.d.mts` rather than the docs
+  or memory.** Clerk 7's Signals API is not what tutorials show — `useSignUp()`
+  returns `{signUp, errors, fetchStatus}`, errors are RETURNED not thrown, and
+  the session is activated by `finalize()` not `setActive()`. Every claim about
+  it this session was checked there first.
+- **Proving fixes from Supabase rather than the UI.** The screen looked right in
+  the morning too; the row was what showed six identical Astronauts.
+- `git checkout <commit>^ -- <paths>` to revert a multi-file change cleanly, then
+  re-applying by hand only the one part worth keeping. Far safer than unwinding
+  fifteen touchpoints in a large file.
+
+**Dead Ends (do not retry)**
+- **The custom auth form (`AccountStep`) — built, failed twice on the owner's own
+  phone, reverted.** "not worked still, go back to the modal from clerk." Two
+  real causes were found and neither saved it: (1) `SignUp` is a STATEFUL
+  resource living on the Clerk *client*, so a half-built attempt survives a
+  failed submit, a reload and a new tab — once one exists `password()` is
+  updating it, not creating a sign-up, and `email_address` is no longer an
+  accepted parameter. That is why a *different email* produced the identical
+  error. `reset()` is the documented remedy and is free ("does not make any API
+  calls"). (2) Email verification must be read off `unverifiedFields`, not
+  assumed from a dashboard setting. Everything is preserved at **21bed00** if it
+  is ever attempted again — but do not, without a better reason than aesthetics.
+- **The @handle — built and removed the same night.** "this messes stuff up,
+  don't have me change my username again so soon." Clerk already collects a
+  username at sign-up, so a second field a minute later reads as the app having
+  lost the answer. The silent email-derived backfill went with it: with no field
+  to change it, a username the student never chose and cannot find is worse than
+  none. Files at **d4db378**.
+- **`min-[420px]` as a phone breakpoint.** 1080px at Android's usual 2.625 DPR
+  is a **411px** viewport, so the owner's own phone missed it by nine pixels and
+  he asked for the same layout twice. Do not guard a mobile layout on 420.
+- Clerk profile-image uploads of the avatar SVG — `setProfileImage` takes
+  Blob/File but Clerk rejects `image/svg+xml`. Rasterise first.
 
 ### Session 2026-08-04 (session 44 — the auth flow finished, and four bugs that only a thumb could find)
 
