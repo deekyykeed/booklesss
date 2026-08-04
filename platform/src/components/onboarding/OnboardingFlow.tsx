@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSignedIn } from "@/lib/account";
 import { coursesForSchool } from "@/lib/courses";
 import {
@@ -42,6 +42,8 @@ import { Button } from "@/components/ui/Button";
 import { WhatsAppMark } from "@/components/icons/whatsapp";
 import { AvatarPicker } from "@/components/identity/AvatarPicker";
 import { type AvatarId } from "@/components/identity/avatars";
+import { AccountStep } from "./AccountStep";
+import { clerkEnabled } from "@/lib/clerk";
 
 /* ------------------------------------------------------------------ *
  * Onboarding — three questions, asked straight after the account is made.
@@ -160,6 +162,7 @@ function useIsClient(): boolean {
 }
 
 type Step =
+  | "account"
   | "you"
   | "school"
   | "programme"
@@ -207,6 +210,17 @@ type Step =
  * reported offered — so the work is confirming, not building.
  */
 const ORDER: Step[] = [
+  /* THE ACCOUNT IS QUESTION ZERO (owner, 2026-08-04: "I want to change and use
+     my own ui to sign a user into clerk … or move the modal into the
+     onboarding"). It was a Clerk modal opened over whatever page a gate fired
+     on. That made sense while the modal's job was to protect the reader's
+     place; it stopped making sense once a gate began sending people here, with
+     `after` carrying them back at the end. See components/onboarding/AccountStep.
+
+     Skipped for anybody who already has a session — see `asks`. Somebody who
+     signed up yesterday and is being walked back for a missing answer must not
+     be shown a create-account form. */
+  "account",
   "you",
   "school",
   "programme",
@@ -358,7 +372,14 @@ function asDraft(identity: Identity | null): Draft {
  * A screen naming its own next step is a decision duplicated once per screen.
  * This is the list; nothing else gets an opinion.
  */
-function asks(step: Step, d: Draft, prog: Programme | undefined): boolean {
+function asks(step: Step, d: Draft, prog: Programme | undefined, signedIn?: boolean | null): boolean {
+  /* Asked only of somebody who has no session. `=== true` and not truthy:
+     null is "Clerk has not reported yet", and treating that as signed-out would
+     flash a create-account form at a student who already has one. While it is
+     null this question is asked, which is the safe direction — the screen is
+     replaced the instant Clerk answers, and the alternative is showing a
+     signed-out stranger the university question. */
+  if (step === "account") return signedIn !== true;
   if (step === "year") return !prog || prog.years.length > 0;
   if (step === "semester") return semestersFor(prog, d.year).length > 1;
   return true;
@@ -366,18 +387,28 @@ function asks(step: Step, d: Draft, prog: Programme | undefined): boolean {
 
 /** The next question this student is actually asked, skipping any that do not
  *  apply. The last one answers itself — `finish` leaves for the dashboard. */
-function stepAfter(from: Step, d: Draft, prog: Programme | undefined): Step {
+function stepAfter(
+  from: Step,
+  d: Draft,
+  prog: Programme | undefined,
+  signedIn?: boolean | null,
+): Step {
   for (let i = ORDER.indexOf(from) + 1; i < ORDER.length; i++) {
-    if (asks(ORDER[i], d, prog)) return ORDER[i];
+    if (asks(ORDER[i], d, prog, signedIn)) return ORDER[i];
   }
   return ORDER[ORDER.length - 1];
 }
 
 /** The previous one they were actually asked. Back has to skip exactly what
  *  forward skipped, or it lands on a card with nothing in it. */
-function stepBefore(from: Step, d: Draft, prog: Programme | undefined): Step {
+function stepBefore(
+  from: Step,
+  d: Draft,
+  prog: Programme | undefined,
+  signedIn?: boolean | null,
+): Step {
   for (let i = ORDER.indexOf(from) - 1; i >= 0; i--) {
-    if (asks(ORDER[i], d, prog)) return ORDER[i];
+    if (asks(ORDER[i], d, prog, signedIn)) return ORDER[i];
   }
   return ORDER[0];
 }
@@ -385,9 +416,17 @@ function stepBefore(from: Step, d: Draft, prog: Programme | undefined): Step {
 /** Which question to open on — the first without an answer, over whichever
  *  steps this student is actually being asked. Mirrors lib/identity's
  *  `firstUnanswered` and extends it over the data-dependent ones. */
-function firstGap(d: Draft, steps: Step[], prog: Programme | undefined): Step {
+function firstGap(
+  d: Draft,
+  steps: Step[],
+  prog: Programme | undefined,
+  signedIn?: boolean | null,
+): Step {
   for (const s of steps) {
-    if (!asks(s, d, prog)) continue;
+    if (!asks(s, d, prog, signedIn)) continue;
+    /* No answer of its own to check — `asks` has already said there is no
+       session, and a session is the answer. */
+    if (s === "account") return s;
     if (s === "you" && !d.name.trim()) return s;
     if (s === "school" && (!d.school || (d.school === OTHER_SCHOOL && !d.schoolName.trim()))) return s;
     /* Same shape as the school question above it: picking "not listed" is not
@@ -412,6 +451,10 @@ function firstGap(d: Draft, steps: Step[], prog: Programme | undefined): Step {
 
 export function OnboardingFlow() {
   const router = useRouter();
+  /* What the gate that sent them here asked for — where to return them, which
+     side of the account form to open on, and an email already typed. See
+     components/auth/ClerkGate. */
+  const search = useSearchParams();
   const signedIn = useSignedIn();
   const { identity, hydrated } = useIdentity();
 
@@ -506,7 +549,7 @@ export function OnboardingFlow() {
    * moves nothing. After the first advance `stepPick` is set and this is not
    * consulted at all.
    */
-  const step = stepPick ?? (hydrated ? firstGap(asDraft(identity), ORDER, prog) : "school");
+  const step = stepPick ?? (hydrated ? firstGap(asDraft(identity), ORDER, prog, signedIn) : "account");
 
   /** Whether this student is on the typed path — no curriculum on file for
    *  their programme, so their answers are the curriculum. The majority case;
@@ -600,14 +643,13 @@ export function OnboardingFlow() {
     setDraft({ ...d, ...patch });
   }
 
-  /* This page is for somebody who has just made an account. Anyone who lands
-     here without one came from a stale link — send them to the front door,
-     where the sign-up card is. `=== false` rather than falsy: null means Clerk
-     has not reported yet, and bouncing a student mid-handshake would throw
-     away the answers they are about to give. */
-  useEffect(() => {
-    if (signedIn === false) router.replace("/");
-  }, [signedIn, router]);
+  /* NO BOUNCE FOR THE SIGNED-OUT ANY MORE. This used to `router.replace("/")`
+     on `signedIn === false`, because the account was made on the landing page
+     and this page was strictly what came after it. The account is now the first
+     question ON this page, so arriving without one is the ordinary way in — and
+     bouncing would send a student the app deliberately routed here straight
+     back out again. The server guard in app/onboarding/page.tsx came out with
+     it, for the same reason. */
 
   /* Which courses to offer. A school narrows the list; "not listed" and no
      answer both mean the whole library (coursesForSchool reads null that
@@ -689,13 +731,23 @@ export function OnboardingFlow() {
     });
   }
 
+  /** Where they were going when a gate stopped them. This is the promise the
+   *  sign-in modal used to keep by opening in place: a reader halfway down a
+   *  step who is made to sign up gets that step back, not the dashboard.
+   *
+   *  Only a path on this site — an `after` off the query string is attacker-
+   *  controllable, and "//evil.com" is a protocol-relative URL that `push`
+   *  would happily follow off the domain. One leading slash, no second one. */
+  const after = search.get("after");
+  const backTo = after && /^\/(?!\/)/.test(after) ? after : "/dashboard";
+
   function finish(source: HeardFrom) {
     save({ coursesChosen: true, heardFrom: source });
     /* SAVED NOW, LEFT IN A MOMENT — the same split every other answer makes.
        The write does not wait on the beat, so a student who taps Done and
        closes the tab inside it has still finished; only the departure waits,
        so the plan they just set is on screen long enough to have been seen. */
-    afterBeat(() => router.replace("/dashboard"));
+    afterBeat(() => router.replace(backTo));
   }
 
   /* Which way the next question comes in from. A form's movement means
@@ -711,7 +763,7 @@ export function OnboardingFlow() {
        Back would otherwise land on the previous question and then get dragged
        forward again by a timer the student can't see. */
     cancelAdvance();
-    goTo(stepBefore(step, d, prog), "back");
+    goTo(stepBefore(step, d, prog, signedIn), "back");
   }
 
   /* The pending tap-to-advance, so it can be called off. */
@@ -748,7 +800,7 @@ export function OnboardingFlow() {
        here would decide the next question against the PREVIOUS degree — which
        is the same one-answer-behind bug the `patch` argument on `save` exists
        to prevent. */
-    const next = stepAfter(step, { ...d, ...patch }, nextProg);
+    const next = stepAfter(step, { ...d, ...patch }, nextProg, signedIn);
     afterBeat(() => goTo(next));
   }
 
@@ -804,6 +856,23 @@ export function OnboardingFlow() {
       {/* Keyed by step so the animation replays on every question, and told
           which way it is going. */}
       <div key={step} data-dir={dir} className="onboard-step pt-6">
+        {step === "account" && isClientFlow && clerkEnabled && (
+          <Card
+            title="Create your account"
+            why="Your progress, your courses and your goal live here. It takes two fields."
+          >
+            {/* Advances itself the moment the session is live. `onward()` rather
+                than naming the next step: `asks` will not offer this question
+                again now that Clerk has a session, so the same predicate that
+                skips it for a returning student skips it here. */}
+            <AccountStep
+              onDone={() => onward()}
+              initialMode={search.get("mode") === "sign-in" ? "sign-in" : "sign-up"}
+              initialEmail={search.get("email") ?? ""}
+            />
+          </Card>
+        )}
+
         {step === "you" && isClientFlow && (
           <Card
             /* FIRST, AND THE ONLY QUESTION THAT IS ABOUT THEM (owner,

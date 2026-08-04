@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
-import { auth } from "@clerk/nextjs/server";
-import { clerkEnabled } from "@/lib/clerk";
+import { Suspense } from "react";
 import { OnboardingFlow } from "@/components/onboarding/OnboardingFlow";
 
 /* The questions, asked straight after the account is made. Reached from the
@@ -31,39 +29,26 @@ export const metadata: Metadata = {
 };
 
 /**
- * NOBODY WITHOUT AN ACCOUNT GETS HERE (owner, 2026-08-04: "someone who has not
- * signed in cannot be on the onboarding ever").
+ * THE SIGNED-OUT ARE THE POINT OF THIS PAGE NOW.
  *
- * OnboardingFlow already redirected a signed-out visitor from the client, and
- * that is not the same thing: it fires after Clerk has reported, so the first
- * question is on screen for a beat before they are thrown off it. A bounce, not
- * a gate. Checked on the server, the page is never drawn at all.
+ * It used to be the opposite, and the reversal is deliberate. This page guarded
+ * itself on the server — "someone who has not signed in cannot be on the
+ * onboarding ever" (owner, 2026-08-03) — because the account was made on the
+ * landing page and these were strictly the questions that came after it.
  *
- * ON THE PAGE RATHER THAN IN THE MIDDLEWARE, which was the first attempt and
- * the wrong one. Clerk's own guidance is now "middleware is not the best place
- * to protect routes — protect access as close to the resource as possible", and
- * `createRouteMatcher` is deprecated and logs a runtime warning. Putting a
- * deprecated API on the path every single request takes, to guard one page, is
- * a bad trade twice over.
+ * The account is now the FIRST question here (owner, 2026-08-04: "move the
+ * modal into the onboarding"), so arriving without one is the ordinary way in
+ * and the guard would bounce every single new student off the page built for
+ * them. Both halves came out: this `auth()` check and the client-side
+ * `router.replace("/")` in OnboardingFlow.
  *
- * THE CLIENT REDIRECT STAYS. It covers what this cannot — a session that ends
- * while the tab is open, long after this ran. Two mechanisms for two moments.
- *
- * This makes the route dynamic, which is the correct cost and only for this
- * page: a session cannot be checked at build time. Every lesson stays static,
- * which is the thing that actually matters on a Zambian connection, and this is
- * a page each student sees once, behind a sign-up.
+ * IT IS A STATIC PAGE AGAIN, which is the happy side effect. The server session
+ * check was the only reason the route was dynamic; nothing here depends on who
+ * is asking any more, so it prerenders like every lesson does. On a Zambian
+ * connection that is the difference between a funnel that starts instantly and
+ * one that waits on a round trip to find out you are nobody.
  */
-export default async function OnboardingPage() {
-  if (clerkEnabled) {
-    const { userId } = await auth();
-    /* To the landing page, where the sign-up card is — the same place the
-       client redirect and RequireAccount both send people. A gate that lands
-       somebody somewhere the rest of the app never sends them reads as an
-       error rather than as a door. */
-    if (!userId) redirect("/");
-  }
-
+export default function OnboardingPage() {
   return (
     <>
       <div className="bg-waves" aria-hidden="true">
@@ -72,7 +57,21 @@ export default async function OnboardingPage() {
         ))}
       </div>
       <main className="relative z-10 min-h-dvh bg-white/[0.62] backdrop-blur-[16px]">
-        <OnboardingFlow />
+        {/* The flow reads `after`, `mode` and `email` off the query string via
+            useSearchParams, which on a PRERENDERED page has to sit behind a
+            boundary — there is no query string at build time, so Next needs
+            somewhere to bail out to until the client takes over. Without this
+            the build fails outright rather than degrading, which is the right
+            trade and how this was caught.
+
+            The fallback is empty on purpose. Anything drawn here would be a
+            skeleton of a form that is about to appear a few milliseconds later,
+            and a flash of one question replaced by another is worse than a beat
+            of nothing — the page already has the blobs and the frost behind
+            it, so it does not read as broken. */}
+        <Suspense fallback={null}>
+          <OnboardingFlow />
+        </Suspense>
       </main>
     </>
   );
