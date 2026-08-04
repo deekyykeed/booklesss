@@ -128,6 +128,15 @@ export function AccountStep({
   const [error, setError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
 
+  /* WHETHER CLERK WANTS A CODE. An instance with "Verify at sign-up" on for
+     email leaves the attempt at `missing_requirements` with `email_address` in
+     `unverifiedFields` — the type's own words: "Keep in mind that the email
+     address requires an extra verification process." Going straight to
+     finalize() there fails, so the form grows a second phase instead of
+     assuming a setting it cannot see. */
+  const [phase, setPhase] = useState<"credentials" | "code">("credentials");
+  const [code, setCode] = useState("");
+
   const isUp = mode === "sign-up";
   /* `!error` matters: a call that hit the STUCK clock never settles, so the
      resource's fetchStatus can read "fetching" forever afterwards — and a
@@ -149,14 +158,25 @@ export function AccountStep({
          — an account that already exists was already attributed. */
       const referredBy = isUp ? referrer() : null;
 
-      /* Step one: hand over the credentials. ONE CALL, NEVER RETRIED.
-         `SignUp` is a stateful resource: the first `password()` creates the
-         attempt and every later call operates on the one already in flight,
-         where `email_address` is no longer an accepted parameter. A loop around
-         this — which is what claimed handles here for about an hour — turns any
-         first failure into "email_address is not a valid parameter for this
-         request", an error about the wrong field pointing at the wrong
-         dashboard page. Nothing may sit between a student and their account. */
+      /* START FROM A CLEAN ATTEMPT. `SignUp` is a stateful resource that lives
+         on the Clerk CLIENT, so a half-built attempt survives a failed submit,
+         a reload, and a new tab — and once one exists, `password()` is no
+         longer creating a sign-up, it is updating the one in flight, where
+         `email_address` is not an accepted parameter.
+
+         That is the whole of the bug the owner hit twice tonight: "email_address
+         is not a valid parameter for this request", naming a field he had
+         plainly supplied and pointing at a dashboard page where nothing was
+         wrong. The first failure was mine; every failure after it, including on
+         a completely different email address, was this stale attempt answering
+         instead of a new one.
+
+         `reset()` is free — the docs are explicit that it "does not make any
+         API calls, it only clears local state" — so it costs nothing to make
+         every sign-up start from nothing. */
+      if (isUp) await signUp.reset();
+
+      // Step one: hand over the credentials.
       const attempt = await withTimeout(
         isUp
           ? signUp.password({
@@ -175,21 +195,136 @@ export function AccountStep({
         return;
       }
 
-      // Step two: turn the completed attempt into a live session.
-      const done = await withTimeout(isUp ? signUp.finalize() : signIn.finalize());
-      if (done === STUCK) {
-        setError("This is taking too long. Check your connection and try again.");
-        return;
-      }
-      if (done.error) {
-        setError(say(done.error));
+      /* Step two, and only when Clerk asks for it. Read off the attempt rather
+         than assumed from a dashboard setting nobody here can see: if the email
+         is sitting in `unverifiedFields`, the instance verifies at sign-up and
+         finalize() would fail. */
+      if (isUp && signUp.unverifiedFields?.includes("email_address")) {
+        const sent = await withTimeout(signUp.verifications.sendEmailCode());
+        if (sent === STUCK) {
+          setError("This is taking too long. Check your connection and try again.");
+          return;
+        }
+        if (sent.error) {
+          setError(say(sent.error));
+          return;
+        }
+        setPhase("code");
         return;
       }
 
-      onDone();
+      await activate();
     } finally {
       setSending(false);
     }
+  }
+
+  /** Turn a completed attempt into a live session. Shared, because both the
+   *  straight-through path and the one that went via a code end here. */
+  async function activate(): Promise<void> {
+    const done = await withTimeout(isUp ? signUp.finalize() : signIn.finalize());
+    if (done === STUCK) {
+      setError("This is taking too long. Check your connection and try again.");
+      return;
+    }
+    if (done.error) {
+      setError(say(done.error));
+      return;
+    }
+    onDone();
+  }
+
+  /** The six digits from their inbox. */
+  async function submitCode(e: React.FormEvent) {
+    e.preventDefault();
+    if (busy) return;
+    setSending(true);
+    setError(null);
+    try {
+      const checked = await withTimeout(signUp.verifications.verifyEmailCode({ code: code.trim() }));
+      if (checked === STUCK) {
+        setError("This is taking too long. Check your connection and try again.");
+        return;
+      }
+      if (checked.error) {
+        setError(say(checked.error));
+        return;
+      }
+      await activate();
+    } finally {
+      setSending(false);
+    }
+  }
+
+  /* THE CODE SCREEN. Only ever reached because Clerk asked — see submit(). It
+     replaces the fields rather than appearing under them: the email and
+     password are answered, and leaving them on screen invites somebody to
+     correct an address the code has already been sent to. */
+  if (phase === "code") {
+    return (
+      <form onSubmit={submitCode} className="flex w-full flex-col gap-2.5">
+        <p className="text-[14px] leading-6 text-muted">
+          We sent a code to <span className="font-medium text-ink">{email}</span>. Enter it here to
+          finish.
+        </p>
+
+        <label>
+          <span className="sr-only">Verification code</span>
+          <input
+            autoFocus
+            type="text"
+            /* `one-time-code` is what makes a phone offer the code from the
+               notification instead of making somebody switch apps to read it,
+               and numeric brings up the keypad. */
+            autoComplete="one-time-code"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            placeholder="123456"
+            maxLength={8}
+            value={code}
+            onChange={(e) => {
+              setCode(e.target.value);
+              setError(null);
+            }}
+            className={FIELD + " text-center tracking-[0.3em]"}
+          />
+        </label>
+
+        {error && (
+          <p role="alert" className="text-[13.5px] leading-5 text-[#b42318]">
+            {error}
+          </p>
+        )}
+
+        <Button
+          type="submit"
+          variant="primary"
+          size="lg"
+          block
+          arrow
+          disabled={busy || code.trim().length < 4}
+          className="mt-1.5"
+        >
+          {busy ? "One moment…" : "Verify"}
+        </Button>
+
+        {/* Back to the fields, and back to a clean attempt — a student who
+            mistyped their address must be able to fix it, and `reset()` is what
+            makes the next submit a new sign-up rather than an edit of this one. */}
+        <button
+          type="button"
+          onClick={() => {
+            void signUp.reset();
+            setPhase("credentials");
+            setCode("");
+            setError(null);
+          }}
+          className="mt-1 self-center text-[13.5px] text-muted transition-colors hover:text-ink"
+        >
+          Use a different email
+        </button>
+      </form>
+    );
   }
 
   return (
