@@ -128,17 +128,22 @@ const schoolTone = (on: boolean) => SCHOOL_ROW + (on ? "" : "hover:bg-active/60"
  * has not been fetched yet, so a new row is never blank.
  */
 function SchoolMark({ id, letter, tone }: { id?: string; letter: string; tone: string }) {
-  /* 20px, down from 32 and then from 24 (owner, 2026-08-04: "the logo is too
-     big, it must feel like its inline", and again on the 24 — "the uni logos
-     are still too big").
+  /* 14px. Fourth size and the owner's call each time: 32 to 24 ("the logo is
+     too big, it must feel like its inline"), to 20, to this ("logos ar still
+     too big").
 
-     20 is the tick's box, so every mark in the row is now one size and the row
-     is led by the NAME rather than by the crest. That is the right way round:
-     the student is reading a list of universities, not picking a logo, and at
-     32 the crest set the row's height and read as a mark the name was
-     captioning. There is no smaller step worth taking after this one — below
-     about 18 a crest stops being recognisable at arm's length on a phone,
-     which is the entire reason the row carries one. */
+     I argued at 20 that nothing below ~18 stays recognisable at arm's length.
+     That was reasoning about a crest a student has to IDENTIFY — and once the
+     row spells out "Copperbelt University" in full, the mark is not doing that
+     job any more. The name identifies the university; the mark just gives the
+     line something to end on. At 14 it sits inside the cap height of the text
+     beside it, which is the literal reading of "within the text" and the thing
+     none of the bigger sizes managed.
+
+     The detail is lost at this size — several of these are heraldic shields
+     with lettering in them, and they read as coloured silhouettes. That is a
+     real cost and it is the right trade here, because nothing depends on
+     reading them. */
   const crest = crestSrc(id);
   if (crest) {
     /* A FILE, not a data URI — see school-crests. width/height are set as
@@ -151,18 +156,18 @@ function SchoolMark({ id, letter, tone }: { id?: string; letter: string; tone: s
         src={crest}
         alt=""
         aria-hidden="true"
-        width={20}
-        height={20}
+        width={14}
+        height={14}
         loading="lazy"
         decoding="async"
-        className="h-5 w-5 shrink-0 object-contain"
+        className="h-3.5 w-3.5 shrink-0 object-contain"
       />
     );
   }
   return (
     <span
       aria-hidden="true"
-      className="grid h-5 w-5 shrink-0 place-items-center rounded-full text-[10px] font-semibold text-white"
+      className="grid h-3.5 w-3.5 shrink-0 place-items-center rounded-full text-[8px] font-semibold text-white"
       style={{ backgroundColor: tone }}
     >
       {letter}
@@ -285,16 +290,29 @@ export function SchoolPicker({
                name and stop looking attached to any of them. */
             <button key={s.id} type="button" onClick={() => onPick(s.id)} aria-pressed={on} className={schoolTone(on)}>
               <Tick on={on} />
-              <span className="flex min-w-0 flex-1 items-center gap-2">
+              <span className="flex min-w-0 flex-1 items-center gap-1.5">
+                {/* THE FULL NAME (owner, 2026-08-04: "i want full names of the
+                    universities not abbreviations"). The row showed `name` —
+                    ZCAS, UNZA, CBU — which is what a student at one of them
+                    says, but it asks everybody else to know an abbreviation to
+                    find their own university in a list. "Copperbelt University"
+                    needs nothing decoded.
+
+                    NOT TRUNCATED. "Zambia Centre for Accountancy Studies" does
+                    not fit one line on a 390px screen, and a full name cut off
+                    mid-word is the abbreviation problem again with worse
+                    manners. It wraps instead: only the longest one or two do,
+                    and a row that is two lines tall costs less than a name
+                    nobody can finish reading. */}
                 <span
                   className={
-                    "truncate font-display text-[15px] leading-tight text-ink " +
+                    "min-w-0 font-display text-[15px] leading-snug text-ink " +
                     (on ? "font-semibold" : "font-medium")
                   }
                 >
-                  {s.name}
+                  {s.full}
                 </span>
-                <SchoolMark id={s.id} letter={s.name.slice(0, 1)} tone={s.tone} />
+                <SchoolMark id={s.id} letter={s.full.slice(0, 1)} tone={s.tone} />
               </span>
             </button>
           );

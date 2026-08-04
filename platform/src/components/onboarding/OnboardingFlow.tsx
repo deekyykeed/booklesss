@@ -239,43 +239,25 @@ export function OnboardingFlow() {
   useEffect(() => cancelAdvance, []);
 
   return (
-    /* A SCREEN, NOT A PAGE (owner's reference, 2026-08-04). The question and
-       its action are pinned — heading at the top, primary action at the
-       bottom in thumb reach — and only the options scroll between them. A
-       button that sits directly under a list moves with the list's length,
-       so on the courses question it lands somewhere different for a student
-       at ZCAS than for one who asked for everything. Same place, every step.
+    /* THE PAGE SCROLLS, ALL OF IT (owner, 2026-08-04: "the whole page should be
+       scrollable").
 
-       h-dvh rather than min-h-dvh: the column has to know its own height for
-       the middle to be the only thing that scrolls. */
-    <div className="mx-auto flex h-dvh w-full max-w-[440px] flex-col px-5 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
-      {/* The logo, top left (owner, 2026-08-04). Onboarding was the one screen
-          in the app with no brand on it at all — a student who has just handed
-          over an email address is looking at three questions from nobody in
-          particular.
+       This was built the other way this morning — h-dvh, heading pinned at the
+       top, action pinned at the bottom in thumb reach, and only the options
+       scrolling between them. The argument for it was that a button sitting
+       under a list moves with the list's length, so it lands somewhere
+       different on a short question than a long one. That is true and it is not
+       worth what it cost: with the full university names in, the list is the
+       tallest thing here, and a pinned frame turns a long answer list into a
+       small window a student has to scroll inside a page that itself cannot
+       move. One scroll, the whole document, the way every other page in the app
+       already behaves.
 
-          "Bklsss", NOT "Booklesss". The logo IS the word, set in Familjen
-          Grotesk Bold, no mark and no glyph beside it — Brand/README.md,
-          settled 2026-08-03 when the diamond and the serif lockup were retired.
-          This shipped once reading "Booklesss", which is the full NAME and not
-          the logo; TopBar, DesktopGate and the OG card have all said Bklsss all
-          along. Live text rather than Brand/booklesss-wordmark-black.svg
-          because the face is already loaded here, which is how every other
-          in-app surface draws it.
-
-          INLINE, NOT A MASTHEAD (owner, same call: "it must feel like its
-          inline"). 18px and tracking-tight is exactly what TopBar wears on a
-          phone, so this reads as the product's chrome rather than as a logo
-          screen the questions happen to sit under.
-
-          NOT A LINK: everywhere else the logo goes to /dashboard, and from here
-          that is a door straight into RequireOnboarding, which would measure
-          this same unfinished record and send them back. A logo that bounces
-          you where you already are is worse than one that sits still. */}
-      <div className="shrink-0 pt-6">
-        <span className="font-display text-[18px] font-bold leading-none tracking-tight text-ink">Bklsss</span>
-      </div>
-
+       No logo (owner, same call: "remove the Bklsss logo from the page"). It
+       went in this morning because onboarding was the one surface with no brand
+       on it; a student who has just made an account with us does not need
+       telling whose form this is. */
+    <div className="mx-auto w-full max-w-[440px] px-5 pb-[calc(2rem+env(safe-area-inset-bottom))]">
       {/* No progress bar (owner, 2026-08-04: "remove the progress thing
           entirely"). It was three labelled nodes over three questions — a
           legend for a form you can finish in three taps, telling a student
@@ -284,7 +266,7 @@ export function OnboardingFlow() {
           Back moves to the left with it. It was on the right because it hung
           under the stepper's last node; on its own, a lone control on the
           right of a form reads as the thing that skips it. */}
-      <div className="flex h-9 shrink-0 items-center">
+      <div className="flex h-9 items-center pt-6">
         {index > 0 && (
           <button
             type="button"
@@ -298,11 +280,11 @@ export function OnboardingFlow() {
 
       {/* Keyed by step so the animation replays on every question, and told
           which way it is going. */}
-      <div key={step} data-dir={dir} className="onboard-step flex min-h-0 flex-1 flex-col pt-6">
+      <div key={step} data-dir={dir} className="onboard-step pt-6">
         {step === "school" && (
           <Card
             title="Where do you study?"
-            why="Pick yours to continue."
+            why="Tap your university to carry on. If it isn't on the list, pick Another university and type it in."
             /* THERE IS NO SKIP ON THIS QUESTION (owner, 2026-08-03: "the
                student cannot skip this — why would they not add the school?
                How do we add their courses and stuff if we have missing info
@@ -375,7 +357,7 @@ export function OnboardingFlow() {
         {step === "courses" && (
           <Card
             title="Which courses are you taking?"
-            why="Choose as many as you like."
+            why="Tick every one you're studying this semester. Not sure yet? Take everything and narrow it down later."
             actions={
               <div className="flex flex-col gap-2">
                 <Button
@@ -430,7 +412,7 @@ export function OnboardingFlow() {
         {step === "target" && (
           <Card
             title="How much studying are you aiming for?"
-            why="Pick what you can keep to."
+            why="Set the days you'll sit down and how long for. Aim at an ordinary week, not your best one."
             actions={
               <Button variant="primary" size="lg" block onClick={finish}>
                 Start studying
@@ -502,21 +484,35 @@ function Card({
    * said there is a score and what feeds it. None of that is the student's
    * business at the moment they are being asked, and a form that explains why
    * it wants something invites a student to argue with the reason instead of
-   * answering. Say what to do: "Pick yours to continue."
+   * answering. Say what to do.
+   *
+   * TWO LINES, and use them (owner, same day: "the descriptions under the
+   * questions can be a bit longer, 2 lines max, giving context on what the user
+   * should do"). One clipped sentence was the over-correction: "Pick yours to
+   * continue" tells somebody whose university is not on the list nothing at all.
+   * The second line is where the edge case goes — what to do if yours is
+   * missing, what to do if you don't know yet — which is context about THEIR
+   * choice, not about our machinery. Two lines is the ceiling: a paragraph over
+   * a list of options is a paragraph nobody reads.
    *
    * This is the rule for every new question added here, not a one-off edit to
    * three strings.
    */
   why: string;
-  /** The step's primary action, pinned to the bottom of the screen. Null on a
-   *  question that answers itself in one tap — a button under an answer you
-   *  have already given is a second ask. */
+  /** The step's primary action, under the options. Null on a question that
+   *  answers itself in one tap — a button under an answer you have already
+   *  given is a second ask. */
   actions?: React.ReactNode;
   children: React.ReactNode;
 }) {
+  /* ORDINARY FLOW, nothing pinned and nothing with its own scrollbar (owner,
+     2026-08-04: "the whole page should be scrollable"). This was a three-part
+     frame this morning — fixed head, scrolling middle, fixed foot — and the
+     min-h-0/flex-1 that made it work is exactly what made the options list a
+     small window inside a page that could not itself move. */
   return (
-    <section className="flex min-h-0 flex-1 flex-col">
-      <div className="shrink-0">
+    <section>
+      <div>
         {/* Back to 30px (owner, 2026-08-04: "make the question title big
             again"). It was cut to 23px in c869b05 alongside the quieter
             stepper — but the stepper is gone now, and the question is the only
@@ -524,15 +520,12 @@ function Card({
         <h1 className="font-display text-[30px] font-bold leading-[1.1] tracking-[-0.02em] text-ink">
           {title}
         </h1>
-        <p className="mt-1.5 text-[13.5px] leading-5 text-muted">{why}</p>
+        {/* Room for two lines, and a measure that makes them break sensibly
+            rather than leaving one word alone on the second. */}
+        <p className="mt-2 max-w-[38ch] text-[14px] leading-[1.45] text-muted">{why}</p>
       </div>
-      {/* The only part that scrolls. `min-h-0` because a flex child's default
-          min-height is its content, which would push the action off the bottom
-          of the screen instead of scrolling — the one line that makes the whole
-          layout work. The list ends above the action rather than sliding under
-          it: a row half-hidden behind a button is a row somebody misses. */}
-      <div className="mt-5 min-h-0 flex-1 overflow-y-auto">{children}</div>
-      {actions ? <div className="shrink-0 pt-4">{actions}</div> : null}
+      <div className="mt-5">{children}</div>
+      {actions ? <div className="pt-5">{actions}</div> : null}
     </section>
   );
 }
