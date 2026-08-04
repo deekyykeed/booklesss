@@ -616,61 +616,46 @@ export function OnboardingFlow() {
               </Button>
             }
           >
+            {/* TICK ROWS HERE TOO (owner, 2026-08-04: "even on this part use the
+                ticks throughout"). These were pills — the app's Button, so not
+                invented, but still a second shape for the same job. Every other
+                answer in the flow is a row you tick, and a question that asks
+                for a different gesture is a question that reads as belonging to
+                a different form. The days one takes more than one answer, which
+                is what OptionRows' `values` is for. */}
             <Choices label="Which days?">
-              {WEEKDAYS.map((d, i) => {
-                const on = picked.includes(i);
-                return (
-                  <Button
-                    key={d}
-                    variant={on ? "primary" : "secondary"}
-                    size="md"
-                    aria-pressed={on}
-                    aria-label={WEEKDAY_FULL[i]}
-                    onClick={() =>
-                      edit({
-                        target: {
-                          ...target,
-                          weekdays: on ? picked.filter((x) => x !== i) : [...picked, i].sort((a, b) => a - b),
-                        },
-                      })
-                    }
-                  >
-                    {d}
-                  </Button>
-                );
-              })}
+              <OptionRows
+                options={WEEKDAYS.map((d, i) => ({ id: i, title: WEEKDAY_FULL[i], note: d }))}
+                values={picked}
+                label={(i) => WEEKDAY_FULL[i]}
+                onPick={(i) =>
+                  edit({
+                    target: {
+                      ...target,
+                      weekdays: picked.includes(i)
+                        ? picked.filter((x) => x !== i)
+                        : [...picked, i].sort((a, b) => a - b),
+                    },
+                  })
+                }
+              />
             </Choices>
 
             <div className="mt-5">
               <Choices label="How long each day?">
-                {MINUTE_CHOICES.map((n) => {
-                  const on = n === target.minutes;
-                  return (
-                    <Button
-                      key={n}
-                      variant={on ? "primary" : "secondary"}
-                      size="md"
-                      aria-pressed={on}
-                      onClick={() => edit({ target: { ...target, minutes: n } })}
-                    >
-                      {/* Math.floor, not a bare divide: 90/60 is 1.5, and the
-                          first render of this said "1.5h 30m". */}
-                      {n >= 60 ? `${Math.floor(n / 60)}h${n % 60 ? ` ${n % 60}m` : ""}` : `${n}m`}
-                    </Button>
-                  );
-                })}
+                <OptionRows
+                  options={MINUTE_CHOICES.map((n) => ({
+                    id: n,
+                    /* Math.floor, not a bare divide: 90/60 is 1.5, and the
+                       first render of this said "1.5h 30m". */
+                    title: n >= 60 ? `${Math.floor(n / 60)}h${n % 60 ? ` ${n % 60}m` : ""}` : `${n}m`,
+                    note: n === RECOMMENDED_MINUTES ? "Recommended" : undefined,
+                  }))}
+                  value={target.minutes}
+                  label={(n) => `${n} minutes a day`}
+                  onPick={(n) => edit({ target: { ...target, minutes: n } })}
+                />
               </Choices>
-              <p className="mt-2 text-[13px] leading-5 text-muted">
-                We recommend at least{" "}
-                <button
-                  type="button"
-                  onClick={() => edit({ target: { ...target, minutes: RECOMMENDED_MINUTES } })}
-                  className="font-medium text-ink underline underline-offset-2"
-                >
-                  1h 30m
-                </button>{" "}
-                a day.
-              </p>
             </div>
 
             <p className="mt-5 text-[13.5px] leading-5 text-muted">
@@ -794,7 +779,7 @@ function Choices({ label, children }: { label: string; children: React.ReactNode
   return (
     <div>
       <p className="mb-2 font-display text-[13px] font-medium text-ink-2">{label}</p>
-      <div className="flex flex-wrap gap-1.5">{children}</div>
+      {children}
     </div>
   );
 }

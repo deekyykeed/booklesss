@@ -383,18 +383,25 @@ export function SchoolPicker({
 export function OptionRows<T extends string | number>({
   options,
   value,
+  values,
   onPick,
   label,
 }: {
   options: { id: T; title: string; note?: string }[];
-  value: T | null;
+  /** Single-select: the one that is on. */
+  value?: T | null;
+  /** Multi-select: all that are on. Takes precedence over `value` when given —
+   *  the days-of-the-week question is the first thing here that takes more than
+   *  one answer, and it wears the same row as everything else rather than
+   *  growing a second control for the sake of it. */
+  values?: T[];
   onPick: (id: T) => void;
   label: (id: T) => string;
 }) {
   return (
     <div className="flex flex-col gap-2">
       {options.map((o) => {
-        const on = o.id === value;
+        const on = values ? values.includes(o.id) : o.id === value;
         return (
           <button
             key={String(o.id)}
