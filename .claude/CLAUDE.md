@@ -171,7 +171,11 @@ Most icons in `platform/` come from the **MynaUI** set (by Praveen Juge) via the
 
 **Five exceptions, all deliberate:**
 - The composer's attachment chips use **Streamline Ultimate Colors (Free)** file-type badges (`reader/file-icons.tsx`) and the course cards use **Streamline Plump** gradient marks (`home/plump-glyphs.tsx`, `home/course-glyphs.tsx`). Both are multicolour on purpose — the colour is what carries the meaning — so they keep their own fills rather than following `currentColor`. CC BY 4.0, attribution still owed (as with MynaUI).
-- The twelve **profile pictures** are **Streamline Kameleon Colors (Free)** (owner's pick, 2026-08-01), generated into `platform/src/components/identity/avatars.tsx` (`AVATARS` in `scripts/gen-avatars.mjs` → `npm run gen:avatars`). Each is a finished badge — a full-bleed coloured disc with its subject on it — so nothing is recoloured and nothing needs a shell drawn round it. The set has only four disc colours, so the table's order alternates them. Replaced the Plump avatars, whose two-colour recolour trick doesn't apply here.
+- The **profile pictures** are **Streamline Kameleon Colors (Free)** (owner's pick, 2026-08-01) — all **200** of them since 2026-08-04. Each is a finished badge, a full-bleed coloured disc with its subject on it, so nothing is recoloured and nothing needs a shell drawn round it. **They are FILES, not inlined**: `npm run gen:avatars` writes `platform/public/avatars/<id>.svg` plus a 7.7KB `avatar-index.json` of ids and labels, and `identity/avatars.tsx` renders an `<img>`. 340KB on disk, ~0KB in the JS bundle. The `-duo` twins in the package are excluded — same subjects, two tones, 200 near-duplicate rows in a picker.
+
+  **This replaced a standing "never do this" and the reasoning is worth keeping.** The rule used to be *do not extend `AVATARS` to the full set — twelve is already 27.8KB in a client component, ~100 would ship ~250KB to every reader.* That was correct **about inlining**, which is what the module did. The answer was never a smaller set, it was to stop shipping artwork as code — the school crests hit the identical wall the same day and took the identical fix (200KB of base64 → 1.6KB of ids). **The same trap is still live in `home/card-glyphs.tsx` and `home/plump-glyphs.tsx`**; if either needs to grow, move it to `public/` rather than trimming it.
+
+  Old ids are **aliased, not renamed** (`LEGACY` in the generator): the first twelve were hand-named and don't all match their icon — `smiley` is `love-smiley`, `dice` is `dices` — so a stored id would otherwise resolve to nothing and a student would silently lose their face. The generator throws if an alias ever points at an icon the set has dropped.
 - The reader sidebar's **lesson caret** is **Mingcute** (owner's pick, 2026-07-31): `<MingcuteIcon name="down-small-line" />` from `platform/src/components/icons/mingcute.tsx`, generated the same way (`ICONS` in `scripts/gen-mingcute-icons.mjs` → `npm run gen:mingcute`). Mingcute's grid draws a much smaller mark than MynaUI's at the same size and strokes it at 2 rather than 1.5, so anything borrowed from it needs its `size`/`strokeWidth` set against the MynaUI icons beside it. Keep this set narrow — MynaUI is still the system.
 - **Solar** (by 480 Design) is on three surfaces: `/workspace` in Solar **Linear**, the dashboard's four **stat cards** in Solar **Duotone** (owner's pick, 2026-08-01), and the reader's **callout kinds** in Solar **Duotone** (owner's pick, 2026-08-02). `<SolarIcon name="chart-2-bold-duotone" />` from `platform/src/components/icons/solar.tsx`, generated like the rest (`ICONS` in `scripts/gen-solar-icons.mjs` → `npm run gen:solar`). A `-bold-duotone` name draws two `currentColor` fills, the back one at `opacity .5`, so the mark shades itself out of whatever hue its tile sets — no second colour to pass. **The standing lesson still holds: Duotone belongs on a tile that gives it its own hue, not in a row of outline chrome.** On 2026-08-02 the reader briefly had three Duotone marks in the checkpoint row (a thumbs pair on the answers, a bubble on the note button) and the owner moved all three back to MynaUI the same day, because Duotone is *filled* and sat heavy beside the hairlines around it. The callout mark is the other case: it sits alone on a container carrying its own hue, which is where the stat tiles put theirs. Adding a fourth surface is a decision, not a convenience.
 
@@ -303,6 +307,29 @@ Then `npm run gen:programmes` in `platform/`.
 Query it through the views, not the tables: **`pipeline_queue`** (the build
 queue), **`pipeline_curriculum`** (the full university→school→programme→course
 tree, drills both ways), **`pipeline_school_summary`**.
+
+**Two things onboarding reads, added 2026-08-04 and NOT internal:**
+
+- **`public.universities`** — the ten Zambian campuses the sign-up picker
+  offers. Public-read like `courses`, because these names are drawn on screen
+  (the picker is the owner's standing exception to the no-school-names rule).
+  `npm run gen:schools` reads it with the **anon** key and commits
+  `src/lib/school-index.json`. Crests are separate files in
+  `platform/public/schools/`, fetched once by `scripts/gen-school-crests.py`.
+- **`public.onboarding_curriculum`** — a deliberately NARROW view over the
+  pipeline tables that **does not select `code`, the awarding body, or faculty
+  names**, so a course code cannot reach the generated file by accident.
+  `pipeline_programmes.university_id` is what joins the internal curriculum to
+  the public picker. `npm run gen:programmes` reads this one with the **service
+  role**, at build only, which is what lets the pipeline tables keep RLS-on-no-
+  policies while onboarding still knows the curriculum.
+
+**Excluding the code COLUMN is not enough.** ZCAS types its tables by hand and
+one row carried its code inside the *title* — "Doctoral Thesis (Word Limit:
+65,000 words) DBA330 – Defense" — which would have shipped a course code to
+every student past a view written specifically to prevent that.
+`gen-programmes.mjs` now **throws** if any title or programme name matches a
+course-code pattern. Fix the row in Supabase; don't loosen the pattern.
 
 **These tables are INTERNAL.** They carry course codes and school names, which
 must never reach a student (see the memory index). Unlike `courses`/`lessons`,

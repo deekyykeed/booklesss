@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-04 (session 42)
+**Last updated:** 2026-08-04 (session 43)
 
 ---
 
@@ -91,6 +91,58 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 43 (2026-08-04 evening, onboarding rebuilt predictive). Numbered
+43 because the social session took 42 while this one was running — two sessions
+in the tree all evening. The first item is half-built and the only one that
+blocks anything.**
+- [ ] ⚠️ **THE AVATAR CLAIM SYSTEM IS HALF BUILT.** The owner's design: a student
+      picks from **twelve UNCLAIMED faces**, so no two people share one. The
+      **pool is in** — all 200 Kameleon Colors icons at
+      `platform/public/avatars/<id>.svg`, 340KB on disk and ~0KB in the JS
+      bundle. **Nothing else exists yet:** no `avatar_claims` table, no endpoint
+      to hand out twelve free ones, no picker step. Today an avatar is still
+      **assigned at random and can collide**. The claim needs a server —
+      Supabase table with a unique constraint on `avatar_id` AND on `user_id`,
+      written through a Next route handler that verifies the Clerk session with
+      the service role. Clerk's user id is not a Supabase auth user, so RLS
+      cannot verify it and a client-side write would let anyone claim anything.
+      **Ceiling accepted by the owner:** 200 icons = 200 students, "not a problem
+      right now — I can pull in the other variants" (there are 200 `-duo` twins
+      excluded, plus Kameleon Pop and Duo free sets at 200 each).
+- [ ] **188 of the 200 avatars have no considered name.** `AVATAR_NAMES` in
+      `lib/identity.tsx` still names only the original twelve; `avatarName()`
+      falls back to the icon's own label for the rest, so a student can be
+      called "Anvil" or "Nuclear mushroom". Fine as a handle, not all fine as a
+      person — worth a pass over the list for anything unflattering in Zambia
+      before the picker ships. **`spongebob`, `r2d2`, `wall-e` and `pokeball`
+      are in the set and are other people's trademarks** — drop them from the
+      pool rather than offer them.
+- [ ] **Settings contradicts onboarding.** It still asks the old
+      whole-library course question and writes `courses` without touching
+      `curriculum`, so a student who onboarded predictively meets a dumber
+      version of the same question. `CurriculumPicker` is built and grouped by
+      year and is the thing Settings should use — including the owner's "add
+      courses that are not in the year they're in".
+- [ ] ⚠️ **Nobody has tapped the five-step flow end to end.** The owner DID
+      complete a sign-up and reach the dashboard today (**the first ever**), but
+      the flow has changed many times since. Everything else was verified by
+      builds, types and grepping deployed bundles — never by a thumb. Five
+      steps, two code paths (curriculum vs plain library), a 380ms beat,
+      direction-aware transitions, Back across all of it, and a resume that
+      reads the record.
+- [ ] **Kwame Nkrumah has no crest** — `knu.ac.zm` does not resolve at all
+      (not slow: DNS failure). The other nine are real, fetched and committed to
+      `platform/public/schools/`. If the real domain surfaces,
+      `scripts/gen-school-crests.py` takes it in one line.
+- [ ] **Google sign-in is still OFF in production Clerk** — unchanged from this
+      morning, and the thing that was blocking its branding check is already
+      fixed. See session 40's block below.
+- [ ] **The onboarding gate is still client-side only.** `RequireOnboarding` is
+      a React component reading localStorage; there is no middleware and
+      `platform/proxy.ts` does not exist. The durable fix is Clerk session
+      claims + a middleware gate, so `/dashboard` cannot render for an
+      incomplete account on any device.
 
 **From session 42 (2026-08-04, the social day that had nothing to post). The
 first two are the ones that decide whether the reader is postable at all.**
@@ -786,6 +838,69 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-04 (session 43 — onboarding stops asking and starts knowing)
+
+Numbered 43 because the social session claimed 42 while this one was running;
+two sessions in the same tree all evening. Its files (`Demand/social/`,
+`.claude/skills/daily-post/`) were left untouched here throughout and it
+committed them itself as `24083e2`.
+
+**Done — 18 commits, `451324b` to `3c4034b`:**
+- **Onboarding became predictive.** University → programme → year → confirm your
+  courses → weekly goal. Picking Year 4 of Accounting and Finance arrives with
+  all seven of that year already ticked and the other 24 grouped beneath. New
+  `universities` table (10 Zambian campuses), `onboarding_curriculum` view,
+  `programme-index.json` (41 ZCAS + UNZA + Mulungushi programmes).
+- **The middle two questions are data-dependent, not hardcoded.** `stepsFor()`
+  reads the index, so the seven universities that publish no curriculum skip
+  to the plain library. Adding one later is a data job.
+- **Every course shows, built or not** (owner: "show them literally all the
+  courses… that way we can prioritise building properly"), which forced
+  `identity.curriculum` apart from `identity.courses` — the first is the demand
+  signal, the second is only what the dashboard may render.
+- **Nine real university crests** fetched and committed as files.
+- **First ever completed sign-up**, which immediately exposed two inversions:
+  the greeting read `identity?.name ?? name` so the assigned avatar name beat
+  the real one, and the header handed over to Clerk's `<UserButton>` on
+  sign-in, trading a face for two grey initials.
+- **200 avatars moved from inlined markup to `public/avatars/`** — the pool the
+  claim system needs.
+
+**What Worked:**
+- **Files in `public/` + a tiny index, twice.** Crests went 200KB of base64 →
+  1.6KB of ids; avatars → 7.7KB. The CSP forbids a REMOTE image, never a
+  same-origin file — that distinction is what unlocked both.
+- **Grepping the BUILT bundle rather than the source.** It caught a course code
+  hiding inside a course TITLE ("Doctoral Thesis … DBA330 – Defense") that
+  sailed past a view written specifically to exclude the code column. The
+  generator now throws on it.
+- **Diffing `.btn` against `.course-resume` line by line** to answer "the button
+  is wrong": they were already identical in colour, border, radius and shadow.
+  The difference was composition — label-left/arrow-right versus centred.
+- **Verifying deploys by fetching the production JS chunk and grepping it**, not
+  by HTTP 200 or a string the previous build also contained.
+- **Checking for a running build process before clearing `.next`** — the table
+  in this skill separates a concurrent build from a cloud-sync lock, and it was
+  the lock (no process, identical failure on retry, fixed by clearing).
+
+**Dead Ends (do not retry):**
+- **`.range(0, 9999)` on PostgREST silently caps at 1000.** It does not error
+  and does not warn. The curriculum generator quietly truncated the moment the
+  join table passed 1000 rows — adding two universities made the output file
+  SMALLER, which reads as a scraping gap, not a paging bug. Page until a short
+  page.
+- **`next lint --file <path>` does not exist** in this Next version — "unknown
+  option". Call `npx eslint <paths>` directly.
+- **Streamline's MCP cannot list a whole set.** `search_assets` is semantic, so
+  querying "icon" against a 200-icon set returns 6. The sets are already local
+  as `@iconify-json/*` packages — enumerate from there. (`streamline-kameleon-color`
+  was in package.json but missing from node_modules; `npm install` fixed it.)
+- **`useId()` alone is not safe inside `fill="url(#…)"`** — React 19 returns
+  `«r0»`, React 18 `:r0:`. Strip to word characters.
+- **A poll that matches a string the previous deploy also had proves nothing.**
+  Claimed "shipped" on a `px-4` match that both builds contained; the new build
+  was still compiling.
 
 ### Session 2026-08-04 (session 42 — the day the social skill got strict, and the placeholder curriculum grew up)
 
