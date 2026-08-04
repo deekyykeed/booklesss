@@ -87,7 +87,7 @@ export function SettingsSheet() {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<Tab>("general");
   const [section, setSection] = useState<Open>(null);
-  const [schoolQuery, setSchoolQuery] = useState("");
+  // No schoolQuery: the university list lost its search field (2026-08-04).
   const [courseQuery, setCourseQuery] = useState("");
   const [confirmWipe, setConfirmWipe] = useState(false);
 
@@ -144,7 +144,8 @@ export function SettingsSheet() {
        would leave someone enrolled in a course their school doesn't teach. */
     const keep = new Set(coursesForSchool(id).map((c) => c.slug));
     save({ school: id, courses: identity.courses.filter((s) => keep.has(s)) });
-    setSchoolQuery("");
+    // The university list has no search to clear any more; the course one does,
+    // and switching school changes which courses are on offer under it.
     setCourseQuery("");
   };
 
@@ -288,8 +289,6 @@ export function SettingsSheet() {
                   <SchoolPicker
                     school={school}
                     schoolName={identity.schoolName ?? ""}
-                    query={schoolQuery}
-                    onQuery={setSchoolQuery}
                     onPick={pickSchool}
                     onName={(v) => save({ schoolName: v })}
                   />

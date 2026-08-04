@@ -3,7 +3,7 @@
 import { useId } from "react";
 import { MynaIcon } from "@/components/icons/myna";
 import type { CourseMeta } from "@/lib/courses";
-import { OTHER_SCHOOL, SCHOOLS, searchSchools, type SchoolChoice } from "@/lib/schools";
+import { OTHER_SCHOOL, SCHOOLS, type SchoolChoice } from "@/lib/schools";
 import { crestSrc } from "./school-crests";
 
 /* The two things this app still asks a student — which university, which
@@ -231,8 +231,6 @@ export function Search({
 export function SchoolPicker({
   school,
   schoolName,
-  query,
-  onQuery,
   onPick,
   onName,
   fill,
@@ -240,8 +238,6 @@ export function SchoolPicker({
   school: SchoolChoice | null;
   /** What they typed when theirs wasn't listed. */
   schoolName: string;
-  query: string;
-  onQuery: (v: string) => void;
   onPick: (id: SchoolChoice) => void;
   onName: (v: string) => void;
   /** True where the page already gives the list its own scrolling area (the
@@ -251,36 +247,54 @@ export function SchoolPicker({
   fill?: boolean;
 }) {
   const other = school === OTHER_SCHOOL;
-  const matches = searchSchools(query);
 
+  /* NO SEARCH FIELD (owner, 2026-08-04: "remove the search bar"). It appeared
+     on its own when the list passed six rows, which ten universities did — but
+     the rule it fired on counts rows, not effort, and eleven short names on a
+     scrolling screen are quicker to read than a field is to type into. On a
+     phone it was actively worse: tapping it raises the keyboard over the list
+     it filters, so the student loses sight of the answers to narrow them.
+     The list is the whole answer; scrolling it is the search. */
   return (
     <>
-      {SCHOOLS.length > SEARCHABLE && (
-        <div className="mb-2">
-          <Search value={query} onChange={onQuery} placeholder="Search universities" label="Search universities" />
-        </div>
-      )}
       <div className={"flex flex-col gap-2 " + (fill ? "" : "max-h-[38dvh] overflow-y-auto")}>
-        {matches.map((s) => {
+        {SCHOOLS.map((s) => {
           const on = s.id === school;
           return (
-            /* Check, mark, name — in that order, one line (owner's layout,
-               2026-08-03). The tick leads because it is what the row is FOR;
-               the full name trails in muted and truncates, so the row stays
-               one line on a 390px screen and still says which university
-               "UNZA" is to somebody who doesn't know. */
+            /* Check, ONE name, then the crest sitting against the word
+               (owner, 2026-08-04).
+
+               ONE NAME, NOT TWO. The row used to carry the short name and the
+               full one beside it — "ZCAS" then "Zambia Centre for Accountancy
+               Studies" in 13px muted. That pairing only works for a university
+               with a real abbreviation, and most have none: it rendered
+               "Mulungushi · Mulungushi University", the same word twice, with
+               the second half too small to read. So the row says what students
+               call the place, once, at the size the short name already had.
+               `full` is still on the record and still searched — it just is not
+               something the row has to show to be understood.
+
+               THE CREST MOVED TO THE END, and this is what "inline" meant. In
+               front of the name it was a bullet the row was indented behind,
+               and every row's text started at the same place whether its mark
+               was a shield or a letter. After the word it reads as part of the
+               line — hence tick-sized, so nothing in the row is taller than
+               anything else. It sits against the name rather than out at the
+               right margin: flex-1 is on the wrapper, not between them, or the
+               mark would drift a different distance from every university's
+               name and stop looking attached to any of them. */
             <button key={s.id} type="button" onClick={() => onPick(s.id)} aria-pressed={on} className={schoolTone(on)}>
               <Tick on={on} />
-              <SchoolMark id={s.id} letter={s.name.slice(0, 1)} tone={s.tone} />
-              <span className="min-w-0 flex-1 truncate">
+              <span className="flex min-w-0 flex-1 items-center gap-2">
                 <span
                   className={
-                    "font-display text-[15px] leading-tight text-ink " + (on ? "font-semibold" : "font-medium")
+                    "truncate font-display text-[15px] leading-tight text-ink " +
+                    (on ? "font-semibold" : "font-medium")
                   }
                 >
                   {s.name}
                 </span>
-                <span className="ml-2 font-display text-[13px] leading-5 text-muted">{s.full}</span>
+                <SchoolMark id={s.id} letter={s.name.slice(0, 1)} tone={s.tone} />
               </span>
             </button>
           );

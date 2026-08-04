@@ -338,8 +338,6 @@ export function OnboardingFlow() {
             <SchoolPicker
               school={school}
               schoolName={schoolName}
-              query={query}
-              onQuery={setQuery}
               onPick={(id) => {
                 /* A DIFFERENT school offers different courses, so anything
                    picked under the old one may not be on offer any more — and

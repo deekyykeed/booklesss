@@ -91,22 +91,14 @@ export type School = {
  */
 export const SCHOOLS: School[] = SCHOOL_INDEX;
 
-/**
- * Schools matching what someone typed, in list order.
- *
- * Plain case-insensitive substring over the name, the full name and the aka
- * list — "zam", "unza" and "great east" all find UNZA. Nothing fuzzier, and
- * deliberately no ranking: the list is short enough to read, and a student who
- * types their own university's initials should see it, not a cleverly scored
- * near-miss above it. An empty query is everything.
- */
-export function searchSchools(query: string): School[] {
-  const q = query.trim().toLowerCase();
-  if (!q) return SCHOOLS;
-  return SCHOOLS.filter((s) =>
-    [s.name, s.full, ...(s.aka ?? [])].some((t) => t.toLowerCase().includes(q)),
-  );
-}
+/* searchSchools() lived here until 2026-08-04, when the university list lost
+ * its search field — the picker scrolls instead, and nothing called this any
+ * more. It is gone rather than left exported for a future caller, on the same
+ * reasoning that deleted AvatarGrid: a search helper sitting in the module is
+ * an invitation to put the field back without asking whether it earns its
+ * place. `full` and `aka` stay on the record, unshown and unsearched, because
+ * they are what a search would need if one ever returns — and `full` is still
+ * how a row explains itself in any surface that wants it. */
 
 /** The school a stored id refers to, or undefined for one we dropped — and for
  *  OTHER_SCHOOL, which has no entry by definition. */
