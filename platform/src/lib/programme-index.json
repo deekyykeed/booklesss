@@ -18,6 +18,18 @@
           "semester": 1
         },
         {
+          "slug": "introduction-to-financial-markets",
+          "title": "Introduction to Financial Markets",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "introduction-to-management",
+          "title": "Introduction to Management",
+          "year": 1,
+          "semester": 1
+        },
+        {
           "slug": "fundamentals-of-entrepreneurship",
           "title": "Fundamentals of Entreprenuership",
           "year": 1,
@@ -29,18 +41,6 @@
           "year": 1,
           "semester": 2,
           "live": "economics"
-        },
-        {
-          "slug": "introduction-to-financial-markets",
-          "title": "Introduction to Financial Markets",
-          "year": 1,
-          "semester": 1
-        },
-        {
-          "slug": "introduction-to-management",
-          "title": "Introduction to Management",
-          "year": 1,
-          "semester": 1
         },
         {
           "slug": "introduction-to-quantitative-methods",
@@ -67,12 +67,6 @@
           "semester": 1
         },
         {
-          "slug": "decision-making-techniques",
-          "title": "Decision Making Techniques",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "enterprenueral-growth-strategies",
           "title": "Enterprenueral Growth Strategies",
           "year": 2,
@@ -83,6 +77,12 @@
           "title": "Financial Accounting",
           "year": 2,
           "semester": 1
+        },
+        {
+          "slug": "decision-making-techniques",
+          "title": "Decision Making Techniques",
+          "year": 2,
+          "semester": 2
         },
         {
           "slug": "human-resource-management-and-development",
@@ -103,40 +103,16 @@
           "semester": 2
         },
         {
-          "slug": "advanced-management-accounting",
-          "title": "Advanced Management Accounting",
-          "year": 3,
-          "semester": 2
-        },
-        {
           "slug": "advanced-taxation",
           "title": "Advanced Taxation",
           "year": 3,
           "semester": 1
         },
         {
-          "slug": "auditing-and-assurance-services",
-          "title": "Auditing and Assurance Services",
-          "year": 3,
-          "semester": 2
-        },
-        {
-          "slug": "financial-management",
-          "title": "Financial Management",
-          "year": 3,
-          "semester": 2
-        },
-        {
           "slug": "financial-reporting",
           "title": "Financial Reporting",
           "year": 3,
           "semester": 1
-        },
-        {
-          "slug": "financial-risk-management",
-          "title": "Financial Risk Management",
-          "year": 3,
-          "semester": 2
         },
         {
           "slug": "organizational-management",
@@ -151,9 +127,27 @@
           "semester": 1
         },
         {
-          "slug": "advanced-audit-and-assurance",
-          "title": "Advanced Audit and Assurance",
-          "year": 4,
+          "slug": "advanced-management-accounting",
+          "title": "Advanced Management Accounting",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "auditing-and-assurance-services",
+          "title": "Auditing and Assurance Services",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "financial-management",
+          "title": "Financial Management",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "financial-risk-management",
+          "title": "Financial Risk Management",
+          "year": 3,
           "semester": 2
         },
         {
@@ -176,16 +170,22 @@
           "semester": 1
         },
         {
-          "slug": "innovation-and-enterpreneurship",
-          "title": "Innovation and Enterpreneurship",
-          "year": 4,
-          "semester": 2
-        },
-        {
           "slug": "research-methods",
           "title": "Research Methods",
           "year": 4,
           "semester": 1
+        },
+        {
+          "slug": "advanced-audit-and-assurance",
+          "title": "Advanced Audit and Assurance",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "innovation-and-enterpreneurship",
+          "title": "Innovation and Enterpreneurship",
+          "year": 4,
+          "semester": 2
         },
         {
           "slug": "strategic-management",
@@ -220,13 +220,6 @@
           "semester": 1
         },
         {
-          "slug": "introduction-to-economics",
-          "title": "Introduction to Economics",
-          "year": 1,
-          "semester": 2,
-          "live": "economics"
-        },
-        {
           "slug": "introduction-to-financial-markets",
           "title": "Introduction to Financial Markets",
           "year": 1,
@@ -237,6 +230,13 @@
           "title": "Introduction to Management",
           "year": 1,
           "semester": 1
+        },
+        {
+          "slug": "introduction-to-economics",
+          "title": "Introduction to Economics",
+          "year": 1,
+          "semester": 2,
+          "live": "economics"
         },
         {
           "slug": "introduction-to-quantitative-methods",
@@ -269,16 +269,22 @@
           "semester": 1
         },
         {
-          "slug": "credit-analysis-and-lending",
-          "title": "Credit Analysis and Lending",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "financial-accounting",
           "title": "Financial Accounting",
           "year": 2,
           "semester": 1
+        },
+        {
+          "slug": "monetary-and-financial-systems",
+          "title": "Monetary and Financial Systems",
+          "year": 2,
+          "semester": 1
+        },
+        {
+          "slug": "credit-analysis-and-lending",
+          "title": "Credit Analysis and Lending",
+          "year": 2,
+          "semester": 2
         },
         {
           "slug": "financial-products-and-services",
@@ -293,21 +299,9 @@
           "semester": 2
         },
         {
-          "slug": "monetary-and-financial-systems",
-          "title": "Monetary and Financial Systems",
-          "year": 2,
-          "semester": 1
-        },
-        {
           "slug": "taxation",
           "title": "Taxation",
           "year": 2,
-          "semester": 2
-        },
-        {
-          "slug": "advanced-management-accounting",
-          "title": "Advanced Management Accounting",
-          "year": 3,
           "semester": 2
         },
         {
@@ -315,6 +309,30 @@
           "title": "Advanced Taxation",
           "year": 3,
           "semester": 1
+        },
+        {
+          "slug": "financial-reporting",
+          "title": "Financial Reporting",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "investment-and-portfolio-management",
+          "title": "Investment and Portfolio Management",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "managing-strategic-risk",
+          "title": "Managing Strategic Risk",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "advanced-management-accounting",
+          "title": "Advanced Management Accounting",
+          "year": 3,
+          "semester": 2
         },
         {
           "slug": "auditing-and-assurance-services",
@@ -329,28 +347,10 @@
           "semester": 2
         },
         {
-          "slug": "financial-reporting",
-          "title": "Financial Reporting",
-          "year": 3,
-          "semester": 1
-        },
-        {
           "slug": "international-trade-and-finance",
           "title": "International Trade and Finance",
           "year": 3,
           "semester": 2
-        },
-        {
-          "slug": "investment-and-portfolio-management",
-          "title": "Investment and Portfolio Management",
-          "year": 3,
-          "semester": 1
-        },
-        {
-          "slug": "managing-strategic-risk",
-          "title": "Managing Strategic Risk",
-          "year": 3,
-          "semester": 1
         },
         {
           "slug": "corporate-finance",
@@ -366,12 +366,6 @@
           "semester": 1
         },
         {
-          "slug": "innovation-and-entrepreneurship",
-          "title": "Innovation and Entrepreneurship",
-          "year": 4,
-          "semester": 2
-        },
-        {
           "slug": "regulation-of-financial-services",
           "title": "Regulation of Financial Services",
           "year": 4,
@@ -382,6 +376,12 @@
           "title": "Research Methods",
           "year": 4,
           "semester": 1
+        },
+        {
+          "slug": "innovation-and-entrepreneurship",
+          "title": "Innovation and Entrepreneurship",
+          "year": 4,
+          "semester": 2
         },
         {
           "slug": "strategic-management",
@@ -423,16 +423,22 @@
           "semester": 1
         },
         {
-          "slug": "ethics-in-education",
-          "title": "Ethics in Education",
-          "year": 1,
-          "semester": 2
-        },
-        {
           "slug": "foundation-mathematics-for-teachers",
           "title": "Foundation Mathematics for Teachers",
           "year": 1,
           "semester": 1
+        },
+        {
+          "slug": "principles-and-practice-of-education",
+          "title": "Principles and Practice of Education",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "ethics-in-education",
+          "title": "Ethics in Education",
+          "year": 1,
+          "semester": 2
         },
         {
           "slug": "fundamentals-of-accounting-principles",
@@ -454,18 +460,6 @@
           "semester": 2
         },
         {
-          "slug": "principles-and-practice-of-education",
-          "title": "Principles and Practice of Education",
-          "year": 1,
-          "semester": 1
-        },
-        {
-          "slug": "accounting-teaching-methods",
-          "title": "Accounting Teaching Methods",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "business-and-corporate-law",
           "title": "Business and Corporate Law",
           "year": 2,
@@ -478,12 +472,6 @@
           "semester": 1
         },
         {
-          "slug": "cost-and-management-accounting",
-          "title": "Cost and Management Accounting",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "educational-psychology",
           "title": "Educational Psychology",
           "year": 2,
@@ -494,6 +482,18 @@
           "title": "Financial Accounting",
           "year": 2,
           "semester": 1
+        },
+        {
+          "slug": "accounting-teaching-methods",
+          "title": "Accounting Teaching Methods",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "cost-and-management-accounting",
+          "title": "Cost and Management Accounting",
+          "year": 2,
+          "semester": 2
         },
         {
           "slug": "sociology-of-education",
@@ -514,22 +514,10 @@
           "semester": 1
         },
         {
-          "slug": "audit-and-internal-control",
-          "title": "Audit and Internal Control",
-          "year": 3,
-          "semester": 2
-        },
-        {
           "slug": "corporate-governance-and-ethics",
           "title": "Corporate Governance & Ethics",
           "year": 3,
           "semester": 1
-        },
-        {
-          "slug": "financial-management",
-          "title": "Financial Management",
-          "year": 3,
-          "semester": 2
         },
         {
           "slug": "financial-reporting",
@@ -538,27 +526,33 @@
           "semester": 1
         },
         {
-          "slug": "management-accounting",
-          "title": "Management Accounting",
-          "year": 3,
-          "semester": 2
-        },
-        {
           "slug": "organizational-management",
           "title": "Organisational Management",
           "year": 3,
           "semester": 1
         },
         {
-          "slug": "school-experience-attachment",
-          "title": "School Experience Attachment",
+          "slug": "audit-and-internal-control",
+          "title": "Audit and Internal Control",
           "year": 3,
           "semester": 2
         },
         {
-          "slug": "audit-and-assurance",
-          "title": "Audit and Assurance",
-          "year": 4,
+          "slug": "financial-management",
+          "title": "Financial Management",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "management-accounting",
+          "title": "Management Accounting",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "school-experience-attachment",
+          "title": "School Experience Attachment",
+          "year": 3,
           "semester": 2
         },
         {
@@ -575,16 +569,22 @@
           "semester": 1
         },
         {
-          "slug": "curriculum-theory-and-practice",
-          "title": "Curriculum Theory and Practice",
-          "year": 4,
-          "semester": 2
-        },
-        {
           "slug": "educational-research",
           "title": "Educational Research",
           "year": 4,
           "semester": 1
+        },
+        {
+          "slug": "audit-and-assurance",
+          "title": "Audit and Assurance",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "curriculum-theory-and-practice",
+          "title": "Curriculum Theory and Practice",
+          "year": 4,
+          "semester": 2
         },
         {
           "slug": "innovation-and-entrepreneurship",
@@ -612,22 +612,10 @@
           "semester": 1
         },
         {
-          "slug": "introduction-to-development-studies",
-          "title": "Introduction to Development Studies",
-          "year": 1,
-          "semester": 2
-        },
-        {
           "slug": "introduction-to-financial-markets",
           "title": "Introduction to Financial Markets",
           "year": 1,
           "semester": 1
-        },
-        {
-          "slug": "introduction-to-macroeconomics",
-          "title": "Introduction to Macroeconomics",
-          "year": 1,
-          "semester": 2
         },
         {
           "slug": "introduction-to-management",
@@ -640,6 +628,18 @@
           "title": "Introduction to Microeconomics",
           "year": 1,
           "semester": 1
+        },
+        {
+          "slug": "introduction-to-development-studies",
+          "title": "Introduction to Development Studies",
+          "year": 1,
+          "semester": 2
+        },
+        {
+          "slug": "introduction-to-macroeconomics",
+          "title": "Introduction to Macroeconomics",
+          "year": 1,
+          "semester": 2
         },
         {
           "slug": "introduction-to-quantitative-methods",
@@ -666,6 +666,18 @@
           "semester": 1
         },
         {
+          "slug": "microeconomics",
+          "title": "Microeconomics",
+          "year": 2,
+          "semester": 1
+        },
+        {
+          "slug": "statistics",
+          "title": "Statistics",
+          "year": 2,
+          "semester": 1
+        },
+        {
           "slug": "financial-products-and-services",
           "title": "Financial Products and Services",
           "year": 2,
@@ -684,27 +696,9 @@
           "semester": 2
         },
         {
-          "slug": "microeconomics",
-          "title": "Microeconomics",
-          "year": 2,
-          "semester": 1
-        },
-        {
           "slug": "statistical-packages-for-research",
           "title": "Statistical Packages for Research",
           "year": 2,
-          "semester": 2
-        },
-        {
-          "slug": "statistics",
-          "title": "Statistics",
-          "year": 2,
-          "semester": 1
-        },
-        {
-          "slug": "development-economics",
-          "title": "Development Economics",
-          "year": 3,
           "semester": 2
         },
         {
@@ -712,18 +706,6 @@
           "title": "Econometrics",
           "year": 3,
           "semester": 1
-        },
-        {
-          "slug": "financial-management",
-          "title": "Financial Management",
-          "year": 3,
-          "semester": 2
-        },
-        {
-          "slug": "international-trade-and-finance",
-          "title": "International Trade and Finance",
-          "year": 3,
-          "semester": 2
         },
         {
           "slug": "investment-and-portfolio-management",
@@ -742,6 +724,24 @@
           "title": "Managing Strategic Risks",
           "year": 3,
           "semester": 1
+        },
+        {
+          "slug": "development-economics",
+          "title": "Development Economics",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "financial-management",
+          "title": "Financial Management",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "international-trade-and-finance",
+          "title": "International Trade and Finance",
+          "year": 3,
+          "semester": 2
         },
         {
           "slug": "treasury-management",
@@ -763,18 +763,6 @@
           "semester": 1
         },
         {
-          "slug": "industrial-economics",
-          "title": "Industrial Economics",
-          "year": 4,
-          "semester": 2
-        },
-        {
-          "slug": "innovation-and-entrepreneurship",
-          "title": "Innovation and Entrepreneurship",
-          "year": 4,
-          "semester": 2
-        },
-        {
           "slug": "monetary-economics",
           "title": "Monetary Economics",
           "year": 4,
@@ -785,6 +773,18 @@
           "title": "Research Methods",
           "year": 4,
           "semester": 1
+        },
+        {
+          "slug": "industrial-economics",
+          "title": "Industrial Economics",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "innovation-and-entrepreneurship",
+          "title": "Innovation and Entrepreneurship",
+          "year": 4,
+          "semester": 2
         }
       ],
       "years": [
@@ -806,16 +806,28 @@
           "semester": 1
         },
         {
-          "slug": "fundamentals-of-entrepreneurship",
-          "title": "Fundamentals of Entreprenuership",
-          "year": 1,
-          "semester": 2
-        },
-        {
           "slug": "introduction-to-constitutional-law-and-basic-human-rights",
           "title": "Introduction to Constitutional Law and Basic Human Rights",
           "year": 1,
           "semester": 1
+        },
+        {
+          "slug": "introduction-to-law",
+          "title": "Introduction to Law",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "introduction-to-sociology",
+          "title": "Introduction to Sociology",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "fundamentals-of-entrepreneurship",
+          "title": "Fundamentals of Entreprenuership",
+          "year": 1,
+          "semester": 2
         },
         {
           "slug": "introduction-to-development-studies",
@@ -831,39 +843,9 @@
           "live": "economics"
         },
         {
-          "slug": "introduction-to-law",
-          "title": "Introduction to Law",
-          "year": 1,
-          "semester": 1
-        },
-        {
-          "slug": "introduction-to-sociology",
-          "title": "Introduction to Sociology",
-          "year": 1,
-          "semester": 1
-        },
-        {
           "slug": "principles-of-accounting",
           "title": "Principles of Accounting",
           "year": 1,
-          "semester": 2
-        },
-        {
-          "slug": "banking-law-banker-client-relationships",
-          "title": "Banking Law- Banker Client Relationships",
-          "year": 2,
-          "semester": 2
-        },
-        {
-          "slug": "business-associations",
-          "title": "Business Associations",
-          "year": 2,
-          "semester": 2
-        },
-        {
-          "slug": "commercial-law",
-          "title": "Commercial Law",
-          "year": 2,
           "semester": 2
         },
         {
@@ -885,12 +867,6 @@
           "semester": 1
         },
         {
-          "slug": "law-of-taxation",
-          "title": "Law of Taxation",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "law-of-torts",
           "title": "Law of Torts",
           "year": 2,
@@ -903,21 +879,33 @@
           "semester": 1
         },
         {
-          "slug": "professional-conduct-and-ethics",
-          "title": "Professional Conduct and Ethics",
+          "slug": "banking-law-banker-client-relationships",
+          "title": "Banking Law- Banker Client Relationships",
           "year": 2,
           "semester": 2
         },
         {
-          "slug": "banking-law",
-          "title": "Banking Law",
-          "year": 3,
+          "slug": "business-associations",
+          "title": "Business Associations",
+          "year": 2,
           "semester": 2
         },
         {
-          "slug": "company-law",
-          "title": "Company Law",
-          "year": 3,
+          "slug": "commercial-law",
+          "title": "Commercial Law",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "law-of-taxation",
+          "title": "Law of Taxation",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "professional-conduct-and-ethics",
+          "title": "Professional Conduct and Ethics",
+          "year": 2,
           "semester": 2
         },
         {
@@ -945,16 +933,28 @@
           "semester": 1
         },
         {
-          "slug": "investment-law",
-          "title": "Investment Law",
-          "year": 3,
-          "semester": 2
-        },
-        {
           "slug": "land-law",
           "title": "Land Law",
           "year": 3,
           "semester": 1
+        },
+        {
+          "slug": "banking-law",
+          "title": "Banking Law",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "company-law",
+          "title": "Company Law",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "investment-law",
+          "title": "Investment Law",
+          "year": 3,
+          "semester": 2
         },
         {
           "slug": "law-of-insolvency",
@@ -966,42 +966,6 @@
           "slug": "pension-law",
           "title": "Pension Law",
           "year": 3,
-          "semester": 2
-        },
-        {
-          "slug": "alternative-dispute-resolution",
-          "title": "Alternative Dispute Resolution",
-          "year": 4,
-          "semester": 2
-        },
-        {
-          "slug": "civil-and-criminal-procedure",
-          "title": "Civil and Criminal Procedure",
-          "year": 4,
-          "semester": 2
-        },
-        {
-          "slug": "competition-law",
-          "title": "Competition Law",
-          "year": 4,
-          "semester": 2
-        },
-        {
-          "slug": "conflict-of-laws",
-          "title": "Conflict of Laws",
-          "year": 4,
-          "semester": 2
-        },
-        {
-          "slug": "corporate-governance",
-          "title": "Corporate Governance",
-          "year": 4,
-          "semester": 2
-        },
-        {
-          "slug": "cyber-law-and-the-internet",
-          "title": "Cyber Law and the Internet",
-          "year": 4,
           "semester": 2
         },
         {
@@ -1045,6 +1009,42 @@
           "title": "Moot Court",
           "year": 4,
           "semester": 1
+        },
+        {
+          "slug": "alternative-dispute-resolution",
+          "title": "Alternative Dispute Resolution",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "civil-and-criminal-procedure",
+          "title": "Civil and Criminal Procedure",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "competition-law",
+          "title": "Competition Law",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "conflict-of-laws",
+          "title": "Conflict of Laws",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "corporate-governance",
+          "title": "Corporate Governance",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "cyber-law-and-the-internet",
+          "title": "Cyber Law and the Internet",
+          "year": 4,
+          "semester": 2
         },
         {
           "slug": "negotiating-investment-contracts",
@@ -1072,16 +1072,28 @@
           "semester": 1
         },
         {
-          "slug": "fundamentals-of-entrepreneurship",
-          "title": "Fundamentals of Entreprenuership",
-          "year": 1,
-          "semester": 2
-        },
-        {
           "slug": "introduction-to-constitutional-law-and-basic-human-rights",
           "title": "Introduction to Constitutional Law and Basic Human Rights",
           "year": 1,
           "semester": 1
+        },
+        {
+          "slug": "introduction-to-law",
+          "title": "Introduction to Law",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "introduction-to-sociology",
+          "title": "Introduction to Sociology",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "fundamentals-of-entrepreneurship",
+          "title": "Fundamentals of Entreprenuership",
+          "year": 1,
+          "semester": 2
         },
         {
           "slug": "introduction-to-development-studies",
@@ -1097,39 +1109,9 @@
           "live": "economics"
         },
         {
-          "slug": "introduction-to-law",
-          "title": "Introduction to Law",
-          "year": 1,
-          "semester": 1
-        },
-        {
-          "slug": "introduction-to-sociology",
-          "title": "Introduction to Sociology",
-          "year": 1,
-          "semester": 1
-        },
-        {
           "slug": "principles-of-accounting",
           "title": "Principles of Accounting",
           "year": 1,
-          "semester": 2
-        },
-        {
-          "slug": "banking-law-banker-client-relationships",
-          "title": "Banking Law- Banker Client Relationships",
-          "year": 2,
-          "semester": 2
-        },
-        {
-          "slug": "business-associations",
-          "title": "Business Associations",
-          "year": 2,
-          "semester": 2
-        },
-        {
-          "slug": "commercial-law",
-          "title": "Commercial Law",
-          "year": 2,
           "semester": 2
         },
         {
@@ -1151,12 +1133,6 @@
           "semester": 1
         },
         {
-          "slug": "law-of-taxation",
-          "title": "Law of Taxation",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "law-of-torts",
           "title": "Law of Torts",
           "year": 2,
@@ -1169,21 +1145,33 @@
           "semester": 1
         },
         {
-          "slug": "professional-conduct-and-ethics",
-          "title": "Professional Conduct and Ethics",
+          "slug": "banking-law-banker-client-relationships",
+          "title": "Banking Law- Banker Client Relationships",
           "year": 2,
           "semester": 2
         },
         {
-          "slug": "banking-law",
-          "title": "Banking Law",
-          "year": 3,
+          "slug": "business-associations",
+          "title": "Business Associations",
+          "year": 2,
           "semester": 2
         },
         {
-          "slug": "company-law",
-          "title": "Company Law",
-          "year": 3,
+          "slug": "commercial-law",
+          "title": "Commercial Law",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "law-of-taxation",
+          "title": "Law of Taxation",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "professional-conduct-and-ethics",
+          "title": "Professional Conduct and Ethics",
+          "year": 2,
           "semester": 2
         },
         {
@@ -1211,16 +1199,28 @@
           "semester": 1
         },
         {
-          "slug": "investment-law",
-          "title": "Investment Law",
-          "year": 3,
-          "semester": 2
-        },
-        {
           "slug": "land-law",
           "title": "Land Law",
           "year": 3,
           "semester": 1
+        },
+        {
+          "slug": "banking-law",
+          "title": "Banking Law",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "company-law",
+          "title": "Company Law",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "investment-law",
+          "title": "Investment Law",
+          "year": 3,
+          "semester": 2
         },
         {
           "slug": "law-of-insolvency",
@@ -1232,42 +1232,6 @@
           "slug": "pension-law",
           "title": "Pension Law",
           "year": 3,
-          "semester": 2
-        },
-        {
-          "slug": "alternative-dispute-resolution",
-          "title": "Alternative Dispute Resolution",
-          "year": 4,
-          "semester": 2
-        },
-        {
-          "slug": "civil-and-criminal-procedure",
-          "title": "Civil and Criminal Procedure",
-          "year": 4,
-          "semester": 2
-        },
-        {
-          "slug": "competition-law",
-          "title": "Competition Law",
-          "year": 4,
-          "semester": 2
-        },
-        {
-          "slug": "conflict-of-laws",
-          "title": "Conflict of Laws",
-          "year": 4,
-          "semester": 2
-        },
-        {
-          "slug": "corporate-governance",
-          "title": "Corporate Governance",
-          "year": 4,
-          "semester": 2
-        },
-        {
-          "slug": "cyber-law-and-the-internet",
-          "title": "Cyber Law and the Internet",
-          "year": 4,
           "semester": 2
         },
         {
@@ -1311,6 +1275,42 @@
           "title": "Moot Court",
           "year": 4,
           "semester": 1
+        },
+        {
+          "slug": "alternative-dispute-resolution",
+          "title": "Alternative Dispute Resolution",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "civil-and-criminal-procedure",
+          "title": "Civil and Criminal Procedure",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "competition-law",
+          "title": "Competition Law",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "conflict-of-laws",
+          "title": "Conflict of Laws",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "corporate-governance",
+          "title": "Corporate Governance",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "cyber-law-and-the-internet",
+          "title": "Cyber Law and the Internet",
+          "year": 4,
+          "semester": 2
         },
         {
           "slug": "negotiating-investment-contracts",
@@ -1344,6 +1344,18 @@
           "semester": 1
         },
         {
+          "slug": "introduction-to-financial-markets",
+          "title": "Introduction to Financial Markets",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "introduction-to-management",
+          "title": "Introduction to Management",
+          "year": 1,
+          "semester": 1
+        },
+        {
           "slug": "introduction-to-economics",
           "title": "Introduction to Economics",
           "year": 1,
@@ -1355,18 +1367,6 @@
           "title": "Introduction to Finance",
           "year": 1,
           "semester": 2
-        },
-        {
-          "slug": "introduction-to-financial-markets",
-          "title": "Introduction to Financial Markets",
-          "year": 1,
-          "semester": 1
-        },
-        {
-          "slug": "introduction-to-management",
-          "title": "Introduction to Management",
-          "year": 1,
-          "semester": 1
         },
         {
           "slug": "introduction-to-quantitative-methods",
@@ -1393,16 +1393,22 @@
           "semester": 1
         },
         {
-          "slug": "decision-making-techniques",
-          "title": "Decision Making Techniques",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "financial-accounting",
           "title": "Financial Accounting",
           "year": 2,
           "semester": 1
+        },
+        {
+          "slug": "managerial-economics",
+          "title": "Managerial Economics",
+          "year": 2,
+          "semester": 1
+        },
+        {
+          "slug": "decision-making-techniques",
+          "title": "Decision Making Techniques",
+          "year": 2,
+          "semester": 2
         },
         {
           "slug": "human-resource-management-and-development",
@@ -1417,21 +1423,9 @@
           "semester": 2
         },
         {
-          "slug": "managerial-economics",
-          "title": "Managerial Economics",
-          "year": 2,
-          "semester": 1
-        },
-        {
           "slug": "taxation",
           "title": "Taxation",
           "year": 2,
-          "semester": 2
-        },
-        {
-          "slug": "advanced-management-accounting",
-          "title": "Advanced Management Accounting",
-          "year": 3,
           "semester": 2
         },
         {
@@ -1439,6 +1433,30 @@
           "title": "Advanced Taxation",
           "year": 3,
           "semester": 1
+        },
+        {
+          "slug": "financial-reporting",
+          "title": "Financial Reporting",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "organizational-management",
+          "title": "Organisational Management",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "project-management",
+          "title": "Project Management",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "advanced-management-accounting",
+          "title": "Advanced Management Accounting",
+          "year": 3,
+          "semester": 2
         },
         {
           "slug": "auditing-and-assurance-services",
@@ -1453,28 +1471,10 @@
           "semester": 2
         },
         {
-          "slug": "financial-reporting",
-          "title": "Financial Reporting",
-          "year": 3,
-          "semester": 1
-        },
-        {
           "slug": "financial-risk-management",
           "title": "Financial Risk Management",
           "year": 3,
           "semester": 2
-        },
-        {
-          "slug": "organizational-management",
-          "title": "Organisational Management",
-          "year": 3,
-          "semester": 1
-        },
-        {
-          "slug": "project-management",
-          "title": "Project Management",
-          "year": 3,
-          "semester": 1
         },
         {
           "slug": "advanced-financial-reporting",
@@ -1496,16 +1496,16 @@
           "semester": 1
         },
         {
-          "slug": "public-finance",
-          "title": "Public Finance",
-          "year": 4,
-          "semester": 2
-        },
-        {
           "slug": "research-methods",
           "title": "Research Methods",
           "year": 4,
           "semester": 1
+        },
+        {
+          "slug": "public-finance",
+          "title": "Public Finance",
+          "year": 4,
+          "semester": 2
         },
         {
           "slug": "strategic-management",
@@ -1541,19 +1541,6 @@
           "semester": 1
         },
         {
-          "slug": "introduction-to-economics",
-          "title": "Introduction to Economics",
-          "year": 1,
-          "semester": 2,
-          "live": "economics"
-        },
-        {
-          "slug": "introduction-to-finance",
-          "title": "Introduction to Finance",
-          "year": 1,
-          "semester": 2
-        },
-        {
           "slug": "introduction-to-financial-markets",
           "title": "Introduction to Financial Markets",
           "year": 1,
@@ -1570,6 +1557,19 @@
           "title": "Introduction to Management",
           "year": 1,
           "semester": 1
+        },
+        {
+          "slug": "introduction-to-economics",
+          "title": "Introduction to Economics",
+          "year": 1,
+          "semester": 2,
+          "live": "economics"
+        },
+        {
+          "slug": "introduction-to-finance",
+          "title": "Introduction to Finance",
+          "year": 1,
+          "semester": 2
         },
         {
           "slug": "introduction-to-quantitative-methods",
@@ -1596,28 +1596,28 @@
           "semester": 1
         },
         {
-          "slug": "credit-analysis-and-lending",
-          "title": "Credit Analysis and Lending",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "financial-accounting",
           "title": "Financial Accounting",
           "year": 2,
           "semester": 1
         },
         {
-          "slug": "financial-products-and-services",
-          "title": "Financial Products and Services",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "law-in-financial-services",
           "title": "Law in Financial Services",
           "year": 2,
           "semester": 1
+        },
+        {
+          "slug": "credit-analysis-and-lending",
+          "title": "Credit Analysis and Lending",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "financial-products-and-services",
+          "title": "Financial Products and Services",
+          "year": 2,
+          "semester": 2
         },
         {
           "slug": "microfinance",
@@ -1632,6 +1632,24 @@
           "semester": 2
         },
         {
+          "slug": "financial-reporting",
+          "title": "Financial Reporting",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "investment-and-portfolio-management",
+          "title": "Investment and Portfolio Management",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "managing-strategic-risk",
+          "title": "Managing Strategic Risk",
+          "year": 3,
+          "semester": 1
+        },
+        {
           "slug": "central-banking",
           "title": "Central Banking",
           "year": 3,
@@ -1644,34 +1662,16 @@
           "semester": 2
         },
         {
-          "slug": "financial-reporting",
-          "title": "Financial Reporting",
-          "year": 3,
-          "semester": 1
-        },
-        {
           "slug": "international-trade-and-finance",
           "title": "International Trade and Finance",
           "year": 3,
           "semester": 2
         },
         {
-          "slug": "investment-and-portfolio-management",
-          "title": "Investment and Portfolio Management",
-          "year": 3,
-          "semester": 1
-        },
-        {
           "slug": "investment-banking",
           "title": "Investment Banking",
           "year": 3,
           "semester": 2
-        },
-        {
-          "slug": "managing-strategic-risk",
-          "title": "Managing Strategic Risk",
-          "year": 3,
-          "semester": 1
         },
         {
           "slug": "corporate-finance",
@@ -1685,12 +1685,6 @@
           "title": "Financial Modelling and Forecasting",
           "year": 4,
           "semester": 1
-        },
-        {
-          "slug": "innovation-and-entrepreneurship",
-          "title": "Innovation and Entrepreneurship",
-          "year": 4,
-          "semester": 2
         },
         {
           "slug": "monetary-economics",
@@ -1709,6 +1703,12 @@
           "title": "Research Methods",
           "year": 4,
           "semester": 1
+        },
+        {
+          "slug": "innovation-and-entrepreneurship",
+          "title": "Innovation and Entrepreneurship",
+          "year": 4,
+          "semester": 2
         },
         {
           "slug": "strategic-management",
@@ -1750,6 +1750,18 @@
           "semester": 1
         },
         {
+          "slug": "introduction-to-financial-markets",
+          "title": "Introduction to Financial Markets",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "introduction-to-management",
+          "title": "Introduction to Management",
+          "year": 1,
+          "semester": 1
+        },
+        {
           "slug": "introduction-to-economics",
           "title": "Introduction to Economics",
           "year": 1,
@@ -1761,18 +1773,6 @@
           "title": "Introduction to Finance",
           "year": 1,
           "semester": 2
-        },
-        {
-          "slug": "introduction-to-financial-markets",
-          "title": "Introduction to Financial Markets",
-          "year": 1,
-          "semester": 1
-        },
-        {
-          "slug": "introduction-to-management",
-          "title": "Introduction to Management",
-          "year": 1,
-          "semester": 1
         },
         {
           "slug": "introduction-to-quantitative-methods",
@@ -1817,18 +1817,6 @@
           "semester": 1
         },
         {
-          "slug": "auditing-and-assurance-services",
-          "title": "Auditing and Assurance Services",
-          "year": 3,
-          "semester": 2
-        },
-        {
-          "slug": "financial-management",
-          "title": "Financial Management",
-          "year": 3,
-          "semester": 2
-        },
-        {
           "slug": "financial-reporting",
           "title": "Financial Reporting",
           "year": 3,
@@ -1847,22 +1835,10 @@
           "semester": 1
         },
         {
-          "slug": "mergers-and-acquisitions",
-          "title": "Mergers and Acquisitions",
-          "year": 3,
-          "semester": 2
-        },
-        {
           "slug": "organizational-management",
           "title": "Organisational Management",
           "year": 3,
           "semester": 1
-        },
-        {
-          "slug": "small-business-development",
-          "title": "Small Business Development",
-          "year": 3,
-          "semester": 2
         },
         {
           "slug": "strategic-management",
@@ -1870,6 +1846,30 @@
           "year": 3,
           "semester": 1,
           "live": "strategic-management"
+        },
+        {
+          "slug": "auditing-and-assurance-services",
+          "title": "Auditing and Assurance Services",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "financial-management",
+          "title": "Financial Management",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "mergers-and-acquisitions",
+          "title": "Mergers and Acquisitions",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "small-business-development",
+          "title": "Small Business Development",
+          "year": 3,
+          "semester": 2
         },
         {
           "slug": "advanced-financial-reporting",
@@ -1891,16 +1891,16 @@
           "semester": 1
         },
         {
-          "slug": "innovation-and-entrepreneurship",
-          "title": "Innovation and Entrepreneurship",
-          "year": 4,
-          "semester": 2
-        },
-        {
           "slug": "research-methods",
           "title": "Research Methods",
           "year": 4,
           "semester": 1
+        },
+        {
+          "slug": "innovation-and-entrepreneurship",
+          "title": "Innovation and Entrepreneurship",
+          "year": 4,
+          "semester": 2
         }
       ],
       "years": [
@@ -1928,6 +1928,18 @@
           "semester": 1
         },
         {
+          "slug": "introduction-to-financial-markets",
+          "title": "Introduction to Financial Markets",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "introduction-to-management",
+          "title": "Introduction to Management",
+          "year": 1,
+          "semester": 1
+        },
+        {
           "slug": "introduction-to-economics",
           "title": "Introduction to Economics",
           "year": 1,
@@ -1939,18 +1951,6 @@
           "title": "Introduction to Finance",
           "year": 1,
           "semester": 2
-        },
-        {
-          "slug": "introduction-to-financial-markets",
-          "title": "Introduction to Financial Markets",
-          "year": 1,
-          "semester": 1
-        },
-        {
-          "slug": "introduction-to-management",
-          "title": "Introduction to Management",
-          "year": 1,
-          "semester": 1
         },
         {
           "slug": "introduction-to-quantitative-methods",
@@ -1989,28 +1989,10 @@
           "semester": 2
         },
         {
-          "slug": "advanced-management-accounting",
-          "title": "Advanced Management Accounting",
-          "year": 3,
-          "semester": 2
-        },
-        {
           "slug": "advanced-taxation",
           "title": "Advanced Taxation",
           "year": 3,
           "semester": 1
-        },
-        {
-          "slug": "auditing-and-assurance-services",
-          "title": "Auditing and Assurance Services",
-          "year": 3,
-          "semester": 2
-        },
-        {
-          "slug": "financial-management",
-          "title": "Financial Management",
-          "year": 3,
-          "semester": 2
         },
         {
           "slug": "financial-reporting",
@@ -2031,12 +2013,6 @@
           "semester": 1
         },
         {
-          "slug": "mergers-and-acquisitions",
-          "title": "Mergers and Acquisitions",
-          "year": 3,
-          "semester": 2
-        },
-        {
           "slug": "organizational-management",
           "title": "Organisational Management",
           "year": 3,
@@ -2047,6 +2023,30 @@
           "title": "Project Management",
           "year": 3,
           "semester": 1
+        },
+        {
+          "slug": "advanced-management-accounting",
+          "title": "Advanced Management Accounting",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "auditing-and-assurance-services",
+          "title": "Auditing and Assurance Services",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "financial-management",
+          "title": "Financial Management",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "mergers-and-acquisitions",
+          "title": "Mergers and Acquisitions",
+          "year": 3,
+          "semester": 2
         },
         {
           "slug": "small-business-development",
@@ -2074,16 +2074,16 @@
           "semester": 1
         },
         {
-          "slug": "innovation-and-entrepreneurship",
-          "title": "Innovation and Entrepreneurship",
-          "year": 4,
-          "semester": 2
-        },
-        {
           "slug": "research-methods",
           "title": "Research Methods",
           "year": 4,
           "semester": 1
+        },
+        {
+          "slug": "innovation-and-entrepreneurship",
+          "title": "Innovation and Entrepreneurship",
+          "year": 4,
+          "semester": 2
         },
         {
           "slug": "strategic-management",
@@ -2118,6 +2118,18 @@
           "semester": 1
         },
         {
+          "slug": "introduction-to-financial-markets",
+          "title": "Introduction to Financial Markets",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "introduction-to-management",
+          "title": "Introduction to Management",
+          "year": 1,
+          "semester": 1
+        },
+        {
           "slug": "introduction-to-economics",
           "title": "Introduction to Economics",
           "year": 1,
@@ -2129,18 +2141,6 @@
           "title": "Introduction to Finance",
           "year": 1,
           "semester": 2
-        },
-        {
-          "slug": "introduction-to-financial-markets",
-          "title": "Introduction to Financial Markets",
-          "year": 1,
-          "semester": 1
-        },
-        {
-          "slug": "introduction-to-management",
-          "title": "Introduction to Management",
-          "year": 1,
-          "semester": 1
         },
         {
           "slug": "introduction-to-quantitative-methods",
@@ -2167,16 +2167,22 @@
           "semester": 1
         },
         {
-          "slug": "credit-analysis-and-lending",
-          "title": "Credit Analysis and Lending",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "financial-accounting",
           "title": "Financial Accounting",
           "year": 2,
           "semester": 1
+        },
+        {
+          "slug": "monetary-and-financial-systems",
+          "title": "Monetary and Financial Systems",
+          "year": 2,
+          "semester": 1
+        },
+        {
+          "slug": "credit-analysis-and-lending",
+          "title": "Credit Analysis and Lending",
+          "year": 2,
+          "semester": 2
         },
         {
           "slug": "management-accounting",
@@ -2191,12 +2197,6 @@
           "semester": 2
         },
         {
-          "slug": "monetary-and-financial-systems",
-          "title": "Monetary and Financial Systems",
-          "year": 2,
-          "semester": 1
-        },
-        {
           "slug": "taxation",
           "title": "Taxation",
           "year": 2,
@@ -2205,6 +2205,24 @@
         {
           "slug": "advanced-taxation",
           "title": "Advanced Taxation",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "financial-reporting",
+          "title": "Financial Reporting",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "investment-and-portfolio-management",
+          "title": "Investment and Portfolio Management",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "managing-strategic-risk",
+          "title": "Managing Strategic Risk",
           "year": 3,
           "semester": 1
         },
@@ -2221,12 +2239,6 @@
           "semester": 2
         },
         {
-          "slug": "financial-reporting",
-          "title": "Financial Reporting",
-          "year": 3,
-          "semester": 1
-        },
-        {
           "slug": "financial-risk-management",
           "title": "Financial Risk Management",
           "year": 3,
@@ -2237,18 +2249,6 @@
           "title": "International Trade and Finance",
           "year": 3,
           "semester": 2
-        },
-        {
-          "slug": "investment-and-portfolio-management",
-          "title": "Investment and Portfolio Management",
-          "year": 3,
-          "semester": 1
-        },
-        {
-          "slug": "managing-strategic-risk",
-          "title": "Managing Strategic Risk",
-          "year": 3,
-          "semester": 1
         },
         {
           "slug": "advanced-financial-reporting",
@@ -2270,16 +2270,16 @@
           "semester": 1
         },
         {
-          "slug": "public-finance",
-          "title": "Public Finance",
-          "year": 4,
-          "semester": 2
-        },
-        {
           "slug": "research-methods",
           "title": "Research Methods",
           "year": 4,
           "semester": 1
+        },
+        {
+          "slug": "public-finance",
+          "title": "Public Finance",
+          "year": 4,
+          "semester": 2
         },
         {
           "slug": "strategic-management",
@@ -2327,6 +2327,12 @@
           "semester": 1
         },
         {
+          "slug": "introduction-to-management",
+          "title": "Introduction to Management",
+          "year": 1,
+          "semester": 1
+        },
+        {
           "slug": "fundamentals-of-programming",
           "title": "Fundamentals of Programming",
           "year": 1,
@@ -2338,12 +2344,6 @@
           "year": 1,
           "semester": 2,
           "live": "economics"
-        },
-        {
-          "slug": "introduction-to-management",
-          "title": "Introduction to Management",
-          "year": 1,
-          "semester": 1
         },
         {
           "slug": "principles-of-accounting",
@@ -2364,22 +2364,10 @@
           "semester": 2
         },
         {
-          "slug": "data-communication-and-computer-networks",
-          "title": "Data Communication and Computer Networks",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "financial-accounting",
           "title": "Financial Accounting",
           "year": 2,
           "semester": 1
-        },
-        {
-          "slug": "human-resource-management-and-development",
-          "title": "Human Resource Management & Development",
-          "year": 2,
-          "semester": 2
         },
         {
           "slug": "introduction-to-databases",
@@ -2398,6 +2386,18 @@
           "title": "Operating Systems Concepts",
           "year": 2,
           "semester": 1
+        },
+        {
+          "slug": "data-communication-and-computer-networks",
+          "title": "Data Communication and Computer Networks",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "human-resource-management-and-development",
+          "title": "Human Resource Management & Development",
+          "year": 2,
+          "semester": 2
         },
         {
           "slug": "web-application-development",
@@ -2460,18 +2460,6 @@
           "semester": 1
         },
         {
-          "slug": "innovation-and-entrepreneurship",
-          "title": "Innovation and Entrepreneurship",
-          "year": 4,
-          "semester": 2
-        },
-        {
-          "slug": "machine-learning-techniques",
-          "title": "Machine Learning Techniques",
-          "year": 4,
-          "semester": 2
-        },
-        {
           "slug": "multimedia-systems",
           "title": "Multimedia Systems",
           "year": 4,
@@ -2484,17 +2472,29 @@
           "semester": 1
         },
         {
+          "slug": "strategic-management-of-it",
+          "title": "Strategic Management of IT",
+          "year": 4,
+          "semester": 1
+        },
+        {
+          "slug": "innovation-and-entrepreneurship",
+          "title": "Innovation and Entrepreneurship",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "machine-learning-techniques",
+          "title": "Machine Learning Techniques",
+          "year": 4,
+          "semester": 2
+        },
+        {
           "slug": "strategic-management",
           "title": "Strategic Management",
           "year": 4,
           "semester": 2,
           "live": "strategic-management"
-        },
-        {
-          "slug": "strategic-management-of-it",
-          "title": "Strategic Management of IT",
-          "year": 4,
-          "semester": 1
         }
       ],
       "years": [
@@ -2522,16 +2522,22 @@
           "semester": 1
         },
         {
-          "slug": "emerging-trends-in-it",
-          "title": "Emerging Trends in ICT",
-          "year": 1,
-          "semester": 2
-        },
-        {
           "slug": "engineering-mathematics",
           "title": "Engineering Mathematics",
           "year": 1,
           "semester": 1
+        },
+        {
+          "slug": "iot-fundamentals-connecting-things",
+          "title": "IoT Fundamentals: Connecting Things",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "emerging-trends-in-it",
+          "title": "Emerging Trends in ICT",
+          "year": 1,
+          "semester": 2
         },
         {
           "slug": "fundamentals-of-digital-logic-design",
@@ -2546,33 +2552,9 @@
           "semester": 2
         },
         {
-          "slug": "iot-fundamentals-connecting-things",
-          "title": "IoT Fundamentals: Connecting Things",
-          "year": 1,
-          "semester": 1
-        },
-        {
           "slug": "professional-ethics-in-computing",
           "title": "Professional Ethics in Computing",
           "year": 1,
-          "semester": 2
-        },
-        {
-          "slug": "advanced-object-oriented-programming",
-          "title": "Advanced Object-Oriented Programming",
-          "year": 2,
-          "semester": 2
-        },
-        {
-          "slug": "computer-organization-and-architecture",
-          "title": "Computer Organization and Architecture",
-          "year": 2,
-          "semester": 2
-        },
-        {
-          "slug": "data-communication-and-computer-networks",
-          "title": "Data Communication and Computer Networks",
-          "year": 2,
           "semester": 2
         },
         {
@@ -2600,6 +2582,24 @@
           "semester": 1
         },
         {
+          "slug": "advanced-object-oriented-programming",
+          "title": "Advanced Object-Oriented Programming",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "computer-organization-and-architecture",
+          "title": "Computer Organization and Architecture",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "data-communication-and-computer-networks",
+          "title": "Data Communication and Computer Networks",
+          "year": 2,
+          "semester": 2
+        },
+        {
           "slug": "web-application-development",
           "title": "Web Application Development",
           "year": 2,
@@ -2612,28 +2612,34 @@
           "semester": 1
         },
         {
-          "slug": "artificial-intelligence-and-decision-support-systems",
-          "title": "Artificial Intelligence and Decision Support Systems",
-          "year": 3,
-          "semester": 2
-        },
-        {
           "slug": "computer-and-network-security",
           "title": "Computer and Network Security",
           "year": 3,
           "semester": 1
         },
         {
-          "slug": "free-and-open-source-software-systems",
-          "title": "Free and Open Source Software Systems",
-          "year": 3,
-          "semester": 2
-        },
-        {
           "slug": "human-computer-interactions",
           "title": "Human-Computer Interactions",
           "year": 3,
           "semester": 1
+        },
+        {
+          "slug": "software-requirements-engineering",
+          "title": "Software Requirements Engineering",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "artificial-intelligence-and-decision-support-systems",
+          "title": "Artificial Intelligence and Decision Support Systems",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "free-and-open-source-software-systems",
+          "title": "Free and Open Source Software Systems",
+          "year": 3,
+          "semester": 2
         },
         {
           "slug": "mobile-application-development",
@@ -2648,12 +2654,6 @@
           "semester": 2
         },
         {
-          "slug": "software-requirements-engineering",
-          "title": "Software Requirements Engineering",
-          "year": 3,
-          "semester": 1
-        },
-        {
           "slug": "advanced-networking",
           "title": "Advanced Networking",
           "year": 4,
@@ -2662,6 +2662,18 @@
         {
           "slug": "cryptography-and-applications",
           "title": "Cryptography and Applications",
+          "year": 4,
+          "semester": 1
+        },
+        {
+          "slug": "multimedia-systems",
+          "title": "Multimedia Systems",
+          "year": 4,
+          "semester": 1
+        },
+        {
+          "slug": "software-research-tools-and-techniques",
+          "title": "Software Research Tools and Techniques",
           "year": 4,
           "semester": 1
         },
@@ -2682,18 +2694,6 @@
           "title": "Machine Learning Techniques",
           "year": 4,
           "semester": 2
-        },
-        {
-          "slug": "multimedia-systems",
-          "title": "Multimedia Systems",
-          "year": 4,
-          "semester": 1
-        },
-        {
-          "slug": "software-research-tools-and-techniques",
-          "title": "Software Research Tools and Techniques",
-          "year": 4,
-          "semester": 1
         }
       ],
       "years": [
@@ -2721,16 +2721,22 @@
           "semester": 1
         },
         {
-          "slug": "emerging-trends-in-it",
-          "title": "Emerging Trends in ICT",
-          "year": 1,
-          "semester": 2
-        },
-        {
           "slug": "engineering-mathematics",
           "title": "Engineering Mathematics",
           "year": 1,
           "semester": 1
+        },
+        {
+          "slug": "iot-fundamentals-connecting-things",
+          "title": "IoT Fundamentals: Connecting Things",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "emerging-trends-in-it",
+          "title": "Emerging Trends in ICT",
+          "year": 1,
+          "semester": 2
         },
         {
           "slug": "fundamentals-of-digital-logic-design",
@@ -2745,27 +2751,9 @@
           "semester": 2
         },
         {
-          "slug": "iot-fundamentals-connecting-things",
-          "title": "IoT Fundamentals: Connecting Things",
-          "year": 1,
-          "semester": 1
-        },
-        {
           "slug": "professional-ethics-in-computing",
           "title": "Professional Ethics in Computing",
           "year": 1,
-          "semester": 2
-        },
-        {
-          "slug": "computer-organization-and-architecture",
-          "title": "Computer Organization and Architecture",
-          "year": 2,
-          "semester": 2
-        },
-        {
-          "slug": "data-communication-and-computer-networks",
-          "title": "Data Communication and Computer Networks",
-          "year": 2,
           "semester": 2
         },
         {
@@ -2773,12 +2761,6 @@
           "title": "Data Security",
           "year": 2,
           "semester": 1
-        },
-        {
-          "slug": "human-security",
-          "title": "Human Security",
-          "year": 2,
-          "semester": 2
         },
         {
           "slug": "introduction-to-databases",
@@ -2799,6 +2781,24 @@
           "semester": 1
         },
         {
+          "slug": "computer-organization-and-architecture",
+          "title": "Computer Organization and Architecture",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "data-communication-and-computer-networks",
+          "title": "Data Communication and Computer Networks",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "human-security",
+          "title": "Human Security",
+          "year": 2,
+          "semester": 2
+        },
+        {
           "slug": "programming-essentials-in-python",
           "title": "Programming Essentials in Python",
           "year": 2,
@@ -2807,6 +2807,24 @@
         {
           "slug": "business-continuity-and-recovery-management",
           "title": "Business Continuity and Recovery Management",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "e-commerce-security",
+          "title": "e-Commerce Security",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "organizational-and-societal-security",
+          "title": "Organizational and Societal Security",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "software-and-system-security",
+          "title": "Software and System Security",
           "year": 3,
           "semester": 1
         },
@@ -2823,12 +2841,6 @@
           "semester": 2
         },
         {
-          "slug": "e-commerce-security",
-          "title": "e-Commerce Security",
-          "year": 3,
-          "semester": 1
-        },
-        {
           "slug": "hacking-theory-and-practice",
           "title": "Hacking Theory and Practice",
           "year": 3,
@@ -2839,18 +2851,6 @@
           "title": "IoT Fundamentals: IoT Security",
           "year": 3,
           "semester": 2
-        },
-        {
-          "slug": "organizational-and-societal-security",
-          "title": "Organizational and Societal Security",
-          "year": 3,
-          "semester": 1
-        },
-        {
-          "slug": "software-and-system-security",
-          "title": "Software and System Security",
-          "year": 3,
-          "semester": 1
         },
         {
           "slug": "ccna-cyber-security-operations",
@@ -2865,16 +2865,22 @@
           "semester": 1
         },
         {
-          "slug": "cyber-law-and-the-internet",
-          "title": "Cyber Law and the Internet",
-          "year": 4,
-          "semester": 2
-        },
-        {
           "slug": "digital-forensic",
           "title": "Digital Forensic",
           "year": 4,
           "semester": 1
+        },
+        {
+          "slug": "software-research-tools-and-techniques",
+          "title": "Software Research Tools and Techniques",
+          "year": 4,
+          "semester": 1
+        },
+        {
+          "slug": "cyber-law-and-the-internet",
+          "title": "Cyber Law and the Internet",
+          "year": 4,
+          "semester": 2
         },
         {
           "slug": "innovation-and-entrepreneurship",
@@ -2887,12 +2893,6 @@
           "title": "Machine Learning Techniques",
           "year": 4,
           "semester": 2
-        },
-        {
-          "slug": "software-research-tools-and-techniques",
-          "title": "Software Research Tools and Techniques",
-          "year": 4,
-          "semester": 1
         }
       ],
       "years": [
@@ -2926,6 +2926,12 @@
           "semester": 1
         },
         {
+          "slug": "introduction-to-microeconomics",
+          "title": "Introduction to Microeconomics",
+          "year": 1,
+          "semester": 1
+        },
+        {
           "slug": "introduction-to-financial-markets",
           "title": "Introduction to Financial Markets",
           "year": 1,
@@ -2936,12 +2942,6 @@
           "title": "Introduction to Macroeconomics",
           "year": 1,
           "semester": 2
-        },
-        {
-          "slug": "introduction-to-microeconomics",
-          "title": "Introduction to Microeconomics",
-          "year": 1,
-          "semester": 1
         },
         {
           "slug": "introduction-to-quantitative-methods",
@@ -2968,28 +2968,28 @@
           "semester": 1
         },
         {
-          "slug": "development-microfinance",
-          "title": "Development Microfinance",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "financial-accounting",
           "title": "Financial Accounting",
           "year": 2,
           "semester": 1
         },
         {
-          "slug": "globalisation",
-          "title": "Globalisation",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "it-in-development",
           "title": "ICT in Development",
           "year": 2,
           "semester": 1
+        },
+        {
+          "slug": "development-microfinance",
+          "title": "Development Microfinance",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "globalisation",
+          "title": "Globalisation",
+          "year": 2,
+          "semester": 2
         },
         {
           "slug": "international-trade-and-finance",
@@ -3010,28 +3010,10 @@
           "semester": 1
         },
         {
-          "slug": "international-economics",
-          "title": "International Economics",
-          "year": 3,
-          "semester": 2
-        },
-        {
           "slug": "international-finance-for-development",
           "title": "International Finance for Development",
           "year": 3,
           "semester": 1
-        },
-        {
-          "slug": "managing-strategic-risk",
-          "title": "Managing Strategic Risk",
-          "year": 3,
-          "semester": 2
-        },
-        {
-          "slug": "micro-insurance",
-          "title": "Micro-insurance",
-          "year": 3,
-          "semester": 2
         },
         {
           "slug": "modern-development-theories",
@@ -3046,15 +3028,27 @@
           "semester": 1
         },
         {
-          "slug": "sme-finance",
-          "title": "SME Finance",
+          "slug": "international-economics",
+          "title": "International Economics",
           "year": 3,
           "semester": 2
         },
         {
-          "slug": "contemporary-issues-in-development-finance",
-          "title": "Contemporary Issues in Development Finance",
-          "year": 4,
+          "slug": "managing-strategic-risk",
+          "title": "Managing Strategic Risk",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "micro-insurance",
+          "title": "Micro-insurance",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "sme-finance",
+          "title": "SME Finance",
+          "year": 3,
           "semester": 2
         },
         {
@@ -3062,18 +3056,6 @@
           "title": "Financial Modelling and Forecasting",
           "year": 4,
           "semester": 1
-        },
-        {
-          "slug": "innovation-and-entrepreneurship",
-          "title": "Innovation and Entrepreneurship",
-          "year": 4,
-          "semester": 2
-        },
-        {
-          "slug": "public-finance",
-          "title": "Public Finance",
-          "year": 4,
-          "semester": 2
         },
         {
           "slug": "renewable-energy-finance",
@@ -3093,6 +3075,24 @@
           "year": 4,
           "semester": 1,
           "live": "strategic-management"
+        },
+        {
+          "slug": "contemporary-issues-in-development-finance",
+          "title": "Contemporary Issues in Development Finance",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "innovation-and-entrepreneurship",
+          "title": "Innovation and Entrepreneurship",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "public-finance",
+          "title": "Public Finance",
+          "year": 4,
+          "semester": 2
         }
       ],
       "years": [
@@ -3114,19 +3114,6 @@
           "semester": 1
         },
         {
-          "slug": "introduction-to-economics",
-          "title": "Introduction to Economics",
-          "year": 1,
-          "semester": 2,
-          "live": "economics"
-        },
-        {
-          "slug": "introduction-to-finance",
-          "title": "Introduction to Finance",
-          "year": 1,
-          "semester": 2
-        },
-        {
           "slug": "introduction-to-financial-markets",
           "title": "Introduction to Financial Markets",
           "year": 1,
@@ -3145,6 +3132,19 @@
           "semester": 1
         },
         {
+          "slug": "introduction-to-economics",
+          "title": "Introduction to Economics",
+          "year": 1,
+          "semester": 2,
+          "live": "economics"
+        },
+        {
+          "slug": "introduction-to-finance",
+          "title": "Introduction to Finance",
+          "year": 1,
+          "semester": 2
+        },
+        {
           "slug": "introduction-to-quantitative-methods",
           "title": "Introduction to Quantitative Methods",
           "year": 1,
@@ -3154,12 +3154,6 @@
           "slug": "principles-of-accounting",
           "title": "Principles of Accounting",
           "year": 1,
-          "semester": 2
-        },
-        {
-          "slug": "behavioral-finance",
-          "title": "Behavioural Finance",
-          "year": 2,
           "semester": 2
         },
         {
@@ -3175,28 +3169,34 @@
           "semester": 1
         },
         {
-          "slug": "derivatives",
-          "title": "Derivatives",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "financial-accounting",
           "title": "Financial Accounting",
           "year": 2,
           "semester": 1
         },
         {
-          "slug": "investment-planning",
-          "title": "Investment Planning",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "monetary-and-financial-systems",
           "title": "Monetary and Financial Systems",
           "year": 2,
           "semester": 1
+        },
+        {
+          "slug": "behavioral-finance",
+          "title": "Behavioural Finance",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "derivatives",
+          "title": "Derivatives",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "investment-planning",
+          "title": "Investment Planning",
+          "year": 2,
+          "semester": 2
         },
         {
           "slug": "taxation",
@@ -3211,10 +3211,10 @@
           "semester": 1
         },
         {
-          "slug": "financial-risk-management",
-          "title": "Financial Risk Management",
+          "slug": "investment-and-portfolio-management",
+          "title": "Investment and Portfolio Management",
           "year": 3,
-          "semester": null
+          "semester": 1
         },
         {
           "slug": "international-trade-and-finance",
@@ -3223,16 +3223,16 @@
           "semester": 2
         },
         {
-          "slug": "investment-and-portfolio-management",
-          "title": "Investment and Portfolio Management",
-          "year": 3,
-          "semester": 1
-        },
-        {
           "slug": "investment-banking",
           "title": "Investment Banking",
           "year": 3,
           "semester": 2
+        },
+        {
+          "slug": "financial-risk-management",
+          "title": "Financial Risk Management",
+          "year": 3,
+          "semester": null
         },
         {
           "slug": "managing-strategic-risk",
@@ -3323,6 +3323,12 @@
           "semester": 1
         },
         {
+          "slug": "iot-fundamentals-connecting-things",
+          "title": "IoT Fundamentals: Connecting Things",
+          "year": 1,
+          "semester": 1
+        },
+        {
           "slug": "fundamentals-of-digital-logic-design",
           "title": "Fundamentals of Digital Logic Design",
           "year": 1,
@@ -3335,21 +3341,9 @@
           "semester": 2
         },
         {
-          "slug": "iot-fundamentals-connecting-things",
-          "title": "IoT Fundamentals: Connecting Things",
-          "year": 1,
-          "semester": 1
-        },
-        {
           "slug": "professional-ethics-in-computing",
           "title": "Professional Ethics in Computing",
           "year": 1,
-          "semester": 2
-        },
-        {
-          "slug": "advanced-object-oriented-programming",
-          "title": "Advanced Object-Oriented Programming",
-          "year": 2,
           "semester": 2
         },
         {
@@ -3357,18 +3351,6 @@
           "title": "Business Information Systems",
           "year": 2,
           "semester": 1
-        },
-        {
-          "slug": "computer-organization-and-architecture",
-          "title": "Computer Organization and Architecture",
-          "year": 2,
-          "semester": 2
-        },
-        {
-          "slug": "data-communication-and-computer-networks",
-          "title": "Data Communication and Computer Networks",
-          "year": 2,
-          "semester": 2
         },
         {
           "slug": "introduction-to-databases",
@@ -3387,6 +3369,24 @@
           "title": "Operating Systems Concepts",
           "year": 2,
           "semester": 1
+        },
+        {
+          "slug": "advanced-object-oriented-programming",
+          "title": "Advanced Object-Oriented Programming",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "computer-organization-and-architecture",
+          "title": "Computer Organization and Architecture",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "data-communication-and-computer-networks",
+          "title": "Data Communication and Computer Networks",
+          "year": 2,
+          "semester": 2
         },
         {
           "slug": "web-application-development",
@@ -3455,6 +3455,18 @@
           "semester": 1
         },
         {
+          "slug": "software-research-tools-and-techniques",
+          "title": "Software Research Tools and Techniques",
+          "year": 4,
+          "semester": 1
+        },
+        {
+          "slug": "strategic-management-of-it",
+          "title": "Strategic Management of IT",
+          "year": 4,
+          "semester": 1
+        },
+        {
           "slug": "distributed-systems",
           "title": "Distributed Systems",
           "year": 4,
@@ -3471,18 +3483,6 @@
           "title": "Machine Learning Techniques",
           "year": 4,
           "semester": 2
-        },
-        {
-          "slug": "software-research-tools-and-techniques",
-          "title": "Software Research Tools and Techniques",
-          "year": 4,
-          "semester": 1
-        },
-        {
-          "slug": "strategic-management-of-it",
-          "title": "Strategic Management of IT",
-          "year": 4,
-          "semester": 1
         }
       ],
       "years": [
@@ -3510,17 +3510,23 @@
           "semester": 1
         },
         {
+          "slug": "introduction-to-management",
+          "title": "Introduction to Management",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "selling-and-sales-management",
+          "title": "Selling & Sales Management",
+          "year": 1,
+          "semester": 1
+        },
+        {
           "slug": "introduction-to-economics",
           "title": "Introduction to Economics",
           "year": 1,
           "semester": 2,
           "live": "economics"
-        },
-        {
-          "slug": "introduction-to-management",
-          "title": "Introduction to Management",
-          "year": 1,
-          "semester": 1
         },
         {
           "slug": "introduction-to-quantitative-methods",
@@ -3541,12 +3547,6 @@
           "semester": 2
         },
         {
-          "slug": "selling-and-sales-management",
-          "title": "Selling & Sales Management",
-          "year": 1,
-          "semester": 1
-        },
-        {
           "slug": "business-and-corporate-law",
           "title": "Business and Corporate Law",
           "year": 2,
@@ -3559,16 +3559,22 @@
           "semester": 1
         },
         {
-          "slug": "consumer-behaviour",
-          "title": "Consumer Behaviour",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "financial-accounting",
           "title": "Financial Accounting",
           "year": 2,
           "semester": 1
+        },
+        {
+          "slug": "services-marketing",
+          "title": "Services Marketing",
+          "year": 2,
+          "semester": 1
+        },
+        {
+          "slug": "consumer-behaviour",
+          "title": "Consumer Behaviour",
+          "year": 2,
+          "semester": 2
         },
         {
           "slug": "human-resource-management-and-development",
@@ -3589,12 +3595,6 @@
           "semester": 2
         },
         {
-          "slug": "services-marketing",
-          "title": "Services Marketing",
-          "year": 2,
-          "semester": 1
-        },
-        {
           "slug": "brand-management",
           "title": "Brand Management",
           "year": 3,
@@ -3603,6 +3603,18 @@
         {
           "slug": "integrated-marketing-mix",
           "title": "Integrated Marketing Mix",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "marketing-planning",
+          "title": "Marketing Planning",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "project-management",
+          "title": "Project Management",
           "year": 3,
           "semester": 1
         },
@@ -3625,27 +3637,9 @@
           "semester": 2
         },
         {
-          "slug": "marketing-planning",
-          "title": "Marketing Planning",
-          "year": 3,
-          "semester": 1
-        },
-        {
           "slug": "marketing-research",
           "title": "Marketing Research",
           "year": 3,
-          "semester": 2
-        },
-        {
-          "slug": "project-management",
-          "title": "Project Management",
-          "year": 3,
-          "semester": 1
-        },
-        {
-          "slug": "contemporary-issues-in-marketing",
-          "title": "Contemporary Issues in Marketing",
-          "year": 4,
           "semester": 2
         },
         {
@@ -3653,18 +3647,6 @@
           "title": "Digital Marketing",
           "year": 4,
           "semester": 1
-        },
-        {
-          "slug": "innovation-and-entrepreneurship",
-          "title": "Innovation and Entrepreneurship",
-          "year": 4,
-          "semester": 2
-        },
-        {
-          "slug": "international-marketing",
-          "title": "International Marketing",
-          "year": 4,
-          "semester": 2
         },
         {
           "slug": "leadership-and-organizational-behaviour",
@@ -3683,6 +3665,24 @@
           "title": "Strategic Marketing Management",
           "year": 4,
           "semester": 1
+        },
+        {
+          "slug": "contemporary-issues-in-marketing",
+          "title": "Contemporary Issues in Marketing",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "innovation-and-entrepreneurship",
+          "title": "Innovation and Entrepreneurship",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "international-marketing",
+          "title": "International Marketing",
+          "year": 4,
+          "semester": 2
         }
       ],
       "years": [
@@ -3716,6 +3716,12 @@
           "semester": 1
         },
         {
+          "slug": "iot-fundamentals-connecting-things",
+          "title": "IoT Fundamentals: Connecting Things",
+          "year": 1,
+          "semester": 1
+        },
+        {
           "slug": "fundamentals-of-digital-logic-design",
           "title": "Fundamentals of Digital Logic Design",
           "year": 1,
@@ -3728,33 +3734,9 @@
           "semester": 2
         },
         {
-          "slug": "iot-fundamentals-connecting-things",
-          "title": "IoT Fundamentals: Connecting Things",
-          "year": 1,
-          "semester": 1
-        },
-        {
           "slug": "professional-ethics-in-computing",
           "title": "Professional Ethics in Computing",
           "year": 1,
-          "semester": 2
-        },
-        {
-          "slug": "computer-organization-and-architecture",
-          "title": "Computer Organization and Architecture",
-          "year": 2,
-          "semester": 2
-        },
-        {
-          "slug": "data-communication-and-computer-networks",
-          "title": "Data Communication and Computer Networks",
-          "year": 2,
-          "semester": 2
-        },
-        {
-          "slug": "internet-of-things",
-          "title": "Internet of Things",
-          "year": 2,
           "semester": 2
         },
         {
@@ -3782,15 +3764,27 @@
           "semester": 1
         },
         {
-          "slug": "programming-in-c",
-          "title": "Programming in C",
+          "slug": "computer-organization-and-architecture",
+          "title": "Computer Organization and Architecture",
           "year": 2,
           "semester": 2
         },
         {
-          "slug": "artificial-intelligence-and-decision-support-systems",
-          "title": "Artificial Intelligence and Decision Support Systems",
-          "year": 3,
+          "slug": "data-communication-and-computer-networks",
+          "title": "Data Communication and Computer Networks",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "internet-of-things",
+          "title": "Internet of Things",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "programming-in-c",
+          "title": "Programming in C",
+          "year": 2,
           "semester": 2
         },
         {
@@ -3812,6 +3806,18 @@
           "semester": 1
         },
         {
+          "slug": "scaling-and-connecting-networks",
+          "title": "Scaling and Connecting Networks",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "artificial-intelligence-and-decision-support-systems",
+          "title": "Artificial Intelligence and Decision Support Systems",
+          "year": 3,
+          "semester": 2
+        },
+        {
           "slug": "mobile-application-development",
           "title": "Mobile Application Development",
           "year": 3,
@@ -3822,12 +3828,6 @@
           "title": "Network Management and Support",
           "year": 3,
           "semester": 2
-        },
-        {
-          "slug": "scaling-and-connecting-networks",
-          "title": "Scaling and Connecting Networks",
-          "year": 3,
-          "semester": 1
         },
         {
           "slug": "telecommunication-and-wan",
@@ -3848,6 +3848,18 @@
           "semester": 1
         },
         {
+          "slug": "multimedia-systems",
+          "title": "Multimedia Systems",
+          "year": 4,
+          "semester": 1
+        },
+        {
+          "slug": "software-research-tools-and-techniques",
+          "title": "Software Research Tools and Techniques",
+          "year": 4,
+          "semester": 1
+        },
+        {
           "slug": "distributed-systems",
           "title": "Distributed Systems",
           "year": 4,
@@ -3864,18 +3876,6 @@
           "title": "Machine Learning Techniques",
           "year": 4,
           "semester": 2
-        },
-        {
-          "slug": "multimedia-systems",
-          "title": "Multimedia Systems",
-          "year": 4,
-          "semester": 1
-        },
-        {
-          "slug": "software-research-tools-and-techniques",
-          "title": "Software Research Tools and Techniques",
-          "year": 4,
-          "semester": 1
         }
       ],
       "years": [
@@ -3903,17 +3903,23 @@
           "semester": 1
         },
         {
+          "slug": "introduction-to-management",
+          "title": "Introduction to Management",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "principles-of-procurement-and-supply",
+          "title": "Principles of Procurement and Supply",
+          "year": 1,
+          "semester": 1
+        },
+        {
           "slug": "introduction-to-economics",
           "title": "Introduction to Economics",
           "year": 1,
           "semester": 2,
           "live": "economics"
-        },
-        {
-          "slug": "introduction-to-management",
-          "title": "Introduction to Management",
-          "year": 1,
-          "semester": 1
         },
         {
           "slug": "introduction-to-quantitative-methods",
@@ -3934,12 +3940,6 @@
           "semester": 2
         },
         {
-          "slug": "principles-of-procurement-and-supply",
-          "title": "Principles of Procurement and Supply",
-          "year": 1,
-          "semester": 1
-        },
-        {
           "slug": "entreprenual-growth-strategies",
           "title": "Entreprenual Growth Strategies",
           "year": 2,
@@ -3952,28 +3952,28 @@
           "semester": 1
         },
         {
-          "slug": "management-accounting",
-          "title": "Management Accounting",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "managing-contracts-and-relationships-in-procurement-and-supply",
           "title": "Managing Contracts and Relationships in Procurement and Supply",
           "year": 2,
           "semester": 1
         },
         {
-          "slug": "procurement-legal-frameworks",
-          "title": "Procurement Legal Frameworks",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "sourcing-in-procurement-and-supply",
           "title": "Sourcing in Procurement and Supply",
           "year": 2,
           "semester": 1
+        },
+        {
+          "slug": "management-accounting",
+          "title": "Management Accounting",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "procurement-legal-frameworks",
+          "title": "Procurement Legal Frameworks",
+          "year": 2,
+          "semester": 2
         },
         {
           "slug": "taxation",
@@ -3985,12 +3985,6 @@
           "slug": "taxationinventory-and-logistics-management",
           "title": "TaxationInventory and Logistics Management",
           "year": 2,
-          "semester": 2
-        },
-        {
-          "slug": "improving-the-competitiveness-of-supply-chains",
-          "title": "Improving the Competitiveness of Supply Chains",
-          "year": 3,
           "semester": 2
         },
         {
@@ -4006,16 +4000,28 @@
           "semester": 1
         },
         {
-          "slug": "operations-management",
-          "title": "Operations Management",
-          "year": 3,
-          "semester": 2
-        },
-        {
           "slug": "project-and-contract-management",
           "title": "Project and Contract Management",
           "year": 3,
           "semester": 1
+        },
+        {
+          "slug": "storage-packaging-and-distribution",
+          "title": "Storage, Packaging and Distribution",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "improving-the-competitiveness-of-supply-chains",
+          "title": "Improving the Competitiveness of Supply Chains",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "operations-management",
+          "title": "Operations Management",
+          "year": 3,
+          "semester": 2
         },
         {
           "slug": "public-sector-procurement-systems",
@@ -4027,24 +4033,6 @@
           "slug": "quality-management",
           "title": "Quality Management",
           "year": 3,
-          "semester": 2
-        },
-        {
-          "slug": "storage-packaging-and-distribution",
-          "title": "Storage, Packaging and Distribution",
-          "year": 3,
-          "semester": 1
-        },
-        {
-          "slug": "innovation-and-entrepreneurship",
-          "title": "Innovation and Entrepreneurship",
-          "year": 4,
-          "semester": 2
-        },
-        {
-          "slug": "international-purchasing",
-          "title": "International Purchasing",
-          "year": 4,
           "semester": 2
         },
         {
@@ -4060,13 +4048,6 @@
           "semester": 1
         },
         {
-          "slug": "strategic-management",
-          "title": "Strategic Management",
-          "year": 4,
-          "semester": 2,
-          "live": "strategic-management"
-        },
-        {
           "slug": "strategic-supply-chain-management",
           "title": "Strategic Supply Chain Management",
           "year": 4,
@@ -4077,6 +4058,25 @@
           "title": "Sustainability in Procurement and Supply",
           "year": 4,
           "semester": 1
+        },
+        {
+          "slug": "innovation-and-entrepreneurship",
+          "title": "Innovation and Entrepreneurship",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "international-purchasing",
+          "title": "International Purchasing",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "strategic-management",
+          "title": "Strategic Management",
+          "year": 4,
+          "semester": 2,
+          "live": "strategic-management"
         }
       ],
       "years": [
@@ -4110,6 +4110,12 @@
           "semester": 1
         },
         {
+          "slug": "iot-fundamentals-connecting-things",
+          "title": "IoT Fundamentals: Connecting Things",
+          "year": 1,
+          "semester": 1
+        },
+        {
           "slug": "fundamentals-of-digital-logic-design",
           "title": "Fundamentals of Digital Logic Design",
           "year": 1,
@@ -4128,21 +4134,9 @@
           "semester": 2
         },
         {
-          "slug": "iot-fundamentals-connecting-things",
-          "title": "IoT Fundamentals: Connecting Things",
-          "year": 1,
-          "semester": 1
-        },
-        {
           "slug": "professional-ethics-in-computing",
           "title": "Professional Ethics in Computing",
           "year": 1,
-          "semester": 2
-        },
-        {
-          "slug": "computer-organization-and-architecture",
-          "title": "Computer Organization and Architecture",
-          "year": 2,
           "semester": 2
         },
         {
@@ -4150,18 +4144,6 @@
           "title": "Crime Mapping",
           "year": 2,
           "semester": 1
-        },
-        {
-          "slug": "data-communication-and-computer-networks",
-          "title": "Data Communication and Computer Networks",
-          "year": 2,
-          "semester": 2
-        },
-        {
-          "slug": "human-security",
-          "title": "Human Security",
-          "year": 2,
-          "semester": 2
         },
         {
           "slug": "introduction-to-databases",
@@ -4182,15 +4164,27 @@
           "semester": 1
         },
         {
-          "slug": "white-collar-crime-and-society",
-          "title": "White-Collar Crime and Society",
+          "slug": "computer-organization-and-architecture",
+          "title": "Computer Organization and Architecture",
           "year": 2,
           "semester": 2
         },
         {
-          "slug": "artificial-intelligence-and-decision-support-systems",
-          "title": "Artificial Intelligence and Decision Support Systems",
-          "year": 3,
+          "slug": "data-communication-and-computer-networks",
+          "title": "Data Communication and Computer Networks",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "human-security",
+          "title": "Human Security",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "white-collar-crime-and-society",
+          "title": "White-Collar Crime and Society",
+          "year": 2,
           "semester": 2
         },
         {
@@ -4198,12 +4192,6 @@
           "title": "Business Continuity and Recovery Management",
           "year": 3,
           "semester": 1
-        },
-        {
-          "slug": "ccna-security",
-          "title": "CCNA Security",
-          "year": 3,
-          "semester": 2
         },
         {
           "slug": "computer-and-network-security",
@@ -4218,16 +4206,28 @@
           "semester": 1
         },
         {
-          "slug": "critical-infrastructure-protection",
-          "title": "Critical Infrastructure Protection",
-          "year": 3,
-          "semester": 2
-        },
-        {
           "slug": "e-commerce-and-security",
           "title": "e-Commerce and Security",
           "year": 3,
           "semester": 1
+        },
+        {
+          "slug": "artificial-intelligence-and-decision-support-systems",
+          "title": "Artificial Intelligence and Decision Support Systems",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "ccna-security",
+          "title": "CCNA Security",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "critical-infrastructure-protection",
+          "title": "Critical Infrastructure Protection",
+          "year": 3,
+          "semester": 2
         },
         {
           "slug": "hacking-theory-and-practice",
@@ -4248,28 +4248,28 @@
           "semester": 1
         },
         {
-          "slug": "cyber-law-and-the-internet",
-          "title": "Cyber Law and the Internet",
-          "year": 4,
-          "semester": 2
-        },
-        {
           "slug": "digital-forensic",
           "title": "Digital Forensic",
           "year": 4,
           "semester": 1
         },
         {
-          "slug": "innovation-and-entrepreneurship",
-          "title": "Innovation and Entrepreneurship",
-          "year": 4,
-          "semester": 2
-        },
-        {
           "slug": "software-research-tools-and-techniques",
           "title": "Software Research Tools and Techniques",
           "year": 4,
           "semester": 1
+        },
+        {
+          "slug": "cyber-law-and-the-internet",
+          "title": "Cyber Law and the Internet",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "innovation-and-entrepreneurship",
+          "title": "Innovation and Entrepreneurship",
+          "year": 4,
+          "semester": 2
         },
         {
           "slug": "terrorism-and-criminology",
@@ -4303,16 +4303,22 @@
           "semester": 1
         },
         {
-          "slug": "emerging-trends-in-it",
-          "title": "Emerging Trends in ICT",
-          "year": 1,
-          "semester": 2
-        },
-        {
           "slug": "engineering-mathematics",
           "title": "Engineering Mathematics",
           "year": 1,
           "semester": 1
+        },
+        {
+          "slug": "iot-fundamentals-connecting-things",
+          "title": "IoT Fundamentals: Connecting Things",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "emerging-trends-in-it",
+          "title": "Emerging Trends in ICT",
+          "year": 1,
+          "semester": 2
         },
         {
           "slug": "fundamentals-of-digital-logic-design",
@@ -4327,33 +4333,9 @@
           "semester": 2
         },
         {
-          "slug": "iot-fundamentals-connecting-things",
-          "title": "IoT Fundamentals: Connecting Things",
-          "year": 1,
-          "semester": 1
-        },
-        {
           "slug": "professional-ethics-in-computing",
           "title": "Professional Ethics in Computing",
           "year": 1,
-          "semester": 2
-        },
-        {
-          "slug": "advanced-object-oriented-programming",
-          "title": "Advanced Object-Oriented Programming",
-          "year": 2,
-          "semester": 2
-        },
-        {
-          "slug": "computer-organization-and-architecture",
-          "title": "Computer Organization and Architecture",
-          "year": 2,
-          "semester": 2
-        },
-        {
-          "slug": "data-communication-and-computer-networks",
-          "title": "Data Communication and Computer Networks",
-          "year": 2,
           "semester": 2
         },
         {
@@ -4381,6 +4363,24 @@
           "semester": 1
         },
         {
+          "slug": "advanced-object-oriented-programming",
+          "title": "Advanced Object-Oriented Programming",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "computer-organization-and-architecture",
+          "title": "Computer Organization and Architecture",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "data-communication-and-computer-networks",
+          "title": "Data Communication and Computer Networks",
+          "year": 2,
+          "semester": 2
+        },
+        {
           "slug": "web-application-development",
           "title": "Web Application Development",
           "year": 2,
@@ -4395,6 +4395,18 @@
         {
           "slug": "human-computer-interactions",
           "title": "Human-Computer Interactions",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "software-quality-assurance-and-testing",
+          "title": "Software Quality Assurance and Testing",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "software-requirements-engineering",
+          "title": "Software Requirements Engineering",
           "year": 3,
           "semester": 1
         },
@@ -4423,20 +4435,26 @@
           "semester": 2
         },
         {
-          "slug": "software-quality-assurance-and-testing",
-          "title": "Software Quality Assurance and Testing",
-          "year": 3,
-          "semester": 1
-        },
-        {
-          "slug": "software-requirements-engineering",
-          "title": "Software Requirements Engineering",
-          "year": 3,
-          "semester": 1
-        },
-        {
           "slug": "cryptography-and-applications",
           "title": "Cryptography and Applications",
+          "year": 4,
+          "semester": 1
+        },
+        {
+          "slug": "multimedia-systems",
+          "title": "Multimedia Systems",
+          "year": 4,
+          "semester": 1
+        },
+        {
+          "slug": "software-research-tools-and-techniques",
+          "title": "Software Research Tools and Techniques",
+          "year": 4,
+          "semester": 1
+        },
+        {
+          "slug": "strategic-management-of-it",
+          "title": "Strategic Management of IT",
           "year": 4,
           "semester": 1
         },
@@ -4457,24 +4475,6 @@
           "title": "Machine Learning Techniques",
           "year": 4,
           "semester": 2
-        },
-        {
-          "slug": "multimedia-systems",
-          "title": "Multimedia Systems",
-          "year": 4,
-          "semester": 1
-        },
-        {
-          "slug": "software-research-tools-and-techniques",
-          "title": "Software Research Tools and Techniques",
-          "year": 4,
-          "semester": 1
-        },
-        {
-          "slug": "strategic-management-of-it",
-          "title": "Strategic Management of IT",
-          "year": 4,
-          "semester": 1
         }
       ],
       "years": [
@@ -4489,18 +4489,6 @@
       "name": "Doctor of Business Administration",
       "level": "doctorate",
       "courses": [
-        {
-          "slug": "advanced-supply-chains-and-networks",
-          "title": "Advanced Supply Chains and Networks",
-          "year": 1,
-          "semester": 2
-        },
-        {
-          "slug": "human-capital-investment",
-          "title": "Human Capital Investment",
-          "year": 1,
-          "semester": 2
-        },
         {
           "slug": "managing-business-growth",
           "title": "Managing Business Growth",
@@ -4520,22 +4508,40 @@
           "semester": 1
         },
         {
-          "slug": "public-sector-management",
-          "title": "Public Sector Management",
-          "year": 1,
-          "semester": 2
-        },
-        {
           "slug": "qualitative-research-methods",
           "title": "Qualitative Research Methods",
           "year": 1,
           "semester": 1
         },
         {
+          "slug": "advanced-supply-chains-and-networks",
+          "title": "Advanced Supply Chains and Networks",
+          "year": 1,
+          "semester": 2
+        },
+        {
+          "slug": "human-capital-investment",
+          "title": "Human Capital Investment",
+          "year": 1,
+          "semester": 2
+        },
+        {
+          "slug": "public-sector-management",
+          "title": "Public Sector Management",
+          "year": 1,
+          "semester": 2
+        },
+        {
           "slug": "quantitative-research-methods",
           "title": "Quantitative Research Methods",
           "year": 1,
           "semester": 2
+        },
+        {
+          "slug": "global-finance",
+          "title": "Global Finance",
+          "year": 2,
+          "semester": 1
         },
         {
           "slug": "doctoral-research-proposal",
@@ -4556,12 +4562,6 @@
           "semester": null
         },
         {
-          "slug": "global-finance",
-          "title": "Global Finance",
-          "year": 2,
-          "semester": 1
-        },
-        {
           "slug": "managing-radical-change",
           "title": "Managing Radical Change",
           "year": 2,
@@ -4578,6 +4578,18 @@
       "name": "Master of Business Administration (Finance)",
       "level": "masters",
       "courses": [
+        {
+          "slug": "management-theory",
+          "title": "Management Theory",
+          "year": 5,
+          "semester": 1
+        },
+        {
+          "slug": "research-methods",
+          "title": "Research Methods",
+          "year": 5,
+          "semester": 1
+        },
         {
           "slug": "corporate-finance",
           "title": "Corporate Finance",
@@ -4596,18 +4608,6 @@
           "title": "Financial Reporting and Analysis",
           "year": 5,
           "semester": 2
-        },
-        {
-          "slug": "management-theory",
-          "title": "Management Theory",
-          "year": 5,
-          "semester": 1
-        },
-        {
-          "slug": "research-methods",
-          "title": "Research Methods",
-          "year": 5,
-          "semester": 1
         },
         {
           "slug": "credit-analysis",
@@ -4657,28 +4657,10 @@
       "level": "masters",
       "courses": [
         {
-          "slug": "financial-and-management-accounting",
-          "title": "Financial & Management Accounting",
-          "year": 5,
-          "semester": 2
-        },
-        {
           "slug": "global-business",
           "title": "Global Business",
           "year": 5,
           "semester": 1
-        },
-        {
-          "slug": "global-strategy",
-          "title": "Global Strategy",
-          "year": 5,
-          "semester": 2
-        },
-        {
-          "slug": "international-human-resource-management",
-          "title": "International Human Resource Management",
-          "year": 5,
-          "semester": 2
         },
         {
           "slug": "leadership-and-ethics",
@@ -4705,6 +4687,24 @@
           "semester": 1
         },
         {
+          "slug": "financial-and-management-accounting",
+          "title": "Financial & Management Accounting",
+          "year": 5,
+          "semester": 2
+        },
+        {
+          "slug": "global-strategy",
+          "title": "Global Strategy",
+          "year": 5,
+          "semester": 2
+        },
+        {
+          "slug": "international-human-resource-management",
+          "title": "International Human Resource Management",
+          "year": 5,
+          "semester": 2
+        },
+        {
           "slug": "project-management",
           "title": "Project Management",
           "year": 6,
@@ -4728,18 +4728,6 @@
       "level": "masters",
       "courses": [
         {
-          "slug": "corporate-governance-and-business-ethics",
-          "title": "Corporate Governance and Business Ethics",
-          "year": 1,
-          "semester": 2
-        },
-        {
-          "slug": "managerial-economics",
-          "title": "Managerial Economics",
-          "year": 1,
-          "semester": 2
-        },
-        {
           "slug": "research-methods",
           "title": "Research Methods",
           "year": 1,
@@ -4752,16 +4740,28 @@
           "semester": 1
         },
         {
-          "slug": "strategy-design-and-implementation",
-          "title": "Strategy Design and Implementation",
-          "year": 1,
-          "semester": 2
-        },
-        {
           "slug": "strategy-concepts-and-cases",
           "title": "Strategy: Concepts and Cases",
           "year": 1,
           "semester": 1
+        },
+        {
+          "slug": "corporate-governance-and-business-ethics",
+          "title": "Corporate Governance and Business Ethics",
+          "year": 1,
+          "semester": 2
+        },
+        {
+          "slug": "managerial-economics",
+          "title": "Managerial Economics",
+          "year": 1,
+          "semester": 2
+        },
+        {
+          "slug": "strategy-design-and-implementation",
+          "title": "Strategy Design and Implementation",
+          "year": 1,
+          "semester": 2
         },
         {
           "slug": "innovation-change-and-entrepreneurship",
@@ -4845,6 +4845,12 @@
       "level": "masters",
       "courses": [
         {
+          "slug": "graduate-research-methods",
+          "title": "Graduate Research Methods",
+          "year": 5,
+          "semester": 1
+        },
+        {
           "slug": "advanced-financial-reporting",
           "title": "Advanced Financial Reporting",
           "year": 5,
@@ -4862,12 +4868,6 @@
           "title": "Global Strategy",
           "year": 5,
           "semester": 2
-        },
-        {
-          "slug": "graduate-research-methods",
-          "title": "Graduate Research Methods",
-          "year": 5,
-          "semester": 1
         },
         {
           "slug": "advanced-audit-and-assurance",
@@ -4917,12 +4917,6 @@
       "level": "masters",
       "courses": [
         {
-          "slug": "business-intelligence-and-data-mining",
-          "title": "Business Intelligence and Data Mining",
-          "year": 5,
-          "semester": 2
-        },
-        {
           "slug": "cloud-computing",
           "title": "Cloud Computing",
           "year": 5,
@@ -4939,6 +4933,12 @@
           "title": "Information Retrieval and Web Search",
           "year": 5,
           "semester": 1
+        },
+        {
+          "slug": "business-intelligence-and-data-mining",
+          "title": "Business Intelligence and Data Mining",
+          "year": 5,
+          "semester": 2
         },
         {
           "slug": "mobile-computing",
@@ -4988,16 +4988,16 @@
           "semester": 1
         },
         {
-          "slug": "investment-banking",
-          "title": "Investment Banking",
-          "year": 5,
-          "semester": 2
-        },
-        {
           "slug": "research-methods",
           "title": "Research Methods",
           "year": 5,
           "semester": 1
+        },
+        {
+          "slug": "investment-banking",
+          "title": "Investment Banking",
+          "year": 5,
+          "semester": 2
         },
         {
           "slug": "retail-financial-services",
@@ -5059,12 +5059,6 @@
       "level": "masters",
       "courses": [
         {
-          "slug": "business-intelligence-and-data-mining",
-          "title": "Business Intelligence and Data Mining",
-          "year": 5,
-          "semester": 2
-        },
-        {
           "slug": "cloud-computing",
           "title": "Cloud Computing",
           "year": 5,
@@ -5077,16 +5071,22 @@
           "semester": 1
         },
         {
-          "slug": "security-management",
-          "title": "Security Management",
-          "year": 5,
-          "semester": 2
-        },
-        {
           "slug": "strategic-it-planning-and-management",
           "title": "Strategic IT Planning and Management",
           "year": 5,
           "semester": 1
+        },
+        {
+          "slug": "business-intelligence-and-data-mining",
+          "title": "Business Intelligence and Data Mining",
+          "year": 5,
+          "semester": 2
+        },
+        {
+          "slug": "security-management",
+          "title": "Security Management",
+          "year": 5,
+          "semester": 2
         },
         {
           "slug": "strategic-project-management",
@@ -5130,28 +5130,10 @@
       "level": "masters",
       "courses": [
         {
-          "slug": "financial-planning-and-analysis",
-          "title": "Financial Planning and Analysis",
-          "year": 1,
-          "semester": 2
-        },
-        {
           "slug": "graduate-research-methods",
           "title": "Graduate Research Methods",
           "year": 1,
           "semester": 1
-        },
-        {
-          "slug": "logistics-systems-management",
-          "title": "Logistics Systems Management",
-          "year": 1,
-          "semester": 2
-        },
-        {
-          "slug": "macroeconomics-and-economic-environments",
-          "title": "Macroeconomics and Economic Environments",
-          "year": 1,
-          "semester": 2
         },
         {
           "slug": "strategic-procurement",
@@ -5164,6 +5146,24 @@
           "title": "Strategy and Organizational Transformation",
           "year": 1,
           "semester": 1
+        },
+        {
+          "slug": "financial-planning-and-analysis",
+          "title": "Financial Planning and Analysis",
+          "year": 1,
+          "semester": 2
+        },
+        {
+          "slug": "logistics-systems-management",
+          "title": "Logistics Systems Management",
+          "year": 1,
+          "semester": 2
+        },
+        {
+          "slug": "macroeconomics-and-economic-environments",
+          "title": "Macroeconomics and Economic Environments",
+          "year": 1,
+          "semester": 2
         },
         {
           "slug": "distribution-and-materials-management",
@@ -5201,18 +5201,6 @@
           "semester": 1
         },
         {
-          "slug": "project-implementation-monitoring-evaluation",
-          "title": "Project Implementation, Monitoring Evaluation",
-          "year": 5,
-          "semester": 2
-        },
-        {
-          "slug": "project-risk-management-exit-and-sustainability",
-          "title": "Project Risk Management, Exit and Sustainability",
-          "year": 5,
-          "semester": 2
-        },
-        {
           "slug": "strategic-leadership",
           "title": "Strategic Leadership",
           "year": 5,
@@ -5223,6 +5211,18 @@
           "title": "Strategic Procurement",
           "year": 5,
           "semester": 1
+        },
+        {
+          "slug": "project-implementation-monitoring-evaluation",
+          "title": "Project Implementation, Monitoring Evaluation",
+          "year": 5,
+          "semester": 2
+        },
+        {
+          "slug": "project-risk-management-exit-and-sustainability",
+          "title": "Project Risk Management, Exit and Sustainability",
+          "year": 5,
+          "semester": 2
         },
         {
           "slug": "strategies-strategic-project-organization-and-design",
@@ -5284,16 +5284,16 @@
           "semester": 1
         },
         {
-          "slug": "professional-ethics-in-computing",
-          "title": "Professional Ethics in Computing",
-          "year": 1,
-          "semester": 2
-        },
-        {
           "slug": "study-and-communication-skills",
           "title": "Study and Communication Skills",
           "year": 1,
           "semester": 1
+        },
+        {
+          "slug": "professional-ethics-in-computing",
+          "title": "Professional Ethics in Computing",
+          "year": 1,
+          "semester": 2
         },
         {
           "slug": "computer-networks",
@@ -5302,22 +5302,10 @@
           "semester": 1
         },
         {
-          "slug": "computer-systems",
-          "title": "Computer Systems",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "databases",
           "title": "Databases",
           "year": 2,
           "semester": 1
-        },
-        {
-          "slug": "design-and-development-of-object-oriented-computer-systems-with-java",
-          "title": "Design and Development of Object-Oriented Computer Systems with Java",
-          "year": 2,
-          "semester": 2
         },
         {
           "slug": "designing-and-developing-websites",
@@ -5332,6 +5320,18 @@
           "semester": 1
         },
         {
+          "slug": "computer-systems",
+          "title": "Computer Systems",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "design-and-development-of-object-oriented-computer-systems-with-java",
+          "title": "Design and Development of Object-Oriented Computer Systems with Java",
+          "year": 2,
+          "semester": 2
+        },
+        {
           "slug": "skills-for-computing",
           "title": "Skills for Computing",
           "year": 2,
@@ -5342,6 +5342,30 @@
           "title": "Software Development Techniques",
           "year": 2,
           "semester": 2
+        },
+        {
+          "slug": "information-systems-analysis",
+          "title": "Information Systems Analysis",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "network-security-threats-and-defence-mechanisms",
+          "title": "Network Security Threats and Defence Mechanisms",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "professional-issues-in-it",
+          "title": "Professional Issues in IT",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "software-quality-assurance-and-testing",
+          "title": "Software Quality Assurance and Testing",
+          "year": 3,
+          "semester": 1
         },
         {
           "slug": "analysis-development-and-implementation",
@@ -5362,34 +5386,10 @@
           "semester": 2
         },
         {
-          "slug": "information-systems-analysis",
-          "title": "Information Systems Analysis",
-          "year": 3,
-          "semester": 1
-        },
-        {
           "slug": "it-project-management",
           "title": "IT Project Management",
           "year": 3,
           "semester": 2
-        },
-        {
-          "slug": "network-security-threats-and-defence-mechanisms",
-          "title": "Network Security Threats and Defence Mechanisms",
-          "year": 3,
-          "semester": 1
-        },
-        {
-          "slug": "professional-issues-in-it",
-          "title": "Professional Issues in IT",
-          "year": 3,
-          "semester": 1
-        },
-        {
-          "slug": "software-quality-assurance-and-testing",
-          "title": "Software Quality Assurance and Testing",
-          "year": 3,
-          "semester": 1
         }
       ],
       "years": [
@@ -5428,16 +5428,16 @@
           "semester": 1
         },
         {
-          "slug": "professional-ethics-in-computing",
-          "title": "Professional Ethics in Computing",
-          "year": 1,
-          "semester": 2
-        },
-        {
           "slug": "study-and-communication-skills",
           "title": "Study and Communication Skills",
           "year": 1,
           "semester": 1
+        },
+        {
+          "slug": "professional-ethics-in-computing",
+          "title": "Professional Ethics in Computing",
+          "year": 1,
+          "semester": 2
         },
         {
           "slug": "computer-networks",
@@ -5446,22 +5446,10 @@
           "semester": 1
         },
         {
-          "slug": "computer-systems",
-          "title": "Computer Systems",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "databases",
           "title": "Databases",
           "year": 2,
           "semester": 1
-        },
-        {
-          "slug": "design-and-development-of-object-oriented-computer-systems-with-java",
-          "title": "Design and Development of Object-Oriented Computer Systems with Java",
-          "year": 2,
-          "semester": 2
         },
         {
           "slug": "designing-and-developing-websites",
@@ -5476,6 +5464,18 @@
           "semester": 1
         },
         {
+          "slug": "computer-systems",
+          "title": "Computer Systems",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "design-and-development-of-object-oriented-computer-systems-with-java",
+          "title": "Design and Development of Object-Oriented Computer Systems with Java",
+          "year": 2,
+          "semester": 2
+        },
+        {
           "slug": "skills-for-computing",
           "title": "Skills for Computing",
           "year": 2,
@@ -5485,24 +5485,6 @@
           "slug": "software-development-techniques",
           "title": "Software Development Techniques",
           "year": 2,
-          "semester": 2
-        },
-        {
-          "slug": "agile-development",
-          "title": "Agile Development",
-          "year": 3,
-          "semester": 2
-        },
-        {
-          "slug": "analysis-development-and-implementation",
-          "title": "Analysis, Development & implementation",
-          "year": 3,
-          "semester": 2
-        },
-        {
-          "slug": "artificial-intelligence",
-          "title": "Artificial Intelligence",
-          "year": 3,
           "semester": 2
         },
         {
@@ -5524,16 +5506,34 @@
           "semester": 1
         },
         {
-          "slug": "network-security-and-cryptography",
-          "title": "Network Security and Cryptography",
-          "year": 3,
-          "semester": 2
-        },
-        {
           "slug": "professional-issues-in-it",
           "title": "Professional Issues in IT",
           "year": 3,
           "semester": 1
+        },
+        {
+          "slug": "agile-development",
+          "title": "Agile Development",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "analysis-development-and-implementation",
+          "title": "Analysis, Development & implementation",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "artificial-intelligence",
+          "title": "Artificial Intelligence",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "network-security-and-cryptography",
+          "title": "Network Security and Cryptography",
+          "year": 3,
+          "semester": 2
         }
       ],
       "years": [
@@ -5572,16 +5572,16 @@
           "semester": 1
         },
         {
-          "slug": "professional-ethics-in-computing",
-          "title": "Professional Ethics in Computing",
-          "year": 1,
-          "semester": 2
-        },
-        {
           "slug": "study-and-communication-skills",
           "title": "Study and Communication Skills",
           "year": 1,
           "semester": 1
+        },
+        {
+          "slug": "professional-ethics-in-computing",
+          "title": "Professional Ethics in Computing",
+          "year": 1,
+          "semester": 2
         },
         {
           "slug": "computer-networks",
@@ -5590,22 +5590,10 @@
           "semester": 1
         },
         {
-          "slug": "computer-systems",
-          "title": "Computer Systems",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "databases",
           "title": "Databases",
           "year": 2,
           "semester": 1
-        },
-        {
-          "slug": "design-and-development-of-object-oriented-computer-systems-with-java",
-          "title": "Design and Development of Object-Oriented Computer Systems with Java",
-          "year": 2,
-          "semester": 2
         },
         {
           "slug": "designing-and-developing-websites",
@@ -5620,6 +5608,18 @@
           "semester": 1
         },
         {
+          "slug": "computer-systems",
+          "title": "Computer Systems",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "design-and-development-of-object-oriented-computer-systems-with-java",
+          "title": "Design and Development of Object-Oriented Computer Systems with Java",
+          "year": 2,
+          "semester": 2
+        },
+        {
           "slug": "skills-for-computing",
           "title": "Skills for Computing",
           "year": 2,
@@ -5629,24 +5629,6 @@
           "slug": "software-development-techniques",
           "title": "Software Development Techniques",
           "year": 2,
-          "semester": 2
-        },
-        {
-          "slug": "agile-development",
-          "title": "Agile Development",
-          "year": 3,
-          "semester": 2
-        },
-        {
-          "slug": "analysis-development-and-implementation",
-          "title": "Analysis, Development & implementation",
-          "year": 3,
-          "semester": 2
-        },
-        {
-          "slug": "artificial-intelligence",
-          "title": "Artificial Intelligence",
-          "year": 3,
           "semester": 2
         },
         {
@@ -5668,16 +5650,34 @@
           "semester": 1
         },
         {
-          "slug": "network-security-and-cryptography",
-          "title": "Network Security and Cryptography",
-          "year": 3,
-          "semester": 2
-        },
-        {
           "slug": "professional-issues-in-it",
           "title": "Professional Issues in IT",
           "year": 3,
           "semester": 1
+        },
+        {
+          "slug": "agile-development",
+          "title": "Agile Development",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "analysis-development-and-implementation",
+          "title": "Analysis, Development & implementation",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "artificial-intelligence",
+          "title": "Artificial Intelligence",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "network-security-and-cryptography",
+          "title": "Network Security and Cryptography",
+          "year": 3,
+          "semester": 2
         }
       ],
       "years": [
@@ -5716,16 +5716,16 @@
           "semester": 1
         },
         {
-          "slug": "professional-ethics-in-computing",
-          "title": "Professional Ethics in Computing",
-          "year": 1,
-          "semester": 2
-        },
-        {
           "slug": "study-and-communication-skills",
           "title": "Study and Communication Skills",
           "year": 1,
           "semester": 1
+        },
+        {
+          "slug": "professional-ethics-in-computing",
+          "title": "Professional Ethics in Computing",
+          "year": 1,
+          "semester": 2
         },
         {
           "slug": "computer-networks",
@@ -5734,22 +5734,10 @@
           "semester": 1
         },
         {
-          "slug": "computer-systems",
-          "title": "Computer Systems",
-          "year": 2,
-          "semester": 2
-        },
-        {
           "slug": "databases",
           "title": "Databases",
           "year": 2,
           "semester": 1
-        },
-        {
-          "slug": "design-and-development-of-object-oriented-computer-systems-with-java",
-          "title": "Design and Development of Object-Oriented Computer Systems with Java",
-          "year": 2,
-          "semester": 2
         },
         {
           "slug": "designing-and-developing-websites",
@@ -5764,6 +5752,18 @@
           "semester": 1
         },
         {
+          "slug": "computer-systems",
+          "title": "Computer Systems",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "design-and-development-of-object-oriented-computer-systems-with-java",
+          "title": "Design and Development of Object-Oriented Computer Systems with Java",
+          "year": 2,
+          "semester": 2
+        },
+        {
           "slug": "skills-for-computing",
           "title": "Skills for Computing",
           "year": 2,
@@ -5773,24 +5773,6 @@
           "slug": "software-development-techniques",
           "title": "Software Development Techniques",
           "year": 2,
-          "semester": 2
-        },
-        {
-          "slug": "agile-development",
-          "title": "Agile Development",
-          "year": 3,
-          "semester": 2
-        },
-        {
-          "slug": "analysis-development-and-implementation",
-          "title": "Analysis, Development & implementation",
-          "year": 3,
-          "semester": 2
-        },
-        {
-          "slug": "artificial-intelligence",
-          "title": "Artificial Intelligence",
-          "year": 3,
           "semester": 2
         },
         {
@@ -5812,16 +5794,34 @@
           "semester": 1
         },
         {
-          "slug": "network-security-and-cryptography",
-          "title": "Network Security and Cryptography",
-          "year": 3,
-          "semester": 2
-        },
-        {
           "slug": "professional-issues-in-it",
           "title": "Professional Issues in IT",
           "year": 3,
           "semester": 1
+        },
+        {
+          "slug": "agile-development",
+          "title": "Agile Development",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "analysis-development-and-implementation",
+          "title": "Analysis, Development & implementation",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "artificial-intelligence",
+          "title": "Artificial Intelligence",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "network-security-and-cryptography",
+          "title": "Network Security and Cryptography",
+          "year": 3,
+          "semester": 2
         }
       ],
       "years": [
@@ -5865,6 +5865,24 @@
           "semester": 1
         },
         {
+          "slug": "computational-complexity",
+          "title": "Computational Complexity",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "mathematical-foundations-of-data-science",
+          "title": "Mathematical Foundations of Data Science",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "research-methods-in-computing",
+          "title": "Research Methods in Computing",
+          "year": 1,
+          "semester": 1
+        },
+        {
           "slug": "advanced-wireless-and-mobile-computing",
           "title": "Advanced Wireless and Mobile Computing",
           "year": 1,
@@ -5889,24 +5907,6 @@
           "semester": 2
         },
         {
-          "slug": "computational-complexity",
-          "title": "Computational Complexity",
-          "year": 1,
-          "semester": 1
-        },
-        {
-          "slug": "mathematical-foundations-of-data-science",
-          "title": "Mathematical Foundations of Data Science",
-          "year": 1,
-          "semester": 1
-        },
-        {
-          "slug": "research-methods-in-computing",
-          "title": "Research Methods in Computing",
-          "year": 1,
-          "semester": 1
-        },
-        {
           "slug": "services-oriented-architecture",
           "title": "Services Oriented Architecture",
           "year": 1,
@@ -5928,6 +5928,30 @@
       "name": "PhD in Information and Technology",
       "level": "doctorate",
       "courses": [
+        {
+          "slug": "information-system-security",
+          "title": "Information System Security",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "information-systems-strategy",
+          "title": "Information Systems Strategy",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "research-methods-in-computing",
+          "title": "Research Methods in Computing",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "social-computing",
+          "title": "Social Computing",
+          "year": 1,
+          "semester": 1
+        },
         {
           "slug": "artificial-intelligence",
           "title": "Artificial Intelligence",
@@ -5959,34 +5983,10 @@
           "semester": 2
         },
         {
-          "slug": "information-system-security",
-          "title": "Information System Security",
-          "year": 1,
-          "semester": 1
-        },
-        {
-          "slug": "information-systems-strategy",
-          "title": "Information Systems Strategy",
-          "year": 1,
-          "semester": 1
-        },
-        {
           "slug": "internet-of-things",
           "title": "Internet of Things",
           "year": 1,
           "semester": 2
-        },
-        {
-          "slug": "research-methods-in-computing",
-          "title": "Research Methods in Computing",
-          "year": 1,
-          "semester": 1
-        },
-        {
-          "slug": "social-computing",
-          "title": "Social Computing",
-          "year": 1,
-          "semester": 1
         }
       ],
       "years": [

@@ -76,9 +76,25 @@ async function generate() {
         // One row per course per programme: the same course can appear in two
         // semesters of a year, and a student should see it once.
         const seen = new Set();
+        /* Year, then SEMESTER, then title (owner, 2026-08-04: "even the
+           semesters, arrange them so they're in order instead of being mixed
+           up"). Sorting a year by title alone interleaved them — Corporate
+           Finance (sem 1) then Innovation (sem 2) then Regulation (sem 1) —
+           so the semester line under each row flickered between 1 and 2 down
+           the list and told a student nothing they could act on. In order, it
+           divides the year into what is on now and what is after Christmas.
+
+           A course with no semester sorts after both rather than before: it is
+           a gap in the scrape, and it should not open a year it may not
+           belong at the front of. */
         const courses = p.courses
           .filter((c) => !seen.has(c.slug) && seen.add(c.slug))
-          .sort((a, b) => (a.year ?? 99) - (b.year ?? 99) || a.title.localeCompare(b.title));
+          .sort(
+            (a, b) =>
+              (a.year ?? 99) - (b.year ?? 99) ||
+              (a.semester ?? 99) - (b.semester ?? 99) ||
+              a.title.localeCompare(b.title),
+          );
         return { ...p, courses, years: [...new Set(courses.map((c) => c.year).filter(Boolean))].sort() };
       })
       .sort((a, b) => a.name.localeCompare(b.name));
