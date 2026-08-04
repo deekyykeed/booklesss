@@ -44,6 +44,11 @@ type ReaderShell = {
   /** False on surfaces with no right rail (the dashboard, the parked pages).
    *  Hides its toggle and stops a swipe uncovering an empty drawer. */
   hasRightPanel: boolean;
+  /** The same, for the LEFT rail. False on the dashboard since 2026-08-05
+   *  (owner: "remove this sidebar temporarily, don't need it yet") — four of
+   *  its six rows were SOON placeholders. Hides the hamburger and stops a
+   *  right-swipe uncovering a drawer with nothing in it. */
+  hasLeftPanel: boolean;
 };
 
 const Ctx = createContext<ReaderShell | null>(null);
@@ -65,6 +70,7 @@ const NOOP: ReaderShell = {
   lessonId: null,
   setLesson: () => {},
   hasRightPanel: false,
+  hasLeftPanel: false,
 };
 
 export function useReaderShell(): ReaderShell {
@@ -82,9 +88,11 @@ const useIso = typeof document !== "undefined" ? useLayoutEffect : useEffect;
 export function MobileNavProvider({
   children,
   hasRightPanel = true,
+  hasLeftPanel = true,
 }: {
   children: React.ReactNode;
   hasRightPanel?: boolean;
+  hasLeftPanel?: boolean;
 }) {
   const [side, setSide] = useState<Side>(null);
   const [leftCollapsed, setLeftCollapsed] = useState(false);
@@ -239,7 +247,7 @@ export function MobileNavProvider({
       if (cur === null) {
         // Open a side only where that side is a drawer: left below md, right
         // below xl. Swipe right opens the course nav; swipe left opens context.
-        if (dx > THRESHOLD && w < 768) { setSide("left"); tracking = false; }
+        if (dx > THRESHOLD && w < 768 && hasLeftPanel) { setSide("left"); tracking = false; }
         else if (dx < -THRESHOLD && w < 1280 && hasRightPanel) { setSide("right"); tracking = false; }
       } else if (cur === "left" && dx < -THRESHOLD) {
         setSide(null); tracking = false;
@@ -259,7 +267,7 @@ export function MobileNavProvider({
       window.removeEventListener("touchend", onEnd);
       window.removeEventListener("touchcancel", onEnd);
     };
-  }, [hasRightPanel]);
+  }, [hasRightPanel, hasLeftPanel]);
 
   const value: ReaderShell = {
     side,
@@ -274,6 +282,7 @@ export function MobileNavProvider({
     lessonId: lesson.id,
     setLesson,
     hasRightPanel,
+    hasLeftPanel,
   };
 
   return (
@@ -300,8 +309,11 @@ export function MobileNavProvider({
 /* Sits where the logo lockup does on desktop; opens the left (course) drawer.
  * Mobile only. */
 export function MobileMenuButton() {
-  const { toggleLeft, side } = useReaderShell();
+  const { toggleLeft, side, hasLeftPanel } = useReaderShell();
   const open = side === "left";
+  /* Nothing to open. The dashboard dropped its rail (owner, 2026-08-05), and a
+     hamburger that reveals an empty drawer is worse than no hamburger. */
+  if (!hasLeftPanel) return null;
   return (
     <button
       type="button"

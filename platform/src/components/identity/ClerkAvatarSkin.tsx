@@ -42,7 +42,34 @@ export function ClerkAvatarSkin({ children }: { children: React.ReactNode }) {
   /* One of the few components allowed to touch Clerk, and mounted only inside
      the provider — TopBar checks clerkEnabled before rendering it. */
   const { user } = useUser();
-  const url = identity ? avatarCssUrl(identity.avatar) : undefined;
+
+  /**
+   * A REAL PHOTO MEANS THIS COMPONENT DOES NOTHING AT ALL.
+   *
+   * Owner, 2026-08-05, on his own header after the avatar started being uploaded
+   * to Clerk: "looks like there is a second, mis-sized one in there." Two faces,
+   * and both of them his.
+   *
+   * The skin paints the face as a BACKGROUND on Clerk's avatar box and hides
+   * Clerk's generated <img> only when `hasImage` is false. That was airtight
+   * while nobody ever had a photo. Then AccountSignal began uploading the chosen
+   * avatar as the account's actual profile image, `hasImage` turned true, the
+   * <img> stopped being hidden — and it now sits on top of a background painted
+   * from the same artwork, at whatever size Clerk gives it. `background-size:
+   * cover` fills the box; the <img> does not. Hence one face inside another.
+   *
+   * So the custom property is withheld once there is a real picture, which
+   * switches off both CSS rules that depend on it — the background and the
+   * `color: transparent` that hides the initials underneath. Clerk's own image
+   * is then the only thing drawn, which is what a student who has a photo should
+   * see, and what the upload was for in the first place.
+   *
+   * `=== true` and not truthy: while `user` is undefined Clerk has not reported
+   * yet, and treating "don't know" as "has a photo" would blank the face for a
+   * beat on every single page load.
+   */
+  const hasPhoto = user?.hasImage === true;
+  const url = identity && !hasPhoto ? avatarCssUrl(identity.avatar) : undefined;
 
   return (
     <span

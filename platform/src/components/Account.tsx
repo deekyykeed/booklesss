@@ -3,6 +3,7 @@
 import { ClerkFailed, ClerkLoaded, ClerkLoading, Show, UserButton } from "@clerk/nextjs";
 import { requireAccount } from "@/lib/onboarding";
 import { MynaIcon } from "@/components/icons/myna";
+import { SETTINGS_EVENT } from "@/components/identity/pickers";
 import { CoursesGlyph, DashboardGlyph } from "./home/plump-glyphs";
 
 /* Deliberately a CLIENT component.
@@ -40,7 +41,22 @@ export function Account() {
             <UserButton.MenuItems>
               <UserButton.Link href="/dashboard" label="Dashboard" labelIcon={<DashboardGlyph size={16} />} />
               <UserButton.Link href="/dashboard#courses" label="My courses" labelIcon={<CoursesGlyph size={16} />} />
-              <UserButton.Action label="manageAccount" />
+              {/* OUR SETTINGS, NOT CLERK'S (owner, 2026-08-05: "remove the
+                  profile settings things from clerk — I'll use my own ui
+                  components from here on out").
+                  `manageAccount` used to sit here and opened Clerk's UserProfile
+                  modal: a second settings surface, in somebody else's dress,
+                  offering fields this app does not use and not offering the ones
+                  it does — the name, the face, the university, the courses.
+                  Two places to change your details is one too many, and the
+                  wrong one was the one that looked official.
+                  Composed menus are opt-in, so leaving the row out is the whole
+                  removal — there is nothing to hide with CSS. */}
+              <UserButton.Action
+                label="Settings"
+                labelIcon={<MynaIcon name="cog" size={16} />}
+                onClick={() => window.dispatchEvent(new Event(SETTINGS_EVENT))}
+              />
               <UserButton.Action label="signOut" />
             </UserButton.MenuItems>
           </UserButton>

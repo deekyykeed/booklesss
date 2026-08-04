@@ -222,15 +222,27 @@ export function OfflineTools() {
           in the same weight left the more valuable one to be found rather than
           taken.
 
-          They collapse to one column on a narrow phone, where two half-width
-          bars would each be too short to hold "Saving 148 of 200…".
+          TWO COLUMNS AT EVERY WIDTH, with no breakpoint under them. There was
+          one — `min-[420px]:grid-cols-2` — so that a narrow phone got a single
+          column rather than two bars too short to hold "Saving 148 of 200…".
+          The reasoning was fine and the number was wrong: 1080px at Android's
+          usual 2.625 device pixel ratio is a 411px viewport, so the owner's own
+          phone missed the threshold by nine pixels and he reported the same
+          request twice (2026-08-04, then again 2026-08-05 with a screenshot of
+          them stacked).
+
+          A layout rule that fails on the most common phone in the market is not
+          a safeguard, it is a bug with a comment explaining it. The label was
+          the actual constraint, so the label is what changed — "148/200" rather
+          than "148 of 200" — and the row holds at 320px, narrower than any
+          phone still in use.
 
           SAVING SHOWS ITS PROGRESS IN THE FILL, which is the whole reason this
           shape was worth sharing — the course card uses it for how far through
           a course you are, and this is the same idea about a different number.
           The count stays in the label, because a fill answers "roughly" and
           somebody watching 200 lessons download wants the actual figure. */}
-      <div className="mt-3 grid gap-2 min-[420px]:grid-cols-2">
+      <div className="mt-3 grid grid-cols-2 gap-2">
         {canInstall && (
           <ActionBar
             variant="primary"
@@ -239,7 +251,15 @@ export function OfflineTools() {
                reader, which is the order it matters in — the grid does not
                reorder it, it simply sits left. */
           >
-            Add to home screen
+            {/* "Install the app", not "Add to home screen" (owner,
+                2026-08-05). The old label described the MECHANISM — what the
+                browser calls its own menu item — and a student reads it as
+                bookmarking. What they get is an app: its own icon, its own
+                window, no address bar, and every lesson readable with no
+                connection. Say the thing, not the gesture.
+                The iOS help line below keeps Apple's exact wording, because
+                there it is naming a menu item somebody has to find. */}
+            Install the app
           </ActionBar>
         )}
         <ActionBar
@@ -248,7 +268,9 @@ export function OfflineTools() {
           progress={saving && progress.total ? progress.done / progress.total : undefined}
         >
           {saving
-            ? `Saving ${progress.done} of ${progress.total}…`
+            ? /* "148/200", not "148 of 200" — see the note above the grid. Two
+                 words of padding is what pushed this bar past half a phone. */
+              `Saving ${progress.done}/${progress.total}…`
             : savedAt
               ? "Save again"
               : "Save all lessons"}

@@ -341,6 +341,12 @@
     .content-frame {
       padding-left: var(--sidebar-docs);
     }
+    /* Surfaces with no left rail (the dashboard, since its home rail was
+       parked on 2026-08-05) keep that gutter. The mirror of .no-rightbar
+       below. */
+    .content-frame.no-leftbar {
+      padding-left: 0;
+    }
     .app-shell[data-left-collapsed] .content-frame {
       padding-left: 0;
     }
