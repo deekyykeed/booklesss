@@ -46,6 +46,20 @@ type Common = {
   label?: string;
   disabled?: boolean;
   className?: string;
+  /**
+   * Which of the two this bar is (owner, 2026-08-04: "that black is a variant
+   * of the button").
+   *
+   * "default" is the white surface the course card wears — the bar as a place
+   * to go. "primary" is the app's ink, for the one action on a screen that is
+   * the point of it: "with the add to homescreen in black since it's what I
+   * ultimately want."
+   *
+   * Two only, and deliberately. A third would need a reason to exist beyond
+   * looking different, and a set of variants is how a shared control turns back
+   * into the several hand-rolled buttons it was extracted to replace.
+   */
+  variant?: "default" | "primary";
 };
 
 type Props =
@@ -76,10 +90,10 @@ function Arrow() {
 }
 
 const SHELL =
-  "course-resume squircle relative z-10 flex items-center justify-between gap-3 overflow-hidden px-2.5 py-1.5";
+  "action-bar squircle relative z-10 flex items-center justify-between gap-3 overflow-hidden px-2.5 py-1.5";
 
 export function ActionBar(props: Props) {
-  const { prefix, children, progress, label, disabled, className } = props;
+  const { prefix, children, progress, label, disabled, className, variant = "default" } = props;
 
   const inner = (
     <>
@@ -97,25 +111,28 @@ export function ActionBar(props: Props) {
           }}
         />
       )}
-      <span className="relative min-w-0 truncate text-[13px] leading-5 text-ink">
-        {prefix && <span className="text-placeholder">{prefix}</span>}
+      <span className="relative min-w-0 truncate text-[13px] leading-5">
+        {prefix && <span className="opacity-55">{prefix}</span>}
         {children}
       </span>
       <Arrow />
     </>
   );
 
-  const cls = SHELL + (disabled ? " pointer-events-none opacity-60" : "") + (className ? ` ${className}` : "");
+  const cls =
+    SHELL +
+    (disabled ? " pointer-events-none opacity-60" : "") +
+    (className ? ` ${className}` : "");
 
   if (props.href !== undefined) {
     return (
-      <Link href={props.href} onClick={props.onClick} className={cls} aria-label={label}>
+      <Link href={props.href} onClick={props.onClick} className={cls} data-variant={variant} aria-label={label}>
         {inner}
       </Link>
     );
   }
   return (
-    <button type="button" onClick={props.onClick} disabled={disabled} className={cls} aria-label={label}>
+    <button type="button" onClick={props.onClick} disabled={disabled} className={cls} data-variant={variant} aria-label={label}>
       {inner}
     </button>
   );

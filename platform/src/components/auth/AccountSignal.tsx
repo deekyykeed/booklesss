@@ -99,5 +99,40 @@ export function AccountSignal() {
     syncProfile(identity);
   }, [user, identity, hydrated]);
 
+  /* ------------------------------------------------------------------ *
+   * The name, onto the Clerk USER — not just its metadata.
+   *
+   * Owner, 2026-08-04: "i wont require them so that the modal is not too long
+   * for the first name and last, but i will require them during onboarding and
+   * thats how ill get them into Clerk." So the sign-up card stays two fields,
+   * and the name is collected on a screen where the student is already
+   * committed — then written up here, which is what puts it in Clerk's own
+   * Users table rather than buried in a metadata blob.
+   *
+   * ONLY A NAME THEY CHOSE. Every record has a name; most are the avatar's.
+   * Writing those up would fill the Users table with two hundred Astronauts and
+   * make `firstName` — the first rung of the dashboard greeting — actively
+   * worse than the email it falls back to. `nameChosen` is the only thing that
+   * tells a typed name from a given one.
+   *
+   * First word to firstName, the rest to lastName, which is the same split the
+   * greeting already undoes in the other direction. A single-word name leaves
+   * lastName empty rather than repeating itself.
+   *
+   * Its own effect, and errors swallowed like the metadata write above: a name
+   * that fails to reach Clerk is retried on the next sign-in, and is not a
+   * reason to break a student's dashboard.
+   * ------------------------------------------------------------------ */
+  useEffect(() => {
+    if (!user || !hydrated || !identity?.nameChosen) return;
+    const parts = identity.name.trim().split(/\s+/).filter(Boolean);
+    const first = parts[0] ?? "";
+    const last = parts.slice(1).join(" ");
+    if (!first) return;
+    // Settles: once written, this compares equal and stops.
+    if (user.firstName === first && (user.lastName ?? "") === last) return;
+    user.update({ firstName: first, lastName: last }).catch(() => {});
+  }, [user, identity, hydrated]);
+
   return null;
 }

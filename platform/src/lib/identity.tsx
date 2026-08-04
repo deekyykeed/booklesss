@@ -238,6 +238,25 @@ export type Identity = {
    *  never empty — a record without one is treated as no record at all. */
   name: string;
   avatar: AvatarId;
+  /**
+   * Whether the student typed this name themselves, rather than being given it.
+   *
+   * ANONYMOUS-BY-DEFAULT STILL STANDS, and this does not undo it. That rule
+   * protects the stranger who taps a WhatsApp link to READ — they are still
+   * given a name and a face on the spot, still asked nothing, still never meet a
+   * form. What changed is that somebody who has chosen to make an account is
+   * asked (owner, 2026-08-04: "i didnt get to pick my avatar, can i not select
+   * it during onboarding?" and "i didnt set my name with that"). Those are two
+   * different people and always were; the 200-face set was built for the second
+   * one, whose own note says a student "picks from twelve UNCLAIMED faces".
+   *
+   * Stored separately from `name` for the same reason `coursesChosen` is stored
+   * separately from `courses`: the field is never empty, so it cannot say on its
+   * own whether anyone was asked. "Astronaut" is a real value and a non-answer
+   * at the same time, and only this tells them apart — which is what stops
+   * AccountSignal writing an avatar's name into Clerk as somebody's real one.
+   */
+  nameChosen: boolean;
   /** Where they study. `null` until they set it in Settings, which most never
    *  will, and on any record naming a school this build no longer carries. */
   school: SchoolChoice | null;
@@ -427,6 +446,9 @@ export type Identity = {
  */
 export function onboardingComplete(v: Identity | null | undefined): boolean {
   if (!v) return false;
+  /* A name they chose. Every record has a name, so `name` alone cannot gate
+     this — see nameChosen. */
+  if (!v.nameChosen) return false;
   if (!v.school) return false;
   if (v.school === OTHER_SCHOOL && !v.schoolName) return false;
   if (!v.coursesChosen) return false;
@@ -492,6 +514,7 @@ function load(): Identity | null {
          than interrogating a reader who has already told us. */
       coursesChosen:
         v.coursesChosen === true || (Array.isArray(v.courses) && v.courses.length > 0),
+      nameChosen: v.nameChosen === true,
       target: parseTarget(v.target),
       studyWindow: isStudyWindow(v.studyWindow) ? v.studyWindow : null,
       // Re-normalised on read, not trusted as stored: a record written by an
@@ -577,6 +600,9 @@ export function useIdentity(): Snapshot {
 export function saveIdentity(input: {
   name: string;
   avatar: AvatarId;
+  /** Only the screen that ASKS passes this. Everywhere else omits it and an
+   *  already-asked device stays asked. */
+  nameChosen?: boolean;
   school: SchoolChoice | null;
   schoolName: string | null;
   courses: string[];
@@ -602,6 +628,7 @@ export function saveIdentity(input: {
   const next: Identity = {
     name: input.name.trim(),
     avatar: input.avatar,
+    nameChosen: input.nameChosen ?? prev?.nameChosen ?? false,
     school: input.school,
     // Only "other" carries a typed name; picking a listed school later must
     // not leave the old one behind to be read as their university.
@@ -674,6 +701,11 @@ export function saveIdentity(input: {
  * question, rather than storing the form's default as their choice.
  */
 export function saveOnboarding(input: {
+  /** Passed only by the screen that asks. Omitted everywhere else, where the
+   *  name and face already on the record stand. */
+  name?: string;
+  avatar?: AvatarId;
+  nameChosen?: boolean;
   school: SchoolChoice | null;
   schoolName: string | null;
   courses: string[];
@@ -697,8 +729,9 @@ export function saveOnboarding(input: {
 }): Identity {
   const prev = assignIdentity();
   return saveIdentity({
-    name: prev.name,
-    avatar: prev.avatar,
+    name: input.name?.trim() || prev.name,
+    avatar: input.avatar ?? prev.avatar,
+    ...(input.nameChosen === undefined ? {} : { nameChosen: input.nameChosen }),
     school: input.school,
     schoolName: input.schoolName,
     courses: input.courses,
@@ -763,6 +796,10 @@ function persist(next: Identity): void {
 export type AccountIdentity = {
   name: string;
   avatar: AvatarId;
+  /** Travels, or a student who named themselves on their phone is asked again
+   *  on a borrowed laptop — and worse, `onboardingComplete` would refuse the
+   *  dashboard until they did. */
+  nameChosen: boolean;
   since: string;
   /**
    * Where they study, and the university they typed if it is one we don't
@@ -814,6 +851,7 @@ export function accountIdentity(): AccountIdentity | null {
     ? {
         name: v.name,
         avatar: v.avatar,
+        nameChosen: v.nameChosen,
         since: v.since,
         school: v.school,
         schoolName: v.schoolName,
@@ -845,6 +883,7 @@ export function parseAccountIdentity(v: unknown): AccountIdentity | null {
   return {
     name,
     avatar: resolveAvatar(typeof o.avatar === "string" ? o.avatar : null),
+    nameChosen: o.nameChosen === true,
     since:
       typeof o.since === "string" && !Number.isNaN(Date.parse(o.since))
         ? o.since
@@ -923,6 +962,7 @@ function mergeAccount(acct: AccountIdentity, prev: Identity | null): Identity {
   return {
     name: acct.name,
     avatar: acct.avatar,
+    nameChosen: acct.nameChosen || (prev?.nameChosen ?? false),
     school,
     // Only "other" carries a typed name, and it must come from whichever side
     // the school itself came from — an account's school with the device's
@@ -958,6 +998,7 @@ export function matchesAccount(id: Identity | null, acct: AccountIdentity): bool
   return (
     id.name === next.name &&
     id.avatar === next.avatar &&
+    id.nameChosen === next.nameChosen &&
     id.since === next.since &&
     id.school === next.school &&
     id.schoolName === next.schoolName &&
@@ -991,6 +1032,7 @@ export function matchesAccount(id: Identity | null, acct: AccountIdentity): bool
 export function accountBehind(id: Identity | null, acct: AccountIdentity): boolean {
   if (!id) return false;
   return (
+    (!acct.nameChosen && id.nameChosen) ||
     (!acct.school && !!id.school) ||
     (!acct.coursesChosen && id.coursesChosen) ||
     (!acct.target && !!id.target) ||
@@ -1027,6 +1069,8 @@ export function assignIdentity(): Identity {
   return saveIdentity({
     name: avatarName(avatar),
     avatar,
+    // Given, not chosen — see the field's note.
+    nameChosen: false,
     // Not asked, and not a gap to be filled in later by anything but the
     // reader themselves, in Settings. Empty courses reads as the whole library.
     school: null,

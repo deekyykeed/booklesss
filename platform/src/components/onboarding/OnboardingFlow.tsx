@@ -40,6 +40,8 @@ import {
 } from "@/components/identity/pickers";
 import { Button } from "@/components/ui/Button";
 import { WhatsAppMark } from "@/components/icons/whatsapp";
+import { AvatarPicker } from "@/components/identity/AvatarPicker";
+import { type AvatarId } from "@/components/identity/avatars";
 
 /* ------------------------------------------------------------------ *
  * Onboarding — three questions, asked straight after the account is made.
@@ -158,6 +160,7 @@ function useIsClient(): boolean {
 }
 
 type Step =
+  | "you"
   | "school"
   | "programme"
   | "year"
@@ -204,6 +207,7 @@ type Step =
  * reported offered — so the work is confirming, not building.
  */
 const ORDER: Step[] = [
+  "you",
   "school",
   "programme",
   "year",
@@ -266,6 +270,11 @@ const UNREALISTIC_WEEKLY_MINUTES = 12 * 60;
 
 /** The answers as the form holds them. */
 type Draft = {
+  /** What they want to be called, and the face that goes with it. Seeded from
+   *  the pair this device was assigned on its first visit. */
+  name: string;
+  avatar: AvatarId;
+  nameChosen: boolean;
   school: SchoolChoice | null;
   schoolName: string;
   programme: string | null;
@@ -300,6 +309,12 @@ type Draft = {
  *  worth anything if it is the one they'd have picked. */
 function asDraft(identity: Identity | null): Draft {
   return {
+    /* Empty rather than the assigned name, so the field reads as a question
+       rather than as an answer already given. The assigned one is the
+       placeholder — see the step. A name they DID choose comes back. */
+    name: identity?.nameChosen ? identity.name : "",
+    avatar: identity?.avatar ?? "astronaut",
+    nameChosen: identity?.nameChosen ?? false,
     school: identity?.school ?? null,
     schoolName: identity?.schoolName ?? "",
     programme: identity?.programme ?? null,
@@ -373,6 +388,7 @@ function stepBefore(from: Step, d: Draft, prog: Programme | undefined): Step {
 function firstGap(d: Draft, steps: Step[], prog: Programme | undefined): Step {
   for (const s of steps) {
     if (!asks(s, d, prog)) continue;
+    if (s === "you" && !d.name.trim()) return s;
     if (s === "school" && (!d.school || (d.school === OTHER_SCHOOL && !d.schoolName.trim()))) return s;
     /* Same shape as the school question above it: picking "not listed" is not
        an answer on its own — the answer is what they then type. */
@@ -426,6 +442,8 @@ export function OnboardingFlow() {
 
   const d = draft ?? asDraft(identity);
   const {
+    name,
+    avatar,
     school,
     schoolName,
     programme,
@@ -448,6 +466,10 @@ export function OnboardingFlow() {
   const phone = normalisePhone(whatsapp);
 
 
+  /* The avatar grid deals a random twelve, which cannot be rendered on the
+     server without the markup disagreeing with the client's. */
+  const isClientFlow = useIsClient();
+
   /** The days they picked, 0 = Monday. A record written before this question
    *  asked for named days has none, and gets an empty board rather than four
    *  days invented on its behalf — we genuinely never knew which. */
@@ -463,7 +485,28 @@ export function OnboardingFlow() {
    *  preserve — a worse trade than the lookup it saves. */
   const prog = programmeBySlug(school, programme);
 
-  const step = stepPick ?? (hydrated ? firstGap(d, ORDER, prog) : "school");
+  /**
+   * Which question is on screen.
+   *
+   * RESOLVED AGAINST THE SAVED RECORD, NOT THE FORM. This read `firstGap(d)` —
+   * the live draft — and `stepPick` is null until the student advances, so the
+   * step was recomputed from what they were CURRENTLY TYPING on every
+   * keystroke. The moment a field satisfied its own gap, the screen answering
+   * that gap stopped being the first unanswered one and the flow jumped
+   * forward, out from under them.
+   *
+   * Tap-to-advance questions never showed it, because their answer and their
+   * advance are the same event. Every text field on this page had it: the name,
+   * the WhatsApp number, the typed university and the typed programme all
+   * threw the student to the next screen mid-word, on the character that
+   * happened to complete a valid answer.
+   *
+   * The record only changes when something is SAVED, which is when a student
+   * advances — so resuming reads the same answer it always did, and typing
+   * moves nothing. After the first advance `stepPick` is set and this is not
+   * consulted at all.
+   */
+  const step = stepPick ?? (hydrated ? firstGap(asDraft(identity), ORDER, prog) : "school");
 
   /** Whether this student is on the typed path — no curriculum on file for
    *  their programme, so their answers are the curriculum. The majority case;
@@ -588,6 +631,9 @@ export function OnboardingFlow() {
    * ahead of the student is a gate that opens on an empty dashboard.
    */
   function save(patch: {
+    name?: string;
+    avatar?: AvatarId;
+    nameChosen?: boolean;
     school?: SchoolChoice | null;
     courses?: string[];
     coursesChosen: boolean;
@@ -604,6 +650,9 @@ export function OnboardingFlow() {
   }) {
     const s = "school" in patch ? (patch.school ?? null) : school;
     saveOnboarding({
+      ...(patch.name === undefined ? {} : { name: patch.name }),
+      ...(patch.avatar === undefined ? {} : { avatar: patch.avatar }),
+      ...(patch.nameChosen === undefined ? {} : { nameChosen: patch.nameChosen }),
       school: s,
       schoolName: s === OTHER_SCHOOL ? schoolName.trim() || null : null,
       courses: patch.courses ?? courses,
@@ -755,6 +804,72 @@ export function OnboardingFlow() {
       {/* Keyed by step so the animation replays on every question, and told
           which way it is going. */}
       <div key={step} data-dir={dir} className="onboard-step pt-6">
+        {step === "you" && isClientFlow && (
+          <Card
+            /* FIRST, AND THE ONLY QUESTION THAT IS ABOUT THEM (owner,
+               2026-08-04: "i didnt get to pick my avatar, can i not select it
+               during onboarding?" and "i didnt set my name with that").
+
+               It does NOT undo anonymous-by-default. That rule protects the
+               stranger who taps a WhatsApp link to read — still given a name and
+               a face on the spot, still asked nothing. This screen is only ever
+               reached by somebody who chose to make an account, and the 200-face
+               set was built for exactly this: its own note says a student "picks
+               from twelve UNCLAIMED faces".
+
+               First because it is the easiest thing on the page and the only one
+               that is a pleasure — a form that opens by asking which university
+               you attend opens with admin. */
+            title="What should we call you?"
+            why="Your name and a face for it. This is what your classmates will see."
+            actions={
+              <Button
+                variant="primary"
+                size="lg"
+                block
+                arrow
+                disabled={!name.trim()}
+                onClick={() => {
+                  save({
+                    name: name.trim(),
+                    avatar,
+                    nameChosen: true,
+                    coursesChosen: coursesAnswered,
+                  });
+                  onward();
+                }}
+              >
+                {name.trim() ? "Continue" : "Type your name"}
+              </Button>
+            }
+          >
+            <input
+              autoFocus
+              type="text"
+              autoComplete="name"
+              autoCapitalize="words"
+              value={name}
+              onChange={(e) => edit({ name: e.target.value })}
+              /* The name this device was given, as the placeholder rather than
+                 as the value. A pre-filled field is an answer somebody has to
+                 undo; a placeholder is a suggestion they can ignore. */
+              placeholder={identity?.name ?? "Your name"}
+              aria-label="Your name"
+              maxLength={40}
+              className={
+                "squircle h-11 w-full rounded-xl border border-line bg-white px-3.5 text-[15px] text-ink " +
+                "outline-none transition-colors placeholder:text-placeholder focus:border-ink"
+              }
+            />
+
+            <div className="mt-5">
+              <Choices label="Pick a face">
+                <AvatarPicker value={avatar} onPick={(id) => edit({ avatar: id })} />
+              </Choices>
+            </div>
+          </Card>
+        )}
+
         {step === "school" && (
           <Card
             title="Which university are you at?"

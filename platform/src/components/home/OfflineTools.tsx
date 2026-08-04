@@ -187,16 +187,40 @@ export function OfflineTools() {
           own radius, padding and hover — a third and fourth spelling of a
           control the app already had.
 
-          They stack rather than sitting side by side, because the shape is
-          full-width by definition: it is a bar with its label at one end and an
-          arrow at the other, and two of them in a row would each be half a bar.
+          SIDE BY SIDE, WITH THE INSTALL IN INK (owner, 2026-08-04: "the save
+          all lessons and add to home screen need to be side by side, with the
+          add to homescreen in black since it's what I ultimately want"). They
+          stacked at first on the reasoning that the shape is full-width by
+          definition — which was a fact about the course card, where the bar IS
+          the card's footer, and not about a pair of controls that belong
+          together. Two halves of one row read as a choice; two stacked bars read
+          as two unrelated things that happen to be adjacent.
+
+          Installing is the one that matters, so it wears the primary variant.
+          Saving lessons is what you do INSIDE the installed app; offering both
+          in the same weight left the more valuable one to be found rather than
+          taken.
+
+          They collapse to one column on a narrow phone, where two half-width
+          bars would each be too short to hold "Saving 148 of 200…".
 
           SAVING SHOWS ITS PROGRESS IN THE FILL, which is the whole reason this
           shape was worth sharing — the course card uses it for how far through
           a course you are, and this is the same idea about a different number.
           The count stays in the label, because a fill answers "roughly" and
           somebody watching 200 lessons download wants the actual figure. */}
-      <div className="mt-3 flex flex-col gap-2">
+      <div className="mt-3 grid gap-2 min-[420px]:grid-cols-2">
+        {canInstall && (
+          <ActionBar
+            variant="primary"
+            onClick={installEvent ? install : () => setShowIosHelp((v) => !v)}
+            /* First in the DOM so it is first to a keyboard and a screen
+               reader, which is the order it matters in — the grid does not
+               reorder it, it simply sits left. */
+          >
+            Add to home screen
+          </ActionBar>
+        )}
         <ActionBar
           onClick={saveEverything}
           disabled={saving}
@@ -208,12 +232,6 @@ export function OfflineTools() {
               ? "Save again"
               : "Save all lessons"}
         </ActionBar>
-
-        {canInstall && (
-          <ActionBar onClick={installEvent ? install : () => setShowIosHelp((v) => !v)}>
-            Add to home screen
-          </ActionBar>
-        )}
       </div>
 
       {/* Safari has no install API, so the only honest thing is directions. */}

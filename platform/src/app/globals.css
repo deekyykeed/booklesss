@@ -759,7 +759,7 @@
      clickable. It used to lift on hovering anywhere, which was honest when the
      whole card was a link and is a lie now that only the button is: a card that
      responds to your pointer is telling you to press it. */
-  .course-card:has(.course-resume:hover) {
+  .course-card:has(.action-bar:hover) {
     border-color: var(--color-line-2);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 20px -6px rgba(0, 0, 0, 0.16);
   }
@@ -912,15 +912,35 @@
      course the reader is. Radius is the card's own, stepped down for the
      inset. Kept as its own class rather than folded into .btn: it carries a
      progress fill and a full-width layout that no other button wants. */
-  .course-resume {
+  .action-bar {
     border: 1px solid var(--color-line);
     border-radius: 18px;
     background-color: rgba(255, 255, 255, 0.6);
+    color: var(--color-ink);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 3px 8px -2px rgba(0, 0, 0, 0.08);
     transition: background-color 0.2s ease, border-color 0.2s ease;
   }
-  .course-resume:hover {
+  .action-bar:hover {
     background-color: #ffffff;
+  }
+  /* The one action on a screen that is the point of it (owner, 2026-08-04:
+     "with the add to homescreen in black since it's what I ultimately want").
+     Same geometry, same arrow, inverted — so the pair reads as one control with
+     one of them emphasised, rather than as two different buttons. */
+  .action-bar[data-variant="primary"] {
+    border-color: var(--color-ink);
+    background-color: var(--color-ink);
+    color: #ffffff;
+  }
+  .action-bar[data-variant="primary"]:hover {
+    background-color: var(--color-ink);
+    opacity: 0.9;
+  }
+  /* The arrow follows the label rather than staying muted, or it disappears
+     into the ink it is sitting on. */
+  .action-bar[data-variant="primary"] .card-arrow {
+    color: currentColor;
+    opacity: 0.75;
   }
 
   /* The footer arrow leans into the door on hover — same spring the rest of
@@ -928,7 +948,7 @@
   .course-card .card-arrow {
     transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .course-card:has(.course-resume:hover) .card-arrow {
+  .course-card:has(.action-bar:hover) .card-arrow {
     transform: translateX(3px);
   }
   /* Label, the number large, then one measured line carrying the stat's mark.
