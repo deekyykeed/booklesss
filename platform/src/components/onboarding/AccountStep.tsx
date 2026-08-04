@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSignIn, useSignUp } from "@clerk/nextjs";
 import { referrer } from "@/lib/referral";
+import { handleFromEmail, nextHandle } from "@/lib/handle";
 import { Button } from "@/components/ui/Button";
 
 /* ------------------------------------------------------------------ *
@@ -60,6 +61,27 @@ import { Button } from "@/components/ui/Button";
  * The block comes back from a636c3c^ the day the branding check passes; the
  * seam is marked below.
  * ------------------------------------------------------------------ */
+
+/** How many suffixed handles to try before creating the account without one.
+ *  Three, because the fourth Deeky is rarer than a slow connection, and every
+ *  attempt is a round trip a student is waiting through. */
+const HANDLE_TRIES = 3;
+
+/**
+ * Whether an error from Clerk is about the handle rather than about the
+ * student's own input.
+ *
+ * Matched on the error's `meta.paramName` where Clerk provides it — that is the
+ * field name, and it is the only part of an error payload that is a contract
+ * rather than prose. The message text is checked only as a fallback, for the
+ * "usernames are not enabled on this instance" case, which arrives as a
+ * form-level rejection with no param attached to it.
+ */
+function aboutHandle(error: unknown): boolean {
+  const e = error as { meta?: { paramName?: string }; message?: string; code?: string } | null;
+  if (e?.meta?.paramName === "username") return true;
+  return /username/i.test(e?.message ?? "") || /username/i.test(e?.code ?? "");
+}
 
 /** `longMessage` is Clerk's user-facing wording; `message` is for developers. */
 function say(error: { longMessage?: string; message?: string } | null | undefined): string {
@@ -123,6 +145,51 @@ export function AccountStep({
   const [sending, setSending] = useState(false);
 
   const isUp = mode === "sign-up";
+
+  /**
+   * Create the account, claiming a handle derived from the email.
+   *
+   * THREE THINGS CAN GO WRONG WITH THE HANDLE AND NONE OF THEM MAY COST THE
+   * STUDENT THEIR ACCOUNT. It is a name we invented on their behalf, offered
+   * because their email already contains a serviceable one — it is not
+   * something they asked for and not something they should ever see fail:
+   *
+   *   - TAKEN. The second Deeky gets `deeky2`. Counted, not random, because a
+   *     handle is read out loud. A few attempts, then give up and go without.
+   *   - USERNAMES NOT ENABLED in the Clerk instance. `signUp.password({
+   *     username })` is rejected outright while the setting is off, and the
+   *     setting is a dashboard toggle this code cannot see or check. Rather
+   *     than gamble the entire sign-up on somebody having flipped it, the
+   *     rejection is caught and the account is created without one.
+   *   - ANYTHING ELSE. Same answer. An account with no handle is a student who
+   *     picks one on the next screen; a failed sign-up is a student who leaves.
+   *
+   * The handle is a nicety layered on top of the account. It never gates it.
+   */
+  async function claimAccount(
+    emailAddress: string,
+    pw: string,
+    referredBy: string | null,
+  ): Promise<{ error?: unknown } | typeof STUCK> {
+    const base = handleFromEmail(emailAddress);
+    const extra = referredBy ? { unsafeMetadata: { referredBy } } : {};
+
+    for (let n = 0; n <= HANDLE_TRIES; n++) {
+      const username = n === 0 ? base : nextHandle(base, n + 1);
+      const attempt = await withTimeout(signUp.password({ emailAddress, password: pw, username, ...extra }));
+      if (attempt === STUCK) return attempt;
+      if (!attempt.error) return attempt;
+      /* Only a complaint about the HANDLE is worth another go. A rejected
+         password or an email already in use is the student's to see and fix,
+         and retrying those would spend their patience on a fixed answer. */
+      if (!aboutHandle(attempt.error)) return attempt;
+    }
+
+    /* Out of handles, or the instance does not take them. The account is what
+       matters — make it plainly, and let the "you" step ask for a handle with a
+       session already live behind it. */
+    return withTimeout(signUp.password({ emailAddress, password: pw, ...extra }));
+  }
   /* `!error` matters: a call that hit the STUCK clock never settles, so the
      resource's fetchStatus can read "fetching" forever afterwards — and a
      button still saying "One moment…" under "try again" is a locked door behind
@@ -144,15 +211,9 @@ export function AccountStep({
       const referredBy = isUp ? referrer() : null;
 
       // Step one: hand over the credentials.
-      const attempt = await withTimeout(
-        isUp
-          ? signUp.password({
-              emailAddress: email,
-              password,
-              ...(referredBy ? { unsafeMetadata: { referredBy } } : {}),
-            })
-          : signIn.password({ identifier: email, password }),
-      );
+      const attempt = isUp
+        ? await claimAccount(email, password, referredBy)
+        : await withTimeout(signIn.password({ identifier: email, password }));
       if (attempt === STUCK) {
         setError("This is taking too long. Check your connection and try again.");
         return;
