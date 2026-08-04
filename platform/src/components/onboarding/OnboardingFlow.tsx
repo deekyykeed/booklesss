@@ -249,25 +249,31 @@ export function OnboardingFlow() {
        h-dvh rather than min-h-dvh: the column has to know its own height for
        the middle to be the only thing that scrolls. */
     <div className="mx-auto flex h-dvh w-full max-w-[440px] flex-col px-5 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
-      {/* The wordmark, top left (owner, 2026-08-04). Onboarding was the one
-          screen in the app with no brand on it at all — a student who has just
-          handed over an email address is looking at three questions from
-          nobody in particular.
+      {/* The logo, top left (owner, 2026-08-04). Onboarding was the one screen
+          in the app with no brand on it at all — a student who has just handed
+          over an email address is looking at three questions from nobody in
+          particular.
+
+          "Bklsss", NOT "Booklesss". The logo IS the word, set in Familjen
+          Grotesk Bold, no mark and no glyph beside it — Brand/README.md,
+          settled 2026-08-03 when the diamond and the serif lockup were retired.
+          This shipped once reading "Booklesss", which is the full NAME and not
+          the logo; TopBar, DesktopGate and the OG card have all said Bklsss all
+          along. Live text rather than Brand/booklesss-wordmark-black.svg
+          because the face is already loaded here, which is how every other
+          in-app surface draws it.
 
           INLINE, NOT A MASTHEAD (owner, same call: "it must feel like its
-          inline"). 18px is exactly what the app's own header wears on a phone,
-          so this reads as the product's chrome rather than as a logo screen
-          the questions happen to be under.
+          inline"). 18px and tracking-tight is exactly what TopBar wears on a
+          phone, so this reads as the product's chrome rather than as a logo
+          screen the questions happen to sit under.
 
-          The wordmark IS the logo — no mark beside it (2026-08-03). It is
-          also NOT a link: every other place it appears goes to /dashboard, and
-          from here that is a door straight into RequireOnboarding, which would
-          measure this same unfinished record and send them back. A logo that
-          bounces you where you already are is worse than one that sits still. */}
+          NOT A LINK: everywhere else the logo goes to /dashboard, and from here
+          that is a door straight into RequireOnboarding, which would measure
+          this same unfinished record and send them back. A logo that bounces
+          you where you already are is worse than one that sits still. */}
       <div className="shrink-0 pt-6">
-        <span className="font-display text-[18px] font-bold leading-none tracking-tight text-ink">
-          Booklesss
-        </span>
+        <span className="font-display text-[18px] font-bold leading-none tracking-tight text-ink">Bklsss</span>
       </div>
 
       {/* No progress bar (owner, 2026-08-04: "remove the progress thing
@@ -296,7 +302,7 @@ export function OnboardingFlow() {
         {step === "school" && (
           <Card
             title="Where do you study?"
-            why="So we show you the right courses."
+            why="Pick yours to continue."
             /* THERE IS NO SKIP ON THIS QUESTION (owner, 2026-08-03: "the
                student cannot skip this — why would they not add the school?
                How do we add their courses and stuff if we have missing info
@@ -371,7 +377,7 @@ export function OnboardingFlow() {
         {step === "courses" && (
           <Card
             title="Which courses are you taking?"
-            why="Choose as many as you like — your dashboard counts only these."
+            why="Choose as many as you like."
             actions={
               <div className="flex flex-col gap-2">
                 <Button
@@ -426,7 +432,7 @@ export function OnboardingFlow() {
         {step === "target" && (
           <Card
             title="How much studying are you aiming for?"
-            why="The only number we score you against."
+            why="Pick what you can keep to."
             actions={
               <Button variant="primary" size="lg" block onClick={finish}>
                 Start studying
@@ -485,6 +491,24 @@ function Card({
   children,
 }: {
   title: string;
+  /**
+   * The line under the question. AN INSTRUCTION, NOT AN EXPLANATION.
+   *
+   * Owner, 2026-08-04: "dont say so we show the right courses on that
+   * description, we just need to tell them what to do — we cannot be revealing
+   * everything to the student."
+   *
+   * All three of these used to narrate our own machinery: "So we show you the
+   * right courses" said the answer drives a filter, "your dashboard counts only
+   * these" said what the tiles read, "the only number we score you against"
+   * said there is a score and what feeds it. None of that is the student's
+   * business at the moment they are being asked, and a form that explains why
+   * it wants something invites a student to argue with the reason instead of
+   * answering. Say what to do: "Pick yours to continue."
+   *
+   * This is the rule for every new question added here, not a one-off edit to
+   * three strings.
+   */
   why: string;
   /** The step's primary action, pinned to the bottom of the screen. Null on a
    *  question that answers itself in one tap — a button under an answer you

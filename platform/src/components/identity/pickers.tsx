@@ -4,7 +4,7 @@ import { useId } from "react";
 import { MynaIcon } from "@/components/icons/myna";
 import type { CourseMeta } from "@/lib/courses";
 import { OTHER_SCHOOL, SCHOOLS, searchSchools, type SchoolChoice } from "@/lib/schools";
-import { SCHOOL_CRESTS } from "./school-crests";
+import { crestSrc } from "./school-crests";
 
 /* The two things this app still asks a student — which university, which
  * courses — as the lists that ask them.
@@ -128,21 +128,41 @@ const schoolTone = (on: boolean) => SCHOOL_ROW + (on ? "" : "hover:bg-active/60"
  * has not been fetched yet, so a new row is never blank.
  */
 function SchoolMark({ id, letter, tone }: { id?: string; letter: string; tone: string }) {
-  /* 24px, down from 32 (owner, 2026-08-04: "the logo is too big, it must feel
-     like its inline"). At 32 the crest was the tallest thing in the row by
-     half again — it set the row's height, pushed the 15px name off the optical
-     line the 20px tick sits on, and read as a logo the name was captioning
-     rather than as one item in a list. 24 sits between the tick and the name,
-     so the three land as one line. */
-  const crest = id ? SCHOOL_CRESTS[id] : undefined;
+  /* 20px, down from 32 and then from 24 (owner, 2026-08-04: "the logo is too
+     big, it must feel like its inline", and again on the 24 — "the uni logos
+     are still too big").
+
+     20 is the tick's box, so every mark in the row is now one size and the row
+     is led by the NAME rather than by the crest. That is the right way round:
+     the student is reading a list of universities, not picking a logo, and at
+     32 the crest set the row's height and read as a mark the name was
+     captioning. There is no smaller step worth taking after this one — below
+     about 18 a crest stops being recognisable at arm's length on a phone,
+     which is the entire reason the row carries one. */
+  const crest = crestSrc(id);
   if (crest) {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img src={crest} alt="" aria-hidden="true" className="h-6 w-6 shrink-0 object-contain" />;
+    /* A FILE, not a data URI — see school-crests. width/height are set as
+       attributes as well as classes so the row reserves the box before the
+       image arrives; nine of these load at once on the school question, and a
+       list that reflows as they land is a list somebody mis-taps. */
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={crest}
+        alt=""
+        aria-hidden="true"
+        width={20}
+        height={20}
+        loading="lazy"
+        decoding="async"
+        className="h-5 w-5 shrink-0 object-contain"
+      />
+    );
   }
   return (
     <span
       aria-hidden="true"
-      className="grid h-6 w-6 shrink-0 place-items-center rounded-full text-[11px] font-semibold text-white"
+      className="grid h-5 w-5 shrink-0 place-items-center rounded-full text-[10px] font-semibold text-white"
       style={{ backgroundColor: tone }}
     >
       {letter}
