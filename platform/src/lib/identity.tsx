@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from "react";
 import { AVATARS, avatarLabel, resolveAvatar, type AvatarId } from "@/components/identity/avatars";
 import { isSchoolChoice, OTHER_SCHOOL, type SchoolChoice } from "@/lib/schools";
+import { OTHER_PROGRAMME } from "@/lib/curriculum-text";
 
 /* ------------------------------------------------------------------ *
  * Who is reading — a name and a face, ASSIGNED rather than asked, plus a
@@ -97,9 +98,25 @@ export const AVATAR_NAMES: Record<string, string> = {
  * fallback is not a compromise so much as an admission: 200 faces cannot each
  * get a name weighed for how it lands in Zambia, and "Anvil" is a plain handle
  * rather than a wrong one. The twelve above are the ones people already carry.
+ *
+ * THE TRAILING NUMBER COMES OFF, and it is the difference between plain and
+ * wrong. An icon set numbers its near-duplicates — the second certificate is
+ * "Certificate 2", the twelfth man "Man 12" — and 35 of the 200 labels carry
+ * one. That is a 1-in-6 chance the app greets a brand new student as
+ * "Certificate 2" every morning, which is not a name, it is a row id. The
+ * argument for the fallback was that a drawing's label is at worst plain; a
+ * number on the end is the case where that stops being true.
+ *
+ * Only a number that is the WHOLE last word goes: "R2d2" is a name and keeps
+ * its digits. What is left can collide — "Pencil" and "Pencil 2" become the
+ * same handle — and collisions were already accepted here and for the same
+ * reason: two Astronauts in one course is fine, and the tiebreak, if it is
+ * ever wanted, is a number we choose rather than one the icon set left behind.
  */
 export function avatarName(avatar: string): string {
-  return AVATAR_NAMES[avatar] ?? avatarLabel(avatar);
+  const named = AVATAR_NAMES[avatar];
+  if (named) return named;
+  return avatarLabel(avatar).replace(/\s+\d+$/, "").trim() || avatarLabel(avatar);
 }
 
 /**
@@ -201,6 +218,19 @@ export type Identity = {
    * to check two strings is the trade lib/programmes exists to avoid.
    */
   programme: string | null;
+  /**
+   * The programme they TYPED, when it is one we do not carry.
+   *
+   * The same pair as `school` / `schoolName`, one level down, and for the same
+   * reason — except that here the unlisted case is the majority. 19 ZCAS
+   * programmes, 98 UNZA ones and 106 Mulungushi ones publish no curriculum, so
+   * they are not in programme-index at all and a student on one of them would
+   * otherwise reach a picker that does not contain their degree.
+   *
+   * `programme` holds OTHER_PROGRAMME when this is set, so one field always
+   * answers "did they find themselves in our list".
+   */
+  programmeName: string | null;
   year: number | null;
   /**
    * Every course they ticked off their own timetable, as curriculum slugs —
@@ -218,6 +248,19 @@ export type Identity = {
    * decide what gets built next.
    */
   curriculum: string[];
+  /**
+   * Courses they TYPED, as titles, because nothing was on file to tick.
+   *
+   * Not slugs: a course nobody has scraped has no slug to be, and inventing one
+   * on the device would mean two students' spellings becoming two courses. The
+   * title is what they said, and normalising it into something countable is a
+   * server job (lib/curriculum-text, /api/profile).
+   *
+   * This is the seam the whole "fill it in as students arrive" plan hangs on —
+   * every one of these is a line in the curriculum of a university that
+   * publishes none.
+   */
+  typedCourses: string[];
   /** Random, per device. See the note above. */
   id: string;
   /** ISO date the identity was created, for a later "member since". */
@@ -306,10 +349,17 @@ function load(): Identity | null {
         v.coursesChosen === true || (Array.isArray(v.courses) && v.courses.length > 0),
       target: parseTarget(v.target),
       programme: typeof v.programme === "string" && v.programme ? v.programme : null,
+      programmeName:
+        typeof v.programmeName === "string" && v.programmeName.trim()
+          ? v.programmeName.trim().slice(0, 160)
+          : null,
       // A year is 1..6 across every programme scraped (a masters starts at 5).
       // Anything else is a record from a build that meant something different.
       year: typeof v.year === "number" && v.year >= 1 && v.year <= 6 ? v.year : null,
       curriculum: Array.isArray(v.curriculum) ? v.curriculum.filter((c) => typeof c === "string") : [],
+      typedCourses: Array.isArray(v.typedCourses)
+        ? v.typedCourses.filter((c) => typeof c === "string")
+        : [],
       id: typeof v.id === "string" ? v.id : newId(),
       since: typeof v.since === "string" ? v.since : new Date().toISOString(),
     };
@@ -387,8 +437,10 @@ export function saveIdentity(input: {
   target?: StudyTarget | null;
   /** Omit any of these to keep what is stored. See the fields' notes. */
   programme?: string | null;
+  programmeName?: string | null;
   year?: number | null;
   curriculum?: string[];
+  typedCourses?: string[];
 }): Identity {
   const prev = load();
   const next: Identity = {
@@ -404,8 +456,19 @@ export function saveIdentity(input: {
     // `undefined` keeps whatever is stored; an explicit null clears it.
     target: input.target === undefined ? (prev?.target ?? null) : parseTarget(input.target),
     programme: input.programme === undefined ? (prev?.programme ?? null) : input.programme,
+    // Only OTHER_PROGRAMME carries a typed name, on the same rule the school
+    // pair follows: picking a listed programme later must not leave the old
+    // typed one behind to be read as their degree.
+    programmeName:
+      input.programme !== undefined && input.programme !== OTHER_PROGRAMME
+        ? null
+        : input.programmeName === undefined
+          ? (prev?.programmeName ?? null)
+          : (input.programmeName?.trim() || null),
     year: input.year === undefined ? (prev?.year ?? null) : input.year,
     curriculum: input.curriculum === undefined ? (prev?.curriculum ?? []) : [...new Set(input.curriculum)],
+    typedCourses:
+      input.typedCourses === undefined ? (prev?.typedCourses ?? []) : [...new Set(input.typedCourses)],
     id: prev?.id ?? newId(),
     since: prev?.since ?? new Date().toISOString(),
   };
@@ -448,10 +511,12 @@ export function saveOnboarding(input: {
   /** Omit to keep whatever is stored; the flow only passes this from the
    *  question that asks for it. */
   target?: StudyTarget | null;
-  /** Same rule for all three: passed only by the question that asks. */
+  /** Same rule for all of these: passed only by the question that asks. */
   programme?: string | null;
+  programmeName?: string | null;
   year?: number | null;
   curriculum?: string[];
+  typedCourses?: string[];
 }): Identity {
   const prev = assignIdentity();
   return saveIdentity({
@@ -463,8 +528,10 @@ export function saveOnboarding(input: {
     coursesChosen: input.coursesChosen,
     ...(input.target === undefined ? {} : { target: input.target }),
     ...(input.programme === undefined ? {} : { programme: input.programme }),
+    ...(input.programmeName === undefined ? {} : { programmeName: input.programmeName }),
     ...(input.year === undefined ? {} : { year: input.year }),
     ...(input.curriculum === undefined ? {} : { curriculum: input.curriculum }),
+    ...(input.typedCourses === undefined ? {} : { typedCourses: input.typedCourses }),
   });
 }
 
@@ -542,8 +609,13 @@ export type AccountIdentity = {
    *  their phone must not be asked again on a borrowed laptop — and this is the
    *  answer that took the most taps to give. */
   programme: string | null;
+  programmeName: string | null;
   year: number | null;
   curriculum: string[];
+  /** Travels for the same reason, and matters more: for a student at a
+   *  university that publishes no curriculum this list IS their timetable, and
+   *  there is nothing on file to rebuild it from if it stays on one phone. */
+  typedCourses: string[];
 };
 
 /** The device's identity shaped for account metadata, or null before any has
@@ -562,8 +634,10 @@ export function accountIdentity(): AccountIdentity | null {
         coursesChosen: v.coursesChosen,
         target: v.target,
         programme: v.programme,
+        programmeName: v.programmeName,
         year: v.year,
         curriculum: v.curriculum,
+        typedCourses: v.typedCourses,
       }
     : null;
 }
@@ -593,6 +667,10 @@ export function parseAccountIdentity(v: unknown): AccountIdentity | null {
     coursesChosen: o.coursesChosen === true,
     target: parseTarget(o.target),
     programme: typeof o.programme === "string" && o.programme ? o.programme.slice(0, 120) : null,
+    programmeName:
+      typeof o.programmeName === "string" && o.programmeName.trim()
+        ? o.programmeName.trim().slice(0, 160)
+        : null,
     year: typeof o.year === "number" && o.year >= 1 && o.year <= 6 ? o.year : null,
     /* Capped. Every other field here is one value; this is a list a signed-in
        browser can write freely, and unsafeMetadata has a size limit that a
@@ -600,6 +678,16 @@ export function parseAccountIdentity(v: unknown): AccountIdentity | null {
        is 33 courses. */
     curriculum: Array.isArray(o.curriculum)
       ? o.curriculum.filter((c): c is string => typeof c === "string").slice(0, 60)
+      : [],
+    /* Capped harder than `curriculum` and per-entry, because these are free
+       text a signed-in browser writes: 20 courses of 90 characters is more
+       than any real timetable and still nowhere near unsafeMetadata's limit. */
+    typedCourses: Array.isArray(o.typedCourses)
+      ? o.typedCourses
+          .filter((c): c is string => typeof c === "string")
+          .map((c) => c.trim().slice(0, 90))
+          .filter(Boolean)
+          .slice(0, 20)
       : [],
   };
 }
@@ -651,8 +739,10 @@ function mergeAccount(acct: AccountIdentity, prev: Identity | null): Identity {
        programme it was picked from. Splitting them across a merge would give a
        student one programme's ticks read against another's timetable. */
     programme: takeCourses ? acct.programme : (prev?.programme ?? null),
+    programmeName: takeCourses ? acct.programmeName : (prev?.programmeName ?? null),
     year: takeCourses ? acct.year : (prev?.year ?? null),
     curriculum: takeCourses ? acct.curriculum : (prev?.curriculum ?? []),
+    typedCourses: takeCourses ? acct.typedCourses : (prev?.typedCourses ?? []),
     id: prev?.id ?? newId(),
     since: acct.since,
   };
@@ -679,9 +769,12 @@ export function matchesAccount(id: Identity | null, acct: AccountIdentity): bool
        the upward write would never fire — the answer would live on one phone
        forever. */
     id.programme === next.programme &&
+    id.programmeName === next.programmeName &&
     id.year === next.year &&
     id.curriculum.length === next.curriculum.length &&
-    id.curriculum.every((s, i) => s === next.curriculum[i])
+    id.curriculum.every((s, i) => s === next.curriculum[i]) &&
+    id.typedCourses.length === next.typedCourses.length &&
+    id.typedCourses.every((s, i) => s === next.typedCourses[i])
   );
 }
 
@@ -696,7 +789,8 @@ export function accountBehind(id: Identity | null, acct: AccountIdentity): boole
     (!acct.coursesChosen && id.coursesChosen) ||
     (!acct.target && !!id.target) ||
     (!acct.programme && !!id.programme) ||
-    (!acct.curriculum.length && id.curriculum.length > 0)
+    (!acct.curriculum.length && id.curriculum.length > 0) ||
+    (!acct.typedCourses.length && id.typedCourses.length > 0)
   );
 }
 

@@ -631,3 +631,133 @@ export function CoursePicker({
     </>
   );
 }
+
+/**
+ * The course list for a student whose programme nobody has on file — typed,
+ * not ticked, because there is nothing to tick.
+ *
+ * This is the majority case, not an edge: seven of the ten universities in the
+ * picker publish no curriculum anywhere, and so do 19 ZCAS programmes, 98 UNZA
+ * ones and 106 of Mulungushi's 107. Sending those students to a list of the
+ * four courses we have built and calling it their timetable was the hole.
+ *
+ * IT IS STILL THE TICK ROW. What they type becomes a row like any other and is
+ * unticked the same way — the owner's standing rule that this flow asks every
+ * question with one control, so nobody meets a form field where the last screen
+ * had a list.
+ *
+ * `suggested` is what earlier students on the same programme said they were
+ * taking, and it is the point of the whole arrangement: the first student types
+ * eight courses into an empty box, the second is offered those eight back and
+ * corrects them, and by the fifth the list is better than anything the
+ * university publishes. `known` is the typeahead over courses the pipeline
+ * already carries, so a typed course lands on the same course as a scraped one
+ * rather than beside it.
+ */
+export function TypedCoursePicker({
+  titles,
+  suggested,
+  known,
+  query,
+  onQuery,
+  onToggle,
+  onAdd,
+  fill,
+}: {
+  /** What they have said they are taking, in the order they said it. */
+  titles: string[];
+  /** Reported by students already on this programme, most-agreed first. */
+  suggested: { title: string; students: number }[];
+  /** Typeahead hits from the courses we already know about. */
+  known: string[];
+  query: string;
+  onQuery: (v: string) => void;
+  onToggle: (title: string) => void;
+  onAdd: (title: string) => void;
+  fill?: boolean;
+}) {
+  const has = (t: string) => titles.some((x) => x.toLowerCase() === t.toLowerCase());
+  /* Their own answers first, then anything offered they have not taken. A
+     suggestion they already ticked must not appear twice — it is one course. */
+  const offered = [...suggested.map((s) => s.title), ...known].filter(
+    (t, i, all) => !has(t) && all.findIndex((x) => x.toLowerCase() === t.toLowerCase()) === i,
+  );
+  const typed = query.trim();
+  /* The escape hatch that makes the whole screen work offline and for a course
+     nobody has ever named: whatever they typed, exactly as typed. */
+  const canAdd = typed.length >= 3 && !has(typed);
+
+  return (
+    <>
+      <div className="flex gap-2">
+        <input
+          value={query}
+          onChange={(e) => onQuery(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && canAdd) {
+              e.preventDefault();
+              onAdd(typed);
+            }
+          }}
+          placeholder="Type a course, then add it"
+          aria-label="Add a course"
+          maxLength={90}
+          className={FIELD}
+        />
+        <button
+          type="button"
+          disabled={!canAdd}
+          onClick={() => onAdd(typed)}
+          aria-label={typed ? `Add ${typed}` : "Add course"}
+          className={
+            "squircle h-11 shrink-0 rounded-xl px-4 font-display text-[15px] font-semibold transition-colors " +
+            (canAdd ? "bg-ink text-white" : "bg-active text-placeholder")
+          }
+        >
+          Add
+        </button>
+      </div>
+
+      <div className={"mt-2 flex flex-col gap-2 " + (fill ? "" : "max-h-[38dvh] overflow-y-auto")}>
+        {titles.map((t) => (
+          <button
+            key={"on:" + t}
+            type="button"
+            onClick={() => onToggle(t)}
+            aria-pressed
+            className={rowTone(true)}
+          >
+            <Tick on />
+            <span className="min-w-0 flex-1 truncate font-display text-[15px] font-semibold leading-snug text-ink">
+              {t}
+            </span>
+          </button>
+        ))}
+        {offered.map((t) => {
+          const votes = suggested.find((s) => s.title === t)?.students ?? 0;
+          return (
+            <button key={"off:" + t} type="button" onClick={() => onToggle(t)} aria-pressed={false} className={rowTone(false)}>
+              <Tick on={false} />
+              <span className="min-w-0 flex-1">
+                <span className="block truncate font-display text-[15px] font-medium leading-snug text-ink-2">{t}</span>
+                {/* Only where somebody actually said so. "1 student" is a
+                    weaker claim than silence and reads as a recommendation the
+                    app is making rather than a fact about their classmates. */}
+                {votes > 1 && (
+                  <span className="mt-0.5 block font-display text-[13px] leading-5 text-muted">
+                    {votes} students on your programme
+                  </span>
+                )}
+              </span>
+            </button>
+          );
+        })}
+        {titles.length === 0 && offered.length === 0 && (
+          <p className="px-0.5 py-2 text-[13px] leading-5 text-muted">
+            Nobody has listed this programme yet — so yours becomes the list the next student sees.
+          </p>
+        )}
+      </div>
+    </>
+  );
+}

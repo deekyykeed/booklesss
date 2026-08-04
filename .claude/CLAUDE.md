@@ -354,6 +354,68 @@ exist), **7 University of Greenwich links 404** (`link_status='dead-404'`), and
 which is why `stepsFor` in the onboarding flow skips the year question when a
 programme's `years` is empty.
 
+### Where a Student's Answers Live — and why there are three copies
+
+Onboarding collects a university, a programme, a year and a course list. Each
+copy of that answers a different question, and none of them is redundant:
+
+| Copy | What it is for | Where |
+|---|---|---|
+| **localStorage** | Instant, offline, works signed-out | `booklesss:identity:v1`, `lib/identity` |
+| **Clerk `unsafeMetadata`** | Travels with the person, so a second device resumes with **no network call** | `AccountSignal` reconciles it |
+| **Supabase `students`** | The only copy that can be **asked a question** | written by `POST /api/profile` |
+
+Clerk's copy cannot be queried in aggregate — "what are CBU students being
+taught?" is unanswerable from a per-user metadata blob you read one row at a
+time. With seven of ten universities publishing no curriculum, that question is
+how the curriculum gets built at all, which is why the Supabase copy exists.
+
+**The browser never writes Supabase.** `lib/supabase-admin.ts` is `server-only`
+(importing it from a client component is a build error) and every write goes
+through `/api/profile`, which takes the user id **from the Clerk session, never
+from the body** — the only thing stopping one signed-in student overwriting
+another's timetable. `students` and `student_courses` have RLS on with no
+policies, like the pipeline tables.
+
+**The sync fails soft, always.** No Clerk, no Supabase, a bad row, a dropped
+connection — all answer 200 and the flow carries on against the device's copy.
+Losing one student's answers is recoverable; losing the student is not.
+
+### Onboarding When We Don't Have Their Curriculum (which is most of the time)
+
+Every student now gets the same five questions — university, programme, year,
+courses, weekly goal. It used to branch: a university whose curriculum we had
+scraped got programme → year → courses, and **everyone else was sent straight to
+a list of the four courses we have BUILT and told it was their timetable**. Since
+most students are in the second group, the branch that skipped the questions was
+the branch that ran.
+
+Only what *answers* a question changes:
+
+- **Programme** — a list to tap where `programme-index.json` has one, a line to
+  type where it doesn't. The **"Mine isn't listed"** row is there even when the
+  list is: 19 ZCAS programmes and 98 UNZA ones publish no curriculum, so they
+  are absent from the index entirely. Stored as `programme: OTHER_PROGRAMME` +
+  `programmeName`, the same pair as `school` / `schoolName`.
+- **Year** — read off the programme where we know it, 1–6 where we don't.
+- **Courses** — ticked off the timetable, or **typed** (`TypedCoursePicker`),
+  with an "I'll add these later" answer so a sign-up is never blocked on typing
+  eight course names.
+
+**What a student types becomes the curriculum for the next one.**
+`student_courses` records each title with a normalised form
+(`lib/curriculum-text`, shared by browser and server so both dedupe the same
+way), and `GET /api/curriculum?university=&programme=&year=` offers back what
+earlier students on that programme listed — "4 students on your programme". The
+first student types eight courses into an empty box; the fifth confirms a list
+better than anything the university publishes. `?q=` is a typeahead over the
+602 course titles the pipeline already knows, so a typed course lands on the
+**same** slug as a scraped one rather than beside it.
+
+Nothing promotes itself. `tools/reported_curriculum.sql` is the by-hand review:
+which campuses are actually signing up, which courses two or more students
+agree on, and which of those the pipeline already carries.
+
 ## Project Tracking (Linear)
 
 This project's Linear workspace is **Booklesss** (team: `Booklesss`, team id `3e290b53-b6cc-4f93-8ad4-03c0fc04a4c1`), reached via the **`linear-server`** MCP connection (tools prefixed `mcp__linear-server__*`).

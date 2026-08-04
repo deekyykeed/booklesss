@@ -12,6 +12,7 @@ import {
   useIdentity,
 } from "@/lib/identity";
 import { referralCode, setMyReferralCode } from "@/lib/referral";
+import { syncProfile } from "@/lib/profile-sync";
 
 /* The one component in the reader that asks Clerk whether anybody is signed
  * in, and it renders nothing. It copies the answer into lib/account, which is
@@ -88,6 +89,14 @@ export function AccountSignal() {
        metadata has been read, and a gate waiting on that must not be left
        holding a page because the two happened to already agree. */
     setAccountRead(true);
+
+    /* And the third copy. AFTER the reconcile, deliberately: this is the one
+       place that knows the settled answer rather than whichever half a single
+       device happened to hold, and posting mid-reconcile would write the
+       placeholder identity a fresh phone rolls for itself over the real one.
+       De-duped inside syncProfile, so re-running on every identity change
+       costs a string comparison. */
+    syncProfile(identity);
   }, [user, identity, hydrated]);
 
   return null;
