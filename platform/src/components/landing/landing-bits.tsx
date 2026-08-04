@@ -1,11 +1,18 @@
 "use client";
 
-import { useEffect } from "react";
-import Link from "next/link";
+import { useEffect, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
+import { SignUp } from "@clerk/nextjs";
 import { useSignedIn } from "@/lib/account";
 import { clerkEnabled } from "@/lib/clerk";
+import { accountIdentity } from "@/lib/identity";
 import { useProgress } from "@/lib/progress";
+import { referrer } from "@/lib/referral";
+
+/** A store that never changes — see LandingAuth. Module-level so its identity
+ *  is stable across renders, which is what stops useSyncExternalStore
+ *  resubscribing on every one. */
+const NEVER_CHANGES = () => () => {};
 
 /* The landing page's client pieces. The page itself is a server component so
  * its whole pitch — name, purpose, privacy link — is in the static HTML,
@@ -36,47 +43,56 @@ export function ToApp() {
  * components/home/OfflineTools — a better moment for it in any case, since a
  * stranger at the front door has not read a word yet. */
 
-/**
- * The front door's one action: a button to the door.
+/** Clerk's own sign-up card, inline on the front door.
  *
- * IT WAS CLERK'S SIGN-UP CARD, INLINE HERE, and that produced second-class
- * accounts. Once the account became question zero of /onboarding — in our own
- * markup, deriving a handle from the email (lib/handle) — this card was a
- * SECOND way in that skipped all of it: a student arriving through the page
- * the marketing points at got a Clerk-shaped form and no handle, while a
- * student stopped by a checkpoint got ours and did. Two doors into one product,
- * and the busier one was the worse one.
+ *  THE ACCOUNT COMES FIRST (owner, 2026-08-03: "after email address and sign
+ *  up they go to this page and start filling in a bunch of details … add back
+ *  the clerk thing on the home page"). The questions moved to /onboarding and
+ *  this card sends them there — an email is the thing worth having early, and
+ *  a student who has just made an account will answer three questions where a
+ *  stranger might not have started at all.
  *
- * So the four surfaces collapsed onto /onboarding — this card, /sign-up and
- * /sign-in — and what is left here is a button. Nothing is lost: the referral
- * code and the device identity that used to ride this card's unsafeMetadata are
- * attached by the account step instead, which is where the account is now made.
- *
- * A BUTTON IS ALSO THE RIGHT THING FOR A FRONT DOOR ON ITS OWN TERMS. This page
- * is read by somebody who does not yet know what Booklesss is, and a form is an
- * answer to a question they have not asked. The headline, the paragraph and the
- * feature sections make the case; one control acts on it.
- *
- * Still a client component for one reason: `clerkEnabled`. A build with no keys
- * has nothing to send anybody to, and the button should not be drawn at all.
- */
+ *  `routing="hash"` because the card is not on its dedicated route: Clerk's
+ *  sub-steps run in the URL fragment right here on "/". unsafeMetadata carries
+ *  who referred this device and who it has been reading as — read after mount,
+ *  since both live in localStorage and the server renders a held space. */
 export function LandingAuth() {
-  if (!clerkEnabled) return null;
+  /* Past the server render, which is what `referrer()` and `accountIdentity()`
+     below both need — they read localStorage, which does not exist during it.
+     useSyncExternalStore rather than the useState + useEffect(setReady) this
+     used to be: that pattern is a cascading render and the lint rule that
+     catches it is right. A store that never changes, whose server snapshot is
+     false and whose client snapshot is true, gives the same answer in one
+     render instead of two. Same shape as `useIsClient` in the onboarding
+     flow. */
+  const ready = useSyncExternalStore(
+    NEVER_CHANGES,
+    () => true,
+    () => false,
+  );
 
+  if (!clerkEnabled) return null;
+  if (!ready) return <div className="min-h-[420px]" aria-hidden="true" />;
+
+  const referredBy = referrer();
+  const identity = accountIdentity();
   return (
-    <div className="flex flex-col items-center gap-3">
-      <Link
-        href="/onboarding"
-        className="squircle inline-flex h-12 items-center justify-center rounded-2xl bg-ink px-7 text-[16px] font-medium text-white transition-opacity hover:opacity-90"
-      >
-        Get started
-      </Link>
-      <Link
-        href="/onboarding?mode=sign-in"
-        className="text-[14px] text-muted transition-colors hover:text-ink"
-      >
-        Already have an account? <span className="font-medium text-ink">Sign in</span>
-      </Link>
+    <div className="flex min-h-[420px] justify-center">
+      <SignUp
+        routing="hash"
+        signInUrl="/sign-in"
+        /* New accounts go and answer the three questions. Someone who flips to
+           "Sign in" already has answers, so they go straight to the app. */
+        forceRedirectUrl="/onboarding"
+        signInForceRedirectUrl="/dashboard"
+        /* No header: the page's headline right above already says what this
+           is, and Clerk's own title would be the second one on screen. */
+        appearance={{ elements: { header: { display: "none" } } }}
+        unsafeMetadata={{
+          ...(referredBy ? { referredBy } : {}),
+          ...(identity ? { identity } : {}),
+        }}
+      />
     </div>
   );
 }
