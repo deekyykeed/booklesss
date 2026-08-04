@@ -52,12 +52,10 @@ export function ToApp() {
  * code and the device identity that used to ride this card's unsafeMetadata are
  * attached by the account step instead, which is where the account is now made.
  *
- * IT MAKES THIS PAGE MORE LIKELY TO PASS GOOGLE'S BRANDING REVIEW, not less,
- * which is the happy accident. The homepage rules want something static that
- * explains the app and does not require signing in; an embedded auth widget is
- * the opposite of that. Google sign-in is off for a while yet (owner,
- * 2026-08-04) — when it comes back, this page is in better shape for it than it
- * was.
+ * A BUTTON IS ALSO THE RIGHT THING FOR A FRONT DOOR ON ITS OWN TERMS. This page
+ * is read by somebody who does not yet know what Booklesss is, and a form is an
+ * answer to a question they have not asked. The headline, the paragraph and the
+ * feature sections make the case; one control acts on it.
  *
  * Still a client component for one reason: `clerkEnabled`. A build with no keys
  * has nothing to send anybody to, and the button should not be drawn at all.

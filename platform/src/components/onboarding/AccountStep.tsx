@@ -54,12 +54,18 @@ import { Button } from "@/components/ui/Button";
  * the bottom of the screen like every other step's. Two fields fit on a phone
  * without scrolling, so there is nothing for a floating button to solve here.
  *
- * NO "CONTINUE WITH GOOGLE" YET. The deleted file had one and it worked, but
- * Google sign-in is currently switched OFF in Clerk — a workaround for the
- * OAuth branding check, which rejects any homepage that redirects. Rendering
- * the button while the strategy is disabled is a door that opens onto an error.
- * The block comes back from a636c3c^ the day the branding check passes; the
- * seam is marked below.
+ * EMAIL AND PASSWORD IS THE WHOLE WAY IN, and that is a complete auth surface
+ * rather than a reduced one. A student types two fields and has an account;
+ * nothing here waits on anything, and nothing elsewhere in the app expects a
+ * strategy that is not on — there is no SSO callback route, no OAuth branch, no
+ * code path that is dark. Owner, 2026-08-04: "everything should still work
+ * normally now even without Google auth, it should not be a constraint."
+ *
+ * A social button is therefore an ADDITION, not a restoration of something
+ * missing. The deleted file had a working one and the seam is marked below, so
+ * whenever a strategy is enabled in Clerk it is a block of markup and a
+ * `signUp.sso()` call on this same Signals API. Until then this is not a form
+ * with a hole in it.
  * ------------------------------------------------------------------ */
 
 /** How many suffixed handles to try before creating the account without one.
@@ -242,10 +248,11 @@ export function AccountStep({
 
   return (
     <form onSubmit={submit} className="flex w-full flex-col gap-2.5">
-      {/* SEAM: "Continue with Google" + the OR divider go here when the OAuth
-          branding check passes. Recover both from a636c3c^:AuthForm.tsx — the
-          `google()` handler uses signUp.sso()/signIn.sso() from this same
-          Signals API and needs no rewrite. */}
+      {/* SEAM: a social button and its OR divider go here if a strategy is ever
+          enabled in Clerk. Recover both from a636c3c^:AuthForm.tsx — the
+          handler uses signUp.sso()/signIn.sso() from this same Signals API and
+          needs no rewrite. Above the fields when it lands: the tap that needs
+          no keyboard goes over the ones that do. */}
 
       <label>
         <span className="sr-only">Email</span>
