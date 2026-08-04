@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-04 (session 43)
+**Last updated:** 2026-08-04 (session 44)
 
 ---
 
@@ -92,57 +92,74 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
-**From session 43 (2026-08-04 evening, onboarding rebuilt predictive). Numbered
-43 because the social session took 42 while this one was running — two sessions
-in the tree all evening. The first item is half-built and the only one that
-blocks anything.**
-- [ ] ⚠️ **THE AVATAR CLAIM SYSTEM IS HALF BUILT.** The owner's design: a student
-      picks from **twelve UNCLAIMED faces**, so no two people share one. The
-      **pool is in** — all 200 Kameleon Colors icons at
-      `platform/public/avatars/<id>.svg`, 340KB on disk and ~0KB in the JS
-      bundle. **Nothing else exists yet:** no `avatar_claims` table, no endpoint
-      to hand out twelve free ones, no picker step. Today an avatar is still
-      **assigned at random and can collide**. The claim needs a server —
-      Supabase table with a unique constraint on `avatar_id` AND on `user_id`,
-      written through a Next route handler that verifies the Clerk session with
-      the service role. Clerk's user id is not a Supabase auth user, so RLS
-      cannot verify it and a client-side write would let anyone claim anything.
-      **Ceiling accepted by the owner:** 200 icons = 200 students, "not a problem
-      right now — I can pull in the other variants" (there are 200 `-duo` twins
-      excluded, plus Kameleon Pop and Duo free sets at 200 each).
-- [ ] **188 of the 200 avatars have no considered name.** `AVATAR_NAMES` in
-      `lib/identity.tsx` still names only the original twelve; `avatarName()`
-      falls back to the icon's own label for the rest, so a student can be
-      called "Anvil" or "Nuclear mushroom". Fine as a handle, not all fine as a
-      person — worth a pass over the list for anything unflattering in Zambia
-      before the picker ships. **`spongebob`, `r2d2`, `wall-e` and `pokeball`
-      are in the set and are other people's trademarks** — drop them from the
-      pool rather than offer them.
-- [ ] **Settings contradicts onboarding.** It still asks the old
-      whole-library course question and writes `courses` without touching
-      `curriculum`, so a student who onboarded predictively meets a dumber
-      version of the same question. `CurriculumPicker` is built and grouped by
-      year and is the thing Settings should use — including the owner's "add
-      courses that are not in the year they're in".
-- [ ] ⚠️ **Nobody has tapped the five-step flow end to end.** The owner DID
-      complete a sign-up and reach the dashboard today (**the first ever**), but
-      the flow has changed many times since. Everything else was verified by
-      builds, types and grepping deployed bundles — never by a thumb. Five
-      steps, two code paths (curriculum vs plain library), a 380ms beat,
-      direction-aware transitions, Back across all of it, and a resume that
-      reads the record.
-- [ ] **Kwame Nkrumah has no crest** — `knu.ac.zm` does not resolve at all
-      (not slow: DNS failure). The other nine are real, fetched and committed to
-      `platform/public/schools/`. If the real domain surfaces,
-      `scripts/gen-school-crests.py` takes it in one line.
-- [ ] **Google sign-in is still OFF in production Clerk** — unchanged from this
-      morning, and the thing that was blocking its branding check is already
-      fixed. See session 40's block below.
-- [ ] **The onboarding gate is still client-side only.** `RequireOnboarding` is
-      a React component reading localStorage; there is no middleware and
-      `platform/proxy.ts` does not exist. The durable fix is Clerk session
-      claims + a middleware gate, so `/dashboard` cannot render for an
-      incomplete account on any device.
+**From session 44 (2026-08-04 night, the auth flow finished end to end). Linear
+was unreachable this session — nothing below has a BOO issue yet, and raising
+them is the first item.**
+- [ ] ⚠️ **Raise BOO issues for session 44's work.** `linear-server` needs a
+      one-time OAuth and this session was non-interactive, so tonight's ten-step
+      onboarding, the Supabase `students` columns and the four bug fixes are
+      recorded in this file ONLY.
+- [ ] ⚠️ **The privacy policy does not mention the WhatsApp number.** The screen
+      tells students it is "how we check in on you when you fall behind" — that
+      promise has to exist in `/privacy` before real students reach it. It is now
+      the most sensitive field in the database and the only one that can reach a
+      person off-platform.
+- [ ] ⚠️ **THE AVATAR CLAIM SYSTEM IS STILL HALF BUILT — the picker now exists,
+      the uniqueness does not.** `AvatarPicker` deals twelve of the 200 and
+      writes the choice, but **two students can still pick the same face**. The
+      owner's design is twelve UNCLAIMED faces. Needs the `avatar_claims` table
+      with a unique constraint on `avatar_id` AND `user_id`, written through a
+      route handler that verifies the Clerk session with the service role —
+      Clerk's user id is not a Supabase auth user, so RLS cannot verify it.
+- [ ] **`spongebob`, `r2d2`, `wall-e` and `pokeball` are in the avatar pool and
+      are other people's trademarks.** The picker now shows random twelves, so
+      they WILL be offered. Drop them from the pool. (Was flagged in 43 when
+      nothing showed them; it shows them now.)
+- [ ] **188 of the 200 avatars have no considered name.** `avatarName()` falls
+      back to the icon's label — now with the trailing digit stripped, so
+      "Certificate 2" is "Certificate" — but "Anvil" and "Nuclear mushroom" are
+      still people. Worth a pass for anything unflattering in Zambia.
+- [ ] **Settings still contradicts onboarding.** It asks the old whole-library
+      course question and writes `courses` without touching `curriculum`,
+      `semester`, `programme` or any of tonight's fields. A student who onboarded
+      predictively meets a dumber version of the same question, and there is
+      still **no way to change the weekly goal at all** — which the realism
+      warning now tells them is deliberate ("you can't change this for a while").
+      That is true today; if Settings gains a goal editor, that copy must go.
+- [ ] **Username is still ON in production Clerk and should come off.** Clerk
+      normalises usernames to lowercase, which is what made the greeting render
+      "deeky" — the app never touched the case (`displayName()` returns
+      `user.username` verbatim). "First and last name" is now ON and OPTIONAL,
+      which is the right pairing: the sign-up modal stays short, onboarding
+      collects the real name, and AccountSignal writes it onto the user. Once a
+      few accounts carry a real `firstName`, turn Sign-up/Sign-in with username
+      off so the modal loses the field.
+- [ ] **Merge or close `fix/landing-redirect-loop`.** Pushed, unmerged at the
+      owner's request. Fixes a real loop: `ToApp` sent any device with
+      `daysStudied > 0` to `/dashboard`, `RequireAccount` sent signed-out
+      visitors back to `/`, and a signed-out device that had read anything
+      bounced between them forever.
+- [ ] **`/dashboard` is still gated client-side only.** `/onboarding` is now
+      checked on the server in its own page; the dashboard still relies on
+      `RequireAccount`, which paints for an instant first. Same fix, same file
+      pattern — do NOT use middleware (see session 44 Dead Ends).
+- [ ] **Notifications are parked until there is a push pipeline.** Decided this
+      session: `Notification.requestPermission()` is one-shot per origin, a
+      granted permission does nothing without VAPID + stored subscriptions + a
+      scheduler, and iOS only allows Web Push for installed PWAs. The
+      `studyWindow` answer collected tonight is the input it will need.
+- [ ] **Kwame Nkrumah has no crest** — `knu.ac.zm` does not resolve (DNS
+      failure, not slow). The other nine are committed to
+      `platform/public/schools/`. One line in `scripts/gen-school-crests.py` if
+      the real domain surfaces.
+- [ ] **Google sign-in is still OFF in production Clerk**, and the thing that was
+      blocking its branding check is long fixed. See session 40.
+
+**✅ Closed in session 44:** "First and last name" turned ON and left OPTIONAL in
+production Clerk — the exact pairing the onboarding name step needs; the
+five-step flow HAS now been walked end to end
+(ten steps, automated, record asserted — see What Worked); the onboarding gate is
+no longer client-side only; the semester/course-load overstatement is fixed.
 
 **From session 42 (2026-08-04, the social day that had nothing to post). The
 first two are the ones that decide whether the reader is postable at all.**
@@ -838,6 +855,100 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-04 (session 44 — the auth flow finished, and four bugs that only a thumb could find)
+
+Numbered 44: session 43 wrapped while a parallel session was still writing, and
+that session landed `64fe907` after 43's wrap commit. Both were in the tree
+again tonight — see Dead Ends.
+
+**Done — onboarding went from five questions to ten, and every one was tapped.**
+- **Name and face are asked** (owner: "i didnt get to pick my avatar" / "i didnt
+  set my name with that"). First screen. `AvatarPicker` deals twelve of the 200,
+  shuffled not paged, with the face they already have always in the grid.
+  `nameChosen` sits beside `name` for the same reason `coursesChosen` sits beside
+  `courses`: the field is never empty, so it cannot say whether anyone was asked.
+- **The name writes onto the Clerk USER**, not just its metadata (owner: "i wont
+  require them so that the modal is not too long … i will require them during
+  onboarding and thats how ill get them into Clerk"). AccountSignal does it, and
+  only for a chosen name — writing the given ones up would fill Clerk's Users
+  table with two hundred Astronauts.
+- **The semester question**, so a student ticks 4 courses and not 8. It also
+  fixed `course_load` (which had been judging a picked count against a year's 8
+  when the norm is 4 a semester) and the demand ranking, which could not say
+  which semester to build for.
+- **WhatsApp (required), the study window on its own screen, the realism warning,
+  and "how did you hear about us".** All four of the owner's asks.
+- **The retake is inferred, never asked** — picked vs expected, stored beside the
+  number it was judged against so the column is auditable.
+- **Referrals became countable**: `referred_by` and `referral_code` now land on
+  `students` with indexes, so "how many did Deeky bring" is a GROUP BY instead of
+  a full user export.
+- **Exam dates went on the CAMPUS, not the student** (owner: "id know since ill be
+  getting things like their academic calendar"). `universities` gained term/exam
+  dates, `gen-schools` carries them, `weeksUntilExams` reads them. Absent for
+  nine of ten campuses — a missing date means draw no countdown, never "no exams".
+- **`ActionBar`** — the course card's button extracted, now also Save all lessons
+  and Add to home screen, side by side with the install in ink.
+- **`PendingCourses`** — the picked-but-unbuilt half of a timetable, in a closed
+  `<details>`. No launch dates: there is no such data and a guessed one is a
+  promise nobody made.
+- **Onboarding is gated server-side.** `/onboarding` checks the session in the
+  page and is now `ƒ`. Every lesson stays static.
+
+**What Worked:**
+- **Walking the whole flow in Playwright with Clerk keys blanked.** With
+  `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=` the flow's own signed-out redirect never
+  fires (it tests `=== false`, and unset leaves it null), so `/onboarding`
+  renders and can be driven end to end. Script at
+  `<scratchpad>/flow.mjs` — it taps by `h1` text and dumps the final
+  localStorage record. This found three of the four bugs below; none of them
+  showed up in a build, a typecheck or a lint.
+- **Reading the record rather than the screen.** Asserting on the final
+  `booklesss:identity:v1` JSON, not on pixels, is what made "the WhatsApp step
+  never rendered" obvious — the step list printed 5 → 6 with nothing between.
+- **Measuring the button's box against the viewport** (`getBoundingClientRect()`
+  vs `window.innerHeight`) rather than eyeballing a screenshot.
+
+**Dead Ends (do not retry):**
+- ⛔ **`--vv-bottom` / visualViewport maths to pin a bottom bar.** Written to fix
+  the button being sliced in half, and it made things worse: Chrome ALREADY
+  anchors `position: fixed` to the visible viewport, and the keyboard is handled
+  by `interactive-widget=resizes-content`. The measurement was a second
+  correction on top of the browser's own, and with the keyboard open the two
+  added up and threw the button 400px up the page. The original bug was about
+  `sticky`, which is positioned in the scrollport; plain `bottom: 0` on a fixed
+  element is correct. `ViewportFit` is deleted.
+- ⛔ **`createRouteMatcher` + `auth.protect()` in `proxy.ts`** to gate onboarding.
+  Clerk's own docs now say `createRouteMatcher()` is **deprecated and logs a
+  runtime deprecation warning**, and "middleware is not the best place to protect
+  routes — protect access as close to the resource as possible". Reverted before
+  it shipped. The gate went in the page instead.
+- ⛔ **Scripted multi-edit batches that write the file once at the end.** A
+  Python `sub()` helper asserting partway through leaves the file untouched and
+  reports only the traceback — so edits that "already ran" are silently gone.
+  This is what caused the WhatsApp-step-skipped bug: the batch carrying the
+  `save()` and `firstGap` changes aborted on a later assertion and neither
+  landed. Re-grep for each change after any batch that failed.
+
+**Flags:**
+- ⚠️ **Linear was unreachable all session** — `linear-server` needs OAuth and
+  this session was non-interactive, so **no issues were created, updated or
+  closed.** Everything above is recorded here only. BOO issues for tonight's work
+  still need raising.
+- ⚠️ **The WhatsApp number is now the most sensitive thing this app stores**, and
+  the screen tells students it is "how we check in on you when you fall behind".
+  The privacy policy does not mention it. That has to be written before real
+  students see the screen.
+- ⚠️ **Adding `nameChosen`, `whatsapp`, `studyWindow` and `heardFrom` to
+  `onboardingComplete` makes every existing record incomplete** — including the
+  owner's. Everyone gets walked back through onboarding once. Intended, but it
+  reads as a bug if you are not expecting it.
+- **`fix/landing-redirect-loop` is pushed and unmerged** at the owner's request.
+  It fixes a real `/` ⇄ `/dashboard` loop: `ToApp` sent any device with
+  `daysStudied > 0` to the dashboard, and `RequireAccount` sent signed-out
+  visitors back — a device that had read anything and was not signed in bounced
+  between them forever.
 
 ### Session 2026-08-04 (session 43 — onboarding stops asking and starts knowing)
 
