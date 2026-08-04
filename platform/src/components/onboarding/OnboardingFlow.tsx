@@ -98,12 +98,28 @@ const RECOMMENDED_MINUTES = 90;
  * mis-tapped row that is worse still — the wrong answer is saved and gone
  * before they can see it was wrong.
  *
- * 380ms, against the row's own 150ms colour transition: long enough for the
- * square to finish filling and be READ as filled, short enough that a student
- * answering three questions never feels held up. The step transition's 260ms
- * runs after this, not inside it.
+ * 700ms, and it is the second time this number has gone up. It was 380 —
+ * reasoned against the row's own 150ms colour transition, so the square had
+ * time to finish filling and be read as filled. That was the right sum for the
+ * wrong quantity: filling is not reading. The owner, going through the live
+ * flow on his phone (2026-08-04): "im not being given time to look at my
+ * options … enough time to see what im selecting." At 380 the tick lands and
+ * the screen is already leaving, so what a student gets is a flicker where
+ * confirmation was meant to be — the beat existed but was too short to be
+ * spent on anything.
+ *
+ * 700 is long enough to move your eye to the row you tapped and read it back,
+ * and still under the ~1s mark where a screen starts reading as broken rather
+ * than deliberate. The step transition's 260ms runs after this, not inside it.
+ *
+ * IT NOW GOVERNS EVERY FORWARD MOVE, not only the tap-to-advance ones — same
+ * call, "put that delay through out the process". A flow that pauses on three
+ * of its questions and snaps on the other two has a rhythm a student cannot
+ * learn, and the questions that snapped were the ones with the most on screen
+ * to look at. Back is deliberately exempt: nobody needs time to confirm an
+ * answer they are leaving.
  */
-const ANSWER_BEAT_MS = 380;
+const ANSWER_BEAT_MS = 700;
 
 type Step = "school" | "programme" | "year" | "courses" | "target";
 
@@ -426,7 +442,11 @@ export function OnboardingFlow() {
        is the one place the two representations are reconciled, and everything
        downstream (lib/performance) reads `days`. */
     save({ coursesChosen: true, target: { ...target, days: picked.length, weekdays: picked } });
-    router.replace("/dashboard");
+    /* SAVED NOW, LEFT IN A MOMENT — the same split every other answer makes.
+       The write does not wait on the beat, so a student who taps Done and
+       closes the tab inside it has still finished; only the departure waits,
+       so the plan they just set is on screen long enough to have been seen. */
+    afterBeat(() => router.replace("/dashboard"));
   }
 
   /* Which way the next question comes in from. A form's movement means
@@ -453,18 +473,27 @@ export function OnboardingFlow() {
     advanceTimer.current = null;
   }
 
-  /** Show them the answer they just gave, then move. See ANSWER_BEAT_MS.
+  /** Let them see what they just chose, then do the thing. See ANSWER_BEAT_MS.
    *
    *  RE-ARMED, NOT QUEUED. Tapping a second university inside the beat cancels
-   *  the first advance and starts the wait again, so the last tap wins and a
-   *  student correcting a mis-tap is never carried forward on the strength of
-   *  the answer they just changed. */
-  function advanceAfterBeat(next: Step) {
+   *  the first and starts the wait again, so the last tap wins and a student
+   *  correcting a mis-tap is never carried forward on the strength of the
+   *  answer they just changed.
+   *
+   *  Takes an ACTION rather than a step, because the last beat in the flow does
+   *  not move to a question — it leaves for the dashboard. One timer for both
+   *  is what makes "the last tap wins" true of the Done button too. */
+  function afterBeat(run: () => void) {
     cancelAdvance();
     advanceTimer.current = setTimeout(() => {
       advanceTimer.current = null;
-      goTo(next);
+      run();
     }, ANSWER_BEAT_MS);
+  }
+
+  /** The common case: show the answer, then ask the next question. */
+  function advanceAfterBeat(next: Step) {
+    afterBeat(() => goTo(next));
   }
 
   // A timer that outlives the page would move a question under whoever is on
@@ -538,7 +567,16 @@ export function OnboardingFlow() {
                   disabled={!schoolName.trim()}
                   onClick={() => {
                     save({ coursesChosen: coursesAnswered });
-                    goTo("courses");
+                    /* TO THE PROGRAMME QUESTION, not past it. This said
+                       "courses", which was correct while the flow branched —
+                       a university we had no curriculum for skipped the two
+                       middle questions. It does not branch any more (see
+                       ORDER), so that jump left a student who picked "Another
+                       university" as the only person never asked what they
+                       study, and `firstGap` — which still checks programme —
+                       would have marched them back to it on their next visit
+                       anyway. */
+                    advanceAfterBeat("programme");
                   }}
                 >
                   {schoolName.trim() ? "Continue" : "Type your university"}
@@ -755,7 +793,7 @@ export function OnboardingFlow() {
                 onClick={() => {
                   edit({ coursesAnswered: true });
                   save({ coursesChosen: true, curriculum, courses: liveSlugsFor(prog, curriculum) });
-                  goTo("target");
+                  advanceAfterBeat("target");
                 }}
               >
                 {curriculum.length === 0
@@ -796,7 +834,7 @@ export function OnboardingFlow() {
                   onClick={() => {
                     edit({ coursesAnswered: true });
                     save({ coursesChosen: true, typedCourses, courses: builtFor(typedCourses) });
-                    goTo("target");
+                    advanceAfterBeat("target");
                   }}
                 >
                   {typedCourses.length === 0
@@ -815,7 +853,7 @@ export function OnboardingFlow() {
                   onClick={() => {
                     edit({ typedCourses: [], courses: [], coursesAnswered: true });
                     save({ typedCourses: [], courses: [], coursesChosen: true });
-                    goTo("target");
+                    advanceAfterBeat("target");
                   }}
                 >
                   I&rsquo;ll add these later
