@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { ActionBar } from "@/components/ui/ActionBar";
 import { useMemo } from "react";
 import { gateStepLink } from "@/lib/account";
 import type { CourseMeta } from "@/lib/courses";
@@ -122,44 +122,18 @@ export function CourseCard({
             the step they'd resume; the aria-label still names that step.
             It is also the card's only link — the rest of the card is a
             display, not a target. */}
-        <Link
+        <ActionBar
           href={pathForId(next)}
           /* The free-step gate (lib/account): a fresh device's first Start is
              free, a second course's Start on a signed-out device asks. */
           onClick={(e) => gateStepLink(e, pathForId(next))}
-          className="course-resume squircle relative z-10 mt-3 flex items-center justify-between gap-3 overflow-hidden px-2.5 py-1.5"
-          aria-label={`${started ? "Resume" : "Start"} ${course.title} — ${hydrated ? labelFor(next) : ""}`}
+          progress={pct}
+          prefix={started ? "Resume · " : "Start · "}
+          label={`${started ? "Resume" : "Start"} ${course.title} — ${hydrated ? labelFor(next) : ""}`}
+          className="mt-3"
         >
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-y-0 left-0"
-            style={{
-              width: `${Math.round(pct * 100)}%`,
-              backgroundColor: "rgba(23, 23, 23, 0.07)",
-              transition: "width 600ms cubic-bezier(0.16, 1, 0.3, 1)",
-            }}
-          />
-          <span className="relative min-w-0 truncate text-[13px] leading-5 text-ink">
-            <span className="text-placeholder">{started ? "Resume · " : "Start · "}</span>
-            {hydrated ? labelFor(next) : " "}
-          </span>
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill="none"
-            aria-hidden="true"
-            className="card-arrow relative shrink-0 text-muted"
-          >
-            <path
-              d="M5 12h13m0 0-5.5-5.5M18 12l-5.5 5.5"
-              stroke="currentColor"
-              strokeWidth="1.7"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </Link>
+          {hydrated ? labelFor(next) : " "}
+        </ActionBar>
       </div>
 
       {/* No stretched link over the card. It used to open the course home, so

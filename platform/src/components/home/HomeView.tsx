@@ -9,6 +9,7 @@ import { overallPerformance, overallScoreHistory } from "@/lib/performance";
 import { SolarIcon } from "@/components/icons/solar";
 import { SETTINGS_EVENT } from "@/components/identity/pickers";
 import { CourseCard } from "./CourseCard";
+import { PendingCourses } from "./PendingCourses";
 import { pickGreeting, rememberGreeting, renderGreeting, type Greeting } from "./greeting";
 import { OfflineTools } from "./OfflineTools";
 import { Spark } from "./Spark";
@@ -422,6 +423,12 @@ export function HomeView({
             );
           })}
         </div>
+
+        {/* The rest of their timetable, closed. The cards above are the
+            courses they can open; these are the ones they told us about that we
+            have not written. Directly under the grid because it is the same
+            answer continued — see PendingCourses. */}
+        <PendingCourses />
 
         {/* Under the courses on purpose: it's about the courses, and it must
             not be the first thing between a reader and opening one. */}

@@ -164,6 +164,27 @@ export function liveSlugsFor(programme: Programme | undefined, picks: string[]):
   return programme.courses.filter((c) => c.live && want.has(c.slug)).map((c) => c.live as string);
 }
 
+/**
+ * The courses they ticked that we have NOT built yet.
+ *
+ * The complement of liveSlugsFor over the same picks, and the reason it exists
+ * is that these are not nothing — they are the student's real timetable, and
+ * the owner's call (2026-08-04) is that they are shown rather than silently
+ * dropped: "i should be shown the courses i picked, ordered first with the ones
+ * that are available and then the ones that are not available in a closed
+ * dropdown below it."
+ *
+ * Sorted by year then title, so a list a student scans reads like a timetable
+ * rather than like the order they happened to tick things in.
+ */
+export function pendingCourses(programme: Programme | undefined, picks: string[]): ProgrammeCourse[] {
+  if (!programme) return [];
+  const want = new Set(picks);
+  return programme.courses
+    .filter((c) => !c.live && want.has(c.slug))
+    .sort((a, b) => (a.year ?? 99) - (b.year ?? 99) || a.title.localeCompare(b.title));
+}
+
 /** Every course this programme teaches that we have actually built. Used to
  *  tell a student what is ready without making them hunt for it. */
 export function builtCount(programme: Programme | undefined): number {

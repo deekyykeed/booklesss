@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MynaIcon } from "@/components/icons/myna";
+import { ActionBar } from "@/components/ui/ActionBar";
 import { pathForId } from "@/lib/course";
 import { enrolledCourses } from "@/lib/courses";
 import { useIdentity } from "@/lib/identity";
@@ -179,38 +180,40 @@ export function OfflineTools() {
         </button>
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-2">
-        <button
-          type="button"
+      {/* ONE BUTTON SHAPE, THE COURSE CARD'S (owner, 2026-08-04: "the exact
+          button in the course card should be its own component and ill use it
+          throughout all the buttons within the app like the add to homescreen
+          and the saveall lessons"). These were two hand-rolled pills with their
+          own radius, padding and hover — a third and fourth spelling of a
+          control the app already had.
+
+          They stack rather than sitting side by side, because the shape is
+          full-width by definition: it is a bar with its label at one end and an
+          arrow at the other, and two of them in a row would each be half a bar.
+
+          SAVING SHOWS ITS PROGRESS IN THE FILL, which is the whole reason this
+          shape was worth sharing — the course card uses it for how far through
+          a course you are, and this is the same idea about a different number.
+          The count stays in the label, because a fill answers "roughly" and
+          somebody watching 200 lessons download wants the actual figure. */}
+      <div className="mt-3 flex flex-col gap-2">
+        <ActionBar
           onClick={saveEverything}
           disabled={saving}
-          className="rounded-full bg-btn px-3.5 py-1.5 text-[13px] font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+          progress={saving && progress.total ? progress.done / progress.total : undefined}
         >
           {saving
             ? `Saving ${progress.done} of ${progress.total}…`
             : savedAt
               ? "Save again"
               : "Save all lessons"}
-        </button>
+        </ActionBar>
 
-        {canInstall &&
-          (installEvent ? (
-            <button
-              type="button"
-              onClick={install}
-              className="rounded-full border border-line-2 bg-white px-3.5 py-1.5 text-[13px] font-medium text-ink transition-colors hover:border-ink-2"
-            >
-              Add to home screen
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setShowIosHelp((v) => !v)}
-              className="rounded-full border border-line-2 bg-white px-3.5 py-1.5 text-[13px] font-medium text-ink transition-colors hover:border-ink-2"
-            >
-              Add to home screen
-            </button>
-          ))}
+        {canInstall && (
+          <ActionBar onClick={installEvent ? install : () => setShowIosHelp((v) => !v)}>
+            Add to home screen
+          </ActionBar>
+        )}
       </div>
 
       {/* Safari has no install API, so the only honest thing is directions. */}

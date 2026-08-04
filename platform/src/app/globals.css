@@ -871,7 +871,12 @@
    * are untouched.
    * ---------------------------------------------------------------- */
   .clerk-avatar-skin .cl-avatarBox {
-    background-image: var(--user-avatar, none);
+    /* !important because the appearance in lib/clerk-appearance sets
+       `background: #ffffff` on this same box, and `background` is a shorthand —
+       it resets background-image to none. Two rules fighting over one property
+       where one of them is written in JS and the other in CSS is exactly the
+       case the flag is for. */
+    background-image: var(--user-avatar, none) !important;
     background-size: cover;
     background-position: center;
   }
@@ -879,6 +884,15 @@
      behind the letters and hiding them would leave an empty disc. */
   .clerk-avatar-skin[style*="--user-avatar"] .cl-avatarBox {
     color: transparent;
+  }
+  /* THE PART THAT WAS MISSING. Clerk does not draw nothing when a user has no
+     photo — it generates a placeholder and renders it as an <img>, which
+     covered the face painted behind it. The background was always there and
+     always hidden. ClerkAvatarSkin sets data-no-photo only once Clerk has
+     confirmed there is no real picture, so a student who genuinely uploads one
+     still gets theirs. */
+  .clerk-avatar-skin[data-no-photo][style*="--user-avatar"] .cl-avatarBox img {
+    display: none;
   }
 
   .btn[data-arrow] {
