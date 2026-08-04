@@ -109,3 +109,48 @@ export function liveSlugsFor(programme: Programme | undefined, picks: string[]):
 export function builtCount(programme: Programme | undefined): number {
   return programme ? programme.courses.filter((c) => c.live).length : 0;
 }
+
+/* ------------------------------------------------------------------ *
+ * What a programme is CALLED in the picker, versus what it is called on a
+ * certificate.
+ *
+ * Owner, 2026-08-04: "you don't have to say Bachelor of Accounting… there's too
+ * much bachelor. And the level is already under the actual programme. So you
+ * can just have the programme say Accounting. And likewise masters — you don't
+ * have to say Master of Science, you can just say Science."
+ *
+ * 22 of the 41 programmes begin "Bachelor of", and the row already prints the
+ * level on its second line, so the degree word was being said twice on every
+ * row and was the first thing on all of them — which is the one position where
+ * a word that never varies is worst, because it pushes the part that does vary
+ * out to where the eye has to hunt for it.
+ *
+ * ONLY THE DEGREE WORDS COME OFF, not "Science in": stripping that too would
+ * turn "Bachelor of Science in Accounting" into "Accounting" and collide it
+ * with the real "Bachelor of Accounting", which is a different programme with a
+ * different curriculum. What remains can still collide — BSc and MSc in
+ * Accounting and Finance both reduce to "Science in Accounting and Finance" —
+ * and that is fine and checked: the level line under them is exactly what tells
+ * those two apart, which is why it is not optional on this row.
+ * ------------------------------------------------------------------ */
+
+const DEGREE_PREFIX = /^(?:bachelor|master|doctor)s?\s+of\s+/i;
+
+/** The programme's name with the degree word taken off the front. */
+export function programmeLabel(programme: Programme): string {
+  return programme.name.replace(DEGREE_PREFIX, "").trim() || programme.name;
+}
+
+/** Sentence-cased level, for the line under it. The stored values are lowercase
+ *  slugs from the scrape ("bachelors"), which is a fine key and a poor label. */
+const LEVEL_LABELS: Record<string, string> = {
+  bachelors: "Bachelor's",
+  masters: "Master's",
+  doctorate: "Doctorate",
+  diploma: "Diploma",
+};
+
+export function levelLabel(programme: Programme): string | undefined {
+  if (!programme.level) return undefined;
+  return LEVEL_LABELS[programme.level] ?? programme.level;
+}

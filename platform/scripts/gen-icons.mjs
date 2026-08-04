@@ -97,6 +97,11 @@ const ICONS = [
      the same question depending on where they met it. */
   "square",
   "check-square-solid",
+  // The "Other" row's mark, where every university above it draws a crest.
+  // An icon rather than a "+" set in a tinted disc: the disc was pretending to
+  // be a logo for a university we don't have one for, and at 14px a letterform
+  // on a circle is a smudge. This is the one row whose mark is a control.
+  "plus",
   "x", // clears its search field
   "chart-bar-increasing",
   "clock-1",

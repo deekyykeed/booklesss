@@ -322,13 +322,31 @@ export function SchoolPicker({
             student who lands here would otherwise be asked to claim one that
             isn't theirs, and their answer is the best evidence there is for
             which campus to build next. */}
-        <button type="button" onClick={() => onPick(OTHER_SCHOOL)} aria-pressed={other} className={schoolTone(other)}>
+        <button
+          type="button"
+          onClick={() => onPick(OTHER_SCHOOL)}
+          aria-pressed={other}
+          aria-label="Other university"
+          className={schoolTone(other)}
+        >
           <Tick on={other} />
-          {/* A neutral disc, so the row lines up with the ones above it rather
-              than starting where their names do. */}
-          <SchoolMark letter="+" tone="var(--color-muted)" />
-          <span className="min-w-0 flex-1 truncate">
-            <span className="font-display text-[15px] font-medium leading-tight text-ink">Another university</span>
+          {/* "OTHER", one word (owner, 2026-08-04). It read "Another
+              university", which is the longest label in a list whose whole
+              point is now that the names are short — and it sat under ten rows
+              that all end in "University", saying the word an eleventh time.
+
+              A PLAIN ICON, not the tinted disc with a "+" in it (owner, same
+              call: "the plus icon should just be an icon"). The disc was
+              standing in for a crest, which made it look like the mark of a
+              university nobody had named; and at 14px a letterform on a circle
+              is a smudge. This is the one row whose mark is a control rather
+              than a logo, so it should look like one. `aria-label` carries the
+              full meaning that the visible word no longer spells out. */}
+          <span className="flex min-w-0 flex-1 items-center gap-1.5">
+            <span className="min-w-0 font-display text-[15px] font-medium leading-snug text-ink">Other</span>
+            <span className="shrink-0 text-muted">
+              <MynaIcon name="plus" size={14} />
+            </span>
           </span>
         </button>
       </div>

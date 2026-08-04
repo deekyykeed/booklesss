@@ -176,7 +176,9 @@ export function SettingsSheet() {
     window.location.href = "/";
   };
 
-  const schoolValue = school === OTHER_SCHOOL ? identity.schoolName || "Another university" : schoolById(school)?.name ?? "Not set";
+  // "Other" to match the row they picked (2026-08-04) — a Settings value that
+  // names the choice differently from the control is two names for one answer.
+  const schoolValue = school === OTHER_SCHOOL ? identity.schoolName || "Other" : schoolById(school)?.name ?? "Not set";
 
   return (
     /* Tapping the dimmed area closes it, which is what everyone tries first;

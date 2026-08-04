@@ -9,8 +9,10 @@ import { OTHER_SCHOOL, type SchoolChoice } from "@/lib/schools";
 import {
   coursesByYear,
   hasProgrammes,
+  levelLabel,
   liveSlugsFor,
   programmeBySlug,
+  programmeLabel,
   programmesFor,
 } from "@/lib/programmes";
 import { CoursePicker, CurriculumPicker, OptionRows, SchoolPicker } from "@/components/identity/pickers";
@@ -347,7 +349,7 @@ export function OnboardingFlow() {
         {step === "school" && (
           <Card
             title="Where do you study?"
-            why="Tap your university to carry on. If it isn't on the list, pick Another university and type it in."
+            why="Tap your university to carry on. If it isn't on the list, pick Other and type it in."
             /* THERE IS NO SKIP ON THIS QUESTION (owner, 2026-08-03: "the
                student cannot skip this — why would they not add the school?
                How do we add their courses and stuff if we have missing info
@@ -433,10 +435,13 @@ export function OnboardingFlow() {
             <OptionRows
               options={programmesFor(school).map((p) => ({
                 id: p.slug,
-                title: p.name,
-                note: p.level ?? undefined,
+                title: programmeLabel(p),
+                note: levelLabel(p),
               }))}
               value={programme}
+              /* The screen reader gets the FULL name. Two programmes can share
+                 a shortened title and be told apart only by the level line, so
+                 the accessible name has to be the one that is always unique. */
               label={(slug) => programmesFor(school).find((p) => p.slug === slug)?.name ?? slug}
               onPick={(slug) => {
                 /* Changing programme invalidates the ticks under it — the same
