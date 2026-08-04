@@ -257,7 +257,8 @@ export function OnboardingFlow() {
        went in this morning because onboarding was the one surface with no brand
        on it; a student who has just made an account with us does not need
        telling whose form this is. */
-    <div className="mx-auto w-full max-w-[440px] px-5 pb-[calc(2rem+env(safe-area-inset-bottom))]">
+    /* 16px of page padding (owner, 2026-08-04), where it was 20. */
+    <div className="mx-auto w-full max-w-[440px] px-4 pb-[calc(2rem+env(safe-area-inset-bottom))]">
       {/* No progress bar (owner, 2026-08-04: "remove the progress thing
           entirely"). It was three labelled nodes over three questions — a
           legend for a form you can finish in three taps, telling a student
