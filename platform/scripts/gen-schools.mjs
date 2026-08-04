@@ -28,7 +28,10 @@ async function generate() {
 
   const res = await sb
     .from("universities")
-    .select("id, name, full_name, aka, course_slugs, tone, position, active")
+    .select(
+      "id, name, full_name, aka, course_slugs, tone, position, active, " +
+        "calendar_label, term_starts, term_ends, exams_start, exams_end",
+    )
     .eq("active", true)
     .order("position");
   if (res.error) throw res.error;
@@ -38,22 +41,49 @@ async function generate() {
      keeps the type it always had and nothing downstream knows this moved.
      Empty `aka` is dropped rather than written as [] — the field is optional in
      the type, and a file full of empty arrays is a file that reads as broken. */
-  const schools = res.data.map((r) => ({
-    id: r.id,
-    name: r.name,
-    full: r.full_name,
-    ...(r.aka?.length ? { aka: r.aka } : {}),
-    courseSlugs: r.course_slugs ?? [],
-    tone: r.tone,
-  }));
+  /* THE CALENDAR RIDES ALONG, and it is omitted rather than written as nulls.
+     Nine of the ten campuses have no dates on file, and a file full of
+     "examsStart": null reads as a broken generator rather than as an honest
+     gap — the same call `aka` already makes below. Anything reading `calendar`
+     treats its absence as "we don't know when their exams are" and draws no
+     countdown, which is the only safe reading: a wrong deadline is worse than
+     no deadline. */
+  const schools = res.data.map((r) => {
+    const cal = {
+      ...(r.calendar_label ? { label: r.calendar_label } : {}),
+      ...(r.term_starts ? { termStarts: r.term_starts } : {}),
+      ...(r.term_ends ? { termEnds: r.term_ends } : {}),
+      ...(r.exams_start ? { examsStart: r.exams_start } : {}),
+      ...(r.exams_end ? { examsEnd: r.exams_end } : {}),
+    };
+    return {
+      id: r.id,
+      name: r.name,
+      full: r.full_name,
+      ...(r.aka?.length ? { aka: r.aka } : {}),
+      courseSlugs: r.course_slugs ?? [],
+      tone: r.tone,
+      ...(Object.keys(cal).length ? { calendar: cal } : {}),
+    };
+  });
 
   writeFileSync(OUT, JSON.stringify(schools, null, 2) + "\n");
 
   const withCourses = schools.filter((s) => s.courseSlugs.length);
+  const withExams = schools.filter((s) => s.calendar?.examsStart);
   console.log(
     `gen-schools: wrote school-index.json — ${schools.length} universities, ` +
       `${withCourses.length} with courses (${withCourses.map((s) => s.name).join(", ")}). ` +
       `The other ${schools.length - withCourses.length} are offered the whole library.`,
+  );
+  /* Said out loud every run, because a missing exam date is invisible in the
+     app by design — the countdown simply does not draw — and a silence that
+     looks identical to "no exams this term" is one worth reporting. */
+  console.log(
+    withExams.length
+      ? `gen-schools: exam dates on file for ${withExams.length} — ` +
+          withExams.map((s) => `${s.name} (${s.calendar.examsStart})`).join(", ")
+      : "gen-schools: NO exam dates on file for any campus — no countdowns will draw.",
   );
 }
 

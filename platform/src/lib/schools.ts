@@ -73,6 +73,41 @@ export type School = {
    * swaps an <img> in for the letter — nothing else moves.
    */
   tone: string;
+  /** The campus academic calendar, where we have it. Absent on nine of the ten
+   *  — see SchoolCalendar. */
+  calendar?: SchoolCalendar;
+};
+
+/**
+ * When this campus teaches and when it examines.
+ *
+ * A FACT ABOUT THE UNIVERSITY, NOT A QUESTION FOR THE STUDENT (owner,
+ * 2026-08-04: "id know since ill be getting things like their academic calendar
+ * and all — so for the meantime set this up as the school requirement"). The
+ * alternative was asking every student when their exams start, which is a
+ * question most of them would answer worse than their own university does, and
+ * would have to be asked again every semester. Entered once per campus, and
+ * every student on it gets the countdown — including the ones who signed up
+ * before the dates were known.
+ *
+ * EVERY FIELD IS OPTIONAL AND USUALLY ABSENT. Nothing may read a missing date
+ * as "no exams": it means nobody has typed the calendar in yet, and the only
+ * safe response is to draw no countdown at all. A wrong deadline is worse than
+ * none — a student who paces themselves against a date we invented is worse off
+ * than one we said nothing to.
+ *
+ * ISO dates (YYYY-MM-DD) as Postgres hands them over, deliberately not parsed
+ * here: this module loads on every page, and a Date is a thing to make at the
+ * point of use.
+ */
+export type SchoolCalendar = {
+  /** Which period the dates describe, e.g. "2026 Semester 2". Without it a
+   *  stale calendar looks exactly like a current one. */
+  label?: string;
+  termStarts?: string;
+  termEnds?: string;
+  examsStart?: string;
+  examsEnd?: string;
 };
 
 /**
@@ -110,4 +145,42 @@ export function schoolById(id: SchoolChoice | string | null | undefined): School
  *  was last written with, including an id from a build that has since changed. */
 export function isSchoolChoice(v: unknown): v is SchoolChoice {
   return typeof v === "string" && (v === OTHER_SCHOOL || SCHOOLS.some((s) => s.id === v));
+}
+
+/* ------------------------------------------------------------------ *
+ * The countdown.
+ *
+ * Everything a student promised at sign-up — four days, ninety minutes,
+ * evenings — is a rate, and a rate means nothing without the date it runs out
+ * at. This is that date, read off the campus rather than off the student.
+ * ------------------------------------------------------------------ */
+
+/** Whole days from today until this campus's exams start. Null where we have
+ *  no calendar for them, and negative once the exams have begun — callers
+ *  decide what to say about each, because "we don't know" and "it has started"
+ *  are different sentences. */
+export function daysUntilExams(
+  id: SchoolChoice | string | null | undefined,
+  now: Date = new Date(),
+): number | null {
+  const start = schoolById(id)?.calendar?.examsStart;
+  if (!start) return null;
+  /* Both ends floored to midnight UTC before subtracting. A plain difference
+     between a date at 00:00 and a `now` at 14:30 is 0.4 days short, which
+     rounds to a countdown that is a day out for most of every day. */
+  const then = Date.parse(`${start}T00:00:00Z`);
+  if (Number.isNaN(then)) return null;
+  const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  return Math.round((then - today) / 86_400_000);
+}
+
+/** Weeks until exams, rounded down — the unit a study plan is actually made
+ *  in. Null on no calendar, and null once exams have started, because "you have
+ *  0 weeks" is not something worth saying to somebody sitting one. */
+export function weeksUntilExams(
+  id: SchoolChoice | string | null | undefined,
+  now: Date = new Date(),
+): number | null {
+  const d = daysUntilExams(id, now);
+  return d === null || d < 0 ? null : Math.floor(d / 7);
 }

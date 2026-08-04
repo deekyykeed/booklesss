@@ -4,7 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSignedIn } from "@/lib/account";
 import { coursesForSchool } from "@/lib/courses";
-import { saveOnboarding, useIdentity, type Identity, type StudyTarget } from "@/lib/identity";
+import {
+  normalisePhone,
+  saveOnboarding,
+  useIdentity,
+  type HeardFrom,
+  type Identity,
+  type StudyTarget,
+  type StudyWindow,
+} from "@/lib/identity";
 import { OTHER_SCHOOL, type SchoolChoice } from "@/lib/schools";
 import {
   coursesByYear,
@@ -82,6 +90,13 @@ const WEEKDAY_FULL = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "S
 
 const MINUTE_CHOICES = [30, 45, 60, 90, 120, 180];
 
+/** "7.5 hours" / "1 hour" / "21 hours" — the number a student has to argue
+ *  with. One decimal at most: "7.5" is a week, "7.53" is a spreadsheet. */
+function hoursLabel(minutes: number): string {
+  const h = Math.round(minutes / 6) / 10;
+  return `${h} ${h === 1 ? "hour" : "hours"}`;
+}
+
 /* The recommendation (owner, same call: "a recommended amount, which is at
    least one hour thirty minutes a day"). Marked rather than forced — a default
    somebody cannot see the reasoning for is just our opinion in their record. */
@@ -121,7 +136,7 @@ const RECOMMENDED_MINUTES = 90;
  */
 const ANSWER_BEAT_MS = 700;
 
-type Step = "school" | "programme" | "year" | "courses" | "target";
+type Step = "school" | "programme" | "year" | "courses" | "whatsapp" | "target" | "heard";
 
 /**
  * The questions, in order. Every student gets all five.
@@ -158,7 +173,56 @@ type Step = "school" | "programme" | "year" | "courses" | "target";
  * already in it — their year's courses ticked, or what their classmates
  * reported offered — so the work is confirming, not building.
  */
-const ORDER: Step[] = ["school", "programme", "year", "courses", "target"];
+const ORDER: Step[] = ["school", "programme", "year", "courses", "whatsapp", "target", "heard"];
+
+/* WHEN THE HARD STUFF GOES IN (owner, 2026-08-04: "ask what time of the day they
+   usually find it easy to learn complex topics, whether they are a night owl or
+   whatever"). Windows rather than clock times — see StudyWindow. The hours are
+   on the row because "evening" means different things to different people and
+   the point is to agree on one. */
+const WINDOWS: { id: StudyWindow; title: string; note: string }[] = [
+  { id: "early-morning", title: "Early morning", note: "Before 8" },
+  { id: "morning", title: "Morning", note: "8 to noon" },
+  { id: "afternoon", title: "Afternoon", note: "Noon to 5" },
+  { id: "evening", title: "Evening", note: "5 to 9" },
+  { id: "night", title: "Late night", note: "After 9" },
+];
+
+/* HOW THEY SAY THEY FOUND US. Every option is a place Booklesss actually is, so
+   nobody has to pick "other" for the honest answer — a list that forces that is
+   a list that measures nothing. */
+const SOURCES: { id: HeardFrom; title: string }[] = [
+  { id: "friend", title: "A friend told me" },
+  { id: "whatsapp-group", title: "A WhatsApp group" },
+  { id: "tiktok", title: "TikTok" },
+  { id: "facebook", title: "Facebook" },
+  { id: "flyer", title: "A flyer or poster" },
+  { id: "search", title: "I searched for it" },
+  { id: "other", title: "Somewhere else" },
+];
+
+/**
+ * When a weekly plan stops being ambitious and starts being a lie.
+ *
+ * Owner, 2026-08-04: "if they start to pick ridiculous options like all the days
+ * and 3h each tell them to be realistic with themselves — tell them they cant
+ * change this any time soon and will be held accountable and lose points for
+ * unrealistic goals."
+ *
+ * BOTH HALVES OF THAT WARNING ARE TRUE TODAY, which is the only reason it is
+ * allowed to be said. The target is set here and NOWHERE else — Settings has no
+ * goal editor — so "you can't change this any time soon" is a fact rather than a
+ * deterrent. And lib/performance scores `35 x progress + 65 x effort` with
+ * effort measured against this very number, so an inflated goal really does
+ * suppress the score every week it is missed. A threat the app could not carry
+ * out would be found out inside a fortnight and would cost more than it bought.
+ *
+ * 12 hours, because the recommendation is 90 minutes and a student keeping it
+ * five days a week lands at 7.5 — comfortably clear. 12 is roughly two hours
+ * every weekday, which is a real student's very good week, and everything past
+ * it is someone typing their intentions rather than their habits.
+ */
+const UNREALISTIC_WEEKLY_MINUTES = 12 * 60;
 
 /** The answers as the form holds them. */
 type Draft = {
@@ -180,6 +244,11 @@ type Draft = {
    *  half-filled record look finished to the dashboard's gate. */
   coursesAnswered: boolean;
   target: StudyTarget;
+  studyWindow: StudyWindow | null;
+  /** As typed, not as normalised — a field that rewrites itself under someone's
+   *  cursor is a field nobody can correct. Normalising happens on save. */
+  whatsapp: string;
+  heardFrom: HeardFrom | null;
 };
 
 /** What the form shows before anybody has touched it: whatever the student
@@ -205,6 +274,9 @@ function asDraft(identity: Identity | null): Draft {
        `days: 0` never reaches storage: finish() writes the count of what they
        picked, and the button will not fire until that is at least one. */
     target: identity?.target ?? { days: 0, minutes: RECOMMENDED_MINUTES, weekdays: [] },
+    studyWindow: identity?.studyWindow ?? null,
+    whatsapp: identity?.whatsapp ?? "",
+    heardFrom: identity?.heardFrom ?? null,
   };
 }
 
@@ -220,8 +292,12 @@ function firstGap(d: Draft, steps: Step[]): Step {
       return s;
     if (s === "year" && !d.year) return s;
     if (s === "courses" && !d.coursesAnswered) return s;
+    /* Typed, not normalised: the field holds what they wrote and the save
+       normalises it, so a resume has to judge the same thing the save would. */
+    if (s === "whatsapp" && !normalisePhone(d.whatsapp)) return s;
+    if (s === "target" && (!d.target.weekdays?.length || !d.studyWindow)) return s;
   }
-  return "target";
+  return "heard";
 }
 
 export function OnboardingFlow() {
@@ -266,12 +342,25 @@ export function OnboardingFlow() {
     courses,
     coursesAnswered,
     target,
+    studyWindow,
+    whatsapp,
+    heardFrom,
   } = d;
+
+  /** The number as it will actually be stored, or null while it is not a
+   *  Zambian mobile yet. Drives the button, the hint and the save — one source,
+   *  so the button can never be enabled on something the save would reject. */
+  const phone = normalisePhone(whatsapp);
+
 
   /** The days they picked, 0 = Monday. A record written before this question
    *  asked for named days has none, and gets an empty board rather than four
    *  days invented on its behalf — we genuinely never knew which. */
   const picked = target.weekdays ?? [];
+
+  /** What they have promised, in minutes a week. The realism warning and the
+   *  running total both read it. */
+  const weeklyMinutes = picked.length * target.minutes;
 
   /** The programme they picked, with its courses. Undefined until they pick.
    *  Not memoised: it is a find over at most 41 rows, and a manual memo here is
@@ -413,6 +502,9 @@ export function OnboardingFlow() {
     year?: number | null;
     curriculum?: string[];
     typedCourses?: string[];
+    studyWindow?: StudyWindow | null;
+    whatsapp?: string | null;
+    heardFrom?: HeardFrom | null;
   }) {
     const s = "school" in patch ? (patch.school ?? null) : school;
     saveOnboarding({
@@ -430,18 +522,29 @@ export function OnboardingFlow() {
       ...(patch.year === undefined ? {} : { year: patch.year }),
       ...(patch.curriculum === undefined ? {} : { curriculum: patch.curriculum }),
       ...(patch.typedCourses === undefined ? {} : { typedCourses: patch.typedCourses }),
+      ...(patch.studyWindow === undefined ? {} : { studyWindow: patch.studyWindow }),
+      ...(patch.whatsapp === undefined ? {} : { whatsapp: patch.whatsapp }),
+      ...(patch.heardFrom === undefined ? {} : { heardFrom: patch.heardFrom }),
     });
   }
 
   /** The last answer — the plan, written here and only here — and into the
    *  app. `replace`, so the back button out of the dashboard is the page they
    *  came from rather than the questions they just finished. */
-  function finish() {
-    /* `days` is written as the count of what they actually picked, not carried
-       off the draft — the draft starts at 0 and only the named days move. This
-       is the one place the two representations are reconciled, and everything
-       downstream (lib/performance) reads `days`. */
-    save({ coursesChosen: true, target: { ...target, days: picked.length, weekdays: picked } });
+  /** The plan, written on leaving the target screen. `days` is the count of
+   *  what they actually picked rather than anything off the draft — the draft
+   *  starts at 0 and only the named days move, and this is the one place the two
+   *  representations are reconciled. Everything downstream reads `days`. */
+  function savePlan(window: StudyWindow | null = studyWindow) {
+    save({
+      coursesChosen: true,
+      target: { ...target, days: picked.length, weekdays: picked },
+      studyWindow: window,
+    });
+  }
+
+  function finish(source: HeardFrom) {
+    save({ coursesChosen: true, heardFrom: source });
     /* SAVED NOW, LEFT IN A MOMENT — the same split every other answer makes.
        The write does not wait on the beat, so a student who taps Done and
        closes the tab inside it has still finished; only the departure waits,
@@ -879,8 +982,22 @@ export function OnboardingFlow() {
             title="Set your weekly goal"
             why="Pick the days you'll put the time in, and how long each of them. An ordinary week, not your best one."
             actions={
-              <Button variant="primary" size="lg" block arrow disabled={picked.length === 0} onClick={finish}>
-                {picked.length === 0 ? "Pick at least one day" : "Done"}
+              <Button
+                variant="primary"
+                size="lg"
+                block
+                arrow
+                disabled={picked.length === 0 || !studyWindow}
+                onClick={() => {
+                  savePlan();
+                  advanceAfterBeat("heard");
+                }}
+              >
+                {picked.length === 0
+                  ? "Pick at least one day"
+                  : !studyWindow
+                    ? "Pick when you focus best"
+                    : "Continue"}
               </Button>
             }
           >
@@ -932,19 +1049,127 @@ export function OnboardingFlow() {
               </Choices>
             </div>
 
-            <p className="mt-5 text-[13.5px] leading-5 text-muted">
-              {picked.length > 0 ? (
-                <>
-                  That&apos;s{" "}
-                  <span className="font-medium text-ink">
-                    {Math.round((picked.length * target.minutes) / 6) / 10} hours a week
-                  </span>
-                  . You can change it later.
-                </>
-              ) : (
-                "You can change this later."
-              )}
-            </p>
+            {/* THE HONEST WARNING (owner, 2026-08-04: "if they start to pick
+                ridiculous options like all the days and 3h each tell them to be
+                realistic with themselves — tell them they cant change this any
+                time soon and will be held accountable and lose points for
+                unrealistic goals").
+
+                Under the days, where the damage is done, and NOT a blocker: a
+                student who means it should be allowed to promise it. It is a
+                warning precisely because the two things it warns about are both
+                real — see UNREALISTIC_WEEKLY_MINUTES. If either ever stops being
+                true, this paragraph comes out the same day.
+
+                It does the arithmetic for them, because "21 hours a week" is the
+                argument. Nobody picks seven days and three hours having worked
+                that out. */}
+            {weeklyMinutes >= UNREALISTIC_WEEKLY_MINUTES && (
+              <p className="mt-5 rounded-xl bg-ink/[0.04] p-3.5 text-[13.5px] leading-5 text-ink-2">
+                <span className="font-medium text-ink">
+                  That&apos;s {hoursLabel(weeklyMinutes)} a week.
+                </span>{" "}
+                Be honest about an ordinary week, not your best one. You can&apos;t change this for a
+                while, and every week you fall short of a goal you set too high costs you points.
+              </p>
+            )}
+
+            <div className="mt-5">
+              <Choices label="When do complex topics go in easiest?">
+                <OptionRows
+                  options={WINDOWS}
+                  columns={2}
+                  value={studyWindow}
+                  label={(id) => WINDOWS.find((w) => w.id === id)?.title ?? String(id)}
+                  onPick={(id) => edit({ studyWindow: id as StudyWindow })}
+                />
+              </Choices>
+            </div>
+
+            {/* The running total, once there is one and the warning above is not
+                already saying it louder. */}
+            {picked.length > 0 && weeklyMinutes < UNREALISTIC_WEEKLY_MINUTES && (
+              <p className="mt-5 text-[13.5px] leading-5 text-muted">
+                That&apos;s <span className="font-medium text-ink">{hoursLabel(weeklyMinutes)} a week</span>.
+              </p>
+            )}
+          </Card>
+        )}
+
+        {step === "whatsapp" && (
+          <Card
+            title="What&rsquo;s your WhatsApp number?"
+            /* WHAT IT IS FOR, IN THE QUESTION. Every other `why` on this page is
+               an instruction, per the rule on Card — but a phone number is the
+               one thing here we are asking for our benefit rather than theirs,
+               and a student is entitled to know what it will be used for before
+               they hand it over rather than after. */
+            why="This is how we check in on you when you fall behind. We don't post it anywhere and we don't sell it."
+            actions={
+              <Button
+                variant="primary"
+                size="lg"
+                block
+                arrow
+                disabled={!phone}
+                onClick={() => {
+                  save({ coursesChosen: coursesAnswered, whatsapp: phone });
+                  advanceAfterBeat("target");
+                }}
+              >
+                {phone ? "Continue" : "Enter your number"}
+              </Button>
+            }
+          >
+            <input
+              autoFocus
+              /* `tel`, so a phone raises the number pad rather than the
+                 alphabet. Not `number`: that draws a spinner, silently drops a
+                 leading zero, and 0977… is exactly how a Zambian number is
+                 written down. */
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
+              value={whatsapp}
+              onChange={(e) => edit({ whatsapp: e.target.value })}
+              placeholder="0977 123 456"
+              aria-label="Your WhatsApp number"
+              maxLength={20}
+              className={
+                "squircle h-11 w-full rounded-xl border border-line bg-white px-3.5 text-[15px] text-ink " +
+                "outline-none transition-colors placeholder:text-placeholder focus:border-ink"
+              }
+            />
+            {/* Shown only once they have typed enough to be wrong. A validation
+                message that greets an empty field is telling somebody off for
+                not having started. */}
+            {whatsapp.trim().length >= 6 && !phone && (
+              <p className="mt-2 text-[13px] leading-5 text-muted">
+                That doesn&apos;t look like a Zambian mobile. Try it as 0977 123 456.
+              </p>
+            )}
+            {phone && <p className="mt-2 text-[13px] leading-5 text-muted">We&apos;ll use {phone}.</p>}
+          </Card>
+        )}
+
+        {step === "heard" && (
+          <Card
+            title="How did you hear about us?"
+            /* LAST, AND ONE TAP. It is the only question on this page that is
+               entirely for us, so it goes where a refusal costs nothing that has
+               not already been banked — and it finishes the flow, so the answer
+               and the Done are the same gesture. */
+            why="Last one. Tap whichever is closest and you're in."
+          >
+            <OptionRows
+              options={SOURCES}
+              value={heardFrom}
+              label={(id) => SOURCES.find((x) => x.id === id)?.title ?? String(id)}
+              onPick={(id) => {
+                edit({ heardFrom: id as HeardFrom });
+                finish(id as HeardFrom);
+              }}
+            />
           </Card>
         )}
       </div>

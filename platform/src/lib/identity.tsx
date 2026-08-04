@@ -136,6 +136,81 @@ export function avatarName(avatar: string): string {
  */
 export type StudyTarget = { days: number; minutes: number; weekdays?: number[] };
 
+/**
+ * When the hard stuff goes in easiest (owner, 2026-08-04: "ask what time of the
+ * day they usually find it easy to learn complex topics, whether they are a
+ * night owl or whatever").
+ *
+ * A WINDOW, NOT A CLOCK TIME. "Half past six" is a promise about a minute;
+ * "evening" is a fact about a person, and it is the fact the app needs — to
+ * decide when a ping is worth sending, and to know whether a student who
+ * studies at midnight is failing at mornings or simply not a morning person.
+ *
+ * Deliberately separate from `weekdays`: which days you will study is a plan
+ * you make, and when your head works is a thing about you that no plan
+ * changes. A student can promise Tuesday and still be useless before noon.
+ */
+export type StudyWindow = "early-morning" | "morning" | "afternoon" | "evening" | "night";
+
+/**
+ * How they say they found us (owner, 2026-08-04: "how did you hear about us is
+ * very important — even though id know but its better they say it incase its an
+ * odd link").
+ *
+ * DELIBERATELY REDUNDANT WITH `referredBy`, and the redundancy is the point. The
+ * referral code says which link a device arrived on; this says what a student
+ * thinks brought them. They disagree in exactly the cases worth knowing about —
+ * a link forwarded through three WhatsApp groups still carries the first
+ * sharer's code, and a flyer or a word-of-mouth arrival carries none at all. One
+ * is measurement, the other is attribution, and only the second can be asked.
+ */
+export type HeardFrom =
+  | "friend"
+  | "whatsapp-group"
+  | "tiktok"
+  | "facebook"
+  | "flyer"
+  | "search"
+  | "other";
+
+const HEARD_FROM: HeardFrom[] = [
+  "friend",
+  "whatsapp-group",
+  "tiktok",
+  "facebook",
+  "flyer",
+  "search",
+  "other",
+];
+
+export function isHeardFrom(v: unknown): v is HeardFrom {
+  return typeof v === "string" && (HEARD_FROM as string[]).includes(v);
+}
+
+const STUDY_WINDOWS: StudyWindow[] = ["early-morning", "morning", "afternoon", "evening", "night"];
+
+export function isStudyWindow(v: unknown): v is StudyWindow {
+  return typeof v === "string" && (STUDY_WINDOWS as string[]).includes(v);
+}
+
+/**
+ * A Zambian mobile number, normalised to +260XXXXXXXXX.
+ *
+ * Accepts the four things people actually type — 0977123456, 977123456,
+ * +260977123456, 260977123456 — plus any spaces, dashes or brackets they put
+ * in, and returns one shape or null. One shape matters because this is a key
+ * the owner will paste into WhatsApp: two spellings of the same number are two
+ * students who are one student.
+ *
+ * Zambian mobiles are 9 digits after the country code and start 7 or 9 (MTN,
+ * Airtel, Zamtel). Landlines are not accepted — this is for WhatsApp.
+ */
+export function normalisePhone(raw: string): string | null {
+  const d = raw.replace(/[^\d+]/g, "").replace(/^\+/, "");
+  const local = d.startsWith("260") ? d.slice(3) : d.startsWith("0") ? d.slice(1) : d;
+  return /^[79]\d{8}$/.test(local) ? `+260${local}` : null;
+}
+
 /** Held to the ranges the onboarding step offers, because this arrives from
  *  localStorage and from account metadata, both of which a stranger can
  *  write. A target of 0 days would divide the dashboard by zero. */
@@ -203,6 +278,37 @@ export type Identity = {
    * students at all.
    */
   target: StudyTarget | null;
+  /**
+   * When complex material actually goes in — see StudyWindow.
+   *
+   * Asked beside the weekly goal because it completes it: which days, how long,
+   * and when. Part of `onboardingComplete` for the same reason the target is —
+   * it is one tap on a screen the student is already on, and the plan is not a
+   * plan without it.
+   */
+  studyWindow: StudyWindow | null;
+  /**
+   * Their WhatsApp number, as +260XXXXXXXXX (owner, 2026-08-04: "we should get
+   * this person's whatsapp number so that we can hold them accountable and
+   * other reasons as well"). REQUIRED — see onboardingComplete.
+   *
+   * THE MOST SENSITIVE THING THIS APP STORES, and the only field that can reach
+   * a person off the platform. Everything else here is a preference; this is a
+   * way to contact somebody. It travels to the account and to Supabase like the
+   * rest, and normalisePhone is what keeps it one value rather than four
+   * spellings of the same student.
+   *
+   * The privacy policy has to say what it is used for before this ships to real
+   * students, because "accountability" is us messaging them and that is exactly
+   * what a person handing over a number is entitled to know in advance.
+   */
+  whatsapp: string | null;
+  /**
+   * What they say brought them here — see HeardFrom. Required, because it is one
+   * tap and it is the only attribution that exists for a student who arrived on
+   * no link at all.
+   */
+  heardFrom: HeardFrom | null;
   /**
    * The programme they are on, as a slug in programme-index.json — and the year
    * of it they are in.
@@ -303,17 +409,35 @@ export function onboardingComplete(v: Identity | null | undefined): boolean {
   if (!v.school) return false;
   if (v.school === OTHER_SCHOOL && !v.schoolName) return false;
   if (!v.coursesChosen) return false;
+  /* The number is REQUIRED (owner, 2026-08-04). It is the only answer here that
+     is worth something to us rather than to the student, so it is the only one
+     a student could reasonably resent — which is the argument for asking it in
+     the middle of the flow rather than last, where a refusal costs everything
+     already given. It is not a question the dashboard can work around: being
+     held to a goal you set means somebody being able to reach you. */
+  if (!v.whatsapp) return false;
   if (!v.target) return false;
+  /* Half a plan is not a plan. The window is one tap on the screen that already
+     asks for the days and the length, so a record with a target and no window
+     is a student who left mid-question, not one who declined. */
+  if (!v.studyWindow) return false;
+  /* One tap, and the only thing that will ever say whether the flyers worked —
+     a student who walked in off a poster carries no referral code to count. */
+  if (!v.heardFrom) return false;
   return true;
 }
 
 /** Which question to open on — the first one without an answer. The flow uses
  *  it to resume rather than restart, so closing the tab on question three does
  *  not cost a student the two they already answered. */
-export function firstUnanswered(v: Identity | null | undefined): "school" | "courses" | "target" {
+export function firstUnanswered(
+  v: Identity | null | undefined,
+): "school" | "courses" | "whatsapp" | "target" | "heard" {
   if (!v?.school || (v.school === OTHER_SCHOOL && !v.schoolName)) return "school";
   if (!v.coursesChosen) return "courses";
-  return "target";
+  if (!v.whatsapp) return "whatsapp";
+  if (!v.target || !v.studyWindow) return "target";
+  return "heard";
 }
 
 let cache: Identity | null = null;
@@ -348,6 +472,11 @@ function load(): Identity | null {
       coursesChosen:
         v.coursesChosen === true || (Array.isArray(v.courses) && v.courses.length > 0),
       target: parseTarget(v.target),
+      studyWindow: isStudyWindow(v.studyWindow) ? v.studyWindow : null,
+      // Re-normalised on read, not trusted as stored: a record written by an
+      // older build, or by hand, may hold whatever the field once accepted.
+      whatsapp: typeof v.whatsapp === "string" ? normalisePhone(v.whatsapp) : null,
+      heardFrom: isHeardFrom(v.heardFrom) ? v.heardFrom : null,
       programme: typeof v.programme === "string" && v.programme ? v.programme : null,
       programmeName:
         typeof v.programmeName === "string" && v.programmeName.trim()
@@ -435,6 +564,10 @@ export function saveIdentity(input: {
   coursesChosen?: boolean;
   /** Omit to keep what is stored; null clears it. */
   target?: StudyTarget | null;
+  /** Omit to keep what is stored; null clears. Same rule as `target`. */
+  studyWindow?: StudyWindow | null;
+  whatsapp?: string | null;
+  heardFrom?: HeardFrom | null;
   /** Omit any of these to keep what is stored. See the fields' notes. */
   programme?: string | null;
   programmeName?: string | null;
@@ -455,6 +588,18 @@ export function saveIdentity(input: {
     coursesChosen: input.coursesChosen ?? prev?.coursesChosen ?? input.courses.length > 0,
     // `undefined` keeps whatever is stored; an explicit null clears it.
     target: input.target === undefined ? (prev?.target ?? null) : parseTarget(input.target),
+    studyWindow:
+      input.studyWindow === undefined
+        ? (prev?.studyWindow ?? null)
+        : (isStudyWindow(input.studyWindow) ? input.studyWindow : null),
+    whatsapp:
+      input.whatsapp === undefined
+        ? (prev?.whatsapp ?? null)
+        : (input.whatsapp ? normalisePhone(input.whatsapp) : null),
+    heardFrom:
+      input.heardFrom === undefined
+        ? (prev?.heardFrom ?? null)
+        : (isHeardFrom(input.heardFrom) ? input.heardFrom : null),
     programme: input.programme === undefined ? (prev?.programme ?? null) : input.programme,
     // Only OTHER_PROGRAMME carries a typed name, on the same rule the school
     // pair follows: picking a listed programme later must not leave the old
@@ -511,6 +656,10 @@ export function saveOnboarding(input: {
   /** Omit to keep whatever is stored; the flow only passes this from the
    *  question that asks for it. */
   target?: StudyTarget | null;
+  /** Same rule: passed only by the question that asks for it. */
+  studyWindow?: StudyWindow | null;
+  whatsapp?: string | null;
+  heardFrom?: HeardFrom | null;
   /** Same rule for all of these: passed only by the question that asks. */
   programme?: string | null;
   programmeName?: string | null;
@@ -527,6 +676,9 @@ export function saveOnboarding(input: {
     courses: input.courses,
     coursesChosen: input.coursesChosen,
     ...(input.target === undefined ? {} : { target: input.target }),
+    ...(input.studyWindow === undefined ? {} : { studyWindow: input.studyWindow }),
+    ...(input.whatsapp === undefined ? {} : { whatsapp: input.whatsapp }),
+    ...(input.heardFrom === undefined ? {} : { heardFrom: input.heardFrom }),
     ...(input.programme === undefined ? {} : { programme: input.programme }),
     ...(input.programmeName === undefined ? {} : { programmeName: input.programmeName }),
     ...(input.year === undefined ? {} : { year: input.year }),
@@ -604,6 +756,11 @@ export type AccountIdentity = {
   /** The promise the dashboard scores them against — theirs, not ours, so it
    *  has to travel with the account rather than sit on one phone. */
   target: StudyTarget | null;
+  /** Both travel: the window is half the plan, and the number is the thing that
+   *  makes accountability possible from any device they sign in on. */
+  studyWindow: StudyWindow | null;
+  whatsapp: string | null;
+  heardFrom: HeardFrom | null;
   /** The programme, the year, and everything they ticked off its timetable.
    *  Travels for the same reason `courses` does: a student who answered on
    *  their phone must not be asked again on a borrowed laptop — and this is the
@@ -633,6 +790,9 @@ export function accountIdentity(): AccountIdentity | null {
         courses: v.courses,
         coursesChosen: v.coursesChosen,
         target: v.target,
+        studyWindow: v.studyWindow,
+        whatsapp: v.whatsapp,
+        heardFrom: v.heardFrom,
         programme: v.programme,
         programmeName: v.programmeName,
         year: v.year,
@@ -666,6 +826,12 @@ export function parseAccountIdentity(v: unknown): AccountIdentity | null {
     courses: Array.isArray(o.courses) ? o.courses.filter((c): c is string => typeof c === "string") : [],
     coursesChosen: o.coursesChosen === true,
     target: parseTarget(o.target),
+    studyWindow: isStudyWindow(o.studyWindow) ? o.studyWindow : null,
+    /* Held to the same shape as a stored record: unsafeMetadata is writable
+       by any signed-in browser, so a number arriving from it is no more
+       trusted than one typed into the form. */
+    whatsapp: typeof o.whatsapp === "string" ? normalisePhone(o.whatsapp) : null,
+    heardFrom: isHeardFrom(o.heardFrom) ? o.heardFrom : null,
     programme: typeof o.programme === "string" && o.programme ? o.programme.slice(0, 120) : null,
     programmeName:
       typeof o.programmeName === "string" && o.programmeName.trim()
@@ -734,6 +900,9 @@ function mergeAccount(acct: AccountIdentity, prev: Identity | null): Identity {
     courses: takeCourses ? acct.courses : (prev?.courses ?? []),
     coursesChosen: takeCourses || (prev?.coursesChosen ?? false),
     target: acct.target ?? prev?.target ?? null,
+    studyWindow: acct.studyWindow ?? prev?.studyWindow ?? null,
+    whatsapp: acct.whatsapp ?? prev?.whatsapp ?? null,
+    heardFrom: acct.heardFrom ?? prev?.heardFrom ?? null,
     /* The programme travels with the courses, not on its own: the two were
        answered together and `curriculum` is only meaningful against the
        programme it was picked from. Splitting them across a merge would give a
@@ -762,6 +931,9 @@ export function matchesAccount(id: Identity | null, acct: AccountIdentity): bool
     id.coursesChosen === next.coursesChosen &&
     id.courses.length === next.courses.length &&
     id.courses.every((s, i) => s === next.courses[i]) &&
+    id.studyWindow === next.studyWindow &&
+    id.whatsapp === next.whatsapp &&
+    id.heardFrom === next.heardFrom &&
     id.target?.days === next.target?.days &&
     id.target?.minutes === next.target?.minutes &&
     /* The curriculum answer has to be compared too, or a device that knows the
@@ -788,6 +960,9 @@ export function accountBehind(id: Identity | null, acct: AccountIdentity): boole
     (!acct.school && !!id.school) ||
     (!acct.coursesChosen && id.coursesChosen) ||
     (!acct.target && !!id.target) ||
+    (!acct.studyWindow && !!id.studyWindow) ||
+    (!acct.whatsapp && !!id.whatsapp) ||
+    (!acct.heardFrom && !!id.heardFrom) ||
     (!acct.programme && !!id.programme) ||
     (!acct.curriculum.length && id.curriculum.length > 0) ||
     (!acct.typedCourses.length && id.typedCourses.length > 0)
@@ -827,6 +1002,9 @@ export function assignIdentity(): Identity {
     courses: [],
     coursesChosen: false,
     target: null,
+    studyWindow: null,
+    whatsapp: null,
+    heardFrom: null,
   });
 }
 
