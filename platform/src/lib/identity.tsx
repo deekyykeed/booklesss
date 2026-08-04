@@ -148,6 +148,55 @@ export type Identity = {
   since: string;
 };
 
+/**
+ * Has this student finished onboarding?
+ *
+ * ONE DEFINITION, because the dashboard now refuses to draw without it (owner,
+ * 2026-08-04, on landing there himself: "a user is never supposed to hit this
+ * screen with incomplete information from onboarding"). What he saw was the
+ * real dashboard rendered over a record that had none of the answers in it: a
+ * greeting with no name, four tiles of dashes, and ALL COURSES over a library
+ * he had never been asked to narrow. Every one of those is correct code
+ * reading an empty record — so the fix is not in the tiles, it is refusing to
+ * render them until the record is filled.
+ *
+ * The three questions, and nothing else:
+ *   - a school, and a typed name if it is one we don't carry. It decides which
+ *     courses are even offered, so an unanswered school makes the next
+ *     question unanswerable.
+ *   - `coursesChosen`, not `courses.length`. "Show me everything" is a real
+ *     answer that leaves the list empty; see the field's own note.
+ *   - a target, because the Performance tile scores them against it. Without
+ *     one the tile marks a student against a number nobody chose.
+ *
+ * Anonymous readers never pass this and are never asked to: the gate runs on
+ * the dashboard alone, which already belongs to people with an account.
+ *
+ * The one way to un-complete a finished record is Settings, by switching to
+ * "Another university" and typing nothing — the sheet writes the school on the
+ * tap. That is the same half-answer the flow refuses to accept, so the next
+ * visit to the dashboard walks them back through it rather than treating a
+ * university nobody named as an answer. Rare, deliberate, and it ends in a
+ * complete record instead of a dead end.
+ */
+export function onboardingComplete(v: Identity | null | undefined): boolean {
+  if (!v) return false;
+  if (!v.school) return false;
+  if (v.school === OTHER_SCHOOL && !v.schoolName) return false;
+  if (!v.coursesChosen) return false;
+  if (!v.target) return false;
+  return true;
+}
+
+/** Which question to open on — the first one without an answer. The flow uses
+ *  it to resume rather than restart, so closing the tab on question three does
+ *  not cost a student the two they already answered. */
+export function firstUnanswered(v: Identity | null | undefined): "school" | "courses" | "target" {
+  if (!v?.school || (v.school === OTHER_SCHOOL && !v.schoolName)) return "school";
+  if (!v.coursesChosen) return "courses";
+  return "target";
+}
+
 let cache: Identity | null = null;
 let read = false;
 const listeners = new Set<() => void>();
@@ -291,12 +340,26 @@ export function saveIdentity(input: {
  * closes the tab on question three keeps what they said — and the sign-up
  * card at the end reads this straight off the device (see ClerkGate and the
  * onboarding page), which is how the answers reach the account.
+ *
+ * EVERY SAVE SAYS WHAT WAS ACTUALLY ANSWERED. This used to hard-code
+ * `coursesChosen: true` on every write, including the one that stores the
+ * school — so answering question one marked question two answered, with an
+ * empty list, and a student who stopped there was recorded as having asked
+ * for the whole library. `onboardingComplete` reads exactly these fields, so
+ * a save that overstates them is a half-filled record that passes the gate.
+ * The plan is the same: omit `target` until the student has seen the
+ * question, rather than storing the form's default as their choice.
  */
 export function saveOnboarding(input: {
   school: SchoolChoice | null;
   schoolName: string | null;
   courses: string[];
-  target: StudyTarget | null;
+  /** True only once the courses question itself has been answered —
+   *  "everything" included, since that is an answer and not a skip. */
+  coursesChosen: boolean;
+  /** Omit to keep whatever is stored; the flow only passes this from the
+   *  question that asks for it. */
+  target?: StudyTarget | null;
 }): Identity {
   const prev = assignIdentity();
   return saveIdentity({
@@ -305,9 +368,8 @@ export function saveOnboarding(input: {
     school: input.school,
     schoolName: input.schoolName,
     courses: input.courses,
-    // Reaching the courses step at all is being asked — "everything" included.
-    coursesChosen: true,
-    target: input.target,
+    coursesChosen: input.coursesChosen,
+    ...(input.target === undefined ? {} : { target: input.target }),
   });
 }
 
@@ -359,9 +421,22 @@ export type AccountIdentity = {
   name: string;
   avatar: AvatarId;
   since: string;
+  /**
+   * Where they study, and the university they typed if it is one we don't
+   * carry.
+   *
+   * THIS USED TO STAY ON THE DEVICE, on the reasoning that a school is a
+   * reading preference rather than who somebody is. That held while nothing
+   * depended on it. It stopped holding when the dashboard began refusing to
+   * render an unfinished record: an answer that doesn't travel is an answer a
+   * second device doesn't have, and the student who answered on their phone
+   * would be marched back through onboarding on a borrowed laptop — which is
+   * the same bug as never asking, seen from the other side.
+   */
+  school: SchoolChoice | null;
+  schoolName: string | null;
   /** Carried so a second device does not ask a question this person has
-   *  already answered — the same bug as never asking, seen from the other
-   *  side. School stays device-local; courses are what the dashboard is. */
+   *  already answered — see above. */
   courses: string[];
   coursesChosen: boolean;
   /** The promise the dashboard scores them against — theirs, not ours, so it
@@ -379,6 +454,8 @@ export function accountIdentity(): AccountIdentity | null {
         name: v.name,
         avatar: v.avatar,
         since: v.since,
+        school: v.school,
+        schoolName: v.schoolName,
         courses: v.courses,
         coursesChosen: v.coursesChosen,
         target: v.target,
@@ -402,6 +479,9 @@ export function parseAccountIdentity(v: unknown): AccountIdentity | null {
       typeof o.since === "string" && !Number.isNaN(Date.parse(o.since))
         ? o.since
         : new Date().toISOString(),
+    school: isSchoolChoice(o.school) ? o.school : null,
+    schoolName:
+      typeof o.schoolName === "string" && o.schoolName.trim() ? o.schoolName.trim().slice(0, 80) : null,
     // Slugs are validated where they're used (lib/courses), as they are on the
     // stored record — this only guarantees the shape.
     courses: Array.isArray(o.courses) ? o.courses.filter((c): c is string => typeof c === "string") : [],
@@ -416,26 +496,77 @@ export function parseAccountIdentity(v: unknown): AccountIdentity | null {
  *  account's `since`, because "member since" is about the person, not the
  *  phone they happen to be holding. */
 export function adoptIdentity(acct: AccountIdentity): Identity {
-  const prev = load();
-  /* Courses follow the ACCOUNT once it has an answer, so signing in on a
-     laptop shows the same four cards as the phone. An account that has never
-     answered leaves whatever this device has — including an answer this
-     device made moments ago, which AccountSignal then writes upward. */
+  const next = mergeAccount(acct, load());
+  persist(next);
+  return next;
+}
+
+/**
+ * The account's record and the device's, reconciled — pure, so AccountSignal
+ * can ask what the answer WOULD be before deciding whether to write.
+ *
+ * The rule is the same on every field: the account wins where it has an
+ * answer, and the device keeps what the account never learned. That second
+ * half is what lets somebody answer on this phone against a bare account and
+ * have it written upward a moment later instead of being wiped by it.
+ *
+ * IDEMPOTENT, and it has to be: AccountSignal compares this against what is
+ * stored to decide whether to adopt, so merging an already-merged record must
+ * come back unchanged or the two would write to each other forever. The one
+ * non-deterministic field, `id`, only ever comes from `prev` — a device
+ * without one is a device with no record at all, which is adopted outright
+ * rather than compared.
+ */
+function mergeAccount(acct: AccountIdentity, prev: Identity | null): Identity {
+  const school = acct.school ?? prev?.school ?? null;
   const takeCourses = acct.coursesChosen;
-  const next: Identity = {
+  return {
     name: acct.name,
     avatar: acct.avatar,
-    school: prev?.school ?? null,
-    schoolName: prev?.schoolName ?? null,
+    school,
+    // Only "other" carries a typed name, and it must come from whichever side
+    // the school itself came from — an account's school with the device's
+    // typed name would be two people's answers spliced together.
+    schoolName:
+      school !== OTHER_SCHOOL ? null : (acct.school ? acct.schoolName : (prev?.schoolName ?? null)),
     courses: takeCourses ? acct.courses : (prev?.courses ?? []),
     coursesChosen: takeCourses || (prev?.coursesChosen ?? false),
-    // Same rule as courses: the account wins where it has an answer.
     target: acct.target ?? prev?.target ?? null,
     id: prev?.id ?? newId(),
     since: acct.since,
   };
-  persist(next);
-  return next;
+}
+
+/** Whether the stored record already IS the merge — everything but `id`,
+ *  which is per-device by design and never travels. */
+export function matchesAccount(id: Identity | null, acct: AccountIdentity): boolean {
+  if (!id) return false;
+  const next = mergeAccount(acct, id);
+  return (
+    id.name === next.name &&
+    id.avatar === next.avatar &&
+    id.since === next.since &&
+    id.school === next.school &&
+    id.schoolName === next.schoolName &&
+    id.coursesChosen === next.coursesChosen &&
+    id.courses.length === next.courses.length &&
+    id.courses.every((s, i) => s === next.courses[i]) &&
+    id.target?.days === next.target?.days &&
+    id.target?.minutes === next.target?.minutes
+  );
+}
+
+/** Whether this device knows an answer the account hasn't got — the cue for
+ *  the upward write. Only ever "the account is missing something", never "the
+ *  two differ": where both have an answer the account's is the one that
+ *  stands, and mergeAccount has already applied it. */
+export function accountBehind(id: Identity | null, acct: AccountIdentity): boolean {
+  if (!id) return false;
+  return (
+    (!acct.school && !!id.school) ||
+    (!acct.coursesChosen && id.coursesChosen) ||
+    (!acct.target && !!id.target)
+  );
 }
 
 /**

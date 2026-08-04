@@ -91,6 +91,13 @@ const ICONS = [
   // picked — a checkbox in the app's own hand
   "circle",
   "check-circle-solid",
+  /* Onboarding's progress line, owner's pick 2026-08-04 (he sent the icon
+     page): a plain square for a question not answered yet, the same square
+     with a tick in it once it is. The empty square is `square` rather than
+     `check-square` drawn faint — a ghosted tick reads as answered from any
+     distance, which is the one thing this row must not say. */
+  "square",
+  "check-square",
   "x", // clears its search field
   "chart-bar-increasing",
   "clock-1",

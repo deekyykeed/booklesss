@@ -2,10 +2,12 @@
 
 import { useEffect } from "react";
 import { useAuth, useUser } from "@clerk/nextjs";
-import { setSignedIn } from "@/lib/account";
+import { setAccountRead, setSignedIn } from "@/lib/account";
 import {
+  accountBehind,
   accountIdentity,
   adoptIdentity,
+  matchesAccount,
   parseAccountIdentity,
   useIdentity,
 } from "@/lib/identity";
@@ -32,6 +34,9 @@ export function AccountSignal() {
 
   useEffect(() => {
     setSignedIn(isLoaded ? !!isSignedIn : null);
+    // Signed out, there is no account record to wait for — say so, or the
+    // onboarding gate would hold a page for a document that is never coming.
+    if (isLoaded && !isSignedIn) setAccountRead(true);
   }, [isLoaded, isSignedIn]);
 
   /* The signed-in student's own share code, published the same way, so
@@ -61,23 +66,14 @@ export function AccountSignal() {
     if (!user || !hydrated) return;
     const acct = parseAccountIdentity(user.unsafeMetadata?.identity);
     if (acct) {
-      /* Courses are compared too, so answering on the phone reaches the
-         laptop — and so this effect settles: adopt makes the two equal, and
-         the healing write below re-runs it with the metadata present, which
-         compares equal and stops. */
-      const sameCourses =
-        identity?.coursesChosen === acct.coursesChosen &&
-        identity?.courses.length === acct.courses.length &&
-        identity.courses.every((s, i) => s === acct.courses[i]);
-      if (
-        !identity ||
-        identity.name !== acct.name ||
-        identity.avatar !== acct.avatar ||
-        identity.since !== acct.since ||
-        (acct.coursesChosen && !sameCourses)
-      ) {
+      /* The comparison is against the MERGE rather than against the account
+         field by field (lib/identity), so every answer travels — the school,
+         the courses and the plan — and so this effect settles: adopting makes
+         the stored record equal the merge, the healing write below re-runs it
+         with the metadata now present, and that pass matches and stops. */
+      if (!matchesAccount(identity, acct)) {
         adoptIdentity(acct);
-      } else if (identity.coursesChosen && !acct.coursesChosen) {
+      } else if (accountBehind(identity, acct)) {
         // Answered on this device against an account that hasn't got it yet.
         user.updateMetadata({ unsafeMetadata: { identity: accountIdentity() } }).catch(() => {});
       }
@@ -85,6 +81,13 @@ export function AccountSignal() {
       const mine = accountIdentity();
       if (mine) user.updateMetadata({ unsafeMetadata: { identity: mine } }).catch(() => {});
     }
+
+    /* The account's answers are now on this device — adoptIdentity persists
+       synchronously, so by this line the record the onboarding gate reads is
+       the reconciled one. Last, and unconditional: whichever branch ran, the
+       metadata has been read, and a gate waiting on that must not be left
+       holding a page because the two happened to already agree. */
+    setAccountRead(true);
   }, [user, identity, hydrated]);
 
   return null;

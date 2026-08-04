@@ -9,7 +9,6 @@ import { overallPerformance, overallScoreHistory } from "@/lib/performance";
 import { SolarIcon } from "@/components/icons/solar";
 import { SETTINGS_EVENT } from "@/components/identity/pickers";
 import { CourseCard } from "./CourseCard";
-import { CourseSetup } from "./CourseSetup";
 import { pickGreeting, rememberGreeting, renderGreeting, type Greeting } from "./greeting";
 import { OfflineTools } from "./OfflineTools";
 import { Spark } from "./Spark";
@@ -361,12 +360,12 @@ export function HomeView({
         </div>
       </section>
 
-      {/* Asks a signed-in reader which courses they take, once, and renders
-          nothing for everybody else. Mounted here because the dashboard is
-          where the answer matters and where an unanswered account inevitably
-          lands — see the note in CourseSetup for why it is not a redirect. */}
-      <CourseSetup />
-
+      {/* The courses question used to be asked here, by a modal over this
+          page (CourseSetup, deleted 2026-08-04). It asked one of onboarding's
+          three questions with the unfinished dashboard visible behind it, and
+          the two questions it didn't ask — the school and the study plan —
+          had no gate at all. /onboarding asks all three now, and
+          RequireOnboarding means this component never renders without them. */}
       {/* ---- the courses themselves ---- */}
       <section id="courses" className="mt-8 scroll-mt-20 pb-10">
         {/* A reader who has not answered sees the whole library — anonymous

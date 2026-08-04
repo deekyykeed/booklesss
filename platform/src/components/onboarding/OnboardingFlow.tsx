@@ -4,7 +4,13 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSignedIn } from "@/lib/account";
 import { coursesForSchool } from "@/lib/courses";
-import { saveOnboarding, type StudyTarget } from "@/lib/identity";
+import {
+  firstUnanswered,
+  saveOnboarding,
+  useIdentity,
+  type Identity,
+  type StudyTarget,
+} from "@/lib/identity";
 import { OTHER_SCHOOL, type SchoolChoice } from "@/lib/schools";
 import { CoursePicker, SchoolPicker } from "@/components/identity/pickers";
 import { Button } from "@/components/ui/Button";
@@ -58,16 +64,65 @@ const MINUTE_CHOICES = [15, 30, 45, 60, 90, 120];
 type Step = "school" | "courses" | "target";
 const ORDER: Step[] = ["school", "courses", "target"];
 
+/** The three answers as the form holds them. */
+type Draft = {
+  school: SchoolChoice | null;
+  schoolName: string;
+  courses: string[];
+  /** Whether the courses QUESTION has been answered, which is not the same as
+   *  the list being non-empty — "Show me everything" answers it with none.
+   *  Carried explicitly because every save has to state it honestly: a save
+   *  that claims it while the student is still on question one is what let a
+   *  half-filled record look finished to the dashboard's gate. */
+  coursesAnswered: boolean;
+  target: StudyTarget;
+};
+
+/** What the form shows before anybody has touched it: whatever the student
+ *  already answered, and the offer for anything they haven't. Four days at
+ *  half an hour is a habit most people can actually keep — the number is only
+ *  worth anything if it is the one they'd have picked. */
+function asDraft(identity: Identity | null): Draft {
+  return {
+    school: identity?.school ?? null,
+    schoolName: identity?.schoolName ?? "",
+    courses: identity?.courses ?? [],
+    coursesAnswered: identity?.coursesChosen ?? false,
+    target: identity?.target ?? { days: 4, minutes: 30 },
+  };
+}
+
 export function OnboardingFlow() {
   const router = useRouter();
   const signedIn = useSignedIn();
+  const { identity, hydrated } = useIdentity();
 
-  const [step, setStep] = useState<Step>("school");
-  const [school, setSchool] = useState<SchoolChoice | null>(null);
-  const [schoolName, setSchoolName] = useState("");
-  const [courses, setCourses] = useState<string[]>([]);
-  const [target, setTarget] = useState<StudyTarget>({ days: 4, minutes: 30 });
+  /* RESUME, DON'T RESTART. Every step saves, so a student who closed the tab
+     on question three already has two answers stored, and asking for them
+     again is the same insult as never asking. The gate that sends people back
+     here (RequireOnboarding) reads the same `firstUnanswered`, so the question
+     it opens on is always the one actually missing.
+
+     THE FORM FOLLOWS THE RECORD UNTIL IT IS TOUCHED, rather than being seeded
+     into state. Copying the record into `useState` needs the copy to happen
+     after the store hydrates, and the two ways to do that are both wrong here:
+     a lazy initialiser reads localStorage during the render that has to match
+     the server's HTML, and an effect is a cascading render (the lint rule that
+     catches it is right — it would paint question one and then swap). Holding
+     the whole draft as one nullable override means the first paint is the
+     record itself, and the moment anybody answers anything the form takes
+     over and later writes cannot move a field under their hands. */
+  const [draft, setDraft] = useState<Draft | null>(null);
+  const [stepPick, setStepPick] = useState<Step | null>(null);
   const [query, setQuery] = useState("");
+
+  const { school, schoolName, courses, coursesAnswered, target } = draft ?? asDraft(identity);
+  const step = stepPick ?? (hydrated ? firstUnanswered(identity) : "school");
+
+  /** Change one answer, and take the form off the record for good. */
+  function edit(patch: Partial<Draft>) {
+    setDraft({ school, schoolName, courses, coursesAnswered, target, ...patch });
+  }
 
   /* This page is for somebody who has just made an account. Anyone who lands
      here without one came from a stale link — send them to the front door,
@@ -85,35 +140,46 @@ export function OnboardingFlow() {
 
   const index = ORDER.indexOf(step);
 
-  /** Save everything answered so far, then move. */
-  function go(next: Step) {
-    save();
-    setStep(next);
-  }
-
-  /* `patch` exists for tap-to-advance: picking a university saves and moves in
-     the same handler, and React has not re-rendered with the new state by
-     then — reading `school` here would store the PREVIOUS answer. Passing the
-     picked value straight through is the difference between the flow working
-     and it silently recording one question behind. */
-  function save(patch?: { school?: SchoolChoice | null }) {
-    const s = patch && "school" in patch ? (patch.school ?? null) : school;
+  /**
+   * Write down what has been answered.
+   *
+   * `patch` exists for tap-to-advance: picking a university saves and moves in
+   * the same handler, and React has not re-rendered with the new state by
+   * then — reading `school` here would store the PREVIOUS answer. Passing the
+   * picked value straight through is the difference between the flow working
+   * and it silently recording one question behind.
+   *
+   * IT SAYS WHAT IT KNOWS AND NOTHING MORE. `coursesChosen` is passed by the
+   * caller, and `target` only by the question that asks for it — the record
+   * this writes is what the onboarding gate reads, so a field filled in
+   * ahead of the student is a gate that opens on an empty dashboard.
+   */
+  function save(patch: {
+    school?: SchoolChoice | null;
+    courses?: string[];
+    coursesChosen: boolean;
+    target?: StudyTarget;
+  }) {
+    const s = "school" in patch ? (patch.school ?? null) : school;
     saveOnboarding({
       school: s,
       schoolName: s === OTHER_SCHOOL ? schoolName.trim() || null : null,
-      courses,
-      target,
+      courses: patch.courses ?? courses,
+      coursesChosen: patch.coursesChosen,
+      ...(patch.target === undefined ? {} : { target: patch.target }),
     });
   }
 
-  /** The last answer, and into the app. */
+  /** The last answer — the plan, written here and only here — and into the
+   *  app. `replace`, so the back button out of the dashboard is the page they
+   *  came from rather than the questions they just finished. */
   function finish() {
-    save();
+    save({ coursesChosen: true, target });
     router.replace("/dashboard");
   }
 
   function back() {
-    setStep(ORDER[Math.max(0, index - 1)]);
+    setStepPick(ORDER[Math.max(0, index - 1)]);
   }
 
   return (
@@ -152,16 +218,24 @@ export function OnboardingFlow() {
               query={query}
               onQuery={setQuery}
               onPick={(id) => {
-                setSchool(id);
-                // A different school offers different courses; anything picked
-                // under the old one may not be on offer any more.
-                setCourses([]);
+                /* A DIFFERENT school offers different courses, so anything
+                   picked under the old one may not be on offer any more — and
+                   the question goes back to unanswered with it. Re-tapping the
+                   SAME school changes nothing and must not throw away an
+                   answer already given, which is a real case now that the flow
+                   resumes into a part-filled record. */
+                const changed = id !== school;
+                edit(changed ? { school: id, courses: [], coursesAnswered: false } : { school: id });
                 if (id !== OTHER_SCHOOL) {
-                  save({ school: id });
-                  setStep("courses");
+                  save({
+                    school: id,
+                    ...(changed ? { courses: [] } : {}),
+                    coursesChosen: changed ? false : coursesAnswered,
+                  });
+                  setStepPick("courses");
                 }
               }}
-              onName={setSchoolName}
+              onName={(v) => edit({ schoolName: v })}
             />
             {/* THERE IS NO SKIP ON THIS QUESTION (owner, 2026-08-03: "the
                 student cannot skip this — why would they not add the school?
@@ -178,7 +252,10 @@ export function OnboardingFlow() {
                 block
                 className="mt-4"
                 disabled={!schoolName.trim()}
-                onClick={() => go("courses")}
+                onClick={() => {
+                  save({ coursesChosen: coursesAnswered });
+                  setStepPick("courses");
+                }}
               >
                 {schoolName.trim() ? "Continue" : "Type your university"}
               </Button>
@@ -197,7 +274,9 @@ export function OnboardingFlow() {
               query={query}
               onQuery={setQuery}
               onToggle={(slug) =>
-                setCourses((cur) => (cur.includes(slug) ? cur.filter((s) => s !== slug) : [...cur, slug]))
+                edit({
+                  courses: courses.includes(slug) ? courses.filter((s) => s !== slug) : [...courses, slug],
+                })
               }
             />
             <div className="mt-5 flex flex-col gap-2">
@@ -206,7 +285,11 @@ export function OnboardingFlow() {
                 size="lg"
                 block
                 disabled={courses.length === 0}
-                onClick={() => go("target")}
+                onClick={() => {
+                  edit({ coursesAnswered: true });
+                  save({ coursesChosen: true });
+                  setStepPick("target");
+                }}
               >
                 {courses.length === 0
                   ? "Pick at least one"
@@ -218,8 +301,12 @@ export function OnboardingFlow() {
                 size="md"
                 block
                 onClick={() => {
-                  setCourses([]);
-                  go("target");
+                  /* An answer, not a skip — so `courses: []` is passed
+                     explicitly rather than read off state React has not
+                     re-rendered with, and it is marked answered. */
+                  edit({ courses: [], coursesAnswered: true });
+                  save({ courses: [], coursesChosen: true });
+                  setStepPick("target");
                 }}
               >
                 Show me everything
@@ -238,7 +325,7 @@ export function OnboardingFlow() {
               value={target.days}
               options={DAY_CHOICES}
               format={(n) => String(n)}
-              onPick={(days) => setTarget((t) => ({ ...t, days }))}
+              onPick={(days) => edit({ target: { ...target, days } })}
             />
             <div className="mt-4">
               <Choices
@@ -248,7 +335,7 @@ export function OnboardingFlow() {
                 /* Math.floor, not a bare divide: 90/60 is 1.5, and the first
                    render of this said "1.5h 30m". */
                 format={(n) => (n >= 60 ? `${Math.floor(n / 60)}h${n % 60 ? ` ${n % 60}m` : ""}` : `${n}m`)}
-                onPick={(minutes) => setTarget((t) => ({ ...t, minutes }))}
+                onPick={(minutes) => edit({ target: { ...target, minutes } })}
               />
             </div>
             <p className="mt-4 text-[13.5px] leading-5 text-muted">
@@ -281,6 +368,19 @@ export function OnboardingFlow() {
  * NOTE THE FIRST SCREEN HAS NO TICK, and should not: nothing is finished when
  * you arrive. The reference behaves the same way — its own first row is one
  * ring and two empty nodes.
+ *
+ * THE NODES ARE SQUARES NOW (owner, 2026-08-04, who sent MynaUI's own
+ * check-square page): an empty square for a question not yet answered, the
+ * square with a tick in it once it is, and the tick drawn BOLD so an answered
+ * step is legible in the shape as well as the colour. The empty node is the
+ * separate `square` icon rather than a faded check-square — he asked for the
+ * tick to come out when unchecked, and he is right that a ghosted tick reads
+ * as answered from arm's length, which is the one thing this row must not say.
+ *
+ * A tick with no box around it is what the row used to draw, on a filled green
+ * disc. That was a state, not a control; a checkbox is the thing everyone
+ * already knows how to read, and it says "three questions, this many done"
+ * without a legend.
  *
  * GREEN, AND NOT AS A PREFERENCE. Green is what completion means everywhere
  * else in this app — the coverage tile, the checkpoint ticks, the course-card
@@ -325,15 +425,22 @@ function Stepper({ index }: { index: number }) {
               >
                 {STEP_LABELS[s]}
               </span>
+              {/* Three states in two icons: a bold ticked square behind you,
+                  an empty square in the step's own green where you are, and a
+                  grey empty square ahead. The stroke does the same work the
+                  fill used to — 2.2 on the tick against MynaUI's 1.5 — so
+                  "answered" survives being read at 20px on a phone in the
+                  sun, which a hairline tick does not. */}
               <span
                 aria-current={now ? "step" : undefined}
-                className="grid h-5 w-5 shrink-0 place-items-center rounded-full transition-colors duration-300"
-                style={{
-                  backgroundColor: done ? GREEN : "#ffffff",
-                  boxShadow: done ? "none" : `inset 0 0 0 2px ${now ? GREEN : "var(--color-line)"}`,
-                }}
+                className="grid h-5 w-5 shrink-0 place-items-center transition-colors duration-300"
+                style={{ color: lit ? GREEN : "var(--color-line-2)" }}
               >
-                {done && <MynaIcon name="check" size={11} strokeWidth={3.5} className="text-white" />}
+                <MynaIcon
+                  name={done ? "check-square" : "square"}
+                  size={20}
+                  strokeWidth={done ? 2.2 : now ? 1.9 : 1.5}
+                />
               </span>
             </div>
           </li>
