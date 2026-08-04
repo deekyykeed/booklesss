@@ -87,14 +87,16 @@ const ICONS = [
   "danger-triangle",
   "clipboard",
   "target",
-  // the sign-up form's school and course rows: an empty ring, filled once
-  // picked — a checkbox in the app's own hand
-  "circle",
-  "check-circle-solid",
-  /* No square/check-square here any more: they were onboarding's progress
-     nodes for the length of one afternoon (2026-08-04) before the owner took
-     the progress line out altogether. Listing an icon nothing draws is how
-     this file stops being a map of where each mark is used. */
+  /* The school and course rows: an empty box, filled once picked — a checkbox
+     in the app's own hand. SQUARE, owner's call 2026-08-04 ("the check can be
+     square as well"), after the round pair had been there since the rows were
+     built. A square is what a checkbox is everywhere else a student has ever
+     used one, and these rows are checkboxes: the course list takes as many as
+     you like. One pair for one control: Settings draws these same rows, so the
+     round pair came out rather than leaving a student two checkbox shapes for
+     the same question depending on where they met it. */
+  "square",
+  "check-square-solid",
   "x", // clears its search field
   "chart-bar-increasing",
   "clock-1",

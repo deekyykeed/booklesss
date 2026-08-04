@@ -30,12 +30,21 @@ export const SETTINGS_EVENT = "booklesss:edit-identity";
  *  on a phone, where it opens the keyboard over the list it filters. */
 export const SEARCHABLE = 6;
 
-/** The selected mark on a school or course row. Keeps its space when off, so
- *  nothing shifts sideways as rows are tapped. */
+/**
+ * The selected mark on a school or course row. Keeps its space when off, so
+ * nothing shifts sideways as rows are tapped.
+ *
+ * SQUARE (owner, 2026-08-04: "the check can be square as well"), where it was
+ * a ring and a filled disc since these rows were built. A square is what a
+ * checkbox is everywhere else a student has used one, and these rows are
+ * checkboxes — the course list takes as many as you like. Both surfaces that
+ * draw these rows, onboarding and Settings, get it from here, so nobody meets
+ * the same question wearing two different controls.
+ */
 export function Tick({ on }: { on: boolean }) {
   return (
-    <span className={"shrink-0 " + (on ? "text-ink" : "text-line-2")}>
-      <MynaIcon name={on ? "check-circle-solid" : "circle"} size={20} />
+    <span className={"shrink-0 transition-colors " + (on ? "text-ink" : "text-line-2")}>
+      <MynaIcon name={on ? "check-square-solid" : "square"} size={20} />
     </span>
   );
 }
@@ -151,6 +160,7 @@ export function SchoolPicker({
   onQuery,
   onPick,
   onName,
+  fill,
 }: {
   school: SchoolChoice | null;
   /** What they typed when theirs wasn't listed. */
@@ -159,6 +169,11 @@ export function SchoolPicker({
   onQuery: (v: string) => void;
   onPick: (id: SchoolChoice) => void;
   onName: (v: string) => void;
+  /** True where the page already gives the list its own scrolling area (the
+   *  onboarding question, whose action is pinned to the bottom of the screen).
+   *  Left off, the list caps its own height — which is what Settings needs,
+   *  where it is one section of a sheet with other things under it. */
+  fill?: boolean;
 }) {
   const other = school === OTHER_SCHOOL;
   const matches = searchSchools(query);
@@ -170,7 +185,7 @@ export function SchoolPicker({
           <Search value={query} onChange={onQuery} placeholder="Search universities" label="Search universities" />
         </div>
       )}
-      <div className="flex max-h-[38dvh] flex-col gap-2 overflow-y-auto">
+      <div className={"flex flex-col gap-2 " + (fill ? "" : "max-h-[38dvh] overflow-y-auto")}>
         {matches.map((s) => {
           const on = s.id === school;
           return (
@@ -233,6 +248,7 @@ export function CoursePicker({
   onQuery,
   onToggle,
   note,
+  fill,
 }: {
   offered: CourseMeta[];
   /** Slugs currently chosen. */
@@ -242,6 +258,8 @@ export function CoursePicker({
   onToggle: (slug: string) => void;
   /** One line above the list, when the school needs explaining. */
   note?: string;
+  /** See SchoolPicker's — the page is doing the scrolling. */
+  fill?: boolean;
 }) {
   const q = query.trim().toLowerCase();
   const matches = q
@@ -257,7 +275,7 @@ export function CoursePicker({
           <Search value={query} onChange={onQuery} placeholder="Search your courses" label="Search courses" />
         </div>
       )}
-      <div className="flex max-h-[42dvh] flex-col gap-2 overflow-y-auto">
+      <div className={"flex flex-col gap-2 " + (fill ? "" : "max-h-[42dvh] overflow-y-auto")}>
         {matches.map((c) => {
           const on = courses.includes(c.slug);
           return (

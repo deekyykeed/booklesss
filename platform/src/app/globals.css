@@ -291,6 +291,7 @@
      every target here, so placement in the file doesn't matter. */
   :root[data-motion="reduced"] .bg-waves span,
   :root[data-motion="reduced"] .lesson-fade,
+  :root[data-motion="reduced"] .onboard-step,
   :root[data-motion="reduced"] .account-skeleton,
   :root[data-motion="reduced"] .ring-pop,
   :root[data-motion="reduced"] .quiz-backdrop,
@@ -610,6 +611,58 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .lesson-fade {
+      animation: none;
+    }
+  }
+
+  /* Onboarding, question to question (owner, 2026-08-04: "make sure the
+     animation is smooth"). The questions used to hard-cut: one list vanished
+     and another appeared in its place, which on a three-question form is most
+     of what the form feels like.
+
+     IT KNOWS WHICH WAY IT IS GOING. Answering slides the next question in from
+     the right; Back brings the previous one in from the left. A transition
+     that plays the same in both directions tells a student they moved without
+     telling them which way, and on a form the whole point of the movement is
+     that Back undoes something.
+
+     Keyed by step in OnboardingFlow so it replays on every change, the same
+     trick .lesson-fade uses per route. 260ms on the same ease-out curve as the
+     reader: far enough to read as travel, over before a fast answerer's next
+     tap. No blur here — the reader's fade blurs a page of prose settling, and
+     blurring a list of options reads as the app struggling rather than moving.
+
+     Translation only, and never opacity on the container alone: these steps
+     hold a search field that can hold focus, and animating a focused input's
+     opacity makes some Android browsers drop the caret mid-animation. */
+  @keyframes onboardNext {
+    from {
+      opacity: 0;
+      transform: translate3d(18px, 0, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  @keyframes onboardBack {
+    from {
+      opacity: 0;
+      transform: translate3d(-18px, 0, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  .onboard-step {
+    animation: onboardNext 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .onboard-step[data-dir="back"] {
+    animation-name: onboardBack;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .onboard-step {
       animation: none;
     }
   }
