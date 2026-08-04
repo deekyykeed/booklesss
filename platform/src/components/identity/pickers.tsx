@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import { MynaIcon } from "@/components/icons/myna";
 import type { CourseMeta } from "@/lib/courses";
 import { OTHER_SCHOOL, SCHOOLS, searchSchools, type SchoolChoice } from "@/lib/schools";
@@ -43,9 +44,57 @@ export const SEARCHABLE = 6;
  */
 export function Tick({ on }: { on: boolean }) {
   return (
-    <span className={"shrink-0 transition-colors " + (on ? "text-ink" : "text-line-2")}>
-      <MynaIcon name={on ? "check-square-solid" : "square"} size={20} />
+    <span className="grid h-5 w-5 shrink-0 place-items-center">
+      {on ? <GradientCheck /> : <span className="text-line-2"><MynaIcon name="square" size={20} /></span>}
     </span>
+  );
+}
+
+/**
+ * The ticked state: Streamline's Flex Gradient "Check Square", in the colours it
+ * ships with (owner sent it, 2026-08-04, asking for it at its defaults).
+ *
+ * ITS OWN COLOURS, NOT currentColor — the same exception the Plump course marks
+ * and the Kameleon avatars get, and for the same reason: the colour is the
+ * point. `#1b4dff` to `#ff51e3`, top-left to bottom-right, exactly as the set
+ * draws it. Streamline Flex Gradient - Free, CC BY 4.0, attribution owed with
+ * the rest.
+ *
+ * 16px INSIDE A 20px BOX, which is the whole trick. Flex is drawn on a 14 grid
+ * and this mark fills 96% of it; MynaUI's `square` is on a 24 grid and fills
+ * 75%. Rendered at the same 20px the gradient check carries 29% more ink than
+ * the empty square it replaces, so a row visibly jumped as you ticked it. 16px
+ * of a 96% mark is 15.4px of ink against the square's 15.0px — the same optical
+ * size — and the fixed 20px box means neither state moves the row.
+ *
+ * THE GRADIENT ID IS PER-INSTANCE. A hardcoded id (the set ships
+ * `paint0_linear_9371_5078`) is fine for one mark on a page and wrong here: the
+ * course question takes as many answers as you like, so several of these render
+ * at once, and duplicate ids in one document all resolve to the first.
+ */
+function GradientCheck() {
+  /* STRIPPED TO WORD CHARACTERS. useId's output is not a safe fragment name —
+     React 19 returns «r0» and React 18 returned :r0:, and both go into
+     `fill="url(#…)"`, where a guillemet or a colon is asking every browser to
+     agree about escaping in a URL fragment. They mostly do; "mostly" is not
+     worth a checkbox that renders as a black square on one phone. The suffix
+     keeps it unique per instance, which is the only thing it was for. */
+  const id = "tick" + useId().replace(/[^a-zA-Z0-9]/g, "");
+  return (
+    <svg width={16} height={16} viewBox="0 0 14 14" fill="none" aria-hidden="true" className="shrink-0">
+      <path
+        fill={`url(#${id})`}
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M3.65727.474686C4.73112.35499 5.85168.25 7 .25s2.26888.10499 3.3427.224686c1.672.186363 3.0154 1.528614 3.1946 3.203594.1143 1.0683.2127 2.18136.2127 3.32172 0 1.14035-.0984 2.25341-.2127 3.3217-.1792 1.675-1.5226 3.0173-3.1946 3.2036C9.26888 13.645 8.14832 13.75 7 13.75c-1.14832 0-2.26888-.105-3.34273-.2247C1.98532 13.339.641908 11.9967.462704 10.3217.348408 9.25341.25 8.14035.25 7c0-1.14036.098408-2.25342.212704-3.32172C.641907 2.0033 1.98532.661049 3.65727.474686ZM9.91992 4.96291c.25568-.23192.27488-.62718.04299-.88283-.23191-.25566-.62717-.27491-.88283-.04299-.83075.7536-1.45479 1.43087-1.98155 2.25306-.38363.59878-.70658 1.26029-1.0228 2.06202L4.94869 7.18991c-.2403-.2478-.63598-.25389-.88378-.0136-.2478.2403-.25389.63598-.0136.88378l1.81818 1.875c.15096.15571.37183.22201.58357.17521.21173-.0468.38409-.20003.45538-.40482.42024-1.20717.79331-2.03973 1.2426-2.741.44682-.69741.98591-1.2913 1.76888-2.00157Z"
+      />
+      <defs>
+        <linearGradient id={id} x1="13.704" x2="-2.283" y1="13.753" y2="4.76" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#ff51e3" />
+          <stop offset="1" stopColor="#1b4dff" />
+        </linearGradient>
+      </defs>
+    </svg>
   );
 }
 

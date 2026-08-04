@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSignedIn } from "@/lib/account";
 import { coursesForSchool } from "@/lib/courses";
@@ -59,6 +59,24 @@ import { Button } from "@/components/ui/Button";
  * them to it, so 2 days has to be as sayable as 7. */
 const DAY_CHOICES = [2, 3, 4, 5, 6, 7];
 const MINUTE_CHOICES = [15, 30, 45, 60, 90, 120];
+
+/**
+ * How long a tapped answer stays on screen before the next question arrives.
+ *
+ * Owner, 2026-08-04: "when i tap an option give me some time before change to
+ * the different page — need time to look at the option before changing."
+ * Tick-and-go answered the school question in one tap and left immediately, so
+ * the tick filled and the screen slid away in the same frame: a student got no
+ * confirmation of what they had just chosen, only a new question. On a
+ * mis-tapped row that is worse still — the wrong answer is saved and gone
+ * before they can see it was wrong.
+ *
+ * 380ms, against the row's own 150ms colour transition: long enough for the
+ * square to finish filling and be READ as filled, short enough that a student
+ * answering three questions never feels held up. The step transition's 260ms
+ * runs after this, not inside it.
+ */
+const ANSWER_BEAT_MS = 380;
 
 type Step = "school" | "courses" | "target";
 const ORDER: Step[] = ["school", "courses", "target"];
@@ -187,8 +205,38 @@ export function OnboardingFlow() {
   }
 
   function back() {
+    /* Back cancels a pending advance. Tapping a school and immediately hitting
+       Back would otherwise land on the previous question and then get dragged
+       forward again by a timer the student can't see. */
+    cancelAdvance();
     goTo(ORDER[Math.max(0, index - 1)], "back");
   }
+
+  /* The pending tap-to-advance, so it can be called off. */
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function cancelAdvance() {
+    if (advanceTimer.current) clearTimeout(advanceTimer.current);
+    advanceTimer.current = null;
+  }
+
+  /** Show them the answer they just gave, then move. See ANSWER_BEAT_MS.
+   *
+   *  RE-ARMED, NOT QUEUED. Tapping a second university inside the beat cancels
+   *  the first advance and starts the wait again, so the last tap wins and a
+   *  student correcting a mis-tap is never carried forward on the strength of
+   *  the answer they just changed. */
+  function advanceAfterBeat(next: Step) {
+    cancelAdvance();
+    advanceTimer.current = setTimeout(() => {
+      advanceTimer.current = null;
+      goTo(next);
+    }, ANSWER_BEAT_MS);
+  }
+
+  // A timer that outlives the page would move a question under whoever is on
+  // it next, or set state on a component that has gone.
+  useEffect(() => cancelAdvance, []);
 
   return (
     /* A SCREEN, NOT A PAGE (owner's reference, 2026-08-04). The question and
@@ -296,12 +344,22 @@ export function OnboardingFlow() {
                 const changed = id !== school;
                 edit(changed ? { school: id, courses: [], coursesAnswered: false } : { school: id });
                 if (id !== OTHER_SCHOOL) {
+                  /* SAVED NOW, MOVED IN A MOMENT. The write is not delayed with
+                     the advance — a student who taps their university and
+                     closes the tab inside that beat has still answered it, and
+                     the resume reads the record rather than the timer. */
                   save({
                     school: id,
                     ...(changed ? { courses: [] } : {}),
                     coursesChosen: changed ? false : coursesAnswered,
                   });
-                  goTo("courses");
+                  advanceAfterBeat("courses");
+                } else {
+                  /* "Another university" opens a field instead of advancing, so
+                     a beat armed by a previous tap has to be called off — it
+                     would otherwise carry them to the courses question while
+                     they were typing the name. */
+                  cancelAdvance();
                 }
               }}
               onName={(v) => edit({ schoolName: v })}
