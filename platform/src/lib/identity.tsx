@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { AVATARS, resolveAvatar, type AvatarId } from "@/components/identity/avatars";
+import { AVATARS, avatarLabel, resolveAvatar, type AvatarId } from "@/components/identity/avatars";
 import { isSchoolChoice, OTHER_SCHOOL, type SchoolChoice } from "@/lib/schools";
 
 /* ------------------------------------------------------------------ *
@@ -57,16 +57,25 @@ const KEY = "booklesss:identity:v1";
  * Deliberately NOT in avatars.tsx, which is generated from an icon set: a name
  * here is a decision about people, an entry there is metadata about a drawing,
  * and `npm run gen:avatars` would quietly overwrite the first with the second.
- * Kept as a total Record so adding a thirteenth avatar without naming it is a
- * type error rather than a student called "undefined".
  *
- * Each name says what the picture shows, because the tie between the two is
- * the whole idea — a Rainbow whose picture is a robot is a username, not an
+ * NO LONGER TOTAL, and it cannot be. It was a Record over twelve ids, so
+ * missing one was a type error; the set is 200 now and hand-naming all of them
+ * would be 200 decisions about how a person sounds in Zambia, made in one
+ * sitting, most of them never used. So these twelve keep their considered names
+ * and `avatarName()` falls back to the icon's own label for the rest — which is
+ * already a noun, already reads as a handle ("Anvil", "Beach"), and is at worst
+ * plain rather than wrong.
+ *
+ * The names that ARE here matter more than the ones that are not: they are the
+ * twelve people already carry.
+ *
+ * Each says what the picture shows, because the tie between the two is the
+ * whole idea — a Rainbow whose picture is a robot is a username, not an
  * identity. Where the icon's own label is a description rather than a name
  * ("Party popper", "Flying saucer", "Ice skate"), the name is the shortest
  * thing you could actually call someone.
  */
-export const AVATAR_NAMES: Record<AvatarId, string> = {
+export const AVATAR_NAMES: Record<string, string> = {
   astronaut: "Astronaut",
   robot: "Robot",
   smiley: "Smiley",
@@ -80,6 +89,18 @@ export const AVATAR_NAMES: Record<AvatarId, string> = {
   dice: "Dice",
   skate: "Skater",
 };
+
+/**
+ * What to call whoever wears this face.
+ *
+ * A considered name where one exists, the icon's own label otherwise. The
+ * fallback is not a compromise so much as an admission: 200 faces cannot each
+ * get a name weighed for how it lands in Zambia, and "Anvil" is a plain handle
+ * rather than a wrong one. The twelve above are the ones people already carry.
+ */
+export function avatarName(avatar: string): string {
+  return AVATAR_NAMES[avatar] ?? avatarLabel(avatar);
+}
 
 /**
  * How many days a week, how long on each — and, now, WHICH days.
@@ -701,7 +722,7 @@ export function assignIdentity(): Identity {
 
   const avatar = AVATARS[Math.floor(Math.random() * AVATARS.length)].id;
   return saveIdentity({
-    name: AVATAR_NAMES[avatar],
+    name: avatarName(avatar),
     avatar,
     // Not asked, and not a gap to be filled in later by anything but the
     // reader themselves, in Settings. Empty courses reads as the whole library.

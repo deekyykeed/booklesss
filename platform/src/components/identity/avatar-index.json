@@ -1,0 +1,818 @@
+{
+  "avatars": [
+    {
+      "id": "aid-kit",
+      "label": "Aid kit"
+    },
+    {
+      "id": "airconditioner",
+      "label": "Airconditioner"
+    },
+    {
+      "id": "airdrop-box",
+      "label": "Airdrop box"
+    },
+    {
+      "id": "antenna",
+      "label": "Antenna"
+    },
+    {
+      "id": "anvil",
+      "label": "Anvil"
+    },
+    {
+      "id": "apartment-2",
+      "label": "Apartment 2"
+    },
+    {
+      "id": "article-file-2",
+      "label": "Article file 2"
+    },
+    {
+      "id": "astronaut",
+      "label": "Astronaut"
+    },
+    {
+      "id": "baby-cart",
+      "label": "Baby cart"
+    },
+    {
+      "id": "bank",
+      "label": "Bank"
+    },
+    {
+      "id": "bank-check",
+      "label": "Bank check"
+    },
+    {
+      "id": "baseball",
+      "label": "Baseball"
+    },
+    {
+      "id": "basket-2",
+      "label": "Basket 2"
+    },
+    {
+      "id": "battery-medium",
+      "label": "Battery medium"
+    },
+    {
+      "id": "beach-2",
+      "label": "Beach 2"
+    },
+    {
+      "id": "bluetooth",
+      "label": "Bluetooth"
+    },
+    {
+      "id": "bomb",
+      "label": "Bomb"
+    },
+    {
+      "id": "boss-6",
+      "label": "Boss 6"
+    },
+    {
+      "id": "box-open",
+      "label": "Box open"
+    },
+    {
+      "id": "box-trolley",
+      "label": "Box trolley"
+    },
+    {
+      "id": "briefcase",
+      "label": "Briefcase"
+    },
+    {
+      "id": "bullhorn",
+      "label": "Bullhorn"
+    },
+    {
+      "id": "businessman-globe",
+      "label": "Businessman globe"
+    },
+    {
+      "id": "businesswoman-3",
+      "label": "Businesswoman 3"
+    },
+    {
+      "id": "butterfly",
+      "label": "Butterfly"
+    },
+    {
+      "id": "cable-car",
+      "label": "Cable car"
+    },
+    {
+      "id": "camera-front",
+      "label": "Camera front"
+    },
+    {
+      "id": "captain-shield",
+      "label": "Captain shield"
+    },
+    {
+      "id": "car-list",
+      "label": "Car list"
+    },
+    {
+      "id": "cart",
+      "label": "Cart"
+    },
+    {
+      "id": "castle",
+      "label": "Castle"
+    },
+    {
+      "id": "certificate-2",
+      "label": "Certificate 2"
+    },
+    {
+      "id": "chair-4",
+      "label": "Chair 4"
+    },
+    {
+      "id": "chalkboard",
+      "label": "Chalkboard"
+    },
+    {
+      "id": "chart-pie",
+      "label": "Chart pie"
+    },
+    {
+      "id": "chicken",
+      "label": "Chicken"
+    },
+    {
+      "id": "christmas-tree",
+      "label": "Christmas tree"
+    },
+    {
+      "id": "cigarette",
+      "label": "Cigarette"
+    },
+    {
+      "id": "clipboard-2",
+      "label": "Clipboard 2"
+    },
+    {
+      "id": "cocktail",
+      "label": "Cocktail"
+    },
+    {
+      "id": "coding-file-2",
+      "label": "Coding file 2"
+    },
+    {
+      "id": "coffee-paper-glass",
+      "label": "Coffee paper glass"
+    },
+    {
+      "id": "cone",
+      "label": "Cone"
+    },
+    {
+      "id": "construction-blueprint",
+      "label": "Construction blueprint"
+    },
+    {
+      "id": "construction-worker-4",
+      "label": "Construction worker 4"
+    },
+    {
+      "id": "conversion",
+      "label": "Conversion"
+    },
+    {
+      "id": "coupons",
+      "label": "Coupons"
+    },
+    {
+      "id": "crab",
+      "label": "Crab"
+    },
+    {
+      "id": "credit-card-3",
+      "label": "Credit card 3"
+    },
+    {
+      "id": "crosshair",
+      "label": "Crosshair"
+    },
+    {
+      "id": "dartboard",
+      "label": "Dartboard"
+    },
+    {
+      "id": "data-transfer",
+      "label": "Data transfer"
+    },
+    {
+      "id": "databse-network",
+      "label": "Databse network"
+    },
+    {
+      "id": "delivery",
+      "label": "Delivery"
+    },
+    {
+      "id": "dices",
+      "label": "Dices"
+    },
+    {
+      "id": "donut",
+      "label": "Donut"
+    },
+    {
+      "id": "download-cloud",
+      "label": "Download cloud"
+    },
+    {
+      "id": "drakkar",
+      "label": "Drakkar"
+    },
+    {
+      "id": "drawer-2",
+      "label": "Drawer 2"
+    },
+    {
+      "id": "drum",
+      "label": "Drum"
+    },
+    {
+      "id": "eco-tag",
+      "label": "Eco tag"
+    },
+    {
+      "id": "education-globe",
+      "label": "Education globe"
+    },
+    {
+      "id": "enter-key",
+      "label": "Enter key"
+    },
+    {
+      "id": "excavator",
+      "label": "Excavator"
+    },
+    {
+      "id": "eyeglasses",
+      "label": "Eyeglasses"
+    },
+    {
+      "id": "farm",
+      "label": "Farm"
+    },
+    {
+      "id": "favorite-file",
+      "label": "Favorite file"
+    },
+    {
+      "id": "filter",
+      "label": "Filter"
+    },
+    {
+      "id": "fireman-2",
+      "label": "Fireman 2"
+    },
+    {
+      "id": "frightened-smiley",
+      "label": "Frightened smiley"
+    },
+    {
+      "id": "glasses",
+      "label": "Glasses"
+    },
+    {
+      "id": "graph-magnifier",
+      "label": "Graph magnifier"
+    },
+    {
+      "id": "grinder",
+      "label": "Grinder"
+    },
+    {
+      "id": "hammer",
+      "label": "Hammer"
+    },
+    {
+      "id": "harp",
+      "label": "Harp"
+    },
+    {
+      "id": "hat-2",
+      "label": "Hat 2"
+    },
+    {
+      "id": "headset-2",
+      "label": "Headset 2"
+    },
+    {
+      "id": "heart-key",
+      "label": "Heart key"
+    },
+    {
+      "id": "heart-watch",
+      "label": "Heart watch"
+    },
+    {
+      "id": "hook",
+      "label": "Hook"
+    },
+    {
+      "id": "house-location",
+      "label": "House location"
+    },
+    {
+      "id": "image-file",
+      "label": "Image file"
+    },
+    {
+      "id": "joystick",
+      "label": "Joystick"
+    },
+    {
+      "id": "keyboard",
+      "label": "Keyboard"
+    },
+    {
+      "id": "ladybug",
+      "label": "Ladybug"
+    },
+    {
+      "id": "lamp",
+      "label": "Lamp"
+    },
+    {
+      "id": "laptop",
+      "label": "Laptop"
+    },
+    {
+      "id": "light-bulb",
+      "label": "Light bulb"
+    },
+    {
+      "id": "lighter",
+      "label": "Lighter"
+    },
+    {
+      "id": "lockers",
+      "label": "Lockers"
+    },
+    {
+      "id": "love",
+      "label": "Love"
+    },
+    {
+      "id": "love-smiley",
+      "label": "Love smiley"
+    },
+    {
+      "id": "luggage-cart",
+      "label": "Luggage cart"
+    },
+    {
+      "id": "mac-signal",
+      "label": "Mac signal"
+    },
+    {
+      "id": "magic-wand",
+      "label": "Magic wand"
+    },
+    {
+      "id": "man-12",
+      "label": "Man 12"
+    },
+    {
+      "id": "man-15",
+      "label": "Man 15"
+    },
+    {
+      "id": "man-18",
+      "label": "Man 18"
+    },
+    {
+      "id": "map",
+      "label": "Map"
+    },
+    {
+      "id": "map-pin",
+      "label": "Map pin"
+    },
+    {
+      "id": "medicine",
+      "label": "Medicine"
+    },
+    {
+      "id": "meteor",
+      "label": "Meteor"
+    },
+    {
+      "id": "microphone-2",
+      "label": "Microphone 2"
+    },
+    {
+      "id": "microphone-3",
+      "label": "Microphone 3"
+    },
+    {
+      "id": "microwave",
+      "label": "Microwave"
+    },
+    {
+      "id": "money-atm",
+      "label": "Money atm"
+    },
+    {
+      "id": "money-graph",
+      "label": "Money graph"
+    },
+    {
+      "id": "money-letter",
+      "label": "Money letter"
+    },
+    {
+      "id": "motorbike",
+      "label": "Motorbike"
+    },
+    {
+      "id": "mountain",
+      "label": "Mountain"
+    },
+    {
+      "id": "movie-file-3",
+      "label": "Movie file 3"
+    },
+    {
+      "id": "movie-film",
+      "label": "Movie film"
+    },
+    {
+      "id": "nail-varnish",
+      "label": "Nail varnish"
+    },
+    {
+      "id": "newspaper",
+      "label": "Newspaper"
+    },
+    {
+      "id": "nuclear-mushroom",
+      "label": "Nuclear mushroom"
+    },
+    {
+      "id": "oven-glove",
+      "label": "Oven glove"
+    },
+    {
+      "id": "oxygen-tank",
+      "label": "Oxygen tank"
+    },
+    {
+      "id": "party-poppers",
+      "label": "Party poppers"
+    },
+    {
+      "id": "peace",
+      "label": "Peace"
+    },
+    {
+      "id": "pen",
+      "label": "Pen"
+    },
+    {
+      "id": "pencil-2",
+      "label": "Pencil 2"
+    },
+    {
+      "id": "pencil-ruler-2",
+      "label": "Pencil ruler 2"
+    },
+    {
+      "id": "perfume",
+      "label": "Perfume"
+    },
+    {
+      "id": "photo-file-2",
+      "label": "Photo file 2"
+    },
+    {
+      "id": "pine-tree",
+      "label": "Pine tree"
+    },
+    {
+      "id": "play",
+      "label": "Play"
+    },
+    {
+      "id": "plug",
+      "label": "Plug"
+    },
+    {
+      "id": "podium",
+      "label": "Podium"
+    },
+    {
+      "id": "pointer",
+      "label": "Pointer"
+    },
+    {
+      "id": "pokeball",
+      "label": "Pokeball"
+    },
+    {
+      "id": "popcorn",
+      "label": "Popcorn"
+    },
+    {
+      "id": "postcard",
+      "label": "Postcard"
+    },
+    {
+      "id": "pounds-coin",
+      "label": "Pounds coin"
+    },
+    {
+      "id": "power",
+      "label": "Power"
+    },
+    {
+      "id": "predator",
+      "label": "Predator"
+    },
+    {
+      "id": "prism-2",
+      "label": "Prism 2"
+    },
+    {
+      "id": "quill-paper",
+      "label": "Quill paper"
+    },
+    {
+      "id": "r2d2",
+      "label": "R2d2"
+    },
+    {
+      "id": "rainbow",
+      "label": "Rainbow"
+    },
+    {
+      "id": "rapper",
+      "label": "Rapper"
+    },
+    {
+      "id": "receptionist",
+      "label": "Receptionist"
+    },
+    {
+      "id": "reindeer",
+      "label": "Reindeer"
+    },
+    {
+      "id": "robot",
+      "label": "Robot"
+    },
+    {
+      "id": "santa",
+      "label": "Santa"
+    },
+    {
+      "id": "scale-weight",
+      "label": "Scale weight"
+    },
+    {
+      "id": "script-paper",
+      "label": "Script paper"
+    },
+    {
+      "id": "sea",
+      "label": "Sea"
+    },
+    {
+      "id": "servers",
+      "label": "Servers"
+    },
+    {
+      "id": "service-bell",
+      "label": "Service bell"
+    },
+    {
+      "id": "settings-4",
+      "label": "Settings 4"
+    },
+    {
+      "id": "shopping-4",
+      "label": "Shopping 4"
+    },
+    {
+      "id": "skate",
+      "label": "Skate"
+    },
+    {
+      "id": "smartphone",
+      "label": "Smartphone"
+    },
+    {
+      "id": "smartphone-forbiden",
+      "label": "Smartphone forbiden"
+    },
+    {
+      "id": "smartphone-qrcode",
+      "label": "Smartphone qrcode"
+    },
+    {
+      "id": "smartphone-rotate",
+      "label": "Smartphone rotate"
+    },
+    {
+      "id": "sneakers-3",
+      "label": "Sneakers 3"
+    },
+    {
+      "id": "soccer-field",
+      "label": "Soccer field"
+    },
+    {
+      "id": "sofa-3",
+      "label": "Sofa 3"
+    },
+    {
+      "id": "soldier",
+      "label": "Soldier"
+    },
+    {
+      "id": "space-shuttle",
+      "label": "Space shuttle"
+    },
+    {
+      "id": "speaker",
+      "label": "Speaker"
+    },
+    {
+      "id": "spongebob",
+      "label": "Spongebob"
+    },
+    {
+      "id": "sprout",
+      "label": "Sprout"
+    },
+    {
+      "id": "stamp-paper",
+      "label": "Stamp paper"
+    },
+    {
+      "id": "start",
+      "label": "Start"
+    },
+    {
+      "id": "steering-wheel",
+      "label": "Steering wheel"
+    },
+    {
+      "id": "stethoscope",
+      "label": "Stethoscope"
+    },
+    {
+      "id": "strawberry",
+      "label": "Strawberry"
+    },
+    {
+      "id": "student-woman-2",
+      "label": "Student woman 2"
+    },
+    {
+      "id": "taxi-2",
+      "label": "Taxi 2"
+    },
+    {
+      "id": "tea-cup",
+      "label": "Tea cup"
+    },
+    {
+      "id": "tease-smiley",
+      "label": "Tease smiley"
+    },
+    {
+      "id": "telemarketer-woman",
+      "label": "Telemarketer woman"
+    },
+    {
+      "id": "test-tube",
+      "label": "Test tube"
+    },
+    {
+      "id": "text-file",
+      "label": "Text file"
+    },
+    {
+      "id": "theater",
+      "label": "Theater"
+    },
+    {
+      "id": "towel",
+      "label": "Towel"
+    },
+    {
+      "id": "traffic-light",
+      "label": "Traffic light"
+    },
+    {
+      "id": "transfer-cloud",
+      "label": "Transfer cloud"
+    },
+    {
+      "id": "truck",
+      "label": "Truck"
+    },
+    {
+      "id": "truck-front",
+      "label": "Truck front"
+    },
+    {
+      "id": "ufo",
+      "label": "Ufo"
+    },
+    {
+      "id": "upload-cloud-computer",
+      "label": "Upload cloud computer"
+    },
+    {
+      "id": "urban-woman",
+      "label": "Urban woman"
+    },
+    {
+      "id": "vespa",
+      "label": "Vespa"
+    },
+    {
+      "id": "wall-e",
+      "label": "Wall e"
+    },
+    {
+      "id": "wallet",
+      "label": "Wallet"
+    },
+    {
+      "id": "webcam",
+      "label": "Webcam"
+    },
+    {
+      "id": "wii-remote",
+      "label": "Wii remote"
+    },
+    {
+      "id": "wind-flag",
+      "label": "Wind flag"
+    },
+    {
+      "id": "wind-vane",
+      "label": "Wind vane"
+    },
+    {
+      "id": "wind-wheel",
+      "label": "Wind wheel"
+    },
+    {
+      "id": "windows-coding",
+      "label": "Windows coding"
+    },
+    {
+      "id": "woman-15",
+      "label": "Woman 15"
+    },
+    {
+      "id": "wrench",
+      "label": "Wrench"
+    },
+    {
+      "id": "wrench-2",
+      "label": "Wrench 2"
+    },
+    {
+      "id": "yacht",
+      "label": "Yacht"
+    },
+    {
+      "id": "yen-coin",
+      "label": "Yen coin"
+    },
+    {
+      "id": "yin-yang",
+      "label": "Yin yang"
+    }
+  ],
+  "legacy": {
+    "astronaut": "astronaut",
+    "robot": "robot",
+    "smiley": "love-smiley",
+    "peace": "peace",
+    "ladybug": "ladybug",
+    "butterfly": "butterfly",
+    "ufo": "ufo",
+    "party": "party-poppers",
+    "rainbow": "rainbow",
+    "strawberry": "strawberry",
+    "dice": "dices",
+    "skate": "skate"
+  }
+}
