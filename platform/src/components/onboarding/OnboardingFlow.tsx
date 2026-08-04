@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { useSignedIn } from "@/lib/account";
 import { coursesForSchool } from "@/lib/courses";
@@ -136,6 +137,23 @@ const RECOMMENDED_MINUTES = 90;
  * answer they are leaving.
  */
 const ANSWER_BEAT_MS = 700;
+
+/* Whether we are past the server render, for the one thing on this page that
+   cannot exist during it: a portal needs `document.body`.
+
+   useSyncExternalStore rather than the usual useState + useEffect(() =>
+   setMounted(true)) — that pattern is a cascading render and the lint rule that
+   catches it is right. A store that never changes, whose server snapshot is
+   false and whose client snapshot is true, gives the same answer without the
+   extra render. */
+const NEVER_CHANGES = () => () => {};
+function useIsClient(): boolean {
+  return useSyncExternalStore(
+    NEVER_CHANGES,
+    () => true,
+    () => false,
+  );
+}
 
 type Step = "school" | "programme" | "year" | "courses" | "whatsapp" | "target" | "heard";
 
@@ -1245,6 +1263,8 @@ function Card({
      frame this morning — fixed head, scrolling middle, fixed foot — and the
      min-h-0/flex-1 that made it work is exactly what made the options list a
      small window inside a page that could not itself move. */
+  const isClient = useIsClient();
+
   return (
     <section>
       <div>
@@ -1260,61 +1280,72 @@ function Card({
         <p className="mt-2 max-w-[38ch] text-[14px] leading-[1.45] text-muted">{why}</p>
       </div>
       <div className="mt-5">{children}</div>
-      {actions ? (
-        /* THE ACTION RIDES THE BOTTOM OF THE SCREEN (owner, 2026-08-04: "the
-           button is at the bottom of the page … it needs to always be visible
-           in case I find my courses at the top. Make it stick to the bottom of
-           the screen properly").
+      {actions && isClient
+        ? createPortal(
+            /* THE ACTION RIDES THE BOTTOM OF THE SCREEN (owner, 2026-08-04:
+               "the button is at the bottom of the page … it needs to always be
+               visible in case I find my courses at the top").
 
-           A full year's courses plus the other years' groups is a long list, and
-           the button sat under all of it — so a student who found their courses
-           in the first three rows still had to scroll past thirty to say so. The
-           screen asked them to confirm and then hid the confirmation.
+               A full year's courses plus the other years' groups is a long
+               list, and the button sat under all of it — so a student who found
+               their courses in the first three rows still had to scroll past
+               thirty to say so.
 
-           FIXED, AND POSITIONED AGAINST A MEASURED EDGE. It was `sticky
-           bottom-0`, which put half the button under the bottom of the screen
-           (owner, with a screenshot: "this happens to the button so it might
-           need to be fixed or use some dynamic way to measure the changing
-           viewport"). Both sticky and fixed resolve `bottom: 0` against the
-           LAYOUT viewport, and on Chrome Android that is sized for the state
-           where the URL bar has scrolled away — so while the bar is showing,
-           "the bottom" is a real edge that happens to be below the glass, and a
-           control pinned to it is cut by exactly the height of the browser
-           chrome. `dvh` does not help: it is the right number for a height, and
-           the positioning is still measured against the wrong box.
+               PORTALLED TO <body>, AND THAT IS THE LOAD-BEARING PART. As a
+               child of the question it vanished completely (owner: "now the
+               button is not here anymore, its doing its calculations at the
+               bottom of the page"). `.onboard-step` runs the slide-in with
+               animation-fill-mode: both, so `transform: translate3d(0,0,0)`
+               STAYS on the element after the animation ends — and any transform
+               other than `none` makes an element the containing block for
+               `position: fixed` descendants. So `bottom` stopped meaning the
+               viewport and started meaning the bottom of the question's own
+               content, which on a thirty-row list is far below the fold. Sticky
+               was immune to this and fixed is not, which is why the bug arrived
+               with the fix for the last one.
 
-           So `--vv-bottom` carries the measured gap between the two viewports
-           (see ui/ViewportFit) and this sits that far up from the layout bottom
-           — which is the visible bottom, on every browser, in every state,
-           including with the keyboard open over the two questions that have a
-           text field.
+               Out at <body> there is no transformed ancestor to be captured by,
+               and no future one can capture it either.
 
-           NOT A PINNED FRAME. The rejected version (same day: "the whole page
-           should be scrollable") was h-dvh with a fixed head, a fixed foot and
-           only the options scrolling between them. That rule is untouched: one
-           scroll, the whole document. Only the action floats, and the page ends
-           above it so nothing can hide behind it.
+               POSITIONED AGAINST A MEASURED EDGE. Both sticky and fixed resolve
+               `bottom: 0` against the LAYOUT viewport, which on Chrome Android
+               is sized for the state where the URL bar has scrolled away — so
+               while it is showing, "the bottom" is below the glass and the
+               button is cut in half. `--vv-bottom` carries the measured gap
+               between the two viewports (see ui/ViewportFit); this sits that far
+               up, which is the visible bottom in every state, keyboard included.
 
-           It fades rather than drawing a border: a hairline would read as the
-           bottom of the list, and the list does not end there. */
-        <div
-          className="fixed inset-x-0 z-20"
-          style={{
-            bottom: "var(--vv-bottom, 0px)",
-            background:
-              "linear-gradient(to top, rgba(255,255,255,0.94) 0%, rgba(255,255,255,0.94) 68%, rgba(255,255,255,0) 100%)",
-          }}
-        >
-          {/* The page's own column, repeated — a fixed element is out of the
-              layout, so it cannot inherit the width it is meant to line up
-              with. Same max-width and same 16px padding as the questions above
-              it, or the button would run the full width of the phone while
-              everything it belongs to stopped short. */}
-          <div className="mx-auto w-full max-w-[440px] px-4 pt-6 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
-            {actions}
-          </div>
-        </div>
-      ) : null}
+               NOT A PINNED FRAME. The rejected version (same day: "the whole
+               page should be scrollable") was h-dvh with a fixed head, a fixed
+               foot and only the options scrolling between them. That rule
+               stands: one scroll, the whole document. Only the action floats,
+               and the page reserves room so nothing hides behind it. */
+            <div
+              className="fixed inset-x-0 z-20"
+              style={{
+                bottom: "var(--vv-bottom, 0px)",
+                background:
+                  /* Opaque under the button, fading only above it. It was
+                     0.94 across the whole bar and the rows behind still ghosted
+                     through the strip beneath the button — 6% of a bold heading
+                     is legible enough to read as a rendering fault. The fade
+                     starts where the button's top edge is, so the softness is
+                     all above and nothing shows through below. */
+                  "linear-gradient(to top, rgb(255,255,255) 0%, rgb(255,255,255) 74%, rgba(255,255,255,0) 100%)",
+              }}
+            >
+              {/* The page's own column, repeated — a portalled element cannot
+                  inherit the width it is meant to line up with. Same max-width
+                  and same 16px padding as the questions, or the button would run
+                  the full width of the phone while everything it belongs to
+                  stopped short. */}
+              <div className="mx-auto w-full max-w-[440px] px-4 pt-6 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+                {actions}
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
     </section>
   );
 }
