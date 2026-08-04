@@ -6016,5 +6016,2284 @@
         2
       ]
     }
+  ],
+  "unza": [
+    {
+      "slug": "bachelor-of-agricultural-sciences-animal-science",
+      "name": "Bachelor of Agricultural Sciences (Animal Science)",
+      "level": "bachelors",
+      "courses": [
+        {
+          "slug": "advances-in-animal-nutrition",
+          "title": "Advances in Animal Nutrition",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "anatomy-and-physiology-of-farm-animals",
+          "title": "Anatomy and Physiology of Farm Animals",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "animal-breeding",
+          "title": "Animal Breeding",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "animal-health",
+          "title": "Animal Health",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "animal-production-and-by-products",
+          "title": "Animal Production and By-Products",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "applied-animal-nutrition",
+          "title": "Applied Animal Nutrition",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "applied-animal-reproduction",
+          "title": "Applied Animal Reproduction",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "beef-and-small-ruminant-production",
+          "title": "Beef and Small Ruminant Production",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "dairy-and-rabbit-production",
+          "title": "Dairy and Rabbit Production",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "experimental-design-and-statistical-analysis",
+          "title": "Experimental Design and Statistical Analysis",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "game-ranching",
+          "title": "Game Ranching",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "integrated-aquaculture-and-fish-nutrition",
+          "title": "Integrated Aquaculture and Fish Nutrition",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-aquaculture",
+          "title": "Introduction to Aquaculture",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "introductory-statistics-for-agriculture",
+          "title": "Introductory Statistics for Agriculture",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "pig-and-poultry-production",
+          "title": "Pig and Poultry Production",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "principles-of-animal-nutrition",
+          "title": "Principles of Animal Nutrition",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "principles-of-animal-science",
+          "title": "Principles of Animal Science",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "principles-of-genetics",
+          "title": "Principles of Genetics",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "range-management-and-forage-crop-production",
+          "title": "Range Management and Forage Crop Production",
+          "year": null,
+          "semester": null
+        }
+      ],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-project-management",
+      "name": "Bachelor of Arts in Project Management",
+      "level": "bachelors",
+      "courses": [
+        {
+          "slug": "admission-requirements",
+          "title": "Admission Requirements",
+          "year": null,
+          "semester": null
+        }
+      ],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-engineering-agricultural-engineering",
+      "name": "Bachelor of Engineering (Agricultural Engineering)",
+      "level": "bachelors",
+      "courses": [
+        {
+          "slug": "cell-biology-and-genetics",
+          "title": "Cell Biology and Genetics",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-chemistry",
+          "title": "Introduction to Chemistry",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-physics",
+          "title": "Introduction to Physics",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "mathematics-methods",
+          "title": "Mathematic Methods",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "engineering-communication",
+          "title": "Engineering Communication",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "engineering-drawing",
+          "title": "Engineering Drawing",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "engineering-mathematics",
+          "title": "Engineering Mathematics",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "engineering-workshop-technology",
+          "title": "Engineering Workshop Technology",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-information-technology",
+          "title": "Introduction to Information Technology",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "principles-of-electrical-and-electronic-engineering",
+          "title": "Principles of Electrical and Electronic Engineering",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "properties-of-engineering-materials",
+          "title": "Properties of Engineering Materials",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "statistics-and-introduction-to-mechanics-of-materials",
+          "title": "Statistics and Introduction to Mechanics of Materials",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "fluid-mechanics",
+          "title": "Fluid Mechanics",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "fundamentals-of-animal-production",
+          "title": "Fundamentals of Animal Production",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "fundamentals-of-field-crop-production",
+          "title": "Fundamentals of Field Crop Production",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "rural-sociology",
+          "title": "Rural Sociology",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "soil-and-water-conservation-engineering",
+          "title": "Soil and Water Conservation Engineering",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "strength-of-materials",
+          "title": "Strength of Materials",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "thermodynamics",
+          "title": "Thermodynamics",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "agricultural-machinery-design",
+          "title": "Agricultural Machinery Design",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "engineering-management-and-entrepreneurship",
+          "title": "Engineering Management & Entrepreneurship",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "farm-power",
+          "title": "Farm Power",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "food-process-engineering",
+          "title": "Food Process Engineering",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "hydrology",
+          "title": "Hydrology",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "instrumentation-and-process-control",
+          "title": "Instrumentation and Process Control",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "principles-of-geomatics",
+          "title": "Principles of Geomatics",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "agricultural-mechanization",
+          "title": "Agricultural Mechanization",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "agricultural-structures-and-infrastructures",
+          "title": "Agricultural Structures and Infrastructures",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "engineering-management-and-society",
+          "title": "Engineering Management & Society",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "irrigation-and-drainage-engineering",
+          "title": "Irrigation and Drainage Engineering",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "renewable-energy-sources",
+          "title": "Renewable Energy Sources",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "environmental-engineering",
+          "title": "Environmental Engineering",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "post-harvest-technology",
+          "title": "Post-Harvest Technology",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "soil-dynamics-and-tillage",
+          "title": "Soil Dynamics and Tillage",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "theory-of-structures-and-structural-design",
+          "title": "Theory of Structures and Structural Design",
+          "year": null,
+          "semester": null
+        }
+      ],
+      "years": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "slug": "bachelor-of-engineering-civil-and-environmental-engineering",
+      "name": "Bachelor of Engineering (Civil and Environmental Engineering)",
+      "level": "bachelors",
+      "courses": [
+        {
+          "slug": "cell-biology-and-genetics",
+          "title": "Cell Biology and Genetics",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-chemistry",
+          "title": "Introduction to Chemistry",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-physics",
+          "title": "Introduction to Physics",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "mathematics-methods",
+          "title": "Mathematic Methods",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "engineering-communication",
+          "title": "Engineering Communication",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "engineering-drawing",
+          "title": "Engineering Drawing",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "engineering-mathematics",
+          "title": "Engineering Mathematics",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "engineering-workshop-technology",
+          "title": "Engineering Workshop Technology",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-information-technology",
+          "title": "Introduction to Information Technology",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "principles-of-electrical-and-electronic-engineering",
+          "title": "Principles of Electrical and Electronic Engineering",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "properties-of-engineering-materials",
+          "title": "Properties of Engineering Materials",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "statistics-and-introduction-to-mechanics-of-materials",
+          "title": "Statistics and Introduction to Mechanics of Materials",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "civil-engineering-drawing",
+          "title": "Civil Engineering Drawing",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "civil-engineering-materials-and-construction-practices",
+          "title": "Civil Engineering Materials and Construction Practices",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "engineering-geology",
+          "title": "Engineering Geology",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "fluid-mechanics",
+          "title": "Fluid Mechanics",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "land-management",
+          "title": "Land Management",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "mechanics-of-materials",
+          "title": "Mechanics of Materials",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "theory-of-structures",
+          "title": "Theory of Structures",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "design-of-masonry-and-timber-structures",
+          "title": "Design of Masonry & Timber Structures",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "engineering-management-and-entrepreneurship",
+          "title": "Engineering Management & Entrepreneurship",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "environmental-engineering",
+          "title": "Environmental Engineering",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "geotechnical-engineering",
+          "title": "Geotechnical Engineering",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "highway-engineering",
+          "title": "Highway Engineering",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "hydrology",
+          "title": "Hydrology",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "principles-of-geomatics",
+          "title": "Principles of Geomatics",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "construction-management",
+          "title": "Construction Management",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "design-of-reinforced-and-pre-stressed-concrete-structures",
+          "title": "Design of Reinforced and Pre-stressed Concrete Structures",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "design-of-steel-structures",
+          "title": "Design of Steel Structures",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "engineering-management-and-society",
+          "title": "Engineering Management & Society",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "water-resources-management-and-hydraulic-structures",
+          "title": "Water Resources Management and Hydraulic Structures",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "bridge-engineering",
+          "title": "Bridge Engineering",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "contract-management",
+          "title": "Contract Management",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "environmental-engineering-il",
+          "title": "Environmental Engineering Il",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "integrated-water-resources-management",
+          "title": "Integrated Water Resources Management",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "rural-and-urban-planning",
+          "title": "Rural and Urban Planning",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "structural-dynamics",
+          "title": "Structural Dynamics",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "transport-planning-and-traffic-engineering",
+          "title": "Transport Planning and Traffic Engineering",
+          "year": null,
+          "semester": null
+        }
+      ],
+      "years": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "slug": "bachelor-of-engineering-electrical-and-electronic-engineering",
+      "name": "Bachelor of Engineering (Electrical and Electronic Engineering)",
+      "level": "bachelors",
+      "courses": [
+        {
+          "slug": "cell-biology-and-genetics",
+          "title": "Cell Biology and Genetics",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-chemistry",
+          "title": "Introduction to Chemistry",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-physics",
+          "title": "Introduction to Physics",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "mathematics-methods",
+          "title": "Mathematic Methods",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "engineering-communication",
+          "title": "Engineering Communication",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "engineering-drawing",
+          "title": "Engineering Drawing",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "engineering-mathematics",
+          "title": "Engineering Mathematics",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "engineering-workshop-technology",
+          "title": "Engineering Workshop Technology",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-information-technology",
+          "title": "Introduction to Information Technology",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "principles-of-electrical-and-electronic-engineering",
+          "title": "Principles of Electrical and Electronic Engineering",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "properties-of-engineering-materials",
+          "title": "Properties of Engineering Materials",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "statistics-and-introduction-to-mechanics-of-materials",
+          "title": "Statistics and Introduction to Mechanics of Materials",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "computer-engineering",
+          "title": "Computer Engineering",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "digital-electronics",
+          "title": "Digital Electronics",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "electrical-engineering-practice",
+          "title": "Electrical Engineering Practice",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "electro-mechanics-and-machines",
+          "title": "Electro Mechanics and Machines",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "electronic-engineering",
+          "title": "Electronic Engineering",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "fluid-mechanics-and-thermodynamics",
+          "title": "Fluid Mechanics & Thermodynamics",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "signals-and-systems",
+          "title": "Signals and Systems",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "digital-signal-processing",
+          "title": "Digital Signal Processing",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "electrical-instrumentation",
+          "title": "Electrical Instrumentation",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "electrical-machines",
+          "title": "Electrical Machines",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "electrical-power-systems",
+          "title": "Electrical Power Systems",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "engineering-electromagnetics",
+          "title": "Engineering Electromagnetics",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "engineering-management-and-entrepreneurship",
+          "title": "Engineering Management & Entrepreneurship",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "",
+          "title": "III",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "microcontroller-technology-and-embedded-systems",
+          "title": "Microcontroller Technology and Embedded Systems",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "advanced-electrical-machines",
+          "title": "Advanced Electrical Machines",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "communication-systems",
+          "title": "Communication Systems",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "communication-theory",
+          "title": "Communication Theory",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "communications-networks",
+          "title": "Communications Networks",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "dynamic-systems-and-control-engineering",
+          "title": "Dynamic Systems and Control Engineering",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "engineering-management-and-society",
+          "title": "Engineering Management & Society",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "power-electronics",
+          "title": "Power Electronics",
+          "year": 5,
+          "semester": null
+        }
+      ],
+      "years": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "slug": "bachelor-of-engineering-geomatic-engineering",
+      "name": "Bachelor of Engineering (Geomatic Engineering)",
+      "level": "bachelors",
+      "courses": [
+        {
+          "slug": "cell-biology-and-genetics",
+          "title": "Cell Biology and Genetics",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-chemistry",
+          "title": "Introduction to Chemistry",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-physics",
+          "title": "Introduction to Physics",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "mathematics-methods",
+          "title": "Mathematic Methods",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "engineering-communication",
+          "title": "Engineering Communication",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "engineering-drawing",
+          "title": "Engineering Drawing",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "engineering-mathematics",
+          "title": "Engineering Mathematics",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "engineering-workshop-technology",
+          "title": "Engineering Workshop Technology",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-information-technology",
+          "title": "Introduction to Information Technology",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "principles-of-electrical-and-electronic-engineering",
+          "title": "Principles of Electrical and Electronic Engineering",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "properties-of-engineering-materials",
+          "title": "Properties of Engineering Materials",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "statistics-and-introduction-to-mechanics-of-materials",
+          "title": "Statistics and Introduction to Mechanics of Materials",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "data-representation-and-visualizations",
+          "title": "Data Representation and Visualizations",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "land-management",
+          "title": "Land Management",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "principles-of-data-acquisition-and-processing",
+          "title": "Principles of Data Acquisition and Processing",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "soil-science-roads-hydrology-and-civil-engineering",
+          "title": "Soil Science, Roads, Hydrology and Civil Engineering",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "surveying",
+          "title": "Surveying",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "engineering-management-and-entrepreneurship",
+          "title": "Engineering Management & Entrepreneurship",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "engineering-surveying",
+          "title": "Engineering Surveying",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "geodesy",
+          "title": "Geodesy",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "highway-engineering",
+          "title": "Highway Engineering",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "image-processing-and-analysis",
+          "title": "Image Processing and Analysis",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "numerical-methods-and-programming",
+          "title": "Numerical Methods and Programming",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "spatial-modeling-and-analysis",
+          "title": "Spatial Modelling and Analysis",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "construction-management",
+          "title": "Construction Management",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "engineering-management-and-society",
+          "title": "Engineering Management & Society",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "geographic-information-infrastructure",
+          "title": "Geographic Information Infrastructure",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "integrated-mapping",
+          "title": "Integrated Mapping",
+          "year": 5,
+          "semester": null
+        }
+      ],
+      "years": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "slug": "bachelor-of-engineering-mechanical-engineering",
+      "name": "Bachelor of Engineering (Mechanical Engineering)",
+      "level": "bachelors",
+      "courses": [
+        {
+          "slug": "cell-biology-and-genetics",
+          "title": "Cell Biology and Genetics",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-chemistry",
+          "title": "Introduction to Chemistry",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-physics",
+          "title": "Introduction to Physics",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "mathematics-methods",
+          "title": "Mathematic Methods",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "engineering-communication",
+          "title": "Engineering Communication",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "engineering-drawing",
+          "title": "Engineering Drawing",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "engineering-mathematics",
+          "title": "Engineering Mathematics",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "engineering-workshop-technology",
+          "title": "Engineering Workshop Technology",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-information-technology",
+          "title": "Introduction to Information Technology",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "principles-of-electrical-and-electronic-engineering",
+          "title": "Principles of Electrical and Electronic Engineering",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "properties-of-engineering-materials",
+          "title": "Properties of Engineering Materials",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "statistics-and-introduction-to-mechanics-of-materials",
+          "title": "Statistics and Introduction to Mechanics of Materials",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "dynamics",
+          "title": "Dynamics",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "fluid-mechanics",
+          "title": "Fluid Mechanics",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "mechanical-engineering-drawing-li",
+          "title": "Mechanical Engineering Drawing lI",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "production-technology-electricity-and-electronics",
+          "title": "Production Technology, Electricity & Electronics",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "strength-of-materials",
+          "title": "Strength of Materials",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "strength-of-materials-il",
+          "title": "Strength of Materials Il",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "thermodynamics",
+          "title": "Thermodynamics",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "engineering-management-and-entrepreneurship",
+          "title": "Engineering Management & Entrepreneurship",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "machine-design",
+          "title": "Machine Design",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "production-technology",
+          "title": "Production Technology",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "properties-of-engineering-materials-il",
+          "title": "Properties of Engineering Materials Il",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "thermodynamics-il-and-heat-engines",
+          "title": "Thermodynamics Il and Heat Engines",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "vibrations-and-control-engineering",
+          "title": "Vibrations and Control Engineering",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "engineering-management-and-society",
+          "title": "Engineering Management & Society",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "final-year-project",
+          "title": "Final Year Project",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "heat-transfer",
+          "title": "Heat Transfer",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "maintenance-engineering",
+          "title": "Maintenance Engineering",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "production-technology-and-process-engineering",
+          "title": "Production Technology & Process Engineering",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "advanced-strength-of-materials",
+          "title": "Advanced Strength of Materials",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "alternative-energy-sources",
+          "title": "Alternative Energy Sources",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "control-engineering",
+          "title": "Control Engineering",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "environmental-engineering",
+          "title": "Environmental Engineering",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "manufacturing-systems-management",
+          "title": "Manufacturing Systems Management",
+          "year": null,
+          "semester": null
+        },
+        {
+          "slug": "refrigeration-and-air-conditioning",
+          "title": "Refrigeration and Air-conditioning",
+          "year": null,
+          "semester": null
+        }
+      ],
+      "years": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "slug": "bachelor-of-engineering-geotechnical-engineering",
+      "name": "Bachelor of Engineering in Geotechnical Engineering",
+      "level": "bachelors",
+      "courses": [
+        {
+          "slug": "engineering-drawing",
+          "title": "Engineering Drawing",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "engineering-mathematics",
+          "title": "Engineering Mathematics",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-geology",
+          "title": "Introduction to Geology",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-information-technology",
+          "title": "Introduction to Information Technology",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-mining",
+          "title": "Introduction to Mining",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "principles-of-electrical-and-electronic-engineering",
+          "title": "Principles of Electrical and Electronic Engineering",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "properties-of-engineering-materials",
+          "title": "Properties of Engineering Materials",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "statics-and-introduction-to-mechanics-of-materials",
+          "title": "Statics and Introduction to Mechanics of Materials",
+          "year": 2,
+          "semester": null
+        }
+      ],
+      "years": [
+        2
+      ]
+    },
+    {
+      "slug": "bachelor-of-engineering-metallurgical-engineering",
+      "name": "Bachelor of Engineering in Metallurgical Engineering",
+      "level": "bachelors",
+      "courses": [
+        {
+          "slug": "c225-analytical-chemistry",
+          "title": "C225 Analytical Chemistry",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "c245-inorganic-chemistry",
+          "title": "C245 Inorganic Chemistry",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "engineering-drawing",
+          "title": "Engineering Drawing",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "engineering-mathematics",
+          "title": "Engineering Mathematics",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-metallurgy",
+          "title": "Introduction to Metallurgy",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "principles-of-electricity",
+          "title": "Principles of Electricity",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "statics-and-introduction-to-strength-of-materials",
+          "title": "Statics and Introduction to Strength of Materials",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "chemical-thermodynamics",
+          "title": "Chemical Thermodynamics",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "computer-techniques",
+          "title": "Computer Techniques",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "fluid-mechanics",
+          "title": "Fluid Mechanics",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "physical-metallurgy",
+          "title": "Physical Metallurgy",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "ferrous-metallurgy",
+          "title": "Ferrous Metallurgy",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "hydrometallurgy",
+          "title": "Hydrometallurgy",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "mineral-processing",
+          "title": "Mineral Processing",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "process-control-and-intrumentation",
+          "title": "Process Control and Intrumentation",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "pyrometallurgy",
+          "title": "Pyrometallurgy",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "transport-phenomena",
+          "title": "Transport Phenomena",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "economics-management",
+          "title": "Economics/Management",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "foundry",
+          "title": "Foundry",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "fuel-furnaces-and-refractories",
+          "title": "Fuel, Furnaces and Refractories",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "mechanical-metallurgy",
+          "title": "MECHANICAL METALLURGY",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "process-design",
+          "title": "Process Design",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "project-continues",
+          "title": "Project (continues)",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "project-end",
+          "title": "Project (end)",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "special-topics-in-extractive-metallurgy",
+          "title": "Special Topics in Extractive Metallurgy",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "special-topics-in-mineral-processing",
+          "title": "Special Topics in Mineral Processing",
+          "year": 5,
+          "semester": null
+        }
+      ],
+      "years": [
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "slug": "bachelor-of-engineering-mining-engineering",
+      "name": "Bachelor of Engineering Mining Engineering",
+      "level": "bachelors",
+      "courses": [
+        {
+          "slug": "cee",
+          "title": "CEE",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "eee",
+          "title": "EEE",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "eng",
+          "title": "ENG",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "ggy",
+          "title": "GGY",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "mat",
+          "title": "MAT",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "mec",
+          "title": "MEC",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "min",
+          "title": "MIN",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "gee",
+          "title": "GEE",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "mn",
+          "title": "MN",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "hydraulic-mining",
+          "title": "hydraulic Mining",
+          "year": 5,
+          "semester": null
+        },
+        {
+          "slug": "mi",
+          "title": "MI",
+          "year": null,
+          "semester": null
+        }
+      ],
+      "years": [
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "slug": "bachelor-of-law",
+      "name": "Bachelor of Law",
+      "level": "bachelors",
+      "courses": [
+        {
+          "slug": "criminal-law",
+          "title": "Criminal Law",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "law-of-contract",
+          "title": "Law of Contract",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "law-of-torts",
+          "title": "Law of Torts",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "legal-process-and-legal-writing",
+          "title": "Legal Process & Legal Writing",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "commercial-law",
+          "title": "Commercial Law",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "competition-law",
+          "title": "Competition Law",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "customary-law",
+          "title": "Customary Law",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "employment-law",
+          "title": "Employment Law",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "family-law-and-succession",
+          "title": "Family Law and Succession",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "gender-law",
+          "title": "Gender Law",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "human-rights",
+          "title": "Human Rights",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "land-law-and-property-relations",
+          "title": "Land Law and Property Relations",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "media-law",
+          "title": "Media Law",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "medical-law",
+          "title": "Medical Law",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "moot-court-project-course",
+          "title": "Moot Court - Project course",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "alternative-dispute-resolutions",
+          "title": "Alternative Dispute Resolutions",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "business-and-corporate-law",
+          "title": "Business and Corporate Law",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "clinical-legal-education-project-course",
+          "title": "Clinical Legal Education - Project course",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "directed-research-project-course",
+          "title": "Directed Research - Project course",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "disability-law",
+          "title": "Disability Law",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "environmental-law",
+          "title": "Environmental Law",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "intellectual-property",
+          "title": "Intellectual Property",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "international-commercial-arbitration",
+          "title": "International Commercial Arbitration",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "jurisprudence",
+          "title": "Jurisprudence",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "mining-law",
+          "title": "Mining Law",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "taxation",
+          "title": "Taxation",
+          "year": 4,
+          "semester": null
+        }
+      ],
+      "years": [
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "slug": "bachelor-of-science-environmental-and-natural-resource",
+      "name": "Bachelor of Science in Environmental and Natural Resource Management",
+      "level": "bachelors",
+      "courses": [
+        {
+          "slug": "1",
+          "title": "1.",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "2",
+          "title": "2.",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "3",
+          "title": "3.",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "4",
+          "title": "4.",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "5",
+          "title": "5.",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "bio",
+          "title": "BIO",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "che",
+          "title": "CHE",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "mat",
+          "title": "MAT",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "phy",
+          "title": "PHY",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "6",
+          "title": "6.",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "a-geography-and-environmental-studies-bias",
+          "title": "a) Geography and Environmental Studies Bias",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "b-biological-science-bias",
+          "title": "b) Biological Science Bias",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "geography-and-environmental-studies-bias",
+          "title": "Geography and Environmental Studies Bias",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "ges",
+          "title": "GES",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "mandatory-full-year-courses",
+          "title": "Mandatory Full-Year Courses",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "mandatory-half-year-courses",
+          "title": "Mandatory Half-Year Courses",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "7",
+          "title": "7.",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "8",
+          "title": "8.",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "mandatory-full-year-course",
+          "title": "Mandatory Full-Year Course",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "mandatory-half-year-course",
+          "title": "Mandatory Half-Year Course",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "9",
+          "title": "9.",
+          "year": 4,
+          "semester": null
+        },
+        {
+          "slug": "course-selection-and-program-progression",
+          "title": "Course Selection and Programme Progression",
+          "year": null,
+          "semester": null
+        }
+      ],
+      "years": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "slug": "bachelor-of-science-geology",
+      "name": "Bachelor of Science in Geology",
+      "level": "bachelors",
+      "courses": [
+        {
+          "slug": "inorganic-chemistry",
+          "title": "Inorganic Chemistry",
+          "year": 2,
+          "semester": 1
+        },
+        {
+          "slug": "introduction-to-geology",
+          "title": "Introduction to Geology",
+          "year": 2,
+          "semester": 1
+        },
+        {
+          "slug": "properties-of-matter-and-thermal-physics",
+          "title": "Properties of Matter and Thermal Physics",
+          "year": 2,
+          "semester": 1
+        },
+        {
+          "slug": "earth-resources-and-environment",
+          "title": "Earth Resources and Environment",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "introduction-to-mine-development",
+          "title": "Introduction to Mine Development",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "optics",
+          "title": "Optics",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "physical-chemistry",
+          "title": "Physical Chemistry",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "mathematics-methods",
+          "title": "Mathematic Methods",
+          "year": 2,
+          "semester": null
+        },
+        {
+          "slug": "remote-sensing-and-geographical-information-systems-gis",
+          "title": "Remote Sensing and Geographical Information Systems (GIS)",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "mineralogy-and-petrology",
+          "title": "Mineralogy and petrology",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "stratigraphy-and-sedimentology",
+          "title": "Stratigraphy and Sedimentology",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "structural-geology",
+          "title": "Structural Geology",
+          "year": 3,
+          "semester": null
+        },
+        {
+          "slug": "geology-of-zambia",
+          "title": "Geology of Zambia",
+          "year": 4,
+          "semester": 1
+        },
+        {
+          "slug": "igneous-petrology",
+          "title": "Igneous Petrology",
+          "year": 4,
+          "semester": 1
+        },
+        {
+          "slug": "low-temperature-and-applied-geochemistry",
+          "title": "Low Temperature and Applied Geochemistry",
+          "year": 4,
+          "semester": 1
+        },
+        {
+          "slug": "structural-geology-and-plate-tectonics",
+          "title": "Structural Geology and Plate Tectonics",
+          "year": 4,
+          "semester": 1
+        },
+        {
+          "slug": "computer-techniques-and-programming",
+          "title": "Computer Techniques and Programming",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "isotope-and-hight-temperature-geochemistry",
+          "title": "Isotope and Hight Temperature Geochemistry",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "metamorphic-petrology",
+          "title": "Metamorphic Petrology",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "mining-geology",
+          "title": "Mining Geology",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "economic-geology-of-metalliferous-mineral-deposits",
+          "title": "Economic Geology of Metalliferous Mineral Deposits",
+          "year": 5,
+          "semester": 1
+        },
+        {
+          "slug": "engineering-geology-and-rock-mechanics",
+          "title": "Engineering Geology and Rock Mechanics",
+          "year": 5,
+          "semester": 1
+        },
+        {
+          "slug": "exploration-geophysics",
+          "title": "Exploration Geophysics",
+          "year": 5,
+          "semester": 1
+        },
+        {
+          "slug": "mapping-project",
+          "title": "Mapping Project",
+          "year": 5,
+          "semester": 1
+        },
+        {
+          "slug": "economic-geology-of-energy-and-industrial-mineral-deposits",
+          "title": "Economic Geology of Energy and Industrial Mineral Deposits",
+          "year": 5,
+          "semester": 2
+        },
+        {
+          "slug": "hydrogeology",
+          "title": "Hydrogeology",
+          "year": 5,
+          "semester": 2
+        },
+        {
+          "slug": "mineral-economics-and-management",
+          "title": "Mineral Economics and Management",
+          "year": 5,
+          "semester": 2
+        },
+        {
+          "slug": "special-project",
+          "title": "Special project",
+          "year": 5,
+          "semester": 2
+        },
+        {
+          "slug": "introduction-to-statistics",
+          "title": "Introduction to Statistics",
+          "year": null,
+          "semester": 1
+        }
+      ],
+      "years": [
+        2,
+        3,
+        4,
+        5
+      ]
+    }
+  ],
+  "mulungushi": [
+    {
+      "slug": "bachelor-of-banking-and-finance",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [
+        {
+          "slug": "business-communication",
+          "title": "Business Communication",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "ethics-and-sustainable-behavior",
+          "title": "Ethics and Sustainable Behavior",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "introduction-to-micro-economics",
+          "title": "Introduction to Micro Economics",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "mathematics",
+          "title": "Mathematics",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "principles-of-accounting",
+          "title": "Principles of Accounting",
+          "year": 1,
+          "semester": 1
+        },
+        {
+          "slug": "business-mathematics-1",
+          "title": "Business Mathematics 1",
+          "year": 1,
+          "semester": 2
+        },
+        {
+          "slug": "introduction-to-computer-software-packages",
+          "title": "Introduction to Computer Software Packages",
+          "year": 1,
+          "semester": 2
+        },
+        {
+          "slug": "introduction-to-entrepreneurship",
+          "title": "Introduction to Entrepreneurship",
+          "year": 1,
+          "semester": 2
+        },
+        {
+          "slug": "introduction-to-macro-economics",
+          "title": "Introduction to Macro Economics",
+          "year": 1,
+          "semester": 2
+        },
+        {
+          "slug": "intermediate-microeconomics",
+          "title": "Intermediate Microeconomics",
+          "year": 2,
+          "semester": 1
+        },
+        {
+          "slug": "introduction-to-banking",
+          "title": "Introduction to Banking",
+          "year": 2,
+          "semester": 1
+        },
+        {
+          "slug": "principles-of-management",
+          "title": "Principles of Management",
+          "year": 2,
+          "semester": 1
+        },
+        {
+          "slug": "banking-law",
+          "title": "Banking Law",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "business-law",
+          "title": "Business Law",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "business-statistics",
+          "title": "Business Statistics",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "intermediate-macroeconomics",
+          "title": "Intermediate Macroeconomics",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "principles-of-marketing",
+          "title": "Principles of Marketing",
+          "year": 2,
+          "semester": 2
+        },
+        {
+          "slug": "econometrics",
+          "title": "Econometrics",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "financial-management-and-risk-appraisal",
+          "title": "Financial Management & Risk Appraisal",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "financial-reporting",
+          "title": "Financial Reporting",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "marketing-of-financial-services",
+          "title": "Marketing of Financial Services",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "organizational-behavior-and-leadership",
+          "title": "Organizational Behavior and Leadership",
+          "year": 3,
+          "semester": 1
+        },
+        {
+          "slug": "bank-lending-and-credit-risk-management",
+          "title": "Bank Lending & Credit Risk Management",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "central-banking-and-monetary-policy",
+          "title": "Central Banking & Monetary Policy",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "financial-markets-and-institutions",
+          "title": "Financial Markets & Institutions",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "money-and-banking",
+          "title": "Money and Banking",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "taxation",
+          "title": "Taxation",
+          "year": 3,
+          "semester": 2
+        },
+        {
+          "slug": "business-research-and-project-development",
+          "title": "Business Research & Project Development",
+          "year": 4,
+          "semester": 1
+        },
+        {
+          "slug": "corporate-finance",
+          "title": "Corporate Finance",
+          "year": 4,
+          "semester": 1,
+          "live": "corporate-finance"
+        },
+        {
+          "slug": "financial-modeling",
+          "title": "Financial Modeling",
+          "year": 4,
+          "semester": 1
+        },
+        {
+          "slug": "international-banking",
+          "title": "International Banking",
+          "year": 4,
+          "semester": 1
+        },
+        {
+          "slug": "strategic-business-management-and-policy",
+          "title": "Strategic Business Management & Policy",
+          "year": 4,
+          "semester": 1
+        },
+        {
+          "slug": "accounting-information-systems-lab",
+          "title": "Accounting Information Systems (+Lab)",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "international-finance",
+          "title": "International Finance",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "investment-analysis-and-portfolio-management",
+          "title": "Investment Analysis & Portfolio Management",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "investment-banking",
+          "title": "Investment Banking",
+          "year": 4,
+          "semester": 2
+        },
+        {
+          "slug": "treasury-management",
+          "title": "Treasury Management",
+          "year": 4,
+          "semester": 2,
+          "live": "treasury-management"
+        }
+      ],
+      "years": [
+        1,
+        2,
+        3,
+        4
+      ]
+    }
   ]
 }

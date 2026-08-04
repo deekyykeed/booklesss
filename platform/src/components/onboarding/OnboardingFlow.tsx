@@ -14,6 +14,7 @@ import {
   programmeBySlug,
   programmeLabel,
   programmesFor,
+  type Programme,
 } from "@/lib/programmes";
 import { CoursePicker, CurriculumPicker, OptionRows, SchoolPicker } from "@/components/identity/pickers";
 import { Button } from "@/components/ui/Button";
@@ -114,7 +115,7 @@ type Step = "school" | "programme" | "year" | "courses" | "target";
  * what was asked for: "set this up so it works dynamically, i will be filling
  * in those courses later."
  */
-function stepsFor(school: SchoolChoice | null): Step[] {
+function stepsFor(school: SchoolChoice | null, prog?: Programme): Step[] {
   /* THE COURSE STEP IS BACK. It came out this afternoon on "don't show the
      courses — just get them finished signing up", and went back in the same
      evening on "I keep missing the courses": a sign-up that never shows a
@@ -126,9 +127,16 @@ function stepsFor(school: SchoolChoice | null): Step[] {
      so the work is confirming, and unticking the one you dropped. That is the
      version worth the extra tap; the one that made you build the list yourself
      was not. */
-  return hasProgrammes(school)
-    ? ["school", "programme", "year", "courses", "target"]
-    : ["school", "courses", "target"];
+  /* THE YEAR STEP NEEDS YEARS, and a programme can have courses without them.
+     UNZA prints two of its curricula as one undivided list — Animal Science and
+     Project Management — so `years` is empty while `courses` is not, and asking
+     "Which year are you in?" would render a card with no options and no way
+     forward. Those programmes skip straight to the course list, which
+     `coursesByYear(prog, null)` already returns whole. */
+  if (!hasProgrammes(school)) return ["school", "courses", "target"];
+  return prog && !prog.years.length
+    ? ["school", "programme", "courses", "target"]
+    : ["school", "programme", "year", "courses", "target"];
 }
 
 /** The answers as the form holds them. */
@@ -219,17 +227,18 @@ export function OnboardingFlow() {
    *  days invented on its behalf — we genuinely never knew which. */
   const picked = target.weekdays ?? [];
 
-  /* Which questions this student gets, and where they resume. Both read off the
-     school, so a university with no curriculum on file never renders a
-     programme step to resume into. */
-  const ORDER = stepsFor(school);
-  const step = stepPick ?? (hydrated ? firstGap(d, ORDER) : "school");
-
   /** The programme they picked, with its courses. Undefined until they pick.
    *  Not memoised: it is a find over at most 41 rows, and a manual memo here is
    *  something the React Compiler has to give up optimising the component to
    *  preserve — a worse trade than the lookup it saves. */
   const prog = programmeBySlug(school, programme);
+
+  /* Which questions this student gets, and where they resume. Off the school
+     and the programme, so a university with no curriculum on file never renders
+     a programme step to resume into, and a programme that publishes no years
+     never renders a year step with nothing in it. */
+  const ORDER = stepsFor(school, prog);
+  const step = stepPick ?? (hydrated ? firstGap(d, ORDER) : "school");
 
   /** Change one answer, and take the form off the record for good. */
   function edit(patch: Partial<Draft>) {
@@ -502,7 +511,10 @@ export function OnboardingFlow() {
                   ...(changed ? { year: keepYear, curriculum: [], courses: [] } : {}),
                   coursesChosen: changed ? false : coursesAnswered,
                 });
-                advanceAfterBeat("year");
+                /* Past the year question when the new programme has no years to
+                   offer — see stepsFor. Its whole course list is what the next
+                   screen shows instead. */
+                advanceAfterBeat(next?.years.length ? "year" : "courses");
               }}
             />
           </Card>

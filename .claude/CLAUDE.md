@@ -256,36 +256,76 @@ Everything else monochrome is MynaUI.
 
 ### Course Pipeline (Supabase, internal)
 
-Everything ZCAS teaches, scraped 2026-08-04 from `zcasu.edu.zm/all-programmes/`
-and held in the Booklesss Supabase project as a **ranked backlog of courses to
-build**. Four tables, a real hierarchy:
+What Zambian universities teach, scraped 2026-08-04 and held in the Booklesss
+Supabase project as a **ranked backlog of courses to build**. Four tables, a
+real hierarchy, now scoped by university:
 
 ```text
-pipeline_schools (4) → pipeline_programmes (60) → pipeline_programme_subjects (979) → pipeline_subjects (357)
+universities → pipeline_schools → pipeline_programmes (278) → pipeline_programme_subjects (1,397) → pipeline_subjects (602)
 ```
 
 `pipeline_subjects` is the unit of work: **one row per distinct course, deduped
-across programmes.** 48% of courses are taught in 2+ programmes, so the queue is
-ranked by **reach** (`programme_count`) — building one course can serve twenty
-programmes. **349 teachable courses, 4 live, 345 to build.** The join table is
-where the codes, years and semesters live.
+across programmes AND across universities** — a course taught at ZCAS and at
+UNZA is one course to build, which is the whole point. The queue is ranked by
+**reach** (`programme_count`), and `pipeline_queue.universities` says how many
+campuses one build serves. **602 teachable courses, 4 live, 598 to build.** The
+join table is where the codes, years and semesters live.
+
+| University | Programmes | With a curriculum | Course rows |
+|---|---|---|---|
+| ZCAS | 60 | 41 | 979 |
+| UNZA | 111 | 13 | 378 |
+| Mulungushi | 107 | 1 | 40 |
+
+**ZCAS is the outlier for publishing a curriculum at all, not the norm.** UNZA's
+Courses tab is present on all 111 programme pages and empty on 98 of them
+("Coming soon…"); Mulungushi says "No Course List Found!" on 106 of 107. **CBU,
+UNILUS, Cavendish, Kwame Nkrumah, Chalimbana, Mukuba and Northrise publish no
+course lists anywhere** — programme names and entry requirements only (checked
+2026-08-04). UNZA's IDE brochure PDF is entry requirements too — a dead end. So
+the remaining curricula are not a scraping job; they need a prospectus, a
+department, or students photographing their own timetables.
+
+One scraper per university, because the three sites are shaped differently
+enough to need their own parsers, and **one loader**, because reach is only
+meaningful computed over all of them at once:
+
+```bash
+python3 tools/scrape_zcas_programmes.py          # tables: code | title | year | semester
+python3 tools/scrape_unza_programmes.py          # Drupal tab: <strong>Year</strong> + <ul>, codes inline or absent
+python3 tools/scrape_mu_programmes.py            # one Programme Structure table per page
+python3 tools/load_pipeline.py --university unza --dir _dev/tmp/unza-scrape
+# then run tools/recount_pipeline.sql to recompute reach and priority
+```
+
+Then `npm run gen:programmes` in `platform/`.
 
 Query it through the views, not the tables: **`pipeline_queue`** (the build
-queue), **`pipeline_curriculum`** (the full school→programme→course tree, drills
-both ways), **`pipeline_school_summary`**.
+queue), **`pipeline_curriculum`** (the full university→school→programme→course
+tree, drills both ways), **`pipeline_school_summary`**.
 
 **These tables are INTERNAL.** They carry course codes and school names, which
 must never reach a student (see the memory index). Unlike `courses`/`lessons`,
 which are public-read, all four have **RLS enabled with no policies** —
-service-role only — and both views are `security_invoker = true` so they cannot
-bypass it. Supabase's "RLS enabled, no policy" advisor INFO on these is the
-intent, not a gap. **Do not add a public read policy.**
+service-role only — and all three views are `security_invoker = true` so they
+cannot bypass it. Supabase's "RLS enabled, no policy" advisor INFO on these is
+the intent, not a gap. **Do not add a public read policy.**
 
-Re-scrape with `python3 tools/scrape_zcas_programmes.py` (`--refresh` to ignore
-cached pages). Two known source-side faults, both flagged in the data rather
-than worked around: **19 programmes publish no curriculum** (their pages
-reference tables that don't exist, so reach counts are understated) and **7
-University of Greenwich links 404** (`link_status='dead-404'`).
+**What a second university broke, so a third doesn't rediscover it:** school
+name/slug/seq and programme slug/seq were unique GLOBALLY and are only unique
+within a university (two "School of Law", three "Bachelor of Business
+Administration"); the join table's primary key **included `code`**, so UNZA's
+code-less rows could not insert at all; and `gen-programmes.mjs` fetched with
+`.range(0, 9999)`, which PostgREST silently caps at its own `db-max-rows` of
+1000 — adding two universities made the output file *smaller* and nothing said
+so. All four are fixed; the generator pages now.
+
+Known source-side faults, flagged in the data rather than worked around: **19
+ZCAS programmes publish no curriculum** (their pages reference tables that don't
+exist), **7 University of Greenwich links 404** (`link_status='dead-404'`), and
+**two UNZA programmes print one undivided course list** with no years at all —
+which is why `stepsFor` in the onboarding flow skips the year question when a
+programme's `years` is empty.
 
 ## Project Tracking (Linear)
 

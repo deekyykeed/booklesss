@@ -51,12 +51,17 @@ const INDEX = PROGRAMME_INDEX as Record<string, Programme[]>;
 /**
  * The programmes a university publishes, or an empty list.
  *
- * EMPTY IS A NORMAL ANSWER, not a failure. Only ZCAS has been scraped so far,
- * so nine of the ten universities in the picker return nothing today — and the
- * flow is built to skip its programme and year questions when that happens
- * rather than showing an empty list. Filling those universities in later is a
+ * EMPTY IS A NORMAL ANSWER, not a failure. Three of the ten universities in the
+ * picker carry programmes (ZCAS 41, UNZA 13, Mulungushi 1) and seven return
+ * nothing — and the flow is built to skip its programme and year questions when
+ * that happens rather than showing an empty list. Filling a university in is a
  * data job with no code change, which is what the owner asked for: "set this up
  * so it works dynamically, i will be filling in those courses later."
+ *
+ * The seven are not an oversight. CBU, UNILUS, Cavendish, Kwame Nkrumah,
+ * Chalimbana, Mukuba and Northrise publish programme NAMES and entry
+ * requirements and no course lists at all — checked 2026-08-04. ZCAS is the
+ * outlier for publishing a curriculum, not the norm.
  */
 export function programmesFor(school: string | null | undefined): Programme[] {
   return (school && INDEX[school]) || [];

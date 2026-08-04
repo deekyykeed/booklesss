@@ -30,12 +30,21 @@ async function generate() {
   if (!url || !key) throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY");
   const sb = createClient(url, key, { auth: { persistSession: false } });
 
-  /* .range() because PostgREST caps a select at 1000 rows by default and the
-     join table is 979 — close enough that a quiet truncation would look like a
-     scraping gap rather than a paging bug. */
-  const res = await sb.from("onboarding_curriculum").select("*").range(0, 9999);
-  if (res.error) throw res.error;
-  if (!res.data.length) throw new Error("onboarding_curriculum returned nothing");
+  /* PAGED, because .range(0, 9999) DOES NOT WORK. PostgREST enforces its own
+     db-max-rows (1000 here) and silently returns the first 1000 whatever range
+     asks for — so the moment the curriculum passed 1000 rows, adding UNZA and
+     Mulungushi made the file SMALLER and nothing said so. It read as a scraping
+     gap. Loop until a short page instead, and check the total afterwards. */
+  const PAGE = 1000;
+  const rows_ = [];
+  for (let from = 0; ; from += PAGE) {
+    const res = await sb.from("onboarding_curriculum").select("*").range(from, from + PAGE - 1);
+    if (res.error) throw res.error;
+    rows_.push(...res.data);
+    if (res.data.length < PAGE) break;
+  }
+  if (!rows_.length) throw new Error("onboarding_curriculum returned nothing");
+  const res = { data: rows_ };
 
   /* Dissertations, industrial attachment and progress reports are on a
      student's timetable but are not something anyone reads notes for, so they
