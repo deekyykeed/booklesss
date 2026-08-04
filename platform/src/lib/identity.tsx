@@ -81,8 +81,22 @@ export const AVATAR_NAMES: Record<AvatarId, string> = {
   skate: "Skater",
 };
 
-/** Days a week, and minutes on each of those days. */
-export type StudyTarget = { days: number; minutes: number };
+/**
+ * How many days a week, how long on each — and, now, WHICH days.
+ *
+ * `weekdays` holds 0..6 with 0 = Monday (owner, 2026-08-04: "instead of showing
+ * the number of days, just show a list of days, Monday Tuesday Wednesday, and
+ * let them pick the days"). A count was a number somebody agreed to in the
+ * abstract; named days are a plan you either kept on Tuesday or did not, which
+ * is the difference between a target and a wish.
+ *
+ * `days` STAYS, and stays authoritative for anything counting. It is
+ * `weekdays.length` whenever weekdays are present, so lib/performance keeps
+ * working untouched and every record written before this — where nobody was
+ * ever asked which days — still parses and still scores. Optional for exactly
+ * that reason: it is an addition, not a replacement.
+ */
+export type StudyTarget = { days: number; minutes: number; weekdays?: number[] };
 
 /** Held to the ranges the onboarding step offers, because this arrives from
  *  localStorage and from account metadata, both of which a stranger can
@@ -90,11 +104,20 @@ export type StudyTarget = { days: number; minutes: number };
 export function parseTarget(v: unknown): StudyTarget | null {
   if (!v || typeof v !== "object") return null;
   const o = v as Record<string, unknown>;
-  const days = Math.round(Number(o.days));
+  /* Deduped, in range, sorted — it is read back as "your days" and a record
+     saying [1,1,9] would draw Tuesday twice and something that is not a day. */
+  const weekdays = Array.isArray(o.weekdays)
+    ? [...new Set(o.weekdays.map(Number).filter((d) => Number.isInteger(d) && d >= 0 && d <= 6))].sort(
+        (a, b) => a - b,
+      )
+    : [];
+  // Named days win over any stored count: if we know which, "how many" is not a
+  // separate fact that could disagree with them.
+  const days = weekdays.length || Math.round(Number(o.days));
   const minutes = Math.round(Number(o.minutes));
   if (!Number.isFinite(days) || !Number.isFinite(minutes)) return null;
   if (days < 1 || days > 7 || minutes < 5 || minutes > 480) return null;
-  return { days, minutes };
+  return { days, minutes, ...(weekdays.length ? { weekdays } : {}) };
 }
 
 export type Identity = {

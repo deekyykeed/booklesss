@@ -15,7 +15,7 @@ import {
   programmeLabel,
   programmesFor,
 } from "@/lib/programmes";
-import { CoursePicker, CurriculumPicker, OptionRows, SchoolPicker } from "@/components/identity/pickers";
+import { CoursePicker, OptionRows, SchoolPicker } from "@/components/identity/pickers";
 import { Button } from "@/components/ui/Button";
 
 /* ------------------------------------------------------------------ *
@@ -56,12 +56,23 @@ import { Button } from "@/components/ui/Button";
  * which is what made this page look like a different product.
  * ------------------------------------------------------------------ */
 
-/* The offer for "how many days a week", and "how many minutes when you sit
- * down". Both are ranges a student can answer honestly rather than
- * aspirationally: the point of the number is that the dashboard will hold
- * them to it, so 2 days has to be as sayable as 7. */
-const DAY_CHOICES = [2, 3, 4, 5, 6, 7];
-const MINUTE_CHOICES = [15, 30, 45, 60, 90, 120];
+/* NAMED DAYS, NOT A COUNT (owner, 2026-08-04: "instead of showing the number of
+   days, just show a list of days — Monday, Tuesday, Wednesday — and let them
+   pick the days"). "4 days a week" is a number somebody agrees to in the
+   abstract; Monday and Thursday are a plan you either kept or did not. The
+   count still exists, as the length of what they picked.
+
+   Monday first, because a week that starts on Sunday is an American habit and
+   nobody here plans against it. Index 0 = Monday throughout. */
+const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const WEEKDAY_FULL = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+const MINUTE_CHOICES = [30, 45, 60, 90, 120, 180];
+
+/* The recommendation (owner, same call: "a recommended amount, which is at
+   least one hour thirty minutes a day"). Marked rather than forced — a default
+   somebody cannot see the reasoning for is just our opinion in their record. */
+const RECOMMENDED_MINUTES = 90;
 
 /**
  * How long a tapped answer stays on screen before the next question arrives.
@@ -102,8 +113,21 @@ type Step = "school" | "programme" | "year" | "courses" | "target";
  * in those courses later."
  */
 function stepsFor(school: SchoolChoice | null): Step[] {
+  /* NO COURSE QUESTION WHERE WE ALREADY KNOW THE ANSWER (owner, 2026-08-04:
+     "you don't have to show that to the user right now — just get them finished
+     signing up, don't show the courses"). Programme plus year IS the course
+     list; putting it on screen to be confirmed is the manual picking this flow
+     exists to remove, and it is a screen of eight rows standing between someone
+     who just made an account and being finished.
+
+     They are still set — the year step writes them — and they are still
+     editable, in Settings, which is where a student who is repeating a module
+     or taking one early goes. Onboarding's job is to get them in.
+
+     A university with no curriculum on file still has to ask, because nothing
+     else can answer it there. */
   return hasProgrammes(school)
-    ? ["school", "programme", "year", "courses", "target"]
+    ? ["school", "programme", "year", "target"]
     : ["school", "courses", "target"];
 }
 
@@ -138,7 +162,14 @@ function asDraft(identity: Identity | null): Draft {
     curriculum: identity?.curriculum ?? [],
     courses: identity?.courses ?? [],
     coursesAnswered: identity?.coursesChosen ?? false,
-    target: identity?.target ?? { days: 4, minutes: 30 },
+    /* No days pre-picked. The old default was "4 days, 30 minutes" — numbers
+       nobody chose, sitting in the form looking like an answer, which is the
+       thing the target field's own note in lib/identity warns about. The
+       recommended length IS offered as the starting value, because it is
+       labelled as a recommendation on screen where a silent default is not.
+       `days: 0` never reaches storage: finish() writes the count of what they
+       picked, and the button will not fire until that is at least one. */
+    target: identity?.target ?? { days: 0, minutes: RECOMMENDED_MINUTES, weekdays: [] },
   };
 }
 
@@ -182,6 +213,11 @@ export function OnboardingFlow() {
 
   const d = draft ?? asDraft(identity);
   const { school, schoolName, programme, year, curriculum, courses, coursesAnswered, target } = d;
+
+  /** The days they picked, 0 = Monday. A record written before this question
+   *  asked for named days has none, and gets an empty board rather than four
+   *  days invented on its behalf — we genuinely never knew which. */
+  const picked = target.weekdays ?? [];
 
   /* Which questions this student gets, and where they resume. Both read off the
      school, so a university with no curriculum on file never renders a
@@ -256,7 +292,11 @@ export function OnboardingFlow() {
    *  app. `replace`, so the back button out of the dashboard is the page they
    *  came from rather than the questions they just finished. */
   function finish() {
-    save({ coursesChosen: true, target });
+    /* `days` is written as the count of what they actually picked, not carried
+       off the draft — the draft starts at 0 and only the named days move. This
+       is the one place the two representations are reconciled, and everything
+       downstream (lib/performance) reads `days`. */
+    save({ coursesChosen: true, target: { ...target, days: picked.length, weekdays: picked } });
     router.replace("/dashboard");
   }
 
@@ -348,7 +388,7 @@ export function OnboardingFlow() {
       <div key={step} data-dir={dir} className="onboard-step pt-6">
         {step === "school" && (
           <Card
-            title="Where do you study?"
+            title="Which university are you at?"
             why="Tap your university to carry on. If it isn't on the list, pick Other and type it in."
             /* THERE IS NO SKIP ON THIS QUESTION (owner, 2026-08-03: "the
                student cannot skip this — why would they not add the school?
@@ -429,7 +469,7 @@ export function OnboardingFlow() {
 
         {step === "programme" && (
           <Card
-            title="What are you studying?"
+            title="What are you doing?"
             why="Pick your programme and we'll line up its courses for you. Tap Back if you picked the wrong university."
           >
             <OptionRows
@@ -470,7 +510,7 @@ export function OnboardingFlow() {
         {step === "year" && (
           <Card
             title="Which year are you in?"
-            why="We'll put this year's courses at the top. You can still take ones from any other year."
+            why="This sets up your courses. You can change them any time in Settings."
           >
             <OptionRows
               options={(prog?.years ?? []).map((y) => {
@@ -480,71 +520,41 @@ export function OnboardingFlow() {
               value={year}
               label={(y) => `Year ${y}`}
               onPick={(y) => {
-                /* THE PREDICTIVE STEP. Picking a year pre-ticks that year's
-                   courses — the whole point of asking the two questions above
-                   (owner: "I'll do as much to help them so they don't have to
-                   manually pick things which we could avoid"). They arrive at
-                   the next screen with their timetable already filled in and
-                   untick what they are not taking, which is a much shorter job
-                   than ticking eight rows from nothing.
+                /* THE STEP THAT ANSWERS THE COURSE QUESTION. Picking a year
+                   enrols them in that year's courses outright — no confirming
+                   screen after it (owner: "don't show the courses"). This is
+                   what the two questions above were for: three taps and their
+                   timetable is set.
 
-                   Only on a CHANGE of year, so coming Back to this screen and
-                   re-tapping the same year cannot wipe edits they made after. */
+                   `coursesChosen: true` is the load-bearing part. It is what
+                   `onboardingComplete` reads, and with the courses screen gone
+                   nothing else would ever set it — the student would finish the
+                   flow, reach the dashboard, and be sent straight back by the
+                   gate for a question they were never asked.
+
+                   Only on a CHANGE of year, so coming Back and re-tapping the
+                   same year cannot wipe edits made in Settings since. */
                 const changed = y !== year;
-                const picks = changed
-                  ? coursesByYear(prog, y).thisYear.map((c) => c.slug)
-                  : curriculum;
-                edit({ year: y, curriculum: picks, courses: liveSlugsFor(prog, picks) });
-                save({ year: y, curriculum: picks, courses: liveSlugsFor(prog, picks), coursesChosen: coursesAnswered });
-                advanceAfterBeat("courses");
+                const picks = changed ? coursesByYear(prog, y).thisYear.map((c) => c.slug) : curriculum;
+                const live = liveSlugsFor(prog, picks);
+                edit({ year: y, curriculum: picks, courses: live, coursesAnswered: true });
+                save({ year: y, curriculum: picks, courses: live, coursesChosen: true });
+                advanceAfterBeat("target");
               }}
             />
           </Card>
         )}
 
-        {step === "courses" && prog && (
-          <Card
-            title="These are your courses"
-            why="We filled in your year from your programme. Untick anything you're not taking, and add from other years."
-            actions={
-              <Button
-                variant="primary"
-                size="lg"
-                block
-                disabled={curriculum.length === 0}
-                onClick={() => {
-                  edit({ coursesAnswered: true });
-                  save({ coursesChosen: true, curriculum, courses: liveSlugsFor(prog, curriculum) });
-                  goTo("target");
-                }}
-              >
-                {curriculum.length === 0
-                  ? "Pick at least one"
-                  : `Continue with ${curriculum.length} course${curriculum.length > 1 ? "s" : ""}`}
-              </Button>
-            }
-          >
-            <CurriculumPicker
-              thisYear={coursesByYear(prog, year).thisYear}
-              otherYears={coursesByYear(prog, year).otherYears}
-              year={year}
-              picked={curriculum}
-              onToggle={(slug) => {
-                const next = curriculum.includes(slug)
-                  ? curriculum.filter((s) => s !== slug)
-                  : [...curriculum, slug];
-                /* Both lists move together: `curriculum` is the demand signal
-                   and `courses` is what the dashboard may actually render. */
-                edit({ curriculum: next, courses: liveSlugsFor(prog, next) });
-              }}
-            />
-          </Card>
-        )}
-
-        {step === "courses" && !prog && (
+        {/* The "These are your courses" confirmation screen stood here and is
+            gone (owner, 2026-08-04: "don't show the courses"). The year step
+            enrols them directly; see stepsFor. CurriculumPicker still exists in
+            identity/pickers and is where the owner's "add courses that are not
+            in the year they're in" ability lives — it belongs in Settings now,
+            which is the one thing this change leaves owing. */}
+        {step === "courses" && (
           <Card
             title="Which courses are you taking?"
-            why="Tick every one you're studying this semester. Not sure yet? Take everything and narrow it down later."
+            why="Tick the ones you're taking this semester. Not sure yet? Take everything and narrow it down later."
             actions={
               <div className="flex flex-col gap-2">
                 <Button
@@ -598,38 +608,83 @@ export function OnboardingFlow() {
 
         {step === "target" && (
           <Card
-            title="How much studying are you aiming for?"
-            why="Set the days you'll sit down and how long for. Aim at an ordinary week, not your best one."
+            title="Set your weekly goal"
+            why="Pick the days you'll put the time in, and how long each of them. An ordinary week, not your best one."
             actions={
-              <Button variant="primary" size="lg" block onClick={finish}>
-                Start studying
+              <Button variant="primary" size="lg" block disabled={picked.length === 0} onClick={finish}>
+                {picked.length === 0 ? "Pick at least one day" : "Done"}
               </Button>
             }
           >
-            <Choices
-              label="Days a week"
-              value={target.days}
-              options={DAY_CHOICES}
-              format={(n) => String(n)}
-              onPick={(days) => edit({ target: { ...target, days } })}
-            />
-            <div className="mt-4">
-              <Choices
-                label="Minutes each time"
-                value={target.minutes}
-                options={MINUTE_CHOICES}
-                /* Math.floor, not a bare divide: 90/60 is 1.5, and the first
-                   render of this said "1.5h 30m". */
-                format={(n) => (n >= 60 ? `${Math.floor(n / 60)}h${n % 60 ? ` ${n % 60}m` : ""}` : `${n}m`)}
-                onPick={(minutes) => edit({ target: { ...target, minutes } })}
-              />
+            <Choices label="Which days?">
+              {WEEKDAYS.map((d, i) => {
+                const on = picked.includes(i);
+                return (
+                  <Button
+                    key={d}
+                    variant={on ? "primary" : "secondary"}
+                    size="md"
+                    aria-pressed={on}
+                    aria-label={WEEKDAY_FULL[i]}
+                    onClick={() =>
+                      edit({
+                        target: {
+                          ...target,
+                          weekdays: on ? picked.filter((x) => x !== i) : [...picked, i].sort((a, b) => a - b),
+                        },
+                      })
+                    }
+                  >
+                    {d}
+                  </Button>
+                );
+              })}
+            </Choices>
+
+            <div className="mt-5">
+              <Choices label="How long each day?">
+                {MINUTE_CHOICES.map((n) => {
+                  const on = n === target.minutes;
+                  return (
+                    <Button
+                      key={n}
+                      variant={on ? "primary" : "secondary"}
+                      size="md"
+                      aria-pressed={on}
+                      onClick={() => edit({ target: { ...target, minutes: n } })}
+                    >
+                      {/* Math.floor, not a bare divide: 90/60 is 1.5, and the
+                          first render of this said "1.5h 30m". */}
+                      {n >= 60 ? `${Math.floor(n / 60)}h${n % 60 ? ` ${n % 60}m` : ""}` : `${n}m`}
+                    </Button>
+                  );
+                })}
+              </Choices>
+              <p className="mt-2 text-[13px] leading-5 text-muted">
+                We recommend at least{" "}
+                <button
+                  type="button"
+                  onClick={() => edit({ target: { ...target, minutes: RECOMMENDED_MINUTES } })}
+                  className="font-medium text-ink underline underline-offset-2"
+                >
+                  1h 30m
+                </button>{" "}
+                a day.
+              </p>
             </div>
-            <p className="mt-4 text-[13.5px] leading-5 text-muted">
-              That&apos;s{" "}
-              <span className="font-medium text-ink">
-                {Math.round((target.days * target.minutes) / 6) / 10} hours a week
-              </span>
-              . You can change it later.
+
+            <p className="mt-5 text-[13.5px] leading-5 text-muted">
+              {picked.length > 0 ? (
+                <>
+                  That&apos;s{" "}
+                  <span className="font-medium text-ink">
+                    {Math.round((picked.length * target.minutes) / 6) / 10} hours a week
+                  </span>
+                  . You can change it later.
+                </>
+              ) : (
+                "You can change this later."
+              )}
             </p>
           </Card>
         )}
@@ -720,42 +775,26 @@ function Card({
 /** A row of set answers. Buttons rather than a slider or a number field: on a
  *  phone a slider is a fight, and a free number invites "600 minutes" from
  *  somebody being optimistic at midnight. */
-function Choices({
-  label,
-  value,
-  options,
-  format,
-  onPick,
-}: {
-  label: string;
-  value: number;
-  options: number[];
-  format: (n: number) => string;
-  onPick: (n: number) => void;
-}) {
+/**
+ * A labelled row of choices. A LAYOUT, not a control.
+ *
+ * It used to draw its own buttons — a hand-rolled `<button>` with its own
+ * background, border, radius and hover, which is a second button in an app that
+ * already has one (owner, 2026-08-04: "this button that you are using, is it my
+ * component button? Use my actual button, don't make up one"). It was drifting
+ * too: `bg-ink text-white` is what `.btn[data-variant=primary]` already means,
+ * copied by hand and free to fall out of step with it.
+ *
+ * So the caller passes real `<Button>`s and this only puts a label over them
+ * and wraps them. Seven days do not fit a fixed six-column grid the way six
+ * minute options did, so it flows instead of gridding — which also means a
+ * future row of four or eight needs nothing here.
+ */
+function Choices({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <p className="mb-2 text-[13px] font-medium text-ink-2">{label}</p>
-      <div className="grid grid-cols-6 gap-1.5">
-        {options.map((n) => {
-          const on = n === value;
-          return (
-            <button
-              key={n}
-              type="button"
-              onClick={() => onPick(n)}
-              aria-pressed={on}
-              className={`squircle h-11 rounded-xl text-[14px] font-medium transition-colors ${
-                on
-                  ? "bg-ink text-white"
-                  : "border border-line bg-white text-ink-2 hover:border-line-2 hover:text-ink"
-              }`}
-            >
-              {format(n)}
-            </button>
-          );
-        })}
-      </div>
+      <p className="mb-2 font-display text-[13px] font-medium text-ink-2">{label}</p>
+      <div className="flex flex-wrap gap-1.5">{children}</div>
     </div>
   );
 }
