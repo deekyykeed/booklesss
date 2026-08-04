@@ -79,15 +79,21 @@ const schoolTone = (on: boolean) => SCHOOL_ROW + (on ? "" : "hover:bg-active/60"
  * has not been fetched yet, so a new row is never blank.
  */
 function SchoolMark({ id, letter, tone }: { id?: string; letter: string; tone: string }) {
+  /* 24px, down from 32 (owner, 2026-08-04: "the logo is too big, it must feel
+     like its inline"). At 32 the crest was the tallest thing in the row by
+     half again — it set the row's height, pushed the 15px name off the optical
+     line the 20px tick sits on, and read as a logo the name was captioning
+     rather than as one item in a list. 24 sits between the tick and the name,
+     so the three land as one line. */
   const crest = id ? SCHOOL_CRESTS[id] : undefined;
   if (crest) {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={crest} alt="" aria-hidden="true" className="h-8 w-8 shrink-0 object-contain" />;
+    return <img src={crest} alt="" aria-hidden="true" className="h-6 w-6 shrink-0 object-contain" />;
   }
   return (
     <span
       aria-hidden="true"
-      className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-[13px] font-semibold text-white"
+      className="grid h-6 w-6 shrink-0 place-items-center rounded-full text-[11px] font-semibold text-white"
       style={{ backgroundColor: tone }}
     >
       {letter}
@@ -198,10 +204,14 @@ export function SchoolPicker({
               <Tick on={on} />
               <SchoolMark id={s.id} letter={s.name.slice(0, 1)} tone={s.tone} />
               <span className="min-w-0 flex-1 truncate">
-                <span className={"text-[15px] leading-tight text-ink " + (on ? "font-semibold" : "font-medium")}>
+                <span
+                  className={
+                    "font-display text-[15px] leading-tight text-ink " + (on ? "font-semibold" : "font-medium")
+                  }
+                >
                   {s.name}
                 </span>
-                <span className="ml-2 text-[13px] leading-5 text-muted">{s.full}</span>
+                <span className="ml-2 font-display text-[13px] leading-5 text-muted">{s.full}</span>
               </span>
             </button>
           );
@@ -216,7 +226,7 @@ export function SchoolPicker({
               than starting where their names do. */}
           <SchoolMark letter="+" tone="var(--color-muted)" />
           <span className="min-w-0 flex-1 truncate">
-            <span className="text-[15px] font-medium leading-tight text-ink">Another university</span>
+            <span className="font-display text-[15px] font-medium leading-tight text-ink">Another university</span>
           </span>
         </button>
       </div>
@@ -282,10 +292,16 @@ export function CoursePicker({
             <button key={c.slug} type="button" onClick={() => onToggle(c.slug)} aria-pressed={on} className={rowTone(on)}>
               <Tick on={on} />
               <span className="min-w-0 flex-1">
-                <span className={"block text-[15px] leading-tight text-ink " + (on ? "font-semibold" : "font-medium")}>
+                <span
+                  className={
+                    "block font-display text-[15px] leading-tight text-ink " + (on ? "font-semibold" : "font-medium")
+                  }
+                >
                   {c.title}
                 </span>
-                <span className="mt-0.5 block truncate text-[13px] leading-5 text-muted">{c.subtitle}</span>
+                <span className="mt-0.5 block truncate font-display text-[13px] leading-5 text-muted">
+                  {c.subtitle}
+                </span>
               </span>
             </button>
           );

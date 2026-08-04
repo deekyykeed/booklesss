@@ -1,23 +1,43 @@
 /* ------------------------------------------------------------------ *
- * The schools whose courses the library carries.
+ * The universities a student picks from at sign-up.
  *
- * A student picks one at sign-up, and it does one job: narrow the course list
- * they are then asked to choose from. Nobody at ZCAS needs to scroll past a
- * UNZA course to find theirs, and the list only gets longer from here.
+ * It does one job: narrow the course list they are then asked to choose from.
+ * Nobody needs to scroll past another university's courses to find theirs, and
+ * the list only gets longer from here.
  *
- * Which courses a school teaches is recorded here as slugs rather than on the
- * course itself, because the courses table in Supabase has no school column —
- * course-index.json is generated straight from it (see scripts/gen-course.mjs),
- * so anything the database doesn't hold has to live beside it. If a school
- * column is ever added, this table moves into the generator and the shape here
- * stays the same.
+ * THE LIST COMES OFF SUPABASE (owner, 2026-08-04: "these options better be
+ * coming off of supabase"). The table is `universities` — read at BUILD by
+ * scripts/gen-schools.mjs and committed as school-index.json, the same
+ * arrangement course-data.json has and for the same reason: adding a campus is
+ * a row in a table, while a student on a Zambian connection still gets the
+ * picker instantly, offline, with no Supabase client in the browser bundle.
+ *
+ * `universities`, not `schools` — pipeline_schools is already taken, and holds
+ * ZCAS's four FACULTIES. Two tables called school meaning different things is
+ * how that mix-up becomes permanent.
+ *
+ * Which courses a university teaches is recorded on ITS row rather than on the
+ * course, because the courses table has no school column — course-index.json is
+ * generated straight from it (scripts/gen-course.mjs), so anything the database
+ * doesn't hold on a course has to live beside it.
  *
  * Slugs only, and no import of lib/courses — this module is pulled in by the
  * identity store, which loads on every page including the reader. The join
- * between a school and its actual courses lives in lib/courses.
+ * between a university and its actual courses lives in lib/courses.
  * ------------------------------------------------------------------ */
 
-export type SchoolId = "zcas" | "unza";
+import SCHOOL_INDEX from "./school-index.json";
+
+/**
+ * A university's stored id.
+ *
+ * `string`, where it used to be a literal union of the two we carried. The list
+ * is data now, so a union here would be a hand-kept copy of a table — right
+ * until somebody adds a row and forgets, at which point the types say a real
+ * university doesn't exist. `isSchoolChoice` does the checking that the union
+ * used to pretend to, and it does it against the actual list.
+ */
+export type SchoolId = string;
 
 /** The answer for a university this list doesn't carry. Students at a campus
  *  Booklesss isn't on yet type their own, rather than being told to pick one of
@@ -55,31 +75,21 @@ export type School = {
   tone: string;
 };
 
-/** In the order the picker draws them.
+/**
+ * In the order the picker draws them — `position` on the table.
  *
- *  Only schools whose courses the library actually carries belong here. A
- *  school listed with nothing to teach is a dead end: the student picks it,
- *  the next screen has nothing to offer, and the form can't be finished. When
- *  a campus is worth capturing before its courses exist, that wants its own
- *  answer ("we're not there yet — tell us where you are"), not a row here. */
-export const SCHOOLS: School[] = [
-  {
-    id: "zcas",
-    name: "ZCAS",
-    full: "Zambia Centre for Accountancy Studies",
-    aka: ["ZCAS University", "Zcasu", "Accountancy"],
-    courseSlugs: ["strategic-management", "treasury-management", "corporate-finance"],
-    tone: "#2a78d6",
-  },
-  {
-    id: "unza",
-    name: "UNZA",
-    full: "University of Zambia",
-    aka: ["Great East Road", "Ridgeway"],
-    courseSlugs: ["economics"],
-    tone: "#17754d",
-  },
-];
+ * A UNIVERSITY WITH NO COURSES IS NOW A REAL ROW, which it deliberately was not
+ * before. The old rule here was that only universities the library actually
+ * serves belonged in the list, because picking one with nothing to teach landed
+ * the student on an empty course screen they couldn't get past — a dead end.
+ * The owner asked for the top ten Zambian universities (2026-08-04) and eight of
+ * them have no courses yet, so the dead end had to be closed rather than
+ * avoided: `coursesForSchool` now offers the whole library to any university
+ * whose syllabus we don't know, exactly as it already did for "another
+ * university". Same honest answer, and the pick is still worth having — it is
+ * the best evidence there is for which campus to build for next.
+ */
+export const SCHOOLS: School[] = SCHOOL_INDEX;
 
 /**
  * Schools matching what someone typed, in list order.

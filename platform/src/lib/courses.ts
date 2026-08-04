@@ -134,7 +134,21 @@ export function coursesForSchool(id: SchoolChoice | null | undefined): CourseMet
   // is finance wherever it's taught.
   if (id === OTHER_SCHOOL || id == null) return COURSES;
   const school = SCHOOLS.find((s) => s.id === id);
-  return COURSES.filter((c) => school?.courseSlugs.includes(c.slug) || !CLAIMED.has(c.slug));
+  /* A LISTED UNIVERSITY WE DON'T CARRY COURSES FOR IS THE SAME ANSWER, and this
+     line is what made it safe to list ten of them (owner, 2026-08-04). Without
+     it, a university with no `courseSlugs` fell into the filter below and
+     matched only courses no school claims — and every course we publish is
+     claimed, so the list came back EMPTY. The student picked their university,
+     met a screen with nothing on it, and the Continue under it is disabled
+     until they choose something. That is the dead end lib/schools used to
+     avoid by refusing to list the university at all; now the eight without
+     courses are real rows, so it has to be answered here instead.
+
+     Not folded into the `id == null` line above: these are different states
+     worth telling apart later (we asked and they're at Mukuba, versus we never
+     asked), even though today they deserve the same list. */
+  if (!school?.courseSlugs.length) return COURSES;
+  return COURSES.filter((c) => school.courseSlugs.includes(c.slug) || !CLAIMED.has(c.slug));
 }
 
 /**

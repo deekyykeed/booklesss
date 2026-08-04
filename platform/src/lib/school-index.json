@@ -1,0 +1,128 @@
+[
+  {
+    "id": "zcas",
+    "name": "ZCAS",
+    "full": "Zambia Centre for Accountancy Studies",
+    "aka": [
+      "ZCAS University",
+      "Zcasu",
+      "Accountancy",
+      "Dedan Kimathi"
+    ],
+    "courseSlugs": [
+      "strategic-management",
+      "treasury-management",
+      "corporate-finance"
+    ],
+    "tone": "#2a78d6"
+  },
+  {
+    "id": "unza",
+    "name": "UNZA",
+    "full": "University of Zambia",
+    "aka": [
+      "Great East Road",
+      "Ridgeway",
+      "Unza"
+    ],
+    "courseSlugs": [
+      "economics"
+    ],
+    "tone": "#17754d"
+  },
+  {
+    "id": "cbu",
+    "name": "CBU",
+    "full": "Copperbelt University",
+    "aka": [
+      "Copperbelt",
+      "Kitwe",
+      "Riverside",
+      "Jambo Drive"
+    ],
+    "courseSlugs": [],
+    "tone": "#b3282d"
+  },
+  {
+    "id": "mulungushi",
+    "name": "Mulungushi",
+    "full": "Mulungushi University",
+    "aka": [
+      "MU",
+      "Kabwe",
+      "Great North Road"
+    ],
+    "courseSlugs": [],
+    "tone": "#7a4bb8"
+  },
+  {
+    "id": "unilus",
+    "name": "UNILUS",
+    "full": "University of Lusaka",
+    "aka": [
+      "Unilus",
+      "Lusaka",
+      "Silverest"
+    ],
+    "courseSlugs": [],
+    "tone": "#0f6d8c"
+  },
+  {
+    "id": "cavendish",
+    "name": "Cavendish",
+    "full": "Cavendish University Zambia",
+    "aka": [
+      "CUZ",
+      "Cavendish Zambia",
+      "Cavandish"
+    ],
+    "courseSlugs": [],
+    "tone": "#c2410c"
+  },
+  {
+    "id": "kwame-nkrumah",
+    "name": "Kwame Nkrumah",
+    "full": "Kwame Nkrumah University",
+    "aka": [
+      "KNU",
+      "Kabwe",
+      "Nkrumah"
+    ],
+    "courseSlugs": [],
+    "tone": "#a16207"
+  },
+  {
+    "id": "chalimbana",
+    "name": "Chalimbana",
+    "full": "Chalimbana University",
+    "aka": [
+      "CHAU",
+      "Chongwe",
+      "Chalimbana"
+    ],
+    "courseSlugs": [],
+    "tone": "#4d7c0f"
+  },
+  {
+    "id": "mukuba",
+    "name": "Mukuba",
+    "full": "Mukuba University",
+    "aka": [
+      "Kitwe",
+      "Itimpi"
+    ],
+    "courseSlugs": [],
+    "tone": "#8b2f6b"
+  },
+  {
+    "id": "northrise",
+    "name": "Northrise",
+    "full": "Northrise University",
+    "aka": [
+      "Ndola",
+      "Northrise"
+    ],
+    "courseSlugs": [],
+    "tone": "#334f8f"
+  }
+]

@@ -201,6 +201,27 @@ export function OnboardingFlow() {
        h-dvh rather than min-h-dvh: the column has to know its own height for
        the middle to be the only thing that scrolls. */
     <div className="mx-auto flex h-dvh w-full max-w-[440px] flex-col px-5 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+      {/* The wordmark, top left (owner, 2026-08-04). Onboarding was the one
+          screen in the app with no brand on it at all — a student who has just
+          handed over an email address is looking at three questions from
+          nobody in particular.
+
+          INLINE, NOT A MASTHEAD (owner, same call: "it must feel like its
+          inline"). 18px is exactly what the app's own header wears on a phone,
+          so this reads as the product's chrome rather than as a logo screen
+          the questions happen to be under.
+
+          The wordmark IS the logo — no mark beside it (2026-08-03). It is
+          also NOT a link: every other place it appears goes to /dashboard, and
+          from here that is a door straight into RequireOnboarding, which would
+          measure this same unfinished record and send them back. A logo that
+          bounces you where you already are is worse than one that sits still. */}
+      <div className="shrink-0 pt-6">
+        <span className="font-display text-[18px] font-bold leading-none tracking-tight text-ink">
+          Booklesss
+        </span>
+      </div>
+
       {/* No progress bar (owner, 2026-08-04: "remove the progress thing
           entirely"). It was three labelled nodes over three questions — a
           legend for a form you can finish in three taps, telling a student
@@ -209,7 +230,7 @@ export function OnboardingFlow() {
           Back moves to the left with it. It was on the right because it hung
           under the stepper's last node; on its own, a lone control on the
           right of a form reads as the thing that skips it. */}
-      <div className="flex h-9 shrink-0 items-center pt-6">
+      <div className="flex h-9 shrink-0 items-center">
         {index > 0 && (
           <button
             type="button"
@@ -416,7 +437,11 @@ function Card({
   return (
     <section className="flex min-h-0 flex-1 flex-col">
       <div className="shrink-0">
-        <h1 className="font-display text-[23px] font-bold leading-[1.15] tracking-[-0.02em] text-ink">
+        {/* Back to 30px (owner, 2026-08-04: "make the question title big
+            again"). It was cut to 23px in c869b05 alongside the quieter
+            stepper — but the stepper is gone now, and the question is the only
+            thing on the screen that says what this is. */}
+        <h1 className="font-display text-[30px] font-bold leading-[1.1] tracking-[-0.02em] text-ink">
           {title}
         </h1>
         <p className="mt-1.5 text-[13.5px] leading-5 text-muted">{why}</p>

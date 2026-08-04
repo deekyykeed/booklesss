@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "gen:course": "node --env-file=.env.local scripts/gen-course.mjs",
+    "gen:schools": "node --env-file=.env.local scripts/gen-schools.mjs",
     "seed:course": "node --env-file=.env.local scripts/seed-course.mjs",
     "gen:icons": "node scripts/gen-icons.mjs",
     "gen:mingcute": "node scripts/gen-mingcute-icons.mjs",
