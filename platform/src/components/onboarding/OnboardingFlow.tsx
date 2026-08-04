@@ -458,6 +458,29 @@ export function OnboardingFlow() {
   const signedIn = useSignedIn();
   const { identity, hydrated } = useIdentity();
 
+  /** Where they were going when a gate stopped them. This is the promise the
+   *  sign-in modal used to keep by opening in place: a reader halfway down a
+   *  step who is made to sign up gets that step back, not the dashboard.
+   *
+   *  Only a path on this site — an `after` off the query string is attacker-
+   *  controllable, and "//evil.com" is a protocol-relative URL that `push`
+   *  would happily follow off the domain. One leading slash, no second one. */
+  const after = search.get("after");
+  const backTo = after && /^\/(?!\/)/.test(after) ? after : "/dashboard";
+
+  /** Whether a gate sent them, as opposed to their own navigation or the
+   *  dashboard's own onboarding gate. It is the presence of `after` that says
+   *  so — the gate is the only thing that sets it (components/auth/ClerkGate) —
+   *  and it decides how much this page is entitled to ask for before giving
+   *  somebody back the page they were on. See the account step.
+   *
+   *  Declared HERE, at the top, and not beside `finish` where it reads more
+   *  naturally: an effect below depends on both, and a dependency array is
+   *  evaluated during the render rather than inside the closure. A `const`
+   *  declared further down is in the temporal dead zone at that moment, which
+   *  is a ReferenceError on first paint that no type checker will catch. */
+  const sentByGate = !!after;
+
   /* RESUME, DON'T RESTART. Every step saves, so a student who closed the tab
      on question three already has two answers stored, and asking for them
      again is the same insult as never asking. The gate that sends people back
@@ -643,6 +666,17 @@ export function OnboardingFlow() {
     setDraft({ ...d, ...patch });
   }
 
+  /* THE BACK BUTTON, AFTER A GATE. A reader who signs up from a checkpoint is
+     returned to their step — and pressing Back puts them on this URL again with
+     `after` still on it and a session now live. Without this they would land on
+     "What should we call you?" and be walked through ten questions they were
+     never asked for, with no way out but Back again.
+     `=== true` and not truthy: null is Clerk not having reported yet, and
+     leaving on that would throw away the account step mid-handshake. */
+  useEffect(() => {
+    if (sentByGate && signedIn === true) router.replace(backTo);
+  }, [sentByGate, signedIn, backTo, router]);
+
   /* NO BOUNCE FOR THE SIGNED-OUT ANY MORE. This used to `router.replace("/")`
      on `signedIn === false`, because the account was made on the landing page
      and this page was strictly what came after it. The account is now the first
@@ -730,16 +764,6 @@ export function OnboardingFlow() {
       studyWindow: window,
     });
   }
-
-  /** Where they were going when a gate stopped them. This is the promise the
-   *  sign-in modal used to keep by opening in place: a reader halfway down a
-   *  step who is made to sign up gets that step back, not the dashboard.
-   *
-   *  Only a path on this site — an `after` off the query string is attacker-
-   *  controllable, and "//evil.com" is a protocol-relative URL that `push`
-   *  would happily follow off the domain. One leading slash, no second one. */
-  const after = search.get("after");
-  const backTo = after && /^\/(?!\/)/.test(after) ? after : "/dashboard";
 
   function finish(source: HeardFrom) {
     save({ coursesChosen: true, heardFrom: source });
@@ -861,12 +885,25 @@ export function OnboardingFlow() {
             title="Create your account"
             why="Your progress, your courses and your goal live here. It takes two fields."
           >
-            {/* Advances itself the moment the session is live. `onward()` rather
-                than naming the next step: `asks` will not offer this question
-                again now that Clerk has a session, so the same predicate that
-                skips it for a returning student skips it here. */}
+            {/* A GATE ASKED FOR AN ACCOUNT, NOT FOR TEN ANSWERS.
+                `sentByGate` is the whole distinction: a reader who tapped a
+                checkpoint halfway down a step gets the two fields and their
+                step back, and the remaining questions stay owed. Anyone
+                arriving without an `after` — the dashboard's own gate, a
+                deliberate visit — runs the flow.
+
+                Without this the funnel ate the reader. Eleven screens is the
+                price of ticking one box, and the modal this replaced cost two
+                fields and put them straight back on the page they were reading.
+                Moving auth INTO the flow was right; dragging the flow onto
+                every gate with it was not, and the two are separable.
+
+                Nothing is lost by deferring. RequireOnboarding still refuses to
+                draw the dashboard on a half-filled record, so the questions are
+                asked the moment they are needed — which is the arrangement that
+                already worked before the account moved here. */}
             <AccountStep
-              onDone={() => onward()}
+              onDone={() => (sentByGate ? router.replace(backTo) : onward())}
               initialMode={search.get("mode") === "sign-in" ? "sign-in" : "sign-up"}
               initialEmail={search.get("email") ?? ""}
             />
