@@ -27,6 +27,8 @@ export type ProgrammeCourse = {
   title: string;
   /** Which year of the programme it is taught in. */
   year: number | null;
+  /** Which half of that year — 1 or 2, null where the source didn't say. */
+  semester: number | null;
   /** The built course this maps to, where one exists. Absent is the normal
    *  case: 4 of 357 are built. A row without it still shows and can still be
    *  picked — see the note on demand below. */
@@ -103,10 +105,38 @@ export function coursesByYear(programme: Programme | undefined, year: number | n
     const k = c.year ?? null;
     rest.set(k, [...(rest.get(k) ?? []), c]);
   }
+  /**
+   * NEAREST YEAR FIRST, WORKING AWAY FROM THEIRS (owner, 2026-08-04: "organize
+   * them from the older years to the younger years… if there are courses that
+   * have been carried over, they'll be closer to the older years, and the
+   * easier courses, the prerequisites, go to the bottom").
+   *
+   * The list is ordered by how likely a row is to be the one they came for. A
+   * year-4 student with a carry-over is overwhelmingly carrying something from
+   * year 3, not from year 1 — so the years below theirs run DOWNWARD from the
+   * one they just finished, and first-year prerequisites end up furthest away.
+   * Ascending put the least likely year at the top and made them scroll past
+   * eight rows of Academic Writing to reach the module they actually failed.
+   *
+   * Years ABOVE theirs then follow, running upward — the same "nearest first"
+   * rule, applied to the other direction. The owner's reasoning was about
+   * carry-overs and so only names the years below; this extends it rather than
+   * inventing a second rule, and it matters for the students they did not
+   * mention: a year-1 student has nothing below them, and ordering their
+   * "other years" downward from 6 would put the most distant year on top.
+   *
+   * A course with no year sorts last in either case. It is a gap in the scrape,
+   * not a year zero, and it should not head anything pretending to be one.
+   */
+  const rank = (y: number | null): [number, number] =>
+    y == null ? [2, 0] : y < year ? [0, -y] : [1, y];
+
   const otherYears: YearGroup[] = [...rest.entries()]
-    // A course with no year on it sorts last: it is a gap in the scrape, not a
-    // year zero, and it should not head the list pretending to be one.
-    .sort((a, b) => (a[0] ?? 99) - (b[0] ?? 99))
+    .sort(([a], [b]) => {
+      const [ba, ka] = rank(a);
+      const [bb, kb] = rank(b);
+      return ba - bb || ka - kb;
+    })
     .map(([y, courses]) => ({ year: y, courses }));
 
   return { thisYear, otherYears };

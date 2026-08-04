@@ -307,8 +307,8 @@ export function SchoolPicker({
                     nobody can finish reading. */}
                 <span
                   className={
-                    "min-w-0 font-display text-[15px] leading-snug text-ink " +
-                    (on ? "font-semibold" : "font-medium")
+                    "min-w-0 font-display text-[15px] leading-snug transition-colors " +
+                    (on ? "font-semibold text-ink" : "font-medium text-ink-2")
                   }
                 >
                   {s.full}
@@ -343,7 +343,14 @@ export function SchoolPicker({
               than a logo, so it should look like one. `aria-label` carries the
               full meaning that the visible word no longer spells out. */}
           <span className="flex min-w-0 flex-1 items-center gap-1.5">
-            <span className="min-w-0 font-display text-[15px] font-medium leading-snug text-ink">Other</span>
+            <span
+              className={
+                "min-w-0 font-display text-[15px] leading-snug transition-colors " +
+                (other ? "font-semibold text-ink" : "font-medium text-ink-2")
+              }
+            >
+              Other
+            </span>
             <span className="shrink-0 text-muted">
               <MynaIcon name="plus" size={14} />
             </span>
@@ -415,7 +422,8 @@ export function OptionRows<T extends string | number>({
             <span className="flex min-w-0 flex-1 flex-col">
               <span
                 className={
-                  "font-display text-[15px] leading-snug text-ink " + (on ? "font-semibold" : "font-medium")
+                  "font-display text-[15px] leading-snug transition-colors " +
+                  (on ? "font-semibold text-ink" : "font-medium text-ink-2")
                 }
               >
                 {o.title}
@@ -474,20 +482,27 @@ export function CurriculumPicker({
         className={schoolTone(on)}
       >
         <Tick on={on} />
-        <span className="flex min-w-0 flex-1 items-center gap-2">
+        {/* NO "READY" MARK (owner, 2026-08-04: "don't show courses that are
+            ready and courses that are not — just remove the ready symbol").
+            Three of a year's seven wore a chip, which sorted a student's own
+            timetable into ours-and-not-ours at the moment they were being shown
+            it as theirs. Which courses have been written is our problem, not a
+            property of their degree, and it is answered by opening one.
+
+            The semester takes its place: lighter and smaller under the title,
+            because "is this on now or after Christmas" is a fact about the
+            course a student is actually choosing. */}
+        <span className="flex min-w-0 flex-1 flex-col">
           <span
-            className={"min-w-0 font-display text-[15px] leading-snug text-ink " + (on ? "font-semibold" : "font-medium")}
+            className={
+              "font-display text-[15px] leading-snug transition-colors " +
+              (on ? "font-semibold text-ink" : "font-medium text-ink-2")
+            }
           >
             {c.title}
           </span>
-          {/* Only the READY ones are marked. Marking the other 350 "coming
-              soon" would put a badge on almost every row, which stops being
-              information and starts being noise — and it would read as an
-              apology for a timetable that is simply the student's own. */}
-          {c.live && (
-            <span className="shrink-0 rounded-full bg-ink/[0.07] px-1.5 py-0.5 font-display text-[10px] font-semibold uppercase tracking-wide text-ink-2">
-              Ready
-            </span>
+          {c.semester && (
+            <span className="mt-0.5 font-display text-[12px] leading-4 text-muted">Semester {c.semester}</span>
           )}
         </span>
       </button>
@@ -508,11 +523,31 @@ export function CurriculumPicker({
   return (
     <div className="flex flex-col gap-5">
       {group("current", year ? `Year ${year} — yours` : "Your courses", thisYear)}
-      {/* Not hidden behind a "show more": a student repeating a module, or
-          taking one early, is ordinary, and the alternative is a list that
-          quietly refuses to contain their actual timetable. */}
-      {otherYears.map((g) =>
-        group(String(g.year ?? "unplaced"), g.year ? `Year ${g.year}` : "Not placed in a year", g.courses),
+
+      {otherYears.length > 0 && (
+        <>
+          {/* ONE DIVIDER SAYING WHAT FOLLOWS (owner, 2026-08-04: "eventually the
+              divider will have a small title or something, saying that these
+              are courses from other years"). The per-year headings say WHICH
+              year each block is; without a line above them, nothing said why
+              the list carried on past the student's own year at all — it read
+              as more of their timetable rather than as the rest of the degree.
+
+              Not hidden behind a "show more": a student repeating a module, or
+              taking one early, is ordinary, and the alternative is a list that
+              quietly refuses to contain their actual timetable. */}
+          <div className="flex items-center gap-3 pt-1">
+            <span className="h-px flex-1 bg-line" />
+            <span className="font-display text-[11px] font-semibold uppercase tracking-wide text-muted">
+              From other years
+            </span>
+            <span className="h-px flex-1 bg-line" />
+          </div>
+
+          {otherYears.map((g) =>
+            group(String(g.year ?? "unplaced"), g.year ? `Year ${g.year}` : "Not placed in a year", g.courses),
+          )}
+        </>
       )}
     </div>
   );
@@ -562,7 +597,8 @@ export function CoursePicker({
               <span className="min-w-0 flex-1">
                 <span
                   className={
-                    "block font-display text-[15px] leading-tight text-ink " + (on ? "font-semibold" : "font-medium")
+                    "block font-display text-[15px] leading-tight transition-colors " +
+                    (on ? "font-semibold text-ink" : "font-medium text-ink-2")
                   }
                 >
                   {c.title}

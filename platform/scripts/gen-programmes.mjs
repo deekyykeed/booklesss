@@ -58,8 +58,13 @@ async function generate() {
       slug: r.course_slug,
       title: r.course_title,
       year: r.year ?? null,
+      // Which half of the year it is taught in. Shown under the title so a
+      // student scanning their own year can tell what is on now from what is
+      // coming after Christmas.
+      semester: r.semester ?? null,
       // The built course this maps to, where one exists. Absent is the normal
-      // case: the picker shows the row either way and only a live one opens.
+      // case. Nothing in the UI marks it any more — see CurriculumPicker — but
+      // it is what turns a pick into an enrolment the dashboard can render.
       ...(r.live_slug ? { live: r.live_slug } : {}),
     });
   }
