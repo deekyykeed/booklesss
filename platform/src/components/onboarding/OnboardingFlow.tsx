@@ -4,11 +4,16 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSignedIn } from "@/lib/account";
 import { coursesForSchool } from "@/lib/courses";
-import { saveOnboarding, type StudyTarget } from "@/lib/identity";
+import {
+  firstUnanswered,
+  saveOnboarding,
+  useIdentity,
+  type Identity,
+  type StudyTarget,
+} from "@/lib/identity";
 import { OTHER_SCHOOL, type SchoolChoice } from "@/lib/schools";
 import { CoursePicker, SchoolPicker } from "@/components/identity/pickers";
 import { Button } from "@/components/ui/Button";
-import { MynaIcon } from "@/components/icons/myna";
 
 /* ------------------------------------------------------------------ *
  * Onboarding — three questions, asked straight after the account is made.
@@ -58,16 +63,66 @@ const MINUTE_CHOICES = [15, 30, 45, 60, 90, 120];
 type Step = "school" | "courses" | "target";
 const ORDER: Step[] = ["school", "courses", "target"];
 
+/** The three answers as the form holds them. */
+type Draft = {
+  school: SchoolChoice | null;
+  schoolName: string;
+  courses: string[];
+  /** Whether the courses QUESTION has been answered, which is not the same as
+   *  the list being non-empty — "Show me everything" answers it with none.
+   *  Carried explicitly because every save has to state it honestly: a save
+   *  that claims it while the student is still on question one is what let a
+   *  half-filled record look finished to the dashboard's gate. */
+  coursesAnswered: boolean;
+  target: StudyTarget;
+};
+
+/** What the form shows before anybody has touched it: whatever the student
+ *  already answered, and the offer for anything they haven't. Four days at
+ *  half an hour is a habit most people can actually keep — the number is only
+ *  worth anything if it is the one they'd have picked. */
+function asDraft(identity: Identity | null): Draft {
+  return {
+    school: identity?.school ?? null,
+    schoolName: identity?.schoolName ?? "",
+    courses: identity?.courses ?? [],
+    coursesAnswered: identity?.coursesChosen ?? false,
+    target: identity?.target ?? { days: 4, minutes: 30 },
+  };
+}
+
 export function OnboardingFlow() {
   const router = useRouter();
   const signedIn = useSignedIn();
+  const { identity, hydrated } = useIdentity();
 
-  const [step, setStep] = useState<Step>("school");
-  const [school, setSchool] = useState<SchoolChoice | null>(null);
-  const [schoolName, setSchoolName] = useState("");
-  const [courses, setCourses] = useState<string[]>([]);
-  const [target, setTarget] = useState<StudyTarget>({ days: 4, minutes: 30 });
+  /* RESUME, DON'T RESTART. Every step saves, so a student who closed the tab
+     on question three already has two answers stored, and asking for them
+     again is the same insult as never asking. The gate that sends people back
+     here (RequireOnboarding) reads the same `firstUnanswered`, so the question
+     it opens on is always the one actually missing.
+
+     THE FORM FOLLOWS THE RECORD UNTIL IT IS TOUCHED, rather than being seeded
+     into state. Copying the record into `useState` needs the copy to happen
+     after the store hydrates, and the two ways to do that are both wrong here:
+     a lazy initialiser reads localStorage during the render that has to match
+     the server's HTML, and an effect is a cascading render (the lint rule that
+     catches it is right — it would paint question one and then swap). Holding
+     the whole draft as one nullable override means the first paint is the
+     record itself, and the moment anybody answers anything the form takes
+     over and later writes cannot move a field under their hands. */
+  const [draft, setDraft] = useState<Draft | null>(null);
+  const [stepPick, setStepPick] = useState<Step | null>(null);
+  const [dir, setDir] = useState<"next" | "back">("next");
   const [query, setQuery] = useState("");
+
+  const { school, schoolName, courses, coursesAnswered, target } = draft ?? asDraft(identity);
+  const step = stepPick ?? (hydrated ? firstUnanswered(identity) : "school");
+
+  /** Change one answer, and take the form off the record for good. */
+  function edit(patch: Partial<Draft>) {
+    setDraft({ school, schoolName, courses, coursesAnswered, target, ...patch });
+  }
 
   /* This page is for somebody who has just made an account. Anyone who lands
      here without one came from a stale link — send them to the front door,
@@ -85,60 +140,119 @@ export function OnboardingFlow() {
 
   const index = ORDER.indexOf(step);
 
-  /** Save everything answered so far, then move. */
-  function go(next: Step) {
-    save();
-    setStep(next);
-  }
-
-  /* `patch` exists for tap-to-advance: picking a university saves and moves in
-     the same handler, and React has not re-rendered with the new state by
-     then — reading `school` here would store the PREVIOUS answer. Passing the
-     picked value straight through is the difference between the flow working
-     and it silently recording one question behind. */
-  function save(patch?: { school?: SchoolChoice | null }) {
-    const s = patch && "school" in patch ? (patch.school ?? null) : school;
+  /**
+   * Write down what has been answered.
+   *
+   * `patch` exists for tap-to-advance: picking a university saves and moves in
+   * the same handler, and React has not re-rendered with the new state by
+   * then — reading `school` here would store the PREVIOUS answer. Passing the
+   * picked value straight through is the difference between the flow working
+   * and it silently recording one question behind.
+   *
+   * IT SAYS WHAT IT KNOWS AND NOTHING MORE. `coursesChosen` is passed by the
+   * caller, and `target` only by the question that asks for it — the record
+   * this writes is what the onboarding gate reads, so a field filled in
+   * ahead of the student is a gate that opens on an empty dashboard.
+   */
+  function save(patch: {
+    school?: SchoolChoice | null;
+    courses?: string[];
+    coursesChosen: boolean;
+    target?: StudyTarget;
+  }) {
+    const s = "school" in patch ? (patch.school ?? null) : school;
     saveOnboarding({
       school: s,
       schoolName: s === OTHER_SCHOOL ? schoolName.trim() || null : null,
-      courses,
-      target,
+      courses: patch.courses ?? courses,
+      coursesChosen: patch.coursesChosen,
+      ...(patch.target === undefined ? {} : { target: patch.target }),
     });
   }
 
-  /** The last answer, and into the app. */
+  /** The last answer — the plan, written here and only here — and into the
+   *  app. `replace`, so the back button out of the dashboard is the page they
+   *  came from rather than the questions they just finished. */
   function finish() {
-    save();
+    save({ coursesChosen: true, target });
     router.replace("/dashboard");
   }
 
+  /* Which way the next question comes in from. A form's movement means
+     nothing if answering and going back look the same — see the .onboard-step
+     rules in globals.css. */
+  function goTo(next: Step, direction: "next" | "back" = "next") {
+    setDir(direction);
+    setStepPick(next);
+  }
+
   function back() {
-    setStep(ORDER[Math.max(0, index - 1)]);
+    goTo(ORDER[Math.max(0, index - 1)], "back");
   }
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-[440px] flex-col px-5 pb-10">
-      {/* ---- progress: a line with a check on every step done ---- */}
-      <div className="pt-6">
-        <Stepper index={index} />
-        <div className="mt-3 flex items-center justify-end">
-          {index > 0 && (
-            <button
-              type="button"
-              onClick={back}
-              className="text-[13px] font-medium text-muted transition-colors hover:text-ink"
-            >
-              Back
-            </button>
-          )}
-        </div>
+    /* A SCREEN, NOT A PAGE (owner's reference, 2026-08-04). The question and
+       its action are pinned — heading at the top, primary action at the
+       bottom in thumb reach — and only the options scroll between them. A
+       button that sits directly under a list moves with the list's length,
+       so on the courses question it lands somewhere different for a student
+       at ZCAS than for one who asked for everything. Same place, every step.
+
+       h-dvh rather than min-h-dvh: the column has to know its own height for
+       the middle to be the only thing that scrolls. */
+    <div className="mx-auto flex h-dvh w-full max-w-[440px] flex-col px-5 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+      {/* No progress bar (owner, 2026-08-04: "remove the progress thing
+          entirely"). It was three labelled nodes over three questions — a
+          legend for a form you can finish in three taps, telling a student
+          something the questions themselves already tell them.
+
+          Back moves to the left with it. It was on the right because it hung
+          under the stepper's last node; on its own, a lone control on the
+          right of a form reads as the thing that skips it. */}
+      <div className="flex h-9 shrink-0 items-center pt-6">
+        {index > 0 && (
+          <button
+            type="button"
+            onClick={back}
+            className="text-[13px] font-medium text-muted transition-colors hover:text-ink"
+          >
+            Back
+          </button>
+        )}
       </div>
 
-      <div className="flex flex-1 flex-col pt-8 pb-8">
+      {/* Keyed by step so the animation replays on every question, and told
+          which way it is going. */}
+      <div key={step} data-dir={dir} className="onboard-step flex min-h-0 flex-1 flex-col pt-6">
         {step === "school" && (
           <Card
             title="Where do you study?"
             why="So we show you the right courses."
+            /* THERE IS NO SKIP ON THIS QUESTION (owner, 2026-08-03: "the
+               student cannot skip this — why would they not add the school?
+               How do we add their courses and stuff if we have missing info
+               on them?"). An unanswered school is the one gap the next
+               question cannot work around, since it decides which courses are
+               even offered. "Another university" is the answer for everyone we
+               don't carry yet — an answer, not a skip, which is why it insists
+               on a name, and why it is the only state this step has a button
+               in: every other answer is one tap and gone. */
+            actions={
+              school === OTHER_SCHOOL ? (
+                <Button
+                  variant="primary"
+                  size="lg"
+                  block
+                  disabled={!schoolName.trim()}
+                  onClick={() => {
+                    save({ coursesChosen: coursesAnswered });
+                    goTo("courses");
+                  }}
+                >
+                  {schoolName.trim() ? "Continue" : "Type your university"}
+                </Button>
+              ) : null
+            }
           >
             {/* TICK AND GO (owner, 2026-08-03: "I just tick a university and I
                 get taken to a new question"). One tap is the whole answer, so
@@ -152,44 +266,68 @@ export function OnboardingFlow() {
               query={query}
               onQuery={setQuery}
               onPick={(id) => {
-                setSchool(id);
-                // A different school offers different courses; anything picked
-                // under the old one may not be on offer any more.
-                setCourses([]);
+                /* A DIFFERENT school offers different courses, so anything
+                   picked under the old one may not be on offer any more — and
+                   the question goes back to unanswered with it. Re-tapping the
+                   SAME school changes nothing and must not throw away an
+                   answer already given, which is a real case now that the flow
+                   resumes into a part-filled record. */
+                const changed = id !== school;
+                edit(changed ? { school: id, courses: [], coursesAnswered: false } : { school: id });
                 if (id !== OTHER_SCHOOL) {
-                  save({ school: id });
-                  setStep("courses");
+                  save({
+                    school: id,
+                    ...(changed ? { courses: [] } : {}),
+                    coursesChosen: changed ? false : coursesAnswered,
+                  });
+                  goTo("courses");
                 }
               }}
-              onName={setSchoolName}
+              onName={(v) => edit({ schoolName: v })}
+              fill
             />
-            {/* THERE IS NO SKIP ON THIS QUESTION (owner, 2026-08-03: "the
-                student cannot skip this — why would they not add the school?
-                How do we add their courses and stuff if we have missing info
-                on them?"). He is right: an unanswered school is the one gap
-                the next question cannot work around, since it is what decides
-                which courses are even offered. "Another university" is the
-                answer for everyone we don't carry yet — an answer, not a
-                skip, which is why it insists on a name. */}
-            {school === OTHER_SCHOOL && (
-              <Button
-                variant="primary"
-                size="lg"
-                block
-                className="mt-4"
-                disabled={!schoolName.trim()}
-                onClick={() => go("courses")}
-              >
-                {schoolName.trim() ? "Continue" : "Type your university"}
-              </Button>
-            )}
           </Card>
         )}
 
         {step === "courses" && (
           <Card
             title="Which courses are you taking?"
-            why="Your dashboard counts only these."
+            why="Choose as many as you like — your dashboard counts only these."
+            actions={
+              <div className="flex flex-col gap-2">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  block
+                  disabled={courses.length === 0}
+                  onClick={() => {
+                    edit({ coursesAnswered: true });
+                    save({ coursesChosen: true });
+                    goTo("target");
+                  }}
+                >
+                  {courses.length === 0
+                    ? "Pick at least one"
+                    : `Continue with ${courses.length} course${courses.length > 1 ? "s" : ""}`}
+                </Button>
+                {/* A real answer — the whole library — not a skip. */}
+                <Button
+                  variant="secondary"
+                  size="md"
+                  block
+                  onClick={() => {
+                    /* An answer, not a skip — so `courses: []` is passed
+                       explicitly rather than read off state React has not
+                       re-rendered with, and it is marked answered. */
+                    edit({ courses: [], coursesAnswered: true });
+                    save({ courses: [], coursesChosen: true });
+                    goTo("target");
+                  }}
+                >
+                  Show me everything
+                </Button>
+              </div>
+            }
           >
             <CoursePicker
               offered={offered}
@@ -197,34 +335,12 @@ export function OnboardingFlow() {
               query={query}
               onQuery={setQuery}
               onToggle={(slug) =>
-                setCourses((cur) => (cur.includes(slug) ? cur.filter((s) => s !== slug) : [...cur, slug]))
+                edit({
+                  courses: courses.includes(slug) ? courses.filter((s) => s !== slug) : [...courses, slug],
+                })
               }
+              fill
             />
-            <div className="mt-5 flex flex-col gap-2">
-              <Button
-                variant="primary"
-                size="lg"
-                block
-                disabled={courses.length === 0}
-                onClick={() => go("target")}
-              >
-                {courses.length === 0
-                  ? "Pick at least one"
-                  : `Continue with ${courses.length} course${courses.length > 1 ? "s" : ""}`}
-              </Button>
-              {/* A real answer — the whole library — not a skip. */}
-              <Button
-                variant="secondary"
-                size="md"
-                block
-                onClick={() => {
-                  setCourses([]);
-                  go("target");
-                }}
-              >
-                Show me everything
-              </Button>
-            </div>
           </Card>
         )}
 
@@ -232,13 +348,18 @@ export function OnboardingFlow() {
           <Card
             title="How much studying are you aiming for?"
             why="The only number we score you against."
+            actions={
+              <Button variant="primary" size="lg" block onClick={finish}>
+                Start studying
+              </Button>
+            }
           >
             <Choices
               label="Days a week"
               value={target.days}
               options={DAY_CHOICES}
               format={(n) => String(n)}
-              onPick={(days) => setTarget((t) => ({ ...t, days }))}
+              onPick={(days) => edit({ target: { ...target, days } })}
             />
             <div className="mt-4">
               <Choices
@@ -248,7 +369,7 @@ export function OnboardingFlow() {
                 /* Math.floor, not a bare divide: 90/60 is 1.5, and the first
                    render of this said "1.5h 30m". */
                 format={(n) => (n >= 60 ? `${Math.floor(n / 60)}h${n % 60 ? ` ${n % 60}m` : ""}` : `${n}m`)}
-                onPick={(minutes) => setTarget((t) => ({ ...t, minutes }))}
+                onPick={(minutes) => edit({ target: { ...target, minutes } })}
               />
             </div>
             <p className="mt-4 text-[13.5px] leading-5 text-muted">
@@ -258,88 +379,10 @@ export function OnboardingFlow() {
               </span>
               . You can change it later.
             </p>
-            <Button variant="primary" size="lg" block className="mt-5" onClick={finish}>
-              Start studying
-            </Button>
           </Card>
         )}
       </div>
     </div>
-  );
-}
-
-/**
- * Progress as a labelled line of nodes — the owner's reference (2026-08-03):
- * a name over each step, a filled tick behind you, a ring where you are, an
- * empty node ahead, and the connector filled only as far as you have got.
- *
- * THE LABELS ARE WHAT MAKE THE TICKS MEAN ANYTHING. Without them this is
- * three dots, and "I don't see the checkmarks" is the fair reading of three
- * dots — nothing names what was completed. With SCHOOL / COURSES / PLAN over
- * them, a tick is visibly a question answered.
- *
- * NOTE THE FIRST SCREEN HAS NO TICK, and should not: nothing is finished when
- * you arrive. The reference behaves the same way — its own first row is one
- * ring and two empty nodes.
- *
- * GREEN, AND NOT AS A PREFERENCE. Green is what completion means everywhere
- * else in this app — the coverage tile, the checkpoint ticks, the course-card
- * rings — so a ticked step in any other colour would be the one green thing
- * that isn't progress. `--color-brand-deep` rather than the brighter
- * `--color-brand`, because this sits on a near-white frosted surface where
- * the light green fails contrast. (The reference is blue; blue in this app is
- * already the Time tile.)
- */
-const STEP_LABELS: Record<Step, string> = {
-  school: "School",
-  courses: "Courses",
-  target: "Plan",
-};
-
-function Stepper({ index }: { index: number }) {
-  const GREEN = "var(--color-brand-deep)";
-  return (
-    <ol className="flex items-start" aria-label={`Step ${index + 1} of ${ORDER.length}`}>
-      {ORDER.map((s, i) => {
-        const done = i < index;
-        const now = i === index;
-        const lit = done || now;
-        return (
-          <li
-            key={s}
-            className={"flex min-w-0 items-start " + (i === 0 ? "shrink-0" : "flex-1")}
-          >
-            {/* The connector sits at the nodes' centre line, so it has to be
-                nudged down past the label above them. */}
-            {i > 0 && (
-              <span
-                aria-hidden="true"
-                className="mt-[28px] h-[2px] flex-1 rounded-full transition-colors duration-500"
-                style={{ backgroundColor: lit ? GREEN : "var(--color-line)" }}
-              />
-            )}
-            <div className="flex flex-col items-center gap-1.5 px-1.5">
-              <span
-                className="text-[10px] font-semibold uppercase tracking-[0.07em] transition-colors duration-300"
-                style={{ color: lit ? GREEN : "var(--color-placeholder)" }}
-              >
-                {STEP_LABELS[s]}
-              </span>
-              <span
-                aria-current={now ? "step" : undefined}
-                className="grid h-5 w-5 shrink-0 place-items-center rounded-full transition-colors duration-300"
-                style={{
-                  backgroundColor: done ? GREEN : "#ffffff",
-                  boxShadow: done ? "none" : `inset 0 0 0 2px ${now ? GREEN : "var(--color-line)"}`,
-                }}
-              >
-                {done && <MynaIcon name="check" size={11} strokeWidth={3.5} className="text-white" />}
-              </span>
-            </div>
-          </li>
-        );
-      })}
-    </ol>
   );
 }
 
@@ -356,14 +399,35 @@ function Stepper({ index }: { index: number }) {
  * The rows keep their surface, because they are the controls. Everything
  * around them is the page.
  */
-function Card({ title, why, children }: { title: string; why: string; children: React.ReactNode }) {
+function Card({
+  title,
+  why,
+  actions,
+  children,
+}: {
+  title: string;
+  why: string;
+  /** The step's primary action, pinned to the bottom of the screen. Null on a
+   *  question that answers itself in one tap — a button under an answer you
+   *  have already given is a second ask. */
+  actions?: React.ReactNode;
+  children: React.ReactNode;
+}) {
   return (
-    <section>
-      <h1 className="font-display text-[23px] font-bold leading-[1.15] tracking-[-0.02em] text-ink">
-        {title}
-      </h1>
-      <p className="mt-1.5 text-[13.5px] leading-5 text-muted">{why}</p>
-      <div className="mt-5">{children}</div>
+    <section className="flex min-h-0 flex-1 flex-col">
+      <div className="shrink-0">
+        <h1 className="font-display text-[23px] font-bold leading-[1.15] tracking-[-0.02em] text-ink">
+          {title}
+        </h1>
+        <p className="mt-1.5 text-[13.5px] leading-5 text-muted">{why}</p>
+      </div>
+      {/* The only part that scrolls. `min-h-0` because a flex child's default
+          min-height is its content, which would push the action off the bottom
+          of the screen instead of scrolling — the one line that makes the whole
+          layout work. The list ends above the action rather than sliding under
+          it: a row half-hidden behind a button is a row somebody misses. */}
+      <div className="mt-5 min-h-0 flex-1 overflow-y-auto">{children}</div>
+      {actions ? <div className="shrink-0 pt-4">{actions}</div> : null}
     </section>
   );
 }

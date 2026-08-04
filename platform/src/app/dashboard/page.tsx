@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { HomeView } from "@/components/home/HomeView";
 import { HomeViewWithUser } from "@/components/home/HomeViewWithUser";
 import { RequireAccount } from "@/components/auth/RequireAccount";
+import { RequireOnboarding } from "@/components/auth/RequireOnboarding";
 import { clerkEnabled } from "@/lib/clerk";
 import { openGraph, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
 
@@ -27,7 +28,10 @@ export default function DashboardPage() {
           stays open to everyone — that is the growth loop — but this page is
           the student's own record, so it belongs to people who have one. */}
       <RequireAccount />
-      {clerkEnabled ? <HomeViewWithUser /> : <HomeView />}
+      {/* And no finished onboarding, no dashboard either (owner, 2026-08-04) —
+          this page is the answers, drawn. Until they exist it renders nothing
+          and sends the student to /onboarding to give them. */}
+      <RequireOnboarding>{clerkEnabled ? <HomeViewWithUser /> : <HomeView />}</RequireOnboarding>
     </>
   );
 }

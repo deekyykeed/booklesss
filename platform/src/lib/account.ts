@@ -38,6 +38,31 @@ export function setSignedIn(v: boolean | null): void {
   for (const l of listeners) l();
 }
 
+/* ------------------------------------------------------------------ *
+ * Has the ACCOUNT'S OWN RECORD been read yet?
+ *
+ * Separate from `signedIn`, and the difference matters exactly once: at the
+ * onboarding gate. A student signing in on a second device is signed in a
+ * beat before their answers arrive — Clerk resolves the session first and the
+ * metadata AccountSignal reconciles from it a moment later — so for that beat
+ * the device holds a blank record belonging to somebody who answered
+ * everything months ago. A gate that fired on `signedIn` alone would send
+ * them back through onboarding to re-answer questions they had already
+ * answered, which is the failure the gate exists to prevent, arrived at from
+ * the other side.
+ *
+ * Set by AccountSignal once it has read the user's metadata and settled the
+ * device's record against it — see the reconcile effect there.
+ * ------------------------------------------------------------------ */
+
+let accountRead = false;
+
+/** Called only by AccountSignal. */
+export function setAccountRead(v: boolean): void {
+  if (v === accountRead) return;
+  accountRead = v;
+  for (const l of listeners) l();
+}
 
 const subscribe = (l: () => void) => {
   listeners.add(l);
@@ -48,6 +73,15 @@ const snapshot = () => signedIn;
 
 export function useSignedIn(): boolean | null {
   return useSyncExternalStore(subscribe, snapshot, () => null);
+}
+
+const readSnapshot = () => accountRead;
+
+/** Whether the signed-in account's own record has landed on this device.
+ *  False on a signed-out or Clerk-less build, where there is no record to
+ *  wait for — callers pair it with `useSignedIn`. */
+export function useAccountRead(): boolean {
+  return useSyncExternalStore(subscribe, readSnapshot, () => false);
 }
 
 /**
