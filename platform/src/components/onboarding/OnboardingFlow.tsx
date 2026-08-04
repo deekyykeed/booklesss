@@ -14,7 +14,6 @@ import {
 import { OTHER_SCHOOL, type SchoolChoice } from "@/lib/schools";
 import { CoursePicker, SchoolPicker } from "@/components/identity/pickers";
 import { Button } from "@/components/ui/Button";
-import { MynaIcon } from "@/components/icons/myna";
 
 /* ------------------------------------------------------------------ *
  * Onboarding — three questions, asked straight after the account is made.
@@ -184,20 +183,24 @@ export function OnboardingFlow() {
 
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-[440px] flex-col px-5 pb-10">
-      {/* ---- progress: a line with a check on every step done ---- */}
-      <div className="pt-6">
-        <Stepper index={index} />
-        <div className="mt-3 flex items-center justify-end">
-          {index > 0 && (
-            <button
-              type="button"
-              onClick={back}
-              className="text-[13px] font-medium text-muted transition-colors hover:text-ink"
-            >
-              Back
-            </button>
-          )}
-        </div>
+      {/* No progress bar (owner, 2026-08-04: "remove the progress thing
+          entirely"). It was three labelled nodes over three questions — a
+          legend for a form you can finish in three taps, telling a student
+          something the questions themselves already tell them.
+
+          Back moves to the left with it. It was on the right because it hung
+          under the stepper's last node; on its own, a lone control on the
+          right of a form reads as the thing that skips it. */}
+      <div className="flex h-9 items-center pt-6">
+        {index > 0 && (
+          <button
+            type="button"
+            onClick={back}
+            className="text-[13px] font-medium text-muted transition-colors hover:text-ink"
+          >
+            Back
+          </button>
+        )}
       </div>
 
       <div className="flex flex-1 flex-col pt-8 pb-8">
@@ -352,101 +355,6 @@ export function OnboardingFlow() {
         )}
       </div>
     </div>
-  );
-}
-
-/**
- * Progress as a labelled line of nodes — the owner's reference (2026-08-03):
- * a name over each step, a filled tick behind you, a ring where you are, an
- * empty node ahead, and the connector filled only as far as you have got.
- *
- * THE LABELS ARE WHAT MAKE THE TICKS MEAN ANYTHING. Without them this is
- * three dots, and "I don't see the checkmarks" is the fair reading of three
- * dots — nothing names what was completed. With SCHOOL / COURSES / PLAN over
- * them, a tick is visibly a question answered.
- *
- * NOTE THE FIRST SCREEN HAS NO TICK, and should not: nothing is finished when
- * you arrive. The reference behaves the same way — its own first row is one
- * ring and two empty nodes.
- *
- * THE NODES ARE SQUARES NOW (owner, 2026-08-04, who sent MynaUI's own
- * check-square page): an empty square for a question not yet answered, the
- * square with a tick in it once it is, and the tick drawn BOLD so an answered
- * step is legible in the shape as well as the colour. The empty node is the
- * separate `square` icon rather than a faded check-square — he asked for the
- * tick to come out when unchecked, and he is right that a ghosted tick reads
- * as answered from arm's length, which is the one thing this row must not say.
- *
- * A tick with no box around it is what the row used to draw, on a filled green
- * disc. That was a state, not a control; a checkbox is the thing everyone
- * already knows how to read, and it says "three questions, this many done"
- * without a legend.
- *
- * GREEN, AND NOT AS A PREFERENCE. Green is what completion means everywhere
- * else in this app — the coverage tile, the checkpoint ticks, the course-card
- * rings — so a ticked step in any other colour would be the one green thing
- * that isn't progress. `--color-brand-deep` rather than the brighter
- * `--color-brand`, because this sits on a near-white frosted surface where
- * the light green fails contrast. (The reference is blue; blue in this app is
- * already the Time tile.)
- */
-const STEP_LABELS: Record<Step, string> = {
-  school: "School",
-  courses: "Courses",
-  target: "Plan",
-};
-
-function Stepper({ index }: { index: number }) {
-  const GREEN = "var(--color-brand-deep)";
-  return (
-    <ol className="flex items-start" aria-label={`Step ${index + 1} of ${ORDER.length}`}>
-      {ORDER.map((s, i) => {
-        const done = i < index;
-        const now = i === index;
-        const lit = done || now;
-        return (
-          <li
-            key={s}
-            className={"flex min-w-0 items-start " + (i === 0 ? "shrink-0" : "flex-1")}
-          >
-            {/* The connector sits at the nodes' centre line, so it has to be
-                nudged down past the label above them. */}
-            {i > 0 && (
-              <span
-                aria-hidden="true"
-                className="mt-[28px] h-[2px] flex-1 rounded-full transition-colors duration-500"
-                style={{ backgroundColor: lit ? GREEN : "var(--color-line)" }}
-              />
-            )}
-            <div className="flex flex-col items-center gap-1.5 px-1.5">
-              <span
-                className="text-[10px] font-semibold uppercase tracking-[0.07em] transition-colors duration-300"
-                style={{ color: lit ? GREEN : "var(--color-placeholder)" }}
-              >
-                {STEP_LABELS[s]}
-              </span>
-              {/* Three states in two icons: a bold ticked square behind you,
-                  an empty square in the step's own green where you are, and a
-                  grey empty square ahead. The stroke does the same work the
-                  fill used to — 2.2 on the tick against MynaUI's 1.5 — so
-                  "answered" survives being read at 20px on a phone in the
-                  sun, which a hairline tick does not. */}
-              <span
-                aria-current={now ? "step" : undefined}
-                className="grid h-5 w-5 shrink-0 place-items-center transition-colors duration-300"
-                style={{ color: lit ? GREEN : "var(--color-line-2)" }}
-              >
-                <MynaIcon
-                  name={done ? "check-square" : "square"}
-                  size={20}
-                  strokeWidth={done ? 2.2 : now ? 1.9 : 1.5}
-                />
-              </span>
-            </div>
-          </li>
-        );
-      })}
-    </ol>
   );
 }
 

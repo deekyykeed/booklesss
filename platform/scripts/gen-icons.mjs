@@ -91,13 +91,10 @@ const ICONS = [
   // picked — a checkbox in the app's own hand
   "circle",
   "check-circle-solid",
-  /* Onboarding's progress line, owner's pick 2026-08-04 (he sent the icon
-     page): a plain square for a question not answered yet, the same square
-     with a tick in it once it is. The empty square is `square` rather than
-     `check-square` drawn faint — a ghosted tick reads as answered from any
-     distance, which is the one thing this row must not say. */
-  "square",
-  "check-square",
+  /* No square/check-square here any more: they were onboarding's progress
+     nodes for the length of one afternoon (2026-08-04) before the owner took
+     the progress line out altogether. Listing an icon nothing draws is how
+     this file stops being a map of where each mark is used. */
   "x", // clears its search field
   "chart-bar-increasing",
   "clock-1",
