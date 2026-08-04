@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-04 (session 41)
+**Last updated:** 2026-08-04 (session 42)
 
 ---
 
@@ -91,6 +91,37 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 42 (2026-08-04, the social day that had nothing to post). The
+first two are the ones that decide whether the reader is postable at all.**
+- [ ] **The neutral curriculum was rewritten and only its TITLES are safe.**
+      `neutralize.mjs` now relabels to four university courses — Organisational
+      Behaviour, Business Law, Operations Management, Marketing Management —
+      after the owner saw a dashboard reading "Mathematics 64%": *"make it
+      different courses and serious courses... these are university level
+      students"*. `MAP` covers course titles, subtitles, lesson names and the
+      step titles the reader shots need. **It does not cover all ~200 step
+      titles**, and the banned-word scan cannot catch the gap because an
+      unmapped title is off-syllabus, not forbidden. Consequence below.
+- [ ] **The SEARCH PALETTE is unpostable until the whole index is mapped.**
+      Search is **global, not per-course**, so its results are real step titles
+      from every course — shot today it returned a screen of hedging and forward
+      rates under an app headed Marketing Management. Captured as
+      `sq-a/b/c.png` and unused. Same trap one level up from a half-mapped
+      course.
+- [ ] **Three of the four callout kinds are never used.** The seeded content has
+      61 `key` callouts and zero `warning`, `example` or `exam`. The marks and
+      tones exist and nothing draws them — which killed a planned carousel and
+      is worth knowing when writing steps.
+- [ ] **Twelve of the sixteen logo plates have now been posted.** Three of
+      today's five slots are plates, because the day had no ship and the app
+      only safely gives two components. **The next thin day needs a different
+      answer** — the reserve is nearly out.
+- [ ] **`.checkpoint-row` cannot be shot as a component**: 370x34 css of note
+      button and two answer faces, with the question it asks living in an
+      `aria-label`. Anything isolated from it is three controls with nothing to
+      answer.
+
 
 **From session 41 (2026-08-04, the ZCAS course pipeline). Nothing here blocks —
 the pipeline is queryable as it stands.**
@@ -755,6 +786,69 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-04 (session 42 — the day the social skill got strict, and the placeholder curriculum grew up)
+
+**Done:**
+- **Rewrote `.claude/skills/daily-post/RULES.md` end to end** at the owner's
+  instruction (*"rewrite the skill so it is clear and strict"*). It now leads
+  with nine numbered HARD RULES — one component, must make sense alone, 3-4
+  slides with no CTA image, no copy on slides, five slots, no onboarding as a
+  subject, university-level placeholders, the safe box, never draw — then the
+  accumulated craft detail behind them. `SKILL.md` updated to match.
+- **Three new standing rules, all from the owner today:**
+  1. **No CTA slide, ever again.** *"from now on im removing the call to action
+     last image, so now i can just have 3 images minimum without it."* `dmCTA()`
+     and `searchCTA()` stay in `prog-post.mjs` unused, so already-posted days
+     re-render as posted.
+  2. **Onboarding is never a post.** *"I'm not posting onboarding things
+     online."* Three cuts of today's day were deleted over this.
+  3. **One component means ONE.** A slide showing the dashboard's whole course
+     section, four cards shrunk to fit, drew *"why show all four courses on the
+     same page? I'm only showing one component."*
+- **Rewrote the neutral curriculum in `neutralize.mjs`** — Mathematics /
+  Physics / Computer Science / Data & Statistics became Organisational
+  Behaviour / Business Law / Operations Management / Marketing Management, with
+  real course trees under each (~108 mapped strings). Two `MAP` bugs fixed on
+  the way: the dashboard's Resume chip spells "&" as "and" so `IRR and MIRR`
+  needed its own key, and an unmapped step title was offering "Introduction to
+  strategy" under a card headed Physics.
+- **Shipped 2026-08-04's five slots**: one course card at three stages
+  (morning), one stat tile at four measures (afternoon), and three sets of logo
+  plates. `cap-0804.mjs` + `p-card` / `p-tile` configs.
+- Added `union: true` to `isolate()` for a component whose parts have no
+  wrapper, and documented that a component taller than the viewport comes back
+  **silently clamped** from a page clip.
+
+**What Worked:**
+- **Shooting from the pinned worktree `C:/bkls-shot` with Clerk's keys
+  commented out.** `/dashboard` holds behind its onboarding gate for anyone
+  Clerk reports as signed out, and a headless browser always is — with no
+  `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` the gate is a no-op and the page renders
+  against the seeded record. It also kept every shot clear of the parallel
+  session's in-flight onboarding refactor.
+- **The banned-word scan earned its keep twice** and failed once, informatively:
+  it caught "treasur" and "cash flow" inside search results, and let through
+  "Introduction to strategy" under a Physics card. **A clean scan is not a clean
+  crop** — read the crop.
+- Asking the owner before building, once. The answer (*"its 5 posts... do what
+  the skill says"*) was worth more than the three rebuilds that followed it.
+
+**Dead Ends (do not retry):**
+- **Framed screenshots (`feature()`) for a day about what changed.** Built three
+  carousels that way; the component-day rule supersedes it and the owner said
+  so. A copy slide has to be earned by a claim no single component can carry.
+- **Whole `h-dvh` screens as slides.** Heading pinned top, action pinned bottom:
+  at 1080 wide both land in the feed's covered zones and everything between is
+  empty page. Not a `plain()` subject and not a `feature()` subject either.
+- **The tap-to-define popup, isolated.** *"doesn't make any sense — what is it
+  pointing at?"* The word, the sentence and the tap are all outside the crop.
+- **The search palette**, for the reason in Next Session above.
+- **The source strip** as a component: 370x28 css, 13:1, reads as a caption.
+- **`.checkpoint-row`** as a component: controls only, no question in the DOM.
+- **A four-kind callout carousel**: three of the four kinds appear nowhere in
+  the content, and authoring content to photograph is drawing UI.
+
 
 ### Session 2026-08-04 (session 41 — every ZCAS programme scraped, and the course backlog becomes a ranked queue)
 

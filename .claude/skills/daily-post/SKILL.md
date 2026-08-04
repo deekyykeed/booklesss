@@ -68,10 +68,14 @@ button is the progress bar" — and build its slides to prove that one sentence,
 with its own shots. A crop reused across two slots reads as padding.
 
 Rank the angles by how much they'd matter to a student and fill the slots in
-that order, so the weakest angle is the one that gets dropped if the day is
-thin. **Four honest posts beat five padded ones** — if the fifth would be a
-stale evergreen or a restatement of the third, ship four and say so in
-`PLAN.md`. Never manufacture news to fill a slot.
+that order. **All five get filled** — but they do not all have to come off
+today's commits. Never manufacture news to fill a slot: when the day's ship
+supports fewer, take the rest off the product or the logo plates and say so in
+`PLAN.md` (RULES.md rule 5).
+
+**Some days have no ship to post at all** — a sign-up rebuild is the standing
+example, and it is not a subject (rule 6). That is a five-slot product day, not
+a four-slot day.
 
 ### 3. Capture from the live app
 
@@ -107,26 +111,28 @@ returning `{ slot, slides }`, built from three slide types:
 
 | Type | What it is |
 |---|---|
-| `cover({eyebrow, title, sub})` | Text on the brand gradient. Opens the post and marks the "in the works" beat. |
-| `feature({img, title, sub, top, fadeTop, fadeBot, shotLeft})` | A full-bleed app shot with the headline over it. |
-| `plain({img})` | The crop alone, filling the frame — no copy, no wordmark, no grain. |
-| `dmCTA()` | The closing slide: DM me "link". Always last on a new post. |
-| `searchCTA()` | The retired Google slide. Kept so already-posted days still re-render as posted — never used on a new day, never edited. |
+| `object({img, w, flat})` | **The default, and almost always the only one you need.** One isolated component on the brand gradient. |
+| `plain({img})` | An app crop filling the frame — no copy, no wordmark, no grain. |
+| `feature({img, title, sub, …})` | A shot with a headline over it. **An exception that has to be earned** — see RULES.md Part 3. |
+| `cover({eyebrow, title, sub})` | Text on the gradient. Same exception, same bar. |
+| `dmCTA()` / `searchCTA()` | **Retired.** Never call either in a new config and never edit them — they exist so already-posted days re-render as posted. The CTA is the caption now. |
 
 ```bash
 cd Demand/social
 POST=<config-name> node _scripts/prog-post.mjs      # writes into today's folder
 ```
 
-`top`, `fadeTop` and `fadeBot` are the framing controls, and getting them right
-is most of the work — the arithmetic is in RULES.md. Set `shotLeft: 0` on any
-slide built from a tight macro crop. Render, **read the PNGs back**, adjust,
-re-render. Two or three passes is normal.
+**A carousel is one component, three or four states, no copy and no CTA slide.**
+`w` is the only control that matters most days: start at 752 (the full width of
+the safe box) and come down only until the measure check passes. Render, **read
+the PNGs back**, adjust, re-render.
 
-On a `plain()` day the framing is all in the capture instead, and the choice of
-**page-level or component-level** crops is the first decision of the day — see
-"Image-only days" and "Component days" in RULES.md. A day about what the app
-*is* wants areas; a day about what *changed* usually wants components.
+The two questions to answer before capturing, both in RULES.md Part 1:
+
+1. *What is the ONE thing in this frame?* If the answer is plural, it is not a
+   component post — and shrinking it to fit is not a fix.
+2. *Shown alone, would a stranger know what it is and why it matters?* If not,
+   the subject is wrong. Do not rescue it with a caption.
 
 The render refuses to write a slide whose text leaves the safe area, naming the
 line and how far over it went. Treat that as the copy being too long for the

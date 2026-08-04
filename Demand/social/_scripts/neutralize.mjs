@@ -2,11 +2,12 @@
  * otherwise — no ZCAS, no UNZA, no BAC4301, no "Corporate Finance", no
  * "Economics". (Owner's rule, 2026-07-29.)
  *
- * The live app happens to be seeded with two real courses, so a raw screenshot
- * of it would say exactly the thing we are not allowed to say. Before every
- * capture we relabel the UI to a neutral curriculum: two ordinary subjects any
- * student anywhere would recognise. **Placeholder labels, real UI** — nothing
- * is drawn, moved or restyled, only the words are swapped.
+ * The live app happens to be seeded with four real courses, so a raw
+ * screenshot of it would say exactly the thing we are not allowed to say.
+ * Before every capture we relabel the UI to a neutral curriculum: four
+ * ordinary UNIVERSITY courses, at the weight our students are actually
+ * studying at. **Placeholder labels, real UI** — nothing is drawn, moved or
+ * restyled, only the words are swapped.
  *
  * Shared by every capture script, and applied immediately before every
  * screenshot (React re-renders undo it, so it cannot be done once up front).
@@ -17,117 +18,151 @@
 /* The two courses, as the posts show them. The slugs stay whatever the app
  * uses; only what a reader can see changes. */
 export const COURSE_TITLES = {
-  Economics: "Data & Statistics",
-  "Corporate Finance": "Computer Science",
-  "Strategic Management": "Physics",
-  "Treasury Management": "Mathematics",
+  Economics: "Organisational Behaviour",
+  "Corporate Finance": "Business Law",
+  "Strategic Management": "Operations Management",
+  "Treasury Management": "Marketing Management",
 };
 
+/* ---------------------------------------------------------------------- *
+ * THE NEUTRAL CURRICULUM IS FOUR UNIVERSITY COURSES (owner's call,
+ * 2026-08-04): "make it different courses and serious courses, not something
+ * silly like Mathematics of all things - these are university level
+ * students".
+ *
+ * It used to be Mathematics / Physics / Computer Science / Data & Statistics,
+ * and every one of those reads as a school subject. A dashboard photographed
+ * with "Mathematics 64%" on it tells a university student the product is for
+ * somebody doing secondary-school maths - which is the same mis-signal the
+ * whole relabelling exercise exists to prevent, pointing the other way from
+ * the one the banned list catches.
+ *
+ * The four below are ordinary first-year university courses, none of which we
+ * teach, so they name no syllabus of ours and no school. The trees under them
+ * are real course structures rather than filler: a student reading a slide has
+ * to believe the app is for them.
+ *
+ * If a course is ever added to the app, give it a neutral course of the same
+ * WEIGHT - a serious one - and map its WHOLE tree, not just its title. A
+ * half-mapped course is how a card headed Operations Management ends up
+ * offering a step about quadratic functions.
+ * ---------------------------------------------------------------------- */
 export const MAP = {
   /* ---- course identity (the part that carried the school's name) ---- */
-  Economics: "Data & Statistics",
-  "Corporate Finance": "Computer Science",
-  "Strategic Management": "Physics",
-  "Treasury Management": "Mathematics",
-  "Micro, macro and behavioural — the whole introductory course.":
-    "Describing data, sampling and inference — the whole first-year course.",
-  "Investment appraisal, cost of capital, valuation and risk — BAC4301 at ZCAS.":
-    "Programming, data and how software actually works — from the ground up.",
+  Economics: "Organisational Behaviour",
+  "Corporate Finance": "Business Law",
+  "Strategic Management": "Operations Management",
+  "Treasury Management": "Marketing Management",
+  "Micro, macro and behavioural \u2014 the whole introductory course.":
+    "Motivation, teams, culture and change \u2014 the whole introductory course.",
+  "Investment appraisal, cost of capital, valuation and risk \u2014 BAC4301 at ZCAS.":
+    "Contract, agency, company formation and the duties that come with them.",
   "Investment appraisal, cost of capital, valuation and risk.":
-    "Programming, data and how software actually works — from the ground up.",
+    "Contract, agency, company formation and the duties that come with them.",
   "How organisations set direction, choose where to compete, and make it happen.":
-    "Forces, motion and energy — the ideas the rest of the subject is built on.",
+    "Capacity, quality, inventory and the flow of work through a business.",
   "Cash, working capital, risk and the systems that move money.":
-    "Algebra, functions, sequences and probability — the whole first-year course.",
+    "Segments, positioning, pricing and the channels that reach a customer.",
 
-  /* ---- course 1 → Mathematics ---- */
+  /* ---- course 1 -> Organisational Behaviour ---- */
   "Getting started": "Getting started",
   "What is Economics": "Welcome to Booklesss",
   "How to use this course": "How Booklesss works",
   "Key terms & glossary": "Key terms",
 
-  Microeconomics: "Algebra",
-  "Supply & demand": "Foundations",
-  "The law of demand": "Working with equations",
-  "The law of supply": "Rearranging formulas",
-  "Market equilibrium": "Simultaneous equations",
-  Elasticity: "Functions",
-  "Price elasticity of demand": "Linear functions",
-  "Income elasticity of demand": "Quadratic functions",
-  "Income elasticity": "Quadratic functions",
-  "Cross-price elasticity of demand": "Exponential functions",
-  "Cross-price elasticity": "Exponential functions",
-  "Consumer choice": "Graphs",
-  "Utility & marginal utility": "Reading a graph",
-  "Indifference curves": "Curves & gradients",
-  "Budget constraints": "Area under a curve",
-  "Firms & production": "Sequences",
-  "Costs of production": "Arithmetic sequences",
-  "Revenue & profit": "Geometric sequences",
-  "Economies of scale": "Series & sums",
-  "Market structures": "Probability",
-  "Perfect competition": "Counting outcomes",
-  Monopoly: "Conditional probability",
-  "Oligopoly & game theory": "Distributions",
+  Microeconomics: "The individual",
+  "Supply & demand": "Motivation",
+  "The law of demand": "What drives effort",
+  "The law of supply": "Needs and incentives",
+  "Market equilibrium": "Expectancy and reward",
+  Elasticity: "Personality and perception",
+  "Price elasticity of demand": "Traits at work",
+  "Income elasticity of demand": "Attitudes and values",
+  "Income elasticity": "Attitudes and values",
+  "Cross-price elasticity of demand": "How we judge others",
+  "Cross-price elasticity": "How we judge others",
+  "Consumer choice": "Learning and behaviour",
+  "Utility & marginal utility": "Reinforcement at work",
+  "Indifference curves": "Habits and routines",
+  "Budget constraints": "Feedback and correction",
+  "Firms & production": "Groups and teams",
+  "Costs of production": "How groups form",
+  "Revenue & profit": "Roles and norms",
+  "Economies of scale": "What makes a team work",
+  "Market structures": "Power and politics",
+  "Perfect competition": "Where power comes from",
+  Monopoly: "Influence at work",
+  "Oligopoly & game theory": "Conflict and negotiation",
 
-  Macroeconomics: "Statistics",
-  "Measuring the economy": "Describing data",
-  "Gross Domestic Product": "Mean, median, mode",
-  "Inflation & the CPI": "Spread & deviation",
-  Unemployment: "Outliers",
-  Policy: "Sampling",
-  "Fiscal policy": "Random samples",
-  "Monetary policy": "Bias in sampling",
-  "International trade": "Correlation",
-  "Comparative advantage": "Scatter plots",
-  "Exchange rates": "Lines of best fit",
+  Macroeconomics: "The organisation",
+  "Measuring the economy": "Structure and design",
+  "Gross Domestic Product": "Hierarchy and span",
+  "Inflation & the CPI": "Centralised or not",
+  Unemployment: "The informal organisation",
+  Policy: "Culture",
+  "Fiscal policy": "How a culture forms",
+  "Monetary policy": "Changing one",
+  "International trade": "Leadership",
+  "Comparative advantage": "Traits and styles",
+  "Exchange rates": "Leading by situation",
 
-  "Behavioral economics": "Calculus",
-  "Cognitive biases": "Rates of change",
-  "Nudges & choice architecture": "Differentiation",
-  "The prisoner's dilemma": "Integration",
-  "The prisoner’s dilemma": "Integration",
+  "Behavioral economics": "Change",
+  "Cognitive biases": "Why people resist it",
+  "Nudges & choice architecture": "Managing a change",
+  "The prisoner's dilemma": "Making it stick",
+  "The prisoner\u2019s dilemma": "Making it stick",
 
   Resources: "Resources",
-  "Formula sheet": "Formula sheet",
-  "Practice problems": "Practice problems",
+  "Formula sheet": "Reference sheet",
+  "Practice problems": "Practice questions",
 
-  /* ---- course 2 → Computer Science ---- */
+  /* ---- course 2 -> Business Law ---- */
   "Investment appraisal": "Foundations",
-  "Free cash flows": "Your first program",
-  "NPV & discounted payback": "Variables & data",
-  "IRR & MIRR": "Loops & conditions",
+  "Free cash flows": "What makes a contract",
+  "NPV & discounted payback": "Offer and acceptance",
+  "IRR & MIRR": "Terms & breach",
+  /* The dashboard's Resume chip prints the step's own title, which spells the
+   * ampersand out - so the map's "&" key never matches it and the banned-word
+   * scan trips on "irr" inside a course card. Both spellings, both mapped. */
+  "IRR and MIRR": "Terms and breach",
 
-  /* ---- course 4 → Mathematics (added 2026-08-01) ----
-   * This is the course the reader shots are now taken on, because it is the
-   * one carrying the blocks the day's posts are about. Both the nav LABEL and
-   * the step TITLE are mapped where they differ — the drawer shows one and the
+  /* ---- course 3 -> Operations Management ---- */
+  /* Its first step, which the dashboard prints on its Start chip for anybody
+   * who has not opened that course. No banned word in it, so the scan lets it
+   * through - and a card headed Operations Management offering a step about
+   * strategy is the same lie the scan exists to prevent, told past it. */
+  "Introduction to strategy": "What operations covers",
+
+  /* ---- course 4 -> Marketing Management (added 2026-08-01) ----
+   * This is the course the reader shots are taken on, because it is the one
+   * carrying the blocks the posts are usually about. Both the nav LABEL and
+   * the step TITLE are mapped where they differ - the drawer shows one and the
    * page shows the other. Longer keys are applied first (see `transform`), so
    * "Risk management" is safe to sit beside "Risk". */
   "Treasury operations": "Foundations",
-  "Introduction to treasury": "Working with equations",
-  "Introduction to treasury management": "Working with equations",
-  "Working capital": "Functions",
-  "Working capital & liquidity": "Linear functions",
-  "Working capital and liquidity management": "Linear functions",
-  "Inventory, EOQ & creditors": "Quadratic functions",
-  "Inventory management, EOQ and creditor management": "Quadratic functions",
-  "Cash management & forecasting": "Exponential functions",
-  "Cash management and cash flow forecasting": "Exponential functions",
-  "Interest rate risk management": "Reading a graph",
-  "Interest rate risk": "Reading a graph",
-  "Foreign exchange risk management": "Gradients & areas",
-  "Foreign exchange risk": "Gradients & areas",
-  "Debt and investment": "Sequences",
-  "Debt management": "Arithmetic sequences",
-  "Investment management": "Geometric sequences",
-  "Systems and clearing": "Probability",
-  "Clearing & settlement": "Counting outcomes",
-  "Clearing and settlement systems": "Counting outcomes",
-  "Treasury systems": "Distributions",
-  "Treasury management systems": "Distributions",
-  "Risk management": "Rates of change",
-  Risk: "Graphs",
+  "Introduction to treasury": "What marketing is for",
+  "Introduction to treasury management": "What marketing is for",
+  "Working capital": "The customer",
+  "Working capital & liquidity": "Segmentation",
+  "Working capital and liquidity management": "Segmentation",
+  "Inventory, EOQ & creditors": "Targeting",
+  "Inventory management, EOQ and creditor management": "Targeting",
+  "Cash management & forecasting": "Positioning",
+  "Cash management and cash flow forecasting": "Positioning",
+  "Interest rate risk management": "Pricing",
+  "Interest rate risk": "Pricing",
+  "Foreign exchange risk management": "Promotion",
+  "Foreign exchange risk": "Promotion",
+  "Debt and investment": "The offer",
+  "Debt management": "Product and service",
+  "Investment management": "Brand",
+  "Systems and clearing": "Channels",
+  "Clearing & settlement": "Route to market",
+  "Clearing and settlement systems": "Route to market",
+  "Treasury systems": "Distribution",
+  "Treasury management systems": "Distribution",
+  "Risk management": "Measuring it",
+  Risk: "Research",
 
   /* ---- the `cards` block (added 2026-08-02) ----
    * The three-card set is the thing one of today's posts is ABOUT, so unlike
@@ -193,12 +228,12 @@ export const MAP = {
    * capture does not quietly ship the original: "front office" carries the word
    * treasury in its definition, so the banned-word scan throws on the element.
    * That is deliberate — it is the one of the pair with a tripwire in it. */
-  "forward contracts": "a variable",
+  "forward contracts": "a market segment",
   "An agreement to buy or sell a set amount of currency on a set future date at a price fixed today. It removes the uncertainty: you know in January what March's dollars will cost you.":
-    "A letter standing in for a number you do not know yet. Find what it stands for, put the number back, and the whole expression resolves.",
-  "front office": "a coefficient",
+    "A group of buyers who want the same thing for the same reason. Find the group first and every decision after it \u2014 the product, the price, the channel \u2014 has something to answer to.",
+  "front office": "positioning",
   "The dealers, the people who actually strike trades. The back office confirms, settles and records them. Keeping the two apart is the single most important treasury control.":
-    "The number sitting directly in front of a letter, saying how many of it there are. In 5x the coefficient is 5, and in x on its own it is 1.",
+    "The place your offer holds in a buyer\u2019s head, next to everything else they could pick. You do not choose it; you earn it, and a competitor can move it.",
 };
 
 export const READER = {

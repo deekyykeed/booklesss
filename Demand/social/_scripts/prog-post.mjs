@@ -903,6 +903,59 @@ const CONFIGS = {
    * shipped brand files themselves, at a size the app can never give them, and
    * a logo post is better made of the logo than of a screenshot containing it.
    * `d-word` is kept below, unrendered, for the reason `searchCTA()` is kept. */
+  /* ================================================================== *
+   * 2026-08-04 — a day with no ship to post.
+   *
+   * Today's commits are one feature, the sign-up/onboarding rebuild, and that
+   * is not a subject (RULES.md rule 6). So the day is the PRODUCT: three
+   * controls a student uses, each ONE component shown large in three or four
+   * states, plus two sets of logo plates.
+   *
+   * NO CTA SLIDE on any of them (owner, 2026-08-04). The call to action is the
+   * caption. `dmCTA()` stays in this file for the days that already went out
+   * on it.
+   * ================================================================== */
+
+  /* 1 — one course card, at three stages.
+   *
+   * The component the house style calls the best thing the app owns. ONE card,
+   * not the section that holds four of them: photographing the section means
+   * shrinking all four to fit, which is four components at a third of the size
+   * rather than one at full size. Same `w` across all three, because here the
+   * DATA is what differs and resizing would misreport the component. */
+  "p-card": () => ({
+    slot: "1-morning",
+    slides: [
+      object({ img: img("cc-deep.png"), w: 752 }),
+      object({ img: img("cc-started.png"), w: 752 }),
+      object({ img: img("cc-fresh.png"), w: 752 }),
+    ],
+  }),
+
+  /* THE SEARCH PANEL IS NOT POSTABLE, and `sq-*.png` is captured and unused.
+   * Search is GLOBAL, not per-course, so its result rows are real step titles
+   * from every course in the app. `MAP` covers lesson names and the step
+   * titles the reader shots need; it does not cover all ~200 of them, and the
+   * banned-word scan cannot help — an unmapped title is off-syllabus, not
+   * forbidden, so nothing throws. Shot as it stands it returns a screen of
+   * hedging and forward rates under an app headed Marketing Management.
+   * Mapping every step title in the index would fix it. Until then, no. */
+
+  /* 3 — one stat tile, at four measures.
+   *
+   * A label, a number, the change on last week and that measure's own curve in
+   * its own hue. Four tiles is four STATES of one component — the same tile
+   * answering a different question — not four components. */
+  "p-tile": () => ({
+    slot: "3-afternoon",
+    slides: [
+      object({ img: img("st-1.png"), w: 752 }),
+      object({ img: img("st-2.png"), w: 752 }),
+      object({ img: img("st-3.png"), w: 752 }),
+      object({ img: img("st-4.png"), w: 752 }),
+    ],
+  }),
+
   brand: () => ({
     slot: "5-night",
     slides: [
