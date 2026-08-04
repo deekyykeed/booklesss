@@ -39,6 +39,7 @@ import {
   TypedCoursePicker,
 } from "@/components/identity/pickers";
 import { Button } from "@/components/ui/Button";
+import { WhatsAppMark } from "@/components/icons/whatsapp";
 
 /* ------------------------------------------------------------------ *
  * Onboarding — three questions, asked straight after the account is made.
@@ -156,7 +157,16 @@ function useIsClient(): boolean {
   );
 }
 
-type Step = "school" | "programme" | "year" | "semester" | "courses" | "whatsapp" | "target" | "heard";
+type Step =
+  | "school"
+  | "programme"
+  | "year"
+  | "semester"
+  | "courses"
+  | "whatsapp"
+  | "target"
+  | "window"
+  | "heard";
 
 /**
  * The questions, in order. Every student gets all five.
@@ -201,6 +211,7 @@ const ORDER: Step[] = [
   "courses",
   "whatsapp",
   "target",
+  "window",
   "heard",
 ];
 
@@ -377,7 +388,8 @@ function firstGap(d: Draft, steps: Step[], prog: Programme | undefined): Step {
     /* Typed, not normalised: the field holds what they wrote and the save
        normalises it, so a resume has to judge the same thing the save would. */
     if (s === "whatsapp" && !normalisePhone(d.whatsapp)) return s;
-    if (s === "target" && (!d.target.weekdays?.length || !d.studyWindow)) return s;
+    if (s === "target" && !d.target.weekdays?.length) return s;
+    if (s === "window" && !d.studyWindow) return s;
   }
   return "heard";
 }
@@ -1145,17 +1157,13 @@ export function OnboardingFlow() {
                 size="lg"
                 block
                 arrow
-                disabled={picked.length === 0 || !studyWindow}
+                disabled={picked.length === 0}
                 onClick={() => {
                   savePlan();
                   onward();
                 }}
               >
-                {picked.length === 0
-                  ? "Pick at least one day"
-                  : !studyWindow
-                    ? "Pick when you focus best"
-                    : "Continue"}
+                {picked.length === 0 ? "Pick at least one day" : "Continue"}
               </Button>
             }
           >
@@ -1232,18 +1240,6 @@ export function OnboardingFlow() {
               </p>
             )}
 
-            <div className="mt-5">
-              <Choices label="When do complex topics go in easiest?">
-                <OptionRows
-                  options={WINDOWS}
-                  columns={2}
-                  value={studyWindow}
-                  label={(id) => WINDOWS.find((w) => w.id === id)?.title ?? String(id)}
-                  onPick={(id) => edit({ studyWindow: id as StudyWindow })}
-                />
-              </Choices>
-            </div>
-
             {/* The running total, once there is one and the warning above is not
                 already saying it louder. */}
             {picked.length > 0 && weeklyMinutes < UNREALISTIC_WEEKLY_MINUTES && (
@@ -1279,25 +1275,40 @@ export function OnboardingFlow() {
               </Button>
             }
           >
-            <input
-              autoFocus
-              /* `tel`, so a phone raises the number pad rather than the
-                 alphabet. Not `number`: that draws a spinner, silently drops a
-                 leading zero, and 0977… is exactly how a Zambian number is
-                 written down. */
-              type="tel"
-              inputMode="tel"
-              autoComplete="tel"
-              value={whatsapp}
-              onChange={(e) => edit({ whatsapp: e.target.value })}
-              placeholder="0977 123 456"
-              aria-label="Your WhatsApp number"
-              maxLength={20}
-              className={
-                "squircle h-11 w-full rounded-xl border border-line bg-white px-3.5 text-[15px] text-ink " +
-                "outline-none transition-colors placeholder:text-placeholder focus:border-ink"
-              }
-            />
+            {/* THE MARK SITS IN THE FIELD (owner, 2026-08-04: "you can use the
+                whatsapp icon to lighten it up a bit"). In the field rather than
+                beside the heading, because that is where it says something: it
+                tells you what KIND of number the box wants, at the moment you are
+                about to type one. Beside a heading that already reads "What's
+                your WhatsApp number?" it would only be saying it twice.
+
+                The solid glyph, not the green disc with the handset knocked out
+                of it in white — see components/icons/whatsapp for why that one
+                vanishes on a pale surface. */}
+            <div className="relative">
+              <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2">
+                <WhatsAppMark size={19} />
+              </span>
+              <input
+                autoFocus
+                /* `tel`, so a phone raises the number pad rather than the
+                   alphabet. Not `number`: that draws a spinner, silently drops a
+                   leading zero, and 0977… is exactly how a Zambian number is
+                   written down. */
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                value={whatsapp}
+                onChange={(e) => edit({ whatsapp: e.target.value })}
+                placeholder="0977 123 456"
+                aria-label="Your WhatsApp number"
+                maxLength={20}
+                className={
+                  "squircle h-11 w-full rounded-xl border border-line bg-white pl-11 pr-3.5 text-[15px] text-ink " +
+                  "outline-none transition-colors placeholder:text-placeholder focus:border-ink"
+                }
+              />
+            </div>
             {/* Shown only once they have typed enough to be wrong. A validation
                 message that greets an empty field is telling somebody off for
                 not having started. */}
@@ -1310,23 +1321,66 @@ export function OnboardingFlow() {
           </Card>
         )}
 
+        {step === "window" && (
+          <Card
+            /* ITS OWN SCREEN (owner, 2026-08-04: "the question about what time of
+               day, can we put it on the next set of questions on its own — its
+               pretty important").
+
+               It was a third block under the weekly goal, below the days and the
+               durations, which made it read as a detail of "how much time" when
+               it is a different question entirely. How long you study is a plan
+               you are making; when your head works is a fact about you that no
+               plan changes — and it is the one that decides whether a reminder is
+               worth sending at all. A question nobody scrolls to is a question
+               answered by whoever happened to reach it. */
+            title="When does the hard stuff go in easiest?"
+            why="Think about where you actually get your best work done, not where you'd like to."
+          >
+            <OptionRows
+              options={WINDOWS}
+              columns={2}
+              value={studyWindow}
+              label={(id) => WINDOWS.find((w) => w.id === id)?.title ?? String(id)}
+              onPick={(id) => {
+                const w = id as StudyWindow;
+                edit({ studyWindow: w });
+                savePlan(w);
+                onward({ studyWindow: w });
+              }}
+            />
+          </Card>
+        )}
+
         {step === "heard" && (
           <Card
             title="How did you hear about us?"
-            /* LAST, AND ONE TAP. It is the only question on this page that is
-               entirely for us, so it goes where a refusal costs nothing that has
-               not already been banked — and it finishes the flow, so the answer
-               and the Done are the same gesture. */
-            why="Last one. Tap whichever is closest and you're in."
+            why="Last one. Tap whichever is closest, then you're in."
+            /* IT DOES NOT FINISH ON THE TAP (owner, 2026-08-04: "dont auto select
+               the how did you hear about us part"). It used to answer and leave
+               in one gesture, which on the LAST screen means a student taps a row
+               and the app is simply gone — no chance to see what they picked, and
+               no chance to change it. Every other list in this flow shows the
+               answer for a beat before moving; this one moved to a different page
+               entirely, so it needed the button rather than the beat. */
+            actions={
+              <Button
+                variant="primary"
+                size="lg"
+                block
+                arrow
+                disabled={!heardFrom}
+                onClick={() => heardFrom && finish(heardFrom)}
+              >
+                {heardFrom ? "Done" : "Pick one to finish"}
+              </Button>
+            }
           >
             <OptionRows
               options={SOURCES}
               value={heardFrom}
               label={(id) => SOURCES.find((x) => x.id === id)?.title ?? String(id)}
-              onPick={(id) => {
-                edit({ heardFrom: id as HeardFrom });
-                finish(id as HeardFrom);
-              }}
+              onPick={(id) => edit({ heardFrom: id as HeardFrom })}
             />
           </Card>
         )}

@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { auth } from "@clerk/nextjs/server";
+import { clerkEnabled } from "@/lib/clerk";
 import { OnboardingFlow } from "@/components/onboarding/OnboardingFlow";
 
 /* The questions, asked straight after the account is made. Reached from the
@@ -27,7 +30,40 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function OnboardingPage() {
+/**
+ * NOBODY WITHOUT AN ACCOUNT GETS HERE (owner, 2026-08-04: "someone who has not
+ * signed in cannot be on the onboarding ever").
+ *
+ * OnboardingFlow already redirected a signed-out visitor from the client, and
+ * that is not the same thing: it fires after Clerk has reported, so the first
+ * question is on screen for a beat before they are thrown off it. A bounce, not
+ * a gate. Checked on the server, the page is never drawn at all.
+ *
+ * ON THE PAGE RATHER THAN IN THE MIDDLEWARE, which was the first attempt and
+ * the wrong one. Clerk's own guidance is now "middleware is not the best place
+ * to protect routes — protect access as close to the resource as possible", and
+ * `createRouteMatcher` is deprecated and logs a runtime warning. Putting a
+ * deprecated API on the path every single request takes, to guard one page, is
+ * a bad trade twice over.
+ *
+ * THE CLIENT REDIRECT STAYS. It covers what this cannot — a session that ends
+ * while the tab is open, long after this ran. Two mechanisms for two moments.
+ *
+ * This makes the route dynamic, which is the correct cost and only for this
+ * page: a session cannot be checked at build time. Every lesson stays static,
+ * which is the thing that actually matters on a Zambian connection, and this is
+ * a page each student sees once, behind a sign-up.
+ */
+export default async function OnboardingPage() {
+  if (clerkEnabled) {
+    const { userId } = await auth();
+    /* To the landing page, where the sign-up card is — the same place the
+       client redirect and RequireAccount both send people. A gate that lands
+       somebody somewhere the rest of the app never sends them reads as an
+       error rather than as a door. */
+    if (!userId) redirect("/");
+  }
+
   return (
     <>
       <div className="bg-waves" aria-hidden="true">
