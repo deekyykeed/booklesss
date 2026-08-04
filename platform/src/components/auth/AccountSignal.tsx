@@ -13,13 +13,7 @@ import {
 } from "@/lib/identity";
 import { referralCode, setMyReferralCode } from "@/lib/referral";
 import { syncProfile } from "@/lib/profile-sync";
-import { handleFromEmail, nextHandle } from "@/lib/handle";
 import { avatarPngFile } from "@/components/identity/avatar-image";
-
-/** How many suffixed handles to try before leaving the student without one.
- *  Three, because a fourth collision on the same email stem is rarer than the
- *  round trips are cheap — and this runs again on their next visit anyway. */
-const HANDLE_TRIES = 3;
 
 /* The one component in the reader that asks Clerk whether anybody is signed
  * in, and it renders nothing. It copies the answer into lib/account, which is
@@ -140,63 +134,6 @@ export function AccountSignal() {
     if (user.firstName === first && (user.lastName ?? "") === last) return;
     user.update({ firstName: first, lastName: last }).catch(() => {});
   }, [user, identity, hydrated]);
-
-  /* ------------------------------------------------------------------ *
-   * The handle, claimed once there is a session to claim it with.
-   *
-   * IT WAS PASSED TO signUp.password() AND THAT WAS THE WRONG PLACE. `SignUp`
-   * is a stateful resource: the first call creates the attempt and every later
-   * one operates on the attempt already in flight, so a retry — to suffix a
-   * taken handle, or to fall back when usernames are off — is not a second
-   * chance, it is a different and invalid request. The owner met it on the
-   * first live sign-up as "email_address is not a valid parameter for this
-   * request", an error naming the wrong field and pointing at the wrong
-   * dashboard page, with his account not created.
-   *
-   * A SESSION IS THE RIGHT SIDE OF THAT LINE. `user.update({ username })` is a
-   * plain update on a user that already exists: it either takes or it doesn't,
-   * a rejection changes nothing, and retrying is free. So the account is made
-   * with nothing but an email and a password — one call, no way for a nicety to
-   * break it — and the handle is claimed a moment later, here.
-   *
-   * IT ALSO BACKFILLS. This runs for every signed-in user, not only new ones,
-   * so accounts made before handles existed — or while the instance had
-   * usernames switched off — pick one up on their next visit. Nobody has to
-   * migrate anything.
-   *
-   * Silent throughout, and deliberately so. The student never asked for this
-   * name; it is derived from their own email as a starting point they can
-   * change on the "you" step. A failure — taken every time, usernames disabled,
-   * a dropped connection — leaves them with no handle and a working account,
-   * which is the correct trade in every case.
-   * ------------------------------------------------------------------ */
-  useEffect(() => {
-    if (!user || user.username) return;
-    const email = user.primaryEmailAddress?.emailAddress;
-    if (!email) return;
-
-    let live = true;
-    void (async () => {
-      const base = handleFromEmail(email);
-      for (let n = 0; n <= HANDLE_TRIES && live; n++) {
-        /* Counted, not random, so the second Deeky is `deeky2` rather than
-           `deeky_8f3a` — a handle gets read out loud. */
-        const username = n === 0 ? base : nextHandle(base, n + 1);
-        try {
-          await user.update({ username });
-          return;
-        } catch {
-          /* Taken, malformed, or not supported by this instance. The next loop
-             tries a suffix; if the reason was the instance rather than the
-             name, all of them fail and the student simply has no handle yet. */
-        }
-      }
-    })();
-
-    return () => {
-      live = false;
-    };
-  }, [user]);
 
   /* ------------------------------------------------------------------ *
    * And the face, onto the Clerk user as its actual profile image.

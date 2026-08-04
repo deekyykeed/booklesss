@@ -42,8 +42,6 @@ import { Button } from "@/components/ui/Button";
 import { WhatsAppMark } from "@/components/icons/whatsapp";
 import { AvatarPicker } from "@/components/identity/AvatarPicker";
 import { type AvatarId } from "@/components/identity/avatars";
-import { HandleField } from "./HandleField";
-import { clerkEnabled } from "@/lib/clerk";
 
 /* ------------------------------------------------------------------ *
  * Onboarding — three questions, asked straight after the account is made.
@@ -823,14 +821,18 @@ export function OnboardingFlow() {
                that is a pleasure — a form that opens by asking which university
                you attend opens with admin. */
             title="What should we call you?"
-            /* TWO NAMES, AND THEY DO DIFFERENT JOBS (owner, 2026-08-04, on
-               abandoning the assigned identity: "users will be identified by
-               their username" — as a handle PLUS a display name). @deeky is
-               unique and Clerk enforces it; "Deeky Mvula" is what people read,
-               and two students are welcome to share one. Collapsing them would
-               mean either a unique name nobody wants to be called, or a
-               friendly one that cannot identify anybody. */
-            why="A handle nobody else can have, and a name people will read."
+            /* ONE NAME. A handle field sat above this for about an hour on
+               2026-08-05 — @deeky beside "Deeky Mvula" — and the owner killed it
+               on sight: "this messes stuff up, don't have me change my username
+               again so soon."
+               He was right, and the reason is worth keeping. Clerk already
+               collects a username at sign-up, so by the time anyone reaches this
+               screen they have one. Asking again a minute later does not read as
+               "here is your handle, change it if you like" — it reads as the app
+               having lost the answer and wanting it again. Two name fields under
+               one heading that asks for a name is a question nobody can tell
+               they have already answered. */
+            why="Your name and a face for it. This is what your classmates will see."
             actions={
               <Button
                 variant="primary"
@@ -852,40 +854,24 @@ export function OnboardingFlow() {
               </Button>
             }
           >
-            {/* The handle first, because a session already exists by the time
-                anyone reaches this screen and AccountSignal has usually claimed
-                one off their email already — so this is the reader disagreeing
-                with a filled field rather than starting an empty one. Its own
-                component: it writes to Clerk rather than to the identity record,
-                and it cannot be rendered on a build with no provider. */}
-            {clerkEnabled && (
-              <div className="mb-4">
-                <Choices label="Your handle">
-                  <HandleField />
-                </Choices>
-              </div>
-            )}
-
-            <Choices label="Your name">
-              <input
-                autoFocus
-                type="text"
-                autoComplete="name"
-                autoCapitalize="words"
-                value={name}
-                onChange={(e) => edit({ name: e.target.value })}
-                /* The name this device was given, as the placeholder rather
-                   than as the value. A pre-filled field is an answer somebody
-                   has to undo; a placeholder is a suggestion they can ignore. */
-                placeholder={identity?.name ?? "Your name"}
-                aria-label="Your name"
-                maxLength={40}
-                className={
-                  "squircle h-11 w-full rounded-xl border border-line bg-white px-3.5 text-[15px] text-ink " +
-                  "outline-none transition-colors placeholder:text-placeholder focus:border-ink"
-                }
-              />
-            </Choices>
+            <input
+              autoFocus
+              type="text"
+              autoComplete="name"
+              autoCapitalize="words"
+              value={name}
+              onChange={(e) => edit({ name: e.target.value })}
+              /* The name this device was given, as the placeholder rather than
+                 as the value. A pre-filled field is an answer somebody has to
+                 undo; a placeholder is a suggestion they can ignore. */
+              placeholder={identity?.name ?? "Your name"}
+              aria-label="Your name"
+              maxLength={40}
+              className={
+                "squircle h-11 w-full rounded-xl border border-line bg-white px-3.5 text-[15px] text-ink " +
+                "outline-none transition-colors placeholder:text-placeholder focus:border-ink"
+              }
+            />
 
             <div className="mt-5">
               <Choices label="Pick a face">
