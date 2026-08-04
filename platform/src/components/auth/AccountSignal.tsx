@@ -13,6 +13,7 @@ import {
 } from "@/lib/identity";
 import { referralCode, setMyReferralCode } from "@/lib/referral";
 import { syncProfile } from "@/lib/profile-sync";
+import { avatarPngFile } from "@/components/identity/avatar-image";
 
 /* The one component in the reader that asks Clerk whether anybody is signed
  * in, and it renders nothing. It copies the answer into lib/account, which is
@@ -132,6 +133,57 @@ export function AccountSignal() {
     // Settles: once written, this compares equal and stops.
     if (user.firstName === first && (user.lastName ?? "") === last) return;
     user.update({ firstName: first, lastName: last }).catch(() => {});
+  }, [user, identity, hydrated]);
+
+  /* ------------------------------------------------------------------ *
+   * And the face, onto the Clerk user as its actual profile image.
+   *
+   * Owner, 2026-08-04: "during the onboarding can the icon i picked not be put
+   * in clerk as the profile pic?"
+   *
+   * identity/ClerkAvatarSkin already paints it behind Clerk's user button, and
+   * that is a costume that only fits inside this app — it cannot reach Clerk's
+   * own account modal or the Users table, where every student is still a pair of
+   * grey initials. This makes it the account's real image, and the two hand over
+   * cleanly: `user.hasImage` turns true, which is the exact flag the skin reads
+   * to stand down.
+   *
+   * ONLY A FACE THEY CHOSE, on the same rule as the name above it. Every device
+   * is assigned one on its first visit, and uploading those would be 200 PNGs a
+   * day of artwork nobody picked — and would put a placeholder in front of the
+   * student's own choice a minute later, since the upload settles before
+   * onboarding does.
+   *
+   * The uploaded id is remembered in metadata rather than inferred from
+   * `hasImage`, so that CHANGING the avatar re-uploads while an unchanged one
+   * costs a string comparison. `updateMetadata` deep-merges, so this sits
+   * alongside `identity` and `referredBy` without touching either.
+   * ------------------------------------------------------------------ */
+  useEffect(() => {
+    if (!user || !hydrated || !identity?.nameChosen) return;
+    const wanted = identity.avatar;
+    if (user.unsafeMetadata?.avatarImage === wanted) return;
+
+    /* The account can outlive this effect — a student who taps through the last
+       question is on the dashboard before a 256px PNG has finished uploading —
+       so a late result must not be written under a face they have since
+       changed. */
+    let live = true;
+    void (async () => {
+      const file = await avatarPngFile(wanted);
+      if (!file || !live) return;
+      await user.setProfileImage({ file });
+      if (!live) return;
+      await user.updateMetadata({ unsafeMetadata: { avatarImage: wanted } });
+    })().catch(() => {
+      /* Swallowed like every other write here. A profile picture is the least
+         important thing happening during a sign-up, the face still draws in the
+         app, and the next sign-in retries. */
+    });
+
+    return () => {
+      live = false;
+    };
   }, [user, identity, hydrated]);
 
   return null;

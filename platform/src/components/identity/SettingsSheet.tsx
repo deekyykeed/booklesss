@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Avatar, resolveAvatar, type AvatarId } from "./avatars";
+import { AvatarPicker } from "./AvatarPicker";
 import { CoursePicker, SchoolPicker, SETTINGS_EVENT } from "./pickers";
 import { MynaIcon } from "@/components/icons/myna";
 import { clearFreeStep } from "@/lib/account";
@@ -77,7 +78,7 @@ const TAB_LABEL: Record<Tab, string> = {
 };
 
 /** Which row of General is expanded. Only one at a time — this is a phone. */
-type Open = "school" | "courses" | null;
+type Open = "you" | "school" | "courses" | null;
 
 export function SettingsSheet() {
   const { identity } = useIdentity();
@@ -130,10 +131,20 @@ export function SettingsSheet() {
 
   /* One writer for the whole sheet: take what's stored, lay the change over
      it, save. Every control below is a one-line call to this. */
-  const save = (patch: Partial<{ name: string; avatar: AvatarId; school: SchoolChoice | null; schoolName: string; courses: string[] }>) =>
+  const save = (
+    patch: Partial<{
+      name: string;
+      avatar: AvatarId;
+      nameChosen: boolean;
+      school: SchoolChoice | null;
+      schoolName: string;
+      courses: string[];
+    }>,
+  ) =>
     saveIdentity({
       name: patch.name ?? identity.name,
       avatar: patch.avatar ?? resolveAvatar(identity.avatar),
+      ...(patch.nameChosen === undefined ? {} : { nameChosen: patch.nameChosen }),
       school: patch.school !== undefined ? patch.school : identity.school,
       schoolName: patch.schoolName ?? identity.schoolName ?? "",
       courses: patch.courses ?? identity.courses,
@@ -262,13 +273,23 @@ export function SettingsSheet() {
             <>
               <Heading>Profile</Heading>
 
-              {/* Reported, not offered. Both were assigned on the first visit
-                  and neither is editable — so this row's whole job is to be
-                  the place a reader can find out what they are called, which
-                  is otherwise only ever glimpsed in a greeting. */}
+              {/* OFFERED, NOT JUST REPORTED. This row was read-only, on the
+                  reasoning that both were assigned on the first visit and
+                  neither was ever asked for — so its whole job was to be the
+                  one place a reader could find out what they were called.
+
+                  Onboarding asks for both now, which makes read-only actively
+                  wrong: the name and face were a CHOICE, and the only way to
+                  revise a choice was "forget this device", which throws away
+                  every section you have marked to change a picture. It is also
+                  the one repair for a record that ended up with a name nobody
+                  typed — see the merge bug in lib/identity, which handed six
+                  accounts the Astronaut they had just replaced. */}
               <Row
-                label="You're reading as"
-                note="Given to this device, and the same every time you come back."
+                label="Name and face"
+                note="What your classmates see. Change either whenever you like."
+                onClick={() => setSection(section === "you" ? null : "you")}
+                expanded={section === "you"}
                 control={
                   <span className="flex items-center gap-2">
                     <Avatar id={identity.avatar} size={28} />
@@ -276,6 +297,37 @@ export function SettingsSheet() {
                   </span>
                 }
               />
+              {section === "you" && (
+                <Panel>
+                  <input
+                    type="text"
+                    autoComplete="name"
+                    autoCapitalize="words"
+                    value={identity.name}
+                    /* Saved on every keystroke, like every other control in this
+                       sheet — there is no Save button anywhere here and adding
+                       one for a single field would be a second way to commit.
+                       An empty box is not written: `name` is never empty by
+                       contract (lib/identity treats a record without one as no
+                       record at all), so a half-deleted name would erase the
+                       reader mid-edit. */
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      if (v.trim()) save({ name: v, nameChosen: true });
+                    }}
+                    aria-label="Your name"
+                    maxLength={40}
+                    className={
+                      "squircle mb-3 h-11 w-full rounded-xl border border-line bg-white px-3.5 text-[15px] text-ink " +
+                      "outline-none transition-colors placeholder:text-placeholder focus:border-ink"
+                    }
+                  />
+                  <AvatarPicker
+                    value={resolveAvatar(identity.avatar)}
+                    onPick={(id) => save({ avatar: id, nameChosen: true })}
+                  />
+                </Panel>
+              )}
 
               <Heading>Study</Heading>
 
@@ -365,12 +417,16 @@ export function SettingsSheet() {
           {tab === "privacy" && (
             <>
               <Heading>What this device knows</Heading>
+              {/* "Given to this device, not asked for" was true of everybody
+                  when this was written and is now true of only half of them —
+                  a reader who never made an account. Onboarding asks for the
+                  name and the face, and telling somebody we assigned the one
+                  they typed reads as the app not knowing what it did. */}
               <Note>
-                Your name and picture were given to this device, not asked for. They, your
-                university, your courses and everything you’ve read are kept in this browser and
-                nowhere else. There is no account, no email address and no password — which also
-                means clearing your browser data clears all of it, and another device starts from
-                nothing.
+                Your name and picture are yours if you chose them, and given to this device if you
+                never did. They, your university, your courses and everything you’ve read are kept
+                in this browser — and on your account, if you made one, which is what carries them
+                to a second phone. Clearing your browser data clears this device’s copy.
               </Note>
 
               <Heading>Start over</Heading>

@@ -411,6 +411,26 @@ export type Identity = {
   id: string;
   /** ISO date the identity was created, for a later "member since". */
   since: string;
+  /**
+   * When this record was last ANSWERED — stamped by saveIdentity, and by
+   * nothing else.
+   *
+   * It exists because the merge had no way to tell which of two copies was
+   * written last, and guessed. The account's copy is a snapshot of the device
+   * taken at sign-up; the student then answers ten questions against the
+   * device, and every one of those answers is NEWER than the snapshot sitting
+   * in Clerk. Without a clock the merge read that snapshot as authority and
+   * handed it back down — see mergeAccount for what that cost.
+   *
+   * NOT touched by `persist`, which is what makes the merge settle: adopting a
+   * record must not make the device look freshly answered, or the two copies
+   * would out-date each other forever.
+   *
+   * A record written before this field existed falls back to `since` — the one
+   * date it definitely has, and never newer than an account snapshot taken
+   * after it.
+   */
+  updatedAt: string;
 };
 
 /**
@@ -536,6 +556,14 @@ function load(): Identity | null {
         : [],
       id: typeof v.id === "string" ? v.id : newId(),
       since: typeof v.since === "string" ? v.since : new Date().toISOString(),
+      // Falls back to `since` on a record written before the field existed —
+      // see the field's note.
+      updatedAt:
+        typeof v.updatedAt === "string"
+          ? v.updatedAt
+          : typeof v.since === "string"
+            ? v.since
+            : new Date().toISOString(),
     };
   } catch {
     // Unparseable or storage blocked (private mode, embedded webview) — the
@@ -670,6 +698,11 @@ export function saveIdentity(input: {
       input.typedCourses === undefined ? (prev?.typedCourses ?? []) : [...new Set(input.typedCourses)],
     id: prev?.id ?? newId(),
     since: prev?.since ?? new Date().toISOString(),
+    /* THE ONLY PLACE THIS IS STAMPED. This function is the one that writes an
+       ANSWER — every question in the flow, and every control in Settings, comes
+       through here — so a save is exactly the event the merge needs to date.
+       adoptIdentity deliberately does not stamp: see mergeAccount. */
+    updatedAt: new Date().toISOString(),
   };
   persist(next);
   return next;
@@ -801,6 +834,9 @@ export type AccountIdentity = {
    *  dashboard until they did. */
   nameChosen: boolean;
   since: string;
+  /** When the copy this was made from was last answered — the whole basis on
+   *  which the merge decides who is right. See Identity.updatedAt. */
+  updatedAt: string;
   /**
    * Where they study, and the university they typed if it is one we don't
    * carry.
@@ -847,28 +883,34 @@ export type AccountIdentity = {
  *  metadata inside an event's effect, and AccountSignal heals outside render. */
 export function accountIdentity(): AccountIdentity | null {
   const v = load();
-  return v
-    ? {
-        name: v.name,
-        avatar: v.avatar,
-        nameChosen: v.nameChosen,
-        since: v.since,
-        school: v.school,
-        schoolName: v.schoolName,
-        courses: v.courses,
-        coursesChosen: v.coursesChosen,
-        target: v.target,
-        studyWindow: v.studyWindow,
-        whatsapp: v.whatsapp,
-        heardFrom: v.heardFrom,
-        programme: v.programme,
-        programmeName: v.programmeName,
-        year: v.year,
-        semester: v.semester,
-        curriculum: v.curriculum,
-        typedCourses: v.typedCourses,
-      }
-    : null;
+  return v ? asAccount(v) : null;
+}
+
+/** A stored record shaped for the account. Split out from `accountIdentity` so
+ *  the merge's own result can be compared against the account in the same
+ *  shape — see `accountBehind`. */
+function asAccount(v: Identity): AccountIdentity {
+  return {
+    name: v.name,
+    avatar: v.avatar,
+    nameChosen: v.nameChosen,
+    since: v.since,
+    updatedAt: v.updatedAt,
+    school: v.school,
+    schoolName: v.schoolName,
+    courses: v.courses,
+    coursesChosen: v.coursesChosen,
+    target: v.target,
+    studyWindow: v.studyWindow,
+    whatsapp: v.whatsapp,
+    heardFrom: v.heardFrom,
+    programme: v.programme,
+    programmeName: v.programmeName,
+    year: v.year,
+    semester: v.semester,
+    curriculum: v.curriculum,
+    typedCourses: v.typedCourses,
+  };
 }
 
 /** Account metadata is `unsafeMetadata` — any signed-in browser can write it —
@@ -888,6 +930,17 @@ export function parseAccountIdentity(v: unknown): AccountIdentity | null {
       typeof o.since === "string" && !Number.isNaN(Date.parse(o.since))
         ? o.since
         : new Date().toISOString(),
+    /* Falls back to `since` rather than to now, and the difference matters: an
+       account written before this field existed must read as OLD, so the answers
+       a student is giving on this device right now win over it. Defaulting to
+       now would make every legacy account permanently newer than the person
+       using it. */
+    updatedAt:
+      typeof o.updatedAt === "string" && !Number.isNaN(Date.parse(o.updatedAt))
+        ? o.updatedAt
+        : typeof o.since === "string" && !Number.isNaN(Date.parse(o.since))
+          ? o.since
+          : new Date(0).toISOString(),
     school: isSchoolChoice(o.school) ? o.school : null,
     schoolName:
       typeof o.schoolName === "string" && o.schoolName.trim() ? o.schoolName.trim().slice(0, 80) : null,
@@ -957,24 +1010,74 @@ export function adoptIdentity(acct: AccountIdentity): Identity {
  * rather than compared.
  */
 function mergeAccount(acct: AccountIdentity, prev: Identity | null): Identity {
-  const school = acct.school ?? prev?.school ?? null;
-  const takeCourses = acct.coursesChosen;
+  /**
+   * WHICH COPY WAS WRITTEN LAST.
+   *
+   * This is the fact the merge was missing, and missing it cost a student every
+   * answer they gave. The account's copy is a SNAPSHOT OF THE DEVICE taken at
+   * sign-up: ClerkGate writes `accountIdentity()` into unsafeMetadata at the
+   * moment the account is created, which on a fresh visit is the placeholder the
+   * device rolled for itself — Astronaut, no school, no courses. The student
+   * then answers ten questions against the device. Every one of those answers is
+   * newer than the snapshot, and the rule "the account wins where it has an
+   * answer" read the snapshot as authority and handed it straight back down.
+   *
+   * What that looked like (owner, 2026-08-04, going through the live flow):
+   * "i missed the part to pick my profile icon and my name, so i got in as the
+   * default Astronaut" and "the courses that i picked are not the ones showing
+   * on the dashboard". He had not missed the screen. He filled it in, this
+   * function overwrote it a beat later, and six sign-ups in Supabase all carry
+   * the same Astronaut, the same empty curriculum and the same 4-days/30-minutes
+   * target that no build has offered since the morning.
+   *
+   * So: the account still wins where it has an answer and the device does not —
+   * that is the second-device case and it is the whole reason any of this exists
+   * — but where BOTH sides hold an answer, the one written last wins.
+   *
+   * BOTH CLOCKS ARE THE STUDENT'S OWN, which is the honest limit of this. Every
+   * stamp is written by a browser, so a phone set three days fast would claim to
+   * be fresher than a laptop answered this morning. The blast radius is one
+   * person's own two devices and the losing answer is still recoverable in
+   * Settings, which is a better failure than the one this replaced — where the
+   * side that won was simply always the same side, and it was the wrong one
+   * during the ten minutes that matter most. A server-stamped write would fix it
+   * properly and needs the /api/profile row to become the arbiter, which is a
+   * bigger change than the bug justifies today.
+   */
+  const deviceFresher = !!prev && prev.updatedAt > acct.updatedAt;
+
+  /** The answer that stands, for a field either side may hold. A placeholder
+   *  device holds null in all of these, which is what makes a fresh phone
+   *  signing in adopt the account rather than blank it. */
+  const pick = <T,>(a: T | null | undefined, p: T | null | undefined): T | null =>
+    (deviceFresher ? (p ?? a) : (a ?? p)) ?? null;
+
+  /* THE NAME AND THE FACE, gated the way the courses always were.
+     `name` is never empty — every record has one, most of them an avatar's — so
+     it cannot say on its own whether anybody was asked. `nameChosen` is the only
+     thing that can, which is exactly what the field was added for, and this is
+     the one place that was not consulting it. */
+  const takeName = acct.nameChosen && !(deviceFresher && (prev?.nameChosen ?? false));
+  const takeCourses = acct.coursesChosen && !(deviceFresher && (prev?.coursesChosen ?? false));
+  /* The school and the name typed under it move as a pair, or an account's
+     university ends up wearing the device's typed one — two people's answers
+     spliced together. */
+  const takeSchool = deviceFresher ? !prev?.school : !!acct.school;
+  const school = takeSchool ? acct.school : (prev?.school ?? null);
+
   return {
-    name: acct.name,
-    avatar: acct.avatar,
+    name: takeName ? acct.name : (prev?.name ?? acct.name),
+    avatar: takeName ? acct.avatar : (prev?.avatar ?? acct.avatar),
     nameChosen: acct.nameChosen || (prev?.nameChosen ?? false),
     school,
-    // Only "other" carries a typed name, and it must come from whichever side
-    // the school itself came from — an account's school with the device's
-    // typed name would be two people's answers spliced together.
     schoolName:
-      school !== OTHER_SCHOOL ? null : (acct.school ? acct.schoolName : (prev?.schoolName ?? null)),
+      school !== OTHER_SCHOOL ? null : (takeSchool ? acct.schoolName : (prev?.schoolName ?? null)),
     courses: takeCourses ? acct.courses : (prev?.courses ?? []),
     coursesChosen: takeCourses || (prev?.coursesChosen ?? false),
-    target: acct.target ?? prev?.target ?? null,
-    studyWindow: acct.studyWindow ?? prev?.studyWindow ?? null,
-    whatsapp: acct.whatsapp ?? prev?.whatsapp ?? null,
-    heardFrom: acct.heardFrom ?? prev?.heardFrom ?? null,
+    target: pick(acct.target, prev?.target),
+    studyWindow: pick(acct.studyWindow, prev?.studyWindow),
+    whatsapp: pick(acct.whatsapp, prev?.whatsapp),
+    heardFrom: pick(acct.heardFrom, prev?.heardFrom),
     /* The programme travels with the courses, not on its own: the two were
        answered together and `curriculum` is only meaningful against the
        programme it was picked from. Splitting them across a merge would give a
@@ -987,62 +1090,86 @@ function mergeAccount(acct: AccountIdentity, prev: Identity | null): Identity {
     typedCourses: takeCourses ? acct.typedCourses : (prev?.typedCourses ?? []),
     id: prev?.id ?? newId(),
     since: acct.since,
+    /* The later of the two, so the merge is IDEMPOTENT: merging an already
+       merged record recomputes `deviceFresher` to the same answer and comes back
+       unchanged. Stamping `now` here instead would make every adopted record
+       look freshly answered, and the two copies would out-date each other
+       forever. */
+    updatedAt: deviceFresher ? (prev as Identity).updatedAt : acct.updatedAt,
   };
+}
+
+const sameList = (a: string[], b: string[]) => a.length === b.length && a.every((s, i) => s === b[i]);
+
+/**
+ * Whether two copies of a student hold the same answers.
+ *
+ * ONE COMPARATOR, TWO QUESTIONS. `matchesAccount` asks it of the device against
+ * the settled truth, `accountBehind` asks it of the ACCOUNT against the same
+ * truth, and between them they decide which way the next write goes. They were
+ * two hand-written field lists before, which is a promise to keep three things
+ * in step by hand — and they had already fallen out of it: neither compared
+ * `target.weekdays`, so a student who moved their study days from Monday to
+ * Tuesday reported "already matches", the upward write never fired, and the
+ * change lived on one phone. Neither compared `semester` or `programmeName`
+ * either.
+ *
+ * A field added to AccountIdentity and not added here is a field that silently
+ * stops travelling, so this list is the one to check when adding one.
+ */
+function sameAnswers(a: AccountIdentity, b: AccountIdentity): boolean {
+  return (
+    a.name === b.name &&
+    a.avatar === b.avatar &&
+    a.nameChosen === b.nameChosen &&
+    a.since === b.since &&
+    a.updatedAt === b.updatedAt &&
+    a.school === b.school &&
+    a.schoolName === b.schoolName &&
+    a.coursesChosen === b.coursesChosen &&
+    sameList(a.courses, b.courses) &&
+    a.target?.days === b.target?.days &&
+    a.target?.minutes === b.target?.minutes &&
+    sameList(
+      (a.target?.weekdays ?? []).map(String),
+      (b.target?.weekdays ?? []).map(String),
+    ) &&
+    a.studyWindow === b.studyWindow &&
+    a.whatsapp === b.whatsapp &&
+    a.heardFrom === b.heardFrom &&
+    a.programme === b.programme &&
+    a.programmeName === b.programmeName &&
+    a.year === b.year &&
+    a.semester === b.semester &&
+    sameList(a.curriculum, b.curriculum) &&
+    sameList(a.typedCourses, b.typedCourses)
+  );
 }
 
 /** Whether the stored record already IS the merge — everything but `id`,
  *  which is per-device by design and never travels. */
 export function matchesAccount(id: Identity | null, acct: AccountIdentity): boolean {
   if (!id) return false;
-  const next = mergeAccount(acct, id);
-  return (
-    id.name === next.name &&
-    id.avatar === next.avatar &&
-    id.nameChosen === next.nameChosen &&
-    id.since === next.since &&
-    id.school === next.school &&
-    id.schoolName === next.schoolName &&
-    id.coursesChosen === next.coursesChosen &&
-    id.courses.length === next.courses.length &&
-    id.courses.every((s, i) => s === next.courses[i]) &&
-    id.studyWindow === next.studyWindow &&
-    id.whatsapp === next.whatsapp &&
-    id.heardFrom === next.heardFrom &&
-    id.target?.days === next.target?.days &&
-    id.target?.minutes === next.target?.minutes &&
-    /* The curriculum answer has to be compared too, or a device that knows the
-       programme and an account that doesn't would report "already matches" and
-       the upward write would never fire — the answer would live on one phone
-       forever. */
-    id.programme === next.programme &&
-    id.programmeName === next.programmeName &&
-    id.year === next.year &&
-    id.semester === next.semester &&
-    id.curriculum.length === next.curriculum.length &&
-    id.curriculum.every((s, i) => s === next.curriculum[i]) &&
-    id.typedCourses.length === next.typedCourses.length &&
-    id.typedCourses.every((s, i) => s === next.typedCourses[i])
-  );
+  return sameAnswers(asAccount(id), asAccount(mergeAccount(acct, id)));
 }
 
-/** Whether this device knows an answer the account hasn't got — the cue for
- *  the upward write. Only ever "the account is missing something", never "the
- *  two differ": where both have an answer the account's is the one that
- *  stands, and mergeAccount has already applied it. */
+/**
+ * Whether the ACCOUNT is the copy that needs writing — the cue for the upward
+ * write.
+ *
+ * It used to ask a narrower question: "is the account missing something this
+ * device knows?", on the reasoning that where both hold an answer the account's
+ * is the one that stands. That reasoning is no longer true — where both hold an
+ * answer the fresher one stands (see mergeAccount), and the fresher one is
+ * usually this device, because this device is where answers are given. So the
+ * question is now simply: does the account differ from the settled truth?
+ *
+ * Settles, and it has to: after the write the account IS the truth, so this
+ * comes back false on the pass that follows.
+ */
 export function accountBehind(id: Identity | null, acct: AccountIdentity): boolean {
   if (!id) return false;
-  return (
-    (!acct.nameChosen && id.nameChosen) ||
-    (!acct.school && !!id.school) ||
-    (!acct.coursesChosen && id.coursesChosen) ||
-    (!acct.target && !!id.target) ||
-    (!acct.studyWindow && !!id.studyWindow) ||
-    (!acct.whatsapp && !!id.whatsapp) ||
-    (!acct.heardFrom && !!id.heardFrom) ||
-    (!acct.programme && !!id.programme) ||
-    (!acct.curriculum.length && id.curriculum.length > 0) ||
-    (!acct.typedCourses.length && id.typedCourses.length > 0)
-  );
+  return !sameAnswers(acct, asAccount(mergeAccount(acct, id)));
 }
 
 /**
