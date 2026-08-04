@@ -837,6 +837,30 @@
     display: flex;
     width: 100%;
   }
+  /* ---------------------------------------------------------------- *
+   * The course card's resume button, as a variant anything can wear.
+   *
+   * Owner, 2026-08-04: "the button that is inside the course card is what I
+   * mean — that's the design of button I want to adopt throughout." The paper
+   * look was already shared with .course-resume; the COMPOSITION was not. That
+   * button is a bar you travel along — label pinned left, arrow pinned right,
+   * the radius of the card stepped down for the inset — where .btn was a
+   * centred word in a lozenge.
+   *
+   * Radius 18 rather than the size's own, so it matches .course-resume exactly
+   * at any size. The arrow leans on hover with the same spring the card's does.
+   * ---------------------------------------------------------------- */
+  .btn[data-arrow] {
+    justify-content: space-between;
+    border-radius: 18px;
+    text-align: left;
+  }
+  .btn-arrow {
+    transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .btn[data-arrow]:hover:not(:disabled) .btn-arrow {
+    transform: translateX(3px);
+  }
 
   /* The resume button, which is also the course's progress bar: a squircle
      the width of the card, its inline fill showing how far through the

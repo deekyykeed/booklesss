@@ -403,6 +403,7 @@ export function OnboardingFlow() {
                   variant="primary"
                   size="lg"
                   block
+                  arrow
                   disabled={!schoolName.trim()}
                   onClick={() => {
                     save({ coursesChosen: coursesAnswered });
@@ -553,6 +554,7 @@ export function OnboardingFlow() {
                 variant="primary"
                 size="lg"
                 block
+                arrow
                 disabled={curriculum.length === 0}
                 onClick={() => {
                   edit({ coursesAnswered: true });
@@ -593,6 +595,7 @@ export function OnboardingFlow() {
                   variant="primary"
                   size="lg"
                   block
+                  arrow
                   disabled={courses.length === 0}
                   onClick={() => {
                     edit({ coursesAnswered: true });
@@ -643,7 +646,7 @@ export function OnboardingFlow() {
             title="Set your weekly goal"
             why="Pick the days you'll put the time in, and how long each of them. An ordinary week, not your best one."
             actions={
-              <Button variant="primary" size="lg" block disabled={picked.length === 0} onClick={finish}>
+              <Button variant="primary" size="lg" block arrow disabled={picked.length === 0} onClick={finish}>
                 {picked.length === 0 ? "Pick at least one day" : "Done"}
               </Button>
             }
