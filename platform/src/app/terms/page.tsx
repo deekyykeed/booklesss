@@ -35,7 +35,7 @@ export default function TermsPage() {
         <p>
           Booklesss is independent study material. It is not affiliated with, endorsed by, or
           acting for any university or examining body, and reading it is not enrolment in
-          anything. It exists to help you understand your course; your institution's own
+          anything. It exists to help you understand your course; your institution&rsquo;s own
           materials and instructions always come first.
         </p>
 

@@ -171,7 +171,16 @@ export function MobileNavProvider({
    * or editable descendants (code playgrounds, inputs) opt out via the guard so
    * a sideways scroll there never yanks a drawer open. */
   const sideRef = useRef<Side>(side);
-  sideRef.current = side;
+  /* Written after the render, not during it. The listeners below are bound once
+     and read this ref for live state, which is the whole reason it is a ref —
+     but assigning it in the component body is a render with a side effect, and
+     React reserves the right to run a render twice or throw one away. An effect
+     is the sanctioned place, and it still lands well before any touch: gestures
+     come from the user, and the user cannot touch a frame that has not been
+     painted. */
+  useEffect(() => {
+    sideRef.current = side;
+  }, [side]);
   useEffect(() => {
     const THRESHOLD = 55; // px of horizontal travel to trigger
     let startX = 0;

@@ -53,7 +53,27 @@ function write(s: Store) {
   }
 }
 
+/* ------------------------------------------------------------------ *
+ * Who is watching. localStorage is an external mutable store, so a component
+ * reading it needs to be told when it changes rather than copying it into
+ * state inside an effect — that copy is a cascading render, and the lint rule
+ * that refuses it is right. Same shape as lib/identity and lib/progress, which
+ * both solved this first.
+ * ------------------------------------------------------------------ */
+const listeners = new Set<() => void>();
+
+/** For useSyncExternalStore. Returns the unsubscribe, as it must. */
+export function subscribeNotes(fn: () => void): () => void {
+  listeners.add(fn);
+  return () => {
+    listeners.delete(fn);
+  };
+}
+
 export function noteFor(lessonId: string, sectionId: string): NoteId | null {
+  /* A PRIMITIVE, which is what makes this safe as a snapshot:
+     useSyncExternalStore compares snapshots by identity and would loop forever
+     on a fresh object each call. A NoteId or null cannot do that. */
   return read()[lessonId]?.[sectionId] ?? null;
 }
 
@@ -65,6 +85,7 @@ export function setNote(lessonId: string, sectionId: string, note: NoteId | null
   else forLesson[sectionId] = note;
   s[lessonId] = forLesson;
   write(s);
+  for (const fn of listeners) fn();
 }
 
 /** Everything collected on this device, for whenever there is somewhere to

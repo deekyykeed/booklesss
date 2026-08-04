@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { MynaIcon } from "@/components/icons/myna";
 import { needsAccount } from "@/lib/account";
 import { requireAccount } from "@/lib/onboarding";
-import { NOTES, noteFor, setNote, type NoteId } from "@/lib/step-notes";
+import { NOTES, noteFor, setNote, subscribeNotes, type NoteId } from "@/lib/step-notes";
 
 // useLayoutEffect on the client, useEffect on the server (avoids the SSR
 // warning). Same helper the sidebar uses for its own measuring.
@@ -27,16 +27,25 @@ const EDGE = 12;
  */
 export function SectionNote({ lessonId, sectionId }: { lessonId: string; sectionId: string }) {
   const [open, setOpen] = useState(false);
-  const [chosen, setChosen] = useState<NoteId | null>(null);
+  /* READ FROM THE STORE, not copied into state after mount. This was
+     `useState(null)` plus an effect that called setChosen(noteFor(...)) — a
+     cascading render, and one that painted the wrong answer first: every
+     section drew as unanswered for a frame before its real note arrived.
+     useSyncExternalStore gives the server `null` (it has no localStorage) and
+     the client the stored value on its first render, with no frame in between,
+     and setNote's own notify re-renders this without anything here having to
+     hold a copy. */
+  const chosen = useSyncExternalStore(
+    subscribeNotes,
+    () => noteFor(lessonId, sectionId),
+    () => null,
+  );
   /* Which way the menu opens. Up is the default and the common case; it flips
      down only when up would put it behind the header. */
   const [drop, setDrop] = useState<"up" | "down">("up");
   const wrap = useRef<HTMLDivElement>(null);
   const menu = useRef<HTMLDivElement>(null);
 
-  // localStorage is read after mount: the server render knows nothing, and
-  // guessing would flash someone else's answer.
-  useEffect(() => setChosen(noteFor(lessonId, sectionId)), [lessonId, sectionId]);
 
   /* Flip the menu below the button when there isn't room above it.
    *
@@ -83,8 +92,9 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
     // Pressing the answer you already gave takes it back, the same rule the
     // checkpoint buttons follow.
     const next = chosen === id ? null : id;
+    /* One write, and the store tells everyone — including this component,
+       which no longer keeps a copy to update alongside it. */
     setNote(lessonId, sectionId, next);
-    setChosen(next);
     setOpen(false);
   };
 

@@ -45,10 +45,13 @@ function Magnifier({ size = 16, className }: { size?: number; className?: string
 export function CommandSearch() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  // `mounted` keeps the palette in the DOM through its exit animation; `show`
-  // is the on/off flag the enter/exit transitions read.
-  const [mounted, setMounted] = useState(false);
+  /* `show` is the only stored flag: "a frame has passed since this opened, and
+     the exit has not finished yet". `mounted` and `visible` fall out of it and
+     `open` — see the effect below for why none of the three is a setState in an
+     effect body any more. */
   const [show, setShow] = useState(false);
+  const mounted = open || show;
+  const visible = open && show;
   const [query, setQuery] = useState("");
   // Which result the keyboard is on. Reset whenever the query changes, since
   // the list underneath it has changed.
@@ -71,6 +74,12 @@ export function CommandSearch() {
     };
   }, [open, indexed]);
 
+  /* `indexed` is not unused, whatever the rule thinks. `search()` reads a
+     module-level index that `loadSearchIndex()` REPLACES in place, so nothing
+     in this call signature changes when the deep index lands — this dep is the
+     only thing that tells the memo the same query now has better answers.
+     Removing it would freeze every open palette on title-only results. */
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const results = useMemo(() => search(query), [query, indexed]);
 
   const close = useCallback(() => setOpen(false), []);
@@ -135,11 +144,21 @@ export function CommandSearch() {
       ?.scrollIntoView({ block: "nearest" });
   }, [active]);
 
-  // Mount, then flip `show` on the next frame so the enter transition runs from
-  // the closed state. On close, flip `show` off and unmount once it has played.
+  /* BOTH FLAGS ARE DERIVED NOW, and only `show` is stored — it is the one thing
+     here that is genuinely a fact about time rather than about `open`.
+       mounted = open || show   in the DOM while open, and after closing until
+                                the exit animation has played
+       visible = open && show   painted at full opacity: not on the first frame
+                                after opening, so the enter transition has a
+                                closed state to run from, and false the instant
+                                `open` goes, so the exit starts immediately
+     What this replaces is a setMounted(true) and a setShow(false) sitting
+     directly in the effect body — cascading renders, and the error React's lint
+     rule reports. Every remaining setState here is inside a requestAnimationFrame
+     or a setTimeout, which is a callback rather than the body, and is exactly
+     what effects are for. */
   useEffect(() => {
     if (open) {
-      setMounted(true);
       let r2 = 0;
       const r1 = requestAnimationFrame(() => {
         r2 = requestAnimationFrame(() => setShow(true));
@@ -149,18 +168,19 @@ export function CommandSearch() {
         cancelAnimationFrame(r2);
       };
     }
-    setShow(false);
+    // Closed, but still on screen: let the exit play, then take it down.
+    if (!show) return;
     const t = setTimeout(() => {
-      setMounted(false);
+      setShow(false);
       setQuery("");
       setActive(0);
     }, 200);
     return () => clearTimeout(t);
-  }, [open]);
+  }, [open, show]);
 
   useEffect(() => {
-    if (show) inputRef.current?.focus();
-  }, [show]);
+    if (visible) inputRef.current?.focus();
+  }, [visible]);
 
   return (
     <>
@@ -187,14 +207,14 @@ export function CommandSearch() {
           <div
             className={
               "fixed inset-0 z-[100] flex items-start justify-center bg-black/25 px-4 pt-[12vh] backdrop-blur-md transition-opacity duration-200 " +
-              (show ? "opacity-100" : "opacity-0")
+              (visible ? "opacity-100" : "opacity-0")
             }
             onClick={close}
           >
             <div
               className={
                 "w-full max-w-[560px] overflow-hidden rounded-xl border border-[#e6e6e6] bg-white shadow-[0_16px_48px_-12px_rgba(0,0,0,0.25)] transition-[opacity,transform] duration-200 ease-out " +
-                (show ? "translate-y-0 scale-100 opacity-100" : "translate-y-1 scale-[0.98] opacity-0")
+                (visible ? "translate-y-0 scale-100 opacity-100" : "translate-y-1 scale-[0.98] opacity-0")
               }
               onClick={(e) => e.stopPropagation()}
             >

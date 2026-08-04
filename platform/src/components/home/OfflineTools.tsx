@@ -6,6 +6,7 @@ import { ActionBar } from "@/components/ui/ActionBar";
 import { pathForId } from "@/lib/course";
 import { enrolledCourses } from "@/lib/courses";
 import { useIdentity } from "@/lib/identity";
+import { useIsClient } from "@/lib/is-client";
 import { loadSearchIndex } from "@/lib/search";
 
 /* The two things a reader can do with the service worker, in one card:
@@ -48,23 +49,43 @@ export function OfflineTools() {
   const mine = useMemo(() => enrolledCourses(identity?.courses), [identity?.courses]);
 
   const [installEvent, setInstallEvent] = useState<InstallPromptEvent | null>(null);
-  const [ios, setIos] = useState(false);
   const [showIosHelp, setShowIosHelp] = useState(false);
-  const [dismissed, setDismissed] = useState(true); // assume hidden until checked
-  const [installed, setInstalled] = useState(true);
 
   const [saving, setSaving] = useState(false);
   const [progress, setProgress] = useState({ done: 0, total: 0 });
-  const [savedAt, setSavedAt] = useState<string | null>(null);
   const [supported, setSupported] = useState(false);
   const workerRef = useRef<ServiceWorker | null>(null);
 
-  useEffect(() => {
-    setDismissed(localStorage.getItem(DISMISSED) === "1");
-    setSavedAt(localStorage.getItem(SAVED));
-    setInstalled(isStandalone());
-    setIos(isIos());
+  /* FOUR FACTS ABOUT THE DEVICE, READ RATHER THAN COPIED.
+   *
+   * All four used to be useState defaults corrected by a setState at the top of
+   * the effect below — "assume hidden until checked" — which is a cascading
+   * render and the thing React's lint rule now refuses outright. It also meant
+   * the panel decided whether to draw itself twice on every visit.
+   *
+   * `isClient` is the gate: on the server all four take the safe default, so
+   * the HTML matches the client's first paint, and from that paint onwards they
+   * are simply read. Nothing is stored, so nothing can go stale.
+   *
+   * Three of them still need to CHANGE later — an install completing, a dismiss
+   * being tapped, a save finishing — so those keep a nullable override beside
+   * them. `null` means "whatever the device says"; anything else is this
+   * session's answer and wins. Same shape the identity form uses. */
+  const isClient = useIsClient();
+  const ios = isClient && isIos();
 
+  const [installedNow, setInstalled] = useState<boolean | null>(null);
+  const installed = installedNow ?? (isClient ? isStandalone() : true);
+
+  const [dismissedNow, setDismissed] = useState<boolean | null>(null);
+  const dismissed = dismissedNow ?? (isClient ? localStorage.getItem(DISMISSED) === "1" : true);
+
+  /* `undefined` rather than `null` for "not overridden", because null is a real
+     answer here — a device that has never saved anything. */
+  const [savedAtNow, setSavedAt] = useState<string | null | undefined>(undefined);
+  const savedAt = savedAtNow === undefined ? (isClient ? localStorage.getItem(SAVED) : null) : savedAtNow;
+
+  useEffect(() => {
     const onPrompt = (e: Event) => {
       // Without this Chrome shows its own mini-infobar and never fires again.
       e.preventDefault();

@@ -39,12 +39,25 @@ export function StudyClock() {
    * well as totalled. A ref, not effect state: flush() runs from timers and
    * unload handlers that must see the current route without re-arming them. */
   const pathname = usePathname();
-  const courseRef = useRef<string | undefined>(undefined);
   const lessonId = pathname ? lessonIdForSlug(pathname.replace(/^\/+/, "").split("/")) : null;
-  courseRef.current = lessonId ? courseForNode(lessonId)?.slug : undefined;
+  const course = lessonId ? courseForNode(lessonId)?.slug : undefined;
+
+  const courseRef = useRef<string | undefined>(undefined);
   /* And which step, so reading one clears its review debt. */
   const lessonRef = useRef<string | undefined>(undefined);
-  lessonRef.current = lessonId ?? undefined;
+
+  /* WRITTEN IN AN EFFECT, NOT DURING THE RENDER. Both of these used to be
+     assigned in the component body, which React forbids — a render must be
+     able to run twice, or be thrown away and re-run, without leaving anything
+     behind, and a ref written on the way through is exactly that. It also
+     read slightly wrong: the ref flipped to the new lesson the moment the new
+     route rendered, so a tick that measured time spent on the PREVIOUS step
+     could be banked against the next one. Writing here moves the switch to
+     after the paint, which is the same place the reader's eye moves. */
+  useEffect(() => {
+    courseRef.current = course;
+    lessonRef.current = lessonId ?? undefined;
+  }, [course, lessonId]);
 
   useEffect(() => {
     let last = Date.now();

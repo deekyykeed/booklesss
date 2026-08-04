@@ -1,18 +1,14 @@
 "use client";
 
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { SignUp } from "@clerk/nextjs";
 import { useSignedIn } from "@/lib/account";
 import { clerkEnabled } from "@/lib/clerk";
+import { useIsClient } from "@/lib/is-client";
 import { accountIdentity } from "@/lib/identity";
 import { useProgress } from "@/lib/progress";
 import { referrer } from "@/lib/referral";
-
-/** A store that never changes — see LandingAuth. Module-level so its identity
- *  is stable across renders, which is what stops useSyncExternalStore
- *  resubscribing on every one. */
-const NEVER_CHANGES = () => () => {};
 
 /* The landing page's client pieces. The page itself is a server component so
  * its whole pitch — name, purpose, privacy link — is in the static HTML,
@@ -65,11 +61,7 @@ export function LandingAuth() {
      false and whose client snapshot is true, gives the same answer in one
      render instead of two. Same shape as `useIsClient` in the onboarding
      flow. */
-  const ready = useSyncExternalStore(
-    NEVER_CHANGES,
-    () => true,
-    () => false,
-  );
+  const ready = useIsClient();
 
   if (!clerkEnabled) return null;
   if (!ready) return <div className="min-h-[420px]" aria-hidden="true" />;

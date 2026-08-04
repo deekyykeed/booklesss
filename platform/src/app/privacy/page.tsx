@@ -46,7 +46,7 @@ export default function PrivacyPage() {
         <p>
           If you create an account we store your email address and a securely hashed password, or —
           if you continue with Google — the name, email address and profile picture Google shares.
-          Accounts are managed by Clerk, our sign-in provider. If you arrived through someone's
+          Accounts are managed by Clerk, our sign-in provider. If you arrived through someone&rsquo;s
           shared link, their referral code is recorded on your account so we can thank the person
           who brought you.
         </p>
@@ -60,7 +60,7 @@ export default function PrivacyPage() {
 
         <h2 className="font-display text-[19px] font-semibold text-ink">Your choices</h2>
         <p>
-          Settings → Privacy → "Forget this device" erases everything the device knows and starts
+          Settings → Privacy → &ldquo;Forget this device&rdquo; erases everything the device knows and starts
           you over as somebody new. To delete an account and everything on it, message us and it
           is done within seven days.
         </p>
