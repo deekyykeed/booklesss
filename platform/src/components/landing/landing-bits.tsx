@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { SignUp } from "@clerk/nextjs";
-import { useSignedIn } from "@/lib/account";
+import { useAccountRead, useSignedIn } from "@/lib/account";
 import { clerkEnabled } from "@/lib/clerk";
-import { accountIdentity } from "@/lib/identity";
+import { accountIdentity, onboardingComplete, useIdentity } from "@/lib/identity";
 import { useProgress } from "@/lib/progress";
 import { referrer } from "@/lib/referral";
 
@@ -16,19 +16,49 @@ import { referrer } from "@/lib/referral";
  * mobile login page): a "Get the app" card and an auth card, both pill
  * controls in soft white cards. */
 
-/** Sends people who already live here past the front door. A signed-in
- *  student, or a device with real studying on it, opening booklesss.app
- *  wants their dashboard, not the pitch — the pitch is for people who
- *  haven't answered "what is this" yet. `replace` so the landing doesn't
- *  sit in history making the back button bounce them through it again. */
+/**
+ * Sends people who already live here past the front door. A signed-in student
+ * opening booklesss.app wants their own pages, not the pitch — the pitch is
+ * for people who haven't answered "what is this" yet. `replace` so the landing
+ * doesn't sit in history making the back button bounce them through it again.
+ *
+ * WHERE PAST THE DOOR DEPENDS ON THE RECORD, and that is not a nicety. This
+ * sent everyone to /dashboard, which fought the sign-up card six inches below
+ * it: Clerk's own `forceRedirectUrl="/onboarding"` and this effect both fire
+ * the moment the session goes live, and whichever landed second won. A new
+ * student could be dragged to a dashboard that immediately bounced them back
+ * to /onboarding — the right destination, reached by a visible detour through
+ * a page they are not allowed to see yet. Reading `onboardingComplete` here
+ * makes both paths agree on the answer instead of racing to give it.
+ *
+ * IT WAITS FOR THE ACCOUNT'S OWN ANSWERS (useAccountRead), for the reason
+ * lib/account documents: a student signing in on a second phone is signed in a
+ * beat before their record arrives, and routing on that beat would send
+ * somebody who answered everything months ago back through onboarding.
+ *
+ * A SIGNED-OUT DEVICE STAYS ON THE LANDING, whatever it has read. It used to be
+ * sent to /dashboard on `daysStudied > 0` alone, which was a redirect LOOP the
+ * day the dashboard began requiring an account: here to /dashboard, RequireAccount
+ * back to here, and round again. There is nothing at the other end for somebody
+ * with no account — the sign-up card on this page is exactly what they need,
+ * and it is already on screen. The old rule survives only where there are no
+ * accounts to have (no Clerk keys), which is the build it was written for.
+ */
 export function ToApp() {
   const router = useRouter();
   const signedIn = useSignedIn();
-  const { hydrated, daysStudied } = useProgress();
+  const accountRead = useAccountRead();
+  const { identity, hydrated } = useIdentity();
+  const { hydrated: progressRead, daysStudied } = useProgress();
 
   useEffect(() => {
-    if (signedIn === true || (hydrated && daysStudied > 0)) router.replace("/dashboard");
-  }, [signedIn, hydrated, daysStudied, router]);
+    if (signedIn === true) {
+      if (!accountRead || !hydrated) return;
+      router.replace(onboardingComplete(identity) ? "/dashboard" : "/onboarding");
+      return;
+    }
+    if (!clerkEnabled && progressRead && daysStudied > 0) router.replace("/dashboard");
+  }, [signedIn, accountRead, identity, hydrated, progressRead, daysStudied, router]);
 
   return null;
 }
