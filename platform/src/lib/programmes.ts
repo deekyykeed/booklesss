@@ -69,6 +69,9 @@ export function programmeBySlug(school: string | null | undefined, slug: string 
   return slug ? programmesFor(school).find((p) => p.slug === slug) : undefined;
 }
 
+/** A year of a programme, and what it teaches. */
+export type YearGroup = { year: number | null; courses: ProgrammeCourse[] };
+
 /**
  * A programme's courses split into the ones the student is taking now and the
  * rest — owner's layout: "I'll first display the year four courses, and then
@@ -77,14 +80,36 @@ export function programmeBySlug(school: string | null | undefined, slug: string 
  * The other years are kept and NOT hidden, because a student repeating a
  * module, or taking one early, is ordinary and the alternative is a list that
  * quietly refuses to contain their actual timetable.
+ *
+ * THE REST STAYS GROUPED BY YEAR (owner, 2026-08-04: "when you let us know the
+ * courses, can you please still categorize the other courses by years?"). It
+ * was one flat list of everything-not-this-year — 24 rows for a year-4 student,
+ * in which Principles of Accounting and Advanced Taxation sat next to each
+ * other with nothing to say that one is a first-year course and the other a
+ * third. The year is the only thing that makes a list that long navigable, and
+ * we already know it for every row, so throwing it away at the last step was
+ * the one place this flow stopped being predictive.
+ *
+ * Ascending, and the student's own year is not among them — it is `thisYear`.
  */
 export function coursesByYear(programme: Programme | undefined, year: number | null | undefined) {
-  if (!programme) return { thisYear: [], otherYears: [] };
-  if (!year) return { thisYear: programme.courses, otherYears: [] };
-  return {
-    thisYear: programme.courses.filter((c) => c.year === year),
-    otherYears: programme.courses.filter((c) => c.year !== year),
-  };
+  if (!programme) return { thisYear: [], otherYears: [] as YearGroup[] };
+  if (!year) return { thisYear: programme.courses, otherYears: [] as YearGroup[] };
+
+  const thisYear = programme.courses.filter((c) => c.year === year);
+  const rest = new Map<number | null, ProgrammeCourse[]>();
+  for (const c of programme.courses) {
+    if (c.year === year) continue;
+    const k = c.year ?? null;
+    rest.set(k, [...(rest.get(k) ?? []), c]);
+  }
+  const otherYears: YearGroup[] = [...rest.entries()]
+    // A course with no year on it sorts last: it is a gap in the scrape, not a
+    // year zero, and it should not head the list pretending to be one.
+    .sort((a, b) => (a[0] ?? 99) - (b[0] ?? 99))
+    .map(([y, courses]) => ({ year: y, courses }));
+
+  return { thisYear, otherYears };
 }
 
 /**

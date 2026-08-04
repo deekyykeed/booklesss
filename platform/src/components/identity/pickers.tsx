@@ -3,7 +3,7 @@
 import { useId } from "react";
 import { MynaIcon } from "@/components/icons/myna";
 import type { CourseMeta } from "@/lib/courses";
-import type { ProgrammeCourse } from "@/lib/programmes";
+import type { ProgrammeCourse, YearGroup } from "@/lib/programmes";
 import { OTHER_SCHOOL, SCHOOLS, type SchoolChoice } from "@/lib/schools";
 import { crestSrc } from "./school-crests";
 
@@ -447,7 +447,10 @@ export function CurriculumPicker({
   onToggle,
 }: {
   thisYear: ProgrammeCourse[];
-  otherYears: ProgrammeCourse[];
+  /** The rest of the programme, GROUPED BY YEAR (owner, 2026-08-04). See
+   *  coursesByYear — a flat list of everything-not-this-year runs to 24 rows
+   *  with nothing to say which is a first-year course and which a third. */
+  otherYears: YearGroup[];
   year: number | null;
   /** Curriculum slugs currently ticked. */
   picked: string[];
@@ -484,22 +487,25 @@ export function CurriculumPicker({
     );
   };
 
+  /* One heading per year, the student's own first and marked as theirs. Every
+     other group says only which year it is: "Other years on this programme"
+     used to sit above the lot as a single heading, which is a label for a
+     leftover pile rather than a way through it. */
+  const group = (key: string, heading: string, courses: ProgrammeCourse[]) => (
+    <div key={key} className="flex flex-col gap-2">
+      <p className="font-display text-[12px] font-semibold uppercase tracking-wide text-muted">{heading}</p>
+      {courses.map(row)}
+    </div>
+  );
+
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex flex-col gap-2">
-        {year && <p className="font-display text-[12px] font-semibold uppercase tracking-wide text-muted">Year {year}</p>}
-        {thisYear.map(row)}
-      </div>
-      {otherYears.length > 0 && (
-        <div className="flex flex-col gap-2">
-          {/* Not hidden behind a "show more": a student repeating a module, or
-              taking one early, is ordinary, and the alternative is a list that
-              quietly refuses to contain their actual timetable. */}
-          <p className="font-display text-[12px] font-semibold uppercase tracking-wide text-muted">
-            Other years on this programme
-          </p>
-          {otherYears.map(row)}
-        </div>
+      {group("current", year ? `Year ${year} — yours` : "Your courses", thisYear)}
+      {/* Not hidden behind a "show more": a student repeating a module, or
+          taking one early, is ordinary, and the alternative is a list that
+          quietly refuses to contain their actual timetable. */}
+      {otherYears.map((g) =>
+        group(String(g.year ?? "unplaced"), g.year ? `Year ${g.year}` : "Not placed in a year", g.courses),
       )}
     </div>
   );
