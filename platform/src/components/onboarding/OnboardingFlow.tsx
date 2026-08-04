@@ -1026,7 +1026,41 @@ function Card({
         <p className="mt-2 max-w-[38ch] text-[14px] leading-[1.45] text-muted">{why}</p>
       </div>
       <div className="mt-5">{children}</div>
-      {actions ? <div className="pt-5">{actions}</div> : null}
+      {actions ? (
+        /* THE ACTION RIDES THE BOTTOM OF THE SCREEN (owner, 2026-08-04: "the
+           button is at the bottom of the page … it needs to always be visible
+           in case I find my courses at the top. Make it stick to the bottom of
+           the screen properly").
+
+           A full year's courses plus the other years' groups is a long list, and
+           the button sat under all of it — so a student who found their courses
+           in the first three rows still had to scroll past thirty to say so. The
+           screen asked them to confirm and then hid the confirmation.
+
+           STICKY, NOT A PINNED FRAME, and the distinction is the whole reason
+           this is allowed. The rejected version (same day: "the whole page
+           should be scrollable") was h-dvh with a fixed head, a fixed foot and
+           only the options scrolling between them — which turned a long answer
+           list into a small window inside a page that could not itself move.
+           This keeps one scroll over the whole document; the button simply never
+           leaves the viewport while there is page left under it, and settles
+           into its natural place at the end. Nothing else is pinned.
+
+           The bar bleeds past the page's 16px padding (-mx-4) and puts it back
+           inside (px-4), so the fade covers edge to edge rather than leaving two
+           stripes of un-faded list beside it. It fades rather than drawing a
+           border: a hairline would read as the bottom of the list, and the list
+           does not end there. */
+        <div
+          className="sticky bottom-0 z-10 -mx-4 px-4 pt-6 pb-[calc(0.75rem+env(safe-area-inset-bottom))]"
+          style={{
+            background:
+              "linear-gradient(to top, rgba(255,255,255,0.94) 0%, rgba(255,255,255,0.94) 68%, rgba(255,255,255,0) 100%)",
+          }}
+        >
+          {actions}
+        </div>
+      ) : null}
     </section>
   );
 }
