@@ -142,6 +142,38 @@ export type Identity = {
    * students at all.
    */
   target: StudyTarget | null;
+  /**
+   * The programme they are on, as a slug in programme-index.json — and the year
+   * of it they are in.
+   *
+   * Both null where we don't know, which today is most people: only one
+   * university has had its curriculum scraped, so the flow skips these two
+   * questions everywhere else (see lib/programmes). They are NOT part of
+   * `onboardingComplete` for that reason — they make the course question
+   * answerable in one tap instead of ten, they are not themselves the record.
+   *
+   * Deliberately not validated here against the programme index. This module
+   * loads on every page including the reader, and pulling 81KB of curriculum in
+   * to check two strings is the trade lib/programmes exists to avoid.
+   */
+  programme: string | null;
+  year: number | null;
+  /**
+   * Every course they ticked off their own timetable, as curriculum slugs —
+   * INCLUDING the ones nobody has written yet.
+   *
+   * Separate from `courses`, which holds built-course slugs and drives the
+   * dashboard. Owner, 2026-08-04: "we should show them literally all the
+   * courses not just what we've built, that way we can prioritise building
+   * properly." So a student ticks their real eight, three of which exist; the
+   * three land in `courses` and all eight land here.
+   *
+   * Keeping them apart is what stops the dashboard rendering five courses with
+   * no content behind them, while still recording that five people on that
+   * programme wanted Financial Reporting — which is the number that should
+   * decide what gets built next.
+   */
+  curriculum: string[];
   /** Random, per device. See the note above. */
   id: string;
   /** ISO date the identity was created, for a later "member since". */
@@ -229,6 +261,11 @@ function load(): Identity | null {
       coursesChosen:
         v.coursesChosen === true || (Array.isArray(v.courses) && v.courses.length > 0),
       target: parseTarget(v.target),
+      programme: typeof v.programme === "string" && v.programme ? v.programme : null,
+      // A year is 1..6 across every programme scraped (a masters starts at 5).
+      // Anything else is a record from a build that meant something different.
+      year: typeof v.year === "number" && v.year >= 1 && v.year <= 6 ? v.year : null,
+      curriculum: Array.isArray(v.curriculum) ? v.curriculum.filter((c) => typeof c === "string") : [],
       id: typeof v.id === "string" ? v.id : newId(),
       since: typeof v.since === "string" ? v.since : new Date().toISOString(),
     };
@@ -304,6 +341,10 @@ export function saveIdentity(input: {
   coursesChosen?: boolean;
   /** Omit to keep what is stored; null clears it. */
   target?: StudyTarget | null;
+  /** Omit any of these to keep what is stored. See the fields' notes. */
+  programme?: string | null;
+  year?: number | null;
+  curriculum?: string[];
 }): Identity {
   const prev = load();
   const next: Identity = {
@@ -318,6 +359,9 @@ export function saveIdentity(input: {
     coursesChosen: input.coursesChosen ?? prev?.coursesChosen ?? input.courses.length > 0,
     // `undefined` keeps whatever is stored; an explicit null clears it.
     target: input.target === undefined ? (prev?.target ?? null) : parseTarget(input.target),
+    programme: input.programme === undefined ? (prev?.programme ?? null) : input.programme,
+    year: input.year === undefined ? (prev?.year ?? null) : input.year,
+    curriculum: input.curriculum === undefined ? (prev?.curriculum ?? []) : [...new Set(input.curriculum)],
     id: prev?.id ?? newId(),
     since: prev?.since ?? new Date().toISOString(),
   };
@@ -360,6 +404,10 @@ export function saveOnboarding(input: {
   /** Omit to keep whatever is stored; the flow only passes this from the
    *  question that asks for it. */
   target?: StudyTarget | null;
+  /** Same rule for all three: passed only by the question that asks. */
+  programme?: string | null;
+  year?: number | null;
+  curriculum?: string[];
 }): Identity {
   const prev = assignIdentity();
   return saveIdentity({
@@ -370,6 +418,9 @@ export function saveOnboarding(input: {
     courses: input.courses,
     coursesChosen: input.coursesChosen,
     ...(input.target === undefined ? {} : { target: input.target }),
+    ...(input.programme === undefined ? {} : { programme: input.programme }),
+    ...(input.year === undefined ? {} : { year: input.year }),
+    ...(input.curriculum === undefined ? {} : { curriculum: input.curriculum }),
   });
 }
 
@@ -442,6 +493,13 @@ export type AccountIdentity = {
   /** The promise the dashboard scores them against — theirs, not ours, so it
    *  has to travel with the account rather than sit on one phone. */
   target: StudyTarget | null;
+  /** The programme, the year, and everything they ticked off its timetable.
+   *  Travels for the same reason `courses` does: a student who answered on
+   *  their phone must not be asked again on a borrowed laptop — and this is the
+   *  answer that took the most taps to give. */
+  programme: string | null;
+  year: number | null;
+  curriculum: string[];
 };
 
 /** The device's identity shaped for account metadata, or null before any has
@@ -459,6 +517,9 @@ export function accountIdentity(): AccountIdentity | null {
         courses: v.courses,
         coursesChosen: v.coursesChosen,
         target: v.target,
+        programme: v.programme,
+        year: v.year,
+        curriculum: v.curriculum,
       }
     : null;
 }
@@ -487,6 +548,15 @@ export function parseAccountIdentity(v: unknown): AccountIdentity | null {
     courses: Array.isArray(o.courses) ? o.courses.filter((c): c is string => typeof c === "string") : [],
     coursesChosen: o.coursesChosen === true,
     target: parseTarget(o.target),
+    programme: typeof o.programme === "string" && o.programme ? o.programme.slice(0, 120) : null,
+    year: typeof o.year === "number" && o.year >= 1 && o.year <= 6 ? o.year : null,
+    /* Capped. Every other field here is one value; this is a list a signed-in
+       browser can write freely, and unsafeMetadata has a size limit that a
+       student's real answer will never approach. The longest programme on file
+       is 33 courses. */
+    curriculum: Array.isArray(o.curriculum)
+      ? o.curriculum.filter((c): c is string => typeof c === "string").slice(0, 60)
+      : [],
   };
 }
 
@@ -532,6 +602,13 @@ function mergeAccount(acct: AccountIdentity, prev: Identity | null): Identity {
     courses: takeCourses ? acct.courses : (prev?.courses ?? []),
     coursesChosen: takeCourses || (prev?.coursesChosen ?? false),
     target: acct.target ?? prev?.target ?? null,
+    /* The programme travels with the courses, not on its own: the two were
+       answered together and `curriculum` is only meaningful against the
+       programme it was picked from. Splitting them across a merge would give a
+       student one programme's ticks read against another's timetable. */
+    programme: takeCourses ? acct.programme : (prev?.programme ?? null),
+    year: takeCourses ? acct.year : (prev?.year ?? null),
+    curriculum: takeCourses ? acct.curriculum : (prev?.curriculum ?? []),
     id: prev?.id ?? newId(),
     since: acct.since,
   };
@@ -552,7 +629,15 @@ export function matchesAccount(id: Identity | null, acct: AccountIdentity): bool
     id.courses.length === next.courses.length &&
     id.courses.every((s, i) => s === next.courses[i]) &&
     id.target?.days === next.target?.days &&
-    id.target?.minutes === next.target?.minutes
+    id.target?.minutes === next.target?.minutes &&
+    /* The curriculum answer has to be compared too, or a device that knows the
+       programme and an account that doesn't would report "already matches" and
+       the upward write would never fire — the answer would live on one phone
+       forever. */
+    id.programme === next.programme &&
+    id.year === next.year &&
+    id.curriculum.length === next.curriculum.length &&
+    id.curriculum.every((s, i) => s === next.curriculum[i])
   );
 }
 
@@ -565,7 +650,9 @@ export function accountBehind(id: Identity | null, acct: AccountIdentity): boole
   return (
     (!acct.school && !!id.school) ||
     (!acct.coursesChosen && id.coursesChosen) ||
-    (!acct.target && !!id.target)
+    (!acct.target && !!id.target) ||
+    (!acct.programme && !!id.programme) ||
+    (!acct.curriculum.length && id.curriculum.length > 0)
   );
 }
 

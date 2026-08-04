@@ -1,18 +1,19 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSignedIn } from "@/lib/account";
 import { coursesForSchool } from "@/lib/courses";
-import {
-  firstUnanswered,
-  saveOnboarding,
-  useIdentity,
-  type Identity,
-  type StudyTarget,
-} from "@/lib/identity";
+import { saveOnboarding, useIdentity, type Identity, type StudyTarget } from "@/lib/identity";
 import { OTHER_SCHOOL, type SchoolChoice } from "@/lib/schools";
-import { CoursePicker, SchoolPicker } from "@/components/identity/pickers";
+import {
+  coursesByYear,
+  hasProgrammes,
+  liveSlugsFor,
+  programmeBySlug,
+  programmesFor,
+} from "@/lib/programmes";
+import { CoursePicker, CurriculumPicker, OptionRows, SchoolPicker } from "@/components/identity/pickers";
 import { Button } from "@/components/ui/Button";
 
 /* ------------------------------------------------------------------ *
@@ -78,13 +79,40 @@ const MINUTE_CHOICES = [15, 30, 45, 60, 90, 120];
  */
 const ANSWER_BEAT_MS = 380;
 
-type Step = "school" | "courses" | "target";
-const ORDER: Step[] = ["school", "courses", "target"];
+type Step = "school" | "programme" | "year" | "courses" | "target";
 
-/** The three answers as the form holds them. */
+/**
+ * The questions, in order — and which of them this student is asked at all.
+ *
+ * PREDICTIVE, NOT A QUESTIONNAIRE (owner, 2026-08-04): "when they say the
+ * school, I already know which programmes are at the school; when they say the
+ * programme, I already know the courses; when they say the year, now I know the
+ * specific courses… I'll do as much to help them so they don't have to manually
+ * pick things which we could avoid." Two extra taps buy the student a course
+ * list that is already their own timetable instead of a library to hunt through.
+ *
+ * THE MIDDLE TWO ARE DATA-DEPENDENT, which is the whole reason this is a
+ * function and not a constant. Only one university has had its curriculum
+ * scraped, so the other nine skip straight from school to courses and get the
+ * plain library — no empty programme list, no dead end. Adding a university's
+ * curriculum later turns its two questions on with no code change, which is
+ * what was asked for: "set this up so it works dynamically, i will be filling
+ * in those courses later."
+ */
+function stepsFor(school: SchoolChoice | null): Step[] {
+  return hasProgrammes(school)
+    ? ["school", "programme", "year", "courses", "target"]
+    : ["school", "courses", "target"];
+}
+
+/** The answers as the form holds them. */
 type Draft = {
   school: SchoolChoice | null;
   schoolName: string;
+  programme: string | null;
+  year: number | null;
+  /** Curriculum slugs ticked — their real timetable, built or not. */
+  curriculum: string[];
   courses: string[];
   /** Whether the courses QUESTION has been answered, which is not the same as
    *  the list being non-empty — "Show me everything" answers it with none.
@@ -103,10 +131,26 @@ function asDraft(identity: Identity | null): Draft {
   return {
     school: identity?.school ?? null,
     schoolName: identity?.schoolName ?? "",
+    programme: identity?.programme ?? null,
+    year: identity?.year ?? null,
+    curriculum: identity?.curriculum ?? [],
     courses: identity?.courses ?? [],
     coursesAnswered: identity?.coursesChosen ?? false,
     target: identity?.target ?? { days: 4, minutes: 30 },
   };
+}
+
+/** Which question to open on — the first without an answer, over whichever
+ *  steps this student is actually being asked. Mirrors lib/identity's
+ *  `firstUnanswered` and extends it over the two data-dependent ones. */
+function firstGap(d: Draft, steps: Step[]): Step {
+  for (const s of steps) {
+    if (s === "school" && (!d.school || (d.school === OTHER_SCHOOL && !d.schoolName.trim()))) return s;
+    if (s === "programme" && !d.programme) return s;
+    if (s === "year" && !d.year) return s;
+    if (s === "courses" && !d.coursesAnswered) return s;
+  }
+  return "target";
 }
 
 export function OnboardingFlow() {
@@ -134,12 +178,24 @@ export function OnboardingFlow() {
   const [dir, setDir] = useState<"next" | "back">("next");
   const [query, setQuery] = useState("");
 
-  const { school, schoolName, courses, coursesAnswered, target } = draft ?? asDraft(identity);
-  const step = stepPick ?? (hydrated ? firstUnanswered(identity) : "school");
+  const d = draft ?? asDraft(identity);
+  const { school, schoolName, programme, year, curriculum, courses, coursesAnswered, target } = d;
+
+  /* Which questions this student gets, and where they resume. Both read off the
+     school, so a university with no curriculum on file never renders a
+     programme step to resume into. */
+  const ORDER = stepsFor(school);
+  const step = stepPick ?? (hydrated ? firstGap(d, ORDER) : "school");
+
+  /** The programme they picked, with its courses. Undefined until they pick.
+   *  Not memoised: it is a find over at most 41 rows, and a manual memo here is
+   *  something the React Compiler has to give up optimising the component to
+   *  preserve — a worse trade than the lookup it saves. */
+  const prog = programmeBySlug(school, programme);
 
   /** Change one answer, and take the form off the record for good. */
   function edit(patch: Partial<Draft>) {
-    setDraft({ school, schoolName, courses, coursesAnswered, target, ...patch });
+    setDraft({ ...d, ...patch });
   }
 
   /* This page is for somebody who has just made an account. Anyone who lands
@@ -154,7 +210,7 @@ export function OnboardingFlow() {
   /* Which courses to offer. A school narrows the list; "not listed" and no
      answer both mean the whole library (coursesForSchool reads null that
      way), which is the honest offer when we don't know their syllabus. */
-  const offered = useMemo(() => coursesForSchool(school), [school]);
+  const offered = coursesForSchool(school);
 
   const index = ORDER.indexOf(step);
 
@@ -177,6 +233,9 @@ export function OnboardingFlow() {
     courses?: string[];
     coursesChosen: boolean;
     target?: StudyTarget;
+    programme?: string | null;
+    year?: number | null;
+    curriculum?: string[];
   }) {
     const s = "school" in patch ? (patch.school ?? null) : school;
     saveOnboarding({
@@ -185,6 +244,9 @@ export function OnboardingFlow() {
       courses: patch.courses ?? courses,
       coursesChosen: patch.coursesChosen,
       ...(patch.target === undefined ? {} : { target: patch.target }),
+      ...(patch.programme === undefined ? {} : { programme: patch.programme }),
+      ...(patch.year === undefined ? {} : { year: patch.year }),
+      ...(patch.curriculum === undefined ? {} : { curriculum: patch.curriculum }),
     });
   }
 
@@ -329,7 +391,14 @@ export function OnboardingFlow() {
                    answer already given, which is a real case now that the flow
                    resumes into a part-filled record. */
                 const changed = id !== school;
-                edit(changed ? { school: id, courses: [], coursesAnswered: false } : { school: id });
+                /* A different university means a different curriculum, so the
+                   programme and everything picked under it go with it — a
+                   Mulungushi student must not carry a ZCAS programme. */
+                edit(
+                  changed
+                    ? { school: id, programme: null, year: null, curriculum: [], courses: [], coursesAnswered: false }
+                    : { school: id },
+                );
                 if (id !== OTHER_SCHOOL) {
                   /* SAVED NOW, MOVED IN A MOMENT. The write is not delayed with
                      the advance — a student who taps their university and
@@ -337,10 +406,11 @@ export function OnboardingFlow() {
                      the resume reads the record rather than the timer. */
                   save({
                     school: id,
-                    ...(changed ? { courses: [] } : {}),
+                    ...(changed ? { courses: [], programme: null, year: null, curriculum: [] } : {}),
                     coursesChosen: changed ? false : coursesAnswered,
                   });
-                  advanceAfterBeat("courses");
+                  // Straight to courses where we don't know the curriculum.
+                  advanceAfterBeat(hasProgrammes(id) ? "programme" : "courses");
                 } else {
                   /* "Another university" opens a field instead of advancing, so
                      a beat armed by a previous tap has to be called off — it
@@ -355,7 +425,118 @@ export function OnboardingFlow() {
           </Card>
         )}
 
-        {step === "courses" && (
+        {step === "programme" && (
+          <Card
+            title="What are you studying?"
+            why="Pick your programme and we'll line up its courses for you. Tap Back if you picked the wrong university."
+          >
+            <OptionRows
+              options={programmesFor(school).map((p) => ({
+                id: p.slug,
+                title: p.name,
+                note: p.level ?? undefined,
+              }))}
+              value={programme}
+              label={(slug) => programmesFor(school).find((p) => p.slug === slug)?.name ?? slug}
+              onPick={(slug) => {
+                /* Changing programme invalidates the ticks under it — the same
+                   rule the school question follows, one level down. The year is
+                   kept where the new programme also teaches it, so somebody
+                   correcting BSc to BA in year 4 stays in year 4. */
+                const changed = slug !== programme;
+                const next = programmeBySlug(school, slug);
+                const keepYear = year && next?.years.includes(year) ? year : null;
+                edit(
+                  changed
+                    ? { programme: slug, year: keepYear, curriculum: [], courses: [], coursesAnswered: false }
+                    : { programme: slug },
+                );
+                save({
+                  programme: slug,
+                  ...(changed ? { year: keepYear, curriculum: [], courses: [] } : {}),
+                  coursesChosen: changed ? false : coursesAnswered,
+                });
+                advanceAfterBeat("year");
+              }}
+            />
+          </Card>
+        )}
+
+        {step === "year" && (
+          <Card
+            title="Which year are you in?"
+            why="We'll put this year's courses at the top. You can still take ones from any other year."
+          >
+            <OptionRows
+              options={(prog?.years ?? []).map((y) => {
+                const n = prog?.courses.filter((c) => c.year === y).length ?? 0;
+                return { id: y, title: `Year ${y}`, note: `${n} course${n === 1 ? "" : "s"}` };
+              })}
+              value={year}
+              label={(y) => `Year ${y}`}
+              onPick={(y) => {
+                /* THE PREDICTIVE STEP. Picking a year pre-ticks that year's
+                   courses — the whole point of asking the two questions above
+                   (owner: "I'll do as much to help them so they don't have to
+                   manually pick things which we could avoid"). They arrive at
+                   the next screen with their timetable already filled in and
+                   untick what they are not taking, which is a much shorter job
+                   than ticking eight rows from nothing.
+
+                   Only on a CHANGE of year, so coming Back to this screen and
+                   re-tapping the same year cannot wipe edits they made after. */
+                const changed = y !== year;
+                const picks = changed
+                  ? coursesByYear(prog, y).thisYear.map((c) => c.slug)
+                  : curriculum;
+                edit({ year: y, curriculum: picks, courses: liveSlugsFor(prog, picks) });
+                save({ year: y, curriculum: picks, courses: liveSlugsFor(prog, picks), coursesChosen: coursesAnswered });
+                advanceAfterBeat("courses");
+              }}
+            />
+          </Card>
+        )}
+
+        {step === "courses" && prog && (
+          <Card
+            title="These are your courses"
+            why="We filled in your year from your programme. Untick anything you're not taking, and add from other years."
+            actions={
+              <Button
+                variant="primary"
+                size="lg"
+                block
+                disabled={curriculum.length === 0}
+                onClick={() => {
+                  edit({ coursesAnswered: true });
+                  save({ coursesChosen: true, curriculum, courses: liveSlugsFor(prog, curriculum) });
+                  goTo("target");
+                }}
+              >
+                {curriculum.length === 0
+                  ? "Pick at least one"
+                  : `Continue with ${curriculum.length} course${curriculum.length > 1 ? "s" : ""}`}
+              </Button>
+            }
+          >
+            <CurriculumPicker
+              thisYear={coursesByYear(prog, year).thisYear}
+              otherYears={coursesByYear(prog, year).otherYears}
+              year={year}
+              picked={curriculum}
+              onToggle={(slug) => {
+                const next = curriculum.includes(slug)
+                  ? curriculum.filter((s) => s !== slug)
+                  : [...curriculum, slug];
+                /* Both lists move together: `curriculum` is the demand signal
+                   and `courses` is what the dashboard may actually render. */
+                edit({ curriculum: next, courses: liveSlugsFor(prog, next) });
+              }}
+            />
+          </Card>
+        )}
+
+        {step === "courses" && !prog && (
           <Card
             title="Which courses are you taking?"
             why="Tick every one you're studying this semester. Not sure yet? Take everything and narrow it down later."

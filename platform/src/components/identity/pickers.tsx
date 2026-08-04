@@ -3,6 +3,7 @@
 import { useId } from "react";
 import { MynaIcon } from "@/components/icons/myna";
 import type { CourseMeta } from "@/lib/courses";
+import type { ProgrammeCourse } from "@/lib/programmes";
 import { OTHER_SCHOOL, SCHOOLS, type SchoolChoice } from "@/lib/schools";
 import { crestSrc } from "./school-crests";
 
@@ -348,6 +349,141 @@ export function SchoolPicker({
         />
       )}
     </>
+  );
+}
+
+/**
+ * A plain list of options wearing the university row (owner, 2026-08-04: "this
+ * same ticking mechanism that I'm setting up for picking the university should
+ * go throughout the whole thing — so don't make up your designs and everything,
+ * this is how it should look almost all the way").
+ *
+ * So the programme question and the year question are not new designs; they are
+ * this row with different words in it. Anything added to the flow later should
+ * reach for this before inventing a control.
+ */
+export function OptionRows<T extends string | number>({
+  options,
+  value,
+  onPick,
+  label,
+}: {
+  options: { id: T; title: string; note?: string }[];
+  value: T | null;
+  onPick: (id: T) => void;
+  label: (id: T) => string;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      {options.map((o) => {
+        const on = o.id === value;
+        return (
+          <button
+            key={String(o.id)}
+            type="button"
+            onClick={() => onPick(o.id)}
+            aria-pressed={on}
+            aria-label={label(o.id)}
+            className={schoolTone(on)}
+          >
+            <Tick on={on} />
+            <span className="flex min-w-0 flex-1 flex-col">
+              <span
+                className={
+                  "font-display text-[15px] leading-snug text-ink " + (on ? "font-semibold" : "font-medium")
+                }
+              >
+                {o.title}
+              </span>
+              {o.note && <span className="mt-0.5 font-display text-[13px] leading-5 text-muted">{o.note}</span>}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/**
+ * A student's own timetable: the year they are in first, the rest of the
+ * programme under it.
+ *
+ * Owner's layout, 2026-08-04: "I'll first of all display the year four courses,
+ * all the year four courses, and then below that I will display the other
+ * years' courses… they also have the ability to add courses that are not in the
+ * year they're in, in case they're studying them as well."
+ *
+ * EVERY COURSE SHOWS, BUILT OR NOT — owner's call: "we should show them
+ * literally all the courses not just what we've built, that way we can
+ * prioritise building properly." A row with nothing behind it yet is still
+ * tickable and still marked, because the tick IS the demand signal that decides
+ * what gets written next. What it must not do is quietly become a course on
+ * somebody's dashboard with no content in it; that is handled upstream, where
+ * the picks are split into built slugs and the rest (see lib/programmes).
+ */
+export function CurriculumPicker({
+  thisYear,
+  otherYears,
+  year,
+  picked,
+  onToggle,
+}: {
+  thisYear: ProgrammeCourse[];
+  otherYears: ProgrammeCourse[];
+  year: number | null;
+  /** Curriculum slugs currently ticked. */
+  picked: string[];
+  onToggle: (slug: string) => void;
+}) {
+  const row = (c: ProgrammeCourse) => {
+    const on = picked.includes(c.slug);
+    return (
+      <button
+        key={c.slug}
+        type="button"
+        onClick={() => onToggle(c.slug)}
+        aria-pressed={on}
+        className={schoolTone(on)}
+      >
+        <Tick on={on} />
+        <span className="flex min-w-0 flex-1 items-center gap-2">
+          <span
+            className={"min-w-0 font-display text-[15px] leading-snug text-ink " + (on ? "font-semibold" : "font-medium")}
+          >
+            {c.title}
+          </span>
+          {/* Only the READY ones are marked. Marking the other 350 "coming
+              soon" would put a badge on almost every row, which stops being
+              information and starts being noise — and it would read as an
+              apology for a timetable that is simply the student's own. */}
+          {c.live && (
+            <span className="shrink-0 rounded-full bg-ink/[0.07] px-1.5 py-0.5 font-display text-[10px] font-semibold uppercase tracking-wide text-ink-2">
+              Ready
+            </span>
+          )}
+        </span>
+      </button>
+    );
+  };
+
+  return (
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-2">
+        {year && <p className="font-display text-[12px] font-semibold uppercase tracking-wide text-muted">Year {year}</p>}
+        {thisYear.map(row)}
+      </div>
+      {otherYears.length > 0 && (
+        <div className="flex flex-col gap-2">
+          {/* Not hidden behind a "show more": a student repeating a module, or
+              taking one early, is ordinary, and the alternative is a list that
+              quietly refuses to contain their actual timetable. */}
+          <p className="font-display text-[12px] font-semibold uppercase tracking-wide text-muted">
+            Other years on this programme
+          </p>
+          {otherYears.map(row)}
+        </div>
+      )}
+    </div>
   );
 }
 
