@@ -4,8 +4,6 @@ import { RightPanel } from "@/components/reader/RightPanel";
 import { MobileNavProvider, MobileScrim } from "@/components/reader/MobileNav";
 import { ProgressScope } from "@/components/reader/ProgressScope";
 import { StudyClock } from "@/components/reader/StudyClock";
-import { clerkEnabled } from "@/lib/clerk";
-import { ClerkIsland } from "@/components/ClerkIsland";
 
 // Persistent chrome: this layout stays mounted while you navigate between
 // lessons, so the sidebar's sliding active indicator animates across routes
@@ -14,14 +12,12 @@ import { ClerkIsland } from "@/components/ClerkIsland";
 export default function ReaderLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      {/* Ties stored progress to the signed-in Clerk user. Only mounted when
-          Clerk is configured — it calls useUser(), which needs ClerkProvider.
-          Progress itself needs no provider: it's a module store (lib/progress). */}
-      {clerkEnabled && (
-        <ClerkIsland>
-          <ProgressScope />
-        </ClerkIsland>
-      )}
+      {/* Ties stored progress to the signed-in student. Mounted unconditionally
+          since 2026-08-05: it reads lib/account, a module store, so there is no
+          provider to be missing and nothing to fail — the ClerkIsland boundary
+          and the `clerkEnabled` guard around it both existed only because
+          useUser() threw without ClerkProvider above it. */}
+      <ProgressScope />
       {/* Times reading, for the dashboard's activity chart. Here rather than in
           the root layout: only a lesson counts as studying. */}
       <StudyClock />

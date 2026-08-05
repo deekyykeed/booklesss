@@ -44,18 +44,17 @@ export default function PrivacyPage() {
 
         <h2 className="font-display text-[19px] font-semibold text-ink">With an account</h2>
         <p>
-          If you create an account we store your email address and a securely hashed password, or —
-          if you continue with Google — the name, email address and profile picture Google shares.
-          Accounts are managed by Clerk, our sign-in provider. If you arrived through someone&rsquo;s
-          shared link, their referral code is recorded on your account so we can thank the person
-          who brought you.
+          If you create an account we store your email address and a securely hashed password.
+          Accounts and the rest of your data are held by Supabase, which runs our database and
+          sign-in. If you arrived through someone&rsquo;s shared link, their referral code is
+          recorded on your account so we can thank the person who brought you.
         </p>
 
         <h2 className="font-display text-[19px] font-semibold text-ink">What we never do</h2>
         <p>
           We do not sell your data. We do not show ads. We do not share your details with anyone
-          except the services that run the app: Clerk (accounts) and Vercel (hosting), which log
-          standard request data the way every web host does.
+          except the services that run the app: Supabase (accounts and database) and Vercel
+          (hosting), which log standard request data the way every web host does.
         </p>
 
         <h2 className="font-display text-[19px] font-semibold text-ink">Your choices</h2>

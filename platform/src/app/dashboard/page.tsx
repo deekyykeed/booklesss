@@ -3,7 +3,7 @@ import { HomeView } from "@/components/home/HomeView";
 import { HomeViewWithUser } from "@/components/home/HomeViewWithUser";
 import { RequireAccount } from "@/components/auth/RequireAccount";
 import { RequireOnboarding } from "@/components/auth/RequireOnboarding";
-import { clerkEnabled } from "@/lib/clerk";
+import { authEnabled } from "@/lib/auth";
 import { openGraph, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -20,8 +20,8 @@ export const metadata: Metadata = {
  * anyway. A course's own overview lives at /[slug] (e.g. /economics), and
  * the steps under their own paths. */
 export default function DashboardPage() {
-  // The greeting uses the signed-in first name where Clerk is configured;
-  // without it the page is identical minus the name.
+  // The greeting uses the student's own name where accounts are configured;
+  // without them the page is identical minus the name.
   return (
     <>
       {/* No account, no dashboard (owner, 2026-08-03). Reading a shared step
@@ -31,7 +31,7 @@ export default function DashboardPage() {
       {/* And no finished onboarding, no dashboard either (owner, 2026-08-04) —
           this page is the answers, drawn. Until they exist it renders nothing
           and sends the student to /onboarding to give them. */}
-      <RequireOnboarding>{clerkEnabled ? <HomeViewWithUser /> : <HomeView />}</RequireOnboarding>
+      <RequireOnboarding>{authEnabled ? <HomeViewWithUser /> : <HomeView />}</RequireOnboarding>
     </>
   );
 }

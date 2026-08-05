@@ -3,24 +3,20 @@
 import { useSyncExternalStore } from "react";
 
 /* ------------------------------------------------------------------ *
- * Ask for an account — by opening CLERK'S OWN modal.
+ * Ask for an account — by opening the app's own sheet.
  *
- * The custom sheet and AuthForm this store used to drive are gone (owner,
- * 2026-08-03: "use clerk stuff just remove the logo") — Clerk's prebuilt
- * sign-up/sign-in card, opened as a modal, is the one auth surface. The logo
- * slot is hidden in lib/clerk-appearance so the card wears no logo at all.
- *
- * The store outlives the sheet it was built for, because its reason does:
+ * This store has now outlived two auth surfaces: the first custom sheet, then
+ * Clerk's prebuilt modal (2026-08-03 to 2026-08-05), and now the app's own
+ * again. It survives each time because its reason is not about the surface —
  * the things that ask are a checkpoint button halfway down a step and the
- * next-step gate in lib/account — plain handlers with no ClerkProvider above
- * them, on builds that may have no Clerk keys at all. So `requireAccount()`
- * stays the one call every gate makes, and exactly one component inside the
- * provider (components/auth/ClerkGate) consumes the ask and opens the modal.
+ * next-step gate in lib/account, plain handlers on a static page, on builds
+ * that may have no auth keys at all. So `requireAccount()` stays the one call
+ * every gate makes, and exactly one component (components/auth/AuthGate)
+ * consumes the ask and puts a form on screen.
  *
- * `reason` no longer chooses the words on the card — Clerk's card says
- * Clerk's words — but the call sites still know why they asked, and keeping
- * the reason in the ask is what lets any later surface (a toast, analytics,
- * a reopened sheet) say it again without re-plumbing every gate.
+ * `reason` chooses the line above the form again — Clerk's card said Clerk's
+ * words, and keeping the reason in the ask through that period is what made it
+ * a one-line change to say ours instead. See WHY in AuthGate.
  * ------------------------------------------------------------------ */
 
 export type OnboardingReason = "checkpoint" | "note" | "comment" | "next-step" | "manual";
@@ -67,7 +63,7 @@ const subscribe = (l: () => void) => {
 };
 const snapshot = () => ask;
 
-/** ClerkGate's feed. Nothing else should need this. */
+/** AuthGate's feed. Nothing else should need this. */
 export function useAccountAsk(): AccountAsk {
   return useSyncExternalStore(subscribe, snapshot, () => IDLE);
 }

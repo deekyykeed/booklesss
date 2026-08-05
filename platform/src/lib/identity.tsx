@@ -721,8 +721,8 @@ export function saveIdentity(input: {
  *
  * The flow saves after every step rather than at the end, so a student who
  * closes the tab on question three keeps what they said — and the sign-up
- * card at the end reads this straight off the device (see ClerkGate and the
- * onboarding page), which is how the answers reach the account.
+ * answers are pushed to the account by profile-sync as they are given, which
+ * is how they reach a second device.
  *
  * EVERY SAVE SAYS WHAT WAS ACTUALLY ANSWERED. This used to hard-code
  * `coursesChosen: true` on every write, including the one that stores the
@@ -878,9 +878,9 @@ export type AccountIdentity = {
   typedCourses: string[];
 };
 
-/** The device's identity shaped for account metadata, or null before any has
- *  been assigned. A plain accessor, not a hook — ClerkGate builds sign-up
- *  metadata inside an event's effect, and AccountSignal heals outside render. */
+/** The device's identity shaped for the account's copy, or null before any has
+ *  been assigned. A plain accessor rather than a hook, so it can be called from
+ *  an event handler or an effect. */
 export function accountIdentity(): AccountIdentity | null {
   const v = load();
   return v ? asAccount(v) : null;
@@ -888,7 +888,18 @@ export function accountIdentity(): AccountIdentity | null {
 
 /** A stored record shaped for the account. Split out from `accountIdentity` so
  *  the merge's own result can be compared against the account in the same
- *  shape — see `accountBehind`. */
+ *  shape.
+ *
+ *  EXPORTED since 2026-08-05, as `accountShape`: profile-sync sends this exact
+ *  object to /api/profile, which stores it verbatim in `students.identity` —
+ *  the column AccountSignal reads back on the next sign-in. Taking it from the
+ *  record in hand rather than from `accountIdentity()`, which re-reads
+ *  localStorage, so the blob that goes up is provably the one the caller was
+ *  looking at. */
+export function accountShape(v: Identity): AccountIdentity {
+  return asAccount(v);
+}
+
 function asAccount(v: Identity): AccountIdentity {
   return {
     name: v.name,
@@ -1015,9 +1026,9 @@ function mergeAccount(acct: AccountIdentity, prev: Identity | null): Identity {
    *
    * This is the fact the merge was missing, and missing it cost a student every
    * answer they gave. The account's copy is a SNAPSHOT OF THE DEVICE taken at
-   * sign-up: ClerkGate writes `accountIdentity()` into unsafeMetadata at the
-   * moment the account is created, which on a fresh visit is the placeholder the
-   * device rolled for itself — Astronaut, no school, no courses. The student
+   * sign-up: the device's own record is pushed up at the moment the account is
+   * created, which on a fresh visit is the placeholder the device rolled for
+   * itself — Astronaut, no school, no courses. The student
    * then answers ten questions against the device. Every one of those answers is
    * newer than the snapshot, and the rule "the account wins where it has an
    * answer" read the snapshot as authority and handed it straight back down.

@@ -62,7 +62,9 @@ export type MynaIconName =
   | "credit-card"
   | "download"
   | "share"
-  | "link";
+  | "link"
+  | "eye"
+  | "eye-off";
 
 /* Path bodies only — a 24-grid viewBox is added by the component. Each keeps
  * stroke="currentColor", so an icon takes the colour of the text around it. */
@@ -177,6 +179,10 @@ const BODIES: Record<MynaIconName, string> = {
     '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.5 12a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0m5-5.5l-5 3.5m5 7.5l-5-3.5m10 4.5a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0m0-13a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0"/>',
   "link":
     '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m15.988 13l3.902-3.902c1.437-1.437 1.485-3.718.107-5.095c-1.377-1.378-3.658-1.33-5.095.107L11 8.012m2 7.95l-3.892 3.88c-1.432 1.43-3.64 1.615-5.082.107c-1.442-1.507-1.326-3.639.107-5.068L8.025 11M9 15l6-6"/>',
+  "eye":
+    '<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M2.55 13.406c-.272-.373-.408-.56-.502-.92a2.5 2.5 0 0 1 0-.971c.094-.361.23-.548.502-.92C4.039 8.55 7.303 5 12 5s7.961 3.55 9.45 5.594c.272.373.408.56.502.92a2.5 2.5 0 0 1 0 .971c-.094.361-.23.548-.502.92C19.961 15.45 16.697 19 12 19s-7.961-3.55-9.45-5.594"/><path d="M12 14a2 2 0 1 0 0-4a2 2 0 0 0 0 4"/></g>',
+  "eye-off":
+    '<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M2.55 13.406c-.272-.373-.408-.56-.502-.92a2.5 2.5 0 0 1 0-.971c.094-.361.23-.548.502-.92C4.039 8.55 7.303 5 12 5s7.961 3.55 9.45 5.594c.272.373.408.56.502.92a2.5 2.5 0 0 1 0 .971c-.094.361-.23.548-.502.92C19.961 15.45 16.697 19 12 19s-7.961-3.55-9.45-5.594"/><path d="M12 14a2 2 0 1 0 0-4a2 2 0 0 0 0 4m9-11L3 21"/></g>',
 };
 
 /**

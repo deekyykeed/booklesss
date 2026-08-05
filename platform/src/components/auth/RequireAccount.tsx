@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSignedIn } from "@/lib/account";
-import { clerkEnabled } from "@/lib/clerk";
+import { authEnabled } from "@/lib/auth";
 
 /**
  * Keeps a page for people who have an account (owner, 2026-08-03: "if the
@@ -27,7 +27,7 @@ export function RequireAccount({ to = "/" }: { to?: string }) {
   const signedIn = useSignedIn();
 
   useEffect(() => {
-    if (clerkEnabled && signedIn === false) router.replace(to);
+    if (authEnabled && signedIn === false) router.replace(to);
   }, [signedIn, router, to]);
 
   return null;

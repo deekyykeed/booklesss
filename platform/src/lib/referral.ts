@@ -6,8 +6,8 @@
  * plain state and pure functions; the browser-only parts guard themselves,
  * and nothing server-side ever calls them.
  *
- * The design was decided 2026-08-02 and parked until Clerk landed, so a
- * referral could point at a person rather than a device. Clerk is live, so
+ * The design was decided 2026-08-02 and parked until accounts landed, so a
+ * referral could point at a person rather than a device. They are live, so
  * this is now the whole loop:
  *
  *   1. A signed-in student's share links carry their code — `?r=deeky-7fq`,
@@ -15,14 +15,15 @@
  *   2. The arriving device stores the code (below). FIRST REFERRER WINS:
  *      the person whose link opened this app first is the one who brought
  *      the reader in, and a later link must not quietly take that over.
- *   3. Sign-up copies it onto the new account as unsafeMetadata.referredBy
- *      (see ClerkGate), so every account permanently records who sent them.
+ *   3. Sign-up copies it onto the new account as `referred_by` in the auth
+ *      user's metadata (see components/auth/AuthForm), and profile-sync writes
+ *      it to the student's row — so every account permanently records who sent
+ *      them, in a table that can be GROUPed BY.
  *
  * Counting and rewarding stays HUMAN for now, which is the right size for a
  * business currently rewarding people over WhatsApp and mobile money: the
- * owner opens Clerk's dashboard, reads referredBy off the new accounts, and
- * pays the star sharers. A leaderboard needs a server table; this needs
- * nothing but the metadata it writes.
+ * owner reads `referred_by` off the students table and pays the star sharers.
+ * A leaderboard is a view over that column when it is worth building.
  *
  * The code is name-based and derived, not stored: a slug of what the person
  * is called, then a short stable tail off their user id so two Deekys don't
@@ -32,7 +33,7 @@
 const KEY = "booklesss:referrer:v1";
 
 /** The signed-in student's own share code, published by AccountSignal (the
- *  one component allowed to talk to Clerk) and read by shareUrl(). Module
+ *  one component that reads the session) and read by shareUrl(). Module
  *  state rather than a hook because shareUrl is a plain function; always
  *  null on the server, which is fine — server-built URLs carry no referral. */
 let myCode: string | null = null;

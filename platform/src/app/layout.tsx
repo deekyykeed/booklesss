@@ -1,14 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Familjen_Grotesk } from "next/font/google";
 import localFont from "next/font/local";
-import { ClerkProvider } from "@clerk/nextjs";
-import { clerkEnabled } from "@/lib/clerk";
-import { clerkAppearance } from "@/lib/clerk-appearance";
 import { RegisterSW } from "@/components/RegisterSW";
 import { DesktopGate } from "@/components/DesktopGate";
 import { IdentityAssignment } from "@/components/identity/IdentityAssignment";
 import { AccountSignal } from "@/components/auth/AccountSignal";
-import { ClerkGate } from "@/components/auth/ClerkGate";
+import { AuthGate } from "@/components/auth/AuthGate";
 import { SettingsSheet } from "@/components/identity/SettingsSheet";
 import { openGraph, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
@@ -153,6 +150,20 @@ export default function RootLayout({
             added later can't quietly land a reader with no identity. */}
         <IdentityAssignment />
         <SettingsSheet />
+        {/* THERE IS NO AUTH PROVIDER (2026-08-05). Clerk needed one wrapping the
+            tree, which is why this file used to return two different documents
+            and why AccountSignal and the gate had to live inside one branch of
+            it. Supabase's client is a module singleton — see
+            lib/supabase/browser — so both of these are ordinary components,
+            mounted once, that no-op on a build with no keys.
+
+            AccountSignal publishes "is anybody signed in" and who they are to
+            lib/account, which is what the checkpoint row and the next-step link
+            gate on. AuthGate turns every requireAccount() ask — a checkpoint
+            answer, the next-step gate, the landing card — into the sheet, over
+            whatever page raised it. */}
+        <AccountSignal />
+        <AuthGate />
         {/* Booklesss is a phone app — a wide viewport gets sent to its phone.
             Mounted at the root for the same reason as the identity assignment. */}
         <DesktopGate />
@@ -161,23 +172,5 @@ export default function RootLayout({
     </html>
   );
 
-  // No keys configured -> no provider, and the app renders exactly as it did
-  // before Clerk. See src/lib/clerk.ts.
-  if (!clerkEnabled) return document;
-
-  return (
-    // One appearance for every Clerk surface — see lib/clerk-appearance.ts.
-    <ClerkProvider appearance={clerkAppearance}>
-      {document}
-      {/* Publishes "is anybody signed in" to lib/account, so the checkpoint row
-          and the next-step link can gate on it without importing Clerk — they
-          render on builds with no provider, where its hooks throw. Inside the
-          provider branch on purpose: these are the only components that touch
-          Clerk. ClerkGate turns every requireAccount() ask — a checkpoint
-          answer, the next-step gate, the landing card — into Clerk's own
-          modal, so no gate needs the provider above it. */}
-      <AccountSignal />
-      <ClerkGate />
-    </ClerkProvider>
-  );
+  return document;
 }

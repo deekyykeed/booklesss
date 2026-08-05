@@ -1,19 +1,29 @@
 "use client";
 
-import type { Identity } from "@/lib/identity";
+import { accountShape, type Identity } from "@/lib/identity";
 import { getMyReferralCode, referrer } from "@/lib/referral";
 
 /* ------------------------------------------------------------------ *
  * The student's answers, mirrored to the server.
  *
- * Three copies exist and each earns its place:
+ * TWO copies exist, since 2026-08-05, and each earns its place:
  *   localStorage  — instant, works signed-out and offline, per device.
- *   Clerk         — travels with the person, so a second device resumes.
- *   Supabase      — the only one that can be ASKED A QUESTION. "What are CBU
- *                   students being taught?" is unanswerable from a per-user
- *                   metadata blob, and with seven of ten universities
- *                   publishing no curriculum it is the question the whole
- *                   pipeline now depends on.
+ *   Supabase      — travels with the person AND is the only one that can be
+ *                   ASKED A QUESTION. "What are CBU students being taught?"
+ *                   is the question the whole course pipeline depends on, with
+ *                   seven of ten universities publishing no curriculum.
+ *
+ * THERE USED TO BE THREE. The middle one was Clerk's `unsafeMetadata`, and it
+ * existed because Clerk's session and Supabase's row were different systems: on
+ * a second device, Clerk resolved first and reading the row was a separate call
+ * to a separate service. Supabase auth collapsed that — the session and the row
+ * are the same client on the same connection, and `auth.uid()` makes an RLS'd
+ * read of your own row safe from the browser. So the copy that travels and the
+ * copy that answers questions became one copy, which is also the one that is
+ * not writable by any signed-in browser.
+ *
+ * What travelled in that metadata blob now rides this same post as `identity`
+ * and is stored verbatim in `students.identity` — see the route handler.
  *
  * FIRE AND FORGET. Nothing waits on this, nothing shows a spinner, nothing
  * reports a failure to the student — the device's copy is already written and
@@ -29,6 +39,13 @@ let lastSent = "";
 export function syncProfile(identity: Identity | null): void {
   if (!identity) return;
   const body = JSON.stringify({
+    /* The whole answer set in the shape a second device wants it back in —
+       stored as-is in `students.identity`, parsed by `parseAccountIdentity` on
+       the next sign-in. It carries the four things the flat columns below
+       cannot: `nameChosen` and `coursesChosen` (a name is never empty, so only
+       these can say whether anybody was ASKED), `since`, and the `updatedAt`
+       clock the merge is decided on. */
+    identity: accountShape(identity),
     deviceId: identity.id,
     name: identity.name,
     avatarId: identity.avatar,
@@ -81,8 +98,8 @@ export function syncProfile(identity: Identity | null): void {
     keepalive: true,
   }).catch(() => {
     // Offline, blocked, or the route is not deployed. The answers are on the
-    // device and in Clerk; the next sign-in re-sends them. Clearing lastSent
-    // is what makes that retry possible.
+    // device, which is the copy the app renders from; the next sign-in re-sends
+    // them. Clearing lastSent is what makes that retry possible.
     lastSent = "";
   });
 }

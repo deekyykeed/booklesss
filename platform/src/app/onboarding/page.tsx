@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { auth } from "@clerk/nextjs/server";
-import { clerkEnabled } from "@/lib/clerk";
+import { authEnabled } from "@/lib/auth";
+import { currentUserId } from "@/lib/supabase/server";
 import { OnboardingFlow } from "@/components/onboarding/OnboardingFlow";
 
 /* The questions, asked straight after the account is made. Reached from the
@@ -40,11 +40,11 @@ export const metadata: Metadata = {
  * a gate. Checked on the server, the page is never drawn at all.
  *
  * ON THE PAGE RATHER THAN IN THE MIDDLEWARE, which was the first attempt and
- * the wrong one. Clerk's own guidance is now "middleware is not the best place
- * to protect routes — protect access as close to the resource as possible", and
- * `createRouteMatcher` is deprecated and logs a runtime warning. Putting a
- * deprecated API on the path every single request takes, to guard one page, is
- * a bad trade twice over.
+ * the wrong one. The rule it settled on outlived the auth provider that taught
+ * it: protect access as close to the resource as possible. `proxy.ts` refreshes
+ * the session and decides nothing — putting a gate on the path every request
+ * takes, to guard one page, is work done everywhere for a rule that applies in
+ * one place.
  *
  * THE CLIENT REDIRECT STAYS. It covers what this cannot — a session that ends
  * while the tab is open, long after this ran. Two mechanisms for two moments.
@@ -55,8 +55,8 @@ export const metadata: Metadata = {
  * a page each student sees once, behind a sign-up.
  */
 export default async function OnboardingPage() {
-  if (clerkEnabled) {
-    const { userId } = await auth();
+  if (authEnabled) {
+    const userId = await currentUserId();
     /* To the landing page, where the sign-up card is — the same place the
        client redirect and RequireAccount both send people. A gate that lands
        somebody somewhere the rest of the app never sends them reads as an

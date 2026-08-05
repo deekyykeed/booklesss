@@ -5,7 +5,8 @@ import { Avatar, resolveAvatar, type AvatarId } from "./avatars";
 import { AvatarPicker } from "./AvatarPicker";
 import { CoursePicker, SchoolPicker, SETTINGS_EVENT } from "./pickers";
 import { MynaIcon } from "@/components/icons/myna";
-import { clearFreeStep } from "@/lib/account";
+import { clearFreeStep, useSignedIn } from "@/lib/account";
+import { browserClient } from "@/lib/supabase/browser";
 import { coursesForSchool } from "@/lib/courses";
 import { clearIdentity, saveIdentity, useIdentity } from "@/lib/identity";
 import { useMotion } from "@/lib/motion";
@@ -83,6 +84,11 @@ type Open = "you" | "school" | "courses" | null;
 export function SettingsSheet() {
   const { identity } = useIdentity();
   const plan = usePlan();
+  /* Whether there is an account to sign out OF — see the Account section below.
+     Null ("not heard yet") draws no row, like everywhere else: offering to sign
+     out somebody whose session hasn't resolved is the same mistake as offering
+     to sign in somebody who already has. */
+  const signedIn = useSignedIn();
   const { pref: motion, hydrated: motionReady, setPref: setMotion } = useMotion();
 
   const [open, setOpen] = useState(false);
@@ -172,11 +178,33 @@ export function SettingsSheet() {
         : [...identity.courses, slug],
     });
 
-  const forget = () => {
+  /* Signing out leaves the device exactly as it was — the face, the name, the
+     courses and everything read stay in this browser. That is deliberate and it
+     is not the same control as "Start over" below: this is "not me right now",
+     that is "not me at all". Progress is namespaced per account
+     (reader/ProgressScope), so what a signed-out reader sees afterwards is
+     their own anonymous progress, not the account's. */
+  const signOut = async () => {
+    await browserClient()?.auth.signOut();
+    /* Reload rather than re-render, for the same reason `forget` does: half the
+       stores on this page were populated for somebody who is no longer here. */
+    window.location.href = "/";
+  };
+
+  const forget = async () => {
     if (!confirmWipe) {
       setConfirmWipe(true);
       return;
     }
+    /* SIGN OUT FIRST, and this ordering is load-bearing. Clearing the device
+       while a session is live doesn't start anybody over: AccountSignal is
+       still mounted, still holds that session, and the moment the freshly blank
+       record hydrates it reads `students.identity` back off the account and
+       adopts every answer we just erased. The wipe would appear to work and
+       then quietly undo itself — and worse, would then be pushed back UP by
+       syncProfile as though the student had re-answered.
+       Awaited, not fired and forgotten: the reload below must not race it. */
+    await browserClient()?.auth.signOut();
     clearProgress();
     clearIdentity();
     /* Somebody new gets a first step to claim again, too. */
@@ -428,6 +456,37 @@ export function SettingsSheet() {
                 in this browser — and on your account, if you made one, which is what carries them
                 to a second phone. Clearing your browser data clears this device’s copy.
               </Note>
+
+              {/* THE ONLY WAY OUT OF AN ACCOUNT (2026-08-05). Clerk's user menu
+                  carried a Sign out row and went with Clerk; without this there
+                  is no sign-out anywhere in the app, and "Start over" — which
+                  erases the record — would be the only thing resembling one.
+                  Signed out, the row isn't drawn: an app that offers to sign
+                  out somebody who never signed in is an app that doesn't know
+                  who is holding it. */}
+              {signedIn && (
+                <>
+                  <Heading>Account</Heading>
+                  <Note>
+                    Your courses, your progress and your notes stay on your account. Sign in again on
+                    any phone to pick them up.
+                  </Note>
+                  <button
+                    type="button"
+                    onClick={signOut}
+                    className="mt-3 w-full rounded-[8px] border-0 px-3 py-2.5 text-left transition-colors"
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 500,
+                      color: INK,
+                      background: "rgba(255,255,255,0.5)",
+                      boxShadow: RING,
+                    }}
+                  >
+                    Sign out
+                  </button>
+                </>
+              )}
 
               <Heading>Start over</Heading>
               <Note>

@@ -58,9 +58,12 @@ const PHONE_MAX_SHORT_SIDE = 600;
  * page does not explain the purpose of your app", and its purpose was behind
  * a "use your phone" wall. The home page carries the landing intro now (see
  * HomeView), so it must be readable anywhere; READING a course stays
- * phone-only, so every other route keeps the gate. /sign-in passes through
- * because Clerk routes its own OAuth callback under it (the catch-all
- * segment), and a browser mid-handshake must not meet a wall. */
+ * phone-only, so every other route keeps the gate. /sign-in and /sign-up pass
+ * through because somebody who followed a link to one on a laptop should be
+ * able to finish rather than meet a wall mid-sign-up. (They used to be here
+ * for a narrower reason — Clerk routed its OAuth callback under /sign-in's
+ * catch-all — which stopped applying when those routes were flattened on
+ * 2026-08-05. The exemption is still right; only the reason changed.) */
 const SKIP = ["/workspace", "/settings", "/privacy", "/terms", "/sign-in", "/sign-up"];
 
 /** Exact paths that skip the gate — "/" can't go in SKIP, whose prefix rule

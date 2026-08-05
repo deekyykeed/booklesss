@@ -856,51 +856,6 @@
    * Radius 18 rather than the size's own, so it matches .course-resume exactly
    * at any size. The arrow leans on hover with the same spring the card's does.
    * ---------------------------------------------------------------- */
-  /* ---------------------------------------------------------------- *
-   * The assigned face, behind Clerk's user button.
-   *
-   * Owner, 2026-08-04, first completed sign-up: "I have not gotten my user
-   * icon." Signed out the header draws the Kameleon face; signed in Clerk's
-   * <UserButton> takes over and, with no photo on an email-and-password
-   * account, falls back to initials. Making an account swapped a face for two
-   * grey letters.
-   *
-   * A BACKGROUND, NOT A REPLACEMENT, and that is the whole trick. Clerk renders
-   * an <img> only when the user really has a photo and initials otherwise, so
-   * painting the box behind both means the face shows through where the
-   * initials were and a real uploaded photo covers it completely. Nobody has to
-   * detect which case applies: upload a picture and you get your picture,
-   * upload nothing and you get your face.
-   *
-   * The initials themselves go transparent — they would otherwise sit on top of
-   * the face — and only inside this wrapper, so Clerk's avatars anywhere else
-   * are untouched.
-   * ---------------------------------------------------------------- */
-  .clerk-avatar-skin .cl-avatarBox {
-    /* !important because the appearance in lib/clerk-appearance sets
-       `background: #ffffff` on this same box, and `background` is a shorthand —
-       it resets background-image to none. Two rules fighting over one property
-       where one of them is written in JS and the other in CSS is exactly the
-       case the flag is for. */
-    background-image: var(--user-avatar, none) !important;
-    background-size: cover;
-    background-position: center;
-  }
-  /* Only when a face is actually set: with no --user-avatar there is nothing
-     behind the letters and hiding them would leave an empty disc. */
-  .clerk-avatar-skin[style*="--user-avatar"] .cl-avatarBox {
-    color: transparent;
-  }
-  /* THE PART THAT WAS MISSING. Clerk does not draw nothing when a user has no
-     photo — it generates a placeholder and renders it as an <img>, which
-     covered the face painted behind it. The background was always there and
-     always hidden. ClerkAvatarSkin sets data-no-photo only once Clerk has
-     confirmed there is no real picture, so a student who genuinely uploads one
-     still gets theirs. */
-  .clerk-avatar-skin[data-no-photo][style*="--user-avatar"] .cl-avatarBox img {
-    display: none;
-  }
-
   .btn[data-arrow] {
     justify-content: space-between;
     border-radius: 18px;
@@ -1075,7 +1030,7 @@
     background-color: #000000;
   }
 
-  /* Placeholder for the account control while Clerk's script loads. Holds the
+  /* Placeholder for the account control while the session resolves. Holds the
      exact 32px the avatar will occupy, with the same hairline as the circle
      buttons beside it, so the header doesn't reflow when auth resolves. */
   .account-skeleton {
@@ -1907,41 +1862,11 @@
 }
 
 /* The onboarding sheet's CSS lived here until 2026-08-03, when the custom
-   sheet was retired for Clerk's own modal ("use clerk stuff") — its styling
-   now comes from lib/clerk-appearance.ts. */
+   sheet was retired for Clerk's own modal ("use clerk stuff"). Clerk is gone
+   (2026-08-05) and the sheet is the app's own again — components/auth/AuthGate
+   and AuthForm, styled inline against the settings sheet's measured spec.
 
-/* ------------------------------------------------------------------ *
- * Two Clerk colours that lib/clerk-appearance.ts CANNOT set, measured
- * 2026-08-03 (owner: "the text boxes are barely visible when unfocused …
- * the sign in with google button is also too white").
- *
- * Both are edges Clerk draws as a BOX-SHADOW RING rather than a border, and
- * its own rule beats the appearance object: setting `border` there leaves
- * `border-width: 0px`, and setting `boxShadow` there was measured still
- * rendering Clerk's own `#dfdfdf` at 0.11 alpha — a ring you cannot see on
- * white. `colorRing` can't fix it either; that variable is rendered at 15%
- * opacity by design.
- *
- * `!important` is load-bearing and measured too: Clerk injects its own
- * stylesheet AFTER this one, so a plain class selector ties on specificity
- * and loses on order — the ring measured unchanged without it.
- *
- * EVERYTHING ELSE STAYS IN clerk-appearance.ts — this is the exception for
- * properties that file demonstrably cannot reach, not a second home for
- * Clerk styling.
- * ------------------------------------------------------------------ */
-.cl-formFieldInput {
-  box-shadow: 0 0 0 1px #b0b0b0 !important;
-}
-.cl-formFieldInput:focus,
-.cl-formFieldInput:focus-visible {
-  box-shadow: 0 0 0 1px #171717 !important;
-}
-/* A tint, so the button is not white-on-white. */
-.cl-socialButtonsBlockButton {
-  background-color: #f2f2f1 !important;
-  box-shadow: 0 0 0 1px #cfcfcf !important;
-}
-.cl-socialButtonsBlockButton:hover {
-  background-color: #ebebe9 !important;
-}
+   The `.cl-*` overrides that sat here went with it: two Clerk colours that its
+   appearance object could not reach, fixed with !important because Clerk
+   injected its stylesheet after this one. There is no third-party stylesheet to
+   out-specify any more, which is most of the point. */

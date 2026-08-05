@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAccountRead, useSignedIn } from "@/lib/account";
-import { clerkEnabled } from "@/lib/clerk";
+import { authEnabled } from "@/lib/auth";
 import { onboardingComplete, useIdentity } from "@/lib/identity";
 
 /**
@@ -53,7 +53,7 @@ export function RequireOnboarding({ children }: { children: React.ReactNode }) {
      device has been read, Clerk has reported, and the account's own record has
      landed. `signedIn === true` and never truthy, for the reason lib/account
      documents — "we haven't heard yet" is not "signed out". */
-  const send = clerkEnabled && signedIn === true && accountRead && hydrated && !complete;
+  const send = authEnabled && signedIn === true && accountRead && hydrated && !complete;
 
   useEffect(() => {
     if (send) router.replace("/onboarding");
@@ -76,7 +76,7 @@ export function RequireOnboarding({ children }: { children: React.ReactNode }) {
   // No Clerk keys means no accounts, no onboarding and nothing to gate — the
   // same no-op RequireAccount makes, and for the same reason: a redirect here
   // would strand the reader on a door that opens nowhere.
-  if (!clerkEnabled) return <>{children}</>;
+  if (!authEnabled) return <>{children}</>;
 
   /* Complete is the only way through, and it does not consult Clerk: a student
      with a filled record is a student with a filled record whether or not the

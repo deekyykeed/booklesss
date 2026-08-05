@@ -1,12 +1,8 @@
 import Link from "next/link";
 import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
-import { clerkEnabled } from "@/lib/clerk";
-import { Account as ClerkAccount } from "./Account";
-import { ClerkIsland } from "./ClerkIsland";
+import { Account } from "./Account";
 import { CommandSearch } from "./CommandSearch";
 import { ShareControl } from "./ShareControl";
-import { ClerkAvatarSkin } from "./identity/ClerkAvatarSkin";
-import { HeaderAvatar } from "./identity/HeaderAvatar";
 import { MobileMenuButton } from "./reader/MobileNav";
 
 /* Shared, fixed 48px header. Transparent so the blob backdrop shows through;
@@ -25,29 +21,6 @@ function CircleButton({ icon, label, className = "" }: { icon: MynaIconName; lab
     >
       <MynaIcon name={icon} size={16} />
     </button>
-  );
-}
-
-/* Account control. With Clerk configured this is the real thing — the user
- * menu once signed in, a sign-in button when not. With Clerk off it's the face
- * and name this device was given on its first visit (see
- * identity/IdentityAssignment), in the same white 32px shell as the circle
- * buttons beside it — green is
- * reserved for completion, so the account control never wears it. */
-function Account() {
-  if (!clerkEnabled) return <HeaderAvatar />;
-  // If auth fails to load, fall back to the local avatar rather than letting
-  // the header take the lesson down with it.
-  return (
-    /* ClerkAvatarSkin carries the student's assigned face down to Clerk's user
-       button as a CSS custom property — without it, signing up trades a face
-       for two grey initials. See the component, and .clerk-avatar-skin in
-       globals.css. */
-    <ClerkAvatarSkin>
-      <ClerkIsland fallback={<HeaderAvatar />}>
-        <ClerkAccount />
-      </ClerkIsland>
-    </ClerkAvatarSkin>
   );
 }
 

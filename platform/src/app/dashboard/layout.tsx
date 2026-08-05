@@ -1,8 +1,6 @@
 import { TopBar } from "@/components/TopBar";
 import { MobileNavProvider, MobileScrim } from "@/components/reader/MobileNav";
 import { ProgressScope } from "@/components/reader/ProgressScope";
-import { clerkEnabled } from "@/lib/clerk";
-import { ClerkIsland } from "@/components/ClerkIsland";
 
 /**
  * Home sits above the courses. It has no right rail — that panel is about a
@@ -27,11 +25,8 @@ import { ClerkIsland } from "@/components/ClerkIsland";
 export default function HomeLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      {clerkEnabled && (
-        <ClerkIsland>
-          <ProgressScope />
-        </ClerkIsland>
-      )}
+      {/* See the reader layout — a module store, so no provider and no guard. */}
+      <ProgressScope />
       <MobileNavProvider hasRightPanel={false} hasLeftPanel={false}>
         <div className="bg-waves" aria-hidden="true">
           {Array.from({ length: 6 }, (_, i) => (

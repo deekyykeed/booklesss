@@ -1,5 +1,5 @@
-import { auth } from "@clerk/nextjs/server";
-import { clerkEnabled } from "@/lib/clerk";
+import { authEnabled } from "@/lib/auth";
+import { currentUserId } from "@/lib/supabase/server";
 import { admin } from "@/lib/supabase-admin";
 
 /* ------------------------------------------------------------------ *
@@ -31,11 +31,14 @@ import { admin } from "@/lib/supabase-admin";
 
 export async function GET(req: Request) {
   const empty = Response.json({ suggested: [], known: [] });
-  if (!clerkEnabled) return empty;
+  if (!authEnabled) return empty;
   const sb = admin();
   if (!sb) return empty;
 
-  const { userId } = await auth();
+  /* Signed-in only, though it reads nothing personal: these are the internal
+     pipeline tables, and an open route over them is an open route over the
+     course backlog. Verified against the auth server — see lib/supabase/server. */
+  const userId = await currentUserId();
   if (!userId) return Response.json({ suggested: [], known: [] }, { status: 401 });
 
   const url = new URL(req.url);

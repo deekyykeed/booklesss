@@ -19,9 +19,9 @@
     "gen:favicons": "node scripts/gen-favicons.mjs"
   },
   "dependencies": {
-    "@clerk/nextjs": "^7.6.1",
     "@iconify-json/streamline-plump-color": "^1.2.2",
     "@iconify/utils": "^3.1.4",
+    "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.110.8",
     "next": "16.2.10",
     "react": "19.2.4",

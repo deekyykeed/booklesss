@@ -10,12 +10,11 @@ import { useSyncExternalStore } from "react";
  * subscription, or a manual course_access grant with an end date — see
  * Operations/pricing-strategy.md for the two rails.
  *
- * Nothing writes to this store yet. The reader currently runs with Clerk off
- * (see lib/clerk), so every reader is anonymous and has no plan to report;
- * the ring draws its empty track and says nothing, which is the honest state
- * rather than an invented countdown. When the billing rail is live, the
- * account island calls setPlan(planFrom(user.publicMetadata)) once and the
- * ring starts moving — that call is the whole integration.
+ * Nothing writes to this store yet: there is no billing rail, so every reader
+ * has no plan to report and the ring draws its empty track and says nothing,
+ * which is the honest state rather than an invented countdown. When billing is
+ * live, AccountSignal calls setPlan(planFrom(...)) once and the ring starts
+ * moving — that call is the whole integration.
  *
  * Same store shape as identity.tsx and progress.tsx: a useSyncExternalStore
  * store, so a value that arrives after hydration can't cause a mismatch.
@@ -39,9 +38,8 @@ const DAY = 86_400_000;
 /**
  * Builds a Plan from whatever the billing rail recorded on the account.
  *
- * Deliberately tolerant about its input: this reads a Clerk user's
- * publicMetadata, which is untyped JSON written by a webhook or by hand for a
- * mobile-money grant. Anything missing or unparseable is no plan at all, not a
+ * Deliberately tolerant about its input: this reads untyped JSON written by a
+ * billing webhook or by hand for a mobile-money grant. Anything missing or unparseable is no plan at all, not a
  * plan of zero days — a ring that reads "expired" because a date was
  * misspelled is worse than a ring that stays quiet.
  */

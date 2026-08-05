@@ -1,5 +1,5 @@
-import { auth } from "@clerk/nextjs/server";
-import { clerkEnabled } from "@/lib/clerk";
+import { authEnabled } from "@/lib/auth";
+import { currentUserId } from "@/lib/supabase/server";
 import { admin } from "@/lib/supabase-admin";
 import { cleanTitle, isCourseTitle, MAX_TYPED_COURSES, normTitle } from "@/lib/curriculum-text";
 /* The curriculum, read SERVER-SIDE. It is 131KB and lib/programmes exists to
@@ -129,6 +129,42 @@ function str(v: unknown, max: number): string | null {
   return typeof v === "string" && v.trim() ? v.trim().slice(0, max) : null;
 }
 
+/**
+ * The answer set as the browser sent it, on its way into `students.identity`.
+ *
+ * WHY THIS IS BARELY VALIDATED, ON PURPOSE. The real validator is
+ * `parseAccountIdentity` in lib/identity, which runs when the blob is read back
+ * on another device and holds every field to the same bar as a stored
+ * localStorage record — an unusable name is no identity at all, an avatar id is
+ * kept only if this build still draws it, a date has to parse. Duplicating that
+ * here would be a second copy of a 60-line validator, on the server, in a file
+ * that cannot import it (lib/identity is "use client" and pulls the avatar set
+ * in with it) — and two validators that must agree forever is how a field
+ * silently stops travelling.
+ *
+ * So this guards only what the reader downstream CANNOT: that it is an object
+ * at all, and that it is not enormous. A jsonb column has no practical size
+ * limit, which is a feature for a 33-course timetable and a liability for a
+ * signed-in browser with a script. 64KB is roughly ten times the worst real
+ * record.
+ *
+ * The FLAT COLUMNS beside it are the ones that get full server-side validation,
+ * because those are the ones that get queried — see the row below. This column
+ * is the student's own copy handed back to the student.
+ */
+const MAX_IDENTITY_BYTES = 64 * 1024;
+
+function identityBlob(v: unknown): Record<string, unknown> | null {
+  if (!v || typeof v !== "object" || Array.isArray(v)) return null;
+  try {
+    if (JSON.stringify(v).length > MAX_IDENTITY_BYTES) return null;
+  } catch {
+    /* Circular, or something that will not serialise. Not ours. */
+    return null;
+  }
+  return v as Record<string, unknown>;
+}
+
 function slugs(v: unknown): string[] {
   return Array.isArray(v)
     ? [...new Set(v.filter((s): s is string => typeof s === "string" && !!s))].slice(0, MAX_SLUGS)
@@ -136,14 +172,16 @@ function slugs(v: unknown): string[] {
 }
 
 export async function POST(req: Request) {
-  if (!clerkEnabled) return Response.json({ ok: false, reason: "no-auth" });
+  if (!authEnabled) return Response.json({ ok: false, reason: "no-auth" });
   const sb = admin();
   if (!sb) return Response.json({ ok: false, reason: "no-db" });
 
-  const { userId } = await auth();
   /* The id comes from the SESSION, never from the body. It is the only thing
      standing between this route and one signed-in student overwriting
-     another's timetable. */
+     another's timetable — and `currentUserId` gets it from `getUser()`, which
+     has the token verified by the auth server rather than trusting what the
+     cookie claims. See lib/supabase/server. */
+  const userId = await currentUserId();
   if (!userId) return Response.json({ ok: false, reason: "signed-out" }, { status: 401 });
 
   let body: Record<string, unknown>;
@@ -176,6 +214,13 @@ export async function POST(req: Request) {
 
   const row = {
     id: userId,
+    /* The copy that TRAVELS. Everything else on this row is shaped for asking
+       questions across students; this one field is shaped for handing this
+       student's own answers back to their next device, and it carries the four
+       things the columns cannot — nameChosen, coursesChosen, since, and the
+       updatedAt clock the merge is decided on. Replaced whole rather than
+       merged: it is one document describing one moment. */
+    identity: identityBlob(body.identity),
     device_id: str(body.deviceId, 64),
     name: str(body.name, 40),
     avatar_id: str(body.avatarId, 60),

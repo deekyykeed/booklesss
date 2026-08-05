@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { clerkEnabled } from "@/lib/clerk";
+import { authEnabled } from "@/lib/auth";
 import { requireAccount } from "@/lib/onboarding";
 
 /* ------------------------------------------------------------------ *
@@ -64,12 +64,53 @@ export function setAccountRead(v: boolean): void {
   for (const l of listeners) l();
 }
 
+/* ------------------------------------------------------------------ *
+ * WHO is signed in — not just whether.
+ *
+ * Three surfaces need the person rather than the boolean: the greeting wants a
+ * name to fall back to, stored progress is namespaced by user id so two people
+ * sharing a laptop don't inherit each other's ticks, and the share code is
+ * derived from the id. Each of them used to call Clerk's `useUser()` directly,
+ * which is exactly the coupling this module exists to prevent — it only worked
+ * because each was mounted behind a `clerkEnabled` check on its route, and a
+ * fourth caller that forgot would have thrown.
+ *
+ * DELIBERATELY TINY. An id and an email is everything the app has ever read off
+ * the account; the answers live on the `students` row and in lib/identity.
+ * Widening this type is a sign something is about to read auth state it should
+ * be reading from the identity record instead.
+ * ------------------------------------------------------------------ */
+
+export type AccountUser = { id: string; email: string | null };
+
+let user: AccountUser | null = null;
+
+/** Called only by AccountSignal. Replaces the object only when the id actually
+ *  changes: supabase-js hands back a new user object on every token refresh,
+ *  and `useSyncExternalStore` compares snapshots by reference — returning a
+ *  fresh object each read is an infinite render loop, and returning one on
+ *  every hourly refresh would re-run every effect keyed on it. */
+export function setAccountUser(v: AccountUser | null): void {
+  if (v?.id === user?.id && v?.email === user?.email) return;
+  user = v;
+  for (const l of listeners) l();
+}
+
 const subscribe = (l: () => void) => {
   listeners.add(l);
   return () => listeners.delete(l);
 };
 
 const snapshot = () => signedIn;
+
+const userSnapshot = () => user;
+
+/** The signed-in person, or null. Null on the server and on the first client
+ *  render, like every other store here — callers pair it with `useSignedIn()`
+ *  when they need to tell "nobody" from "not yet". */
+export function useAccountUser(): AccountUser | null {
+  return useSyncExternalStore(subscribe, userSnapshot, () => null);
+}
 
 export function useSignedIn(): boolean | null {
   return useSyncExternalStore(subscribe, snapshot, () => null);
@@ -95,7 +136,7 @@ export function useAccountRead(): boolean {
  * one true at the moment of the tap.
  */
 export function needsAccount(): boolean {
-  return clerkEnabled && signedIn === false;
+  return authEnabled && signedIn === false;
 }
 
 /* ------------------------------------------------------------------ *

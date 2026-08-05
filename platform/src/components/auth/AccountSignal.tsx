@@ -1,190 +1,189 @@
 "use client";
 
-import { useEffect } from "react";
-import { useAuth, useUser } from "@clerk/nextjs";
-import { setAccountRead, setSignedIn } from "@/lib/account";
-import {
-  accountBehind,
-  accountIdentity,
-  adoptIdentity,
-  matchesAccount,
-  parseAccountIdentity,
-  useIdentity,
-} from "@/lib/identity";
+import { useEffect, useRef, useState } from "react";
+import type { User } from "@supabase/supabase-js";
+import { setAccountRead, setAccountUser, setSignedIn, useAccountRead } from "@/lib/account";
+import { adoptIdentity, matchesAccount, parseAccountIdentity, useIdentity } from "@/lib/identity";
 import { referralCode, setMyReferralCode } from "@/lib/referral";
 import { syncProfile } from "@/lib/profile-sync";
-import { avatarPngFile } from "@/components/identity/avatar-image";
+import { browserClient } from "@/lib/supabase/browser";
 
-/* The one component in the reader that asks Clerk whether anybody is signed
- * in, and it renders nothing. It copies the answer into lib/account, which is
- * what the checkpoint row and the next-step link read.
+/* ------------------------------------------------------------------ *
+ * The one component that asks who is signed in, and it renders nothing.
  *
- * It exists because those two are ordinary pieces of a static page: a build
- * with no Clerk keys mounts no provider, `useAuth()` throws without one, and a
- * hook cannot be called only when a flag is set. One component that is mounted
- * only when the provider is (see layout.tsx) turns a hook everything would
- * have to guard into a value anything can read.
+ * It copies the answer into lib/account, which is what the checkpoint row and
+ * the next-step link read. That indirection was built because Clerk's hooks
+ * threw without a provider; it survives the migration for a reason that is
+ * ours — a build with no Supabase keys must still render every step, and
+ * `browserClient()` returning null has to be handled in ONE place rather than
+ * at every gate.
  *
- * `isLoaded` is passed through as null rather than collapsed to false. "Not
- * signed in" and "we haven't heard yet" look identical for the first second of
- * a visit, and gating on the second one tells a signed-in student to make an
- * account they already have. */
+ * WHAT CHANGED ON 2026-08-05, and what deliberately did not.
+ *
+ * The account's copy of the student's answers used to live in Clerk's
+ * `unsafeMetadata.identity`. It now lives in `students.identity`, a jsonb
+ * column on the student's own row, read here under RLS with the anon key —
+ * `auth.uid() = id`, so a student can read theirs and nobody else's.
+ *
+ * THE MERGE ITSELF IS UNTOUCHED. `parseAccountIdentity`, `mergeAccount`,
+ * `sameAnswers`, `matchesAccount` and the `updatedAt` clock are the same code
+ * they were, because the bug they were written to fix does not care what the
+ * transport is: two copies of one student's answers can disagree, and the later
+ * one wins. Porting the transport and rewriting the merge in the same session
+ * would have made the next wrong dashboard impossible to attribute.
+ *
+ * `parseAccountIdentity` still treats what comes back as stranger input, and
+ * still should. The column is written only by /api/profile behind the service
+ * role — which is already stricter than unsafeMetadata, where any signed-in
+ * browser could write its own — but a validator that stops being run because
+ * the source got safer is a validator that was load-bearing for the wrong
+ * reason.
+ * ------------------------------------------------------------------ */
+
 export function AccountSignal() {
-  const { isLoaded, isSignedIn } = useAuth();
-  const { user } = useUser();
   const { identity, hydrated } = useIdentity();
+  const [user, setUser] = useState<User | null>(null);
+  /* Read back out of the store this component writes, so the push below can
+     wait for the read above to finish. It is the same value RequireOnboarding
+     gates on, which is the point: "the account's record has landed" is one
+     fact, and two components deciding it separately is how they drift. */
+  const accountRead = useAccountRead();
 
+  /* ------------------------------------------------------------------ *
+   * The session.
+   *
+   * `onAuthStateChange` covers the first read too — it fires INITIAL_SESSION
+   * once the client has restored the session from the cookie — so there is no
+   * separate getSession() call to race with it.
+   *
+   * NOTHING ELSE IS CALLED INSIDE THE CALLBACK. supabase-js holds an internal
+   * lock while it runs, and awaiting another supabase call from in there
+   * deadlocks the client: the session never resolves, and every gate in the app
+   * sits on "we haven't heard yet" forever. So this sets state and returns, and
+   * the row is fetched from the effect below.
+   * ------------------------------------------------------------------ */
   useEffect(() => {
-    setSignedIn(isLoaded ? !!isSignedIn : null);
-    // Signed out, there is no account record to wait for — say so, or the
-    // onboarding gate would hold a page for a document that is never coming.
-    if (isLoaded && !isSignedIn) setAccountRead(true);
-  }, [isLoaded, isSignedIn]);
+    const supabase = browserClient();
+    if (!supabase) return;
 
-  /* The signed-in student's own share code, published the same way, so
-     shareUrl() — a plain function with no React above it — can append
-     `?r=<code>` to every link this person shares. See lib/referral. */
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      const next = session?.user ?? null;
+      setUser(next);
+      setSignedIn(!!next);
+      /* Published for the three surfaces that need the person rather than the
+         boolean — the greeting, the progress namespace and the share code. See
+         lib/account; none of them imports anything auth-shaped. */
+      setAccountUser(next ? { id: next.id, email: next.email ?? null } : null);
+      /* Signed out, there is no account record to wait for — say so, or the
+         onboarding gate would hold a page for a document never coming. */
+      if (!next) setAccountRead(true);
+    });
+
+    return () => data.subscription.unsubscribe();
+  }, []);
+
+  /* The signed-in student's own share code, published so shareUrl() — a plain
+     function with no React above it — can append `?r=<code>` to every link they
+     share. The email's local part where there is no chosen name yet; the name
+     takes over once onboarding has one, which is the same order the greeting
+     falls back through. See lib/referral. */
   useEffect(() => {
     setMyReferralCode(
-      user ? referralCode(user.firstName ?? user.primaryEmailAddress?.emailAddress?.split("@")[0], user.id) : null,
+      user
+        ? referralCode(
+            identity?.nameChosen ? identity.name : user.email?.split("@")[0],
+            user.id,
+          )
+        : null,
     );
-  }, [user]);
+  }, [user, identity]);
 
-  /* The identity, reconciled with the account — the "signing up CONNECTS"
-     promise in lib/identity, kept here because this is the one component
-     that can read the user.
-       - The account has an identity: it lands on this device. Signing in on
-         a new phone is the same person arriving, so the account's name and
-         face replace the placeholder this device rolled for itself.
-       - The account has none (created before this existed, or the metadata
-         was lost): the device's identity is written up, once, so the account
-         stops being bare. `updateMetadata` deep-merges, which is what keeps
-         `referredBy` intact beside it.
-     Both sides settle: adopt makes the two equal, and the healing write
-     re-runs this effect with the metadata now present, which compares equal
-     and stops. The failure mode of a lost write is a retry on the next
-     sign-in, not a broken reader, so errors are deliberately swallowed. */
+  /* The latest identity, readable from an effect that must not RE-RUN when it
+     changes. The reconcile below needs the current record to compare against,
+     but depending on it would re-fetch the row on every answer — ten selects
+     during onboarding, for a row that cannot have changed underneath us,
+     because this device is the only thing writing it.
+
+     Written in an EFFECT, not during render — refs are not render state, and
+     the lint rule that says so is right. Nothing is lost by the delay: the
+     reconcile only reads this after awaiting a network round trip, by which
+     point every effect from every render since has long run. */
+  const latest = useRef(identity);
   useEffect(() => {
-    if (!user || !hydrated) return;
-    const acct = parseAccountIdentity(user.unsafeMetadata?.identity);
-    if (acct) {
-      /* The comparison is against the MERGE rather than against the account
-         field by field (lib/identity), so every answer travels — the school,
-         the courses and the plan — and so this effect settles: adopting makes
-         the stored record equal the merge, the healing write below re-runs it
-         with the metadata now present, and that pass matches and stops. */
-      if (!matchesAccount(identity, acct)) {
-        adoptIdentity(acct);
-      } else if (accountBehind(identity, acct)) {
-        // Answered on this device against an account that hasn't got it yet.
-        user.updateMetadata({ unsafeMetadata: { identity: accountIdentity() } }).catch(() => {});
-      }
-    } else {
-      const mine = accountIdentity();
-      if (mine) user.updateMetadata({ unsafeMetadata: { identity: mine } }).catch(() => {});
-    }
-
-    /* The account's answers are now on this device — adoptIdentity persists
-       synchronously, so by this line the record the onboarding gate reads is
-       the reconciled one. Last, and unconditional: whichever branch ran, the
-       metadata has been read, and a gate waiting on that must not be left
-       holding a page because the two happened to already agree. */
-    setAccountRead(true);
-
-    /* And the third copy. AFTER the reconcile, deliberately: this is the one
-       place that knows the settled answer rather than whichever half a single
-       device happened to hold, and posting mid-reconcile would write the
-       placeholder identity a fresh phone rolls for itself over the real one.
-       De-duped inside syncProfile, so re-running on every identity change
-       costs a string comparison. */
-    syncProfile(identity);
-  }, [user, identity, hydrated]);
+    latest.current = identity;
+  }, [identity]);
 
   /* ------------------------------------------------------------------ *
-   * The name, onto the Clerk USER — not just its metadata.
+   * The account's record, reconciled onto this device — ONCE PER SIGN-IN.
    *
-   * Owner, 2026-08-04: "i wont require them so that the modal is not too long
-   * for the first name and last, but i will require them during onboarding and
-   * thats how ill get them into Clerk." So the sign-up card stays two fields,
-   * and the name is collected on a screen where the student is already
-   * committed — then written up here, which is what puts it in Clerk's own
-   * Users table rather than buried in a metadata blob.
+   * The "signing up CONNECTS" promise in lib/identity: a student who answered
+   * on their phone must not be asked again on a borrowed laptop, and a device
+   * that answered while offline must not have those answers overwritten by an
+   * older row.
    *
-   * ONLY A NAME THEY CHOSE. Every record has a name; most are the avatar's.
-   * Writing those up would fill the Users table with two hundred Astronauts and
-   * make `firstName` — the first rung of the dashboard greeting — actively
-   * worse than the email it falls back to. `nameChosen` is the only thing that
-   * tells a typed name from a given one.
+   * `matchesAccount` compares the stored record against THE MERGE rather than
+   * against the row field by field, which is what makes this settle: adopting
+   * makes the two equal, and a second pass would compare equal and stop.
    *
-   * First word to firstName, the rest to lastName, which is the same split the
-   * greeting already undoes in the other direction. A single-word name leaves
-   * lastName empty rather than repeating itself.
-   *
-   * Its own effect, and errors swallowed like the metadata write above: a name
-   * that fails to reach Clerk is retried on the next sign-in, and is not a
-   * reason to break a student's dashboard.
+   * KEYED ON user.id, NOT ON THE USER OBJECT. supabase-js hands back a new
+   * object on every token refresh — hourly, and on every tab focus — and each
+   * one would otherwise re-read the row and re-adopt a student's own answers
+   * back over themselves mid-sentence.
    * ------------------------------------------------------------------ */
+  const uid = user?.id ?? null;
   useEffect(() => {
-    if (!user || !hydrated || !identity?.nameChosen) return;
-    const parts = identity.name.trim().split(/\s+/).filter(Boolean);
-    const first = parts[0] ?? "";
-    const last = parts.slice(1).join(" ");
-    if (!first) return;
-    // Settles: once written, this compares equal and stops.
-    if (user.firstName === first && (user.lastName ?? "") === last) return;
-    user.update({ firstName: first, lastName: last }).catch(() => {});
-  }, [user, identity, hydrated]);
+    if (!uid || !hydrated) return;
+    const supabase = browserClient();
+    if (!supabase) return;
 
-  /* ------------------------------------------------------------------ *
-   * And the face, onto the Clerk user as its actual profile image.
-   *
-   * Owner, 2026-08-04: "during the onboarding can the icon i picked not be put
-   * in clerk as the profile pic?"
-   *
-   * identity/ClerkAvatarSkin already paints it behind Clerk's user button, and
-   * that is a costume that only fits inside this app — it cannot reach Clerk's
-   * own account modal or the Users table, where every student is still a pair of
-   * grey initials. This makes it the account's real image, and the two hand over
-   * cleanly: `user.hasImage` turns true, which is the exact flag the skin reads
-   * to stand down.
-   *
-   * ONLY A FACE THEY CHOSE, on the same rule as the name above it. Every device
-   * is assigned one on its first visit, and uploading those would be 200 PNGs a
-   * day of artwork nobody picked — and would put a placeholder in front of the
-   * student's own choice a minute later, since the upload settles before
-   * onboarding does.
-   *
-   * The uploaded id is remembered in metadata rather than inferred from
-   * `hasImage`, so that CHANGING the avatar re-uploads while an unchanged one
-   * costs a string comparison. `updateMetadata` deep-merges, so this sits
-   * alongside `identity` and `referredBy` without touching either.
-   * ------------------------------------------------------------------ */
-  useEffect(() => {
-    if (!user || !hydrated || !identity?.nameChosen) return;
-    const wanted = identity.avatar;
-    if (user.unsafeMetadata?.avatarImage === wanted) return;
-
-    /* The account can outlive this effect — a student who taps through the last
-       question is on the dashboard before a 256px PNG has finished uploading —
-       so a late result must not be written under a face they have since
-       changed. */
     let live = true;
     void (async () => {
-      const file = await avatarPngFile(wanted);
-      if (!file || !live) return;
-      await user.setProfileImage({ file });
+      /* `maybeSingle` and not `single`: a student who has just created an
+         account has no row yet, and `single` calls that an error. No row is the
+         normal first state, not a failure. */
+      const { data, error } = await supabase
+        .from("students")
+        .select("identity")
+        .eq("id", uid)
+        .maybeSingle();
+
       if (!live) return;
-      await user.updateMetadata({ unsafeMetadata: { avatarImage: wanted } });
-    })().catch(() => {
-      /* Swallowed like every other write here. A profile picture is the least
-         important thing happening during a sign-up, the face still draws in the
-         app, and the next sign-in retries. */
-    });
+
+      /* FAILS SOFT, like every other read on this path. An unreachable row is
+         a student who reads their device's own copy — which is the copy the app
+         renders from anyway. What must NOT happen is the gate being left
+         waiting, so `setAccountRead` runs whichever branch was taken. */
+      if (!error && data?.identity) {
+        const acct = parseAccountIdentity(data.identity);
+        if (acct && !matchesAccount(latest.current, acct)) adoptIdentity(acct);
+      }
+
+      setAccountRead(true);
+    })();
 
     return () => {
       live = false;
     };
-  }, [user, identity, hydrated]);
+  }, [uid, hydrated]);
+
+  /* ------------------------------------------------------------------ *
+   * And up to the server, on every change.
+   *
+   * Separate from the reconcile above so that the two run at their own rates:
+   * the row is read once when a session appears, and the answers are pushed
+   * whenever they change. Both orders matter and they are opposite — the read
+   * must happen before anything is written (posting mid-reconcile would write
+   * the placeholder identity a fresh phone rolls for itself over the real one,
+   * which is what cost six sign-ups their names on 2026-08-05), and the write
+   * must keep happening long afterwards, all the way through onboarding.
+   *
+   * `accountRead` is what sequences them. De-duped inside syncProfile, so a
+   * re-run that changes nothing costs a string comparison and no request.
+   * ------------------------------------------------------------------ */
+  useEffect(() => {
+    if (!user || !hydrated || !accountRead) return;
+    syncProfile(identity);
+  }, [user, identity, hydrated, accountRead]);
 
   return null;
 }

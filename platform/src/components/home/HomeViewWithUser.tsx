@@ -1,39 +1,34 @@
 "use client";
 
-import { useUser } from "@clerk/nextjs";
+import { useAccountUser, useSignedIn, type AccountUser } from "@/lib/account";
+import { useIdentity } from "@/lib/identity";
 import { requireAccount } from "@/lib/onboarding";
 import { HomeView } from "./HomeView";
 
-// Derived from the hook rather than imported from @clerk/types, which isn't a
-// direct dependency — this stays correct if Clerk's shape changes under us.
-type ClerkUser = NonNullable<ReturnType<typeof useUser>["user"]>;
-
-/* Supplies the signed-in name to the greeting. Only mounted when Clerk is
- * configured (the route checks), so useUser always has a provider above it. */
+/* Supplies the signed-in name to the greeting. Reads lib/account rather than an
+ * auth SDK, so it needs no provider above it. */
 
 /**
  * A name to greet someone by, in descending order of how deliberately they
  * chose it.
  *
- * firstName alone isn't enough: Clerk only collects it if the instance asks
- * for it at sign-up, so an email-and-password user can be perfectly signed in
- * and still have none — which is what left the greeting bare. Each rung below
- * is something the person actually gave us, ending at the local part of their
- * address, which beats greeting a signed-in student as nobody.
+ * THE IDENTITY RECORD COMES FIRST, and that is the change Supabase auth allowed
+ * (2026-08-05). Under Clerk this function had four rungs, three of which were
+ * Clerk profile fields — firstName, fullName, username — that existed only
+ * because AccountSignal wrote the onboarding name UP onto the Clerk user, so
+ * that the greeting could read it back down. That round trip is gone: the name
+ * a student typed in onboarding is on their identity record and on their
+ * `students` row, and both are already in hand here.
+ *
+ * `nameChosen` is what separates a name they typed from the avatar's — every
+ * record has a name, and greeting somebody as "Astronaut" is worse than
+ * greeting them by their email's first token.
  */
-function displayName(user: ClerkUser): string | undefined {
-  const first = user.firstName?.trim();
-  if (first) return first;
-
+function displayName(user: AccountUser, chosen: string | null): string | undefined {
   // "Deeky Mvula" -> "Deeky". Greet by first name, not full name.
-  const full = user.fullName?.trim();
-  if (full) return full.split(/\s+/)[0];
+  if (chosen) return chosen.trim().split(/\s+/)[0];
 
-  const username = user.username?.trim();
-  if (username) return username;
-
-  const email = user.primaryEmailAddress?.emailAddress ?? "";
-  const local = email.split("@")[0];
+  const local = (user.email ?? "").split("@")[0];
   // Split on the separators and digits people pad addresses with, so
   // "deeky.mvula84" greets as "Deeky" rather than the whole handle.
   const token = local.split(/[._+\-0-9]+/).filter(Boolean)[0];
@@ -46,9 +41,6 @@ function displayName(user: ClerkUser): string | undefined {
 function SignInPrompt() {
   return (
     <p className="mt-2 text-[13.5px] leading-5 text-muted">
-      {/* Our sheet, not Clerk's modal — same reason as the header button
-          (see Account.tsx): Clerk's dialog wears Clerk's dress and the
-          dashboard's logo, neither of which is this app. */}
       <button
         type="button"
         onClick={() => requireAccount("manual", null, "sign-in")}
@@ -62,14 +54,17 @@ function SignInPrompt() {
 }
 
 export function HomeViewWithUser() {
-  const { isLoaded, user } = useUser();
+  const signedIn = useSignedIn();
+  const user = useAccountUser();
+  const { identity } = useIdentity();
+  const chosen = identity?.nameChosen ? identity.name : null;
 
-  // Until Clerk has loaded, show neither a name nor a prompt — otherwise the
-  // prompt flashes up and is replaced by a name a moment later.
+  // Until the session has resolved, show neither a name nor a prompt —
+  // otherwise the prompt flashes up and is replaced by a name a moment later.
   return (
     <HomeView
-      name={isLoaded && user ? displayName(user) : undefined}
-      afterGreeting={isLoaded && !user ? <SignInPrompt /> : null}
+      name={signedIn && user ? displayName(user, chosen) : undefined}
+      afterGreeting={signedIn === false ? <SignInPrompt /> : null}
     />
   );
 }

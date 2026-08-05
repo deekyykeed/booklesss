@@ -11,8 +11,8 @@
  * two-layer construction the Plump Gradient style uses, on the same
  * shapes, in this app's validated hues.
  *
- * Used by the dashboard's stat tiles and by the Clerk user menu, so the
- * two read as one set.
+ * Used by the dashboard's stat tiles and the course cards, so the surfaces
+ * read as one set.
  *
  * GENERATED: the fills are a find-and-replace over the set's two flat
  * colours (#8fbffa light, #2859c5 dark). Regenerate rather than

@@ -1,25 +1,31 @@
 "use client";
 
 import { useEffect } from "react";
-import { useUser } from "@clerk/nextjs";
+import { useAccountUser, useSignedIn } from "@/lib/account";
 import { setProgressScope } from "@/lib/progress";
 
-/* Namespaces stored progress to the signed-in Clerk user, so two people
- * sharing a laptop don't inherit each other's ticks — and so signing in on a
- * new device starts clean rather than inheriting whatever that browser had.
+/* Namespaces stored progress to the signed-in student, so two people sharing a
+ * laptop don't inherit each other's ticks — and so signing in on a new device
+ * starts clean rather than inheriting whatever that browser had.
  *
- * Only ever rendered when Clerk is configured (the reader layout checks), so
- * useUser always has a provider above it. Renders nothing.
+ * Reads lib/account rather than an auth SDK, so it needs no provider above it
+ * and is safe on a build with no keys. Renders nothing.
  *
- * Signed out it falls back to the unscoped key — progress made before signing
- * in stays where it was rather than vanishing. */
+ * WAITS FOR THE SESSION TO RESOLVE. `signedIn === null` is "we haven't heard
+ * yet", not "nobody" — scoping on it would namespace a signed-in student's
+ * ticks to the unscoped key for the first second of every visit and then move
+ * them, which reads as progress disappearing and coming back.
+ *
+ * Signed OUT it does fall back to the unscoped key, deliberately: progress made
+ * before signing in stays where it was rather than vanishing. */
 export function ProgressScope() {
-  const { isLoaded, user } = useUser();
+  const signedIn = useSignedIn();
+  const user = useAccountUser();
 
   useEffect(() => {
-    if (!isLoaded) return;
+    if (signedIn === null) return;
     setProgressScope(user?.id ?? null);
-  }, [isLoaded, user?.id]);
+  }, [signedIn, user?.id]);
 
   return null;
 }

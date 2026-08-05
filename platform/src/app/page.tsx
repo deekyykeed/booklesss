@@ -18,7 +18,7 @@ import { LandingAuth, ToApp } from "@/components/landing/landing-bits";
  * screenshots of Claude's own mobile login page: "I would like my whole
  * homepage to literally look like this, as simple as could be"). One narrow
  * column, in the APP'S own colours: wordmark header, a big display headline,
- * Clerk's own sign-up card, a "Meet Booklesss" section, then feature sections
+ * the sign-up card, a "Meet Booklesss" section, then feature sections
  * over hairlines, each with a screenshot in a panel. Per the design system's
  * rule on references, the reference is the brief — centred and stacked wins
  * over the usual variance dials — with the app's own faces standing in for
@@ -138,8 +138,8 @@ export default function LandingPage() {
         </p>
 
         {/* ---- the account, then the questions ----
-             Sign up here; Clerk sends new accounts to /onboarding for the
-             three questions that make the dashboard theirs. */}
+             Sign up here; new accounts land on /onboarding for the questions
+             that make the dashboard theirs. */}
         <LandingAuth />
 
         {/* ---- what this is (static, for anyone who scrolls — and for the

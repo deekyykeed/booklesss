@@ -120,6 +120,14 @@ const ICONS = [
      and a share glyph would promise a sheet that isn't going to open. */
   "share",
   "link",
+  /* The password field's reveal toggle (components/auth/AuthForm). A password
+     you cannot read is a password you cannot check before submitting, and this
+     app is used one-thumbed on a phone where a typo is likelier than not.
+     `eye-off` and NOT `eye-slash` — MynaUI names it the first way, and the
+     generator throws on a name the set doesn't carry rather than rendering an
+     empty box. */
+  "eye",
+  "eye-off",
 ];
 
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "components", "icons", "myna.tsx");
