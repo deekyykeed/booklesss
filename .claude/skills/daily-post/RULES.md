@@ -29,6 +29,22 @@ makes it worse, not legal.
 - **Enlarging one thing beats fitting several.** A component that fills the safe
   box reads as a product. The same component at a third of that size, three
   times over, reads as a screenshot of a page.
+- **AND IT HAS TO ACTUALLY FILL IT.** `w` is the width of the COMPONENT, not of
+  the PNG it arrived in, and the render enforces that — `fitObject()` reads each
+  file's alpha bounding box, scales so the opaque part is `w` wide, and centres
+  *that box* in the stage. It prints what it drew:
+  `slide 1: component 752x315 (asked 752)`. **The two numbers must agree**; a
+  smaller drawn width means the height bound took over, and anything else is a
+  bug. Start at 752 — the safe box's full width — and come down only for
+  something that would be absurd there.
+  > 2026-08-04, on the day's last post: *"you're not zooming in enough so the
+  > actual element you're showing is clear."* Every config that day already said
+  > `w: 752`. `isolate()` bakes 16 css px of transparent padding into each file
+  > so a shadow is not clipped, so sizing the IMG to 752 drew **633px of
+  > component** and gave 16% of the frame's clear width to empty gradient,
+  > invisibly. A wide component still cannot fill the frame vertically — a 2.4:1
+  > card at 752 is 315 tall in an 1100 stage — and the answer to a slide that
+  > feels empty is a taller subject, never a wider box.
 - **A section is not a component.** `section#courses` contains cards. The card
   is the component.
 - **Repeat the component, not the frame.** Three slides of the same control in
@@ -87,6 +103,13 @@ rest from something dateless:
 
 Say in `PLAN.md` which it is and why. An honest fifth post beats an honest
 explanation of why there isn't one.
+
+**Two plate slots in a day is the ceiling.** A third was built on 4 Aug and the
+owner sent it straight back — *"all of them were very good except that last one,
+can you redo it focusing on something else."* Two reads as a brand thread
+running through the day; three reads as the reserve carrying it. The fix was a
+product component nobody had shot yet, which is almost always available: the app
+has more controls than a thin day has plates.
 
 ## 6. The sign-up flow is not a post
 
@@ -267,6 +290,24 @@ Print the css size `isolate()` reports and check the numbers actually differ.
 - **Seed progress before shooting the dashboard.** It reads
   `localStorage["booklesss:progress:v6"]`; a virgin browser photographs as an
   empty app. Cluster the rest days in pairs — alternating days off draw a comb.
+- **Some components only exist in a PRODUCTION build.** The offline card
+  (`.dash-offline`) renders only when a service worker is active, and
+  `RegisterSW` deliberately *unregisters* the worker on anything but production
+  — so on `next dev` the component returns null and the selector times out with
+  nothing to explain it. `npm run build && npx next start -p 3101` in the shot
+  worktree. Anything touching offline, caching or install is in this class.
+- **Assert the state at the shutter, not just before it.** A state that ends by
+  itself — a save counting up, a toast, a spinner — can finish between the wait
+  and the screenshot, and the file lands under a name describing something no
+  longer on screen. Pass the state's own words as a regex (`expect:` in
+  `cap-0804-night.mjs`) and let the capture throw. Same failure as picking an
+  answered checkpoint by index: it looks deliberate and it is wrong.
+- **CDP network throttling does not reach a service worker.**
+  `Network.emulateNetworkConditions` applies to the page's network target; the
+  worker has its own, so a save being throttled to 400kb/s still finished in
+  milliseconds. `context.route()` with a `setTimeout` before `route.continue()`
+  does catch the worker's fetches — and a slow connection is the honest setting
+  for a feature that exists because of one.
 - **Shoot gated pages from a worktree with Clerk's keys commented out.** A
   headless browser is always signed out, so `/dashboard` holds behind its
   onboarding gate. With no `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `clerkEnabled`

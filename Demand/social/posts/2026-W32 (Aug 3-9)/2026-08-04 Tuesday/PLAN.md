@@ -13,13 +13,13 @@ two product components and three sets of logo plates.
 | ☀️ Midday | ~11:00 | `2-midday/` | 4 | logo plates |
 | 🌤️ Afternoon | ~15:00 | `3-afternoon/` | 4 | one stat tile, at four measures |
 | 🌆 Evening | ~19:00 | `4-evening/` | 4 | logo plates |
-| 🌙 Night | ~21:30 | `5-night/` | 4 | logo plates |
+| 🌙 Night | ~21:30 | `5-night/` | 4 | the offline card, at four states |
 
-**Three plate slots is more than usual and it is the honest number.** Two
-components is what the app safely gives today — see the two write-offs at the
-foot of this file. The plates carry no date and were built for exactly this;
-twelve of the sixteen are now used, so the next thin day needs a different
-answer.
+**Two plate slots, not three.** The night slot went out as a third set of
+plates and came back rejected — *"all of them were very good except that last
+one, can you redo it focusing on something else"* — so it is a product
+component again: **"Study without data."** Eight of the sixteen plates are now
+used; the other eight are still the reserve for a genuinely thin day.
 
 > **The neutral curriculum is four university courses now** — Organisational
 > Behaviour, Business Law, Operations Management, Marketing Management, each
@@ -126,22 +126,35 @@ edge → one letter per line
 
 ---
 
-## 🌙 Night — `5-night/` · Logo plates
+## 🌙 Night — `5-night/` · The offline card, at four states
 
-**Slides:** the mark on purple → the letterforms, past the frame → the word cut
-out of black → the app icon, rounded
+**Post title:** Study without data
 
-`04-mark-purple`, `12-macro-sss`, `16-knockout`, `09-icon-round`.
+**Slides:** the offer → saving, counting up → saved on this date → the same
+card on an iPhone
+
+One component, four states that differ in kind. Every one of them is the card's
+own: the count comes from the service worker as it puts each page on the
+device, the date is the stamp the card itself wrote when a save finished, and
+the iPhone wording is the same `isIos()` branch a student on Safari gets —
+Safari has no install API, so directions are the only honest thing to show.
+
+`cap-0804-night.mjs` → `POST=p-offline`. **Needs a production server**, not
+`next dev`: the card only renders when a service worker is active, and dev
+deliberately unregisters it.
 
 **Caption:**
-> Built the whole identity out of one font's outlines this week 🖤
-> Wordmark, app icon, favicon, the card a shared link turns into — all the same
-> letterforms at different sizes, none of them a saved picture. Which means
-> there's no size at which it goes soft and no screen it looks wrong on.
-> The old logo lived at 239 pixels wide and turned to mush the moment anything
-> needed it bigger. That's the whole reason it's gone.
+> Your notes work with no connection, and no data 📥
+> One tap saves every lesson in your courses onto the phone itself. Well under a
+> megabyte — less than a single photo — and after that the app opens whether
+> you have bundles left or not.
+> It's opt-in on purpose. Spending someone's data without asking is exactly the
+> kind of thing that gets an app deleted, so nothing is downloaded until you
+> say so, and it tells you what it's doing while it does it.
+> Bus, hostel with bad signal, lecture room with no wifi, the night before an
+> exam when the bundle is finished. That's when studying actually happens.
 > DM me "link" and I'll send you the whole thing. 👇
-> #buildinpublic #branding #logodesign #typography #zambia
+> #buildinpublic #edtech #studygram #universitylife #zambia
 
 ---
 
@@ -151,6 +164,11 @@ from the pinned worktree:*
 `npx next dev -p 3101`, *then:*
 `BASE_URL=http://localhost:3101 node _scripts/cap-0804.mjs`
 *then* `POST=p-card|p-tile node _scripts/prog-post.mjs`.
+
+*The night slot is the exception: it needs a **production** server on the same
+worktree —* `npm run build && npx next start -p 3101` *— then*
+`BASE_URL=http://localhost:3101 node _scripts/cap-0804-night.mjs` *and*
+`POST=p-offline node _scripts/prog-post.mjs`.
 *The plates are copied from Monday's `6-logo/`; regenerate a different set with*
 `SLOT=<slot> node _scripts/logo-variants.mjs`.
 *No posting connector — upload manually.*

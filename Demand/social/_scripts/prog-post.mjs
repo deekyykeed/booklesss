@@ -205,11 +205,31 @@ const plain = (o) => ({ bg: "plain", img: o.img, html: "" });
  * card, no border, no device mockup. The component's own outline is the whole
  * shape.
  *
- *  `w`    rendered width in the 1080 frame. Set it per component, not globally —
- *         a 34px button and a 370px card both filling 700px would say they are
- *         the same size, and one of them would be a 20x enlargement.
+ *  `w`    the width of THE COMPONENT in the 1080 frame — not of the PNG that
+ *         holds it. Set it per component, not globally: a 34px button and a
+ *         370px card both filling 700px would say they are the same size, and
+ *         one of them would be a 20x enlargement. 752 fills the safe box.
  *  `flat` set it on a component with no surface of its own — a bare glyph, an
  *         underlined word — so it takes the tight shadow instead of the card one.
+ *
+ * `w` MEANS THE COMPONENT, and it has to be enforced rather than assumed
+ * (owner, 2026-08-04: *"you're not zooming in enough so the actual element
+ * you're showing is clear"*). `isolate()` writes each PNG with 16 css px of
+ * transparent padding round the component so a shadow or a focus ring is not
+ * clipped — at capture scale that is a wide transparent margin baked into the
+ * file, and sizing the IMG to 752 spent it on empty gradient. The 4 Aug stat
+ * tile asked for the full width of the safe box and drew 633px of component
+ * inside it: 16% of the frame's clear width, given away invisibly.
+ *
+ * So `fitObject()` below reads each PNG's alpha bounding box and scales the
+ * image so the OPAQUE part is `w` wide, then translates it so the component —
+ * not the file — is centred in the stage. Nothing to remember per post and
+ * nothing to measure by eye.
+ *
+ * Consequence worth knowing: a config written before today re-renders a few
+ * per cent larger than it was posted, because the padding was never meant to
+ * be part of the component. That is a craft correction, not a content change —
+ * unlike `dmCTA()`, which is frozen because it changes what a slide SAYS.
  *
  * STRAIGHT. There is no tilt. The first version turned each component in
  * perspective and the owner's verdict was "the skewing thing doesn't work, it
@@ -224,8 +244,63 @@ const object = (o) => ({
   bg: "object",
   // `false` only when the component IS the logo — see the dressing note below.
   wordmark: o.wordmark !== false,
-  html: `<div class="stage"><img class="obj${o.flat ? " flat" : ""}" src="${o.img}" style="width:${o.w}px"></div>`,
+  html: `<div class="stage"><img class="obj${o.flat ? " flat" : ""}" src="${o.img}" data-w="${o.w}" style="width:${o.w}px"></div>`,
 });
+
+/* Fit the COMPONENT to the frame, not the file it arrived in.
+ *
+ * Runs in the page after layout: reads the image's alpha bounding box off a
+ * canvas (the PNGs are inlined as data: URIs, so nothing is tainted), scales
+ * so the opaque box is `data-w` wide, and translates the image so that box —
+ * rather than the transparent rectangle around it — is centred in the stage.
+ *
+ * Height is the other bound: a tall component scaled to `w` would run out of
+ * the stage's 1100px and under the caption. `maxH` leaves 60px for the drop
+ * shadow, which the alpha box does not include.
+ *
+ * The insets are written back to the element so the safe-area check below can
+ * measure the component. Without that the check reads the padded rectangle and
+ * throws on a component that is comfortably inside the box. */
+const fitObject = (safe) =>
+  `(async () => {
+    const stageW = 1080 - ${safe.left} - ${safe.right};
+    const maxH = ${safe.bottom - safe.top} - 60;
+    const out = [];
+    for (const el of document.querySelectorAll(".obj")) {
+      if (el.decode) { try { await el.decode(); } catch {} }
+      const nw = el.naturalWidth, nh = el.naturalHeight;
+      const c = document.createElement("canvas");
+      c.width = nw; c.height = nh;
+      const cx = c.getContext("2d", { willReadFrequently: true });
+      cx.drawImage(el, 0, 0);
+      const d = cx.getImageData(0, 0, nw, nh).data;
+      let x0 = nw, y0 = nh, x1 = -1, y1 = -1;
+      for (let y = 0; y < nh; y++) {
+        for (let x = 0; x < nw; x++) {
+          // 8/255: ignore the all-but-invisible tail of an antialiased edge,
+          // which otherwise reports the shadow's outermost pixel as content.
+          if (d[(y * nw + x) * 4 + 3] > 8) {
+            if (x < x0) x0 = x;
+            if (x > x1) x1 = x;
+            if (y < y0) y0 = y;
+            if (y > y1) y1 = y;
+          }
+        }
+      }
+      if (x1 < 0) { out.push(null); continue; }
+      const cw = x1 - x0 + 1, ch = y1 - y0 + 1;
+      const asked = Number(el.dataset.w) || stageW;
+      let scale = Math.min(asked, stageW) / cw;
+      if (ch * scale > maxH) scale = maxH / ch;
+      el.style.width = nw * scale + "px";
+      el.style.transform =
+        "translate(" + (nw / 2 - (x0 + cw / 2)) * scale + "px," +
+                       (nh / 2 - (y0 + ch / 2)) * scale + "px)";
+      el.dataset.inset = [x0, y0, nw - x1 - 1, nh - y1 - 1].map((v) => v * scale).join(",");
+      out.push({ asked, drawn: [Math.round(cw * scale), Math.round(ch * scale)] });
+    }
+    return out;
+  })()`;
 
 // closing Google search CTA — DM (never comment), trimmed, bigger sub
 const searchCTA = () => ({ bg: "gradient", wordmark: true, html: `<div class="layer">
@@ -956,6 +1031,35 @@ const CONFIGS = {
     ],
   }),
 
+  /* 5 — the offline card, at four states.  (night)
+   *
+   * REPLACES a third set of logo plates, which is what this slot went out as
+   * and what the owner sent back: every other post of the day was a product
+   * component and the last one was the reserve again.
+   *
+   * "Study without data" is the right thing to have picked in the first place.
+   * It passes rule 2 more cleanly than anything else in the app — a download
+   * mark, a title, one sentence and a button, and a stranger knows what it
+   * does — and it is the feature this product's students actually feel, on
+   * phones where the data bundle is the constraint.
+   *
+   * Four states that differ in KIND, not in wording: the offer, the save
+   * counting up, the card afterwards saying when it saved, and the same card
+   * on an iPhone, where Safari has no install API and the app can only give
+   * directions. Same `w` throughout — the data is what differs.
+   *
+   * `cap-0804-night.mjs`, and it needs a PRODUCTION server: no service
+   * worker, no card. */
+  "p-offline": () => ({
+    slot: "5-night",
+    slides: [
+      object({ img: img("of-offer.png"), w: 752 }),
+      object({ img: img("of-saving.png"), w: 752 }),
+      object({ img: img("of-saved.png"), w: 752 }),
+      object({ img: img("of-ios.png"), w: 752 }),
+    ],
+  }),
+
   brand: () => ({
     slot: "5-night",
     slides: [
@@ -1020,6 +1124,17 @@ for (let i = 0; i < cfg.slides.length; i++) {
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(200);
 
+  /* Enlarge every component to the size its config actually asked for — see
+   * `fitObject`. Logged, because the number that matters (how much of the
+   * frame the component fills) is otherwise invisible until someone looks at
+   * the PNG and says it is too small. */
+  if (s.bg === "object") {
+    const fitted = await page.evaluate(fitObject(SAFE));
+    for (const f of fitted) {
+      if (f) console.log(`  slide ${i + 1}: component ${f.drawn[0]}x${f.drawn[1]} (asked ${f.asked})`);
+    }
+  }
+
   /* The safe area is checked, not trusted. Every `.safe` block is measured
    * after layout — after the real font has loaded and the text has wrapped —
    * and anything crossing the boundary fails the render instead of being
@@ -1056,15 +1171,24 @@ for (let i = 0; i < cfg.slides.length; i++) {
 
   /* An object slide has no `.safe` text to measure, so the check above passes
    * trivially and the component itself is what has to be kept out of the
-   * covered zones. `getBoundingClientRect` reports the box AFTER the 3D
-   * transform, which is the whole reason to measure rather than trust `w`: a
-   * rotateX on a tall card makes it taller than the number set in the config,
-   * and the overflow goes under the caption where nobody sees it. */
+   * covered zones. `getBoundingClientRect` reports the box AFTER the
+   * transform, which is the whole reason to measure rather than trust `w`.
+   *
+   * The rect is then pulled in by the alpha insets `fitObject` recorded: the
+   * element's box includes the transparent margin the capture padded it with,
+   * and measuring that would fail a component sitting well inside the frame. */
   if (s.bg === "object") {
     const spill = await page.evaluate((safe) => {
       const el = document.querySelector(".obj");
       if (!el) return ["no component on the slide"];
-      const r = el.getBoundingClientRect();
+      const box = el.getBoundingClientRect();
+      const [il, it, ir, ib] = (el.dataset.inset || "0,0,0,0").split(",").map(Number);
+      const r = {
+        top: box.top + it,
+        bottom: box.bottom - ib,
+        left: box.left + il,
+        right: box.right - ir,
+      };
       const bad = [];
       if (r.top < safe.top) bad.push(`${Math.ceil(safe.top - r.top)}px above the top`);
       if (r.bottom > safe.bottom) bad.push(`${Math.ceil(r.bottom - safe.bottom)}px below the bottom`);
