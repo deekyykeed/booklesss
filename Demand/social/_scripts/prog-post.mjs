@@ -240,11 +240,32 @@ const plain = (o) => ({ bg: "plain", img: o.img, html: "" });
  * photograph of a screen at an angle. Depth here comes from the shadow and the
  * space around it, not from the geometry.
  */
+/* `group` — SLIDES THAT MUST BE SCALED AS ONE.
+ *
+ * `fitObject` sizes a component by its ALPHA box, which is right until the
+ * thing that changes between states is how much ink there is. The 5 Aug
+ * contents list is the case: the first state has nothing answered, so no green
+ * ticks, so its opaque content stops 200px short of the states that do. Scaled
+ * to fill the frame it came out 966px tall beside its own siblings at 332 — the
+ * same component, claiming to be three times the size, because it had less
+ * drawn in it.
+ *
+ * Naming a group makes every slide in it share ONE box: the union of all their
+ * alpha boxes, measured before the render loop (see `measureGroups`). One
+ * scale, one centre, so the rail stays put down the carousel and only the
+ * ticks appear. This is the "same component, same `w` across its states" rule
+ * enforced rather than trusted — and it only applies where it is asked for, so
+ * every post written before today renders exactly as it did.
+ */
 const object = (o) => ({
   bg: "object",
   // `false` only when the component IS the logo — see the dressing note below.
   wordmark: o.wordmark !== false,
-  html: `<div class="stage"><img class="obj${o.flat ? " flat" : ""}" src="${o.img}" data-w="${o.w}" style="width:${o.w}px"></div>`,
+  img: o.img,
+  group: o.group,
+  html: `<div class="stage"><img class="obj${o.flat ? " flat" : ""}" src="${o.img}" data-w="${o.w}"${
+    o.group ? ` data-group="${o.group}"` : ""
+  } style="width:${o.w}px"></div>`,
 });
 
 /* Fit the COMPONENT to the frame, not the file it arrived in.
@@ -261,33 +282,47 @@ const object = (o) => ({
  * The insets are written back to the element so the safe-area check below can
  * measure the component. Without that the check reads the padded rectangle and
  * throws on a component that is comfortably inside the box. */
+/* The alpha bounding box of one image, in its own pixel space. Shared by the
+ * group pre-pass and the per-slide fit so both agree on what "the component"
+ * means down to the pixel. */
+const ALPHA_BOX = `(img) => {
+  const nw = img.naturalWidth, nh = img.naturalHeight;
+  const c = document.createElement("canvas");
+  c.width = nw; c.height = nh;
+  const cx = c.getContext("2d", { willReadFrequently: true });
+  cx.drawImage(img, 0, 0);
+  const d = cx.getImageData(0, 0, nw, nh).data;
+  let x0 = nw, y0 = nh, x1 = -1, y1 = -1;
+  for (let y = 0; y < nh; y++) {
+    for (let x = 0; x < nw; x++) {
+      // 8/255: ignore the all-but-invisible tail of an antialiased edge,
+      // which otherwise reports the shadow's outermost pixel as content.
+      if (d[(y * nw + x) * 4 + 3] > 8) {
+        if (x < x0) x0 = x;
+        if (x > x1) x1 = x;
+        if (y < y0) y0 = y;
+        if (y > y1) y1 = y;
+      }
+    }
+  }
+  return x1 < 0 ? null : { x0, y0, x1, y1, nw, nh };
+}`;
+
 const fitObject = (safe) =>
   `(async () => {
+    const alphaBox = ${ALPHA_BOX};
     const stageW = 1080 - ${safe.left} - ${safe.right};
     const maxH = ${safe.bottom - safe.top} - 60;
     const out = [];
     for (const el of document.querySelectorAll(".obj")) {
       if (el.decode) { try { await el.decode(); } catch {} }
       const nw = el.naturalWidth, nh = el.naturalHeight;
-      const c = document.createElement("canvas");
-      c.width = nw; c.height = nh;
-      const cx = c.getContext("2d", { willReadFrequently: true });
-      cx.drawImage(el, 0, 0);
-      const d = cx.getImageData(0, 0, nw, nh).data;
-      let x0 = nw, y0 = nh, x1 = -1, y1 = -1;
-      for (let y = 0; y < nh; y++) {
-        for (let x = 0; x < nw; x++) {
-          // 8/255: ignore the all-but-invisible tail of an antialiased edge,
-          // which otherwise reports the shadow's outermost pixel as content.
-          if (d[(y * nw + x) * 4 + 3] > 8) {
-            if (x < x0) x0 = x;
-            if (x > x1) x1 = x;
-            if (y < y0) y0 = y;
-            if (y > y1) y1 = y;
-          }
-        }
-      }
-      if (x1 < 0) { out.push(null); continue; }
+      /* A grouped slide is measured against the whole set, not against itself
+         — see the note on \`object()\`. The box arrives on the element as
+         data-fit, written by the pre-pass. */
+      const box = el.dataset.fit ? JSON.parse(el.dataset.fit) : alphaBox(el);
+      if (!box) { out.push(null); continue; }
+      const { x0, y0, x1, y1 } = box;
       const cw = x1 - x0 + 1, ch = y1 - y0 + 1;
       const asked = Number(el.dataset.w) || stageW;
       let scale = Math.min(asked, stageW) / cw;
@@ -1060,6 +1095,109 @@ const CONFIGS = {
     ],
   }),
 
+  /* ================================================================== *
+   * 2026-08-05 — a day with no ship to post, for the second day running.
+   *
+   * Today's commits are the auth surface being torn out of Clerk and rebuilt
+   * on Supabase. That is a sign-up form, and a sign-up form is not a subject
+   * (RULES.md rule 6) however much work went into it. So the day is the
+   * PRODUCT again: two controls a student uses that have never been shot, one
+   * component per carousel, in the states a student puts them through.
+   *
+   * BOTH LIVE IN THE STEP-CONTEXT DRAWER, which on a phone is a swipe with no
+   * button (see cap-0805.mjs). Both are shot in the one course whose whole
+   * tree `MAP` covers, on the step whose sections are the generic set —
+   * Overview, Key ideas, In practice, Summary — so a contents list of it names
+   * no syllabus before the relabel even runs.
+   * ================================================================== */
+
+  /* 1 — where you are in a step, at three reading positions.  (morning)
+   *
+   * A rail, a bar that tracks whichever section is on screen, and a mark
+   * against each one that has been answered. Three states that differ in kind:
+   * the top of a step with nothing answered, the middle with two cleared, and
+   * the end with all four. Same `w` throughout — the DATA is what differs, and
+   * resizing would misreport the component. */
+  "s-page": () => ({
+    slot: "1-morning",
+    slides: [
+      object({ img: img("op-top.png"), w: 750, group: "toc" }),
+      object({ img: img("op-mid.png"), w: 750, group: "toc" }),
+      object({ img: img("op-end.png"), w: 750, group: "toc" }),
+    ],
+  }),
+
+  /* 2 — the comment box, at three states.  (afternoon)
+   *
+   * It binds itself to whatever section is on screen and re-labels as you
+   * scroll, so there is nothing to pick and no wondering what a note will
+   * attach to. The component GETS TALLER down the carousel — empty, written
+   * in, then carrying everything else written in this step — which is the
+   * argument made without a word, the same shape the nav tree post used. */
+  "s-note": () => ({
+    slot: "3-afternoon",
+    slides: [
+      /* NOT grouped, unlike the contents list next door: all three states run
+         the full width of the panel, so each measures the same ink width and
+         scales identically on its own. Grouping them would register the three
+         against the tallest, which strands the empty box in the top third of
+         the frame — and the point of this set is that the component GROWS. */
+      object({ img: img("cm-empty.png"), w: 752 }),
+      object({ img: img("cm-typed.png"), w: 752 }),
+      object({ img: img("cm-list.png"), w: 752 }),
+    ],
+  }),
+
+  /* 3 — the course tree, at three degrees of clearing.  (night)
+   *
+   * THE SAME COMPONENT AS THE 3 AUG MORNING POST, ON ITS SECOND AXIS. That is
+   * a shape this account has used before and which shipped: the `cards` block
+   * went out on 2 Aug at three KINDS and on 3 Aug at three FILL LEVELS. The
+   * folders post was about the tree growing a level; this one is about the
+   * ring on every step row — empty, part drawn, filled.
+   *
+   * GROUPED, so the three register on each other: same tree, same rows, same
+   * place, and the only thing that moves is the rings. That is the argument.
+   *
+   * Taller than it is wide (283x540 css), so the HEIGHT bound takes over and
+   * `w` stops being the control: 750 and 480 both draw the same picture until
+   * the height comes down. It is set to 480 because at the full 1040 the tree
+   * starts at y=330 and runs straight into the corner wordmark at 316 — the
+   * first tall subject this account has posted, and the first time the two have
+   * had to share the top of the frame. 480 draws 877, which centres at 411 and
+   * clears it. */
+  "s-rings": () => ({
+    slot: "5-night",
+    slides: [
+      object({ img: img("nv-none.png"), w: 480, group: "tree" }),
+      object({ img: img("nv-part.png"), w: 480, group: "tree" }),
+      object({ img: img("nv-full.png"), w: 480, group: "tree" }),
+    ],
+  }),
+
+  /* NOT POSTED — the ActionBar, one shape at four jobs.
+   *
+   * Shot (ab-*) and rendered and rejected on looking at it. `.action-bar` is
+   * 336x34 css, so at the full width of the safe box it draws 80px in an
+   * 1100px stage: a sliver on an empty gradient, which is exactly the failure
+   * rule 1 names — "the answer to a slide that feels empty is a taller
+   * subject, never a wider box". The two offline-card bars are worse: they sit
+   * in a two-column grid, arrive half as wide, and blow up to twice the type
+   * size of the other two, so the set does not even read as one component.
+   *
+   * Kept because the shots are good and the subject is real. It wants a frame
+   * that is about a WIDE, SHORT thing — or to be shown inside the card it
+   * belongs to, which is a different post. */
+  "s-bar": () => ({
+    slot: "5-night",
+    slides: [
+      object({ img: img("ab-resume.png"), w: 750 }),
+      object({ img: img("ab-start.png"), w: 750 }),
+      object({ img: img("ab-saving.png"), w: 750 }),
+      object({ img: img("ab-install.png"), w: 750 }),
+    ],
+  }),
+
   brand: () => ({
     slot: "5-night",
     slides: [
@@ -1091,6 +1229,55 @@ fs.mkdirSync(OUT, { recursive: true });
 /* ---- render ---- */
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 2 });
+
+/* GROUP PRE-PASS — one box for a whole set of states.
+ *
+ * Slides are rendered one page at a time, so a slide cannot see its siblings;
+ * the union has to be measured before the loop starts. See the note on
+ * `object()` for why a set needs one box rather than one each. */
+/* A real function rather than the expression-string form `fitObject` uses:
+ * this one needs an ARGUMENT (the images), and a string handed to
+ * page.evaluate is evaluated as an expression with nothing passed to it — the
+ * first version measured no images at all and silently returned null, which
+ * looks exactly like a set that happens not to need grouping. */
+const measureGroup = async ({ srcs, boxFn }) => {
+  const alphaBox = new Function("return " + boxFn)();
+  const boxes = [];
+  for (const src of srcs) {
+    const im = new Image();
+    im.src = src;
+    await im.decode();
+    const b = alphaBox(im);
+    if (b) boxes.push(b);
+  }
+  if (!boxes.length) return null;
+  return {
+    x0: Math.min(...boxes.map((b) => b.x0)),
+    y0: Math.min(...boxes.map((b) => b.y0)),
+    x1: Math.max(...boxes.map((b) => b.x1)),
+    y1: Math.max(...boxes.map((b) => b.y1)),
+  };
+};
+
+const groupBox = {};
+{
+  const groups = new Map();
+  for (const s of cfg.slides) {
+    if (s.bg !== "object" || !s.group) continue;
+    if (!groups.has(s.group)) groups.set(s.group, []);
+    groups.get(s.group).push(s.img);
+  }
+  if (groups.size) {
+    await page.setContent("<!doctype html><html><body></body></html>", { waitUntil: "load" });
+    for (const [name, srcs] of groups) {
+      groupBox[name] = await page.evaluate(measureGroup, { srcs, boxFn: ALPHA_BOX });
+      const b = groupBox[name];
+      if (!b) throw new Error(`group "${name}": measured no ink in ${srcs.length} images.`);
+      console.log(`  group "${name}": ${srcs.length} states share one ${b.x1 - b.x0 + 1}x${b.y1 - b.y0 + 1}px box`);
+    }
+  }
+}
+
 for (let i = 0; i < cfg.slides.length; i++) {
   const s = cfg.slides[i];
   const base =
@@ -1129,6 +1316,12 @@ for (let i = 0; i < cfg.slides.length; i++) {
    * frame the component fills) is otherwise invisible until someone looks at
    * the PNG and says it is too small. */
   if (s.bg === "object") {
+    if (s.group && groupBox[s.group]) {
+      await page.evaluate((b) => {
+        const el = document.querySelector(".obj");
+        if (el) el.dataset.fit = JSON.stringify(b);
+      }, groupBox[s.group]);
+    }
     const fitted = await page.evaluate(fitObject(SAFE));
     for (const f of fitted) {
       if (f) console.log(`  slide ${i + 1}: component ${f.drawn[0]}x${f.drawn[1]} (asked ${f.asked})`);

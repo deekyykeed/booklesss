@@ -49,6 +49,46 @@ makes it worse, not legal.
   is the component.
 - **Repeat the component, not the frame.** Three slides of the same control in
   different states is the shape. Three slides of different controls is a tour.
+- **A WIDE, SHORT control is not a subject, however good it is.** The ActionBar
+  — the app's one button shape, in four genuinely different jobs — is 336×34
+  css, so at the full width of the safe box it draws **80px in an 1100px
+  stage**. Rendered, it is a sliver on an empty gradient (2026-08-05, `s-bar`,
+  kept in `prog-post.mjs` unposted). The rule of thumb: anything past about
+  **5:1** cannot carry a slide. The course card at 2.4:1 is the flattest thing
+  that has worked.
+- **Nor is one whose ASPECT changes between states.** The same ActionBar sits
+  full width in a course card and half width in the offline card's two-column
+  grid, so two of its four states blow up to twice the type size of the others
+  and the set stops reading as one component.
+- **A TALL subject is the answer to an empty frame, and it needs its own `w`.**
+  The nav tree is 283×540 css, so the HEIGHT bound takes over and `w` stops
+  being the control — 750 and 480 draw the same picture until the height comes
+  down. At the full bound (`stage − 60`) the component starts at y=330 and runs
+  into the corner wordmark at 316. Set `w` so the drawn height is ~880, not
+  1040.
+
+## 1a. States of one component must be SCALED as one
+
+`fitObject` sizes a component by its ALPHA box, which is right until the thing
+that changes between states is **how much ink there is**.
+
+> 2026-08-05: the contents list at three reading positions. The first state has
+> nothing answered, so no green ticks, so its opaque content stopped 200px short
+> of the states that did — and it rendered **966px tall beside its own siblings
+> at 332**. The same component, claiming to be three times the size, because
+> less of it was drawn in.
+
+Pass `group: "<name>"` to `object()` on every slide in such a set.
+`prog-post.mjs` measures the union of the whole set's alpha boxes **before** the
+render loop (slides render one page at a time, so a slide cannot see its
+siblings) and gives them one scale and one centre. The set then registers: same
+place, same size, and only the state moves.
+
+- **Group when the ink changes; do not group when the component GROWS.** The
+  comment box gets taller down its carousel and that is the argument — grouping
+  it would register all three against the tallest and strand the empty one in
+  the top third of the frame. All three run the panel's full width, so they
+  already scale identically.
 
 ## 2. The component has to make sense on its own
 
@@ -99,7 +139,38 @@ rest from something dateless:
 
 - **the logo plates** — sixteen in `2026-08-03 Monday/6-logo/`, built for this.
   Copy four into the slot as `01`–`04`. No CTA slide, no copy, caption only.
+  **All sixteen are now spent** (eight on 4 Aug, eight on 5 Aug), so the next
+  thin day builds a fresh set with `SLOT=<slot> node _scripts/logo-variants.mjs`
+  before it can lean on them. Mix light and dark plates within a slot rather
+  than posting four black ones — the house rule is all light, and a set that is
+  half black reads as a brand system rather than as a dark post.
+
+  **A PLATE SLOT NEEDS FOUR DIFFERENT TREATMENTS, NOT ONE TREATMENT ON FOUR
+  GROUNDS.** This is rule 1's "states must differ in kind", pointed at the
+  brand instead of at a control, and it is what separates the two plate slots
+  of 5 Aug.
+
+  > Midday went out as `08-icon`, `09-icon-round`, `02-mark-dark`,
+  > `16-knockout`. Owner: *"the mid day ones were bad — not a good rep."* It is
+  > two pairs of near-duplicates: the same tile square then round, then the same
+  > word reversed out of black twice. Four slides, two ideas, and neither of
+  > them says anything the other doesn't.
+  >
+  > Evening went out as `13-bleed`, `04-mark-purple`, `06-name-dark`,
+  > `12-macro-sss`. Owner: *"evening was good — better illustration and creative
+  > showcase of logo on different ways."* Four different ideas: the word running
+  > off the frame, the word on the brand hue, the full name reversed, and one
+  > letterform blown past the edge.
+
+  So when picking four, say out loud what each one is FOR. If two of them need
+  the same sentence, one of them is padding — swap it, or build a new plate.
 - **a product component that has not been posted yet.**
+- **a product component already posted, on a DIFFERENT AXIS.** Legitimate and
+  with precedent: the `cards` block went out on 2 Aug at three *kinds* and on
+  3 Aug at three *fill levels*, and the nav tree went out on 3 Aug at three
+  *depths* and on 5 Aug at three degrees of *clearing*. The test is whether the
+  new set answers a different question about the component. Re-shooting the same
+  axis is padding.
 
 Say in `PLAN.md` which it is and why. An honest fifth post beats an honest
 explanation of why there isn't one.
@@ -199,6 +270,41 @@ Seeded data stays plausible — someone a few weeks in, a live streak, a couple
 of steps going stale, never a finished course and never a perfect week. The
 numbers on screen must be the app's own arithmetic on real ids, so a screenshot
 can be trusted.
+
+## 10. A HALF-BUILT FEATURE IS NOT A SUBJECT
+
+**Rendering is not shipping.** A control can be on screen, respond to a tap and
+save what you type, and still be a third of the feature it is going to be. Do
+not post one.
+
+> 2026-08-05: the comment box went out at three states — empty, written in,
+> carrying the notes already written in that step. Owner: *"afternoon was not
+> good — showing an incomplete feature."* And it is: `platform/COMMENTS-PLAN.md`
+> opens *"A plan to approve, not code that exists. Nothing here is built. The
+> thing shipped is a private notebox on one device; this is what turns it into
+> people talking."* The whole point of section comments is other students
+> answering you, and none of that exists.
+
+This is a harder line than the honesty rule in the skill's README, which says
+copy about an unfinished thing should say "building this". That is right for a
+`cover()` slide about work in progress. It is not a licence to shoot the
+half-built control as though it were finished — a carousel has no copy on it at
+all (rule 4), so the slides cannot carry the caveat, and the caption arrives
+after the reader has already decided what they are looking at.
+
+**The test before capturing: if a student used this today, would they get the
+thing the post implies they get?** For the notebox the answer is no — they get
+a private box nobody will ever answer.
+
+Two consequences worth keeping:
+
+- **`grep` the repo for a plan file before picking a subject.** A `*-PLAN.md`
+  next to the component is the app telling you it is not done.
+- **The two posts that landed on 5 Aug are the pattern.** The contents rail
+  (*"great illustration of the feature"*) and the tree's step rings
+  (*"amazing"*) are both a **finished** control whose STATE is drawn on its
+  face, shown at three degrees of that state. Nothing about either is waiting on
+  a backend.
 
 ---
 
@@ -308,11 +414,31 @@ Print the css size `isolate()` reports and check the numbers actually differ.
   milliseconds. `context.route()` with a `setTimeout` before `route.continue()`
   does catch the worker's fetches — and a slow connection is the honest setting
   for a feature that exists because of one.
-- **Shoot gated pages from a worktree with Clerk's keys commented out.** A
+- **Shoot gated pages from a worktree with the AUTH keys commented out.** A
   headless browser is always signed out, so `/dashboard` holds behind its
-  onboarding gate. With no `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `clerkEnabled`
-  is false and the page renders against the seeded record. `C:/bkls-shot` is
-  already set up this way — leave it.
+  onboarding gate. The flag is `authEnabled` in `lib/auth.ts` and it reads
+  **`NEXT_PUBLIC_SUPABASE_URL && NEXT_PUBLIC_SUPABASE_ANON_KEY`** — it replaced
+  `clerkEnabled` and its single publishable key on 2026-08-05, so a worktree set
+  up before then comments out the wrong pair and the gate comes back on.
+  `C:/bkls-shot` is set up correctly — leave it.
+- **Re-pin the shot worktree, and `npm install` when you do.** It holds its own
+  `node_modules`, so a pin that crosses a dependency change (Clerk out,
+  `@supabase/ssr` in) fails to build with an error about the app rather than
+  about the install.
+- **The step a reader shot is taken on is a decision, not a default.** Only
+  ONE course has its whole tree in `MAP`, and inside it only some steps have the
+  generic section set — Overview, Key ideas, In practice, Summary. Anything that
+  lists a step's SECTIONS has to be shot on one of those: the step yesterday's
+  shots used has its own headings ("Treasury as a cost centre"), which is
+  invisible in a 370×34 crop of one row and fatal in a contents list.
+  `/microeconomics/supply-demand/law-of-demand` is the known-good one.
+- **The left drawer has a button; the right one is a swipe.** `button[aria-label="Open navigation"]`
+  opens the course tree. The step-context drawer lost its button on 1 Aug, so it
+  takes a real gesture — CDP `Input.dispatchTouchEvent`, >=12px to declare the
+  drag horizontal and 55px of travel to open. **Try several heights**: MobileNav
+  refuses to track a drag starting inside anything scrolling sideways or wearing
+  `[data-no-swipe]`, so one fixed y opens the drawer at the top of a step and
+  silently does nothing half way down it.
 - **Relabelling is case-sensitive**, misses callouts and list items unless each
   is walked separately, and must be written **past the fold** — the scan tests
   every element whose box touches the crop.

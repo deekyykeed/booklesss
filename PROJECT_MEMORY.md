@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-04 (session 44)
+**Last updated:** 2026-08-05 (session 46)
 
 ---
 
@@ -92,13 +92,35 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
-**From session 45 (2026-08-05, ~01:00). Linear was unreachable AGAIN — two
-sessions running now with no issues raised. Everything below lives in this file
-only.**
-- [ ] ⚠️ **Raise BOO issues for sessions 44 AND 45.** `linear-server` needs a
-      one-time interactive OAuth; both sessions were non-interactive. Two
-      sessions of onboarding work, the identity merge fix and a reverted auth
-      form are recorded here ONLY.
+**From session 46 (2026-08-05, evening). Linear was unreachable AGAIN — THREE
+sessions now with no issues raised. Everything below lives in this file only.**
+- [ ] ⚠️ **Raise BOO issues for sessions 44, 45 AND 46.** `linear-server` needs
+      a one-time interactive OAuth; all three sessions were non-interactive. Two
+      sessions of onboarding work, the identity merge fix, a reverted auth form,
+      the Clerk→Supabase migration and a day of social posts are recorded here
+      ONLY.
+- [ ] ⚠️ **`.claude/CLAUDE.md` still documents Clerk as the auth surface, and
+      HEAD cut it.** `132673c` ("Cut Clerk. Supabase auth, and the sign-up form
+      is ours again") was committed by a session that never wrapped, so two
+      sections are now wrong: *"The auth surface is Clerk's own modal — do not
+      rebuild it"*, and the three-copies table built around Clerk
+      `unsafeMetadata`. Session 46 left both alone deliberately — it is that
+      session's work to document and they may still be holding it. **Verified
+      facts to fold in when it is rewritten:** `lib/clerk.ts` → `lib/auth.ts`,
+      `clerkEnabled` → `authEnabled`, and the flag now reads
+      `NEXT_PUBLIC_SUPABASE_URL && NEXT_PUBLIC_SUPABASE_ANON_KEY` rather than
+      one Clerk publishable key.
+- [ ] **The social logo-plate reserve is EMPTY.** All sixteen plates built on
+      3 Aug are spent (eight on 4 Aug, eight on 5 Aug). The next thin day either
+      builds a fresh set — `SLOT=<slot> node _scripts/logo-variants.mjs` from
+      `Demand/social/` — or finds a third product component. Two plate slots a
+      day is the owner's ceiling.
+- [ ] **The app's postable component surface is nearly exhausted**, and finding a
+      third product subject took most of session 46. Shot and unusable so far:
+      the ActionBar (too flat), the source chips (banned site names), the search
+      palette (global index, unmappable), the settings replica (not ours), the
+      comment box (half built). A genuinely new student-visible component is now
+      the cheapest way to feed the social slots.
 - [ ] ⚠️ **Walk the SHARED-LINK path before sharing anything.** It is the one
       journey every WhatsApp link takes — stranger opens a step, reads free,
       hits the gate on the second one — and it was never walked in 45. Five
@@ -886,6 +908,93 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-05 (session 46 — five posts, three landed, and the two that missed became rules)
+
+**A social-only session.** Nothing in `platform/` was touched. Today's five
+carousels are in `Demand/social/posts/2026-W32 (Aug 3-9)/2026-08-05 Wednesday/`
+with captions and reasoning in its `PLAN.md`.
+
+**No ship to post, for the second day running.** Every commit today is the auth
+surface — Clerk cut, Supabase in, the handle question removed, a lint pass —
+and a sign-up form is not a subject (daily-post RULES.md rule 6). So the day
+was three product components and two sets of logo plates.
+
+**The owner's verdict, all five:**
+
+| Slot | Subject | Verdict |
+|---|---|---|
+| Morning | the step's "on this page" rail, three reading positions | ✅ *"great illustration of the feature"* |
+| Midday | logo plates — the icon | ❌ *"bad — not a good rep"* |
+| Afternoon | the comment box, three states | ❌ *"showing an incomplete feature"* |
+| Evening | logo plates — the name | ✅ *"creative showcase of logo on different ways"* |
+| Night | the course tree's step rings, three degrees of clearing | ✅ *"amazing"* |
+
+Both misses are now hard rules in `.claude/skills/daily-post/RULES.md`, with the
+owner's words and the reason:
+
+- **New rule 10 — a half-built feature is not a subject.** The comment box
+  renders, saves and reads back, and `platform/COMMENTS-PLAN.md` opens *"Nothing
+  here is built. The thing shipped is a private notebox on one device."* The
+  feature is students answering each other and none of it exists. Rendering is
+  not shipping. **The check that would have caught it: grep for a `*-PLAN.md`
+  beside a component before choosing it as a subject.**
+- **Rule 5 extended — a plate slot needs four TREATMENTS, not one treatment on
+  four grounds.** Midday was two pairs of near-duplicates (a tile square then
+  round; the word reversed out of black twice). Evening, from the same reserve,
+  was four different ideas and was praised for exactly that.
+
+**Also new in `prog-post.mjs`: `group` on `object()`.** `fitObject` sizes a
+component by its alpha box, which is wrong when what changes between states is
+how much ink there is — the contents list with nothing answered has no green
+ticks, so it rendered **966px tall beside its own siblings at 332**. A named
+group measures the union of the set's alpha boxes before the render loop
+(slides render one page at a time and cannot see each other) and gives them one
+scale and one centre. Opt-in, so every earlier post renders unchanged.
+
+**⚠️ The Clerk → Supabase auth migration (`132673c`) is NOT in this log.** It
+was committed by a session that never wrapped. `.claude/CLAUDE.md` still carries
+*"The auth surface is Clerk's own modal — do not rebuild it"* and the whole
+three-copies section written around Clerk's `unsafeMetadata`, which HEAD now
+contradicts. Left alone rather than rewritten — it is that session's work to
+document and they may still be holding it. Carried to Next Session.
+
+**What Worked:**
+- **Shooting whole reference screens first, then choosing the subject off the
+  pictures** (`cap-0805-ref.mjs`). Reasoning about components from the source
+  tree kept picking things that photograph badly or cannot be photographed at
+  all. Four candidates died on sight of a reference frame; two of the three that
+  survived were the ones the owner liked.
+- **`git status` catching a foreign dirty file.** `tools/migrate_auth_to_supabase.sql`
+  showed as modified and turned out to be a stale stat entry from OneDrive
+  touching the mtime — `git diff` refreshed the index and it went clean. Worth
+  knowing before assuming a parallel session is mid-flight.
+- **The shot worktree `C:/bkls-shot` is re-pinned to `132673c`** and needed two
+  changes to work at that pin, both now permanent: `npm install` (Clerk's
+  packages gone, `@supabase/ssr` in), and the two `NEXT_PUBLIC_SUPABASE_*` keys
+  commented out of its `.env.local`. `authEnabled` in `lib/auth.ts` replaced
+  `clerkEnabled` and reads THAT pair, so a worktree set up before today comments
+  out the wrong key and the dashboard's onboarding gate comes back on.
+
+**Dead Ends (do not retry):**
+- **The ActionBar as a carousel subject.** Shot, rendered (`POST=s-bar`, kept
+  unposted in `prog-post.mjs`) and rejected on looking at it: 336×34 css draws
+  an 80px sliver in an 1100px stage, and the offline-card copies sit in a
+  two-column grid so they arrive half as wide and blow up to twice the type
+  size. Anything past ~5:1 cannot carry a slide.
+- **The source chips.** Every chip is a site's real name and the sites are
+  `Corporate Finance Institute`, `Treasury Today`, `treasury-management.com`.
+  The relabel catches the first; the scan throws on the rest, correctly. No step
+  in the mapped course carries a neutral set.
+- **`page.evaluate(<function-as-string>, arg)` does not pass the argument.**
+  Playwright evaluates a string as an expression, so the group pre-pass measured
+  zero images and returned `null` — which looks exactly like a set that happens
+  not to need grouping, and failed silently. Pass a real function.
+- **Reader components cannot be shot on yesterday's step.** Its sections are its
+  own headings ("Treasury as a cost centre"), fine in a 370×34 crop of one row
+  and fatal in a contents list. Use `/microeconomics/supply-demand/law-of-demand`
+  — the one course whose whole tree `MAP` covers, on a step with the generic
+  section set.
 
 ### Session 2026-08-04 into 05 (session 45 — the account stops overwriting the student, and the custom auth form dies twice)
 
