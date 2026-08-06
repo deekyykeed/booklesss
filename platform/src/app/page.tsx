@@ -1,40 +1,37 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { authEnabled } from "@/lib/auth";
 import { openGraph, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
-import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
-import { LandingAuth, ToApp } from "@/components/landing/landing-bits";
+import { ToApp } from "@/components/landing/landing-bits";
 
 /* ------------------------------------------------------------------ *
- * The front door. A real landing page, not the app.
+ * The front door. One screen, and nothing under it.
  *
- * "/" was the student dashboard until 2026-08-03, when Google's OAuth review
- * rejected the branding twice: the home page has to be a static URL that
- * names the app, fully describes what it does, links the privacy policy, and
- * is readable without signing in — none of which a dashboard is. The
- * dashboard lives at /dashboard.
+ * THE DESIGN IS THE OWNER'S, drawn in Framer (project "Booklesss RESERVE",
+ * page "/") and read off the canvas on 2026-08-06 — layout, type, colour,
+ * shadows and timing are all measured from that file rather than interpreted.
+ * If it needs to change, change it there first and re-read it; a value edited
+ * only here goes stale the next time anyone looks at the source.
  *
- * THE LOOK IS A REFERENCE, SUPPLIED BY THE OWNER (2026-08-03, four phone
- * screenshots of Claude's own mobile login page: "I would like my whole
- * homepage to literally look like this, as simple as could be"). One narrow
- * column, in the APP'S own colours: wordmark header, a big display headline,
- * the sign-up card, a "Meet Booklesss" section, then feature sections
- * over hairlines, each with a screenshot in a panel. Per the design system's
- * rule on references, the reference is the brief — centred and stacked wins
- * over the usual variance dials — with the app's own faces standing in for
- * the reference's serif. The reference's "Get the app" card was dropped by
- * the owner; installing lives on the dashboard.
+ * WHAT THIS REPLACED, so the reasoning isn't lost: a scrolling page with a
+ * headline, an inline sign-up card, a "Meet Booklesss" paragraph and three
+ * feature sections each carrying a screenshot of the real app. The owner's
+ * call (2026-08-06) was hero only — "a very simple landing page".
  *
- * SERVER-RENDERED ON PURPOSE. The pitch — name, purpose, privacy link — is
- * in the static HTML, because the reviewer that failed us may never run
- * JavaScript. The client pieces (landing-bits) are the two cards and the
- * redirect that sends people who already live here past the door.
+ * ⚠️ THE OAUTH CONSTRAINT THIS BREAKS, ON PURPOSE. Google's OAuth branding
+ * review rejected this app twice in August 2026 because the home page did not
+ * name the product, describe what it does, or link the privacy policy without
+ * JavaScript. The previous page existed in that shape to pass it, and Google
+ * sign-in is currently OFF in production as the workaround. This page carries
+ * the name and a one-line description in static HTML, but no privacy link and
+ * no fuller explanation — so turning Google sign-in back on needs either a
+ * footer here or a different verification URL. Raised with the owner before
+ * this shipped; the decision was to ship it.
  *
- * THE SCREENSHOTS ARE THE REAL APP, with its real courses, shot at the phone
- * viewport by `scripts/cap-landing.mjs`. Not the social captures: those are
- * relabelled to an invented curriculum so no post names a school, and putting
- * invented courses on the product's own front door would be claiming a
- * catalogue that does not exist.
+ * STILL A SERVER COMPONENT. Nothing here needs the browser: the entrance is
+ * CSS keyframes with per-element delays (see globals.css → "the front door's
+ * entrance"), and the only client piece is ToApp, which renders nothing.
  * ------------------------------------------------------------------ */
 
 export const metadata: Metadata = {
@@ -45,159 +42,199 @@ export const metadata: Metadata = {
   openGraph: openGraph({ title: SITE_NAME, description: SITE_DESCRIPTION, path: "/" }),
 };
 
-/* THE APP'S OWN GROUND, not the reference's cream (owner, 2026-08-03: "use
- * my app default coloring styles for the website — that warm color should
- * go"). The layout stays the reference's; the colours are the app's tokens:
- * canvas grey, white cards, the app's hairline. */
-const PANEL = "var(--color-active)";
-const RULE = "var(--color-line)";
+/* The five faces above "Trusted by Students". Template stock photography that
+ * came with the design, downscaled from the 3–6MP originals Framer was serving
+ * to the 96px they are actually drawn at (3.5MB → 17KB for the set).
+ *
+ * They are photographs of nobody in particular, over a line claiming students
+ * trust us. Flagged to the owner on 2026-08-06 and kept deliberately. The
+ * honest version is public/avatars/ — the same 200 Kameleon discs students are
+ * actually assigned — and swapping to it is this array plus a rounded <img>. */
+const FACES = [1, 2, 3, 4, 5] as const;
 
-const SHOTS = {
-  reader: { src: "/landing/reader.png", w: 1206, h: 2622 },
-  contents: { src: "/landing/contents.png", w: 960, h: 2340 },
-  dashboard: { src: "/landing/dashboard.png", w: 1206, h: 2622 },
-} as const;
+/** The headline, one span per word, because the design plays it in a word at a
+ *  time. Splitting in the markup rather than at runtime is what keeps the page
+ *  a server component — and it keeps the whole line in the HTML, so it is
+ *  still one readable sentence to a crawler that runs no CSS. */
+const HEADLINE = ["Learn", "2X", "faster", "with", "Booklesss"];
 
-/** A feature: an icon beside a heading, a line of what it means, and the
- *  screen that proves it — cropped in a warm panel, as the reference crops
- *  its product shots, rather than floating in a phone bezel. */
-function Feature({
-  icon,
-  title,
-  body,
-  shot,
-  alt,
-}: {
-  icon: MynaIconName;
-  title: string;
-  body: string;
-  shot: keyof typeof SHOTS;
-  alt: string;
-}) {
-  const s = SHOTS[shot];
-  return (
-    <section className="border-t py-12" style={{ borderColor: RULE }}>
-      <h3 className="flex items-center gap-3 font-display text-[26px] font-medium leading-tight tracking-[-0.01em] text-ink">
-        <MynaIcon name={icon} size={26} className="shrink-0 text-ink-2" />
-        {title}
-      </h3>
-      <p className="mt-4 text-[17px] leading-7 text-ink-2">{body}</p>
-      <div
-        className="mt-7 h-[380px] overflow-hidden rounded-[20px] px-6 pt-6"
-        style={{ backgroundColor: PANEL }}
-      >
-        <Image
-          src={s.src}
-          alt={alt}
-          width={s.w}
-          height={s.h}
-          sizes="(max-width: 640px) 90vw, 480px"
-          className="h-full w-full rounded-t-[14px] border border-black/5 object-cover object-top shadow-[var(--shadow-lift)]"
-        />
-      </div>
-    </section>
-  );
-}
+/** Framer's word stagger: 50ms per token. */
+const WORD_STEP = 0.05;
 
 export default function LandingPage() {
   return (
-    <div className="relative min-h-dvh bg-white/[0.62] backdrop-blur-[16px]">
-      {/* The app's own backdrop, same as the dashboard and the reader — see
-          app/onboarding/page.tsx for what the two layers are. The front door
-          should look like the thing it is a door to. */}
-      <div className="bg-waves" aria-hidden="true">
-        {Array.from({ length: 6 }, (_, i) => (
-          <span key={i} />
-        ))}
-      </div>
+    <main className="relative flex min-h-dvh w-full flex-col items-center justify-end overflow-clip bg-black px-4 pt-20 pb-[140px]">
       <ToApp />
 
-      {/* The wordmark, and nothing beside it. The page's actions live in the
-          two cards; a returning reader is caught by ToApp or by the auth
-          card's own sign-in toggle inside the modal. */}
-      <header className="relative z-10 mx-auto w-full max-w-[560px] px-5 py-6">
-        <span className="font-display text-[22px] font-bold leading-none tracking-tight text-ink">
-          Booklesss
-        </span>
-      </header>
+      {/* ---- the backdrop ----
+          Three layers, painted bottom to top: the photograph, a gradient that
+          drowns its lower half in black so white type has somewhere solid to
+          sit, and a noise tile over both.
 
-      <main className="relative z-10 mx-auto w-full max-w-[560px] px-5 pb-4">
-        {/* ---- the headline ----
-             THE PROMISE, NOT THE MECHANISM (owner, 2026-08-03: "make the main
-             title more bold and hooking, but short still — look at the main
-             thing the person desires for us to do for them"). It used to say
-             "Your whole course, in steps you can actually read", which
-             describes the product. Nobody wants steps; they want to pass. The
-             line under it is where the mechanism goes, and it is also what
-             Google's reviewers read to learn what this app does. */}
-        <h1 className="px-2 pt-8 text-center font-display text-[48px] font-bold leading-[0.98] tracking-[-0.035em] text-ink md:text-[68px]">
-          Everything you need to pass
-        </h1>
-        <p className="mx-auto mt-4 max-w-[380px] px-2 pb-10 text-center text-[17px] leading-7 text-ink-2">
-          Your whole course, rewritten as short steps you can read on your phone.
-        </p>
+          No z-index on either this or the content beside it. Both are
+          positioned and both are z-index auto, so DOM order alone decides:
+          this comes first and the content paints over it. Stacking here is one
+          less thing to reason about than three competing layer numbers. */}
+      <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
+        <Image
+          src="/landing/hero/photo.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_42%,rgb(0,0,0)_100%)]" />
+        {/* Tiled at its native 256px rather than stretched to cover. Framer
+            scales the same PNG across the whole frame, which at this size
+            turns 1px grain into 3px blotches; repeating it is what the texture
+            is for and it holds up at any viewport. */}
+        <div
+          className="absolute inset-0 opacity-20"
+          style={{ backgroundImage: "url(/landing/hero/noise.png)", backgroundSize: "256px" }}
+        />
+      </div>
 
-        {/* ---- the account, then the questions ----
-             Sign up here; new accounts land on /onboarding for the questions
-             that make the dashboard theirs. */}
-        <LandingAuth />
+      {/* ---- the content ----
+          Top and bottom of the screen, pushed apart. The design is a 390px
+          phone; the column is capped just above that and centred so a laptop
+          gets the same composition on a full-bleed photo rather than a hero
+          stretched sideways. "/" is exempt from the DesktopGate, so a desktop
+          render is a real case, not a hypothetical. */}
+      <div className="relative flex h-full w-full max-w-[430px] flex-1 flex-col items-center justify-between gap-8">
+        {/* ---- the mark ---- */}
+        <div className="flex flex-col items-center gap-2.5">
+          {/* The B is 40px on a 50px disc that clips it, and the clipping is the
+              design: the 10px-offset underline runs past the bottom of the
+              circle, so what is left is a solid bar with its ends cut by the
+              curve. Do not relax the overflow or it escapes as a full rule.
 
-        {/* ---- what this is (static, for anyone who scrolls — and for the
-                reviewer who runs no JavaScript) ---- */}
-        <section className="px-2 pb-14 pt-20 text-center">
-          <h2 className="font-display text-[34px] font-medium leading-tight tracking-[-0.015em] text-ink">
-            Meet Booklesss
-          </h2>
-          <p className="mx-auto mt-5 max-w-[440px] text-[19px] leading-8 text-ink-2">
-            Booklesss is a course reader: university study notes rewritten as short steps you read
-            on your phone, with checkpoints that track your studying.
+              LINE HEIGHT IS 50px, NOT THE DESIGN'S 1.4em, AND THAT IS A FIX
+              RATHER THAN A DEVIATION. 1.4em is a 56px line box in a 50px disc;
+              Framer centres it at -3px, but a grid or flex item TALLER than its
+              container is aligned to the start edge instead of centred — the
+              engine refusing to push content out of the top where it could not
+              be scrolled back to. So `place-items-center` silently yields y=0,
+              the glyph sits 3px low, and the bar falls off the bottom of the
+              circle. Setting the line box to the disc's own height puts the
+              baseline exactly where the design has it (half-leading 5px from
+              50, vs Framer's 8px from 56 on a box starting 3px higher — the
+              same 85px) and nothing overflows, so no alignment rule applies.
+              Measured against a screenshot of the Framer page, not derived. */}
+          <div className="hero-in grid size-[50px] place-items-center overflow-clip rounded-full bg-black shadow-[var(--shadow-hero-disc)] [--rise-blur:0px] [--rise-dur:0.4s] [--rise:0px]">
+            <span className="font-mark text-[40px] leading-[50px] text-white underline decoration-solid decoration-[5px] underline-offset-[10px]">
+              B
+            </span>
+          </div>
+          {/* No underline on the wordmark. Framer's canvas carries a stale
+              text-decoration on this node that its own render ignores — checked
+              against a screenshot of the page before dropping it. */}
+          <p
+            className="hero-in font-mark text-[22px] leading-[1.2em] tracking-[-0.03em] text-white"
+            style={{ animationDelay: "0.05s" }}
+          >
+            Booklesss
           </p>
-        </section>
+        </div>
 
-        <Feature
-          icon="book-open"
-          title="Read it in steps, not chapters"
-          body="Every lesson is one sitting — the idea first, then what it means in practice. Tap a term you don't know and it explains itself in place, without losing your spot."
-          shot="reader"
-          alt="A step open in the Booklesss reader on a phone"
-        />
+        {/* ---- the pitch ---- */}
+        <div className="flex w-full flex-col items-center gap-8">
+          {/* Five faces, 31px each, overlapping by 6px. */}
+          <div className="flex flex-col items-center gap-0.5">
+            <div className="hero-in flex" style={{ animationDelay: "0.2s" }}>
+              {FACES.map((n, i) => (
+                <Image
+                  key={n}
+                  src={`/landing/hero/face-${n}.jpg`}
+                  alt=""
+                  width={31}
+                  height={31}
+                  className={`size-[31px] rounded-full border border-white object-cover ${
+                    i === 0 ? "" : "-ml-1.5"
+                  }`}
+                />
+              ))}
+            </div>
+            <p
+              className="hero-in font-hero-meta text-[14px] leading-[1.3em] text-[#dedede]"
+              style={{ "--rise": "20px", "--rise-blur": "10px", "--rise-dur": "0.7s", animationDelay: "0.25s" } as React.CSSProperties}
+            >
+              Trusted by Students
+            </p>
+          </div>
 
-        <Feature
-          icon="clipboard"
-          title="The whole course, in order"
-          body="No hunting through a folder of PDFs for the right one. Everything is laid out in reading order, and what you have finished is ticked off as you go."
-          shot="contents"
-          alt="The course contents drawer, showing lessons with completed steps ticked"
-        />
+          <div className="flex w-full flex-col items-center gap-4">
+            {/* NO mix-blend-mode, and the design file says otherwise on purpose.
+                The Framer node carries `blendingMode: exclusion`, but Framer
+                wraps this content in a z-indexed layer, which makes it its own
+                stacking context — and an element only blends with what is
+                painted beneath it INSIDE that context. The photograph is
+                outside it, so Framer's own render draws this line solid white.
+                Checked against a screenshot of the page rather than the canvas.
 
-        <Feature
-          icon="chart-bar-increasing"
-          title="Proof the studying happened"
-          body="Each section ends with an honest answer — got it, almost, not yet. Those answers turn into a streak, hours read and how much of the course is covered."
-          shot="dashboard"
-          alt="The dashboard, showing streak, coverage and time studied this week"
-        />
+                Implementing the attribute faithfully therefore produces
+                something the owner has never seen: over the skin tones in the
+                middle of the photo, exclusion turns white into muddy blue-grey
+                and the headline gets noticeably harder to read. The rendered
+                design is the design. */}
+            <h1 className="text-center font-display text-[42px] leading-[48px] font-semibold tracking-[-0.03em] text-white sm:text-[48px] sm:leading-[54px]">
+              {HEADLINE.map((word, i) => (
+                <span
+                  key={word}
+                  className="hero-in hero-word"
+                  style={{ animationDelay: `${i * WORD_STEP}s` }}
+                >
+                  {word}
+                  {i < HEADLINE.length - 1 ? " " : ""}
+                </span>
+              ))}
+            </h1>
+            {/* The only sentence on the page that says what this is, which is
+                also the whole of what a crawler or a reviewer gets. */}
+            <p
+              className="hero-in max-w-[90%] text-center font-content text-[16px] leading-[1.3em] font-semibold text-white"
+              style={{ "--rise": "20px", "--rise-blur": "10px", "--rise-dur": "0.7s", animationDelay: "0.25s" } as React.CSSProperties}
+            >
+              Track your academic progress, analyze your performance, and get real-time coaching, all
+              on your phone.
+            </p>
+          </div>
 
-        {/* ---- footer ----
-            Privacy and terms are load-bearing: Google's OAuth review requires
-            the home page to link its privacy policy, and their absence is what
-            failed it. Do not remove them to "keep the page to one link". */}
-        <footer
-          className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t py-8 text-[13px] text-muted"
-          style={{ borderColor: RULE }}
-        >
-          <span className="font-medium text-ink">Booklesss</span>
-          <Link href="/privacy" className="transition-colors hover:text-ink">
-            Privacy policy
-          </Link>
-          <Link href="/terms" className="transition-colors hover:text-ink">
-            Terms of service
-          </Link>
-          <a href="mailto:deekymvula@gmail.com" className="transition-colors hover:text-ink">
-            Contact
-          </a>
-        </footer>
-      </main>
-    </div>
+          {/* ---- the one thing to do ----
+              A black pill inside a lighter one: the outer gradient is the rim,
+              the inner is the button. It arrives a full second after the rest,
+              which is the design's timing and not an accident — the page
+              finishes settling, then offers the tap.
+
+              Framer points this at /category, a route on the marketing site
+              that has no counterpart here. The app's answer is the sign-up
+              flow; on a build with no auth keys /sign-up 404s, so it falls
+              back to the dashboard rather than to a dead end. */}
+          <div
+            className="hero-in flex w-full flex-col items-center"
+            style={
+              {
+                "--rise": "48px",
+                "--rise-blur": "0px",
+                "--rise-dur": "1s",
+                "--rise-ease": "cubic-bezier(0.44, 0, 0.56, 1)",
+                animationDelay: "1s",
+              } as React.CSSProperties
+            }
+          >
+            <Link
+              href={authEnabled ? "/sign-up" : "/dashboard"}
+              className="rounded-[33px] bg-[linear-gradient(120deg,rgb(255,255,255)_0%,rgba(255,255,255,0.75)_100%)] p-2 transition-transform duration-200 active:scale-[0.97]"
+            >
+              <span className="flex items-center justify-center rounded-full bg-black px-6 py-3 pr-5 shadow-[var(--shadow-hero-cta)]">
+                <span className="font-hero-cta text-[16px] leading-[1.7em] font-extrabold text-white select-none">
+                  Get started now
+                </span>
+              </span>
+            </Link>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }

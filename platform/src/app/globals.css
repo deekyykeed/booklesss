@@ -18,6 +18,15 @@
      Use it as `font-container`; `font-content` stays the reading. */
   --font-container: var(--font-satoshi), var(--font-inter), system-ui, sans-serif;
 
+  /* THE FRONT DOOR ONLY (2026-08-06), measured off the owner's Framer design.
+     Named for the job they do on that page rather than for the typeface, so a
+     later change of face is one line here. Do not reach for these inside the
+     app — the four faces above are the system; "/" is the exception, and it is
+     one page. */
+  --font-mark: var(--font-burbank), var(--font-familjen), ui-sans-serif, sans-serif;
+  --font-hero-meta: var(--font-rubik), var(--font-inter), system-ui, sans-serif;
+  --font-hero-cta: var(--font-bricolage), var(--font-familjen), ui-sans-serif, sans-serif;
+
   --color-canvas: #f5f5f5;          /* app background — hsl(0,0%,96%) */
   --color-card: #fcfcfb;            /* stat cards                */
   --color-line: #dfdfdf;            /* header / sidebar dividers  */
@@ -55,6 +64,33 @@
    */
   --shadow-lift: 0 1px 2px -1px rgb(0 0 0 / 0.04), 0 4px 10px -6px rgb(0 0 0 / 0.05);
   --shadow-chip: 0 1px 1px -0.5px rgb(0 0 0 / 0.04), 0 2px 5px -2px rgb(0 0 0 / 0.06);
+
+  /* THE FRONT DOOR'S TWO SHADOWS, and they break the rule directly above on
+     purpose. That rule is about a light card on a light page, where a wide
+     blur reads as a smudge; these sit on a black photograph, where the same
+     stack reads as depth and nothing else is there to smudge against.
+
+     Seven and six layers, copied from the Framer design rather than
+     approximated: an exponential ramp of offset/blur against a fixed alpha is
+     what makes a shadow look cast rather than drawn, and collapsing it to two
+     layers is exactly the flattening it exists to avoid. Rounded to 2dp from
+     Framer's full precision — the difference is well under a pixel.
+
+     The disc's throws UP AND LEFT (negative x, positive y), which is why it
+     cannot borrow --shadow-lift: the light on the hero photo comes from the
+     other side. The button adds a hard inset, which is what stops a pure-black
+     pill on a black gradient from disappearing into it. */
+  --shadow-hero-disc: -0.59px 0.59px 0.83px -0.54px rgb(0 0 0 / 0.19),
+    -1.44px 1.44px 2.04px -1.07px rgb(0 0 0 / 0.18),
+    -2.73px 2.73px 3.86px -1.61px rgb(0 0 0 / 0.18),
+    -4.76px 4.76px 6.74px -2.14px rgb(0 0 0 / 0.17),
+    -8.29px 8.29px 11.72px -2.68px rgb(0 0 0 / 0.15),
+    -15.18px 15.18px 21.47px -3.21px rgb(0 0 0 / 0.12), -30px 30px 42.43px -3.75px rgb(0 0 0 / 0.06);
+  --shadow-hero-cta: 0.57px 0.57px 1.76px -0.42px rgb(0 0 0 / 0.18),
+    1.45px 1.45px 4.5px -0.83px rgb(0 0 0 / 0.18), 2.9px 2.9px 9.01px -1.25px rgb(0 0 0 / 0.18),
+    5.49px 5.49px 17.09px -1.67px rgb(0 0 0 / 0.18),
+    10.92px 10.92px 33.97px -2.08px rgb(0 0 0 / 0.18), 24px 24px 74.67px -2.5px rgb(0 0 0 / 0.18),
+    inset 0 -16px 48px 0 rgb(0 0 0);
 
   --header-h: 48px;
   --sidebar-docs: 265px;
@@ -290,6 +326,7 @@
      add a selector when a new animation lands. The attribute selector outranks
      every target here, so placement in the file doesn't matter. */
   :root[data-motion="reduced"] .bg-waves span,
+  :root[data-motion="reduced"] .hero-in,
   :root[data-motion="reduced"] .lesson-fade,
   :root[data-motion="reduced"] .onboard-step,
   :root[data-motion="reduced"] .account-skeleton,
@@ -1795,6 +1832,54 @@
        and below, so the only part left to see is what rises past its top edge.
        Anchoring them above the bar instead detaches the glow from the thing
        it belongs to. */
+  }
+
+  /* ---- the front door's entrance ------------------------------------- *
+     The Framer design does not just lay the hero out, it plays it in: the
+     headline arrives a word at a time, the lines under it a line at a time,
+     and the button last, a full second behind everything else. Shipping the
+     layout without the timing ships a different design — the stagger is most
+     of why the page reads as considered rather than as a photo with text on.
+
+     ONE KEYFRAME, THREE DIALS. Every element rises, de-blurs and fades from
+     the same @keyframes; each caller sets how far (--rise), how soft
+     (--rise-blur), how long (--rise-dur), how eased (--rise-ease) and how
+     late (animation-delay, inline, because a word's delay is its index).
+     Custom properties resolve per-element inside a keyframe, so the one
+     animation covers a 12px word and a 48px button without a second copy.
+
+     PURE CSS, so the page stays a server component. The words are already
+     split into spans in the markup; nothing here needs the browser to think.
+     `both` holds the from-state before the delay elapses — without it every
+     element paints in place first and then jumps back to start. */
+  @keyframes heroRise {
+    from {
+      opacity: 0;
+      transform: translateY(var(--rise, 12px));
+      filter: blur(var(--rise-blur, 4px));
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+  }
+  .hero-in {
+    animation: heroRise var(--rise-dur, 0.8s) var(--rise-ease, cubic-bezier(0.12, 0.23, 0.17, 0.98))
+      both;
+  }
+  /* A word of the headline. inline-block because translateY does nothing to an
+     inline box, and the trailing space has to survive the split — it lives on
+     the span rather than between them, so the line still wraps naturally. */
+  .hero-word {
+    display: inline-block;
+    white-space: pre;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-in {
+      animation: none;
+    }
   }
 }
 

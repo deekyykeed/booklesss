@@ -236,7 +236,7 @@ referral can point at a person rather than a device. Format is decided —
 
 ### Platform Fonts (Next.js)
 
-Four faces, all self-hosted from `_dev/fonts/` and subset by `python3 scripts/subset-fonts.py` (run it after any content change that could add a character — it derives the kept set from `course-data.json`):
+**Four faces in the app**, all self-hosted from `_dev/fonts/` and subset by `python3 scripts/subset-fonts.py` (run it after any content change that could add a character — it derives the kept set from `course-data.json`). Three more are registered for the landing page alone — see the end of this section:
 
 | Variable | Face | Where |
 |---|---|---|
@@ -250,6 +250,10 @@ Four faces, all self-hosted from `_dev/fonts/` and subset by `python3 scripts/su
 **Callouts and cards are containers, all the way through** — owner's call, same day, settling the question that was left open when the split first landed. Only their labels were Satoshi and their bodies stayed Aptos, on the reasoning that a callout *holds* a sentence rather than framing one. The owner's reaction on seeing it live: *"in the containers with key point and that you've moved the font back to Aptos, keep it as Satoshi Medium."* **A box lifted off the page to be remembered is not the reading**, and setting it in the reading face made it read as one more paragraph that happened to have a border. Card titles keep `font-semibold`, everything else in a container is `font-container font-medium`.
 
 **Container surfaces set `font-medium` (500)** — owner's call, same day. Satoshi ships a real 500 here, so it is not a synthesised weight, and at chip and popup size the regular sat too light beside the Aptos it annotates. Pair it as `font-container font-medium`. The one exception is a table's column heading, which stays `font-semibold` because it is a heading, not body.
+
+**Three more faces exist for the landing page and for nothing else** (2026-08-06), because the owner's Framer design for `/` uses them: **Burbank Big Condensed** as `font-mark` (the ◯B disc and the "Booklesss" lockup), **Rubik** as `font-hero-meta` ("Trusted by Students"), **Bricolage Grotesque** as `font-hero-cta` ("Get started now"). The tokens are named for the *job*, not the typeface, so changing a face is one line in `globals.css`. Burbank was already vendored in `src/fonts/` — it drew the logo until the mark became an icon — and the other two come through `next/font/google` at one static weight each, self-hosted at build like Inter and Familjen Grotesk.
+
+**They are free on every other route.** `next/font` emits a `@font-face` per family and a browser fetches a face only when something rendered actually asks for it; `/` is the only page that does. **Do not reach for these inside the app** — the four faces above are the system, and the front door is a deliberate exception, not a widened palette.
 
 Everything else monochrome is MynaUI.
 

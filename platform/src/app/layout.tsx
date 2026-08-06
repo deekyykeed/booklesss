@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Familjen_Grotesk } from "next/font/google";
+import { Inter, Familjen_Grotesk, Rubik, Bricolage_Grotesque } from "next/font/google";
 import localFont from "next/font/local";
 import { RegisterSW } from "@/components/RegisterSW";
 import { DesktopGate } from "@/components/DesktopGate";
@@ -9,9 +9,6 @@ import { AuthGate } from "@/components/auth/AuthGate";
 import { SettingsSheet } from "@/components/identity/SettingsSheet";
 import { openGraph, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
-
-// The logo is an icon again, so Burbank is no longer loaded. Both it and
-// Ernon are still in src/fonts/ if either is ever wanted back.
 
 // Titles use Familjen Grotesk (via --font-display). The Ernon face is still
 // in src/fonts/ if it's ever wanted back — re-register it with next/font/local
@@ -68,6 +65,45 @@ const satoshi = localFont({
     { path: "../fonts/satoshi-bold-italic.woff2", weight: "700", style: "italic" },
   ],
   variable: "--font-satoshi",
+  display: "swap",
+});
+
+/* ---- THREE FACES THAT EXIST FOR THE FRONT DOOR AND NOWHERE ELSE ----
+ *
+ * Measured off the owner's Framer design for "/" (Booklesss RESERVE, read
+ * 2026-08-06). Every other surface in the app is Inter / Familjen Grotesk /
+ * Aptos / Satoshi and should stay that way — if one of these starts appearing
+ * inside the app, that is a decision to make on purpose, not by reaching for
+ * whatever is already registered.
+ *
+ * They cost nothing on the routes that don't use them: next/font emits a
+ * @font-face per family and a browser downloads a face only when something
+ * rendered actually asks for it. The landing page is the only thing that does.
+ *
+ * BURBANK WAS ALREADY HERE. It drew the logo until the mark became an icon,
+ * and the file never left src/fonts/ — the design brings it back for the same
+ * job, so this is a re-registration rather than a new dependency. */
+const burbank = localFont({
+  src: [{ path: "../fonts/burbank.woff2", weight: "700", style: "normal" }],
+  variable: "--font-burbank",
+  display: "swap",
+});
+
+// One weight each: the design uses Rubik at 400 for the trust line and
+// Bricolage at 800 for the button, and nothing else. Both are variable
+// families upstream; naming the weight takes the static instance instead,
+// which is the smaller file when only one weight is ever drawn.
+const rubik = Rubik({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-rubik",
+  display: "swap",
+});
+
+const bricolage = Bricolage_Grotesque({
+  subsets: ["latin"],
+  weight: "800",
+  variable: "--font-bricolage",
   display: "swap",
 });
 
@@ -130,7 +166,7 @@ export default function RootLayout({
   const document = (
     <html
       lang="en"
-      className={`${inter.variable} ${familjen.variable} ${aptos.variable} ${satoshi.variable} h-full`}
+      className={`${inter.variable} ${familjen.variable} ${aptos.variable} ${satoshi.variable} ${burbank.variable} ${rubik.variable} ${bricolage.variable} h-full`}
     >
       <head>
         {/* Sets data-motion before first paint, so a reader who asked for a
