@@ -113,6 +113,17 @@ button that says Resume. A tooltip fails.
 can just have 3 images minimum without it"*).
 
 - **Three slides minimum, four is the usual, five is the ceiling.**
+- **A WHOLE-SCREEN DESIGN POST CAN BE ONE SLIDE**, and the minimum does not
+  override the owner asking for one.
+  > 2026-08-06, on the new front door, built as three moments of its entrance:
+  > *"just one page at the end of the animation."* A carousel of one screen at
+  > three points in its own animation is three pictures of the same screen —
+  > the difference between them is a button arriving, which is a thing to say
+  > in the caption, not three slides to swipe. The finished page is the design.
+  >
+  > This is the reverse of the states rule, not an exception to it: a
+  > COMPONENT carousel earns its slides because the component is doing
+  > different things. A whole screen at rest is doing one thing.
 - `dmCTA()` and `searchCTA()` stay in `prog-post.mjs` **unused by new posts** —
   every carousel already published ends on one, and deleting them would
   silently change what was posted the moment an old day is re-rendered. Do not
