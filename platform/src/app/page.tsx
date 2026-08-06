@@ -4,6 +4,7 @@ import Link from "next/link";
 import { authEnabled } from "@/lib/auth";
 import { openGraph, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
 import { ToApp } from "@/components/landing/landing-bits";
+import { TrustedFaces } from "@/components/landing/TrustedFaces";
 
 /* ------------------------------------------------------------------ *
  * The front door. One screen, and nothing under it.
@@ -50,42 +51,31 @@ export const metadata: Metadata = {
  * trust us. Flagged to the owner on 2026-08-06 and kept deliberately. The
  * honest version is public/avatars/ — the same 200 Kameleon discs students are
  * actually assigned — and swapping to it is this array plus a rounded <img>. */
-const FACES = [1, 2, 3, 4, 5] as const;
-
-/** The row is the five faces TWICE. The track slides one full set and starts
- *  over, and because the second set is the same images in the same order the
- *  last frame and the first are identical — so the loop has no seam. See
- *  `.faces-track` in globals.css for the stepped timing. */
-const FACE_LOOP = [...FACES, ...FACES];
+/* The five faces themselves now live in components/landing/TrustedFaces, with
+   the arrive/scoot/depart motion that draws them. */
 
 /** The headline, one span per word, because the design plays it in a word at a
  *  time. Splitting in the markup rather than at runtime is what keeps the page
  *  a server component — and it keeps the whole line in the HTML, so it is
  *  still one readable sentence to a crawler that runs no CSS. */
 /**
- * The owner's pick, 2026-08-06, from a set rendered into the live hero.
+ * The Framer file's own headline, restored on the owner's call (2026-08-06:
+ * "then revert to my original title and subtitle") after a round of
+ * alternatives were tried in the live hero.
  *
- * It aims at the thing a student is actually sick of, which is reading the same
- * page four times — not at speed, and not at us. No number to defend, no
- * product name (the wordmark two blocks up has just said it), and no "while
- * still", which was the hedge in the drafts either side of this one: `still`
- * concedes you would expect to understand less, so it argues with an objection
- * the reader has not raised.
+ * Still nested by LINE rather than flat, which is what that round bought.
+ * Left to wrap on its own this breaks "Learn 2X faster with / Booklesss",
+ * dropping the product's name alone onto the second line; breaking after "2X"
+ * gives two balanced lines. A headline is five words long — letting the browser
+ * choose where it folds is leaving the only typographic decision on the page to
+ * chance.
  *
- * WHAT IT REPLACED: "Learn 2X faster with Booklesss", from the Framer file.
- * "2X" is a measurement nobody has taken — the kind of number a student
- * discounts on sight and we would have to defend if asked.
- *
- * NESTED BY LINE, AND THAT IS THE POINT. Left to wrap on its own this breaks
- * "Understand it the / first time", which strands the weak half of the sentence
- * on its own line and puts the stress on "the". Breaking after "it" balances
- * the two lines and lands the emphasis on "the first time", which is the claim.
- * A headline is four words long; letting the browser choose where it folds is
- * leaving the only typographic decision on the page to chance.
+ * Recorded rather than re-argued: "2X" is a measurement nobody here has taken.
+ * Raised, and the owner's call is to keep it.
  */
 const HEADLINE: string[][] = [
-  ["Understand", "it"],
-  ["the", "first", "time"],
+  ["Learn", "2X", "faster"],
+  ["with", "Booklesss"],
 ];
 
 /** Framer's word stagger: 50ms per token. */
@@ -197,33 +187,12 @@ export default function LandingPage() {
               ticker reads as decoration rather than as people showing up.
               Timing and the seamless wrap are in globals.css → .faces-track. */}
           <div className="flex flex-col items-center gap-2">
-            {/* 240px shows five discs and the four gaps between them, ending
-                flush with the fifth — the sixth begins at 250 and is clipped by
-                the window, which is where an arriving face comes from. */}
-            <div className="hero-in w-[240px] overflow-hidden" style={{ animationDelay: "0.2s" }}>
-              <div className="faces-track flex w-max">
-                {FACE_LOOP.map((n, i) => (
-                  /* NO WHITE RING, AND REAL GAPS (owner, 2026-08-06: "remove
-                     the white border, what i'd like is to see through the gaps
-                     between them, and increase the gaps too"). The discs used
-                     to overlap by 6px with a 1px white border drawing the
-                     separation — a stack, in other words, which is the
-                     convention for "and 400 more" rather than for five people.
-                     Held apart with the photograph showing through, they read
-                     as five separate students, and the gap does the job the
-                     border was doing without putting a colour on the picture.
-                     mr-[10px] on every disc INCLUDING the last: see the note on
-                     .faces-track for why this cannot be a flex gap. */
-                  <Image
-                    key={i}
-                    src={`/landing/hero/face-${n}.jpg`}
-                    alt=""
-                    width={40}
-                    height={40}
-                    className="face-pop mr-[10px] size-10 shrink-0 rounded-full object-cover"
-                  />
-                ))}
-              </div>
+            {/* Overlapping discs with the photograph showing through the gap
+                between them, a new student growing in on the left as the
+                oldest shrinks away on the right. The mechanic is all in
+                components/landing/TrustedFaces and the CSS beside it. */}
+            <div className="hero-in" style={{ animationDelay: "0.2s" }}>
+              <TrustedFaces />
             </div>
             <p
               className="hero-in hero-shade font-hero-meta text-[14px] leading-[1.3em] text-[#dedede]"
@@ -277,23 +246,24 @@ export default function LandingPage() {
                 </span>
               ))}
             </h1>
-            {/* THE ONLY SENTENCE ON THE PAGE THAT SAYS WHAT THIS IS, and the
-                whole of what a crawler or an OAuth reviewer gets. Which is why
-                it had to stop being untrue.
+            {/* THE ONLY SENTENCE ON THE PAGE THAT SAYS WHAT THIS IS — the whole
+                of what a stranger, a crawler, or an OAuth reviewer gets.
 
-                It read: "Track your academic progress, analyze your
-                performance, and get real-time coaching, all on your phone."
-                Three claims from the Framer template, and the app does one of
-                them. There is no coaching, real-time or otherwise, and
-                "analyze your performance" oversells a score on a dashboard.
-                Cosmetic on a mock-up; on a live front door it is the first
-                thing a stranger reads and the line Google's branding check
-                reads as the description of the product.
+                ⚠️ IT DESCRIBES A PRODUCT WE DO NOT HAVE. Three claims off the
+                Framer template, of which the app does one: there is no
+                coaching, real-time or otherwise, and "analyze your performance"
+                oversells a score on a dashboard. It was briefly swapped for the
+                previous landing page's own subline — already written, already
+                true, and identical to this page's `description` metadata — and
+                the owner reverted it (2026-08-06: "revert to my original title
+                and subtitle").
 
-                What replaces it is the previous landing page's own subline —
-                already written, already true, and the same sentence this
-                page's `description` metadata carries, so the page says one
-                thing to a person and to a crawler rather than two. */}
+                That is his call and it stands. Left here so the next person to
+                read this file knows the line is aspirational rather than
+                descriptive, and does not go looking for the coaching feature.
+                The true version is one string away:
+                "Your whole course, rewritten as short steps you read on your
+                phone." */}
             {/* RUBIK (owner, 2026-08-06: "still use rubik for the subtitle
                 text"). It was Aptos — the reading face, which belongs inside a
                 step and nowhere near a hero. Rubik puts it in the same voice as
@@ -313,7 +283,8 @@ export default function LandingPage() {
               className="hero-in hero-shade max-w-[90%] text-center font-hero-meta text-[16px] leading-[1.45] font-medium text-white/90"
               style={{ "--rise": "20px", "--rise-blur": "10px", "--rise-dur": "0.7s", animationDelay: "0.25s" } as React.CSSProperties}
             >
-              Your whole course, rewritten as short steps you read on your phone.
+              Track your academic progress, analyze your performance, and get real-time coaching, all
+              on your phone.
             </p>
           </div>
 

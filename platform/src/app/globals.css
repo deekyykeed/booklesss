@@ -120,6 +120,16 @@
   initial-value: 0%;
 }
 
+/* The radius of the hole one avatar punches in the one behind it. Registered
+ * for the same reason: it has to CLOSE smoothly on the disc that stops being
+ * overlapped, and an unregistered property would snap it shut. Not inherited —
+ * each disc owns its own, and the rightmost one animates its away. */
+@property --cut {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 23px;
+}
+
 /* Voice-glow blob colours. Registered as real <color>s (not the raw "r g b"
    triplets they used to be) so they can be TRANSITIONED — an unregistered
    custom property jumps between values, which made a colour reshuffle snap.
@@ -350,8 +360,8 @@
   :root[data-motion="reduced"] .bg-waves span,
   :root[data-motion="reduced"] .hero-in,
   :root[data-motion="reduced"] .bar-spinner,
-  :root[data-motion="reduced"] .faces-track,
-  :root[data-motion="reduced"] .face-pop,
+  :root[data-motion="reduced"] .face-slot[data-state],
+  :root[data-motion="reduced"] .face-slot[data-state] .face-disc,
   :root[data-motion="reduced"] .lesson-fade,
   :root[data-motion="reduced"] .onboard-step,
   :root[data-motion="reduced"] .account-skeleton,
@@ -1036,70 +1046,100 @@
   }
 
   /* ---------------------------------------------------------------- *
-   * The trusted-by row, cycling.
+   * The trusted-by row: overlapping discs, arriving one at a time.
    *
-   * Owner, 2026-08-06: "id like the student profile picks to cycle round.
-   * cycle then stay then cycle — as more students come from the left more
-   * disappear on the right, in a cool motion animation."
+   * THE RING IS A HOLE, NOT A COLOUR (owner, 2026-08-06: "remove the white
+   * border, what i'd like is to see through the gaps between them, and
+   * increase what will be looking like the invisible border"). The design drew
+   * a 1px white stroke to separate the overlapping discs, which puts a colour
+   * on top of a photograph. Instead every disc has the circle of its RIGHT-HAND
+   * NEIGHBOUR punched out of it, three pixels wider than that neighbour — so
+   * the separation is a gap you see the picture through, and it costs nothing
+   * on top of the image.
    *
-   * STEPPED, NOT A MARQUEE. A constant scroll is a ticker and reads as
-   * decoration; the pause is what makes it read as people arriving. Each step
-   * moves the track one face-width and then holds for roughly three times as
-   * long, so there is time to look at who is there before it moves again.
+   * The cut is at 52px because the neighbour's centre is 32px (one step) right
+   * of this disc's own centre at 20px; its radius is 23 = the 20px disc radius
+   * plus a 3px ring. Change the disc size or the step and both numbers move.
    *
-   * THE TRACK IS THE FACES TWICE. It runs from -250px (one full set left) to 0,
-   * so faces enter on the left and leave on the right — and because the second
-   * set is the same five images in the same order, the frame at 100% is
-   * pixel-identical to the frame at 0% and the loop has no seam to hide.
-   *
-   * 50px a step: 40px discs with a 10px gap. The unit is carried as a right
-   * MARGIN on every disc including the last, not as flex `gap` — gap puts no
-   * space after the final item, so the repeating unit would be 50px nine times
-   * and 40px once, and a translation of exactly one set would land half a gap
-   * out. A margin makes every unit identical and the wrap exact.
-   *
-   * NO MASK. It faded the discs at both ends, and the owner's call
-   * (2026-08-06) is "don't fade the student profiles" — so a face is clipped by
-   * the window edge instead, which is what an arrival looks like.
+   * The RIGHTMOST disc has nothing overlapping it, so its cut has to close as
+   * the disc that was covering it shrinks away — otherwise a bite appears out
+   * of its side with nothing in front of it. That is what `--cut` is registered
+   * for: an unregistered custom property is a string and jumps, so the hole
+   * would pop shut instead of closing.
    * ---------------------------------------------------------------- */
-  @keyframes facesCycle {
-    0%, 14% { transform: translate3d(-250px, 0, 0); }
-    20%, 34% { transform: translate3d(-200px, 0, 0); }
-    40%, 54% { transform: translate3d(-150px, 0, 0); }
-    60%, 74% { transform: translate3d(-100px, 0, 0); }
-    80%, 94% { transform: translate3d(-50px, 0, 0); }
-    100% { transform: translate3d(0, 0, 0); }
+  .face-slot {
+    position: relative;
+    display: block;
+    width: 32px;
+    flex: none;
   }
-  .faces-track {
-    animation: facesCycle 14s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  .face-disc {
+    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 9999px;
+    object-fit: cover;
+    /* Above the disc to its left, so the overlap falls the way the design has
+       it — each new face in front of the one before. */
+    position: relative;
+    -webkit-mask-image: radial-gradient(circle var(--cut) at 52px 20px, transparent 99%, #000 100%);
+    mask-image: radial-gradient(circle var(--cut) at 52px 20px, transparent 99%, #000 100%);
   }
 
-  /* The pop (owner: "give them a quick grow and shrink effect").
-   *
-   * Peaks sit inside the five windows where the track is MOVING — 14–20%,
-   * 34–40% and so on — so the row swells exactly as it steps and is flat again
-   * while it holds. Off by a beat and it reads as a nervous tic rather than as
-   * the movement having weight.
-   *
-   * On the discs, not the track: the track already owns `transform` for the
-   * translation, and a second animation on the same property on the same
-   * element replaces it rather than combining. */
-  @keyframes facePop {
-    0%, 14% { transform: scale(1); }
-    17% { transform: scale(1.16); }
-    20%, 34% { transform: scale(1); }
-    37% { transform: scale(1.16); }
-    40%, 54% { transform: scale(1); }
-    57% { transform: scale(1.16); }
-    60%, 74% { transform: scale(1); }
-    77% { transform: scale(1.16); }
-    80%, 94% { transform: scale(1); }
-    97% { transform: scale(1.16); }
-    100% { transform: scale(1); }
+  /* One gesture, one duration. The slot opening is the "scoot" — the discs to
+     its right are pushed along by ordinary layout rather than by being animated
+     themselves, so the row can never get out of step with itself. */
+  @keyframes faceSlotOpen {
+    from { width: 0; }
+    to { width: 32px; }
   }
-  .face-pop {
-    animation: facePop 14s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+  @keyframes faceSlotShut {
+    from { width: 32px; }
+    to { width: 0; }
   }
+  @keyframes faceDiscIn {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  @keyframes faceDiscOut {
+    from { transform: scale(1); opacity: 1; }
+    to { transform: scale(0); opacity: 0; }
+  }
+  @keyframes faceCutClose {
+    from { --cut: 23px; }
+    to { --cut: 0px; }
+  }
+
+  .face-slot[data-state="in"] {
+    animation: faceSlotOpen 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .face-slot[data-state="in"] .face-disc {
+    animation: faceDiscIn 700ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  .face-slot[data-state="out"] {
+    animation: faceSlotShut 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .face-slot[data-state="out"] .face-disc {
+    animation: faceDiscOut 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .face-slot[data-state="last"] .face-disc {
+    animation: faceCutClose 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .face-slot[data-state],
+    .face-slot[data-state] .face-disc {
+      animation: none;
+    }
+    /* The row is still six items with a spare at each end; without the
+       entrance the arriving one must simply be there and the departing one
+       must simply not be. */
+    .face-slot[data-state="in"] { width: 32px; }
+    .face-slot[data-state="out"] { width: 0; }
+    .face-slot[data-state="out"] .face-disc { opacity: 0; }
+    .face-slot[data-state="last"] .face-disc { --cut: 0px; }
+  }
+
 
   @media (prefers-reduced-motion: reduce) {
     /* Not `animation: none` on the bar — that would leave --bar-fill at its 0%
@@ -1110,9 +1150,7 @@
       animation: none;
       --bar-fill: 100%;
     }
-    .bar-spinner,
-    .faces-track,
-    .face-pop {
+    .bar-spinner {
       animation: none;
     }
   }
