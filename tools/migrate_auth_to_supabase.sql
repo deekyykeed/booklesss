@@ -132,35 +132,39 @@ create policy student_courses_select_own
 commit;
 
 -- ===================================================================
--- STILL TO DO IN THE DASHBOARD — settings that live in the platform API, not
--- in the database, so neither this file nor SQL of any kind can reach them.
--- (There is no `auth.config` table; the auth schema holds only data.)
+-- THE DASHBOARD HALF — settings that live in the platform API, not in the
+-- database, so neither this file nor SQL of any kind can reach them.  (There
+-- is no `auth.config` table; the auth schema holds only data.)
 --
 --   Authentication -> Sign In / Providers -> Email
 --
---     >>> "Confirm email" is currently ON. It must be turned OFF. <<<
---
---     MEASURED, not assumed, 2026-08-05: a signup posted to /auth/v1/signup
---     with the anon key came back HTTP 200 with `access_token` absent and
---     `confirmed_at` null — which is exactly what an unconfirmed account looks
---     like. The owner chose "no confirmation, straight in" so that a student
---     goes from the form into onboarding without an inbox trip.
---
---     Until it is off, AuthForm shows its "check your email" branch. That
---     branch exists precisely so this misconfiguration cannot fail silently —
---     but it is a different product than the one that was chosen, and on a
+--     "Confirm email"  OFF — done by the owner 2026-08-05, and MEASURED both
+--     ways rather than assumed.  Before: a signup posted to /auth/v1/signup
+--     with the anon key returned HTTP 200 with `access_token` ABSENT and
+--     `confirmed_at` null, which is what an unconfirmed account looks like.
+--     After: the same probe returned an `access_token`, and the row it created
+--     had `email_confirmed_at` set.  That is the difference between a student
+--     landing in onboarding and a student landing in their inbox — and on a
 --     Zambian connection an inbox round trip is where sign-ups go to die.
+--
+--     AuthForm's "check your email" branch stays regardless. It is not dead
+--     code: it is what stops this setting being turned back on and failing
+--     silently.
 --
 --     Minimum password length: 8, to match components/auth/AuthForm.
 --
 --   Authentication -> URL Configuration
 --     Site URL: https://booklesss.app
 --
--- The same probe confirmed the other half of the sign-up path works: the
--- `referred_by` passed as `options.data` landed in the user's `user_metadata`
--- intact. The probe user was deleted; auth.users is empty.
+-- VERIFIED END TO END, 2026-08-06.  One real account
+-- (auth.users bc35ee29…) carries a complete `students` row keyed to its own
+-- uuid: name chosen, avatar, university, programme, year 4 semester 2, four
+-- curriculum slugs, two courses — and `identity` populated, which is the whole
+-- third-copy mechanism working. The FK to auth.users holds, so `auth.uid()`
+-- and `students.id` are the same value and the select-own policy can be
+-- trusted. The probe user was deleted afterwards.
 --
--- And in Clerk: nothing.  Leave the instance alone until the new flow has
--- been walked end to end on a phone; deleting it is a one-way door and it
--- costs nothing to keep for a week.
+-- And in Clerk: nothing.  Leave the instance alone until the new flow has been
+-- walked end to end on a phone; deleting it is a one-way door and it costs
+-- nothing to keep for a week.
 -- ===================================================================
