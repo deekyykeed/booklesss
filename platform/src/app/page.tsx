@@ -62,7 +62,27 @@ const FACE_LOOP = [...FACES, ...FACES];
  *  time. Splitting in the markup rather than at runtime is what keeps the page
  *  a server component — and it keeps the whole line in the HTML, so it is
  *  still one readable sentence to a crawler that runs no CSS. */
-const HEADLINE = ["Learn", "2X", "faster", "with", "Booklesss"];
+/**
+ * Owner's line, 2026-08-06, arrived at from his own draft — "study faster while
+ * still understanding more".
+ *
+ * "WHILE STILL" CAME OUT, and it is the whole edit. It concedes: `still` admits
+ * you would expect to understand LESS, so the sentence argues with an objection
+ * the reader has not raised yet. Two flat statements assert the same thing and
+ * let the reader supply the contrast, which is always stronger than being told
+ * there is one.
+ *
+ * It was also four lines at 184px in this type — double every alternative,
+ * swallowing the middle of the frame and pushing the subtitle and the button
+ * toward the fold. Measured in the live hero, not guessed. This lands at two
+ * lines and 92px, the same block the page was built around.
+ *
+ * WHAT IT REPLACED: "Learn 2X faster with Booklesss", from the Framer file. Two
+ * faults. "2X" is a measurement nobody has taken — the kind of number a student
+ * discounts on sight, and one we would have to defend. And it ended in the
+ * product's name, directly under a wordmark that had just said it.
+ */
+const HEADLINE = ["Study", "faster.", "Understand", "more."];
 
 /** Framer's word stagger: 50ms per token. */
 const WORD_STEP = 0.05;
