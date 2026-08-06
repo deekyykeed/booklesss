@@ -14,6 +14,7 @@ import {
   type StudyTarget,
   type StudyWindow,
 } from "@/lib/identity";
+import { nextFromQuery } from "@/lib/next-path";
 import { OTHER_SCHOOL, type SchoolChoice } from "@/lib/schools";
 import {
   coursesByYear,
@@ -691,11 +692,23 @@ export function OnboardingFlow() {
 
   function finish(source: HeardFrom) {
     save({ coursesChosen: true, heardFrom: source });
-    /* SAVED NOW, LEFT IN A MOMENT — the same split every other answer makes.
+    /* BACK WHERE THEY CAME FROM, not always the dashboard (owner, 2026-08-06:
+       "as long as it redirects to the right page the user came from and keeps
+       the scroll position"). Whoever sent them here put the origin in `?next=`;
+       `nextFromQuery` validates it and falls back to /dashboard, which is the
+       right answer for the front-door sign-up that had no page behind it.
+
+       THE SCROLL IS NOT THIS FUNCTION'S JOB. Landing on the right path is —
+       reader/LessonReader saves the offset per lesson as they read and restores
+       it on mount, so a student returned to their step lands on the paragraph
+       they left rather than at the top of it.
+
+       SAVED NOW, LEFT IN A MOMENT — the same split every other answer makes.
        The write does not wait on the beat, so a student who taps Done and
        closes the tab inside it has still finished; only the departure waits,
        so the plan they just set is on screen long enough to have been seen. */
-    afterBeat(() => router.replace("/dashboard"));
+    const back = nextFromQuery();
+    afterBeat(() => router.replace(back));
   }
 
   /* Which way the next question comes in from. A form's movement means

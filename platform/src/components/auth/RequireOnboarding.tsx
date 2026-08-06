@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAccountRead, useSignedIn } from "@/lib/account";
 import { authEnabled } from "@/lib/auth";
 import { onboardingComplete, useIdentity } from "@/lib/identity";
+import { currentPath, onboardingHref } from "@/lib/next-path";
 
 /**
  * Nothing renders here until the student's record is complete.
@@ -50,17 +51,24 @@ export function RequireOnboarding({ children }: { children: React.ReactNode }) {
   const complete = hydrated && onboardingComplete(identity);
 
   /* Send them to answer only once every softer explanation is ruled out: the
-     device has been read, Clerk has reported, and the account's own record has
-     landed. `signedIn === true` and never truthy, for the reason lib/account
-     documents — "we haven't heard yet" is not "signed out". */
+     device has been read, the session has reported, and the account's own
+     record has landed. `signedIn === true` and never truthy, for the reason
+     lib/account documents — "we haven't heard yet" is not "signed out". */
   const send = authEnabled && signedIn === true && accountRead && hydrated && !complete;
 
+  /* CARRYING WHERE THEY WERE. Onboarding is a page, so being sent there means
+     leaving whatever was on screen; `?next=` is how it puts them back
+     afterwards, and reader/LessonReader restores the scroll offset once the
+     path is right. Read off `window.location` inside the effect rather than
+     from `useSearchParams`, which would force a Suspense boundary onto every
+     page this component wraps. */
   useEffect(() => {
-    if (send) router.replace("/onboarding");
+    if (send) router.replace(onboardingHref(currentPath()));
   }, [send, router]);
 
-  /* THE HOLD HAS A FLOOR UNDER IT. Everything above waits on Clerk answering,
-     and Clerk not answering is a real state on a Zambian connection: a student
+  /* THE HOLD HAS A FLOOR UNDER IT. Everything above waits on the session
+     resolving, and it not resolving is a real state on a Zambian connection: a
+     student
      with an unfinished record and a session that never resolves would sit on a
      blank page for as long as they were willing to. After four seconds the
      hold says so and offers the door, which is where they were going anyway.
@@ -73,14 +81,14 @@ export function RequireOnboarding({ children }: { children: React.ReactNode }) {
     return () => clearTimeout(t);
   }, [complete]);
 
-  // No Clerk keys means no accounts, no onboarding and nothing to gate — the
-  // same no-op RequireAccount makes, and for the same reason: a redirect here
-  // would strand the reader on a door that opens nowhere.
+  // No keys means no accounts, no onboarding and nothing to gate — the same
+  // no-op RequireAccount makes, and for the same reason: a redirect here would
+  // strand the reader on a door that opens nowhere.
   if (!authEnabled) return <>{children}</>;
 
-  /* Complete is the only way through, and it does not consult Clerk: a student
-     with a filled record is a student with a filled record whether or not the
-     session has resolved yet. A signed-OUT visitor with one is RequireAccount's
+  /* Complete is the only way through, and it does not consult the session: a
+     student with a filled record is a student with a filled record whether or
+     not the session has resolved yet. A signed-OUT visitor with one is RequireAccount's
      business, and it is already sending them to the front door. */
   if (complete) return <>{children}</>;
 
@@ -88,7 +96,7 @@ export function RequireOnboarding({ children }: { children: React.ReactNode }) {
     <div className="mx-auto w-full max-w-[900px] px-4 pt-28 md:px-6 md:pt-36">
       <p className="text-[14px] leading-6 text-muted">
         Still setting up your dashboard.{" "}
-        <Link href="/onboarding" className="font-medium text-ink underline underline-offset-2">
+        <Link href={onboardingHref()} className="font-medium text-ink underline underline-offset-2">
           Finish your setup
         </Link>{" "}
         and it will have something to show.
