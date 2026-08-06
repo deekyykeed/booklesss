@@ -49,12 +49,30 @@ export function TopBar({
               and its steps and nothing above them, so without this a student
               who opened a lesson has no route back to the dashboard. */}
           <Link href="/dashboard" className="flex items-center gap-2.5 transition-opacity hover:opacity-70 md:gap-2">
-            {/* The wordmark is the whole logo, so it gets logo scale — 22px
-                against the 48px bar — rather than nav-label scale. On phones it
-                shares the bar with the hamburger and the header controls, so it
-                steps down to 18px. font-bold is already the heaviest weight
-                Familjen Grotesk ships. */}
-            <span className="font-display text-[18px] font-bold leading-none tracking-tight text-ink md:text-[22px]">
+            {/* The wordmark is the whole logo, so it gets logo scale — against
+                the 48px bar — rather than nav-label scale, and it steps down on
+                phones where it shares the bar with the hamburger and the header
+                controls.
+
+                BURBANK, ON TRIAL (owner, 2026-08-06: "the font used in the logo
+                … can i use it in my actual text logo on the app and going
+                forward, let's see what it looks like"). This was Familjen
+                Grotesk bold — the app's heading face doing double duty as the
+                mark, which is why the wordmark never looked like a logo so much
+                as a heading that happened to say the name.
+
+                ⚠️ IT IS NOT A FREE FACE. Burbank Big Condensed is a Font Bureau
+                retail family, and there is no licence beside it in this repo the
+                way Satoshi's is documented. Fine for looking at; NOT fine to
+                launch a brand on without buying the web licence — and logo use
+                is often a separate grant again. Decide before it reaches print
+                or an app icon, because a mark is the one asset that is expensive
+                to change late.
+
+                Two sizes up from the old ones (20/24 against 18/22): Burbank is
+                CONDENSED, so it sets narrower at the same point size and the
+                lockup shrank visibly when the face changed under it. */}
+            <span className="font-mark text-[20px] font-bold leading-none tracking-tight text-ink md:text-[24px]">
               {orgName}
             </span>
           </Link>

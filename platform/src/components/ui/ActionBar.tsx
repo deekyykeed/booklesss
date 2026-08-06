@@ -215,9 +215,23 @@ export function ActionBar(props: Props) {
     (disabled && !busy ? " pointer-events-none opacity-60" : "") +
     (className ? ` ${className}` : "");
 
+  /* `data-busy` is what actually starts the sweep — the animation and the
+     --bar-fill it drives live on `.action-bar[data-busy="true"]` in globals.css.
+     Rendering the fill and the inverted layer without it gets you both elements
+     sitting at 0%: a spinner, and ink that never moves. */
+  const busyAttr = busy ? "true" : undefined;
+
   if (props.href !== undefined) {
     return (
-      <Link href={props.href} onClick={props.onClick} className={cls} data-variant={variant} aria-label={label}>
+      <Link
+        href={props.href}
+        onClick={props.onClick}
+        className={cls}
+        data-variant={variant}
+        data-busy={busyAttr}
+        aria-busy={busy || undefined}
+        aria-label={label}
+      >
         {inner}
       </Link>
     );
@@ -229,6 +243,8 @@ export function ActionBar(props: Props) {
       disabled={disabled}
       className={cls}
       data-variant={variant}
+      data-busy={busyAttr}
+      aria-busy={busy || undefined}
       aria-label={label}
     >
       {inner}

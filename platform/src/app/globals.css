@@ -996,14 +996,25 @@
       --bar-fill: 100%;
     }
   }
-  /* 1.6s and easing OUT, so it moves decisively and then crawls the last few
-     per cent. A sign-up usually answers inside a second, and a bar that eases
-     out is still visibly moving when it does — a linear one that had already
-     stopped would read as finished-and-stuck. Nothing here claims to measure
-     the request; it is a spinner with a direction. `both` holds it at 100%
-     rather than snapping back to empty while the page navigates. */
+  /* 1.8s, easing IN then out — and the ease-IN half is the whole point.
+   *
+   * This first shipped as ease-out, `cubic-bezier(0.33, 1, 0.68, 1)`, on the
+   * reasoning that a bar should move decisively and then settle. Measured
+   * against the real button that puts the edge past 45% inside 180ms — and the
+   * label lives in the left 45%, so the inversion the owner asked to see
+   * ("the words basically change color as the bar passes under them") was over
+   * before anyone could look at it. The effect existed and was invisible.
+   *
+   * Standard-curve instead: slow away, quickest through the middle, settling at
+   * the end. The edge now crosses the text between roughly 0.2s and 0.6s, which
+   * is long enough to read as a sweep rather than a flash, and the deceleration
+   * still lands where a request usually answers.
+   *
+   * Nothing here claims to measure the request; it is a spinner with a
+   * direction. `both` holds it at 100% rather than snapping back to empty while
+   * the page navigates. */
   .action-bar[data-busy="true"] {
-    animation: barFill 1.6s cubic-bezier(0.33, 1, 0.68, 1) both;
+    animation: barFill 1.8s cubic-bezier(0.4, 0, 0.2, 1) both;
     pointer-events: none;
   }
   .bar-fill {
