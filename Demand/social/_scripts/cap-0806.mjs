@@ -27,6 +27,19 @@ const DIR = path.join(SOURCE, "feature-capture");
 fs.mkdirSync(DIR, { recursive: true });
 const out = (n) => path.join(DIR, n);
 
+/* ONE SECTION AT A TIME, because the front door was still being edited while
+ * this ran. A parallel session shipped `0183aaa` and `7d3dbf5` between the
+ * first capture and the render — bigger faces, no white rings, the pitch back
+ * where Framer had it — which made the morning shots a picture of a design
+ * that no longer existed. Re-shooting all four sections to fix one is both
+ * slow and needless; the dashboard subjects are unaffected by a landing-page
+ * commit.
+ *
+ *   ONLY=door BASE_URL=http://localhost:3101 node _scripts/cap-0806.mjs
+ */
+const ONLY = (process.env.ONLY || "").split(",").map((s) => s.trim()).filter(Boolean);
+const wants = (name) => !ONLY.length || ONLY.includes(name);
+
 const browser = await chromium.launch();
 
 /* ====================================================================== *
@@ -53,7 +66,7 @@ const browser = await chromium.launch();
  * out-of-focus screenshot rather than as a designed moment, which is exactly
  * what looking at the pictures first is for.
  * ====================================================================== */
-{
+if (wants("door")) {
   const ctx = await browser.newContext({
     viewport: { width: 405, height: 720 },
     deviceScaleFactor: 3,
@@ -388,13 +401,15 @@ const GREETINGS = [
   },
 ];
 
-console.log("the greeting ->");
-for (const g of GREETINGS) {
+if (wants("hello")) {
+ console.log("the greeting ->");
+ for (const g of GREETINGS) {
   const ctx = await ctxFor({ identity: g.identity, seed: g.seed, hour: g.hour });
   page = await ctx.newPage();
   await go("/dashboard", "main h1");
   await isolate(g.name, ["main h1", "main h1 + p"], { expect: g.expect });
   await ctx.close();
+ }
 }
 
 /* ====================================================================== *
@@ -410,7 +425,7 @@ for (const g of GREETINGS) {
  * One seeded reader, three units of the same course — finished, part way,
  * untouched. Grouped in the render so the three register on each other.
  * ====================================================================== */
-{
+if (wants("unit")) {
   const done = {
     /* Getting started, all three steps. */
     ...full(["what-is-economics", "how-to-use", "glossary"]),
@@ -513,8 +528,9 @@ const run = (weeks, base) =>
 HISTORY[1].weeks = run(4, 16);
 HISTORY[2].weeks = run(6, 19);
 
-console.log("the stat tile ->");
-for (const h of HISTORY) {
+if (wants("tile")) {
+ console.log("the stat tile ->");
+ for (const h of HISTORY) {
   const span = h.weeks.length;
   const days = {};
   for (const [i, mins] of h.weeks) {
@@ -549,6 +565,7 @@ for (const h of HISTORY) {
   );
   await isolate(h.name, [".dash-stat"], { expect: /Performance/i });
   await ctx.close();
+ }
 }
 
 await browser.close();

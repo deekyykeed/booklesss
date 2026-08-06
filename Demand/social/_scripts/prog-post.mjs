@@ -1214,12 +1214,21 @@ const CONFIGS = {
    * shot at 405x720, fills 1080x1920 exactly — no crop, no fade, no corner
    * wordmark, because the page already carries the mark itself.
    *
-   * THE STATES ARE THE PAGE'S OWN TIMING. Everything rises, de-blurs and
-   * lands inside a second; the button then arrives a full second after the
-   * rest. So: the page settled with nothing to tap, the button on its way
-   * up, and the door as a visitor leaves it. The design's argument is that
-   * it finishes settling BEFORE it asks for anything, and three frames are
-   * what it takes to show that.
+   * ONE SLIDE, AND IT IS THE END OF THE ANIMATION (owner, 2026-08-06: "just
+   * one page at the end of the animation"). It first went out as three
+   * moments of the entrance — the page settled with nothing to tap, the
+   * button on its way up, then the door as a visitor leaves it — on the
+   * argument that the design finishes settling BEFORE it asks for anything.
+   * The owner's call is the finished page and nothing else, so the entrance
+   * belongs in the caption rather than on the slides. The three-slide
+   * minimum (rule 3) does not survive an instruction to post one.
+   *
+   * RE-SHOT AT 7d3dbf5, NOT AT THE COMMIT THIS POST WAS PLANNED ON. A
+   * parallel session shipped two more landing-page commits while the day was
+   * being built — 40px faces held apart with the photograph showing through
+   * instead of 31px overlapping discs in white rings, and the pitch back at
+   * Framer's 140px. The first shots were a picture of a design that had
+   * already been replaced.
    *
    * A DARK POST, WHICH IS A FIRST and is flagged in PLAN.md. The house rule
    * is all light until the app has a real dark mode; the front door is
@@ -1227,11 +1236,7 @@ const CONFIGS = {
    * the thing the owner asked for. */
   "t-door": () => ({
     slot: "1-morning",
-    slides: [
-      plain({ img: img("door-1-settled.png") }),
-      plain({ img: img("door-2-offer.png") }),
-      plain({ img: img("door-3-full.png") }),
-    ],
+    slides: [plain({ img: img("door-3-full.png") })],
   }),
 
   /* 2 — one stat tile, at three points in one student's history. (midday)

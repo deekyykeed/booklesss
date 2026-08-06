@@ -19,17 +19,23 @@ and it is still 336×34 css: the 5 Aug write-off stands.
 
 | Slot | Time (local) | Folder | Slides | What it is |
 |------|------|-------|-------|------|
-| 🌅 Morning | ~07:00 | `1-morning/` | 3 | **the front door**, at three moments of its own entrance |
+| 🌅 Morning | ~07:00 | `1-morning/` | **1** | **the front door**, finished — one frame, no carousel |
 | ☀️ Midday | ~11:00 | `2-midday/` | 3 | one stat tile, at three points in one student's history |
 | 🌤️ Afternoon | ~15:00 | `3-afternoon/` | 3 | the course page's unit block, at three degrees of clearing |
 | 🌆 Evening | ~19:00 | `4-evening/` | 4 | brand plates — the ◯B disc |
 | 🌙 Night | ~21:30 | `5-night/` | 4 | brand plates — the name, in the front door's own face |
 
-> ⚠️ **Shot from the clean worktree pinned to `877e851`** — today's HEAD.
-> `git -C C:/bkls-shot checkout --detach 877e851`, `.next` cleared, `next dev`
-> on :3101. No `npm install` needed: nothing in `package.json` moved since
-> `132673c`, which is where the worktree was already pinned. `next dev` is
-> enough today — nothing here needs a service worker.
+> ⚠️ **Shot from the clean worktree `C:/bkls-shot`.** The four dashboard and
+> course-page subjects are pinned to `877e851`; the front door was re-shot
+> twice as the owner kept moving it and its final frame is `226b582` (see the
+> morning slot). No `npm install` needed — nothing in `package.json` has moved
+> since `132673c`, where the worktree was already pinned. `next dev` on :3101
+> is enough today; nothing here needs a service worker.
+>
+> Clearing `.next` between pins has to be done with the server **stopped**.
+> Deleting it under a running dev server leaves it serving 500s for every route
+> (`ENOENT … routes-manifest.json`) and the capture times out waiting for an
+> `h1` that was never rendered.
 
 > ⚠️ **Two plate slots, which is the ceiling — but not from the reserve.** All
 > sixteen plates built on 3 Aug are spent. These eight are new, and they are
@@ -40,29 +46,44 @@ and it is still 336×34 css: the 5 Aug write-off stands.
 
 ---
 
-## 🌅 Morning — `1-morning/` · The front door, arriving
+## 🌅 Morning — `1-morning/` · The front door
 
-**Post title:** It settles, then it asks
+**Post title:** The front door is one screen now
 
-**Slides:** the page with everything but the button → the button on its way up
-→ the door as a visitor leaves it
+**Slides:** one — the page, finished.
+
+**ONE SLIDE, AT THE OWNER'S CALL** (2026-08-06: *"just one page at the end of
+the animation"*). It was built as three moments of the entrance — the page
+settled with nothing to tap, the button on its way up, then the door as a
+visitor leaves it — on the argument that the design finishes settling before it
+asks for anything. That argument now lives in the caption. **Rule 3's
+three-slide minimum does not survive an instruction to post one**, and if this
+is a standing preference for a design post rather than a one-off it should go
+into RULES.md.
 
 `plain()`, which nothing has used since 1 Aug and which is exactly right here:
 the front door is the only screen in the app shaped like the frame. One
 `min-h-dvh` screen with nothing under it, shot at 405×720, fills 1080×1920 with
 no crop, no fade and no corner wordmark — the page carries the mark itself.
 
-**The states are the page's own timing, frozen rather than raced.**
-`document.getAnimations()` returns the live CSS animations and `currentTime` is
-settable, so each frame is the real thing stopped at 800ms, 1500ms and settled.
-Nothing is drawn and nothing is retouched. A ladder of twelve frames was shot
-first (`cap-0806-ref.mjs`) and everything before ~700ms is mid-de-blur — those
-read as an out-of-focus screenshot rather than as a designed moment, which is
-what looking at the pictures before choosing is for.
+**Shot at the settled state by freezing the page's own animation**, not by
+waiting and hoping: `document.getAnimations()` returns the live CSS animations
+and `currentTime` is settable, so the frame is the real thing stopped at 3000ms
+with every entrance finished and the faces mid-cycle. Nothing is drawn and
+nothing is retouched.
 
-The argument is the button. It arrives a full second after everything else,
-which is the design's timing and not an accident: the page finishes settling,
-*then* offers the tap.
+> ⚠️ **RE-SHOT TWICE, AND THE FINAL FRAME IS `226b582`.** A parallel session
+> shipped three more landing-page commits while the day was being built (owner:
+> *"the website design is currently a bit different"*). What moved, in order:
+> the faces went to 40px held apart with the photograph showing through, instead
+> of 31px discs overlapping inside white rings, and the pitch went back to
+> Framer's 140px (`7d3dbf5`); then the headline changed from *"Learn 2X faster
+> with Booklesss"* to **"Study faster. Understand more."** (`226b582`). Both
+> earlier shots were pictures of a design that had already been replaced.
+> **The door is a moving target today.** If it moves again before 07:00:
+> `git -C C:/bkls-shot checkout --detach <sha>`, clear `.next` from PowerShell,
+> `next dev -p 3101`, then `ONLY=door node _scripts/cap-0806.mjs` and
+> `POST=t-door node _scripts/prog-post.mjs`. That is what `ONLY=` is for.
 
 > ⚠️ **THIS IS A DARK POST, AND IT IS THE FIRST.** The house rule is all light
 > until the app ships a real dark mode (RULES.md, House style). The front door
@@ -75,11 +96,11 @@ which is the design's timing and not an accident: the page finishes settling,
 > The front door is one screen now 🚪
 > It used to be a scrolling page — a headline, a sign-up box, three sections
 > explaining the app to someone who hadn't opened it yet. All of that is gone.
-> One photograph, the name, one sentence about what this is, and one thing to
-> tap.
-> Watch the order it arrives in. Everything lands inside a second, and then the
-> page waits a full second before it offers you the button. It finishes
-> settling before it asks you for anything.
+> One photograph, the name, one line, one sentence about what this is, and one
+> thing to tap.
+> The part you can't see in a screenshot is the order it arrives in. Everything
+> lands inside a second, and then the page waits a full second longer before it
+> offers you the button. It finishes settling before it asks you for anything.
 > That second is the whole design.
 > DM me "link" and I'll send you the whole thing. 👇
 
