@@ -72,7 +72,9 @@ and `currentTime` is settable, so the frame is the real thing stopped at 3000ms
 with every entrance finished and the faces mid-cycle. Nothing is drawn and
 nothing is retouched.
 
-> ⚠️ **RE-SHOT FOUR TIMES. THE POSTED FRAME IS `1924764`.** The front door was
+> ⚠️ **RE-SHOT FIVE TIMES. THE POSTED FRAME IS `1557994`** (the landing state of
+> `8d26eb9` — round faces again, and "Join 67+ members" under the button). The
+> sequence below is kept because it is the point: the front door was
 > being worked on in a parallel session for the whole of the day this post was
 > built, and every earlier shot was a picture of a design that had already been
 > replaced. In order:
@@ -85,7 +87,9 @@ nothing is retouched.
 >   the subtitle rewritten under it.
 > - `1924764` — the faces overlap once more, but as a gesture rather than a
 >   layout: each one grows in on the left, the row scoots, and the one on the
->   right shrinks out. **This is what is posted.**
+>   right shrinks out.
+> - `8d26eb9` — round faces again, and **"Join 67+ members"** under the button.
+>   **This is what is posted.**
 >
 > **Do not trust an old frame.** If it moves again: stop the dev server, then
 > `git -C C:/bkls-shot checkout --detach <sha>`, clear `.next` from PowerShell
@@ -95,11 +99,18 @@ nothing is retouched.
 > optional any more** — the date has rolled past this post's folder, and without
 > it the render writes into a 7 Aug folder instead.
 
-> ⚠️ **ONE LANDING CHANGE IS NOT IN THIS FRAME.** A `MemberCount` line under the
-> button is written but uncommitted (`platform/src/components/landing/MemberCount.tsx`,
-> untracked, plus its import in `page.tsx`), so it is not at any commit the shot
-> worktree can be pinned to. If that is the change that mattered, commit it and
-> re-run the two commands above.
+> ⚠️ **"JOIN 67+ MEMBERS" IS IN THE FRAME AND IS NOT A MEASURED NUMBER.**
+> `MemberCount.tsx` says so in its own header: it starts at a constant and
+> increments on a random timer, it is not the row count of `students`, and it
+> never goes down. The owner's call, knowingly made.
+>
+> The slide is still honest under rule 9 — it is an unretouched screenshot of
+> what the product actually shows, and the post is not inventing anything the
+> page does not. **But the caption must never repeat it as a claim.** Today's
+> does not mention it, and no future caption should say "67 students" or
+> anything resembling a count until the component reads the table. If the owner
+> ever wants the number in the copy, the fix is a server component reading
+> `count` off `students` on an ISR revalidate — same slot, same animation, true.
 
 > ⚠️ **THIS IS A DARK POST, AND IT IS THE FIRST.** The house rule is all light
 > until the app ships a real dark mode (RULES.md, House style). The front door

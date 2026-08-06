@@ -543,7 +543,41 @@ If one is genuinely earned:
   clear the directory. A *stale* `.next` 404s every route — same fix.
 - **`TaskStop` on a backgrounded `next dev` kills the wrapper, not the server.**
   `Get-NetTCPConnection -LocalPort 3101 -State Listen`, then stop that PID.
-- **Derive the date from `new Date()`,** never hardcode `DAY`.
+  The inverse also bites: the Bash tool's `run_in_background` printed *"Ready in
+  2.2s"* and then **exited 127 with nothing left on the port** (2026-08-06).
+  Start the server with `(npx next dev -p 3101 > log 2>&1 &)` in the same shell
+  as the capture, or detach it from PowerShell — and either way poll the port
+  before shooting rather than trusting the banner.
+- **STOP THE SERVER BEFORE CLEARING `.next`.** Deleting it under a running dev
+  server leaves that server answering **500 on every route** (`ENOENT …
+  routes-manifest.json`), and the failure surfaces as the capture timing out
+  waiting for a selector — which reads as a page problem rather than a build
+  one. Re-pinning the shot worktree is: stop, checkout, clear, start.
+- **Derive the date from `new Date()`,** never hardcode `DAY` — but **pass
+  `DAY=` explicitly on any re-render after midnight.** A slot rebuilt the next
+  morning without it writes a fresh day folder and leaves the real slot holding
+  the stale image, silently. (2026-08-06, re-rendering the front door.)
+- **THE SUBJECT MAY STILL BE MOVING. Shoot it LAST, and re-check before
+  posting.** A feature that shipped this morning is not finished being designed;
+  on 2026-08-06 the front door changed five times over the day the post about it
+  was built, twice reversing itself, and every earlier frame was a picture of a
+  design that had already been replaced. Three habits, all cheap:
+  - **Give every capture script an `ONLY=` switch** (`cap-0806.mjs`) so one
+    subject can be re-shot without re-running the others. This is what makes a
+    third and fourth pass affordable.
+  - **Write the shot's commit sha into `PLAN.md`, and keep the whole sequence**
+    when it moves more than once — a bare "shot at HEAD" cannot be checked
+    later.
+  - **`git log --oneline -1 -- platform/src/app/<the page>` before posting.** If
+    a commit lands after the sha in `PLAN.md`, the frame is stale.
+- **A screenshot of a fabricated number is honest; a caption repeating it is
+  not.** The front door's "Join 67+ members" starts at a constant and ticks up
+  on a timer — `MemberCount.tsx` says so in its own header, and it is the
+  owner's call. Rule 9 is satisfied because the slide is an unretouched picture
+  of what the page shows. The caption is a different thing: it is the account
+  speaking, so it may not restate an invented figure as a fact. Check any number
+  visible in a crop against the code that produces it before writing copy about
+  it.
 - **The rendered PNGs are gitignored.** Commit the recipe — capture script, post
   config, `PLAN.md` — never the images.
 - **There is no posting connector.** Always say the upload is manual.

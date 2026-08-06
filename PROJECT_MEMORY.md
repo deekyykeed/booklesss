@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-05 (session 46)
+**Last updated:** 2026-08-06 (session 47)
 
 ---
 
@@ -91,6 +91,46 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 47 (2026-08-06, the social day the front door would not sit
+still). Linear unreachable for the FOURTH session running.**
+- [ ] ⚠️ **VERIFY THE MORNING FRAME BEFORE POSTING IT.** `1-morning/01.png` is
+      the front door at `1557994` (the landing state of `8d26eb9` — round faces,
+      "Join 67+ members" under the button). The page moved **five times** while
+      the post was being built and was still being edited at wrap:
+      `platform/src/components/landing/MemberCount.tsx` is dirty with 19 lines
+      belonging to a parallel session. If it moved again, the re-shoot is three
+      commands and they are written at the top of that day's `PLAN.md`.
+      **`DAY=2026-08-06` is now mandatory on the re-render** — the date has
+      rolled past the folder, and without it `prog-post.mjs` writes a 7 Aug
+      folder and silently leaves the real slot stale.
+- [ ] ⚠️ **"Join 67+ members" IS NOT A MEASURED NUMBER, and it is now on a
+      poster.** `MemberCount.tsx` says so in its own header: it starts at a
+      constant and ticks up on a random timer, it is not the row count of
+      `students`, and it never goes down. The owner's call, knowingly made. The
+      slide is honest — it is an unretouched screenshot of what the page shows
+      — but **no caption may ever repeat it as a claim**, and today's does not.
+      The honest fix is small and worth doing before this travels further: a
+      server component reading `count` off `students` on an ISR revalidate puts
+      a true number in the same slot with the same animation.
+- [ ] **The plate reserve is no longer empty — but it is not the old reserve.**
+      Eight new plates exist (`20`–`23` the ◯B disc, `24`–`27` the name in
+      Burbank) and all eight went out on 6 Aug, so the reserve is spent again.
+      `logo-variants.mjs` now vendors Burbank and takes `PICK=` to build a slot
+      as four chosen plates. The 3 Aug sixteen remain spent.
+- [ ] **`Booklesss Bucket/` still holds two unfiled images** —
+      `6mcf62RlDfRfU61Yg5vb2pefpi4.png` and `tTjAmPTCPjbsyabJCdiEPJzRfo.jpg`.
+      Both carry CDN-style hash names with nothing to say where they belong
+      (the workspace sidebar replicated in `/workspace` came out of this folder,
+      so they are probably design references). **Not filed, deliberately** —
+      guessing a destination for an unnamed asset is worse than leaving it in
+      the drop folder. Ask the owner what they are.
+- [ ] **Two subjects came off the "postable surface is exhausted" problem** and
+      are worth remembering as available axes rather than one-offs: the course
+      page's **unit block** (the count beside a unit's name — a different
+      question from the drawer tree's rings) and **one stat tile across a
+      student's own history** rather than across measures. The greeting was
+      written off on shape, not on subject — see the day's `PLAN.md`.
 
 **From session 46 (2026-08-05, evening). Linear was unreachable AGAIN — THREE
 sessions now with no issues raised. Everything below lives in this file only.**
@@ -908,6 +948,89 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-06 (session 47 — five posts, and a front door that moved five times)
+
+**A social day with an actual ship, for the first time in three.** Five slots in
+`Demand/social/posts/2026-W32 (Aug 3-9)/2026-08-06 Thursday/`, captions and
+reasoning in its `PLAN.md`.
+
+Opened by committing a previous session's uncommitted landing-page work as
+`877e851` — complete, coherent, and clearly finished rather than mid-flight.
+
+| Slot | Subject |
+|---|---|
+| Morning | the front door, finished — **one slide** |
+| Midday | one stat tile, at three points in one student's history |
+| Afternoon | the course page's unit block — 9/15, 3/3, 0/7 |
+| Evening | brand plates — the ◯B disc, four treatments |
+| Night | brand plates — the name in Burbank, four treatments |
+
+**THE FRONT DOOR MOVED FIVE TIMES WHILE THE POST ABOUT IT WAS BEING BUILT**, and
+the morning slot was shot four times: `877e851` (31px faces in white rings) →
+`7d3dbf5` (40px, held apart, pitch back to 140px) → `226b582` (headline to
+"Study faster. Understand more.") → `ad6e3c9` (**headline back** to "Learn 2X
+faster with Booklesss") → `1924764` (faces overlap again, as a gesture) →
+`8d26eb9` (round faces, "Join 67+ members"). Each earlier frame was a picture of
+a design that had already been replaced. The whole sequence is in the day's
+`PLAN.md` so the next person can tell at a glance whether the frame on disk is
+current — which matters, because a parallel session was still editing
+`MemberCount.tsx` at wrap.
+
+**Two owner calls landed mid-session**, both now rules:
+- *"just one page at the end of the animation"* — the morning post went from
+  three moments of the entrance to one finished frame. Promoted to
+  `daily-post/RULES.md` under rule 3: a component carousel earns its slides
+  because the component is doing different things, and a whole screen at rest is
+  doing one.
+- *"do it cause the website design is currently a bit different"* — which is
+  what turned re-shooting into the day's actual work.
+
+**The morning post is the account's first DARK post.** The house rule is all
+light until the app ships a real dark mode; the front door is genuinely black,
+so the rule and the request could not both hold. Broken deliberately and flagged
+at the top of `PLAN.md` for a verdict rather than quietly.
+
+**Written off after rendering and looking at it:** the greeting and the fact
+under it, at four states. The subject is real and the four states differ in kind
+— `HomeView`'s line has exactly four derived forms — but grouped it is 4.9:1 and
+draws 153px in an 1100px stage, which reads as a caption floating in an empty
+gradient. Kept as `t-hello`, unposted, like `s-bar`. Also written off:
+`/workspace` (its own metadata says the board is not built — rule 10, caught by
+the grep-for-a-plan check before anything was shot) and the `ActionBar`'s new
+ink-fill (still 336×34, and the only place the state exists is the sign-up form).
+
+**What Worked:**
+- **Freezing CSS animations to pick a frame.** `document.getAnimations()` returns
+  the live animations and `currentTime` is settable, so a page mid-motion can be
+  photographed at an exact millisecond, repeatably. Shooting a ladder of twelve
+  frames first and choosing off the pictures is what killed the entrance idea:
+  everything before ~700ms is mid-de-blur and reads as an out-of-focus
+  screenshot rather than as a designed moment.
+- **`ONLY=` on the capture script.** Added the moment the door moved the first
+  time; it turned each of the next three re-shoots into one command instead of
+  re-running four sections. Worth adding to any capture script covering more
+  than one subject.
+- **Asserting the state at the shutter caught nothing this time and was still
+  right.** Every greeting state is a DERIVED sentence, so a subtly wrong seed
+  renders a component that looks deliberate and says something else.
+- **`git status` before every commit.** A parallel session was in this tree all
+  day; `--only` with an explicit path list kept four commits clean and left
+  `MemberCount.tsx` and `page.tsx` alone.
+
+**Dead Ends (do not retry):**
+- **The greeting as a component post.** 4.9:1. See above — the subject is fine,
+  the shape is not.
+- **Clearing `.next` while the dev server is running.** It leaves the server
+  answering 500 on every route (`ENOENT … routes-manifest.json`) and the failure
+  surfaces as the capture timing out on a selector, which looks like a page
+  problem rather than a build one. Stop the server, then clear.
+- **Backgrounding `next dev` through the Bash tool's `run_in_background`.** It
+  printed "Ready in 2.2s" and then died with exit 127, leaving nothing on the
+  port. Starting it with `(… &)` inside the same shell as the capture, or
+  detaching it from PowerShell, both work.
+
+---
 
 ### Session 2026-08-05 (session 46 — five posts, three landed, and the two that missed became rules)
 
