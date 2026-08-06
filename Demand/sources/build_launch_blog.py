@@ -1,10 +1,13 @@
 """
 Booklesss — launch blog post (August 2026).
 
-A read-it-in-five-minutes argument for why a student should get into Booklesss,
-written for the weekend the course reader opens. Presses the real pain (notes
-nobody wrote), says what the reader actually is, explains the mechanics that
-make it different, and ends on one action: comment Booklesss under the post.
+A serious, value-led argument for a student to get into Booklesss, written for
+the weekend the course reader opens. The case is the gap between reading
+something and being able to do it, and what the reader does about that gap.
+
+Deliberately NOT in here (owner, 2026-08-06): the photocopied-notes story and
+who wrote whose material, counts of courses and steps, and the curriculum /
+timetable machinery. None of them is the value, and the first is corny.
 
 House style: cream paper, black type, Parastoo serif titles. No accent colour,
 no em dashes, no pricing (the founding rate expired and the replacement offer
@@ -68,12 +71,12 @@ MX        = 2.2 * cm
 MY        = 2.0 * cm
 CONTENT_W = W - 2 * MX
 
-RUNNING_TITLE = "Nobody Ever Built You Something Good To Learn From"
+RUNNING_TITLE = "The Difference Between Reading It And Having It"
 RUNNING_META  = "Launch · August 2026"
 
 OUT_DIR  = os.path.join(_ROOT, "Demand")
 OUT_PATH = os.path.join(
-    OUT_DIR, "Nobody Ever Built You Something Good To Learn From - Booklesss.pdf")
+    OUT_DIR, "The Difference Between Reading It And Having It - Booklesss.pdf")
 
 
 # ── STYLES ───────────────────────────────────────────────────────────────────
@@ -286,220 +289,173 @@ def build():
     story = []
 
     # ── COVER ────────────────────────────────────────────────────────────────
-    story.append(Spacer(1, 96))
+    story.append(Spacer(1, 104))
     story.append(Paragraph("OPENS SATURDAY, 8 AUGUST", ST["cover_step"]))
     story.append(Spacer(1, 14))
-    story.append(Paragraph("Nobody Ever Built You<br/>Something Good<br/>To Learn From", ST["cover_title"]))
+    story.append(Paragraph(
+        "The Difference Between<br/>Reading It<br/>And Having It", ST["cover_title"]))
     story.append(Spacer(1, 20))
     story.append(Paragraph(
-        "So we did. Four courses, written from nothing, that open on your phone "
-        "and remember where you stopped. Here is what it is, why it works "
-        "differently to everything you have been handed so far, and how to get in "
-        "this weekend.",
+        "Booklesss is a course you can check yourself against, weeks before "
+        "anyone else checks you. Here is what it does and why it is worth your "
+        "evening.",
         ST["cover_sub"]))
     story.append(Spacer(1, 150))
-    story.append(Paragraph("A five-minute read · August 2026", ST["cover_meta"]))
+    story.append(Paragraph("A short read \u00b7 August 2026", ST["cover_meta"]))
     story.append(Spacer(1, 3))
-    story.append(Paragraph("Booklesss · booklesss.app", ST["cover_meta"]))
+    story.append(Paragraph("Booklesss \u00b7 booklesss.app", ST["cover_meta"]))
     story.append(NextPageTemplate("body"))
     story.append(PageBreak())
 
-    # ── 1. THE PROBLEM ───────────────────────────────────────────────────────
-    story += section("Start here", "Try to name who wrote your notes")
+    # ── 1. THE GAP ───────────────────────────────────────────────────────────
+    story += section("Start here", "You can revise for a week and not know whether it worked")
     story.append(lead(
-        "Open whatever you are revising from tonight and try to name the person who "
-        "wrote it. Most students cannot."
+        "The hard part of a course is not getting hold of the material. It is that "
+        "nothing tells you whether you have understood it until the paper is in front "
+        "of you."
     ))
     story.append(body(
-        "A classmate sent them to you. They got them from someone in the year above, "
-        "who got them from someone who graduated three years ago. Somewhere down that "
-        "chain the pages were photocopied, screenshotted and forwarded so many times "
-        "that the author is gone and so are four of the pages. Half of it is written in "
-        "the shorthand people use at 2am for themselves, and the examples do not match "
-        "what your lecturer taught this semester."
+        "Reading feels like progress. You go through a chapter, the sentences make "
+        "sense as you read them, and you close it with the impression of having learned "
+        "something. Weeks later the question is phrased a way you did not expect, and "
+        "the impression turns out to have been the whole of it."
     ))
     story.append(body(
-        "So the week before the exam you are building one clear understanding out of "
-        "three people's handwriting, a textbook priced for somebody in another country, "
-        "and a video made for a syllabus that is not yours. At eleven at night, when a "
-        "sentence stops making sense, there is nobody to ask."
+        "So every hour you study is a bet placed without a result. You find out once, "
+        "at the end, when there is nothing left to do about it. That is the real problem "
+        "with how studying works now, and more material does not fix it."
     ))
     story.append(fact(
-        "That is not a discipline problem and it is not an intelligence problem. It is a "
-        "materials problem. Nobody ever built you anything good to learn from."
+        "What is missing is not access to notes. It is an honest answer about where you "
+        "stand, early enough that you can still do something with it."
     ))
 
-    # ── 2. WHAT IT IS ────────────────────────────────────────────────────────
-    story += section("What it is", "A course you read, not a folder you download")
+    # ── 2. WHAT IT DOES ──────────────────────────────────────────────────────
+    story += section("What it does", "A course that answers back")
     story.append(body(
-        "Booklesss is one place you open on your phone. You pick a course, you get a "
-        "list of steps, and each step is about ten minutes of reading written to be "
-        "understood the first time rather than skimmed the night before. Nothing to "
-        "install, nothing to lose in a WhatsApp thread. Close it on the bus and it opens "
-        "on the same paragraph in your room."
+        "Booklesss is a course you read on your phone, one section at a time, and every "
+        "section ends by asking you something about what you just read."
     ))
     story.append(body(
-        "Every step was written from scratch, in plain English, with the examples in "
-        "kwacha and the companies ones you have heard of. Four courses are on it this "
-        "weekend."
+        "Get it wrong the first time and you are told only that it is wrong, then sent "
+        "back to the text. You are deliberately not shown the right answer, because then "
+        "trying again would mean picking the green one. Miss it twice and the answer and "
+        "the reasoning both appear, and you still have to select it yourself."
     ))
-    story.append(table_std([
-        ["Course", "Steps", "What it goes through"],
-        ["Economics", "25",
-         "Supply and demand, market structures, inflation, how people decide"],
-        ["Corporate Finance", "25",
-         "Time value of money, appraisal, cost of capital, capital structure"],
-        ["Treasury Management", "21",
-         "Liquidity and cash, funding, risk and hedging, controls"],
-        ["Strategic Management", "7",
-         "Environment analysis, competitive position, choosing a strategy"],
-    ], [4.4 * cm, 1.4 * cm, CONTENT_W - 5.8 * cm]))
     story.append(body(
-        "That is 78 steps already written, with more added every week. If you have sat "
-        "one of those courses you know what a semester of it costs you in photocopying "
-        "alone."
-    ))
-
-    # ── 3. WHY IT WORKS ──────────────────────────────────────────────────────
-    story += section("Why it is different", "You cannot tick your way through it")
-    story.append(body(
-        "This is the part that matters, and it is the part no PDF and no group chat can "
-        "do. Five things are built into the reading itself."
-    ))
-
-    story.append(h3("A section ends with a question, not a tick box"))
-    story.append(body(
-        "Finish a section and you are asked something about what you just read. Get it "
-        "wrong the first time and you are told only that it was wrong, then sent back to "
-        "the text. You are deliberately not shown the right answer, because then "
-        "\"try again\" would just mean clicking the green one. Miss it twice and the "
-        "answer and the reason are both shown, and you still have to pick it yourself to "
-        "move on. <b>The tick is always earned.</b>"
-    ))
-
-    story.append(h3("Any word you do not know is one tap away"))
-    story.append(body(
-        "Words the material assumes you already own are underlined. Tap one and the "
-        "definition appears beside it, then goes away. A definition sitting in brackets "
-        "in the sentence is read by everyone, including the person who already knew the "
-        "word, and it breaks the sentence for them every time. This way it is paid for "
-        "only by the reader who needs it."
-    ))
-
-    story.append(h3("Every claim shows you where it came from"))
-    story.append(body(
-        "Under the paragraph that makes a claim sits a row of small chips naming the "
-        "sources it rests on. Not a reading list at the end that nobody opens. Directly "
-        "under the sentence, so you can see at a glance what a paragraph is standing on "
-        "and go check it if you want to."
-    ))
-
-    story.append(h3("The study clock undercounts on purpose"))
-    story.append(body(
-        "Time only counts while the tab is actually in front of you and you have moved "
-        "in the last minute. Leave a step open while you make tea and the clock stops. "
-        "Read a long passage perfectly still and that minute is quietly lost. It is "
-        "built to be too strict rather than too generous, because a study streak you can "
-        "fake is worth nothing to you."
-    ))
-
-    story.append(h3("It asks you how the section read"))
-    story.append(body(
-        "Beside each checkpoint you can say how the writing landed. That goes straight "
-        "into the next version of the step. Students who join this weekend are not "
-        "reading a finished product, they are deciding what it becomes."
+        "The wrong options are not filler either. Each one is a mistake students "
+        "actually make at that exact point, so the option you reach for tells you which "
+        "misunderstanding you are carrying and where to go back to."
     ))
     story.append(fact(
-        "Your progress is measured rather than claimed. What survives is what you can "
-        "actually answer, which is also the only thing worth having in an exam hall."
+        "What you have finished is what you can answer. Progress here is a measurement "
+        "rather than a feeling, and you get it weeks before the exam gives you one."
     ))
 
-    # ── 4. THE BIGGER IDEA ───────────────────────────────────────────────────
-    story += section("The bigger idea", "Your timetable is not on the internet")
+    # ── 3. HOW IT IS WRITTEN ─────────────────────────────────────────────────
+    story += section("How it is written", "Written to be understood the first time")
     story.append(body(
-        "Building a course for every student in Zambia meant first finding out what "
-        "every student is taught. Ten universities were checked properly, page by page, "
-        "in the first week of August."
+        "The material is not a syllabus retyped or a lecture transcribed. It is written "
+        "against rules, and these are the ones you will feel:"
     ))
-    story.append(body(
-        "Seven of them publish no course list anywhere. Not a bad one. None. Programme "
-        "names and entry requirements, and then nothing. Of the three that publish "
-        "anything, one prints \"Coming soon\" on 98 of its 111 programme pages and "
-        "another says \"No Course List Found\" on 106 of 107. <b>Nobody has written down "
-        "what Zambian students are being taught.</b>"
-    ))
-    story.append(body(
-        "So it is being written down by the students. When you sign up you are asked "
-        "your university, your programme, your year, and the courses you are actually "
-        "taking this semester. Where the timetable is known you tick it in about fifteen "
-        "seconds. Where it is not, you type it, and what you type is offered to the next "
-        "person on your programme."
-    ))
-    story.append(fact(
-        "The first student on a programme types eight course names into an empty box. "
-        "The fifth confirms a list better than anything the university has ever "
-        "published."
-    ))
-    story.append(body(
-        "602 distinct courses are mapped so far, deduped across campuses so that "
-        "building one serves everybody who sits it. Four are built. The rest are ranked "
-        "by how many students each would reach, which is how the order is decided. "
-        "Signing up and putting your real timetable in is how yours moves up that list."
-    ))
-
-    # ── 5. WHERE IT GOES ─────────────────────────────────────────────────────
-    story += section("Where it goes", "Passing is the entry point, not the point")
-    story.append(body(
-        "Every question you answer is a small piece of evidence that you can do a "
-        "specific thing. Discount a cash flow. Read a hedge. Spot where a strategy is "
-        "exposed. On their own they are checkpoints. Stacked up over two years they are "
-        "something a line on a CV cannot be: proof, with a record behind it."
-    ))
-    story.append(body(
-        "Where this is going is the most reliable place in the country for a business to "
-        "find someone who can genuinely do the work, instead of someone who wrote that "
-        "they can. That is not built yet and you should not join for it. It is being "
-        "built in order, and the studying is the part that is ready now."
-    ))
-
-    # ── 6. HONEST ────────────────────────────────────────────────────────────
-    story += section("Be clear about it", "What you are actually getting on Saturday")
-    # The intro and its bullets are one block: a list that splits across a page
-    # break leaves a single orphaned bullet under the heading.
     story.append(KeepTogether([
-        body("Four courses is not your whole degree, so here is the plain version."),
-        bullet("Four courses are live. If yours is not one of them, it is not there yet."),
-        bullet("Steps are added every week, and the ones already up get rewritten when "
-               "readers say they were unclear."),
-        bullet("Something will break. You will be told when it does rather than finding "
-               "it quietly fixed."),
-        bullet("What you say about a section changes it. That is the whole point of "
-               "joining in the first week."),
+        bullet("<b>One idea per section</b>, and a section is short enough to finish in "
+               "a sitting. Three finished in an evening is worth more than one abandoned "
+               "two thirds of the way through."),
+        bullet("<b>A term is defined where you meet it</b>, in the same sentence, and "
+               "used plainly after that. The jargon around it is underlined, and one tap "
+               "gives you the meaning without breaking the sentence for someone who "
+               "already knew the word."),
+        bullet("<b>Plain words for the ordinary parts, exact words for the technical "
+               "parts.</b> The vocabulary being taught is never watered down. Everything "
+               "carrying it is the simplest available, so a sentence never costs you "
+               "twice."),
+        bullet("<b>Workings are laid out as workings.</b> Figures aligned, subtotals "
+               "ruled off, kwacha, negatives in brackets. The way it is done on paper "
+               "and the way a marker expects to see it."),
+        bullet("<b>One boxed sentence per section</b>, carrying the thing that has to "
+               "survive when the rest of the detail is gone."),
+        bullet("<b>Examples come from what your course actually teaches</b>, at their "
+               "original figures, so you can hold the step and the lecture side by side "
+               "instead of translating between two versions of the same topic."),
         Spacer(1, 6),
     ]))
-    story.append(callout(
-        "<b>If your course is not one of the four, come in anyway.</b>\n"
-        "Sign up, put your real timetable in, and yours enters the queue with your name "
-        "on the count. The order is decided by how many students ask for a course, and "
-        "right now a single student moves a course several places."
+
+    # ── 4. WHO IT IS FOR ─────────────────────────────────────────────────────
+    story += section("Who it is written for", "You are handed the judgement, not the mark scheme")
+    story.append(body(
+        "Most notes teach you what an exam will ask. Booklesss teaches you what the "
+        "decision costs."
+    ))
+    story.append(body(
+        "The sentences land on a choice you would have to make. What a business can "
+        "survive without while it is small. What you are actually buying when you hire. "
+        "What a hedge protects and what it gives up to do it. It is written to someone "
+        "who intends to run something, because most of the people reading it do."
+    ))
+    story.append(body(
+        "That is the harder way to write and it produces better exam answers as a side "
+        "effect. Understand why a treasury function is split the way it is and you "
+        "answer a question on segregation of duties correctly without ever having "
+        "memorised the phrase. Memorise the phrase instead and you are one rewording "
+        "away from losing the marks."
+    ))
+    story.append(fact(
+        "Understanding survives a question you have not seen before. Memorising does "
+        "not, and the paper is written by someone who knows that."
+    ))
+
+    # ── 5. THE SHAPE ─────────────────────────────────────────────────────────
+    story += section("The shape", "You hold the whole course before you have finished it")
+    story.append(body(
+        "You are given the structure of the course up front rather than a topic at a "
+        "time. Early on you already know what the final section deals with and why it "
+        "sits at the end."
+    ))
+    story.append(body(
+        "So the course stops being a sequence of new territory and becomes a picture you "
+        "are filling in. Depth lands on a frame you already hold, which is the whole "
+        "difference between remembering twelve topics and understanding one subject. By "
+        "the end it reads as confirmation rather than discovery, and that is what makes "
+        "revision short."
+    ))
+
+    # ── 6. WHAT IT ADDS UP TO ────────────────────────────────────────────────
+    story += section("What it adds up to", "A record of what you can actually do")
+    story.append(body(
+        "Every checkpoint you clear is a specific piece of evidence. You can discount a "
+        "cash flow. You can see where a strategy is exposed. You can say what a hedge "
+        "gives up. On their own they are checkpoints. Across a semester they are a "
+        "record of demonstrated work, and nothing else you are given at university is "
+        "that."
+    ))
+    story.append(body(
+        "A grade compresses a year into a single letter and says nothing about which "
+        "parts you own. This accumulates the opposite: specific, dated, and yours. Where "
+        "it goes next is the most reliable place in this country for a business to find "
+        "someone who can genuinely do the work rather than someone who wrote that they "
+        "can. That part is being built in order, and the studying is the part that is "
+        "ready now."
     ))
 
     # ── 7. CTA ───────────────────────────────────────────────────────────────
     story += section("How to get in", "One word")
     story.append(body(
-        "Booklesss opens this Saturday, 8 August. There is nothing to download, no card "
-        "to enter, and it works on the phone you are reading this on."
+        "Booklesss opens this Saturday, 8 August. Economics, Corporate Finance, "
+        "Treasury Management and Strategic Management are on it, with more added every "
+        "week. Nothing to download, no card to enter, and it runs on the phone you are "
+        "reading this on."
+    ))
+    story.append(body(
+        "It is early, and that is the argument for coming in now rather than the "
+        "disclaimer. What you say about a section goes into the next version of it, so "
+        "the people who arrive this week shape more of the course than the ones who "
+        "arrive after it settles."
     ))
     story.append(Spacer(1, 4))
     story.append(callout(
         "<b>Comment \"Booklesss\" under the post</b> and the link comes to you the "
-        "morning it opens.\n"
-        "That is it. First names on the list get first pick of the courses that get "
-        "built next."
-    ))
-    story.append(body(
-        "You have already done the hard part, which was showing up to the lectures. The "
-        "only thing missing was something decent to read afterwards."
+        "morning it opens."
     ))
 
     doc.build(story)
