@@ -5,6 +5,7 @@ import { authEnabled } from "@/lib/auth";
 import { openGraph, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
 import { ToApp } from "@/components/landing/landing-bits";
 import { TrustedFaces } from "@/components/landing/TrustedFaces";
+import { MemberCount } from "@/components/landing/MemberCount";
 
 /* ------------------------------------------------------------------ *
  * The front door. One screen, and nothing under it.
@@ -320,6 +321,11 @@ export default function LandingPage() {
                 </span>
               </span>
             </Link>
+            {/* Under the button, in the same quiet register as the trust line
+                above the headline — the two pieces of social proof on this page
+                should sound like each other. See MemberCount for what this
+                number is and is not. */}
+            <MemberCount />
           </div>
         </div>
       </div>

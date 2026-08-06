@@ -362,6 +362,7 @@
   :root[data-motion="reduced"] .bar-spinner,
   :root[data-motion="reduced"] .face-slot[data-state],
   :root[data-motion="reduced"] .face-slot[data-state] .face-disc,
+  :root[data-motion="reduced"] .count-tick,
   :root[data-motion="reduced"] .lesson-fade,
   :root[data-motion="reduced"] .onboard-step,
   :root[data-motion="reduced"] .account-skeleton,
@@ -1077,6 +1078,13 @@
     display: block;
     width: 40px;
     height: 40px;
+    /* THE DISC IS WIDER THAN ITS SLOT, WHICH IS THE POINT — 40px of face in a
+       32px step is what makes them overlap. Tailwind's preflight sets
+       `img { max-width: 100% }`, and 100% here is the 32px slot, so the disc
+       rendered 32 x 40: an oval. `width` does not override a max-width; only
+       max-width does. Every overlapping image in this row depends on this
+       line. */
+    max-width: none;
     border-radius: 9999px;
     object-fit: cover;
     /* Above the disc to its left, so the overlap falls the way the design has
@@ -1126,7 +1134,28 @@
     animation: faceCutClose 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
+  /* One more member. Rises and fades in where the old number was, so the change
+     is something you SEE rather than something you notice later — which is the
+     entire reason the count moves at all. Short, because it fires while a
+     visitor is reading something else on the page. */
+  @keyframes countTick {
+    from {
+      opacity: 0;
+      transform: translateY(7px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .count-tick {
+    animation: countTick 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
   @media (prefers-reduced-motion: reduce) {
+    /* The count still climbs — it is information, not decoration — it just
+       stops announcing itself. */
+    .count-tick,
     .face-slot[data-state],
     .face-slot[data-state] .face-disc {
       animation: none;
