@@ -25,13 +25,32 @@
  * clear of a share button, and cropping it to the safe box would just make it
  * a small letter in a big empty frame.
  */
-import { chromium, POSTS, FAMILJEN_DATA, dayFolder } from "./paths.mjs";
+import { chromium, POSTS, PLATFORM, FAMILJEN_DATA, dayFolder } from "./paths.mjs";
 import fs from "fs";
 import path from "path";
 
 const DAY = process.env.DAY || new Date().toLocaleDateString("en-CA");
 const SLOT = process.env.SLOT || "6-logo";
+/* A slot takes FOUR plates, not sixteen. Naming them here writes exactly those
+ * four, numbered 01–04 in the order given, so a posting slot is built rather
+ * than filled and then weeded by hand.
+ *
+ *   PICK=20-disc-light,21-disc-cut,22-disc-macro,23-disc-knockout \
+ *     SLOT=4-evening node _scripts/logo-variants.mjs
+ *
+ * With no PICK the script does what it always did — every plate, under its own
+ * name — which is how the reserve was built on 3 Aug. */
+const PICK = (process.env.PICK || "").split(",").map((s) => s.trim()).filter(Boolean);
 const FAMILJEN = FAMILJEN_DATA();
+
+/* Burbank Big Condensed — the face the front door's mark is drawn in, vendored
+ * in the app since it drew the logo. It is here because 2026-08-06 shipped a
+ * NEW brand object in it: the ◯B disc, now with the 1px ring the owner asked
+ * for so it can sit on a white surface without reading as a hole. A plate of
+ * it has to be the real letterform, not Familjen standing in. */
+const BURBANK =
+  "data:font/woff2;base64," +
+  fs.readFileSync(path.join(PLATFORM, "src/fonts/burbank.woff2")).toString("base64");
 
 const INK = "#0D0D0F";       // the poster black
 const TILE = "#0b0b0b";      // the app's solid black, what the icon tile wears
@@ -51,6 +70,7 @@ const GRADIENT =
 
 const CSS = `
 @font-face{font-family:FG;src:url(${FAMILJEN}) format('woff2');font-weight:400 700;font-display:block}
+@font-face{font-family:BB;src:url(${BURBANK}) format('woff2');font-weight:400 700;font-display:block}
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:1080px;height:1920px;overflow:hidden}
 body{font-family:FG,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
@@ -69,6 +89,34 @@ body{font-family:FG,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 const word = (t, o = {}) =>
   `<span class="w" style="font-size:${o.size}px;color:${o.color};` +
   `letter-spacing:${o.track ?? -0.031}em;${o.extra || ""}">${t}</span>`;
+
+/* ---- the ◯B disc, shipped 2026-08-06 on the front door -------------- *
+ *
+ * Every ratio is the app's, read off page.tsx rather than eyeballed: on a 50px
+ * disc the B is 40, its line box is the disc's own height, the underline is
+ * 5px thick and offset 10 — so 0.8, 1.0, 0.1 and 0.2 of whatever size a plate
+ * asks for. The clipping is the design and not an accident: the underline runs
+ * past the bottom of the circle, and what survives is a solid bar with its ends
+ * cut by the curve.
+ *
+ * THE RING SCALES WITH EVERYTHING ELSE. The owner asked for "a 1px black
+ * border" and 1px is what ships, at 50px. A plate drawing it 12× larger keeps
+ * it at 1/50th, because that is what scaling a logo means — a vector mark's
+ * stroke grows with the mark. Holding it at a literal 1px would make it
+ * invisible here and would be a different object, not a truer one. */
+const disc = ({ size, bg = TILE, fg = PAPER, ring = "#000", shadow = "" }) =>
+  `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${bg};
+    border:${(size / 50).toFixed(2)}px solid ${ring};overflow:hidden;
+    display:grid;place-items:center;${shadow}">
+    <span style="font-family:BB,system-ui,sans-serif;font-size:${size * 0.8}px;
+      line-height:${size}px;color:${fg};text-decoration:underline;text-decoration-style:solid;
+      text-decoration-thickness:${size * 0.1}px;text-underline-offset:${size * 0.2}px">B</span>
+  </div>`;
+
+/** The name, in the face the front door sets it in. */
+const burbank = (t, { size, color, track = -0.03 }) =>
+  `<span style="font-family:BB,system-ui,sans-serif;font-size:${size}px;color:${color};
+    letter-spacing:${track}em;line-height:1.2;white-space:nowrap">${t}</span>`;
 
 const PLATES = [
   // ---- the logo, plainly, on each of the three grounds it is allowed ----
@@ -160,7 +208,103 @@ const PLATES = [
   { name: "16-knockout", bg: TILE, safe: true,
     html: `<div class="safebox"><span class="w" style="font-size:232px;
       background:${GRADIENT};-webkit-background-clip:text;background-clip:text;color:transparent">Bklsss</span></div>` },
+
+  /* ================================================================== *
+   * THE ◯B DISC — new on 2026-08-06, and the reason there are plates at
+   * all today. The sixteen above are spent (eight on 4 Aug, eight on 5
+   * Aug); these are not the reserve being stretched, they are a mark that
+   * shipped this morning.
+   *
+   * FOUR DIFFERENT IDEAS, not one idea on four grounds — the rule the 5
+   * Aug midday slot broke and the evening slot got right. Say what each
+   * is for: the mark as it ships, the mark taken apart, the letterform
+   * past the frame, the mark as a surface.
+   * ================================================================== */
+
+  /* 1 — as it ships. On the light ground, which is the one place the new
+     ring does anything: black on black is invisible on the front door and
+     an edge is the whole point everywhere else. */
+  { name: "20-disc-light", bg: GRADIENT, safe: true,
+    html: `<div class="safebox">${disc({
+      size: 620,
+      shadow: "box-shadow:0 3px 6px rgba(24,24,45,.07),0 22px 44px rgba(24,24,45,.12)",
+    })}</div>` },
+
+  /* 2 — the cut. The same letter twice: on the left as it is drawn, with
+     its underline running on past the foot; on the right after the circle
+     has taken the ends off it. The mark's one real idea, shown rather than
+     described. */
+  { name: "21-disc-cut", bg: CREAM, safe: true,
+    html: `<div class="safebox"><div style="display:flex;align-items:center;gap:60px">
+      <div style="width:330px;height:330px;display:grid;place-items:center">
+        <span style="font-family:BB,system-ui,sans-serif;font-size:264px;line-height:330px;
+          color:${INK};text-decoration:underline;text-decoration-thickness:33px;
+          text-underline-offset:66px">B</span>
+      </div>
+      ${disc({ size: 330, bg: INK, fg: CREAM, ring: INK })}
+    </div></div>` },
+
+  /* 3 — the letterform past the frame. Burbank's B and the bar under it,
+     enlarged until it is texture rather than a letter, so the safe box
+     does not apply. Not 11-macro-b in another face: that one has no bar,
+     and the bar is what makes this mark this mark. */
+  { name: "22-disc-macro", bg: TILE, safe: false,
+    html: `<div class="frame"><span style="font-family:BB,system-ui,sans-serif;font-size:2000px;
+      line-height:0.86;color:${PAPER};text-decoration:underline;text-decoration-thickness:200px;
+      text-underline-offset:400px;transform:translate(-1%,-6%)">B</span></div>` },
+
+  /* 4 — the mark as a surface. Rows of discs at low contrast, so it reads
+     as paper the brand is printed on rather than as a signature. */
+  { name: "23-disc-field", bg: GRADIENT, safe: false,
+    html: `<div class="frame"><div style="display:flex;flex-direction:column;gap:52px;
+      transform:rotate(-8deg) scale(1.35)">
+      ${Array.from({ length: 9 }, (_, r) =>
+        `<div style="display:flex;gap:52px;margin-left:${(r % 2) * 92 - 46}px;opacity:${r % 2 ? 0.14 : 0.2}">
+          ${Array.from({ length: 8 }, () => disc({ size: 138, bg: INK, fg: "#F2F3F6", ring: INK })).join("")}
+        </div>`).join("")}
+    </div></div>` },
+
+  /* ================================================================== *
+   * THE NAME, IN THE FRONT DOOR'S OWN FACE. "Booklesss" is set in Burbank
+   * on "/" and in Familjen everywhere else, which makes this a different
+   * object from plates 05–07 rather than the same one re-photographed.
+   * ================================================================== */
+
+  /* 1 — the lockup, exactly as the front door stacks it. */
+  { name: "24-lockup", bg: GRADIENT, safe: true,
+    html: `<div class="safebox"><div style="display:flex;flex-direction:column;align-items:center;gap:34px">
+      ${disc({ size: 400, shadow: "box-shadow:0 4px 8px rgba(24,24,45,.07),0 22px 42px rgba(24,24,45,.12)" })}
+      ${burbank("Booklesss", { size: 176, color: INK })}
+    </div></div>` },
+
+  /* 2 — the word wider than the frame. Burbank is a condensed face, so it
+     crops differently from 13-bleed: the verticals keep their rhythm and
+     the eye completes the word off the ends. */
+  { name: "25-name-bleed", bg: TILE, safe: false,
+    html: `<div class="frame">${burbank("Booklesss", { size: 440, color: PAPER })}</div>` },
+
+  /* 3 — the word as an aperture, the ground showing through it. */
+  { name: "26-name-knock", bg: TILE, safe: true,
+    html: `<div class="safebox"><span style="font-family:BB,system-ui,sans-serif;font-size:196px;
+      letter-spacing:-.03em;line-height:1.2;white-space:nowrap;background:${GRADIENT};
+      -webkit-background-clip:text;background-clip:text;color:transparent">Booklesss</span></div>` },
+
+  /* 4 — laid on its side. The same two parts as 24, in a row instead of a
+     stack — the arrangement a header needs and the front door does not. */
+  { name: "27-lockup-row", bg: CREAM, safe: true,
+    html: `<div class="safebox"><div style="display:flex;align-items:center;gap:44px">
+      ${disc({ size: 200, bg: INK, fg: CREAM, ring: INK })}
+      ${burbank("Booklesss", { size: 136, color: INK })}
+    </div></div>` },
 ];
+
+const CHOSEN = PICK.length
+  ? PICK.map((n) => {
+      const p = PLATES.find((x) => x.name === n);
+      if (!p) throw new Error(`no plate called "${n}" (${PLATES.map((x) => x.name).join(", ")})`);
+      return p;
+    })
+  : PLATES;
 
 const OUT = path.join(POSTS, dayFolder(DAY).rel, SLOT);
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -169,7 +313,7 @@ fs.mkdirSync(OUT, { recursive: true });
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 2 });
 
-for (const p of PLATES) {
+for (const [i, p] of CHOSEN.entries()) {
   await page.setContent(
     `<!doctype html><html><head><meta charset="utf-8"><style>${CSS}</style></head>` +
       `<body style="background:${p.bg}">${p.html}</body></html>`,
@@ -199,8 +343,14 @@ for (const p of PLATES) {
     }
   }
 
-  await page.screenshot({ path: path.join(OUT, `${p.name}.png`) });
+  /* A picked set is a POSTING ORDER, so it is numbered rather than named —
+     the folder is swiped in file order and 01–04 is what carries that. Without
+     PICK nothing changes: every plate keeps its own name, which is what the
+     reserve folder is for. */
+  const file = PICK.length ? `0${i + 1}-${p.name.replace(/^\d+-/, "")}.png` : `${p.name}.png`;
+  await page.screenshot({ path: path.join(OUT, file) });
+  console.log("  " + file);
 }
 
 await browser.close();
-console.log(`done -> ${OUT} (${PLATES.length} plates)`);
+console.log(`done -> ${OUT} (${CHOSEN.length} plates)`);

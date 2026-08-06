@@ -1198,6 +1198,130 @@ const CONFIGS = {
     ],
   }),
 
+  /* ================================================================== *
+   * 2026-08-06 — THE DAY THE FRONT DOOR SHIPPED.
+   *
+   * The first day in three with something a student can see. The other
+   * three commits are the onboarding return path and the sign-in/sign-up
+   * form, which rule 6 puts off limits however much work went into them.
+   * ================================================================== */
+
+  /* 1 — the front door, at three moments of its own entrance.  (morning)
+   *
+   * `plain()`, WHICH NOTHING HAS USED SINCE 1 AUG, and it is right here for
+   * the reason it exists: the front door is the only screen in the app
+   * shaped like the frame. One `min-h-dvh` screen with nothing under it,
+   * shot at 405x720, fills 1080x1920 exactly — no crop, no fade, no corner
+   * wordmark, because the page already carries the mark itself.
+   *
+   * THE STATES ARE THE PAGE'S OWN TIMING. Everything rises, de-blurs and
+   * lands inside a second; the button then arrives a full second after the
+   * rest. So: the page settled with nothing to tap, the button on its way
+   * up, and the door as a visitor leaves it. The design's argument is that
+   * it finishes settling BEFORE it asks for anything, and three frames are
+   * what it takes to show that.
+   *
+   * A DARK POST, WHICH IS A FIRST and is flagged in PLAN.md. The house rule
+   * is all light until the app has a real dark mode; the front door is
+   * genuinely black, so the only way to obey the rule would be not to post
+   * the thing the owner asked for. */
+  "t-door": () => ({
+    slot: "1-morning",
+    slides: [
+      plain({ img: img("door-1-settled.png") }),
+      plain({ img: img("door-2-offer.png") }),
+      plain({ img: img("door-3-full.png") }),
+    ],
+  }),
+
+  /* 2 — one stat tile, at three points in one student's history. (midday)
+   *
+   * THE TILE HAS BEEN POSTED TWICE AND THIS IS A DIFFERENT QUESTION, which
+   * is what rule 5 asks of a component going out again. 2 Aug showed one
+   * tile at four numbers, 4 Aug at four measures — both of them "what does
+   * this tile count?". Neither asked the thing a student actually wants to
+   * know, which is whether the number moves.
+   *
+   * So: the same tile, the same measure, one reader at a fortnight, a month
+   * and six weeks in. 45% on an erratic curve, then 63%, then 77% on a
+   * settled one — and the CURVE is what carries it, because the shape of a
+   * fortnight of turning up says more than the figure does.
+   *
+   * Not grouped: the card has a surface of its own, so all three measure the
+   * same alpha box and scale identically without help. */
+  "t-tile": () => ({
+    slot: "2-midday",
+    slides: [
+      object({ img: img("tile-1-early.png"), w: 752 }),
+      object({ img: img("tile-2-month.png"), w: 752 }),
+      object({ img: img("tile-3-settled.png"), w: 752 }),
+    ],
+  }),
+
+  /* NOT POSTED — the greeting, and the fact under it, at four states.
+   *
+   * The subject is real and the four states are genuinely different: the
+   * line under the greeting has exactly four forms in HomeView, each derived
+   * from what the reader did — nothing yet, a streak going with today still
+   * open, studied today, and lapsed. None of them is encouragement; they are
+   * four facts the app can prove.
+   *
+   * IT IS THE WRONG SHAPE, and that is rule 1 again. Grouped, the four share
+   * a 2898x591 box — 4.9:1, just inside the "past about 5:1 cannot carry a
+   * slide" line and far enough over it in practice: at the full 748 it draws
+   * 153px in an 1100px stage and reads as a caption floating in an empty
+   * gradient. Rendered and looked at before posting, which is the whole
+   * point of looking.
+   *
+   * Kept, like s-bar, because the shots are good and the subject is real. It
+   * wants a frame built for a wide, short thing — or the greeting shown on
+   * the page it opens, which is a different post. */
+  "t-hello": () => ({
+    slot: "2-midday",
+    slides: [
+      object({ img: img("hi-1-new.png"), w: 748, flat: true, group: "hello" }),
+      object({ img: img("hi-2-streak.png"), w: 748, flat: true, group: "hello" }),
+      object({ img: img("hi-3-today.png"), w: 748, flat: true, group: "hello" }),
+      object({ img: img("hi-4-lapsed.png"), w: 748, flat: true, group: "hello" }),
+    ],
+  }),
+
+  /* 3 — the course page's unit block, at three units.        (afternoon)
+   *
+   * NOT THE DRAWER TREE FROM 5 AUG. That is the navigation, in a 283px
+   * rail, and its argument was the ring on a step row. This is the
+   * syllabus: a unit's name, the COUNT beside it, and every step in it at
+   * full width. The count is what the tree never had, and it is the point —
+   * a course is units, and each one says how much of it is behind you
+   * without anybody adding anything up.
+   *
+   * NOT GROUPED, and deliberately. These three are 171, 723 and 355 css
+   * tall because the units are three, fifteen and seven steps long, and the
+   * size difference IS the information — the same reasoning that kept the
+   * comment box ungrouped. All three are 370 wide, so they already scale
+   * identically and the type is the same size on every slide.
+   *
+   * `w: 530` is set by the TALLEST, not by the widest. At 752 the fifteen-
+   * step unit would hit the height bound and drift up into the corner
+   * wordmark at y=316; 530 draws it 1036 tall, which is the height bound
+   * almost exactly and leaves the block clear of the corner mark, which sits
+   * left of it rather than over it. The
+   * other two then come out shorter, which is the honest picture of a
+   * three-step unit. */
+  "t-unit": () => ({
+    slot: "3-afternoon",
+    /* THE BIGGEST FIRST, not the course's own reading order. A carousel is
+       judged on slide 1 and the three-step unit is 220px of ink in an 1100px
+       stage — true to the component and a weak opening. Led with the fifteen-
+       step unit, the set reads: one you are in the middle of, one you have
+       finished, one still ahead. */
+    slides: [
+      object({ img: img("unit-2-part.png"), w: 530 }),
+      object({ img: img("unit-1-done.png"), w: 530 }),
+      object({ img: img("unit-3-open.png"), w: 530 }),
+    ],
+  }),
+
   brand: () => ({
     slot: "5-night",
     slides: [
