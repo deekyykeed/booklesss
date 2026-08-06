@@ -34,9 +34,25 @@ import { useEffect, useState } from "react";
 /** Where the count starts. The owner's figure. */
 const START = 67;
 
-/** The gap between arrivals, milliseconds. */
-const MIN_GAP = 7_000;
-const MAX_GAP = 18_000;
+/**
+ * The gap between arrivals, milliseconds.
+ *
+ * Was 7–18s. The owner called it "way too slow", then diagnosed it properly a
+ * moment later: "or is it that some are too far apart" — which is the right
+ * reading. The AVERAGE was fine at 12s; it was the TAIL that killed it. Draws
+ * near the top of that range put a 17-second dead stretch in the middle of a
+ * page a visitor reads in well under twenty, so the number simply never moved
+ * while anyone was looking at it — and one dead stretch is enough, because the
+ * visitor has already concluded it is a static number and stopped watching.
+ *
+ * So the fix is a narrower spread, not just a faster one. Capping the long end
+ * is what does the work here; lowering the short end only keeps it irregular.
+ * The original brief still holds at that short end ("not too short so there is
+ * room to see it grow") — 2.5s is comfortably longer than the 420ms rise, so no
+ * tick ever interrupts the one before it.
+ */
+const MIN_GAP = 2_500;
+const MAX_GAP = 7_000;
 
 export function MemberCount() {
   const [n, setN] = useState(START);

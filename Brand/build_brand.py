@@ -180,6 +180,113 @@ def icon_png(size: int) -> Image.Image:
     return img
 
 
+# ---------------------------------------------------------------------------
+# THE DISC — A CANDIDATE, NOT THE LOGO (owner, 2026-08-06)
+#
+# "I actually want to experiment using that logo on the page as my actual logo
+# exactly as it is, just add a 1px black border to the whole thing" … "can you
+# save it in the brand, id like to test it out and see if i can replace it as
+# the new one later — just the circular one."
+#
+# So it ships as `booklesss-disc-*`, beside the wordmark rather than instead of
+# it. THE STANDING RULE IN README.md STILL HOLDS until the owner says otherwise:
+# the logo is the word. Nothing in this repo points at these files yet; they
+# exist to be looked at.
+#
+# ⚠️ IT IS SET IN BURBANK BIG CONDENSED, WHICH IS NOT LICENSED HERE. Font Bureau
+# retail. The woff2 has been in platform/src/fonts since it drew the old logo,
+# with nothing recording a purchase — unlike Satoshi, whose licence is written
+# down. Rendering it costs nothing; adopting it as the mark means buying the
+# web licence, and foundries commonly treat logo use as a separate grant again.
+# Settle that before this replaces anything, because a mark is the one asset
+# that is expensive to change late.
+#
+# GEOMETRY IS MEASURED OFF THE LIVE PAGE, not re-derived. The hero draws a 50px
+# disc with the B at font-size 40 in a 50px line box, underlined 5px thick at a
+# 10px offset, clipped by the circle. Rendered, that puts the baseline at y=35
+# and the bar at y=45..50 with its ends cut by the curve. Those two numbers are
+# taken from a screenshot rather than from the font's ascender, because which
+# ascender a browser uses for a line box is not something to guess at.
+DISC_FONT = ROOT / "platform" / "src" / "fonts" / "burbank.woff2"
+DISC_SIZES = [192, 512, 1024]
+
+DISC_BOX = 50.0        # the drawn size on the page, and the SVG's viewBox
+DISC_TYPE = 40.0       # font-size
+DISC_BASELINE = 35.0   # measured
+DISC_RULE_OFFSET = 10.0
+DISC_RULE_THICK = 5.0
+
+
+def disc_parts() -> tuple[str, float, float, float]:
+    """The B as an SVG path in font units, its advance, upm, and the scale."""
+    font = TTFont(DISC_FONT)
+    glyphs = font.getGlyphSet()
+    upm = font["head"].unitsPerEm
+    glyph = glyphs[font.getBestCmap()[ord("B")]]
+    pen = SVGPathPen(glyphs)
+    glyph.draw(pen)
+    return pen.getCommands(), glyph.width, upm, DISC_TYPE / upm
+
+
+def disc_svg() -> str:
+    """The mark: white B on a black circle, its underline cut by the curve."""
+    path, advance, _upm, scale = disc_parts()
+    adv = advance * scale
+    x = (DISC_BOX - adv) / 2
+    r = DISC_BOX / 2
+
+    # The rule is clipped by the same circle that fills the disc — which is what
+    # turns a full-width underline into a bar with rounded-off ends. Without the
+    # clip it escapes the mark entirely.
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {DISC_BOX:.0f} {DISC_BOX:.0f}" '
+        f'width="{DISC_BOX:.0f}" height="{DISC_BOX:.0f}">'
+        f'<defs><clipPath id="d"><circle cx="{r}" cy="{r}" r="{r}"/></clipPath></defs>'
+        f'<g clip-path="url(#d)">'
+        f'<circle cx="{r}" cy="{r}" r="{r}" fill="#000000"/>'
+        # scale(1 -1) because font outlines run y-up and SVG runs y-down.
+        f'<path fill="{PAPER}" transform="translate({x:.3f} {DISC_BASELINE:.3f}) '
+        f'scale({scale:.6f} {-scale:.6f})" d="{path}"/>'
+        f'<rect x="{x:.3f}" y="{DISC_BASELINE + DISC_RULE_OFFSET:.3f}" '
+        f'width="{adv:.3f}" height="{DISC_RULE_THICK:.3f}" fill="{PAPER}"/>'
+        f"</g></svg>\n"
+    )
+
+
+def disc_png(size: int) -> Image.Image:
+    """One disc, transparent outside the circle.
+
+    Drawn at 4x and brought down — the circle's edge and the two cut ends of the
+    rule are the whole silhouette, and Pillow does not antialias a shape it
+    draws at final size. Down is fine; up is what this folder forbids."""
+    ss = 4
+    px = size * ss
+    k = px / DISC_BOX  # page units -> pixels
+
+    img = Image.new("RGBA", (px, px), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.ellipse((0, 0, px - 1, px - 1), fill=(0, 0, 0, 255))
+
+    _path, advance, upm, _scale = disc_parts()
+    pt = round(DISC_TYPE * k)
+    font = ImageFont.truetype(str(DISC_FONT), pt)
+    adv_px = advance * (pt / upm)
+    x = (px - adv_px) / 2
+
+    # Anchor "ls": left edge, baseline — the same origin the SVG's translate
+    # uses, so the two renders cannot drift apart.
+    d.text((x, DISC_BASELINE * k), "B", font=font, fill=(255, 255, 255, 255), anchor="ls")
+    top = (DISC_BASELINE + DISC_RULE_OFFSET) * k
+    d.rectangle((x, top, x + adv_px, top + DISC_RULE_THICK * k), fill=(255, 255, 255, 255))
+
+    # Everything outside the circle goes, which is what clips the rule's ends.
+    mask = Image.new("L", (px, px), 0)
+    ImageDraw.Draw(mask).ellipse((0, 0, px - 1, px - 1), fill=255)
+    img.putalpha(Image.composite(img.getchannel("A"), Image.new("L", (px, px), 0), mask))
+
+    return img.resize((size, size), Image.LANCZOS)
+
+
 def main() -> None:
     if not FONT.exists():
         raise SystemExit(f"font not found: {FONT}")
@@ -207,6 +314,19 @@ def main() -> None:
     p = HERE / "booklesss-google-consent-120.png"
     icon_png(CONSENT_SIZE).save(p)
     written.append(p.name)
+
+    # The candidate disc — see the block above it. Skipped rather than fatal if
+    # Burbank is absent, because it is not the brand and this script must keep
+    # building the things that are.
+    if DISC_FONT.exists():
+        (HERE / "booklesss-disc.svg").write_text(disc_svg(), encoding="utf-8")
+        written.append("booklesss-disc.svg")
+        for size in DISC_SIZES:
+            p = HERE / f"booklesss-disc-{size}.png"
+            disc_png(size).save(p)
+            written.append(p.name)
+    else:
+        print(f"  (disc skipped — no {DISC_FONT.name})")
 
     for name in written:
         p = HERE / name

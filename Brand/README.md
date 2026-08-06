@@ -49,6 +49,38 @@ enlarging either turned it to mush — there was no detail in the file to enlarg
   two drift, the browser tab and this folder carry visibly different logos.
 - **Aspect** 3.96 : 1 for the logo.
 
+## The disc — on trial, not adopted
+
+| File | Size | Use |
+|------|------|-----|
+| `booklesss-disc.svg` | vector | The candidate mark |
+| `booklesss-disc-192.png` | 192×192 | transparent outside the circle |
+| `booklesss-disc-512.png` | 512×512 | |
+| `booklesss-disc-1024.png` | 1024×1024 | |
+
+A white **B** on a black circle, underlined, with the rule cut off by the
+curve. It is the mark the landing page wears, saved here on the owner's ask
+(2026-08-06) so it can be looked at against everything else: *"id like to test
+it out and see if i can replace it as the new one later — just the circular
+one."*
+
+**Nothing points at these files.** The rule at the top of this README still
+stands — the logo is the word — and it stands until the owner replaces it, not
+until someone finds a disc in this folder and assumes it won.
+
+Geometry is measured off the live page rather than re-derived: a 50px circle,
+the B at font-size 40 on a baseline at y=35, a 5px rule 10px below it, all
+clipped by the circle. Those two numbers come from a screenshot, because which
+ascender a browser picks for a line box is not a thing to guess at.
+
+⚠️ **It is set in Burbank Big Condensed, which this repo has no licence for.**
+Font Bureau retail. The `.woff2` has been in `platform/src/fonts/` since it drew
+the old logo, with nothing recording a purchase — unlike Satoshi, whose licence
+is written down. Looking at it costs nothing. **Adopting it means buying the web
+licence, and foundries commonly treat logo use as a separate grant again.**
+Settle that before it replaces anything: a mark is the one asset that is
+expensive to change late.
+
 ## Why the icon has a tile and the logo does not
 
 `prefers-color-scheme` reports the OS theme, **not** the colour of the surface
