@@ -89,13 +89,17 @@ const burbank = localFont({
   display: "swap",
 });
 
-// One weight each: the design uses Rubik at 400 for the trust line and
-// Bricolage at 800 for the button, and nothing else. Both are variable
-// families upstream; naming the weight takes the static instance instead,
-// which is the smaller file when only one weight is ever drawn.
+/* Rubik at 400 and 500, Bricolage at 800. Both are variable families upstream;
+   naming the weights takes static instances instead, which is smaller than
+   shipping an axis for two stops.
+   The 500 is the hero subtitle (owner, 2026-08-06: "increase the opacity and
+   weight of the subtitle text"). It is a real cut, not a synthesised bold —
+   which matters at 16px over a photograph, where faux-bold thickens strokes
+   unevenly and reads as blur rather than weight. 400 stays for the trust
+   line. */
 const rubik = Rubik({
   subsets: ["latin"],
-  weight: "400",
+  weight: ["400", "500"],
   variable: "--font-rubik",
   display: "swap",
 });

@@ -351,6 +351,7 @@
   :root[data-motion="reduced"] .hero-in,
   :root[data-motion="reduced"] .bar-spinner,
   :root[data-motion="reduced"] .faces-track,
+  :root[data-motion="reduced"] .face-pop,
   :root[data-motion="reduced"] .lesson-fade,
   :root[data-motion="reduced"] .onboard-step,
   :root[data-motion="reduced"] .account-skeleton,
@@ -1046,31 +1047,58 @@
    * moves the track one face-width and then holds for roughly three times as
    * long, so there is time to look at who is there before it moves again.
    *
-   * THE TRACK IS THE FACES TWICE. It runs from -125px (one full set left) to 0,
+   * THE TRACK IS THE FACES TWICE. It runs from -250px (one full set left) to 0,
    * so faces enter on the left and leave on the right — and because the second
    * set is the same five images in the same order, the frame at 100% is
    * pixel-identical to the frame at 0% and the loop has no seam to hide.
    *
-   * 25px a step: 31px discs overlapping by 6.
+   * 50px a step: 40px discs with a 10px gap. The unit is carried as a right
+   * MARGIN on every disc including the last, not as flex `gap` — gap puts no
+   * space after the final item, so the repeating unit would be 50px nine times
+   * and 40px once, and a translation of exactly one set would land half a gap
+   * out. A margin makes every unit identical and the wrap exact.
+   *
+   * NO MASK. It faded the discs at both ends, and the owner's call
+   * (2026-08-06) is "don't fade the student profiles" — so a face is clipped by
+   * the window edge instead, which is what an arrival looks like.
    * ---------------------------------------------------------------- */
   @keyframes facesCycle {
-    0%, 14% { transform: translate3d(-125px, 0, 0); }
-    20%, 34% { transform: translate3d(-100px, 0, 0); }
-    40%, 54% { transform: translate3d(-75px, 0, 0); }
-    60%, 74% { transform: translate3d(-50px, 0, 0); }
-    80%, 94% { transform: translate3d(-25px, 0, 0); }
+    0%, 14% { transform: translate3d(-250px, 0, 0); }
+    20%, 34% { transform: translate3d(-200px, 0, 0); }
+    40%, 54% { transform: translate3d(-150px, 0, 0); }
+    60%, 74% { transform: translate3d(-100px, 0, 0); }
+    80%, 94% { transform: translate3d(-50px, 0, 0); }
     100% { transform: translate3d(0, 0, 0); }
   }
   .faces-track {
     animation: facesCycle 14s cubic-bezier(0.22, 1, 0.36, 1) infinite;
   }
-  /* Soft ends, so a face is not sliced off by a hard edge on the way in or out.
-     The window is the five faces exactly; the mask only eats the last few
-     pixels, so the row still reads as five crisp discs rather than as
-     something behind frosted glass. */
-  .faces-window {
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 11%, #000 89%, transparent);
-    mask-image: linear-gradient(to right, transparent, #000 11%, #000 89%, transparent);
+
+  /* The pop (owner: "give them a quick grow and shrink effect").
+   *
+   * Peaks sit inside the five windows where the track is MOVING — 14–20%,
+   * 34–40% and so on — so the row swells exactly as it steps and is flat again
+   * while it holds. Off by a beat and it reads as a nervous tic rather than as
+   * the movement having weight.
+   *
+   * On the discs, not the track: the track already owns `transform` for the
+   * translation, and a second animation on the same property on the same
+   * element replaces it rather than combining. */
+  @keyframes facePop {
+    0%, 14% { transform: scale(1); }
+    17% { transform: scale(1.16); }
+    20%, 34% { transform: scale(1); }
+    37% { transform: scale(1.16); }
+    40%, 54% { transform: scale(1); }
+    57% { transform: scale(1.16); }
+    60%, 74% { transform: scale(1); }
+    77% { transform: scale(1.16); }
+    80%, 94% { transform: scale(1); }
+    97% { transform: scale(1.16); }
+    100% { transform: scale(1); }
+  }
+  .face-pop {
+    animation: facePop 14s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1083,7 +1111,8 @@
       --bar-fill: 100%;
     }
     .bar-spinner,
-    .faces-track {
+    .faces-track,
+    .face-pop {
       animation: none;
     }
   }

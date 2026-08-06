@@ -69,16 +69,16 @@ const WORD_STEP = 0.05;
 
 export default function LandingPage() {
   return (
-    /* THE MARK RIDES THE TOP AND THE PITCH SITS LOW (owner, 2026-08-06: "drop
-       the button text and all to the screen leaving some room down the centre
-       to see into the image", "then move Booklesss and the actual logo to the
-       top"). Framer's padding was 80 over 140, which parked both blocks in the
-       middle third and left the photograph peering out around them. Now the
-       logo is up against the top edge and the pitch is down near the bottom,
-       and what opens up between them is the face — which is the only reason
-       there is a photograph at all. The safe-area insets are added rather than
-       assumed: on a notched phone in a PWA this is the top of the screen. */
-    <main className="relative flex min-h-dvh w-full flex-col items-center justify-end overflow-clip bg-black px-4 pt-[calc(1.75rem+env(safe-area-inset-top))] pb-[calc(3.5rem+env(safe-area-inset-bottom))]">
+    /* THE MARK RIDES THE TOP; THE TEXT IS BACK WHERE IT WAS.
+       The logo moved up on the owner's call (2026-08-06: "move Booklesss and
+       the actual logo to the top") and stays there. The pitch went down with it
+       in the same pass and came straight back — "no, revert the positioning of
+       the text": dropping it to 56px put the headline, the subtitle and the
+       button in a block at the very bottom of the frame, which opens the middle
+       but crowds the foot. Framer's 140px is the value that holds; only the top
+       changed. The safe-area insets are added rather than assumed: on a notched
+       phone in a PWA this is the top and bottom of the screen. */
+    <main className="relative flex min-h-dvh w-full flex-col items-center justify-end overflow-clip bg-black px-4 pt-[calc(1.75rem+env(safe-area-inset-top))] pb-[calc(140px+env(safe-area-inset-bottom))]">
       <ToApp />
 
       {/* ---- the backdrop ----
@@ -172,22 +172,31 @@ export default function LandingPage() {
               the point — a face that never stops moving is a ticker, and a
               ticker reads as decoration rather than as people showing up.
               Timing and the seamless wrap are in globals.css → .faces-track. */}
-          <div className="flex flex-col items-center gap-0.5">
-            <div
-              className="hero-in faces-window w-[131px] overflow-hidden"
-              style={{ animationDelay: "0.2s" }}
-            >
+          <div className="flex flex-col items-center gap-2">
+            {/* 240px shows five discs and the four gaps between them, ending
+                flush with the fifth — the sixth begins at 250 and is clipped by
+                the window, which is where an arriving face comes from. */}
+            <div className="hero-in w-[240px] overflow-hidden" style={{ animationDelay: "0.2s" }}>
               <div className="faces-track flex w-max">
                 {FACE_LOOP.map((n, i) => (
+                  /* NO WHITE RING, AND REAL GAPS (owner, 2026-08-06: "remove
+                     the white border, what i'd like is to see through the gaps
+                     between them, and increase the gaps too"). The discs used
+                     to overlap by 6px with a 1px white border drawing the
+                     separation — a stack, in other words, which is the
+                     convention for "and 400 more" rather than for five people.
+                     Held apart with the photograph showing through, they read
+                     as five separate students, and the gap does the job the
+                     border was doing without putting a colour on the picture.
+                     mr-[10px] on every disc INCLUDING the last: see the note on
+                     .faces-track for why this cannot be a flex gap. */
                   <Image
                     key={i}
                     src={`/landing/hero/face-${n}.jpg`}
                     alt=""
-                    width={31}
-                    height={31}
-                    className={`size-[31px] shrink-0 rounded-full border border-white object-cover ${
-                      i === 0 ? "" : "-ml-1.5"
-                    }`}
+                    width={40}
+                    height={40}
+                    className="face-pop mr-[10px] size-10 shrink-0 rounded-full object-cover"
                   />
                 ))}
               </div>
@@ -235,18 +244,23 @@ export default function LandingPage() {
             </h1>
             {/* The only sentence on the page that says what this is, which is
                 also the whole of what a crawler or a reviewer gets. */}
-            {/* RUBIK, AND DIMMED (owner, 2026-08-06: "dim the subtitle text",
-                "still use rubik for the subtitle text"). It was Aptos — the
-                reading face, which belongs inside a step and nowhere near a
-                hero. Rubik puts it in the same voice as "Trusted by Students"
-                just above it, so the two quiet lines read as one register
-                under the headline.
-                white/70 rather than a grey: on a photograph a grey goes muddy
-                where the picture is light, while a transparent white stays the
-                same relationship to whatever is behind it. The shade underneath
-                is what keeps it legible at 70%. */}
+            {/* RUBIK (owner, 2026-08-06: "still use rubik for the subtitle
+                text"). It was Aptos — the reading face, which belongs inside a
+                step and nowhere near a hero. Rubik puts it in the same voice as
+                "Trusted by Students" just above it, so the two quiet lines read
+                as one register under the headline.
+
+                DIMMED, THEN BROUGHT BACK UP. "Dim the subtitle text" took it to
+                white/70 regular; "increase the opacity and weight" is the
+                correction, and both are right — at 70% regular over a
+                photograph the line was quiet to the point of being work to
+                read. 90% at a real 500 keeps it clearly subordinate to the
+                headline while staying a sentence rather than a texture.
+                A transparent white rather than a grey: on a photograph a grey
+                goes muddy where the picture is light, while white at an alpha
+                holds the same relationship to whatever is behind it. */}
             <p
-              className="hero-in hero-shade max-w-[90%] text-center font-hero-meta text-[16px] leading-[1.45] text-white/70"
+              className="hero-in hero-shade max-w-[90%] text-center font-hero-meta text-[16px] leading-[1.45] font-medium text-white/90"
               style={{ "--rise": "20px", "--rise-blur": "10px", "--rise-dur": "0.7s", animationDelay: "0.25s" } as React.CSSProperties}
             >
               Track your academic progress, analyze your performance, and get real-time coaching, all
