@@ -72,18 +72,34 @@ and `currentTime` is settable, so the frame is the real thing stopped at 3000ms
 with every entrance finished and the faces mid-cycle. Nothing is drawn and
 nothing is retouched.
 
-> ⚠️ **RE-SHOT TWICE, AND THE FINAL FRAME IS `226b582`.** A parallel session
-> shipped three more landing-page commits while the day was being built (owner:
-> *"the website design is currently a bit different"*). What moved, in order:
-> the faces went to 40px held apart with the photograph showing through, instead
-> of 31px discs overlapping inside white rings, and the pitch went back to
-> Framer's 140px (`7d3dbf5`); then the headline changed from *"Learn 2X faster
-> with Booklesss"* to **"Study faster. Understand more."** (`226b582`). Both
-> earlier shots were pictures of a design that had already been replaced.
-> **The door is a moving target today.** If it moves again before 07:00:
-> `git -C C:/bkls-shot checkout --detach <sha>`, clear `.next` from PowerShell,
-> `next dev -p 3101`, then `ONLY=door node _scripts/cap-0806.mjs` and
-> `POST=t-door node _scripts/prog-post.mjs`. That is what `ONLY=` is for.
+> ⚠️ **RE-SHOT FOUR TIMES. THE POSTED FRAME IS `1924764`.** The front door was
+> being worked on in a parallel session for the whole of the day this post was
+> built, and every earlier shot was a picture of a design that had already been
+> replaced. In order:
+>
+> - `877e851` — the first shots. 31px faces overlapping inside white rings.
+> - `7d3dbf5` — faces to 40px, held apart with the photograph showing through;
+>   the pitch back to Framer's 140px.
+> - `226b582` — headline to *"Study faster. Understand more."*
+> - `ad6e3c9` — **and back again** to *"Learn 2X faster with Booklesss"*, with
+>   the subtitle rewritten under it.
+> - `1924764` — the faces overlap once more, but as a gesture rather than a
+>   layout: each one grows in on the left, the row scoots, and the one on the
+>   right shrinks out. **This is what is posted.**
+>
+> **Do not trust an old frame.** If it moves again: stop the dev server, then
+> `git -C C:/bkls-shot checkout --detach <sha>`, clear `.next` from PowerShell
+> (not while the server runs), `next dev -p 3101`, then
+> `ONLY=door node _scripts/cap-0806.mjs` and
+> `DAY=2026-08-06 POST=t-door node _scripts/prog-post.mjs`. **`DAY=` is not
+> optional any more** — the date has rolled past this post's folder, and without
+> it the render writes into a 7 Aug folder instead.
+
+> ⚠️ **ONE LANDING CHANGE IS NOT IN THIS FRAME.** A `MemberCount` line under the
+> button is written but uncommitted (`platform/src/components/landing/MemberCount.tsx`,
+> untracked, plus its import in `page.tsx`), so it is not at any commit the shot
+> worktree can be pinned to. If that is the change that mattered, commit it and
+> re-run the two commands above.
 
 > ⚠️ **THIS IS A DARK POST, AND IT IS THE FIRST.** The house rule is all light
 > until the app ships a real dark mode (RULES.md, House style). The front door
