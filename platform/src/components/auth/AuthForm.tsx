@@ -268,15 +268,17 @@ export function AuthForm({
       )}
 
       {/* THE COURSE CARD'S BUTTON, EXACTLY (owner, 2026-08-06: "pull in the
-          exact button i use on the course cards here no difference").
-          `.action-bar` in its ink variant — the same component the card's
-          Resume wears, which is what ActionBar was extracted for in the first
-          place: "the exact button in the course card should be its own
-          component and ill use it throughout all the buttons within the app."
-          No `progress`, because there is nothing to be part-way through — an
-          undefined progress draws no fill at all, which is the difference
-          between a bar and a button. */}
-      <ActionBar type="submit" variant="primary" disabled={busy} className="mt-1">
+          exact button i use on the course cards here no difference", and then
+          "when the form is unfilled the button is exactly what you'd see in the
+          course card").
+          So it is the DEFAULT variant, not the ink one — the paper surface, the
+          muted arrow and the card's own shadow. It briefly shipped as
+          variant="primary", which made it a black pill on a page whose whole
+          point was that it looks like the app.
+          Pressing it draws the ink instead: `busy` sweeps the fill across and
+          inverts the label under it. Nothing swaps, so the thing a student
+          pressed is the thing that answers. */}
+      <ActionBar type="submit" busy={busy} className="mt-1">
         {busy ? (signUp ? "Making your account…" : "Signing in…") : signUp ? "Create account" : "Sign in"}
       </ActionBar>
 

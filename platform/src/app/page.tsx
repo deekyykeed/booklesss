@@ -52,6 +52,12 @@ export const metadata: Metadata = {
  * actually assigned — and swapping to it is this array plus a rounded <img>. */
 const FACES = [1, 2, 3, 4, 5] as const;
 
+/** The row is the five faces TWICE. The track slides one full set and starts
+ *  over, and because the second set is the same images in the same order the
+ *  last frame and the first are identical — so the loop has no seam. See
+ *  `.faces-track` in globals.css for the stepped timing. */
+const FACE_LOOP = [...FACES, ...FACES];
+
 /** The headline, one span per word, because the design plays it in a word at a
  *  time. Splitting in the markup rather than at runtime is what keeps the page
  *  a server component — and it keeps the whole line in the HTML, so it is
@@ -63,7 +69,16 @@ const WORD_STEP = 0.05;
 
 export default function LandingPage() {
   return (
-    <main className="relative flex min-h-dvh w-full flex-col items-center justify-end overflow-clip bg-black px-4 pt-20 pb-[140px]">
+    /* THE MARK RIDES THE TOP AND THE PITCH SITS LOW (owner, 2026-08-06: "drop
+       the button text and all to the screen leaving some room down the centre
+       to see into the image", "then move Booklesss and the actual logo to the
+       top"). Framer's padding was 80 over 140, which parked both blocks in the
+       middle third and left the photograph peering out around them. Now the
+       logo is up against the top edge and the pitch is down near the bottom,
+       and what opens up between them is the face — which is the only reason
+       there is a photograph at all. The safe-area insets are added rather than
+       assumed: on a notched phone in a PWA this is the top of the screen. */
+    <main className="relative flex min-h-dvh w-full flex-col items-center justify-end overflow-clip bg-black px-4 pt-[calc(1.75rem+env(safe-area-inset-top))] pb-[calc(3.5rem+env(safe-area-inset-bottom))]">
       <ToApp />
 
       {/* ---- the backdrop ----
@@ -121,7 +136,15 @@ export default function LandingPage() {
               50, vs Framer's 8px from 56 on a box starting 3px higher — the
               same 85px) and nothing overflows, so no alignment rule applies.
               Measured against a screenshot of the Framer page, not derived. */}
-          <div className="hero-in grid size-[50px] place-items-center overflow-clip rounded-full bg-black shadow-[var(--shadow-hero-disc)] [--rise-blur:0px] [--rise-dur:0.4s] [--rise:0px]">
+          {/* THE 1px BLACK RING is the owner's (2026-08-06), and it does nothing
+              here on purpose: black on black against a dark photograph. It is
+              for everywhere else this mark is about to go — "i actually want to
+              experiment using that logo on the page as my actual logo exactly
+              as it is, just add a 1px black border to the whole thing". On a
+              white surface the ring is what gives the disc an edge instead of
+              letting it read as a hole. Defining it here, where the mark is
+              drawn, means the version that travels already has it. */}
+          <div className="hero-in grid size-[50px] place-items-center overflow-clip rounded-full border border-black bg-black shadow-[var(--shadow-hero-disc)] [--rise-blur:0px] [--rise-dur:0.4s] [--rise:0px]">
             <span className="font-mark text-[40px] leading-[50px] text-white underline decoration-solid decoration-[5px] underline-offset-[10px]">
               B
             </span>
@@ -130,7 +153,7 @@ export default function LandingPage() {
               text-decoration on this node that its own render ignores — checked
               against a screenshot of the page before dropping it. */}
           <p
-            className="hero-in font-mark text-[22px] leading-[1.2em] tracking-[-0.03em] text-white"
+            className="hero-in hero-shade font-mark text-[22px] leading-[1.2em] tracking-[-0.03em] text-white"
             style={{ animationDelay: "0.05s" }}
           >
             Booklesss
@@ -139,24 +162,38 @@ export default function LandingPage() {
 
         {/* ---- the pitch ---- */}
         <div className="flex w-full flex-col items-center gap-8">
-          {/* Five faces, 31px each, overlapping by 6px. */}
+          {/* Five faces, 31px each, overlapping by 6px — and they keep arriving
+              (owner, 2026-08-06: "id like the student profile pics to cycle
+              round. cycle then stay then cycle. as more students come from the
+              left more disappear on the right").
+
+              The window is exactly five discs wide; the track inside it is ten,
+              stepping one disc at a time and holding between steps. The hold is
+              the point — a face that never stops moving is a ticker, and a
+              ticker reads as decoration rather than as people showing up.
+              Timing and the seamless wrap are in globals.css → .faces-track. */}
           <div className="flex flex-col items-center gap-0.5">
-            <div className="hero-in flex" style={{ animationDelay: "0.2s" }}>
-              {FACES.map((n, i) => (
-                <Image
-                  key={n}
-                  src={`/landing/hero/face-${n}.jpg`}
-                  alt=""
-                  width={31}
-                  height={31}
-                  className={`size-[31px] rounded-full border border-white object-cover ${
-                    i === 0 ? "" : "-ml-1.5"
-                  }`}
-                />
-              ))}
+            <div
+              className="hero-in faces-window w-[131px] overflow-hidden"
+              style={{ animationDelay: "0.2s" }}
+            >
+              <div className="faces-track flex w-max">
+                {FACE_LOOP.map((n, i) => (
+                  <Image
+                    key={i}
+                    src={`/landing/hero/face-${n}.jpg`}
+                    alt=""
+                    width={31}
+                    height={31}
+                    className={`size-[31px] shrink-0 rounded-full border border-white object-cover ${
+                      i === 0 ? "" : "-ml-1.5"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
             <p
-              className="hero-in font-hero-meta text-[14px] leading-[1.3em] text-[#dedede]"
+              className="hero-in hero-shade font-hero-meta text-[14px] leading-[1.3em] text-[#dedede]"
               style={{ "--rise": "20px", "--rise-blur": "10px", "--rise-dur": "0.7s", animationDelay: "0.25s" } as React.CSSProperties}
             >
               Trusted by Students
@@ -177,7 +214,14 @@ export default function LandingPage() {
                 middle of the photo, exclusion turns white into muddy blue-grey
                 and the headline gets noticeably harder to read. The rendered
                 design is the design. */}
-            <h1 className="text-center font-display text-[42px] leading-[48px] font-semibold tracking-[-0.03em] text-white sm:text-[48px] sm:leading-[54px]">
+            {/* BRICOLAGE, THE BUTTON'S FACE (owner, 2026-08-06: "use bricolage
+                for the hero text"). It was Familjen Grotesk, which is the app's
+                heading face and correct inside the app — on the front door it
+                made the headline and the button look like they came from two
+                different pages. One weight is registered, 800, so this is the
+                same cut the button wears rather than a lighter instance of it;
+                at 42px that is heavy on purpose. */}
+            <h1 className="hero-shade text-center font-hero text-[42px] leading-[46px] font-extrabold tracking-[-0.03em] text-white sm:text-[48px] sm:leading-[52px]">
               {HEADLINE.map((word, i) => (
                 <span
                   key={word}
@@ -191,8 +235,18 @@ export default function LandingPage() {
             </h1>
             {/* The only sentence on the page that says what this is, which is
                 also the whole of what a crawler or a reviewer gets. */}
+            {/* RUBIK, AND DIMMED (owner, 2026-08-06: "dim the subtitle text",
+                "still use rubik for the subtitle text"). It was Aptos — the
+                reading face, which belongs inside a step and nowhere near a
+                hero. Rubik puts it in the same voice as "Trusted by Students"
+                just above it, so the two quiet lines read as one register
+                under the headline.
+                white/70 rather than a grey: on a photograph a grey goes muddy
+                where the picture is light, while a transparent white stays the
+                same relationship to whatever is behind it. The shade underneath
+                is what keeps it legible at 70%. */}
             <p
-              className="hero-in max-w-[90%] text-center font-content text-[16px] leading-[1.3em] font-semibold text-white"
+              className="hero-in hero-shade max-w-[90%] text-center font-hero-meta text-[16px] leading-[1.45] text-white/70"
               style={{ "--rise": "20px", "--rise-blur": "10px", "--rise-dur": "0.7s", animationDelay: "0.25s" } as React.CSSProperties}
             >
               Track your academic progress, analyze your performance, and get real-time coaching, all
@@ -227,7 +281,7 @@ export default function LandingPage() {
               className="rounded-[33px] bg-[linear-gradient(120deg,rgb(255,255,255)_0%,rgba(255,255,255,0.75)_100%)] p-2 transition-transform duration-200 active:scale-[0.97]"
             >
               <span className="flex items-center justify-center rounded-full bg-black px-6 py-3 pr-5 shadow-[var(--shadow-hero-cta)]">
-                <span className="font-hero-cta text-[16px] leading-[1.7em] font-extrabold text-white select-none">
+                <span className="font-hero text-[16px] leading-[1.7em] font-extrabold text-white select-none">
                   Get started now
                 </span>
               </span>

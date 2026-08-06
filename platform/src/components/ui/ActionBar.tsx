@@ -60,6 +60,21 @@ type Common = {
    * into the several hand-rolled buttons it was extracted to replace.
    */
   variant?: "default" | "primary";
+  /**
+   * Working on it — ink sweeps across the bar and the label inverts as the edge
+   * passes under it, with a spinner where the arrow was.
+   *
+   * NOT A THIRD VARIANT. The bar it fills is still the default one, which is
+   * the owner's point (2026-08-06): the control a student presses and the
+   * control telling them it heard are the same object, so pressing it must not
+   * swap it for a different-looking button. See `.action-bar[data-busy]` in
+   * globals.css for how the sweep and the inversion stay on one clock.
+   *
+   * It reports nothing. A real percentage would need the request to have
+   * progress to report, and an HTTP round trip does not — `progress` is the
+   * prop for the case where there IS something to measure.
+   */
+  busy?: boolean;
 };
 
 /**
@@ -105,18 +120,60 @@ function Arrow() {
   );
 }
 
-const SHELL =
-  "action-bar squircle relative z-10 flex items-center justify-between gap-3 overflow-hidden px-2.5 py-1.5";
+/** The spinner that replaces the arrow while the bar is working. Same 15px box
+ *  as the arrow, so nothing on the row shifts when one becomes the other. */
+function Spinner() {
+  return (
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+      className="bar-spinner relative shrink-0 text-muted"
+    >
+      {/* The track, then the arc. Drawing both means the spin reads as a ring
+          turning rather than as a lone stroke flickering. */}
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2.2" opacity="0.25" />
+      <path
+        d="M21 12a9 9 0 0 0-9-9"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+/* The padding and the row live on an inner element rather than on the shell,
+   because the busy state stacks a SECOND copy of that row on top and the two
+   have to be laid out identically to the pixel. The rendered box is unchanged
+   — the padding simply moved one level in. */
+const SHELL = "action-bar squircle relative z-10 block overflow-hidden";
+const ROW = "flex items-center justify-between gap-3 px-2.5 py-1.5";
 
 export function ActionBar(props: Props) {
-  const { prefix, children, progress, label, disabled, className, variant = "default" } = props;
+  const { prefix, children, progress, label, disabled, className, variant = "default", busy } = props;
+
+  /* The row's contents, rendered once normally and — while busy — once more in
+     white, clipped to the ink. Built here so the two copies cannot drift. */
+  const row = (
+    <>
+      <span className="min-w-0 truncate text-[13px] leading-5">
+        {prefix && <span className="opacity-55">{prefix}</span>}
+        {children}
+      </span>
+      {busy ? <Spinner /> : <Arrow />}
+    </>
+  );
 
   const inner = (
     <>
-      {/* The fill, behind everything and inert. Its width is the only thing
-          that animates — a transition on the bar itself would drag the label
-          with it. */}
-      {progress !== undefined && (
+      {/* The measured fill, behind everything and inert. Its width is the only
+          thing that animates — a transition on the bar itself would drag the
+          label with it. Suppressed while busy: two fills on one bar would be
+          two different claims about the same edge. */}
+      {progress !== undefined && !busy && (
         <span
           aria-hidden="true"
           className="pointer-events-none absolute inset-y-0 left-0"
@@ -127,17 +184,35 @@ export function ActionBar(props: Props) {
           }}
         />
       )}
-      <span className="relative min-w-0 truncate text-[13px] leading-5">
-        {prefix && <span className="opacity-55">{prefix}</span>}
-        {children}
-      </span>
-      <Arrow />
+
+      {/* The ink sweeping across. Width comes off --bar-fill, which the bar
+          animates; see globals.css. */}
+      {busy && (
+        <span
+          aria-hidden="true"
+          className="bar-fill pointer-events-none absolute inset-y-0 left-0 bg-ink"
+        />
+      )}
+
+      <span className={"relative " + ROW}>{row}</span>
+
+      {/* The same row again, white, showing only where the ink has reached.
+          `aria-hidden` because it is the identical text — a screen reader
+          announcing the label twice is the cost of doing this visually. */}
+      {busy && (
+        <span
+          aria-hidden="true"
+          className={"bar-invert pointer-events-none absolute inset-0 text-white " + ROW}
+        >
+          {row}
+        </span>
+      )}
     </>
   );
 
   const cls =
     SHELL +
-    (disabled ? " pointer-events-none opacity-60" : "") +
+    (disabled && !busy ? " pointer-events-none opacity-60" : "") +
     (className ? ` ${className}` : "");
 
   if (props.href !== undefined) {

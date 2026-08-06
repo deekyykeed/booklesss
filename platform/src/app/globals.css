@@ -25,7 +25,10 @@
      one page. */
   --font-mark: var(--font-burbank), var(--font-familjen), ui-sans-serif, sans-serif;
   --font-hero-meta: var(--font-rubik), var(--font-inter), system-ui, sans-serif;
-  --font-hero-cta: var(--font-bricolage), var(--font-familjen), ui-sans-serif, sans-serif;
+  /* Bricolage. Was `--font-hero-cta`, named for the only thing wearing it; the
+     owner moved the headline onto it too (2026-08-06: "use bricolage for the
+     hero text"), so the name had to stop describing one caller. */
+  --font-hero: var(--font-bricolage), var(--font-familjen), ui-sans-serif, sans-serif;
 
   --color-canvas: #f5f5f5;          /* app background — hsl(0,0%,96%) */
   --color-card: #fcfcfb;            /* stat cards                */
@@ -96,6 +99,25 @@
   --sidebar-docs: 265px;
   --rightbar-w: 300px;
   --sidebar-dash: 208px;
+}
+
+/* How far the action bar has filled, 0% to 100%.
+ *
+ * REGISTERED SO IT CAN BE ANIMATED. An unregistered custom property is just a
+ * string to the engine and jumps between values rather than tweening; declaring
+ * a syntax makes it a real animatable percentage. Same reason as the blob
+ * colours below.
+ *
+ * INHERITED, WHICH IS THE WHOLE TRICK. The animation runs once, on the bar, and
+ * both children that need it read the same live value off the cascade: the
+ * black fill sets its width from it, and the white copy of the label clips
+ * itself to it. Two elements, one clock — so the text cannot invert ahead of or
+ * behind the edge sweeping under it. Animating them separately is how that
+ * seam ends up a frame out of step. */
+@property --bar-fill {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 0%;
 }
 
 /* Voice-glow blob colours. Registered as real <color>s (not the raw "r g b"
@@ -327,6 +349,8 @@
      every target here, so placement in the file doesn't matter. */
   :root[data-motion="reduced"] .bg-waves span,
   :root[data-motion="reduced"] .hero-in,
+  :root[data-motion="reduced"] .bar-spinner,
+  :root[data-motion="reduced"] .faces-track,
   :root[data-motion="reduced"] .lesson-fade,
   :root[data-motion="reduced"] .onboard-step,
   :root[data-motion="reduced"] .account-skeleton,
@@ -939,6 +963,118 @@
   .action-bar[data-variant="primary"] .card-arrow {
     color: currentColor;
     opacity: 0.75;
+  }
+
+  /* ---------------------------------------------------------------- *
+   * The bar filling itself in.
+   *
+   * Owner, 2026-08-06: "when the form is unfilled the button is exactly what
+   * you'd see in the course card … then when im done filling the form and tap
+   * on it it then fills up black from left to right while the words basically
+   * change color as the bar passes under them."
+   *
+   * So the button never changes variant. It is the course card's bar, and
+   * submitting draws ink across it — which means the same control says "go
+   * here" and "working on it" without becoming a different button in between.
+   *
+   * THE TEXT INVERTS BY CLIPPING A SECOND COPY, not by recolouring the first.
+   * The bar renders its label twice, stacked exactly: the normal one, and a
+   * white one clipped to `--bar-fill` so only the part standing on ink is
+   * visible. Every glyph therefore flips at the precise column the edge
+   * crosses, including mid-letter, which recolouring whole words cannot do.
+   *
+   * `mix-blend-mode: difference` on one layer would be fewer elements and was
+   * the first attempt. It gets white-on-ink and ink-on-white right and
+   * everything else wrong: the muted arrow becomes a lighter grey rather than
+   * itself, because difference is arithmetic on the backdrop, not a swap.
+   * ---------------------------------------------------------------- */
+  @keyframes barFill {
+    from {
+      --bar-fill: 0%;
+    }
+    to {
+      --bar-fill: 100%;
+    }
+  }
+  /* 1.6s and easing OUT, so it moves decisively and then crawls the last few
+     per cent. A sign-up usually answers inside a second, and a bar that eases
+     out is still visibly moving when it does — a linear one that had already
+     stopped would read as finished-and-stuck. Nothing here claims to measure
+     the request; it is a spinner with a direction. `both` holds it at 100%
+     rather than snapping back to empty while the page navigates. */
+  .action-bar[data-busy="true"] {
+    animation: barFill 1.6s cubic-bezier(0.33, 1, 0.68, 1) both;
+    pointer-events: none;
+  }
+  .bar-fill {
+    width: var(--bar-fill);
+  }
+  /* Show only what the fill has reached. `inset()` from the right by whatever
+     is left, so the visible band grows with the ink underneath it. */
+  .bar-invert {
+    clip-path: inset(0 calc(100% - var(--bar-fill)) 0 0);
+  }
+  @keyframes barSpin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .bar-spinner {
+    animation: barSpin 700ms linear infinite;
+  }
+
+  /* ---------------------------------------------------------------- *
+   * The trusted-by row, cycling.
+   *
+   * Owner, 2026-08-06: "id like the student profile picks to cycle round.
+   * cycle then stay then cycle — as more students come from the left more
+   * disappear on the right, in a cool motion animation."
+   *
+   * STEPPED, NOT A MARQUEE. A constant scroll is a ticker and reads as
+   * decoration; the pause is what makes it read as people arriving. Each step
+   * moves the track one face-width and then holds for roughly three times as
+   * long, so there is time to look at who is there before it moves again.
+   *
+   * THE TRACK IS THE FACES TWICE. It runs from -125px (one full set left) to 0,
+   * so faces enter on the left and leave on the right — and because the second
+   * set is the same five images in the same order, the frame at 100% is
+   * pixel-identical to the frame at 0% and the loop has no seam to hide.
+   *
+   * 25px a step: 31px discs overlapping by 6.
+   * ---------------------------------------------------------------- */
+  @keyframes facesCycle {
+    0%, 14% { transform: translate3d(-125px, 0, 0); }
+    20%, 34% { transform: translate3d(-100px, 0, 0); }
+    40%, 54% { transform: translate3d(-75px, 0, 0); }
+    60%, 74% { transform: translate3d(-50px, 0, 0); }
+    80%, 94% { transform: translate3d(-25px, 0, 0); }
+    100% { transform: translate3d(0, 0, 0); }
+  }
+  .faces-track {
+    animation: facesCycle 14s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  }
+  /* Soft ends, so a face is not sliced off by a hard edge on the way in or out.
+     The window is the five faces exactly; the mask only eats the last few
+     pixels, so the row still reads as five crisp discs rather than as
+     something behind frosted glass. */
+  .faces-window {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 11%, #000 89%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 11%, #000 89%, transparent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* Not `animation: none` on the bar — that would leave --bar-fill at its 0%
+       initial value, so the ink would never appear and a student who asked for
+       a still page would get no feedback at all from the button they pressed.
+       It arrives at once instead of sweeping. */
+    .action-bar[data-busy="true"] {
+      animation: none;
+      --bar-fill: 100%;
+    }
+    .bar-spinner,
+    .faces-track {
+      animation: none;
+    }
   }
 
   /* The footer arrow leans into the door on hover — same spring the rest of
@@ -1874,6 +2010,25 @@
   .hero-word {
     display: inline-block;
     white-space: pre;
+  }
+
+  /* Type standing on a photograph (owner, 2026-08-06: "add a shadow to the text
+     that helps it stand out more").
+   *
+   * TWO LAYERS DOING DIFFERENT JOBS. The tight one is a contact shadow — it
+   * puts a dark edge immediately under the strokes, which is what stops white
+   * type dissolving where it crosses a highlight. The wide one is a haze that
+   * darkens the photo generally behind the words without reading as a shadow
+   * at all. One layer cannot do both: tight enough to hold an edge is too small
+   * to lift the background, and wide enough to lift it looks like fog.
+   *
+   * Deliberately not a scrim rectangle behind the text. The design's whole
+   * point is that the photograph runs uninterrupted behind the words; a panel
+   * would be the container the front door does not have. */
+  .hero-shade {
+    text-shadow:
+      0 1px 2px rgb(0 0 0 / 0.38),
+      0 2px 18px rgb(0 0 0 / 0.45);
   }
 
   @media (prefers-reduced-motion: reduce) {
