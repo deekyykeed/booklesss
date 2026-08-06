@@ -63,26 +63,30 @@ const FACE_LOOP = [...FACES, ...FACES];
  *  a server component — and it keeps the whole line in the HTML, so it is
  *  still one readable sentence to a crawler that runs no CSS. */
 /**
- * Owner's line, 2026-08-06, arrived at from his own draft — "study faster while
- * still understanding more".
+ * The owner's pick, 2026-08-06, from a set rendered into the live hero.
  *
- * "WHILE STILL" CAME OUT, and it is the whole edit. It concedes: `still` admits
- * you would expect to understand LESS, so the sentence argues with an objection
- * the reader has not raised yet. Two flat statements assert the same thing and
- * let the reader supply the contrast, which is always stronger than being told
- * there is one.
+ * It aims at the thing a student is actually sick of, which is reading the same
+ * page four times — not at speed, and not at us. No number to defend, no
+ * product name (the wordmark two blocks up has just said it), and no "while
+ * still", which was the hedge in the drafts either side of this one: `still`
+ * concedes you would expect to understand less, so it argues with an objection
+ * the reader has not raised.
  *
- * It was also four lines at 184px in this type — double every alternative,
- * swallowing the middle of the frame and pushing the subtitle and the button
- * toward the fold. Measured in the live hero, not guessed. This lands at two
- * lines and 92px, the same block the page was built around.
+ * WHAT IT REPLACED: "Learn 2X faster with Booklesss", from the Framer file.
+ * "2X" is a measurement nobody has taken — the kind of number a student
+ * discounts on sight and we would have to defend if asked.
  *
- * WHAT IT REPLACED: "Learn 2X faster with Booklesss", from the Framer file. Two
- * faults. "2X" is a measurement nobody has taken — the kind of number a student
- * discounts on sight, and one we would have to defend. And it ended in the
- * product's name, directly under a wordmark that had just said it.
+ * NESTED BY LINE, AND THAT IS THE POINT. Left to wrap on its own this breaks
+ * "Understand it the / first time", which strands the weak half of the sentence
+ * on its own line and puts the stress on "the". Breaking after "it" balances
+ * the two lines and lands the emphasis on "the first time", which is the claim.
+ * A headline is four words long; letting the browser choose where it folds is
+ * leaving the only typographic decision on the page to chance.
  */
-const HEADLINE = ["Study", "faster.", "Understand", "more."];
+const HEADLINE: string[][] = [
+  ["Understand", "it"],
+  ["the", "first", "time"],
+];
 
 /** Framer's word stagger: 50ms per token. */
 const WORD_STEP = 0.05;
@@ -251,19 +255,45 @@ export default function LandingPage() {
                 same cut the button wears rather than a lighter instance of it;
                 at 42px that is heavy on purpose. */}
             <h1 className="hero-shade text-center font-hero text-[42px] leading-[46px] font-extrabold tracking-[-0.03em] text-white sm:text-[48px] sm:leading-[52px]">
-              {HEADLINE.map((word, i) => (
-                <span
-                  key={word}
-                  className="hero-in hero-word"
-                  style={{ animationDelay: `${i * WORD_STEP}s` }}
-                >
-                  {word}
-                  {i < HEADLINE.length - 1 ? " " : ""}
+              {/* One block per line, words inside. The stagger counts across
+                  the whole headline rather than restarting per line — the
+                  reveal follows the sentence, not the layout — so the delay is
+                  the running word index, not the index within its line. */}
+              {HEADLINE.map((line, li) => (
+                <span key={li} className="block">
+                  {line.map((word, wi) => {
+                    const n = HEADLINE.slice(0, li).reduce((t, l) => t + l.length, 0) + wi;
+                    return (
+                      <span
+                        key={word}
+                        className="hero-in hero-word"
+                        style={{ animationDelay: `${n * WORD_STEP}s` }}
+                      >
+                        {word}
+                        {wi < line.length - 1 ? " " : ""}
+                      </span>
+                    );
+                  })}
                 </span>
               ))}
             </h1>
-            {/* The only sentence on the page that says what this is, which is
-                also the whole of what a crawler or a reviewer gets. */}
+            {/* THE ONLY SENTENCE ON THE PAGE THAT SAYS WHAT THIS IS, and the
+                whole of what a crawler or an OAuth reviewer gets. Which is why
+                it had to stop being untrue.
+
+                It read: "Track your academic progress, analyze your
+                performance, and get real-time coaching, all on your phone."
+                Three claims from the Framer template, and the app does one of
+                them. There is no coaching, real-time or otherwise, and
+                "analyze your performance" oversells a score on a dashboard.
+                Cosmetic on a mock-up; on a live front door it is the first
+                thing a stranger reads and the line Google's branding check
+                reads as the description of the product.
+
+                What replaces it is the previous landing page's own subline —
+                already written, already true, and the same sentence this
+                page's `description` metadata carries, so the page says one
+                thing to a person and to a crawler rather than two. */}
             {/* RUBIK (owner, 2026-08-06: "still use rubik for the subtitle
                 text"). It was Aptos — the reading face, which belongs inside a
                 step and nowhere near a hero. Rubik puts it in the same voice as
@@ -283,8 +313,7 @@ export default function LandingPage() {
               className="hero-in hero-shade max-w-[90%] text-center font-hero-meta text-[16px] leading-[1.45] font-medium text-white/90"
               style={{ "--rise": "20px", "--rise-blur": "10px", "--rise-dur": "0.7s", animationDelay: "0.25s" } as React.CSSProperties}
             >
-              Track your academic progress, analyze your performance, and get real-time coaching, all
-              on your phone.
+              Your whole course, rewritten as short steps you read on your phone.
             </p>
           </div>
 
