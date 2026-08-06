@@ -5,6 +5,7 @@ import { MynaIcon } from "@/components/icons/myna";
 import type { CourseMeta } from "@/lib/courses";
 import type { ProgrammeCourse, YearGroup } from "@/lib/programmes";
 import { OTHER_SCHOOL, SCHOOLS, type SchoolChoice } from "@/lib/schools";
+import { FIELD as SHARED_FIELD } from "@/components/ui/Field";
 import { crestSrc } from "./school-crests";
 
 /* The two things this app still asks a student — which university, which
@@ -99,8 +100,11 @@ function GradientCheck() {
   );
 }
 
-const FIELD =
-  "squircle h-11 w-full rounded-xl border border-line bg-white px-3.5 text-[15px] text-ink outline-none transition-colors placeholder:text-placeholder focus:border-ink";
+/* The blank, from components/ui/Field — a rule and a caret, not a box (owner,
+   2026-08-06). It lived here as its own string while the options still had
+   frames of their own; now that neither has one, the fields and the rows have
+   to agree, and one constant in one place is how they stay agreeing. */
+const FIELD = SHARED_FIELD;
 
 /** Course rows carry no box either — same call as the school list, same day.
  *  The tick and the weight of the title carry selection. */

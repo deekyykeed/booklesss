@@ -27,7 +27,11 @@ export default function SignInPage() {
           <span key={i} />
         ))}
       </div>
-      <main className="relative z-10 grid min-h-dvh place-items-center p-6">
+      {/* The onboarding page's surface, exactly (owner, 2026-08-06) — the
+          frosted layer over the drifting blobs, not a centred card on grey.
+          See app/onboarding/page.tsx for what the two layers are and why the
+          frost is applied here rather than by reusing `.content-surface`. */}
+      <main className="relative z-10 min-h-dvh bg-white/[0.62] backdrop-blur-[16px]">
         <AuthPanel initialMode="sign-in" />
       </main>
     </>

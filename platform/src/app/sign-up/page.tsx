@@ -19,7 +19,10 @@ export default function SignUpPage() {
           <span key={i} />
         ))}
       </div>
-      <main className="relative z-10 grid min-h-dvh place-items-center p-6">
+      {/* The onboarding page's surface — see sign-in/page.tsx and
+          app/onboarding/page.tsx. Sign-up hands straight over to the questions,
+          so the two screens have to be the same screen. */}
+      <main className="relative z-10 min-h-dvh bg-white/[0.62] backdrop-blur-[16px]">
         <AuthPanel initialMode="sign-up" />
       </main>
     </>

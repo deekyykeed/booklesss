@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { ActionBar } from "@/components/ui/ActionBar";
+import { Field } from "@/components/ui/Field";
 import { MynaIcon } from "@/components/icons/myna";
 import { browserClient } from "@/lib/supabase/browser";
 import { referrer } from "@/lib/referral";
@@ -38,10 +40,15 @@ import type { OnboardingMode } from "@/lib/onboarding";
  *  rule they could not see. */
 const MIN_PASSWORD = 8;
 
-const INK = "rgb(11,11,11)";
-const MUTED = "rgb(137,135,129)";
-const RING = "inset 0 0 0 1px rgba(11,11,11,0.10)";
-const RING_FOCUS = "inset 0 0 0 1.5px rgba(11,11,11,0.45)";
+/* The hardcoded palette that used to sit here — INK rgb(11,11,11), MUTED
+   rgb(137,135,129), and two inset-ring shadows standing in for a border — is
+   gone. It was measured off the settings sheet's spec and written as literals,
+   which is the exact thing the onboarding flow already refuses to do: "I
+   already have colors that look good on my app, why aren't I using these even
+   for the website" (owner, 2026-08-03). rgb(11,11,11) is not var(--color-ink)
+   and rgb(137,135,129) is a warm grey next to a neutral one, so this form read
+   as a slightly different product to the questions it hands the student to.
+   Everything below uses the tokens. */
 
 /**
  * What went wrong, in words a student can act on.
@@ -188,8 +195,8 @@ export function AuthForm({
 
   if (checkEmail) {
     return (
-      <div className="flex flex-col gap-3">
-        <p style={{ fontSize: 14, lineHeight: "20px", color: INK }}>
+      <div className="flex flex-col gap-4">
+        <p className="text-[14px] leading-5 text-ink">
           Check <strong>{email.trim()}</strong> for a confirmation link, then come back and sign in.
         </p>
         <Button
@@ -209,7 +216,10 @@ export function AuthForm({
   const signUp = mode === "sign-up";
 
   return (
-    <form onSubmit={submit} className="flex flex-col gap-3" noValidate>
+    /* gap-6 between the blanks, where the boxed version used gap-3. A box holds
+       its own edges apart from the next one; two rules 12px apart read as a
+       pair of lines rather than as two separate questions. */
+    <form onSubmit={submit} className="flex flex-col gap-6" noValidate>
       <Field
         ref={emailRef}
         id="auth-email"
@@ -241,8 +251,7 @@ export function AuthForm({
             type="button"
             onClick={() => setShow((v) => !v)}
             aria-label={show ? "Hide password" : "Show password"}
-            className="grid h-7 w-7 shrink-0 place-items-center rounded-[6px] bg-transparent transition-colors hover:bg-[rgba(11,11,11,0.05)]"
-            style={{ color: MUTED }}
+            className="grid h-7 w-7 shrink-0 place-items-center rounded-[6px] bg-transparent text-muted transition-colors hover:bg-active"
             tabIndex={-1}
           >
             <MynaIcon name={show ? "eye-off" : "eye"} size={16} strokeWidth={1.6} />
@@ -253,22 +262,30 @@ export function AuthForm({
       {/* `role="alert"` so a screen reader hears it — the error appears without
           focus moving, which is otherwise silent. */}
       {shownError && (
-        <p role="alert" style={{ fontSize: 13, lineHeight: "18px", color: "#b42318" }}>
+        <p role="alert" className="text-[13px] leading-[18px] text-[#b42318]">
           {shownError}
         </p>
       )}
 
-      <Button type="submit" variant="primary" size="lg" block arrow disabled={busy}>
+      {/* THE COURSE CARD'S BUTTON, EXACTLY (owner, 2026-08-06: "pull in the
+          exact button i use on the course cards here no difference").
+          `.action-bar` in its ink variant — the same component the card's
+          Resume wears, which is what ActionBar was extracted for in the first
+          place: "the exact button in the course card should be its own
+          component and ill use it throughout all the buttons within the app."
+          No `progress`, because there is nothing to be part-way through — an
+          undefined progress draws no fill at all, which is the difference
+          between a bar and a button. */}
+      <ActionBar type="submit" variant="primary" disabled={busy} className="mt-1">
         {busy ? (signUp ? "Making your account…" : "Signing in…") : signUp ? "Create account" : "Sign in"}
-      </Button>
+      </ActionBar>
 
-      <p style={{ fontSize: 13, lineHeight: "18px", color: MUTED }}>
+      <p className="text-[13px] leading-[18px] text-muted">
         {signUp ? "Already have an account? " : "New here? "}
         <button
           type="button"
           onClick={() => onMode(signUp ? "sign-in" : "sign-up")}
-          className="bg-transparent underline underline-offset-2"
-          style={{ color: INK, fontWeight: 500 }}
+          className="bg-transparent font-medium text-ink underline underline-offset-2"
         >
           {signUp ? "Sign in" : "Create an account"}
         </button>
@@ -277,64 +294,12 @@ export function AuthForm({
   );
 }
 
-/* ------------------------------------------------------------------ *
- * One labelled field, in the settings sheet's measured style — 14px, 8px
- * radius, a half-transparent fill and a 1px inset ring standing in for a
- * border. Kept local for now: two fields is not a design system, and lifting it
- * into components/ui before a third surface needs it would be guessing at the
- * shape that surface wants.
- * ------------------------------------------------------------------ */
-function Field({
-  ref,
-  id,
-  label,
-  type,
-  value,
-  onChange,
-  trailing,
-  ...rest
-}: {
-  ref?: React.Ref<HTMLInputElement>;
-  id: string;
-  label: string;
-  type: string;
-  value: string;
-  onChange: (v: string) => void;
-  trailing?: React.ReactNode;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "id" | "type" | "value" | "onChange" | "ref">) {
-  const [focus, setFocus] = useState(false);
-  return (
-    <div className="flex flex-col gap-1">
-      <label htmlFor={id} style={{ fontSize: 14, lineHeight: "20px", color: INK }}>
-        {label}
-      </label>
-      <div
-        className="flex items-center gap-1 rounded-[8px] pr-1 transition-shadow"
-        style={{ background: "rgba(255,255,255,0.5)", boxShadow: focus ? RING_FOCUS : RING }}
-      >
-        <input
-          ref={ref}
-          id={id}
-          type={type}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onFocus={() => setFocus(true)}
-          onBlur={() => setFocus(false)}
-          className="min-w-0 flex-1 bg-transparent outline-none"
-          style={{
-            fontSize: 14,
-            lineHeight: "20px",
-            /* 16px on a phone would zoom the viewport on focus; 14 does not,
-               because the field is inside a dialog with a max-width. iOS zooms
-               under 16 — this is the reason `maximum-scale` is not the fix. */
-            padding: "10px 12px",
-            color: INK,
-            fontFamily: "var(--font-sans)",
-          }}
-          {...rest}
-        />
-        {trailing}
-      </div>
-    </div>
-  );
-}
+/* The local `Field` that lived here is now components/ui/Field — the blank the
+ * onboarding questions fill in too, so the account and the questions it hands
+ * the student to are one form in two parts rather than two forms.
+ *
+ * Its note claimed 14px "does not zoom the viewport on focus, because the field
+ * is inside a dialog with a max-width". That was simply wrong: iOS Safari zooms
+ * on ANY focused input under 16px regardless of what contains it, and this form
+ * is also rendered full-page at /sign-up. The shared field is 16px, which is the
+ * fix that does not cost everybody pinch-zoom. */

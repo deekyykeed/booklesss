@@ -62,9 +62,25 @@ type Common = {
   variant?: "default" | "primary";
 };
 
+/**
+ * Three shapes, and the type says which: a link, a button that does something,
+ * or a form's submit.
+ *
+ * The third is not the second with a different attribute. A `type="button"`
+ * inside a form does nothing on Enter, and implicit submission — pressing
+ * Enter in a field — needs a real submit button present for a form with more
+ * than one input. The auth form has two, so spelling this wrong costs the
+ * keyboard path silently: the bar still works when tapped, and Enter stops
+ * doing anything at all.
+ *
+ * Which is also why a submit takes no `onClick`. Its handler is the form's
+ * `onSubmit`, so both routes in run the same code; hanging a second one here
+ * is how a control ends up submitting twice on a tap and once on Enter.
+ */
 type Props =
   | (Common & { href: string; onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void })
-  | (Common & { href?: undefined; onClick: () => void });
+  | (Common & { href?: undefined; onClick: () => void; type?: "button" })
+  | (Common & { href?: undefined; onClick?: undefined; type: "submit" });
 
 /** The arrow. Its lean-on-hover lives in globals.css beside the bar's own
  *  rules, so a caller cannot forget to bring it. */
@@ -132,7 +148,14 @@ export function ActionBar(props: Props) {
     );
   }
   return (
-    <button type="button" onClick={props.onClick} disabled={disabled} className={cls} data-variant={variant} aria-label={label}>
+    <button
+      type={props.type ?? "button"}
+      onClick={props.onClick}
+      disabled={disabled}
+      className={cls}
+      data-variant={variant}
+      aria-label={label}
+    >
       {inner}
     </button>
   );

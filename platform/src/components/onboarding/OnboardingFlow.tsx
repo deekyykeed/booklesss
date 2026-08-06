@@ -40,6 +40,7 @@ import {
   TypedCoursePicker,
 } from "@/components/identity/pickers";
 import { Button } from "@/components/ui/Button";
+import { FIELD } from "@/components/ui/Field";
 import { WhatsAppMark } from "@/components/icons/whatsapp";
 import { AvatarPicker } from "@/components/identity/AvatarPicker";
 import { type AvatarId } from "@/components/identity/avatars";
@@ -880,10 +881,7 @@ export function OnboardingFlow() {
               placeholder={identity?.name ?? "Your name"}
               aria-label="Your name"
               maxLength={40}
-              className={
-                "squircle h-11 w-full rounded-xl border border-line bg-white px-3.5 text-[15px] text-ink " +
-                "outline-none transition-colors placeholder:text-placeholder focus:border-ink"
-              }
+              className={FIELD}
             />
 
             <div className="mt-5">
@@ -1072,11 +1070,7 @@ export function OnboardingFlow() {
                 placeholder="e.g. Bachelor of Accountancy"
                 aria-label="Your programme"
                 maxLength={160}
-                className={
-                  "squircle h-11 w-full rounded-xl border border-line bg-white px-3.5 text-[15px] text-ink " +
-                  "outline-none transition-colors placeholder:text-placeholder focus:border-ink " +
-                  (programmesFor(school).length ? "mt-2" : "")
-                }
+                className={FIELD + (programmesFor(school).length ? " mt-2" : "")}
               />
             )}
           </Card>
@@ -1424,8 +1418,11 @@ export function OnboardingFlow() {
                 The solid glyph, not the green disc with the handset knocked out
                 of it in white — see components/icons/whatsapp for why that one
                 vanishes on a pale surface. */}
+            {/* The mark sits ON the line's left end now the box is gone. It was
+                inset to left-3.5 to clear a border that no longer exists;
+                against a rule, anything inset reads as floating away from it. */}
             <div className="relative">
-              <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2">
+              <span className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2">
                 <WhatsAppMark size={19} />
               </span>
               <input
@@ -1442,10 +1439,9 @@ export function OnboardingFlow() {
                 placeholder="0977 123 456"
                 aria-label="Your WhatsApp number"
                 maxLength={20}
-                className={
-                  "squircle h-11 w-full rounded-xl border border-line bg-white pl-11 pr-3.5 text-[15px] text-ink " +
-                  "outline-none transition-colors placeholder:text-placeholder focus:border-ink"
-                }
+                /* pl-7 clears the 19px mark at the line's left end — the box
+                   version needed pl-11 to clear the same mark inset by 14. */
+                className={FIELD + " pl-7"}
               />
             </div>
             {/* Shown only once they have typed enough to be wrong. A validation
