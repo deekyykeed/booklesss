@@ -1895,6 +1895,139 @@
     "defaultOpen": true,
     "children": [
       {
+        "id": "start-here-corporate-finance",
+        "label": "Start here",
+        "lesson": {
+          "title": "Start here: what this course is for",
+          "kicker": "Corporate Finance",
+          "sections": [
+            {
+              "id": "the-expensive-yes",
+              "check": {
+                "answer": 0,
+                "explain": "An accounting profit is struck after interest but before any return to shareholders, so it can be positive while the project earns less than the full cost of the money in it. The comparison that decides the question is return against the cost of capital, and here it is 20% against 24%.",
+                "options": [
+                  "No. It earns less than the money costs, so every year it runs it destroys value, whatever the accounting profit says",
+                  "Yes, because a project reporting a profit is by definition adding value",
+                  "Yes, because 20% is a high return in absolute terms",
+                  "It cannot be judged without knowing how long the project lasts"
+                ],
+                "question": "A project earns a 20% return. The company funds it with a mix of borrowing and shareholders' money that costs 24% overall. It reports an accounting profit every year. Is it worth doing?"
+              },
+              "blocks": [
+                {
+                  "text": "A project returns 18% a year. The money to build it costs 22%. It runs for six years, it is busy, it employs people, and **it will show a profit in the accounts every single one of those years while making the company poorer.**",
+                  "type": "p"
+                },
+                {
+                  "text": "Nothing in that is a trick. Profit is measured after paying interest to lenders and before paying anything at all to shareholders, so a project can clear the first hurdle and fail the one that matters. The full price of the money, borrowed and invested together, is the [cost of capital](https://corporatefinanceinstitute.com/resources/valuation/cost-of-capital/). The gap only shows up if somebody puts a cost on every kwacha the business uses, including the money nobody sends an invoice for. Shareholders send no invoice and still expect a return, which is why [[equity|The owners' money in a business. It costs more than borrowing, not less: a lender is paid before an owner and can sue, so an owner carries the risk and prices it accordingly.]] is the expensive half.",
+                  "type": "p"
+                },
+                {
+                  "kind": "key",
+                  "text": "Money has a price even when nobody bills you for it. Every method in this course exists to make that price visible before the decision, rather than obvious afterwards.",
+                  "type": "callout"
+                },
+                {
+                  "text": "That is the whole of corporate finance in one line: **which things are worth doing, where the money to do them comes from, and what that money costs.** Get it wrong in one direction and you turn down something that would have paid. Get it wrong in the other and you spend six years busy and behind.",
+                  "type": "p"
+                }
+              ],
+              "heading": "Start here"
+            },
+            {
+              "id": "what-it-buys-you",
+              "check": {
+                "answer": 0,
+                "explain": "The other three are all used in practice and each is misleading on its own: totals ignore when the money arrives, payback ignores everything after it, and first-year profit ignores the rest of the project. Discounting is what makes cash arriving in different years comparable at all.",
+                "options": [
+                  "Which one adds more value today, once each project's future cash flows are discounted at the cost of the money funding them",
+                  "Which one produces the larger total cash over its life, added up without adjustment",
+                  "Which one recovers its initial outlay in the fewest months",
+                  "Which one reports the higher accounting profit in its first year"
+                ],
+                "question": "A company must choose between two profitable projects and can only fund one. Which comparison decides it?"
+              },
+              "blocks": [
+                {
+                  "text": "This course assumes you can read a set of accounts and have met an income statement and a balance sheet. It does not assume anything else. What it adds is a way of putting today's value on money that arrives in five years. That is [[discounting|Working backwards from a future amount to what it is worth today, given what money earns in the meantime. Every method in this course is this one idea wearing a different name.]], and it is the one skill every question in the course turns on.",
+                  "type": "p"
+                },
+                {
+                  "text": "It sits one step before the day-to-day. Deciding which project to fund is here. **Making sure the company can pay for it in month four is treasury's question, and the two are separate jobs done by separate people** in every company big enough to have both.",
+                  "type": "p"
+                },
+                {
+                  "text": "The decisions this hands you",
+                  "type": "h2"
+                },
+                {
+                  "type": "ul",
+                  "items": [
+                    "Whether to [build the thing at all](https://corporatefinanceinstitute.com/resources/valuation/net-present-value-npv/), when the money comes back over years and is worth less the later it arrives.",
+                    "Which two of five good projects to fund when the budget only stretches to two.",
+                    "Whether to raise money by borrowing or by selling a share of the business, and what each choice costs.",
+                    "What a share is actually worth, as opposed to what it is trading at. The gap between those two is what a [[valuation|An estimate of what a business is worth on its own numbers, rather than what the market is currently paying for it. The two disagree often, and the disagreement is the opportunity.]] is for.",
+                    "How much profit to pay out and how much to keep, and what the decision signals to everyone watching."
+                  ]
+                },
+                {
+                  "text": "Those are the questions a finance director answers, and they are the same questions a founder answers about their own money with fewer zeros and no committee. A ZMW 40,000 second truck and a ZMW 400 million shaft are the same sum written twice. **The arithmetic that tells a mining group whether to open a shaft is the arithmetic that tells one person whether to buy a second truck.**",
+                  "type": "p"
+                },
+                {
+                  "kind": "exam",
+                  "text": "The past papers reward the working, not the verdict. A right answer with no visible calculation earns a fraction of the marks, and a wrong answer with correct method and one arithmetic slip keeps most of them. Show every line.",
+                  "type": "callout"
+                }
+              ],
+              "heading": "What you can do with it"
+            },
+            {
+              "id": "how-to-use-this",
+              "check": {
+                "answer": 0,
+                "explain": "Inflation and default risk are real and are handled separately. The reason underneath both is opportunity: money in hand can earn a return now, so being made to wait has a price. That price is the discount rate, and it is what every method in this course applies.",
+                "options": [
+                  "Because a kwacha today can be put to work for those five years, so waiting has a cost whether or not prices rise",
+                  "Because money physically wears out over time",
+                  "Only inflation makes future money worth less, so with no inflation the two are equal",
+                  "Because five years is long enough that the payer will probably default"
+                ],
+                "question": "Why does a kwacha received in five years count for less than a kwacha received today, even with no inflation at all?"
+              },
+              "blocks": [
+                {
+                  "text": "You have started, which is the part most people put off until the week before the exam. From here it is short steps rather than long ones: **each one is a single sitting, and finishing three of them in an evening beats abandoning one halfway.**",
+                  "type": "p"
+                },
+                {
+                  "text": "**Twenty-five steps sit after this one, across 125 sections,** and they run from the decision outward. First whether a project is worth doing, then where the money comes from and what each source costs, then what the business is worth and [what to do with the profit](https://corporatefinanceinstitute.com/resources/accounting/dividend/) once it arrives. A section is roughly five minutes, which makes an evening about a lesson.",
+                  "type": "p"
+                },
+                {
+                  "text": "Three things worth knowing before you start",
+                  "type": "h2"
+                },
+                {
+                  "type": "ul",
+                  "items": [
+                    "Every section ends with a question. Get it wrong and it tells you why the right answer is right, which is the point of it. Nothing is marked and nobody sees it.",
+                    "There is a flag at the end of each section. If something is confusing, too long or looks wrong, say so there. That is the fastest way to get a section rewritten, and it has already changed several.",
+                    "Your place is kept as you go, so you can stop mid-step and come back to the same spot on any device."
+                  ]
+                },
+                {
+                  "text": "One habit is worth more than any of that. **When a step works an example, work it yourself on paper before reading the answer.** Following a worked calculation feels like understanding and is not: the exam hands you a blank page, and the only preparation for a blank page is a blank page.",
+                  "type": "p"
+                }
+              ],
+              "heading": "How to use this"
+            }
+          ]
+        }
+      },
+      {
         "id": "investment-appraisal",
         "label": "Investment appraisal",
         "children": [
@@ -11889,6 +12022,139 @@
     "defaultOpen": true,
     "children": [
       {
+        "id": "start-here-strategic-management",
+        "label": "Start here",
+        "lesson": {
+          "title": "Start here: what this course is for",
+          "kicker": "Strategic Management",
+          "sections": [
+            {
+              "id": "beaten-by-someone-else",
+              "check": {
+                "answer": 0,
+                "explain": "The last three are real problems and all of them are about doing the current thing better or worse. The first is different in kind: the basis of competition changed, so being excellent at the old basis stopped paying. Telling those two apart is most of what this subject is for.",
+                "options": [
+                  "Customers moved to a way of buying that the retailer's whole model was not built for, so its advantages stopped being the ones that mattered",
+                  "Its staff became less efficient at running the tills",
+                  "It failed to negotiate hard enough with its existing suppliers",
+                  "Its stores needed refurbishment and the shelves looked dated"
+                ],
+                "question": "A retailer with the lowest costs, the best stock control and the highest customer satisfaction in its sector loses most of its market within five years. Which explanation is strategic rather than operational?"
+              },
+              "blocks": [
+                {
+                  "text": "Think about the last time you sent someone money. For most people in Zambia the answer now involves a phone rather than a bank, and the company that moved it sells airtime for a living. Airtel Money and MTN Mobile Money reached most of the country while the banks still measured their reach in branches.",
+                  "type": "p"
+                },
+                {
+                  "text": "Nothing a bank could have done at the counter would have changed that. The branches were not too slow, the staff were not rude and the systems were not broken. **The competition simply arrived from outside the industry, carrying something the industry had never had to compete with: a device already in everybody's hand.** Being good at banking was not the thing being tested. What the banks lost was their [competitive advantage](https://corporatefinanceinstitute.com/resources/management/competitive-advantage/), which is never lost in the abstract: it is lost to somebody in particular.",
+                  "type": "p"
+                },
+                {
+                  "kind": "key",
+                  "text": "Operational excellence is doing the thing well. Strategy is being sure it is still the right thing to be doing. A company can be outstanding at the first and lose anyway.",
+                  "type": "callout"
+                },
+                {
+                  "text": "That is the question this course exists for. Not how to run the business you have, but **which business to be in, who you are actually competing with, and what you are betting on when you choose.** Those decisions are made a handful of times in a company's life and they decide more than everything in between.",
+                  "type": "p"
+                }
+              ],
+              "heading": "Start here"
+            },
+            {
+              "id": "what-it-buys-you",
+              "check": {
+                "answer": 0,
+                "explain": "Each of the wrong three is a real habit students bring. Reciting frameworks shows knowledge and no judgement; deciding without support shows the opposite; refusing to choose reads as avoidance, because a real board has to pick. The marks sit where the framework meets these particular facts and produces a decision somebody could act on.",
+                "options": [
+                  "One that applies a relevant framework to the specific facts given and reaches a clear recommendation, including what it would cost the company",
+                  "One that lists and correctly defines every framework on the syllabus",
+                  "One that states a firm recommendation immediately and moves on, since decisiveness is what is being tested",
+                  "One that sets out every option evenly and declines to choose, since there is no single right answer"
+                ],
+                "question": "An exam question gives you a company's situation and asks what it should do. Which answer is likely to score highest?"
+              },
+              "blocks": [
+                {
+                  "text": "This course assumes nothing technical. It is the one subject on your timetable where the hard part is a judgement rather than a method, and where two well-argued answers can both earn full marks while a confident unsupported one earns very little.",
+                  "type": "p"
+                },
+                {
+                  "text": "It sits above everything else you study. Finance tells you whether a project pays and treasury tells you whether you can afford it this month. A copper producer deciding in 2015 whether to keep smelting through a price slump was not doing arithmetic, it was choosing what kind of company to be. **Strategy is what decides which projects were ever on the list.** A company that appraises the wrong five options carefully is still choosing between the wrong five.",
+                  "type": "p"
+                },
+                {
+                  "text": "The decisions this hands you",
+                  "type": "h2"
+                },
+                {
+                  "type": "ul",
+                  "items": [
+                    "Who you are really competing with, which is often not the company you think of as the rival. A [[substitute|Something that meets the same need a different way. It does not have to resemble your product at all, which is why it is the competitor most often missed.]] never appears on a list of rivals.",
+                    "Whether to compete by being cheaper or by being different, and why trying to do both usually ends badly. Being stuck between the two has a name, [[stuck in the middle|Competing on neither price nor difference clearly enough to be chosen for either. It is the common outcome of trying to do both, and it usually looks like a reasonable compromise right up until customers stop having a reason to pick you.]].",
+                    "What your business is actually good at, as opposed to what it says it is good at in the annual report.",
+                    "Whether to grow by doing more of this, doing something adjacent, or buying somebody who already does it, which is the [corporate strategy](https://corporatefinanceinstitute.com/resources/management/corporate-strategy/) question.",
+                    "Why the plan that everyone agreed to in the boardroom did not happen, which is a separate subject from whether it was a good plan."
+                  ]
+                },
+                {
+                  "text": "**This is the part of a business degree that people carry longest.** The methods in a finance course get automated; deciding what a company should be doing next does not, and it is the conversation you are eventually in the room for.",
+                  "type": "p"
+                },
+                {
+                  "kind": "exam",
+                  "text": "The paper is a case study with a question attached, so it rewards a position that is argued rather than a model that is recited. Naming a framework earns almost nothing. Using it on the facts in front of you, and saying what the company should therefore do, is where the marks are.",
+                  "type": "callout"
+                }
+              ],
+              "heading": "What you can do with it"
+            },
+            {
+              "id": "how-to-use-this",
+              "check": {
+                "answer": 0,
+                "explain": "The word doing the work is trade-off. Serving every customer, competing on price and on quality, and entering every market are individually attractive and cannot all be resourced. A strategy is recognisable by what it rules out, which is why the hardest part of it is rarely the analysis.",
+                "options": [
+                  "Because deciding what a company will do necessarily means deciding what it will not do, and a plan that gives up nothing is a wish list rather than a strategy",
+                  "Because plans are written by managers and strategies are written by consultants",
+                  "Because strategies are short-term and plans are long-term",
+                  "Because a strategy cannot be written down, only understood"
+                ],
+                "question": "Why is strategy usually described as being about choices rather than about plans?"
+              },
+              "blocks": [
+                {
+                  "text": "You have started, which is the part most people put off until the week before the exam. From here it is short steps rather than long ones: **each one is a single sitting, and finishing three of them in an evening beats abandoning one halfway.**",
+                  "type": "p"
+                },
+                {
+                  "text": "**Seven steps sit after this one, across 35 sections,** and they run outward and then back in. What strategy is and what a company says it is for, then the world outside it and the [[capability|What a business is actually able to do better than others, as opposed to what it owns. Two companies can hold identical equipment and only one of them can run it well.]] inside it, then the choices that follow, including [how to grow](https://corporatefinanceinstitute.com/resources/management/corporate-strategy/), and why so many of them never actually happen. A section is roughly five minutes, which makes this the shortest course on the reader.",
+                  "type": "p"
+                },
+                {
+                  "text": "Three things worth knowing before you start",
+                  "type": "h2"
+                },
+                {
+                  "type": "ul",
+                  "items": [
+                    "Every section ends with a question. Get it wrong and it tells you why the right answer is right, which is the point of it. Nothing is marked and nobody sees it.",
+                    "There is a flag at the end of each section. If something is confusing, too long or looks wrong, say so there. That is the fastest way to get a section rewritten, and it has already changed several.",
+                    "Your place is kept as you go, so you can stop mid-step and come back to the same spot on any device."
+                  ]
+                },
+                {
+                  "text": "One habit is worth more than any of that, and it is different from the one a finance course needs. **Every time a framework is introduced, stop and run a real company through it before reading on.** Pick one you actually use. A model you have applied once to something you know is worth more in an exam than a model you have read three times.",
+                  "type": "p"
+                }
+              ],
+              "heading": "How to use this"
+            }
+          ]
+        }
+      },
+      {
         "id": "foundations",
         "label": "Foundations",
         "children": [
@@ -14000,6 +14266,139 @@
     "label": "Treasury Management",
     "defaultOpen": true,
     "children": [
+      {
+        "id": "start-here-treasury",
+        "label": "Start here",
+        "lesson": {
+          "title": "Start here: what this course is for",
+          "kicker": "Treasury Management",
+          "sections": [
+            {
+              "id": "the-day-it-falls-due",
+              "check": {
+                "answer": 0,
+                "explain": "Profit counts a sale when it is made, not when it is paid for, and it is spread across a whole year. Cash is a balance on a particular morning. A business can be growing, profitable and completely unable to meet a payment, which is why treasury is a separate job from accounting.",
+                "options": [
+                  "Nothing in the accounts is necessarily wrong: profit is measured over a year and includes money not yet received, while paying a supplier needs cash on a specific day",
+                  "The profit figure must have been falsified, because a profitable company always has cash",
+                  "The suppliers were paid early, which is the only way this happens",
+                  "Profit and cash are the same number reported in two places, so one of them is a clerical error"
+                ],
+                "question": "A company's audited accounts show a healthy profit for the year, and three weeks later it cannot pay its suppliers. What has gone wrong?"
+              },
+              "blocks": [
+                {
+                  "text": "In November 2020 Zambia missed a [[coupon|The interest a bond pays its holders, on fixed dates, whatever else is happening. Missing one is a default even when the borrower still owns plenty: the date is the obligation, not the wealth.]] payment of about **USD 42.5 million** and became the first African country to [default](https://corporatefinanceinstitute.com/resources/economics/sovereign-risk/) in the pandemic era. The country was not empty. It had copper in the ground, tax still coming in and assets on every balance sheet you could name. What it did not have was that much money, in that currency, on that day.",
+                  "type": "p"
+                },
+                {
+                  "text": "That gap is the entire subject. **Being owed money, owning things and making a profit are three different questions from having cash when a payment falls due,** and the fourth one is the only one anybody can be sued over. That fourth question has a name, [[liquidity|Whether a business can meet what falls due, on the day it falls due. It is separate from wealth: an asset you cannot sell this week is not liquidity, however much it is worth.]], and it is the one this course is about. A company can post its best year on record in March and be unable to pay staff on the 28th, for reasons that are all visible months ahead if somebody is looking.",
+                  "type": "p"
+                },
+                {
+                  "kind": "key",
+                  "text": "Profit is an opinion formed at year end. Cash is a fact on a Tuesday. This course is about the Tuesday.",
+                  "type": "callout"
+                },
+                {
+                  "text": "Treasury is the part of a business that watches the Tuesday: what is coming in, what has to go out, what it costs to cover the difference, and what happens to all of that when the kwacha moves or the central bank changes rates. The cycle it watches runs from buying stock to being paid for it, and is called the [working capital cycle](https://corporatefinanceinstitute.com/resources/accounting/working-capital-cycle/).",
+                  "type": "p"
+                }
+              ],
+              "heading": "Start here"
+            },
+            {
+              "id": "what-it-buys-you",
+              "check": {
+                "answer": 0,
+                "explain": "The other three are real questions and none of them is treasury's. Treasury owns the exposure: the amount is fixed in dollars, the company earns kwacha, and the cost in kwacha is unknown until the day it is paid. Deciding whether to leave that open or fix it now is the job.",
+                "options": [
+                  "What the payment will cost in kwacha if the exchange rate moves before the date, and whether to fix that cost now",
+                  "Whether the goods being bought are of acceptable quality",
+                  "How the purchase should be depreciated over its useful life",
+                  "Which department's budget the cost is charged to"
+                ],
+                "question": "A Zambian company earns its revenue in kwacha and has agreed to pay a supplier USD 200,000 in three months. Which of these is a treasury question?"
+              },
+              "blocks": [
+                {
+                  "text": "This course assumes you can read a balance sheet and knows you have met an income statement. It does not assume anything else. What it adds is the money already in motion: the [cash sitting in accounts](https://corporatefinanceinstitute.com/resources/accounting/cash-management/), the invoices waiting to be paid, the borrowing that funds the gap and the currency risk sitting under all of it.",
+                  "type": "p"
+                },
+                {
+                  "text": "That is a different question from the one investment appraisal asks. Deciding whether to build the plant is one job. **Making sure the company can still pay for cement in month four is this one,** and a business that gets the first right and the second wrong does not finish the plant.",
+                  "type": "p"
+                },
+                {
+                  "text": "The decisions this hands you",
+                  "type": "h2"
+                },
+                {
+                  "type": "ul",
+                  "items": [
+                    "How much cash to keep, when idle cash earns nothing and an empty account costs everything.",
+                    "Whether to take a supplier's early-payment discount or keep the money and take the credit.",
+                    "What to do when your revenue is in kwacha and a supplier invoices you in US dollars, with three months before you pay. That gap is an [[exposure|A position whose value in your own currency is not yet fixed, so it moves with the market until the day it settles.]].",
+                    "How to fund a shortfall you can see coming, and what a lender will demand in return.",
+                    "Where to put a surplus so it is still there, in full, on the day you need it back."
+                  ]
+                },
+                {
+                  "text": "Those are the treasurer's decisions in a bank or a mining group, and they are also the first five money decisions anybody running their own business ever makes. **The scale changes and the questions do not.** A finance officer at ZESCO and a founder with one truck are answering the same list with different numbers of zeros.",
+                  "type": "p"
+                },
+                {
+                  "kind": "exam",
+                  "text": "The paper is written the same way. Most marks in the past papers go to a calculation and then to a short recommendation about what the business should actually do, so a number without a decision attached to it leaves marks on the table.",
+                  "type": "callout"
+                }
+              ],
+              "heading": "What you can do with it"
+            },
+            {
+              "id": "how-to-use-this",
+              "check": {
+                "answer": 0,
+                "explain": "The split matters because it is where treasury failures come from. A treasurer choosing their own risk limits is the setup behind most of the famous blow-ups in the syllabus. Policy comes from above, execution and the daily judgement calls sit with treasury, and the line between them is examinable.",
+                "options": [
+                  "The board decides how much risk the company will carry, and treasury operates within that: it manages the exposures and the cash, but does not decide the company's appetite for risk on its own",
+                  "Treasury has no decisions to make, and simply processes payments the board has approved",
+                  "Treasury sets the company's strategy and the board carries it out",
+                  "It means treasury only exists in companies large enough to have a board"
+                ],
+                "question": "Treasury is usually described as executing rather than setting policy. What does that mean in practice?"
+              },
+              "blocks": [
+                {
+                  "text": "You have started, which is the part most people put off until the week before the exam. From here it is short steps rather than long ones: **each one is a single sitting, and finishing three of them in an evening beats abandoning one halfway.**",
+                  "type": "p"
+                },
+                {
+                  "text": "**Twenty-one steps sit after this one, across 57 sections,** and they run in the order the money does. Getting cash in and keeping it moving, then protecting it from [rates and currencies](https://corporatefinanceinstitute.com/resources/foreign-exchange/foreign-exchange-risk/), then what it costs to borrow and what to do with a surplus, then the systems that actually move it between banks. A section is roughly five minutes, which makes an evening about a lesson.",
+                  "type": "p"
+                },
+                {
+                  "text": "Three things worth knowing before you start",
+                  "type": "h2"
+                },
+                {
+                  "type": "ul",
+                  "items": [
+                    "Every section ends with a question. Get it wrong and it tells you why the right answer is right, which is the point of it. Nothing is marked and nobody sees it.",
+                    "There is a flag at the end of each section. If something is confusing, too long or looks wrong, say so there. That is the fastest way to get a section rewritten, and it has already changed several.",
+                    "Your place is kept as you go, so you can stop mid-step and come back to the same spot on any device."
+                  ]
+                },
+                {
+                  "text": "One habit is worth more than any of that. **When a step works an example, work it yourself on paper before reading the answer.** Following a worked example feels like understanding and is not: the exam hands you a blank page, and the only preparation for a blank page is a blank page.",
+                  "type": "p"
+                }
+              ],
+              "heading": "How to use this"
+            }
+          ]
+        }
+      },
       {
         "id": "treasury-operations",
         "label": "Treasury operations",

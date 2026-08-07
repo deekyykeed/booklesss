@@ -30,6 +30,11 @@
  * at, and nothing in the repo referenced the old paths. See DEBT.md D-6.
  */
 
+/* Rule S-11: every course opens with a step about the COURSE rather than
+ * about its first topic. It is a sibling of the lessons, not a member of one,
+ * so it sits directly under the root node and is the first thing tapped.
+ * Written 2026-08-07, paying debt D-15. */
+import startHere from "../01-investment/reader/start-here.mjs";
 import freeCashFlows from "../01-investment/reader/free-cash-flows.mjs";
 import npvAndPayback from "../01-investment/reader/npv-and-payback.mjs";
 import irrAndMirr from "../01-investment/reader/irr-and-mirr.mjs";
@@ -77,6 +82,7 @@ export default {
       label: "Corporate Finance",
       defaultOpen: true,
       children: [
+        startHere,
         {
           slug: "investment-appraisal",
           label: "Investment appraisal",

@@ -114,9 +114,20 @@ export function Checkpoint({
           `shadow-lift` is what a callout and a card already use, so the row
           reads as one more thing the step is made of rather than as chrome that
           landed on it.
-          8px of padding all round, and the marks are 20px, so the row is a
-          control strip rather than a box with things in it. */}
-      <div className="squircle checkpoint-row flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#e7e7e6] bg-white p-2 shadow-lift">
+          6px of padding all round (`p-1.5`), down from the 8px it shipped at
+          this afternoon. The buttons inside are 34px and carry their own
+          breathing room, so the container's padding is stacked on top of theirs
+          and 8px made the row taller than the controls in it needed. The marks
+          are 20px, so this is a control strip rather than a box with things in
+          it.
+          `rounded-3xl` (owner, 2026-08-07: "the container radius needs a lot
+          more rounded, and keep the squircle there"). It is the same 24px a
+          callout and a card take, which is the point — this is one of the
+          containers, so it wears their corner. At a row height of about 50px
+          that reads as very round without being the pill it was an hour ago,
+          and `squircle` is what keeps the corner a continuous curve rather than
+          the quarter-circle a plain radius draws. */}
+      <div className="squircle checkpoint-row flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-[#e7e7e6] bg-white p-1.5 shadow-lift">
         <SectionNote lessonId={lessonId} sectionId={checkpointId} />
         <div
           className="grasp-group"

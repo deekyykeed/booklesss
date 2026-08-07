@@ -660,6 +660,28 @@
     "defaultOpen": true,
     "children": [
       {
+        "id": "start-here-corporate-finance",
+        "label": "Start here",
+        "lesson": {
+          "title": "Start here: what this course is for",
+          "kicker": "Corporate Finance",
+          "sections": [
+            {
+              "id": "the-expensive-yes",
+              "heading": "Start here"
+            },
+            {
+              "id": "what-it-buys-you",
+              "heading": "What you can do with it"
+            },
+            {
+              "id": "how-to-use-this",
+              "heading": "How to use this"
+            }
+          ]
+        }
+      },
+      {
         "id": "investment-appraisal",
         "label": "Investment appraisal",
         "children": [
@@ -1489,6 +1511,28 @@
     "defaultOpen": true,
     "children": [
       {
+        "id": "start-here-strategic-management",
+        "label": "Start here",
+        "lesson": {
+          "title": "Start here: what this course is for",
+          "kicker": "Strategic Management",
+          "sections": [
+            {
+              "id": "beaten-by-someone-else",
+              "heading": "Start here"
+            },
+            {
+              "id": "what-it-buys-you",
+              "heading": "What you can do with it"
+            },
+            {
+              "id": "how-to-use-this",
+              "heading": "How to use this"
+            }
+          ]
+        }
+      },
+      {
         "id": "foundations",
         "label": "Foundations",
         "children": [
@@ -1727,6 +1771,28 @@
     "label": "Treasury Management",
     "defaultOpen": true,
     "children": [
+      {
+        "id": "start-here-treasury",
+        "label": "Start here",
+        "lesson": {
+          "title": "Start here: what this course is for",
+          "kicker": "Treasury Management",
+          "sections": [
+            {
+              "id": "the-day-it-falls-due",
+              "heading": "Start here"
+            },
+            {
+              "id": "what-it-buys-you",
+              "heading": "What you can do with it"
+            },
+            {
+              "id": "how-to-use-this",
+              "heading": "How to use this"
+            }
+          ]
+        }
+      },
       {
         "id": "treasury-operations",
         "label": "Treasury operations",

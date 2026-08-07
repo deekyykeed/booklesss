@@ -610,11 +610,23 @@ text, so a mark written into one shows its own syntax.
   - **The brackets are a record, not decoration.** Since nothing shows in the
     prose, put them on the phrase the source actually backs: that is what the
     next person editing the `.mjs` will check the link against.
-  - **One chip per site, per block** *(was per section, 2026-08-02)* — the strip
-    dedupes within the block it sits under, so two Investopedia pages in the
-    same paragraph show as one chip and only the first is reachable. Two pages
-    in **different** paragraphs now each get their own strip and both are
-    reachable, which the old section-wide strip could not do.
+  - **One chip per PAGE, labelled with that page's own title** *(revised
+    2026-08-07; it was one chip per site, labelled with the site's name)*. The
+    owner: *"the text should be the title of the page on the source, not the
+    name of the company or website."* A chip reading "Corporate Finance
+    Institute" answers a question about **who**; the reader is asking **what is
+    behind this paragraph**, and "Net Present Value" tells them whether it is
+    worth the tap.
+    - The title is fetched at build by `npm run gen:favicons`, cleaned of the
+      site name publishers bolt onto a `<title>` for search engines, and cut to
+      48 characters on a word boundary. A page that cannot be read falls back to
+      the site name, so a chip is never empty.
+    - **Two pages from the same site in one block now show as two chips**, and
+      both are reachable, where the old rule collapsed them into one and lost
+      the second. The strip still dedupes the same URL cited twice.
+    - **This makes C-7's "two or three sites per section" tighter, not looser.**
+      Four chips under a paragraph was already the shape that read as furniture,
+      and four *titles* is longer than four site names. Keep the budget.
   - **Two or three sites per section**, spread across its blocks rather than
     stacked on one. More reads as a bibliography, and four chips under a single
     paragraph is the shape that made the old strip look like furniture.

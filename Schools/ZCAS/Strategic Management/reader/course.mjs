@@ -15,6 +15,11 @@
  * write if it finds a collision.
  */
 
+/* Rule S-11: every course opens with a step about the COURSE rather than
+ * about its first topic. It is a sibling of the lessons, not a member of one,
+ * so it sits directly under the root node and is the first thing tapped.
+ * Written 2026-08-07, paying debt D-15. */
+import startHere from "../01-foundations/reader/start-here.mjs";
 import introToStrategy from "../01-foundations/reader/intro-to-strategy.mjs";
 import missionAndVision from "../01-foundations/reader/mission-and-vision.mjs";
 
@@ -42,6 +47,7 @@ export default {
       label: "Strategic Management",
       defaultOpen: true,
       children: [
+        startHere,
         {
           slug: "foundations",
           label: "Foundations",

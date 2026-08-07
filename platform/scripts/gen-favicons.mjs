@@ -73,6 +73,22 @@ function hosts() {
   return [...seen];
 }
 
+/** Every distinct source URL linked from any step, for the page titles below.
+ *  Same scan as hosts(), keeping the whole URL rather than its hostname. */
+function sourceUrls() {
+  const raw = readFileSync(DATA, "utf8");
+  const seen = new Set();
+  for (const m of raw.matchAll(/\]\((https?:\/\/[^)\s"\\]+)\)/g)) {
+    try {
+      new URL(m[1]);
+      seen.add(m[1]);
+    } catch {
+      /* a malformed URL is the step's problem, not this script's */
+    }
+  }
+  return [...seen];
+}
+
 /** The label for a host: the table above, else the domain without its TLD. */
 function nameFor(host) {
   const bare = host.replace(/^www\./, "");
@@ -183,6 +199,65 @@ async function iconFor(host) {
   return null;
 }
 
+/* THE CHIP'S LABEL IS THE PAGE'S OWN TITLE (owner, 2026-08-07: "the text should
+ * be the title of the page on the source, not the name of the company or
+ * website"). It was the site name until now, and the reasoning against titles
+ * is still in NAMES above and still half right: a raw <title> is written for
+ * search engines, so it arrives as "Net Present Value (NPV) | Formula,
+ * Definition | CFI" with the site bolted on the end and the useful part first.
+ *
+ * So the title is cleaned rather than trusted:
+ *   · split on the separators publishers actually use (| – — ·, and " - "),
+ *   · drop any trailing piece that IS the site (CFI, Investopedia, ACCA…),
+ *   · take what is left, and if that leaves several pieces keep the first,
+ *     which is the specific one on every site checked,
+ *   · trim to 48 characters on a word boundary, because this sits in a chip.
+ *
+ * A page that cannot be fetched or has no usable title falls back to the site
+ * name, which is exactly what shipped before, so this can only improve a chip
+ * and never empty one. */
+const TITLE_MAX = 48;
+
+function cleanTitle(raw, host) {
+  if (!raw) return null;
+  let t = raw.replace(/\s+/g, " ").trim();
+  const site = (nameFor(host) || "").toLowerCase();
+  let parts = t.split(/\s*[|–—·]\s*|\s+-\s+/).map((x) => x.trim()).filter(Boolean);
+  parts = parts.filter((x) => {
+    const l = x.toLowerCase();
+    return l !== site && !l.includes("corporate finance institute") && l !== "cfi";
+  });
+  t = parts[0] ?? "";
+  if (!t || t.length < 3) return null;
+  if (t.length > TITLE_MAX) {
+    const cut = t.slice(0, TITLE_MAX);
+    t = cut.slice(0, cut.lastIndexOf(" ") > 20 ? cut.lastIndexOf(" ") : TITLE_MAX).trim();
+  }
+  /* Trailing punctuation left by the cut. "Working Capital Cycle Explained:
+     Formula," reads as a sentence that was interrupted, which is worse than a
+     shorter label — the reader cannot tell whether the chip is broken or the
+     title really is that. Also drops a dangling "and"/"&", same reason. */
+  t = t.replace(/\s*(?:and|&|or|with|for|in|of|to|the|a)$/i, "").replace(/[\s,;:.\-–—]+$/, "");
+  return t.length >= 3 ? t : null;
+}
+
+async function titleFor(url) {
+  try {
+    const res = await fetch(url, { headers: { "user-agent": UA }, redirect: "follow" });
+    if (!res.ok) return null;
+    const html = (await res.text()).slice(0, 200_000);
+    const m = /<title[^>]*>([\s\S]*?)<\/title>/i.exec(html);
+    if (!m) return null;
+    const decoded = m[1]
+      .replace(/&amp;/g, "&").replace(/&#8217;|&rsquo;/g, "’")
+      .replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+      .replace(/&nbsp;/g, " ").replace(/&[a-z]+;/gi, " ");
+    return cleanTitle(decoded, new URL(url).host);
+  } catch {
+    return null;
+  }
+}
+
 const found = [];
 const missing = [];
 for (const host of hosts()) {
@@ -194,6 +269,20 @@ for (const host of hosts()) {
     missing.push(host);
   }
 }
+
+/* One request per distinct source URL. 83 of them at the time of writing, which
+ * is a few seconds at build time and zero at read time. */
+const pageTitles = new Map();
+console.log("\n  page titles:");
+for (const url of sourceUrls()) {
+  const t = await titleFor(url);
+  if (t) pageTitles.set(url, t);
+  console.log(`    ${t ? "ok  " : "--  "}${t ?? "(falls back to the site name)"}  ${url}`);
+}
+
+const pageEntries = [...pageTitles]
+  .map(([url, t]) => `  ${JSON.stringify(url)}: ${JSON.stringify(t)},`)
+  .join("\n");
 
 const entries = found
   .map(([host, i]) => `  "${host}": {\n    name: "${nameFor(host)}",\n    icon:\n      "${i.dataUri}",\n  },`)
@@ -211,6 +300,13 @@ writeFileSync(
  * Add a link to a new site in a step, then run \`npm run gen:favicons\`.
  */
 export type Site = { name: string; icon: string };
+
+/** A source URL to the title of the page it opens (rule C-7). Missing here
+ *  means the page could not be read at build time; the chip falls back to the
+ *  site's name, which is what every chip showed before 2026-08-07. */
+export const PAGES: Record<string, string> = {
+${pageEntries}
+};
 
 const SITES: Record<string, Site> = {
 ${entries}

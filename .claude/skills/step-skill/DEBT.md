@@ -74,7 +74,7 @@ unchecked ones get ticked off by someone assuming the list was audited.
 | D-12 | Callouts that never say which kind they are — E-10 | 2026-08-07 | open · **60 of 60 in 53 steps**, 1 fixed · exactly measurable |
 | D-13 | Steps that work every example and hand over none — C-9 | 2026-08-07 | open · 1 of 53 checked |
 | D-14 | Definitions orphaned by the popup being switched off — E-8 | 2026-08-07 | open · 1 of 53 checked · **a reader gets nothing today** |
-| D-15 | Four courses, no course-intro step — S-11 | 2026-08-07 | open · **0 of 4** |
+| D-15 | Four courses, no course-intro step — S-11 | 2026-08-07 | open · **3 of 4 written same day** · economics is the 4th and has no `.mjs` |
 | D-16 | Prose nobody has asked the shorter-version question of — W-17 | 2026-08-07 | open · 0 of 53 |
 
 > **Counts moved from 44 to 53 on 2026-08-02.** The nine remaining Treasury
@@ -847,10 +847,31 @@ is one new step per course and it is the one every single reader sees.
 `intro-to-strategy` are introductions to the SUBJECT, which is a different job
 and does not satisfy S-11.
 
-- [ ] treasury-management
-- [ ] corporate-finance
-- [ ] strategic-management
+- [x] treasury-management — 2026-08-07 · `start-here-treasury`, 3 sections, 5/5
+- [x] corporate-finance — 2026-08-07 · `start-here-corporate-finance`, 3 sections, 5/5
+- [x] strategic-management — 2026-08-07 · `start-here-strategic-management`, 3 sections, 5/5
 - [ ] economics — not reachable from a `.mjs`; needs authoring properly first
+
+**What writing three of these in one pass taught, beyond the three steps.**
+
+All three scored **2/5 on the first run** and every one of the three failures
+was the same failure: an intro step has a section (**how to use this**) that is
+about the course rather than about the subject, so it starts with no concrete
+anchor (**C-5**), no jargon worth defining (**E-8**) and nothing an outside site
+teaches (**C-7**). The fix was not to argue with the scanner. It was to notice
+that a section with no anchor and no source is a section carrying no subject —
+and **S-11 never said that section should be subject-free.** Each now names the
+real size of the course, links the topic it gestures at, and defines a word the
+reader has not met. That is better writing, not a higher score.
+
+Worth carrying to the fourth: **write the shape sentence with a link in it and
+the counts as figures from the start**, rather than writing chrome and then
+retrofitting anchors.
+
+`C-7`'s "no filler links" and the scanner's "every section needs a source" pull
+against each other here and did NOT need a rule change — every link added is on
+a phrase whose idea genuinely is taught better elsewhere. If a future intro
+cannot find one honestly, that is the moment to revisit C-7, not before.
 
 ### D-16 · prose nobody has asked the shorter-version question of · opened 2026-08-07
 **Source:** 2026-08-07 · owner — "is there a more concise way of setting up this

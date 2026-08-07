@@ -1,6 +1,6 @@
 "use client";
 
-import { siteFor } from "./favicons";
+import { PAGES, siteFor } from "./favicons";
 
 /* Where a section's claims came from, collected at its foot.
  *
@@ -28,14 +28,29 @@ import { siteFor } from "./favicons";
  * happens to be.
  */
 export function SourceStrip({ urls }: { urls: string[] }) {
-  /* One chip per site, not per link. Two Investopedia pages under one section
-   * are one source as far as the reader is concerned; the first link wins and
-   * the chip opens it. */
+  /* ONE CHIP PER PAGE, and its label is that page's own title (owner,
+   * 2026-08-07: "the text should be the title of the page on the source, not
+   * the name of the company or website").
+   *
+   * It was one chip per SITE, labelled with the site's name, and the reason for
+   * that was real: two pages from one place are one source as far as trust
+   * goes. But trust is not what the reader is asking the strip. They are asking
+   * "what is behind this paragraph", and "Corporate Finance Institute" answers
+   * a question about who rather than about what. "Net Present Value" tells them
+   * whether it is worth the tap.
+   *
+   * Deduped by URL now rather than by site, so a paragraph resting on two
+   * different pages shows both. Still deduped, because the same URL cited twice
+   * in one block is one source.
+   *
+   * The title comes from PAGES, filled at build time by gen-favicons. A page it
+   * could not read falls back to the site name, which is exactly the old
+   * behaviour, so this can only improve a chip and never empty one. */
   const seen = new Map<string, { href: string; name: string; icon: string }>();
   for (const href of urls) {
     const site = siteFor(href);
-    if (!site || seen.has(site.name)) continue;
-    seen.set(site.name, { href, name: site.name, icon: site.icon });
+    if (!site || seen.has(href)) continue;
+    seen.set(href, { href, name: PAGES[href] ?? site.name, icon: site.icon });
   }
   const chips = [...seen.values()];
   if (!chips.length) return null;

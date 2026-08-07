@@ -40,6 +40,11 @@
 /* Treasury operations was one six-section step until 2026-08-01; it is three
  * now (rule S-8). The first keeps the `intro-to-treasury` slug, so the URL that
  * was already linked to still opens the course. */
+/* Rule S-11: every course opens with a step about the COURSE rather than
+ * about its first topic. It is a sibling of the lessons, not a member of one,
+ * so it sits directly under the root node and is the first thing tapped.
+ * Written 2026-08-07, paying debt D-15. */
+import startHere from "../01-operations/reader/start-here.mjs";
 import introToTreasury from "../01-operations/reader/intro-to-treasury.mjs";
 import treasuryLevelsAndMandate from "../01-operations/reader/treasury-levels-and-mandate.mjs";
 import treasuryControlsAndStructure from "../01-operations/reader/treasury-controls-and-structure.mjs";
@@ -86,6 +91,7 @@ export default {
       label: "Treasury Management",
       defaultOpen: true,
       children: [
+        startHere,
         /* Three separate frames — what treasury is, how its work divides, how it
          * is governed. No two of them pair, so this lesson stays flat (S-9: do
          * not create a folder for one step). */
