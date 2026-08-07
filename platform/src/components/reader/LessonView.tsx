@@ -430,23 +430,30 @@ function renderBlock(b: Block) {
       <div className="squircle flex items-start gap-3 rounded-3xl border border-[#e7e7e6] bg-white px-5 py-4 shadow-lift">
         {/* What this container IS — the mark and nothing else.
             MYNAUI, IN INK, as of 2026-08-07 (owner: "the icon should be a black
-            mynaui icon"). Third mark on this control: MynaUI at 22px (57fdf08)
-            → Solar Duotone at 22px, then 18px (cb3e8a9, d9c3abd) → back to
-            MynaUI. It is the same finding the checkpoint row produced on
+            mynaui icon"). Third mark on this control: MynaUI at 15px beside the
+            word "Key point" (57fdf08) → Solar Duotone alone at 22px, the jump
+            being the word coming off (cb3e8a9), → 18px the same day after
+            "icon is too [big], reduce its size" (d9c3abd) → back to MynaUI.
+            It is the same finding the checkpoint row produced on
             2026-08-02 and it has now been reached twice: Duotone is a FILLED
             mark and belongs on a tile that gives it its own hue, and a callout
             is a white box, so the mark was importing a colour the container
             never had. In ink it labels the box instead of decorating it, and
             the reading underneath is the only thing in the box with weight.
-            20px, not the 18px Duotone sat at: a hairline carries far less per
-            pixel than a filled mark, so matching the old size would have made
-            it smaller on screen than it was. This is what the checkpoint row's
-            MynaUI pair reads at.
+            17px (owner, 2026-08-07: "reduce the size of the icon in the
+            container"). It went in at 20 on the reasoning that a hairline
+            carries less per pixel than the filled Duotone it replaced, so
+            matching the old 18 would have made it smaller on screen than it
+            was. True in isolation and wrong beside the sentence: at 20 the mark
+            was the first thing read in a box whose whole point is the sentence.
+            17 is the app's own chrome size rather than a step down from 20 —
+            the same number the header and the sidebars draw at, which is what
+            a mark that labels a container should match.
             The height is the reading's line-height, so the glyph centres on the
             first line rather than on its own box — with 27px of leading, top
             edge to top edge sits the mark visibly high. */}
         <div className="flex h-[27px] shrink-0 items-center text-ink" title={kind.label}>
-          <MynaIcon name={kind.icon} size={20} />
+          <MynaIcon name={kind.icon} size={17} />
           {/* Off-screen, not absent: the mark has no text of its own, so this
               is what a screen reader announces. Same trick as .grasp-label. */}
           <span className="grasp-label">{kind.label}</span>
