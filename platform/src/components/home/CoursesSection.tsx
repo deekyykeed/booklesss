@@ -319,14 +319,15 @@ export function CoursesSection({
         key={tab}
         data-dir={dir}
         data-no-swipe
-        /* mt-0 (owner, 2026-08-07: "the tabs are too far from the actual list
-           of courses"). The gap was never one value — `pb-2.5` under the tab
-           labels and `mt-3` here stacked to 22px, which at the tabs' old 14px
-           was fine and at 17px bold reads as a hole. The padding under the
-           label is the one that has to stay (it is the tab's own hit area, and
-           it is what a future underline would sit on), so the margin is the
-           one that goes. */
-        className="tab-panel touch-pan-y"
+        /* Close to the tabs (owner, 2026-08-07: "the tabs are too far from the
+           actual list of courses"). The gap was never one value — `pb-2.5`
+           under the tab labels plus `mt-3` here stacked to 22px, which at the
+           tabs' old 14px was fine and at 17px bold read as a hole. It went to
+           zero, and the underline added since needs a little of it back or the
+           rule sits directly on the first card's edge. 6px of label padding +
+           the 2px rule + 8px here is 16px, still well under the 22 that was
+           too much. */
+        className="tab-panel mt-2 touch-pan-y"
         {...swipe}
       >
         {tab === "active" &&
@@ -457,12 +458,32 @@ function CourseTab({
          "My courses" heading gone these ARE the heading, so they carry the
          weight it used to.
 
-         Weight stays equal across states on purpose — colour is what marks
-         the selection, ink against muted, so raising only the active tab
-         would re-flow the row every time somebody switched. `pb-2.5` is the
-         gap down to the cards, not padding for a border; the rule is gone. */
-      className="shrink-0 whitespace-nowrap border-0 bg-transparent pb-2.5 font-display text-[17px] font-bold leading-6 tracking-[-0.01em] transition-colors"
-      style={{ color: active ? "var(--color-ink)" : "var(--color-muted)" }}
+         Weight stays equal across states on purpose — it is colour and the
+         rule below that mark the selection, so bolding only the active tab
+         would re-flow the row every time somebody switched.
+
+         TWO SIGNALS NOW, NOT ONE (owner, 2026-08-07: "its not very clear
+         which one is active… you might want to underline it, with a two px
+         underline, which is greyed out"). Ink against muted was carrying the
+         whole job, and at bold 17px it stopped reading — heavy type narrows
+         the apparent distance between two greys, so three bold words looked
+         like three headings rather than one selected and two not.
+
+         So the inactive ones drop from `--color-muted` to
+         `--color-placeholder`, the faintest text token the app has, and the
+         active one gains a rule under it.
+
+         EVERY TAB CARRIES THE BORDER, transparent when it is not the one —
+         colouring it only on the active tab would add 2px to that button and
+         shove the whole row down by two pixels on every switch. */
+      className="shrink-0 whitespace-nowrap border-0 border-b-2 bg-transparent pb-1.5 font-display text-[17px] font-bold leading-6 tracking-[-0.01em] transition-colors"
+      style={{
+        color: active ? "var(--color-ink)" : "var(--color-placeholder)",
+        /* Grey, as asked, and not ink: the rule is there to say WHICH, not to
+           be read. Ink under ink type would draw more attention than the word
+           it underlines. */
+        borderBottomColor: active ? "var(--color-placeholder)" : "transparent",
+      }}
     >
       {label}
       {/* The count stays a step down in weight and size — it annotates the
