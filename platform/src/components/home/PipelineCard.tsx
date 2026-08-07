@@ -63,9 +63,24 @@ export function PipelineCard({
           {year ? `Year ${year} — not written yet` : "Not written yet"}
         </p>
 
-        {/* The resume button's shape, carrying a fact instead of an action. */}
+        {/* The resume button's shape, carrying a fact instead of an action.
+         *
+         * WRAPS, RATHER THAN TRUNCATES. This was `truncate`, copied from the
+         * resume button next door where it is right — that one carries a step
+         * TITLE, which is a name, and a clipped name still names the thing.
+         * Here the line is a SENTENCE, and half a sentence is not a shorter
+         * sentence. At 370px, which is every phone, the fallback rendered as
+         * "The more students taking it, the sooner it gets b…" — and it is the
+         * fallback that ships, because the real number only exists once
+         * somebody else on the same programme has listed the same course.
+         * Caught while photographing it for a post (2026-08-07).
+         *
+         * `line-clamp-2` rather than nothing at all: two lines is the whole of
+         * both strings at any width the card takes, and the clamp is there so a
+         * future third string cannot silently make this card taller than the
+         * course cards it sits in a grid with. */}
         <div className="mt-3 flex items-center justify-between gap-3 rounded-[18px] border border-line px-3.5 py-2.5">
-          <span className="min-w-0 truncate text-[13px] leading-5 text-muted">
+          <span className="min-w-0 line-clamp-2 text-[13px] leading-5 text-muted">
             {students && students > 0
               ? `${students} other${students === 1 ? "" : "s"} on your programme want this too`
               : "The more students taking it, the sooner it gets built"}
