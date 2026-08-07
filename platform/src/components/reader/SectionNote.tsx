@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
+import { LordIcon } from "@/components/icons/lordicon";
 import { MynaIcon } from "@/components/icons/myna";
 import { needsAccount } from "@/lib/account";
 import { requireAccount } from "@/lib/onboarding";
@@ -43,6 +44,10 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
   /* Which way the menu opens. Up is the default and the common case; it flips
      down only when up would put it behind the header. */
   const [drop, setDrop] = useState<"up" | "down">("up");
+  /* Bumped on hover, and passed to the icon as part of its play token. A
+     counter rather than a boolean because the icon replays whenever the token
+     CHANGES — a boolean would fire once and then sit true. */
+  const [pulse, setPulse] = useState(0);
   const wrap = useRef<HTMLDivElement>(null);
   const menu = useRef<HTMLDivElement>(null);
 
@@ -115,6 +120,7 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
           }
           setOpen((o) => !o);
         }}
+        onMouseEnter={() => setPulse((p) => p + 1)}
         aria-expanded={open}
         aria-label={label ? `You said: ${label}. Change it` : "How did that read?"}
         /* The label is off-screen now (see .grasp-label), so the tooltip is the
@@ -125,10 +131,35 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
         data-active={chosen ? "" : undefined}
         style={{ "--grasp-tone": "#5b5b66" } as React.CSSProperties}
       >
-        {/* Back on MynaUI with the two answers, so the row is one set of
-            hairlines again, and the line/solid swap on `chosen` returns with
-            it: having said how the section read, the mark fills in. */}
-        <MynaIcon name={chosen ? "info-circle-solid" : "info-circle"} size={20} strokeWidth={1.2} />
+        {/* A DRAWN MARK, like the two answers beside it (owner, 2026-08-07 —
+            Lordicon's `messages-feedback`, and the question was whether it
+            could run on `hover-enlarge`. It can: that is one of the three
+            states in the file, confirmed with lord-states.mjs rather than
+            assumed).
+            It also settles an inconsistency the faces created. This row used to
+            be three MynaUI hairlines; the answers became drawn doodles this
+            afternoon and left this button as the only hairline in a row of
+            artwork. Now the row is one set again, the other way round.
+            `hover-enlarge` rather than the file's default `hover-slide`: slide
+            moves the two speech bubbles past each other, which at 26px reads as
+            a wobble, where enlarge is legible at any size.
+            It plays on hover AND on open, because the reader this is built for
+            is a phone and a phone has no hover. `pulse` is what makes the hover
+            replay — LordIcon restarts whenever `playToken` changes, so a
+            counter is the whole mechanism. */}
+        <LordIcon
+          name="note-feedback"
+          state="hover-enlarge"
+          size={26}
+          playToken={`${open}:${pulse}`}
+          fallback={
+            <MynaIcon
+              name={chosen ? "info-circle-solid" : "info-circle"}
+              size={20}
+              strokeWidth={1.2}
+            />
+          }
+        />
         <span className="grasp-label">{label ?? "How did that read?"}</span>
       </button>
 

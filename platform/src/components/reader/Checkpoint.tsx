@@ -116,8 +116,28 @@ export function Checkpoint({
     <>
       {/* Two ends, asking two different things: how the section READ (left) and
           what the reader wants to DO about it (right). Pushed apart rather than
-          sat together, so neither looks like an option in the other's set. */}
-      <div className="checkpoint-row flex flex-wrap items-center justify-between gap-3">
+          sat together, so neither looks like an option in the other's set.
+
+          ON ITS OWN SURFACE as of 2026-08-07 (owner: "put the interaction items
+          in their own container", then a picture of a comment bar). The
+          controls used to float directly on the page, which was fine while they
+          were hairline glyphs and stopped being fine the moment they became
+          drawn artwork: three coloured marks loose on the reading column read
+          as decoration that had landed there, not as a thing to use.
+
+          A PILL, FILLED GREY, NO BORDER — which is the reference, and it
+          corrects the word that came before it. "White and rounded" was the
+          first instruction and it does not survive contact with this page: the
+          reading sits on white already, so a white fill has to be drawn with a
+          border to exist at all, and a bordered white box is the callout's own
+          surface language. That made a control read as one more container to
+          READ. Filled grey with no border is the opposite and is what every
+          comment bar on a phone looks like: the page is what you read, the grey
+          is what you press.
+          `rounded-full`, not the `rounded-3xl` a callout takes. At this height
+          a pill is unmistakably a control, and it is the one shape in the
+          reader that never appears around prose. */}
+      <div className="checkpoint-row flex flex-wrap items-center justify-between gap-3 rounded-full bg-[#f2f2f1] px-4 py-2">
         <SectionNote lessonId={lessonId} sectionId={checkpointId} />
         <div
           className="grasp-group"
