@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { labelFor, nextLessonId, pathForId } from "@/lib/course";
 import { rate, useProgress, type Grasp } from "@/lib/progress";
+import { LordIcon } from "@/components/icons/lordicon";
 import { gateStepLink, needsAccount } from "@/lib/account";
 import { requireAccount } from "@/lib/onboarding";
 import { SectionNote } from "./SectionNote";
@@ -59,18 +60,26 @@ import { SectionNote } from "./SectionNote";
  *         sections on screen do not set ten faces going on first paint.
  *   .gif  a one-shot reveal, swapped in only once the answer is given, so the
  *         animation is the reward for the tap rather than wallpaper.
- * At rest the still is greyed and dimmed by the CSS below, which keeps the row
- * the row of hairlines it is and means colour arriving IS the answer landing.
+ * At rest the still is the colourless version of the face, which keeps the row
+ * calm and means colour arriving IS the answer landing.
  *
  * "Later" is a shock face rather than a sad one, because that is the pair the
  * owner picked. It reads as "wait, no" rather than "I am unhappy", which is
  * closer to what the button actually records.
  *
  * `tone` still drives the hover and the focus ring. It no longer tints a mark:
- * the artwork carries its own colour and cannot be recoloured. */
-const ANSWERS: { id: Grasp; label: string; art: string; tone: string }[] = [
-  { id: "not", label: "Later", art: "grasp-not", tone: "#96601f" },
-  { id: "got", label: "Got it", art: "grasp-got", tone: "#17754d" },
+ * the artwork carries its own colour.
+ *
+ * `state` is the named animation inside the Lottie, and these two came off
+ * Lordicon's own code panel rather than off the files, which do not exist here
+ * yet. **Confirm them with `node scripts/lord-states.mjs` the moment they do**
+ * — a state name that does not match falls back to the default silently, so a
+ * wrong one plays the wrong animation and says nothing. It degrades gently
+ * (these icons make their hover state the default) but "gently" is not
+ * "correctly". */
+const ANSWERS: { id: Grasp; label: string; art: string; state: string; tone: string }[] = [
+  { id: "not", label: "Later", art: "grasp-not", state: "hover-pinch", tone: "#96601f" },
+  { id: "got", label: "Got it", art: "grasp-got", state: "hover-smile", tone: "#17754d" },
 ];
 
 /* End-of-section checkpoint — a scale rather than a tick.
@@ -200,33 +209,56 @@ export function Checkpoint({
                   style={{ width: 26, height: 26 }}
                   aria-hidden="true"
                 >
-                  {[
-                    { src: `/reader/${a.art}-rest.png`, on: !active, pop: false },
-                    { src: `/reader/${a.art}.png`, on: active, pop: true },
-                  ].map((layer) => (
-                    /* eslint-disable-next-line @next/next/no-img-element */
-                    <img
-                      key={layer.src}
-                      src={layer.src}
-                      alt=""
-                      width={26}
-                      height={26}
-                      draggable={false}
-                      /* `.grasp-pop` only while this is the chosen answer, so
-                         React removing and re-adding the class is what restarts
-                         the animation — neither image ever unmounts, and a CSS
-                         animation re-applied to a live element plays again from
-                         0. That is the whole trick, and it is why this reacts
-                         where the re-keyed <img> could only reload. */
-                      className={
-                        "absolute inset-0" + (layer.pop && active ? " grasp-pop" : "")
+                  {/* THE REST STATE STAYS A STILL, and only the chosen one is
+                      the Lottie. Colouring a Lottie grey would mean `colorize`,
+                      which flattens EVERY colour to one — including the black
+                      line work, so the face would become a grey blob, which is
+                      the thing that was rejected two goes ago. `colors` can set
+                      the fill alone but reloads the animation, and reloading on
+                      tap is the flicker this control has already had. The
+                      still is right and costs nothing. */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`/reader/${a.art}-rest.png`}
+                    alt=""
+                    width={26}
+                    height={26}
+                    draggable={false}
+                    className="absolute inset-0"
+                    style={{ opacity: active ? 0 : 1, transition: "opacity 140ms ease" }}
+                  />
+                  <span
+                    className="absolute inset-0"
+                    style={{ opacity: active ? 1 : 0, transition: "opacity 140ms ease" }}
+                  >
+                    {/* `playToken` flips with `active`, and LordIcon replays
+                        from the first frame whenever it changes — so the
+                        animation happens because the answer was given.
+                        `fallback` is the coloured still, drawn while the icon
+                        data loads AND left in place permanently if the file is
+                        not there. That is what makes the Lottie a DROP-IN: with
+                        no .json in public/reader/icons this is exactly the
+                        still-plus-CSS-pop that ships today, and the moment the
+                        two files land the real animation takes over with no
+                        code change. */}
+                    <LordIcon
+                      name={a.art}
+                      state={a.state}
+                      size={26}
+                      playToken={active}
+                      fallback={
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img
+                          src={`/reader/${a.art}.png`}
+                          alt=""
+                          width={26}
+                          height={26}
+                          draggable={false}
+                          className={active ? "grasp-pop" : undefined}
+                        />
                       }
-                      style={{
-                        opacity: layer.on ? 1 : 0,
-                        transition: "opacity 140ms ease",
-                      }}
                     />
-                  ))}
+                  </span>
                 </span>
                 <span className="grasp-label">{a.label}</span>
               </button>

@@ -23,14 +23,38 @@ import { fileURLToPath } from "node:url";
 
 const ICONS = join(dirname(fileURLToPath(import.meta.url)), "../public/reader/icons");
 
+/* A Lottie marker carries its name in `cm`, and Lordicon's format is
+ *
+ *     [default:]<state-name>[:<param>]
+ *
+ * read off their own example icons (`@lordicon/element/examples/icons`):
+ *
+ *     in-reveal              → in-reveal
+ *     default:hover-locked   → hover-locked      ← plays when `state` is unset
+ *     morph-unlocked         → morph-unlocked
+ *     morph-select:0.5       → morph-select      ← 0.5 is a parameter
+ *
+ * Neither end of the string is reliably the name, which is worth stating
+ * because the obvious readings both fail: taking the LAST colon-separated part
+ * turns `morph-select:0.5` into a state called "0.5", and taking the FIRST
+ * turns `default:hover-locked` into one called "default". This script exists to
+ * stop state names being guessed, so it had better not invent one. */
 function statesOf(file) {
   const data = JSON.parse(readFileSync(file, "utf8"));
-  /* Lottie markers carry their name in `cm`. Lordicon prefixes each with the
-     frame band it belongs to, so "1:hover-smile" and "hover-smile" both turn
-     up depending on how the icon was exported — the element wants the part
-     after the colon. */
-  const markers = (data.markers ?? []).map((m) => String(m.cm ?? "").split(":").pop().trim());
-  return { states: [...new Set(markers.filter(Boolean))], frames: data.op, size: [data.w, data.h] };
+  const seen = new Map(); // name -> isDefault
+  for (const m of data.markers ?? []) {
+    let cm = String(m.cm ?? "").trim();
+    if (!cm) continue;
+    const isDefault = cm.startsWith("default:");
+    if (isDefault) cm = cm.slice("default:".length);
+    cm = cm.replace(/:[\d.]+$/, ""); // trailing numeric parameter
+    if (cm) seen.set(cm, isDefault || seen.get(cm) === true);
+  }
+  return {
+    states: [...seen].map(([name, isDefault]) => ({ name, isDefault })),
+    frames: data.op,
+    size: [data.w, data.h],
+  };
 }
 
 const targets = process.argv.slice(2).length
@@ -53,7 +77,8 @@ for (const file of targets) {
       console.log("  (no named states — the whole file is one animation, so omit `state`)");
       continue;
     }
-    for (const s of states) console.log(`  state="${s}"`);
+    for (const s of states)
+      console.log(`  state="${s.name}"${s.isDefault ? "   ← plays when state is unset" : ""}`);
   } catch (err) {
     console.error(`\n${basename(file)}  NOT a readable Lottie: ${err.message}`);
     process.exitCode = 1;

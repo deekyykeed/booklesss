@@ -24,7 +24,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@iconify-json/streamline-plump-color": "^1.2.2",
     "@iconify/utils": "^3.1.4",
-    "@lordicon/element": "^2.3.1",
+    "@lordicon/react": "^1.11.0",
     "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.110.8",
     "next": "16.2.10",
