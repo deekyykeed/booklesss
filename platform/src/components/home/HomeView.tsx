@@ -7,13 +7,10 @@ import { useIdentity } from "@/lib/identity";
 import { isStudyDay, studyHistory, useProgress } from "@/lib/progress";
 import { overallPerformance, overallScoreHistory } from "@/lib/performance";
 import { SolarIcon } from "@/components/icons/solar";
-import { SETTINGS_EVENT } from "@/components/identity/pickers";
-import { CourseCard } from "./CourseCard";
-import { PendingCourses } from "./PendingCourses";
+import { CoursesSection } from "./CoursesSection";
 import { pickGreeting, rememberGreeting, renderGreeting, type Greeting } from "./greeting";
 import { OfflineTools } from "./OfflineTools";
 import { Spark } from "./Spark";
-import { courseTone } from "./tones";
 
 
 /* ------------------------------------------------------------------ *
@@ -381,54 +378,26 @@ export function HomeView({
           the two questions it didn't ask — the school and the study plan —
           had no gate at all. /onboarding asks all three now, and
           RequireOnboarding means this component never renders without them. */}
-      {/* ---- the courses themselves ---- */}
+      {/* ---- the courses themselves ----
+          Three tabs, one list: Active, Pipeline, Completed. The heading, the
+          Change link, the grid and the pipeline all moved into CoursesSection
+          on 2026-08-07 — they are one control now, and splitting the tabs
+          from the list they filter across two files would mean this component
+          holding tab state it has no other use for.
+
+          WHAT WENT WITH THEM: the `<details>` disclosure that sat under the
+          grid (PendingCourses, deleted). Its whole job — showing the timetable
+          we haven't written — is the Pipeline tab now, as real cards rather
+          than a collapsed list. Its standing rule about never inventing a
+          build date carried over; see PipelineCard. */}
       <section id="courses" className="mt-8 scroll-mt-20 pb-10">
-        {/* A reader who has not answered sees the whole library — anonymous
-            reading asks nothing — so this says which of the two it is,
-            because "My courses" over every course we publish is a claim they
-            never made. Narrowing sits on the list itself: Settings, opened
-            with its course row already unfolded. */}
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="dash-heading">{identity?.courses.length ? "My courses" : "All courses"}</h2>
-          <button
-            type="button"
-            onClick={() =>
-              window.dispatchEvent(new CustomEvent(SETTINGS_EVENT, { detail: { step: "courses" } }))
-            }
-            className="text-[13px] font-medium text-muted transition-colors hover:text-ink"
-          >
-            Change
-          </button>
-        </div>
-        <div className="mt-2.5 grid gap-3 md:grid-cols-2">
-          {mine.map((c) => {
-            const cDone = hydrated ? c.lessonIds.reduce((n, id) => n + doneCount(id), 0) : 0;
-            const cSteps = hydrated ? c.lessonIds.filter((id) => isComplete(id)).length : 0;
-            /* Where the button lands: the step they've started but not
-               finished, else the first one they haven't finished. */
-            const unfinished = c.lessonIds.filter((id) => !hydrated || !isComplete(id));
-            const next = unfinished.find((id) => hydrated && doneCount(id) > 0) ?? unfinished[0] ?? c.lessonIds[0];
-
-            return (
-              <CourseCard
-                key={c.slug}
-                course={c}
-                tone={courseTone(c.slug)}
-                hydrated={hydrated}
-                days={days}
-                done={cDone}
-                steps={cSteps}
-                next={next}
-              />
-            );
-          })}
-        </div>
-
-        {/* The rest of their timetable, closed. The cards above are the
-            courses they can open; these are the ones they told us about that we
-            have not written. Directly under the grid because it is the same
-            answer continued — see PendingCourses. */}
-        <PendingCourses />
+        <CoursesSection
+          mine={mine}
+          hydrated={hydrated}
+          doneCount={doneCount}
+          isComplete={isComplete}
+          days={days}
+        />
 
         {/* Under the courses on purpose: it's about the courses, and it must
             not be the first thing between a reader and opening one. */}
