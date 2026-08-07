@@ -234,6 +234,25 @@ export const MAP = {
   "front office": "positioning",
   "The dealers, the people who actually strike trades. The back office confirms, settles and records them. Keeping the two apart is the single most important treasury control.":
     "The place your offer holds in a buyer\u2019s head, next to everything else they could pick. You do not choose it; you earn it, and a competitor can move it.",
+
+  /* ---- the PIPELINE tab's cards (added 2026-08-07) ----
+   * A pipeline card prints a course off the student's own timetable \u2014 a real
+   * title, scraped from a real university's real programme. That is the one
+   * thing rule 7 exists to stop, and no banned word appears in any of them, so
+   * the scan cannot catch it: "Taxation" is off-syllabus, not forbidden. Same
+   * trap as a half-mapped course, arriving through a different door.
+   *
+   * These three are the year-2 courses the capture's seeded student ticked.
+   * They map to the same neutral first-year register as everything above:
+   * ordinary university courses, none of which we teach, none of which is one
+   * of the four the placeholder curriculum already uses.
+   *
+   * ADD A ROW HERE BEFORE SHOOTING THE PIPELINE TAB WITH A DIFFERENT SEED.
+   * The tab renders whatever `identity.curriculum` holds, so changing the seed
+   * changes the words on the cards, and an unmapped one ships silently. */
+  "Financial Accounting": "Human Resource Management",
+  "Management Accounting": "Business Communication",
+  Taxation: "Research Methods",
 };
 
 export const READER = {

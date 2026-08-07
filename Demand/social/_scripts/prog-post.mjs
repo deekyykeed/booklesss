@@ -1327,6 +1327,65 @@ const CONFIGS = {
     ],
   }),
 
+  /* ================= 2026-08-07 ================= *
+   *
+   * 1 — the two answers, drawn.                              (morning)
+   *
+   * The control shipped as MynaUI glyphs on 2 Aug and was posted that morning.
+   * This is not that post: the marks are the owner's own drawings now, and the
+   * thing they say is said in COLOUR — grey at rest, the answered one in its
+   * own hue. That is a different question about the same control, which is the
+   * test rule 5 sets for re-shooting one.
+   *
+   * `w: 640`, NOT 752. The subject is two 34px buttons and nothing else, so at
+   * the full width of the safe box each face draws about 300px across and the
+   * pair reads as wallpaper rather than as a control. 640 keeps the drawing
+   * large enough to be the subject and leaves the gradient a margin to be a
+   * frame.
+   *
+   * GROUPED, and it was not obvious it needed to be. The ink here does not
+   * change SIZE the way the contents list's ticks did — the two faces are the
+   * same two faces in every state. But `-rest.png` is a flattened still and the
+   * answered one is a GIF's last frame, and the two files do not carry the same
+   * alpha bounds: ungrouped they rendered 211, 229 and 236 tall, so the pair
+   * grew 12% across a carousel whose whole claim is that nothing changes except
+   * the colour. One scale, one centre, and the only thing that moves is the
+   * thing the post is about. */
+  "f-faces": () => ({
+    slot: "1-morning",
+    slides: [
+      object({ img: img("grasp-1-rest.png"), w: 752, flat: true, group: "faces" }),
+      object({ img: img("grasp-2-got.png"), w: 752, flat: true, group: "faces" }),
+      object({ img: img("grasp-3-later.png"), w: 752, flat: true, group: "faces" }),
+    ],
+  }),
+
+  /* 2 — the menu at the other end of that row.                (midday)
+   *
+   * SECOND AXIS ON A COMPONENT POSTED ON 2 AUG, and the axis is the marks. That
+   * post was what the menu IS — a second question at the end of a section,
+   * about the writing rather than about the reader — shot as button, menu,
+   * answered. Today every row grew its own mark, line at rest and solid when it
+   * is the answer given, replacing a tick that could only ever say the second
+   * of those in the slot where the first belonged.
+   *
+   * So the three states are the five options at rest and two different verdicts
+   * given. Two chosen rows rather than one because a single one cannot show
+   * that the mark is the ROW'S OWN — with one slide it reads as a generic tick
+   * that moved. Two, and the clipboard and the warning triangle say it.
+   *
+   * `flat: true` — the menu carries its own border and its own shadow, and the
+   * poster's wide drop-shadow under that draws a second, softer edge outside
+   * the real one. */
+  "f-note": () => ({
+    slot: "2-midday",
+    slides: [
+      object({ img: img("note-1-options.png"), w: 700, flat: true }),
+      object({ img: img("note-2-example.png"), w: 700, flat: true }),
+      object({ img: img("note-3-wrong.png"), w: 700, flat: true }),
+    ],
+  }),
+
   brand: () => ({
     slot: "5-night",
     slides: [

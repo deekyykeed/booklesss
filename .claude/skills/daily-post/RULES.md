@@ -349,6 +349,17 @@ Print the css size `isolate()` reports and check the numbers actually differ.
 - **Same component, same `w` across its states** when the data is what differs —
   changing the size misreports the component. Vary `w` only when the states are
   genuinely different objects.
+- **A RASTER ASSET'S OWN RESOLUTION IS A CEILING ON `w`, and it beats "fill the
+  box".** `isolate()` shoots at `deviceScaleFactor: 8`, so vector UI — type,
+  borders, SVG marks — is sharp at any size the frame allows. A PNG or GIF in
+  the component is not: it is resampled from whatever it actually is. The
+  checkpoint faces are **128×128 files**, so one button on its own (34×34 css,
+  square, and the better poster by every other measure) is a 10× blow-up and
+  visibly soft, while the pair (78×34) needs a third of that and stays crisp.
+  2026-08-07: both sets were shot and the crisp-but-flatter one shipped.
+  **Check the source file's pixel size before choosing `w`**, and when the
+  choice is soft-and-big against sharp-and-flat, ship sharp — a fuzzy asset on a
+  poster reads as a cheap product, where an empty margin only reads as quiet.
 - **STRAIGHT. No skew, no perspective.** Tried 2 Aug, rejected on sight: *"the
   skewing thing doesn't work, it is very ugly."* Flat vector UI with hairline
   borders goes through a resampler and stops looking like a card. Depth comes
@@ -413,6 +424,25 @@ Print the css size `isolate()` reports and check the numbers actually differ.
   — so on `next dev` the component returns null and the selector times out with
   nothing to explain it. `npm run build && npx next start -p 3101` in the shot
   worktree. Anything touching offline, caching or install is in this class.
+- **NEVER PIN `Math.random` IN A SCRIPT THAT HAS TO CLICK ANYTHING.**
+  `Math.random = () => 0.42` in an `addInitScript` is how `cap-0806.mjs` holds
+  the greeting's line steady across re-renders, and it is correct there because
+  that capture clicks nothing. Copied into a capture whose states are produced
+  by tapping, it stops **every React event handler from doing its work**: the
+  store never changes, `data-answered` never appears, and there is no error, no
+  timeout and no console warning — just a flawless screenshot of the state
+  before the tap. Proved by bisection on 2026-08-07 (same seed, same identity,
+  same page: pin on → `null`, pin off → `got`), after two full runs.
+  Pin it only where a random pick is the subject and nothing is clicked.
+- **INTERACT FIRST, RELABEL SECOND — always, on every state.** `transform`
+  rewrites the DOM's text nodes in place and React is not told, so the next
+  state change reconciles against a tree it no longer owns. A tab clicked after
+  a relabel changes `tab` in state and leaves the visible panel on the old one.
+  Identical silent failure to the `Math.random` one, and it hits the same
+  scripts. The shape that works is `raw()` in `cap-0807.mjs`: navigate WITHOUT
+  relabelling, do the clicking against live React, and let `isolate()` relabel
+  immediately before the shutter. Each state that needs a click gets its own
+  fresh page — the store is localStorage, so the previous answer carries.
 - **Assert the state at the shutter, not just before it.** A state that ends by
   itself — a save counting up, a toast, a spinner — can finish between the wait
   and the screenshot, and the file lands under a name describing something no
