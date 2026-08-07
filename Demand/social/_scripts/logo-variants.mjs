@@ -296,6 +296,142 @@ const PLATES = [
       ${disc({ size: 200, bg: INK, fg: CREAM, ring: INK })}
       ${burbank("Booklesss", { size: 136, color: INK })}
     </div></div>` },
+
+  /* ================================================================== *
+   * THE DISC AS THE APP ICON — built 2026-08-07, the day `c5982ed` made
+   * it the real favicon, apple-icon and PWA manifest icon rather than a
+   * thing that only lived on the front door.
+   *
+   * FOUR IDEAS, NOT FOUR GROUNDS — the 5 Aug lesson. Say what each one is
+   * FOR before it earns a slot: it survives every size it is asked for /
+   * it works cut out of the ground as well as printed on it / here is how
+   * it is built / it is big enough to be a surface. Two of those needing
+   * the same sentence would mean one of them is padding.
+   * ================================================================== */
+
+  /* 1 — every size it actually ships at, in one picture. 512 is the PWA
+     icon, 180 the apple-icon, then the two favicons, and 16 is the one in
+     a browser tab. Bottom-aligned so the ladder is the subject rather
+     than a row of circles. The claim the day earned: a mark that is a
+     letter and a bar, not a drawing, is still legible at 16px. */
+  { name: "28-icon-sizes", bg: GRADIENT, safe: true,
+    /* THE RATIOS ARE THE SHIPPED ONES; the absolute sizes are not, and
+       cannot be. 512+180+64+32+16 plus four gaps is 988px against a safe
+       box 752 wide, so the ladder is scaled by a single constant and the
+       32 : 11.25 : 4 : 2 : 1 relationship — which is the whole claim —
+       survives intact. Widening the safe area would be the bug. */
+    html: `<div class="safebox"><div style="display:flex;align-items:flex-end;gap:40px">
+      ${[512, 180, 64, 32, 16].map((s) =>
+        disc({ size: s * 0.72, shadow: s >= 180
+          ? "box-shadow:0 3px 6px rgba(24,24,45,.07),0 20px 40px rgba(24,24,45,.12)" : "" })).join("")}
+    </div></div>` },
+
+  /* 2 — cut out of the ground rather than printed on it. The ink fills the
+     frame and the disc is the hole, so the gradient underneath is what
+     draws the mark. 26-name-knock does this to the WORD; the disc has
+     never been asked to hold up as an aperture, and an app icon is
+     punched out of a home screen for a living. */
+  /* `safe: false` because the INK fills the frame by design — the checker
+     measures `.safebox`'s child and there isn't one. The mark itself is
+     hand-placed at x 142–802, y 520–1180, which is inside the safe box on
+     every edge; the thing crossing it is the ground, which is the plate.
+     `overflow:hidden` on the inner circle is NOT optional: the underline
+     runs past the foot of the circle by design and the shipped mark clips
+     it, so a plate that lets the bar escape is drawing a different logo.
+     It escaped on the first render, because this aperture is built from a
+     bordered div rather than from disc(), which has the clip baked in. */
+  { name: "29-icon-aperture", bg: GRADIENT, safe: false,
+    html: `<div class="frame"><div style="position:absolute;inset:0;background:${TILE};
+      -webkit-mask:radial-gradient(circle 330px at 472px 850px,transparent 99%,#000 100%);
+      mask:radial-gradient(circle 330px at 472px 850px,transparent 99%,#000 100%)"></div>
+      <div style="position:absolute;left:142px;top:520px;width:660px;height:660px;
+        border-radius:50%;border:13px solid ${TILE};overflow:hidden;
+        display:grid;place-items:center">
+        <span style="font-family:BB,system-ui,sans-serif;font-size:528px;line-height:660px;
+          color:${TILE};text-decoration:underline;text-decoration-thickness:66px;
+          text-underline-offset:132px">B</span>
+      </div></div>` },
+
+  /* 3 — how it is made, left to right: the ring on its own, the letter
+     dropped in with its underline still running past the foot, then the
+     circle closed so the curve takes the ends off the bar. 21-disc-cut
+     shows the BEFORE and AFTER of that crop as two objects; this shows
+     the three moves as one sentence, which is a different thing to say. */
+  { name: "30-icon-build", bg: CREAM, safe: true,
+    html: `<div class="safebox"><div style="display:flex;align-items:center;gap:40px">
+      <div style="width:220px;height:220px;border-radius:50%;border:4.4px solid ${INK}"></div>
+      <div style="width:220px;height:220px;border-radius:50%;border:4.4px solid ${INK};
+        display:grid;place-items:center">
+        <span style="font-family:BB,system-ui,sans-serif;font-size:176px;line-height:220px;
+          color:${INK};text-decoration:underline;text-decoration-thickness:22px;
+          text-underline-offset:44px">B</span>
+      </div>
+      ${disc({ size: 220, bg: INK, fg: CREAM, ring: INK })}
+    </div></div>` },
+
+  /* 4 — big enough to be a surface. Anchored in the top-left and bled off
+     two edges, so what is left in frame is the curve and the bar rather
+     than a logo sitting in the middle of a poster. Not 22-disc-macro,
+     which is the bare letterform as texture with no circle in it at all —
+     the circle and its crop are the whole subject here. */
+  { name: "31-icon-corner", bg: GRADIENT, safe: false,
+    html: `<div class="frame"><div style="position:absolute;left:-420px;top:-300px">
+      ${disc({ size: 1680, bg: INK, fg: "#F2F3F6", ring: INK })}
+    </div></div>` },
+
+  /* ================================================================== *
+   * "Bklsss" — THE APP'S OWN WORDMARK, which is a different object from
+   * plates 05–07 and 24–27. Those are "Booklesss", the full name, set in
+   * Familjen and then in Burbank. This is the five-letter stamp the app
+   * header wears and the one every poster in this account is signed with,
+   * bottom-left of slide one. It has never had a plate.
+   * ================================================================== */
+
+  /* THE FOUR BELOW ARE WHAT WAS LEFT AFTER CHECKING THE SIXTEEN ABOVE.
+     Three obvious wordmark ideas were built on 2026-08-07 and thrown away
+     before they went out, because the reserve had already had them:
+     "Bklsss" repeated as a field is 15-field, the word cut out of a solid
+     ground is 16-knockout, and the word plain on the gradient is
+     01-mark-light. Sixteen plates is enough to have used up a five-letter
+     wordmark's easy angles — check the list before writing a new one. */
+
+  /* 1 — tracked out until it stops being a word and becomes a rule. The
+     letters span the whole safe box with air between them, which is the
+     one setting where the three s's read as a rhythm rather than as a
+     spelling. Nothing else in the set uses letter-spacing as the subject. */
+  { name: "36-bk-rule", bg: GRADIENT, safe: true,
+    html: `<div class="safebox">${word("Bklsss", { size: 118, color: INK, track: 0.30 })}</div>` },
+
+  /* 2 — cut by the frame from below, so only the tops of the letters
+     survive. 13-bleed runs the word off the SIDES and keeps every letter
+     whole; cutting it horizontally asks the opposite question — whether
+     the mark is still itself when half of it is gone. It is, because the
+     ascenders and the double-s carry the whole silhouette. */
+  { name: "37-bk-half", bg: TILE, safe: false,
+    html: `<div class="frame"><div style="position:absolute;left:-40px;top:700px;
+      height:300px;overflow:hidden;display:flex;align-items:flex-start">
+      ${word("Bklsss", { size: 420, color: PAPER })}
+    </div></div>` },
+
+  /* 3 — on its side, as one line rather than as a stack. 14-vertical sets
+     a letter per row, which reads as a banner and loses the word; rotating
+     the lockup itself keeps the letterforms in their real relationship and
+     turns the mark into a spine — the arrangement a page edge takes. */
+  { name: "39-bk-spine", bg: CREAM, safe: false,
+    html: `<div class="frame"><div style="transform:rotate(-90deg)">
+      ${word("Bklsss", { size: 300, color: INK })}
+    </div></div>` },
+
+  /* 4 — the two marks together, which they have never been. The disc
+     shipped on 6 Aug and 24/27 pair it with "Booklesss" set in Burbank —
+     the NAME. This is the disc beside the LOGO, matched on cap height, so
+     the poster stamp and the app icon are shown to be one system rather
+     than two things the brand happens to own. */
+  { name: "40-bk-lockup", bg: GRADIENT, safe: true,
+    html: `<div class="safebox"><div style="display:flex;align-items:center;gap:44px">
+      ${disc({ size: 205, shadow: "box-shadow:0 3px 6px rgba(24,24,45,.07),0 20px 40px rgba(24,24,45,.12)" })}
+      ${word("Bklsss", { size: 182, color: INK })}
+    </div></div>` },
 ];
 
 const CHOSEN = PICK.length

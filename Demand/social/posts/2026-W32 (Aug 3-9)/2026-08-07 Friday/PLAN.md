@@ -20,8 +20,8 @@ limits however good it is.
 | 🌅 Morning | ~07:00 | `1-morning/` | 3 | **the two answers**, drawn — grey until you answer |
 | ☀️ Midday | ~11:00 | `2-midday/` | 3 | **the menu at the other end of that row**, every option with its own mark |
 | 🌤️ Afternoon | ~15:00 | `3-afternoon/` | 3 | **one course card, three lives** — reading it, queued, finished |
-| 🌆 Evening | ~19:00 | `4-evening/` | — | ⚠️ **open — needs four new plates, see below** |
-| 🌙 Night | ~21:30 | `5-night/` | — | ⚠️ **open** |
+| 🌆 Evening | ~19:00 | `4-evening/` | 4 | brand plates — **the disc, now that it is the app icon** |
+| 🌙 Night | ~21:30 | `5-night/` | 4 | brand plates — **the wordmark**, and the two marks together |
 
 > ⚠️ **Shot from the clean worktree `C:/bkls-shot`, pinned to `82115ae`** —
 > which is the second pin of the day. The first was `5ac4d46`, and `82115ae`
@@ -136,12 +136,69 @@ progress bar — part filled, absent, full.
 
 ---
 
-## ⚠️ Evening and night — OPEN, and why
+## 🌆 Evening — `4-evening/` · The disc, as the icon
 
-Rule 5 says all five slots get filled and that an honest fifth post beats an
-honest explanation of why there isn't one. Two are empty anyway, because what is
-left would have to be invented, and **manufacturing a post is the one thing rule
-5 forbids outright**. Each is under an hour once the idea exists.
+**Post title:** The mark had to survive being 16 pixels wide
+
+**Slides:** every size it ships at → cut out of the ground → how it is built → big enough to be a surface
+
+**Four ideas, not four grounds** — the 5 Aug lesson, applied before rendering
+rather than after. Say what each is for: it survives every size it is asked
+for / it works cut out of a ground as well as printed on one / here is how it is
+made / it is big enough to stop being a signature. Three light, one dark, which
+is the mix rule 5 asks for rather than four black plates.
+
+The reason there is a plate slot at all today is `c5982ed`: the ◯B disc stopped
+being a thing on the front door and became the actual favicon, apple-icon and
+PWA manifest icon. Slide 1 is that commit as a picture — the real 512 : 180 : 64
+: 32 : 16 ratios, scaled by one constant to fit the safe box, so the
+relationship is the shipped one even though the absolute sizes cannot be.
+
+**Caption:**
+> The logo became the app icon today, which means it now has to work at 16
+> pixels 🛠️
+> That's the size of the little square in a browser tab. A drawing dies there. A
+> letter and a bar under it doesn't — it just gets smaller, and you can still
+> tell what it is. Same mark cut out of black, taken apart, and blown up until
+> it's a surface instead of a signature.
+> Install the app to your home screen and this is what lands there.
+> DM me "link" and I'll send you the whole thing. 👇
+> #buildinpublic #branding #logodesign #productdesign #zambia
+
+---
+
+## 🌙 Night — `5-night/` · The wordmark
+
+**Post title:** Two marks, one system
+
+**Slides:** the two marks together → tracked out to a rule → cut in half → on its side
+
+**THE SIXTEEN PLATES ALREADY BUILT ARE WHY THIS SET LOOKS LIKE THIS.** Three
+obvious wordmark ideas were written today and thrown away before rendering,
+because the reserve had them: the word repeated as a field is `15-field`, the
+word cut out of a solid ground is `16-knockout`, and the word plain on the
+gradient is `01-mark-light`. A five-letter wordmark runs out of easy angles
+faster than it looks — **read the list before writing a new plate.**
+
+Slide 1 is the one worth having: the disc beside "Bklsss", matched on cap
+height. They have never appeared together. `24-lockup` and `27-lockup-row` pair
+the disc with **Booklesss**, the full name in Burbank; this is the disc with the
+**logo**, which is the thing every poster in this account is signed with.
+
+**Caption:**
+> Two marks, and until tonight they'd never been in the same picture 🛠️
+> The disc is the app icon — it's what lands on your home screen. The word is
+> what signs everything else. Same weight, same black, matched on the height of
+> the capital, so they read as one system rather than two things a brand
+> happens to own.
+> Then the word tracked out until it's a rule, cut in half by the frame, and
+> stood on its side.
+> DM me "link" and I'll send you the whole thing. 👇
+> #buildinpublic #branding #logodesign #typography #zambia
+
+---
+
+## Notes on what did NOT go out
 
 **1. Brand plates — the reserve is spent, twice over.** All sixteen from 3 Aug
 went out on 4 and 5 Aug; all eight from 6 Aug went out on 6 Aug. A plate slot
@@ -154,13 +211,13 @@ set running is the "two ideas, four slides" the owner sent back on 5 Aug.
 about 5:1, and the ActionBar write-up from 5 Aug is the same shape. Shot as
 `try-tabs.png` so the measurement is on the record, not going out.
 
-**What is left is a plate set, and it needs four IDEAS, not four grounds.** Only
-one is obvious — the disc at every size it actually ships at (16, 32, 180, 512),
-which is exactly what `c5982ed` did today and says "it holds at any size" in one
-picture. The other three would be invented to sit beside it, which is the two-
-ideas-four-slides set the owner sent back on 5 Aug. Left open rather than
-padded. `SLOT=4-evening PICK=… node _scripts/logo-variants.mjs` once there are
-four worth having.
+**3. Seven plates were written today and thrown away before rendering.** Four
+because they repeated the reserve (`15-field`, `16-knockout`, `01-mark-light`,
+`12-macro-sss` under new names), and three more that were four-grounds-not-four-
+ideas. What went out is what survived that. The one plate that was killed on the
+picture rather than on the idea is `38-bk-stamp` — the wordmark at its true 31px
+corner size, alone in the frame. A neat thought and a nearly empty poster, which
+is rule 8's "fill the box, don't float in it" from the other direction.
 
 ---
 
