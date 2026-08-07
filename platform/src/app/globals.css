@@ -1472,13 +1472,25 @@
   /* No pill, no border, no fill: a hairline glyph sitting on the page.
      The button is still 34px square even though the mark is 20px — the tap
      target does not shrink just because the decoration went. */
+  /* 28px, down from 34 (owner, 2026-08-07: the container "doesn't look like
+     eight pixels — what is giving it extra fatty?"). The container's padding
+     was not the culprit and shrinking it further would not have fixed this.
+     A 34px box around a 20px mark is 7px of padding per side, and the
+     container's 6px sits OUTSIDE that, so the gap from the mark to the border
+     was 13px and the row stood 46px tall to hold 20px of ink.
+     The 34 was correct when these buttons sat BARE on the page: with no
+     container, the box was the only thing holding a mark apart from the prose
+     and the only thing making it a comfortable target. The container took the
+     first job on 2026-08-07 and the box kept charging for it.
+     28 keeps the second job — it is still well above the 24px WCAG target
+     minimum — and takes the mark-to-edge gap to 10px with the row at 40px. */
   .grasp-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    height: 34px;
-    width: 34px;
+    height: 28px;
+    width: 28px;
     border-radius: 999px;
     border: 0;
     background: none;

@@ -120,14 +120,21 @@ export function Checkpoint({
           and 8px made the row taller than the controls in it needed. The marks
           are 20px, so this is a control strip rather than a box with things in
           it.
-          `rounded-3xl` (owner, 2026-08-07: "the container radius needs a lot
-          more rounded, and keep the squircle there"). It is the same 24px a
-          callout and a card take, which is the point — this is one of the
-          containers, so it wears their corner. At a row height of about 50px
-          that reads as very round without being the pill it was an hour ago,
-          and `squircle` is what keeps the corner a continuous curve rather than
-          the quarter-circle a plain radius draws. */}
-      <div className="squircle checkpoint-row flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-[#e7e7e6] bg-white p-1.5 shadow-lift">
+          `rounded-full` (owner, 2026-08-07: "a lot more rounded, and keep the
+          squircle there", then "rounded 100%"). It went 3xl first and that was
+          reading the instruction too carefully: 24px on a 40px row is most of
+          the way to a pill and looks like a radius that stopped short.
+          It is NOT the grey pill of earlier today, and the difference is the
+          whole point. That one was filled grey with no border, which said
+          "input" and put a menu surface in the reading column. This is white
+          with the house hairline and shadow-lift, so it is still one of the
+          containers; only its corner changed.
+          `squircle` is doing real work at a full radius rather than being
+          along for the ride: `corner-shape: superellipse(2.4)` on a 999px
+          radius draws a true squircle with flatter sides, not the stadium a
+          plain border-radius gives. Browsers without `corner-shape` fall back
+          to the stadium, which is the right thing to degrade to. */}
+      <div className="squircle checkpoint-row flex flex-wrap items-center justify-between gap-3 rounded-full border border-[#e7e7e6] bg-white p-1.5 shadow-lift">
         <SectionNote lessonId={lessonId} sectionId={checkpointId} />
         <div
           className="grasp-group"
