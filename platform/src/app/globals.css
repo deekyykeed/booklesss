@@ -1096,7 +1096,24 @@
 
   /* One gesture, one duration. The slot opening is the "scoot" — the discs to
      its right are pushed along by ordinary layout rather than by being animated
-     themselves, so the row can never get out of step with itself. */
+     themselves, so the row can never get out of step with itself.
+
+     420ms, DOWN FROM 700 (owner, 2026-08-07: "that animation as a whole is too
+     slow... speed up the motion of appearing and disappearing and moving
+     over"). The interval between arrivals (`TICK` in TrustedFaces.tsx) is
+     untouched — that is the "cycle, stay, cycle" rhythm and was never the
+     complaint. It is the four numbers below, moved together so the gesture
+     stays one motion rather than drifting out of sync with itself. 420ms is
+     what count-tick beside it already uses — the row now moves at the same
+     speed as the number under it.
+
+     faceDiscIn LOST ITS OVERSHOOT (owner: "remove that bounce... it overgrows
+     then resizes dont like that"). cubic-bezier(0.34, 1.56, 0.64, 1) is a
+     back-out ease — the `1.56` is the curve travelling PAST 1 before
+     settling, which on a `scale()` is a disc that grows bigger than its final
+     size and shrinks back down. That is the bounce, not a bug in how it was
+     tuned. The other three animations here were already plain ease-outs and
+     never bounced; this brings the fourth in line with them. */
   @keyframes faceSlotOpen {
     from { width: 0; }
     to { width: 32px; }
@@ -1119,19 +1136,19 @@
   }
 
   .face-slot[data-state="in"] {
-    animation: faceSlotOpen 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: faceSlotOpen 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .face-slot[data-state="in"] .face-disc {
-    animation: faceDiscIn 700ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation: faceDiscIn 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .face-slot[data-state="out"] {
-    animation: faceSlotShut 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: faceSlotShut 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .face-slot[data-state="out"] .face-disc {
-    animation: faceDiscOut 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: faceDiscOut 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .face-slot[data-state="last"] .face-disc {
-    animation: faceCutClose 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: faceCutClose 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
   /* One more member. Rises and fades in where the old number was, so the change

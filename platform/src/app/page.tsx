@@ -95,14 +95,24 @@ export default function LandingPage() {
        phone in a PWA this is the top and bottom of the screen.
 
        THE WHOLE COMPOSITION THEN SAT LOWER (owner, 2026-08-07: "drop
-        everything on the screen lower"). Both paddings move it, in opposite
-        directions: the top pushes the mark down, the bottom lets the pitch
-        fall. They move by DIFFERENT amounts on purpose — 28→52px at the head,
-        140→100px at the foot — because the same instruction asked for more air
-        under the mark too, and with `justify-between` the space between the two
-        blocks is simply whatever is left over. Dropping the foot 40px while the
-        head drops 24px is what opens it. */
-    <main className="relative flex min-h-dvh w-full flex-col items-center justify-end overflow-clip bg-black px-4 pt-[calc(3.25rem+env(safe-area-inset-top))] pb-[calc(100px+env(safe-area-inset-bottom))]">
+       everything on the screen lower"). Both paddings moved it, in opposite
+       directions: the top pushes the mark down, the bottom lets the pitch
+       fall. They moved by DIFFERENT amounts on purpose — 28→52px at the head,
+       140→100px at the foot — because the same instruction asked for more air
+       under the mark too, and with `justify-between` the space between the two
+       blocks is simply whatever is left over.
+
+       THEN "leave the logo where it is and move everything down a little
+       more" — one lever only, since the mark's position is set by pt alone
+       (the top of the flex-1 content box, which `justify-between` pins the
+       mark to) and touching it again would move the one thing this ask
+       excludes. pb is the only property that moves the pitch without moving
+       the mark: less padding below the content box means the box itself
+       grows taller and its bottom — where the pitch sits — lands nearer the
+       screen edge. 100→80px, and the gap the last change opened under the
+       mark grows by the same 20px, since that gap is what pb isn't spending
+       any more. */
+    <main className="relative flex min-h-dvh w-full flex-col items-center justify-end overflow-clip bg-black px-4 pt-[calc(3.25rem+env(safe-area-inset-top))] pb-[calc(80px+env(safe-area-inset-bottom))]">
       <ToApp />
 
       {/* ---- the backdrop ----
