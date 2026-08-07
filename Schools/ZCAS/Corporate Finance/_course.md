@@ -1,6 +1,6 @@
 # BAC4301 Corporate Finance — Course Status
 
-**Last updated:** 2026-07-31
+**Last updated:** 2026-08-07
 
 ---
 
@@ -24,7 +24,9 @@ channels were never created, and the reader is the live product.
 | House style | `.claude/skills/step-skill/RULES.md` — read before writing a step |
 | URL | `/corporate-finance/<lesson>/<step>` |
 
-**Reader step status — the course is complete: 25 steps, 125 sections.**
+**Reader step status — the course is complete: 26 steps, 128 sections.** A
+course-intro step (`start-here-corporate-finance`, rule S-11) was added above
+lesson 1 on 2026-08-07.
 
 Every section carries a comprehension check, so each step's checkpoint ring is
 earned by answering rather than self-marking. Each step has 5 sections.

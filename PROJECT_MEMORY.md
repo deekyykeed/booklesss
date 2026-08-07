@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-07 (session 49)
+**Last updated:** 2026-08-07 (session 50)
 
 ---
 
@@ -91,6 +91,44 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 50 (2026-08-07, the step-skill day — the skill stopped assuming
+every course is finance). Numbered 50 because session 49, the social day, was
+still in flight in the same tree and had already claimed 49; its block is below
+and is not mine to renumber. Linear unreachable for the SEVENTH session.**
+- [ ] ⚠️ **THE LORDICON LICENCE IS UNSETTLED AND ARTWORK IS NOW IN THE REPO.**
+      Three Lottie files under `platform/public/reader/icons/`, all
+      `premium: false`, all free-tier. Lordicon's free tier requires
+      attribution and its paid tiers do not, and nothing records which plan
+      applies. Same shape as the Burbank question and cheaper to answer now,
+      while it is on one control, than after it spreads. Nothing in the app
+      draws one today (the checkpoint went back to flat marks), so this is not
+      urgent, only cheap.
+- [ ] ⚠️ **`tsc` AND `lint` PASSED ON TWO BROKEN BUILDS TODAY.** A missing peer
+      dependency (`lottie-web`, which `@lordicon/react` needs and
+      `@lordicon/element` does not) and an unbalanced brace left in
+      `globals.css` by a scripted edit. Both were invisible to typecheck and
+      lint and both were caught by `npm run build`. **Build before pushing a
+      component change, and serve before believing a visual one.** Now written
+      into the wrap skill.
+- [ ] **D-12 is the cheapest open debt in the ledger: 58 callouts across 52
+      steps still draw "Key point" because none of them names a `kind`.**
+      Exactly measurable, one line per callout, and `example` / `warning` /
+      `exam` are all drawable today. Paid on contact rather than swept, because
+      the kind is a judgement about what the box is doing.
+- [ ] **D-13 and D-14 are scoped at 1 of 53 checked each.** D-13 (every example
+      worked, none handed over) is the one with teeth: `the-price-of-debt`
+      priced a bond to the kwacha and then asked a recall question, so its own
+      check could be passed by someone unable to price a bond. **Nothing has
+      looked at the other 20 TM steps for this.**
+- [ ] **The fourth course-intro step needs economics authored as `.mjs` first.**
+      Three of four shipped (D-15); economics is the original demo content and
+      has no authorable source. Not a writing job until that changes.
+- [ ] **`@lordicon/react` is installed and wired but nothing renders it.**
+      `LordIcon` + `fetch-lordicon.mjs` + `lord-states.mjs` all work and are
+      documented in WORKSPACE.md under "Animated icons". Owner: "store how
+      they're done so I can do something with that later." Picking it up is
+      choosing a surface, not building anything.
 
 **From session 49 (2026-08-07, the social day — five slots off a seventeen-commit
 ship). Linear unreachable for the SIXTH session running.**
@@ -3864,6 +3902,58 @@ dashboard-click launch items (Speed Insights, Fluid compute, bot WAF).
 **Next:** Revenue model still stress-testing — see Next Session list.
 
 ---
+
+### Session 2026-08-07 (session 50) — the step skill stopped assuming every course is finance
+
+**Done:** Seven rules added or revised in `step-skill` off one session of the
+owner reading on a phone: **C-2** (the source of truth is the material the course
+comes with, and it names transcripts and marking keys, which no rule had ever
+mentioned), **C-9** (show one worked, hand the next over unworked), **C-10**
+(relatable is not the same as local), **W-17** (concision with a floor, because
+"too vague" is the opposite failure), **C-11** + `reference/disciplines.md` (four
+profiles, two with no course behind them and saying so), **S-11** (every course
+opens with a step about the course) and **E-10** (callout kinds). Debt D-12
+through D-16 opened; D-15 paid for three of four courses. `the-price-of-debt`
+rewritten as the proof and three course-intro steps written, all at 5/5.
+On the app: tap-to-define popups off, step-to-step links built end to end
+(`[words](step:slug)`, resolved at render, guarded in `seed:course`), the
+checkpoint row rebuilt as a white container with a flag that becomes what you
+flagged and thumbs that colour on tap, and source chips now carry the page's
+title rather than the site's name.
+
+**What Worked:**
+- **Reading the site's JS bundle when its HTML gave nothing.** Lordicon looked
+  account-gated: client-rendered pages, no CDN URL anywhere, and
+  `cdn.lordicon.com/<name>.json` 404s because the CDN cannot be addressed by
+  name. Pulling the chunks and grepping how it builds asset paths led to
+  `/api/library/icons`, which is public, carries an opaque `key` per icon, and
+  joins to `cdn.lordicon.com/<key>.json`. Now a script.
+- **Breaking a guard on purpose before trusting it.** The `step:` link validator
+  was tested with an unknown slug, a folder slug and a self-link before any real
+  link was authored. It also surfaced an ordering bug: the walk that validates
+  blocks is the walk that collects slugs, so a forward link would have failed
+  against a half-built set. Second pass fixed it.
+- **Letting the rank gate win the argument.** All three intro steps scored 2/5
+  first time and the reflex was to argue that an intro has no anchors and no
+  outside sources. The scanner was right: a section with neither is carrying no
+  subject. Fixing it made the writing better, not the score.
+
+**Dead Ends (do not retry):**
+- **`cdn.lordicon.com/<icon-name>.json`** — 404, always. The CDN is keyed by an
+  opaque hash, never by the name in the URL you are looking at. Use
+  `scripts/fetch-lordicon.mjs`.
+- **`lottie-web` alongside `@lordicon/element`** — dead weight, that package
+  bundles `@lordicon/web`. But it IS required by `@lordicon/react`, as a peer
+  dependency npm does not install. Removing it broke the build an hour after
+  removing it was correct.
+- **GIFs exported from an icon's `in-reveal` state** for a control already on
+  screen. It plays when an icon APPEARS, so it starts from an empty frame and
+  reads as the icon vanishing and rebuilding itself.
+- **`tsc` + `lint` as proof a change works.** Passed clean on both broken builds
+  today. Only `npm run build` caught them.
+- **CFI URLs guessed from the pattern** — `management/porters-five-forces/`,
+  `management/strategy/` and two others all 404. C-7 says open every link and it
+  means it.
 
 ### Session 2026-05-31 (session 2)
 **Done:**

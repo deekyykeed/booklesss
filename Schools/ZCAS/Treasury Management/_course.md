@@ -1,6 +1,6 @@
 # BBF4302 Treasury Management — Course Status
 
-**Last updated:** 2026-08-02
+**Last updated:** 2026-08-07
 
 ---
 
@@ -22,8 +22,9 @@ post PDFs without checking with the owner.
 | House style | `.claude/skills/step-skill/RULES.md` — read before writing a step |
 | URL | `/treasury-management/<lesson>/<step>` |
 
-**Reader step status — the course is complete: 21 steps, 57 sections, every
-section with a comprehension check.** The section count is unchanged from the
+**Reader step status — the course is complete: 22 steps, 60 sections, every
+section with a comprehension check.** A course-intro step (`start-here-treasury`,
+rule S-11) was added above lesson 1 on 2026-08-07. The section count is unchanged from the
 12-step version, which is the proof that the split moved the seams and cut
 nothing.
 

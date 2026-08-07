@@ -1,6 +1,6 @@
 # Strategic Management — Course Status
 
-**Last updated:** 2026-07-31
+**Last updated:** 2026-08-07
 
 ---
 
@@ -22,8 +22,10 @@ the owner.
 | House style | `.claude/skills/step-skill/RULES.md` — read before writing a step |
 | URL | `/strategic-management/<lesson>/<step>` |
 
-**Reader step status — the course is complete: 7 steps, 35 sections, every
-section with a comprehension check.** Written from the same lecture sources as
+**Reader step status — the course is complete: 8 steps, 38 sections, every
+section with a comprehension check.** A course-intro step
+(`start-here-strategic-management`, rule S-11) was added above lesson 1 on
+2026-08-07. Written from the same lecture sources as
 the v2 PDFs.
 
 | Lesson | Step | Slug | Written |
