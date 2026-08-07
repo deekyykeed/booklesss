@@ -109,7 +109,7 @@ function markProblems(blocks) {
     }
     // Table cells are plain text in the reader, so a mark in one shows as syntax.
     for (const row of b?.rows ?? []) for (const cell of row ?? []) {
-      if (typeof cell === "string" && /\*\*|\]\(https?:|\[\[/.test(cell))
+      if (typeof cell === "string" && /\*\*|\]\((?:https?|step):|\[\[/.test(cell))
         out.push(`a table cell carries an inline mark, which renders as raw text: "${cell.slice(0, 50)}"`);
     }
   }
@@ -121,6 +121,27 @@ function markProblems(blocks) {
     const terms = t.match(/\[\[([^\]|]+)\|([^\]]+)\]\]/g) ?? [];
     for (const d of terms)
       if (/\]\(https?:/.test(d)) out.push(`a link sits inside a term definition: "${d.slice(0, 60)}"`);
+  }
+  return out;
+}
+
+/* Every step this text links ACROSS to, authored `[the words](step:its-slug)`
+ * (RULES.md C-8). Checked in a SECOND pass below, not here: the walk that
+ * validates blocks is the same walk that collects the slugs, so a link pointing
+ * at a step further down the tree would fail against a half-built set.
+ *
+ * The pattern is a hand-rolled copy of the `step:` branch of MARK in
+ * src/lib/emphasis.ts, because that is TypeScript and this is a .mjs node runs
+ * directly. Keep the two in step. It is deliberately the loosest useful form —
+ * anything between `](step:` and `)` is taken as the slug, so a malformed one
+ * is reported as an unknown step rather than silently not matching, which is
+ * the failure that would put a dead link on a page. */
+function stepRefsIn(blocks) {
+  const out = [];
+  for (const b of blocks) {
+    for (const t of blockTexts(b)) {
+      for (const m of t.matchAll(/\[[^\][]+\]\(step:([^)\s]*)\)/g)) out.push(m[1]);
+    }
   }
   return out;
 }
@@ -153,6 +174,14 @@ const flat = [...walk(manifest.tree ?? [])];
 if (!SLUG_RE.test(manifest.slug ?? "")) problems.push(`course slug "${manifest.slug}" is not a valid slug`);
 if (!flat.length) problems.push("the manifest has an empty tree");
 
+/* Collected during the walk, checked after it. See stepRefsIn above.
+ * `stepSlugs` is NOT `seen`: every node in the tree has a slug, including the
+ * lesson and group folders, and only a node with `sections` has a page. The
+ * reader builds its URL map from the same test, so a link at a folder resolves
+ * to nothing there while sailing past a check made against `seen`. */
+const stepLinks = []; // { from, slug }
+const stepSlugs = new Set();
+
 for (const { node } of flat) {
   const where = node.title ? `step "${node.title}"` : `node "${node.label}"`;
   if (!SLUG_RE.test(node.slug ?? "")) problems.push(`${where}: invalid slug "${node.slug}"`);
@@ -161,6 +190,7 @@ for (const { node } of flat) {
   else seen.set(node.slug, where);
 
   if (node.sections) {
+    stepSlugs.add(node.slug);
     if (!node.title) problems.push(`${where}: a step needs a title`);
     const ids = new Set();
     node.sections.forEach((s, i) => {
@@ -171,6 +201,8 @@ for (const { node } of flat) {
       if (!s.blocks?.length) problems.push(`${node.slug}/${s.id}: no blocks`);
       for (const p of markProblems(s.blocks ?? [])) problems.push(`${node.slug}/${s.id}: ${p}`);
       for (const w of emDashWarnings(s.blocks ?? [])) warnings.push(`${node.slug}/${s.id}: ${w}`);
+      for (const slug of stepRefsIn(s.blocks ?? []))
+        stepLinks.push({ from: `${node.slug}/${s.id}`, slug });
       // A check that points at a missing option would silently mark every
       // answer wrong, so the reader could never clear the checkpoint.
       if (s.check) {
@@ -182,6 +214,36 @@ for (const { node } of flat) {
       }
     });
   }
+}
+
+/* Second pass: every `[…](step:slug)` must name a step this course actually
+ * has. `seen` is only complete now that the whole tree has been walked.
+ *
+ * Scoped to THIS COURSE on purpose. Seeding runs one course at a time, so a
+ * link to another course's step cannot be checked here and would ship
+ * unverified — and the reader resolves slugs through the global nav, so it
+ * would in fact work. That is precisely why it has to be refused rather than
+ * waved through: an unverifiable link is how a dead one reaches a reader. If
+ * cross-course links are ever wanted, they need checking against the generated
+ * course-data.json, which does not exist until gen:course has run.
+ *
+ * A step linking to ITSELF is refused too. It renders as a link that reloads
+ * the page, which reads to a student as a broken one. */
+for (const { from, slug } of stepLinks) {
+  const [fromStep] = from.split("/");
+  if (!slug) problems.push(`${from}: an empty step: link — write [words](step:the-slug)`);
+  else if (slug === fromStep) problems.push(`${from}: links to its own step "${slug}"`);
+  else if (stepSlugs.has(slug)) continue;
+  else if (seen.has(slug))
+    problems.push(
+      `${from}: links to "${slug}", which is a lesson or group in this course` +
+        ` and has no page of its own. Link a step.`,
+    );
+  else
+    problems.push(
+      `${from}: links to step "${slug}", which this course has no step for` +
+        ` (C-8 links are within one course; check the slug in that step's .mjs)`,
+    );
 }
 
 if (problems.length) {

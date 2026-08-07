@@ -1,12 +1,18 @@
 "use client";
 
-import { type Block, type CalloutKind, type Column, type Lesson } from "@/lib/course";
-import { links, runs } from "@/lib/emphasis";
-import { SolarIcon, type SolarIconName } from "@/components/icons/solar";
+import Link from "next/link";
+import {
+  courseIndex,
+  type Block,
+  type CalloutKind,
+  type Column,
+  type Lesson,
+} from "@/lib/course";
+import { links, runs, STEP_SCHEME, type Run } from "@/lib/emphasis";
+import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
 import { CardGlyph, isCardGlyph } from "./card-glyphs";
 import { CodePlayground } from "./CodePlayground";
 import { Checkpoint, StepComplete } from "./Checkpoint";
-import { Term } from "./Term";
 import { SourceStrip } from "./SourceStrip";
 
 /* Step prose with its three inline marks: `**bold**`, `[[term|definition]]`
@@ -19,22 +25,72 @@ import { SourceStrip } from "./SourceStrip";
  * A source link renders as **nothing at all** here: the words appear exactly as
  * written, and the site turns up in the strip under the section instead. The
  * brackets in the .mjs are there to record which claim rests on which source,
- * not to decorate the sentence. */
+ * not to decorate the sentence.
+ *
+ * TAP-TO-DEFINE IS OFF (owner, 2026-08-07: "disable text popups from the app
+ * entirely for now"). A `[[term|definition]]` run now renders as ordinary
+ * prose: no dotted underline, no button, no popover. Deliberately switched off
+ * HERE and nowhere else — the mark is still authored in all 53 steps, still
+ * parsed by `runs()` and still validated by seed-course, so nothing about the
+ * content has to change and turning it back on is restoring the `Term` branch
+ * plus its import. `Term.tsx` stays on disk for that.
+ *
+ * What it costs while it is off: a word that was carrying its definition in a
+ * popup now carries none at all. RULES.md E-8 has the standing instruction —
+ * anything a reader genuinely cannot proceed without gets defined in the prose
+ * under W-5 instead.
+ *
+ * A `step:` link is the one mark that DOES render, and it is the only visible
+ * link in the reading. That is deliberate now that the tap-to-define underline
+ * is gone: an underline in step prose means exactly one thing, that the words
+ * go somewhere, and the only somewhere is another step in this course. */
 function Rich({ text }: { text: string }) {
   return (
     <>
-      {runs(text).map((r, i) =>
-        r.define ? (
-          <Term key={i} term={r.text} definition={r.define} />
-        ) : r.bold ? (
-          <strong key={i} className="font-semibold text-ink">
-            {r.text}
-          </strong>
-        ) : (
-          <span key={i}>{r.text}</span>
-        ),
-      )}
+      {runs(text).map((r, i) => {
+        if (r.href?.startsWith(STEP_SCHEME)) return <StepLink key={i} run={r} />;
+        if (r.bold)
+          return (
+            <strong key={i} className="font-semibold text-ink">
+              {r.text}
+            </strong>
+          );
+        return <span key={i}>{r.text}</span>;
+      })}
     </>
+  );
+}
+
+/* A link across to another step, authored as `[the words](step:its-slug)`.
+ *
+ * The slug is resolved to a path HERE rather than being authored as one, so a
+ * step moving between lessons re-points every link to it instead of breaking
+ * them. `seed:course` has already refused any slug that resolves to nothing, so
+ * the fallback below should be unreachable — it exists because the alternative
+ * failure is a reader tapping a phrase and landing on a 404 in exam week, and
+ * plain prose is a far better way to be wrong.
+ *
+ * Read off `idToPath`, not `pathForId`. Every node in the tree has an id,
+ * including the lesson and group folders, and only a node carrying a lesson
+ * gets a path — so `pathForId` on a folder returns the string "/undefined",
+ * which is a link to a 404 rather than the absence of a link. The map is the
+ * only thing that answers "does this have a page". */
+function StepLink({ run }: { run: Run }) {
+  const slug = run.href!.slice(STEP_SCHEME.length);
+  const path = courseIndex().idToPath.get(slug);
+  const href = path ? "/" + path : null;
+  if (!href) return <span>{run.text}</span>;
+  return (
+    <Link
+      href={href}
+      /* Ink and underlined: the body is #4a4a52, so lifting the words to full
+         ink is what says "this is not just more sentence" before the underline
+         is even noticed. `decoration-2` at this offset matches what the term
+         popup used to draw, which is the weight this reading was tuned against. */
+      className="font-medium text-ink underline decoration-[#c2c2ca] decoration-2 underline-offset-2 transition-colors hover:decoration-ink"
+    >
+      {run.text}
+    </Link>
   );
 }
 
@@ -62,28 +118,33 @@ const CARD_TONES = ["#eb6834", "#4a3aa7", "#17754d", "#2a78d6"];
 /* What each kind of callout is, and the mark that says so. See CALLOUT_KINDS in
  * lib/course.ts for the rule on adding one.
  *
- * Tones come from the same four the cards and the dashboard tiles use, which
- * were validated together for lightness and for telling apart under colour
- * blindness — "Watch out" borrows the checkpoint's amber instead, because that
- * amber already means "careful, come back to this" everywhere else here.
+ * MYNAUI LINE, IN INK, and the mark ALONE — no word beside it. Owner,
+ * 2026-08-07: "the icon should be a black mynaui icon". These four names were
+ * already in gen-icons.mjs and already generated: they are what this control
+ * drew when kinds first shipped (57fdf08), before cb3e8a9 moved it to Solar
+ * Duotone. Nothing had to be regenerated to come back.
  *
- * SOLAR DUOTONE, and the mark ALONE — no word beside it (owner, 2026-08-02).
- * A `-bold-duotone` name draws two currentColor fills with the back one at
- * opacity .5, so each mark shades itself out of its kind's hue with no second
- * colour to pass. This is the reader's only Solar; the reasoning for allowing
- * it here, after three Duotone marks were pulled out of the checkpoint row the
- * same day, is in scripts/gen-solar-icons.mjs.
+ * THE TONES ARE GONE, and that is the actual change. Each kind used to carry a
+ * hex from the four the cards and the dashboard tiles use, and the mark drew
+ * itself in it. But a Duotone mark is a FILLED mark: it belongs on a tile that
+ * gives it its own hue, which is what the stat tiles do, and a callout is a
+ * white box on a white page. The hue was not coming from the container, it was
+ * being imported into it, and it sat heavy against the hairlines around it —
+ * the same finding that pulled three Duotone marks out of the checkpoint row
+ * on 2026-08-02. Reached twice now, from both directions. In ink the mark
+ * labels the box instead of decorating it, and the sentence is the only thing
+ * in there carrying weight, which is the whole point of a callout.
  *
  * `label` is still every bit as required — it is the accessible name and the
  * hover tooltip. Dropping the visible word does not drop the word: a screen
  * reader still hears "In the exam", and a mouse still gets it. What is lost is
  * specific to a sighted, tap-only reader meeting a mark for the first time,
  * which is the same open question the label-less checkpoint row carries. */
-const CALLOUTS: Record<CalloutKind, { label: string; icon: SolarIconName; tone: string }> = {
-  key: { label: "Key point", icon: "key-bold-duotone", tone: "#4a3aa7" },
-  warning: { label: "Watch out", icon: "danger-triangle-bold-duotone", tone: "#96601f" },
-  example: { label: "Example", icon: "clipboard-text-bold-duotone", tone: "#2a78d6" },
-  exam: { label: "In the exam", icon: "target-bold-duotone", tone: "#eb6834" },
+const CALLOUTS: Record<CalloutKind, { label: string; icon: MynaIconName }> = {
+  key: { label: "Key point", icon: "key" },
+  warning: { label: "Watch out", icon: "danger-triangle" },
+  example: { label: "Example", icon: "clipboard" },
+  exam: { label: "In the exam", icon: "target" },
 };
 
 function Cards({ cards }: { cards: { icon: string; title: string; lead?: string; text: string }[] }) {
@@ -361,19 +422,31 @@ function renderBlock(b: Block) {
       /* Lifted off the page with a shadow: the callout is the one sentence in a
          section meant to survive when the rest is forgotten, and a plain
          outlined box sat too flat against prose that already has boxes in it. */
-      <div className="squircle rounded-3xl border border-[#e7e7e6] bg-white px-5 py-4 shadow-lift">
-        {/* What this container IS, top-left — the mark and nothing else, drawn
-            in the kind's own hue. Bigger than the 15px it was beside a word:
-            with the word gone the mark is the whole label, so it has to be
-            read, not just noticed. The hue is the only colour in the box, so
-            the reading underneath stays the reading.
-            18px, not the 22px it shipped at on 2026-08-02 — owner reading it on
-            a phone: "icon is too [big], reduce its size". Duotone is a filled
-            mark, so it carries far more weight per pixel than the hairlines
-            elsewhere in the reader, and at 22px it out-shouted the sentence it
-            is there to label. */}
-        <div className="mb-2 flex" style={{ color: kind.tone }} title={kind.label}>
-          <SolarIcon name={kind.icon} size={18} />
+      /* Mark LEFT, reading RIGHT, both aligned to the first line — owner,
+         2026-08-07: "make them side by side with the icon […] the icon on the
+         left and the text on the right all aligned to the top". It stacked
+         until now, which spent a whole line of the box on a 20px glyph and
+         made a two-line callout three lines tall. */
+      <div className="squircle flex items-start gap-3 rounded-3xl border border-[#e7e7e6] bg-white px-5 py-4 shadow-lift">
+        {/* What this container IS — the mark and nothing else.
+            MYNAUI, IN INK, as of 2026-08-07 (owner: "the icon should be a black
+            mynaui icon"). Third mark on this control: MynaUI at 22px (57fdf08)
+            → Solar Duotone at 22px, then 18px (cb3e8a9, d9c3abd) → back to
+            MynaUI. It is the same finding the checkpoint row produced on
+            2026-08-02 and it has now been reached twice: Duotone is a FILLED
+            mark and belongs on a tile that gives it its own hue, and a callout
+            is a white box, so the mark was importing a colour the container
+            never had. In ink it labels the box instead of decorating it, and
+            the reading underneath is the only thing in the box with weight.
+            20px, not the 18px Duotone sat at: a hairline carries far less per
+            pixel than a filled mark, so matching the old size would have made
+            it smaller on screen than it was. This is what the checkpoint row's
+            MynaUI pair reads at.
+            The height is the reading's line-height, so the glyph centres on the
+            first line rather than on its own box — with 27px of leading, top
+            edge to top edge sits the mark visibly high. */}
+        <div className="flex h-[27px] shrink-0 items-center text-ink" title={kind.label}>
+          <MynaIcon name={kind.icon} size={20} />
           {/* Off-screen, not absent: the mark has no text of its own, so this
               is what a screen reader announces. Same trick as .grasp-label. */}
           <span className="grasp-label">{kind.label}</span>
@@ -383,8 +456,10 @@ function renderBlock(b: Block) {
             container, so it wears the container face throughout rather than
             only on its label. It is a sentence lifted out of the reading to be
             remembered, and setting it in the reading face made it read as one
-            more paragraph in a box. */}
-        <div className="font-container text-[16.5px] font-medium leading-[27px] text-[#4a4a52]">
+            more paragraph in a box.
+            `min-w-0` so a long unbroken string wraps inside the flex row rather
+            than pushing the box wider than the column. */}
+        <div className="min-w-0 font-container text-[16.5px] font-medium leading-[27px] text-[#4a4a52]">
           <Rich text={b.text} />
         </div>
       </div>

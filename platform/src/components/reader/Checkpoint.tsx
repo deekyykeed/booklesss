@@ -6,7 +6,6 @@ import { labelFor, nextLessonId, pathForId } from "@/lib/course";
 import { rate, useProgress, type Grasp } from "@/lib/progress";
 import { gateStepLink, needsAccount } from "@/lib/account";
 import { requireAccount } from "@/lib/onboarding";
-import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
 import { SectionNote } from "./SectionNote";
 
 /* Two answers: "Later" and "Got it".
@@ -46,10 +45,32 @@ import { SectionNote } from "./SectionNote";
  * ORDER: "Later" then "Got it", so the smiling face is the outermost mark on
  * the right (owner, 2026-08-02). It reads worst-to-best towards the edge, and
  * it puts the answer most readers are reaching for under the thumb that is
- * already there. */
-const ANSWERS: { id: Grasp; label: string; icon: MynaIconName; tone: string }[] = [
-  { id: "not", label: "Later", icon: "sad", tone: "#96601f" },
-  { id: "got", label: "Got it", icon: "smile", tone: "#17754d" },
+ * already there.
+ *
+ * DOODLES, not glyphs, as of 2026-08-07 — owner, with two files dropped in the
+ * bucket: "trying to see if I can replace my old smile and sad face one for
+ * something more interesting". Fifth pair on this control. They are FILES in
+ * public/reader, never inlined: 110KB of artwork each, which is the trap
+ * card-glyphs.tsx and the avatars both walked into and only the avatars have
+ * climbed out of.
+ *
+ * Each answer is TWO files and that is the whole design:
+ *   .png  the last frame, drawn at rest. A still cannot animate, so five
+ *         sections on screen do not set ten faces going on first paint.
+ *   .gif  a one-shot reveal, swapped in only once the answer is given, so the
+ *         animation is the reward for the tap rather than wallpaper.
+ * At rest the still is greyed and dimmed by the CSS below, which keeps the row
+ * the row of hairlines it is and means colour arriving IS the answer landing.
+ *
+ * "Later" is a shock face rather than a sad one, because that is the pair the
+ * owner picked. It reads as "wait, no" rather than "I am unhappy", which is
+ * closer to what the button actually records.
+ *
+ * `tone` still drives the hover and the focus ring. It no longer tints a mark:
+ * the artwork carries its own colour and cannot be recoloured. */
+const ANSWERS: { id: Grasp; label: string; art: string; tone: string }[] = [
+  { id: "not", label: "Later", art: "grasp-not", tone: "#96601f" },
+  { id: "got", label: "Got it", art: "grasp-got", tone: "#17754d" },
 ];
 
 /* End-of-section checkpoint — a scale rather than a tick.
@@ -131,13 +152,42 @@ export function Checkpoint({
                 className="grasp-btn squircle"
                 style={{ "--grasp-tone": a.tone } as React.CSSProperties}
               >
-                {/* Bigger and thinner than the app's 17px/1.5 chrome: with the
-                    pill gone the mark is the whole control, and MynaUI's default
-                    weight reads as heavy once nothing is bounding it. */}
-                <MynaIcon
-                  name={active ? (`${a.icon}-solid` as MynaIconName) : a.icon}
-                  size={20}
-                  strokeWidth={1.2}
+                {/* 26px, not the 20px the glyphs sat at: a drawn face needs
+                    more room to be legible than a two-stroke mark does, and
+                    the button is 34px so it still has air round it.
+                    `key` on the src is what makes the reveal REPLAY. A browser
+                    plays a GIF once and then holds the last frame; swapping
+                    the same src back in is a cache hit and shows a still.
+                    Re-keying on the answer forces a fresh element each time
+                    the reader changes their mind, so the animation fires on
+                    every real selection and never on a re-render.
+                    Unoptimised: next/image would re-encode the GIF and drop
+                    every frame but one. These are already sized and already
+                    small, so they are served as they are. */}
+                {/* Grey until it is the answer given, then its own colour, so
+                    colour arriving IS the answer landing — the same signal the
+                    line/solid glyph swap carried before, made the only way it
+                    can be made on artwork, which takes no `color`.
+                    INLINE rather than in globals.css with the other .grasp-*
+                    rules, which is where it belongs: on 2026-08-07 a parallel
+                    session had a finished, staged change to that file, and one
+                    class is not worth committing somebody else's work under
+                    this commit's message. Fold it in there when that lands —
+                    and take the chance to add the desktop hover-to-colour that
+                    an inline style cannot express. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  key={active ? "on" : "off"}
+                  src={`/reader/${a.art}.${active ? "gif" : "png"}`}
+                  alt=""
+                  width={26}
+                  height={26}
+                  draggable={false}
+                  style={{
+                    filter: active ? "none" : "grayscale(1)",
+                    opacity: active ? 1 : 0.5,
+                    transition: "filter 160ms ease, opacity 160ms ease",
+                  }}
                 />
                 <span className="grasp-label">{a.label}</span>
               </button>

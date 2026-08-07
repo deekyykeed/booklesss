@@ -87,6 +87,22 @@ const ICONS = [
   "danger-triangle",
   "clipboard",
   "target",
+  /* The section-note menu's five rows (lib/step-notes.ts → reader/SectionNote).
+     A row now carries its own mark on the right instead of a tick appearing
+     there when chosen: the mark says WHICH answer the row is, and the line →
+     solid swap says whether it is the one given, which is the same pair the
+     sidebar rows and the two faces beside this menu already use. A tick could
+     only ever say the second thing, and it said it in the slot where the first
+     thing should have been.
+     Two of them are deliberately the marks the callouts use for the same
+     meaning — `clipboard` is "Example" in both places, `danger-triangle` is the
+     thing that looks wrong in both. A reader meets one mark per idea. */
+  "lamp", // Clear: it lit up
+  "lamp-solid",
+  "question-circle-solid", // Hard to follow (line twin is in the chrome above)
+  "clock-1-solid", // Too long (line twin is on the dashboard)
+  "clipboard-solid", // Needs an example
+  "danger-triangle-solid", // Something looks wrong
   /* The school and course rows: an empty box, filled once picked — a checkbox
      in the app's own hand. SQUARE, owner's call 2026-08-04 ("the check can be
      square as well"), after the round pair had been there since the rows were

@@ -163,12 +163,18 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
               aria-checked={chosen === n.id}
               onClick={() => pick(n.id)}
               className={
-                "squircle flex items-center justify-between gap-2 rounded-xl px-3 py-2 text-left text-[14.5px] leading-5 transition-colors hover:bg-[#f4f4f3] " +
+                "squircle flex items-center justify-between gap-3 rounded-xl px-3 py-2 text-left text-[14.5px] leading-5 transition-colors hover:bg-[#f4f4f3] " +
                 (chosen === n.id ? "font-medium text-ink" : "text-ink-2")
               }
             >
               {n.label}
-              {chosen === n.id && <MynaIcon name="check" size={15} />}
+              {/* The row's own mark, right-aligned, solid when it is the answer
+                  given (owner, 2026-08-07). `shrink-0` because "Something looks
+                  wrong" wraps to two lines at 230px and the mark must not be
+                  squeezed into an ellipse when it does. 16px against the
+                  label's 14.5px: a hairline glyph reads a size smaller than
+                  text does, and at 15 it disappeared beside the words. */}
+              <MynaIcon name={chosen === n.id ? n.iconOn : n.icon} size={16} className="shrink-0" />
             </button>
           ))}
         </div>

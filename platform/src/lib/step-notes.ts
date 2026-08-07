@@ -21,14 +21,36 @@
  *   clear     → the "keep" signal, so a rewrite doesn't delete what worked
  */
 
+import { type MynaIconName } from "@/components/icons/myna";
+
 export type NoteId = "hard" | "long" | "example" | "wrong" | "clear";
 
-export const NOTES: { id: NoteId; label: string }[] = [
-  { id: "clear", label: "Clear" },
-  { id: "hard", label: "Hard to follow" },
-  { id: "long", label: "Too long" },
-  { id: "example", label: "Needs an example" },
-  { id: "wrong", label: "Something looks wrong" },
+/* Each row carries its own mark, on the right (owner, 2026-08-07). `icon` is a
+ * MynaUI Line name and the row draws its `-solid` twin when it is the answer
+ * given — the same line-at-rest / solid-when-chosen pair the sidebar rows and
+ * the two faces beside this menu use, so the mark says which answer the row is
+ * AND whether it is the one selected. It replaces a tick that could only say
+ * the second of those, in the slot where the first belonged.
+ *
+ * `clipboard` and `danger-triangle` are on purpose the same two marks the
+ * Example and Watch-out callouts draw: one mark per idea across the reader.
+ *
+ * Both names are written out rather than the solid one being built as
+ * `${icon}-solid`: a template literal is a plain string to the compiler, so
+ * that spelling would let a missing twin through to render nothing at all.
+ * Named separately, `MynaIconName` refuses at build time any pair the generator
+ * has not actually emitted. */
+export const NOTES: {
+  id: NoteId;
+  label: string;
+  icon: MynaIconName;
+  iconOn: MynaIconName;
+}[] = [
+  { id: "clear", label: "Clear", icon: "lamp", iconOn: "lamp-solid" },
+  { id: "hard", label: "Hard to follow", icon: "question-circle", iconOn: "question-circle-solid" },
+  { id: "long", label: "Too long", icon: "clock-1", iconOn: "clock-1-solid" },
+  { id: "example", label: "Needs an example", icon: "clipboard", iconOn: "clipboard-solid" },
+  { id: "wrong", label: "Something looks wrong", icon: "danger-triangle", iconOn: "danger-triangle-solid" },
 ];
 
 const KEY = "booklesss:step-notes:v1";
