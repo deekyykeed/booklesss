@@ -836,7 +836,18 @@
        difference is a single point of alpha, invisible as a colour and only
        ever felt as which surface is the one you press. */
     background-color: rgba(255, 255, 255, 0.99);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 12px -4px rgba(0, 0, 0, 0.1);
+    /* ONE SOFT SHADOW, NOT TWO (owner, 2026-08-07: "the shadow is too harsh
+       close to the card itself and it looks like a second border").
+       It was `0 1px 2px rgba(0,0,0,.06)` PLUS a wide one. That first layer is
+       a contact shadow — 1px down, 2px blur, no negative spread — so it draws
+       a dark hairline hugging all four edges, immediately outside a border
+       that is already a hairline. Two parallel lines 1px apart is a double
+       border, which is exactly what it looked like.
+       The wide layer was never the problem and does the whole job on its own:
+       `-10px` of spread pulls it back inside the card's own footprint so it
+       only ever appears BELOW and AWAY from the edge, and the card lifts
+       without anything touching its outline. */
+    box-shadow: 0 10px 28px -10px rgba(0, 0, 0, 0.14);
     transition: box-shadow 0.2s ease, border-color 0.2s ease;
   }
   /* The card lifts only when the pointer is over the one thing that is
@@ -845,7 +856,10 @@
      responds to your pointer is telling you to press it. */
   .course-card:has(.action-bar:hover) {
     border-color: var(--color-line-2);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 20px -6px rgba(0, 0, 0, 0.16);
+    /* The same single soft shadow, lifted — see the rule above for why the
+       tight contact layer is gone from both states. Keeping it here would put
+       the double border back the moment anybody hovered. */
+    box-shadow: 0 14px 32px -10px rgba(0, 0, 0, 0.2);
   }
   /* ---------------------------------------------------------------- *
    * .btn — the app's one button, generalised out of .course-resume.
