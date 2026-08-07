@@ -129,12 +129,21 @@ export function Checkpoint({
           "input" and put a menu surface in the reading column. This is white
           with the house hairline and shadow-lift, so it is still one of the
           containers; only its corner changed.
-          `squircle` is doing real work at a full radius rather than being
-          along for the ride: `corner-shape: superellipse(2.4)` on a 999px
-          radius draws a true squircle with flatter sides, not the stadium a
-          plain border-radius gives. Browsers without `corner-shape` fall back
-          to the stadium, which is the right thing to degrade to. */}
-      <div className="squircle checkpoint-row flex flex-wrap items-center justify-between gap-3 rounded-full border border-[#e7e7e6] bg-white p-1.5 shadow-lift">
+          NO `squircle` ON THIS ONE, and that is a correction rather than an
+          omission (owner, 2026-08-07, with a screenshot: "no, give 999 radius,
+          needs to be circular round"). The note here previously claimed a
+          superellipse at a full radius draws "a true squircle with flatter
+          sides" — right about the mechanism and wrong about the result.
+          `corner-shape: superellipse(2.4)` reshapes the corner toward a
+          RECTANGLE as the radius grows, so 999px plus squircle renders as a
+          box with modest corners, which is the opposite of what a full radius
+          is asked for.
+          The two settings fight: `rounded-full` says "make the ends
+          semicircles" and `superellipse` says "flatten the curve". Every other
+          container in the reader pairs squircle with a MODEST radius (16-24px),
+          where flattening is the whole point and reads as a softer box. At a
+          full radius the plain border-radius is the correct one. */}
+      <div className="checkpoint-row flex flex-wrap items-center justify-between gap-3 rounded-full border border-[#e7e7e6] bg-white p-1.5 shadow-lift">
         <SectionNote lessonId={lessonId} sectionId={checkpointId} />
         <div
           className="grasp-group"
