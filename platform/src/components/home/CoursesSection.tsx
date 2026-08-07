@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   DndContext,
   KeyboardSensor,
@@ -52,6 +52,18 @@ import { courseTone } from "./tones";
 
 type Tab = "active" | "pipeline" | "completed";
 
+/** Left to right, which is both the tab order and the swipe order — swiping
+ *  the panel leftwards moves to the next one along, the way a carousel does.
+ *  One array so the row, the animation's direction and the gesture can never
+ *  disagree about which tab is "next". */
+const TABS: Tab[] = ["active", "pipeline", "completed"];
+
+/** How far a finger must travel before it counts as a swipe rather than a
+ *  tap that wandered. 56px is about a thumb's width — comfortably past the
+ *  8px that starts a card drag, so the two gestures never mean the same
+ *  movement. */
+const SWIPE_PX = 56;
+
 type WithProgress = {
   course: CourseMeta;
   cDone: number;
@@ -76,6 +88,39 @@ export function CoursesSection({
   const { identity } = useIdentity();
   const order = useCourseOrder();
   const [tab, setTab] = useState<Tab>("active");
+  /* Which way the incoming panel should come from. Held rather than derived,
+     because by the time the new panel renders the old tab is gone — the
+     direction is a fact about the TRANSITION, and nothing in the new state
+     remembers it. */
+  const [dir, setDir] = useState<"left" | "right">("left");
+
+  /** Move to `next`, working out which way that is so the panel slides the
+   *  way the reader's eye is already travelling. Later in the row → the panel
+   *  comes in from the right; earlier → from the left. */
+  function goTab(next: Tab) {
+    if (next === tab) return;
+    setDir(TABS.indexOf(next) > TABS.indexOf(tab) ? "left" : "right");
+    setTab(next);
+  }
+
+  /** One step along the row, or nothing at the ends. No wrapping: a carousel
+   *  that loops from Completed back to Active makes the row's left-to-right
+   *  order a lie, and there is no third state for a reader to be surprised
+   *  into — they either move or they are already at the end. */
+  function stepTab(by: 1 | -1) {
+    const next = TABS[TABS.indexOf(tab) + by];
+    if (next) goTab(next);
+  }
+
+  /* THE SWIPE. Tracked on refs rather than state — a touchmove fires dozens
+     of times per gesture and re-rendering a grid of course cards on each one
+     is how a swipe turns into a stutter. Nothing here needs to be rendered
+     until the gesture is over. */
+  const touch = useRef<{ x: number; y: number; live: boolean } | null>(null);
+  /* A card being dragged is also a finger moving sideways. Without this the
+     same movement would reorder a card AND change tab, and the reader would
+     land on a different panel than the one they just rearranged. */
+  const dragging = useRef(false);
 
   const withProgress = useMemo<WithProgress[]>(
     () =>
@@ -172,6 +217,43 @@ export function CoursesSection({
     saveCourseOrder([...reordered, ...orderedCompleted].map((w) => w.course.slug));
   }
 
+  /* Passive listeners, so the browser never waits on this to decide whether
+     the page scrolls. That is also why a vertical-looking gesture is
+     abandoned rather than prevented: `preventDefault` is unavailable here by
+     design, so the only correct move is to get out of the way. */
+  const swipe = {
+    onTouchStart: (e: React.TouchEvent) => {
+      if (dragging.current || e.touches.length !== 1) {
+        touch.current = null;
+        return;
+      }
+      touch.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, live: true };
+    },
+    onTouchMove: (e: React.TouchEvent) => {
+      const t = touch.current;
+      if (!t?.live || dragging.current) return;
+      const dx = e.touches[0].clientX - t.x;
+      const dy = e.touches[0].clientY - t.y;
+      /* Vertical wins ties, and deliberately: this panel is most of a
+         scrolling page, so a gesture that is even slightly more up-and-down
+         than sideways is somebody scrolling past the courses, not switching
+         tabs. Stealing those would make the section feel like it grabs. */
+      if (Math.abs(dy) > Math.abs(dx)) t.live = false;
+    },
+    onTouchEnd: (e: React.TouchEvent) => {
+      const t = touch.current;
+      touch.current = null;
+      if (!t?.live || dragging.current) return;
+      const dx = e.changedTouches[0].clientX - t.x;
+      if (Math.abs(dx) < SWIPE_PX) return;
+      // Dragging the content leftwards reveals what is to its right.
+      stepTab(dx < 0 ? 1 : -1);
+    },
+    onTouchCancel: () => {
+      touch.current = null;
+    },
+  };
+
   const sensors = useSensors(
     // A real press-and-move, not a tap: 8px is enough to tell a drag from a
     // finger landing on the card to press Resume, which sits inside it.
@@ -200,13 +282,32 @@ export function CoursesSection({
           things. */}
       <div role="tablist" className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-5">
-          <CourseTab label="Active" count={orderedActive.length} active={tab === "active"} onClick={() => setTab("active")} />
-          <CourseTab label="Pipeline" count={pipelineTotal} active={tab === "pipeline"} onClick={() => setTab("pipeline")} />
+          <CourseTab label="Active" count={orderedActive.length} active={tab === "active"} onClick={() => goTab("active")} />
+          <CourseTab label="Pipeline" count={pipelineTotal} active={tab === "pipeline"} onClick={() => goTab("pipeline")} />
         </div>
-        <CourseTab label="Completed" count={orderedCompleted.length} active={tab === "completed"} onClick={() => setTab("completed")} />
+        <CourseTab label="Completed" count={orderedCompleted.length} active={tab === "completed"} onClick={() => goTab("completed")} />
       </div>
 
-      <div className="mt-3">
+      {/* `key={tab}` is what REPLAYS the slide. A CSS animation runs when the
+          element mounts, so without a key React reuses this div, swaps the
+          children, and nothing moves. Keying it on the tab makes each panel a
+          new element and every switch a fresh entrance.
+
+          `data-no-swipe` for the reader's drawer, which listens on `window`
+          and skips anything under that attribute. The drawer is not on this
+          page today; putting it here costs nothing and means a shared shell
+          later cannot open a drawer out from under a tab change.
+
+          `touch-pan-y` tells the browser this area scrolls vertically and
+          never horizontally, so it commits to a vertical gesture immediately
+          instead of waiting to see whether we cancel a horizontal one. */}
+      <div
+        key={tab}
+        data-dir={dir}
+        data-no-swipe
+        className="tab-panel mt-3 touch-pan-y"
+        {...swipe}
+      >
         {tab === "active" &&
           (orderedActive.length ? (
             /* `id` IS REQUIRED HERE, NOT OPTIONAL POLISH. Without it dnd-kit
@@ -219,7 +320,25 @@ export function CoursesSection({
               id="course-order"
               sensors={sensors}
               collisionDetection={closestCenter}
-              onDragEnd={onDragEnd}
+              /* The drag flag the swipe reads. Set here rather than inferred
+                 from the touch deltas, because dnd-kit is the only thing that
+                 knows whether its 150ms hold actually elapsed — guessing from
+                 movement alone would either miss slow drags or eat fast
+                 swipes. */
+              onDragStart={() => {
+                dragging.current = true;
+                /* A gesture that turns out to be a drag is no longer a
+                   candidate swipe, even though touchstart already recorded
+                   it. */
+                touch.current = null;
+              }}
+              onDragCancel={() => {
+                dragging.current = false;
+              }}
+              onDragEnd={(e) => {
+                dragging.current = false;
+                onDragEnd(e);
+              }}
             >
               <SortableContext items={orderedActive.map((w) => w.course.slug)} strategy={rectSortingStrategy}>
                 <div className="grid gap-3 md:grid-cols-2">
@@ -310,17 +429,27 @@ function CourseTab({
       role="tab"
       aria-selected={active}
       onClick={onClick}
-      /* SEMIBOLD, BOTH STATES (owner, 2026-08-07: "make the waits of the tab
-         text thicker"). Weight is not what separates the selected tab from
-         the others — colour is, ink against muted — so raising one and not
-         the other would make the row jump as the label re-flows on every
-         switch. `pb-2.5` stays even with the rule gone: it is the gap to the
-         cards, not padding for a border. */
-      className="shrink-0 whitespace-nowrap border-0 bg-transparent pb-2.5 font-display text-[14px] font-semibold leading-5 transition-colors"
+      /* BOLD AND BIGGER, BOTH STATES (owner, 2026-08-07: "make the waits of
+         the tab text thicker" → semibold at 14px, then "increase the weight
+         and size of the tabs, use bold" → 17px bold). At this size they are
+         the largest thing in the section's chrome, which is right: with the
+         "My courses" heading gone these ARE the heading, so they carry the
+         weight it used to.
+
+         Weight stays equal across states on purpose — colour is what marks
+         the selection, ink against muted, so raising only the active tab
+         would re-flow the row every time somebody switched. `pb-2.5` is the
+         gap down to the cards, not padding for a border; the rule is gone. */
+      className="shrink-0 whitespace-nowrap border-0 bg-transparent pb-2.5 font-display text-[17px] font-bold leading-6 tracking-[-0.01em] transition-colors"
       style={{ color: active ? "var(--color-ink)" : "var(--color-muted)" }}
     >
       {label}
-      {count > 0 && <span className="ml-1 font-medium tabular-nums text-placeholder">{count}</span>}
+      {/* The count stays a step down in weight and size — it annotates the
+          label rather than being part of it, and at bold 17 it would read as
+          a second word in the tab's name. */}
+      {count > 0 && (
+        <span className="ml-1.5 text-[14px] font-medium tabular-nums text-placeholder">{count}</span>
+      )}
     </button>
   );
 }

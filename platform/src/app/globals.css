@@ -819,6 +819,66 @@
     letter-spacing: 0.09em;
     color: var(--color-muted);
   }
+
+  /* ---------------------------------------------------------------- *
+   * The courses tab panel, sliding (owner, 2026-08-07: "when i tap i want a
+   * sort of swipe animation on the courses", and "i even want to be able to
+   * swipe on screen to left and right").
+   *
+   * SEPARATE FROM .onboard-step even though the motion is nearly identical.
+   * That one is a question in a linear flow — its "back" means one question
+   * earlier — and these are three peers a reader moves between in either
+   * direction. Sharing the class would mean any future change to onboarding's
+   * pacing silently retuned the dashboard, and the two have no reason to move
+   * together. 24px rather than 18: this panel is a grid of cards a phone-width
+   * across, and the same travel that reads on a single column of options is
+   * barely visible under one.
+   *
+   * NO OPACITY ON THE WAY OUT, because there is no way out — the old panel is
+   * unmounted the instant the tab changes and only the new one animates. A
+   * true cross-fade would need both mounted at once and a container height
+   * that can hold the taller of them, which on lists of 4 and 2 cards means
+   * the page jumping by the difference. One panel entering says the same
+   * thing for none of that cost.
+   * ---------------------------------------------------------------- */
+  @keyframes tabPanelLeft {
+    from {
+      opacity: 0;
+      transform: translate3d(24px, 0, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  @keyframes tabPanelRight {
+    from {
+      opacity: 0;
+      transform: translate3d(-24px, 0, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  .tab-panel {
+    animation: tabPanelLeft 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .tab-panel[data-dir="right"] {
+    animation-name: tabPanelRight;
+  }
+  /* Both the OS preference and the app's own toggle, which is what the
+     :root[data-motion] block near the top of this file switches on. */
+  :root[data-motion="reduced"] .tab-panel,
+  :root[data-motion="reduced"] .tab-panel[data-dir="right"] {
+    animation: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tab-panel,
+    .tab-panel[data-dir="right"] {
+      animation: none;
+    }
+  }
   /* The course cards: one step up from the tiles' 28 — the courses are the
      page's headline cards, and the extra radius says so. relative + hidden
      for the same reason as .dash-stat: the top gradient and the sparkline

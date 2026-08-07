@@ -389,8 +389,16 @@ export function HomeView({
           grid (PendingCourses, deleted). Its whole job — showing the timetable
           we haven't written — is the Pipeline tab now, as real cards rather
           than a collapsed list. Its standing rule about never inventing a
-          build date carried over; see PipelineCard. */}
-      <section id="courses" className="mt-8 scroll-mt-20 pb-10">
+          build date carried over; see PipelineCard.
+
+          mt-14, UP FROM mt-8 (owner, 2026-08-07: "add more space between the
+          stats and where the courses start"). The stats section above ends in
+          a row of four tiles and this one opens on a row of tabs — two bands
+          of small type with nothing between them, so at 32px they read as one
+          continuous block of chrome. The gap is now clearly larger than the
+          gap BETWEEN the tiles, which is what makes it a section break rather
+          than another row. */}
+      <section id="courses" className="mt-14 scroll-mt-20 pb-10">
         <CoursesSection
           mine={mine}
           hydrated={hydrated}
