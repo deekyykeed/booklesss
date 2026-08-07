@@ -99,15 +99,23 @@ export function SourceStrip({ urls }: { urls: string[] }) {
              THE BORDER IS BACK (owner, 2026-08-07: "add a border to the
              source container"), though the shadow it arrived with the first
              time is not — that combination was the thing that overweighted
-             it, not the border on its own. `--color-line-2`, the token this
-             app already uses for pills and tags, so the chip picks up an edge
-             without inventing a new grey next to the tint's own #f6f6f5.
+             it, not the border on its own.
+
+             `--color-line`, NOT `--color-line-2`. It shipped as line-2
+             (#d4d4d4) on the reasoning that that is the app's pills-and-tags
+             token, and the owner's answer was immediate: "its too dark."
+             The token is right for a pill on WHITE, where it has the full
+             surface to contrast against; these sit on a #f6f6f5 tint that has
+             already used up part of that distance, so the same grey reads a
+             step heavier here than it does anywhere else it is used. #dfdfdf
+             gives the pill its edge without the row of them competing with
+             the sentence above.
 
              The tint is a hair off white (#f6f6f5), not the #eeeeec it was for
              one revision — that read as a grey block sitting ON the page rather
              than as part of it. It only has to be far enough from the surface
              to show the pill's shape. */
-          className="flex shrink-0 items-center gap-1 rounded-full border border-[color:var(--color-line-2)] bg-[#f6f6f5] py-0.5 pl-0.5 pr-2 text-[11px] leading-4 text-[#7a7a82] transition-colors hover:bg-[#ededeb] hover:text-ink"
+          className="flex shrink-0 items-center gap-1 rounded-full border border-line bg-[#f6f6f5] py-0.5 pl-0.5 pr-2 text-[11px] leading-4 text-[#7a7a82] transition-colors hover:bg-[#ededeb] hover:text-ink"
         >
           {/* Round, whatever shape the site's own mark is. Most favicons are
               squares with their own padding, so a circular crop of one reads

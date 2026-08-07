@@ -23,7 +23,6 @@ import { OTHER_PROGRAMME, normTitle } from "@/lib/curriculum-text";
 import { useIdentity } from "@/lib/identity";
 import { applyOrder, saveCourseOrder, useCourseOrder } from "@/lib/course-order";
 import { pendingCourses, programmeBySlug } from "@/lib/programmes";
-import { SETTINGS_EVENT } from "@/components/identity/pickers";
 import type { CourseMeta } from "@/lib/courses";
 import type { StudyDay } from "@/lib/progress";
 import { CourseCard } from "./CourseCard";
@@ -183,22 +182,23 @@ export function CoursesSection({
 
   return (
     <>
-      <div className="flex items-center justify-between gap-3">
-        <h2 className="dash-heading">{identity?.courses.length ? "My courses" : "All courses"}</h2>
-        <button
-          type="button"
-          onClick={() =>
-            window.dispatchEvent(new CustomEvent(SETTINGS_EVENT, { detail: { step: "courses" } }))
-          }
-          className="text-[13px] font-medium text-muted transition-colors hover:text-ink"
-        >
-          Change
-        </button>
-      </div>
+      {/* NO HEADING AND NO "CHANGE" (owner, 2026-08-07: "remove that mycourses
+          and the change form the app"). The heading said "My courses" over a
+          row of course cards, which is the one thing a row of course cards
+          cannot be mistaken for; the tabs under it already name what is being
+          shown, more precisely than the heading did. "Change" opened the
+          settings sheet on its courses row — still reachable there, and the
+          sheet is where every other answer is edited, so this was a second
+          door onto one screen rather than the only door.
 
-      {/* Active + Pipeline grouped left, Completed alone on the right — see
-          the file note on why the split falls there rather than evenly. */}
-      <div role="tablist" className="mt-4 flex items-center justify-between gap-3 border-b border-line">
+          Active + Pipeline grouped left, Completed alone on the right — see
+          the file note on why the split falls there rather than evenly.
+
+          NO RULE UNDER THE ROW (same call: "dont need the divider below the
+          tabs"). It was drawing a line between the tabs and the cards they
+          filter, which is the one place a border says these are two separate
+          things. */}
+      <div role="tablist" className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-5">
           <CourseTab label="Active" count={orderedActive.length} active={tab === "active"} onClick={() => setTab("active")} />
           <CourseTab label="Pipeline" count={pipelineTotal} active={tab === "pipeline"} onClick={() => setTab("pipeline")} />
@@ -310,11 +310,17 @@ function CourseTab({
       role="tab"
       aria-selected={active}
       onClick={onClick}
-      className="shrink-0 whitespace-nowrap border-0 bg-transparent pb-2.5 font-display text-[14px] font-medium leading-5 transition-colors"
+      /* SEMIBOLD, BOTH STATES (owner, 2026-08-07: "make the waits of the tab
+         text thicker"). Weight is not what separates the selected tab from
+         the others — colour is, ink against muted — so raising one and not
+         the other would make the row jump as the label re-flows on every
+         switch. `pb-2.5` stays even with the rule gone: it is the gap to the
+         cards, not padding for a border. */
+      className="shrink-0 whitespace-nowrap border-0 bg-transparent pb-2.5 font-display text-[14px] font-semibold leading-5 transition-colors"
       style={{ color: active ? "var(--color-ink)" : "var(--color-muted)" }}
     >
       {label}
-      {count > 0 && <span className="ml-1 tabular-nums text-placeholder">{count}</span>}
+      {count > 0 && <span className="ml-1 font-medium tabular-nums text-placeholder">{count}</span>}
     </button>
   );
 }
