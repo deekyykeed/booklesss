@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-06 (session 48)
+**Last updated:** 2026-08-07 (session 49)
 
 ---
 
@@ -91,6 +91,34 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 49 (2026-08-07, the social day — five slots off a seventeen-commit
+ship). Linear unreachable for the SIXTH session running.**
+- [ ] ⚠️ **A FINISHED COURSE CARD LOOKS LIKE AN UNTOUCHED ONE.** It still says
+      "Resume", still points at the first step, still shows a performance score
+      rather than a completion, and its streak reads 0d — the only thing that
+      says "done" is the resume button's fill being full. The Completed tab
+      shipped today and this is the card it draws. Caught photographing it: the
+      afternoon carousel's third slide reads as "not touched lately" as easily
+      as "finished", and no caption can fix that under the no-copy rule.
+- [ ] **`Demand/social/_source/ref-0807/` is untracked on purpose** — recon
+      screenshots, not the recipe. Delete it or leave it; nothing reads it.
+- [ ] **The checkpoint faces are 128×128 PNGs, and that is what caps the poster
+      framing.** One face alone fills the frame properly and is visibly soft at
+      10×; the pair is sharp and sits as a band. Both sets are shot and the
+      pair shipped. The Lottie the reader is already moving to (`82115ae`,
+      `c487bb2`) makes the question go away — vector scales.
+- [ ] **The wordmark's easy plate angles are SPENT.** Sixteen plates already
+      cover the word as a field (`15-field`), cut out of a ground
+      (`16-knockout`), plain on the gradient (`01-mark-light`) and the three
+      s's blown up (`12-macro-sss`). Four plates written today were those
+      four under new names and were thrown away before rendering. Read the list
+      in `logo-variants.mjs` before writing a new one. Fresh this session:
+      `28`–`31` (the disc as the app icon) and `36`,`37`,`39`,`40` (the
+      wordmark) — all eight went out today, so the reserve is spent again.
+- [ ] ⚠️ **Raise BOO issues for sessions 44 through 49.** `linear-server` needs
+      a one-time interactive OAuth and every one of those sessions was
+      non-interactive. Six sessions of work recorded in this file only.
 
 **From session 48 (2026-08-06, the front door rebuilt from the Framer design).
 Linear unreachable again — five sessions now with no issues raised.**
@@ -987,6 +1015,59 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-07 (session 49 — five slots, and two capture bugs that fail silently)
+
+*A parallel session worked `platform/` and `step-skill` all day and had not
+wrapped when this one did; its `course.mjs` and `start-here.mjs` changes were
+left uncommitted rather than swept in. Numbered 49 on the basis that 48 was the
+last entry in this file at the time.*
+
+**Done:**
+- Five social slots for 2026-08-07, all rendered and pushed as recipe (PNGs are
+  gitignored): the checkpoint's two drawn answers, the section-note menu's five
+  marks, the course card's three lives, and two plate slots — the ◯B disc as
+  the app icon, and the wordmark with the two marks finally shown together.
+- Shipped one product fix to unblock a post: `PipelineCard`'s foot line was
+  `truncate` and clipped its own sentence at every mobile width. Now
+  `line-clamp-2` (`b1447d9`).
+- Eight new brand plates (`28`–`31`, `36`,`37`,`39`,`40`) in
+  `logo-variants.mjs`, and three neutral pipeline course titles in
+  `neutralize.mjs`.
+- Two capture rules folded into `daily-post/RULES.md`, plus a third about
+  raster assets capping how close a frame can go.
+
+**What Worked:**
+- **Bisecting a silent failure across contexts in one script.** The checkpoint
+  tap not landing produced no error and a perfectly plausible screenshot; five
+  seed/identity permutations in one Playwright run isolated it to a single line
+  in about two minutes, after two full capture runs had failed blind.
+- **`expect:` on the isolate.** It is the only reason either capture bug was
+  noticed at all — both produce a correct-looking picture of the wrong state.
+- **`ONLY=` on the capture script.** The subject moved twice while the post was
+  being built; re-shooting one section rather than all four is what made a
+  second and third pin affordable.
+- **Reading the existing plate list before writing new ones** — after writing
+  four that were already in it under different names.
+
+**Dead Ends (do not retry):**
+- **`Math.random = () => 0.42` in an `addInitScript` on any page that must be
+  CLICKED.** Copied from `cap-0806.mjs`, where it pins the greeting's line and
+  nothing is clicked. It stops every React event handler doing its work: no
+  error, no timeout, the store never changes. Proved by bisection.
+- **Relabelling (`transform`) before an interaction.** It rewrites text nodes in
+  place, React reconciles against a tree it no longer owns, and the tap updates
+  the store while the visible DOM stays put. Navigate raw, click, relabel at the
+  shutter — `raw()` in `cap-0807.mjs`.
+- **Blowing a 128×128 raster up 10× for a poster.** The single-face frame is the
+  better composition and is visibly soft; sharp-and-flatter shipped.
+- **Reading the course card's percentage as progress.** It is a PERFORMANCE
+  score — a course with nothing done reads 65%. Half an hour was spent chasing
+  a seed bug that did not exist.
+- **A plate whose idea is "the mark at its real size".** `38-bk-stamp` is the
+  wordmark at 31px alone in the frame: a good thought and an empty poster.
+
+---
 
 ### Session 2026-08-06 (session 48 — the front door is the Framer design, and the auth pages become the onboarding page)
 

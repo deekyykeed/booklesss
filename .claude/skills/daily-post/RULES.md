@@ -175,6 +175,23 @@ rest from something dateless:
 
   So when picking four, say out loud what each one is FOR. If two of them need
   the same sentence, one of them is padding — swap it, or build a new plate.
+
+  **READ THE EXISTING PLATE LIST BEFORE WRITING A NEW ONE.** A five-letter
+  wordmark has fewer angles than it looks, and sixteen plates has already spent
+  the obvious ones: the word as a repeated field is `15-field`, cut out of a
+  solid ground is `16-knockout`, plain on the gradient is `01-mark-light`, the
+  three s's blown past the frame is `12-macro-sss`. On 2026-08-07 four "new"
+  plates were authored and thrown away on inspection because they were those
+  four under different names — an hour spent re-inventing the reserve. The new
+  ideas that survived that check were the ones asking a question nothing had
+  asked: the mark at every size it ships at, the word tracked out until it is a
+  rule, the word cut horizontally rather than at the sides, and the disc beside
+  the wordmark (which, after 27 plates, had never been in one frame).
+
+  **A plate can also die on the picture rather than on the idea.** "The mark at
+  its true 31px corner size, alone in the frame" is a genuinely new thought and
+  renders as an empty poster — rule 8's *fill the box, don't float in it*, from
+  the other direction. Render it and look before counting it.
 - **a product component that has not been posted yet.**
 - **a product component already posted, on a DIFFERENT AXIS.** Legitimate and
   with precedent: the `cards` block went out on 2 Aug at three *kinds* and on
