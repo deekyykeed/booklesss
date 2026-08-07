@@ -1514,9 +1514,16 @@
     color: var(--grasp-tone);
   }
   /* Once something is answered the rest recede — still there to change your
-     mind with, no longer competing with the answer you gave. */
+     mind with, no longer competing with the answer you gave.
+     0.8, NOT the 0.55 this was (2026-08-07). That number was set when both
+     answers were hairline glyphs of the same weight, where the only way to
+     say "this is not the one you picked" was to take some of it away. The
+     answers are drawn faces now and the unpicked one is ALREADY the colourless
+     version of itself, so 0.55 was a second recession stacked on a first: the
+     owner, reading on a phone, "the other icon is way too dim". Colour does
+     the work; this only has to stop the two reading as equals. */
   .grasp-group[data-answered] .grasp-btn:not([data-active]) {
-    opacity: 0.55;
+    opacity: 0.8;
   }
   .grasp-group[data-answered] .grasp-btn:not([data-active]):hover {
     opacity: 1;

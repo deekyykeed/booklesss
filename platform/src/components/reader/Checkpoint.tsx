@@ -164,30 +164,34 @@ export function Checkpoint({
                     Unoptimised: next/image would re-encode the GIF and drop
                     every frame but one. These are already sized and already
                     small, so they are served as they are. */}
-                {/* Grey until it is the answer given, then its own colour, so
-                    colour arriving IS the answer landing — the same signal the
-                    line/solid glyph swap carried before, made the only way it
-                    can be made on artwork, which takes no `color`.
-                    INLINE rather than in globals.css with the other .grasp-*
-                    rules, which is where it belongs: on 2026-08-07 a parallel
-                    session had a finished, staged change to that file, and one
-                    class is not worth committing somebody else's work under
-                    this commit's message. Fold it in there when that lands —
-                    and take the chance to add the desktop hover-to-colour that
-                    an inline style cannot express. */}
+                {/* Colour arriving IS the answer landing — the same thing the
+                    line/solid glyph swap used to say, made the only way it can
+                    be made on artwork, which takes no `color`.
+                    A THIRD FILE, not a CSS filter. The first cut did this with
+                    `grayscale(1)` and `opacity: .5`, and the owner on a phone:
+                    "the other icon is way too dim … is there a way to just
+                    remove that orange colour on them and then when tapped they
+                    do their little animation and get back the orange?" That is
+                    exactly right, and a filter cannot do it: grayscale and
+                    opacity hit the black line work as hard as the orange fill,
+                    so the face did not lose its colour, it faded out.
+                    `-rest.png` is the last frame with every pixel above a
+                    luminance threshold flattened to #ededf0 and everything
+                    below it to the ink — the drawing at full strength, the fill
+                    gone. It draws at full opacity, so the two answers sit level
+                    with each other and with the type beside them.
+                    (When the Lottie lands this becomes the `colors` attribute
+                    and the three files collapse back to one. That is the whole
+                    argument for lord-icon: this is a build step for something
+                    that ought to be a parameter.) */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   key={active ? "on" : "off"}
-                  src={`/reader/${a.art}.${active ? "gif" : "png"}`}
+                  src={`/reader/${a.art}${active ? ".gif" : "-rest.png"}`}
                   alt=""
                   width={26}
                   height={26}
                   draggable={false}
-                  style={{
-                    filter: active ? "none" : "grayscale(1)",
-                    opacity: active ? 1 : 0.5,
-                    transition: "filter 160ms ease, opacity 160ms ease",
-                  }}
                 />
                 <span className="grasp-label">{a.label}</span>
               </button>
