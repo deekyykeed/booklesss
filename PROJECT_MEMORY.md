@@ -99,13 +99,17 @@ Linear unreachable again — five sessions now with no issues raised.**
       sign-in is already OFF in production so nothing regresses today, but
       turning it back on needs either a footer on `/` or a different
       verification URL. This is now the blocker on that whole thread.
-- [ ] ⚠️ **BURBANK BIG CONDENSED IS NOT LICENSED AND IS NOW ON THE APP'S TEXT
-      LOGO.** Font Bureau retail; the woff2 has been in `platform/src/fonts/`
-      since it drew the old logo with nothing recording a purchase, unlike
-      Satoshi. It is on `TopBar`, on the hero lockup, and on the new
-      `Brand/booklesss-disc.*` candidate. Adopting it means buying the WEB
-      licence, and logo use is frequently a separate grant again. Settle before
-      it reaches an app icon or print.
+- [ ] ⚠️ **BURBANK BIG CONDENSED IS STILL NOT LICENSED, and it reached the app
+      icon anyway (2026-08-07: "ship it now anyway").** Font Bureau retail; the
+      woff2 has been in `platform/src/fonts/` since it drew the old logo with
+      nothing recording a purchase, unlike Satoshi. Was on `TopBar` and the
+      hero lockup; is now ALSO the favicon, apple-icon and PWA manifest icons
+      (`platform/scripts/gen-disc-icons.py`, sourced from
+      `Brand/booklesss-disc-1024.png`) — live in every browser tab and every
+      installed home screen. Adopting it means buying the WEB licence, and
+      logo use is frequently a separate grant again; shipping the icon did not
+      settle that, only defer it. Settle before it reaches print or an
+      app-store listing.
 - [ ] ⚠️ **"Join 67+ members" IS NOT A REAL NUMBER.** It starts at a constant
       and only goes up; a visitor reads it as live sign-ups. `students` is a
       real table — a server component reading `count` on an ISR revalidate puts

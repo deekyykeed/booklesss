@@ -49,7 +49,7 @@ enlarging either turned it to mush — there was no detail in the file to enlarg
   two drift, the browser tab and this folder carry visibly different logos.
 - **Aspect** 3.96 : 1 for the logo.
 
-## The disc — on trial, not adopted
+## The disc — the app icon now, the logo still not
 
 | File | Size | Use |
 |------|------|-----|
@@ -64,22 +64,29 @@ curve. It is the mark the landing page wears, saved here on the owner's ask
 it out and see if i can replace it as the new one later — just the circular
 one."*
 
-**Nothing points at these files.** The rule at the top of this README still
-stands — the logo is the word — and it stands until the owner replaces it, not
-until someone finds a disc in this folder and assumes it won.
+**These files are now the app's icon** — favicon, apple-icon, and the PWA
+manifest set, wired in 2026-08-07 by `platform/scripts/gen-disc-icons.py`
+(owner: *"ship it now anyway"*, asked directly about the licence risk below).
+The rule at the top of this README — the logo is the word — still stands for
+the WORDMARK: nothing here replaces `booklesss-wordmark-*` or `booklesss-icon-*`,
+and TopBar and the hero lockup are untouched. Only the small square marks a
+browser tab or a home screen actually draws changed.
 
 Geometry is measured off the live page rather than re-derived: a 50px circle,
 the B at font-size 40 on a baseline at y=35, a 5px rule 10px below it, all
 clipped by the circle. Those two numbers come from a screenshot, because which
 ascender a browser picks for a line box is not a thing to guess at.
 
-⚠️ **It is set in Burbank Big Condensed, which this repo has no licence for.**
-Font Bureau retail. The `.woff2` has been in `platform/src/fonts/` since it drew
-the old logo, with nothing recording a purchase — unlike Satoshi, whose licence
-is written down. Looking at it costs nothing. **Adopting it means buying the web
-licence, and foundries commonly treat logo use as a separate grant again.**
-Settle that before it replaces anything: a mark is the one asset that is
-expensive to change late.
+⚠️ **It is set in Burbank Big Condensed, which this repo STILL has no licence
+for.** Font Bureau retail. The `.woff2` has been in `platform/src/fonts/` since
+it drew the old logo, with nothing recording a purchase — unlike Satoshi, whose
+licence is written down. **Adopting it means buying the web licence, and
+foundries commonly treat logo use as a separate grant again** — that has not
+happened, and shipping the icon did not settle it, only defer it. A mark is
+the one asset that is expensive to change late, and this one is now live in
+every browser tab and every installed home screen. Settle the licence — or
+redraw the glyph in a face this repo already owns — before it goes anywhere
+else (print, an app-store listing, anything with the icon's own review).
 
 ## Why the icon has a tile and the logo does not
 
