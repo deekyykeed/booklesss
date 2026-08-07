@@ -42,8 +42,10 @@ import {
 import { Button } from "@/components/ui/Button";
 import { FIELD } from "@/components/ui/Field";
 import { WhatsAppMark } from "@/components/icons/whatsapp";
+import { MynaIcon } from "@/components/icons/myna";
 import { AvatarPicker } from "@/components/identity/AvatarPicker";
 import { type AvatarId } from "@/components/identity/avatars";
+import { useInstall } from "@/lib/install";
 
 /* ------------------------------------------------------------------ *
  * Onboarding — three questions, asked straight after the account is made.
@@ -171,6 +173,7 @@ type Step =
   | "whatsapp"
   | "target"
   | "window"
+  | "install"
   | "heard";
 
 /**
@@ -207,6 +210,15 @@ type Step =
  * find out. What changed is what the screen ASKS. It arrives with the answer
  * already in it — their year's courses ticked, or what their classmates
  * reported offered — so the work is confirming, not building.
+ *
+ * "install" IS DATA-DEPENDENT TOO, and in the same sense as "year" and
+ * "semester" — asked only where there is something to ask (owner, 2026-08-07:
+ * "during onboarding please prompt user to install the app"). Placed ahead of
+ * "heard" rather than after it so "heard" stays truly the last question: a
+ * student who is never offered install (already running standalone, or a
+ * browser with no install story at all) never sees a gap where it would have
+ * been, and one who is sees it as one more thing before the last one, not
+ * after it.
  */
 const ORDER: Step[] = [
   "you",
@@ -218,6 +230,7 @@ const ORDER: Step[] = [
   "whatsapp",
   "target",
   "window",
+  "install",
   "heard",
 ];
 
@@ -359,37 +372,51 @@ function asDraft(identity: Identity | null): Draft {
  *
  * A screen naming its own next step is a decision duplicated once per screen.
  * This is the list; nothing else gets an opinion.
+ *
+ * `installOK` IS THE THIRD DATA SOURCE, alongside the draft and the programme
+ * — it comes from `useInstall()`, not from anything saved, because whether
+ * there is something to offer is a fact about the BROWSER (a fired
+ * `beforeinstallprompt`, or iOS) rather than about the student. Threaded
+ * through the same three callers as `prog` for the same reason `prog` is:
+ * one predicate deciding for everyone downstream, not a question each caller
+ * answers for itself.
  */
-function asks(step: Step, d: Draft, prog: Programme | undefined): boolean {
+function asks(step: Step, d: Draft, prog: Programme | undefined, installOK: boolean): boolean {
   if (step === "year") return !prog || prog.years.length > 0;
   if (step === "semester") return semestersFor(prog, d.year).length > 1;
+  if (step === "install") return installOK;
   return true;
 }
 
 /** The next question this student is actually asked, skipping any that do not
  *  apply. The last one answers itself — `finish` leaves for the dashboard. */
-function stepAfter(from: Step, d: Draft, prog: Programme | undefined): Step {
+function stepAfter(from: Step, d: Draft, prog: Programme | undefined, installOK: boolean): Step {
   for (let i = ORDER.indexOf(from) + 1; i < ORDER.length; i++) {
-    if (asks(ORDER[i], d, prog)) return ORDER[i];
+    if (asks(ORDER[i], d, prog, installOK)) return ORDER[i];
   }
   return ORDER[ORDER.length - 1];
 }
 
 /** The previous one they were actually asked. Back has to skip exactly what
  *  forward skipped, or it lands on a card with nothing in it. */
-function stepBefore(from: Step, d: Draft, prog: Programme | undefined): Step {
+function stepBefore(from: Step, d: Draft, prog: Programme | undefined, installOK: boolean): Step {
   for (let i = ORDER.indexOf(from) - 1; i >= 0; i--) {
-    if (asks(ORDER[i], d, prog)) return ORDER[i];
+    if (asks(ORDER[i], d, prog, installOK)) return ORDER[i];
   }
   return ORDER[0];
 }
 
 /** Which question to open on — the first without an answer, over whichever
  *  steps this student is actually being asked. Mirrors lib/identity's
- *  `firstUnanswered` and extends it over the data-dependent ones. */
-function firstGap(d: Draft, steps: Step[], prog: Programme | undefined): Step {
+ *  `firstUnanswered` and extends it over the data-dependent ones.
+ *
+ *  Note that "install" has no case below, deliberately — there is nothing
+ *  saved to check it against, so it is never the answer this returns. A
+ *  student resuming a half-finished record is resuming the DATA questions;
+ *  install is only ever reached by moving forward through the live flow. */
+function firstGap(d: Draft, steps: Step[], prog: Programme | undefined, installOK: boolean): Step {
   for (const s of steps) {
-    if (!asks(s, d, prog)) continue;
+    if (!asks(s, d, prog, installOK)) continue;
     if (s === "you" && !d.name.trim()) return s;
     if (s === "school" && (!d.school || (d.school === OTHER_SCHOOL && !d.schoolName.trim()))) return s;
     /* Same shape as the school question above it: picking "not listed" is not
@@ -436,6 +463,20 @@ export function OnboardingFlow() {
   const [stepPick, setStepPick] = useState<Step | null>(null);
   const [dir, setDir] = useState<"next" | "back">("next");
   const [query, setQuery] = useState("");
+  /* Called once, here, rather than inside the "install" step itself. The
+     hook's own listener has to be live for the WHOLE flow — Chrome can fire
+     `beforeinstallprompt` at any point while the student is answering the
+     other nine questions, and it fires exactly once, so a listener that only
+     mounted when they reached this step would miss every event that arrived
+     before it. */
+  const { canInstall, showIosHelp, install } = useInstall();
+  /** Whether there is anything to offer at all — the one thing `asks()` needs
+   *  to know about this browser. */
+  const installOK = canInstall || showIosHelp;
+  /** The native prompt is a modal the OS draws; this is only for the moment
+   *  between tapping and it resolving, so the button says something rather
+   *  than sitting there looking unpressed. */
+  const [installing, setInstalling] = useState(false);
   /* What earlier students on this programme reported, and the pipeline's own
      titles as a typeahead. Both start empty and stay empty when there is no
      server — see the effects below. */
@@ -508,7 +549,7 @@ export function OnboardingFlow() {
    * moves nothing. After the first advance `stepPick` is set and this is not
    * consulted at all.
    */
-  const step = stepPick ?? (hydrated ? firstGap(asDraft(identity), ORDER, prog) : "school");
+  const step = stepPick ?? (hydrated ? firstGap(asDraft(identity), ORDER, prog, installOK) : "school");
 
   /** Whether this student is on the typed path — no curriculum on file for
    *  their programme, so their answers are the curriculum. The majority case;
@@ -725,7 +766,7 @@ export function OnboardingFlow() {
        Back would otherwise land on the previous question and then get dragged
        forward again by a timer the student can't see. */
     cancelAdvance();
-    goTo(stepBefore(step, d, prog), "back");
+    goTo(stepBefore(step, d, prog, installOK), "back");
   }
 
   /* The pending tap-to-advance, so it can be called off. */
@@ -762,7 +803,7 @@ export function OnboardingFlow() {
        here would decide the next question against the PREVIOUS degree — which
        is the same one-answer-behind bug the `patch` argument on `save` exists
        to prevent. */
-    const next = stepAfter(step, { ...d, ...patch }, nextProg);
+    const next = stepAfter(step, { ...d, ...patch }, nextProg, installOK);
     afterBeat(() => goTo(next));
   }
 
@@ -1484,6 +1525,80 @@ export function OnboardingFlow() {
                 onward({ studyWindow: w });
               }}
             />
+          </Card>
+        )}
+
+        {step === "install" && (
+          <Card
+            /* ONE SCREEN, TWO STORIES — Chrome/Android gets a real button that
+               fires the OS install dialog; iOS gets directions, because Safari
+               has no API to trigger from here at all. `asks()` is what keeps a
+               THIRD case — nothing to offer — from ever reaching this render,
+               so there is no branch here for "neither": if this is on screen,
+               one of the two is true. */
+            title={canInstall ? "Install Booklesss on your phone" : "Add Booklesss to your home screen"}
+            why={
+              canInstall
+                ? "One tap, and it opens like an app from here on — no browser bar."
+                : "In Safari, tap the Share button, then “Add to Home Screen.” Ten seconds, and it opens like an app from here on."
+            }
+            actions={
+              <div className="flex flex-col gap-2">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  block
+                  /* An arrow says "continue"; installing is an action, not a
+                     step, so it earns one only on the iOS card, where the
+                     button really is just moving on past what was just read. */
+                  arrow={!canInstall}
+                  busy={installing}
+                  onClick={async () => {
+                    if (canInstall) {
+                      /* The OS draws its own modal here — `install()` doesn't
+                         resolve until the student has answered IT, which can be
+                         several seconds either way. `busy` is what stops the
+                         button looking unpressed for that whole stretch. Moving
+                         on afterwards regardless of `accepted` vs `dismissed`:
+                         a "no thanks" to Chrome's dialog is still an answer to
+                         OUR question, not a reason to ask it again. */
+                      setInstalling(true);
+                      await install();
+                      setInstalling(false);
+                    }
+                    onward();
+                  }}
+                >
+                  {canInstall ? (installing ? "Waiting on you" : "Install the app") : "Continue"}
+                </Button>
+                {/* No skip on the iOS card — there is nothing to skip, since
+                    tapping Continue there doesn't attempt anything the student
+                    could decline. Chrome's card gets one because tapping
+                    Install raises a real OS dialog asking permission, and a
+                    student entitled to say no to THAT is entitled to not be
+                    asked at all. */}
+                {canInstall && (
+                  <Button variant="secondary" size="md" block onClick={() => onward()}>
+                    Not now
+                  </Button>
+                )}
+              </div>
+            }
+          >
+            <div className="flex flex-col gap-3">
+              {[
+                "Opens straight to your dashboard, no browser bar",
+                "Lessons you've saved open with no signal",
+                "Sits on your home screen like any other app",
+              ].map((line) => (
+                <div key={line} className="flex items-start gap-2.5">
+                  <span className="mt-0.5 shrink-0 text-ink-2">
+                    <MynaIcon name="check" size={16} />
+                  </span>
+                  <p className="text-[14px] leading-5 text-ink-2">{line}</p>
+                </div>
+              ))}
+            </div>
           </Card>
         )}
 
