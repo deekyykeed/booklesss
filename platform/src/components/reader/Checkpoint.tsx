@@ -167,32 +167,59 @@ export function Checkpoint({
                 {/* Colour arriving IS the answer landing — the same thing the
                     line/solid glyph swap used to say, made the only way it can
                     be made on artwork, which takes no `color`.
-                    A THIRD FILE, not a CSS filter. The first cut did this with
-                    `grayscale(1)` and `opacity: .5`, and the owner on a phone:
-                    "the other icon is way too dim … is there a way to just
-                    remove that orange colour on them and then when tapped they
-                    do their little animation and get back the orange?" That is
-                    exactly right, and a filter cannot do it: grayscale and
-                    opacity hit the black line work as hard as the orange fill,
-                    so the face did not lose its colour, it faded out.
                     `-rest.png` is the last frame with every pixel above a
                     luminance threshold flattened to #ededf0 and everything
-                    below it to the ink — the drawing at full strength, the fill
-                    gone. It draws at full opacity, so the two answers sit level
-                    with each other and with the type beside them.
-                    (When the Lottie lands this becomes the `colors` attribute
-                    and the three files collapse back to one. That is the whole
-                    argument for lord-icon: this is a build step for something
-                    that ought to be a parameter.) */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  key={active ? "on" : "off"}
-                  src={`/reader/${a.art}${active ? ".gif" : "-rest.png"}`}
-                  alt=""
-                  width={26}
-                  height={26}
-                  draggable={false}
-                />
+                    below it to the ink: the drawing at full strength, the fill
+                    gone. A CSS filter cannot do that — grayscale and opacity
+                    hit the black line work exactly as hard as the orange, so
+                    the face does not lose its colour, it fades towards the
+                    page ("the other icon is way too dim", owner, 2026-08-07).
+
+                    TWO STILLS STACKED AND CROSS-FADED, and no animation at all
+                    for now. Both of those are the same bug, reported the same
+                    day: "when you tap, they disappear and do a reveal after a
+                    weird length of time."
+                    · The GAP was mine. Swapping `src` on a re-keyed element
+                      unmounts the image and mounts a new one, which then has to
+                      fetch and decode 110KB before it can paint anything.
+                      Stacked, both files are loaded at mount and the tap is a
+                      pure opacity change with nothing to wait for.
+                    · The REVEAL was the wrong animation. Those GIFs were
+                      exported from Lordicon's `in-reveal` state, which plays
+                      when an icon APPEARS and so begins from an empty frame by
+                      design — owner: "the mistake i made was having the icons
+                      in-reveal instead of on hover or on taps". A GIF bakes
+                      that choice into pixels.
+                    So the animation comes back with the Lottie, not before, and
+                    it comes back correct: one file holds every state, `state`
+                    picks the hover one, `colors` does what these three files do.
+                    `scripts/lord-states.mjs` prints what a given file actually
+                    carries, so the state name is read rather than guessed. */}
+                <span
+                  className="relative block"
+                  style={{ width: 26, height: 26 }}
+                  aria-hidden="true"
+                >
+                  {[
+                    { src: `/reader/${a.art}-rest.png`, on: !active },
+                    { src: `/reader/${a.art}.png`, on: active },
+                  ].map((layer) => (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      key={layer.src}
+                      src={layer.src}
+                      alt=""
+                      width={26}
+                      height={26}
+                      draggable={false}
+                      className="absolute inset-0"
+                      style={{
+                        opacity: layer.on ? 1 : 0,
+                        transition: "opacity 140ms ease",
+                      }}
+                    />
+                  ))}
+                </span>
                 <span className="grasp-label">{a.label}</span>
               </button>
             );

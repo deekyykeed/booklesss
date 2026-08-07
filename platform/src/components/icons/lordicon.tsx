@@ -30,9 +30,24 @@ import { useEffect, useState } from "react";
  * ADDING ONE:
  *   1. Lordicon → the icon → Download → Lottie (.json)
  *   2. save it as `platform/public/reader/icons/<meaning>.json`
- *   3. use `<LordIcon name="<meaning>" …>`
+ *   3. `node scripts/lord-states.mjs` — it prints the states that file has
+ *   4. use `<LordIcon name="<meaning>" state="<one of those>" …>`
  * There is no generator here, unlike myna.tsx: these are files served as
  * files, so nothing has to be inlined and nothing has to be kept in step.
+ *
+ * ⚠️ STEP 3 IS NOT OPTIONAL, AND IT IS THE ONE THAT HAS ALREADY COST SOMETHING.
+ * An icon is not one animation. It is several, held in the same file as named
+ * markers — `in-reveal`, `hover-smile`, `hover-pinch` — and `state` picks
+ * between them. **The player falls back to the default state when a name does
+ * not match, silently**, so a guessed name does not fail, it plays the wrong
+ * thing.
+ * `in-reveal` is the trap. It is what Lordicon previews first and it plays when
+ * an icon APPEARS, so it begins from an empty frame. On a control that is
+ * already on screen it reads as the icon vanishing and rebuilding itself. That
+ * is what the checkpoint faces did as GIFs, and it is why they are stills right
+ * now — owner, 2026-08-07: "the mistake i made was having the icons in-reveal
+ * instead of on hover or on taps." **For anything the reader taps, take a
+ * `hover-` state and set `trigger="click"`.**
  *
  * ⚠️ LICENCE, UNSETTLED. Lordicon's free tier requires attribution, its paid
  * tiers do not. Nothing in this repo records which applies here. That is the
