@@ -318,9 +318,31 @@ export default function LandingPage() {
 
           {/* ---- the one thing to do ----
               A black pill inside a lighter one: the outer gradient is the rim,
-              the inner is the button. It arrives a full second after the rest,
-              which is the design's timing and not an accident — the page
-              finishes settling, then offers the tap.
+              the inner is the button.
+
+              USED TO ARRIVE A FULL SECOND AFTER THE REST, on the Framer file's
+              own timing — the page finishes settling, THEN offers the tap.
+              Owner, 2026-08-07, watching it live: "the button awkwardly comes
+              in later than it should... and its slower." Both complaints are
+              the same gap. Everything above it is fully in by ~1.0s (the
+              faces and the last headline word both land there), so a 1s delay
+              plus a 1s rise of its own meant nothing moved on screen for a
+              beat, and then the one element built to be NOTICED took twice as
+              long as any other to do it — on cubic-bezier(0.44, 0, 0.56, 1),
+              an ease-IN-out that leaves the rest of the row's fast-out curve
+              for a slow, symmetric one.
+
+              Now: delay 0.45s, so it starts moving while the headline and the
+              two quiet lines under it are still settling rather than after —
+              a cascade, not a relay race with a baton drop in the middle.
+              Duration 0.7s, matching Trusted-by and the subtitle rather than
+              doubling them. No `--rise-ease` override, so it falls through to
+              `.hero-in`'s own default — the fast-out curve everything else on
+              the page already uses; the slow ease-in-out was the other half
+              of why this one element read as a different kind of motion.
+              `--rise` stays 48px: the bigger travel is still what marks this
+              as the last, largest gesture, it just no longer takes a second
+              to make it.
 
               Framer points this at /category, a route on the marketing site
               that has no counterpart here. The app's answer is the sign-up
@@ -332,9 +354,8 @@ export default function LandingPage() {
               {
                 "--rise": "48px",
                 "--rise-blur": "0px",
-                "--rise-dur": "1s",
-                "--rise-ease": "cubic-bezier(0.44, 0, 0.56, 1)",
-                animationDelay: "1s",
+                "--rise-dur": "0.7s",
+                animationDelay: "0.45s",
               } as React.CSSProperties
             }
           >

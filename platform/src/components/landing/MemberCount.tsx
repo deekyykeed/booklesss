@@ -48,11 +48,15 @@ const START = 67;
  * So the fix is a narrower spread, not just a faster one. Capping the long end
  * is what does the work here; lowering the short end only keeps it irregular.
  * The original brief still holds at that short end ("not too short so there is
- * room to see it grow") — 2.5s is comfortably longer than the 420ms rise, so no
+ * room to see it grow") — 1.5s is comfortably longer than the 420ms rise, so no
  * tick ever interrupts the one before it.
+ *
+ * TIGHTENED AGAIN (owner, 2026-08-07: "that number counting up please make it
+ * faster") — both ends pulled down by a third, keeping the same shape rather
+ * than just capping the tail a second time.
  */
-const MIN_GAP = 2_500;
-const MAX_GAP = 7_000;
+const MIN_GAP = 1_500;
+const MAX_GAP = 4_500;
 
 export function MemberCount() {
   const [n, setN] = useState(START);
