@@ -132,7 +132,10 @@ Every PDF follows this sequence: cover → 4–7 content sections → 2 embedded
 No hard CTAs. Two discussion questions embedded mid-content. Guide the reader toward the next step by weaving a natural hint into the body at the point where it's relevant — never a labelled "Next:" pointer.
 
 ### Step Cross-References
-When a step's content references another step (e.g. "Step 2.1"), keep the reference as **plain text** — do not link it to a Slack file URL. Slack assigns a new unpredictable file ID on every upload, so embedded file links go stale immediately (see PROJECT_MEMORY dead end, 2026-06-04). Older scripts may still carry a `STEP_LINKS` dict and `step_ref()` helper — remove them when touching those scripts. External permanent links (NotebookLM) are fine.
+
+**In a PDF, a step reference stays plain text.** Do not link it to a Slack file URL: Slack assigns a new unpredictable file ID on every upload, so embedded file links go stale immediately (see PROJECT_MEMORY dead end, 2026-06-04). Older scripts may still carry a `STEP_LINKS` dict and `step_ref()` helper — remove them when touching those scripts. External permanent links (NotebookLM) are fine.
+
+**In the reader, a step reference is a real link, as of 2026-08-07** (owner: *"a course needs to feel like a network of steps"*). Authored `[the words](step:its-slug)`, it is the only visible link in step prose — an `https://` link still renders as nothing, with its site appearing as a chip in the source strip. The Slack reasoning above does not carry over: a slug is authored in the step's own `.mjs`, it is the string the sidebar and the URL are both built from, and **the renderer resolves it to a path at render**, so moving a step between lessons re-points every link to it rather than breaking them. `seed:course` refuses a slug no step answers to, a lesson or group slug (a folder has no page), and a step linking to itself; links are within one course, because seeding runs one course at a time and cannot verify another's slugs. The rule and its budget are **C-8** in `step-skill/RULES.md`.
 
 ### Cover ADDED VALUE Box
 Each step cover has an accent-bordered "ADDED VALUE" panel listing companion resources as clickable links (NotebookLM audio overviews, linked steps, etc.). Uses the `resources_box([(label, url), ...])` helper defined in each script.
@@ -149,11 +152,20 @@ content, socials, web:
   `RULES.md` is the house style and `DEBT.md` says what that step owes; both get
   applied in the same edit. Reactions land in `LOG.md` and, when they generalise,
   are promoted to `RULES.md`. It carries the ENGAGEMENT PASS for a step that is
-  correct and still not worth reading. Two reference files load on demand:
-  `reference/planning.md` (course architecture) and `reference/pdf.md` (the PDF
-  design system). Consolidated 2026-08-01 from the former `lesson-skill` +
-  `step-skill` + `step-feedback` — the writing rules and the debt they create are
-  one state, and splitting them meant whichever skill got invoked read half of it.
+  correct and still not worth reading. **Three** reference files load on demand:
+  `reference/planning.md` (course architecture), `reference/disciplines.md`
+  (which rules read differently in a quantitative, rule-application, discursive
+  or procedural course — read before the first step of any course this skill has
+  not written before) and `reference/pdf.md` (the PDF design system).
+  Consolidated 2026-08-01 from the former `lesson-skill` + `step-skill` +
+  `step-feedback` — the writing rules and the debt they create are one state, and
+  splitting them meant whichever skill got invoked read half of it.
+
+  **Before the first line of any step: read the material the course came with**
+  (**C-2** — slides, transcript, past papers, marking key, assignment brief),
+  then **name the discipline** (**C-11**). Both were added 2026-08-07, and the
+  order matters: a step written from general knowledge about a subject can be
+  entirely correct and still not be the course the reader is sitting.
 - **`daily-post`** — PUBLISH. The build-in-public social pipeline: read what
   actually shipped from the git log, pick the story, capture the reader's mobile
   layout, render the 9:16 carousels, write the day's `PLAN.md`. Its `RULES.md`
@@ -177,7 +189,7 @@ Most icons in `platform/` come from the **MynaUI** set (by Praveen Juge) via the
 
   Old ids are **aliased, not renamed** (`LEGACY` in the generator): the first twelve were hand-named and don't all match their icon — `smiley` is `love-smiley`, `dice` is `dices` — so a stored id would otherwise resolve to nothing and a student would silently lose their face. The generator throws if an alias ever points at an icon the set has dropped.
 - The reader sidebar's **lesson caret** is **Mingcute** (owner's pick, 2026-07-31): `<MingcuteIcon name="down-small-line" />` from `platform/src/components/icons/mingcute.tsx`, generated the same way (`ICONS` in `scripts/gen-mingcute-icons.mjs` → `npm run gen:mingcute`). Mingcute's grid draws a much smaller mark than MynaUI's at the same size and strokes it at 2 rather than 1.5, so anything borrowed from it needs its `size`/`strokeWidth` set against the MynaUI icons beside it. Keep this set narrow — MynaUI is still the system.
-- **Solar** (by 480 Design) is on three surfaces: `/workspace` in Solar **Linear**, the dashboard's four **stat cards** in Solar **Duotone** (owner's pick, 2026-08-01), and the reader's **callout kinds** in Solar **Duotone** (owner's pick, 2026-08-02). `<SolarIcon name="chart-2-bold-duotone" />` from `platform/src/components/icons/solar.tsx`, generated like the rest (`ICONS` in `scripts/gen-solar-icons.mjs` → `npm run gen:solar`). A `-bold-duotone` name draws two `currentColor` fills, the back one at `opacity .5`, so the mark shades itself out of whatever hue its tile sets — no second colour to pass. **The standing lesson still holds: Duotone belongs on a tile that gives it its own hue, not in a row of outline chrome.** On 2026-08-02 the reader briefly had three Duotone marks in the checkpoint row (a thumbs pair on the answers, a bubble on the note button) and the owner moved all three back to MynaUI the same day, because Duotone is *filled* and sat heavy beside the hairlines around it. The callout mark is the other case: it sits alone on a container carrying its own hue, which is where the stat tiles put theirs. Adding a fourth surface is a decision, not a convenience.
+- **Solar** (by 480 Design) is on **two** surfaces: `/workspace` in Solar **Linear** and the dashboard's four **stat cards** in Solar **Duotone** (owner's pick, 2026-08-01). It was on a third — the reader's **callout kinds**, 2026-08-02 to 2026-08-07 — and **that is now MynaUI in ink** (owner: *"the icon should be a black mynaui icon"*), with the mark moved to the left of the sentence rather than sitting on a line of its own. **The standing lesson below was reached a second time and from the other direction:** a callout is a white box, so it never gave its mark a hue, and a filled Duotone glyph was importing one. The four names were still in `gen-icons.mjs` from when kinds first shipped, so nothing had to be regenerated to come back. `<SolarIcon name="chart-2-bold-duotone" />` from `platform/src/components/icons/solar.tsx`, generated like the rest (`ICONS` in `scripts/gen-solar-icons.mjs` → `npm run gen:solar`). A `-bold-duotone` name draws two `currentColor` fills, the back one at `opacity .5`, so the mark shades itself out of whatever hue its tile sets — no second colour to pass. **The standing lesson, now confirmed twice: Duotone belongs on a tile that gives it its own hue, not on a white surface and not in a row of outline chrome.** On 2026-08-02 the reader briefly had three Duotone marks in the checkpoint row (a thumbs pair on the answers, a bubble on the note button) and the owner moved all three back to MynaUI the same day, because Duotone is *filled* and sat heavy beside the hairlines around it. The callout was argued at the time to be the other case — a mark alone on a container carrying its own hue, like the stat tiles. **Five days of reading it said otherwise**: the stat tile is a coloured tile and a callout is a white box, so the callout was not giving the mark a hue, the mark was bringing one in. The dashboard tiles are the only place left where the argument actually holds. Adding a third surface is a decision, not a convenience.
 
 Everything else monochrome is MynaUI.
 

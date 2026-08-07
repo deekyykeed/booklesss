@@ -96,6 +96,24 @@ frame. Don't pad it with extra steps, and don't force it down to one; the count
 follows the material and isn't the point. The lesson is defined by the grouping of
 similar-concept steps, not by how many there are.
 
+### 4b. Put the course-intro step at the top — every course, no exceptions
+**S-11**, added 2026-08-07. Before lesson 1 sits one step that is about the
+course rather than about its first topic: why the subject exists, what it
+connects to, what someone who has it can do that someone without it cannot, one
+line congratulating the reader for starting, and how to read the thing.
+
+It sits **above the first lesson folder**, not inside it, and it is planned here
+rather than discovered later because a course scaffolded without it gets one
+bolted on afterwards, out of the argument the rest of the course makes.
+
+Two traps, both in **S-11** in full:
+- It is **not** a contents page. **S-6** still bans a course skeleton in a step,
+  and this is the step most likely to grow one. The shape of the course goes in
+  one sentence; the sidebar lists the steps.
+- It is the **shortest** step in the course, two or three sections. A reader who
+  has to climb the introduction has learned something about the course, and it
+  is not what was intended.
+
 ### 5. Confirm with the user before writing files
 Present the proposed lessons, their steps, and the channel each maps to, as a table.
 Name the judgment calls explicitly (which topics you merged and why; which lessons

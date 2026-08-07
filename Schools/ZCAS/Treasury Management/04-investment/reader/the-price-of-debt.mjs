@@ -19,6 +19,28 @@
  * here directly", and §6 explained the AAA-against-BBB rate gap by naming a
  * swap example told in another lesson. Both now say the thing itself, because a
  * reader arriving here has read neither.
+ *
+ * Discipline (C-11): QUANTITATIVE. The paper asks for a price, shown.
+ *
+ * 2026-08-07, the first step written against C-8's link rule, C-9, E-8's
+ * popup-off clause and E-10:
+ *  · C-9  §2 worked a bond and then asked a recall question about it, so a
+ *         reader finished able to follow the method and unable to start one.
+ *         It now hands over a second bond at different figures and the check
+ *         marks it. The three wrong options are the three real slips:
+ *         discounting at the coupon rate (which returns par exactly, and is
+ *         why that slip is invisible), dropping the redemption, and leaving
+ *         the coupons undiscounted. The price/yield inverse the old check
+ *         tested is not lost, it is now something the reader proves rather
+ *         than recalls.
+ *  · E-10 both callouts name their kind. Every callout in all 53 steps was
+ *         drawing "Key point" because none of them set one.
+ *  · E-8  PBIT and `par` are defined in the prose now the popup is off. Both
+ *         were load-bearing: the sentences around them do not survive not
+ *         knowing the word. `notch` and `covenant headroom` are explained by
+ *         their own sentences and keep the mark alone.
+ *  · C-8  two links out, both backward. No forward links: the sidebar and the
+ *         foot of the step already carry what comes next.
  */
 
 export default {
@@ -44,7 +66,7 @@ export default {
         {
           type: "ul",
           items: [
-            "Affirmative covenants say what you must do: hold minimum working capital or current ratios, keep interest cover ([[PBIT|Profit before interest and tax. Lenders use it because it measures what the business earns before the debt is served, which is the number that tells them whether the debt can be served.]] over interest expense) above a floor, deliver statements on time, insure the financed assets, pay your taxes.",
+            "Affirmative covenants say what you must do: hold minimum working capital or current ratios, keep interest cover above a floor, deliver statements on time, insure the financed assets, pay your taxes. Cover is profit before interest and tax, [[PBIT|The profit line lenders watch, because it is what the business earns before the debt is served. Everything below it in the accounts is paid out of money the lender has first claim on.]], divided by the interest bill, so cover of 3 times means you earn three kwacha for every one you owe in interest.",
             "Restrictive covenants say what you cannot do without consent: take on further debt beyond a set level, sell the financed assets, pay a dividend that breaks a gearing ratio, or change what the business does.",
           ],
         },
@@ -54,6 +76,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "**Covenants are the price of the interest rate.** The more tightly the lender's risk is boxed in, the cheaper the money. Flexibility is what you are selling to buy a lower rate, so know what you sold.",
         },
       ],
@@ -83,7 +106,7 @@ export default {
         },
         {
           type: "p",
-          text: "A bond promises a [coupon](https://corporatefinanceinstitute.com/resources/fixed-income/coupon-rate/) each year and its face value at maturity, so its [price](https://corporatefinanceinstitute.com/resources/fixed-income/bond-pricing/) is those cash flows discounted at whatever similar bonds currently yield. Market yield above the coupon puts the price below [[par|The face value printed on the bond, the amount repaid at maturity. Trading below par is a discount and above it a premium, and which one it is tells you instantly whether rates have risen or fallen since it was issued.]], and below the coupon puts it above.",
+          text: "A bond promises a [coupon](https://corporatefinanceinstitute.com/resources/fixed-income/coupon-rate/) each year and its face value at maturity, so its [price](https://corporatefinanceinstitute.com/resources/fixed-income/bond-pricing/) is those cash flows discounted at whatever similar bonds currently yield. The face value is also called [[par|Trading below par is a discount and above it a premium, and which one it is tells you instantly whether rates have risen or fallen since the bond was issued.]], and it is the number the price gets compared against: a market yield above the coupon puts the price below par, and a yield below the coupon puts it above.",
         },
         {
           type: "formula",
@@ -113,21 +136,26 @@ export default {
         },
         {
           type: "p",
-          text: "About ZMW 931,300, a discount to par, exactly as it has to be. An issuer selling new debt at par into this market simply sets the coupon at 14% instead. **And the longer the maturity and the lower the coupon, the harder the price falls when yields rise,** which is the risk you are carrying the moment your treasury holds bonds rather than issues them.",
+          text: "About ZMW 931,300, a discount to par, exactly as it has to be. An issuer [selling new debt](step:debt-management) at par into this market simply sets the coupon at 14% instead. **And the longer the maturity and the lower the coupon, the harder the price falls when yields rise,** which is the risk you are carrying the moment your treasury holds bonds rather than issues them.",
+        },
+        {
+          type: "callout",
+          kind: "example",
+          text: "Price one yourself before you read on. A 4-year bond, face value ZMW 500,000, coupon 10% so ZMW 50,000 a year, and similar bonds today yield 13%. Discount each year the way the table above does, and remember that year 4 carries the last coupon and the ZMW 500,000 together.",
         },
       ],
       check: {
         question:
-          "Market yields rise from 12% to 14% after a company issues a 12% coupon bond at par. What happens to the bond's market price, and why?",
+          "What is that bond worth today: ZMW 500,000 face value, 10% coupon, 4 years to run, similar bonds yielding 13%?",
         options: [
-          "It falls below par, because the fixed 12% coupons must be discounted harder to give a new buyer the 14% the market now pays",
-          "It rises above par, because higher yields make bonds more valuable",
-          "It stays at par, because the coupon was fixed at issue",
-          "It falls to zero, because the bond is now in default",
+          "About ZMW 455,400",
+          "ZMW 500,000, its face value",
+          "About ZMW 148,700",
+          "About ZMW 506,700",
         ],
         answer: 0,
         explain:
-          "The coupons cannot change, so the price must. Only by paying less than par can a buyer of 12% coupons earn a 14% return. Price and yield always move inversely, which is the single most-tested fact about bonds.",
+          "The four coupons discount to 148,724 and the 500,000 repayment discounts to 306,659, so the price is 455,383. It sits below par because the market wants 13% and the bond only pays 10%, which is the inverse move of price and yield in one figure. ZMW 500,000 is what you get by discounting at the coupon rate instead of the market yield, and that slip is dangerous because it always returns par exactly and so looks right. 148,700 leaves out the repayment. 506,700 discounts the repayment but adds the coupons at face.",
       },
     },
 
@@ -163,7 +191,7 @@ export default {
         },
         {
           type: "p",
-          text: "The same grading drives the gaps between borrowers. A AAA name and a BBB name face different [credit spreads](https://corporatefinanceinstitute.com/resources/commercial-lending/credit-risk/), and the gap is not the same size in the fixed market as in the floating one. **That difference between two differences is real money,** and it is what an interest rate swap exists to release.",
+          text: "The same grading drives the gaps between borrowers. A AAA name and a BBB name face different [credit spreads](https://corporatefinanceinstitute.com/resources/commercial-lending/credit-risk/), and the gap is not the same size in the fixed market as in the floating one. **That difference between two differences is real money,** and it is what [an interest rate swap](step:interest-rate-hedging-instruments) exists to release.",
         },
         { type: "h2", text: "The ceiling you do not control" },
         {

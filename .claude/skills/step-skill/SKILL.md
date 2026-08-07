@@ -135,6 +135,7 @@ What is *not* course- or school-specific and stays: ZMW and Zambian companies
 | `DEBT.md` | Rules and corrections owed to steps **already written**. | Grepped before editing any step. Opened when a rule or error invalidates published content. |
 | `LOG.md` | Every reaction, dated, sourced, tied to its step. | Appended after every reaction. Never edited or pruned. |
 | `reference/planning.md` | Course architecture: lessons, channels, `_course.md`, the outline PDF. | Read when planning or restructuring a course. |
+| `reference/disciplines.md` | Which rules read differently in a quantitative, rule-application, discursive or procedural course. | Read before the first step of any course this skill has not written before (**C-11**). |
 | `reference/pdf.md` | The PDF design system — fonts, palette, geometry, flowables, document profiles. | Read when the output is a PDF. |
 
 Load a `reference/` file only for the job in hand. `RULES.md` and `DEBT.md` are
@@ -168,21 +169,38 @@ step is written for the reader unless the owner asks for a PDF.
 | Reader step | `Schools/<School>/<Course>/<lesson>/reader/<step-slug>.mjs` | below |
 | Any PDF | `.../sources/build_*.py` → sibling `steps/` | `reference/pdf.md` |
 
-## Before writing OR rewriting — two things, in order, every time
+## Before writing OR rewriting — four things, in order, every time
 
-1. **Read `RULES.md` in full.** It is short by design; read all of it, not a
+1. **Read the material the course came with.** All of it in that lesson folder,
+   before a line is written: slides, transcript, past papers, any marking key,
+   the assignment brief, the handbook. **C-2** says what each one is evidence of
+   and how to weigh them against each other. This is first because it is the
+   thing that decides what the step is *for*, and because a step written from
+   general knowledge about the subject can be entirely correct and still not be
+   the course the reader is sitting.
+
+2. **Name the discipline** (**C-11**) — what does this paper ask the reader to
+   *produce*? Load its profile from `reference/disciplines.md` and put the
+   answer in the file's header comment. Almost every course this skill will
+   ever write is one it has not written before, and the finance assumptions
+   baked into some of the **E** and **C** rules are invisible until they are
+   wrong.
+
+3. **Read `RULES.md` in full.** It is short by design; read all of it, not a
    grep. Write so every rule holds. Don't re-derive a style decision a rule
    already settles, and don't "improve" on a rule because this step feels like an
    exception — if it genuinely is one, say so to the owner rather than quietly
    departing.
 
-2. **Grep `DEBT.md` for this step's slug.** Every open box against it is applied
+4. **Grep `DEBT.md` for this step's slug.** Every open box against it is applied
    in this edit and ticked. Not optional, not a follow-up task — the step is
    open, the fix is known, it gets fixed now. If nothing is owed, say so in one
    clause and move on.
 
 If a rule and the source material conflict (a lecture uses a banned term, say),
-follow the rule and note the substitution.
+follow the rule and note the substitution. If a rule and the **discipline
+profile** conflict, the profile is the more specific reading of that same rule —
+follow it, and say so.
 
 Before calling the edit done, run the two passes below over what you wrote:
 **RANK** scores it rule by rule and tells you what is broken; the **engagement
@@ -584,11 +602,21 @@ not worth reading — and because nothing is *wrong*, a normal review returns
 course-agnostic: it asks nothing about treasury or strategy, so it runs on any
 step in any course.
 
-Ten checks, in order. Each has a rule behind it, so a failure is a defect with
-an id, not an opinion. Checks 8–10 were added 2026-08-02: 7 and 8 are the two
-halves of an opening (readable, then worth reading) and must both pass, 9 is the
-one that catches what sentence-length limits miss, and 10 is the only check that
-looks outside the step it is run on.
+Thirteen checks, in order. Each has a rule behind it, so a failure is a defect
+with an id, not an opinion. Checks 8–10 were added 2026-08-02: 7 and 8 are the
+two halves of an opening (readable, then worth reading) and must both pass, 9 is
+the one that catches what sentence-length limits miss, and 10 is the only check
+that looks outside the step it is run on.
+
+**Checks 11–13 were added 2026-08-07** and they share a premise the first ten
+only imply: *a reader's attention is the scarce resource, and every one of these
+is a way of spending it badly.* The owner's framing — **"people have limited
+attention spans, so it's important to make sure we are not boring or taking too
+long or being too vague."** Eleven is *taking too long*, twelve is *being too
+vague* (an example nobody has stood near is abstract however many figures it
+has), and thirteen is the one that decides whether they can actually do it
+afterwards. Thirteen is **n/a** in a discipline whose exam asks for no
+production; see `reference/disciplines.md` before scoring it a Fail.
 
 | # | Check | Fails when | Rule |
 |---|-------|-----------|------|
@@ -602,6 +630,9 @@ looks outside the step it is run on.
 | 8 | **Is that opening worth reading?** — same sentences again, now asking what they earn rather than what they assume | It announces the topic instead of starting on something ("Working capital is an important area of…") — passing 7 and failing this is a legal sentence nobody wants to read | **W-14** |
 | 9 | **Read it aloud as a second-language first-year** | Any sentence you would stop and explain out loud; a short sentence still doing two jobs; an expensive ordinary word wrapped round a technical one | **W-15**, **W-12** |
 | 10 | **The two seams** — what does this step pick up, and what does it hand on? | It could be dropped into any position in the course without changing a word, or it leans on an earlier step without re-stating the fact it needs | **C-8** |
+| 11 | **The shorter version** — take each paragraph and rewrite it at half length. Compare the two | The half teaches the same thing, so the full one was spending a reader's attention on nothing | **W-17** |
+| 12 | **Has the reader felt this?** — for every example, name the student and say when they have been near this situation | The honest answer is "nobody reading this has". A ZMW figure on a company nobody has worked for is local, not relatable | **C-10** |
+| 13 | **Does the reader ever do one?** — count the examples the step works *for* them against the ones it hands *over* | Every example is worked. They finish able to follow the method and unable to start it | **C-9** |
 
 **The moves that fix them.** These are what the TM 1.1 rewrite actually did, in
 the order they were worth doing:

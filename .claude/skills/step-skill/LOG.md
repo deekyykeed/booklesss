@@ -22,6 +22,113 @@ Quote actual words. A student's phrasing is never rewritten into the owner's.
 
 ---
 
+### 2026-08-07 · all courses · owner
+- `content` — "the source of truth for any school is the material it already
+  comes with. Slides, transcripts and other things." **C-2** named only "this
+  course's lecture" and said to read the lesson folder; it did not say what is
+  in one or how the kinds weigh against each other. Now it does, and the two
+  that were missing entirely are the ones with the most evidence in them: a
+  **transcript** says what the lecturer *dwelt on*, which a deck cannot (every
+  bullet has equal weight on a slide), and a **marking key** says what earns
+  the mark. Treasury Management's folders carry twelve past papers and a
+  marking key and no rule had ever mentioned either.
+  → promoted: **C-2** (revised) · debt: none — published steps were built from
+  the material; this changes how the *next* one reads it
+
+- `content` — "important pieces are worked and unworked examples in cases of
+  mathematical courses." Found live in `the-price-of-debt`: it prices a bond to
+  the kwacha, line by line, and then asks a multiple-choice question about
+  which direction prices move. **A reader could pass that step's own check
+  without being able to price a bond.** Every quantitative step in the product
+  is shaped this way — the examples are all worked *for* the reader and none is
+  handed *to* them. The fix needs no new block: an `example` callout poses it
+  and the section's `check` marks it, with the wrong options set to the answers
+  the real slips produce.
+  → promoted: **C-9** · debt: **D-13**
+
+- `writing` — "is there a more concise way of setting up this sentence or
+  paragraph that doesn't lose the user?" and "people have limited attention
+  spans, so it's important to make sure we are not boring or taking too long or
+  being too vague." The second half is the rule. **W-2** bans padding and
+  **W-12** bans the sentence that runs on; neither catches prose where every
+  sentence is legal and the passage is still longer than the idea in it. The
+  clause that matters is *"that doesn't lose the user"* — this is not licence
+  to compress, and cutting the concrete anchor a weak reader was holding is a
+  gap with fewer words in it, not concision. **"Too vague" is the other failure
+  and it is written into the rule**, because the cheapest way to make a
+  paragraph shorter is to make it more general, which is the wrong direction.
+  → promoted: **W-17** · debt: **D-16** (paid on contact only — a course-wide
+  compression pass is forty steps rewritten by whoever is currently annoyed)
+
+- `content` — "is there a better way to reword or rewrite an example so it's
+  more relatable?" **C-1** fixes the currency and the companies and **C-5**
+  demands an anchor, and neither asks whether the reader has ever been near the
+  situation. ZMW on a company nobody has worked for is *local*, not
+  *relatable*. The rule's test is deliberately hard to answer yes to by
+  reflex: name the student and say when they have stood near this.
+  → promoted: **C-10** · debt: **D-13** (scoped with C-9, same steps)
+
+- `structure` — "this skill is going to be universal, so it should be able to
+  act differently in different scenarios like a law course or a math course,
+  but we will be improving as we go." Every course built so far is finance, and
+  the finance assumptions are baked into rules that do not announce themselves
+  as assumptions — **E-1**, **E-4**, **E-5**, **E-6** are meaningless in a law
+  course and **C-5**'s "concrete anchor" means a decided case rather than a
+  figure. Answered with one question (*what does the paper ask the reader to
+  produce?*) and four profiles in `reference/disciplines.md`. **Two of the four
+  have no course behind them and say so at the top**, because "we will be
+  improving as we go" is an instruction not to invent a taxonomy ahead of the
+  material.
+  → promoted: **C-11** + `reference/disciplines.md` · debt: none
+
+- `structure` — "steps need to be able to reference each other … maybe say
+  what's coming or what was there before and link to it … a course needs to
+  feel like a network of steps." **This reverses "plain text, always"**, which
+  had stood since the beginning and which `.claude/CLAUDE.md` still stated as a
+  general rule. That rule was right about **Slack**, where a new file id was
+  minted on every upload so an embedded link went stale the same day. It is
+  wrong about the reader: a slug is authored in the step's own `.mjs`, and the
+  renderer resolves it to a path at render, so moving a step re-points every
+  link to it. Built the same day as `[words](step:slug)`, with `seed:course`
+  refusing an unknown slug, a folder slug and a self-link — all three proved by
+  breaking them on purpose.
+  → promoted: **C-8** (revised) · debt: folded into **D-7**
+
+- `structure` — "the first step should always be an intro to the course as a
+  whole … people want to be given something that has a context and reason for
+  it. So for someone to actually start spending incredible amounts of time
+  doing this course and solving all the problems, there needs to be a good
+  reason for why we're doing this course and how it's going to elevate the
+  person for doing it. And always congratulate them for starting. And you need
+  to tell them about the features of the course."
+  **All four live courses open by teaching.** `intro-to-treasury` and
+  `intro-to-strategy` introduce the *subject*, which is a different job. The
+  hard part of writing this rule was keeping it clear of **S-6** (no course
+  skeleton in a step, the owner's own earlier rule): the line is that a
+  skeleton says *what is in the course* and this step says *what the course is
+  for*. Also bounded the two things that go wrong by default — the
+  congratulation is **one line** (a paragraph of encouragement reads as
+  marketing to someone who came to study) and the features are named **where
+  they are about to be used**, never as a tour.
+  → promoted: **S-11** · debt: **D-15**
+
+- `element` — "disable text popups from the app entirely for now." Done in the
+  renderer, not in the content: `[[term|definition]]` still parses, validates
+  and renders its word, so no step changes and it is one branch to restore.
+  **But the definitions now reach nobody**, which is a live content problem
+  rather than a style one — anything load-bearing has to move into the prose
+  under **W-5** while it is off.
+  → promoted: **E-8** (revised) · debt: **D-14**
+
+- `element` — measured while writing **E-10**: the reader has drawn four
+  callout kinds since 2026-08-02 and **not one of the 60 callouts in the 53
+  steps sets one.** Every box in the product says "Key point", including the
+  ones that are a trap and the ones that are a worked case. Nothing was ever
+  wrong on screen, which is exactly why it went uncounted for five days. The
+  `example` kind is also what **C-9**'s unworked example needed a home in, so
+  two of today's rules turned out to be the same gap.
+  → promoted: **E-10** · debt: **D-12**
+
 ### 2026-08-03 · treasury-management/working-capital/debtors-and-factoring · owner
 - `writing` — "there is another mostake in the forst sentence / there is no hook,
   it looks like you jump staright into explaining the step without making sure

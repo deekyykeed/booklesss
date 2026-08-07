@@ -192,6 +192,37 @@ Ids are stable. A withdrawn rule is struck through, never deleted.
   - Test: hand the first screen to someone who has not done the course. If they
     have to ask what a symbol, abbreviation or number means, it is a rewrite.
 
+- **W-17** **Cut it down. Then check you did not cut the reader out.** *(added
+  2026-08-07)* Every paragraph gets one question asked of it before it ships:
+  *is there a shorter way to say this that a reader still follows?* Attention is
+  the scarce thing here, not space. A student opening a step at 11pm gives it a
+  few minutes, and they do not stop reading at the paragraph that wandered —
+  they stop reading at the step. A paragraph that spends ninety words doing
+  sixty words of work is charged to the whole thing.
+  W-2 bans padding and W-12 bans the sentence that runs past its point. This is
+  the pass neither catches: prose where every sentence is legal, nothing is
+  padding, and the passage is still longer than the idea in it.
+  - **Ask it of the paragraph, not the sentence.** The common shape is three
+    tight sentences making one point three ways. Each survives W-12 on its own.
+    Keep the best one.
+  - **What goes is the run-up, never the substance.** The sentence that sets up
+    the sentence that makes the point. The clause restating the clause before
+    it. The qualifier defending against an objection nobody raised. The
+    "essentially", "in practice", "it is important to note that".
+  - **The floor is W-15, and it is a real floor.** Compression that removes the
+    step someone needed is not concision, it is a gap with fewer words in it. A
+    reader at the edge of their English is carried by the concrete anchor, the
+    second way of putting it, the *which means* clause. **Those words are the
+    work.** Cut around them, not through them.
+  - **Vagueness is not concision, it is the other failure.** "This affects
+    liquidity" is shorter than a worked figure and teaches nothing. If a cut
+    makes a sentence more general, it was the wrong cut: the fastest sentence
+    is usually the most specific one, because a number does in four words what
+    a description does in twenty.
+  - Test: rewrite the paragraph at half length. If the half teaches the same
+    thing, ship the half. If something is now missing, you have just found what
+    the paragraph was actually for — keep that, cut the rest.
+
 ## E — Page elements
 
 The block vocabulary. Each block exists for one job; using the wrong one is a
@@ -236,8 +267,27 @@ text, so a mark written into one shows its own syntax.
   their original figures, so a student can hold the step and the slide side by
   side. Where a slide contains an arithmetic error, use the correct figure and
   record the correction in the file's header comment.
-- **E-8** A word that is **key or outside a first-year's vocabulary** gets a
-  tap-to-define popup: `[[term|definition]]`. This is for the jargon the source
+- **E-8** ⚠️ **THE TAP-TO-DEFINE POPUP IS SWITCHED OFF** *(owner, 2026-08-07:
+  "disable text popups from the app entirely for now")*. A `[[term|definition]]`
+  still parses, still validates and still renders its **word** — but as ordinary
+  prose, with no underline and no popup, so **the definition reaches nobody.**
+  Until it comes back:
+  - **Anything the reader cannot proceed without is defined in the prose**, in
+    the sentence that first uses it (**W-5**). That was always the rule for
+    terms the step is teaching; while the popup is off it covers every term
+    that is load-bearing, not just those.
+  - **Keep authoring `[[term|definition]]` for the rest.** The mark costs
+    nothing on screen, the definitions are the expensive part to write, and
+    turning the popup back on is one branch in `reader/LessonView.tsx`. Deleting
+    them would throw away work to gain nothing.
+  - **Do not compensate by parenthesising every term.** A definition in
+    brackets is read by everyone, including the reader who already knew the
+    word, which is the exact cost the popup existed to avoid. Define what the
+    reader is stuck without; leave the rest marked and wait.
+
+  The rule as it stands when the popup is on: a word that is **key or outside a
+  first-year's vocabulary** gets a tap-to-define popup: `[[term|definition]]`.
+  This is for the jargon the source
   material assumes and moves on from — *arbitrage*, *error account*, *front
   office*, *netting*. It is **not** for the terms the step is teaching; those
   are defined in the prose where the reader meets them (**W-5**), and a term
@@ -272,6 +322,32 @@ text, so a mark written into one shows its own syntax.
     it and this rule does not apply. Run
     `node .claude/skills/step-skill/tools/table-scan.mjs Schools` to see which
     tables are which without opening 44 files.
+
+- **E-10** **A callout has a kind, and the kind carries meaning the sentence
+  does not.** *(added 2026-08-07)* The reader draws four, each with its own
+  Solar Duotone mark and its own hue, and the mark is the box's only label:
+
+  | `kind` | Reads as | For |
+  |---|---|---|
+  | `key` *(default)* | Key point | The one sentence that must survive when the section is forgotten (**E-3**) |
+  | `warning` | Watch out | The trap. The slip that loses the mark, the assumption that breaks, the thing that looks right |
+  | `example` | Example | A case set out to be worked, including the one handed to the reader unworked (**C-9**) |
+  | `exam` | In the exam | What the paper actually does with this: how it is asked, what it awards, the method it demands by name |
+
+  **Measured 2026-08-07: none of the 60 callouts in the 53 authored steps sets
+  a kind.** Every box in the product says "Key point", including the ones that
+  are a trap and the ones that are an exam instruction. The kinds have been
+  drawable the whole time; nothing was ever wrong on screen, so nothing said so.
+  - **Set the kind on every callout you write.** `key` is a choice as much as
+    the others are, not a default to fall into.
+  - **E-3's one-per-section limit is about `key`, not about the box.** One
+    sentence per section is the one worth carrying. A `warning` naming the slip
+    or an `example` posing a task is a different job, and a section can hold
+    one of those beside its `key` without the pair cancelling out. Three boxes
+    in a section is still too many.
+  - **The kind must be true.** An `exam` box that says something generally
+    useful rather than something the paper does is worse than no box, because
+    the reader files it as exam technique and it is not.
 
 ## S — Structure
 
@@ -404,15 +480,93 @@ text, so a mark written into one shows its own syntax.
     classifies every step and exits on the defect count. Baseline 2026-08-03 is
     **26 of 53** (debt **D-9**).
 
+- **S-11** **Every course opens with a step about the course.** *(added
+  2026-08-07)* Step one is not the first topic. It is the reason the other
+  forty are worth the hours they will cost. The owner's words: *"for someone to
+  actually start spending incredible amounts of time doing this course and
+  solving all the problems, there needs to be a good reason for why we're doing
+  this course and how it's going to elevate the person for doing it."*
+
+  A reader arriving at a course they were assigned has already been told what it
+  is called and nothing else. **The most expensive thing a course can do is
+  start teaching.** This step is where the context goes, and it carries five
+  things:
+
+  | | What it does | Watch for |
+  |---|---|---|
+  | **The stake** | Why this subject exists at all — the thing that goes wrong in the world when nobody can do it | **W-6** and **W-14** bind here like anywhere. Not "Treasury management is an important discipline" |
+  | **Where it sits** | What it connects to, in subject terms — what it assumes, what it feeds, which other things they are studying it beside | **Never by course code or school name.** Say "the accounting you already do" |
+  | **Where it lands** | What someone who has this does at work, and what someone without it cannot. Named roles, real decisions, real money | This is the "how it elevates them" half, and it must be specific enough to be checkable |
+  | **The welcome** | One line congratulating them for starting | **One line.** See below |
+  | **How to read it** | What the reader gives them, named where it is about to be used | **Not a product tour.** See below |
+
+  - **Congratulate them once, in a sentence, and mean it.** Starting is the
+    hardest part and most people never do, so it is worth saying. A banner, a
+    paragraph of encouragement, or an exclamation mark is worse than silence:
+    it reads as marketing, and the reader came to study. Earn it by being
+    specific about what they have started, not about how great they are.
+  - **Name the features where they are about to be used, not as a list.** "Each
+    section ends with a question — get it wrong and it tells you why" belongs in
+    this step because they meet the first one two screens later. A tour of the
+    interface is furniture (**C-7**'s whole lesson), and a reader skips it.
+  - **This is NOT a course skeleton, and S-6 still stands.** Do not list the
+    lessons or the steps: the sidebar does that, it goes stale, and it is the
+    exact thing the owner banned. The difference is that a skeleton says *what
+    is in the course* and this step says *what the course is for*. If you find
+    yourself writing "we will cover", stop.
+  - **Give the shape in one sentence, not a contents page.** "This course is
+    about getting money in, keeping it safe, and paying for it" is orientation.
+    Five bullets naming five lessons is a skeleton.
+  - **It is a real step**, with sections and checks like any other (**S-1**,
+    **S-4**) — but the checks are about the subject's shape and stakes, not
+    about the app. A check on where treasury sits between the business and the
+    banks is fair; a check on where the sidebar is, is not.
+  - **Two to three sections**, and it is the shortest step in the course.
+    Whatever else it does, it must not become the first climb (**S-8**).
+  - **It keeps the first slot and the first slug**, above the first lesson
+    folder, and its label is the course's own name or something close to it.
+
 ## C — Content
 
 - **C-1** *(inherited)* Every example uses ZMW and Zambian companies — Zanaco,
   Zambeef, ZESCO, First Quantum, Airtel Zambia, LuSE-listed names.
-- **C-2** Cover what **this course's** lecture covers, at the depth that lecture
-  and its practice questions demand. The step is exam preparation for the paper
-  the reader is actually sitting; an idea the lecturer spent four slides on
-  cannot become one sentence. The syllabus is set by whoever teaches the course,
-  not by this skill — read the material in the lesson folder and follow it.
+- **C-2** *(revised 2026-08-07)* **The source of truth is the material the
+  course already comes with.** The owner's words: *"the source of truth for any
+  school is the material it already comes with. Slides, transcripts and other
+  things."* The syllabus is set by whoever teaches the course, never by this
+  skill and never by what a model happens to know about the subject. Cover what
+  **this course's** own material covers, at the depth it demands: an idea the
+  lecturer spent four slides on cannot become one sentence.
+
+  **Read the lesson folder before writing, all of it.** What is in there varies
+  by course, and each kind answers a different question:
+
+  | Source | The question only it answers |
+  |---|---|
+  | **Slides / lecture decks** | What is on the syllabus, in what order, and in whose notation (**C-4**) |
+  | **Lecture transcript** | What the lecturer actually *dwelt on*. A slide gives every bullet equal weight; ten minutes of talking over one of them does not |
+  | **Past papers** | What is genuinely examined, how it is asked, and how often. This outranks a topic's slide count |
+  | **A marking key**, where one exists | What earns the mark. The most direct evidence in the folder of the depth required, and the rarest |
+  | **Assignment briefs** | What the reader is being asked to produce *this* semester |
+  | **Module handbook / scheme of work** | The official coverage claim, and what the course says it is for |
+  | **Set textbook** | Where to go deeper, and the worked examples the lecture compressed |
+
+  - **Weight them by what they are evidence of.** Where the slides and a past
+    paper disagree about how much a topic matters, **the paper wins** — it is
+    what the reader is sitting. Where the slides and a textbook disagree about
+    method or notation, **the slides win** (**C-4**), because the marker is
+    holding the slides.
+  - **A transcript is a source, not a transcript.** Where a course's lectures
+    were recorded, `python3 tools/transcribe.py` puts a `_transcript.md` beside
+    the video and that file is read the same way the deck is. It is often the
+    only place an examiner's emphasis is written down.
+  - **Say what a step was built from**, in the file's header comment, naming
+    the actual files. That is what lets the next person check a figure against
+    the slide it came from, and it is how **E-7**'s corrections stay auditable.
+  - **A gap in the material is a finding, not a licence.** If the folder has no
+    source for something the step needs, say so to the owner rather than
+    filling it from general knowledge. General knowledge is not wrong; it is
+    just not what the paper is set from.
 - **C-3** Where the lecture works a numeric example, the step works one too —
   with the arithmetic visible, so the reader can follow each line rather than
   trusting the answer.
@@ -492,34 +646,161 @@ text, so a mark written into one shows its own syntax.
     pattern looks right.
   - Never link a competitor's paid course, and never a school's material.
 
-- **C-8** **Steps refer to each other and run on from each other.** *(added
-  2026-08-02)* A course is one argument told over forty steps, not forty
-  handouts that happen to share a folder. A step should be visibly downstream of
-  what came before it and visibly pointed at what comes next, so a reader
-  finishing one has a reason to open the next rather than a decision to make.
+- **C-8** **Steps refer to each other, run on from each other, and now link to
+  each other.** *(added 2026-08-02, revised 2026-08-07)* A course is one
+  argument told over forty steps, not forty handouts that happen to share a
+  folder. The owner's words: *"a course needs to feel like a network of
+  steps."* A step should be visibly downstream of what came before it and
+  visibly pointed at what comes next, so a reader finishing one has a reason to
+  open the next rather than a decision to make.
   - **Pick the thread up.** Where a step uses something an earlier step
     established, say so in passing: *the same operating cycle from the last
     step, now with the creditor side on it*. One clause. It tells the reader
     their earlier work is being spent, not repeated.
   - **Hand the thread on.** End on the question the next step answers, inside
     the prose, at the point it becomes obvious. Never a labelled "Next:" row —
-    the reader already has a real link at the foot of the step, and a pointer
-    written into the content goes stale the moment the order changes.
+    the reader already has a real link at the foot of the step, and a labelled
+    pointer goes stale the moment the order changes.
   - **A reference must survive being read alone.** This is the hard constraint
-    and it beats the other three. A reader arrives mid-course from a shared
+    and it beats everything else here. A reader arrives mid-course from a shared
     link, a resumed position or the sidebar, so anything load-bearing has to be
     re-stated in enough words to stand up here. "As we saw with Barings" is not
     a reference, it is an assumption. Give the fact again in a clause and then
-    build on it.
+    build on it. **A link does not lift this.** A reader who has to leave the
+    step to follow the sentence has been sent away mid-idea, and most of them
+    will not come back.
   - **Never in the opening sentence.** A callback across a step boundary is
     banned there outright — see **W-13**'s fourth bullet, which exists because
     exactly this was tried and the owner could not follow it.
-  - **Plain text, always.** A step reference is words, never a link to another
-    step's file — see `.claude/CLAUDE.md`. The reader's own navigation is what
-    moves someone between steps.
+
+  ### The link itself *(new 2026-08-07)*
+
+  **A step reference is now a real link:** `[the words](step:its-slug)`,
+  rendered as the only visible link in the reading. **This reverses "plain
+  text, always", which stood until today** and which `.claude/CLAUDE.md` still
+  stated as a general rule. That rule was right about *Slack*: Slack minted a
+  new unpredictable file id on every upload, so an embedded file link went
+  stale the same day. None of that is true of the reader. A step's slug is
+  authored in its own `.mjs`, it is the string the sidebar and the URL are both
+  built from, and **the reader resolves the slug to a path at render** — so
+  moving a step into a different lesson re-points every link to it instead of
+  breaking them. The failure the old rule protected against cannot happen here.
+  - **Link the words, never a bare pointer.** `[what a covenant costs
+    you](step:the-price-of-debt)`, not "see the step on debt". The phrase the
+    reader is already reading becomes the door.
+  - **`seed:course` refuses a slug no step in the course answers to**, refuses
+    a lesson or group slug (a folder has no page), and refuses a step linking
+    to itself. A typo blocks the write rather than shipping a dead link into
+    somebody's exam week. Links are **within one course**: seeding runs one
+    course at a time and cannot check another's slugs, so a cross-course link
+    is refused rather than shipped unverified.
+  - **Two or three per step, at most.** This is the same discipline **C-7**
+    puts on sources and for the same reason. A paragraph with a link every
+    other line stops being reading and becomes a menu, and the reader who
+    follows all of them never finishes anything. **A step with no links is
+    fine**; a step that cannot be read without following one is broken.
+  - **Link backwards freely, forwards rarely.** A backward link is an offer to
+    a reader who knows they missed something. A forward link invites them to
+    leave before they have finished, and the sidebar and the foot of the step
+    already carry what comes next. Where a forward reference earns its place,
+    it goes at the **end** of the step, which is where the reader is leaving
+    anyway.
+  - **Never inside `**bold**` or `[[term|…]]`** — the marks do not nest, so the
+    words render and the link silently vanishes. Pick a different phrase.
   - This is a **flow** rule, not a summary rule. It does not license a "recap of
     the last step" block, which is **S-6** all over again: the reader either
-    read it or can go back to it.
+    read it or can go back to it — and now, can tap to.
+
+- **C-9** **Show one worked. Hand the next one over unworked.** *(added
+  2026-08-07)* **C-3** says that where the lecture works a number, the step
+  works one too. That is the demonstration, and on its own it teaches
+  recognition rather than method: a reader can follow every line of a worked
+  example and still not be able to start a blank one. The owner's words:
+  *"important pieces are worked and unworked examples in cases of mathematical
+  courses."*
+
+  Where a step teaches something the reader will have to **produce** — a
+  calculation, a valuation, a classification, a test applied to facts — it
+  carries both:
+  - **The worked one.** Every line visible (**C-3**), at the course material's
+    own figures (**E-7**), so the step and the slide can be held side by side.
+  - **The unworked one.** Same method, different figures, and it **stops**. It
+    is a `callout` with `kind: "example"` (**E-10**) posing the task, and the
+    section's `check` is what marks it: the options are the answers the common
+    slips actually produce (**S-5**), so a reader who works it finds their
+    number in the list and a reader who does not is guessing between four.
+    **That gap is the rule doing its job.**
+  - **Change the figures, not the difficulty.** The second one is the same
+    method on a different case, never a harder variant. You are asking whether
+    they can start, not examining them.
+  - **Put the answer where they will look after trying, not before.** The
+    check's `explain` carries the working, not just the verdict. A reader who
+    got it wrong needs the line they missed.
+  - **Take it from the past papers where there are any** (**C-2**). A question
+    the paper has actually asked beats one invented for the step, and the
+    folder usually has a dozen.
+  - **Not every step is like this.** A step teaching what a thing *is* has
+    nothing to hand over, and inventing a drill for it is worse than leaving
+    it. The trigger is whether the exam will ask the reader to produce
+    something — which is a question about the **discipline** (**C-11**), not
+    about this rule.
+
+- **C-10** **Pick the example the reader has already felt.** *(added
+  2026-08-07)* **C-1** fixes the currency and the companies; **C-5** requires an
+  anchor in every section. Neither asks the question that decides whether an
+  example lands: **has this reader ever been in this situation?** ZMW and a
+  Zambian name make an example local. They do not make it recognisable to a
+  nineteen-year-old who has never run a treasury, sat on a board or issued a
+  bond. The owner's words: *"is there a better way to reword or rewrite an
+  example so it's more relatable?"* — and that question gets asked of every
+  example before it ships.
+  - **Enter through the mechanism they know, then scale to the syllabus.** The
+    reader has waited to be paid back by a friend, watched a price move between
+    two shops, put money into a chilimba, seen someone pay kaloba rates because
+    they needed cash today. Those are the same mechanisms as receivables,
+    arbitrage, pooled funds and the cost of short-term debt. Start where they
+    have stood, name the corporate version, then work at the corporate scale.
+  - **This does not license writing down to them.** **W-9** still holds: they
+    are a future founder and the material is theirs to run. Relatable is about
+    the **way in**, not the ceiling. A step that stays at bus fares has failed
+    **C-2** as surely as one that opens on translation exposure.
+  - **The strongest version is a situation with a feeling in it.** "You have
+    paid every instalment on time, in full, for four years. You are in default."
+    A reader who has never seen a covenant knows exactly what it is to do
+    everything right and be told it is wrong. That sentence does more work than
+    the definition after it, and it cost nine words.
+  - **Test it by naming the reader.** Not "would a student find this
+    relatable", which always answers yes. *Which* student, doing what, when
+    have they been near this? If the honest answer is "nobody reading this
+    has", the example is a fact about the world rather than a way into it, and
+    it needs one in front of it.
+  - **A borrowed example ages.** Where the course material's own example is
+    remote (a 1990s London bank, a US retailer), keep its figures for **E-7**
+    and put a reachable case beside it. Do not replace it: the slide is what
+    the marker is holding.
+
+- **C-11** **Name the discipline before writing, and load its profile.**
+  *(added 2026-08-07)* This skill is the house style for **every** Booklesss
+  course, and 598 of the 602 in the pipeline have not been built yet. Most of
+  the rules above are about writing and hold everywhere. A few are shaped by
+  the fact that every course written so far has been finance, and applying
+  those to a law or a history course would produce something confidently wrong.
+  - **Decide, in one line, what kind of course this is** before the first
+    section: what the exam asks the reader to *produce*. A calculation? An
+    argument applied to facts? A classification defended? A design? That answer
+    is what **C-9** turns on, what **C-5**'s "concrete anchor" means, and which
+    of the **E** blocks the step will live in.
+  - **Read `reference/disciplines.md`** for the profile, and follow it. It says
+    which rules bind unchanged, which are read differently, and which do not
+    apply at all.
+  - **Say the profile out loud in the file's header comment**, beside the
+    sources (**C-2**). It is the assumption every other decision in the step
+    rests on, and the next person editing it should not have to infer it.
+  - **A course that fits no profile is a finding.** Write the step against the
+    universal rules, say plainly which conventions you invented, and add the
+    profile once a second course of that kind proves it. **Do not invent a
+    taxonomy ahead of the material** — every profile in that file came from a
+    course that was actually built.
 
 ---
 

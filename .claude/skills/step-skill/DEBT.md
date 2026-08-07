@@ -71,6 +71,11 @@ unchecked ones get ticked off by someone assuming the list was audited.
 | D-9 | Steps whose sidebar label is a different name from their page title — S-10 | 2026-08-03 | **closed 2026-08-03** · 0 of 53 authored steps; economics' 2 are not reachable from a `.mjs` |
 | D-10 | Em dashes in step prose — W-11 | 2026-08-03 | open · **790 in 32 of 53** (CF 449, SM 341, **TM 0**) |
 | D-11 | First screens nobody has read cold — W-16 | 2026-08-03 | open · **1 of 83 read** · no scan can see it |
+| D-12 | Callouts that never say which kind they are — E-10 | 2026-08-07 | open · **60 of 60 in 53 steps**, 1 fixed · exactly measurable |
+| D-13 | Steps that work every example and hand over none — C-9 | 2026-08-07 | open · 1 of 53 checked |
+| D-14 | Definitions orphaned by the popup being switched off — E-8 | 2026-08-07 | open · 1 of 53 checked · **a reader gets nothing today** |
+| D-15 | Four courses, no course-intro step — S-11 | 2026-08-07 | open · **0 of 4** |
+| D-16 | Prose nobody has asked the shorter-version question of — W-17 | 2026-08-07 | open · 0 of 53 |
 
 > **Counts moved from 44 to 53 on 2026-08-02.** The nine remaining Treasury
 > Management steps were split into eighteen (S-8), so the course is 21 steps and
@@ -758,3 +763,106 @@ title must never renumber a slug, or the shared links break (**S-8**).
       `intro-to-strategy`, is an allowed trim
 - [ ] economics — 2 of 30, and not reachable from a `.mjs`; fix in
       `course-data.json` or leave until the course is authored properly
+
+### D-12 · callouts that never say which kind they are · opened 2026-08-07
+**Source:** 2026-08-07 · measured while adding **E-10** · owner
+**Rule:** E-10 (new)
+**Why it can't wait for a rewrite:** the reader has drawn four kinds since
+2026-08-02 and **not one of the 60 callouts across the 53 authored steps sets
+one**, so every box in the product says "Key point" — including the ones that
+are a trap the exam sets and the ones that are a worked case. The reader was
+never wrong on screen, which is exactly why nobody counted it.
+**Applies to:** all 53 steps. This is the rare item with an exact number rather
+than an estimate: `grep -c 'type: "callout"'` is 60 and `grep -c 'kind:'` is 0.
+
+- [x] treasury-management/debt-and-investment/the-price-of-debt — 2026-08-07
+      (2 callouts: the covenant one is `key`, the new unworked bond is
+      `example`)
+- [ ] the other 58 callouts, in 52 steps
+
+Paid on contact (**E-10** is one line per callout), not swept: the kind is a
+judgement about what the box is doing, and a sweep would set them all to `key`
+and call the debt closed, which is the state it is in now.
+
+### D-13 · steps that work every example and hand over none · opened 2026-08-07
+**Source:** 2026-08-07 · owner — "important pieces are worked and unworked
+examples in cases of mathematical courses."
+**Rule:** C-9 (new)
+**Why it can't wait for a rewrite:** a reader who has only ever watched
+examples being solved can follow every line and still not start a blank one,
+and the exam gives them a blank one. `the-price-of-debt` worked a bond
+valuation to the kwacha and then asked a multiple-choice question about which
+direction prices move — so the step's own check could be passed by someone who
+could not price a bond.
+**Applies to:** every step in a **quantitative** course (`reference/disciplines.md`)
+— Corporate Finance, Treasury Management, the economics steps. Strategic
+Management is discursive and C-9 reads differently there; check it against the
+profile before scoring it.
+
+- [x] treasury-management/debt-and-investment/the-price-of-debt — 2026-08-07
+      (a second bond at different figures, marked by a numeric check whose
+      three wrong options are the three real slips)
+- [ ] the other 20 TM steps — **unchecked**
+- [ ] 25 Corporate Finance steps — **unchecked**
+- [ ] 30 economics steps — **unchecked**, and not reachable from a `.mjs`
+
+⚠️ **The count is 1 of 53 checked, not "TM is done".** Nothing has looked at
+the other 20 TM steps for this.
+
+### D-14 · definitions orphaned by the popup being switched off · opened 2026-08-07
+**Source:** 2026-08-07 · owner — "disable text popups from the app entirely for
+now."
+**Rule:** E-8 (revised)
+**Why it can't wait for a rewrite:** **a reader gets nothing today.** Every
+`[[term|definition]]` still renders its word and no longer renders its
+definition, so wherever a step leaned on the popup to carry a word the reader
+needed, the sentence around it is now unsupported. This is not a style item: it
+is content that was on screen last week and is not on screen now.
+
+The fix is never "delete the marks" — the definitions are the expensive part and
+the popup is one branch away from returning. It is: find the ones that are
+**load-bearing**, define those in the prose under **W-5**, and leave the rest
+marked.
+
+**Applies to:** every step carrying a `[[term|…]]`, which is most of them.
+
+- [x] treasury-management/debt-and-investment/the-price-of-debt — 2026-08-07
+      (`PBIT` and `par` moved into the prose, both load-bearing; `notch` and
+      `covenant headroom` are explained by their own sentences and keep the
+      mark alone)
+- [ ] the other 52 steps
+
+### D-15 · four courses, no course-intro step · opened 2026-08-07
+**Source:** 2026-08-07 · owner — "the first step should always be an intro to
+the course as a whole … for someone to actually start spending incredible
+amounts of time doing this course, there needs to be a good reason for why
+we're doing this course and how it's going to elevate the person for doing it."
+**Rule:** S-11 (new)
+**Why it can't wait for a rewrite:** it is the cheapest unbuilt thing in the
+product. Every course currently opens by teaching, so a reader who was assigned
+the course and does not yet know why it matters meets a definition first. This
+is one new step per course and it is the one every single reader sees.
+
+**Applies to:** all four live courses. None has one — `intro-to-treasury` and
+`intro-to-strategy` are introductions to the SUBJECT, which is a different job
+and does not satisfy S-11.
+
+- [ ] treasury-management
+- [ ] corporate-finance
+- [ ] strategic-management
+- [ ] economics — not reachable from a `.mjs`; needs authoring properly first
+
+### D-16 · prose nobody has asked the shorter-version question of · opened 2026-08-07
+**Source:** 2026-08-07 · owner — "is there a more concise way of setting up this
+sentence or paragraph that doesn't lose the user … people have limited
+attention spans."
+**Rule:** W-17 (new)
+**Why it can't wait for a rewrite:** it can, and it is the one item here that
+should NOT be swept. Nothing is wrong on screen, no reader is missing anything,
+and a course-wide compression pass is forty steps rewritten by whoever is
+currently annoyed. It is here so that any step opened for another reason gets
+the question asked of it in the same edit.
+**Applies to:** all 53 steps, at a rate of whichever ones get touched.
+
+- [ ] 0 of 53 · **paid on contact only** — see the note above before batching
+      this one
