@@ -1513,20 +1513,49 @@
   .grasp-btn[data-active] {
     color: var(--grasp-tone);
   }
-  /* Once something is answered the rest recede — still there to change your
-     mind with, no longer competing with the answer you gave.
-     0.8, NOT the 0.55 this was (2026-08-07). That number was set when both
-     answers were hairline glyphs of the same weight, where the only way to
-     say "this is not the one you picked" was to take some of it away. The
-     answers are drawn faces now and the unpicked one is ALREADY the colourless
-     version of itself, so 0.55 was a second recession stacked on a first: the
-     owner, reading on a phone, "the other icon is way too dim". Colour does
-     the work; this only has to stop the two reading as equals. */
+  /* NOTHING RECEDES ANY MORE, and the rule is kept as a placeholder for why.
+     It went 0.55 → 0.8 → 1 across 2026-08-07 as the answers changed from
+     hairline glyphs to drawn faces. The number existed because two identical
+     grey glyphs had no other way to say which one you had picked; taking
+     something away was the only signal available. The faces say it with
+     COLOUR, and every point of opacity on top of that was a second recession
+     stacked on a first — owner, twice in one afternoon: "the other icon is way
+     too dim", then "its inactive state is too subtle, make it stand out more".
+     A control the reader is invited to change their mind with should not look
+     switched off. */
   .grasp-group[data-answered] .grasp-btn:not([data-active]) {
-    opacity: 0.8;
-  }
-  .grasp-group[data-answered] .grasp-btn:not([data-active]):hover {
     opacity: 1;
+  }
+  /* The tap reaction. The drawn faces were briefly animated GIFs and the GIFs
+     were the `in-reveal` state, which plays when an icon APPEARS and so starts
+     from an empty frame — on a control already on screen that read as the icon
+     vanishing and rebuilding itself. This is the honest interim: the artwork is
+     a still, and the POP is what reacts.
+     Applied only while the answer is the chosen one, so React adding and
+     removing the class is what restarts it — an animation re-applied to an
+     element that never unmounts plays again from 0. Slightly past 1 and back,
+     because a reaction that only grows into place reads as loading rather than
+     as answering. */
+  @keyframes graspPop {
+    0% {
+      transform: scale(0.55);
+    }
+    55% {
+      transform: scale(1.14);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  .grasp-pop {
+    animation: graspPop 340ms cubic-bezier(0.34, 1.3, 0.5, 1) both;
+  }
+  /* Asked for less motion: the colour still arrives, it just arrives without
+     the bounce. Unlike a GIF, a CSS animation can actually honour this. */
+  @media (prefers-reduced-motion: reduce) {
+    .grasp-pop {
+      animation: none;
+    }
   }
 
   /* Ring completion flourish. transform-box: fill-box is what makes

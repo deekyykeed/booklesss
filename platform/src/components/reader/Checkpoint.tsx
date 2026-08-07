@@ -201,8 +201,8 @@ export function Checkpoint({
                   aria-hidden="true"
                 >
                   {[
-                    { src: `/reader/${a.art}-rest.png`, on: !active },
-                    { src: `/reader/${a.art}.png`, on: active },
+                    { src: `/reader/${a.art}-rest.png`, on: !active, pop: false },
+                    { src: `/reader/${a.art}.png`, on: active, pop: true },
                   ].map((layer) => (
                     /* eslint-disable-next-line @next/next/no-img-element */
                     <img
@@ -212,7 +212,15 @@ export function Checkpoint({
                       width={26}
                       height={26}
                       draggable={false}
-                      className="absolute inset-0"
+                      /* `.grasp-pop` only while this is the chosen answer, so
+                         React removing and re-adding the class is what restarts
+                         the animation — neither image ever unmounts, and a CSS
+                         animation re-applied to a live element plays again from
+                         0. That is the whole trick, and it is why this reacts
+                         where the re-keyed <img> could only reload. */
+                      className={
+                        "absolute inset-0" + (layer.pop && active ? " grasp-pop" : "")
+                      }
                       style={{
                         opacity: layer.on ? 1 : 0,
                         transition: "opacity 140ms ease",
