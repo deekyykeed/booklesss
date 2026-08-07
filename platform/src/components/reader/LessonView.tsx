@@ -427,7 +427,14 @@ function renderBlock(b: Block) {
          left and the text on the right all aligned to the top". It stacked
          until now, which spent a whole line of the box on a 20px glyph and
          made a two-line callout three lines tall. */
-      <div className="squircle flex items-start gap-3 rounded-3xl border border-[#e7e7e6] bg-white px-5 py-4 shadow-lift">
+      /* `pl-4` against `pr-5`: the left padding is the only asymmetric thing
+         here and it is deliberate (owner, 2026-08-07: "reduce the padding on
+         the left side of the container"). A 14px hairline glyph does not fill
+         its box the way a line of type fills its column, so equal padding on
+         both sides reads as MORE space on the left — the optical gap runs from
+         the border to the ink of the mark, which is inset within its own
+         square. Taking 4px off measures unequal and looks level. */
+      <div className="squircle flex items-start gap-3 rounded-3xl border border-[#e7e7e6] bg-white py-4 pl-4 pr-5 shadow-lift">
         {/* What this container IS — the mark and nothing else.
             MYNAUI, IN INK, as of 2026-08-07 (owner: "the icon should be a black
             mynaui icon"). Third mark on this control: MynaUI at 15px beside the
@@ -440,20 +447,25 @@ function renderBlock(b: Block) {
             is a white box, so the mark was importing a colour the container
             never had. In ink it labels the box instead of decorating it, and
             the reading underneath is the only thing in the box with weight.
-            17px (owner, 2026-08-07: "reduce the size of the icon in the
-            container"). It went in at 20 on the reasoning that a hairline
-            carries less per pixel than the filled Duotone it replaced, so
-            matching the old 18 would have made it smaller on screen than it
-            was. True in isolation and wrong beside the sentence: at 20 the mark
-            was the first thing read in a box whose whole point is the sentence.
-            17 is the app's own chrome size rather than a step down from 20 —
-            the same number the header and the sidebars draw at, which is what
-            a mark that labels a container should match.
+            14px, arrived at in two goes on 2026-08-07 (owner: "reduce the size
+            of the icon in the container", then "reduce it to 14px"). It went in
+            at 20 on the reasoning that a hairline carries less per pixel than
+            the filled Duotone it replaced, so matching the old 18 would have
+            made it smaller on screen than it was. True in isolation and wrong
+            beside the sentence: at 20 the mark was the first thing read in a
+            box whose whole point is the sentence.
+            14 is SMALLER than anything else in the app's chrome, and that is
+            the point rather than an oversight. Everywhere else a MynaUI mark is
+            a control you press, so it has to hold a tap target. This one is
+            pressed by nobody: it is a label saying which kind of box this is,
+            read once on the way into the sentence and never again. It only has
+            to be legible, and 14 is where it stops competing with the reading
+            it introduces.
             The height is the reading's line-height, so the glyph centres on the
             first line rather than on its own box — with 27px of leading, top
             edge to top edge sits the mark visibly high. */}
         <div className="flex h-[27px] shrink-0 items-center text-ink" title={kind.label}>
-          <MynaIcon name={kind.icon} size={17} />
+          <MynaIcon name={kind.icon} size={14} />
           {/* Off-screen, not absent: the mark has no text of its own, so this
               is what a screen reader announces. Same trick as .grasp-label. */}
           <span className="grasp-label">{kind.label}</span>
