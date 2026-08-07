@@ -93,7 +93,15 @@ export default function LandingPage() {
        but crowds the foot. Framer's 140px is the value that holds; only the top
        changed. The safe-area insets are added rather than assumed: on a notched
        phone in a PWA this is the top and bottom of the screen. */
-    <main className="relative flex min-h-dvh w-full flex-col items-center justify-end overflow-clip bg-black px-4 pt-[calc(1.75rem+env(safe-area-inset-top))] pb-[calc(140px+env(safe-area-inset-bottom))]">
+    {/* THE WHOLE COMPOSITION THEN SAT LOWER (owner, 2026-08-07: "drop
+        everything on the screen lower"). Both paddings move it, in opposite
+        directions: the top pushes the mark down, the bottom lets the pitch
+        fall. They move by DIFFERENT amounts on purpose — 28→52px at the head,
+        140→100px at the foot — because the same instruction asked for more air
+        under the mark too, and with `justify-between` the space between the two
+        blocks is simply whatever is left over. Dropping the foot 40px while the
+        head drops 24px is what opens it. */}
+    <main className="relative flex min-h-dvh w-full flex-col items-center justify-end overflow-clip bg-black px-4 pt-[calc(3.25rem+env(safe-area-inset-top))] pb-[calc(100px+env(safe-area-inset-bottom))]">
       <ToApp />
 
       {/* ---- the backdrop ----
@@ -187,7 +195,15 @@ export default function LandingPage() {
               the point — a face that never stops moving is a ticker, and a
               ticker reads as decoration rather than as people showing up.
               Timing and the seamless wrap are in globals.css → .faces-track. */}
-          <div className="flex flex-col items-center gap-2">
+          {/* CLOSER TO THE HEADLINE THAN THE OTHER TWO GAPS (owner, 2026-08-07:
+              "reduce the space between the profile pic container closer to the
+              title text"). The negative margin rather than a smaller gap on the
+              parent, because that gap also sets subtitle→button: this stack has
+              three children and only the first join was asked to tighten. 32px
+              less 12px = 20px, so the faces and the line under them read as
+              belonging to the headline instead of floating between it and the
+              mark. */}
+          <div className="-mb-3 flex flex-col items-center gap-2">
             {/* Overlapping discs with the photograph showing through the gap
                 between them, a new student growing in on the left as the
                 oldest shrinks away on the right. The mechanic is all in
