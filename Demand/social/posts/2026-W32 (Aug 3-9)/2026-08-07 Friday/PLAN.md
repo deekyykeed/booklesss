@@ -19,17 +19,19 @@ limits however good it is.
 |------|------|-------|-------|------|
 | 🌅 Morning | ~07:00 | `1-morning/` | 3 | **the two answers**, drawn — grey until you answer |
 | ☀️ Midday | ~11:00 | `2-midday/` | 3 | **the menu at the other end of that row**, every option with its own mark |
-| 🌤️ Afternoon | ~15:00 | `3-afternoon/` | — | ⚠️ **open — needs a decision, see below** |
-| 🌆 Evening | ~19:00 | `4-evening/` | — | ⚠️ **open** |
+| 🌤️ Afternoon | ~15:00 | `3-afternoon/` | 3 | **one course card, three lives** — reading it, queued, finished |
+| 🌆 Evening | ~19:00 | `4-evening/` | — | ⚠️ **open — needs four new plates, see below** |
 | 🌙 Night | ~21:30 | `5-night/` | — | ⚠️ **open** |
 
 > ⚠️ **Shot from the clean worktree `C:/bkls-shot`, pinned to `82115ae`** —
 > which is the second pin of the day. The first was `5ac4d46`, and `82115ae`
 > landed 40 minutes later fixing exactly the subject that was already shot: the
 > faces were vanishing on tap and playing an `in-reveal` animation meant for an
-> icon that is arriving. Both carousels were re-shot at the new pin. **Check
-> `git log --oneline -1 -- platform/src/components/reader/` before posting** —
-> this control has moved four times today alone.
+> icon that is arriving. Both reader carousels were re-shot at the new pin.
+> **The afternoon set is a third pin, `b1447d9`** — the pipeline card's truncated
+> line was fixed before it was photographed, so that shot is of the fix.
+> **Check `git log --oneline -1 -- platform/src/components/reader/` before
+> posting** — this control has moved four times today alone.
 >
 > `next dev` on :3101 is enough; nothing here needs a service worker.
 
@@ -98,50 +100,67 @@ triangle say it belongs to the row.
 
 ---
 
-## ⚠️ Afternoon, evening and night — OPEN, and why
+## 🌤️ Afternoon — `3-afternoon/` · One card, three lives
+
+**Post title:** A course on your timetable has three lives in here
+
+**Slides:** reading it → waiting to be written → finished
+
+What the tabs actually did today: gave the same `.course-card` shell three jobs.
+The pipeline card is not a different component in disguise — same radius, same
+border, same shadow, with every colour that would carry meaning dropped to a
+muted token and the resume button's shape carrying a fact instead of an action.
+Greyed rather than faded, deliberately: a blanket `opacity` would take the
+border and the shadow with it and the card would read as broken rather than as
+not-yet. What moves across the three is the resume button's fill, which IS the
+progress bar — part filled, absent, full.
+
+**Caption:**
+> Your timetable has courses we haven't written yet. They're on your dashboard
+> anyway 🛠️
+> Same card, three states. One you're in the middle of. One nobody has written —
+> greyed, no button, because there's nowhere for it to go, and instead of a
+> made-up launch date it tells you how many others on your programme also listed
+> it. That number is what decides the build order. One you've finished.
+> I shot this to post it and found the queued card was cutting its own sentence
+> in half on every phone. Fixed before this went out.
+> DM me "link" and I'll send you the whole thing. 👇
+> #buildinpublic #edtech #productdesign #studytok #zambia
+
+> ⚠️ **THE FINISHED CARD DIFFERS FROM THE FIRST ONE BY THE FILL AND NOTHING
+> ELSE.** It still says "Resume", still points at the first step, still shows a
+> performance score rather than a completion, and its streak reads 0d. So slide
+> 3 reads as "a course you haven't touched lately" about as easily as "a course
+> you finished". That is a gap in the card, not in the crop, and rule 4 means no
+> caption can close it. Worth settling before this set runs again.
+
+---
+
+## ⚠️ Evening and night — OPEN, and why
 
 Rule 5 says all five slots get filled and that an honest fifth post beats an
-honest explanation of why there isn't one. Three are empty anyway, because the
-three things that could have filled them each failed a rule rather than a taste
-test, and **manufacturing a fourth is the one thing rule 5 forbids**. The
-decision is the owner's; each of these is an hour or less once it is made.
+honest explanation of why there isn't one. Two are empty anyway, because what is
+left would have to be invented, and **manufacturing a post is the one thing rule
+5 forbids outright**. Each is under an hour once the idea exists.
 
-**1. The course card's three lives — blocked by two real defects.**
-The tabs are the day's other visible ship and the post writes itself: the same
-`.course-card` shell doing three jobs — one you are reading, one nobody has
-written yet, one you have finished. Shot, and neither of the two new states can
-go out:
-
-- **The pipeline card's one line truncates on every phone.** *"The more students
-  taking it, the sooner it gets b…"* — `PipelineCard`'s foot is a `truncate`
-  span at 370px and the fallback sentence does not fit at any mobile width. It
-  is only the fallback because `/api/curriculum` genuinely returns
-  `{"suggested":[],"known":[]}` — no student has listed a course yet, so the
-  real number is honestly absent and this line is what every pipeline card in
-  production is showing right now.
-- **I could not get a completed course to register**, so the Completed tab was
-  never photographed. Seeding every section of all 7 lessons of the short course
-  left its card at 35%, and the card's percentage does not appear to be
-  coverage: a course with **nothing** done also reads 65% (`fill-1-fresh.png`).
-  Either the seed shape is wrong or that number is measuring something other
-  than progress. **Worth a look independently of the post** — it is the biggest
-  number on the card a student sees.
-
-**2. Brand plates — the reserve is spent, twice over.** All sixteen from 3 Aug
+**1. Brand plates — the reserve is spent, twice over.** All sixteen from 3 Aug
 went out on 4 and 5 Aug; all eight from 6 Aug went out on 6 Aug. A plate slot
 today means building new plates, and there is a real reason to (`c5982ed` made
 the disc the actual favicon, apple-icon and PWA icon). But yesterday's evening
 AND night were both plates — disc, then the name — so a third and fourth disc
 set running is the "two ideas, four slides" the owner sent back on 5 Aug.
 
-**3. The tab row itself.** `370×35` css, which is 10.6:1. Rule 1's ceiling is
+**2. The tab row itself.** `370×35` css, which is 10.6:1. Rule 1's ceiling is
 about 5:1, and the ActionBar write-up from 5 Aug is the same shape. Shot as
 `try-tabs.png` so the measurement is on the record, not going out.
 
-**The cheapest honest fills, in order:** fix the pipeline card's foot line (a
-shorter string, or `line-clamp-2` instead of `truncate`) and the three-lives
-post is back, worth two slots on its own → or build four genuinely new plates on
-a treatment neither of yesterday's slots used.
+**What is left is a plate set, and it needs four IDEAS, not four grounds.** Only
+one is obvious — the disc at every size it actually ships at (16, 32, 180, 512),
+which is exactly what `c5982ed` did today and says "it holds at any size" in one
+picture. The other three would be invented to sit beside it, which is the two-
+ideas-four-slides set the owner sent back on 5 Aug. Left open rather than
+padded. `SLOT=4-evening PICK=… node _scripts/logo-variants.mjs` once there are
+four worth having.
 
 ---
 

@@ -1386,6 +1386,39 @@ const CONFIGS = {
     ],
   }),
 
+  /* 3 — one course card, three lives.                       (afternoon)
+   *
+   * What the tabs actually did today: gave the same `.course-card` shell three
+   * jobs. The pipeline card is NOT a different component wearing a disguise —
+   * same radius, same border, same shadow, with every colour that would carry
+   * meaning dropped to a muted token and the resume button's shape carrying a
+   * fact instead of an action. Greyed rather than faded, deliberately: a
+   * blanket `opacity` would take the border and shadow with it and the card
+   * would read as broken instead of as not-yet.
+   *
+   * ORDER: reading it → waiting to be written → finished. The thing that moves
+   * across the three is the RESUME BUTTON'S FILL, which is the progress bar —
+   * part filled, absent, full.
+   *
+   * ⚠️ THE FINISHED CARD DIFFERS FROM THE FIRST ONE BY THAT FILL AND BY
+   * NOTHING ELSE. It still says "Resume", still points at the first step, still
+   * shows a performance score rather than a completion, and its streak reads
+   * 0d. Slide 3 therefore reads as "a course you have not touched lately" as
+   * easily as "a course you finished" — a gap in the card, not in the crop, and
+   * one no caption can close under rule 4. Worth a look before this set goes
+   * out a second time.
+   *
+   * NOT grouped: all three run the card's full width, so each measures the same
+   * ink width and scales identically on its own. */
+  "f-lives": () => ({
+    slot: "3-afternoon",
+    slides: [
+      object({ img: img("card-1-reading.png"), w: 752 }),
+      object({ img: img("card-2-queued.png"), w: 752 }),
+      object({ img: img("card-3-done.png"), w: 752 }),
+    ],
+  }),
+
   brand: () => ({
     slot: "5-night",
     slides: [
