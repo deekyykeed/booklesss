@@ -91,16 +91,23 @@ export function SourceStrip({ urls }: { urls: string[] }) {
              and a shadow at 15px — and that made a footnote look like a
              feature: three of them under a paragraph carried more visual weight
              than the sentence they were annotating.
-             Now a flat tint with no border, no shadow and grey type, so a
-             source reads as a quiet note under the claim and the prose stays
-             the loudest thing in the column. It darkens on hover, which is the
-             only state that needs to say "this is a link".
+             A flat tint with no shadow and grey type, so a source reads as a
+             quiet note under the claim and the prose stays the loudest thing
+             in the column. It darkens on hover, which is the only state that
+             needs to say "this is a link".
+
+             THE BORDER IS BACK (owner, 2026-08-07: "add a border to the
+             source container"), though the shadow it arrived with the first
+             time is not — that combination was the thing that overweighted
+             it, not the border on its own. `--color-line-2`, the token this
+             app already uses for pills and tags, so the chip picks up an edge
+             without inventing a new grey next to the tint's own #f6f6f5.
 
              The tint is a hair off white (#f6f6f5), not the #eeeeec it was for
              one revision — that read as a grey block sitting ON the page rather
              than as part of it. It only has to be far enough from the surface
              to show the pill's shape. */
-          className="flex shrink-0 items-center gap-1 rounded-full bg-[#f6f6f5] py-0.5 pl-0.5 pr-2 text-[11px] leading-4 text-[#7a7a82] transition-colors hover:bg-[#ededeb] hover:text-ink"
+          className="flex shrink-0 items-center gap-1 rounded-full border border-[color:var(--color-line-2)] bg-[#f6f6f5] py-0.5 pl-0.5 pr-2 text-[11px] leading-4 text-[#7a7a82] transition-colors hover:bg-[#ededeb] hover:text-ink"
         >
           {/* Round, whatever shape the site's own mark is. Most favicons are
               squares with their own padding, so a circular crop of one reads
