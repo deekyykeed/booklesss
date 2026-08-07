@@ -31,6 +31,15 @@ import { Player } from "@lordicon/react";
  *     animation because the tap happened — rather than because a class was
  *     re-applied, which is the trick the CSS stand-in has to use.
  *
+ * ⚠️ IT NEEDS `lottie-web`, AS A PEER DEPENDENCY. This is the one real trap in
+ * the swap and it cost a broken build. `@lordicon/element` BUNDLES its player
+ * (`@lordicon/web`), so lottie-web was installed for it, found to be dead
+ * weight, and removed — correctly. `@lordicon/react` does not bundle one: it
+ * declares `lottie-web` in `peerDependencies`, npm does not install peers,
+ * and nothing complains until something tries to render. Its other three peers
+ * (`react-native`, `lottie-react-native`, `react`) are for the native build and
+ * are not needed on the web.
+ *
  * NEITHER PACKAGE SHIPS ANY ICONS, which is worth writing down because the
  * install line sits directly above a `<lord-icon src="…json">` snippet on
  * Lordicon's site and reads as though it does. Both are players; the artwork is
