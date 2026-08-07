@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   DndContext,
   KeyboardSensor,
-  PointerSensor,
+  MouseSensor,
   TouchSensor,
   closestCenter,
   useSensor,
@@ -254,11 +254,25 @@ export function CoursesSection({
     },
   };
 
+  /* MOUSE AND TOUCH SEPARATELY, NOT PointerSensor (owner, 2026-08-07: "when i
+     try to swipe it triggers the drag, i need to hold to drag").
+     PointerSensor handles both input types through one constraint, and a
+     browser fires pointer events for touch as well — so `distance: 8` meant a
+     finger that moved 8px started a drag INSTANTLY, before TouchSensor's hold
+     had any say. Every swipe was a drag; the TouchSensor beside it never got
+     a look in. They cannot be reconciled in one sensor because the two inputs
+     want opposite things: a mouse should drag the moment it moves (there is
+     no other gesture it could be), and a finger must not (it could be a
+     swipe or a scroll). So each gets its own.
+
+     250ms rather than 150: this is now the ONLY thing standing between a
+     swipe and a drag, so it has to be long enough to read as a deliberate
+     press. `tolerance: 8` is the other half — moving more than 8px before
+     the delay elapses cancels the pending drag outright, which is what lets
+     a fast swipe through untouched. */
   const sensors = useSensors(
-    // A real press-and-move, not a tap: 8px is enough to tell a drag from a
-    // finger landing on the card to press Resume, which sits inside it.
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 8 } }),
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 8 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
@@ -305,7 +319,14 @@ export function CoursesSection({
         key={tab}
         data-dir={dir}
         data-no-swipe
-        className="tab-panel mt-3 touch-pan-y"
+        /* mt-0 (owner, 2026-08-07: "the tabs are too far from the actual list
+           of courses"). The gap was never one value — `pb-2.5` under the tab
+           labels and `mt-3` here stacked to 22px, which at the tabs' old 14px
+           was fine and at 17px bold reads as a hole. The padding under the
+           label is the one that has to stay (it is the tab's own hit area, and
+           it is what a future underline would sit on), so the margin is the
+           one that goes. */
+        className="tab-panel touch-pan-y"
         {...swipe}
       >
         {tab === "active" &&
