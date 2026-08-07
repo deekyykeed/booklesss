@@ -49,6 +49,8 @@ export type MynaIconName =
   | "key"
   | "danger-triangle"
   | "target"
+  | "flag"
+  | "flag-solid"
   | "lamp"
   | "lamp-solid"
   | "question-circle-solid"
@@ -156,6 +158,10 @@ const BODIES: Record<MynaIconName, string> = {
     '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8.5V14m0 3.247v-.5m-6.02-5.985C8.608 5.587 9.92 3 12 3s3.393 2.587 6.02 7.762l.327.644c2.182 4.3 3.274 6.45 2.287 8.022C19.648 21 17.208 21 12.327 21h-.654c-4.88 0-7.321 0-8.307-1.572s.105-3.722 2.287-8.022z"/>',
   "target":
     '<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M12 17.25a5.25 5.25 0 1 0 0-10.5a5.25 5.25 0 0 0 0 10.5"/><path d="M12 13.5a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3"/><path d="M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0"/></g>',
+  "flag":
+    '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 21v-5.313m0 0c5.818-4.55 10.182 4.55 16 0V4.313c-5.818 4.55-10.182-4.55-16 0z"/>',
+  "flag-solid":
+    '<path fill="currentColor" d="M19.538 3.723c-1.3 1.016-2.469 1.246-3.594 1.124c-1.18-.127-2.342-.64-3.638-1.218l-.053-.024c-1.235-.552-2.6-1.162-4.036-1.317c-1.511-.163-3.07.176-4.679 1.434a.75.75 0 0 0-.288.591V21a.75.75 0 0 0 1.5 0v-4.936c1.186-.835 2.264-1.023 3.306-.91c1.18.126 2.342.639 3.638 1.218l.053.023c1.235.553 2.6 1.162 4.036 1.317c1.511.163 3.07-.176 4.679-1.434a.75.75 0 0 0 .288-.591V4.313a.75.75 0 0 0-1.212-.59"/>',
   "lamp":
     '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21v-9m0 9H9m3 0h3m-3-9h6l-2.513-7.702A2 2 0 0 0 13.614 3h-3.228a2 2 0 0 0-1.873 1.298L6 12z"/>',
   "lamp-solid":

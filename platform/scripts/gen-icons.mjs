@@ -97,6 +97,15 @@ const ICONS = [
      Two of them are deliberately the marks the callouts use for the same
      meaning — `clipboard` is "Example" in both places, `danger-triangle` is the
      thing that looks wrong in both. A reader meets one mark per idea. */
+  /* The control that OPENS that menu (owner, 2026-08-07: "the one on the far
+     left will be a flag, i want students to flag the content"). It is a flag
+     until something is flagged, and then it becomes the mark of whatever was
+     flagged — one of the five below — so the row says what you said without a
+     word. It replaced an "i" in a circle, which asked a question ("how did that
+     read?") where a flag makes a claim ("something is wrong here"), and the
+     second is what a student actually wants to do mid-read. */
+  "flag",
+  "flag-solid",
   "lamp", // Clear: it lit up
   "lamp-solid",
   "question-circle-solid", // Hard to follow (line twin is in the chrome above)

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { labelFor, nextLessonId, pathForId } from "@/lib/course";
 import { rate, useProgress, type Grasp } from "@/lib/progress";
-import { LordIcon } from "@/components/icons/lordicon";
+import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
 import { gateStepLink, needsAccount } from "@/lib/account";
 import { requireAccount } from "@/lib/onboarding";
 import { SectionNote } from "./SectionNote";
@@ -24,62 +24,42 @@ import { SectionNote } from "./SectionNote";
  * Amber then green, each dark enough to hold 5.2:1 on the content surface.
  * Green is completion, the same thing it means everywhere else here.
  *
- * The marks went through four pairs on 2026-08-02, all owner-led. The row lost
- * its labels, so a clipboard carrying the word "Later" became a bare clipboard
- * saying nothing; that gave a bookmark and a ticked circle; then a Solar
- * Duotone thumbs pair; and now a smiling face and a sad one, MynaUI's own,
- * picked off a search of the set.
+ * THE MARKS, in order, all owner-led. Worth keeping because the pattern in it
+ * is the useful part: every pair that described what happens NEXT lost to a
+ * pair that described how the reader FEELS.
+ *   2026-08-02  a clipboard and a bookmark, with words beside them
+ *               → bookmark + ticked circle, once the words came off
+ *               → Solar Duotone thumbs
+ *               → MynaUI smiling and sad faces
+ *   2026-08-07  drawn doodle faces (Lordicon), grey at rest and colour when
+ *               chosen
+ *               → thumbs again, and this time they stay
  *
- * A face is the right answer to the question this control actually asks. The
- * bookmark and tick described what happens next, which is a step removed from
- * "how did that land", and the thumbs read as a verdict on the writing rather
- * than on the reader's grasp of it. A face is neither: it is how you feel
- * about the section you just read, needs no word, and is understood by anyone.
+ * The thumbs lost in August on the argument that they read as a verdict on the
+ * WRITING rather than on the reader's grasp of it, and the faces answered "how
+ * did that land". That argument is now spent, because the row has a second
+ * control: the flag on the left is where a verdict on the writing goes, and it
+ * says which kind. With that question asked properly somewhere else, the right
+ * hand side is free to be the plain thing it always wanted to be — did this
+ * land, yes or no.
  *
- * Round rather than the square or ghost variants of the same pair, because at
- * 20px on a phone the square's corners and the ghost's tail are noise.
+ * ORDER: "Later" then "Got it" (owner, 2026-08-02), so the positive answer is
+ * the outermost mark on the right. It reads worst-to-best towards the edge and
+ * puts the answer most readers reach for under the thumb already there.
  *
- * Back on MynaUI, so the line/solid swap on `active` returns: the answer given
- * fills in, which is a second signal beside the colour and the one the rest of
- * the app's chrome already uses for "this is the current one".
+ * COLOUR ON TAP, from the doodles that were here for an afternoon: the orange
+ * off the smiling face, and a pink for the down. The pink is the shock face's
+ * own #fcb4cd brought down to the orange's weight — at 20px solid, the original
+ * is so light it reads as a smudge, and a pair has to carry the same weight or
+ * one of them looks disabled.
  *
- * ORDER: "Later" then "Got it", so the smiling face is the outermost mark on
- * the right (owner, 2026-08-02). It reads worst-to-best towards the edge, and
- * it puts the answer most readers are reaching for under the thumb that is
- * already there.
- *
- * DOODLES, not glyphs, as of 2026-08-07 — owner, with two files dropped in the
- * bucket: "trying to see if I can replace my old smile and sad face one for
- * something more interesting". Fifth pair on this control. They are FILES in
- * public/reader, never inlined: 110KB of artwork each, which is the trap
- * card-glyphs.tsx and the avatars both walked into and only the avatars have
- * climbed out of.
- *
- * Each answer is TWO files and that is the whole design:
- *   .png  the last frame, drawn at rest. A still cannot animate, so five
- *         sections on screen do not set ten faces going on first paint.
- *   .gif  a one-shot reveal, swapped in only once the answer is given, so the
- *         animation is the reward for the tap rather than wallpaper.
- * At rest the still is the colourless version of the face, which keeps the row
- * calm and means colour arriving IS the answer landing.
- *
- * "Later" is a shock face rather than a sad one, because that is the pair the
- * owner picked. It reads as "wait, no" rather than "I am unhappy", which is
- * closer to what the button actually records.
- *
- * `tone` still drives the hover and the focus ring. It no longer tints a mark:
- * the artwork carries its own colour.
- *
- * `state` is the named animation inside the Lottie, and these two came off
- * Lordicon's own code panel rather than off the files, which do not exist here
- * yet. **Confirm them with `node scripts/lord-states.mjs` the moment they do**
- * — a state name that does not match falls back to the default silently, so a
- * wrong one plays the wrong animation and says nothing. It degrades gently
- * (these icons make their hover state the default) but "gently" is not
- * "correctly". */
-const ANSWERS: { id: Grasp; label: string; art: string; state: string; tone: string }[] = [
-  { id: "not", label: "Later", art: "grasp-not", state: "hover-pinch", tone: "#96601f" },
-  { id: "got", label: "Got it", art: "grasp-got", state: "hover-smile", tone: "#17754d" },
+ * `tone` drives the hue of the mark, the hover and the focus ring, and the mark
+ * swaps to its solid twin when chosen — so an answer given is bolder AND
+ * coloured, which is the same two-signal pattern the sidebar rows use.
+ */
+const ANSWERS: { id: Grasp; label: string; icon: MynaIconName; iconOn: MynaIconName; tone: string }[] = [
+  { id: "not", label: "Later", icon: "dislike", iconOn: "dislike-solid", tone: "#f2749b" },
+  { id: "got", label: "Got it", icon: "like", iconOn: "like-solid", tone: "#faa709" },
 ];
 
 /* End-of-section checkpoint — a scale rather than a tick.
@@ -125,19 +105,18 @@ export function Checkpoint({
           drawn artwork: three coloured marks loose on the reading column read
           as decoration that had landed there, not as a thing to use.
 
-          A PILL, FILLED GREY, NO BORDER — which is the reference, and it
-          corrects the word that came before it. "White and rounded" was the
-          first instruction and it does not survive contact with this page: the
-          reading sits on white already, so a white fill has to be drawn with a
-          border to exist at all, and a bordered white box is the callout's own
-          surface language. That made a control read as one more container to
-          READ. Filled grey with no border is the opposite and is what every
-          comment bar on a phone looks like: the page is what you read, the grey
-          is what you press.
-          `rounded-full`, not the `rounded-3xl` a callout takes. At this height
-          a pill is unmistakably a control, and it is the one shape in the
-          reader that never appears around prose. */}
-      <div className="checkpoint-row flex flex-wrap items-center justify-between gap-3 rounded-full bg-[#f2f2f1] px-4 py-2">
+          WHITE, LIKE EVERY OTHER CONTAINER, and lifted with the same shadow
+          (owner, 2026-08-07: "the container will be white just like other
+          containers, will have a shadow"). It was a grey pill for one revision.
+          The grey said "control" loudly, but it also said "not part of this
+          page" — the reader has exactly one filled-grey surface language and it
+          belongs to menus and inputs, not to the reading column. White plus
+          `shadow-lift` is what a callout and a card already use, so the row
+          reads as one more thing the step is made of rather than as chrome that
+          landed on it.
+          8px of padding all round, and the marks are 20px, so the row is a
+          control strip rather than a box with things in it. */}
+      <div className="squircle checkpoint-row flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#e7e7e6] bg-white p-2 shadow-lift">
         <SectionNote lessonId={lessonId} sectionId={checkpointId} />
         <div
           className="grasp-group"
@@ -193,93 +172,14 @@ export function Checkpoint({
                     Unoptimised: next/image would re-encode the GIF and drop
                     every frame but one. These are already sized and already
                     small, so they are served as they are. */}
-                {/* Colour arriving IS the answer landing — the same thing the
-                    line/solid glyph swap used to say, made the only way it can
-                    be made on artwork, which takes no `color`.
-                    `-rest.png` is the last frame with every pixel above a
-                    luminance threshold flattened to #ededf0 and everything
-                    below it to the ink: the drawing at full strength, the fill
-                    gone. A CSS filter cannot do that — grayscale and opacity
-                    hit the black line work exactly as hard as the orange, so
-                    the face does not lose its colour, it fades towards the
-                    page ("the other icon is way too dim", owner, 2026-08-07).
-
-                    TWO STILLS STACKED AND CROSS-FADED, and no animation at all
-                    for now. Both of those are the same bug, reported the same
-                    day: "when you tap, they disappear and do a reveal after a
-                    weird length of time."
-                    · The GAP was mine. Swapping `src` on a re-keyed element
-                      unmounts the image and mounts a new one, which then has to
-                      fetch and decode 110KB before it can paint anything.
-                      Stacked, both files are loaded at mount and the tap is a
-                      pure opacity change with nothing to wait for.
-                    · The REVEAL was the wrong animation. Those GIFs were
-                      exported from Lordicon's `in-reveal` state, which plays
-                      when an icon APPEARS and so begins from an empty frame by
-                      design — owner: "the mistake i made was having the icons
-                      in-reveal instead of on hover or on taps". A GIF bakes
-                      that choice into pixels.
-                    So the animation comes back with the Lottie, not before, and
-                    it comes back correct: one file holds every state, `state`
-                    picks the hover one, `colors` does what these three files do.
-                    `scripts/lord-states.mjs` prints what a given file actually
-                    carries, so the state name is read rather than guessed. */}
-                <span
-                  className="relative block"
-                  style={{ width: 26, height: 26 }}
-                  aria-hidden="true"
-                >
-                  {/* THE REST STATE STAYS A STILL, and only the chosen one is
-                      the Lottie. Colouring a Lottie grey would mean `colorize`,
-                      which flattens EVERY colour to one — including the black
-                      line work, so the face would become a grey blob, which is
-                      the thing that was rejected two goes ago. `colors` can set
-                      the fill alone but reloads the animation, and reloading on
-                      tap is the flicker this control has already had. The
-                      still is right and costs nothing. */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`/reader/${a.art}-rest.png`}
-                    alt=""
-                    width={26}
-                    height={26}
-                    draggable={false}
-                    className="absolute inset-0"
-                    style={{ opacity: active ? 0 : 1, transition: "opacity 140ms ease" }}
-                  />
-                  <span
-                    className="absolute inset-0"
-                    style={{ opacity: active ? 1 : 0, transition: "opacity 140ms ease" }}
-                  >
-                    {/* `playToken` flips with `active`, and LordIcon replays
-                        from the first frame whenever it changes — so the
-                        animation happens because the answer was given.
-                        `fallback` is the coloured still, drawn while the icon
-                        data loads AND left in place permanently if the file is
-                        not there. That is what makes the Lottie a DROP-IN: with
-                        no .json in public/reader/icons this is exactly the
-                        still-plus-CSS-pop that ships today, and the moment the
-                        two files land the real animation takes over with no
-                        code change. */}
-                    <LordIcon
-                      name={a.art}
-                      state={a.state}
-                      size={26}
-                      playToken={active}
-                      fallback={
-                        /* eslint-disable-next-line @next/next/no-img-element */
-                        <img
-                          src={`/reader/${a.art}.png`}
-                          alt=""
-                          width={26}
-                          height={26}
-                          draggable={false}
-                          className={active ? "grasp-pop" : undefined}
-                        />
-                      }
-                    />
-                  </span>
-                </span>
+                {/* 20px (owner, 2026-08-07). Line at rest, solid when it is
+                    the answer given, and coloured by `--grasp-tone` off the CSS
+                    — so a tap changes BOTH the weight and the hue, which is the
+                    same pair of signals the sidebar uses for its current row.
+                    strokeWidth 1.2 rather than MynaUI's 1.5: at 20px with
+                    nothing bounding it, the default weight reads heavy beside
+                    the flag on the other end of the row. */}
+                <MynaIcon name={active ? a.iconOn : a.icon} size={20} strokeWidth={1.2} />
                 <span className="grasp-label">{a.label}</span>
               </button>
             );

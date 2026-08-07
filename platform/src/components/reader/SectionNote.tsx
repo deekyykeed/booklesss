@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
-import { LordIcon } from "@/components/icons/lordicon";
 import { MynaIcon } from "@/components/icons/myna";
 import { needsAccount } from "@/lib/account";
 import { requireAccount } from "@/lib/onboarding";
@@ -44,10 +43,6 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
   /* Which way the menu opens. Up is the default and the common case; it flips
      down only when up would put it behind the header. */
   const [drop, setDrop] = useState<"up" | "down">("up");
-  /* Bumped on hover, and passed to the icon as part of its play token. A
-     counter rather than a boolean because the icon replays whenever the token
-     CHANGES — a boolean would fire once and then sit true. */
-  const [pulse, setPulse] = useState(0);
   const wrap = useRef<HTMLDivElement>(null);
   const menu = useRef<HTMLDivElement>(null);
 
@@ -103,7 +98,10 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
     setOpen(false);
   };
 
-  const label = chosen ? NOTES.find((n) => n.id === chosen)?.label : null;
+  /* The whole row, not just its label: the flag wears the chosen reason's
+     own mark, so this needs the icon off it too. */
+  const active = chosen ? (NOTES.find((n) => n.id === chosen) ?? null) : null;
+  const label = active?.label ?? null;
 
   return (
     <div ref={wrap} className="relative">
@@ -120,7 +118,6 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
           }
           setOpen((o) => !o);
         }}
-        onMouseEnter={() => setPulse((p) => p + 1)}
         aria-expanded={open}
         aria-label={label ? `You said: ${label}. Change it` : "How did that read?"}
         /* The label is off-screen now (see .grasp-label), so the tooltip is the
@@ -131,34 +128,24 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
         data-active={chosen ? "" : undefined}
         style={{ "--grasp-tone": "#5b5b66" } as React.CSSProperties}
       >
-        {/* A DRAWN MARK, like the two answers beside it (owner, 2026-08-07 —
-            Lordicon's `messages-feedback`, and the question was whether it
-            could run on `hover-enlarge`. It can: that is one of the three
-            states in the file, confirmed with lord-states.mjs rather than
-            assumed).
-            It also settles an inconsistency the faces created. This row used to
-            be three MynaUI hairlines; the answers became drawn doodles this
-            afternoon and left this button as the only hairline in a row of
-            artwork. Now the row is one set again, the other way round.
-            `hover-enlarge` rather than the file's default `hover-slide`: slide
-            moves the two speech bubbles past each other, which at 26px reads as
-            a wobble, where enlarge is legible at any size.
-            It plays on hover AND on open, because the reader this is built for
-            is a phone and a phone has no hover. `pulse` is what makes the hover
-            replay — LordIcon restarts whenever `playToken` changes, so a
-            counter is the whole mechanism. */}
-        <LordIcon
-          name="note-feedback"
-          state="hover-enlarge"
-          size={26}
-          playToken={`${open}:${pulse}`}
-          fallback={
-            <MynaIcon
-              name={chosen ? "info-circle-solid" : "info-circle"}
-              size={20}
-              strokeWidth={1.2}
-            />
-          }
+        {/* A FLAG, and once something is flagged it BECOMES what was flagged
+            (owner, 2026-08-07: "i want students to flag the content and that
+            same popup will come up … the flag to indicate it's been flagged
+            will then change to that icon of the thing they just flagged").
+            That is the whole idea and it is better than the tick it replaces.
+            A tick says an answer was given; the reason's own mark says WHICH,
+            so a reader scrolling back through a step sees which sections they
+            called confusing and which they called too long, without opening
+            anything. The five marks are on the menu rows too, so the one that
+            appears here is the one that was pressed there.
+            It replaced an "i" in a circle. The "i" asked a question ("how did
+            that read?") where a flag makes a claim ("something is wrong here"),
+            and the second is what a student actually wants to do mid-read.
+            Solid once flagged, like every other mark in this row. */}
+        <MynaIcon
+          name={active ? active.iconOn : "flag"}
+          size={20}
+          strokeWidth={1.2}
         />
         <span className="grasp-label">{label ?? "How did that read?"}</span>
       </button>
