@@ -830,7 +830,12 @@
     overflow: hidden;
     border: 1px solid var(--color-line);
     border-radius: 32px;
-    background-color: #ffffff;
+    /* 99%, not 100 (owner, 2026-08-07: "make its color 99 then the button to
+       be 100 white") — so the button sitting on it reads as the crisper of
+       the two whites rather than matching its surface exactly. The
+       difference is a single point of alpha, invisible as a colour and only
+       ever felt as which surface is the one you press. */
+    background-color: rgba(255, 255, 255, 0.99);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 12px -4px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.2s ease, border-color 0.2s ease;
   }
@@ -946,16 +951,22 @@
      course the reader is. Radius is the card's own, stepped down for the
      inset. Kept as its own class rather than folded into .btn: it carries a
      progress fill and a full-width layout that no other button wants. */
+  /* Full white, not the 60% this carried before (owner, 2026-08-07: "then the
+     button to be 100 white"). It used to be the more translucent of the two
+     surfaces, letting a little of the card's own white show a shadow through
+     it; now it is the one solid thing on a 99%-white card, which is what
+     actually makes it read as the thing to press rather than as one more
+     panel. No more `:hover` background swap — default and hover were both
+     landing on #ffffff already, so the rule was doing nothing; the card's
+     shadow still lifts on hover via `.course-card:has(.action-bar:hover)`,
+     unaffected by this. */
   .action-bar {
     border: 1px solid var(--color-line);
     border-radius: 18px;
-    background-color: rgba(255, 255, 255, 0.6);
+    background-color: #ffffff;
     color: var(--color-ink);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 3px 8px -2px rgba(0, 0, 0, 0.08);
     transition: background-color 0.2s ease, border-color 0.2s ease;
-  }
-  .action-bar:hover {
-    background-color: #ffffff;
   }
   /* The one action on a screen that is the point of it (owner, 2026-08-04:
      "with the add to homescreen in black since it's what I ultimately want").
