@@ -92,15 +92,16 @@ export default function LandingPage() {
        button in a block at the very bottom of the frame, which opens the middle
        but crowds the foot. Framer's 140px is the value that holds; only the top
        changed. The safe-area insets are added rather than assumed: on a notched
-       phone in a PWA this is the top and bottom of the screen. */
-    {/* THE WHOLE COMPOSITION THEN SAT LOWER (owner, 2026-08-07: "drop
+       phone in a PWA this is the top and bottom of the screen.
+
+       THE WHOLE COMPOSITION THEN SAT LOWER (owner, 2026-08-07: "drop
         everything on the screen lower"). Both paddings move it, in opposite
         directions: the top pushes the mark down, the bottom lets the pitch
         fall. They move by DIFFERENT amounts on purpose — 28→52px at the head,
         140→100px at the foot — because the same instruction asked for more air
         under the mark too, and with `justify-between` the space between the two
         blocks is simply whatever is left over. Dropping the foot 40px while the
-        head drops 24px is what opens it. */}
+        head drops 24px is what opens it. */
     <main className="relative flex min-h-dvh w-full flex-col items-center justify-end overflow-clip bg-black px-4 pt-[calc(3.25rem+env(safe-area-inset-top))] pb-[calc(100px+env(safe-area-inset-bottom))]">
       <ToApp />
 

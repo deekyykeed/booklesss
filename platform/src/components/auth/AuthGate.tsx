@@ -31,7 +31,12 @@ import { useAccountAsk, type OnboardingMode, type OnboardingReason } from "@/lib
 /** The one line above the form, chosen by why we asked. Clerk's card said
  *  Clerk's words and the reason was carried but unused; it says ours now.
  *  Sign-in never gets a reason — somebody who already has an account did not
- *  need talking into it. */
+ *  need talking into it.
+ *
+ *  `mode` NOW CHOOSES WORDS AND NOTHING ELSE (2026-08-07). The form below does
+ *  both jobs from one box, so this is a greeting picked by what the caller was
+ *  asking for, not a branch — a gate that opens on "sign-in" still creates an
+ *  account for somebody who turns out not to have one. */
 const WHY: Record<OnboardingReason, string> = {
   checkpoint: "Make an account to keep your answers and your streak.",
   note: "Make an account so your notes are here next time.",
@@ -127,13 +132,12 @@ export function AuthGate() {
         )}
 
         <div className="px-5 pb-6 pt-4">
-          <AuthForm
-            mode={mode}
-            onMode={setMode}
-            initialEmail={ask.email}
-            after={ask.after}
-            onDone={() => setOpen(false)}
-          />
+          {/* NO `afterNew`. A student who turns out to be new gets their
+              account made and stays exactly where they were — the sheet's whole
+              promise. RequireOnboarding asks the questions the moment they
+              reach for the dashboard, which is the first screen that needs an
+              answer to draw anything. */}
+          <AuthForm initialEmail={ask.email} after={ask.after} onDone={() => setOpen(false)} />
         </div>
       </div>
     </div>

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthForm } from "@/components/auth/AuthForm";
 import type { OnboardingMode } from "@/lib/onboarding";
@@ -36,23 +35,29 @@ import type { OnboardingMode } from "@/lib/onboarding";
  * for the ways in that aren't a tap inside the app: a bookmark, a link in a
  * message, somebody typing the URL.
  *
- * Which is why the toggle is held HERE rather than by the route. A student who
- * lands on /sign-up and turns out to have an account already should not have to
- * navigate — the heading flips, the way it does in the sheet, and the URL is
- * left behind as the historical detail it is.
+ * NO TOGGLE ANY MORE (2026-08-07). The form itself now tries a sign-in first and
+ * only falls back to making an account if there isn't one — see the note atop
+ * AuthForm — so a student who lands on /sign-up with an account already just
+ * gets signed into it, with no error telling them to go find the other card.
+ * `initialMode` survives as what it always half-was: which of two URLs got them
+ * here, and so which greeting and which destination-if-new to show. It picks
+ * words, not behaviour.
  *
  * `after` is a real destination rather than null: arriving here means there was
- * no page behind to return to. A NEW account goes to /onboarding, because it
- * has no answers yet and a dashboard drawn from none is a screen of dashes
- * (see RequireOnboarding). Somebody SIGNING IN already answered, so they go
- * straight to the app — and if they somehow didn't, RequireOnboarding sends
- * them back.
+ * no page behind to return to. Reached via /sign-in it is `/dashboard` — somebody
+ * who already has answers goes straight to the app. Reached via /sign-up it is
+ * ALSO `/dashboard`, because most people who tap "Sign up" already have an
+ * account and are about to be signed into it; `afterNew` is where a genuinely
+ * new record goes instead — `/onboarding`, because it has no answers yet and a
+ * dashboard drawn from none is a screen of dashes (see RequireOnboarding).
  * ------------------------------------------------------------------ */
 
 export function AuthPanel({ initialMode }: { initialMode: OnboardingMode }) {
   const router = useRouter();
-  const [mode, setMode] = useState<OnboardingMode>(initialMode);
-  const signUp = mode === "sign-up";
+  /* Read straight off the route now, with no state behind it. The toggle that
+     used to flip this is gone — see the note above — and a `useState` nothing
+     sets is a variable pretending to be a control. */
+  const signUp = initialMode === "sign-up";
 
   return (
     /* The question's own column, to the pixel — max-w-[440px] and 16px of page
@@ -73,12 +78,11 @@ export function AuthPanel({ initialMode }: { initialMode: OnboardingMode }) {
         </button>
       </div>
 
-      {/* Keyed by mode so flipping between the two plays the flow's own
-          question transition rather than swapping the words in place. Always
-          "next": there is no back through a toggle, and a card that slid
-          leftward on one tap and rightward on the next would be describing a
-          direction this control does not have. */}
-      <div key={mode} data-dir="next" className="onboard-step pt-6">
+      {/* The flow's own question transition, played once on arrival. It used to
+          be keyed by mode so the card slid when the toggle flipped it; there is
+          no toggle now, so this is simply how every question on this route
+          enters. */}
+      <div data-dir="next" className="onboard-step pt-6">
         <section>
           {/* The question, in the flow's exact type — 30px display bold, and
               the two-line muted line under it. */}
@@ -92,7 +96,7 @@ export function AuthPanel({ initialMode }: { initialMode: OnboardingMode }) {
           </p>
 
           <div className="mt-8">
-            <AuthForm mode={mode} onMode={setMode} after={signUp ? "/onboarding" : "/dashboard"} />
+            <AuthForm after="/dashboard" afterNew="/onboarding" />
           </div>
         </section>
       </div>

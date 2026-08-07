@@ -34,7 +34,7 @@
  * version set, so nothing else on the page moves.
  */
 export const FIELD =
-  "h-11 w-full border-b border-line bg-transparent text-[16px] text-ink " +
+  "h-11 w-full border-b-2 border-line bg-transparent text-[16px] text-ink " +
   "outline-none transition-colors placeholder:text-placeholder focus:border-ink";
 
 /**
@@ -85,7 +85,15 @@ export function Field({
       <label htmlFor={id} className="font-display text-[13px] font-medium text-ink-2">
         {label}
       </label>
-      <div className="flex items-center gap-2 border-b border-line transition-colors focus-within:border-ink">
+      {/* TWO PIXELS, NOT ONE (owner, 2026-08-07: "double the underline in the
+          form text fields"). A hairline is the app's rule for a DIVIDER — the
+          thing between two rows that nobody is meant to look at. This line is
+          the control itself, and at 1px over a frosted surface it was reading
+          as a seam rather than as somewhere to write. Doubled, the blank is
+          visible before it is focused, which is the whole argument for taking
+          the boxes off in the first place. Kept in step with FIELD above; the
+          two must never disagree. */}
+      <div className="flex items-center gap-2 border-b-2 border-line transition-colors focus-within:border-ink">
         <input
           ref={ref}
           id={id}
