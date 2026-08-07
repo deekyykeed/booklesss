@@ -313,6 +313,48 @@ nobody can find.
 notifications panel, in an app with no notifications, is a switch that does
 nothing. Either wire it to something real or say plainly that it was left out.
 
+**A design FILE is not the design — screenshot the reference's own render.**
+*(2026-08-06, the Framer landing.)* Reading the canvas gave a headline with
+`blendingMode: exclusion` and an underlined wordmark. Neither is what Framer
+draws: it wraps the content in a z-indexed layer, which makes it its own
+stacking context, so the photograph is not in the blend's backdrop and the
+attributes do nothing. Implementing them faithfully produced a muddy blue-grey
+headline the owner had never seen. **Where a serialised attribute and a
+screenshot disagree, the screenshot wins** — it is what was approved. Note the
+divergence in the file so the next reader doesn't "fix" it back.
+
+**Render the candidates; don't list them.** *(Same day, six headline options.)*
+Injecting each into the live hero and measuring settled the argument in one
+screenshot: the owner's own draft was four lines and 184px where every
+alternative was two lines and 92px. A layout fact beats a copy opinion, and it
+costs one Playwright loop over `h1.textContent`.
+
+---
+
+## Two layout traps that look like design bugs *(2026-08-06)*
+
+Both cost a round of "it looks wrong" and neither is visible in the CSS you
+wrote — the browser is doing something correct that you did not ask for.
+
+**Flex and grid CLAMP an item bigger than its container to the start edge.**
+`place-items-center` on a 50px logo disc containing a 56px line box put the
+glyph at y=0, not the −3px true centre, so the mark sat low and its underline
+fell off the circle. This is deliberate — the engine refuses to push content out
+of a top edge you could never scroll back to — and no amount of alignment
+tweaking fixes it. **Make the child fit** (here, set the line box to the
+container's own height) rather than arguing with the alignment.
+
+**Tailwind preflight's `img { max-width: 100% }` squashes any image wider than
+its layout box.** A 40px avatar in a 32px overlap slot rendered **32×40** — an
+oval. `width` does not override a `max-width`; only `max-width: none` does. This
+bites exactly when overlap is the point, which is the one case where an image is
+meant to exceed its own slot. If a fixed-size image renders the wrong aspect,
+read `max-width` back before touching anything else.
+
+The method for both: `getBoundingClientRect()` against what you specified. A
+32×40 disc and a 40×40 disc are hard to tell apart by eye and trivial to tell
+apart by number.
+
 ---
 
 ## Pre-build checklist

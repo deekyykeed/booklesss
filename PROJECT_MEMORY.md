@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-06 (session 47)
+**Last updated:** 2026-08-06 (session 48)
 
 ---
 
@@ -91,6 +91,41 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 48 (2026-08-06, the front door rebuilt from the Framer design).
+Linear unreachable again — five sessions now with no issues raised.**
+- [ ] ⚠️ **`/` HAS NO PRIVACY LINK, and that is what Google's OAuth branding
+      review failed us on twice.** The owner chose hero-only knowing it. Google
+      sign-in is already OFF in production so nothing regresses today, but
+      turning it back on needs either a footer on `/` or a different
+      verification URL. This is now the blocker on that whole thread.
+- [ ] ⚠️ **BURBANK BIG CONDENSED IS NOT LICENSED AND IS NOW ON THE APP'S TEXT
+      LOGO.** Font Bureau retail; the woff2 has been in `platform/src/fonts/`
+      since it drew the old logo with nothing recording a purchase, unlike
+      Satoshi. It is on `TopBar`, on the hero lockup, and on the new
+      `Brand/booklesss-disc.*` candidate. Adopting it means buying the WEB
+      licence, and logo use is frequently a separate grant again. Settle before
+      it reaches an app icon or print.
+- [ ] ⚠️ **"Join 67+ members" IS NOT A REAL NUMBER.** It starts at a constant
+      and only goes up; a visitor reads it as live sign-ups. `students` is a
+      real table — a server component reading `count` on an ISR revalidate puts
+      a TRUE number in the same slot with the same animation. Roughly twenty
+      minutes, and it removes the only invented claim on the page.
+- [ ] ⚠️ **The subtitle promises "real-time coaching", which the app does not
+      do.** Raised three times; the owner reverted to it deliberately. The true
+      line is sitting in a comment one string away in `app/page.tsx`.
+- [ ] **Onboarding's four blanks have never been seen rendered.** The field
+      style changed for every typed answer in the app, but `/onboarding`
+      redirects without a session and signing in would make a real account in
+      production. Typecheck/lint/build only. Five minutes on the deploy.
+- [ ] **`platform/public/landing/` still holds `reader.png`, `contents.png`,
+      `dashboard.png`, `practice.png`** — the old scrolling landing page's app
+      screenshots. Nothing references them now. Delete unless
+      `scripts/cap-landing.mjs` is still wanted.
+- [ ] **The Framer agent is set up and authorised** (`npx @framer/agent@latest
+      session new "<url>"`, project "Booklesss RESERVE"). The relay restarts on
+      demand; the generated context lives in
+      `~/.claude/skills/framer/projects/1lYwE1HIFL3cMy3kvmv3/`.
 
 **From session 47 (2026-08-06, the social day the front door would not sit
 still). Linear unreachable for the FOURTH session running.**
@@ -948,6 +983,61 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-06 (session 48 — the front door is the Framer design, and the auth pages become the onboarding page)
+
+*Numbered 48, not 47: a parallel session (the social day, below) was wrapping at
+the same moment and had already claimed 47. Its numbering is not mine to
+correct.*
+
+**Done.** `/` is now the owner's Framer design (project "Booklesss RESERVE",
+page `/`), read off the canvas via `npx @framer/agent` rather than eyeballed —
+layout, type, colour, the shadow stacks and the entrance timing all measured
+from the serialised nodes. Hero only, no footer, on the owner's explicit call.
+Then rebuilt through about eight rounds of his notes: mark to the top, headline
+to Bricolage, subtitle to Rubik, text shadow, cycling faces, a fill-in-place
+loading button, "Join 67+ members". `/sign-in` and `/sign-up` were rebuilt as
+the onboarding page — same column, same 30px display heading, same muted
+two-line why — and every typed field in the app became an underline rather than
+a box. The candidate disc mark is saved to `Brand/`.
+
+**What Worked.**
+- **Render the candidates, don't list them.** Injecting six headline options
+  into the live hero and measuring each gave "your draft is FOUR lines / 184px,
+  every alternative is two" — a layout fact that settled the copy argument in
+  one screenshot. Same trick measured the button's fill easing and the mark's
+  3px misalignment.
+- **Screenshot beats the design file.** Framer's canvas carried
+  `blendingMode: exclusion` on the headline and an underline on the wordmark
+  that its OWN renderer does not draw (a z-indexed wrapper isolates the blend).
+  Implementing the attributes faithfully produced something the owner had never
+  seen. The rendered design is the design — check a screenshot of the Framer
+  page, not just the serialised nodes.
+- **`createRequire` to borrow the app's Playwright** from a scratchpad script,
+  so no throwaway harness lands in the repo:
+  `createRequire("…/platform/package.json")("playwright")`.
+- **Intercept the auth route to see a loading state.** `p.route("**/auth/v1/**")`
+  held open for 6s renders the busy button with zero server contact and no
+  account created.
+
+**Dead Ends (do not retry).**
+- **A pure-CSS marquee cannot express "one arrives, the rest scoot, one
+  leaves".** A disc's visible life is exactly five steps, which is exactly one
+  loop of the track, so a single keyframe cannot both grow it at the start and
+  shrink it at the end — those are the same instant. It needs state; see
+  `components/landing/TrustedFaces`.
+- **`grid`/`flex` centring silently CLAMPS an item taller than its container to
+  the start edge.** `place-items-center` on the 50px logo disc yielded y=0, not
+  the -3px true centre, so the glyph sat low and its underline fell off the
+  circle. Set the line box to the container's height instead of fighting the
+  alignment.
+- **Tailwind preflight's `img { max-width: 100% }` squashes any image wider than
+  its own layout box.** The 40px avatar in a 32px overlap slot rendered 32×40 —
+  an oval. `width` does not override a `max-width`; only `max-width: none` does.
+- **`TaskStop` does not kill grandchildren.** `npm run start` dies, `next start`
+  survives, keeps port 3000 and keeps a handle on `.next` — which then fails the
+  next build with `EPERM` on `unlink`, looking exactly like the cloud-sync lock
+  this file already documents. Check the port, not just the task.
 
 ### Session 2026-08-06 (session 47 — five posts, and a front door that moved five times)
 
