@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-08 (session 52)
+**Last updated:** 2026-08-08 (session 53)
 
 ---
 
@@ -91,6 +91,38 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 53 (2026-08-08, the four-course planning day — Macroeconomics,
+Mathematics, Development Studies and Demography planned and scaffolded from
+their own UNZA material. Linear unreachable for the TENTH session.)**
+- [ ] **83 steps are planned and none is written.** Four new active course
+      folders sit under `Schools/UNZA/` (ECN 1215, MATH 1110, DEV 1150,
+      DEM 1110), each with `_course.md` carrying the full step plan with
+      collision-checked slugs, and 26 lesson folders with sources copied in
+      (177 files, 69.5MB, all verified). The natural first writing job per
+      course: the `start-here` intro step (S-11) plus lesson 1.
+- [ ] ⚠️ **The `macroeconomics` course slug may clash at seed time.** The
+      economics demo course carries a *group* id `macroeconomics` (and step ids
+      `unemployment`, `inflation`, `exchange-rates`, `trade`…). All planned
+      step slugs were checked against the 342 published ids and dodge them;
+      the course slug itself is the one to verify when `seed:course` first
+      runs. Resolve in favour of the real course if they clash.
+- [ ] **Development Studies has the thinnest source base of the four** — one
+      58pp notes compilation (2017), four lecture decks, one past paper. Its
+      `_course.md` says so; gaps found while writing are findings to raise
+      (C-2), not licences to fill from general knowledge. It is also the
+      project's first discursive-end-to-end course, so
+      `reference/disciplines.md`'s Discursive profile gets its first real test
+      and should be corrected from what it teaches us.
+- [ ] **No course outline PDFs were generated** for the four new courses.
+      `reference/planning.md` lists one per course, but it is a Slack-era
+      posting artifact and the reader is the product; skipped deliberately.
+      If the owner wants them as lead magnets they are a WRITE job against
+      `reference/pdf.md`.
+- [ ] **The four pipeline folders stay in `_pipeline/` on purpose** — they
+      hold the textbooks and HSS scans over GitHub's 100MB limit. Active
+      lesson folders carry everything topic-specific; `lesson.md` files note
+      what stayed behind and where.
 
 **From session 52 (2026-08-07 into 08, the dashboard-and-front-door day — one
 auth box, install in onboarding, three course tabs. Numbered 52 because sessions
@@ -1116,7 +1148,37 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 
 ## Session Log
 
+### Session 2026-08-08 (session 53 — four courses planned from their own paper)
+
+**Done:** Macroeconomics (ECN 1215), Mathematics (MAT 1110), Development
+Studies (DEV 1150) and Demography (DEM 1110) planned and scaffolded from
+`Schools/UNZA/_pipeline/` into active course folders. 26 lessons, 83 planned
+steps (20 + 28 + 20 + 15), each course's `_course.md` carrying the full step
+plan with slugs checked against the 342 published ids, a `lesson.md` per
+lesson naming its frame, discipline (C-11) and sources, and 177 source files
+(69.5MB) copied in with size-verified landings. Every lesson grouping follows
+the course's own outline: macro's seven headings unmerged, maths' lessons on
+the lecturer's chapter order (probability at 6, statistics last, against the
+printed outline: C-2), dev's six units as the notes give them, demography's
+13 topics folded to four frames with the ZamStats excursion absorbed into 4.1
+as content.
+
+**What Worked:** the three course outlines (ECN and MAT PDFs, DEM docx) and
+the DEV notes' own contents page gave the lesson structure almost verbatim;
+extracting them first (fitz for PDFs, a 10-line zip/XML walk for the docx —
+no python-docx needed) meant zero guessing. Checking planned slugs against
+`course-data.json` before writing them into trackers caught six collisions
+(`exchange-rates`, `unemployment`, `inflation`, `trade`, `foundations`,
+`macroeconomics`) that would otherwise have surfaced at seed time.
+
+**Dead Ends (do not retry):** printing extracted PDF text through the default
+cp1252 stdout dies on ligature characters (U+FB01); wrap stdout in a UTF-8
+TextIOWrapper before any fitz text hits print. `course-data.json` is a LIST
+at top level, not a dict — a walker that assumes `data.items()` silently
+returns nothing.
+
 ### Session 2026-08-07 into 08 (session 52 — one auth box, install in onboarding, and the dashboard's courses become three tabs)
+
 
 **Done:** The front door: everything dropped lower in two passes (pt 28→52,
 pb 140→100→80, the second pass on pb alone because pt is what sets the mark's

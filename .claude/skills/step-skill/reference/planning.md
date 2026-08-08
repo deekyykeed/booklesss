@@ -121,6 +121,16 @@ you split into extra steps). Do not scaffold until the structure is agreed — t
 the cheap moment to change it.
 
 ### 6. Emit the structure
+
+> **Reader-era note (2026-08-08, from planning the four UNZA courses):** the
+> channel map and the outline PDF below are Slack-era artifacts. A course
+> promoted today is authored for the reader; plan the step slugs instead
+> (checked against the published ids in `platform/src/lib/course-data.json` —
+> step slugs are global across courses), record "Slack: none planned" in
+> `_course.md`, and treat the outline PDF as an optional lead-magnet job.
+> **Never create Slack channels** — paid Slack was dropped (BOO-7) and the
+> workspace question is unresolved (`Operations/workspace.md`).
+
 Once agreed, produce all of:
 - **`_course.md`** at the course root — the canonical tracker (see template below).
 - **Folder scaffold** — one folder per lesson, each with `steps/`, `sources/`, and
