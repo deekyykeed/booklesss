@@ -574,7 +574,20 @@ export function OnboardingFlow() {
    *  not: a year is a thing a student knows about themselves, and refusing to
    *  ask because we have no timetable to line it up against throws away the
    *  one answer that makes their course list mean something later. */
-  const years = prog?.years.length ? prog.years : [1, 2, 3, 4, 5, 6];
+  /* A CURRICULUM NAMING ONE OR TWO YEARS IS A PARTIAL CURRICULUM, NOT A SHORT
+     DEGREE. UNZA BA (Economics) has Year 1 typed in by hand and nothing else,
+     because Year 1 is all we hold material for — and reading the options
+     straight off it left a third-year student with "Year 1" as their only
+     choice. That is the one fact this question exists to collect, and the
+     student is the only person who has it.
+
+     No bachelor's runs for one or two years, so a curriculum listing that few
+     is definitionally incomplete and the full range is offered. Three or more
+     is taken as the real shape of the degree. Either way the row carries a
+     count of the courses we hold for that year, so an empty year is visibly
+     empty rather than silently wrong. */
+  const knownYears = prog?.years ?? [];
+  const years = knownYears.length >= 3 ? knownYears : [1, 2, 3, 4, 5, 6];
 
   /** The programme as the server groups reports under: its slug where we hold
    *  it, otherwise the words they typed. */
