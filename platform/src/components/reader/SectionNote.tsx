@@ -106,14 +106,13 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
   const label = active?.label ?? null;
 
   return (
-    /* `checkpoint-pod` is this control's OWN container as of 2026-08-08 (owner:
-       "instead of the one continuous container will split into two with same
-       styling as the search icon and its container in the header"). The flag and
-       the three faces used to share one long white strip, which made them read
-       as one toolbar of four marks; they are two different questions, so they
-       are two containers now. The pod is the header's circular button exactly —
-       see the note on .checkpoint-pod in globals.css. */
-    <div ref={wrap} className="checkpoint-pod relative">
+    /* Its own cluster, with nothing drawn round it (owner, 2026-08-08: "remove
+       the containers around the buttons"). The flag and the three faces sat in
+       one long white strip, then in a pill each, and now in neither: they are
+       two questions held apart by the space between them. See the note on
+       .mark-cluster in globals.css for why bare works now and did not on
+       2026-08-07. */
+    <div ref={wrap} className="mark-cluster relative">
       <button
         type="button"
         /* Gated the same way as the two faces beside it (owner's rule,
