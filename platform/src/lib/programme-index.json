@@ -6298,8 +6298,47 @@
       "slug": "bachelor-of-arts-economics",
       "name": "Bachelor of Arts in Economics",
       "level": "bachelors",
-      "courses": [],
-      "years": []
+      "courses": [
+        {
+          "slug": "communication-skills",
+          "title": "Communication Skills",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "foundation-mathematics-and-statistics-for-social-sciences",
+          "title": "Foundation Mathematics and Statistics for Social Sciences",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-demography",
+          "title": "Introduction to Demography",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-development-studies",
+          "title": "Introduction to Development Studies",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-macroeconomic-theory",
+          "title": "Introduction to Macroeconomic Theory",
+          "year": 1,
+          "semester": null
+        },
+        {
+          "slug": "introduction-to-microeconomics",
+          "title": "Introduction to Microeconomics",
+          "year": 1,
+          "semester": null
+        }
+      ],
+      "years": [
+        1
+      ]
     },
     {
       "slug": "bachelor-of-arts-english-language-and-linguistics",
