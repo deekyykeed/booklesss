@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
-import { MynaIcon } from "@/components/icons/myna";
 import { UltimateIcon } from "@/components/icons/ultimate";
 import { hapticConfirm, hapticTap } from "@/lib/haptics";
 import { needsAccount } from "@/lib/account";
@@ -211,13 +210,33 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
               }
             >
               {n.label}
-              {/* The row's own mark, right-aligned, solid when it is the answer
-                  given (owner, 2026-08-07). `shrink-0` because "Something looks
-                  wrong" wraps to two lines at 230px and the mark must not be
-                  squeezed into an ellipse when it does. 16px against the
-                  label's 14.5px: a hairline glyph reads a size smaller than
-                  text does, and at 15 it disappeared beside the words. */}
-              <MynaIcon name={chosen === n.id ? n.iconOn : n.icon} size={16} className="shrink-0" />
+              {/* The row's own mark, right-aligned, and the SAME mark the flag
+                  collapses to — so the menu teaches which picture means which
+                  verdict, and the collapsed flag is then readable without the
+                  menu ever being opened again.
+                  STREAMLINE ULTIMATE COLORS as of 2026-08-08 (owner: "and yes I
+                  do want it"). This row was MynaUI for one commit on the
+                  argument that a coloured fill in a list of five text rows would
+                  sit as heavy as the Duotone marks pulled out of this row on
+                  2026-08-02. That argument was wrong here, and the difference is
+                  the state model: the Duotone marks were filled ALWAYS, and
+                  these are line-drawn until chosen, so an unanswered menu is
+                  five quiet outlines and exactly one of them ever carries
+                  colour. It is the same rule as the faces pod, which is the
+                  point — colour means "this is your answer" everywhere in the
+                  row.
+                  `shrink-0` because "Something looks wrong" wraps to two lines
+                  at 230px and the mark must not be squeezed into an ellipse when
+                  it does. 18px, up from the 16 a hairline glyph needed: these
+                  carry an internal drawing rather than two strokes, so they need
+                  the extra couple of pixels to stay legible beside a 14.5px
+                  label. */}
+              <UltimateIcon
+                name={n.mark}
+                size={18}
+                muted={chosen !== n.id}
+                className="shrink-0"
+              />
             </button>
           ))}
         </div>
