@@ -267,6 +267,26 @@ to live.
 
 **The OG preview card is still Familjen** — `lib/og.tsx` renders through Satori, which reads only ttf/otf/woff, so matching it means vendoring and instancing a Bricolage TTF the way `platform/assets/FamiljenGrotesk-Medium.ttf` was. Left alone deliberately: that card is the *social poster* system (see the Domain section), not the reader, and its face is part of a look that was designed as a whole.
 
+### The Reader's Vertical Ladder
+
+Owner, 2026-08-08: *"a paragraph a section a title and all must be spaced and sized accordingly so different pieces stay separated."* It had two rungs and needed four. **Four different seams all measured 20px** — paragraph to paragraph, above a sub-heading, below a sub-heading, and the last block to the checkpoint — so a new sub-idea, the next sentence and the end of the whole section were spaced identically. Space is the only thing telling a reader which pieces belong together, and at one value it says nothing.
+
+**Type scale** (the sizes, top down): **30 / 24 / 21 / 18** — step title (Bricolage 600), section heading (Familjen 500), sub-heading (Aptos 600), reading (Aptos, 30px leading). The sub-heading **was 19px against 18px body**, which is not a size step; it was bold text. The section heading and the sub-heading are now separated by *both* face and size, so they cannot be mistaken for each other.
+
+**Space scale**, smallest first. Each rung means something different and no two are within 8px:
+
+| px | seam |
+|---|---|
+| 12 | after a sub-heading |
+| 24 | paragraph to paragraph, and after a section heading |
+| 32 | last block to the checkpoint row |
+| 40 | before a sub-heading; step title to first block |
+| 56 | checkpoint to the section rule (then 36 more to the heading) |
+
+**A heading always gets more space above it than below**, and that rule does most of the work. Equal space orphans a heading between two things; more above attaches it downwards to what it introduces. The sub-heading's 40/12 is `mt-4 -mb-3` played against the block container's 24px gap.
+
+It lives in three places: the ladder comment and the two `h2` renderers in `reader/LessonView.tsx`, and `.checkpoint-row` in `globals.css`. Measure changes off the live DOM rather than off the classes — the checkpoint row is a sibling of the block container, so a naive `section > div > *` selector reads its buttons as blocks and reports negative gaps.
+
 **The `content` / `container` split is the owner's rule (2026-08-02)** and it is by *job*, not by element: a sentence someone reads is Aptos, and chrome that frames or annotates a sentence is Satoshi. The whole reading face was briefly swapped to Satoshi and that was too far. Satoshi is Fontshare / Indian Type Foundry (ITF Free Font Licence) and is on no device by default, which is why it is vendored rather than linked.
 
 **Callouts and cards are containers, all the way through** — owner's call, same day, settling the question that was left open when the split first landed. Only their labels were Satoshi and their bodies stayed Aptos, on the reasoning that a callout *holds* a sentence rather than framing one. The owner's reaction on seeing it live: *"in the containers with key point and that you've moved the font back to Aptos, keep it as Satoshi Medium."* **A box lifted off the page to be remembered is not the reading**, and setting it in the reading face made it read as one more paragraph that happened to have a border. Card titles keep `font-semibold`, everything else in a container is `font-container font-medium`.

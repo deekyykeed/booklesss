@@ -363,7 +363,33 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
           step. */}
       <h1 className="font-title text-[30px] font-semibold leading-[1.2] tracking-[-0.02em] text-ink">{lesson.title}</h1>
 
-      <div className="mt-8 flex flex-col gap-10">
+      {/* THE VERTICAL LADDER (owner, 2026-08-08: "a paragraph a section a title
+          and all must be spaced and sized accordingly so different pieces stay
+          separated").
+
+          It used to have two rungs and needed four. FOUR different seams all
+          measured 20px — paragraph to paragraph, above a sub-heading, below a
+          sub-heading, and the last block to the checkpoint — so a new
+          sub-idea, the next sentence and the end of the whole section were
+          spaced identically. Space is the only thing telling a reader which
+          pieces belong together, and at one value it says nothing.
+
+          Every gap on the page, smallest first. Each one means something
+          different, and no two tiers are within 8px of each other:
+
+            12  after a sub-heading      binds it to what it introduces
+            24  paragraph to paragraph   the reading rhythm
+            24  after a section heading  same: a heading owns what follows
+            32  last block to checkpoint the section stops
+            40  before a sub-heading     a new idea inside the section
+            40  title to first block     the biggest object gets the most air
+            56  checkpoint to the rule   the section seam
+
+          A HEADING GETS MORE SPACE ABOVE IT THAN BELOW, always, and that is the
+          rule doing most of the work here. Equal space orphans it between two
+          things; more above attaches it downwards, which is what a heading is
+          for. */}
+      <div className="mt-10 flex flex-col gap-12">
         {lesson.sections.map((s, i) => (
           <section key={s.id} id={s.id} className="scroll-mt-24">
             {/* A new section has to announce itself. Its heading used to be
@@ -373,16 +399,17 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
                 made the seam blurrier still.
                 Now: a rule across the column, real space either side of it, and
                 the heading in the display face at 24px. The in-section `h2`
-                stays 19px sans, so the two are no longer interchangeable. */}
+                stays in the reading face and is 21px, so the two are separated
+                by face AND size and are not interchangeable. */}
             {i > 0 && (
               <>
-                <hr className="mb-8 mt-2 border-0 border-t border-[#e7e7e6]" />
-                <h2 className="mb-5 font-display text-[24px] font-medium leading-[1.25] tracking-[-0.015em] text-ink">
+                <hr className="mb-9 mt-2 border-0 border-t border-[#e7e7e6]" />
+                <h2 className="mb-6 font-display text-[24px] font-medium leading-[1.25] tracking-[-0.015em] text-ink">
                   {s.heading}
                 </h2>
               </>
             )}
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-6">
               {s.blocks.map((b, j) => {
                 /* Each block draws its own sources under itself (see
                    `BlockWithSources`), so the chips sit against the sentence
@@ -423,7 +450,16 @@ function BlockWithSources({ urls, children }: { urls: string[]; children: React.
 /** One block, drawn. The `key` is applied by the caller's wrapper. */
 function renderBlock(b: Block) {
   if (b.type === "p") return <p className="text-[18px] leading-[30px] text-[#4a4a52]"><Rich text={b.text} /></p>;
-  if (b.type === "h2") return <h2 className="text-[19px] font-semibold text-ink">{b.text}</h2>;
+  /* 21px, not 19px. At 19 against 18px body this was a one-pixel "step", which
+     is not a size difference — it was bold text in a slightly larger face, and
+     the reader met a new idea with nothing but weight to mark it. 30 / 24 / 21
+     / 18 is the ladder now: title, section heading, sub-heading, reading, each
+     rung far enough from the next to be seen without measuring.
+     `mt-4 -mb-3` against the parent's 24px gap gives 40px above and 12px below.
+     It was 20 and 20, which floated the heading exactly halfway between the
+     paragraph it belonged to and the one it did not. */
+  if (b.type === "h2")
+    return <h2 className="-mb-3 mt-4 text-[21px] font-semibold leading-[1.3] tracking-[-0.01em] text-ink">{b.text}</h2>;
   if (b.type === "callout") {
     const kind = CALLOUTS[b.kind ?? "key"];
     return (

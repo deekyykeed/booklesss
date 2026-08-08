@@ -1471,8 +1471,14 @@
      questions now that no pill or label does. Asking "how did that read?" is
      not one of the answers to "what will you do with this section?", and
      sitting them together implied it was. */
+  /* 32px, up from 20 (owner, 2026-08-08). At 20 the checkpoint sat the same
+     distance from the last paragraph as that paragraph sat from the one above
+     it, so the section appeared to end one paragraph early and the row read as
+     another block of content rather than as the thing that closes the section.
+     It is the fourth rung of the reader's vertical ladder — see the comment
+     over the section list in LessonView.tsx. */
   .checkpoint-row {
-    margin-top: 20px;
+    margin-top: 32px;
   }
   /* Bare marks in a row, aligned to the right edge of the reading column
      (owner's call, 2026-08-01, against the way Claude draws its own message
