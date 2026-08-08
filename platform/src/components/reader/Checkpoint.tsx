@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { labelFor, nextLessonId, pathForId } from "@/lib/course";
 import { rate, useProgress, type Grasp } from "@/lib/progress";
-import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
+import { UltimateIcon, type UltimateIconName } from "@/components/icons/ultimate";
 import { gateStepLink, needsAccount } from "@/lib/account";
 import { requireAccount } from "@/lib/onboarding";
 import { SectionNote } from "./SectionNote";
@@ -43,23 +43,41 @@ import { SectionNote } from "./SectionNote";
  * hand side is free to be the plain thing it always wanted to be — did this
  * land, yes or no.
  *
- * ORDER: "Later" then "Got it" (owner, 2026-08-02), so the positive answer is
- * the outermost mark on the right. It reads worst-to-best towards the edge and
- * puts the answer most readers reach for under the thumb already there.
+ *   2026-08-08  Streamline Ultimate Colors faces, and THREE of them
  *
- * COLOUR ON TAP, from the doodles that were here for an afternoon: the orange
- * off the smiling face, and a pink for the down. The pink is the shock face's
- * own #fcb4cd brought down to the orange's weight — at 20px solid, the original
- * is so light it reads as a smudge, and a pair has to carry the same weight or
- * one of them looks disabled.
+ * THREE ANSWERS, NOT TWO (owner, 2026-08-08: "3 icons indicating the 3 main
+ * reactions someone would have about what they've just read"). This is a
+ * restoration rather than a new scale: `Grasp` in lib/progress has always been
+ * `got | almost | not` with a weight each (1 / 0.5 / 0), and the middle one has
+ * been unreachable from the UI for weeks while the dashboard went on scoring
+ * it. Nothing stored changes meaning, and every answer already recorded still
+ * reads the same.
  *
- * `tone` drives the hue of the mark, the hover and the focus ring, and the mark
- * swaps to its solid twin when chosen — so an answer given is bolder AND
- * coloured, which is the same two-signal pattern the sidebar rows use.
+ * ORDER: worst to best, left to right, so the positive answer is the outermost
+ * mark on the right (owner, 2026-08-02, when there were two). It puts the
+ * answer most readers reach for under the thumb already there, and the middle
+ * step slots in where it belongs on that scale rather than beside it.
+ *
+ * THE FACES ARE STREAMLINE ULTIMATE COLORS (FREE) — owner's pick of family.
+ * They are multicolour and ignore currentColor, so `tone` is gone: the marks no
+ * longer take a hue from CSS, they arrive with their own. What replaces it is a
+ * pair of drawn states, `full` and `rest`, generated together — see
+ * icons/ultimate.tsx. An unchosen face keeps all of its black line work and
+ * loses only its colour, which is the treatment the owner arrived at on
+ * 2026-08-07 (a793eae) after a CSS `grayscale`/`opacity` filter greyed the line
+ * work as hard as the fill and made the whole mark faint.
+ *
+ * WHY THESE THREE FACES of the ten in the free set: the set has NO neutral or
+ * confused face (checked exhaustively), so the middle step had to be built from
+ * what exists. Grin / flat mouth / frown is the only trio that reads as one
+ * scale. `smiley-mad` is red and furious, which is not what "not yet" means,
+ * and `smiley-unhappy-1` is a weaker `smiley-sad-1`, so the bottom two steps
+ * would have been the same picture. Full reasoning in the generator.
  */
-const ANSWERS: { id: Grasp; label: string; icon: MynaIconName; iconOn: MynaIconName; tone: string }[] = [
-  { id: "not", label: "Later", icon: "dislike", iconOn: "dislike-solid", tone: "#f2749b" },
-  { id: "got", label: "Got it", icon: "like", iconOn: "like-solid", tone: "#faa709" },
+const ANSWERS: { id: Grasp; label: string; icon: UltimateIconName }[] = [
+  { id: "not", label: "Lost me", icon: "smiley-sad-1" },
+  { id: "almost", label: "Sort of", icon: "smiley-disapointed" },
+  { id: "got", label: "Got it", icon: "smiley-happy" },
 ];
 
 /* End-of-section checkpoint — a scale rather than a tick.
@@ -149,10 +167,10 @@ export function Checkpoint({
           16-24px range, where the flattening is the point. So the house pairing
           now argues FOR adding it back. Left off because it has not been asked
           for; it is a one-word change if it is wanted. */}
-      <div className="checkpoint-row flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#e7e7e6] bg-white p-1.5 shadow-lift">
+      <div className="checkpoint-row flex flex-wrap items-center justify-between gap-3">
         <SectionNote lessonId={lessonId} sectionId={checkpointId} />
         <div
-          className="grasp-group"
+          className="grasp-group checkpoint-pod"
           role="radiogroup"
           aria-label={`How much of "${heading}" landed?`}
           data-answered={chosen ?? undefined}
@@ -190,39 +208,21 @@ export function Checkpoint({
                    is the only way a mouse reader recovers the word. */
                 title={a.label}
                 data-active={active ? "" : undefined}
-                className="grasp-btn squircle"
-                style={{ "--grasp-tone": a.tone } as React.CSSProperties}
+                className="grasp-btn"
               >
-                {/* 26px, not the 20px the glyphs sat at: a drawn face needs
-                    more room to be legible than a two-stroke mark does, and
-                    the button is 34px so it still has air round it.
-                    `key` on the src is what makes the reveal REPLAY. A browser
-                    plays a GIF once and then holds the last frame; swapping
-                    the same src back in is a cache hit and shows a still.
-                    Re-keying on the answer forces a fresh element each time
-                    the reader changes their mind, so the animation fires on
-                    every real selection and never on a re-render.
-                    Unoptimised: next/image would re-encode the GIF and drop
-                    every frame but one. These are already sized and already
-                    small, so they are served as they are. */}
-                {/* 20px. Line at rest, solid when it is the answer given, and
-                    coloured by `--grasp-tone` off the CSS, so a tap changes BOTH
-                    the weight and the hue: the same pair of signals the sidebar
-                    uses for its current row.
-                    IT WENT TO 12px AND CAME BACK the same day (owner,
-                    2026-08-08, asked for 12 and then for 20 again). Worth
-                    keeping, because the reason is about the button rather than
-                    the mark: `.grasp-btn` is a fixed 28px, so shrinking the
-                    glyph does not shrink the control, it just leaves a 12px dot
-                    floating in a 28px target. 20px in 28px is a mark that fills
-                    its button; anything much smaller reads as a gap with
-                    something in it.
-                    strokeWidth 1.2 rather than MynaUI's 1.5: at 20px with
-                    nothing bounding it, the default weight reads heavy beside
-                    the flag on the other end of the row.
+                {/* 20px. It went to 12 and back on 2026-08-08 (owner), and the
+                    reason is about the button rather than the mark: `.grasp-btn`
+                    is a fixed 28px, so shrinking the glyph does not shrink the
+                    control, it leaves a small mark floating in a full-size
+                    target. 20 in 28 fills its button.
+                    `muted` is the whole state model now that these carry their
+                    own colour: the chosen face is drawn in full, the other two
+                    keep every black line and lose their fills. Nothing fades and
+                    nothing is filtered — see the generator for why a CSS
+                    grayscale was the wrong tool for this.
                     SectionNote's flag is the fourth mark in this row and is set
                     to 20 as well. Move the two together. */}
-                <MynaIcon name={active ? a.iconOn : a.icon} size={20} strokeWidth={1.2} />
+                <UltimateIcon name={a.icon} size={20} muted={!active} />
                 <span className="grasp-label">{a.label}</span>
               </button>
             );
