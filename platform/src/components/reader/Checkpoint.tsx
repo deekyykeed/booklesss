@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { labelFor, nextLessonId, pathForId } from "@/lib/course";
 import { rate, useProgress, type Grasp } from "@/lib/progress";
 import { UltimateIcon, type UltimateIconName } from "@/components/icons/ultimate";
+import { hapticConfirm } from "@/lib/haptics";
 import { gateStepLink, needsAccount } from "@/lib/account";
 import { requireAccount } from "@/lib/onboarding";
 import { SectionNote } from "./SectionNote";
@@ -198,6 +199,11 @@ export function Checkpoint({
                     requireAccount("checkpoint");
                     return;
                   }
+                  /* Called here, in the handler, because a browser ignores
+                     vibrate() outside a user gesture. Android only; silently
+                     nothing on iOS, and nothing at all if the reader has asked
+                     this app for reduced motion. See lib/haptics. */
+                  hapticConfirm();
                   if (active) toggle(lessonId, checkpointId);
                   else rate(lessonId, checkpointId, a.id);
                 }}

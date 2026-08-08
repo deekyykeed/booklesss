@@ -21,36 +21,45 @@
  *   clear     → the "keep" signal, so a rewrite doesn't delete what worked
  */
 
-import { type MynaIconName } from "@/components/icons/myna";
+import { type UltimateIconName } from "@/components/icons/ultimate";
 
 export type NoteId = "hard" | "long" | "example" | "wrong" | "clear";
 
-/* Each row carries its own mark, on the right (owner, 2026-08-07). `icon` is a
- * MynaUI Line name and the row draws its `-solid` twin when it is the answer
- * given — the same line-at-rest / solid-when-chosen pair the sidebar rows and
- * the two faces beside this menu use, so the mark says which answer the row is
- * AND whether it is the one selected. It replaces a tick that could only say
- * the second of those, in the slot where the first belonged.
+/* Each row carries its own mark, on the right (owner, 2026-08-07). The mark says
+ * which answer the row IS and, by whether it carries colour, whether it is the
+ * one selected — replacing a tick that could only ever say the second of those,
+ * in the slot where the first belonged.
  *
- * `clipboard` and `danger-triangle` are on purpose the same two marks the
- * Example and Watch-out callouts draw: one mark per idea across the reader.
+ * The pair it used to draw was a MynaUI outline and its `-solid` twin, both
+ * written out longhand rather than built as `${icon}-solid`, because a template
+ * literal is a plain string to the compiler and would have let a missing twin
+ * render nothing at all. That whole mechanism is gone: one name per reason now,
+ * with the chosen/unchosen states drawn by the generator instead of named here. */
+/* ONE MARK PER REASON, drawn in two places: the menu row that offers it, and the
+ * collapsed flag once it has been given. Both are the same picture on purpose —
+ * that is what lets a reader recognise a verdict later without reopening the
+ * menu.
  *
- * Both names are written out rather than the solid one being built as
- * `${icon}-solid`: a template literal is a plain string to the compiler, so
- * that spelling would let a missing twin through to render nothing at all.
- * Named separately, `MynaIconName` refuses at build time any pair the generator
- * has not actually emitted. */
+ * `icon`/`iconOn` (MynaUI, an outline and its solid twin) were here until
+ * 2026-08-08 and are gone rather than left in place: nothing drew them once the
+ * menu moved to this family, and a dead field with a "keep in step with" story
+ * attached is exactly the drift that makes the next addition half-done. The
+ * MynaUI names are recoverable from git if a monochrome fallback is ever wanted.
+ *
+ * Streamline Ultimate Colors (Free). The picks, and the two the free set could
+ * not supply — there is no plain lightbulb and no plain warning triangle — are
+ * argued in scripts/gen-ultimate-icons.mjs. `UltimateIconName` is what makes a
+ * typo a build error rather than a blank space in the menu. */
 export const NOTES: {
   id: NoteId;
   label: string;
-  icon: MynaIconName;
-  iconOn: MynaIconName;
+  mark: UltimateIconName;
 }[] = [
-  { id: "clear", label: "Clear", icon: "lamp", iconOn: "lamp-solid" },
-  { id: "hard", label: "Hard to follow", icon: "question-circle", iconOn: "question-circle-solid" },
-  { id: "long", label: "Too long", icon: "clock-1", iconOn: "clock-1-solid" },
-  { id: "example", label: "Needs an example", icon: "clipboard", iconOn: "clipboard-solid" },
-  { id: "wrong", label: "Something looks wrong", icon: "danger-triangle", iconOn: "danger-triangle-solid" },
+  { id: "clear", label: "Clear", mark: "check" },
+  { id: "hard", label: "Hard to follow", mark: "question-help-message" },
+  { id: "long", label: "Too long", mark: "time-clock-circle" },
+  { id: "example", label: "Needs an example", mark: "task-list-text-1" },
+  { id: "wrong", label: "Something looks wrong", mark: "delete-2" },
 ];
 
 const KEY = "booklesss:step-notes:v1";

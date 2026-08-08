@@ -1546,19 +1546,25 @@
     white-space: nowrap;
     border: 0;
   }
-  /* `--grasp-tone` is gone. It existed to give a monochrome glyph a hue, and the
-     marks bring their own now, so hover and chosen are said with the WELL behind
-     the mark rather than with the mark itself. That also keeps the two pods
-     honest: a face is either drawn in colour or drawn in line, and nothing in
-     between. */
-  .grasp-btn:hover {
-    background: #f3f3f1;
-  }
-  /* The answer given. The mark is already the signal — it is the only one of the
-     three carrying colour — so this is a quiet second confirmation rather than
-     the whole of it. */
-  .grasp-btn[data-active] {
-    background: #f3f3f1;
+  /* `--grasp-tone` is gone. It existed to give a monochrome glyph a hue, and these
+     marks bring their own.
+     ⚠️ NOTHING IS DRAWN BEHIND A CHOSEN MARK, and that is explicit (owner,
+     2026-08-08: "remove that gray background from a selected icon so its just
+     the icon getting color when active"). The `[data-active]` plate lasted one
+     commit. The mark going from line-drawn to full colour IS the signal, and a
+     grey plate under it was a second one saying the same thing — which read as a
+     button that had been pressed rather than an answer that had been given, and
+     put a filled surface back inside a pod whose whole job is to be the only
+     container here.
+     HOVER IS GATED TO A REAL POINTER, and that is not tidiness. On a phone
+     `:hover` sticks to the last thing tapped, so an ungated rule would leave
+     exactly the grey plate that was just removed sitting under the mark the
+     reader chose — the artefact would come back on the one device it was
+     reported from. */
+  @media (hover: hover) and (pointer: fine) {
+    .grasp-btn:hover {
+      background: #f3f3f1;
+    }
   }
   /* NOTHING RECEDES ANY MORE, and the rule is kept as a placeholder for why.
      It went 0.55 → 0.8 → 1 across 2026-08-07 as the answers changed from
