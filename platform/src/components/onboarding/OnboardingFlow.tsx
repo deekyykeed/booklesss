@@ -1085,14 +1085,25 @@ export function OnboardingFlow() {
                 curriculum was scraped: not knowing someone's timetable was
                 never a reason to leave their degree out of the picker. See
                 scripts/gen-programmes.mjs. */}
+            {/* THE SAME BLANK AS EVERY OTHER TYPED ANSWER, not a box. The
+                fields lost their frames on 2026-08-06 ("let it instead look
+                like a line, a blank that you fill"), so a bordered search sat
+                on this page as the one control still wearing the old shape.
+                This is Field's own internals — the 2px rule, the gap, the 44px
+                height, `focus-within` on the wrapper — with a mark on the left
+                where that component puts `trailing` on the right. Kept in step
+                with `FIELD`; the three must never disagree. */}
             {allProgrammes.length > 8 && (
-              <input
-                value={progQuery}
-                onChange={(e) => setProgQuery(e.target.value)}
-                placeholder="Search your programme"
-                aria-label="Search your programme"
-                className="mb-3 w-full rounded-xl border border-[--color-line] bg-transparent px-4 py-3 text-base outline-none placeholder:text-[--color-placeholder] focus:border-[--color-ink]"
-              />
+              <div className="mb-4 flex items-center gap-2 border-b-2 border-line transition-colors focus-within:border-ink">
+                <MynaIcon name="search" size={18} className="shrink-0 text-placeholder" />
+                <input
+                  value={progQuery}
+                  onChange={(e) => setProgQuery(e.target.value)}
+                  placeholder="Search your programme"
+                  aria-label="Search your programme"
+                  className="h-11 min-w-0 flex-1 bg-transparent text-[16px] text-ink outline-none placeholder:text-placeholder"
+                />
+              </div>
             )}
             {allProgrammes.length > 0 && (
               <OptionRows
