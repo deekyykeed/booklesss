@@ -396,7 +396,32 @@ export function CoursesSection({
               }}
             >
               <SortableContext items={orderedActive.map((w) => w.course.slug)} strategy={rectSortingStrategy}>
-                <div className="grid gap-3 md:grid-cols-2">
+                {/* `grid-cols-1` IS LOad-BEARING ON PHONES, not decoration.
+                    Owner, 2026-08-09: "course cards now go all the way to the
+                    end of the screen."
+
+                    This was a bare `grid gap-3 md:grid-cols-2`, so from md up
+                    Tailwind wrote `repeat(2, minmax(0, 1fr))` — the `0`
+                    floor — and below md there was no grid-template-columns at
+                    all. An implicit column is `auto`-sized, and `auto` floors
+                    at MIN-CONTENT. The card's Resume bar is one nowrap
+                    `truncate` line, whose min-content is the whole untruncated
+                    string, so the column grew to fit a label that was never
+                    going to be shown in full and the cards ran off the right
+                    edge. `truncate` cannot save a box that has already been
+                    sized to the text it was meant to cut.
+
+                    It only showed up now because it needs a LONG step name to
+                    exceed the viewport — "Welcome to Booklesss" fitted, "The
+                    Case for Treasury Management" did not. The stat tiles above
+                    never had it because `grid-cols-2` was always explicit
+                    there, which is the whole tell.
+
+                    `min-w-0` on the item is the other half: clamping the track
+                    is not enough on its own, because a grid ITEM also carries
+                    `min-width: auto` and can overflow a track that is sized
+                    correctly. See SortableCard. */}
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                   {orderedActive.map((w) => (
                     <SortableCard key={w.course.slug} id={w.course.slug}>
                       <CourseCard
@@ -423,7 +448,8 @@ export function CoursesSection({
 
         {tab === "completed" &&
           (orderedCompleted.length ? (
-            <div className="grid gap-3 md:grid-cols-2">
+            /* grid-cols-1 for the reason spelled out on the Active grid. */
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
               {orderedCompleted.map((w) => (
                 <CourseCard
                   key={w.course.slug}
@@ -470,7 +496,7 @@ export function CoursesSection({
               <span className="hidden group-open:inline">hide</span>
             </span>
           </summary>
-          <div className="mt-3 grid gap-3 md:grid-cols-2">
+          <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
             {scraped.map((c) => (
               <PipelineCard
                 key={c.slug}
@@ -689,12 +715,21 @@ function EmptyRow({ children }: { children: React.ReactNode }) {
 
 /** One draggable slot in the Active grid. Wraps the whole card rather than
  *  adding a separate grab handle — see the activation constraints above for
- *  why that doesn't fight with the Resume button sitting inside it. */
+ *  why that doesn't fight with the Resume button sitting inside it.
+ *
+ *  `min-w-0` because THIS is the grid item, and a grid item's `min-width:
+ *  auto` is a content-based floor that will happily overflow a correctly
+ *  sized track. The card inside sets `overflow: hidden`, which would have
+ *  zeroed that floor by itself — but this plain wrapper sits between them and
+ *  has no overflow of its own, so the floor is back. Clamping the track
+ *  (grid-cols-1) and clamping the item are two different fixes and the phone
+ *  needed both. */
 function SortableCard({ id, children }: { id: string; children: React.ReactNode }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
   return (
     <div
       ref={setNodeRef}
+      className="min-w-0"
       style={{
         transform: CSS.Transform.toString(transform),
         transition,
