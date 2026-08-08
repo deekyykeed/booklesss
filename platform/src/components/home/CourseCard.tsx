@@ -7,6 +7,7 @@ import type { CourseMeta } from "@/lib/courses";
 import { labelFor, pathForId } from "@/lib/course";
 import { courseStreak, studyHistory, type StudyDay } from "@/lib/progress";
 import { coursePerformance } from "@/lib/performance";
+import { MynaIcon } from "@/components/icons/myna";
 import { CardMark, StreakMark } from "./card-glyphs";
 import { Spark } from "./Spark";
 
@@ -22,6 +23,18 @@ import { Spark } from "./Spark";
  * StudyClock records, which only exist from the day that field shipped, so
  * a course studied before then shows no curve rather than a flat invented
  * one.
+ *
+ * A FINISHED COURSE IS A DIFFERENT CLAIM, and until 2026-08-08 the card
+ * refused to make it: the Completed tab existed to show finished courses and
+ * the card in it said "Resume", pointed at step one, and read 0d streak —
+ * indistinguishable from a course never opened. `completed` swaps the three
+ * spots where "in motion" was assumed: the streak figure goes (there is
+ * nothing left to keep a streak on), the performance score gives way to a
+ * green check (a recency-weighted score DECAYS after the last session, so a
+ * course finished a month ago would read ~25% next to the word Done), and the
+ * bar owns the claim — "Done ✓ · Read it again", pointing at step one, which
+ * is exactly where reading it again starts. Same target the old card had; the
+ * lie was the word Resume, not the destination.
  * ------------------------------------------------------------------ */
 
 export function CourseCard({
@@ -34,6 +47,8 @@ export function CourseCard({
   steps,
   /** The step the button resumes — where they left off, or the first one. */
   next,
+  /** Every checkpoint answered — the Completed tab's list. */
+  completed = false,
 }: {
   course: CourseMeta;
   tone: string;
@@ -42,6 +57,7 @@ export function CourseCard({
   done: number;
   steps: number;
   next: string;
+  completed?: boolean;
 }) {
   const pct = course.totalCheckpoints ? done / course.totalCheckpoints : 0;
 
@@ -76,13 +92,17 @@ export function CourseCard({
         <span className="text-ink">
           <CardMark size={24} />
         </span>
-        <div className="flex items-center gap-4">
-          <Figure
-            label="day streak on this course"
-            value={hydrated ? `${time.streak}d` : "–"}
-            mark={<StreakMark size={13} />}
-          />
-        </div>
+        {/* No streak on a finished course — the figure would read 0d forever,
+            which is the untouched-course look this variant exists to shed. */}
+        {!completed && (
+          <div className="flex items-center gap-4">
+            <Figure
+              label="day streak on this course"
+              value={hydrated ? `${time.streak}d` : "–"}
+              mark={<StreakMark size={13} />}
+            />
+          </div>
+        )}
       </div>
 
       {/* The card's foot. Brand green on the score from 70 up; the working
@@ -95,22 +115,36 @@ export function CourseCard({
           <p className="min-w-0 flex-1 font-display text-[21px] font-semibold leading-tight tracking-[-0.01em] text-ink">
             {course.title}
           </p>
-          {/* Just the percentage, in the title's own voice — no container,
-              no marks. The working stays on hover. */}
-          <span
-            className="shrink-0 font-display text-[21px] font-semibold leading-tight tracking-[-0.01em]"
-            style={{ color: time.perf && time.perf.score >= 70 ? "var(--color-brand-deep)" : "var(--color-ink)" }}
-            title={
-              time.perf
-                ? `performance score, ${time.perf.delta >= 0 ? "up" : "down"} ${Math.abs(time.perf.delta)} this week — ` +
-                  `mostly effort (${time.perf.weekDays} study day${time.perf.weekDays === 1 ? "" : "s"} and ` +
-                  `${time.perf.weekMins}m this week), plus ${Math.round(time.perf.parts.coverage * 100)}% covered`
-                : "performance score"
-            }
-          >
-            {time.perf ? `${time.perf.score}%` : "–"}
-            <span className="sr-only"> performance score</span>
-          </span>
+          {completed ? (
+            /* The check, not the score. Green because green means completion
+               across this app, solid because there is nothing partial left to
+               hedge about. */
+            <span
+              className="shrink-0"
+              style={{ color: "var(--color-brand-deep)" }}
+              title="Course complete — every checkpoint answered"
+            >
+              <MynaIcon name="check-circle-solid" size={22} />
+              <span className="sr-only">course complete</span>
+            </span>
+          ) : (
+            /* Just the percentage, in the title's own voice — no container,
+               no marks. The working stays on hover. */
+            <span
+              className="shrink-0 font-display text-[21px] font-semibold leading-tight tracking-[-0.01em]"
+              style={{ color: time.perf && time.perf.score >= 70 ? "var(--color-brand-deep)" : "var(--color-ink)" }}
+              title={
+                time.perf
+                  ? `performance score, ${time.perf.delta >= 0 ? "up" : "down"} ${Math.abs(time.perf.delta)} this week — ` +
+                    `mostly effort (${time.perf.weekDays} study day${time.perf.weekDays === 1 ? "" : "s"} and ` +
+                    `${time.perf.weekMins}m this week), plus ${Math.round(time.perf.parts.coverage * 100)}% covered`
+                  : "performance score"
+              }
+            >
+              {time.perf ? `${time.perf.score}%` : "–"}
+              <span className="sr-only"> performance score</span>
+            </span>
+          )}
         </div>
 
         {/* What the course is about, held to two lines — the body the card
@@ -128,11 +162,15 @@ export function CourseCard({
              free, a second course's Start on a signed-out device asks. */
           onClick={(e) => gateStepLink(e, pathForId(next))}
           progress={pct}
-          prefix={started ? "Resume · " : "Start · "}
-          label={`${started ? "Resume" : "Start"} ${course.title} — ${hydrated ? labelFor(next) : ""}`}
+          prefix={completed ? "Done ✓ · " : started ? "Resume · " : "Start · "}
+          label={
+            completed
+              ? `${course.title} is complete — read it again from the start`
+              : `${started ? "Resume" : "Start"} ${course.title} — ${hydrated ? labelFor(next) : ""}`
+          }
           className="mt-3"
         >
-          {hydrated ? labelFor(next) : " "}
+          {completed ? "Read it again" : hydrated ? labelFor(next) : " "}
         </ActionBar>
       </div>
 

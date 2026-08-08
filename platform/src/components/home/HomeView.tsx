@@ -2,10 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { gateStepLink } from "@/lib/account";
 import { enrolledCourses } from "@/lib/courses";
+import { labelFor, pathForId } from "@/lib/course";
 import { useIdentity } from "@/lib/identity";
-import { isStudyDay, studyHistory, useProgress } from "@/lib/progress";
+import { isStudyDay, studyHistory, useProgress, type StudyDay } from "@/lib/progress";
 import { overallPerformance, overallScoreHistory } from "@/lib/performance";
+import { ActionBar } from "@/components/ui/ActionBar";
+import { MynaIcon } from "@/components/icons/myna";
 import { SolarIcon } from "@/components/icons/solar";
 import { CoursesSection } from "./CoursesSection";
 import { pickGreeting, rememberGreeting, renderGreeting, type Greeting } from "./greeting";
@@ -21,10 +25,14 @@ import { Spark } from "./Spark";
  *
  * What's deliberately absent, because the data for it doesn't exist yet:
  *   - a coaching/AI summary of how the week went. There is no tutor backend,
- *     and no study goal is captured anywhere at sign-up, so any "you're
- *     behind target" line would be invented. The band below states facts
- *     instead — streak, whether you've studied today — until there is a
- *     target to measure against.
+ *     so any "here's what to focus on" prose would be invented.
+ *
+ * (This note used to also claim no study goal was captured anywhere. That
+ * stopped being true when onboarding's weekly-goal question shipped:
+ * `identity.target` holds the days and minutes the student promised,
+ * lib/performance scores against it, and the time tile below reads "of" it.
+ * The claim outlived the code by days and nearly steered an edit wrong —
+ * hence this correction rather than a silent deletion.)
  * ------------------------------------------------------------------ */
 
 /* One hue per stat — the four validated together against the card surface
@@ -38,9 +46,11 @@ const TONE = {
   time: "#2a78d6", // hours on task — blue
 } as const;
 
-/** Reading time as a short human string. */
+/** Reading time as a short human string. Floors at one minute: this is only
+ *  ever called with a positive figure, and "0 min" printed over a number the
+ *  reader knows is real reads as the app losing their time. */
 function fmtTime(secs: number): string {
-  const m = Math.round(secs / 60);
+  const m = Math.max(1, Math.round(secs / 60));
   if (m < 60) return `${m} min`;
   const h = Math.floor(m / 60);
   return m % 60 ? `${h}h ${m % 60}m` : `${h}h`;
@@ -146,7 +156,8 @@ export function HomeView({
    *  is signed in. Kept as a slot so this component stays Clerk-free. */
   afterGreeting?: React.ReactNode;
 }) {
-  const { hydrated, doneCount, isComplete, streak, bestStreak, daysStudied, studiedToday, days } = useProgress();
+  const { hydrated, doneCount, isComplete, streak, bestStreak, daysStudied, studiedToday, days, totalSecs, last, grasp } =
+    useProgress();
   const { identity } = useIdentity();
   const greeting = useGreeting();
 
@@ -224,6 +235,46 @@ export function HomeView({
 
   const coverage = totals.checks ? Math.round((done.checks / totals.checks) * 100) : 0;
 
+  /* "STARTED" MEANS ANY RECORDED SIGNAL — a cleared checkpoint, a study day,
+   * or time on the clock. It used to mean checkpoints alone, and the page
+   * contradicted itself in one screenful (owner's own dashboard, 2026-08-08):
+   * "You haven't started yet" over a 2-day streak and 2h 26m, because the
+   * subline, Performance and Coverage all keyed on `done.checks` while the
+   * tiles beside them keyed on reading. A student who reads without ticking
+   * was told they hadn't started by a page showing them studying. */
+  const started = done.checks > 0 || daysStudied > 0 || totalSecs > 0;
+
+  /* The week the student promised, as minutes — `target.minutes` is per study
+   * day, so the week is the two multiplied (same arithmetic as lib/performance's
+   * weeklyTarget, NOT its fallbacks: a goal nobody set is not shown as if they
+   * set it). Zero when onboarding's goal question was never answered. */
+  const goalMins = identity?.target ? identity.target.days * identity.target.minutes : 0;
+
+  /* THE SHAKY QUEUE. Every "how did this land" answer is stored per section
+   * (grasp), and until 2026-08-08 nothing ever offered it back — which made
+   * answering honestly decorative. "Almost" and "not yet" both count: both are
+   * the reader saying it hasn't stuck. Scoped to enrolled courses, like every
+   * other figure on this page. */
+  const shaky = useMemo(() => {
+    if (!hydrated) return { total: 0, rows: [] as { id: string; n: number }[] };
+    const mineIds = new Set(totals.lessons);
+    const rows: { id: string; n: number }[] = [];
+    for (const [lessonId, row] of Object.entries(grasp)) {
+      if (!mineIds.has(lessonId)) continue;
+      const n = Object.values(row).filter((g) => g !== "got").length;
+      if (n > 0) rows.push({ id: lessonId, n });
+    }
+    // Worst first — the step with the most shaky sections is the one to reopen.
+    rows.sort((a, b) => b.n - a.n);
+    return { total: rows.reduce((s, r) => s + r.n, 0), rows };
+  }, [hydrated, grasp, totals.lessons]);
+
+  /* The jump-back target: the exact step last open with reading or work
+   * recorded against it (lib/progress `last`). Label resolved defensively —
+   * a step can be unpublished between visits, and a bar pointing at a page
+   * that no longer exists is worse than no bar. */
+  const lastLabel = hydrated && last ? labelFor(last.id) : null;
+
   /* Each tile's figure climbing to its value on first paint. One hook per
      tile rather than one for all four: they hold different units, and a
      single shared progress would make them look mechanically locked together
@@ -231,23 +282,32 @@ export function HomeView({
      still travel as a set. */
   const climb = {
     score: useCountUp(perf?.score ?? 0, hydrated),
-    streak: useCountUp(streak, hydrated),
+    // No streak entry any more — that tile draws the week as seven squares
+    // (owner, 2026-08-08), and a grid has nothing to count up.
     coverage: useCountUp(coverage, hydrated),
     secs: useCountUp(charts.secsWeek, hydrated),
   };
   const minWeek = Math.round(charts.secsWeek / 60);
   const minPrev = Math.round(charts.secsPrev / 60);
 
-  /* Facts, not encouragement dressed as insight. */
+  /* Facts, not encouragement dressed as insight. Where no checkpoint is
+     ticked yet the fact is the reading time — never "you haven't started"
+     over a page whose tiles show studying (see `started` above). */
   const line = !hydrated
     ? "Loading your progress…"
-    : done.checks === 0
+    : !started
       ? "You haven't started yet — the first step takes about ten minutes."
       : studiedToday
-        ? `You've studied today${streak > 1 ? ` — ${streak} days in a row` : ""}. ${done.checks} sections done so far.`
+        ? `You've studied today${streak > 1 ? ` — ${streak} days in a row` : ""}. ${
+            done.checks > 0 ? `${done.checks} sections done so far.` : `${fmtTime(totalSecs)} read so far.`
+          }`
         : streak > 0
           ? `${streak}-day streak going. Do a section today to keep it.`
-          : `${done.checks} sections done across ${daysStudied} day${daysStudied === 1 ? "" : "s"}.`;
+          : done.checks > 0
+            ? `${done.checks} sections done across ${daysStudied} day${daysStudied === 1 ? "" : "s"}.`
+            : daysStudied > 0
+              ? `${fmtTime(totalSecs)} read across ${daysStudied} day${daysStudied === 1 ? "" : "s"}.`
+              : `${fmtTime(totalSecs)} read so far.`;
 
   return (
     /* Extra room above the greeting: it sat tight under the chrome, and the
@@ -304,32 +364,42 @@ export function HomeView({
           <Stat
             hydrated={hydrated}
             label="Performance"
-            /* A dash until something is cleared: a confident 0% reads as a mark
-               awarded when nothing has been measured yet. */
-            value={perf && done.checks > 0 ? `${Math.round(climb.score)}%` : "–"}
+            /* A dash until anything is RECORDED — not until something is
+               ticked. Three-quarters of this score is effort, which a reader
+               racks up without touching a checkpoint, so gating it on
+               `done.checks` showed "Not started" to somebody two study days
+               in. */
+            value={perf && started ? `${Math.round(climb.score)}%` : "–"}
             tone={TONE.score}
             icon={<SolarIcon name="chart-2-bold-duotone" size={20} className="shrink-0" />}
             series={perfSeries}
             foot={
-              perf && done.checks > 0
+              perf && started
                 ? growth(perf.score, perf.prev, "nothing yet")
                 : { lead: "Not started", tail: "nothing yet", good: false }
             }
           />
           {/* 2. Streak — the purest reward for turning up: it moves on effort
-              alone and never touches whether anything was understood. The chart
-              is a rolling count of the days you showed up. */}
+              alone and never touches whether anything was understood.
+
+              THE WEEK, NOT A NUMBER (owner, 2026-08-08: "fit all these 7 dots
+              or squares into the streak stat card replacing the number… a
+              series of 3 by 3 and then the extra one can go in a 3rd row, then
+              a tick for the day actually studied"). Seven squares, Monday
+              first, planned days tinted from the goal's own weekdays — kept
+              vs broken is legible in a way a rolling count never was. The
+              counts move to the footer: the running streak leads it, the best
+              keeps its place beside. */}
           <Stat
             hydrated={hydrated}
             label="Streak"
-            value={`${Math.round(climb.streak)}`}
-            unit={streak === 1 ? "day" : "days"}
+            body={<WeekSquares days={days} planned={identity?.target?.weekdays} tone={TONE.streak} />}
             tone={TONE.streak}
             icon={<SolarIcon name="bolt-bold-duotone" size={20} className="shrink-0" />}
             series={charts.streak}
             foot={
               bestStreak > 0
-                ? { lead: `${bestStreak} best`, tail: "days so far", good: streak > 0 }
+                ? { lead: `${streak}d streak`, tail: `${bestStreak} best`, good: streak > 0 }
                 : { lead: "None", tail: "studied yet", good: false }
             }
           />
@@ -339,13 +409,24 @@ export function HomeView({
           <Stat
             hydrated={hydrated}
             label="Coverage"
-            value={done.checks > 0 ? `${Math.round(climb.coverage)}%` : "–"}
+            /* 0% once anything is recorded — for a reader mid-study with
+               nothing ticked, "0% covered · none ticked yet" is the true
+               state, where a dash was the tile refusing to believe the
+               studying happening one tile over. The dash still holds before
+               any signal at all. */
+            value={started ? `${Math.round(climb.coverage)}%` : "–"}
             tone={TONE.coverage}
             icon={<SolarIcon name="notebook-minimalistic-bold-duotone" size={20} className="shrink-0" />}
             series={charts.coverage}
             /* Growth on the raw counts, which is identical to growth on the
                percentages — same denominator top and bottom, so it cancels. */
-            foot={growth(done.checks, done.checks - charts.weekChecks, "added yet")}
+            foot={
+              done.checks > 0
+                ? growth(done.checks, done.checks - charts.weekChecks, "added yet")
+                : started
+                  ? { lead: "None", tail: "ticked yet", good: false }
+                  : { lead: "Not started", tail: "added yet", good: false }
+            }
           />
           {/* 4. Time this week — the clock's own measurement, surfaced at last.
               It undercounts on purpose (see StudyClock), so the number is only
@@ -354,6 +435,12 @@ export function HomeView({
             hydrated={hydrated}
             label="Time this week"
             value={charts.secsWeek > 0 ? fmtTime(climb.secs) : "–"}
+            /* "of 5h" — the goal THEY set at onboarding, shown at last (owner,
+               2026-08-08). Only when they set one: lib/performance's fallback
+               target stays internal, because printing it would put a promise
+               in their mouth. And only once there is time to measure against
+               it — "– of 5h" would be the goal scolding an empty week. */
+            unit={goalMins > 0 && charts.secsWeek > 0 ? `of ${fmtTime(goalMins * 60)}` : undefined}
             tone={TONE.time}
             icon={<SolarIcon name="clock-circle-bold-duotone" size={20} className="shrink-0" />}
             series={charts.time}
@@ -370,6 +457,38 @@ export function HomeView({
             }
           />
         </div>
+
+        {/* THE SHAKY QUEUE, OFFERED BACK (owner, 2026-08-08: "that's great,
+            add this"). Sections answered "almost" or "not yet", as a
+            disclosure under the tiles they qualify — closed it is one honest
+            line, open it is the revision list, each row the step to reopen.
+            Absent entirely at zero: an empty revision queue is not a state,
+            it is the goal. */}
+        {shaky.total > 0 && (
+          <details className="group mt-3">
+            <summary className="cursor-pointer list-none text-[13.5px] leading-6 text-muted [&::-webkit-details-marker]:hidden">
+              <span className="font-medium text-ink">
+                {shaky.total} section{shaky.total === 1 ? "" : "s"}
+              </span>{" "}
+              marked shaky —{" "}
+              <span className="underline underline-offset-2 group-open:no-underline">review them</span>
+            </summary>
+            <ul className="mt-1.5">
+              {shaky.rows.map((r) => (
+                <li key={r.id}>
+                  <Link
+                    href={pathForId(r.id)}
+                    onClick={(e) => gateStepLink(e, pathForId(r.id))}
+                    className="flex items-center justify-between gap-3 py-1 text-[13px] leading-5 text-muted transition-colors hover:text-ink"
+                  >
+                    <span className="min-w-0 truncate">{labelFor(r.id)}</span>
+                    <span className="shrink-0 tabular-nums text-placeholder">{r.n}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </details>
+        )}
       </section>
 
       {/* The courses question used to be asked here, by a modal over this
@@ -399,6 +518,25 @@ export function HomeView({
           gap BETWEEN the tiles, which is what makes it a section break rather
           than another row. */}
       <section id="courses" className="mt-14 scroll-mt-20 pb-10">
+        {/* JUMP BACK IN (owner, 2026-08-08: "sounds good add it") — one tap to
+            the exact step last open, above the tabs, because the dashboard's
+            first job is resuming and the old shortest path was greeting →
+            scroll → find the card → Resume. Reads the store's `last` record,
+            which follows the reading clock — so it points at where the reader
+            actually was, ticked or not. Absent until a step has been read
+            (nothing to jump back INTO), and absent for records from before
+            `last` shipped, which self-heal on the next study. */}
+        {lastLabel && last && (
+          <ActionBar
+            href={pathForId(last.id)}
+            onClick={(e) => gateStepLink(e, pathForId(last.id))}
+            prefix="Jump back in · "
+            label={`Jump back in — ${lastLabel}`}
+            className="mb-4"
+          >
+            {lastLabel}
+          </ActionBar>
+        )}
         <CoursesSection
           mine={mine}
           hydrated={hydrated}
@@ -435,6 +573,7 @@ function Stat({
   label,
   value,
   unit,
+  body,
   tone,
   icon,
   series,
@@ -444,8 +583,11 @@ function Stat({
    *  the tile shows a quiet dash rather than a zero pretending to be one. */
   hydrated: boolean;
   label: string;
-  value: string;
+  value?: string;
   unit?: string;
+  /** Takes the figure's place when the tile draws something that isn't a
+   *  number — the streak tile's week of squares. Wins over `value`. */
+  body?: React.ReactNode;
   /** The stat's hue — carries the mark and the sparkline. */
   tone: string;
   icon: React.ReactNode;
@@ -468,17 +610,23 @@ function Stat({
           <span className="shrink-0" style={{ color: tone }}>{icon}</span>
         </div>
         {/* mt-7/mt-2: the number sits low, nearer its footer than the title —
-            the air lives between title and figure, not inside the figures. */}
-        <p className="mt-7 flex items-baseline gap-1.5">
-          {hydrated ? (
-            <>
-              <span className="dash-stat-value">{value}</span>
-              {unit && <span className="dash-stat-unit">{unit}</span>}
-            </>
-          ) : (
-            <span className="dash-stat-value" style={{ color: "var(--color-placeholder)" }}>–</span>
-          )}
-        </p>
+            the air lives between title and figure, not inside the figures.
+            A `body` sits higher (mt-4): three rows of squares are taller than
+            one line of digits, and the tiles share a grid row's height. */}
+        {hydrated && body ? (
+          <div className="mt-4">{body}</div>
+        ) : (
+          <p className="mt-7 flex items-baseline gap-1.5">
+            {hydrated ? (
+              <>
+                <span className="dash-stat-value">{value}</span>
+                {unit && <span className="dash-stat-unit">{unit}</span>}
+              </>
+            ) : (
+              <span className="dash-stat-value" style={{ color: "var(--color-placeholder)" }}>–</span>
+            )}
+          </p>
+        )}
         {/* The footer keeps its line even while loading, so the tile doesn't
             change height when the numbers arrive. */}
         <p className="dash-stat-foot">
@@ -499,6 +647,86 @@ function Stat({
           )}
         </p>
       </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * The streak tile's week: seven squares in a three-column grid — three,
+ * three, and the seventh on its own row (owner, 2026-08-08, spelling out the
+ * layout). Monday first, matching how `identity.target.weekdays` is stored
+ * (0 = Monday, the onboarding day-picker's convention).
+ *
+ * Three states, all measured, none invented:
+ *   studied   — filled in the tile's hue with a tick ("a tick for the day
+ *               actually studied"). isStudyDay's own bar, so a square never
+ *               claims a day the streak wouldn't count.
+ *   planned   — tinted: a day they promised (target.weekdays) that hasn't
+ *               happened — still ahead, or missed. The tint against the fill
+ *               is the plan against the week, which is the whole point of
+ *               drawing days instead of a number.
+ *   neither   — a quiet grey letter.
+ *
+ * No goal set, no weekdays — every unstudied square is the quiet kind, and
+ * the grid still reads: which days this week were study days.
+ * ------------------------------------------------------------------ */
+
+const DAY_LETTERS = ["M", "T", "W", "T", "F", "S", "S"] as const;
+
+/** This calendar week's dates, Monday first, in the store's own local
+ *  yyyy-mm-dd form — progress keys days locally on purpose (a streak is
+ *  about the reader's own days), so UTC here would misfile midnight. */
+function weekDatesLocal(): string[] {
+  const p = (n: number) => String(n).padStart(2, "0");
+  const monday = new Date();
+  monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+  });
+}
+
+function WeekSquares({
+  days,
+  planned,
+  tone,
+}: {
+  days: Record<string, StudyDay>;
+  /** The weekdays they promised at onboarding (0 = Monday), if they did. */
+  planned?: number[];
+  tone: string;
+}) {
+  const dates = weekDatesLocal();
+  const studiedCount = dates.filter((d) => isStudyDay(days[d])).length;
+  return (
+    <div
+      className="grid w-fit grid-cols-3 gap-1"
+      role="img"
+      aria-label={`${studiedCount} of 7 days studied this week`}
+    >
+      {dates.map((date, i) => {
+        const studied = isStudyDay(days[date]);
+        const isPlanned = planned?.includes(i) ?? false;
+        return (
+          <span
+            key={date}
+            className="flex h-4 w-4 items-center justify-center rounded-[5px] text-[8.5px] font-semibold"
+            style={
+              studied
+                ? { backgroundColor: tone, color: "#fff" }
+                : isPlanned
+                  ? {
+                      backgroundColor: `color-mix(in oklab, ${tone} 14%, transparent)`,
+                      color: `color-mix(in oklab, ${tone} 70%, #000)`,
+                    }
+                  : { backgroundColor: "rgba(0, 0, 0, 0.05)", color: "var(--color-placeholder)" }
+            }
+          >
+            {studied ? <MynaIcon name="check" size={10} strokeWidth={2.4} /> : DAY_LETTERS[i]}
+          </span>
+        );
+      })}
     </div>
   );
 }

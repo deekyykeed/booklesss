@@ -81,6 +81,13 @@ type State = {
    *  rather than a running tally, so changing your mind overwrites one answer
    *  instead of being counted twice. */
   grasp: Record<string, Record<string, Grasp>>;
+  /** The step most recently read or worked — what the dashboard's jump-back
+   *  bar points at. `touched` cannot answer this: it holds dates, and a day of
+   *  studying touches several steps that all tie. `at` is a timestamp, so the
+   *  last one is the last one. Optional because records written before it
+   *  shipped (2026-08-08) simply don't have it; it accrues from the next
+   *  study. */
+  last?: { id: string; at: number } | null;
 };
 
 /* A day counts toward the streak once it carries a cleared checkpoint or two
@@ -158,6 +165,15 @@ function cleanDates(raw: unknown): Record<string, string> {
   return out;
 }
 
+/** The last-open step, or null for anything that isn't one. */
+function cleanLast(raw: unknown): { id: string; at: number } | null {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  const o = raw as Record<string, unknown>;
+  return typeof o.id === "string" && typeof o.at === "number" && Number.isFinite(o.at)
+    ? { id: o.id, at: o.at }
+    : null;
+}
+
 /** lessonId -> checkpointId -> grasp. Anything that isn't one of the three
  *  answers is dropped rather than guessed at. */
 function cleanGrasp(raw: unknown): Record<string, Record<string, Grasp>> {
@@ -203,6 +219,7 @@ function read(scope: string | null): State {
           days: cleanDays((parsed as { days?: unknown }).days),
           touched: cleanDates((parsed as { touched?: unknown }).touched),
           grasp: cleanGrasp((parsed as { grasp?: unknown }).grasp),
+          last: cleanLast((parsed as { last?: unknown }).last),
         };
       }
     }
@@ -357,7 +374,11 @@ function mutate(lessonId: string, next: (prev: string[]) => string[], markToday:
    * accruing against a step you are actually keeping up with. */
   const touched = markToday ? { ...snapshot.state.touched, [lessonId]: today() } : snapshot.state.touched;
 
-  const state = { ...snapshot.state, done, days, touched };
+  /* Same gate as touched: working a step makes it the last one open, and
+   * un-ticking or resetting says nothing about where the reader is. */
+  const last = markToday ? { id: lessonId, at: Date.now() } : snapshot.state.last;
+
+  const state = { ...snapshot.state, done, days, touched, last };
   snapshot = { ...snapshot, state };
   persist(snapshot.scope, state);
   emit();
@@ -425,6 +446,9 @@ export function addStudySeconds(secs: number, course?: string, lessonId?: string
     // Reading a step counts as touching it, so revisiting clears its debt
     // without needing to re-tick anything.
     touched: lessonId ? { ...snapshot.state.touched, [lessonId]: t } : snapshot.state.touched,
+    // And counts as being there — the jump-back bar follows the clock, so it
+    // points at where the reading actually is, ticked or not.
+    last: lessonId ? { id: lessonId, at: Date.now() } : snapshot.state.last,
   };
   snapshot = { ...snapshot, state };
   persist(snapshot.scope, state);
@@ -645,6 +669,8 @@ export type ProgressApi = {
   graspOf: (lessonId: string, checkpointId: string) => Grasp | null;
   /** lessonId -> the date it was last read or worked. */
   touched: Record<string, string>;
+  /** The step most recently open, or null before any reading is recorded. */
+  last: { id: string; at: number } | null;
   /** Cleared checkpoints per lesson, for staleness. */
   done: Record<string, string[]>;
 };
@@ -702,6 +728,7 @@ export function useProgress(): ProgressApi {
     graspOf: (lessonId, checkpointId) =>
       (snap.hydrated ? snap.state.grasp[lessonId]?.[checkpointId] : undefined) ?? null,
     touched: snap.hydrated ? snap.state.touched : EMPTY_STATE.touched,
+    last: snap.hydrated ? (snap.state.last ?? null) : null,
     done: snap.hydrated ? done : EMPTY_STATE.done,
   };
 }

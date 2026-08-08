@@ -44,6 +44,10 @@ const ICONS = [
      2026-08-08: Completed joins the other tabs "and on that end is where ill
      have sort icons"). */
   "sort",
+  /* The completed course card's headline mark — sits where the performance
+     figure sits on a course still in motion, green because green means
+     completion across this app (2026-08-08). */
+  "check-circle-solid",
   /* The Appearance segmented on /settings — system, light, dark. */
   "monitor",
   "sun",

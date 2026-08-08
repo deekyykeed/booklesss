@@ -44,12 +44,11 @@ import { courseTone } from "./tones";
  * right as a look-back rather than a choice; the far end is now spoken for by
  * sorting, so the row is one group of three plus a trailing sort control.
  *
- * ⚠️ THE ROW IS RENDERED TWICE, DELIBERATELY AND TEMPORARILY. The owner is
- * choosing between two ways of marking the selected tab — a white chip that
- * slides behind the word (the step selector's look) and a slimmed underline
- * that slides beneath it — and wants both live on the deploy to compare. One
- * survives; when the call comes, delete the losing variant and render TabRow
- * once. Both rows drive the same state, so tapping either moves both.
+ * THE UNDERLINE WON (owner, 2026-08-08, off the deploy). Two markers ran live
+ * the same day — a white chip borrowed whole from the step selector, and this
+ * underline — and the owner picked the underline within the hour. The chip
+ * variant lives in git ("The course tabs try on both answers at once") if the
+ * question ever reopens; do not park a second copy here.
  *
  * ONE ORDER, applying to both Active and Completed — see lib/course-order for
  * why it isn't threaded through the account. Only Active exposes the drag
@@ -295,26 +294,16 @@ export function CoursesSection({
           door onto one screen rather than the only door.
 
           All three tabs grouped left now, sort at the far end — see the file
-          note on the 2026-08-08 regrouping, and on why the row appears TWICE
-          (a live A/B; one gets deleted once the owner has seen both deployed).
+          note on the 2026-08-08 regrouping and the marker the owner picked.
 
           NO RULE UNDER THE ROW (same call: "dont need the divider below the
           tabs"). It was drawing a line between the tabs and the cards they
           filter, which is the one place a border says these are two separate
           things. */}
       <TabRow
-        variant="chip"
         tab={tab}
         goTab={goTab}
         counts={{ active: orderedActive.length, pipeline: pipelineTotal, completed: orderedCompleted.length }}
-      />
-      <TabRow
-        variant="underline"
-        tab={tab}
-        goTab={goTab}
-        counts={{ active: orderedActive.length, pipeline: pipelineTotal, completed: orderedCompleted.length }}
-        className="mt-4"
-        plain
       />
 
       {/* `key={tab}` is what REPLAYS the slide. A CSS animation runs when the
@@ -338,8 +327,7 @@ export function CoursesSection({
            actual list of courses"). The gap was never one value — `pb-2.5`
            under the tab labels plus `mt-3` here stacked to 22px, which at the
            tabs' old 14px was fine and at 17px bold read as a hole. 8px here,
-           well under the 22 that was too much. (While the A/B runs this sits
-           under the second row; the survivor keeps the same gap.) */
+           well under the 22 that was too much. */
         className="tab-panel mt-2 touch-pan-y"
         {...swipe}
       >
@@ -417,7 +405,9 @@ export function CoursesSection({
               ))}
             </div>
           ) : (
-            <EmptyRow>Nothing queued — every course on your timetable is either built or not yet told to us.</EmptyRow>
+            /* One clause (owner, 2026-08-08) — it was the longest sentence on
+               the page, spent on the emptiest state. */
+            <EmptyRow>Nothing waiting to be built.</EmptyRow>
           ))}
 
         {tab === "completed" &&
@@ -433,6 +423,7 @@ export function CoursesSection({
                   done={w.cDone}
                   steps={w.cSteps}
                   next={w.next}
+                  completed
                 />
               ))}
             </div>
@@ -460,20 +451,12 @@ const IND_MOVE = "left 240ms cubic-bezier(0.3, 1.4, 0.55, 1), width 240ms cubic-
 
 /**
  * One row of the three course tabs plus the trailing sort control, with a
- * single indicator that SLIDES to the selected tab rather than each tab
- * drawing its own mark. Two variants, both live while the owner chooses
- * (2026-08-08 — see the file note):
- *
- *   chip      — the step selector's white box, borrowed faithfully from
- *               `.step-selector` in globals.css: same fill, hairline, blur and
- *               shadow, so the comparison is against the real thing and not an
- *               approximation of it.
- *   underline — the 2px rule the row already had, but dimmer than the
- *               placeholder grey it was (the line says WHICH, it is not to be
- *               read) and pulled up until it hugs the baseline — close enough
- *               that descenders hang THROUGH it. That is why the buttons carry
- *               `z-10` and the indicator `z-0`: the letters must paint in
- *               front of the line, not under it.
+ * single underline that SLIDES to the selected tab rather than each tab
+ * drawing its own mark: the 2px rule the row already had, but dimmer than the
+ * placeholder grey it was (the line says WHICH, it is not to be read) and
+ * pulled up until it hugs the baseline — close enough that descenders hang
+ * THROUGH it. That is why the buttons carry `z-10` and the indicator `z-0`:
+ * the letters must paint in front of the line, not under it.
  *
  * MEASURED, NOT DERIVED. The indicator's left/width come from the active
  * button's real layout box, re-read whenever the tab, a count, or the row's
@@ -481,25 +464,15 @@ const IND_MOVE = "left 240ms cubic-bezier(0.3, 1.4, 0.55, 1), width 240ms cubic-
  * catches a count mounting or the display font swapping in late). The first
  * measurement mounts the indicator already in place — it appears, it doesn't
  * travel in from nowhere.
- *
- * `plain` keeps the tablist role on one row only — two tablists steering one
- * panel would be an a11y lie, and the second row exists for the eye, not the
- * tree.
  */
 function TabRow({
-  variant,
   tab,
   goTab,
   counts,
-  className,
-  plain,
 }: {
-  variant: "chip" | "underline";
   tab: Tab;
   goTab: (t: Tab) => void;
   counts: Record<Tab, number>;
-  className?: string;
-  plain?: boolean;
 }) {
   const groupRef = useRef<HTMLDivElement | null>(null);
   const btns = useRef(new Map<Tab, HTMLButtonElement>());
@@ -533,36 +506,9 @@ function TabRow({
   const move = ind && !reduced.current ? IND_MOVE : undefined;
 
   return (
-    <div className={`flex items-center justify-between gap-3 ${className ?? ""}`}>
-      <div
-        ref={groupRef}
-        role={plain ? undefined : "tablist"}
-        className={`relative flex items-center ${variant === "chip" ? "gap-1" : "gap-5"}`}
-      >
-        {ind && variant === "chip" && (
-          /* `.step-selector`, verbatim — fill, hairline, radius, blur, shadow.
-             If that block changes this must follow it, which is the cost of
-             inlining; the styles are dynamic (left/width) so a class alone
-             cannot carry them. */
-          <span
-            aria-hidden
-            className="pointer-events-none absolute z-0"
-            style={{
-              left: ind.left,
-              width: ind.width,
-              top: 0,
-              bottom: 0,
-              borderRadius: 16,
-              backgroundColor: "rgba(255, 255, 255, 0.85)",
-              border: "1px solid var(--color-line)",
-              boxShadow: "0 1px 1px -0.5px rgba(0, 0, 0, 0.06)",
-              WebkitBackdropFilter: "blur(16px)",
-              backdropFilter: "blur(16px)",
-              transition: move,
-            }}
-          />
-        )}
-        {ind && variant === "underline" && (
+    <div className="flex items-center justify-between gap-3">
+      <div ref={groupRef} role="tablist" className="relative flex items-center gap-5">
+        {ind && (
           /* bottom 2px against a 24px line box puts the rule's top edge ~2px
              below the baseline: Pipeline's and Completed's descenders reach
              ~1.5px off the bottom, so they cross it — which is the ask,
@@ -585,11 +531,9 @@ function TabRow({
         {TABS.map((t) => (
           <CourseTab
             key={t}
-            variant={variant}
             label={TAB_LABEL[t]}
             count={counts[t]}
             active={tab === t}
-            plain={plain}
             onClick={() => goTab(t)}
             btnRef={(el) => {
               if (el) btns.current.set(t, el);
@@ -615,19 +559,15 @@ function TabRow({
 }
 
 function CourseTab({
-  variant,
   label,
   count,
   active,
-  plain,
   onClick,
   btnRef,
 }: {
-  variant: "chip" | "underline";
   label: string;
   count: number;
   active: boolean;
-  plain?: boolean;
   onClick: () => void;
   btnRef: (el: HTMLButtonElement | null) => void;
 }) {
@@ -635,8 +575,8 @@ function CourseTab({
     <button
       ref={btnRef}
       type="button"
-      role={plain ? undefined : "tab"}
-      aria-selected={plain ? undefined : active}
+      role="tab"
+      aria-selected={active}
       onClick={onClick}
       /* BOLD AND BIGGER, BOTH STATES (owner, 2026-08-07: "make the waits of
          the tab text thicker" → semibold at 14px, then "increase the weight
@@ -649,17 +589,13 @@ function CourseTab({
          sliding indicator that mark the selection, so bolding only the active
          tab would re-flow the row (and the indicator's target) every switch.
 
-         `relative z-10` puts the label in front of the indicator, which only
-         MATTERS for the underline (descenders hang through the rule) but is
-         harmless over the chip — the word was always going to sit on it.
+         `relative z-10` puts the label in front of the indicator — the rule
+         hugs the baseline, so descenders have to hang through it, not under.
 
          The per-button border-b is gone: the selection mark is the row's one
          sliding indicator now, so a static rule under the active tab would be
          the same thing said twice, once without the motion. */
-      className={
-        "relative z-10 shrink-0 whitespace-nowrap bg-transparent font-display text-[17px] font-bold leading-6 tracking-[-0.01em] transition-colors " +
-        (variant === "chip" ? "px-3 py-1.5" : "")
-      }
+      className="relative z-10 shrink-0 whitespace-nowrap bg-transparent font-display text-[17px] font-bold leading-6 tracking-[-0.01em] transition-colors"
       style={{ color: active ? "var(--color-ink)" : "var(--color-placeholder)" }}
     >
       {label}
