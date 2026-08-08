@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 
 /* The probe. Deliberately calls `navigator.vibrate` DIRECTLY rather than going
  * through lib/haptics, so that a silent result here rules the app's own code out
@@ -22,23 +22,38 @@ type Facts = {
   standalone: boolean;
 };
 
-export function HapticsProbe() {
-  const [f, setF] = useState<Facts | null>(null);
-  const [last, setLast] = useState<string>("");
+/* Read ONCE and cached, because `useSyncExternalStore` compares snapshots by
+ * identity: rebuilding this object on every call would hand React a new
+ * reference each render and spin forever. Nothing here changes while the page is
+ * open — they are facts about the device, not state. */
+let cached: Facts | null = null;
 
-  useEffect(() => {
-    setF({
-      hasApi: typeof navigator !== "undefined" && typeof navigator.vibrate === "function",
-      motionAttr: document.documentElement.dataset.motion ?? null,
-      prefersReduced: matchMedia("(prefers-reduced-motion: reduce)").matches,
-      swControlled: !!navigator.serviceWorker?.controller,
-      standalone: matchMedia("(display-mode: standalone)").matches,
-    });
-    /* Nothing here reports the build id, and it does not need to: this page did
-       not exist before haptics did, so simply REACHING it proves the bundle is
-       new enough. A stale service worker would have served a 404 or the offline
-       page instead. */
-  }, []);
+function clientFacts(): Facts {
+  cached ??= {
+    hasApi: typeof navigator.vibrate === "function",
+    motionAttr: document.documentElement.dataset.motion ?? null,
+    prefersReduced: matchMedia("(prefers-reduced-motion: reduce)").matches,
+    swControlled: !!navigator.serviceWorker?.controller,
+    standalone: matchMedia("(display-mode: standalone)").matches,
+  };
+  return cached;
+}
+
+/* Nothing here reports the build id, and it does not need to: this page did not
+ * exist before haptics did, so simply REACHING it proves the bundle is new
+ * enough. A stale service worker would have served a 404 or the offline page. */
+const noop = () => () => {};
+
+export function HapticsProbe() {
+  /* `useSyncExternalStore` rather than an effect that calls setState. Every fact
+     here is client-only — `document`, `matchMedia`, `navigator` — so a lazy
+     useState initialiser would run on the server and mismatch on hydration, and
+     reading them in an effect is a cascading render the lint rule is right to
+     refuse. This gives the server `null` and the client the real reading on its
+     first render with no frame in between, which is the same pattern
+     lib/progress and SectionNote already use. */
+  const f = useSyncExternalStore(noop, clientFacts, () => null);
+  const [last, setLast] = useState<string>("");
 
   const fire = (ms: number) => {
     /* Straight at the API, no reduced-motion gate: this page is a measurement,

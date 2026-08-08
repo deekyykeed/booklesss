@@ -1531,6 +1531,34 @@
      these buttons carries its own aria-label and a title, so a screen reader
      still hears "Later" and a mouse still gets the tooltip; only the sighted
      tap-only reader loses the word, which is what was asked for. */
+  /* A MARK WITH A NUMBER BESIDE IT stops being a circle and becomes a short
+     pill. The 28px square is a tap target sized for a mark alone; add a figure
+     and the box has to grow sideways or the number lands on top of the face.
+     Only the width changes — the 28px height, and therefore the tap target, is
+     untouched.
+     Padding is asymmetric on purpose: 4px on the mark's side, 7px after the
+     figure. A drawn face is visually centred in its own bounding box and a digit
+     is not, so equal padding reads as the number crowding the right edge. */
+  .grasp-btn[data-with-count] {
+    width: auto;
+    gap: 4px;
+    padding: 0 7px 0 4px;
+  }
+  /* Smaller than the reading and lighter than the ink: this is a count, not a
+     word the reader has to read. `tabular-nums` in the markup so 9 → 10 does not
+     shift the mark beside it. */
+  .grasp-count {
+    font-size: 12px;
+    line-height: 1;
+    font-weight: 500;
+    color: #6b6b74;
+  }
+  /* The reader's OWN answer carries its colour, so its figure comes up to full
+     ink to sit with it. The other two stay quiet, which is the same
+     one-of-three-is-yours rule the faces follow. */
+  .grasp-btn[data-active] .grasp-count {
+    color: var(--color-ink, #121212);
+  }
   .grasp-label {
     position: absolute;
     width: 1px;

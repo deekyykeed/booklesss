@@ -6,6 +6,7 @@ import { labelFor, nextLessonId, pathForId } from "@/lib/course";
 import { rate, useProgress, type Grasp } from "@/lib/progress";
 import { UltimateIcon, type UltimateIconName } from "@/components/icons/ultimate";
 import { hapticConfirm } from "@/lib/haptics";
+import { COUNT_FLOOR, recordReaction, useSectionCounts } from "@/lib/reactions";
 import { gateStepLink, needsAccount } from "@/lib/account";
 import { requireAccount } from "@/lib/onboarding";
 import { SectionNote } from "./SectionNote";
@@ -105,6 +106,24 @@ export function Checkpoint({
   // unanswered and settles once localStorage has been read.
   const chosen = hydrated ? graspOf(lessonId, checkpointId) : null;
 
+  /* THE TALLY, AND THE TWO GATES ON IT.
+   *
+   * 1. NOT UNTIL THE READER HAS ANSWERED. Showing "4 said this section lost
+   *    them" before someone answers anchors the answer, and this row exists to
+   *    find out what THEY thought. Every system that does this well reveals the
+   *    count after the vote, and the reason is that a biased answer is worse
+   *    than no answer: it corrupts the one measurement the row is for.
+   * 2. NOT UNTIL FIVE PEOPLE HAVE. `students` had 2 rows the day this shipped,
+   *    so without a floor every face would read "0" on roughly 160 checkpoints.
+   *    See COUNT_FLOOR — this is the same call as MemberCount's floor.
+   *
+   * Both gates fail closed, and so does the fetch: counts are null until they
+   * arrive and the row simply has no numbers in it. Nothing about reading or
+   * answering waits on the network. */
+  const counts = useSectionCounts(lessonId, checkpointId);
+  const answered = counts ? counts.got + counts.almost + counts.not : 0;
+  const showCounts = !!chosen && answered >= COUNT_FLOOR;
+
   /* The comment control is NOT here. It sat beside the note button for one
      revision and the owner moved it out (2026-08-02): commenting lives in the
      right panel with the table of contents, and a third mark in this row was
@@ -177,6 +196,12 @@ export function Checkpoint({
                   hapticConfirm();
                   if (active) toggle(lessonId, checkpointId);
                   else rate(lessonId, checkpointId, a.id);
+                  /* The server copy, written AFTER the device's. That order is
+                     the contract: localStorage is what the reader sees and this
+                     is what can be counted, so a failed write costs the tally
+                     and never the answer. `null` on un-answer, or taking a
+                     reaction back would leave a vote counted forever. */
+                  recordReaction(lessonId, checkpointId, active ? null : a.id);
                 }}
                 role="radio"
                 aria-checked={active}
@@ -185,6 +210,7 @@ export function Checkpoint({
                    is the only way a mouse reader recovers the word. */
                 title={a.label}
                 data-active={active ? "" : undefined}
+                data-with-count={showCounts ? "" : undefined}
                 className="grasp-btn"
               >
                 {/* 20px. It went to 12 and back on 2026-08-08 (owner), and the
@@ -200,6 +226,11 @@ export function Checkpoint({
                     SectionNote's flag is the fourth mark in this row and is set
                     to 20 as well. Move the two together. */}
                 <UltimateIcon name={a.icon} size={20} muted={!active} />
+                {/* How many readers said this (owner, 2026-08-08). Drawn only
+                    when `showCounts` — see the two gates where it is computed. */}
+                {showCounts && (
+                  <span className="grasp-count tabular-nums">{counts?.[a.id] ?? 0}</span>
+                )}
                 <span className="grasp-label">{a.label}</span>
               </button>
             );
