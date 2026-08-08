@@ -40,6 +40,10 @@ const ICONS = [
   "message-dots",
   "external-link",
   "chevron-down",
+  /* The dashboard's course tab row — the sort control at its far end (owner,
+     2026-08-08: Completed joins the other tabs "and on that end is where ill
+     have sort icons"). */
+  "sort",
   /* The Appearance segmented on /settings — system, light, dark. */
   "monitor",
   "sun",

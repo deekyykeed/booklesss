@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   DndContext,
   KeyboardSensor,
@@ -25,6 +25,7 @@ import { applyOrder, saveCourseOrder, useCourseOrder } from "@/lib/course-order"
 import { pendingCourses, programmeBySlug } from "@/lib/programmes";
 import type { CourseMeta } from "@/lib/courses";
 import type { StudyDay } from "@/lib/progress";
+import { MynaIcon } from "@/components/icons/myna";
 import { CourseCard } from "./CourseCard";
 import { PipelineCard } from "./PipelineCard";
 import { courseTone } from "./tones";
@@ -37,12 +38,18 @@ import { courseTone } from "./tones";
  * between for the first two" — then, reordering: "id like the ability to
  * organise my courses manually so i cn drag them above and below each other."
  *
- * ACTIVE + PIPELINE SIT TOGETHER; COMPLETED STANDS APART. Both readings of
- * "spaced between for the first two" say the same thing once you notice
- * Active and Pipeline are the two a student is actually deciding between —
- * what to read next, and what's still coming — where Completed is a look
- * back rather than a choice. One `justify-between` row does it: the first two
- * tabs share a tight group on the left, Completed sits alone on the right.
+ * ALL THREE TABS SIT TOGETHER NOW (owner, 2026-08-08: "even the completed
+ * courses will move to fit with the rest of the tabs and on that end is where
+ * ill have sort icons"). The original call had Completed standing apart on the
+ * right as a look-back rather than a choice; the far end is now spoken for by
+ * sorting, so the row is one group of three plus a trailing sort control.
+ *
+ * ⚠️ THE ROW IS RENDERED TWICE, DELIBERATELY AND TEMPORARILY. The owner is
+ * choosing between two ways of marking the selected tab — a white chip that
+ * slides behind the word (the step selector's look) and a slimmed underline
+ * that slides beneath it — and wants both live on the deploy to compare. One
+ * survives; when the call comes, delete the losing variant and render TabRow
+ * once. Both rows drive the same state, so tapping either moves both.
  *
  * ONE ORDER, applying to both Active and Completed — see lib/course-order for
  * why it isn't threaded through the account. Only Active exposes the drag
@@ -287,20 +294,28 @@ export function CoursesSection({
           sheet is where every other answer is edited, so this was a second
           door onto one screen rather than the only door.
 
-          Active + Pipeline grouped left, Completed alone on the right — see
-          the file note on why the split falls there rather than evenly.
+          All three tabs grouped left now, sort at the far end — see the file
+          note on the 2026-08-08 regrouping, and on why the row appears TWICE
+          (a live A/B; one gets deleted once the owner has seen both deployed).
 
           NO RULE UNDER THE ROW (same call: "dont need the divider below the
           tabs"). It was drawing a line between the tabs and the cards they
           filter, which is the one place a border says these are two separate
           things. */}
-      <div role="tablist" className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-5">
-          <CourseTab label="Active" count={orderedActive.length} active={tab === "active"} onClick={() => goTab("active")} />
-          <CourseTab label="Pipeline" count={pipelineTotal} active={tab === "pipeline"} onClick={() => goTab("pipeline")} />
-        </div>
-        <CourseTab label="Completed" count={orderedCompleted.length} active={tab === "completed"} onClick={() => goTab("completed")} />
-      </div>
+      <TabRow
+        variant="chip"
+        tab={tab}
+        goTab={goTab}
+        counts={{ active: orderedActive.length, pipeline: pipelineTotal, completed: orderedCompleted.length }}
+      />
+      <TabRow
+        variant="underline"
+        tab={tab}
+        goTab={goTab}
+        counts={{ active: orderedActive.length, pipeline: pipelineTotal, completed: orderedCompleted.length }}
+        className="mt-4"
+        plain
+      />
 
       {/* `key={tab}` is what REPLAYS the slide. A CSS animation runs when the
           element mounts, so without a key React reuses this div, swaps the
@@ -322,11 +337,9 @@ export function CoursesSection({
         /* Close to the tabs (owner, 2026-08-07: "the tabs are too far from the
            actual list of courses"). The gap was never one value — `pb-2.5`
            under the tab labels plus `mt-3` here stacked to 22px, which at the
-           tabs' old 14px was fine and at 17px bold read as a hole. It went to
-           zero, and the underline added since needs a little of it back or the
-           rule sits directly on the first card's edge. 6px of label padding +
-           the 2px rule + 8px here is 16px, still well under the 22 that was
-           too much. */
+           tabs' old 14px was fine and at 17px bold read as a hole. 8px here,
+           well under the 22 that was too much. (While the A/B runs this sits
+           under the second row; the survivor keeps the same gap.) */
         className="tab-panel mt-2 touch-pan-y"
         {...swipe}
       >
@@ -434,22 +447,196 @@ export function CoursesSection({
   );
 }
 
+const TAB_LABEL: Record<Tab, string> = {
+  active: "Active",
+  pipeline: "Pipeline",
+  completed: "Completed",
+};
+
+/* Quick with a little bounce (owner, 2026-08-08). The overshoot past 1 is the
+ * bounce; 240ms is the quick. One string so the chip and the underline can
+ * never drift apart in feel. */
+const IND_MOVE = "left 240ms cubic-bezier(0.3, 1.4, 0.55, 1), width 240ms cubic-bezier(0.3, 1.4, 0.55, 1)";
+
+/**
+ * One row of the three course tabs plus the trailing sort control, with a
+ * single indicator that SLIDES to the selected tab rather than each tab
+ * drawing its own mark. Two variants, both live while the owner chooses
+ * (2026-08-08 — see the file note):
+ *
+ *   chip      — the step selector's white box, borrowed faithfully from
+ *               `.step-selector` in globals.css: same fill, hairline, blur and
+ *               shadow, so the comparison is against the real thing and not an
+ *               approximation of it.
+ *   underline — the 2px rule the row already had, but dimmer than the
+ *               placeholder grey it was (the line says WHICH, it is not to be
+ *               read) and pulled up until it hugs the baseline — close enough
+ *               that descenders hang THROUGH it. That is why the buttons carry
+ *               `z-10` and the indicator `z-0`: the letters must paint in
+ *               front of the line, not under it.
+ *
+ * MEASURED, NOT DERIVED. The indicator's left/width come from the active
+ * button's real layout box, re-read whenever the tab, a count, or the row's
+ * size changes (the ResizeObserver watches the buttons too, which is what
+ * catches a count mounting or the display font swapping in late). The first
+ * measurement mounts the indicator already in place — it appears, it doesn't
+ * travel in from nowhere.
+ *
+ * `plain` keeps the tablist role on one row only — two tablists steering one
+ * panel would be an a11y lie, and the second row exists for the eye, not the
+ * tree.
+ */
+function TabRow({
+  variant,
+  tab,
+  goTab,
+  counts,
+  className,
+  plain,
+}: {
+  variant: "chip" | "underline";
+  tab: Tab;
+  goTab: (t: Tab) => void;
+  counts: Record<Tab, number>;
+  className?: string;
+  plain?: boolean;
+}) {
+  const groupRef = useRef<HTMLDivElement | null>(null);
+  const btns = useRef(new Map<Tab, HTMLButtonElement>());
+  const [ind, setInd] = useState<{ left: number; width: number } | null>(null);
+  /* Read once, at mount, like useCountUp does — the setting is an app-level
+     toggle and a page reload is an acceptable price for changing it. */
+  const reduced = useRef(false);
+
+  useLayoutEffect(() => {
+    reduced.current =
+      document.documentElement.dataset.motion === "reduced" ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }, []);
+
+  useLayoutEffect(() => {
+    const group = groupRef.current;
+    if (!group) return;
+    const measure = () => {
+      const btn = btns.current.get(tab);
+      /* offsetLeft is relative to the offsetParent — the group div below is
+         `relative` precisely so the buttons resolve against it. */
+      if (btn) setInd({ left: btn.offsetLeft, width: btn.offsetWidth });
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(group);
+    for (const b of btns.current.values()) ro.observe(b);
+    return () => ro.disconnect();
+  }, [tab, counts.active, counts.pipeline, counts.completed]);
+
+  const move = ind && !reduced.current ? IND_MOVE : undefined;
+
+  return (
+    <div className={`flex items-center justify-between gap-3 ${className ?? ""}`}>
+      <div
+        ref={groupRef}
+        role={plain ? undefined : "tablist"}
+        className={`relative flex items-center ${variant === "chip" ? "gap-1" : "gap-5"}`}
+      >
+        {ind && variant === "chip" && (
+          /* `.step-selector`, verbatim — fill, hairline, radius, blur, shadow.
+             If that block changes this must follow it, which is the cost of
+             inlining; the styles are dynamic (left/width) so a class alone
+             cannot carry them. */
+          <span
+            aria-hidden
+            className="pointer-events-none absolute z-0"
+            style={{
+              left: ind.left,
+              width: ind.width,
+              top: 0,
+              bottom: 0,
+              borderRadius: 16,
+              backgroundColor: "rgba(255, 255, 255, 0.85)",
+              border: "1px solid var(--color-line)",
+              boxShadow: "0 1px 1px -0.5px rgba(0, 0, 0, 0.06)",
+              WebkitBackdropFilter: "blur(16px)",
+              backdropFilter: "blur(16px)",
+              transition: move,
+            }}
+          />
+        )}
+        {ind && variant === "underline" && (
+          /* bottom 2px against a 24px line box puts the rule's top edge ~2px
+             below the baseline: Pipeline's and Completed's descenders reach
+             ~1.5px off the bottom, so they cross it — which is the ask,
+             verbatim ("such that protruding letters even come infront of it").
+             0.2 black where the old rule was the placeholder grey (~0.3):
+             dimmer, still present. */
+          <span
+            aria-hidden
+            className="pointer-events-none absolute z-0 rounded-full"
+            style={{
+              left: ind.left,
+              width: ind.width,
+              bottom: 2,
+              height: 2,
+              backgroundColor: "rgba(0, 0, 0, 0.2)",
+              transition: move,
+            }}
+          />
+        )}
+        {TABS.map((t) => (
+          <CourseTab
+            key={t}
+            variant={variant}
+            label={TAB_LABEL[t]}
+            count={counts[t]}
+            active={tab === t}
+            plain={plain}
+            onClick={() => goTab(t)}
+            btnRef={(el) => {
+              if (el) btns.current.set(t, el);
+              else btns.current.delete(t);
+            }}
+          />
+        ))}
+      </div>
+      {/* Where sorting will live (owner, 2026-08-08: "on that end is where ill
+          have sort icons"). Disabled until it does something — it is here so
+          the row's composition can be judged whole, not as a promise the
+          button keeps yet. */}
+      <button
+        type="button"
+        disabled
+        aria-label="Sort courses"
+        className="shrink-0 text-placeholder"
+      >
+        <MynaIcon name="sort" size={18} />
+      </button>
+    </div>
+  );
+}
+
 function CourseTab({
+  variant,
   label,
   count,
   active,
+  plain,
   onClick,
+  btnRef,
 }: {
+  variant: "chip" | "underline";
   label: string;
   count: number;
   active: boolean;
+  plain?: boolean;
   onClick: () => void;
+  btnRef: (el: HTMLButtonElement | null) => void;
 }) {
   return (
     <button
+      ref={btnRef}
       type="button"
-      role="tab"
-      aria-selected={active}
+      role={plain ? undefined : "tab"}
+      aria-selected={plain ? undefined : active}
       onClick={onClick}
       /* BOLD AND BIGGER, BOTH STATES (owner, 2026-08-07: "make the waits of
          the tab text thicker" → semibold at 14px, then "increase the weight
@@ -459,31 +646,21 @@ function CourseTab({
          weight it used to.
 
          Weight stays equal across states on purpose — it is colour and the
-         rule below that mark the selection, so bolding only the active tab
-         would re-flow the row every time somebody switched.
+         sliding indicator that mark the selection, so bolding only the active
+         tab would re-flow the row (and the indicator's target) every switch.
 
-         TWO SIGNALS NOW, NOT ONE (owner, 2026-08-07: "its not very clear
-         which one is active… you might want to underline it, with a two px
-         underline, which is greyed out"). Ink against muted was carrying the
-         whole job, and at bold 17px it stopped reading — heavy type narrows
-         the apparent distance between two greys, so three bold words looked
-         like three headings rather than one selected and two not.
+         `relative z-10` puts the label in front of the indicator, which only
+         MATTERS for the underline (descenders hang through the rule) but is
+         harmless over the chip — the word was always going to sit on it.
 
-         So the inactive ones drop from `--color-muted` to
-         `--color-placeholder`, the faintest text token the app has, and the
-         active one gains a rule under it.
-
-         EVERY TAB CARRIES THE BORDER, transparent when it is not the one —
-         colouring it only on the active tab would add 2px to that button and
-         shove the whole row down by two pixels on every switch. */
-      className="shrink-0 whitespace-nowrap border-0 border-b-2 bg-transparent pb-1.5 font-display text-[17px] font-bold leading-6 tracking-[-0.01em] transition-colors"
-      style={{
-        color: active ? "var(--color-ink)" : "var(--color-placeholder)",
-        /* Grey, as asked, and not ink: the rule is there to say WHICH, not to
-           be read. Ink under ink type would draw more attention than the word
-           it underlines. */
-        borderBottomColor: active ? "var(--color-placeholder)" : "transparent",
-      }}
+         The per-button border-b is gone: the selection mark is the row's one
+         sliding indicator now, so a static rule under the active tab would be
+         the same thing said twice, once without the motion. */
+      className={
+        "relative z-10 shrink-0 whitespace-nowrap bg-transparent font-display text-[17px] font-bold leading-6 tracking-[-0.01em] transition-colors " +
+        (variant === "chip" ? "px-3 py-1.5" : "")
+      }
+      style={{ color: active ? "var(--color-ink)" : "var(--color-placeholder)" }}
     >
       {label}
       {/* The count stays a step down in weight and size — it annotates the
