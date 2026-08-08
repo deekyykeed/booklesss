@@ -57,21 +57,15 @@ export type StudyDay = {
   courseChecks?: Record<string, number>;
 };
 
-/** How well a section landed, in the reader's own words — three steps: got
- *  it, sort of, not yet. Three because the middle has to mean something, and
- *  finer gradations were more scale than a self-rating can honestly carry. */
-export type Grasp = "got" | "almost" | "not";
-
-export const GRASPS: Grasp[] = ["got", "almost", "not"];
-
-/** What each answer is worth when a step's answers are averaged. */
-export const GRASP_WEIGHT: Record<Grasp, number> = {
-  got: 1,
-  almost: 0.5,
-  not: 0,
-};
-
-const isGrasp = (v: unknown): v is Grasp => (GRASPS as string[]).includes(v as string);
+/* The grasp vocabulary moved to lib/progress-shared on 2026-08-08 and is
+ * re-exported here, so every existing import of `Grasp`/`GRASPS`/`GRASP_WEIGHT`
+ * from this module still resolves. It had to move because /api/reaction needs
+ * the same three values and this file is `"use client"` — see the note there. */
+export { GRASPS, GRASP_WEIGHT, isGrasp, type Grasp } from "./progress-shared";
+/* Imported as well as re-exported: `export … from` forwards the names to
+ * importers without binding them in this module's own scope, and everything
+ * below uses all four. */
+import { GRASPS, GRASP_WEIGHT, isGrasp, type Grasp } from "./progress-shared";
 
 type State = {
   /** lessonId -> cleared checkpoint ids. */
