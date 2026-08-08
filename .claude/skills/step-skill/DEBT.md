@@ -76,6 +76,7 @@ unchecked ones get ticked off by someone assuming the list was audited.
 | D-14 | Definitions orphaned by the popup being switched off — E-8 | 2026-08-07 | open · 1 of 53 checked · **a reader gets nothing today** |
 | D-15 | Four courses, no course-intro step — S-11 | 2026-08-07 | open · **3 of 4 written same day** · economics is the 4th and has no `.mjs` |
 | D-16 | Prose nobody has asked the shorter-version question of — W-17 | 2026-08-07 | open · 0 of 53 |
+| D-17 | Titles in sentence case, hedging where they should name — S-12 | 2026-08-08 | open · **22 of 53** · **all of TM** (2026-08-08) |
 
 > **Counts moved from 44 to 53 on 2026-08-02.** The nine remaining Treasury
 > Management steps were split into eighteen (S-8), so the course is 21 steps and
@@ -965,3 +966,83 @@ the question asked of it in the same edit.
 
 - [ ] 0 of 53 · **paid on contact only** — see the note above before batching
       this one
+
+### D-17 · titles in sentence case, hedging where they should name · opened 2026-08-08
+**Source:** 2026-08-08 · owner, reading Treasury Management — "the titles im
+coming across are poor… they lack a certain assertiveness and feel like they
+aren't bold or confident. a title is supposed to be capitalised properly and
+seriously."
+**Rule:** S-12 (new)
+**Why it can't wait for a rewrite:** a title is the one string every reader of a
+step sees, and it is on screen in four places at once — the sidebar row, the
+`<h1>`, the browser tab and the WhatsApp card someone gets in a study group. It
+is also the only part of the product a student reads **before** deciding whether
+to read anything. Nothing here is wrong on a page, which is why five days of
+reading the course never surfaced it: each title is defensible alone, and it is
+the **column** that fails.
+
+**Measured 2026-08-08, first run of `title-scan.mjs`: 194 defects across 166
+names, in 56 of 56 authored steps and 37 course/group rows. Nothing in the
+product passed.**
+
+| Verdict | Count | What it is |
+|---|---|---|
+| CASE | 166 | sentence case where a name wants Title Case |
+| TAIL | 14 | the hedged `, and how/what/where…` clause |
+| OPENER | 10 | opens on *What* or *How* — a question in disguise |
+| DANGLE | 4 | ends on a bare particle: "Getting the cash in" |
+
+**The count is 56, not 53.** The three `start-here` steps written on 2026-08-07
+(D-15) are steps like any other, and every item above this one still says 53.
+Corrected here rather than rewritten upward through the file, because those
+counts are records of what was measured on their own dates.
+
+**TAIL is the finding, and it is a voice rather than a set of titles.**
+Thirteen of Treasury Management's twenty-two carried it: "Working capital, and
+how much of it to run", "What debt costs, and what it demands", "Clearing,
+settlement, and the risk in between". One title with a second clause is a
+subtitle. Twenty-two of them is a habit, and the habit is hedging — the first
+half names the topic and the second half apologises for not having said enough.
+By the fourth sidebar row a reader has stopped reading past the comma.
+
+**How to pay it:** cheap and mechanical per step, and it is the same two
+adjacent lines **S-10**'s fix touches, plus the `kicker` beneath them and the
+grouping rows in `reader/course.mjs`. **Run `label-scan` immediately after**:
+S-10 wants the label to be the title's own words in the title's order, so
+retitling a step is exactly the move that breaks it.
+
+```bash
+node .claude/skills/step-skill/tools/title-scan.mjs Schools
+node .claude/skills/step-skill/tools/label-scan.mjs Schools   # S-10, always after
+```
+
+**Watch the URL.** `slug` is not touched by any of this. A retitle must never
+renumber a slug (**S-8**), and none did.
+
+- [x] treasury-management — **97 defects of 22 steps + 16 rows → 0, fixed
+      2026-08-08.** All 22 titles rewritten, not just recapitalised: 13 hedged
+      tails, 3 question openers and 2 dangling particles are gone, and every
+      title is now the noun phrase a syllabus would use. Twenty of the 22 titles
+      came in at or under `label-scan`'s 32-character row budget, so **label and
+      title are now the same string on 20 of 22** — the two that trim are
+      `payment-systems-and-ccps` (43) and `choosing-and-running-a-tms` (39).
+      All five lesson rows, all eight grouping rows and all 22 kickers are Title
+      Case. No `slug` was touched. `label-scan` on the course exits 0.
+- [ ] corporate-finance — **80 defects across 26 steps + 15 rows**
+- [ ] strategic-management — **17 defects across 8 steps + 6 rows.** The
+      cheapest of the three, the same way D-10 was
+- [ ] economics — 30 steps, not reachable from a `.mjs` and not scanned; fix in
+      `course-data.json` or leave until the course is authored properly
+
+**What the TM pass taught, worth carrying to the other three.** The rewrite is
+not a capitalisation job with some editing attached — it is the other way round.
+Recapitalising "What treasury is and what it does" gives "What Treasury Is and
+What It Does", which passes CASE and is a worse title than before, because Title
+Case makes a weak title look like it was chosen. **Write the name first, then
+capitalise it.**
+
+Second: the titles got shorter, and that is what closed **S-10** as a side
+effect rather than as extra work. A hedged tail is what pushed a title past a
+sidebar row in the first place, so removing it collapsed 20 of 22 label/title
+pairs into one string. The two debts have the same root and should be paid in
+one pass on each remaining course.

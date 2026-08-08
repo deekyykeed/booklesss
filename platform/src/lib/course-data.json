@@ -14267,148 +14267,155 @@
     "defaultOpen": true,
     "children": [
       {
-        "id": "start-here-treasury",
-        "label": "Start here",
-        "lesson": {
-          "title": "Start here: what this course is for",
-          "kicker": "Treasury Management",
-          "sections": [
-            {
-              "id": "the-day-it-falls-due",
-              "check": {
-                "answer": 0,
-                "explain": "Profit counts a sale when it is made, not when it is paid for, and it is spread across a whole year. Cash is a balance on a particular morning. A business can be growing, profitable and completely unable to meet a payment, which is why treasury is a separate job from accounting.",
-                "options": [
-                  "Nothing in the accounts is necessarily wrong: profit is measured over a year and includes money not yet received, while paying a supplier needs cash on a specific day",
-                  "The profit figure must have been falsified, because a profitable company always has cash",
-                  "The suppliers were paid early, which is the only way this happens",
-                  "Profit and cash are the same number reported in two places, so one of them is a clerical error"
-                ],
-                "question": "A company's audited accounts show a healthy profit for the year, and three weeks later it cannot pay its suppliers. What has gone wrong?"
-              },
-              "blocks": [
+        "id": "getting-started-treasury",
+        "label": "Getting Started",
+        "defaultOpen": true,
+        "children": [
+          {
+            "id": "start-here-treasury",
+            "label": "The Case for Treasury Management",
+            "lesson": {
+              "title": "The Case for Treasury Management",
+              "kicker": "Treasury Management",
+              "sections": [
                 {
-                  "text": "In November 2020 Zambia missed a [[coupon|The interest a bond pays its holders, on fixed dates, whatever else is happening. Missing one is a default even when the borrower still owns plenty: the date is the obligation, not the wealth.]] payment of about **USD 42.5 million** and became the first African country to [default](https://corporatefinanceinstitute.com/resources/economics/sovereign-risk/) in the pandemic era. The country was not empty. It had copper in the ground, tax still coming in and assets on every balance sheet you could name. What it did not have was that much money, in that currency, on that day.",
-                  "type": "p"
+                  "id": "the-day-it-falls-due",
+                  "check": {
+                    "answer": 0,
+                    "explain": "Profit counts a sale when it is made, not when it is paid for, and it is spread across a whole year. Cash is a balance on a particular morning. A business can be growing, profitable and completely unable to meet a payment, which is why treasury is a separate job from accounting.",
+                    "options": [
+                      "Nothing in the accounts is necessarily wrong: profit is measured over a year and includes money not yet received, while paying a supplier needs cash on a specific day",
+                      "The profit figure must have been falsified, because a profitable company always has cash",
+                      "The suppliers were paid early, which is the only way this happens",
+                      "Profit and cash are the same number reported in two places, so one of them is a clerical error"
+                    ],
+                    "question": "A company's audited accounts show a healthy profit for the year, and three weeks later it cannot pay its suppliers. What has gone wrong?"
+                  },
+                  "blocks": [
+                    {
+                      "text": "In November 2020 Zambia missed a [[coupon|The interest a bond pays its holders, on fixed dates, whatever else is happening. Missing one is a default even when the borrower still owns plenty: the date is the obligation, not the wealth.]] payment of about **USD 42.5 million** and became the first African country to [default](https://corporatefinanceinstitute.com/resources/economics/sovereign-risk/) in the pandemic era. The country was not empty. It had copper in the ground, tax still coming in and assets on every balance sheet you could name. What it did not have was that much money, in that currency, on that day.",
+                      "type": "p"
+                    },
+                    {
+                      "text": "That gap is the entire subject. **Being owed money, owning things and making a profit are three different questions from having cash when a payment falls due,** and the fourth one is the only one anybody can be sued over. That fourth question has a name, [[liquidity|Whether a business can meet what falls due, on the day it falls due. It is separate from wealth: an asset you cannot sell this week is not liquidity, however much it is worth.]], and it is the one this course is about. A company can post its best year on record in March and be unable to pay staff on the 28th, for reasons that are all visible months ahead if somebody is looking.",
+                      "type": "p"
+                    },
+                    {
+                      "kind": "key",
+                      "text": "Profit is an opinion formed at year end. Cash is a fact on a Tuesday. This course is about the Tuesday.",
+                      "type": "callout"
+                    },
+                    {
+                      "text": "Treasury is the part of a business that watches the Tuesday: what is coming in, what has to go out, and what it costs to cover the difference. When the kwacha moves or the central bank changes rates, treasury is what absorbs it. The cycle it watches runs from buying stock to being paid for it, and is called the [working capital cycle](https://corporatefinanceinstitute.com/resources/accounting/working-capital-cycle/).",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "Start here"
                 },
                 {
-                  "text": "That gap is the entire subject. **Being owed money, owning things and making a profit are three different questions from having cash when a payment falls due,** and the fourth one is the only one anybody can be sued over. That fourth question has a name, [[liquidity|Whether a business can meet what falls due, on the day it falls due. It is separate from wealth: an asset you cannot sell this week is not liquidity, however much it is worth.]], and it is the one this course is about. A company can post its best year on record in March and be unable to pay staff on the 28th, for reasons that are all visible months ahead if somebody is looking.",
-                  "type": "p"
+                  "id": "what-it-buys-you",
+                  "check": {
+                    "answer": 0,
+                    "explain": "The other three are real questions and none of them is treasury's. Treasury owns the exposure: the amount is fixed in dollars, the company earns kwacha, and the cost in kwacha is unknown until the day it is paid. Deciding whether to leave that open or fix it now is the job.",
+                    "options": [
+                      "What the payment will cost in kwacha if the exchange rate moves before the date, and whether to fix that cost now",
+                      "Whether the goods being bought are of acceptable quality",
+                      "How the purchase should be depreciated over its useful life",
+                      "Which department's budget the cost is charged to"
+                    ],
+                    "question": "A Zambian company earns its revenue in kwacha and has agreed to pay a supplier USD 200,000 in three months. Which of these is a treasury question?"
+                  },
+                  "blocks": [
+                    {
+                      "text": "This course assumes you can read a balance sheet and knows you have met an income statement. It does not assume anything else. What it adds is the money already in motion: the [cash sitting in accounts](https://corporatefinanceinstitute.com/resources/accounting/cash-management/), the invoices waiting to be paid, the borrowing that funds the gap and the currency risk sitting under all of it.",
+                      "type": "p"
+                    },
+                    {
+                      "text": "That is a different question from the one investment appraisal asks. Deciding whether to build the plant is one job. **Making sure the company can still pay for cement in month four is this one,** and a business that gets the first right and the second wrong does not finish the plant.",
+                      "type": "p"
+                    },
+                    {
+                      "text": "The decisions this hands you",
+                      "type": "h2"
+                    },
+                    {
+                      "type": "ul",
+                      "items": [
+                        "How much cash to keep, when idle cash earns nothing and an empty account costs everything.",
+                        "Whether to take a supplier's early-payment discount or keep the money and take the credit.",
+                        "What to do when your revenue is in kwacha and a supplier invoices you in US dollars, with three months before you pay. That gap is an [[exposure|A position whose value in your own currency is not yet fixed, so it moves with the market until the day it settles.]].",
+                        "How to fund a shortfall you can see coming, and what a lender will demand in return.",
+                        "Where to put a surplus so it is still there, in full, on the day you need it back."
+                      ]
+                    },
+                    {
+                      "text": "Those are the treasurer's decisions in a bank or a mining group, and they are also the first five money decisions anybody running their own business ever makes. **The scale changes and the questions do not.** A finance officer at ZESCO and a founder with one truck are answering the same list with different numbers of zeros.",
+                      "type": "p"
+                    },
+                    {
+                      "kind": "exam",
+                      "text": "The paper is written the same way. Most marks in the past papers go to a calculation and then to a short recommendation about what the business should actually do. A number with no decision attached to it leaves marks on the table.",
+                      "type": "callout"
+                    }
+                  ],
+                  "heading": "What you can do with it"
                 },
                 {
-                  "kind": "key",
-                  "text": "Profit is an opinion formed at year end. Cash is a fact on a Tuesday. This course is about the Tuesday.",
-                  "type": "callout"
-                },
-                {
-                  "text": "Treasury is the part of a business that watches the Tuesday: what is coming in, what has to go out, what it costs to cover the difference, and what happens to all of that when the kwacha moves or the central bank changes rates. The cycle it watches runs from buying stock to being paid for it, and is called the [working capital cycle](https://corporatefinanceinstitute.com/resources/accounting/working-capital-cycle/).",
-                  "type": "p"
+                  "id": "how-to-use-this",
+                  "check": {
+                    "answer": 0,
+                    "explain": "The split matters because it is where treasury failures come from. A treasurer choosing their own risk limits is the setup behind most of the famous blow-ups in the syllabus. Policy comes from above, execution and the daily judgement calls sit with treasury, and the line between them is examinable.",
+                    "options": [
+                      "The board decides how much risk the company will carry, and treasury operates within that: it manages the exposures and the cash, but does not decide the company's appetite for risk on its own",
+                      "Treasury has no decisions to make, and simply processes payments the board has approved",
+                      "Treasury sets the company's strategy and the board carries it out",
+                      "It means treasury only exists in companies large enough to have a board"
+                    ],
+                    "question": "Treasury is usually described as executing rather than setting policy. What does that mean in practice?"
+                  },
+                  "blocks": [
+                    {
+                      "text": "You have started, which is the part most people put off until the week before the exam. From here it is short steps rather than long ones: **each one is a single sitting, and finishing three of them in an evening beats abandoning one halfway.**",
+                      "type": "p"
+                    },
+                    {
+                      "text": "**Twenty-one steps sit after this one, across 57 sections,** and they run in the order the money does. Getting cash in and keeping it moving. Protecting it from [rates and currencies](https://corporatefinanceinstitute.com/resources/foreign-exchange/foreign-exchange-risk/). What it costs to borrow, and what to do with a surplus. Then the systems that actually move it between banks. A section is roughly five minutes, which makes an evening about a lesson.",
+                      "type": "p"
+                    },
+                    {
+                      "text": "Three things worth knowing before you start",
+                      "type": "h2"
+                    },
+                    {
+                      "type": "ul",
+                      "items": [
+                        "Every section ends with a question. Get it wrong and it tells you why the right answer is right, which is the point of it. Nothing is marked and nobody sees it.",
+                        "There is a flag at the end of each section. If something is confusing, too long or looks wrong, say so there. That is the fastest way to get a section rewritten, and it has already changed several.",
+                        "Your place is kept as you go, so you can stop mid-step and come back to the same spot on any device."
+                      ]
+                    },
+                    {
+                      "text": "One habit is worth more than any of that. **When a step works an example, work it yourself on paper before reading the answer.** Following a worked example feels like understanding and is not: the exam hands you a blank page, and the only preparation for a blank page is a blank page.",
+                      "type": "p"
+                    }
+                  ],
+                  "heading": "How to use this"
                 }
-              ],
-              "heading": "Start here"
-            },
-            {
-              "id": "what-it-buys-you",
-              "check": {
-                "answer": 0,
-                "explain": "The other three are real questions and none of them is treasury's. Treasury owns the exposure: the amount is fixed in dollars, the company earns kwacha, and the cost in kwacha is unknown until the day it is paid. Deciding whether to leave that open or fix it now is the job.",
-                "options": [
-                  "What the payment will cost in kwacha if the exchange rate moves before the date, and whether to fix that cost now",
-                  "Whether the goods being bought are of acceptable quality",
-                  "How the purchase should be depreciated over its useful life",
-                  "Which department's budget the cost is charged to"
-                ],
-                "question": "A Zambian company earns its revenue in kwacha and has agreed to pay a supplier USD 200,000 in three months. Which of these is a treasury question?"
-              },
-              "blocks": [
-                {
-                  "text": "This course assumes you can read a balance sheet and knows you have met an income statement. It does not assume anything else. What it adds is the money already in motion: the [cash sitting in accounts](https://corporatefinanceinstitute.com/resources/accounting/cash-management/), the invoices waiting to be paid, the borrowing that funds the gap and the currency risk sitting under all of it.",
-                  "type": "p"
-                },
-                {
-                  "text": "That is a different question from the one investment appraisal asks. Deciding whether to build the plant is one job. **Making sure the company can still pay for cement in month four is this one,** and a business that gets the first right and the second wrong does not finish the plant.",
-                  "type": "p"
-                },
-                {
-                  "text": "The decisions this hands you",
-                  "type": "h2"
-                },
-                {
-                  "type": "ul",
-                  "items": [
-                    "How much cash to keep, when idle cash earns nothing and an empty account costs everything.",
-                    "Whether to take a supplier's early-payment discount or keep the money and take the credit.",
-                    "What to do when your revenue is in kwacha and a supplier invoices you in US dollars, with three months before you pay. That gap is an [[exposure|A position whose value in your own currency is not yet fixed, so it moves with the market until the day it settles.]].",
-                    "How to fund a shortfall you can see coming, and what a lender will demand in return.",
-                    "Where to put a surplus so it is still there, in full, on the day you need it back."
-                  ]
-                },
-                {
-                  "text": "Those are the treasurer's decisions in a bank or a mining group, and they are also the first five money decisions anybody running their own business ever makes. **The scale changes and the questions do not.** A finance officer at ZESCO and a founder with one truck are answering the same list with different numbers of zeros.",
-                  "type": "p"
-                },
-                {
-                  "kind": "exam",
-                  "text": "The paper is written the same way. Most marks in the past papers go to a calculation and then to a short recommendation about what the business should actually do, so a number without a decision attached to it leaves marks on the table.",
-                  "type": "callout"
-                }
-              ],
-              "heading": "What you can do with it"
-            },
-            {
-              "id": "how-to-use-this",
-              "check": {
-                "answer": 0,
-                "explain": "The split matters because it is where treasury failures come from. A treasurer choosing their own risk limits is the setup behind most of the famous blow-ups in the syllabus. Policy comes from above, execution and the daily judgement calls sit with treasury, and the line between them is examinable.",
-                "options": [
-                  "The board decides how much risk the company will carry, and treasury operates within that: it manages the exposures and the cash, but does not decide the company's appetite for risk on its own",
-                  "Treasury has no decisions to make, and simply processes payments the board has approved",
-                  "Treasury sets the company's strategy and the board carries it out",
-                  "It means treasury only exists in companies large enough to have a board"
-                ],
-                "question": "Treasury is usually described as executing rather than setting policy. What does that mean in practice?"
-              },
-              "blocks": [
-                {
-                  "text": "You have started, which is the part most people put off until the week before the exam. From here it is short steps rather than long ones: **each one is a single sitting, and finishing three of them in an evening beats abandoning one halfway.**",
-                  "type": "p"
-                },
-                {
-                  "text": "**Twenty-one steps sit after this one, across 57 sections,** and they run in the order the money does. Getting cash in and keeping it moving, then protecting it from [rates and currencies](https://corporatefinanceinstitute.com/resources/foreign-exchange/foreign-exchange-risk/), then what it costs to borrow and what to do with a surplus, then the systems that actually move it between banks. A section is roughly five minutes, which makes an evening about a lesson.",
-                  "type": "p"
-                },
-                {
-                  "text": "Three things worth knowing before you start",
-                  "type": "h2"
-                },
-                {
-                  "type": "ul",
-                  "items": [
-                    "Every section ends with a question. Get it wrong and it tells you why the right answer is right, which is the point of it. Nothing is marked and nobody sees it.",
-                    "There is a flag at the end of each section. If something is confusing, too long or looks wrong, say so there. That is the fastest way to get a section rewritten, and it has already changed several.",
-                    "Your place is kept as you go, so you can stop mid-step and come back to the same spot on any device."
-                  ]
-                },
-                {
-                  "text": "One habit is worth more than any of that. **When a step works an example, work it yourself on paper before reading the answer.** Following a worked example feels like understanding and is not: the exam hands you a blank page, and the only preparation for a blank page is a blank page.",
-                  "type": "p"
-                }
-              ],
-              "heading": "How to use this"
+              ]
             }
-          ]
-        }
+          }
+        ]
       },
       {
         "id": "treasury-operations",
-        "label": "Treasury operations",
+        "label": "Treasury Operations",
         "children": [
           {
             "id": "intro-to-treasury",
-            "label": "What treasury is",
+            "label": "The Treasury Function",
             "lesson": {
-              "title": "What treasury is and what it does",
-              "kicker": "Treasury operations",
+              "title": "The Treasury Function",
+              "kicker": "Treasury Operations",
               "sections": [
                 {
                   "id": "what-treasury-is",
@@ -14433,6 +14440,7 @@
                       "type": "p"
                     },
                     {
+                      "kind": "key",
                       "text": "Profit is an opinion formed over a year. Cash is a fact on a Friday. Treasury owns the Friday.",
                       "type": "callout"
                     },
@@ -14549,6 +14557,7 @@
                       "type": "p"
                     },
                     {
+                      "kind": "key",
                       "text": "Recover the list from the five/six split: **five functions that move the money, six that manage the people and institutions who let it move.** Eleven flat items will not survive pressure; the split will.",
                       "type": "callout"
                     }
@@ -14560,10 +14569,10 @@
           },
           {
             "id": "treasury-levels-and-mandate",
-            "label": "How treasury work divides",
+            "label": "The Three Levels of Treasury",
             "lesson": {
-              "title": "How treasury work divides, and what it is for",
-              "kicker": "Treasury operations",
+              "title": "The Three Levels of Treasury",
+              "kicker": "Treasury Operations",
               "sections": [
                 {
                   "id": "task-levels",
@@ -14615,6 +14624,7 @@
                       ]
                     },
                     {
+                      "kind": "key",
                       "text": "Classify by time horizon: **strategic = long-term policy, tactical = medium-term decisions, operational = daily execution.**",
                       "type": "callout"
                     }
@@ -14660,6 +14670,7 @@
                       "type": "p"
                     },
                     {
+                      "kind": "warning",
                       "text": "A profit centre is not forbidden, and plenty of firms run one well. What Barings shows is that **the moment profit becomes the measure, the controls in the next section stop being paperwork.** They become the only thing standing between your company and a trader with a losing position to hide.",
                       "type": "callout"
                     }
@@ -14671,10 +14682,10 @@
           },
           {
             "id": "treasury-controls-and-structure",
-            "label": "Keeping treasury honest",
+            "label": "Treasury Controls and Governance",
             "lesson": {
-              "title": "Keeping treasury honest, and where it sits",
-              "kicker": "Treasury operations",
+              "title": "Treasury Controls and Governance",
+              "kicker": "Treasury Operations",
               "sections": [
                 {
                   "id": "controls",
@@ -14805,14 +14816,14 @@
       },
       {
         "id": "working-capital",
-        "label": "Working capital",
+        "label": "Working Capital",
         "children": [
           {
             "id": "working-capital-and-liquidity",
-            "label": "Working capital",
+            "label": "Working Capital and Liquidity",
             "lesson": {
-              "title": "Working capital, and how much of it to run",
-              "kicker": "Working capital",
+              "title": "Working Capital and Liquidity",
+              "kicker": "Working Capital",
               "sections": [
                 {
                   "id": "what-working-capital-is",
@@ -14841,6 +14852,7 @@
                       "type": "p"
                     },
                     {
+                      "kind": "key",
                       "text": "Even a profitable business fails without adequate working capital. **Cash is king, not profit.** A company can look excellent on paper and still collapse because it cannot meet what falls due next week.",
                       "type": "callout"
                     }
@@ -14944,14 +14956,14 @@
                   "id": "cash-conversion-cycle",
                   "check": {
                     "answer": 0,
-                    "explain": "The cycle lengthens when inventory or receivable days rise, or payable days fall. Slower collection adds directly to it, paying suppliers later would shorten it, and higher revenue with constant receivables reduces receivable days. Diagnosis starts with the component that actually moved.",
+                    "explain": "Days inventory = (1,800,000 ÷ 10,950,000) × 365 = 60. Days receivables = (2,250,000 ÷ 18,250,000) × 365 = 45. Days payables = (1,050,000 ÷ 10,950,000) × 365 = 35. CCC = 60 + 45 − 35 = **70 days**, so cash turns over 365 ÷ 70 = 5.2 times a year, against Zanaco Distributors' 4.5. 105 days is the operating cycle: it stops before subtracting payables, which is the same as pretending suppliers are paid on delivery. 60 days runs all three ratios over revenue, which understates both stock and supplier days. 140 days adds payables instead of subtracting them. Notice what that claims: the cycle gets longer the later you pay, which is backwards, so the sign is checkable without redoing the arithmetic.",
                     "options": [
-                      "Days receivables rose sharply, meaning customers are taking much longer to pay",
-                      "Days payables rose sharply, meaning the company pays suppliers later",
-                      "Revenue rose while everything else stayed constant",
-                      "The company negotiated a discount for early supplier payment"
+                      "70 days",
+                      "105 days",
+                      "60 days",
+                      "140 days"
                     ],
-                    "question": "A year later Zanaco Distributors' CCC has jumped from 81 to 120 days. Which single change explains it?"
+                    "question": "What is that distributor's cash conversion cycle: revenue ZMW 18,250,000, cost of goods sold ZMW 10,950,000, inventory ZMW 1,800,000, receivables ZMW 2,250,000, payables ZMW 1,050,000?"
                   },
                   "blocks": [
                     {
@@ -15024,6 +15036,11 @@
                         "Turn [inventory](https://corporatefinanceinstitute.com/resources/accounting/days-inventory-outstanding-dio/) quicker, or order in smaller and more frequent lots.",
                         "Take longer to pay, up to the point where it starts costing you the supplier."
                       ]
+                    },
+                    {
+                      "kind": "example",
+                      "text": "Measure one before you read on. A Kitwe hardware distributor reports revenue of ZMW 18,250,000, cost of goods sold of ZMW 10,950,000, inventory of ZMW 1,800,000, receivables of ZMW 2,250,000 and payables of ZMW 1,050,000. Work the three components, then the cycle. Each ratio has its own denominator. Two of the three are measured against cost of goods sold, and only receivables goes over revenue. A receivable is billed at the selling price; stock and supplier invoices are not.",
+                      "type": "callout"
                     }
                   ],
                   "heading": "The cash conversion cycle"
@@ -15033,23 +15050,23 @@
           },
           {
             "id": "debtors-and-factoring",
-            "label": "Getting the cash in",
+            "label": "Debtors and Factoring",
             "lesson": {
-              "title": "Getting the cash in",
-              "kicker": "Working capital",
+              "title": "Debtors and Factoring",
+              "kicker": "Working Capital",
               "sections": [
                 {
                   "id": "debtor-management",
                   "check": {
                     "answer": 0,
-                    "explain": "The 20 extra days of credit cost 2% of the invoice, which annualises to [2/98] × [365/20] = 37.23%, nearly five times the overdraft rate. Supplier credit only looks free until somebody prices it.",
+                    "explain": "[1.5 ÷ 98.5] × [365 ÷ 45] = 0.015228 × 8.111 = **12.35%** a year. And notice where that leaves you: 12.35% is CHEAPER than the 20% overdraft, so here you keep the 45 days and let the discount go. That is the opposite of the 2/10 net 30 answer above. The formula decides it, not the reflex. About 12.17% divides by 100 instead of by the 98.5 you would actually pay, which flatters every discount slightly. About 9.26% uses the 60-day net period instead of the 45 days of credit being bought. About 1.52% never annualises, and would have you turn down free money.",
                     "options": [
-                      "Borrow at 8% and pay by day 10, because forgoing the discount costs 37.23% per annum",
-                      "Pay on day 30, because free credit from the supplier always beats borrowing",
-                      "Pay on day 10 without the discount, to strengthen the relationship",
-                      "Negotiate 3/15 net 45 before deciding anything"
+                      "About 12.35%",
+                      "About 12.17%",
+                      "About 9.26%",
+                      "About 1.52%"
                     ],
-                    "question": "A supplier offers 2/10 net 30, and your overdraft costs 8% per annum. What should you do?"
+                    "question": "What does forgoing a 1.5/15 net 60 discount cost, on an annual basis?"
                   },
                   "blocks": [
                     {
@@ -15094,7 +15111,13 @@
                       "type": "p"
                     },
                     {
+                      "kind": "key",
                       "text": "Always price the annual cost of forgoing a discount against your cost of short-term borrowing. If borrowing is cheaper, take the discount. **37.23% against 8% is not a close call.**",
+                      "type": "callout"
+                    },
+                    {
+                      "kind": "example",
+                      "text": "Price a different offer before you read on, because they do not all come out the same way. A supplier offers 1.5/15 net 60 and your overdraft costs 20% a year. Work the annual cost of letting the discount go, then say what you would do. The formula punishes two habits: the discount comes off what you actually pay, not off 100, and the days you are buying are the ones *between* the two dates.",
                       "type": "callout"
                     }
                   ],
@@ -15225,14 +15248,14 @@
           },
           {
             "id": "inventory-and-suppliers",
-            "label": "Inventory and suppliers",
+            "label": "Inventory and Suppliers",
             "children": [
               {
                 "id": "inventory-and-creditors",
-                "label": "Inventory",
+                "label": "Inventory and Trade Credit",
                 "lesson": {
-                  "title": "Inventory, and how it is financed",
-                  "kicker": "Working capital",
+                  "title": "Inventory and Trade Credit",
+                  "kicker": "Working Capital",
                   "sections": [
                     {
                       "id": "what-inventory-is",
@@ -15377,23 +15400,23 @@
               },
               {
                 "id": "ordering-and-paying-suppliers",
-                "label": "How to order, and when to pay",
+                "label": "Order Quantity and Payment Terms",
                 "lesson": {
-                  "title": "How much to order, and when to pay",
-                  "kicker": "Working capital",
+                  "title": "Order Quantity and Payment Terms",
+                  "kicker": "Working Capital",
                   "sections": [
                     {
                       "id": "eoq",
                       "check": {
                         "answer": 0,
-                        "explain": "EOQ minimises the sum of the two costs, so any departure from it has to be justified against both. Free delivery effectively lowers the ordering cost, which does move the optimum, but quadrupling the order size also quadruples the average stock held. Rerun the trade-off rather than assuming either cost dominates.",
+                        "explain": "Annual demand is 4,000 × 12 = 48,000 units, so EOQ = √(2 × 48,000 × 40 ÷ 6) = √640,000 = **800 units**, or 60 orders a year, one about every 6 days. Which is also the check on it: 6 days is inside most suppliers' lead times, so this answer survives contact with the real supplier where the lecture's 15-day one nearly did not. 566 units drops the 2 from the numerator. 231 units puts the monthly 4,000 against an annual holding cost, which is the slip the formula invites because it never says over what period a is measured. 60 is the number of orders, not the size of one.",
                         "options": [
-                          "Larger orders cut ordering costs but raise holding costs, so moving from 500 to 2,000 units only pays if the savings beat the extra holding cost",
-                          "Order the 2,000, because fewer orders always means lower total cost",
-                          "Keep ordering 500, because EOQ never changes whatever the terms",
-                          "Order monthly regardless, since demand is monthly"
+                          "800 units",
+                          "566 units",
+                          "231 units",
+                          "60 units"
                         ],
-                        "question": "XYZ's supplier offers free delivery on orders of 2,000 units, and a manager suggests ordering quarterly to \"save on ordering costs\". What does the EOQ logic say?"
+                        "question": "What is that bottler's economic order quantity: 4,000 units a month, ZMW 40 per order, ZMW 6 to hold a unit for a year?"
                       },
                       "blocks": [
                         {
@@ -15456,6 +15479,11 @@
                         {
                           "text": "A supplier who needs twenty days' notice has made this order size impossible whatever the arithmetic says. Finding that out through a [[stock-out|Running out of an input and having to stop production, or turning away a sale you could have made. It is the cost no inventory model carries, because it lands in operations and in the customer relationship instead.]] is the expensive way to learn it, and **the model will never warn you, because the cost of running out is the one cost it does not contain.**",
                           "type": "p"
+                        },
+                        {
+                          "kind": "example",
+                          "text": "Size one yourself. A Ndola bottler uses 4,000 units a month of a packaging line input, each order costs ZMW 40 to place, and holding a unit for a year costs ZMW 6. Work the order quantity, then the orders a year, then the days between them. The first move is the one the formula does not prompt you to make: a and h have to be measured over the same period.",
+                          "type": "callout"
                         }
                       ],
                       "heading": "The economic order quantity"
@@ -15494,6 +15522,7 @@
                           "type": "p"
                         },
                         {
+                          "kind": "warning",
                           "text": "Stretch payables to shorten the cycle. **The limit is the supplier's survival, not the point at which they stop chasing you,** and the second thing you are spending is their [[goodwill|What a supplier is willing to do for you that the contract does not require: the rush order, the last unit, the quiet extension. It is unpriced right up to the day you need it and it is gone.]].",
                           "type": "callout"
                         }
@@ -15511,10 +15540,10 @@
             "children": [
               {
                 "id": "cash-management",
-                "label": "Deciding how much cash to hold",
+                "label": "Optimal Cash Balances",
                 "lesson": {
-                  "title": "Deciding how much cash to hold",
-                  "kicker": "Working capital",
+                  "title": "Optimal Cash Balances",
+                  "kicker": "Working Capital",
                   "sections": [
                     {
                       "id": "why-cash-management",
@@ -15543,6 +15572,7 @@
                           "type": "p"
                         },
                         {
+                          "kind": "key",
                           "text": "Hold cash only until the marginal value of liquidity equals the interest lost. **Everything in this step is machinery for finding that point.**",
                           "type": "callout"
                         }
@@ -15553,14 +15583,14 @@
                       "id": "baumol",
                       "check": {
                         "answer": 0,
-                        "explain": "F sits inside the square root, so doubling it raises C by about 41% rather than doubling it. Directionally, dearer transactions push the balance up for the same reason a dearer order cost raises an optimum order size: you economise on whatever got expensive.",
+                        "explain": "C = √(2 × 25 × 640,000 ÷ 0.08) = √400,000,000 = ZMW 20,000. Check it: 640,000 ÷ 20,000 = 32 transfers at ZMW 25 = ZMW 800 of fees, against an average balance of 10,000 × 8% = ZMW 800 of interest forgone. They meet exactly, which is the signature. ZMW 14,142 drops the 2 from the numerator; ZMW 10,000 is the average balance, which is half the transfer rather than the transfer; ZMW 2,000 divides by 8 instead of 0.08. Note also what the formula's shape tells you: F sits inside the root, so if the bank doubled its fee to ZMW 50 the optimum would rise by about 41%, not double.",
                         "options": [
-                          "It rises, because with transfers costlier the firm makes fewer, larger withdrawals and holds more cash between them",
-                          "It falls, because expensive transfers mean holding less cash",
-                          "Nothing, because the optimum depends only on the interest rate",
-                          "It exactly doubles"
+                          "ZMW 20,000",
+                          "ZMW 14,142",
+                          "ZMW 10,000",
+                          "ZMW 2,000"
                         ],
-                        "question": "In the Baumol model, the bank doubles its per-withdrawal fee. What happens to the optimum cash balance?"
+                        "question": "What is that wholesaler's optimum transfer: ZMW 640,000 disbursed a year, ZMW 25 per transfer, 8% on deposit?"
                       },
                       "blocks": [
                         {
@@ -15640,6 +15670,11 @@
                         {
                           "text": "**At the optimum the two costs almost meet:** ZMW 540 of fees against ZMW 550 of interest given up. That near-equality is the signature of the model working, and it is worth remembering as a check on your own arithmetic. Any larger balance is holding too much idle cash, and any smaller one is paying for too many withdrawals.",
                           "type": "p"
+                        },
+                        {
+                          "kind": "example",
+                          "text": "Now do one. A Lusaka wholesaler pays out ZMW 640,000 a year in a steady stream, each transfer out of the deposit account costs ZMW 25, and money left on deposit earns 8%. Find the optimum transfer, then test it the way the paragraph above does: work out the year's fees and the year's forgone interest separately, and see whether they meet.",
+                          "type": "callout"
                         }
                       ],
                       "heading": "The Baumol model"
@@ -15648,14 +15683,14 @@
                       "id": "miller-orr",
                       "check": {
                         "answer": 0,
-                        "explain": "Touching the upper limit triggers a purchase equal to the gap down to the return point, so 8,400 less 3,467 is 4,933. Going all the way down to the lower limit would only maximise the chance of an immediate opposite transaction. The return point sits a third of the way up because running out of cash is costlier than parking it.",
+                        "explain": "Inside the root: 3 × 30 × 360,000 ÷ (4 × 0.0003) = 27,000,000,000, whose cube root is 3,000, so the spread Z = 3 × 3,000 = ZMW 9,000. Upper limit = 2,000 + 9,000 = ZMW 11,000, and the return point = 2,000 + 9,000 ÷ 3 = **ZMW 5,000**, so touching 11,000 means buying ZMW 6,000 of securities. ZMW 3,000 is Z ÷ 3 with the lower limit never added back. ZMW 6,500 puts the return point halfway up the spread instead of a third of the way. That third is the whole asymmetry of the model: running out of cash costs more than parking it. ZMW 2,356 used the ZMW 600 standard deviation where the formula asks for the 360,000 variance.",
                         "options": [
-                          "Buy ZMW 4,933 of securities, returning the balance to the ZMW 3,467 return point",
-                          "Sell securities to raise the balance to the upper limit",
-                          "Do nothing until the balance reaches the lower limit",
-                          "Buy securities down to the ZMW 1,000 lower limit"
+                          "ZMW 5,000",
+                          "ZMW 3,000",
+                          "ZMW 6,500",
+                          "ZMW 2,356"
                         ],
-                        "question": "Under the lecture's Miller-Orr figures, the balance drifts up to ZMW 8,400. What does the model instruct?"
+                        "question": "In that treasury, the balance climbs to the upper limit. What is the return point it should be brought back to?"
                       },
                       "blocks": [
                         {
@@ -15735,7 +15770,13 @@
                           "type": "p"
                         },
                         {
+                          "kind": "key",
                           "text": "Baumol assumes certainty and Miller-Orr does not. **Real cash flows wander, so Miller-Orr is the one to reach for whenever the flows in front of you are volatile.**",
+                          "type": "callout"
+                        },
+                        {
+                          "kind": "example",
+                          "text": "Set the levels for a different treasury before you read on. Management fixes the lower limit at ZMW 2,000, each securities transaction costs ZMW 30, daily cash flows have a standard deviation of ZMW 600, and the daily interest rate is 0.03%. Work the spread, then the upper limit, then the return point. Watch two things: the formula wants the variance, not the standard deviation, and every level is measured up from the lower limit rather than from zero.",
                           "type": "callout"
                         }
                       ],
@@ -15746,10 +15787,10 @@
               },
               {
                 "id": "cash-forecasting-and-surpluses",
-                "label": "Forecasting the cash",
+                "label": "Cash Forecasting and Surpluses",
                 "lesson": {
-                  "title": "Forecasting the cash, and putting it to work",
-                  "kicker": "Working capital",
+                  "title": "Cash Forecasting and Surpluses",
+                  "kicker": "Working Capital",
                   "sections": [
                     {
                       "id": "forecasting",
@@ -15800,14 +15841,14 @@
                       "id": "surpluses-and-overdrafts",
                       "check": {
                         "answer": 0,
-                        "explain": "The four questions resolve it. The money is free for exactly the bill's life, so the bill's illiquidity never binds and its doubled return is a free gain. Liquidity is only worth paying for when there is a real chance of needing the cash early.",
+                        "explain": "(100 − 98) ÷ 98 = 2.0408% over 73 days, and 365 ÷ 73 = 5, so the annualised yield is 2.0408% × 5 = **10.20%**. Take the bill: it pays better than the 6% call deposit, and because the cash is free for exactly the bill's life its illiquidity never binds, so the extra return costs nothing. 10.00% divides by 100 rather than by the 98 actually paid: that is the discount rate, not the yield, and it is the slip that survives because it is always close enough to look right. 2.04% is the 73-day return left unannualised, which would have you turn down 10.2% for 6%. 0.41% multiplies by 73 ÷ 365 instead of 365 ÷ 73.",
                         "options": [
-                          "Take the T-bill, because the cash's availability horizon matches the bill's maturity, so the extra yield costs nothing in liquidity",
-                          "Take the call deposit, because instant access is always worth more than yield",
-                          "Split it 50/50 to diversify",
-                          "Leave it in the current account pending a decision"
+                          "About 10.20%",
+                          "About 10.00%",
+                          "About 2.04%",
+                          "About 0.41%"
                         ],
-                        "question": "A surplus of ZMW 2 million is definitely not needed for 90 days. The options are a call deposit at 2% or a 91-day T-bill annualising 4.05%. What should treasury do, and why?"
+                        "question": "What does that 73-day treasury bill, bought at 98, yield on an annualised basis?"
                       },
                       "blocks": [
                         {
@@ -15877,6 +15918,11 @@
                         {
                           "text": "**The forecast is what keeps that overdraft cheap.** A shortfall you saw three weeks out is funded on terms you negotiated; the same shortfall discovered on the morning is funded on whatever terms are available.",
                           "type": "p"
+                        },
+                        {
+                          "kind": "example",
+                          "text": "Price the alternative before you read on. Your forecast frees ZMW 4 million for exactly 73 days. The bank's call deposit pays 6% a year, and a 73-day treasury bill is on offer at 98. Annualise the bill, then say which one you take. Two traps sit in one line of arithmetic. The yield is measured against what you pay, not against the 100 you get back. And a 73-day return is not an annual one until you scale it.",
+                          "type": "callout"
                         }
                       ],
                       "heading": "Investing surpluses, borrowing shortfalls"
@@ -15976,13 +16022,13 @@
         "children": [
           {
             "id": "interest-rates",
-            "label": "Interest rates",
+            "label": "Interest Rates",
             "children": [
               {
                 "id": "interest-rate-risk-management",
-                "label": "Interest rate risk",
+                "label": "Interest Rate Risk",
                 "lesson": {
-                  "title": "Interest rate risk, and how to measure it",
+                  "title": "Interest Rate Risk",
                   "kicker": "Risk",
                   "sections": [
                     {
@@ -16035,14 +16081,14 @@
                       "id": "measuring",
                       "check": {
                         "answer": 0,
-                        "explain": "A negative gap means the cost side reprices first. When rates rise, the bank pays the new rates on more liabilities than it earns them on assets, which squeezes net interest income. That is why a negative-gap bank fearing rate rises either hedges or shortens its asset book.",
+                        "explain": "Gap = 260 − 380 = −ZMW 120 million, and −120,000,000 × 1.5% = **a fall of ZMW 1.8 million**. A rise of 1.8 million has the size right and the sign backwards: a negative gap means the cost side reprices first, so rising rates hurt. A fall of 5.7 million charges the whole ZMW 380 million with the increase and forgets that the 260 million of assets is earning the new rate as well. Netting them is the entire idea of a gap. A fall of 9.6 million adds the two sides instead of subtracting them, which would make a perfectly matched book the most exposed one rather than the least.",
                         "options": [
-                          "Net interest income falls, because the repricing liabilities get more expensive faster than the assets earn more",
-                          "Net interest income rises, because rising rates always help banks",
-                          "Nothing, because gaps only matter when rates fall",
-                          "The gap turns positive automatically"
+                          "It falls by about ZMW 1.8 million",
+                          "It rises by about ZMW 1.8 million",
+                          "It falls by about ZMW 5.7 million",
+                          "It falls by about ZMW 9.6 million"
                         ],
-                        "question": "A bank's one-year bucket shows a negative gap, so more liabilities than assets reprice this year. Rates then rise 2%. What happens?"
+                        "question": "Assets of ZMW 260 million and liabilities of ZMW 380 million reprice within the year, and rates rise 1.5%. What happens to net interest income?"
                       },
                       "blocks": [
                         {
@@ -16080,6 +16126,11 @@
                         {
                           "text": "[Duration](https://corporatefinanceinstitute.com/resources/fixed-income/duration/) is the sensitivity measure for anything fixed-income you hold, and basis point value turns it into cash: the effect of a 0.01% move. On ZMW 1 million over six months that is 1,000,000 × 0.0001 × 0.5 = ZMW 50 a year. Small per point, which is the whole reason exposures are quoted this way. Multiply by the number of points you actually fear and it stops being a percentage and becomes a decision.",
                           "type": "p"
+                        },
+                        {
+                          "kind": "example",
+                          "text": "Turn one into a number yourself. In a bank's one-year bucket, ZMW 260 million of assets reprice and ZMW 380 million of liabilities do. The MPC then raises rates by 1.5%. Work the gap, then what it costs over the year. The point of netting them first is that both sides move: the assets earn the new rate too, and the gap is the part of the book where that does not cancel out.",
+                          "type": "callout"
                         }
                       ],
                       "heading": "Measuring the exposure"
@@ -16089,23 +16140,23 @@
               },
               {
                 "id": "interest-rate-hedging-instruments",
-                "label": "Covering interest rate risk",
+                "label": "Hedging Interest Rate Risk",
                 "lesson": {
-                  "title": "Covering interest rate risk",
+                  "title": "Hedging Interest Rate Risk",
                   "kicker": "Risk",
                   "sections": [
                     {
                       "id": "fras",
                       "check": {
                         "answer": 0,
-                        "explain": "An FRA is binding both ways. The company enjoys the cheaper market loan but must compensate the counterparty for the difference below the agreed rate, netting back to exactly 7.5%. Locked means locked: the certainty is what was bought, and the forgone upside is what it cost.",
+                        "explain": "(11% − 9%) × 4,000,000 × ½ = **ZMW 40,000 received**, which offsets the extra 2% the loan now costs and leaves the borrower at 9%, exactly what it bought. ZMW 80,000 forgets that the period is six months, not a year, and it is the commonest slip in the whole product because the rates are quoted annually and the contract is not. Paying ZMW 40,000 is the right size in the wrong direction: a borrower is hurt by rates rising, so its hedge has to pay IN when they rise. ZMW 220,000 settles the whole 11% instead of the 2% difference, which would mean the principal had moved, and in an FRA it never does.",
                         "options": [
-                          "7.5%, because it pays 6% on the loan plus a 1.5% settlement to the FRA counterparty",
-                          "6%, because the FRA only pays out when rates rise",
-                          "4.5%, because the fall and the FRA benefit stack",
-                          "9%, because the FRA doubles the cost when rates fall"
+                          "The company receives ZMW 40,000",
+                          "The company receives ZMW 80,000",
+                          "The company pays ZMW 40,000",
+                          "The company receives ZMW 220,000"
                         ],
-                        "question": "A company buys an FRA at 7.5% and market rates then fall to 6%. What is its effective borrowing cost?"
+                        "question": "That FRA is fixed at 9% on ZMW 4 million for six months, and rates reach 11%. What is settled?"
                       },
                       "blocks": [
                         {
@@ -16151,6 +16202,11 @@
                         {
                           "text": "Both rows end at 7.5%, and that is the entire product. **An FRA removes the uncertainty in both directions,** so you buy protection against the rise and [hand over the benefit of the fall](https://treasurytoday.com/risk-management/question-answered-hedging-strategies/) in the same signature. Whether handing that over is acceptable is the question the last section of this step answers.",
                           "type": "p"
+                        },
+                        {
+                          "kind": "example",
+                          "text": "Settle one in cash. A ZMW 4 million loan resets in three months for a six-month period, and the treasurer buys an FRA at 9%. By the reset date six-month rates have gone to 11%. Work out which way the money moves and how much of it. Only one number in the question is not needed for the settlement, and finding it is half the exercise: no principal changes hands, and the period is not a year.",
+                          "type": "callout"
                         }
                       ],
                       "heading": "Forward rate agreements"
@@ -16159,14 +16215,14 @@
                       "id": "swaps",
                       "check": {
                         "answer": 0,
-                        "explain": "The absolute advantage all belongs to Zambia Sugar, but the sizes differ: 1.0% in fixed against 0.2% in floating. That 0.8% spread is real surplus, released when each firm borrows where its disadvantage is smallest, and it is split 0.4% each here.",
+                        "explain": "The processor pays 11.3% − 9.5% = 1.8% more in the fixed market and only 1.0% − 0.4% = 0.6% more in the floating one. The surplus is the difference between those two penalties: 1.8% − 0.6% = **1.2%**, or 0.6% each split evenly. 0.6% is the smaller penalty mistaken for the gain. 1.8% is the larger one: the whole gap in the market each side is about to leave, rather than the gain from trading. 2.4% adds the penalties instead of subtracting them, which would mean the surplus grows the more alike the two firms are. It is exactly the other way round, and where both penalties are equal there is nothing to swap for.",
                         "options": [
-                          "From comparative advantage, because Lafarge's penalty is 1% in fixed but only 0.2% in floating, and the swap lets each firm borrow in its relatively cheaper market",
-                          "From Zambia Sugar's AAA rating subsidising Lafarge",
-                          "From the banks waiving fees on swap transactions",
-                          "It is an accounting illusion, because no real saving exists"
+                          "1.2% in total, so 0.6% each",
+                          "0.6% in total, so 0.3% each",
+                          "1.8% in total, so 0.9% each",
+                          "2.4% in total, so 1.2% each"
                         ],
-                        "question": "In the Zambia Sugar and Lafarge swap, where does the 0.8% of total savings come from?"
+                        "question": "In that pair, how much total saving is there to share, and how much does each side get on an even split?"
                       },
                       "blocks": [
                         {
@@ -16250,7 +16306,13 @@
                           "type": "p"
                         },
                         {
+                          "kind": "key",
                           "text": "**A swap creates value when two parties' borrowing penalties differ between markets.** Each borrows where it is relatively cheapest, then swaps into the exposure it actually wanted.",
+                          "type": "callout"
+                        },
+                        {
+                          "kind": "example",
+                          "text": "Find the surplus in a different pair. Zambeef can borrow at 9.5% fixed or LIBOR + 0.4% floating; a smaller processor can borrow at 11.3% fixed or LIBOR + 1.0% floating. Zambeef wants floating and the processor wants fixed. Work out each of the processor's two penalties, then how much a swap has to share out. Do not start from which rate looks cheapest: the gain is a difference between two differences, and neither of them is a rate you can read straight off the table.",
                           "type": "callout"
                         }
                       ],
@@ -16391,9 +16453,9 @@
             "children": [
               {
                 "id": "foreign-exchange-risk",
-                "label": "Currency risk",
+                "label": "Foreign Exchange Risk",
                 "lesson": {
-                  "title": "Currency risk, and how rates are quoted",
+                  "title": "Foreign Exchange Risk",
                   "kicker": "Risk",
                   "sections": [
                     {
@@ -16449,14 +16511,14 @@
                       "id": "quotations",
                       "check": {
                         "answer": 0,
-                        "explain": "The bank buys the exporter's dollars at its bid. The customer is always on the worse side of the spread, so sellers of dollars get the low rate and buyers pay the high one. That is exactly how the bank earns the 0.04.",
+                        "explain": "The importer is buying, so it is on the bank's ask on both legs: it buys pounds at 1.28 dollars each and buys those dollars at 12.60 kwacha each. GBP/ZMW = 1.28 × 12.60 = 16.128, and 250,000 × 16.128 = **ZMW 4,032,000**. ZMW 3,906,000 takes the favourable side of the pound leg and the unfavourable side of the dollar leg. That is the real trap: being on the worse side once feels like enough, and the bank is on the good side of both. ZMW 3,937,500 deals at the midpoints, a rate nobody is offering. ZMW 3,844,000 uses both bids, which is the rate the importer would get if it were selling pounds rather than buying them. The ZMW 188,000 between the right answer and that one is what the two spreads actually cost.",
                         "options": [
-                          "ZMW 1,248,000, because the exporter sells dollars to the bank at the bid of 12.48",
-                          "ZMW 1,252,000, because the exporter gets the ask of 12.52",
-                          "ZMW 1,250,000, because deals happen at the midpoint",
-                          "ZMW 1,244,000, because the bank deducts the spread twice"
+                          "ZMW 4,032,000",
+                          "ZMW 3,906,000",
+                          "ZMW 3,937,500",
+                          "ZMW 3,844,000"
                         ],
-                        "question": "The bank quotes USD/ZMW 12.48 to 12.52. An exporter converts USD 100,000 of receipts. How many kwacha result?"
+                        "question": "What does that GBP 250,000 payment cost, on quotes of GBP/USD 1.24 – 1.28 and USD/ZMW 12.40 – 12.60?"
                       },
                       "blocks": [
                         {
@@ -16482,6 +16544,11 @@
                         {
                           "text": "Cross rates matter here because kwacha pairs beyond the dollar are thin. If you invoice in rand or pounds, your price is being built out of two dollar legs whether you look at them or not, and you are paying a [[spread|The gap between the price at which a bank will buy and the price at which it will sell. It is not a fee on your statement, which is why it is the cost companies most often fail to count.]] on each.",
                           "type": "p"
+                        },
+                        {
+                          "kind": "example",
+                          "text": "Put the two halves of this section together on one invoice. A Lusaka importer owes GBP 250,000. Its bank quotes GBP/USD 1.24 – 1.28 and USD/ZMW 12.40 – 12.60. Work out what the payment costs in kwacha. Do it in two steps rather than one: decide which side of each quote you are on before you multiply anything, and remember there are two spreads here, not one.",
+                          "type": "callout"
                         }
                       ],
                       "heading": "Quotations, spreads and cross rates"
@@ -16526,6 +16593,7 @@
                           "type": "p"
                         },
                         {
+                          "kind": "warning",
                           "text": "**A high-interest currency always trades at a forward discount.** If a forward quote ever looks like good news about your currency, check the interest rates before you celebrate.",
                           "type": "callout"
                         }
@@ -16537,9 +16605,9 @@
               },
               {
                 "id": "hedging-currency-risk",
-                "label": "Hedging currency risk",
+                "label": "Hedging Foreign Exchange Risk",
                 "lesson": {
-                  "title": "Hedging currency risk",
+                  "title": "Hedging Foreign Exchange Risk",
                   "kicker": "Risk",
                   "sections": [
                     {
@@ -16571,6 +16639,7 @@
                           ]
                         },
                         {
+                          "kind": "key",
                           "text": "Operational hedges cost little and never expire. **The instruments in the next sections are for the exposure that survives them,** not a substitute for doing this first.",
                           "type": "callout"
                         }
@@ -16581,14 +16650,14 @@
                       "id": "forwards-and-futures",
                       "check": {
                         "answer": 0,
-                        "explain": "2,650,000 ÷ 62,500 = 42.4, and you cannot sell four-tenths of a contract. That small residual is the standing trade-off against a forward, which is cut to the exact amount and date but locks you in with no liquid way out.",
+                        "explain": "1,900,000 ÷ 62,500 = 30.4 contracts, and you round DOWN to 30: over-hedging turns the spare part of a contract into a bet. So the hedge covers 30 × 62,500 = USD 1,875,000, and the gain is (11.60 − 10.40) × 1,875,000 = **ZMW 2,250,000**. The USD 25,000 tail rides unhedged, which is the price of standardisation and the standing trade-off against a forward. ZMW 2,280,000 applies the 1.20 movement to the full USD 1,900,000, hedging an amount no contract exists for. ZMW 2,325,000 rounds 30.4 up to 31. The loss is what an exporter gets for buying futures instead of selling them. An exporter is exposed to the kwacha strengthening, so its hedge must gain when the dollar buys fewer kwacha. A bought position does the opposite.",
                         "options": [
-                          "Futures come in fixed sizes, so 42 contracts cover 2,625,000 and the 25,000 tail stays unhedged as the price of standardisation",
-                          "Exchange rules cap any hedge at 42 contracts",
-                          "The remaining 25,000 was hedged automatically by the margin",
-                          "XYZ expected the kwacha to depreciate on the remainder"
+                          "A gain of ZMW 2,250,000",
+                          "A gain of ZMW 2,280,000",
+                          "A gain of ZMW 2,325,000",
+                          "A loss of ZMW 2,250,000"
                         ],
-                        "question": "XYZ needed to hedge USD 2,650,000 but sold exactly 42 contracts of USD 62,500. Why not hedge the full amount?"
+                        "question": "That exporter hedges USD 1,900,000 with USD 62,500 futures at 11.60, and spot falls to 10.40. What does the futures position deliver?"
                       },
                       "blocks": [
                         {
@@ -16643,6 +16712,11 @@
                         {
                           "text": "Now let spot fall to 8.25. The receivable converts to only ZMW 21,862,500, which is the disaster the hedge was for. The futures gain of (9.92 − 8.25) × 42 × 62,500 = ZMW 4,383,750 brings the total back to **ZMW 26,246,250**, close to the rate it locked in June.",
                           "type": "p"
+                        },
+                        {
+                          "kind": "example",
+                          "text": "Run the same hedge on your own numbers. A Copperbelt exporter expects USD 1,900,000 in three months, September futures are quoted at 11.60, and a contract is USD 62,500. By maturity spot has fallen to 10.40. Work out how many contracts it sells, then what the position delivers. Two decisions carry the whole answer: which way it deals, and which way it rounds.",
+                          "type": "callout"
                         }
                       ],
                       "heading": "Hedging with forwards and futures"
@@ -16744,7 +16818,7 @@
       },
       {
         "id": "debt-and-investment",
-        "label": "Debt and investment",
+        "label": "Debt and Investment",
         "children": [
           {
             "id": "debt",
@@ -16752,10 +16826,10 @@
             "children": [
               {
                 "id": "debt-management",
-                "label": "Where debt comes from",
+                "label": "Debt Sources and Maturity",
                 "lesson": {
-                  "title": "Where debt comes from, and how long it should run",
-                  "kicker": "Debt and investment",
+                  "title": "Debt Sources and Maturity",
+                  "kicker": "Debt and Investment",
                   "sections": [
                     {
                       "id": "the-function",
@@ -16912,6 +16986,7 @@
                           "type": "p"
                         },
                         {
+                          "kind": "key",
                           "text": "**Matching is the default, and departing from it is a policy rather than an accident.** Funding permanent assets with short-term debt is the aggressive position, cheaper and exposed at every renewal. Funding everything long is the conservative one, safer and dearer. Pick knowingly.",
                           "type": "callout"
                         }
@@ -16923,10 +16998,10 @@
               },
               {
                 "id": "the-price-of-debt",
-                "label": "What debt costs",
+                "label": "The Price of Debt",
                 "lesson": {
-                  "title": "What debt costs, and what it demands",
-                  "kicker": "Debt and investment",
+                  "title": "The Price of Debt",
+                  "kicker": "Debt and Investment",
                   "sections": [
                     {
                       "id": "covenants",
@@ -16988,7 +17063,7 @@
                           "type": "p"
                         },
                         {
-                          "text": "A bond promises a [coupon](https://corporatefinanceinstitute.com/resources/fixed-income/coupon-rate/) each year and its face value at maturity, so its [price](https://corporatefinanceinstitute.com/resources/fixed-income/bond-pricing/) is those cash flows discounted at whatever similar bonds currently yield. The face value is also called [[par|Trading below par is a discount and above it a premium, and which one it is tells you instantly whether rates have risen or fallen since the bond was issued.]], and it is the number the price gets compared against: a market yield above the coupon puts the price below par, and a yield below the coupon puts it above.",
+                          "text": "A bond promises a [coupon](https://corporatefinanceinstitute.com/resources/fixed-income/coupon-rate/) each year and its face value at maturity, so its [price](https://corporatefinanceinstitute.com/resources/fixed-income/bond-pricing/) is those cash flows discounted at whatever similar bonds currently yield. The face value is also called [[par|Trading below par is a discount and above it a premium, and which one it is tells you instantly whether rates have risen or fallen since the bond was issued.]]. It is the number the price gets compared against: a market yield above the coupon puts the price below par, and a yield below the coupon puts it above.",
                           "type": "p"
                         },
                         {
@@ -17168,10 +17243,10 @@
             "children": [
               {
                 "id": "investment-management",
-                "label": "Investing surplus cash",
+                "label": "Investing Surplus Cash",
                 "lesson": {
-                  "title": "The rules for investing surplus cash",
-                  "kicker": "Debt and investment",
+                  "title": "Investing Surplus Cash",
+                  "kicker": "Debt and Investment",
                   "sections": [
                     {
                       "id": "objectives",
@@ -17204,6 +17279,7 @@
                           ]
                         },
                         {
+                          "kind": "warning",
                           "text": "Never sacrifice safety for yield, and never sacrifice liquidity for yield. **Treasurers who inverted the order found their high-yield instruments defaulted or frozen at exactly the moment the cash was needed,** which is the only moment that was ever going to test it.",
                           "type": "callout"
                         }
@@ -17285,10 +17361,10 @@
               },
               {
                 "id": "building-the-portfolio",
-                "label": "Credit risk and the portfolio",
+                "label": "Credit Risk and the Portfolio",
                 "lesson": {
-                  "title": "Instruments, credit risk and the portfolio",
-                  "kicker": "Debt and investment",
+                  "title": "Credit Risk and the Portfolio",
+                  "kicker": "Debt and Investment",
                   "sections": [
                     {
                       "id": "instruments",
@@ -17385,14 +17461,14 @@
                       "id": "portfolio-construction",
                       "check": {
                         "answer": 0,
-                        "explain": "Liquidity outranks yield. The 15% is only real if the money can stay the full year, and the tax falls due in 91 days. Matching maturity to need means the higher rate was never actually available for this tranche, so the bill's 13% is the best the constraint allows.",
+                        "explain": "Take each tranche's own return and add them: 90,000 + 360,000 + 270,000 + 300,000 = ZMW 1,020,000, over ZMW 8,000,000, is **12.75%**. 12.38% is the plain average of the four rates, which quietly gives the ZMW 1 million reserve the same weight as the ZMW 3 million tax tranche. 13.29% drops the call deposit out of the denominator, and it is the most tempting slip. The reserve looks like idle cash rather than an investment, but it is money the portfolio is holding, and reporting a yield without it flatters the whole thing. 15% is the best rate in the table, which is only what the portfolio earns if the schedule is ignored. Then the VAT falls due with nothing matured to pay it.",
                         "options": [
-                          "The cash is needed in 3 months, so the bill matures exactly then while the bond would have to be sold early at whatever price prevails",
-                          "T-bills always outyield bonds",
-                          "Tax payments may only legally be funded from T-bills",
-                          "The bond's coupon is taxed and the bill's is not"
+                          "12.75%",
+                          "12.38%",
+                          "13.29%",
+                          "15.00%"
                         ],
-                        "question": "In the worked portfolio, why does the ZMW 2 million tax tranche go into a 91-day T-bill rather than the 15% 1-year bond?"
+                        "question": "What blended yield does that ZMW 8 million portfolio earn: 1m on call at 9%, 3m at 12%, 2m at 13.5%, 2m at 15%?"
                       },
                       "blocks": [
                         {
@@ -17474,6 +17550,11 @@
                         {
                           "text": "Judge it afterwards against a [[benchmark|A reference return built from market rates in the same proportions as your own portfolio. Comparing against one is how you tell a good year for you from a good year for everyone.]] weighted the same way, comparing total return against what that mix of market rates actually delivered. A large gap either way deserves the same question: was that skill, or was it risk the policy never intended you to take?",
                           "type": "p"
+                        },
+                        {
+                          "kind": "example",
+                          "text": "Price a portfolio of your own. A distributor has ZMW 8 million of surplus and four calls on it. ZMW 1 million must stay instantly available, on call at 9%. ZMW 3 million meets a VAT bill in three months, in a 91-day bill at 12%. ZMW 2 million funds a dividend in six months, in a 182-day bill at 13.5%. The last ZMW 2 million is free for the year, in a 1-year bond at 15%. Work the blended yield on the whole ZMW 8 million. The reserve is part of the portfolio, and so is the fact that the tranches are different sizes.",
+                          "type": "callout"
                         }
                       ],
                       "heading": "Constructing the portfolio"
@@ -17487,18 +17568,18 @@
       },
       {
         "id": "systems-and-clearing",
-        "label": "Systems and clearing",
+        "label": "Systems and Clearing",
         "children": [
           {
             "id": "payments-and-clearing",
-            "label": "Payments and clearing",
+            "label": "Payments and Clearing",
             "children": [
               {
                 "id": "clearing-and-settlement",
-                "label": "Clearing and settlement",
+                "label": "Clearing and Settlement",
                 "lesson": {
-                  "title": "Clearing, settlement, and the risk in between",
-                  "kicker": "Systems and clearing",
+                  "title": "Clearing and Settlement",
+                  "kicker": "Systems and Clearing",
                   "sections": [
                     {
                       "id": "clearing-vs-settlement",
@@ -17527,6 +17608,7 @@
                           "type": "p"
                         },
                         {
+                          "kind": "key",
                           "text": "Risk exists during clearing and ends at settlement. **A payment that has cleared but not settled is a promise, not money.**",
                           "type": "callout"
                         }
@@ -17641,10 +17723,10 @@
               },
               {
                 "id": "payment-systems-and-ccps",
-                "label": "The systems that carry a payment",
+                "label": "Payment Systems",
                 "lesson": {
-                  "title": "The systems that carry a payment",
-                  "kicker": "Systems and clearing",
+                  "title": "Payment Systems and Central Counterparties",
+                  "kicker": "Systems and Clearing",
                   "sections": [
                     {
                       "id": "swift",
@@ -17827,14 +17909,14 @@
           },
           {
             "id": "treasury-systems",
-            "label": "Treasury systems",
+            "label": "Treasury Systems",
             "children": [
               {
                 "id": "treasury-management-systems",
-                "label": "What a treasury system is",
+                "label": "Treasury Management Systems",
                 "lesson": {
-                  "title": "What a treasury system is, and how it is built",
-                  "kicker": "Systems and clearing",
+                  "title": "Treasury Management Systems",
+                  "kicker": "Systems and Clearing",
                   "sections": [
                     {
                       "id": "what-a-tms-is",
@@ -17989,10 +18071,10 @@
               },
               {
                 "id": "choosing-and-running-a-tms",
-                "label": "Choosing a treasury system",
+                "label": "Selecting a Treasury System",
                 "lesson": {
-                  "title": "Choosing a treasury system, and living with it",
-                  "kicker": "Systems and clearing",
+                  "title": "Selecting and Running a Treasury System",
+                  "kicker": "Systems and Clearing",
                   "sections": [
                     {
                       "id": "cash-positioning",
@@ -18087,6 +18169,7 @@
                           ]
                         },
                         {
+                          "kind": "key",
                           "text": "Budget **30% for software and 70% for implementation**, meaning migration, integration, testing and training, and 18 to 24 months for a full rollout in a complex group.",
                           "type": "callout"
                         }

@@ -38,12 +38,17 @@
  * order to do them in. The distractor at ZMW 3,906,000 is the instructive one:
  * it takes the worse side of one leg and the better side of the other, which
  * is what being on the wrong side of the second spread actually feels like.
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'Currency risk, and how rates are quoted'.
+ * The old name was sentence case and carried the hedged `, and how/what…` tail that 13 of this course's
+ * 22 titles shared. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "foreign-exchange-risk",
-  label: "Currency risk",
-  title: "Currency risk, and how rates are quoted",
+  label: "Foreign Exchange Risk",
+  title: "Foreign Exchange Risk",
   kicker: "Risk",
 
   sections: [
@@ -123,7 +128,7 @@ export default {
         {
           type: "callout",
           kind: "example",
-          text: "Put the two halves of this section together on one invoice. A Lusaka importer owes **GBP 250,000**. Its bank quotes **GBP/USD 1.24 – 1.28** and **USD/ZMW 12.40 – 12.60**. Work out what the payment costs in kwacha. Do it in two steps rather than one: **decide which side of each quote you are on before you multiply anything,** and remember there are two spreads here, not one.",
+          text: "Put the two halves of this section together on one invoice. A Lusaka importer owes GBP 250,000. Its bank quotes GBP/USD 1.24 – 1.28 and USD/ZMW 12.40 – 12.60. Work out what the payment costs in kwacha. Do it in two steps rather than one: decide which side of each quote you are on before you multiply anything, and remember there are two spreads here, not one.",
         },
       ],
       check: {
@@ -137,7 +142,7 @@ export default {
         ],
         answer: 0,
         explain:
-          "The importer is buying, so it is on the bank's ask on both legs: it buys pounds at 1.28 dollars each and buys those dollars at 12.60 kwacha each. GBP/ZMW = 1.28 × 12.60 = 16.128, and 250,000 × 16.128 = **ZMW 4,032,000**. ZMW 3,906,000 takes the favourable side of the pound leg and the unfavourable side of the dollar leg, which is the real trap: being on the worse side once feels like enough, and the bank is on the good side of both. ZMW 3,937,500 deals at the midpoints, a rate nobody is offering. ZMW 3,844,000 uses both bids, which is the rate the importer would get if it were selling pounds rather than buying them. The ZMW 188,000 between the right answer and that one is what the two spreads actually cost.",
+          "The importer is buying, so it is on the bank's ask on both legs: it buys pounds at 1.28 dollars each and buys those dollars at 12.60 kwacha each. GBP/ZMW = 1.28 × 12.60 = 16.128, and 250,000 × 16.128 = **ZMW 4,032,000**. ZMW 3,906,000 takes the favourable side of the pound leg and the unfavourable side of the dollar leg. That is the real trap: being on the worse side once feels like enough, and the bank is on the good side of both. ZMW 3,937,500 deals at the midpoints, a rate nobody is offering. ZMW 3,844,000 uses both bids, which is the rate the importer would get if it were selling pounds rather than buying them. The ZMW 188,000 between the right answer and that one is what the two spreads actually cost.",
       },
     },
 

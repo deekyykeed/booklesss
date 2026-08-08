@@ -29,12 +29,16 @@
  * nonsense number: it is what an exporter gets for buying futures instead of
  * selling them, and it is the same magnitude, so only the reasoning separates
  * them. The standardisation insight the old check tested is kept in the explain.
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'Hedging currency risk'.
+ * The old name was sentence case and did not name the topic the way the paper does. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "hedging-currency-risk",
-  label: "Hedging currency risk",
-  title: "Hedging currency risk",
+  label: "Hedging Foreign Exchange Risk",
+  title: "Hedging Foreign Exchange Risk",
   kicker: "Risk",
 
   sections: [
@@ -116,7 +120,7 @@ export default {
         {
           type: "callout",
           kind: "example",
-          text: "Run the same hedge on your own numbers. A Copperbelt exporter expects **USD 1,900,000** in three months, September futures are quoted at **11.60**, and a contract is **USD 62,500**. By maturity spot has fallen to **10.40**. Work out how many contracts it sells, then what the position delivers. Two decisions carry the whole answer: **which way it deals**, and **which way it rounds.**",
+          text: "Run the same hedge on your own numbers. A Copperbelt exporter expects USD 1,900,000 in three months, September futures are quoted at 11.60, and a contract is USD 62,500. By maturity spot has fallen to 10.40. Work out how many contracts it sells, then what the position delivers. Two decisions carry the whole answer: which way it deals, and which way it rounds.",
         },
       ],
       check: {
@@ -130,7 +134,7 @@ export default {
         ],
         answer: 0,
         explain:
-          "1,900,000 ÷ 62,500 = 30.4 contracts, and you round DOWN to 30: over-hedging turns the spare part of a contract into a bet. So the hedge covers 30 × 62,500 = USD 1,875,000, and the gain is (11.60 − 10.40) × 1,875,000 = **ZMW 2,250,000**. The USD 25,000 tail rides unhedged, which is the price of standardisation and the standing trade-off against a forward. ZMW 2,280,000 applies the 1.20 movement to the full USD 1,900,000, hedging an amount no contract exists for. ZMW 2,325,000 rounds 30.4 up to 31. The loss is what an exporter gets for buying futures instead of selling them: it is exposed to the kwacha strengthening, so its hedge must gain when the dollar buys fewer kwacha, and a bought position does the opposite.",
+          "1,900,000 ÷ 62,500 = 30.4 contracts, and you round DOWN to 30: over-hedging turns the spare part of a contract into a bet. So the hedge covers 30 × 62,500 = USD 1,875,000, and the gain is (11.60 − 10.40) × 1,875,000 = **ZMW 2,250,000**. The USD 25,000 tail rides unhedged, which is the price of standardisation and the standing trade-off against a forward. ZMW 2,280,000 applies the 1.20 movement to the full USD 1,900,000, hedging an amount no contract exists for. ZMW 2,325,000 rounds 30.4 up to 31. The loss is what an exporter gets for buying futures instead of selling them. An exporter is exposed to the kwacha strengthening, so its hedge must gain when the dollar buys fewer kwacha. A bought position does the opposite.",
       },
     },
 

@@ -22,13 +22,18 @@
  * twelve steps since the S-8 split of 2026-08-01 and more since this one, and
  * listing them broke S-6 anyway. The close now names what meets, not which
  * steps.
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'Choosing a treasury system, and living with it'.
+ * The old name was sentence case and carried the hedged `, and how/what…` tail that 13 of this course's
+ * 22 titles shared, and ended on a bare particle. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "choosing-and-running-a-tms",
-  label: "Choosing a treasury system",
-  title: "Choosing a treasury system, and living with it",
-  kicker: "Systems and clearing",
+  label: "Selecting a Treasury System",
+  title: "Selecting and Running a Treasury System",
+  kicker: "Systems and Clearing",
 
   sections: [
     /* ---------------------------------------------------------------- */

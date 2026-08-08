@@ -41,13 +41,18 @@
  *         their own sentences and keep the mark alone.
  *  · C-8  two links out, both backward. No forward links: the sidebar and the
  *         foot of the step already carry what comes next.
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'What debt costs, and what it demands'.
+ * The old name was sentence case and carried the hedged `, and how/what…` tail that 13 of this course's
+ * 22 titles shared, and opened on a question word. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "the-price-of-debt",
-  label: "What debt costs",
-  title: "What debt costs, and what it demands",
-  kicker: "Debt and investment",
+  label: "The Price of Debt",
+  title: "The Price of Debt",
+  kicker: "Debt and Investment",
 
   sections: [
     /* ---------------------------------------------------------------- */
@@ -106,7 +111,7 @@ export default {
         },
         {
           type: "p",
-          text: "A bond promises a [coupon](https://corporatefinanceinstitute.com/resources/fixed-income/coupon-rate/) each year and its face value at maturity, so its [price](https://corporatefinanceinstitute.com/resources/fixed-income/bond-pricing/) is those cash flows discounted at whatever similar bonds currently yield. The face value is also called [[par|Trading below par is a discount and above it a premium, and which one it is tells you instantly whether rates have risen or fallen since the bond was issued.]], and it is the number the price gets compared against: a market yield above the coupon puts the price below par, and a yield below the coupon puts it above.",
+          text: "A bond promises a [coupon](https://corporatefinanceinstitute.com/resources/fixed-income/coupon-rate/) each year and its face value at maturity, so its [price](https://corporatefinanceinstitute.com/resources/fixed-income/bond-pricing/) is those cash flows discounted at whatever similar bonds currently yield. The face value is also called [[par|Trading below par is a discount and above it a premium, and which one it is tells you instantly whether rates have risen or fallen since the bond was issued.]]. It is the number the price gets compared against: a market yield above the coupon puts the price below par, and a yield below the coupon puts it above.",
         },
         {
           type: "formula",

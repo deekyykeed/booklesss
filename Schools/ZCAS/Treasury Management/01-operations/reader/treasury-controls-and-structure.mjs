@@ -1,4 +1,4 @@
-/* TM · Lesson 1 Operations · Step 1.3: Keeping treasury honest, and where it sits
+/* TM · Lesson 1 Operations · Step 1.3: Treasury Controls and Governance
  *
  * Source: 06_Introduction to Treasury Management PPTX; Treasury controls.pdf;
  *         build_lesson_1_1_tm.py (PDF).
@@ -24,13 +24,18 @@
  * reconciling the same payments, and reaches Barings second, with the figures
  * carried so it stands on its own. Coverage unchanged: same six controls, same
  * three structures, same checks.
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'Keeping treasury honest, and where it sits'.
+ * The old name was sentence case and carried the hedged `, and how/what…` tail that 13 of this course's
+ * 22 titles shared. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "treasury-controls-and-structure",
-  label: "Keeping treasury honest",
-  title: "Keeping treasury honest, and where it sits",
-  kicker: "Treasury operations",
+  label: "Treasury Controls and Governance",
+  title: "Treasury Controls and Governance",
+  kicker: "Treasury Operations",
 
   sections: [
     /* ---------------------------------------------------------------- */

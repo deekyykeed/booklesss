@@ -25,13 +25,17 @@
  * a 15.4 KB multi-size .ico, so no chip renders, and a source with no chip is a
  * source the reader cannot reach. Restore the link if the generator ever learns
  * to downscale an .ico; the URL is good.
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'The systems that carry a payment'.
+ * The old name was sentence case and did not name the topic the way the paper does. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "payment-systems-and-ccps",
-  label: "The systems that carry a payment",
-  title: "The systems that carry a payment",
-  kicker: "Systems and clearing",
+  label: "Payment Systems",
+  title: "Payment Systems and Central Counterparties",
+  kicker: "Systems and Clearing",
 
   sections: [
     /* ---------------------------------------------------------------- */

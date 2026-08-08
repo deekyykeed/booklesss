@@ -21,13 +21,18 @@
  * financing policies from the working capital lesson". A reader who has not
  * read that lesson cannot use the sentence, so the two policies are described
  * where they are mentioned instead of pointed at.
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'Where debt comes from, and how long it should run'.
+ * The old name was sentence case and carried the hedged `, and how/what…` tail that 13 of this course's
+ * 22 titles shared. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "debt-management",
-  label: "Where debt comes from",
-  title: "Where debt comes from, and how long it should run",
-  kicker: "Debt and investment",
+  label: "Debt Sources and Maturity",
+  title: "Debt Sources and Maturity",
+  kicker: "Debt and Investment",
 
   sections: [
     /* ---------------------------------------------------------------- */

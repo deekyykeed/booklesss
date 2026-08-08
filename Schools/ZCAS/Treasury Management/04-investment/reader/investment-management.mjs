@@ -15,13 +15,17 @@
  * 2026-08-02 quality pass, paying D-1, D-2, D-3 and D-4's jargon half.
  * Engagement (D-1): §2's buried lead was its last sentence, that the policy
  * protects the treasurer as much as the company. It now opens the section.
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'The rules for investing surplus cash'.
+ * The old name was sentence case and did not name the topic the way the paper does. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "investment-management",
-  label: "Investing surplus cash",
-  title: "The rules for investing surplus cash",
-  kicker: "Debt and investment",
+  label: "Investing Surplus Cash",
+  title: "Investing Surplus Cash",
+  kicker: "Debt and Investment",
 
   sections: [
     /* ---------------------------------------------------------------- */

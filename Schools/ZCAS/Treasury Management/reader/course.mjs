@@ -35,6 +35,21 @@
  * root node and is untouched. The step `slug` values themselves did not change
  * (S-8), only the path they sit at. Do not repeat this casually once links are
  * circulating: 18 of the 21 steps moved.
+ *
+ * 2026-08-08 — EVERY NAME IN THIS COLUMN WAS REWRITTEN under rule S-12 (debt
+ * D-17): all 22 step titles, the nine lesson and grouping rows below, and all
+ * 22 kickers. The owner, reading the course: "a title is supposed to be
+ * capitalised properly and seriously … they lack a certain assertiveness."
+ *
+ * Two changes, and the second is the one that mattered. Names are Title Case
+ * now, so a row reads as a name rather than a sentence fragment. And thirteen
+ * of the 22 titles ended in a hedged `, and how/what/where…` clause — "Working
+ * capital, and how much of it to run" — which is a habit rather than a title;
+ * they are the noun phrase the paper uses instead.
+ *
+ * NO SLUG WAS TOUCHED, here or in any step, so nothing moved and no URL broke.
+ * That is the whole reason this was cheap: a title is a display string, and the
+ * 2026-08-03 note above is about the one thing that is not.
  */
 
 /* Treasury operations was one six-section step until 2026-08-01; it is three
@@ -119,7 +134,7 @@ export default {
       children: [
         {
           slug: "getting-started-treasury",
-          label: "Getting started",
+          label: "Getting Started",
           defaultOpen: true,
           children: [startHere],
         },
@@ -128,18 +143,18 @@ export default {
          * not create a folder for one step). */
         {
           slug: "treasury-operations",
-          label: "Treasury operations",
+          label: "Treasury Operations",
           children: [introToTreasury, treasuryLevelsAndMandate, treasuryControlsAndStructure],
         },
         {
           slug: "working-capital",
-          label: "Working capital",
+          label: "Working Capital",
           children: [
             workingCapitalAndLiquidity,
             debtorsAndFactoring,
             {
               slug: "inventory-and-suppliers",
-              label: "Inventory and suppliers",
+              label: "Inventory and Suppliers",
               children: [inventoryAndCreditors, orderingAndPayingSuppliers],
             },
             {
@@ -155,7 +170,7 @@ export default {
           children: [
             {
               slug: "interest-rates",
-              label: "Interest rates",
+              label: "Interest Rates",
               children: [interestRateRiskManagement, interestRateHedgingInstruments],
             },
             {
@@ -167,7 +182,7 @@ export default {
         },
         {
           slug: "debt-and-investment",
-          label: "Debt and investment",
+          label: "Debt and Investment",
           children: [
             {
               slug: "debt",
@@ -183,16 +198,16 @@ export default {
         },
         {
           slug: "systems-and-clearing",
-          label: "Systems and clearing",
+          label: "Systems and Clearing",
           children: [
             {
               slug: "payments-and-clearing",
-              label: "Payments and clearing",
+              label: "Payments and Clearing",
               children: [clearingAndSettlement, paymentSystemsAndCcps],
             },
             {
               slug: "treasury-systems",
-              label: "Treasury systems",
+              label: "Treasury Systems",
               children: [treasuryManagementSystems, choosingAndRunningATms],
             },
           ],

@@ -25,13 +25,17 @@
  * the call-deposit reserve out of the denominator, which is tempting because a
  * reserve reads as idle cash rather than as part of the portfolio, and it
  * flatters the reported yield every time.
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'Instruments, credit risk and the portfolio'.
+ * The old name was sentence case and did not name the topic the way the paper does. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "building-the-portfolio",
-  label: "Credit risk and the portfolio",
-  title: "Instruments, credit risk and the portfolio",
-  kicker: "Debt and investment",
+  label: "Credit Risk and the Portfolio",
+  title: "Credit Risk and the Portfolio",
+  kicker: "Debt and Investment",
 
   sections: [
     /* ---------------------------------------------------------------- */
@@ -176,7 +180,7 @@ export default {
         {
           type: "callout",
           kind: "example",
-          text: "Price a portfolio of your own. A distributor has **ZMW 8 million** of surplus and this schedule: **ZMW 1 million** must stay instantly available, on call at **9%**; **ZMW 3 million** meets a VAT bill in three months, in a 91-day bill at **12%**; **ZMW 2 million** funds a dividend in six months, in a 182-day bill at **13.5%**; and **ZMW 2 million** is free for the year, in a 1-year bond at **15%**. Work the blended yield on the whole ZMW 8 million. **The reserve is part of the portfolio,** and so is the fact that the tranches are different sizes.",
+          text: "Price a portfolio of your own. A distributor has ZMW 8 million of surplus and four calls on it. ZMW 1 million must stay instantly available, on call at 9%. ZMW 3 million meets a VAT bill in three months, in a 91-day bill at 12%. ZMW 2 million funds a dividend in six months, in a 182-day bill at 13.5%. The last ZMW 2 million is free for the year, in a 1-year bond at 15%. Work the blended yield on the whole ZMW 8 million. The reserve is part of the portfolio, and so is the fact that the tranches are different sizes.",
         },
       ],
       check: {
@@ -190,7 +194,7 @@ export default {
         ],
         answer: 0,
         explain:
-          "Take each tranche's own return and add them: 90,000 + 360,000 + 270,000 + 300,000 = ZMW 1,020,000, over ZMW 8,000,000, is **12.75%**. 12.38% is the plain average of the four rates, which quietly gives the ZMW 1 million reserve the same weight as the ZMW 3 million tax tranche. 13.29% drops the call deposit out of the denominator, and that is the most tempting one: the reserve looks like idle cash rather than an investment, but it is money the portfolio is holding and reporting a yield without it flatters the whole thing. 15% is the best rate in the table, which is only what the portfolio earns if the schedule is ignored. Then the VAT falls due with nothing matured to pay it.",
+          "Take each tranche's own return and add them: 90,000 + 360,000 + 270,000 + 300,000 = ZMW 1,020,000, over ZMW 8,000,000, is **12.75%**. 12.38% is the plain average of the four rates, which quietly gives the ZMW 1 million reserve the same weight as the ZMW 3 million tax tranche. 13.29% drops the call deposit out of the denominator, and it is the most tempting slip. The reserve looks like idle cash rather than an investment, but it is money the portfolio is holding, and reporting a yield without it flatters the whole thing. 15% is the best rate in the table, which is only what the portfolio earns if the schedule is ignored. Then the VAT falls due with nothing matured to pay it.",
       },
     },
   ],

@@ -41,13 +41,17 @@
  * the answer REVERSES: 12.35% is cheaper than the overdraft, so the discount
  * is declined. A second case at the same figures teaches a verdict; a second
  * case that comes out the other way teaches the method.
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'Getting the cash in'.
+ * The old name was sentence case and ended on a bare particle. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "debtors-and-factoring",
-  label: "Getting the cash in",
-  title: "Getting the cash in",
-  kicker: "Working capital",
+  label: "Debtors and Factoring",
+  title: "Debtors and Factoring",
+  kicker: "Working Capital",
 
   sections: [
     /* ---------------------------------------------------------------- */
@@ -98,7 +102,7 @@ export default {
         {
           type: "callout",
           kind: "example",
-          text: "Price a different offer before you read on, because they do not all come out the same way. A supplier offers **1.5/15 net 60** and your overdraft costs **20%** a year. Work the annual cost of letting the discount go, then say what you would do. The formula punishes two habits: **the discount comes off what you actually pay, not off 100,** and the days you are buying are the ones *between* the two dates.",
+          text: "Price a different offer before you read on, because they do not all come out the same way. A supplier offers 1.5/15 net 60 and your overdraft costs 20% a year. Work the annual cost of letting the discount go, then say what you would do. The formula punishes two habits: the discount comes off what you actually pay, not off 100, and the days you are buying are the ones *between* the two dates.",
         },
       ],
       check: {

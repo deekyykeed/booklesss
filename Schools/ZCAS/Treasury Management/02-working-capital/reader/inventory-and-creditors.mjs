@@ -19,13 +19,18 @@
  * Engagement (D-1): §2's closing line was its best sentence, that the weaker
  * the borrower the more the financing leans on the stock itself. It now opens
  * the section and the five methods are read against it.
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'Inventory, and how it is financed'.
+ * The old name was sentence case and carried the hedged `, and how/what…` tail that 13 of this course's
+ * 22 titles shared. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "inventory-and-creditors",
-  label: "Inventory",
-  title: "Inventory, and how it is financed",
-  kicker: "Working capital",
+  label: "Inventory and Trade Credit",
+  title: "Inventory and Trade Credit",
+  kicker: "Working Capital",
 
   sections: [
     /* ---------------------------------------------------------------- */

@@ -259,6 +259,13 @@ to live.
 | `--font-display` / `font-display` | **Familjen Grotesk** | Headings, step titles, formulas |
 | `--font-content` / `font-content` | **Aptos** | **The reading** inside a step: prose, list items, table cells |
 | `--font-container` / `font-container` | **Satoshi** | **The containers** inside a step: callouts and cards (label *and* body), source chips, the tap-to-define popup, the section-note menu, table column headings |
+| `--font-title` / `font-title` | **Bricolage Grotesque** 600 | **A step's `<h1>` and nothing else** (2026-08-08) |
+
+**The step title left Familjen Grotesk on 2026-08-08** (owner: *"i want to move away from familjen font titles i want to use bricolage grotesk"*), and the weight moved with the face — 500 → **600**, because the same reaction said the titles *"aren't bold or confident"*. The wording half of that is rule **S-12** in `step-skill/RULES.md`; this is the rest of it. It is one line in `reader/LessonView.tsx`.
+
+**This is the first landing-page face to come inside the app, and it is scoped to one element.** `--font-display` (Familjen) is still every heading, every section `h2` and all the chrome — moving those is a second decision, not an implication of this one. The token falls back to Familjen, so a failed fetch lands on what it replaced. `next/font` now emits a Bricolage **600** alongside the hero's 800 and reader routes fetch it, where before no route but `/` asked for any Bricolage: a real cost, taken on purpose.
+
+**The OG preview card is still Familjen** — `lib/og.tsx` renders through Satori, which reads only ttf/otf/woff, so matching it means vendoring and instancing a Bricolage TTF the way `platform/assets/FamiljenGrotesk-Medium.ttf` was. Left alone deliberately: that card is the *social poster* system (see the Domain section), not the reader, and its face is part of a look that was designed as a whole.
 
 **The `content` / `container` split is the owner's rule (2026-08-02)** and it is by *job*, not by element: a sentence someone reads is Aptos, and chrome that frames or annotates a sentence is Satoshi. The whole reading face was briefly swapped to Satoshi and that was too far. Satoshi is Fontshare / Indian Type Foundry (ITF Free Font Licence) and is on no device by default, which is why it is vendored rather than linked.
 

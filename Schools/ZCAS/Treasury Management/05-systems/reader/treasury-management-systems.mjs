@@ -27,13 +27,18 @@
  * Emphasis and voice (D-2): 0 bold, 0 tappable terms and 0 source links across
  * the original six sections became 13, 6 and 12. Exam framing replaced with
  * founder framing (W-9). 44 em dashes became 0 (W-11).
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'What a treasury system is, and how it is built'.
+ * The old name was sentence case and carried the hedged `, and how/what…` tail that 13 of this course's
+ * 22 titles shared, and opened on a question word. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "treasury-management-systems",
-  label: "What a treasury system is",
-  title: "What a treasury system is, and how it is built",
-  kicker: "Systems and clearing",
+  label: "Treasury Management Systems",
+  title: "Treasury Management Systems",
+  kicker: "Systems and Clearing",
 
   sections: [
     /* ---------------------------------------------------------------- */

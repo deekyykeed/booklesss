@@ -21,13 +21,18 @@
  * and the decision rides on the number instead of being given with it. The
  * 10.00% distractor is the discount-rate-for-yield slip, which is worth naming
  * because it is always close enough to the right answer to look right.
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'Forecasting the cash, and putting it to work'.
+ * The old name was sentence case and carried the hedged `, and how/what…` tail that 13 of this course's
+ * 22 titles shared, and ended on a bare particle. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "cash-forecasting-and-surpluses",
-  label: "Forecasting the cash",
-  title: "Forecasting the cash, and putting it to work",
-  kicker: "Working capital",
+  label: "Cash Forecasting and Surpluses",
+  title: "Cash Forecasting and Surpluses",
+  kicker: "Working Capital",
 
   sections: [
     /* ---------------------------------------------------------------- */
@@ -142,7 +147,7 @@ export default {
         {
           type: "callout",
           kind: "example",
-          text: "Price the alternative before you read on. Your forecast frees **ZMW 4 million** for exactly **73 days**. The bank's call deposit pays **6%** a year, and a 73-day treasury bill is on offer at **98**. Annualise the bill, then say which one you take. Two traps sit in one line of arithmetic: **the yield is measured against what you pay, not against the 100 you get back,** and a 73-day return is not an annual one until you scale it.",
+          text: "Price the alternative before you read on. Your forecast frees ZMW 4 million for exactly 73 days. The bank's call deposit pays 6% a year, and a 73-day treasury bill is on offer at 98. Annualise the bill, then say which one you take. Two traps sit in one line of arithmetic. The yield is measured against what you pay, not against the 100 you get back. And a 73-day return is not an annual one until you scale it.",
         },
       ],
       check: {

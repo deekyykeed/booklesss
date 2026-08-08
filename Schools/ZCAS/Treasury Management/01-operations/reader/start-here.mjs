@@ -1,4 +1,4 @@
-/* TM · Step 0 — Start here: what this course is for
+/* TM · Step 0 — Start here: The Case for Treasury Management
  *
  * Sources: the course's own module handbook and scheme of work; the past papers
  * in `past-papers/` for what the paper actually rewards. No lecture slide backs
@@ -19,12 +19,16 @@
  * `intro-to-treasury`, the very next step, opens on exactly that and a reader
  * meeting the same hook twice in two screens learns that the course repeats
  * itself (W-13, C-8).
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'Start here: what this course is for'.
+ * The old name was sentence case and did not name the topic the way the paper does. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "start-here-treasury",
-  label: "Start here",
-  title: "Start here: what this course is for",
+  label: "The Case for Treasury Management",
+  title: "The Case for Treasury Management",
   kicker: "Treasury Management",
 
   sections: [
@@ -48,7 +52,7 @@ export default {
         },
         {
           type: "p",
-          text: "Treasury is the part of a business that watches the Tuesday: what is coming in, what has to go out, what it costs to cover the difference, and what happens to all of that when the kwacha moves or the central bank changes rates. The cycle it watches runs from buying stock to being paid for it, and is called the [working capital cycle](https://corporatefinanceinstitute.com/resources/accounting/working-capital-cycle/).",
+          text: "Treasury is the part of a business that watches the Tuesday: what is coming in, what has to go out, and what it costs to cover the difference. When the kwacha moves or the central bank changes rates, treasury is what absorbs it. The cycle it watches runs from buying stock to being paid for it, and is called the [working capital cycle](https://corporatefinanceinstitute.com/resources/accounting/working-capital-cycle/).",
         },
       ],
       check: {
@@ -97,7 +101,7 @@ export default {
         {
           type: "callout",
           kind: "exam",
-          text: "The paper is written the same way. Most marks in the past papers go to a calculation and then to a short recommendation about what the business should actually do, so a number without a decision attached to it leaves marks on the table.",
+          text: "The paper is written the same way. Most marks in the past papers go to a calculation and then to a short recommendation about what the business should actually do. A number with no decision attached to it leaves marks on the table.",
         },
       ],
       check: {
@@ -126,7 +130,7 @@ export default {
         },
         {
           type: "p",
-          text: "**Twenty-one steps sit after this one, across 57 sections,** and they run in the order the money does. Getting cash in and keeping it moving, then protecting it from [rates and currencies](https://corporatefinanceinstitute.com/resources/foreign-exchange/foreign-exchange-risk/), then what it costs to borrow and what to do with a surplus, then the systems that actually move it between banks. A section is roughly five minutes, which makes an evening about a lesson.",
+          text: "**Twenty-one steps sit after this one, across 57 sections,** and they run in the order the money does. Getting cash in and keeping it moving. Protecting it from [rates and currencies](https://corporatefinanceinstitute.com/resources/foreign-exchange/foreign-exchange-risk/). What it costs to borrow, and what to do with a surplus. Then the systems that actually move it between banks. A section is roughly five minutes, which makes an evening about a lesson.",
         },
         { type: "h2", text: "Three things worth knowing before you start" },
         {

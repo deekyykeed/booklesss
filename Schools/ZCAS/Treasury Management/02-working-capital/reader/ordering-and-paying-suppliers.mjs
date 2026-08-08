@@ -23,13 +23,18 @@
  * the slip the formula invites and the lecture's own figures also carry it.
  * 231 units is that slip, 566 drops the 2, and 60 is the order frequency
  * mistaken for the order size. Figures resolve to exactly 800 units.
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'How much to order, and when to pay'.
+ * The old name was sentence case and carried the hedged `, and how/what…` tail that 13 of this course's
+ * 22 titles shared, and opened on a question word. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "ordering-and-paying-suppliers",
-  label: "How to order, and when to pay",
-  title: "How much to order, and when to pay",
-  kicker: "Working capital",
+  label: "Order Quantity and Payment Terms",
+  title: "Order Quantity and Payment Terms",
+  kicker: "Working Capital",
 
   sections: [
     /* ---------------------------------------------------------------- */
@@ -78,7 +83,7 @@ export default {
         {
           type: "callout",
           kind: "example",
-          text: "Size one yourself. A Ndola bottler uses **4,000 units a month** of a packaging line input, each order costs **ZMW 40** to place, and holding a unit for a year costs **ZMW 6**. Work the order quantity, then the orders a year, then the days between them. The first move is the one the formula does not prompt you to make: **a and h have to be measured over the same period.**",
+          text: "Size one yourself. A Ndola bottler uses 4,000 units a month of a packaging line input, each order costs ZMW 40 to place, and holding a unit for a year costs ZMW 6. Work the order quantity, then the orders a year, then the days between them. The first move is the one the formula does not prompt you to make: a and h have to be measured over the same period.",
         },
       ],
       check: {

@@ -1,4 +1,4 @@
-/* TM · Lesson 1 Operations · Step 1.1: What treasury is and what it does
+/* TM · Lesson 1 Operations · Step 1.1: The Treasury Function
  *
  * Source: 06_Introduction to Treasury Management PPTX; Treasury controls.pdf;
  *         build_lesson_1_1_tm.py (PDF).
@@ -15,13 +15,17 @@
  * This step is also the reference implementation for the writing rules: W-8
  * bold, W-9/W-10 ownership voice, W-11 no em dashes, W-12 sentence length,
  * E-8 [[term|definition]] popups, C-7 inline source links.
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'What treasury is and what it does'.
+ * The old name was sentence case and opened on a question word. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "intro-to-treasury",
-  label: "What treasury is",
-  title: "What treasury is and what it does",
-  kicker: "Treasury operations",
+  label: "The Treasury Function",
+  title: "The Treasury Function",
+  kicker: "Treasury Operations",
 
   sections: [
     /* ---------------------------------------------------------------- */

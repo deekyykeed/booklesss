@@ -22,6 +22,36 @@ Quote actual words. A student's phrasing is never rewritten into the owner's.
 
 ---
 
+### 2026-08-08 · treasury-management (all steps) · owner
+- `structure` — "the titles im coming across are poor… they lack a certain
+  assertiveness and feel like they aren't bold or confident. a title is supposed
+  to be capitalised properly and seriously." Two complaints in one, and both are
+  measurable. **Case:** every title in the product is sentence case, so the name
+  a step travels under reads as a sentence fragment rather than a name.
+  **Register:** the set had one tic and it was everywhere. **Thirteen of
+  Treasury Management's twenty-two titles ended in a `, and how/what/where…`
+  clause** — "Working capital, and how much of it to run", "What debt costs, and
+  what it demands" — and most of the rest were casual verb phrases ("Getting the
+  cash in") or questions in disguise ("What treasury is and what it does"). One
+  of those is a subtitle; twenty-two of them is a voice, and it is a hedging
+  one. The fix is Title Case plus the noun phrase a syllabus would use, which is
+  also what a student types into a search box the night before the exam (**C-4**).
+  Section `heading`s deliberately stay sentence case: a heading is a signpost
+  inside the reading, not a name.
+  → promoted: **S-12** · debt: **D-17** (51 of 53 steps; TM's 22 paid the same
+  day)
+
+- `element` — "i want to move away from familjen font titles i want to use
+  bricolage grotesk." Applies to the step `<h1>` and the course/lesson names
+  above it, not to `font-display` everywhere: the app chrome, the pickers and
+  the settings rows are Inter-adjacent and were not what the owner was reading.
+  Bricolage was already registered for the landing page, so this widens the
+  palette **into** the app for the first time, which `.claude/CLAUDE.md`
+  explicitly says is a decision rather than a convenience. It is now a named
+  token, `--font-title`, so the next change of face is one line.
+  → promoted: none (app typography, not a step rule — recorded in
+  `.claude/CLAUDE.md`) · debt: none
+
 ### 2026-08-07 · all courses · owner
 - `content` — "the source of truth for any school is the material it already
   comes with. Slides, transcripts and other things." **C-2** named only "this

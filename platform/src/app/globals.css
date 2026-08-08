@@ -18,6 +18,22 @@
      Use it as `font-container`; `font-content` stays the reading. */
   --font-container: var(--font-satoshi), var(--font-inter), system-ui, sans-serif;
 
+  /* THE TITLE OF A STEP, and only that (owner, 2026-08-08: "i want to move away
+     from familjen font titles i want to use bricolage grotesk"). Bricolage
+     Grotesque at 600, drawn by the reader's <h1> in LessonView.tsx.
+
+     Named for the job, like every token here, so the next change of face is one
+     line. It is deliberately NOT --font-display: that token is the app's
+     headings and chrome, and moving all of them is a separate decision. The
+     fallback is Familjen, so a failed fetch lands on what this replaced rather
+     than on a system face.
+
+     This is the first time a landing-page face has been used inside the app.
+     The block below still means what it says — reaching for one of those is a
+     decision, not a convenience — and this is that decision, taken once and
+     scoped to one element. */
+  --font-title: var(--font-bricolage), var(--font-familjen), ui-sans-serif, sans-serif;
+
   /* THE FRONT DOOR ONLY (2026-08-06), measured off the owner's Framer design.
      Named for the job they do on that page rather than for the typeface, so a
      later change of face is one line here. Do not reach for these inside the

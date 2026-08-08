@@ -1772,37 +1772,44 @@
     "defaultOpen": true,
     "children": [
       {
-        "id": "start-here-treasury",
-        "label": "Start here",
-        "lesson": {
-          "title": "Start here: what this course is for",
-          "kicker": "Treasury Management",
-          "sections": [
-            {
-              "id": "the-day-it-falls-due",
-              "heading": "Start here"
-            },
-            {
-              "id": "what-it-buys-you",
-              "heading": "What you can do with it"
-            },
-            {
-              "id": "how-to-use-this",
-              "heading": "How to use this"
+        "id": "getting-started-treasury",
+        "label": "Getting Started",
+        "defaultOpen": true,
+        "children": [
+          {
+            "id": "start-here-treasury",
+            "label": "The Case for Treasury Management",
+            "lesson": {
+              "title": "The Case for Treasury Management",
+              "kicker": "Treasury Management",
+              "sections": [
+                {
+                  "id": "the-day-it-falls-due",
+                  "heading": "Start here"
+                },
+                {
+                  "id": "what-it-buys-you",
+                  "heading": "What you can do with it"
+                },
+                {
+                  "id": "how-to-use-this",
+                  "heading": "How to use this"
+                }
+              ]
             }
-          ]
-        }
+          }
+        ]
       },
       {
         "id": "treasury-operations",
-        "label": "Treasury operations",
+        "label": "Treasury Operations",
         "children": [
           {
             "id": "intro-to-treasury",
-            "label": "What treasury is",
+            "label": "The Treasury Function",
             "lesson": {
-              "title": "What treasury is and what it does",
-              "kicker": "Treasury operations",
+              "title": "The Treasury Function",
+              "kicker": "Treasury Operations",
               "sections": [
                 {
                   "id": "what-treasury-is",
@@ -1817,10 +1824,10 @@
           },
           {
             "id": "treasury-levels-and-mandate",
-            "label": "How treasury work divides",
+            "label": "The Three Levels of Treasury",
             "lesson": {
-              "title": "How treasury work divides, and what it is for",
-              "kicker": "Treasury operations",
+              "title": "The Three Levels of Treasury",
+              "kicker": "Treasury Operations",
               "sections": [
                 {
                   "id": "task-levels",
@@ -1835,10 +1842,10 @@
           },
           {
             "id": "treasury-controls-and-structure",
-            "label": "Keeping treasury honest",
+            "label": "Treasury Controls and Governance",
             "lesson": {
-              "title": "Keeping treasury honest, and where it sits",
-              "kicker": "Treasury operations",
+              "title": "Treasury Controls and Governance",
+              "kicker": "Treasury Operations",
               "sections": [
                 {
                   "id": "controls",
@@ -1855,14 +1862,14 @@
       },
       {
         "id": "working-capital",
-        "label": "Working capital",
+        "label": "Working Capital",
         "children": [
           {
             "id": "working-capital-and-liquidity",
-            "label": "Working capital",
+            "label": "Working Capital and Liquidity",
             "lesson": {
-              "title": "Working capital, and how much of it to run",
-              "kicker": "Working capital",
+              "title": "Working Capital and Liquidity",
+              "kicker": "Working Capital",
               "sections": [
                 {
                   "id": "what-working-capital-is",
@@ -1881,10 +1888,10 @@
           },
           {
             "id": "debtors-and-factoring",
-            "label": "Getting the cash in",
+            "label": "Debtors and Factoring",
             "lesson": {
-              "title": "Getting the cash in",
-              "kicker": "Working capital",
+              "title": "Debtors and Factoring",
+              "kicker": "Working Capital",
               "sections": [
                 {
                   "id": "debtor-management",
@@ -1899,14 +1906,14 @@
           },
           {
             "id": "inventory-and-suppliers",
-            "label": "Inventory and suppliers",
+            "label": "Inventory and Suppliers",
             "children": [
               {
                 "id": "inventory-and-creditors",
-                "label": "Inventory",
+                "label": "Inventory and Trade Credit",
                 "lesson": {
-                  "title": "Inventory, and how it is financed",
-                  "kicker": "Working capital",
+                  "title": "Inventory and Trade Credit",
+                  "kicker": "Working Capital",
                   "sections": [
                     {
                       "id": "what-inventory-is",
@@ -1925,10 +1932,10 @@
               },
               {
                 "id": "ordering-and-paying-suppliers",
-                "label": "How to order, and when to pay",
+                "label": "Order Quantity and Payment Terms",
                 "lesson": {
-                  "title": "How much to order, and when to pay",
-                  "kicker": "Working capital",
+                  "title": "Order Quantity and Payment Terms",
+                  "kicker": "Working Capital",
                   "sections": [
                     {
                       "id": "eoq",
@@ -1949,10 +1956,10 @@
             "children": [
               {
                 "id": "cash-management",
-                "label": "Deciding how much cash to hold",
+                "label": "Optimal Cash Balances",
                 "lesson": {
-                  "title": "Deciding how much cash to hold",
-                  "kicker": "Working capital",
+                  "title": "Optimal Cash Balances",
+                  "kicker": "Working Capital",
                   "sections": [
                     {
                       "id": "why-cash-management",
@@ -1971,10 +1978,10 @@
               },
               {
                 "id": "cash-forecasting-and-surpluses",
-                "label": "Forecasting the cash",
+                "label": "Cash Forecasting and Surpluses",
                 "lesson": {
-                  "title": "Forecasting the cash, and putting it to work",
-                  "kicker": "Working capital",
+                  "title": "Cash Forecasting and Surpluses",
+                  "kicker": "Working Capital",
                   "sections": [
                     {
                       "id": "forecasting",
@@ -2001,13 +2008,13 @@
         "children": [
           {
             "id": "interest-rates",
-            "label": "Interest rates",
+            "label": "Interest Rates",
             "children": [
               {
                 "id": "interest-rate-risk-management",
-                "label": "Interest rate risk",
+                "label": "Interest Rate Risk",
                 "lesson": {
-                  "title": "Interest rate risk, and how to measure it",
+                  "title": "Interest Rate Risk",
                   "kicker": "Risk",
                   "sections": [
                     {
@@ -2023,9 +2030,9 @@
               },
               {
                 "id": "interest-rate-hedging-instruments",
-                "label": "Covering interest rate risk",
+                "label": "Hedging Interest Rate Risk",
                 "lesson": {
-                  "title": "Covering interest rate risk",
+                  "title": "Hedging Interest Rate Risk",
                   "kicker": "Risk",
                   "sections": [
                     {
@@ -2055,9 +2062,9 @@
             "children": [
               {
                 "id": "foreign-exchange-risk",
-                "label": "Currency risk",
+                "label": "Foreign Exchange Risk",
                 "lesson": {
-                  "title": "Currency risk, and how rates are quoted",
+                  "title": "Foreign Exchange Risk",
                   "kicker": "Risk",
                   "sections": [
                     {
@@ -2077,9 +2084,9 @@
               },
               {
                 "id": "hedging-currency-risk",
-                "label": "Hedging currency risk",
+                "label": "Hedging Foreign Exchange Risk",
                 "lesson": {
-                  "title": "Hedging currency risk",
+                  "title": "Hedging Foreign Exchange Risk",
                   "kicker": "Risk",
                   "sections": [
                     {
@@ -2103,7 +2110,7 @@
       },
       {
         "id": "debt-and-investment",
-        "label": "Debt and investment",
+        "label": "Debt and Investment",
         "children": [
           {
             "id": "debt",
@@ -2111,10 +2118,10 @@
             "children": [
               {
                 "id": "debt-management",
-                "label": "Where debt comes from",
+                "label": "Debt Sources and Maturity",
                 "lesson": {
-                  "title": "Where debt comes from, and how long it should run",
-                  "kicker": "Debt and investment",
+                  "title": "Debt Sources and Maturity",
+                  "kicker": "Debt and Investment",
                   "sections": [
                     {
                       "id": "the-function",
@@ -2133,10 +2140,10 @@
               },
               {
                 "id": "the-price-of-debt",
-                "label": "What debt costs",
+                "label": "The Price of Debt",
                 "lesson": {
-                  "title": "What debt costs, and what it demands",
-                  "kicker": "Debt and investment",
+                  "title": "The Price of Debt",
+                  "kicker": "Debt and Investment",
                   "sections": [
                     {
                       "id": "covenants",
@@ -2161,10 +2168,10 @@
             "children": [
               {
                 "id": "investment-management",
-                "label": "Investing surplus cash",
+                "label": "Investing Surplus Cash",
                 "lesson": {
-                  "title": "The rules for investing surplus cash",
-                  "kicker": "Debt and investment",
+                  "title": "Investing Surplus Cash",
+                  "kicker": "Debt and Investment",
                   "sections": [
                     {
                       "id": "objectives",
@@ -2179,10 +2186,10 @@
               },
               {
                 "id": "building-the-portfolio",
-                "label": "Credit risk and the portfolio",
+                "label": "Credit Risk and the Portfolio",
                 "lesson": {
-                  "title": "Instruments, credit risk and the portfolio",
-                  "kicker": "Debt and investment",
+                  "title": "Credit Risk and the Portfolio",
+                  "kicker": "Debt and Investment",
                   "sections": [
                     {
                       "id": "instruments",
@@ -2205,18 +2212,18 @@
       },
       {
         "id": "systems-and-clearing",
-        "label": "Systems and clearing",
+        "label": "Systems and Clearing",
         "children": [
           {
             "id": "payments-and-clearing",
-            "label": "Payments and clearing",
+            "label": "Payments and Clearing",
             "children": [
               {
                 "id": "clearing-and-settlement",
-                "label": "Clearing and settlement",
+                "label": "Clearing and Settlement",
                 "lesson": {
-                  "title": "Clearing, settlement, and the risk in between",
-                  "kicker": "Systems and clearing",
+                  "title": "Clearing and Settlement",
+                  "kicker": "Systems and Clearing",
                   "sections": [
                     {
                       "id": "clearing-vs-settlement",
@@ -2235,10 +2242,10 @@
               },
               {
                 "id": "payment-systems-and-ccps",
-                "label": "The systems that carry a payment",
+                "label": "Payment Systems",
                 "lesson": {
-                  "title": "The systems that carry a payment",
-                  "kicker": "Systems and clearing",
+                  "title": "Payment Systems and Central Counterparties",
+                  "kicker": "Systems and Clearing",
                   "sections": [
                     {
                       "id": "swift",
@@ -2259,14 +2266,14 @@
           },
           {
             "id": "treasury-systems",
-            "label": "Treasury systems",
+            "label": "Treasury Systems",
             "children": [
               {
                 "id": "treasury-management-systems",
-                "label": "What a treasury system is",
+                "label": "Treasury Management Systems",
                 "lesson": {
-                  "title": "What a treasury system is, and how it is built",
-                  "kicker": "Systems and clearing",
+                  "title": "Treasury Management Systems",
+                  "kicker": "Systems and Clearing",
                   "sections": [
                     {
                       "id": "what-a-tms-is",
@@ -2285,10 +2292,10 @@
               },
               {
                 "id": "choosing-and-running-a-tms",
-                "label": "Choosing a treasury system",
+                "label": "Selecting a Treasury System",
                 "lesson": {
-                  "title": "Choosing a treasury system, and living with it",
-                  "kicker": "Systems and clearing",
+                  "title": "Selecting and Running a Treasury System",
+                  "kicker": "Systems and Clearing",
                   "sections": [
                     {
                       "id": "cash-positioning",

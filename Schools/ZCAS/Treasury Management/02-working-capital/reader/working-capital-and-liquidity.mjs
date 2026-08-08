@@ -35,13 +35,18 @@
  * any, is in the method rather than in rounding. The distractors are the three
  * real ones: the operating cycle reported as the cash cycle, every ratio run
  * over revenue, and payables added rather than subtracted.
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'Working capital, and how much of it to run'.
+ * The old name was sentence case and carried the hedged `, and how/what…` tail that 13 of this course's
+ * 22 titles shared. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "working-capital-and-liquidity",
-  label: "Working capital",
-  title: "Working capital, and how much of it to run",
-  kicker: "Working capital",
+  label: "Working Capital and Liquidity",
+  title: "Working Capital and Liquidity",
+  kicker: "Working Capital",
 
   sections: [
     /* ---------------------------------------------------------------- */
@@ -222,7 +227,7 @@ export default {
         {
           type: "callout",
           kind: "example",
-          text: "Measure one before you read on. A Kitwe hardware distributor reports revenue of **ZMW 18,250,000**, cost of goods sold of **ZMW 10,950,000**, inventory of **ZMW 1,800,000**, receivables of **ZMW 2,250,000** and payables of **ZMW 1,050,000**. Work the three components, then the cycle. **Each ratio has its own denominator:** two of the three are measured against cost of goods sold, and only receivables goes over revenue, because a receivable is billed at the selling price and stock and supplier invoices are not.",
+          text: "Measure one before you read on. A Kitwe hardware distributor reports revenue of ZMW 18,250,000, cost of goods sold of ZMW 10,950,000, inventory of ZMW 1,800,000, receivables of ZMW 2,250,000 and payables of ZMW 1,050,000. Work the three components, then the cycle. Each ratio has its own denominator. Two of the three are measured against cost of goods sold, and only receivables goes over revenue. A receivable is billed at the selling price; stock and supplier invoices are not.",
         },
       ],
       check: {

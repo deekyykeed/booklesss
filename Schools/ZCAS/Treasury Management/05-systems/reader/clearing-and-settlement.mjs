@@ -23,13 +23,18 @@
  *
  * Emphasis (D-2): 0 bold, 0 tappable terms and 0 source links across the
  * original six sections became 12, 7 and 9. 52 em dashes became 0 (W-11).
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'Clearing, settlement, and the risk in between'.
+ * The old name was sentence case and carried the hedged `, and how/what…` tail that 13 of this course's
+ * 22 titles shared. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "clearing-and-settlement",
-  label: "Clearing and settlement",
-  title: "Clearing, settlement, and the risk in between",
-  kicker: "Systems and clearing",
+  label: "Clearing and Settlement",
+  title: "Clearing and Settlement",
+  kicker: "Systems and Clearing",
 
   sections: [
     /* ---------------------------------------------------------------- */

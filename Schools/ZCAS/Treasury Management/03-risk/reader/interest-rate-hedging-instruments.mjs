@@ -33,12 +33,16 @@
  * distractor adds the penalties instead of subtracting them, which implies the
  * gain grows the more alike the two borrowers are; saying that out loud in the
  * explain is cheaper than the arithmetic.
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'Covering interest rate risk'.
+ * The old name was sentence case and did not name the topic the way the paper does. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "interest-rate-hedging-instruments",
-  label: "Covering interest rate risk",
-  title: "Covering interest rate risk",
+  label: "Hedging Interest Rate Risk",
+  title: "Hedging Interest Rate Risk",
   kicker: "Risk",
 
   sections: [
@@ -80,7 +84,7 @@ export default {
         {
           type: "callout",
           kind: "example",
-          text: "Settle one in cash. A **ZMW 4 million** loan resets in three months for a **six-month** period, and the treasurer buys an FRA at **9%**. By the reset date six-month rates have gone to **11%**. Work out which way the money moves and how much of it. Only one number in the question is not needed for the settlement, and finding it is half the exercise: **no principal changes hands, and the period is not a year.**",
+          text: "Settle one in cash. A ZMW 4 million loan resets in three months for a six-month period, and the treasurer buys an FRA at 9%. By the reset date six-month rates have gone to 11%. Work out which way the money moves and how much of it. Only one number in the question is not needed for the settlement, and finding it is half the exercise: no principal changes hands, and the period is not a year.",
         },
       ],
       check: {
@@ -145,7 +149,7 @@ export default {
         {
           type: "callout",
           kind: "example",
-          text: "Find the surplus in a different pair. Zambeef can borrow at **9.5% fixed** or **LIBOR + 0.4% floating**; a smaller processor can borrow at **11.3% fixed** or **LIBOR + 1.0% floating**. Zambeef wants floating and the processor wants fixed. Work out each of the processor's two penalties, then how much a swap has to share out. Do not start from which rate looks cheapest: **the gain is a difference between two differences,** and neither of them is a rate you can read straight off the table.",
+          text: "Find the surplus in a different pair. Zambeef can borrow at 9.5% fixed or LIBOR + 0.4% floating; a smaller processor can borrow at 11.3% fixed or LIBOR + 1.0% floating. Zambeef wants floating and the processor wants fixed. Work out each of the processor's two penalties, then how much a swap has to share out. Do not start from which rate looks cheapest: the gain is a difference between two differences, and neither of them is a rate you can read straight off the table.",
         },
       ],
       check: {
@@ -159,7 +163,7 @@ export default {
         ],
         answer: 0,
         explain:
-          "The processor pays 11.3% − 9.5% = 1.8% more in the fixed market and only 1.0% − 0.4% = 0.6% more in the floating one. The surplus is the difference between those two penalties: 1.8% − 0.6% = **1.2%**, or 0.6% each split evenly. 0.6% is the smaller penalty mistaken for the gain; 1.8% is the larger one, which is the whole gap in the market each side is about to leave rather than the gain from trading; 2.4% adds the penalties instead of subtracting them, which would mean the surplus grows the more alike the two firms are, and it is exactly the other way round: where both penalties are equal there is nothing to swap for.",
+          "The processor pays 11.3% − 9.5% = 1.8% more in the fixed market and only 1.0% − 0.4% = 0.6% more in the floating one. The surplus is the difference between those two penalties: 1.8% − 0.6% = **1.2%**, or 0.6% each split evenly. 0.6% is the smaller penalty mistaken for the gain. 1.8% is the larger one: the whole gap in the market each side is about to leave, rather than the gain from trading. 2.4% adds the penalties instead of subtracting them, which would mean the surplus grows the more alike the two firms are. It is exactly the other way round, and where both penalties are equal there is nothing to swap for.",
       },
     },
 

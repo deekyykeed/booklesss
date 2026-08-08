@@ -29,12 +29,17 @@
  * The distractors are the two ways the netting gets lost (charging the whole
  * liability book, adding the two sides) plus the sign error the old check
  * tested, which is kept as an option rather than as the question.
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'Interest rate risk, and how to measure it'.
+ * The old name was sentence case and carried the hedged `, and how/what…` tail that 13 of this course's
+ * 22 titles shared, and ended on a bare particle. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "interest-rate-risk-management",
-  label: "Interest rate risk",
-  title: "Interest rate risk, and how to measure it",
+  label: "Interest Rate Risk",
+  title: "Interest Rate Risk",
   kicker: "Risk",
 
   sections: [
@@ -126,7 +131,7 @@ export default {
         {
           type: "callout",
           kind: "example",
-          text: "Turn one into a number yourself. In a bank's one-year bucket, **ZMW 260 million** of assets reprice and **ZMW 380 million** of liabilities do. The MPC then raises rates by **1.5%**. Work the gap, then what it costs over the year. The point of netting them first is that both sides move: **the assets earn the new rate too, and the gap is the part of the book where that does not cancel out.**",
+          text: "Turn one into a number yourself. In a bank's one-year bucket, ZMW 260 million of assets reprice and ZMW 380 million of liabilities do. The MPC then raises rates by 1.5%. Work the gap, then what it costs over the year. The point of netting them first is that both sides move: the assets earn the new rate too, and the gap is the part of the book where that does not cancel out.",
         },
       ],
       check: {
@@ -140,7 +145,7 @@ export default {
         ],
         answer: 0,
         explain:
-          "Gap = 260 − 380 = −ZMW 120 million, and −120,000,000 × 1.5% = **a fall of ZMW 1.8 million**. A rise of 1.8 million has the size right and the sign backwards: a negative gap means the cost side reprices first, so rising rates hurt. A fall of 5.7 million charges the whole ZMW 380 million with the increase and forgets that the 260 million of assets is earning the new rate as well: netting them is the entire idea of a gap. A fall of 9.6 million adds the two sides instead of subtracting them, which would make a perfectly matched book the most exposed one rather than the least.",
+          "Gap = 260 − 380 = −ZMW 120 million, and −120,000,000 × 1.5% = **a fall of ZMW 1.8 million**. A rise of 1.8 million has the size right and the sign backwards: a negative gap means the cost side reprices first, so rising rates hurt. A fall of 5.7 million charges the whole ZMW 380 million with the increase and forgets that the 260 million of assets is earning the new rate as well. Netting them is the entire idea of a gap. A fall of 9.6 million adds the two sides instead of subtracting them, which would make a perfectly matched book the most exposed one rather than the least.",
       },
     },
   ],

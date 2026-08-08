@@ -526,6 +526,71 @@ text, so a mark written into one shows its own syntax.
   - **It keeps the first slot and the first slug**, above the first lesson
     folder, and its label is the course's own name or something close to it.
 
+- **S-12** **A title is Title Case, and it makes a claim.** *(added 2026-08-08)*
+  **S-10** settles which of a step's two names is which; this settles how either
+  of them is written. The owner, reading the course: *"a title is supposed to be
+  capitalised properly and seriously"*, and of the set as a whole — *"they lack
+  a certain assertiveness and feel like they aren't bold or confident."*
+
+  A title is the only part of a step every reader sees, in four places at once:
+  the sidebar row, the `<h1>`, the browser tab and the WhatsApp card. It is a
+  **name**, not a sentence about the step, and a name that hedges reads as
+  material that hedges.
+
+  **Capitalisation.** Title Case, one convention, no exceptions to argue about:
+  capitalise the first and last word and every other word **except** articles
+  (*a, an, the*), coordinating conjunctions (*and, but, or, nor, for, so, yet*)
+  and prepositions of four letters or fewer (*of, in, to, for, on, at, by,
+  with*). *"The Three Levels of Treasury"*, *"Debt Sources and Maturity"*. An
+  abbreviation keeps its own case (*NPV*, *WACC*, *EOQ*), and **C-4** decides
+  whether it belongs in a title at all.
+
+  **Three shapes that are banned, because they were the whole disease.**
+  Measured on Treasury Management, 2026-08-08 — 21 of its 22 titles broke at
+  least one:
+  - **The hedged tail.** *"Working capital, and how much of it to run"*,
+    *"What debt costs, and what it demands"*. **Thirteen of twenty-two** carried
+    a `, and how/what/where…` clause. One title doing this is a subtitle; the
+    whole course doing it is a tic, and by the fourth row the reader has stopped
+    reading past the comma. Name the thing and stop.
+  - **The casual verb phrase.** *"Getting the cash in"*, *"Putting it to
+    work"*, *"Living with it"*. It sounds like a chat about the topic rather
+    than the topic. **A gerund is not itself the problem** — *"Hedging Foreign
+    Exchange Risk"* is a serious title — the problem is a verb phrase that
+    names no technique.
+  - **The question in disguise.** *"What treasury is and what it does"*,
+    *"How much to order, and when to pay"*. A title that opens on *what* or
+    *how* is describing the step to itself.
+
+  **What to write instead: the noun phrase a syllabus would use.** *"The
+  Treasury Function"*, *"Optimal Cash Balances"*, *"Payment Systems and Central
+  Counterparties"*. It should be the phrase a student would type into a search
+  box the night before the exam, which is also the phrase the paper uses
+  (**C-4**).
+  - **Serious is not dull, and dull is not the fix.** A title earns its
+    confidence by being **specific**, never by being loud. *"The Price of
+    Debt"* is assertive; *"Debt: The Silent Killer"* is a headline, and a
+    student paying for a course can tell.
+  - **It must face the same way as the step** — the second half of **W-16**.
+    Read the title, then the first sentence, and check they are about the same
+    thing from the same side.
+  - **Lesson and grouping labels follow the same rule**, and so does a step's
+    `kicker`: they are names in the same column, and a Title Case step under a
+    sentence-case folder looks like a mistake in the product rather than a
+    choice.
+  - **Section `heading`s do NOT.** They stay sentence case. A heading is a
+    signpost inside a piece of reading, not a name the step travels under, and
+    Title Case on every `h2` turns a page into a contents list.
+  - Measurable: `node .claude/skills/step-skill/tools/title-scan.mjs Schools`
+    flags case defects, hedged tails, question openers and dangling particles,
+    and exits on the count. Baseline 2026-08-08 is **194 defects in 56 of 56
+    authored steps** — nothing in the product passed (debt **D-17**).
+  - **The scan cannot see the half that matters.** Whether a title is assertive
+    is not a regex question, and "Treasury Things and Other Matters" passes
+    every check in it. Read the sidebar column top to bottom as a stranger, the
+    way **W-16** asks for first screens: does each row tell you what you would
+    get, and would you tap it?
+
 ## C — Content
 
 - **C-1** *(inherited)* Every example uses ZMW and Zambian companies — Zanaco,

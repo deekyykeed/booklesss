@@ -345,7 +345,9 @@ function DataTable({
 }
 
 // Content column. Reading is Aptos (font-content); the containers inside a
-// step take Satoshi (font-container). Headings use Familjen.
+// step take Satoshi (font-container); section headings use Familjen
+// (font-display). The step TITLE is the exception — Bricolage Grotesque
+// (font-title) since 2026-08-08.
 export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: string }) {
   /* Nothing above the title. The crumbs went first — the sidebar already says
    * where you are — and the section count followed: it sat over an unread page
@@ -353,7 +355,13 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
    * still carry the same numbers for anyone who wants them. */
   return (
     <div className="font-content">
-      <h1 className="font-display text-[30px] font-medium leading-[1.2] tracking-[-0.02em] text-ink">{lesson.title}</h1>
+      {/* Bricolage Grotesque at 600, not Familjen at 500 (owner, 2026-08-08).
+          The weight moved with the face: the complaint was that titles "aren't
+          bold or confident", and rule S-12 answers the wording half of that
+          while this answers the rest. A medium-weight title under a 15px
+          semibold sidebar row was the lighter of the two names for the same
+          step. */}
+      <h1 className="font-title text-[30px] font-semibold leading-[1.2] tracking-[-0.02em] text-ink">{lesson.title}</h1>
 
       <div className="mt-8 flex flex-col gap-10">
         {lesson.sections.map((s, i) => (

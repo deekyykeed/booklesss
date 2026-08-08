@@ -40,13 +40,17 @@
  * rather than 0.08; and for Miller-Orr, never adding the lower limit back,
  * halving the spread instead of thirding it, using 𝜎 where the formula wants 𝜎².
  * The directional insight the old §2 check tested is kept, in the explain.
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'Deciding how much cash to hold'.
+ * The old name was sentence case and did not name the topic the way the paper does. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "cash-management",
-  label: "Deciding how much cash to hold",
-  title: "Deciding how much cash to hold",
-  kicker: "Working capital",
+  label: "Optimal Cash Balances",
+  title: "Optimal Cash Balances",
+  kicker: "Working Capital",
 
   sections: [
     /* ---------------------------------------------------------------- */
@@ -138,7 +142,7 @@ export default {
         {
           type: "callout",
           kind: "example",
-          text: "Now do one. A Lusaka wholesaler pays out **ZMW 640,000** a year in a steady stream, each transfer out of the deposit account costs **ZMW 25**, and money left on deposit earns **8%**. Find the optimum transfer, then test it the way the paragraph above does: work out the year's fees and the year's forgone interest separately, and see whether they meet.",
+          text: "Now do one. A Lusaka wholesaler pays out ZMW 640,000 a year in a steady stream, each transfer out of the deposit account costs ZMW 25, and money left on deposit earns 8%. Find the optimum transfer, then test it the way the paragraph above does: work out the year's fees and the year's forgone interest separately, and see whether they meet.",
         },
       ],
       check: {
@@ -214,7 +218,7 @@ export default {
         {
           type: "callout",
           kind: "example",
-          text: "Set the levels for a different treasury before you read on. Management fixes the lower limit at **ZMW 2,000**, each securities transaction costs **ZMW 30**, daily cash flows have a standard deviation of **ZMW 600**, and the daily interest rate is **0.03%**. Work the spread, then the upper limit, then the return point. Watch two things: the formula wants the variance, not the standard deviation, and every level is measured up from the lower limit rather than from zero.",
+          text: "Set the levels for a different treasury before you read on. Management fixes the lower limit at ZMW 2,000, each securities transaction costs ZMW 30, daily cash flows have a standard deviation of ZMW 600, and the daily interest rate is 0.03%. Work the spread, then the upper limit, then the return point. Watch two things: the formula wants the variance, not the standard deviation, and every level is measured up from the lower limit rather than from zero.",
         },
       ],
       check: {
@@ -228,7 +232,7 @@ export default {
         ],
         answer: 0,
         explain:
-          "Inside the root: 3 × 30 × 360,000 ÷ (4 × 0.0003) = 27,000,000,000, whose cube root is 3,000, so the spread Z = 3 × 3,000 = ZMW 9,000. Upper limit = 2,000 + 9,000 = ZMW 11,000, and the return point = 2,000 + 9,000 ÷ 3 = **ZMW 5,000**, so touching 11,000 means buying ZMW 6,000 of securities. ZMW 3,000 is Z ÷ 3 with the lower limit never added back; ZMW 6,500 puts the return point halfway up the spread instead of a third of the way, which is the whole asymmetry of the model (running out of cash costs more than parking it); ZMW 2,356 used the ZMW 600 standard deviation where the formula asks for the 360,000 variance.",
+          "Inside the root: 3 × 30 × 360,000 ÷ (4 × 0.0003) = 27,000,000,000, whose cube root is 3,000, so the spread Z = 3 × 3,000 = ZMW 9,000. Upper limit = 2,000 + 9,000 = ZMW 11,000, and the return point = 2,000 + 9,000 ÷ 3 = **ZMW 5,000**, so touching 11,000 means buying ZMW 6,000 of securities. ZMW 3,000 is Z ÷ 3 with the lower limit never added back. ZMW 6,500 puts the return point halfway up the spread instead of a third of the way. That third is the whole asymmetry of the model: running out of cash costs more than parking it. ZMW 2,356 used the ZMW 600 standard deviation where the formula asks for the 360,000 variance.",
       },
     },
   ],

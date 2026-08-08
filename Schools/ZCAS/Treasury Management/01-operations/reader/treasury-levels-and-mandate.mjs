@@ -1,4 +1,4 @@
-/* TM · Lesson 1 Operations · Step 1.2: How treasury work divides, and what it is for
+/* TM · Lesson 1 Operations · Step 1.2: The Three Levels of Treasury
  *
  * Source: 06_Introduction to Treasury Management PPTX; Treasury controls.pdf;
  *         build_lesson_1_1_tm.py (PDF).
@@ -28,13 +28,18 @@
  * Freehand Duotone mark on the time axis the section teaches: chess for the
  * long game, a calendar for months, a clipboard and clock for daily work.
  * Content is the lecture's, plus one closing line per card naming its horizon.
+ *
+ * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'How treasury work divides, and what it is for'.
+ * The old name was sentence case and carried the hedged `, and how/what…` tail that 13 of this course's
+ * 22 titles shared, and opened on a question word. The slug is
+ * untouched, so no URL moved.
  */
 
 export default {
   slug: "treasury-levels-and-mandate",
-  label: "How treasury work divides",
-  title: "How treasury work divides, and what it is for",
-  kicker: "Treasury operations",
+  label: "The Three Levels of Treasury",
+  title: "The Three Levels of Treasury",
+  kicker: "Treasury Operations",
 
   sections: [
     /* ---------------------------------------------------------------- */
