@@ -17,6 +17,14 @@
  *
  * The §3 instruments paragraph was one 50-word sentence carrying four separate
  * instruments (W-12). It is a list now.
+ *
+ * 2026-08-08, paying D-13 (C-9) and D-12 (E-10). §3 worked a four-tranche
+ * portfolio to a 13.4% blended yield and then asked why one tranche sat where
+ * it did, which the table's own 'Need' column answers. It now hands over a
+ * portfolio to build and blend. 13.29% is the distractor worth having: it drops
+ * the call-deposit reserve out of the denominator, which is tempting because a
+ * reserve reads as idle cash rather than as part of the portfolio, and it
+ * flatters the reported yield every time.
  */
 
 export default {
@@ -165,19 +173,24 @@ export default {
           type: "p",
           text: "Judge it afterwards against a [[benchmark|A reference return built from market rates in the same proportions as your own portfolio. Comparing against one is how you tell a good year for you from a good year for everyone.]] weighted the same way, comparing total return against what that mix of market rates actually delivered. A large gap either way deserves the same question: was that skill, or was it risk the policy never intended you to take?",
         },
+        {
+          type: "callout",
+          kind: "example",
+          text: "Price a portfolio of your own. A distributor has **ZMW 8 million** of surplus and this schedule: **ZMW 1 million** must stay instantly available, on call at **9%**; **ZMW 3 million** meets a VAT bill in three months, in a 91-day bill at **12%**; **ZMW 2 million** funds a dividend in six months, in a 182-day bill at **13.5%**; and **ZMW 2 million** is free for the year, in a 1-year bond at **15%**. Work the blended yield on the whole ZMW 8 million. **The reserve is part of the portfolio,** and so is the fact that the tranches are different sizes.",
+        },
       ],
       check: {
         question:
-          "In the worked portfolio, why does the ZMW 2 million tax tranche go into a 91-day T-bill rather than the 15% 1-year bond?",
+          "What blended yield does that ZMW 8 million portfolio earn: 1m on call at 9%, 3m at 12%, 2m at 13.5%, 2m at 15%?",
         options: [
-          "The cash is needed in 3 months, so the bill matures exactly then while the bond would have to be sold early at whatever price prevails",
-          "T-bills always outyield bonds",
-          "Tax payments may only legally be funded from T-bills",
-          "The bond's coupon is taxed and the bill's is not",
+          "12.75%",
+          "12.38%",
+          "13.29%",
+          "15.00%",
         ],
         answer: 0,
         explain:
-          "Liquidity outranks yield. The 15% is only real if the money can stay the full year, and the tax falls due in 91 days. Matching maturity to need means the higher rate was never actually available for this tranche, so the bill's 13% is the best the constraint allows.",
+          "Take each tranche's own return and add them: 90,000 + 360,000 + 270,000 + 300,000 = ZMW 1,020,000, over ZMW 8,000,000, is **12.75%**. 12.38% is the plain average of the four rates, which quietly gives the ZMW 1 million reserve the same weight as the ZMW 3 million tax tranche. 13.29% drops the call deposit out of the denominator, and that is the most tempting one: the reserve looks like idle cash rather than an investment, but it is money the portfolio is holding and reporting a yield without it flatters the whole thing. 15% is the best rate in the table, which is only what the portfolio earns if the schedule is ignored. Then the VAT falls due with nothing matured to pay it.",
       },
     },
   ],

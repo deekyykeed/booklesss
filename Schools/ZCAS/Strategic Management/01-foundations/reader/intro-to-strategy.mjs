@@ -31,6 +31,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Strategy answers three questions: Where are we now? Where do we want to go? How do we get there? Every framework in this course maps onto one of them.",
         },
       ],
@@ -129,6 +130,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Plan is deliberate and top-down; pattern is emergent — visible only in consistent decisions over time. When they conflict, the pattern is the strategy the company actually has.",
         },
       ],

@@ -41,6 +41,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Exposure is measured on the amount, not on the profit. A rate change of one point on a large balance is a large number.",
         },
       ],

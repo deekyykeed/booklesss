@@ -104,6 +104,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "warning",
           text: "A preference dividend is a distribution of profit, not a charge against it, so there is no tax relief. Never multiply the cost of preference shares by (1 − t).",
         },
         {

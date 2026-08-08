@@ -124,6 +124,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Distributable profits say what a company may pay. Free cash flow to equity says what it can pay. Only the second one is money.",
         },
       ],

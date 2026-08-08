@@ -222,6 +222,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "exam",
           text: "Work both hedges and compare. Then say which you would take and why, rather than presenting two numbers and stopping.",
         },
       ],

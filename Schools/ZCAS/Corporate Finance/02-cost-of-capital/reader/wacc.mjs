@@ -53,6 +53,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "warning",
           text: "Only long-term finance goes into WACC. An overdraft and next month’s payables are not sources of capital.",
         },
       ],

@@ -51,6 +51,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Money cash flows go with the money rate; real cash flows go with the real rate. Matching them is the whole discipline here.",
         },
       ],
@@ -160,6 +161,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "warning",
           text: "Read the timing sentence twice. Same year or one year in arrears changes every discount factor in the tax line.",
         },
       ],

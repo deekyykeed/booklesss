@@ -31,6 +31,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Free cash flow is what a business could hand to its investors without damaging its ability to keep trading.",
         },
       ],
@@ -145,6 +146,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Cash to the firm answers what the business generates. Cash to equity answers what the shareholders can actually be paid.",
         },
       ],

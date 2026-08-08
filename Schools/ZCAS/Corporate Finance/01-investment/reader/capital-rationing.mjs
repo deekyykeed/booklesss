@@ -34,6 +34,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Unconstrained, you maximise NPV project by project. Constrained, you maximise NPV per kwacha of the scarce resource.",
         },
       ],
@@ -222,6 +223,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Divisible projects: rank by the index and work down. Indivisible projects: total up every combination that fits.",
         },
       ],

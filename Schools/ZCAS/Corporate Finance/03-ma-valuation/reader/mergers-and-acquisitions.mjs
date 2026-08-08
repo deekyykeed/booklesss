@@ -123,6 +123,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "warning",
           text: "Synergy is a forecast, not a fact. It is realised in the integration, and that is where most acquisitions fail.",
         },
       ],
@@ -204,6 +205,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "warning",
           text: "A rising EPS after an acquisition is not the same as value created. Ask what the combined company’s P/E should be before believing the share price.",
         },
       ],

@@ -87,6 +87,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "warning",
           text: "The currency with the higher inflation is the one that weakens. Check your forecast against that before using it.",
         },
       ],

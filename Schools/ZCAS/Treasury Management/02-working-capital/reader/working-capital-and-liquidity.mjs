@@ -27,6 +27,14 @@
  *
  * 2026-08-02 W-9: §2 closed "When the exam asks you to evaluate a policy…".
  * The sentence now hands the judgement to whoever is choosing the policy.
+ *
+ * 2026-08-08, paying D-13 (C-9) and D-12 (E-10). §3 worked the Zanaco
+ * Distributors cycle and then asked which component moved in a hypothetical
+ * later year, which needs no arithmetic. It now hands over a full cycle whose
+ * three components land on whole days (60, 45, 35), so the reader's error, if
+ * any, is in the method rather than in rounding. The distractors are the three
+ * real ones: the operating cycle reported as the cash cycle, every ratio run
+ * over revenue, and payables added rather than subtracted.
  */
 
 export default {
@@ -55,6 +63,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Even a profitable business fails without adequate working capital. **Cash is king, not profit.** A company can look excellent on paper and still collapse because it cannot meet what falls due next week.",
         },
       ],
@@ -210,19 +219,24 @@ export default {
             "Take longer to pay, up to the point where it starts costing you the supplier.",
           ],
         },
+        {
+          type: "callout",
+          kind: "example",
+          text: "Measure one before you read on. A Kitwe hardware distributor reports revenue of **ZMW 18,250,000**, cost of goods sold of **ZMW 10,950,000**, inventory of **ZMW 1,800,000**, receivables of **ZMW 2,250,000** and payables of **ZMW 1,050,000**. Work the three components, then the cycle. **Each ratio has its own denominator:** two of the three are measured against cost of goods sold, and only receivables goes over revenue, because a receivable is billed at the selling price and stock and supplier invoices are not.",
+        },
       ],
       check: {
         question:
-          "A year later Zanaco Distributors' CCC has jumped from 81 to 120 days. Which single change explains it?",
+          "What is that distributor's cash conversion cycle: revenue ZMW 18,250,000, cost of goods sold ZMW 10,950,000, inventory ZMW 1,800,000, receivables ZMW 2,250,000, payables ZMW 1,050,000?",
         options: [
-          "Days receivables rose sharply, meaning customers are taking much longer to pay",
-          "Days payables rose sharply, meaning the company pays suppliers later",
-          "Revenue rose while everything else stayed constant",
-          "The company negotiated a discount for early supplier payment",
+          "70 days",
+          "105 days",
+          "60 days",
+          "140 days",
         ],
         answer: 0,
         explain:
-          "The cycle lengthens when inventory or receivable days rise, or payable days fall. Slower collection adds directly to it, paying suppliers later would shorten it, and higher revenue with constant receivables reduces receivable days. Diagnosis starts with the component that actually moved.",
+          "Days inventory = (1,800,000 ÷ 10,950,000) × 365 = 60. Days receivables = (2,250,000 ÷ 18,250,000) × 365 = 45. Days payables = (1,050,000 ÷ 10,950,000) × 365 = 35. CCC = 60 + 45 − 35 = **70 days**, so cash turns over 365 ÷ 70 = 5.2 times a year, against Zanaco Distributors' 4.5. 105 days is the operating cycle: it stops before subtracting payables, which is the same as pretending suppliers are paid on delivery. 60 days runs all three ratios over revenue, which understates both stock and supplier days. 140 days adds payables instead of subtracting them. Notice what that claims: the cycle gets longer the later you pay, which is backwards, so the sign is checkable without redoing the arithmetic.",
       },
     },
   ],

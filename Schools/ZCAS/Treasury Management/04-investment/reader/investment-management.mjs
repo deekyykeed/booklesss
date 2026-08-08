@@ -47,6 +47,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "warning",
           text: "Never sacrifice safety for yield, and never sacrifice liquidity for yield. **Treasurers who inverted the order found their high-yield instruments defaulted or frozen at exactly the moment the cash was needed,** which is the only moment that was ever going to test it.",
         },
       ],

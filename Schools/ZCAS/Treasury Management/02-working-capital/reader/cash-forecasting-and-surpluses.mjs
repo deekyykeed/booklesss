@@ -13,6 +13,14 @@
  * 2026-08-02 W-13 after the split. Every opening was re-read cold. No section
  * here refers to Baumol or Miller-Orr in its first sentence, because a reader
  * arriving from the sidebar or a shared link has not met either.
+ *
+ * 2026-08-08, paying D-13 (C-9) and D-12 (E-10). §2's check handed the reader
+ * an already-annualised 4.05% and asked which instrument to pick, so the one
+ * piece of arithmetic in the section was never theirs to do. It now hands over
+ * a 73-day bill at 98 (365 ÷ 73 = 5 exactly, so the annualisation is clean)
+ * and the decision rides on the number instead of being given with it. The
+ * 10.00% distractor is the discount-rate-for-yield slip, which is worth naming
+ * because it is always close enough to the right answer to look right.
  */
 
 export default {
@@ -131,19 +139,24 @@ export default {
           type: "p",
           text: "**The forecast is what keeps that overdraft cheap.** A shortfall you saw three weeks out is funded on terms you negotiated; the same shortfall discovered on the morning is funded on whatever terms are available.",
         },
+        {
+          type: "callout",
+          kind: "example",
+          text: "Price the alternative before you read on. Your forecast frees **ZMW 4 million** for exactly **73 days**. The bank's call deposit pays **6%** a year, and a 73-day treasury bill is on offer at **98**. Annualise the bill, then say which one you take. Two traps sit in one line of arithmetic: **the yield is measured against what you pay, not against the 100 you get back,** and a 73-day return is not an annual one until you scale it.",
+        },
       ],
       check: {
         question:
-          "A surplus of ZMW 2 million is definitely not needed for 90 days. The options are a call deposit at 2% or a 91-day T-bill annualising 4.05%. What should treasury do, and why?",
+          "What does that 73-day treasury bill, bought at 98, yield on an annualised basis?",
         options: [
-          "Take the T-bill, because the cash's availability horizon matches the bill's maturity, so the extra yield costs nothing in liquidity",
-          "Take the call deposit, because instant access is always worth more than yield",
-          "Split it 50/50 to diversify",
-          "Leave it in the current account pending a decision",
+          "About 10.20%",
+          "About 10.00%",
+          "About 2.04%",
+          "About 0.41%",
         ],
         answer: 0,
         explain:
-          "The four questions resolve it. The money is free for exactly the bill's life, so the bill's illiquidity never binds and its doubled return is a free gain. Liquidity is only worth paying for when there is a real chance of needing the cash early.",
+          "(100 − 98) ÷ 98 = 2.0408% over 73 days, and 365 ÷ 73 = 5, so the annualised yield is 2.0408% × 5 = **10.20%**. Take the bill: it pays better than the 6% call deposit, and because the cash is free for exactly the bill's life its illiquidity never binds, so the extra return costs nothing. 10.00% divides by 100 rather than by the 98 actually paid: that is the discount rate, not the yield, and it is the slip that survives because it is always close enough to look right. 2.04% is the 73-day return left unannualised, which would have you turn down 10.2% for 6%. 0.41% multiplies by 73 ÷ 365 instead of 365 ÷ 73.",
       },
     },
 

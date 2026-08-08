@@ -71,8 +71,8 @@ unchecked ones get ticked off by someone assuming the list was audited.
 | D-9 | Steps whose sidebar label is a different name from their page title — S-10 | 2026-08-03 | **closed 2026-08-03** · 0 of 53 authored steps; economics' 2 are not reachable from a `.mjs` |
 | D-10 | Em dashes in step prose — W-11 | 2026-08-03 | open · **790 in 32 of 53** (CF 449, SM 341, **TM 0**) |
 | D-11 | First screens nobody has read cold — W-16 | 2026-08-03 | open · **1 of 83 read** · no scan can see it |
-| D-12 | Callouts that never say which kind they are — E-10 | 2026-08-07 | open · **60 of 60 in 53 steps**, 1 fixed · exactly measurable |
-| D-13 | Steps that work every example and hand over none — C-9 | 2026-08-07 | open · 1 of 53 checked |
+| ~~D-12~~ | Callouts that never say which kind they are — E-10 | 2026-08-07 | **closed 2026-08-08** · 67 of 67 in 53 steps |
+| D-13 | Steps that work every example and hand over none — C-9 | 2026-08-07 | open · **22 of 53** · **all of TM** (2026-08-08) |
 | D-14 | Definitions orphaned by the popup being switched off — E-8 | 2026-08-07 | open · 1 of 53 checked · **a reader gets nothing today** |
 | D-15 | Four courses, no course-intro step — S-11 | 2026-08-07 | open · **3 of 4 written same day** · economics is the 4th and has no `.mjs` |
 | D-16 | Prose nobody has asked the shorter-version question of — W-17 | 2026-08-07 | open · 0 of 53 |
@@ -778,11 +778,49 @@ than an estimate: `grep -c 'type: "callout"'` is 60 and `grep -c 'kind:'` is 0.
 - [x] treasury-management/debt-and-investment/the-price-of-debt — 2026-08-07
       (2 callouts: the covenant one is `key`, the new unworked bond is
       `example`)
-- [ ] the other 58 callouts, in 52 steps
+- [x] **the other 59 callouts, in 45 steps — 2026-08-08.** Every one read in the
+      context of the section holding it, and the kind chosen against E-10's four
+      definitions rather than assigned in bulk. `grep -c 'type: "callout"'` is 67
+      and every one now sets a kind. Twelve `example` boxes were written the same
+      day by D-13 and are counted there, not here.
 
-Paid on contact (**E-10** is one line per callout), not swept: the kind is a
-judgement about what the box is doing, and a sweep would set them all to `key`
-and call the debt closed, which is the state it is in now.
+**What the distribution says, which is the actual finding.** The 59 came out
+**41 `key`, 16 `warning`, 2 `exam`** — and 70% `key` is close enough to the
+sweep this item warned against that it has to be defended rather than reported.
+It is not a sweep: **18 boxes (31%) were saying the wrong thing on screen** and
+now do not, and the reason so many are genuinely `key` is that `key` was the
+only kind that existed when they were written. E-3 asks each section for the one
+sentence worth carrying, so that is the box most sections got.
+
+The 18 are where the reader was actively misled. Sixteen are traps wearing a
+"Key point" label: *never* multiply preference shares by (1 − t)
+(`cost-of-debt`), an overdraft is not a source of capital in WACC (`wacc`), a
+rising EPS is not value created (`mergers-and-acquisitions`), an implied forward
+rate is not an expectation (`yield-curve`), PESTEL is not a checklist
+(`external-environment`), a capability every rival has is not a strength
+(`internal-environment`), a strategy can be perfectly executed and wrong
+(`strategy-implementation`). Two are exam instructions that were not marked as
+such: work both hedges and say which you would take (`currency-hedging`), and
+the specificity test a vision has to pass (`mission-and-vision`).
+
+**Judgement calls worth recording, because they are the ones that will be
+revisited.** Where a box's first sentence states a rule it is `key`; where it
+names a mistake it is `warning`. That resolved most of them, and it was
+overridden twice in each direction: `competitive-strategy` §5 ("The goal is not
+to answer every attack but…") reads as a negation and names no slip, so it is
+`key`; `internal-environment` §2 opens with a positive test and exists to stop a
+generic SWOT strength, so it is `warning`. **`external-environment` §2 was very
+nearly `exam`** and is `warning` instead, on E-10's own clause: it says how to
+think about PESTEL rather than what the paper does with it, and SM's
+`start-here` already carries the real exam line. An `exam` box that is merely
+good advice is worse than no box.
+
+**No prose was touched.** This pass added exactly one line per callout, which is
+what makes 59 judgements reviewable against the list in one diff. The other
+debts those 45 steps carry (D-1 through D-4, D-10, D-16 for CF and SM) are
+**not** ticked and were not paid: a `kind:` line is not the rewrite the
+paid-on-contact contract is about, and pretending otherwise would tick 45 boxes
+nobody checked.
 
 ### D-13 · steps that work every example and hand over none · opened 2026-08-07
 **Source:** 2026-08-07 · owner — "important pieces are worked and unworked
@@ -802,12 +840,52 @@ profile before scoring it.
 - [x] treasury-management/debt-and-investment/the-price-of-debt — 2026-08-07
       (a second bond at different figures, marked by a numeric check whose
       three wrong options are the three real slips)
-- [ ] the other 20 TM steps — **unchecked**
+- [x] **all 21 remaining Treasury Management steps — 2026-08-08.** Every step
+      opened and read. **Ten needed a handover and got twelve**, one per section
+      that works a number: Baumol and Miller-Orr (`cash-management`), EOQ
+      (`ordering-and-paying-suppliers`), the cash conversion cycle
+      (`working-capital-and-liquidity`), the annualised T-bill yield
+      (`cash-forecasting-and-surpluses`), the discount decision
+      (`debtors-and-factoring`), a two-leg cross rate with both spreads
+      (`foreign-exchange-risk`), a futures hedge and its rounding
+      (`hedging-currency-risk`), an FRA settlement and a swap's surplus
+      (`interest-rate-hedging-instruments`), an interest-rate gap priced in
+      kwacha (`interest-rate-risk-management`), and a blended portfolio yield
+      (`building-the-portfolio`). Each is a `callout` with `kind: "example"`
+      posing the task, and each section's `check` was rewritten so its four
+      options are numbers and its three wrong ones are the slips that actually
+      produce them. Every `explain` now carries the working, not the verdict.
 - [ ] 25 Corporate Finance steps — **unchecked**
 - [ ] 30 economics steps — **unchecked**, and not reachable from a `.mjs`
 
-⚠️ **The count is 1 of 53 checked, not "TM is done".** Nothing has looked at
-the other 20 TM steps for this.
+**⚠️ THE SCAN THAT WAS MEANT TO FIND THESE MISSED TWO OF THE WORST, AND THAT IS
+THE FINDING TO CARRY.** Sections were triaged by asking whether the check's
+options contained figures, on the assumption that a numeric check means the
+reader has to produce something. It does not. `debtors-and-factoring` §1 scored
+4 numeric options out of 4 and was the purest instance of the defect in the
+course: it re-asked the section's own worked case at the SAME figures (2/10 net
+30 against an 8% overdraft), with 37.23% printed in the paragraph above the
+question and again inside the winning option. `interest-rate-hedging-instruments`
+§1 was the same shape, its answer being a row of the table two inches higher.
+**A numeric option is not a produced number.** The question to ask of a check is
+whether its answer is visible on the same screen, and no scan can see that.
+
+**Two things this pass changed about how C-9 gets applied, both worth keeping.**
+Where the second case comes out with the *same verdict* as the worked one it
+teaches a conclusion, so `debtors-and-factoring` hands over 1.5/15 net 60
+against a 20% overdraft, where the answer **reverses** and the discount is
+declined. And the insight the old check tested is never simply deleted: the
+Baumol √ intuition, the futures tail, the FRA's both-ways bind and the gap's sign
+all moved into the new `explain` or survive as one of its options, so nothing the
+step used to teach was traded for the handover.
+
+**Not claimed as done:** `interest-rate-hedging-instruments` §3 (futures) and §4
+(collars) work tables and keep conceptual checks. Both are producible and
+neither got a handover, because two example boxes in one step is already the
+ceiling E-3 will bear and these are the two least likely to be examined as a
+calculation. Eleven TM steps needed nothing: they teach what a thing is or how to
+classify one, and their checks already hand a fresh case over for the framework
+to be applied to, which is what C-9 asks of a non-quantitative section.
 
 ### D-14 · definitions orphaned by the popup being switched off · opened 2026-08-07
 **Source:** 2026-08-07 · owner — "disable text popups from the app entirely for

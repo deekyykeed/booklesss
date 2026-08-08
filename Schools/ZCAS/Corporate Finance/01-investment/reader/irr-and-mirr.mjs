@@ -120,6 +120,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "warning",
           text: "Interpolation draws a straight line between two NPVs. The real relationship is a curve, so the answer is close rather than exact — and the further apart the two rates, the rougher it gets.",
         },
       ],
@@ -168,6 +169,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Where NPV and IRR disagree about which project to take, NPV is right. IRR is reported because it communicates well, not because it decides well.",
         },
       ],
@@ -291,6 +293,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "MIRR is always the more honest percentage. NPV is still the decision.",
         },
       ],

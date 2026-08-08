@@ -1,97 +1,69 @@
-"use client";
-
-import { useEffect, useState } from "react";
+import { memberCount } from "@/lib/members";
 
 /* ------------------------------------------------------------------ *
- * "Join 67+ members", ticking up.
+ * "Join N members", where N is the row count of `students`.
  *
  * Owner, 2026-08-06: "under the get started button say join 67+ members, but
  * that grows at random short intervals by 1 — not too short so there is room to
  * see it grow."
  *
- * ⚠️ THIS NUMBER IS NOT MEASURED. It starts at a constant and increments on a
- * timer; it is not the row count of `students` and does not go down. A visitor
- * watching it climb will read it as people signing up while they stand there,
- * which is the effect it is built for and is not what is happening. Said plainly
- * here because the next person to read this file should not have to work it out,
- * and because the honest version is close: `students` is a real table, and a
- * server component reading `count` off it on an ISR revalidate would put a true
- * number in the same slot with the same animation. Raised with the owner; his
- * call to ship this one.
+ * WHAT THIS REPLACED, AND WHY. That brief shipped literally: a client component
+ * starting at a constant 67 and incrementing on a random 1.5–4.5s timer. It was
+ * flagged in its own header, in PROJECT_MEMORY twice and to the owner — the
+ * number was not measured, did not go down, and a visitor watching it climb read
+ * it as people signing up while they stood there. It is the only invented claim
+ * this page has ever carried, and the honest version turned out to be smaller
+ * than the machinery it replaces: one count, no timer, no client bundle.
  *
- * RANDOM, AND NOT TOO OFTEN. A fixed cadence reads as a clock, which is the one
- * thing that gives away a fake counter — real sign-ups do not arrive every nine
- * seconds exactly. The window is wide (7–18s) and the low end is deliberately
- * slow: the owner's note is "room to see it grow", so the point is that a
- * visitor is still on the page when it moves, having already looked at it once.
+ * NO "use client" ANY MORE. The tick was the only reason this needed the
+ * browser. A true count changes when the cache revalidates, not on a timer, so
+ * the entrance is the same CSS keyframe (`.count-tick`, both-filled, one shot)
+ * and the whole component renders on the server. `/` sets `revalidate` — that
+ * is what makes this a periodic read rather than a per-visitor one.
  *
- * The starting value is rendered on the SERVER and matches the client's first
- * state exactly, so there is no hydration mismatch. `Math.random` is only ever
- * called inside the effect — calling it during render would give the server and
- * the browser two different numbers for the same paint.
+ * ⚠️ THE FLOOR IS THE PART TO UNDERSTAND BEFORE CHANGING IT. Below FLOOR this
+ * component renders NOTHING, and that is deliberate: social proof that is
+ * honest and tiny costs more than no social proof at all, so the choice on the
+ * front door is between a true number and an empty slot — never between a true
+ * number and a flattering one. On 2026-08-08 the real count is 2, so the line is
+ * currently absent from the page. It appears on its own, with no code change,
+ * the day the twelfth student signs up.
+ *
+ * If the owner wants something in that slot before then, the answer is to write
+ * a line that is TRUE of the product (what it holds, what it costs) rather than
+ * to lower the floor to 1 — a claim of "Join 2 members" is accurate and still
+ * reads as an empty room.
  * ------------------------------------------------------------------ */
 
-/** Where the count starts. The owner's figure. */
-const START = 67;
-
 /**
- * The gap between arrivals, milliseconds.
+ * The count at which the line starts drawing.
  *
- * Was 7–18s. The owner called it "way too slow", then diagnosed it properly a
- * moment later: "or is it that some are too far apart" — which is the right
- * reading. The AVERAGE was fine at 12s; it was the TAIL that killed it. Draws
- * near the top of that range put a 17-second dead stretch in the middle of a
- * page a visitor reads in well under twenty, so the number simply never moved
- * while anyone was looking at it — and one dead stretch is enough, because the
- * visitor has already concluded it is a static number and stopped watching.
- *
- * So the fix is a narrower spread, not just a faster one. Capping the long end
- * is what does the work here; lowering the short end only keeps it irregular.
- * The original brief still holds at that short end ("not too short so there is
- * room to see it grow") — 1.5s is comfortably longer than the 420ms rise, so no
- * tick ever interrupts the one before it.
- *
- * TIGHTENED AGAIN (owner, 2026-08-07: "that number counting up please make it
- * faster") — both ends pulled down by a third, keeping the same shape rather
- * than just capping the tail a second time.
+ * Twelve is a judgement, not a measurement: it is roughly the point at which a
+ * headcount reads as "other people are here" rather than as a number small
+ * enough to count on the page. Raise it freely — the only wrong value is one
+ * that lets the page imply a crowd that does not exist.
  */
-const MIN_GAP = 1_500;
-const MAX_GAP = 4_500;
+const FLOOR = 12;
 
-export function MemberCount() {
-  const [n, setN] = useState(START);
+export async function MemberCount() {
+  const n = await memberCount();
 
-  useEffect(() => {
-    /* setTimeout re-armed rather than setInterval, because the whole point is
-       that each gap is a different length. An interval can only be regular. */
-    let timer: ReturnType<typeof setTimeout>;
-    const arm = () => {
-      timer = setTimeout(
-        () => {
-          setN((v) => v + 1);
-          arm();
-        },
-        MIN_GAP + Math.random() * (MAX_GAP - MIN_GAP),
-      );
-    };
-    arm();
-    return () => clearTimeout(timer);
-  }, []);
+  /* No Supabase configured (fresh clone, preview, CI) → null → nothing drawn.
+     A missing environment must never be reported to a visitor as a headcount. */
+  if (n === null || n < FLOOR) return null;
 
   return (
     <p className="hero-shade mt-3 text-center font-hero-meta text-[13px] leading-[1.4] text-white/70">
       Join{" "}
-      {/* Keyed by the value so React swaps the node when it changes, which is
-          what replays the animation — without the key it edits the text in
-          place and the number simply becomes a different number with nothing to
-          notice. `tabular-nums` so 99 to 100 does not shunt the word after it. */}
-      {/* One expression, not `{n}+` — React separates an expression from an
+      {/* `tabular-nums` so 99 to 100 does not shunt the word after it. The
+          `count-tick` rise still plays, once, on the paint that shows the
+          number — it is an entrance now rather than a per-arrival flash.
+
+          One expression, not `{n}+` — React separates an expression from an
           adjacent literal with an HTML comment, so that spelling puts
           `67<!-- -->+` in the markup. It renders identically and reads as
           "67 + members" to anything parsing the raw text. */}
-      <span key={n} className="count-tick inline-block tabular-nums">
-        {`${n}+`}
-      </span>{" "}
+      <span className="count-tick inline-block tabular-nums">{`${n}`}</span>{" "}
       members
     </p>
   );

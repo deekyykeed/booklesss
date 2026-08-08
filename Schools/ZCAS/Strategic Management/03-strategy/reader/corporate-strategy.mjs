@@ -153,6 +153,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "The growth paths are ordered by distance from what the firm already knows. Each step away — new market, new product, new stage of the chain, new industry — adds risk that must be paid for by a bigger prize.",
         },
       ],

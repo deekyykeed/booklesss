@@ -172,6 +172,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Operating gearing and financial gearing compound. A company with high fixed costs should think carefully before also carrying high fixed interest.",
         },
       ],

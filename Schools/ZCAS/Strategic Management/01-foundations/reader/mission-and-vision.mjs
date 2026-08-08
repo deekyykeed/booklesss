@@ -74,6 +74,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "exam",
           text: "The exam test for a vision: does it describe a future destination specifically enough to guide decisions? If it could belong to any company in any industry, it has failed as a vision.",
         },
       ],

@@ -39,6 +39,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "The whole debate reduces to one question: does the cost of equity rise fast enough to cancel out the cheapness of the debt?",
         },
       ],

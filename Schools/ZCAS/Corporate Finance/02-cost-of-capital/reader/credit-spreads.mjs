@@ -42,6 +42,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "The government bond yield is what waiting costs. The spread is what doubt costs.",
         },
       ],

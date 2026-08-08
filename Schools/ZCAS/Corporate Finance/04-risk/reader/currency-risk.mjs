@@ -106,6 +106,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Transaction risk is about a payment. Economic risk is about whether the business still works at that exchange rate.",
         },
       ],

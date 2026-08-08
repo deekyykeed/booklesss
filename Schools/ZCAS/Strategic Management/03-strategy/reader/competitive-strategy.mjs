@@ -28,6 +28,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "The choice is the strategy. A firm that will not choose between cost and differentiation ends up worse than the cost leader at cost and worse than the differentiators at everything else.",
         },
       ],
@@ -256,6 +257,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "The goal is not to answer every attack but to be structurally unattractive to attack. Rivals who know you will defend hard, and can, look elsewhere.",
         },
       ],

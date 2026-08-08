@@ -45,6 +45,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Maturity says when the last cash flow arrives. Duration says when the money, on average, actually arrives.",
         },
       ],
