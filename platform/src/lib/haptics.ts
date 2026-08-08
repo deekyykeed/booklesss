@@ -40,9 +40,30 @@
  * there is nothing to feel. Silence with no error is exactly what was reported.
  *
  * 20 and 35 are the low end of what is reliably perceptible across Android
- * hardware rather than a taste judgement. If a tap still cannot be felt at
- * these, the cause is NOT the number — see /haptics-test, which is built to
- * separate the four candidates in ten seconds. */
+ * hardware rather than a taste judgement.
+ *
+ * ⚠️ AND ON THE OWNER'S OWN PHONE, NONE OF IT IS FELT — INCLUDING 200ms AND A
+ * PATTERN. That was measured, not assumed. A diagnostic page (`/haptics-test`,
+ * deleted 2026-08-08 once it had answered; recover it from git if it is ever
+ * wanted again) reported `navigator.vibrate` present, no service worker in the
+ * way, reduced motion off in both the app and the OS, and `vibrate()` returning
+ * TRUE for every duration from 8 to 200ms and for `[100,60,100]`. Nothing was
+ * felt at any of them.
+ *
+ * What that rules out is the useful part: returning true means Chrome accepted
+ * and queued the request, so the page is being obeyed and the hardware is not
+ * responding. It is not the numbers, not the bundle, not this file. It is the
+ * device or the OS — battery saver, the system touch-feedback setting, ring
+ * mode — or a Chrome/OEM build that simply does not honour the API from a page.
+ *
+ * SO DO NOT TUNE THESE NUMBERS AGAIN CHASING THAT REPORT. The next person to
+ * hear "I can't feel it" should check whether the phone gives haptic feedback
+ * ANYWHERE — long-press the home screen, type on the keyboard — before touching
+ * a line of this. Two rounds were already spent guessing from a sandbox.
+ *
+ * The feature stays because it costs nothing, is silenced correctly for
+ * reduced-motion, and will work for readers whose devices honour it. Nothing in
+ * the app may ever DEPEND on the buzz being felt. */
 const TAP = 20;
 const CONFIRM = 35;
 
