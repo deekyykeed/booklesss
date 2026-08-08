@@ -31,18 +31,38 @@ import { PipelineCard } from "./PipelineCard";
 import { courseTone } from "./tones";
 
 /* ------------------------------------------------------------------ *
- * "My courses" — three states of the same list, not three different lists.
+ * "My courses" — states of the same list, not separate lists.
  *
  * Owner, 2026-08-07: "for the part with the list of courses id like a tab
  * system for the courses active, pipeline and completed at the end spaced
  * between for the first two" — then, reordering: "id like the ability to
  * organise my courses manually so i cn drag them above and below each other."
  *
- * ALL THREE TABS SIT TOGETHER NOW (owner, 2026-08-08: "even the completed
- * courses will move to fit with the rest of the tabs and on that end is where
- * ill have sort icons"). The original call had Completed standing apart on the
- * right as a look-back rather than a choice; the far end is now spoken for by
- * sorting, so the row is one group of three plus a trailing sort control.
+ * ⚠️ A TAB HAS TO EARN ITS PLACE NOW (owner, 2026-08-08: "i was thinking
+ * pipeline and completed tabs were not relevant — i shouldn't have a tab
+ * telling students what they can't do"). Three fixed tabs shipped that morning
+ * and the row was wrong by lunchtime, for a reason worth writing down because
+ * it will apply to the next tab somebody wants:
+ *
+ *   PIPELINE IS GONE FROM THE ROW ENTIRELY. It lists courses on the student's
+ *   timetable that nobody has written, and there are 4 built against ~598 in
+ *   the backlog — so that tab was ALWAYS going to outnumber the student's real
+ *   work, permanently, at equal billing with it. A row advertising the
+ *   product's incompleteness beside the thing the student came to do.
+ *
+ *   COMPLETED IS EARNED. It is empty for every new student, so as a fixed tab
+ *   it existed to say "nothing here" to exactly the people least able to
+ *   afford the discouragement. It appears the day a course is finished.
+ *
+ * So the row is DERIVED, never constant: Active alone on day one, Active +
+ * Completed once something is done. With one tab there is nothing to choose
+ * between, so it draws as a plain label — no underline, no swipe, no tablist
+ * role — and becomes a real tab the moment a second one exists.
+ *
+ * THE DEMAND SIGNAL SURVIVES, because it does real work — what students list
+ * is how the curriculum gets built (see /api/curriculum). It is a quiet
+ * disclosure under the grid now: closed it is one line, open it is the same
+ * cards. Absence reports itself, but at absence's own volume.
  *
  * THE UNDERLINE WON (owner, 2026-08-08, off the deploy). Two markers ran live
  * the same day — a white chip borrowed whole from the step selector, and this
@@ -56,13 +76,7 @@ import { courseTone } from "./tones";
  * courses have nothing left to decide between.
  * ------------------------------------------------------------------ */
 
-type Tab = "active" | "pipeline" | "completed";
-
-/** Left to right, which is both the tab order and the swipe order — swiping
- *  the panel leftwards moves to the next one along, the way a carousel does.
- *  One array so the row, the animation's direction and the gesture can never
- *  disagree about which tab is "next". */
-const TABS: Tab[] = ["active", "pipeline", "completed"];
+type Tab = "active" | "completed";
 
 /** How far a finger must travel before it counts as a swipe rather than a
  *  tap that wandered. 56px is about a thumb's width — comfortably past the
@@ -99,24 +113,6 @@ export function CoursesSection({
      direction is a fact about the TRANSITION, and nothing in the new state
      remembers it. */
   const [dir, setDir] = useState<"left" | "right">("left");
-
-  /** Move to `next`, working out which way that is so the panel slides the
-   *  way the reader's eye is already travelling. Later in the row → the panel
-   *  comes in from the right; earlier → from the left. */
-  function goTab(next: Tab) {
-    if (next === tab) return;
-    setDir(TABS.indexOf(next) > TABS.indexOf(tab) ? "left" : "right");
-    setTab(next);
-  }
-
-  /** One step along the row, or nothing at the ends. No wrapping: a carousel
-   *  that loops from Completed back to Active makes the row's left-to-right
-   *  order a lie, and there is no third state for a reader to be surprised
-   *  into — they either move or they are already at the end. */
-  function stepTab(by: 1 | -1) {
-    const next = TABS[TABS.indexOf(tab) + by];
-    if (next) goTab(next);
-  }
 
   /* THE SWIPE. Tracked on refs rather than state — a touchmove fires dozens
      of times per gesture and re-rendering a grid of course cards on each one
@@ -160,6 +156,40 @@ export function CoursesSection({
     () => applyOrder(completedList, order, (w) => w.course.slug),
     [completedList, order],
   );
+
+  /* THE ROW, DERIVED. See the file note: Active is always there, Completed
+     arrives the day one is finished. Order here is the tab order, the swipe
+     order and the slide direction all at once. */
+  const tabs = useMemo<Tab[]>(
+    () => (orderedCompleted.length ? ["active", "completed"] : ["active"]),
+    [orderedCompleted.length],
+  );
+
+  /* Un-ticking a checkpoint can empty Completed while the reader is standing
+     in it, which would otherwise leave them on a panel no tab points at —
+     visible as an empty section with no way back. Falls to Active, which
+     always exists. */
+  useEffect(() => {
+    if (!tabs.includes(tab)) setTab("active");
+  }, [tabs, tab]);
+
+  /** Move to `next`, working out which way that is so the panel slides the
+   *  way the reader's eye is already travelling. Later in the row → the panel
+   *  comes in from the right; earlier → from the left. */
+  function goTab(next: Tab) {
+    if (next === tab) return;
+    setDir(tabs.indexOf(next) > tabs.indexOf(tab) ? "left" : "right");
+    setTab(next);
+  }
+
+  /** One step along the row, or nothing at the ends. No wrapping: a carousel
+   *  that loops back to Active makes the row's left-to-right order a lie, and
+   *  there is no third state for a reader to be surprised into — they either
+   *  move or they are already at the end. */
+  function stepTab(by: 1 | -1) {
+    const next = tabs[tabs.indexOf(tab) + by];
+    if (next) goTab(next);
+  }
 
   /* ---- the pipeline: what's on their timetable that nobody's written ---- */
   const prog = programmeBySlug(identity?.school, identity?.programme);
@@ -293,17 +323,19 @@ export function CoursesSection({
           sheet is where every other answer is edited, so this was a second
           door onto one screen rather than the only door.
 
-          All three tabs grouped left now, sort at the far end — see the file
-          note on the 2026-08-08 regrouping and the marker the owner picked.
+          Tabs grouped left, sort at the far end — and the row is derived, so
+          on day one there is only "Active" and it draws as a label. See the
+          file note.
 
           NO RULE UNDER THE ROW (same call: "dont need the divider below the
           tabs"). It was drawing a line between the tabs and the cards they
           filter, which is the one place a border says these are two separate
           things. */}
       <TabRow
+        tabs={tabs}
         tab={tab}
         goTab={goTab}
-        counts={{ active: orderedActive.length, pipeline: pipelineTotal, completed: orderedCompleted.length }}
+        counts={{ active: orderedActive.length, completed: orderedCompleted.length }}
       />
 
       {/* `key={tab}` is what REPLAYS the slide. A CSS animation runs when the
@@ -389,27 +421,6 @@ export function CoursesSection({
             </EmptyRow>
           ))}
 
-        {tab === "pipeline" &&
-          (pipelineTotal ? (
-            <div className="grid gap-3 md:grid-cols-2">
-              {scraped.map((c) => (
-                <PipelineCard
-                  key={c.slug}
-                  title={c.title}
-                  year={c.year}
-                  students={demandFor(c.title, false)}
-                />
-              ))}
-              {typed.map((title) => (
-                <PipelineCard key={`typed:${normTitle(title)}`} title={title} students={demandFor(title, true)} />
-              ))}
-            </div>
-          ) : (
-            /* One clause (owner, 2026-08-08) — it was the longest sentence on
-               the page, spent on the emptiest state. */
-            <EmptyRow>Nothing waiting to be built.</EmptyRow>
-          ))}
-
         {tab === "completed" &&
           (orderedCompleted.length ? (
             <div className="grid gap-3 md:grid-cols-2">
@@ -428,19 +439,58 @@ export function CoursesSection({
               ))}
             </div>
           ) : (
-            <EmptyRow>
-              Nothing finished yet — it&apos;ll land here the day you clear a course&apos;s last
-              checkpoint.
-            </EmptyRow>
+            /* Only reachable for the instant between un-ticking the last
+               checkpoint and the effect above moving them to Active. */
+            <EmptyRow>Nothing finished yet.</EmptyRow>
           ))}
       </div>
+
+      {/* THE PIPELINE, AT ABSENCE'S OWN VOLUME. It was a tab until 2026-08-08
+          — see the file note for why a permanent tab listing what nobody has
+          written was always going to outnumber the student's real work.
+
+          It is not deleted, because what students list is the demand signal
+          the curriculum gets built from (/api/curriculum, and
+          tools/reported_curriculum.sql is the by-hand review). Closed it is
+          one line under the grid; open it is the same cards it always was.
+          Nothing at all when there is nothing pending, which is the state the
+          old tab could not express — it had to say "Nothing waiting to be
+          built" out loud instead. */}
+      {pipelineTotal > 0 && (
+        <details className="group mt-4">
+          <summary className="cursor-pointer list-none text-[13px] leading-6 text-muted [&::-webkit-details-marker]:hidden">
+            <span className="font-medium text-ink">{pipelineTotal}</span> more on your timetable
+            {" "}
+            {pipelineTotal === 1 ? "isn't" : "aren't"} written yet
+            {" — "}
+            <span className="underline underline-offset-2 group-open:no-underline">
+              {/* The label flips, so the control says what the next tap does
+                  rather than what it did. */}
+              <span className="group-open:hidden">see them</span>
+              <span className="hidden group-open:inline">hide</span>
+            </span>
+          </summary>
+          <div className="mt-3 grid gap-3 md:grid-cols-2">
+            {scraped.map((c) => (
+              <PipelineCard
+                key={c.slug}
+                title={c.title}
+                year={c.year}
+                students={demandFor(c.title, false)}
+              />
+            ))}
+            {typed.map((title) => (
+              <PipelineCard key={`typed:${normTitle(title)}`} title={title} students={demandFor(title, true)} />
+            ))}
+          </div>
+        </details>
+      )}
     </>
   );
 }
 
 const TAB_LABEL: Record<Tab, string> = {
   active: "Active",
-  pipeline: "Pipeline",
   completed: "Completed",
 };
 
@@ -450,30 +500,40 @@ const TAB_LABEL: Record<Tab, string> = {
 const IND_MOVE = "left 240ms cubic-bezier(0.3, 1.4, 0.55, 1), width 240ms cubic-bezier(0.3, 1.4, 0.55, 1)";
 
 /**
- * One row of the three course tabs plus the trailing sort control, with a
- * single underline that SLIDES to the selected tab rather than each tab
- * drawing its own mark: the 2px rule the row already had, but dimmer than the
- * placeholder grey it was (the line says WHICH, it is not to be read) and
- * pulled up until it hugs the baseline — close enough that descenders hang
- * THROUGH it. That is why the buttons carry `z-10` and the indicator `z-0`:
- * the letters must paint in front of the line, not under it.
+ * The course tabs plus the trailing sort control, with a single underline that
+ * SLIDES to the selected tab rather than each tab drawing its own mark: the
+ * 2px rule the row already had, but dimmer than the placeholder grey it was
+ * (the line says WHICH, it is not to be read) and pulled up until it hugs the
+ * baseline — close enough that descenders hang THROUGH it. That is why the
+ * buttons carry `z-10` and the indicator `z-0`: the letters must paint in
+ * front of the line, not under it.
+ *
+ * ONE TAB IS NOT A TAB. `tabs` is derived (see the file note) and starts as
+ * just Active, so on most students' first weeks this row has a single entry —
+ * and a lone tab with an underline under it is a control implying a choice
+ * that does not exist. So at length 1 it renders as a plain label: no rule, no
+ * tablist role, no aria-selected, nothing to press. It becomes a real tab the
+ * moment Completed joins it, and the underline appears already under the right
+ * word rather than sliding in from nowhere.
  *
  * MEASURED, NOT DERIVED. The indicator's left/width come from the active
  * button's real layout box, re-read whenever the tab, a count, or the row's
  * size changes (the ResizeObserver watches the buttons too, which is what
- * catches a count mounting or the display font swapping in late). The first
- * measurement mounts the indicator already in place — it appears, it doesn't
- * travel in from nowhere.
+ * catches a count mounting or the display font swapping in late — Bricolage
+ * arrives after first paint and every tab changes width when it does).
  */
 function TabRow({
+  tabs,
   tab,
   goTab,
   counts,
 }: {
+  tabs: Tab[];
   tab: Tab;
   goTab: (t: Tab) => void;
   counts: Record<Tab, number>;
 }) {
+  const single = tabs.length < 2;
   const groupRef = useRef<HTMLDivElement | null>(null);
   const btns = useRef(new Map<Tab, HTMLButtonElement>());
   const [ind, setInd] = useState<{ left: number; width: number } | null>(null);
@@ -489,6 +549,7 @@ function TabRow({
 
   useLayoutEffect(() => {
     const group = groupRef.current;
+    if (single) return; // nothing to mark — see the note above
     if (!group) return;
     const measure = () => {
       const btn = btns.current.get(tab);
@@ -501,14 +562,18 @@ function TabRow({
     ro.observe(group);
     for (const b of btns.current.values()) ro.observe(b);
     return () => ro.disconnect();
-  }, [tab, counts.active, counts.pipeline, counts.completed]);
+  }, [single, tab, tabs.length, counts.active, counts.completed]);
 
   const move = ind && !reduced.current ? IND_MOVE : undefined;
 
   return (
     <div className="flex items-center justify-between gap-3">
-      <div ref={groupRef} role="tablist" className="relative flex items-center gap-5">
-        {ind && (
+      <div
+        ref={groupRef}
+        role={single ? undefined : "tablist"}
+        className="relative flex items-center gap-5"
+      >
+        {ind && !single && (
           /* bottom 2px against a 24px line box puts the rule's top edge ~2px
              below the baseline: Pipeline's and Completed's descenders reach
              ~1.5px off the bottom, so they cross it — which is the ask,
@@ -528,12 +593,13 @@ function TabRow({
             }}
           />
         )}
-        {TABS.map((t) => (
+        {tabs.map((t) => (
           <CourseTab
             key={t}
             label={TAB_LABEL[t]}
             count={counts[t]}
             active={tab === t}
+            single={single}
             onClick={() => goTab(t)}
             btnRef={(el) => {
               if (el) btns.current.set(t, el);
@@ -562,21 +628,29 @@ function CourseTab({
   label,
   count,
   active,
+  single,
   onClick,
   btnRef,
 }: {
   label: string;
   count: number;
   active: boolean;
+  /** The only tab there is — draws as a label, not a control. */
+  single?: boolean;
   onClick: () => void;
   btnRef: (el: HTMLButtonElement | null) => void;
 }) {
+  /* A lone tab is a heading. `disabled` rather than rendering a <span>: it
+     keeps the element, the class and the measurement identical, so the day
+     Completed arrives nothing about this one changes except that it starts
+     answering taps. */
   return (
     <button
       ref={btnRef}
       type="button"
-      role="tab"
-      aria-selected={active}
+      role={single ? undefined : "tab"}
+      aria-selected={single ? undefined : active}
+      disabled={single}
       onClick={onClick}
       /* BOLD AND BIGGER, BOTH STATES (owner, 2026-08-07: "make the waits of
          the tab text thicker" → semibold at 14px, then "increase the weight
