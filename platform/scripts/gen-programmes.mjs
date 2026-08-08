@@ -36,14 +36,29 @@ async function generate() {
      Mulungushi made the file SMALLER and nothing said so. It read as a scraping
      gap. Loop until a short page instead, and check the total afterwards. */
   const PAGE = 1000;
-  const rows_ = [];
-  for (let from = 0; ; from += PAGE) {
-    const res = await sb.from("onboarding_curriculum").select("*").range(from, from + PAGE - 1);
-    if (res.error) throw res.error;
-    rows_.push(...res.data);
-    if (res.data.length < PAGE) break;
+  async function all(view) {
+    const out = [];
+    for (let from = 0; ; from += PAGE) {
+      const r = await sb.from(view).select("*").range(from, from + PAGE - 1);
+      if (r.error) throw r.error;
+      out.push(...r.data);
+      if (r.data.length < PAGE) break;
+    }
+    if (!out.length) throw new Error(`${view} returned nothing`);
+    return out;
   }
-  if (!rows_.length) throw new Error("onboarding_curriculum returned nothing");
+
+  /* TWO READS, AND THE PROGRAMME LIST IS THE ONE THAT DEFINES THE OUTPUT.
+     onboarding_curriculum INNER JOINs the course table, so a programme whose
+     curriculum was never published produces no rows there and used to vanish
+     from the picker completely. That is most of them: 98 of UNZA's 111
+     programmes publish nothing, so a student doing BA Economics could not find
+     their own programme and had to type it as though we had never heard of it.
+     Not knowing someone's timetable is no reason to pretend their degree does
+     not exist — so programmes come from onboarding_programmes, and courses are
+     attached to whichever of them have any. */
+  const progRows = await all("onboarding_programmes");
+  const rows_ = await all("onboarding_curriculum");
   const res = { data: rows_ };
 
   /* Dissertations, industrial attachment and progress reports are on a
@@ -54,15 +69,27 @@ async function generate() {
      signal we could not act on. 8 rows across the whole set. */
   const rows = res.data.filter((r) => r.course_kind !== "project");
 
+  /* Every programme first, each with an empty course list. A programme that
+     never gains one still ships — the student picks it, and the course question
+     falls through to typing (OnboardingFlow's `typing`), which is also how the
+     curriculum for that programme starts getting collected. */
   const byUni = {};
+  for (const p of progRows) {
+    const uni = (byUni[p.university_id] ??= {});
+    uni[p.programme_slug] ??= {
+      slug: p.programme_slug,
+      name: p.programme_name,
+      level: p.programme_level ?? null,
+      courses: [],
+    };
+  }
+
   for (const r of rows) {
     const uni = (byUni[r.university_id] ??= {});
-    const prog = (uni[r.programme_slug] ??= {
-      slug: r.programme_slug,
-      name: r.programme_name,
-      level: r.programme_level ?? null,
-      courses: [],
-    });
+    /* A curriculum row whose programme is not in the list above would be one
+       we deliberately dropped (a dead link), so it does not resurrect it. */
+    const prog = uni[r.programme_slug];
+    if (!prog) continue;
     prog.courses.push({
       slug: r.course_slug,
       title: r.course_title,
@@ -141,7 +168,11 @@ async function generate() {
       `${live.size} of them built. ${(JSON.stringify(out).length / 1024).toFixed(0)}KB.`,
   );
   const empty = progs.filter((p) => !p.courses.length).length;
-  if (empty) console.log(`gen-programmes: ${empty} programme(s) publish no curriculum and will not be offered.`);
+  if (empty)
+    console.log(
+      `gen-programmes: ${empty} programme(s) publish no curriculum. They ARE offered — ` +
+        `the student picks the programme and types their courses, which is how that curriculum gets built.`,
+    );
 }
 
 generate().catch((e) => {

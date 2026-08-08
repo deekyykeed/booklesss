@@ -382,7 +382,17 @@ function asDraft(identity: Identity | null): Draft {
  * answers for itself.
  */
 function asks(step: Step, d: Draft, prog: Programme | undefined, installOK: boolean): boolean {
-  if (step === "year") return !prog || prog.years.length > 0;
+  /* Ask unless the programme's OWN timetable says the question is meaningless.
+     Three cases, and the middle one is the reason this is not just
+     `prog.years.length > 0`: no programme picked (typed) asks 1–6; a programme
+     we hold NO curriculum for asks 1–6 too, because the student knows their own
+     year whether or not we know their courses; and a programme whose scraped
+     course list carries no years at all is skipped, since there is nothing to
+     read a year off and nothing to tick once they answer. Most programmes are
+     now the middle case — 98 of UNZA's 111 publish nothing — and gating on
+     `years` alone silently skipped the year for every one of them the moment
+     they started shipping. */
+  if (step === "year") return !prog || !prog.courses.length || prog.years.length > 0;
   if (step === "semester") return semestersFor(prog, d.year).length > 1;
   if (step === "install") return installOK;
   return true;
@@ -463,6 +473,10 @@ export function OnboardingFlow() {
   const [stepPick, setStepPick] = useState<Step | null>(null);
   const [dir, setDir] = useState<"next" | "back">("next");
   const [query, setQuery] = useState("");
+  /** Separate from `query`, which is the course typeahead two questions later.
+   *  One box per question: sharing it would carry a half-typed degree name into
+   *  the course search and filter it to nothing. */
+  const [progQuery, setProgQuery] = useState("");
   /* Called once, here, rather than inside the "install" step itself. The
      hook's own listener has to be live for the WHOLE flow — Chrome can fire
      `beforeinstallprompt` at any point while the student is answering the
@@ -565,6 +579,23 @@ export function OnboardingFlow() {
   /** The programme as the server groups reports under: its slug where we hold
    *  it, otherwise the words they typed. */
   const programmeKey = (programme === OTHER_PROGRAMME ? programmeName : programme || "").trim();
+
+  /* A FILTER, BECAUSE THE LIST STOPPED BEING SCROLLABLE. The picker used to
+     hold only programmes whose curriculum had been scraped — 13 at UNZA, 1 at
+     Mulungushi — and a bare list was the right control for that. Offering every
+     programme (2026-08-08) took UNZA to 111 rows and Mulungushi to 107, which
+     on a phone is a scroll long enough that a student stops believing their own
+     degree is in there. Matching is on words in any order, so "econ arts" finds
+     "Bachelor of Arts in Economics"; a student typing what they call their
+     course should not have to guess the registry's word order. */
+  const allProgrammes = programmesFor(school);
+  const progTerms = progQuery.toLowerCase().split(/\s+/).filter(Boolean);
+  const shownProgrammes = progTerms.length
+    ? allProgrammes.filter((p) => {
+        const hay = `${p.name} ${p.level ?? ""}`.toLowerCase();
+        return progTerms.every((t) => hay.includes(t));
+      })
+    : allProgrammes;
 
   /* WHAT THEIR CLASSMATES SAID, offered back. This is the mechanism the owner
      asked for — "we can find a way to do this dynamically as I bring in
@@ -990,6 +1021,11 @@ export function OnboardingFlow() {
                    answer already given, which is a real case now that the flow
                    resumes into a part-filled record. */
                 const changed = id !== school;
+                /* The programme search goes with the programme. Left standing,
+                   a term typed against the old university's list silently
+                   filters the new one, and a student who backs up to correct
+                   their campus is shown an empty list of their own degrees. */
+                if (changed) setProgQuery("");
                 /* A different university means a different curriculum, so the
                    programme and everything picked under it go with it — a
                    Mulungushi student must not carry a ZCAS programme. */
@@ -1033,22 +1069,35 @@ export function OnboardingFlow() {
           <Card
             title="What are you studying?"
             why={
-              programmesFor(school).length
-                ? "Pick your programme and we'll line up its courses for you. Tap Back if you picked the wrong university."
+              allProgrammes.length
+                ? "Find your programme. Tap Back if you picked the wrong university."
                 : "Type your degree as your university writes it. Yours is the first — it becomes the list the next student sees."
             }
           >
             {/* A LIST WHERE WE HAVE ONE, A LINE WHERE WE DON'T, and the same
-                control either way. `programmesFor` is empty for seven of the
-                ten universities, and the last row is there even when it is
-                not: 19 ZCAS programmes and 98 UNZA ones publish no curriculum,
-                so they are absent from the index and a student on one of them
-                would otherwise be asked to find a degree the list cannot
-                contain. */}
-            {programmesFor(school).length > 0 && (
+                control either way. `programmesFor` is empty for the seven
+                universities that publish no programme list at all, and the
+                "not listed" row is there even when it is not — a registry can
+                be out of date, and a student on a programme it omits still has
+                to get through this question.
+
+                Note the list is now EVERY programme, not only those whose
+                curriculum was scraped: not knowing someone's timetable was
+                never a reason to leave their degree out of the picker. See
+                scripts/gen-programmes.mjs. */}
+            {allProgrammes.length > 8 && (
+              <input
+                value={progQuery}
+                onChange={(e) => setProgQuery(e.target.value)}
+                placeholder="Search your programme"
+                aria-label="Search your programme"
+                className="mb-3 w-full rounded-xl border border-[--color-line] bg-transparent px-4 py-3 text-base outline-none placeholder:text-[--color-placeholder] focus:border-[--color-ink]"
+              />
+            )}
+            {allProgrammes.length > 0 && (
               <OptionRows
                 options={[
-                  ...programmesFor(school).map((p) => ({
+                  ...shownProgrammes.map((p) => ({
                     id: p.slug,
                     title: programmeLabel(p),
                     note: levelLabel(p),
@@ -1103,7 +1152,7 @@ export function OnboardingFlow() {
               />
             )}
 
-            {(programme === OTHER_PROGRAMME || programmesFor(school).length === 0) && (
+            {(programme === OTHER_PROGRAMME || allProgrammes.length === 0) && (
               <input
                 autoFocus
                 value={programmeName}
@@ -1111,7 +1160,7 @@ export function OnboardingFlow() {
                 placeholder="e.g. Bachelor of Accountancy"
                 aria-label="Your programme"
                 maxLength={160}
-                className={FIELD + (programmesFor(school).length ? " mt-2" : "")}
+                className={FIELD + (allProgrammes.length ? " mt-2" : "")}
               />
             )}
           </Card>

@@ -601,6 +601,48 @@
       ]
     },
     {
+      "slug": "bachelor-of-arts-in-economics",
+      "name": "Bachelor of Arts in Economics",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-in-financial-services",
+      "name": "Bachelor of Arts in Financial Services",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-in-human-resource-management",
+      "name": "Bachelor of Arts in Human Resource Management",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-in-public-administration-management",
+      "name": "Bachelor of Arts in Public Administration & Management",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-business-administration",
+      "name": "Bachelor of Business Administration",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-business-entrepreneurship",
+      "name": "Bachelor of Business Entrepreneurship",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
       "slug": "bachelor-of-economics-and-finance",
       "name": "Bachelor of Economics and Finance",
       "level": "bachelors",
@@ -2505,6 +2547,13 @@
       ]
     },
     {
+      "slug": "bachelor-of-business-mathematics-with-computing",
+      "name": "Bachelor of Science in Business Mathematics with Computing",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
       "slug": "bachelor-of-science-in-computer-science",
       "name": "Bachelor of Science in Computer Science",
       "level": "bachelors",
@@ -3493,6 +3542,13 @@
       ]
     },
     {
+      "slug": "bachelor-of-science-in-internet-technology-and-security",
+      "name": "Bachelor of Science in Internet Technology and Security",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
       "slug": "bachelor-of-science-in-marketing-management",
       "name": "Bachelor of Science in Marketing Management",
       "level": "bachelors",
@@ -3691,6 +3747,20 @@
         3,
         4
       ]
+    },
+    {
+      "slug": "bachelor-of-science-in-mobile-computing",
+      "name": "Bachelor of Science in Mobile Computing",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-in-monitoring-and-evaluation",
+      "name": "Bachelor of Science in Monitoring and Evaluation",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
     },
     {
       "slug": "bachelor-of-science-in-network-engineering",
@@ -4794,6 +4864,13 @@
       ]
     },
     {
+      "slug": "master-of-laws-in-corporate-and-commercial-laws",
+      "name": "Master of Laws in Corporate and Commercial Laws",
+      "level": "masters",
+      "courses": [],
+      "years": []
+    },
+    {
       "slug": "master-of-laws-in-taxation-and-investment",
       "name": "Master of Laws in Taxation and Investment",
       "level": "masters",
@@ -4838,6 +4915,13 @@
       "years": [
         5
       ]
+    },
+    {
+      "slug": "master-of-science-economics-and-finance",
+      "name": "Master of Science Economics and Finance",
+      "level": "masters",
+      "courses": [],
+      "years": []
     },
     {
       "slug": "master-of-science-in-accounting-and-finance",
@@ -6019,6 +6103,20 @@
   ],
   "unza": [
     {
+      "slug": "bachelor-of-adult-education",
+      "name": "Bachelor of Adult Education",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-agricultural-science-education",
+      "name": "Bachelor of Agricultural Science with Education",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
       "slug": "bachelor-of-agricultural-sciences-animal-science",
       "name": "Bachelor of Agricultural Sciences (Animal Science)",
       "level": "bachelors",
@@ -6141,6 +6239,153 @@
       "years": []
     },
     {
+      "slug": "bachelor-of-agricultural-sciences-land-management",
+      "name": "Bachelor of Agricultural Sciences (Land Management)",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-agricultural-sciences-plant-sciences",
+      "name": "Bachelor of Agricultural Sciences (Plant Science)",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-applied-ethics-and-management",
+      "name": "Bachelor of Arts in Applied Ethics and Management",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-archaeology",
+      "name": "Bachelor of Arts in Archaeology",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-chinese-language-and-linguistics",
+      "name": "Bachelor of Arts in Chinese Language and Linguistics",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-criminology-and-security-studies",
+      "name": "Bachelor of Arts in Criminology and Security Studies",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-demography",
+      "name": "Bachelor of Arts in Demography",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-development-studies",
+      "name": "Bachelor of Arts in Development Studies",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-economics",
+      "name": "Bachelor of Arts in Economics",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-english-language-and-linguistics",
+      "name": "Bachelor of Arts in English Language and Linguistics",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-french",
+      "name": "Bachelor of Arts in French",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-gender-studies",
+      "name": "Bachelor of Arts in Gender Studies",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-history",
+      "name": "Bachelor of Arts in History",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-human-resource-management",
+      "name": "Bachelor of Arts in Human Resource Management",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-intangible-cultural-heritage",
+      "name": "Bachelor of Arts in Intangible Cultural Heritage",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-international-relations",
+      "name": "Bachelor of Arts in International Relations",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-linguistics-and-african-languages",
+      "name": "Bachelor of Arts in Linguistics and African Languages",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-local-government-administration",
+      "name": "Bachelor of Arts in Local Government Administration",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-peace-security-and-conflict",
+      "name": "Bachelor of Arts in Peace, Security, and Conflict Resolution",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-philosophy-and-applied-ethics",
+      "name": "Bachelor of Arts in Philosophy and Applied Ethics",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-political-science",
+      "name": "Bachelor of Arts in Political Science",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
       "slug": "bachelor-of-arts-project-management",
       "name": "Bachelor of Arts in Project Management",
       "level": "bachelors",
@@ -6152,6 +6397,181 @@
           "semester": null
         }
       ],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-psychology",
+      "name": "Bachelor of Arts in Psychology",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-public-administration",
+      "name": "Bachelor of Arts in Public Administration",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-records-and-archives-management",
+      "name": "Bachelor of Arts in Records and Archives Management",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-rural-sociology-and-community-development",
+      "name": "Bachelor of Arts in Rural Sociology and Community Development",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-sociology",
+      "name": "Bachelor of Arts in Sociology",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-education",
+      "name": "Bachelor of Arts with Education",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-library-and-information-studies",
+      "name": "Bachelor of Arts with Library and information Studies",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-business-administration",
+      "name": "Bachelor of Business Administration",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-computer-science-computer-science",
+      "name": "Bachelor of Computer Science in Computer Science",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-computer-science-computer-systems-engineering",
+      "name": "Bachelor of Computer Science in Computer Systems Engineering",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-computer-science-networking-and-information-security",
+      "name": "Bachelor of Computer Science in Networking and Information Security",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-computer-science-software-engineering",
+      "name": "Bachelor of Computer Science in Software Engineering",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-cultural-studies",
+      "name": "Bachelor of Cultural Studies",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-education-early-childhood-education",
+      "name": "Bachelor of Education (Early Childhood Education)",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-education-educational-administration-and",
+      "name": "Bachelor of Education (Educational Administration and Management)",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-education-educational-psychology",
+      "name": "Bachelor of Education (Educational Psychology)",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-education-environmental-education-and",
+      "name": "Bachelor of Education (Environmental Education and Management)",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-education-guidance-and-counselling",
+      "name": "Bachelor of Education (Guidance and Counselling)",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-education-literacy-and-language",
+      "name": "Bachelor of Education (Literacy and Language)",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-education-primary-education",
+      "name": "Bachelor of Education (Primary Education)",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-education-sociology-of-education",
+      "name": "Bachelor of Education (Sociology of Education)",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-education-special-education",
+      "name": "Bachelor of Education (Special Education)",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-education-chinese-language-teaching",
+      "name": "Bachelor of Education in Chinese Language Teaching",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-education-commerce-and-entrepreneurship",
+      "name": "Bachelor of Education in Commerce and Entrepreneurship",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-education-secondary-mathematics-and-science",
+      "name": "Bachelor of Education-Secondary (Mathematics and Science)",
+      "level": "bachelors",
+      "courses": [],
       "years": []
     },
     {
@@ -7557,6 +7977,20 @@
       ]
     },
     {
+      "slug": "bachelor-of-food-science-and-technology",
+      "name": "Bachelor of Food Science and Technology",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-information-and-communication-technologies-education",
+      "name": "Bachelor of Information and Communication Technologies in Education",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
       "slug": "bachelor-of-law",
       "name": "Bachelor of Law",
       "level": "bachelors",
@@ -7725,6 +8159,139 @@
       ]
     },
     {
+      "slug": "bachelor-of-media-and-journalism-studies",
+      "name": "Bachelor of Media and Journalism Studies",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-medicine-and-surgery",
+      "name": "Bachelor of Medicine and Surgery (Regular and Parallel)",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-pharmacy",
+      "name": "Bachelor of Pharmacy",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-public-relations-and-advertising",
+      "name": "Bachelor of Public Relations and Advertising",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-accounting-and-finance",
+      "name": "Bachelor of Science in Accounting and Finance (Fulltime and Evening)",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-actuarial-science",
+      "name": "Bachelor of Science in Actuarial Science",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-agricultural-economics",
+      "name": "Bachelor of Science in Agricultural Economics",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-agricultural-extension",
+      "name": "Bachelor of Science in Agricultural Extension",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-agronomy",
+      "name": "Bachelor of Science in Agronomy",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-biological-sciences",
+      "name": "Bachelor of Science in Biological Sciences",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-biomedical-science",
+      "name": "Bachelor of Science in Biomedical Science",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-business-management",
+      "name": "Bachelor of Science in Business Management (Fulltime and Evening)",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-chemical-and-biological-sciences",
+      "name": "Bachelor of Science in Chemical and Biological Sciences",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-chemistry",
+      "name": "Bachelor of Science in Chemistry",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-chemistrybiology",
+      "name": "Bachelor of Science in Chemistry/Biology",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-chemistrygeology",
+      "name": "Bachelor of Science in Chemistry/Geology",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-clinical-medicine-for-clinical-officers",
+      "name": "Bachelor of Science in Clinical Medicine for Clinical Officers",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-ecology-and-wildlife-management",
+      "name": "Bachelor of Science in Ecology and Wildlife Management",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-entrepreneurship-and-innovation-management",
+      "name": "Bachelor of Science in Entrepreneurship and Innovation Management (Fulltime and…",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
       "slug": "bachelor-of-science-environmental-and-natural-resource",
       "name": "Bachelor of Science in Environmental and Natural Resource Management",
       "level": "bachelors",
@@ -7868,6 +8435,13 @@
         3,
         4
       ]
+    },
+    {
+      "slug": "bachelor-of-science-environmental-health",
+      "name": "Bachelor of Science in Environmental Health",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
     },
     {
       "slug": "bachelor-of-science-geology",
@@ -8055,6 +8629,202 @@
         4,
         5
       ]
+    },
+    {
+      "slug": "bachelor-of-science-health-services-management-and-planning",
+      "name": "Bachelor of Science in Health Services Management and Planning",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-human-nutrition",
+      "name": "Bachelor of Science in Human Nutrition",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-human-resource-management",
+      "name": "Bachelor of Science in Human Resource Management (Fulltime and Evening)",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-logistics-and-transport",
+      "name": "Bachelor of Science in Logistics and Transport Management (Full-time and Evenin…",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-marketing",
+      "name": "Bachelor of Science in Marketing (Fulltime and Evening)",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-mathematics",
+      "name": "Bachelor of Science in Mathematics",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-mental-health-and-psychiatric-nursing",
+      "name": "Bachelor of Science in Mental Health Nursing",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-microbiology",
+      "name": "Bachelor of Science in Microbiology",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-midwifery",
+      "name": "Bachelor of Science in Midwifery",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-molecular-biology-and-genetics",
+      "name": "Bachelor of Science in Molecular Biology and Genetics",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-nursing",
+      "name": "Bachelor of Science in Nursing",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-occupational-safety-health-and-environment",
+      "name": "Bachelor of Science in Occupational Safety Health and Environment",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-oncology-nursing",
+      "name": "Bachelor of Science in Oncology Nursing",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-parasitology",
+      "name": "Bachelor of Science in Parasitology",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-physics",
+      "name": "Bachelor of Science in Physics",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-physicsgeology",
+      "name": "Bachelor of Science in Physics/Geology",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-physicsmathematics",
+      "name": "Bachelor of Science in Physics/Mathematics",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-physiotherapy",
+      "name": "Bachelor of Science in Physiotherapy",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-public-health",
+      "name": "Bachelor of Science in Public Health",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-public-health-nursing",
+      "name": "Bachelor of Science in Public Health Nursing",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-radiography",
+      "name": "Bachelor of Science in Radiography",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-statistics",
+      "name": "Bachelor of Science in Statistics",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-education",
+      "name": "Bachelor of Science with Education",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-social-work",
+      "name": "Bachelor of Social Work",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-veterinary-medicine",
+      "name": "Bachelor of Veterinary Medicine",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-youth-development-and-leadership",
+      "name": "Bachelor of Youth Development and Leadership",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "diploma-midwifery",
+      "name": "Diploma in Registered Midwifery",
+      "level": "diploma",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "diploma-registered-nursing",
+      "name": "Diploma in Registered Nursing",
+      "level": "diploma",
+      "courses": [],
+      "years": []
     }
   ],
   "mulungushi": [
@@ -8294,6 +9064,748 @@
         3,
         4
       ]
+    },
+    {
+      "slug": "bachelor-of-science-in-computer-science",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-in-information-technology",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-in-data-science",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-in-cyber-security",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-engineering-beng-civil-engineering",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-engineering-beng-electrical-and-electronics-engineering",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-engineering-beng-mechanical-engineering",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-engineering-beng-agricultyre-engineering",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-bsc-in-agronomy",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-bsc-agricultural-business-management",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-bsc-in-agricultural-economics",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-science-in-agronomy",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-science-in-agribusiness",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "phd-in-agribusiness-agricultural-economics-by-research",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-business-administration-with-marketing",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-in-communications-public-relations",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-in-communications-journalism",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-commerce-bcom-in-accounting-and-finance",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-commerce-bcom-in-marketing",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-commerce-bcom-in-business-management",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-commerce-bcom-in-economics",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-business-administration-and-entrepreneurship",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-in-biomedical-sciences",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-bsc-in-biological-sciences",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-bsc-in-chemistry",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-bsc-in-bio-chemistry",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-in-laboratory-technology-specialization-chemistry-biology-electronics",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "biological-sciences-electronics-and-instrumentation",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-in-biotechnology",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-science-in-biochemistry",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-science-in-human-anatomy",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-public-health-mph",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-information-systems",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-science-in-computer-science",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-science-in-sanitation",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-information-technology",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-science-in-cyber-security",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-bsc-in-economics-and-statistics",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-arts-ba-in-economics",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-in-economics-and-finance",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-in-demography-and-economics",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-arts-in-economics-and-finance",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-arts-degree-in-economics",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-science-bsc-in-ict-with-education",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-bsc-in-agriculture-with-education",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-bsc-in-agriculture-with-education-1",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-with-education-ba-ed-double-major-english-civic-education-geography",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-with-education-social-studies",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-with-education-english-single-major",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-primary-education",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-business-studies-with-education-bbsed",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-business-administration-entrepreneurship-with-education-bbae-ed",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-engineering-beng-geometrics-engineering",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-engineering-in-project-management",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-engineering-in-project-management-1",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "doctor-of-philosophy-phd-in-computer-sciences-distance-learning",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "doctor-of-philosophy-phd-in-information-systems-distance-learning",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-laws",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-human-resource-management",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-labour-and-employment-relations",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-in-labour-and-human-resource-management",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-law-in-labour-studies",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-labour-and-employment-relations",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-laws",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-science-in-human-resource-management",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-arts-in-peace-and-conflict-resolution",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-bsc-in-mathematics-and-statistics",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-in-actuarial-science",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-science-in-applied-mathematics-distance-learning",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-science-in-particle-and-nuclear-physics-distance-learning",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-arts-in-development-studies",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-bsc-in-agriculture",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-bsc-in-land-and-water-resources-management",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-bsc-in-environmental-studies",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-bsc-in-natural-resources-management",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-bsc-in-climatology-and-environmental-management",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-bsc-in-hydrology-and-earth-system-science",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-science-in-agricultural-risk-management",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-in-disaster-studies",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-science-in-environmental-and-natural-resources-management",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-in-nursing",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "diploma-in-nursing",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-pharmacy",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-science-in-chemical-pathology",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-science-in-immuno-pathology",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "phd-in-human-anatomy",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "phd-in-immuno-pathology",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "phd-in-chemical-pathology",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "phd-in-biochemistry",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "phd-in-pathology",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "phd-in-medical-biochemistry",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-public-health",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-bsc-in-physics",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-bsc-in-medical-physics",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-public-administration",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-science-in-demography",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-development-studies",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-social-work",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-psychology",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-in-sociology",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-arts-in-community-and-rural-development",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "diploma-in-social-work-in-conjunction-with-the-ministry-of-community-development-and-social-services-monze-and-kitwe-community-development-colleges",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-international-relations-and-development-with-chinese-or-french",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-social-work",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "bachelor-of-medicine-and-bachelor-of-surgery-mbchb",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
+    },
+    {
+      "slug": "master-of-medicine-surgery",
+      "name": "Read More",
+      "level": "bachelors",
+      "courses": [],
+      "years": []
     }
   ]
 }
