@@ -1419,6 +1419,106 @@ const CONFIGS = {
     ],
   }),
 
+  /* ================= 2026-08-08 ================= *
+   *
+   * 1 — the three faces.                                       (morning)
+   *
+   * THE SAME CONTROL AS YESTERDAY MORNING, ONE DAY LATER, AND THAT IS THE
+   * POST. The two drawn faces went out yesterday; overnight the owner rebuilt
+   * the row — the answers are three Streamline faces now, the middle answer
+   * ("Sort of") is back after weeks of being unreachable from the UI, and the
+   * rest state is a second DRAWN body (full line work, no fills) rather than a
+   * filter. Build-in-public means posting the redesign, not pretending the
+   * yesterday version was final.
+   *
+   * FOUR SLIDES: rest, then each answer in turn, worst to best, so the swipe
+   * ends on the happy face. GROUPED — the ink between states is fills arriving
+   * inside the same line work, so the alpha bounds barely move, but the count
+   * chip would widen a button if it ever drew and one scale for the set costs
+   * nothing.
+   *
+   * `w: 752` is a 1.7x enlargement of the dsf-8 shot — inside the crispness
+   * the 8-07 pair shipped at. */
+  "k-faces": () => ({
+    slot: "1-morning",
+    slides: [
+      object({ img: img("faces-1-rest.png"), w: 752, flat: true, group: "kfaces" }),
+      object({ img: img("faces-2-lost.png"), w: 752, flat: true, group: "kfaces" }),
+      object({ img: img("faces-3-sort.png"), w: 752, flat: true, group: "kfaces" }),
+      object({ img: img("faces-4-got.png"), w: 752, flat: true, group: "kfaces" }),
+    ],
+  }),
+
+  /* 2 — the flag becomes what you flagged.                      (midday)
+   *
+   * One control at four moments of one interaction: the line-drawn flag, the
+   * menu it opens with a verdict chosen (colour on exactly one of five outline
+   * rows), the flag again wearing that verdict's own mark, and a different
+   * verdict so "becomes what YOU flagged" reads as variable rather than as a
+   * fixed swap.
+   *
+   * NOT GROUPED, deliberately: a closed 28px control and the 230px menu it
+   * opens are genuinely different objects, which is the rule-1a carve-out. The
+   * singles were re-shot at dsf 16 so a 20px mark can fill a frame without the
+   * 5x softness the 8-07 single faces were rejected for; `w: 560` keeps the
+   * enlargement under 2x on the poster.
+   *
+   * `flat` everywhere — a bare glyph and a menu that carries its own shadow
+   * both smear under the poster's wide drop-shadow. */
+  "k-flag": () => ({
+    slot: "2-midday",
+    slides: [
+      object({ img: img("flagx-1-rest.png"), w: 560, flat: true }),
+      object({ img: img("flag-2-menu.png"), w: 700, flat: true }),
+      object({ img: img("flagx-3-became.png"), w: 560, flat: true }),
+      object({ img: img("flagx-4-wrong.png"), w: 560, flat: true }),
+    ],
+  }),
+
+  /* 3 — the callout says which kind of box it is.            (afternoon)
+   *
+   * D-12 closed overnight: 59 callouts that all drew "Key point" now name what
+   * they are, and 18 of them were saying the wrong thing on screen — traps
+   * labelled as key points. The kind is a 14px ink mark at the head of the
+   * sentence: key / danger triangle / target. Three real callouts, three
+   * kinds; the bodies are relabelled to the neutral curriculum in
+   * neutralize.mjs the way the cards and the popup were.
+   *
+   * NOT grouped — a callout's height IS its sentence (the comment-box case),
+   * and all three run the content column's full width so one `w` scales them
+   * identically anyway. `flat` because the box carries its own border and
+   * shadow. */
+  "k-callout": () => ({
+    slot: "3-afternoon",
+    slides: [
+      object({ img: img("co-1-key.png"), w: 752, flat: true }),
+      object({ img: img("co-2-warning.png"), w: 752, flat: true }),
+      object({ img: img("co-3-exam.png"), w: 752, flat: true }),
+    ],
+  }),
+
+  /* 4 — the course's first fold.                               (evening)
+   *
+   * All three authored courses got a "Getting started" folder today, which is
+   * the shape the demo course pioneered — so at HEAD every course opens by
+   * orienting you before it teaches you. Third axis on the tree (3 Aug depths,
+   * 5 Aug rings): what sits at the TOP of it.
+   *
+   * Three states of the folder: as a course lands (open, nothing read), the
+   * orientation read (two green ticks), and folded to one quiet row — which is
+   * what a folder is FOR once you are past it. The shrink on slide 3 is the
+   * point, so nothing is grouped; all three crops are 283 css wide, so one `w`
+   * gives them one scale and the fold reads as the component collapsing rather
+   * than the camera moving. */
+  "k-fold": () => ({
+    slot: "4-evening",
+    slides: [
+      object({ img: img("fold-1-landed.png"), w: 700, flat: true }),
+      object({ img: img("fold-2-read.png"), w: 700, flat: true }),
+      object({ img: img("fold-3-folded.png"), w: 700, flat: true }),
+    ],
+  }),
+
   brand: () => ({
     slot: "5-night",
     slides: [

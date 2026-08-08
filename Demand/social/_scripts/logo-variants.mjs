@@ -432,6 +432,51 @@ const PLATES = [
       ${disc({ size: 205, shadow: "box-shadow:0 3px 6px rgba(24,24,45,.07),0 20px 40px rgba(24,24,45,.12)" })}
       ${word("Bklsss", { size: 182, color: INK })}
     </div></div>` },
+
+  /* ================================================================== *
+   * 2026-08-08 — three more, each asking a question the forty above
+   * have not. Checked against the list before writing (the 8-07 lesson:
+   * four "new" plates were thrown away for being the reserve under new
+   * names).
+   * ================================================================== */
+
+  /* 1 — the derivation. 07-both stacks the two forms as two words; nobody
+     has shown WHERE the short one comes from. One word, with the letters
+     the contraction drops still standing in it as ghosts — the name and
+     the logo turn out to be the same object, and the eye does the cut. */
+  { name: "41-derivation", bg: GRADIENT, safe: true,
+    html: `<div class="safebox"><span class="w" style="font-size:150px">
+      ${["B", "o", "o", "k", "l", "e", "s", "s", "s"].map((c) =>
+        `<span style="color:${INK};opacity:${"ooe".includes(c) ? 0.13 : 1}">${c}</span>`).join("")}
+    </span></div>` },
+
+  /* 2 — the construction. 30-icon-build takes the DISC apart; the word has
+     never shown its skeleton. Cap line, x line and baseline drawn through
+     the mark in the brand purple, the way a type specimen is ruled. The
+     offsets are Familjen's metrics at line-height .82, checked against the
+     render rather than trusted. */
+  { name: "42-anatomy", bg: CREAM, safe: true,
+    html: `<div class="safebox"><div style="position:relative;display:inline-block">
+      ${word("Bklsss", { size: 200, color: INK })}
+      ${[
+        /* Measured, not estimated: canvas actualBoundingBoxAscent for "B" and
+           "s" against an inline baseline probe, at this exact size and
+           line-height. The eyeballed first cut was 8px out on every rule. */
+        ["cap", 32], // top of B
+        ["x", 59],   // top of the s's
+        ["base", 162], // the baseline
+      ].map(([, y]) =>
+        `<div style="position:absolute;left:-64px;right:-64px;top:${y}px;height:2px;background:${PURPLE};opacity:.55"></div>`).join("")}
+    </div></div>` },
+
+  /* 3 — the two scales. The wordmark lives at 31px in a poster corner and
+     nowhere else; 38-bk-stamp showed that size alone and died as an empty
+     frame. This is the same claim with the frame given a second layer: the
+     word at its true corner size, in its true corner, over itself as a
+     ghost the size of the poster. The signature and the field, one frame. */
+  { name: "43-echo", bg: TILE, safe: false,
+    html: `<div class="frame">${word("Bklsss", { size: 430, color: PAPER, extra: "opacity:.09" })}</div>
+      <div style="position:absolute;left:96px;top:320px">${word("Bklsss", { size: 31, color: PAPER })}</div>` },
 ];
 
 const CHOSEN = PICK.length

@@ -377,6 +377,14 @@ Print the css size `isolate()` reports and check the numbers actually differ.
   **Check the source file's pixel size before choosing `w`**, and when the
   choice is soft-and-big against sharp-and-flat, ship sharp — a fuzzy asset on a
   poster reads as a cheap product, where an empty margin only reads as quiet.
+- **A SMALL SVG GLYPH NEEDS A HI-DPI SHOT BEFORE IT CAN FILL A FRAME.** The
+  raster-ceiling rule has a second arrival: vector UI is sharp at any size *in
+  the browser*, but the shot is a raster the moment the shutter fires, and a
+  20px mark at dsf 8 is a 160px file — filling the safe box with it is the
+  same 5× softness the 8-07 single faces were rejected for. Re-shoot single
+  glyphs in their own context at dsf 16 with a SHORT viewport (buffer cost is
+  width × height × dsf², and only width decides the mobile layout, so keep 402
+  wide and cut the height). `flagx` in `cap-0808.mjs` is the shape.
 - **STRAIGHT. No skew, no perspective.** Tried 2 Aug, rejected on sight: *"the
   skewing thing doesn't work, it is very ugly."* Flat vector UI with hairline
   borders goes through a resampler and stops looking like a card. Depth comes
@@ -502,6 +510,12 @@ Print the css size `isolate()` reports and check the numbers actually differ.
   every element whose box touches the crop.
 - **Map both spellings of an ampersand.** The dashboard's Resume chip prints
   "and" where the nav prints "&".
+- **A body with a `**bold**` span is two or three TEXT NODES, and each node is
+  its own MAP row.** The relabeller walks text nodes, so keying the whole
+  authored sentence matches nothing and the original ships silently — the scan
+  only saves you if a banned word happens to be inside. Key each fragment
+  (the bold span's text, and the plain text around it) separately; the
+  2026-08-08 callout rows in `neutralize.mjs` are the shape.
 - **A clean scan is not a clean crop.** A step title with no banned word in it
   can still be a lie under the wrong course heading. Read the crop.
 - **Print the offending SENTENCE, not just the banned word** — most hits are a

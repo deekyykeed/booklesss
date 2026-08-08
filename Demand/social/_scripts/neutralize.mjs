@@ -235,6 +235,26 @@ export const MAP = {
   "The dealers, the people who actually strike trades. The back office confirms, settles and records them. Keeping the two apart is the single most important treasury control.":
     "The place your offer holds in a buyer\u2019s head, next to everything else they could pick. You do not choose it; you earn it, and a competitor can move it.",
 
+  /* ---- three callouts, for the kind slides (added 2026-08-08) ----
+   * The callout is photographed on its own, so its sentence is the entire
+   * slide. Same treatment as the cards and the tap-to-define popup above: the
+   * box, the mark, the shadow and the Satoshi are the real component — only
+   * the words are placeholders, in the register of the course the reader
+   * shots already use (Marketing Management). A callout body is authored with
+   * **bold** spans, which render as separate text nodes, so each NODE is a
+   * key here — mapping the whole authored string would match nothing. */
+  /* start-here-treasury, kind "key" (one node): */
+  "Profit is an opinion formed at year end. Cash is a fact on a Tuesday. This course is about the Tuesday.":
+    "A sale is what a product does for someone once. A brand is what they remember when it is time to buy again. This course is about the remembering.",
+  /* foreign-exchange-risk, kind "warning" (two nodes, first one bold): */
+  "A high-interest currency always trades at a forward discount.":
+    "A discount that never ends is not a promotion, it is your new price.",
+  "If a forward quote ever looks like good news about your currency, check the interest rates before you celebrate.":
+    "If sales only move while the offer is running, the product did not get more attractive. It got cheaper, and the customer noticed.",
+  /* start-here-treasury, kind "exam" (one node): */
+  "The paper is written the same way. Most marks in the past papers go to a calculation and then to a short recommendation about what the business should actually do. A number with no decision attached to it leaves marks on the table.":
+    "The paper is written the same way. Most marks go to applying a model to the case in front of you and then a short recommendation about what the business should actually do. A model named with no decision attached leaves marks on the table.",
+
   /* ---- the PIPELINE tab's cards (added 2026-08-07) ----
    * A pipeline card prints a course off the student's own timetable \u2014 a real
    * title, scraped from a real university's real programme. That is the one
