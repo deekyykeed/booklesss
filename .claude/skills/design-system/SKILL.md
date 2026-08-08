@@ -240,6 +240,32 @@ Lists and grids cascade: `animation-delay: calc(var(--index) * 80ms)`. Never ins
 - `backdrop-blur` only on fixed/sticky elements — never on scrolling containers
 - Grain/noise overlays on `position: fixed; pointer-events: none` pseudo-elements only
 - CPU-heavy perpetual animations isolated in leaf components — never trigger parent re-renders
+- **Never run a perpetual animation on the element that owns a border or a
+  multi-layer shadow — put it on a child.** "Animate only opacity" is not
+  enough on its own: opacity on a bordered, shadowed box makes Safari
+  re-rasterise the border and every shadow layer each frame, which is visible
+  as choppiness on a phone and invisible in Chrome on a desktop. Move the
+  animated fill to an `::after` with nothing but a background colour, and
+  promote it (`transform: translateZ(0)` — Safari honours the transform hint
+  on a pseudo-element more reliably than `will-change` alone). *(2026-08-08)*
+
+### Loading placeholders
+**A placeholder must be the same object it becomes, not a stand-in for it.**
+Every property that differs between the skeleton and the real thing — border,
+radius, shadow, background — is a separate visible change at the moment they
+swap, and a control that changes three times on one load reads as broken
+rather than loading. Match the box exactly and let only the *fill* differ.
+
+Two corollaries, both learned from one header avatar:
+- **Never draw a settled-looking empty state mid-load.** A bordered circle with
+  nothing in it looks finished while the app is still working, which is worse
+  than a placeholder that admits it is one. Keep pulsing until there is
+  something real to draw.
+- **Fade art in when it lands** (~160ms). The box was already reserved so
+  nothing moves, but going from nothing to full strength in one frame reads as
+  a flicker against the placeholder it replaces.
+
+Count the states before you build the load: three is a glitch, two is a load.
 
 ---
 
@@ -360,10 +386,36 @@ costs one Playwright loop over `h1.textContent`.
 
 ---
 
-## Two layout traps that look like design bugs *(2026-08-06)*
+## Three layout traps that look like design bugs *(2026-08-06, 2026-08-09)*
 
-Both cost a round of "it looks wrong" and neither is visible in the CSS you
+Each cost a round of "it looks wrong" and none is visible in the CSS you
 wrote — the browser is doing something correct that you did not ask for.
+
+**A grid column with no `grid-template-columns` floors at MIN-CONTENT, and
+`truncate` cannot save a box already sized to the text it was meant to cut.**
+`grid gap-3 md:grid-cols-2` looks symmetrical and is not: from `md` up Tailwind
+writes `repeat(2, minmax(0, 1fr))` — with its zero floor — and below `md` there
+is no template at all, so the implicit column is `auto`-sized and `auto` floors
+at min-content. One `whitespace-nowrap` line inside (which is what `truncate`
+is) reports its *whole untruncated* width as min-content, and the column grows
+to fit a string that was always going to be clipped. Cards then run off the
+right edge of a phone while every other section on the page sits correctly.
+
+Two clamps are needed and people usually apply one:
+- `grid-cols-1` sizes the **track**
+- `min-w-0` on the item sizes the **item** — a grid item carries `min-width:
+  auto` of its own and will overflow a track that is perfectly sized
+
+An item that sets `overflow: hidden` zeroes its own floor for free, which is
+why this hides for months: it only surfaces when a *wrapper* with no overflow
+(a drag handle, an animation shell) sits between the grid and the card. And it
+needs long enough content to exceed the viewport, so it ships looking fine and
+breaks on one student's longer course name.
+
+**The tell: compare against a sibling grid that already works.** On the
+dashboard the stat tiles were always correct because their `grid-cols-2` was
+explicit. Same container, same padding, different overflow behaviour — that
+asymmetry names the cause before you open devtools.
 
 **Flex and grid CLAMP an item bigger than its container to the start edge.**
 `place-items-center` on a 50px logo disc containing a 56px line box put the

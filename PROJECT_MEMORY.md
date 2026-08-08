@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-08 (session 53)
+**Last updated:** 2026-08-09 (session 55)
 
 ---
 
@@ -91,6 +91,81 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 55 (2026-08-09, the reader-typography day — the vertical ladder,
+and the step title's round trip to Bricolage and back. Numbered 55 because the
+dashboard session had already claimed 54 while in flight in this same tree.
+Linear unreachable for the TWELFTH session.)**
+- [ ] **The ladder is set on the reader's step page and nowhere else.** The
+      dashboard, the course pages, the settings rows and the onboarding steps
+      still space themselves however they were built. If the owner's complaint
+      generalises — *"different pieces stay separated"* — those surfaces are
+      where to look next. The scale to reuse is in `.claude/CLAUDE.md` under
+      "The Reader's Vertical Ladder"; the principle worth carrying is that a
+      heading gets more space above it than below.
+- [ ] **The step title's weight is 600 and was never re-litigated.** It went up
+      with the Bricolage change and stayed when the face was reverted, so the
+      owner has seen Familjen 600 and not objected — but they only ever asked
+      for the *face* back. If titles now read heavy, 500 is one line in
+      `LessonView.tsx`.
+- [ ] **The OG preview card is Familjen and is now accidentally consistent**
+      with the reader again. It did not change this session and nobody has
+      compared them side by side since. Worth knowing before the next title
+      face is tried: the reader is one CSS line, the card needs the font
+      vendored and instanced for Satori (`lib/og.tsx`).
+- [ ] **Sub-headings are 21px now, which changes how a written step reads.**
+      No step was rewritten for it, and steps that lean on many short `h2`
+      blocks will look more sectioned than they did. Worth a look during the
+      next study session rather than a pre-emptive edit.
+- [ ] ⚠️ **Two sessions were live in this working tree all afternoon** — this
+      one and the dashboard one — and it showed: `PROJECT_MEMORY.md` changed
+      under an in-flight edit twice, both sessions independently reached for
+      session number 54, and the local HEAD briefly sat on a lineage that did
+      not contain this session's own pushed commits. Everything reconciled
+      (verified against a fetched `origin/main`, not the local log), but the
+      `git add -A` ban in the wrap skill is not theoretical here.
+
+**From session 54 (2026-08-08 into 09, the dashboard day — a redirect loop
+killed, the dashboard rebuilt around comparison rather than counting.
+Numbered 54 because session 53 was in flight in the same tree and had already
+claimed 53; its block below is not mine to renumber. Linear unreachable for
+the ELEVENTH session.)**
+- [ ] ⚠️ **THE JUMP-BACK BAR AND THE WEEK COMPARISON BOTH NEED A REAL STUDY
+      SESSION BEFORE THEY SHOW ANYTHING.** `lib/progress` grew a `last`
+      record ({id, at}) and it only accrues from now on, so on the owner's own
+      device the bar is absent until the next step is opened — which is
+      indistinguishable from it being broken. Same for the greeting line's
+      "compared to your usual": `usualMins` averages the three complete weeks
+      before this one, so it says nothing until there is history. Neither is a
+      bug; both need a day of use to verify.
+- [ ] ⚠️ **`--font-tab` IS BRICOLAGE ON TRIAL, AND THE APP NOW PAYS FOR IT.**
+      The dashboard fetches a Bricolage 700 file it did not before. Bricolage
+      has been put on and taken off the step title once already the same day.
+      **If the tabs go back to Familjen, drop `"700"` from the weight array in
+      `layout.tsx` in the same edit** or the app keeps downloading a face
+      nothing draws.
+- [ ] **THE SORT CONTROL IN THE TAB ROW IS A DISABLED PLACEHOLDER.** MynaUI
+      `sort`, right-hand end of the course tab row, does nothing — it holds
+      the spot the owner asked for ("on that end is where ill have sort
+      icons") so the row's composition could be judged whole. Needs deciding
+      what it sorts by (name / progress / recent) and building.
+- [ ] **THE SHAKY-SECTIONS QUEUE WAS BUILT AND CUT ON THE SAME DAY.** Every
+      "how did this land" answer is still collected in `grasp` and still
+      offered back nowhere. The owner's reason for cutting it is the useful
+      part: a dashboard is where you decide what to do next, and a list of
+      what you half-understood is homework arriving before you have opened
+      anything. **If it returns it belongs inside a course, next to the steps
+      it names.** The removed code is in git ("The greeting line starts
+      comparing…").
+- [ ] **BURBANK IS NOW FRONT-DOOR-ONLY AND THE LICENCE QUESTION IS STILL
+      OPEN.** The header wordmark went back to Familjen, so Burbank Big
+      Condensed (Font Bureau retail, no licence recorded in this repo) is down
+      to the ◯B disc and the lockup on `/`. Much smaller exposure than it was,
+      still has to be settled before that mark reaches print or an app icon.
+- [ ] **The tab row is DERIVED now** — Active always, Completed only once a
+      course is finished, Pipeline never. A future tab has to earn its place
+      the same way; the reasoning is at the top of `CoursesSection.tsx` and it
+      is about not giving absence equal billing with the student's own work.
 
 **From session 53 (2026-08-08, the four-course planning day — Macroeconomics,
 Mathematics, Development Studies and Demography planned and scaffolded from
@@ -187,15 +262,13 @@ Linear unreachable for the NINTH session.)**
       desktop Chrome with the app already installed it correctly draws nothing —
       which is indistinguishable from it being broken. Check on a phone that has
       not installed the PWA.
-- [ ] **A FINISHED COURSE CARD STILL LOOKS LIKE AN UNTOUCHED ONE**, and the
-      Completed tab that shipped this session is what draws it. Session 49
-      raised this from the marketing side; it is now also a product gap, since
-      there is a tab whose whole purpose is showing finished courses and the
-      card in it says "Resume", points at step one, and reads 0d streak.
-- [ ] **The tab underline is `--color-placeholder` and so is the inactive tab
-      text** — the same grey doing two jobs. It reads correctly today because
-      one is type and one is a rule, but if either moves they should stop
-      matching by accident.
+- [x] ~~A FINISHED COURSE CARD STILL LOOKS LIKE AN UNTOUCHED ONE~~ → ✅ closed
+      in session 54. `CourseCard` takes a `completed` flag: the streak figure
+      goes, the decayed performance score becomes a green check, and the bar
+      reads "Done ✓ · Read it again".
+- [x] ~~The tab underline is `--color-placeholder` and so is the inactive tab
+      text~~ → ✅ closed in session 54. The rule is `rgba(0,0,0,0.2)` now and
+      the two greys no longer match by accident.
 - [ ] **`MemberCount`'s tick interval was retuned this session and then the
       whole component was replaced** by session 51's server-side count. The
       1.5–4.5s timer is gone. Nothing to do; noted so the change is not looked
@@ -267,13 +340,11 @@ and is not mine to renumber. Linear unreachable for the SEVENTH session.**
 
 **From session 49 (2026-08-07, the social day — five slots off a seventeen-commit
 ship). Linear unreachable for the SIXTH session running.**
-- [ ] ⚠️ **A FINISHED COURSE CARD LOOKS LIKE AN UNTOUCHED ONE.** It still says
-      "Resume", still points at the first step, still shows a performance score
-      rather than a completion, and its streak reads 0d — the only thing that
-      says "done" is the resume button's fill being full. The Completed tab
-      shipped today and this is the card it draws. Caught photographing it: the
-      afternoon carousel's third slide reads as "not touched lately" as easily
-      as "finished", and no caption can fix that under the no-copy rule.
+- [x] ~~⚠️ A FINISHED COURSE CARD LOOKS LIKE AN UNTOUCHED ONE~~ → ✅ closed in
+      session 54, raised here first from the marketing side. `CourseCard` takes
+      a `completed` flag: no streak figure, a green check where the decaying
+      performance score was, and "Done ✓ · Read it again" on the bar. Safe to
+      photograph now.
 - [ ] **`Demand/social/_source/ref-0807/` is untracked on purpose** — recon
       screenshots, not the recipe. Delete it or leave it; nothing reads it.
 - [ ] **The checkpoint faces are 128×128 PNGs, and that is what caps the poster
@@ -1188,6 +1259,122 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-09 (session 55 — the reader gets a vertical ladder, and the title comes back from Bricolage)
+
+*Numbered 55 because the dashboard session was in flight in the same tree and
+had already claimed 54; its numbering is not mine to correct.*
+
+**Done:** Two reader-typography changes, both measured on the live page rather
+than eyeballed. **The vertical ladder:** four different seams all measured 20px
+— paragraph to paragraph, above a sub-heading, below a sub-heading, and the last
+block to the checkpoint — so a new sub-idea, the next sentence and the end of a
+whole section were spaced identically (owner: *"a paragraph a section a title and
+all must be spaced and sized accordingly so different pieces stay separated"*).
+Now 12 / 24 / 32 / 40 / 56, no two rungs within 8px, each meaning one thing, and
+**a heading always gets more space above it than below** — equal space orphans a
+heading, more above attaches it to what it introduces. The type scale went
+30 / 24 / **21** / 18: the sub-heading was 19px against 18px body, which is not a
+size step, it is bold text. **The title face:** Bricolage Grotesque in the
+morning (*"i want to move away from familjen font titles"*), Familjen again by
+the afternoon (*"bring the title back to familjen"*) — the weight stayed at 600,
+so what was rejected was the face, not the confidence. `--font-title` kept, which
+is why both changes were one line each. Recorded in `.claude/CLAUDE.md` (new
+"Reader's Vertical Ladder" section + the fonts table) and `step-skill/LOG.md`.
+
+**What Worked:** **measuring the ladder off the live DOM at 390px, not off the
+Tailwind classes.** A Playwright script that walks `getBoundingClientRect()` and
+tallies each seam by kind is what proved the 40/12 asymmetry landed and, before
+that, what showed the four seams were identical. It also caught its own bug: the
+checkpoint row is a *sibling* of the block container, so a naive
+`section > div > *` selector reads its buttons as blocks and reports **negative**
+gaps — scope to `div:not(.checkpoint-row)`. Screenshotting three states (title,
+section seam, a pair of sub-headings) caught what numbers cannot: Familjen sets
+the same title on one line where Bricolage wrapped to two.
+
+**Dead Ends (do not retry):** **never pipe a build through `head`.**
+`npm run build 2>&1 | grep -E … | head -10` printed *"✓ Compiled successfully"*
+and still left no usable build: `head` closes the pipe, SIGPIPE kills `next
+build` partway, `.next` ends up with no BUILD_ID, and the damage only surfaces
+two commands later as `next start` saying *"Could not find a production build"*
+while the next `npm run build` refuses with *"Another next build process is
+already running."* Redirect to a log file and read it instead. Recovering needed
+PowerShell `Remove-Item -Recurse -Force` on `.next` — bash `rm -rf` failed with
+*"Directory not empty"* on OneDrive, exactly as the wrap skill already warns.
+Also: **playwright lives in `platform/node_modules`**, so a capture script in the
+session scratchpad cannot import it — copy the script into `platform/` to run it.
+
+### Session 2026-08-08 into 09 (session 54 — a redirect loop killed, and the dashboard stops counting and starts comparing)
+
+**Done:** Opened on a production emergency: the owner signed out and the app
+trapped them in `/` → `/dashboard` → `/` forever. Two guards that were never
+complements — the landing sent anyone with `daysStudied > 0` to the dashboard
+*without consulting the session*, and the dashboard sent anyone signed-out
+back — with `replace` on both ends eating the history that would have let them
+escape. **Signing out was only the easiest way in:** the same trap caught every
+anonymous reader returning after their free step, which is the growth loop's
+entire audience. Fixed by making the landing's admit condition the exact
+complement of `RequireAccount`'s eject condition, with the invariant written
+into the code so the next person to add a condition sees it.
+
+Then a full dashboard pass off the owner's own phone screenshots: the page was
+told "you haven't started yet" over a 2-day streak and 2h 26m, because the
+subline, Performance and Coverage keyed on ticked checkpoints while Streak and
+Time keyed on reading. "Started" now means any recorded signal. A finished
+course card said "Resume", pointed at step one and read 0d — it says
+"Done ✓ · Read it again" with a green check. The greeting line stopped counting
+and started comparing: against the weekly goal they set at onboarding (paced by
+their own named study days, so a day their plan gave them off never reads as
+"behind") or, failing that, against their own average week. Jump-back-in bar
+added and moved to the top of the page. Weekly goal surfaced on the time tile,
+then moved from the number to the footer on the owner's call.
+
+Three things were built and reverted the same day, all correctly: a chip
+variant of the tab marker (A/B'd live against the underline, underline won in
+an hour), a week-of-squares grid on the streak tile (it stretched the whole
+tile row — tiles are now pinned at 130px so nothing can do that again), and a
+shaky-sections revision queue. Burbank came off the header wordmark back to
+Familjen at its original 18/22.
+
+Closed on two real bugs: a Safari avatar flicker (the account slot changed
+shape three times per load, and the pulse was repainting a bordered, shadowed
+box every frame) and course cards running off the right edge of a phone.
+
+**What Worked:**
+- **Reading the two redirect conditions side by side rather than debugging the
+  symptom.** The loop was obvious the moment `ToApp`'s admit test and
+  `RequireAccount`'s eject test were on screen together — and that framing is
+  also what revealed the anonymous-reader case, which the bug report did not
+  mention and which was strictly worse than what was reported.
+- **Comparing a broken grid against a working sibling.** The course cards
+  overflowed on mobile while the stat tiles above them, in the same container
+  with the same padding, did not. That asymmetry named the cause (`grid-cols-2`
+  was explicit on the tiles, absent on the cards below `md`) before devtools
+  was needed. Promoted to `design-system/SKILL.md` as a third layout trap.
+- **`git commit --only -- <paths>` throughout.** The tree had a parallel
+  session in it all day (step-skill, then the four UNZA courses); nine commits
+  landed without ever touching their files.
+- **The wrap skill's own `.next` triage table**, four times. Every failure was
+  the cloud-sync signature (EPERM/EBUSY on a path, no node process, port free)
+  and `Remove-Item -Recurse -Force` cleared it instantly each time. Retrying
+  would have been pure delay, exactly as documented.
+
+**Dead Ends (do not retry):**
+- **A week-of-squares grid inside the streak stat tile.** Three rows of squares
+  are taller than one line of digits, so it stretched the tile and every tile
+  beside it. The owner's reaction was immediate and covered the dimensions, not
+  the idea. Tiles are now `h-[130px]`; anything new a tile wants to draw has to
+  fit that box rather than grow it. If the week-of-days idea returns it needs
+  its own surface, not this one.
+- **A shaky-sections queue on the dashboard.** Built on `grasp` data that had
+  never been offered back, and cut within the hour: a dashboard is where a
+  student decides what to do next, and a list of what they half-understood is
+  homework arriving before they have opened anything. The data is untouched —
+  if it returns it belongs *inside a course*, beside the steps it names.
+- **A white chip as the tab selection marker.** Borrowed verbatim from
+  `.step-selector`, A/B'd live beside the underline, lost. Not a failure of
+  execution — the underline is simply right for a row of headings — but do not
+  park a second copy in the file; it is in git.
 
 ### Session 2026-08-08 (session 53 — four courses planned from their own paper)
 
