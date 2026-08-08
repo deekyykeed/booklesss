@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { MynaIcon } from "@/components/icons/myna";
+import { UltimateIcon } from "@/components/icons/ultimate";
 import { needsAccount } from "@/lib/account";
 import { requireAccount } from "@/lib/onboarding";
 import { NOTES, noteFor, setNote, subscribeNotes, type NoteId } from "@/lib/step-notes";
@@ -104,7 +105,14 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
   const label = active?.label ?? null;
 
   return (
-    <div ref={wrap} className="relative">
+    /* `checkpoint-pod` is this control's OWN container as of 2026-08-08 (owner:
+       "instead of the one continuous container will split into two with same
+       styling as the search icon and its container in the header"). The flag and
+       the three faces used to share one long white strip, which made them read
+       as one toolbar of four marks; they are two different questions, so they
+       are two containers now. The pod is the header's circular button exactly —
+       see the note on .checkpoint-pod in globals.css. */
+    <div ref={wrap} className="checkpoint-pod relative">
       <button
         type="button"
         /* Gated the same way as the two faces beside it (owner's rule,
@@ -124,9 +132,8 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
            only way a mouse reader recovers the word — and here it carries the
            answer already given, which the bare glyph cannot say on its own. */
         title={label ? `You said: ${label}. Change it` : "How did that read?"}
-        className="grasp-btn squircle"
+        className="grasp-btn"
         data-active={chosen ? "" : undefined}
-        style={{ "--grasp-tone": "#5b5b66" } as React.CSSProperties}
       >
         {/* A FLAG, and once something is flagged it BECOMES what was flagged
             (owner, 2026-08-07: "i want students to flag the content and that
@@ -142,15 +149,21 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
             that read?") where a flag makes a claim ("something is wrong here"),
             and the second is what a student actually wants to do mid-read.
             Solid once flagged, like every other mark in this row. */}
-        {/* 20px. It went to 12 and back on 2026-08-08 (owner). Kept in step with
-            the three grasp marks in Checkpoint.tsx: this button sits at the other
-            end of the same row, so the two sizes have to move together or the row
-            has a big mark on the left and small ones on the right. */}
-        <MynaIcon
-          name={active ? active.iconOn : "flag"}
-          size={20}
-          strokeWidth={1.2}
-        />
+        {/* Streamline Ultimate Colors as of 2026-08-08, the same family as the
+            three faces in the other pod, so the row's four marks come from one
+            set instead of two.
+            ⚠️ AND THAT COSTS SOMETHING WORTH RECORDING: the flag no longer
+            becomes the mark of whatever was flagged. That behaviour was the
+            owner's own idea a day earlier ("the flag to indicate it's been
+            flagged will then change to that icon of the thing they just
+            flagged") and it needs the five menu marks to exist in this family
+            too — they are MynaUI, and Ultimate Colors has no match for several
+            of them. So the flag stays a flag and colours in when a reason has
+            been given, which keeps the "answered" signal without the swap.
+            Restoring the swap means finding five Ultimate Colors marks for the
+            menu, not reverting this line.
+            20px, in step with the three faces. */}
+        <UltimateIcon name="flag" size={20} muted={!chosen} />
         <span className="grasp-label">{label ?? "How did that read?"}</span>
       </button>
 

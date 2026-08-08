@@ -1465,9 +1465,38 @@
      has to be wider than the padding it replaced. */
   .grasp-group {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 10px;
+    align-items: center;
+  }
+  /* TWO PODS, NOT ONE STRIP (owner, 2026-08-08: "instead of the one continuous
+     container will split into two with same styling as the search icon and its
+     container in the header"). The flag gets one, the three faces get the other,
+     and the row pushes them to opposite ends.
+     Why it is better than the strip it replaces: the row asks two unrelated
+     questions — what is wrong with this WRITING, and how much of it LANDED — and
+     one container around all four marks said they were one set of options. Two
+     containers say two questions, which is what the layout was already trying to
+     do by pushing them apart.
+     EVERY VALUE HERE IS THE HEADER'S. Border #d4d4d4, white fill, full radius and
+     the same three-layer shadow as CircleButton in components/TopBar.tsx, which
+     is the search button the owner pointed at. If that button's styling changes,
+     this has to change with it — they are the same object in two places, and
+     there is no shared token for it yet.
+     3px of padding around 28px buttons puts the pod at 34px, within 2px of the
+     header's 32px circle, so the two read as the same size without matching a
+     number that was chosen for a 16px icon.
+     No `squircle`: the header's button is a true circle and so is this. */
+  .checkpoint-pod {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px;
+    border-radius: 999px;
+    border: 1px solid #d4d4d4;
+    background: #fff;
+    box-shadow:
+      0 0.6px 0.6px -1.25px rgba(0, 0, 0, 0.18),
+      0 2.3px 2.3px -2.5px rgba(0, 0, 0, 0.16),
+      0 10px 10px -3.75px rgba(0, 0, 0, 0.06);
   }
   /* No pill, no border, no fill: a hairline glyph sitting on the page.
      The button is still 34px square even though the mark is 20px — the tap
@@ -1495,11 +1524,12 @@
     border: 0;
     background: none;
     box-shadow: none;
-    /* Lighter than --color-muted, which is the reading text's grey: these are
-       controls beside prose, and at the text's own weight they competed with
-       it. They come up to their own hue on hover and when chosen. */
+    /* Kept for the flag's fallback and for anything monochrome that lands in
+       this row later. The four marks in it are Streamline Ultimate Colors as of
+       2026-08-08 and ignore currentColor entirely, so this no longer tints them:
+       the state is drawn, not coloured (see icons/ultimate.tsx). */
     color: #9a9aa2;
-    transition: color 160ms ease, opacity 160ms ease;
+    transition: background-color 160ms ease;
   }
   /* The words are gone from the screen but not from the page. Every one of
      these buttons carries its own aria-label and a title, so a screen reader
@@ -1516,14 +1546,19 @@
     white-space: nowrap;
     border: 0;
   }
+  /* `--grasp-tone` is gone. It existed to give a monochrome glyph a hue, and the
+     marks bring their own now, so hover and chosen are said with the WELL behind
+     the mark rather than with the mark itself. That also keeps the two pods
+     honest: a face is either drawn in colour or drawn in line, and nothing in
+     between. */
   .grasp-btn:hover {
-    color: var(--grasp-tone);
+    background: #f3f3f1;
   }
-  /* The answer given: its hue, and the glyph swaps to its solid twin in the
-     component. With no pill left to tint, weight and colour are the whole
-     signal, so the solid mark is doing more work than it used to. */
+  /* The answer given. The mark is already the signal — it is the only one of the
+     three carrying colour — so this is a quiet second confirmation rather than
+     the whole of it. */
   .grasp-btn[data-active] {
-    color: var(--grasp-tone);
+    background: #f3f3f1;
   }
   /* NOTHING RECEDES ANY MORE, and the rule is kept as a placeholder for why.
      It went 0.55 → 0.8 → 1 across 2026-08-07 as the answers changed from
