@@ -162,6 +162,9 @@ export function CourseCard({
              free, a second course's Start on a signed-out device asks. */
           onClick={(e) => gateStepLink(e, pathForId(next))}
           progress={pct}
+          /* The bar's fill in the card's own hue — the same colour its Spark
+             draws, so curve and fill read as one course (owner, 2026-08-08). */
+          progressTone={tone}
           prefix={completed ? "Done ✓ · " : started ? "Resume · " : "Start · "}
           label={
             completed

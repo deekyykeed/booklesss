@@ -41,6 +41,14 @@ type Common = {
    * is a course not started, and one with no progress to report is a button.
    */
   progress?: number;
+  /**
+   * The fill's hue (owner, 2026-08-08: the course card's completion bar
+   * should be "the same color as that mini chart in it"). The card's Spark
+   * and its bar now speak the same colour — the curve says how the studying
+   * moved, the fill says how far it got. Undefined keeps the neutral ink
+   * wash, which is right anywhere the bar has no chart to agree with.
+   */
+  progressTone?: string;
   /** Spelled out where the visible label is not the whole story — the course
    *  card names the step it would resume. */
   label?: string;
@@ -153,7 +161,7 @@ const SHELL = "action-bar squircle relative z-10 block overflow-hidden";
 const ROW = "flex items-center justify-between gap-3 px-2.5 py-1.5";
 
 export function ActionBar(props: Props) {
-  const { prefix, children, progress, label, disabled, className, variant = "default", busy } = props;
+  const { prefix, children, progress, progressTone, label, disabled, className, variant = "default", busy } = props;
 
   /* The row's contents, rendered once normally and — while busy — once more in
      white, clipped to the ink. Built here so the two copies cannot drift. */
@@ -179,7 +187,13 @@ export function ActionBar(props: Props) {
           className="pointer-events-none absolute inset-y-0 left-0"
           style={{
             width: `${Math.round(Math.min(1, Math.max(0, progress)) * 100)}%`,
-            backgroundColor: "rgba(23, 23, 23, 0.07)",
+            /* 15% of the tone against the 7% the neutral ink gets: a hue is
+               far lighter than black, so it needs the extra share to sit at
+               the same visual weight. oklab, like every other mix in the
+               app. */
+            backgroundColor: progressTone
+              ? `color-mix(in oklab, ${progressTone} 15%, transparent)`
+              : "rgba(23, 23, 23, 0.07)",
             transition: "width 600ms cubic-bezier(0.16, 1, 0.3, 1)",
           }}
         />
