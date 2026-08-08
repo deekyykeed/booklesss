@@ -142,9 +142,13 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
             that read?") where a flag makes a claim ("something is wrong here"),
             and the second is what a student actually wants to do mid-read.
             Solid once flagged, like every other mark in this row. */}
+        {/* 12px (owner, 2026-08-08), down from 20. Kept in step with the three
+            grasp marks in Checkpoint.tsx: this button sits at the other end of
+            the same row, so the two sizes have to move together or the row has
+            a big mark on the left and small ones on the right. */}
         <MynaIcon
           name={active ? active.iconOn : "flag"}
-          size={20}
+          size={12}
           strokeWidth={1.2}
         />
         <span className="grasp-label">{label ?? "How did that read?"}</span>
