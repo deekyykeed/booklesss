@@ -1467,36 +1467,32 @@
     display: flex;
     align-items: center;
   }
-  /* TWO PODS, NOT ONE STRIP (owner, 2026-08-08: "instead of the one continuous
-     container will split into two with same styling as the search icon and its
-     container in the header"). The flag gets one, the three faces get the other,
+  /* TWO CLUSTERS OF MARKS, ON THE PAGE, WITH NOTHING DRAWN ROUND THEM (owner,
+     2026-08-08: "id like to remove the containers around the buttons, and space
+     the 3 a little more"). The flag is one cluster, the three faces the other,
      and the row pushes them to opposite ends.
-     Why it is better than the strip it replaces: the row asks two unrelated
-     questions — what is wrong with this WRITING, and how much of it LANDED — and
-     one container around all four marks said they were one set of options. Two
-     containers say two questions, which is what the layout was already trying to
-     do by pushing them apart.
-     EVERY VALUE HERE IS THE HEADER'S. Border #d4d4d4, white fill, full radius and
-     the same three-layer shadow as CircleButton in components/TopBar.tsx, which
-     is the search button the owner pointed at. If that button's styling changes,
-     this has to change with it — they are the same object in two places, and
-     there is no shared token for it yet.
-     3px of padding around 28px buttons puts the pod at 34px, within 2px of the
-     header's 32px circle, so the two read as the same size without matching a
-     number that was chosen for a 16px icon.
-     No `squircle`: the header's button is a true circle and so is this. */
-  .checkpoint-pod {
+     ⚠️ THIS IS THE THIRD SHAPE THIS ROW HAS HAD, and the reason it can be bare
+     NOW when it could not be on 2026-08-07 is worth keeping. The container was
+     added then because the marks had just become drawn artwork: "three coloured
+     marks loose on the reading column read as decoration that had landed there,
+     not as a thing to use." That was true of marks that were ALWAYS coloured.
+     These are line-drawn until chosen, so at rest the row is four black outlines
+     — chrome, not artwork — and exactly one of them ever carries colour. The
+     objection the container answered no longer applies, which is why removing it
+     is not simply undoing a decision.
+     What was here until now: a white pill per cluster, border #d4d4d4, full
+     radius and the header CircleButton's three-layer shadow. If a container is
+     ever wanted again, that is the recipe, and TopBar.tsx is where it lives.
+     GAP 14px, up from the 6 the pill allowed. With no border bounding either
+     cluster the space between marks is the only thing separating one control
+     from the next, so it has to be wider than it was when a pill was doing that
+     job — the same reasoning the row used the last time it sat bare, at 10px.
+     14 because the marks are drawings now rather than two-stroke glyphs, and a
+     drawing needs more air around it before it reads as separate. */
+  .mark-cluster {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 3px;
-    border-radius: 999px;
-    border: 1px solid #d4d4d4;
-    background: #fff;
-    box-shadow:
-      0 0.6px 0.6px -1.25px rgba(0, 0, 0, 0.18),
-      0 2.3px 2.3px -2.5px rgba(0, 0, 0, 0.16),
-      0 10px 10px -3.75px rgba(0, 0, 0, 0.06);
+    gap: 14px;
   }
   /* No pill, no border, no fill: a hairline glyph sitting on the page.
      The button is still 34px square even though the mark is 20px — the tap

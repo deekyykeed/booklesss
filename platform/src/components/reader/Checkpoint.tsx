@@ -115,63 +115,34 @@ export function Checkpoint({
     <>
       {/* Two ends, asking two different things: how the section READ (left) and
           what the reader wants to DO about it (right). Pushed apart rather than
-          sat together, so neither looks like an option in the other's set.
+          sat together, so neither looks like an option in the other's set. That
+          much has held through every revision of this row.
 
-          ON ITS OWN SURFACE as of 2026-08-07 (owner: "put the interaction items
-          in their own container", then a picture of a comment bar). The
-          controls used to float directly on the page, which was fine while they
-          were hairline glyphs and stopped being fine the moment they became
-          drawn artwork: three coloured marks loose on the reading column read
-          as decoration that had landed there, not as a thing to use.
+          NOTHING IS DRAWN AROUND ANY OF IT as of 2026-08-08 (owner: "id like to
+          remove the containers around the buttons"). Four marks on the page, held
+          apart by space. The container is not lost work: see .mark-cluster in
+          globals.css for the recipe and for why bare reads correctly now when it
+          did not on 2026-08-07 — the marks were always-coloured artwork then and
+          are line-drawn-until-chosen now.
 
-          WHITE, LIKE EVERY OTHER CONTAINER, and lifted with the same shadow
-          (owner, 2026-08-07: "the container will be white just like other
-          containers, will have a shadow"). It was a grey pill for one revision.
-          The grey said "control" loudly, but it also said "not part of this
-          page" — the reader has exactly one filled-grey surface language and it
-          belongs to menus and inputs, not to the reading column. White plus
-          `shadow-lift` is what a callout and a card already use, so the row
-          reads as one more thing the step is made of rather than as chrome that
-          landed on it.
-          6px of padding all round (`p-1.5`), down from the 8px it shipped at on
-          the afternoon of 2026-08-07. The buttons inside are 28px (`.grasp-btn`)
-          and carry their own breathing room, so the container's padding is
-          stacked on top of theirs and 8px made the row taller than the controls
-          in it needed. The marks are 20px, so this is a control strip rather than
-          a box with things in it. They spent one revision at 12px on 2026-08-08
-          and came straight back: at 12 in a 28px button the mark is a dot in a
-          well, and the row stops reading as three things you press.
-          `rounded-2xl` — 16px (owner, 2026-08-08, picked off a rendered
-          24/16/12/8 comparison after asking for 24px first).
-          ⚠️ 24px WAS A NO-OP AND 16px IS NOT, which is the whole reason this
-          number is 16. Measured in the built app: the row is 44px tall, and CSS
-          clamps a border-radius to HALF the box it is curving, so anything from
-          22px up renders as a full pill. 24px was therefore pixel-identical to
-          the `rounded-full` it was meant to replace. 16px is under the clamp, so
-          it is the first of the values tried that draws a visible corner.
-          This is also why 24px read differently on 2026-08-07, when it was tried
-          and rejected as "a radius that stopped short": the row was taller then
-          (34px buttons, 8px padding), so 24 was under the clamp and DID show. A
-          radius on a short row is not a free parameter — check it against half
-          the height before trusting the number.
-          It is NOT the grey pill of 2026-08-07, and the difference is the whole
-          point. That one was filled grey with no border, which said "input" and
-          put a menu surface in the reading column. This is white with the house
-          hairline and shadow-lift, so it is still one of the containers; only
-          its corner changed.
-          STILL NO `squircle`, and now for a weaker reason than before. It came
-          off because a superellipse fights a full radius: `corner-shape:
-          superellipse(2.4)` reshapes a corner toward a RECTANGLE as the radius
-          grows, so 999px plus squircle rendered as a box with modest corners,
-          the opposite of what was asked for. At 16px that conflict is gone, and
-          every other container in the reader pairs squircle with exactly this
-          16-24px range, where the flattening is the point. So the house pairing
-          now argues FOR adding it back. Left off because it has not been asked
-          for; it is a one-word change if it is wanted. */}
+          THREE SHAPES IN TWO DAYS, and the useful part is that each one was
+          answering a real objection: bare hairlines → one white strip (drawn
+          faces loose on the reading column read as decoration) → a pill per
+          question (one strip made four marks look like one set of options) →
+          bare again. The row did not go in a circle; the marks changed under it
+          each time.
+
+          ⚠️ ONE MEASUREMENT WORTH NOT LOSING, since nothing here has a radius
+          any more. CSS clamps a border-radius to HALF the box it curves, so on
+          the 44px strip this row used to be, every value from 22px up rendered as
+          an identical full pill — which is why 24px was asked for, applied, and
+          changed nothing, and why 16px was the first value that drew a visible
+          corner. If a container ever comes back here, check the radius against
+          half the height before trusting the number. */}
       <div className="checkpoint-row flex flex-wrap items-center justify-between gap-3">
         <SectionNote lessonId={lessonId} sectionId={checkpointId} />
         <div
-          className="grasp-group checkpoint-pod"
+          className="grasp-group mark-cluster"
           role="radiogroup"
           aria-label={`How much of "${heading}" landed?`}
           data-answered={chosen ?? undefined}
