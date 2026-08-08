@@ -42,13 +42,20 @@ Quote actual words. A student's phrasing is never rewritten into the owner's.
   day)
 
 - `element` — "i want to move away from familjen font titles i want to use
-  bricolage grotesk." Applies to the step `<h1>` and the course/lesson names
-  above it, not to `font-display` everywhere: the app chrome, the pickers and
-  the settings rows are Inter-adjacent and were not what the owner was reading.
-  Bricolage was already registered for the landing page, so this widens the
-  palette **into** the app for the first time, which `.claude/CLAUDE.md`
-  explicitly says is a decision rather than a convenience. It is now a named
-  token, `--font-title`, so the next change of face is one line.
+  bricolage grotesk", and then, on seeing it live the same afternoon, **"bring
+  the title back to familjen."** Applies to the step `<h1>`, not to
+  `font-display` everywhere: the app chrome, the pickers and the settings rows
+  were not what the owner was reading. It is a named token now,
+  `--font-title` — which is what made both the change and the reversal one
+  line, and is the reason the token stays even though it resolves to Familjen
+  again.
+  **What the round trip taught, and it is not about weight.** The weight went
+  500 → 600 with the face and **stayed** at 600 after the face came back, so
+  what was rejected was Bricolage specifically. A display face with that much
+  personality in its letterforms, at 30px directly above a column of Aptos,
+  announces itself rather than the title. A face chosen for the landing page is
+  chosen against a photograph and a hero; a title face is chosen against the
+  reading it must not compete with. Bricolage is front-door-only again.
   → promoted: none (app typography, not a step rule — recorded in
   `.claude/CLAUDE.md`) · debt: none
 

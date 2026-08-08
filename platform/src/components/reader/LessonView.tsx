@@ -355,12 +355,17 @@ export function LessonView({ lesson, lessonId }: { lesson: Lesson; lessonId: str
    * still carry the same numbers for anyone who wants them. */
   return (
     <div className="font-content">
-      {/* Bricolage Grotesque at 600, not Familjen at 500 (owner, 2026-08-08).
-          The weight moved with the face: the complaint was that titles "aren't
-          bold or confident", and rule S-12 answers the wording half of that
-          while this answers the rest. A medium-weight title under a 15px
-          semibold sidebar row was the lighter of the two names for the same
-          step. */}
+      {/* Familjen Grotesk at 600, through `--font-title` (globals.css).
+          It was Familjen 500 until 2026-08-08, spent that afternoon in
+          Bricolage Grotesque, and the owner put the FACE back — "bring the
+          title back to familjen" — while the WEIGHT stayed at 600. Both halves
+          are deliberate: the complaint was that titles "aren't bold or
+          confident", rule S-12 answers the wording half, and a medium-weight
+          title under a 15px semibold sidebar row was the lighter of the two
+          names for the same step. What Bricolage got wrong was not weight, it
+          was that a display face with that much personality, set at 30px
+          directly over a column of Aptos, announces itself rather than the
+          title. */}
       <h1 className="font-title text-[30px] font-semibold leading-[1.2] tracking-[-0.02em] text-ink">{lesson.title}</h1>
 
       {/* THE VERTICAL LADDER (owner, 2026-08-08: "a paragraph a section a title

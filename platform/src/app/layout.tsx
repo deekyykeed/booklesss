@@ -10,11 +10,11 @@ import { SettingsSheet } from "@/components/identity/SettingsSheet";
 import { openGraph, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
-// App chrome and headings use Familjen Grotesk (via --font-display); a STEP
-// TITLE uses Bricolage Grotesque (via --font-title) since 2026-08-08 — see the
-// note above the Bricolage registration below. The Ernon face is still in
-// src/fonts/ if it's ever wanted back — re-register it with next/font/local
-// and put --font-ernon at the front of --font-display.
+// App chrome and headings use Familjen Grotesk (via --font-display), and so
+// does a step title — through its own token, --font-title, which exists so that
+// face is one line to change. The Ernon face is still in src/fonts/ if it's
+// ever wanted back — re-register it with next/font/local and put --font-ernon
+// at the front of --font-display.
 
 // Self-hosted at build time by next/font — no Google round-trip, no CLS.
 const inter = Inter({
@@ -106,25 +106,22 @@ const rubik = Rubik({
   display: "swap",
 });
 
-/* BRICOLAGE IS NO LONGER FRONT-DOOR-ONLY (owner, 2026-08-08: "i want to move
- * away from familjen font titles i want to use bricolage grotesk"). It draws
- * the step <h1> in the reader now, through `--font-title` in globals.css.
+/* BRICOLAGE IS FRONT-DOOR-ONLY AGAIN, and the round trip is worth one comment.
  *
- * That is a deliberate widening of the palette, which the note above and
- * .claude/CLAUDE.md both say is a decision rather than a convenience — so it is
- * a decision, and it is scoped: the title of a step, and nothing else. The app
- * chrome (header, sidebars, dashboard, settings, pickers) stays on Familjen via
- * `--font-display`, and swapping THAT would be a second decision.
+ * It drew the reader's step <h1> for part of 2026-08-08 (owner: "i want to move
+ * away from familjen font titles i want to use bricolage grotesk") and came
+ * straight back off it the same day ("bring the title back to familjen"). A
+ * 600 instance was registered here for that and is gone again, so no route but
+ * "/" fetches any Bricolage — which is what the note above promises and was
+ * briefly untrue.
  *
- * 600 is new and is what the title wears. 800 is the landing page's hero and is
- * untouched. Two static instances rather than the variable axis, for the same
- * reason Rubik takes two: naming the weights is smaller than shipping an axis
- * for two stops. The 600 file is fetched on reader routes now, where before no
- * route but "/" asked for any Bricolage at all — a real cost, and the point of
- * writing it down. */
+ * The lesson is the one already written above and it now has a second proof:
+ * a face chosen for the front door is chosen against a photograph and a hero,
+ * and a face for a step title is chosen against a column of Aptos it must not
+ * compete with. Reaching for one of these inside the app stays a decision. */
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
-  weight: ["600", "800"],
+  weight: "800",
   variable: "--font-bricolage",
   display: "swap",
 });

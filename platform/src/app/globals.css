@@ -18,21 +18,26 @@
      Use it as `font-container`; `font-content` stays the reading. */
   --font-container: var(--font-satoshi), var(--font-inter), system-ui, sans-serif;
 
-  /* THE TITLE OF A STEP, and only that (owner, 2026-08-08: "i want to move away
-     from familjen font titles i want to use bricolage grotesk"). Bricolage
-     Grotesque at 600, drawn by the reader's <h1> in LessonView.tsx.
+  /* THE TITLE OF A STEP, and only that. Familjen Grotesk at 600.
 
-     Named for the job, like every token here, so the next change of face is one
-     line. It is deliberately NOT --font-display: that token is the app's
-     headings and chrome, and moving all of them is a separate decision. The
-     fallback is Familjen, so a failed fetch lands on what this replaced rather
-     than on a system face.
+     BACK ON FAMILJEN, SAME DAY IT LEFT (owner, 2026-08-08: "i want to move away
+     from familjen font titles i want to use bricolage grotesk", then, having
+     seen it, "bring the title back to familjen"). Bricolage is a display face
+     with real personality in its letterforms, and at 30px directly over a
+     column of Aptos it announced itself instead of the title.
 
-     This is the first time a landing-page face has been used inside the app.
-     The block below still means what it says — reaching for one of those is a
-     decision, not a convenience — and this is that decision, taken once and
-     scoped to one element. */
-  --font-title: var(--font-bricolage), var(--font-familjen), ui-sans-serif, sans-serif;
+     THE TOKEN STAYS, and that is the point of naming tokens for the job. The
+     face here changed twice in one afternoon and both changes were this one
+     line — which is exactly the argument the --font-mark / --font-hero-meta
+     block below makes. It resolves to the same stack as --font-display today
+     and is still not the same thing: that token is every heading and all the
+     app chrome, and a step title is one element somebody is deliberately
+     choosing a face for.
+
+     THE WEIGHT DID NOT COME BACK. It was 500 before this morning and stays at
+     600: the complaint that started all this was that titles "aren't bold or
+     confident", and only the typeface half of the answer was withdrawn. */
+  --font-title: var(--font-familjen), var(--font-inter), ui-sans-serif, sans-serif;
 
   /* THE FRONT DOOR ONLY (2026-08-06), measured off the owner's Framer design.
      Named for the job they do on that page rather than for the typeface, so a

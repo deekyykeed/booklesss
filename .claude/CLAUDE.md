@@ -259,13 +259,15 @@ to live.
 | `--font-display` / `font-display` | **Familjen Grotesk** | Headings, step titles, formulas |
 | `--font-content` / `font-content` | **Aptos** | **The reading** inside a step: prose, list items, table cells |
 | `--font-container` / `font-container` | **Satoshi** | **The containers** inside a step: callouts and cards (label *and* body), source chips, the tap-to-define popup, the section-note menu, table column headings |
-| `--font-title` / `font-title` | **Bricolage Grotesque** 600 | **A step's `<h1>` and nothing else** (2026-08-08) |
+| `--font-title` / `font-title` | **Familjen Grotesk** 600 | **A step's `<h1>` and nothing else** |
 
-**The step title left Familjen Grotesk on 2026-08-08** (owner: *"i want to move away from familjen font titles i want to use bricolage grotesk"*), and the weight moved with the face — 500 → **600**, because the same reaction said the titles *"aren't bold or confident"*. The wording half of that is rule **S-12** in `step-skill/RULES.md`; this is the rest of it. It is one line in `reader/LessonView.tsx`.
+**The step title has its own token even though it resolves to Familjen, same as `--font-display`.** On 2026-08-08 it went to Bricolage Grotesque (owner: *"i want to move away from familjen font titles i want to use bricolage grotesk"*) and came back the same afternoon (*"bring the title back to familjen"*). Both changes were one line, which is the whole argument for naming a token after the job rather than the typeface. **Do not collapse it back into `--font-display`**: that token is every heading and all the app chrome, and a step title is the one element somebody keeps deliberately choosing a face for.
 
-**This is the first landing-page face to come inside the app, and it is scoped to one element.** `--font-display` (Familjen) is still every heading, every section `h2` and all the chrome — moving those is a second decision, not an implication of this one. The token falls back to Familjen, so a failed fetch lands on what it replaced. `next/font` now emits a Bricolage **600** alongside the hero's 800 and reader routes fetch it, where before no route but `/` asked for any Bricolage: a real cost, taken on purpose.
+**The weight did NOT come back.** It was 500 before that day and is **600** now — the reaction that started it was that titles *"aren't bold or confident"*, and only the typeface half of the answer was withdrawn. The wording half is rule **S-12** in `step-skill/RULES.md`.
 
-**The OG preview card is still Familjen** — `lib/og.tsx` renders through Satori, which reads only ttf/otf/woff, so matching it means vendoring and instancing a Bricolage TTF the way `platform/assets/FamiljenGrotesk-Medium.ttf` was. Left alone deliberately: that card is the *social poster* system (see the Domain section), not the reader, and its face is part of a look that was designed as a whole.
+**What Bricolage got wrong, since something else will be tried eventually:** not the weight. A display face with that much personality in its letterforms, set at 30px directly above a column of Aptos, announces itself instead of the title. A face picked for `/` is picked against a photograph and a hero; a face for a step title is picked against the reading it must not compete with. Bricolage is front-door-only again, and no route but `/` fetches it.
+
+**The OG preview card is Familjen too**, and now trivially consistent — `lib/og.tsx` renders through Satori, which reads only ttf/otf/woff, so any future title face needs vendoring and instancing the way `platform/assets/FamiljenGrotesk-Medium.ttf` was. Worth remembering as a cost before the next swap: the reader is one CSS line, the preview card is not.
 
 ### The Reader's Vertical Ladder
 
