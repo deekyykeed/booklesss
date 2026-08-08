@@ -54,25 +54,27 @@ export function TopBar({
                 phones where it shares the bar with the hamburger and the header
                 controls.
 
-                BURBANK, ON TRIAL (owner, 2026-08-06: "the font used in the logo
-                … can i use it in my actual text logo on the app and going
-                forward, let's see what it looks like"). This was Familjen
-                Grotesk bold — the app's heading face doing double duty as the
-                mark, which is why the wordmark never looked like a logo so much
-                as a heading that happened to say the name.
+                THE BURBANK TRIAL IS OVER (owner, 2026-08-08: "for the logo text
+                lets go back to familjen as well"). Burbank Big Condensed was
+                put on this wordmark on 2026-08-06 to see how the logo's own face
+                read as the app's text logo; two days of looking at it settled
+                it, and the face goes back to where it was.
 
-                ⚠️ IT IS NOT A FREE FACE. Burbank Big Condensed is a Font Bureau
-                retail family, and there is no licence beside it in this repo the
-                way Satoshi's is documented. Fine for looking at; NOT fine to
-                launch a brand on without buying the web licence — and logo use
-                is often a separate grant again. Decide before it reaches print
-                or an app icon, because a mark is the one asset that is expensive
-                to change late.
+                THE SIZES COME BACK TOO — 18/22, not the 20/24 Burbank wore.
+                That bump was never a design decision, it was compensation:
+                Burbank is CONDENSED and sets narrower at the same point size,
+                so the lockup shrank visibly when the face changed under it.
+                Leaving 20/24 on a non-condensed face would hand the header a
+                wordmark a size too big for a reason that no longer exists.
 
-                Two sizes up from the old ones (20/24 against 18/22): Burbank is
-                CONDENSED, so it sets narrower at the same point size and the
-                lockup shrank visibly when the face changed under it. */}
-            <span className="font-mark text-[20px] font-bold leading-none tracking-tight text-ink md:text-[24px]">
+                AND THE LICENCE QUESTION LEAVES THE APP WITH IT. Burbank is a
+                Font Bureau retail family with no licence recorded beside it in
+                this repo, which made every deploy of this header a small bet.
+                It is still vendored and still drawn on "/" — the ◯B disc and
+                the Booklesss lockup there are the owner's Framer design — so
+                the question is deferred, not answered. It has to be settled
+                before that mark reaches print or an app icon. */}
+            <span className="font-display text-[18px] font-bold leading-none tracking-tight text-ink md:text-[22px]">
               {orgName}
             </span>
           </Link>
