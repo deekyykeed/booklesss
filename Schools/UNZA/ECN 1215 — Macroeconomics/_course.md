@@ -115,10 +115,38 @@ dodge ids the economics demo course already uses.
 | `04-government/sources/` | Lecture 7 (government), Lecture 8 (fiscal), public finance PPT | 4.1–4.3 |
 | `05-money/sources/` | Money market deck (filed as "Lecture 2") | 5.1–5.3 |
 | `06-inflation/sources/` | Lecture 10 (inflation rate) | 6.1, 6.2 |
-| `sources/` | Course outline, two full modules, lecture-notes compilation | whole course; the only source for lessons 3 and 7 |
+| `sources/` | Course outline, the IDE BA (Economics) module, lecture-notes compilation | whole course |
 | `sources/transcripts/` | ECO 155 Principles of Macroeconomics, 39 lectures transcribed, plus Khan Academy GDP series | lecturer-emphasis evidence for every lesson (C-2) |
 | `sources/tutorials/` | 19 tutorial sheets, several with solutions | where C-9's unworked examples come from |
 | `past-papers/` | Exam questions, practice exam, test 2 with answers, question bank | what is actually examined |
+
+### ⚠️ Lessons 3 and 7 have NO course source, and that is a finding
+
+**Unemployment (lesson 3) and The External Sector (lesson 7) are on the
+outline and have no lecture file, no deck and no module chapter in this
+course's material.** They were originally planned as "taught from the course
+modules", which turned out to mean a module that is not this course's at all
+(below). What is left for them: the outline's own bullet list, the ECO 155
+transcripts, and the past papers. **That is not enough to write from under
+C-2.** Raise it with the owner and get the lecturer's slides before writing
+either lesson; do not fill the gap from general knowledge about macroeconomics.
+
+### Removed 2026-08-08: two files that were another university's
+
+`INTRODUCTION TO MACROECONOMIC MODULE.pdf` and `macro.pdf` were copied into
+`sources/` during the scaffold and are **University of Lusaka** material:
+their title page reads *"UNIVERSITY OF LUSAKA / FACULTY OF ECONOMICS, BUSINESS
+& MANAGEMENT / INTRODUCTION TO MACROECONOMICS ED:230"*, prepared for ECF 110.
+The two were byte-identical, one file under two names. Both were deleted from
+this course; the originals stay in the gitignored `_pipeline/` folder where
+they were found.
+
+This is exactly the trap in the no-travel warning above, and it was walked
+into while writing that warning: a plausible filename in a folder of genuine
+UNZA material. **Check the title page, not the filename, before a source is
+cited by a step.** One duplicate was removed at the same time —
+`INTRODUCTION TO MACROECONOMICS (2).pdf` in `01-foundations/` was
+byte-identical to `Positive & Normative Economics.pdf`.
 
 Textbooks (Begg — the required text, Mankiw ×4, Ahuja 388MB, Dornbusch/Fischer,
 Case/Fair/Oster) and the bulk HSS exam scans stay in
