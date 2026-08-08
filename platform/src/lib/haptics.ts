@@ -26,9 +26,25 @@
  * tap itself, never from an effect or a timer reacting to one.
  * ------------------------------------------------------------------ */
 
-/** Durations, milliseconds. Short enough to read as one tick, not a buzz. */
-const TAP = 8;
-const CONFIRM = 14;
+/* Durations, milliseconds.
+ *
+ * ⚠️ THESE WERE 8 AND 14 AND NOBODY COULD FEEL THEM. Owner, on Android, in the
+ * installed PWA, after the first version shipped: "I still cannot feel it."
+ *
+ * The mistake was picking a number for how it should READ ("one tick, not a
+ * buzz") when the constraint is physical. A phone's vibration motor has to spin
+ * up: an ERM motor needs tens of milliseconds to reach an amplitude a hand
+ * notices, and even an LRA has a rise time. Ask for 8ms and the honest outcome
+ * is that the motor is still accelerating when the request ends, so nothing
+ * reaches the hand — the call succeeds, `navigator.vibrate` returns true, and
+ * there is nothing to feel. Silence with no error is exactly what was reported.
+ *
+ * 20 and 35 are the low end of what is reliably perceptible across Android
+ * hardware rather than a taste judgement. If a tap still cannot be felt at
+ * these, the cause is NOT the number — see /haptics-test, which is built to
+ * separate the four candidates in ten seconds. */
+const TAP = 20;
+const CONFIRM = 35;
 
 /* `data-motion="reduced"` is the app's own motion switch (lib/motion), and it
  * governs this too. A haptic is not motion on screen, so no spec says it must,
