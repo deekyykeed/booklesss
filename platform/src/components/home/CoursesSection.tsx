@@ -595,7 +595,7 @@ function CourseTab({
          The per-button border-b is gone: the selection mark is the row's one
          sliding indicator now, so a static rule under the active tab would be
          the same thing said twice, once without the motion. */
-      className="relative z-10 shrink-0 whitespace-nowrap bg-transparent font-display text-[17px] font-bold leading-6 tracking-[-0.01em] transition-colors"
+      className="relative z-10 shrink-0 whitespace-nowrap bg-transparent font-tab text-[17px] font-bold leading-6 tracking-[-0.01em] transition-colors"
       style={{ color: active ? "var(--color-ink)" : "var(--color-placeholder)" }}
     >
       {label}

@@ -78,7 +78,12 @@ export function Avatar({ id, size = 40 }: { id: AvatarId | string; size?: number
      the box is reserved before the file lands: the picker draws twelve at once,
      and a grid that reflows as they arrive is a grid somebody mis-taps.
      Not lazy — the header's avatar and every tile in an open picker are already
-     on screen, and lazy would blink them in. */
+     on screen, and lazy would blink them in.
+
+     `avatar-fade` takes the pop off the arrival (owner, 2026-08-08, Safari).
+     The box was always reserved, so nothing moved — but the art appeared at
+     full strength in one frame, which against the pulsing placeholder it
+     replaces read as a flicker rather than a load. See globals.css. */
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
@@ -89,7 +94,7 @@ export function Avatar({ id, size = 40 }: { id: AvatarId | string; size?: number
       width={size}
       height={size}
       decoding="async"
-      className="shrink-0"
+      className="avatar-fade shrink-0"
       style={{ width: size, height: size }}
     />
   );

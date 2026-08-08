@@ -75,7 +75,11 @@ type Foot = { lead: string; tail: string; good: boolean };
  */
 function growth(now: number, prev: number, unstarted: string): Foot {
   if (now <= 0 && prev <= 0) return { lead: "Not started", tail: unstarted, good: false };
-  if (prev <= 0) return { lead: "First week", tail: "on the board", good: true };
+  /* No tail on the first week. It read "on the board", and at tile width that
+     clipped to "First week  on the b…" on two of the four tiles at once
+     (owner's phone, 2026-08-08) — three words spent saying what the two words
+     before them already said, and not even fitting. */
+  if (prev <= 0) return { lead: "First week", tail: "", good: true };
   const pct = Math.round(((now - prev) / prev) * 100);
   if (pct > 0) return { lead: `+${pct}%`, tail: "on last week", good: true };
   if (pct < 0) return { lead: `${pct}%`, tail: "on last week", good: false };
@@ -136,6 +140,103 @@ function useCountUp(target: number, run: boolean, ms = 600): number {
   return target * p;
 }
 
+/* ------------------------------------------------------------------ *
+ * THE LINE UNDER THE GREETING (owner, 2026-08-08: "the subtitle under the
+ * greeting is not a very good one — i want it to be a more intuitive subtitle
+ * saying something about how im doing so far compared to my usual study
+ * habbits and the goals i set").
+ *
+ * What it used to do was COUNT: "2 sections done across 3 days." True, and
+ * useless — a count with nothing to measure it against tells a reader nothing
+ * about whether to be pleased. The two yardsticks that make a number mean
+ * something are both already on this device: the goal they set at onboarding,
+ * and what their own past weeks actually looked like.
+ *
+ * SO THE LINE IS ALWAYS A COMPARISON, and never a bare figure. It answers, in
+ * priority order, the first of these that is true and knowable:
+ *
+ *   1. goal met            — the best news there is, so it leads
+ *   2. goal set, on pace   — pace, not the raw total: 1h of a 7h week is
+ *                            failing on Sunday and fine on Monday
+ *   3. goal set, behind    — by how much, in minutes they can act on
+ *   4. no goal, but a past — this week against their own usual week
+ *   5. no goal, no past    — the honest first-week line
+ *
+ * NOTHING HERE IS ENCOURAGEMENT DRESSED AS INSIGHT. Every clause is arithmetic
+ * on measured figures; where a comparison can't be made honestly the line says
+ * less rather than inventing a benchmark. In particular it never uses
+ * lib/performance's fallback target — a goal nobody set is not a goal, and
+ * scoring somebody against a number they never chose is the thing this whole
+ * page is careful not to do.
+ * ------------------------------------------------------------------ */
+function studyLine(o: {
+  hydrated: boolean;
+  started: boolean;
+  /** Minutes read since Monday. */
+  weekMins: number;
+  /** Their weekly promise in minutes, or 0 if they never made one. */
+  goalMins: number;
+  /** Minutes they'd have read by now to be on track for it. */
+  pacedMins: number;
+  /** A typical past week of theirs, in minutes — 0 with no history. */
+  usualMins: number;
+  streak: number;
+  studiedToday: boolean;
+  doneChecks: number;
+  totalSecs: number;
+  daysStudied: number;
+}): string {
+  if (!o.hydrated) return "Loading your progress…";
+  if (!o.started) return "You haven't started yet — the first step takes about ten minutes.";
+
+  /* The streak is the one fact worth carrying into any of the branches below:
+     it is about turning up, which is what every one of them is really asking
+     about. Kept to a clause so no line runs past two. */
+  const run =
+    o.streak > 1
+      ? ` ${o.streak} days in a row.`
+      : o.studiedToday
+        ? " Today's on the board."
+        : "";
+
+  if (o.goalMins > 0) {
+    if (o.weekMins >= o.goalMins) {
+      const over = o.weekMins - o.goalMins;
+      return over >= 5
+        ? `This week's goal is done — ${fmtTime(o.weekMins * 60)} against ${fmtTime(o.goalMins * 60)}.${run}`
+        : `You've just hit this week's ${fmtTime(o.goalMins * 60)} goal.${run}`;
+    }
+    if (o.weekMins <= 0) {
+      return `Nothing logged this week yet — you're aiming at ${fmtTime(o.goalMins * 60)}.`;
+    }
+    const behind = Math.round(o.pacedMins - o.weekMins);
+    if (behind <= 5) {
+      return `${fmtTime(o.weekMins * 60)} of your ${fmtTime(o.goalMins * 60)} week, and on pace.${run}`;
+    }
+    return `${fmtTime(o.weekMins * 60)} of your ${fmtTime(o.goalMins * 60)} week — about ${fmtTime(behind * 60)} behind pace.${run}`;
+  }
+
+  /* No goal set. Their own past weeks are the only honest yardstick left, and
+     a 15% band keeps "about the same" from being reported as a change — two
+     minutes either side of a usual week is noise, not a trend. */
+  if (o.usualMins > 0 && o.weekMins > 0) {
+    const diff = o.weekMins - o.usualMins;
+    if (Math.abs(diff) < o.usualMins * 0.15) {
+      return `${fmtTime(o.weekMins * 60)} this week — about your usual.${run}`;
+    }
+    return diff > 0
+      ? `${fmtTime(o.weekMins * 60)} this week, ${fmtTime(diff * 60)} more than you usually do.${run}`
+      : `${fmtTime(o.weekMins * 60)} this week, ${fmtTime(-diff * 60)} down on your usual.${run}`;
+  }
+
+  /* First week, or the first with time on it — nothing to compare against yet,
+     so it reports what there is and says that plainly. */
+  if (o.doneChecks > 0) {
+    return `${o.doneChecks} section${o.doneChecks === 1 ? "" : "s"} done across ${o.daysStudied} day${o.daysStudied === 1 ? "" : "s"}.${run}`;
+  }
+  return `${fmtTime(o.totalSecs)} read so far — your first week sets the bar.`;
+}
+
 /** One greeting per visit, held for the life of the mount so it doesn't
  *  change under the reader when progress re-renders the page. Picked in the
  *  initialiser rather than an effect: it is only ever read after `hydrated`,
@@ -155,7 +256,7 @@ export function HomeView({
    *  is signed in. Kept as a slot so this component stays Clerk-free. */
   afterGreeting?: React.ReactNode;
 }) {
-  const { hydrated, doneCount, isComplete, streak, bestStreak, daysStudied, studiedToday, days, totalSecs, last, grasp } =
+  const { hydrated, doneCount, isComplete, streak, bestStreak, daysStudied, studiedToday, days, totalSecs, last } =
     useProgress();
   const { identity } = useIdentity();
   const greeting = useGreeting();
@@ -249,26 +350,54 @@ export function HomeView({
    * set it). Zero when onboarding's goal question was never answered. */
   const goalMins = identity?.target ? identity.target.days * identity.target.minutes : 0;
 
-  /* THE SHAKY QUEUE. Every "how did this land" answer is stored per section
-   * (grasp), and until 2026-08-08 nothing ever offered it back — which made
-   * answering honestly decorative. "Almost" and "not yet" both count: both are
-   * the reader saying it hasn't stuck. Scoped to enrolled courses, like every
-   * other figure on this page. */
-  const shaky = useMemo(() => {
-    if (!hydrated) return { total: 0, rows: [] as { id: string; n: number }[] };
-    const mineIds = new Set(totals.lessons);
-    const rows: { id: string; n: number }[] = [];
-    for (const [lessonId, row] of Object.entries(grasp)) {
-      if (!mineIds.has(lessonId)) continue;
-      const n = Object.values(row).filter((g) => g !== "got").length;
-      if (n > 0) rows.push({ id: lessonId, n });
+  /* WHAT "ON PACE" MEANS, and why it isn't goal × days-elapsed ÷ 7.
+   *
+   * A student who promised "40 minutes on Mon, Wed and Fri" owes nothing on
+   * Tuesday. Straight-line pace would report them behind on the day their own
+   * plan gave them off, which is the fastest way to teach somebody to ignore
+   * this line. So where they named their days (`target.weekdays`, 0 = Monday)
+   * the bar is their per-day minutes times the planned days that have already
+   * come round this week, today included — they are "behind" only against
+   * sessions they said they would do and haven't.
+   *
+   * Where they set a goal without naming days, straight-line is the best
+   * available and is used. */
+  const pacedMins = useMemo(() => {
+    if (goalMins <= 0 || !identity?.target) return 0;
+    const todayIdx = (new Date().getDay() + 6) % 7; // 0 = Monday
+    const picked = identity.target.weekdays;
+    if (picked?.length) {
+      const due = picked.filter((d) => d <= todayIdx).length;
+      return Math.min(goalMins, due * identity.target.minutes);
     }
-    // Worst first — the step with the most shaky sections is the one to reopen.
-    rows.sort((a, b) => b.n - a.n);
-    return { total: rows.reduce((s, r) => s + r.n, 0), rows };
-  }, [hydrated, grasp, totals.lessons]);
+    return (goalMins * (todayIdx + 1)) / 7;
+  }, [goalMins, identity?.target]);
 
-  /* The jump-back target: the exact step last open with reading or work
+  /* A TYPICAL WEEK OF THEIRS, from the three complete weeks before this one.
+   * Only weeks with reading on them count toward the mean — a fortnight away
+   * from the app should not halve what the line calls "usual", or coming back
+   * would be reported as a personal best for doing very little. */
+  const usualMins = useMemo(() => {
+    const win = studyHistory(days, 28); // oldest first: 3 past weeks, then this one
+    const past = [0, 1, 2]
+      .map((i) => win.slice(i * 7, i * 7 + 7).reduce((n, d) => n + d.secs, 0))
+      .filter((s) => s > 0);
+    return past.length ? Math.round(past.reduce((a, b) => a + b, 0) / past.length / 60) : 0;
+  }, [days]);
+
+  /* A SHAKY-SECTIONS QUEUE LIVED HERE for a few hours on 2026-08-08 — every
+   * section answered "almost" or "not yet", listed back as a revision list —
+   * and the owner cut it the same day ("i also want to remove the shakey
+   * steps, those can go").
+   *
+   * The `grasp` data it read is untouched and still collected on every
+   * checkpoint. What was wrong was the dashboard: this page is where a
+   * student decides what to do next, and a list of what they half-understood
+   * is a page of homework arriving before they have opened anything. If it
+   * comes back it belongs inside a course, next to the steps it names, not
+   * over the top of the whole page.
+   *
+   * The jump-back target: the exact step last open with reading or work
    * recorded against it (lib/progress `last`). Label resolved defensively —
    * a step can be unpublished between visits, and a bar pointing at a page
    * that no longer exists is worse than no bar. */
@@ -288,24 +417,21 @@ export function HomeView({
   const minWeek = Math.round(charts.secsWeek / 60);
   const minPrev = Math.round(charts.secsPrev / 60);
 
-  /* Facts, not encouragement dressed as insight. Where no checkpoint is
-     ticked yet the fact is the reading time — never "you haven't started"
-     over a page whose tiles show studying (see `started` above). */
-  const line = !hydrated
-    ? "Loading your progress…"
-    : !started
-      ? "You haven't started yet — the first step takes about ten minutes."
-      : studiedToday
-        ? `You've studied today${streak > 1 ? ` — ${streak} days in a row` : ""}. ${
-            done.checks > 0 ? `${done.checks} sections done so far.` : `${fmtTime(totalSecs)} read so far.`
-          }`
-        : streak > 0
-          ? `${streak}-day streak going. Do a section today to keep it.`
-          : done.checks > 0
-            ? `${done.checks} sections done across ${daysStudied} day${daysStudied === 1 ? "" : "s"}.`
-            : daysStudied > 0
-              ? `${fmtTime(totalSecs)} read across ${daysStudied} day${daysStudied === 1 ? "" : "s"}.`
-              : `${fmtTime(totalSecs)} read so far.`;
+  /* See studyLine: always a comparison — against the goal they set, or failing
+     that against their own usual week — never a bare count. */
+  const line = studyLine({
+    hydrated,
+    started,
+    weekMins: minWeek,
+    goalMins,
+    pacedMins,
+    usualMins,
+    streak,
+    studiedToday,
+    doneChecks: done.checks,
+    totalSecs,
+    daysStudied,
+  });
 
   return (
     /* Extra room above the greeting: it sat tight under the chrome, and the
@@ -345,6 +471,40 @@ export function HomeView({
       </h1>
       <p className="mt-1.5 text-[14px] leading-6 text-muted">{line}</p>
       {afterGreeting}
+
+      {/* JUMP BACK IN — the page's first action, directly under the sentence
+          that just described their studying (owner, 2026-08-08: "let's find a
+          better place to put it").
+
+          IT WAS DOWN BY THE TABS and that was the wrong half of the page. The
+          dashboard's first job is resuming, and there it was the fifth thing
+          on the screen, below the fold on a phone, sitting a few pixels above
+          a course card offering to resume the same course. Two controls making
+          the same offer, both requiring a scroll to find.
+
+          Here it answers the line above it. The greeting says what the
+          studying has been; this says what to do about it, before the numbers
+          get a chance to be interesting. The course cards still carry their
+          own Resume and are not redundant with this one — those are scoped to
+          a COURSE ("carry on with Treasury Management"), this is scoped to the
+          exact place the reading stopped.
+
+          Reads the store's `last` record, which follows the reading clock — so
+          it points where the reader actually was, ticked or not. Absent until
+          a step has been read (nothing to jump back INTO), and absent for
+          records written before `last` shipped, which self-heal on the next
+          study. */}
+      {lastLabel && last && (
+        <ActionBar
+          href={pathForId(last.id)}
+          onClick={(e) => gateStepLink(e, pathForId(last.id))}
+          prefix="Jump back in · "
+          label={`Jump back in — ${lastLabel}`}
+          className="mt-4"
+        >
+          {lastLabel}
+        </ActionBar>
+      )}
 
       {/* ---- how the studying is going ---- */}
       <section className="mt-6">
@@ -460,37 +620,6 @@ export function HomeView({
           />
         </div>
 
-        {/* THE SHAKY QUEUE, OFFERED BACK (owner, 2026-08-08: "that's great,
-            add this"). Sections answered "almost" or "not yet", as a
-            disclosure under the tiles they qualify — closed it is one honest
-            line, open it is the revision list, each row the step to reopen.
-            Absent entirely at zero: an empty revision queue is not a state,
-            it is the goal. */}
-        {shaky.total > 0 && (
-          <details className="group mt-3">
-            <summary className="cursor-pointer list-none text-[13.5px] leading-6 text-muted [&::-webkit-details-marker]:hidden">
-              <span className="font-medium text-ink">
-                {shaky.total} section{shaky.total === 1 ? "" : "s"}
-              </span>{" "}
-              marked shaky —{" "}
-              <span className="underline underline-offset-2 group-open:no-underline">review them</span>
-            </summary>
-            <ul className="mt-1.5">
-              {shaky.rows.map((r) => (
-                <li key={r.id}>
-                  <Link
-                    href={pathForId(r.id)}
-                    onClick={(e) => gateStepLink(e, pathForId(r.id))}
-                    className="flex items-center justify-between gap-3 py-1 text-[13px] leading-5 text-muted transition-colors hover:text-ink"
-                  >
-                    <span className="min-w-0 truncate">{labelFor(r.id)}</span>
-                    <span className="shrink-0 tabular-nums text-placeholder">{r.n}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </details>
-        )}
       </section>
 
       {/* The courses question used to be asked here, by a modal over this
@@ -521,24 +650,9 @@ export function HomeView({
           than another row. */}
       <section id="courses" className="mt-14 scroll-mt-20 pb-10">
         {/* JUMP BACK IN (owner, 2026-08-08: "sounds good add it") — one tap to
-            the exact step last open, above the tabs, because the dashboard's
-            first job is resuming and the old shortest path was greeting →
-            scroll → find the card → Resume. Reads the store's `last` record,
-            which follows the reading clock — so it points at where the reader
-            actually was, ticked or not. Absent until a step has been read
-            (nothing to jump back INTO), and absent for records from before
-            `last` shipped, which self-heal on the next study. */}
-        {lastLabel && last && (
-          <ActionBar
-            href={pathForId(last.id)}
-            onClick={(e) => gateStepLink(e, pathForId(last.id))}
-            prefix="Jump back in · "
-            label={`Jump back in — ${lastLabel}`}
-            className="mb-4"
-          >
-            {lastLabel}
-          </ActionBar>
-        )}
+            the exact step last open. It sat here, above the tabs, for about an
+            hour on 2026-08-08 and moved to the top of the page the same day —
+            see the greeting. */}
         <CoursesSection
           mine={mine}
           hydrated={hydrated}

@@ -106,22 +106,31 @@ const rubik = Rubik({
   display: "swap",
 });
 
-/* BRICOLAGE IS FRONT-DOOR-ONLY AGAIN, and the round trip is worth one comment.
+/* BRICOLAGE IS NO LONGER FRONT-DOOR-ONLY, and the history is worth keeping
+ * because this is its THIRD posting inside the app.
  *
  * It drew the reader's step <h1> for part of 2026-08-08 (owner: "i want to move
  * away from familjen font titles i want to use bricolage grotesk") and came
- * straight back off it the same day ("bring the title back to familjen"). A
- * 600 instance was registered here for that and is gone again, so no route but
- * "/" fetches any Bricolage — which is what the note above promises and was
- * briefly untrue.
+ * straight back off it the same day ("bring the title back to familjen"). Then,
+ * the same evening, the dashboard's course tabs: "for the tab text try
+ * bricolage grotesk". 700 is registered for that; 800 stays for "/".
  *
- * The lesson is the one already written above and it now has a second proof:
- * a face chosen for the front door is chosen against a photograph and a hero,
- * and a face for a step title is chosen against a column of Aptos it must not
- * compete with. Reaching for one of these inside the app stays a decision. */
+ * WHY THE TABS ARE A BETTER FIT THAN THE TITLE WAS, and it is not taste. A step
+ * title sits directly over a column of Aptos it must not compete with, so a
+ * face with this much personality announces itself instead of the words. The
+ * tabs sit over CARDS — no running prose anywhere near them — and they are
+ * chrome a reader aims at rather than text they read through. A loud face is
+ * doing its job there and was doing somebody else's job on the title.
+ *
+ * THE COST, PAID KNOWINGLY: /dashboard now fetches a Bricolage file it did not
+ * before. `next/font` emits a @font-face per family and the browser fetches one
+ * only when something rendered asks — so this is one extra file on the app's
+ * most-visited screen, not on every route. If the tabs go back to Familjen,
+ * drop "700" here in the same edit or the app keeps paying for a face nothing
+ * draws. */
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
-  weight: "800",
+  weight: ["700", "800"],
   variable: "--font-bricolage",
   display: "swap",
 });

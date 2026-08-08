@@ -44,6 +44,17 @@
      later change of face is one line here. Do not reach for these inside the
      app — the four faces above are the system; "/" is the exception, and it is
      one page. */
+  /* THE COURSE TABS, and only those (owner, 2026-08-08: "for the tab text try
+     bricolage grotesk"). Its own token rather than reaching for --font-hero,
+     which is named for the front door's headline and would become a lie the
+     moment a second surface wore it.
+
+     This is the same argument --font-title makes above, and for the same
+     reason: a face somebody is TRYING needs one line to change its mind on.
+     Bricolage has already been put on and taken off the step title once
+     today — if it comes off the tabs too, this line goes back to
+     var(--font-familjen) and nothing else in the app moves. */
+  --font-tab: var(--font-bricolage), var(--font-familjen), ui-sans-serif, sans-serif;
   --font-mark: var(--font-burbank), var(--font-familjen), ui-sans-serif, sans-serif;
   --font-hero-meta: var(--font-rubik), var(--font-inter), system-ui, sans-serif;
   /* Bricolage. Was `--font-hero-cta`, named for the only thing wearing it; the
@@ -386,7 +397,8 @@
   :root[data-motion="reduced"] .count-tick,
   :root[data-motion="reduced"] .lesson-fade,
   :root[data-motion="reduced"] .onboard-step,
-  :root[data-motion="reduced"] .account-skeleton,
+  :root[data-motion="reduced"] .account-skeleton::after,
+  :root[data-motion="reduced"] .avatar-fade,
   :root[data-motion="reduced"] .ring-pop,
   :root[data-motion="reduced"] .quiz-backdrop,
   :root[data-motion="reduced"] .quiz-card,
@@ -1433,25 +1445,85 @@
     background-color: #000000;
   }
 
-  /* Placeholder for the account control while the session resolves. Holds the
-     exact 32px the avatar will occupy, with the same hairline as the circle
-     buttons beside it, so the header doesn't reflow when auth resolves. */
+  /* ---------------------------------------------------------------- *
+   * Placeholder for the account control while the session resolves.
+   *
+   * THE GLITCH THIS FIXES (owner, 2026-08-08, on Safari: "the app home page
+   * profile pic animation kept glitching"). The header's account slot used to
+   * change SHAPE three times on one page load — a pulsing grey disc with no
+   * shadow, then a white shadowed circle with no face, then the face popping
+   * in when its SVG landed. Three different paint results in a row reads as a
+   * control that cannot make its mind up, and Safari makes it worse: session
+   * restore is slower there (ITP holds up the cookie read), so every beat is
+   * long enough to actually see.
+   *
+   * So the skeleton is now the SAME OBJECT the avatar becomes — identical box,
+   * border, radius and shadow — and only the fill differs. Nothing moves when
+   * auth resolves; a grey centre becomes a face.
+   *
+   * AND THE PULSE MOVED OFF THE BORDERED BOX ONTO A CHILD. Animating opacity
+   * on the element that owns the 1px border and the three-layer shadow makes
+   * Safari re-rasterise all of it every frame, which is the choppiness itself.
+   * The ::after is a plain fill with nothing but a colour, promoted onto its
+   * own layer, so the pulse is a compositor opacity change and the expensive
+   * chrome under it is painted once.
+   * ---------------------------------------------------------------- */
   .account-skeleton {
+    position: relative;
     display: block;
     width: 32px;
     height: 32px;
     flex-shrink: 0;
     border: 1px solid var(--color-line-2);
     border-radius: 9999px;
-    background-color: rgba(0, 0, 0, 0.05);
+    /* White, not grey — the avatar shell's own background, so the disc does
+       not change colour underneath the face when it arrives. */
+    background-color: #ffffff;
+    /* HeaderAvatar's shadow, to the pixel. Without it the control visibly
+       lifted off the bar the instant the session resolved. */
+    box-shadow:
+      0 0.6px 0.6px -1.25px rgba(0, 0, 0, 0.18),
+      0 2.3px 2.3px -2.5px rgba(0, 0, 0, 0.16),
+      0 10px 10px -3.75px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+  }
+  .account-skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background-color: rgba(0, 0, 0, 0.07);
     animation: accountPulse 1.4s ease-in-out infinite;
+    /* Its own compositor layer, so the pulse never repaints the border or the
+       shadow above. `translateZ(0)` rather than `will-change` alone: Safari
+       honours the transform hint more reliably on a pseudo-element. */
+    transform: translateZ(0);
+    will-change: opacity;
   }
   @keyframes accountPulse {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.45; }
+    50% { opacity: 0.3; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .account-skeleton {
+    .account-skeleton::after {
+      animation: none;
+    }
+  }
+
+  /* The face, once its file lands. `Avatar` renders an <img> whose box is
+     already reserved, so this fades in the ART without moving anything — the
+     last of the three pops the note above describes. 160ms: long enough to
+     read as an arrival, short enough that a cached avatar on a repeat visit
+     is not a wait. */
+  .avatar-fade {
+    animation: avatarIn 160ms ease-out both;
+  }
+  @keyframes avatarIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .avatar-fade {
       animation: none;
     }
   }

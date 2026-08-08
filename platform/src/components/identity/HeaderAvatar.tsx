@@ -35,13 +35,15 @@ export function HeaderAvatar() {
   const ring = <PlanRing used={plan?.used ?? null} daysLeft={plan?.daysLeft} size={AVATAR_PX} />;
 
   /* Before the store has read localStorage there is no name to draw, and
-   * guessing one would flash the wrong monogram at a returning reader. */
-  if (!identity)
-    return (
-      <div className={shell} aria-label="Account">
-        {ring}
-      </div>
-    );
+   * guessing one would flash the wrong monogram at a returning reader.
+   *
+   * IT KEEPS PULSING RATHER THAN DRAWING AN EMPTY CIRCLE (owner, 2026-08-08,
+   * Safari). This used to be a finished-looking bordered disc with nothing in
+   * it, which made the load THREE states — pulsing placeholder, blank circle,
+   * face — and the middle one is a lie: it looks settled while the app is
+   * still working. Reusing the skeleton makes it two, and both are the same
+   * box, so the only thing that ever changes is the fill. */
+  if (!identity) return <span className="account-skeleton" aria-hidden="true" />;
 
   /* Two facts, one control, so the tooltip says both — what the ring is
      showing, then what clicking does. */
