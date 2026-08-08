@@ -10,6 +10,23 @@ Planned and scaffolded 2026-08-08 from the department's own outline
 (`sources/DEM 1110 COURSE OUTLINE MARCH 2020.docx`, 13 topics). This course is
 authored for the **course reader** from day one.
 
+## Programme — and this course is UNZA's, nobody else's
+
+**Year 1 of the School of Humanities and Social Sciences BA**, taught by the
+**Department of Population Studies** (the outline's own heading: *"THE
+UNIVERSITY OF ZAMBIA / SCHOOL OF HUMANITIES AND SOCIAL SCIENCES / DEPARTMENT
+OF POPULATION STUDIES"*).
+
+Like Development Studies, it sits in two places: the first course of the **BA
+in Demography** major, and a standard first-year course for **BA Economics**
+students taking it beside Macroeconomics.
+
+⚠️ **Do not assume this course travels** (owner, 2026-08-08). No other campus
+in the pipeline publishes a demography course at all, so this one has no
+cross-campus claim even in principle. It is written against this department's
+outline, notes and its sixteen past papers, and is correct for UNZA students
+only.
+
 **Where reader content lives**
 
 | | |

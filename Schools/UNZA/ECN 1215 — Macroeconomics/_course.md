@@ -14,6 +14,24 @@ provenance that accumulates but nothing is planned for them.
 The outline's own instruction, kept verbatim because it is also ours:
 *"Examples and applications must be drawn from Zambia."*
 
+## Programme — and this course is UNZA's, nobody else's
+
+**Bachelor of Arts (Economics), Year 1.** This is not an inference: the
+module's own title page reads *"THE UNIVERSITY OF ZAMBIA / INSTITUTE OF
+DISTANCE EDUCATION / BACHELOR OF ARTS (Economics) / MODULE / INTRODUCTION TO
+MACROECONOMIC THEORY (ECN 1215)"*. Taught in the School of Humanities and
+Social Sciences; the same first-year course is also taken by students heading
+into Development Studies, Demography and the rest of the BA family.
+
+⚠️ **Do not assume this course travels** (owner, 2026-08-08). Other Zambian
+universities teach something called Macroeconomics, and the pipeline's
+`pipeline_subjects` dedupes by title across campuses — that dedupe is a
+**backlog-ranking device, not a claim that the courses are the same**. A
+different school means a different syllabus, different notation and a
+different paper. This build is written against UNZA's outline, UNZA's modules
+and UNZA's past papers, and it is correct for UNZA students only. Serving it
+to another campus needs that campus's own material and its own build.
+
 **Where reader content lives**
 
 | | |

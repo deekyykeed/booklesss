@@ -11,6 +11,21 @@ Planned and scaffolded 2026-08-08 from the course's own outline
 (Xavier Mbaale, 2023). This course is authored for the **course reader** from
 day one.
 
+## Programme — and this course is UNZA's, nobody else's
+
+**Bachelor of Arts (Economics), Year 1** — and the whole BA family beside it.
+The course's full name is the evidence: *"Foundation Mathematics and
+Statistics **for Social Sciences**"*, a service course taught into the School
+of Humanities and Social Sciences first year. It is the required quantitative
+course for Economics; a student cannot major in Economics without it.
+Prerequisite: 'O' Level Mathematics.
+
+⚠️ **Do not assume this course travels** (owner, 2026-08-08). "Foundation
+Mathematics" is a common course title and the pipeline dedupes by title across
+campuses, but that dedupe ranks the backlog, it does not claim two courses are
+the same. This build is written against this course's own chapter notes,
+tutorial sheets and papers, and is correct for UNZA students only.
+
 **Where reader content lives**
 
 | | |

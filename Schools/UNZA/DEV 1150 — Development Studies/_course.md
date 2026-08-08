@@ -11,6 +11,24 @@ Planned and scaffolded 2026-08-08 from the department's own lecture notes
 the official course content list) plus four dedicated lecture decks. This
 course is authored for the **course reader** from day one.
 
+## Programme — and this course is UNZA's, nobody else's
+
+**Year 1 of the School of Humanities and Social Sciences BA**, taught by the
+**Development Studies Department** (the notes' own title page: *"UNIVERSITY OF
+ZAMBIA / SCHOOL OF HUMANITIES AND SOCIAL SCIENCE / DEVELOPMENT STUDIES
+DEPARTMENT / DS 101: INTRODUCTION TO DEVELOPMENT STUDIES"*).
+
+It sits in **two** places at once, which is worth being precise about: it is
+the first course of the **BA in Development Studies** major, and it is a
+standard first-year course for **BA Economics** students, who take it
+alongside Macroeconomics. Both are real; neither owns it.
+
+⚠️ **Do not assume this course travels** (owner, 2026-08-08). Development
+Studies is taught at other campuses under similar names and the pipeline
+dedupes by title, but that dedupe ranks the backlog rather than claiming two
+courses are the same. This build runs on this department's own notes and its
+own paper, and is correct for UNZA students only.
+
 **Where reader content lives**
 
 | | |

@@ -101,6 +101,21 @@ their own UNZA material. Linear unreachable for the TENTH session.)**
       collision-checked slugs, and 26 lesson folders with sources copied in
       (177 files, 69.5MB, all verified). The natural first writing job per
       course: the `start-here` intro step (S-11) plus lesson 1.
+- [ ] ⚠️ **These four are UNZA's, and courses are NOT portable across
+      universities** (owner, same day: *"we cannot assume courses across
+      different universities for now"*). Each `_course.md` now carries a
+      "Programme" section naming the university, the school and the
+      programme from evidence in the material itself, plus the no-travel
+      warning. The pipeline's cross-campus dedupe ranks the backlog; it is
+      not a claim two same-named courses are the same course. Written to
+      memory as `feedback_courses_not_portable_across_universities`.
+      **Programme, for the record:** all four are **Year 1, School of
+      Humanities and Social Sciences** — the ECN module's own title page
+      says *"BACHELOR OF ARTS (Economics)"*, MAT 1110 is the required
+      quantitative course for that degree ("Foundation Mathematics and
+      Statistics *for Social Sciences*"), and DEV/DEM are first-year courses
+      an Economics student takes that are also the opening course of their
+      own majors (BA Development Studies, BA Demography).
 - [ ] ⚠️ **The `macroeconomics` course slug may clash at seed time.** The
       economics demo course carries a *group* id `macroeconomics` (and step ids
       `unemployment`, `inflation`, `exchange-rates`, `trade`…). All planned
