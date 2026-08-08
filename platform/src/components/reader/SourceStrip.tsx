@@ -138,11 +138,19 @@ export function SourceStrip({ urls }: { urls: string[] }) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           {/* No white disc behind it any more — on a tinted chip that read as a
               second shape inside the pill. The favicon sits on the tint. */}
+          {/* 16px, up from 12 (owner, 2026-08-08: "the source favicon needs to be
+              bigger"). It costs nothing: the label's line box is already 16px
+              (`text-[11px] leading-4`), so the mark grows into height the chip
+              was reserving anyway and the pill does not get taller. 12 was
+              smaller than the type it sat beside, which is why it read as a
+              speck rather than as the site's mark.
+              Above 16 the chip WOULD grow, because then the icon rather than the
+              line box sets the height — check that before going further. */}
           <img
             src={c.icon}
             alt=""
             aria-hidden="true"
-            className="h-3 w-3 shrink-0 rounded-full object-cover"
+            className="h-4 w-4 shrink-0 rounded-full object-cover"
           />
             <span className="whitespace-nowrap">{c.name}</span>
           </a>
