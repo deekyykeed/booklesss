@@ -242,9 +242,12 @@ the link where there isn't one. Do not add a second share button to a page
 surface: the owner's rule (2026-08-02) is that there is exactly one place in
 the app where sharing can be got wrong.
 
-**Referral codes are deferred, not forgotten.** They wait for Clerk, so a
-referral can point at a person rather than a device. Format is decided —
-`?r=deeky-7fq` — and the seam is documented in `shareUrl()`.
+**Referral codes are BUILT** (no longer waiting on an account system — see the
+memory index). `?r=deeky-7fq` is read by `lib/referral`, and `AuthForm` passes
+`referrer()` into `signUp` as `options.data.referred_by`, so the code is captured
+at the one moment it is knowable: when the account is created. Everything else
+about a student is answered later in onboarding; who sent them has nowhere else
+to live.
 
 ### Platform Fonts (Next.js)
 
@@ -378,19 +381,30 @@ copy of that answers a different question, and none of them is redundant:
 | Copy | What it is for | Where |
 |---|---|---|
 | **localStorage** | Instant, offline, works signed-out | `booklesss:identity:v1`, `lib/identity` |
-| **Clerk `unsafeMetadata`** | Travels with the person, so a second device resumes with **no network call** | `AccountSignal` reconciles it |
-| **Supabase `students`** | The only copy that can be **asked a question** | written by `POST /api/profile` |
+| **`students.identity` (jsonb)** | Travels with the person, so a second device resumes | read by `AccountSignal` under RLS (`auth.uid() = id`) |
+| **`students` / `student_courses` columns** | The only copy that can be **asked a question** | written by `POST /api/profile` |
 
-Clerk's copy cannot be queried in aggregate — "what are CBU students being
-taught?" is unanswerable from a per-user metadata blob you read one row at a
-time. With seven of ten universities publishing no curriculum, that question is
-how the curriculum gets built at all, which is why the Supabase copy exists.
+**This was three stores and is now two, since Clerk is gone (2026-08-05).** The
+account's copy used to be Clerk's `unsafeMetadata.identity`; it is a jsonb column
+on the student's own row now, which is strictly better — it is written only by
+`/api/profile` behind the service role, where `unsafeMetadata` could be written
+by any signed-in browser.
 
-**THE MERGE NEEDS A CLOCK, AND `Identity.updatedAt` IS IT.** Three copies means
-two of them can disagree, and the rule "the account wins where it has an answer"
-is wrong in the ten minutes that matter most. Clerk's copy is a **snapshot of
-the device taken at sign-up** — ClerkGate writes `accountIdentity()` into
-`unsafeMetadata` when the account is created, which on a fresh visit is the
+A blob you read one row at a time still cannot answer "what are CBU students
+being taught?", which is why the queryable columns exist alongside it. With seven
+of ten universities publishing no curriculum, that question is how the curriculum
+gets built at all.
+
+**The merge is unchanged and the reasoning below still holds verbatim** — it was
+deliberately not rewritten in the same session as the transport port, so that the
+next wrong dashboard stays attributable. `parseAccountIdentity` still treats what
+comes back as stranger input.
+
+**THE MERGE NEEDS A CLOCK, AND `Identity.updatedAt` IS IT.** Two copies can
+disagree, and the rule "the account wins where it has an answer" is wrong in the
+ten minutes that matter most. The account's copy is a **snapshot of the device
+taken at sign-up** — the gate writes `accountIdentity()` up when the account is
+created, which on a fresh visit is the
 placeholder the device rolled for itself. The student then answers ten
 questions, every answer newer than that snapshot, and a merge without a clock
 hands the snapshot straight back down. That shipped, and cost six sign-ups their
@@ -410,13 +424,37 @@ already drifted — neither compared `target.weekdays`, so a student moving stud
 days from Monday to Tuesday never had it travel. A field added to
 `AccountIdentity` and not added to `sameAnswers` silently stops travelling.
 
-### The auth surface is Clerk's own modal — do not rebuild it
+### The auth surface is the app's own form, on Supabase — ONE box for both jobs
 
-`ClerkGate` turns every `requireAccount()` into `clerk.openSignUp()` /
-`openSignIn()`, and the landing page carries Clerk's inline `<SignUp>`. That is
-the whole of it.
+**Clerk is gone.** `AuthGate` replaced `ClerkGate` on 2026-08-05 and the app
+authenticates against **Supabase** now. `requireAccount()` still works exactly
+as it did — a plain function on a module store, consumed by exactly one
+component that puts a form on screen — because that indirection was never about
+Clerk (see the note in `lib/onboarding.ts`).
 
-**A custom form has now been written and thrown away twice** — 2026-08-03 ("use
+**There is no sign-in / sign-up distinction any more** (owner, 2026-08-07: "i
+dont want to have the user select sign in if they already have an account…
+if they are new they go through onboarding and if not they jyst get in and not
+error them saying the accont exists"). `AuthForm` is one email + password box
+with a single **Continue** button, and `/sign-in` and `/sign-up` render the same
+thing — the route only chooses the heading. It tries `signInWithPassword`, and
+**only** on "Invalid login credentials" falls back to `signUp`; if that comes
+back "already registered" the account existed and the password was wrong, which
+is the one sentence the sequence exists to be able to say.
+
+**Sign-in first, not sign-up first, and the order is load-bearing.** Sign-up
+first is a call shorter for a new student but puts every RETURNING one through a
+sign-up attempt on their own address — and the moment "Confirm email" is
+switched back on in the Supabase dashboard, that mails them a confirmation link
+on every login. Probing with a sign-in sends nothing and creates nothing.
+
+**The Clerk history below is kept as history**, because it is why a custom form
+is allowed at all: what killed the first two attempts was Clerk's stateful
+`SignUp` resource, not the idea. Supabase auth is two async functions returning
+`{ data, error }` — no attempt object, nothing to reset — which is what makes a
+two-call fallback safe to write. If Clerk ever returns, this is still true:
+
+**A custom form was written and thrown away twice ON CLERK** — 2026-08-03 ("use
 clerk stuff just remove the logo") and again on 2026-08-05, where it was built,
 failed twice on the owner's own phone during a live sign-up, and was reverted
 inside three hours ("not worked still, go back to the modal from clerk"). The
@@ -442,10 +480,11 @@ looks — and the modal is what ships in the meantime.
 
 **The browser never writes Supabase.** `lib/supabase-admin.ts` is `server-only`
 (importing it from a client component is a build error) and every write goes
-through `/api/profile`, which takes the user id **from the Clerk session, never
-from the body** — the only thing stopping one signed-in student overwriting
-another's timetable. `students` and `student_courses` have RLS on with no
-policies, like the pipeline tables.
+through `/api/profile`, which takes the user id **from the Supabase session
+cookie, never from the body** — the only thing stopping one signed-in student
+overwriting another's timetable. `students` and `student_courses` are
+service-role for writes; `students.identity` is additionally readable by its
+owner under RLS (`auth.uid() = id`), which is how a second device resumes.
 
 **The sync fails soft, always.** No Clerk, no Supabase, a bad row, a dropped
 connection — all answer 200 and the flow carries on against the device's copy.

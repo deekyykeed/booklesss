@@ -79,6 +79,25 @@ Precede major H1/H2 with an eyebrow tag:
 ```
 Eyebrow: `font-size: 0.65rem`, `letter-spacing: 0.18em`, `text-transform: uppercase`, amber colour.
 
+### Selected-state contrast scales with weight *(2026-08-07, the course tabs)*
+**Two greys that clearly differ at regular weight stop differing when the type
+goes bold.** Heavy strokes put more ink on the page, which narrows the apparent
+distance between any two text colours — so a tab row that read correctly as
+14px medium (`ink` vs `muted`) read as three headings at 17px bold, and the
+owner could not tell which one he was on.
+
+When type gets heavier or larger, the selected state needs **either a bigger
+colour gap or a second signal** — not the same pair scaled up. Both is safest:
+drop the unselected ones to the faintest text token, and add a mark (a 2px rule
+under the active one).
+
+Two rules for that mark, both learned the same day:
+- **Every item carries it, transparent when inactive.** Applying the border only
+  to the selected one adds 2px to that item and shifts the whole row on each
+  switch.
+- **Keep the mark grey, not ink.** It is there to say *which*, not to be read —
+  ink under ink-weight type competes with the word it underlines.
+
 ---
 
 ## Layout principles
@@ -176,6 +195,16 @@ Never place a card flatly on the background. Nest it:
   `28px` blur: a wide layer spreads grey over enough pixels to read as a band
   even at 9% black. What worked was **deleting the wide layer**, not dimming
   it.
+- **A tight contact layer next to a hairline border reads as a SECOND BORDER.**
+  *(2026-08-07, the course cards.)* The other end of the same problem. `0 1px
+  2px rgb(0 0 0 / .06)` has no negative spread, so it paints a dark line hugging
+  all four edges — 1px outside a border that is itself 1px. The owner's words
+  were "too harsh close to the card itself and it looks like a second border",
+  which names the mechanism exactly. **Any layer meant to sit under a bordered
+  surface needs negative spread at least equal to its blur** (`0 10px 28px
+  -10px`), so it only ever appears below and away from the outline. Delete the
+  contact layer rather than dimming it — and delete it from `:hover` too, or it
+  returns the moment a pointer arrives.
 - **Reading surfaces cap at ~10px of blur.** Two tokens carry the whole reader:
   ```css
   --shadow-lift: 0 1px 2px -1px rgb(0 0 0 / 0.04), 0 4px 10px -6px rgb(0 0 0 / 0.05);

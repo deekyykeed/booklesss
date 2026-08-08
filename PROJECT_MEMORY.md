@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-08 (session 51)
+**Last updated:** 2026-08-08 (session 52)
 
 ---
 
@@ -91,6 +91,42 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 52 (2026-08-07 into 08, the dashboard-and-front-door day — one
+auth box, install in onboarding, three course tabs. Numbered 52 because sessions
+49, 50 and 51 were all in flight in the same tree while this one ran and had
+already claimed their numbers; their blocks below are not mine to renumber.
+Linear unreachable for the NINTH session.)**
+- [ ] ⚠️ **THE MERGED AUTH BOX HAS NEVER BEEN RUN AGAINST A REAL SUPABASE.**
+      `/sign-in` and `/sign-up` now render one form that tries
+      `signInWithPassword` and falls back to `signUp` on "Invalid login
+      credentials" (`AuthForm.tsx`). Typechecked, linted, built — **and every
+      branch of it is unverified**, because exercising it means creating real
+      accounts in production. The three to check, in order: a brand-new email
+      lands in onboarding; a known email with the right password goes straight
+      in; a known email with the WRONG password says "That password doesn't
+      match this email" rather than silently making a second account. That last
+      one is the whole reason the fallback is ordered sign-in-first, and it is
+      the one that would be worst to get wrong.
+- [ ] ⚠️ **The onboarding install step is also unverified, for the same reason
+      `/onboarding` has never been seen rendered.** It is question ten of eleven
+      and only appears where `useInstall()` has something to offer, so on a
+      desktop Chrome with the app already installed it correctly draws nothing —
+      which is indistinguishable from it being broken. Check on a phone that has
+      not installed the PWA.
+- [ ] **A FINISHED COURSE CARD STILL LOOKS LIKE AN UNTOUCHED ONE**, and the
+      Completed tab that shipped this session is what draws it. Session 49
+      raised this from the marketing side; it is now also a product gap, since
+      there is a tab whose whole purpose is showing finished courses and the
+      card in it says "Resume", points at step one, and reads 0d streak.
+- [ ] **The tab underline is `--color-placeholder` and so is the inactive tab
+      text** — the same grey doing two jobs. It reads correctly today because
+      one is type and one is a rule, but if either moves they should stop
+      matching by accident.
+- [ ] **`MemberCount`'s tick interval was retuned this session and then the
+      whole component was replaced** by session 51's server-side count. The
+      1.5–4.5s timer is gone. Nothing to do; noted so the change is not looked
+      for later.
 
 **From session 51 (2026-08-08 — D-12 closed, D-13's TM box closed, the member
 count made true. Linear unreachable for the EIGHTH session.)**
@@ -1079,6 +1115,57 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-07 into 08 (session 52 — one auth box, install in onboarding, and the dashboard's courses become three tabs)
+
+**Done:** The front door: everything dropped lower in two passes (pt 28→52,
+pb 140→100→80, the second pass on pb alone because pt is what sets the mark's
+position and the ask was to leave the logo); the faces lost their bounce and
+went 700→420ms; the CTA stopped arriving a second after everything else had
+settled. **Auth became ONE box** — `/sign-in` and `/sign-up` render the same
+form, "Continue", no toggle, which tries sign-in and falls back to sign-up.
+**Onboarding gained an install step**, gated on `useInstall()` having something
+to offer. The dashboard's courses became **three tabs** (Active / Pipeline /
+Completed) with drag-to-reorder on Active, a sliding panel and a swipe gesture;
+the "My courses" heading and its Change link came out. The bucket was filed —
+both files were byte-identical duplicates of the landing hero assets, so filing
+meant deleting.
+
+**What Worked:**
+- **Reading an unidentifiable asset before filing it.** Two CDN-hash files had
+  sat in the bucket since 6 Aug because nobody could tell what they were.
+  Opening them took seconds and `md5` settled it outright: identical to
+  `landing/hero/noise.png` and `photo.jpg`, already committed in 55d4918. The
+  correct filing was deletion, and guessing a folder would have created a second
+  copy of an asset already in place.
+- **Committing PARTIAL hunks of a file a parallel session is also editing.**
+  `git diff -- <file>` → split the patch on `^@@ ` → keep only your hunks →
+  `git apply --cached`. Their work stays in the working tree, uncommitted and
+  untouched. This is now the answer whenever `globals.css` is contended, which
+  is most of the time.
+- **Telling the three `EPERM` causes apart before acting.** Retry failed
+  identically, `Get-CimInstance Win32_Process` showed only `gen:favicons` and no
+  build — so it was a sync lock, and clearing the ONE locked build-id directory
+  with PowerShell fixed it without touching the parallel session's `.next`.
+
+**Dead Ends (do not retry):**
+- **`git commit --only -- <paths>` silently DISCARDS partial hunks you staged
+  with `git apply --cached`.** `--only` re-reads the working tree for the paths
+  it is given and ignores the index entirely, so a carefully staged
+  `globals.css` was left uncommitted while the two named files went in. It
+  looked like a success — "2 files changed" — and the shadow fix simply was not
+  in the commit. Partial hunks need a **bare `git commit`** with nothing else
+  staged.
+- **`PointerSensor` cannot coexist with a swipe gesture.** Browsers fire pointer
+  events for touch, so `activationConstraint: { distance: 8 }` started a drag the
+  instant a finger moved 8px and the `TouchSensor` beside it never applied its
+  hold. Every swipe was a drag. Split into `MouseSensor` (distance) +
+  `TouchSensor` (delay) — the two inputs want opposite things and no single
+  constraint reconciles them.
+- **`/tmp` is not writable from the Bash tool here.** `cat > /tmp/g.patch`
+  failed with `Permission denied` and then `git commit -F` resolved the path
+  against `C:/Program Files/Git/`. Use the session scratchpad for every temp
+  file, including commit messages.
 
 ### Session 2026-08-08 (session 51 — three debts paid, and a selector that was drawing off the edge of the screen)
 
