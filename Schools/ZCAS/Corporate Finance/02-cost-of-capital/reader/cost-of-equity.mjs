@@ -33,6 +33,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "The cost of equity is what shareholders require, not what the company pays out. It is charged whether or not a dividend is declared.",
         },
       ],

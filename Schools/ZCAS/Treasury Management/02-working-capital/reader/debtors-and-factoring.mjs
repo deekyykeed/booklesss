@@ -32,6 +32,15 @@
  * than the premise. NOTE FOR SCANNERS: `2/10 net 30` contains a digit, so the
  * old opening passed the C-5 anchor check while being unreadable. A measurement
  * is not a reading.
+ *
+ * 2026-08-08, paying D-13 (C-9) and D-12 (E-10). The check re-asked the
+ * section's own worked case at the SAME figures (2/10 net 30 against 8%), with
+ * the 37.23% printed in the paragraph above it and again in the winning
+ * option. Numeric options were hiding a recall question. It now hands over
+ * 1.5/15 net 60 against a 20% overdraft, which is deliberately a case where
+ * the answer REVERSES: 12.35% is cheaper than the overdraft, so the discount
+ * is declined. A second case at the same figures teaches a verdict; a second
+ * case that comes out the other way teaches the method.
  */
 
 export default {
@@ -83,21 +92,27 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Always price the annual cost of forgoing a discount against your cost of short-term borrowing. If borrowing is cheaper, take the discount. **37.23% against 8% is not a close call.**",
+        },
+        {
+          type: "callout",
+          kind: "example",
+          text: "Price a different offer before you read on, because they do not all come out the same way. A supplier offers **1.5/15 net 60** and your overdraft costs **20%** a year. Work the annual cost of letting the discount go, then say what you would do. The formula punishes two habits: **the discount comes off what you actually pay, not off 100,** and the days you are buying are the ones *between* the two dates.",
         },
       ],
       check: {
         question:
-          "A supplier offers 2/10 net 30, and your overdraft costs 8% per annum. What should you do?",
+          "What does forgoing a 1.5/15 net 60 discount cost, on an annual basis?",
         options: [
-          "Borrow at 8% and pay by day 10, because forgoing the discount costs 37.23% per annum",
-          "Pay on day 30, because free credit from the supplier always beats borrowing",
-          "Pay on day 10 without the discount, to strengthen the relationship",
-          "Negotiate 3/15 net 45 before deciding anything",
+          "About 12.35%",
+          "About 12.17%",
+          "About 9.26%",
+          "About 1.52%",
         ],
         answer: 0,
         explain:
-          "The 20 extra days of credit cost 2% of the invoice, which annualises to [2/98] × [365/20] = 37.23%, nearly five times the overdraft rate. Supplier credit only looks free until somebody prices it.",
+          "[1.5 ÷ 98.5] × [365 ÷ 45] = 0.015228 × 8.111 = **12.35%** a year. And notice where that leaves you: 12.35% is CHEAPER than the 20% overdraft, so here you keep the 45 days and let the discount go. That is the opposite of the 2/10 net 30 answer above. The formula decides it, not the reflex. About 12.17% divides by 100 instead of by the 98.5 you would actually pay, which flatters every discount slightly. About 9.26% uses the 60-day net period instead of the 45 days of credit being bought. About 1.52% never annualises, and would have you turn down free money.",
       },
     },
 

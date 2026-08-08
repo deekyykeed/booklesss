@@ -448,8 +448,23 @@ export function Sidebar() {
   /* The active bar sits in the rail of the folder holding the active row, so
    * its x comes from the row's depth AS DRAWN — tree depth less whatever the
    * unwrapping hid. Miss the offset and every step in a wrapped course draws
-   * its bar one indent right of the rail it belongs to. */
-  const barX = barLeftFor(depthOf(activeId) - 1 - (course?.unitDepthOffset ?? 0));
+   * its bar one indent right of the rail it belongs to.
+   *
+   * ⚠️ A ROW AT THE TOP LEVEL HAS NO ENCLOSING RAIL, so there is no rail for a
+   * bar to sit in and `barDepth` goes to -1. That is not a hypothetical: every
+   * course's intro step (S-11, `start-here-*`) is a leaf at the top level, and
+   * it drew its bar at barLeftFor(-1) = -2.5px — a black sliver clipped by the
+   * drawer's own edge, on the first row of the first step every reader opens.
+   * Reported by the owner, 2026-08-08, off a phone screenshot.
+   *
+   * The bar is a RAIL-RELATIVE mark: it says "this row, inside this folder".
+   * With no rail there is nothing for it to be inside, so it is not drawn and
+   * the selected card carries the row on its own — which is what the Dashboard
+   * row above already does. Clamping it to 0 instead would put it at x=15.5,
+   * on top of a label whose text starts at ROOT_PAD (8). */
+  const barDepth = depthOf(activeId) - 1 - (course?.unitDepthOffset ?? 0);
+  const inRail = barDepth >= 0;
+  const barX = barLeftFor(barDepth);
 
   const activeAncestors = useMemo(() => new Set(ancestorsOf(activeId)), [activeId]);
   const ctx: Ctx = { openIds, activeId, activeAncestors, activeRef, toggle, onSelect };
@@ -639,7 +654,7 @@ export function Sidebar() {
               }}
             />
           )}
-          {m.visible && (
+          {m.visible && inRail && (
             <span
               key={parentId}
               ref={barRef}

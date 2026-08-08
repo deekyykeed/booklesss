@@ -92,6 +92,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "The coupon is fixed. The market rate moves. The price is what adjusts to reconcile the two.",
         },
       ],

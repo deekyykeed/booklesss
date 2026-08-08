@@ -82,7 +82,20 @@ export default {
       label: "Corporate Finance",
       defaultOpen: true,
       children: [
-        startHere,
+        /* 2026-08-08: wrapped in a folder, a deliberate exception to S-9's "do
+         * not create a folder for one step" (owner). A top-level LEAF has no
+         * enclosing rail for the sidebar's active bar to sit in, and the bar was
+         * drawing at -2.5px, clipped by the drawer edge. `defaultOpen` keeps the
+         * step visible without a tap. The slug carries a course suffix because
+         * grouping slugs are unique across every course. Full reasoning is in
+         * Treasury Management's course.mjs.
+         * ⚠️ Moves the path to /corporate-finance/getting-started-corporate-finance/start-here-corporate-finance */
+        {
+          slug: "getting-started-corporate-finance",
+          label: "Getting started",
+          defaultOpen: true,
+          children: [startHere],
+        },
         {
           slug: "investment-appraisal",
           label: "Investment appraisal",

@@ -180,6 +180,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "**Matching is the default, and departing from it is a policy rather than an accident.** Funding permanent assets with short-term debt is the aggressive position, cheaper and exposed at every renewal. Funding everything long is the conservative one, safer and dearer. Pick knowingly.",
         },
       ],

@@ -51,6 +51,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Risk exists during clearing and ends at settlement. **A payment that has cleared but not settled is a promise, not money.**",
         },
       ],

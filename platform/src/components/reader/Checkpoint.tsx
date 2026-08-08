@@ -114,36 +114,45 @@ export function Checkpoint({
           `shadow-lift` is what a callout and a card already use, so the row
           reads as one more thing the step is made of rather than as chrome that
           landed on it.
-          6px of padding all round (`p-1.5`), down from the 8px it shipped at
-          this afternoon. The buttons inside are 34px and carry their own
-          breathing room, so the container's padding is stacked on top of theirs
-          and 8px made the row taller than the controls in it needed. The marks
-          are 20px, so this is a control strip rather than a box with things in
-          it.
-          `rounded-full` (owner, 2026-08-07: "a lot more rounded, and keep the
-          squircle there", then "rounded 100%"). It went 3xl first and that was
-          reading the instruction too carefully: 24px on a 40px row is most of
-          the way to a pill and looks like a radius that stopped short.
-          It is NOT the grey pill of earlier today, and the difference is the
+          6px of padding all round (`p-1.5`), down from the 8px it shipped at on
+          the afternoon of 2026-08-07. The buttons inside are 28px (`.grasp-btn`)
+          and carry their own breathing room, so the container's padding is
+          stacked on top of theirs and 8px made the row taller than the controls
+          in it needed. The marks are 12px as of 2026-08-08, so this is very much
+          a control strip rather than a box with things in it.
+          `rounded-3xl` — 24px (owner, 2026-08-08: "the step feedback container
+          needs to reduce radius, try 24px").
+          ⚠️ AND AT THIS ROW HEIGHT 24px IS A NO-OP. Measured in the built app:
+          the row is 42px tall (28px buttons + 6px padding each side + 2px of
+          border), and CSS clamps a border-radius to HALF the box it is curving,
+          so anything above 21px renders as a full pill. 24px is therefore
+          pixel-identical to the `rounded-full` it replaced. 16px is the first
+          value that draws a visible corner here.
+          This is why it reads differently from 2026-08-07, when 24px was tried
+          and rejected as "a radius that stopped short": the row was ~52px then
+          (34px buttons, 8px padding) so 24 was under the clamp and DID show. The
+          row has lost 10px since, so the same number now means the opposite
+          thing. A radius on a short row is not a free parameter — check it
+          against half the height before trusting it.
+          Kept at 24px because that is what was asked for and it is honest about
+          intent; the four-way comparison (24 / 16 / 12 / 8) was rendered and put
+          in front of the owner, and the number moves the moment they pick one.
+          It is NOT the grey pill of 2026-08-07 either, and the difference is the
           whole point. That one was filled grey with no border, which said
           "input" and put a menu surface in the reading column. This is white
           with the house hairline and shadow-lift, so it is still one of the
           containers; only its corner changed.
-          NO `squircle` ON THIS ONE, and that is a correction rather than an
-          omission (owner, 2026-08-07, with a screenshot: "no, give 999 radius,
-          needs to be circular round"). The note here previously claimed a
-          superellipse at a full radius draws "a true squircle with flatter
-          sides" — right about the mechanism and wrong about the result.
-          `corner-shape: superellipse(2.4)` reshapes the corner toward a
-          RECTANGLE as the radius grows, so 999px plus squircle renders as a
-          box with modest corners, which is the opposite of what a full radius
-          is asked for.
-          The two settings fight: `rounded-full` says "make the ends
-          semicircles" and `superellipse` says "flatten the curve". Every other
-          container in the reader pairs squircle with a MODEST radius (16-24px),
-          where flattening is the whole point and reads as a softer box. At a
-          full radius the plain border-radius is the correct one. */}
-      <div className="checkpoint-row flex flex-wrap items-center justify-between gap-3 rounded-full border border-[#e7e7e6] bg-white p-1.5 shadow-lift">
+          STILL NO `squircle`, and now for a weaker reason than before. It came
+          off because a superellipse fights a full radius: `corner-shape:
+          superellipse(2.4)` reshapes a corner toward a RECTANGLE as the radius
+          grows, so 999px plus squircle rendered as a box with modest corners,
+          the opposite of what was asked for. At 24px that conflict is gone, and
+          every other container in the reader pairs squircle with exactly this
+          modest 16-24px range, where the flattening is the point. So the house
+          pairing now argues FOR adding it back. It was left off because it was
+          not asked for and this element has been iterated three times in two
+          days; adding the class is a one-word change if it is wanted. */}
+      <div className="checkpoint-row flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-[#e7e7e6] bg-white p-1.5 shadow-lift">
         <SectionNote lessonId={lessonId} sectionId={checkpointId} />
         <div
           className="grasp-group"
@@ -199,14 +208,24 @@ export function Checkpoint({
                     Unoptimised: next/image would re-encode the GIF and drop
                     every frame but one. These are already sized and already
                     small, so they are served as they are. */}
-                {/* 20px (owner, 2026-08-07). Line at rest, solid when it is
-                    the answer given, and coloured by `--grasp-tone` off the CSS
-                    — so a tap changes BOTH the weight and the hue, which is the
-                    same pair of signals the sidebar uses for its current row.
-                    strokeWidth 1.2 rather than MynaUI's 1.5: at 20px with
-                    nothing bounding it, the default weight reads heavy beside
-                    the flag on the other end of the row. */}
-                <MynaIcon name={active ? a.iconOn : a.icon} size={20} strokeWidth={1.2} />
+                {/* 12px (owner, 2026-08-08), down from the 20px it wore for a
+                    day. Line at rest, solid when it is the answer given, and
+                    coloured by `--grasp-tone` off the CSS, so a tap changes BOTH
+                    the weight and the hue: the same pair of signals the sidebar
+                    uses for its current row.
+                    The button stays 28px, so at 12px the mark now sits in a
+                    generous well rather than filling it. That is the point of a
+                    control strip: the target is finger-sized and the mark is
+                    only as big as it needs to be to be read.
+                    strokeWidth 1.2 rather than MynaUI's 1.5 was set when these
+                    were 20px and nothing bounded them. It is kept, and it is
+                    worth knowing why it did not go up: a thinner stroke on a
+                    smaller glyph keeps the ink-to-size ratio roughly where it
+                    was, where 1.5 at 12px would read as a heavier mark than the
+                    one it replaced.
+                    SectionNote's flag is the fourth mark in this row and is set
+                    to 12 as well. Move the two together. */}
+                <MynaIcon name={active ? a.iconOn : a.icon} size={12} strokeWidth={1.2} />
                 <span className="grasp-label">{a.label}</span>
               </button>
             );

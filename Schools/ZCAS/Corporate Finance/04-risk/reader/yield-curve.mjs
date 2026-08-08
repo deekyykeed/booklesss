@@ -128,6 +128,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "warning",
           text: "An implied forward rate of 12% does not mean the market expects 12%. It means the market expects 12% less whatever premium it is charging for the wait.",
         },
         {

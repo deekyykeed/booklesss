@@ -75,6 +75,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Yesterday’s prices are free to everybody, so they cannot be a source of advantage to anybody.",
         },
         {

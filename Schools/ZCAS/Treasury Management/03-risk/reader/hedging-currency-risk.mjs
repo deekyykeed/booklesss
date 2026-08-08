@@ -20,6 +20,15 @@
  * The original §5 opening also read "…like the FRA in the previous step", a
  * pointer across a step boundary. It is gone, and the comparison between
  * binding and optional cover is made inside this step.
+ *
+ * 2026-08-08, paying D-13 (C-9) and D-12 (E-10). §2 worked the XYZ futures
+ * hedge to the kwacha and then asked WHY the tail was left unhedged, so the
+ * contract arithmetic was demonstrated and never required. It now hands over a
+ * second hedge; the check turns on the two decisions that actually carry it,
+ * which way you deal and which way you round. The loss option is not a
+ * nonsense number: it is what an exporter gets for buying futures instead of
+ * selling them, and it is the same magnitude, so only the reasoning separates
+ * them. The standardisation insight the old check tested is kept in the explain.
  */
 
 export default {
@@ -50,6 +59,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Operational hedges cost little and never expire. **The instruments in the next sections are for the exposure that survives them,** not a substitute for doing this first.",
         },
       ],
@@ -103,19 +113,24 @@ export default {
           type: "p",
           text: "Now let spot fall to 8.25. The receivable converts to only ZMW 21,862,500, which is the disaster the hedge was for. The futures gain of (9.92 − 8.25) × 42 × 62,500 = ZMW 4,383,750 brings the total back to **ZMW 26,246,250**, close to the rate it locked in June.",
         },
+        {
+          type: "callout",
+          kind: "example",
+          text: "Run the same hedge on your own numbers. A Copperbelt exporter expects **USD 1,900,000** in three months, September futures are quoted at **11.60**, and a contract is **USD 62,500**. By maturity spot has fallen to **10.40**. Work out how many contracts it sells, then what the position delivers. Two decisions carry the whole answer: **which way it deals**, and **which way it rounds.**",
+        },
       ],
       check: {
         question:
-          "XYZ needed to hedge USD 2,650,000 but sold exactly 42 contracts of USD 62,500. Why not hedge the full amount?",
+          "That exporter hedges USD 1,900,000 with USD 62,500 futures at 11.60, and spot falls to 10.40. What does the futures position deliver?",
         options: [
-          "Futures come in fixed sizes, so 42 contracts cover 2,625,000 and the 25,000 tail stays unhedged as the price of standardisation",
-          "Exchange rules cap any hedge at 42 contracts",
-          "The remaining 25,000 was hedged automatically by the margin",
-          "XYZ expected the kwacha to depreciate on the remainder",
+          "A gain of ZMW 2,250,000",
+          "A gain of ZMW 2,280,000",
+          "A gain of ZMW 2,325,000",
+          "A loss of ZMW 2,250,000",
         ],
         answer: 0,
         explain:
-          "2,650,000 ÷ 62,500 = 42.4, and you cannot sell four-tenths of a contract. That small residual is the standing trade-off against a forward, which is cut to the exact amount and date but locks you in with no liquid way out.",
+          "1,900,000 ÷ 62,500 = 30.4 contracts, and you round DOWN to 30: over-hedging turns the spare part of a contract into a bet. So the hedge covers 30 × 62,500 = USD 1,875,000, and the gain is (11.60 − 10.40) × 1,875,000 = **ZMW 2,250,000**. The USD 25,000 tail rides unhedged, which is the price of standardisation and the standing trade-off against a forward. ZMW 2,280,000 applies the 1.20 movement to the full USD 1,900,000, hedging an amount no contract exists for. ZMW 2,325,000 rounds 30.4 up to 31. The loss is what an exporter gets for buying futures instead of selling them: it is exposed to the kwacha strengthening, so its hedge must gain when the dollar buys fewer kwacha, and a bought position does the opposite.",
       },
     },
 

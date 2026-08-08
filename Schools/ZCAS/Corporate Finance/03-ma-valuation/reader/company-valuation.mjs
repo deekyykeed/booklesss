@@ -148,6 +148,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Net asset value sets a lower limit on what a going concern is worth. A bid at or below it would be better spent buying the assets separately.",
         },
         {

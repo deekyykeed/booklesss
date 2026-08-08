@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-07 (session 50)
+**Last updated:** 2026-08-08 (session 51)
 
 ---
 
@@ -91,6 +91,32 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 51 (2026-08-08 — D-12 closed, D-13's TM box closed, the member
+count made true. Linear unreachable for the EIGHTH session.)**
+- [ ] ⚠️ **RUN THE PUBLISH. Nothing written to the steps today is on the reader.**
+      Three `seed:course` runs and one `gen:course`, exact commands in the
+      session-51 log below. Twelve unworked examples and 59 callout kinds are
+      sitting in `.mjs` and validate clean; the app reads `course-data.json`.
+- [ ] **The member count line is currently ABSENT from `/`, by design.** The real
+      count is **2**, the floor is 12, and below the floor `MemberCount` draws
+      nothing rather than print a small number or an invented one. The owner's
+      call to make: raise the floor, accept the empty slot until the twelfth
+      sign-up, or put a line there that is true of the PRODUCT rather than of the
+      headcount. The floor is one constant in `MemberCount.tsx`.
+- [ ] **D-13's remaining scope is 25 Corporate Finance steps**, and CF is the
+      course where it will bite hardest: it is quantitative end to end and none
+      of its 25 steps has been looked at. The TM pass took one session for 21
+      steps, so budget accordingly. Use the same method, not the numeric-options
+      shortlist, which missed two of TM's worst.
+- [ ] **The owner suggested making `start-here` a folder** to dodge the selector
+      bug. The bug is fixed at the geometry instead, because a folder wrapping
+      one step costs every reader a tap on the first row of the course. If the
+      folder is still wanted it is now a preference rather than a workaround.
+- [ ] **D-10 is the cheapest thing left in the ledger and it is now the only
+      cheap one.** 790 em dashes: **449 in CF, 341 in SM, 0 in TM.** The five
+      worst steps in the project are all SM at ~49 each, so SM is 7 steps to
+      clear the denser half.
 
 **From session 50 (2026-08-07, the step-skill day — the skill stopped assuming
 every course is finance). Numbered 50 because session 49, the social day, was
@@ -1053,6 +1079,71 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-08 (session 51 — three debts paid, and a selector that was drawing off the edge of the screen)
+
+**Done:**
+- **D-12 CLOSED.** All **59** callouts that had no `kind` now have one, read in
+  the context of the section holding it. Distribution: 41 `key`, 16 `warning`,
+  2 `exam`. **18 of the 59 (31%) were saying the wrong thing on screen** —
+  sixteen traps and two exam instructions, every one of them labelled "Key
+  point". 67 of 67 callouts in the 53 authored steps now name a kind.
+- **D-13: all of Treasury Management.** Ten steps needed a worked/unworked pair
+  and got **twelve handovers**, one per section that works a number: Baumol,
+  Miller-Orr, EOQ, the cash conversion cycle, the annualised T-bill yield, the
+  discount decision, a two-leg cross rate with both spreads, a futures hedge and
+  its rounding, an FRA settlement, a swap's surplus, an interest-rate gap priced
+  in kwacha, a blended portfolio yield. Each is a `kind: "example"` callout that
+  stops, marked by a rewritten check whose four options are numbers and whose
+  three wrong ones are the slips that actually produce them. Eleven TM steps
+  needed nothing and are recorded as checked with the reason.
+- **The invented member count is gone.** `MemberCount` reads the real row count
+  of `students` on the server; `/` carries `revalidate = 600`. It is no longer a
+  client component and ships no JS.
+- **Fixed a sidebar bug the owner caught mid-session off a phone screenshot.**
+  The step selector's active bar was drawing at **x = −2.5px** on every course's
+  `start-here` step, clipped by the drawer's own edge. Verified fixed and
+  verified not broken for nested steps, both by screenshot on a 430px viewport.
+
+**⚠️ THE STEP CONTENT IS NOT LIVE YET, AND THIS IS THE ONE THING TO DO NEXT.**
+The `.mjs` sources are the authored truth and they all validate
+(`seed-course --dry-run` passes on all three courses, 22/26/8 steps, every
+section with a check), but the reader reads `course-data.json`, which is
+generated out of Supabase. This container has no `.env.local` and
+`SUPABASE_SERVICE_ROLE_KEY` is not obtainable through the MCP, so the publish
+step could not run. **On a machine with the key:**
+
+```bash
+cd platform
+npm run seed:course "../Schools/ZCAS/Treasury Management/reader/course.mjs"
+npm run seed:course "../Schools/ZCAS/Corporate Finance/reader/course.mjs"
+npm run seed:course "../Schools/ZCAS/Strategic Management/reader/course.mjs"
+npm run gen:course
+```
+
+Hand-writing the publish as SQL through the Supabase MCP was considered and
+rejected: `seed-course.mjs` deletes a course's `nav_nodes` wholesale and rewrites
+them, and getting that wrong by hand goes straight at the table the live reader
+reads.
+
+**What went wrong on the way, worth keeping:**
+- **A numeric check is not a produced number, and the triage that assumed so
+  missed the two worst cases in the course.** Sections were shortlisted by
+  whether the check's options contained figures. `debtors-and-factoring` §1
+  scored 4 out of 4 and was the purest instance of the whole defect: it re-asked
+  the section's own worked case at the same figures, with the answer printed in
+  the paragraph above the question and again inside the winning option.
+  `interest-rate-hedging-instruments` §1 was the same. The real test is whether
+  the answer is visible on the same screen, and no scan can see that.
+- **I put 11 em dashes into TM myself** in the new `explain` text, against a
+  documented count of 0 (D-10). The seeder's own warning catches only some
+  fields; `em-dash-scan.mjs` caught the rest. All 11 rewritten per W-11's three
+  cases rather than swapped for commas. **Run the scan after writing, not just
+  the seeder.**
+- `npm run lint` and `npx tsc` both silently prove nothing in a fresh clone
+  until `npm install` has run — `node_modules` is absent and eslint simply
+  fails to resolve itself. Session 50's "build before pushing" lesson has a
+  precondition.
 
 ### Session 2026-08-07 (session 49 — five slots, and two capture bugs that fail silently)
 

@@ -45,6 +45,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Use APV when the project changes the company’s gearing. Use WACC when it does not.",
         },
       ],
@@ -228,6 +229,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "warning",
           text: "The shield is worth the tax on the interest, never the interest itself. Discounting the whole interest payment overstates the benefit by a factor of about three.",
         },
       ],

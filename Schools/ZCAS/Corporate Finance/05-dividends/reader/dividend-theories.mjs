@@ -39,6 +39,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "A dividend is not a reward the company hands out. It is capital leaving the business, and the question is always what it would have earned had it stayed.",
         },
       ],

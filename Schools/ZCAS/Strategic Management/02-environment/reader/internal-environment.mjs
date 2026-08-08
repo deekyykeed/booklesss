@@ -98,6 +98,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "warning",
           text: "A strength must be relevant to the strategy and superior to what rivals have. If every competitor has the same capability, it is not a strength — it is the minimum requirement for competing.",
         },
       ],

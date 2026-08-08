@@ -50,6 +50,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Matching removes the exposure by cancelling it. Smoothing accepts the exposure but limits how much of it any one movement can reach.",
         },
       ],

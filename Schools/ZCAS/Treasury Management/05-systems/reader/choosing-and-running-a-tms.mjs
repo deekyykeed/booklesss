@@ -114,6 +114,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Budget **30% for software and 70% for implementation**, meaning migration, integration, testing and training, and 18 to 24 months for a full rollout in a complex group.",
         },
       ],

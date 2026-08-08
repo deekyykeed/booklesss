@@ -31,9 +31,11 @@ import { MemberCount } from "@/components/landing/MemberCount";
  * footer here or a different verification URL. Raised with the owner before
  * this shipped; the decision was to ship it.
  *
- * STILL A SERVER COMPONENT. Nothing here needs the browser: the entrance is
- * CSS keyframes with per-element delays (see globals.css → "the front door's
- * entrance"), and the only client piece is ToApp, which renders nothing.
+ * STILL A SERVER COMPONENT. The entrance is CSS keyframes with per-element
+ * delays (see globals.css → "the front door's entrance"), so the page itself
+ * needs no JavaScript at all. Two children do: ToApp, which renders nothing,
+ * and TrustedFaces, whose row is driven by state. MemberCount used to be a
+ * third and is not any more — its number is read on the server now.
  * ------------------------------------------------------------------ */
 
 export const metadata: Metadata = {
@@ -43,6 +45,19 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   openGraph: openGraph({ title: SITE_NAME, description: SITE_DESCRIPTION, path: "/" }),
 };
+
+/* Ten minutes, and this is the ONLY thing on the page that needs a clock:
+ * MemberCount reads the row count of `students` on the server, so the page has
+ * to be rebuilt occasionally for that number to move. Everything else here is
+ * static markup and CSS.
+ *
+ * ISR rather than a per-visitor read, deliberately. `dynamic = "force-dynamic"`
+ * would put a database round trip in front of every single first impression, to
+ * refresh a number that changes a few times a week — and would take the front
+ * door down with Supabase if Supabase ever went down. With `revalidate`, a
+ * visitor is always served static HTML; at most one of them, once every ten
+ * minutes, pays for the refresh in the background. */
+export const revalidate = 600;
 
 /* The five faces above "Trusted by Students". Template stock photography that
  * came with the design, downscaled from the 3–6MP originals Framer was serving
@@ -371,8 +386,10 @@ export default function LandingPage() {
             </Link>
             {/* Under the button, in the same quiet register as the trust line
                 above the headline — the two pieces of social proof on this page
-                should sound like each other. See MemberCount for what this
-                number is and is not. */}
+                should sound like each other. The number is now the real row
+                count of `students`, and MemberCount draws NOTHING until that
+                count clears its floor, so this slot is empty on purpose today.
+                Read its header before putting anything back in it. */}
             <MemberCount />
           </div>
         </div>

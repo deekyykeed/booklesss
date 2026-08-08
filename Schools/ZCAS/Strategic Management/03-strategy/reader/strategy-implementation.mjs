@@ -28,6 +28,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Implementation is not a one-off event. Strategy without control drifts; control without strategy optimises for the wrong outcomes.",
         },
       ],
@@ -282,6 +283,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "warning",
           text: "Operational control asks \"are we doing things right?\". Strategic control asks \"are we still doing the right things?\". A strategy can be perfectly executed and still be wrong.",
         },
       ],

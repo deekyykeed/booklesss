@@ -21,6 +21,18 @@
  * The comparison at the end deliberately keeps the corrected cap-vs-FRA
  * figures: the source PDF's version compared a 6-month FRA against a cap on
  * inconsistent interest totals, so the two columns were not the same loan.
+ *
+ * 2026-08-08, paying D-13 (C-9) and D-12 (E-10). Two sections, the same fault.
+ * §1's check asked what an FRA nets to when rates fall to 6%, which is a row
+ * of the table directly above it. §2's asked where the 0.8% comes from, with
+ * the answer in the table's own note. Both now hand over a fresh case: an FRA
+ * settled in cash on ZMW 4m for six months (the ZMW 80,000 distractor is the
+ * annual-rate-on-a-half-year slip, which is the commonest error in the product
+ * because the quote is annual and the contract is not), and a swap whose
+ * surplus must be found as a difference between two differences. The 2.4%
+ * distractor adds the penalties instead of subtracting them, which implies the
+ * gain grows the more alike the two borrowers are; saying that out loud in the
+ * explain is cheaper than the arithmetic.
  */
 
 export default {
@@ -65,19 +77,24 @@ export default {
           type: "p",
           text: "Both rows end at 7.5%, and that is the entire product. **An FRA removes the uncertainty in both directions,** so you buy protection against the rise and [hand over the benefit of the fall](https://treasurytoday.com/risk-management/question-answered-hedging-strategies/) in the same signature. Whether handing that over is acceptable is the question the last section of this step answers.",
         },
+        {
+          type: "callout",
+          kind: "example",
+          text: "Settle one in cash. A **ZMW 4 million** loan resets in three months for a **six-month** period, and the treasurer buys an FRA at **9%**. By the reset date six-month rates have gone to **11%**. Work out which way the money moves and how much of it. Only one number in the question is not needed for the settlement, and finding it is half the exercise: **no principal changes hands, and the period is not a year.**",
+        },
       ],
       check: {
         question:
-          "A company buys an FRA at 7.5% and market rates then fall to 6%. What is its effective borrowing cost?",
+          "That FRA is fixed at 9% on ZMW 4 million for six months, and rates reach 11%. What is settled?",
         options: [
-          "7.5%, because it pays 6% on the loan plus a 1.5% settlement to the FRA counterparty",
-          "6%, because the FRA only pays out when rates rise",
-          "4.5%, because the fall and the FRA benefit stack",
-          "9%, because the FRA doubles the cost when rates fall",
+          "The company receives ZMW 40,000",
+          "The company receives ZMW 80,000",
+          "The company pays ZMW 40,000",
+          "The company receives ZMW 220,000",
         ],
         answer: 0,
         explain:
-          "An FRA is binding both ways. The company enjoys the cheaper market loan but must compensate the counterparty for the difference below the agreed rate, netting back to exactly 7.5%. Locked means locked: the certainty is what was bought, and the forgone upside is what it cost.",
+          "(11% − 9%) × 4,000,000 × ½ = **ZMW 40,000 received**, which offsets the extra 2% the loan now costs and leaves the borrower at 9%, exactly what it bought. ZMW 80,000 forgets that the period is six months, not a year, and it is the commonest slip in the whole product because the rates are quoted annually and the contract is not. Paying ZMW 40,000 is the right size in the wrong direction: a borrower is hurt by rates rising, so its hedge has to pay IN when they rise. ZMW 220,000 settles the whole 11% instead of the 2% difference, which would mean the principal had moved, and in an FRA it never does.",
       },
     },
 
@@ -122,21 +139,27 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "**A swap creates value when two parties' borrowing penalties differ between markets.** Each borrows where it is relatively cheapest, then swaps into the exposure it actually wanted.",
+        },
+        {
+          type: "callout",
+          kind: "example",
+          text: "Find the surplus in a different pair. Zambeef can borrow at **9.5% fixed** or **LIBOR + 0.4% floating**; a smaller processor can borrow at **11.3% fixed** or **LIBOR + 1.0% floating**. Zambeef wants floating and the processor wants fixed. Work out each of the processor's two penalties, then how much a swap has to share out. Do not start from which rate looks cheapest: **the gain is a difference between two differences,** and neither of them is a rate you can read straight off the table.",
         },
       ],
       check: {
         question:
-          "In the Zambia Sugar and Lafarge swap, where does the 0.8% of total savings come from?",
+          "In that pair, how much total saving is there to share, and how much does each side get on an even split?",
         options: [
-          "From comparative advantage, because Lafarge's penalty is 1% in fixed but only 0.2% in floating, and the swap lets each firm borrow in its relatively cheaper market",
-          "From Zambia Sugar's AAA rating subsidising Lafarge",
-          "From the banks waiving fees on swap transactions",
-          "It is an accounting illusion, because no real saving exists",
+          "1.2% in total, so 0.6% each",
+          "0.6% in total, so 0.3% each",
+          "1.8% in total, so 0.9% each",
+          "2.4% in total, so 1.2% each",
         ],
         answer: 0,
         explain:
-          "The absolute advantage all belongs to Zambia Sugar, but the sizes differ: 1.0% in fixed against 0.2% in floating. That 0.8% spread is real surplus, released when each firm borrows where its disadvantage is smallest, and it is split 0.4% each here.",
+          "The processor pays 11.3% − 9.5% = 1.8% more in the fixed market and only 1.0% − 0.4% = 0.6% more in the floating one. The surplus is the difference between those two penalties: 1.8% − 0.6% = **1.2%**, or 0.6% each split evenly. 0.6% is the smaller penalty mistaken for the gain; 1.8% is the larger one, which is the whole gap in the market each side is about to leave rather than the gain from trading; 2.4% adds the penalties instead of subtracting them, which would mean the surplus grows the more alike the two firms are, and it is exactly the other way round: where both penalties are equal there is nothing to swap for.",
       },
     },
 

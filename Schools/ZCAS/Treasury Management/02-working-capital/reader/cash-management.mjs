@@ -25,6 +25,21 @@
  * Engagement (D-1): all three sections opened on a definition. They now open on
  * the ZMW 80,000 a year an idle balance costs, on the two fees Baumol is
  * caught between, and on the assumption Miller-Orr exists to drop.
+ *
+ * 2026-08-08, paying D-13 (C-9) and D-12 (E-10). Both models were worked and
+ * neither was handed over. §2 asked which way the optimum moves when the fee
+ * doubles, which is answerable from the shape of the formula without ever
+ * having used it; §3 asked what the model instructs at a limit the table above
+ * had already printed. Each now hands over a second case and the check marks
+ * it. The Baumol figures (A 640,000, F 25, O 8%) are chosen so the two annual
+ * costs come out EQUAL at ZMW 800, which lets the reader verify the answer
+ * against the near-equality the section names as the model's signature. The
+ * Miller-Orr figures resolve to a whole cube root, so nothing is lost to
+ * rounding while the reader is learning where the levels sit. Distractors are
+ * the real slips: dropping the 2, reporting the average balance, dividing by 8
+ * rather than 0.08; and for Miller-Orr, never adding the lower limit back,
+ * halving the spread instead of thirding it, using 𝜎 where the formula wants 𝜎².
+ * The directional insight the old §2 check tested is kept, in the explain.
  */
 
 export default {
@@ -53,6 +68,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Hold cash only until the marginal value of liquidity equals the interest lost. **Everything in this step is machinery for finding that point.**",
         },
       ],
@@ -119,19 +135,24 @@ export default {
           type: "p",
           text: "**At the optimum the two costs almost meet:** ZMW 540 of fees against ZMW 550 of interest given up. That near-equality is the signature of the model working, and it is worth remembering as a check on your own arithmetic. Any larger balance is holding too much idle cash, and any smaller one is paying for too many withdrawals.",
         },
+        {
+          type: "callout",
+          kind: "example",
+          text: "Now do one. A Lusaka wholesaler pays out **ZMW 640,000** a year in a steady stream, each transfer out of the deposit account costs **ZMW 25**, and money left on deposit earns **8%**. Find the optimum transfer, then test it the way the paragraph above does: work out the year's fees and the year's forgone interest separately, and see whether they meet.",
+        },
       ],
       check: {
         question:
-          "In the Baumol model, the bank doubles its per-withdrawal fee. What happens to the optimum cash balance?",
+          "What is that wholesaler's optimum transfer: ZMW 640,000 disbursed a year, ZMW 25 per transfer, 8% on deposit?",
         options: [
-          "It rises, because with transfers costlier the firm makes fewer, larger withdrawals and holds more cash between them",
-          "It falls, because expensive transfers mean holding less cash",
-          "Nothing, because the optimum depends only on the interest rate",
-          "It exactly doubles",
+          "ZMW 20,000",
+          "ZMW 14,142",
+          "ZMW 10,000",
+          "ZMW 2,000",
         ],
         answer: 0,
         explain:
-          "F sits inside the square root, so doubling it raises C by about 41% rather than doubling it. Directionally, dearer transactions push the balance up for the same reason a dearer order cost raises an optimum order size: you economise on whatever got expensive.",
+          "C = √(2 × 25 × 640,000 ÷ 0.08) = √400,000,000 = ZMW 20,000. Check it: 640,000 ÷ 20,000 = 32 transfers at ZMW 25 = ZMW 800 of fees, against an average balance of 10,000 × 8% = ZMW 800 of interest forgone. They meet exactly, which is the signature. ZMW 14,142 drops the 2 from the numerator; ZMW 10,000 is the average balance, which is half the transfer rather than the transfer; ZMW 2,000 divides by 8 instead of 0.08. Note also what the formula's shape tells you: F sits inside the root, so if the bank doubled its fee to ZMW 50 the optimum would rise by about 41%, not double.",
       },
     },
 
@@ -187,21 +208,27 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Baumol assumes certainty and Miller-Orr does not. **Real cash flows wander, so Miller-Orr is the one to reach for whenever the flows in front of you are volatile.**",
+        },
+        {
+          type: "callout",
+          kind: "example",
+          text: "Set the levels for a different treasury before you read on. Management fixes the lower limit at **ZMW 2,000**, each securities transaction costs **ZMW 30**, daily cash flows have a standard deviation of **ZMW 600**, and the daily interest rate is **0.03%**. Work the spread, then the upper limit, then the return point. Watch two things: the formula wants the variance, not the standard deviation, and every level is measured up from the lower limit rather than from zero.",
         },
       ],
       check: {
         question:
-          "Under the lecture's Miller-Orr figures, the balance drifts up to ZMW 8,400. What does the model instruct?",
+          "In that treasury, the balance climbs to the upper limit. What is the return point it should be brought back to?",
         options: [
-          "Buy ZMW 4,933 of securities, returning the balance to the ZMW 3,467 return point",
-          "Sell securities to raise the balance to the upper limit",
-          "Do nothing until the balance reaches the lower limit",
-          "Buy securities down to the ZMW 1,000 lower limit",
+          "ZMW 5,000",
+          "ZMW 3,000",
+          "ZMW 6,500",
+          "ZMW 2,356",
         ],
         answer: 0,
         explain:
-          "Touching the upper limit triggers a purchase equal to the gap down to the return point, so 8,400 less 3,467 is 4,933. Going all the way down to the lower limit would only maximise the chance of an immediate opposite transaction. The return point sits a third of the way up because running out of cash is costlier than parking it.",
+          "Inside the root: 3 × 30 × 360,000 ÷ (4 × 0.0003) = 27,000,000,000, whose cube root is 3,000, so the spread Z = 3 × 3,000 = ZMW 9,000. Upper limit = 2,000 + 9,000 = ZMW 11,000, and the return point = 2,000 + 9,000 ÷ 3 = **ZMW 5,000**, so touching 11,000 means buying ZMW 6,000 of securities. ZMW 3,000 is Z ÷ 3 with the lower limit never added back; ZMW 6,500 puts the return point halfway up the spread instead of a third of the way, which is the whole asymmetry of the model (running out of cash costs more than parking it); ZMW 2,356 used the ZMW 600 standard deviation where the formula asks for the 360,000 variance.",
       },
     },
   ],

@@ -79,6 +79,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Classify by time horizon: **strategic = long-term policy, tactical = medium-term decisions, operational = daily execution.**",
         },
       ],
@@ -122,6 +123,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "warning",
           text: "A profit centre is not forbidden, and plenty of firms run one well. What Barings shows is that **the moment profit becomes the measure, the controls in the next section stop being paperwork.** They become the only thing standing between your company and a trader with a losing position to hide.",
         },
       ],

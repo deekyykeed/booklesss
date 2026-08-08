@@ -39,6 +39,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Profit is an opinion formed over a year. Cash is a fact on a Friday. Treasury owns the Friday.",
         },
         {
@@ -105,6 +106,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "Recover the list from the five/six split: **five functions that move the money, six that manage the people and institutions who let it move.** Eleven flat items will not survive pressure; the split will.",
         },
       ],

@@ -41,9 +41,35 @@
  * now (rule S-8). The first keeps the `intro-to-treasury` slug, so the URL that
  * was already linked to still opens the course. */
 /* Rule S-11: every course opens with a step about the COURSE rather than
- * about its first topic. It is a sibling of the lessons, not a member of one,
- * so it sits directly under the root node and is the first thing tapped.
- * Written 2026-08-07, paying debt D-15. */
+ * about its first topic. Written 2026-08-07, paying debt D-15.
+ *
+ * 2026-08-08 — IT NOW SITS INSIDE A "Getting started" FOLDER, and that is a
+ * deliberate exception to S-9's "do not create a folder for one step" (owner:
+ * "intro steps can simply be within a folder so that the bar isn't where it is
+ * right now"). It used to be a direct child of the root, which made it the only
+ * LEAF at the top level of any course, and the sidebar's active bar is drawn
+ * relative to the rail of the folder holding the current row. With no folder
+ * there is no rail, and the bar was placed at barLeftFor(-1) = -2.5px: a black
+ * sliver clipped by the drawer's own edge, on the first row of the first step
+ * every reader opens. The geometry is also fixed independently in Sidebar.tsx,
+ * so a top-level leaf no longer draws a stray bar wherever one occurs; this
+ * folder is the owner's preferred SHAPE, not the bug fix.
+ *
+ * `defaultOpen: true` matters and is not decoration. A folder wrapping one step
+ * costs a tap, and the tap would land on the very first row of the course; open
+ * by default, the step is visible exactly as before and only its indent changes.
+ *
+ * The folder slug carries a course suffix because grouping-node slugs are unique
+ * across EVERY course (see the note above), and the economics course already
+ * owns the bare `getting-started`. The label is shared with it on purpose: that
+ * course has had a "Getting started" group since it was built, so this is the
+ * existing convention rather than a new one.
+ *
+ * ⚠️ THIS MOVES THE INTRO STEP'S URL, the same way the 2026-08-03 grouping did:
+ *   /treasury-management/start-here-treasury
+ *   /treasury-management/getting-started-treasury/start-here-treasury
+ * The step `slug` is untouched. These three steps were written on 2026-08-07 and
+ * nothing in the repo links to their paths, so the cost is zero today. */
 import startHere from "../01-operations/reader/start-here.mjs";
 import introToTreasury from "../01-operations/reader/intro-to-treasury.mjs";
 import treasuryLevelsAndMandate from "../01-operations/reader/treasury-levels-and-mandate.mjs";
@@ -91,7 +117,12 @@ export default {
       label: "Treasury Management",
       defaultOpen: true,
       children: [
-        startHere,
+        {
+          slug: "getting-started-treasury",
+          label: "Getting started",
+          defaultOpen: true,
+          children: [startHere],
+        },
         /* Three separate frames — what treasury is, how its work divides, how it
          * is governed. No two of them pair, so this lesson stays flat (S-9: do
          * not create a folder for one step). */

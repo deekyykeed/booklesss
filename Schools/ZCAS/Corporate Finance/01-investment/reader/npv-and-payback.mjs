@@ -103,6 +103,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "NPV is the amount by which a project increases the value of the business, measured today.",
         },
       ],
@@ -264,6 +265,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "key",
           text: "NPV decides whether a project is worth doing. Payback decides whether the company can afford to wait.",
         },
       ],

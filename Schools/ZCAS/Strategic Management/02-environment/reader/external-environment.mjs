@@ -98,6 +98,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "warning",
           text: "PESTEL is a thinking tool, not a checklist. The question is never \"what are the factors?\" but \"which factors are most material to this company in this context, and how do they interact?\"",
         },
       ],

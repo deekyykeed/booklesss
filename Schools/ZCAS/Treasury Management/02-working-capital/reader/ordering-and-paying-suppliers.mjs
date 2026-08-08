@@ -15,6 +15,14 @@
  * know the follow-on divisions as well as the square root." Exam framing was
  * the default voice here rather than the point; it now says why the three
  * numbers matter to whoever is placing the orders.
+ *
+ * 2026-08-08, paying D-13 (C-9) and D-12 (E-10). §1 worked an EOQ and then
+ * asked a reasoning question about order size, so a reader could pass it
+ * without being able to compute one. It now hands over a second EOQ, stated in
+ * MONTHLY demand against an annual holding cost, because mismatched periods is
+ * the slip the formula invites and the lecture's own figures also carry it.
+ * 231 units is that slip, 566 drops the 2, and 60 is the order frequency
+ * mistaken for the order size. Figures resolve to exactly 800 units.
  */
 
 export default {
@@ -67,19 +75,24 @@ export default {
           type: "p",
           text: "A supplier who needs twenty days' notice has made this order size impossible whatever the arithmetic says. Finding that out through a [[stock-out|Running out of an input and having to stop production, or turning away a sale you could have made. It is the cost no inventory model carries, because it lands in operations and in the customer relationship instead.]] is the expensive way to learn it, and **the model will never warn you, because the cost of running out is the one cost it does not contain.**",
         },
+        {
+          type: "callout",
+          kind: "example",
+          text: "Size one yourself. A Ndola bottler uses **4,000 units a month** of a packaging line input, each order costs **ZMW 40** to place, and holding a unit for a year costs **ZMW 6**. Work the order quantity, then the orders a year, then the days between them. The first move is the one the formula does not prompt you to make: **a and h have to be measured over the same period.**",
+        },
       ],
       check: {
         question:
-          "XYZ's supplier offers free delivery on orders of 2,000 units, and a manager suggests ordering quarterly to \"save on ordering costs\". What does the EOQ logic say?",
+          "What is that bottler's economic order quantity: 4,000 units a month, ZMW 40 per order, ZMW 6 to hold a unit for a year?",
         options: [
-          "Larger orders cut ordering costs but raise holding costs, so moving from 500 to 2,000 units only pays if the savings beat the extra holding cost",
-          "Order the 2,000, because fewer orders always means lower total cost",
-          "Keep ordering 500, because EOQ never changes whatever the terms",
-          "Order monthly regardless, since demand is monthly",
+          "800 units",
+          "566 units",
+          "231 units",
+          "60 units",
         ],
         answer: 0,
         explain:
-          "EOQ minimises the sum of the two costs, so any departure from it has to be justified against both. Free delivery effectively lowers the ordering cost, which does move the optimum, but quadrupling the order size also quadruples the average stock held. Rerun the trade-off rather than assuming either cost dominates.",
+          "Annual demand is 4,000 × 12 = 48,000 units, so EOQ = √(2 × 48,000 × 40 ÷ 6) = √640,000 = **800 units**, or 60 orders a year, one about every 6 days. Which is also the check on it: 6 days is inside most suppliers' lead times, so this answer survives contact with the real supplier where the lecture's 15-day one nearly did not. 566 units drops the 2 from the numerator. 231 units puts the monthly 4,000 against an annual holding cost, which is the slip the formula invites because it never says over what period a is measured. 60 is the number of orders, not the size of one.",
       },
     },
 
@@ -107,6 +120,7 @@ export default {
         },
         {
           type: "callout",
+          kind: "warning",
           text: "Stretch payables to shorten the cycle. **The limit is the supplier's survival, not the point at which they stop chasing you,** and the second thing you are spending is their [[goodwill|What a supplier is willing to do for you that the contract does not require: the rush order, the last unit, the quiet extension. It is unpriced right up to the day you need it and it is gone.]].",
         },
       ],
