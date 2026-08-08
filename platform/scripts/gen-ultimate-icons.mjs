@@ -49,6 +49,33 @@ const ICONS = [
   "smiley-happy", // got — "yes, that landed"
   "smiley-disapointed", // almost — flat mouth, the closest thing to a neutral
   "smiley-sad-1", // not — "lost me"
+
+  /* THE FLAG BECOMES WHAT WAS FLAGGED (owner, 2026-08-08: "find icons to
+     replace the flag when I tap something, from the same set"). One per row of
+     the five-reason menu in lib/step-notes, so a reader scrolling back through a
+     step sees WHICH verdict they left without opening anything. The owner asked
+     for this on 2026-08-07 and it was lost when the flag moved to this family;
+     these five are what brings it back.
+
+     Chosen to read as one row: every one is a single object, no scene, and no
+     two share a silhouette. The set forced two substitutions worth recording,
+     because the obvious pick does not exist in it:
+       · "Clear" wanted a lightbulb. There is no plain bulb — `idea-strategy` is
+         a bulb over three shapes on a stand, which is a diagram at 20px, and
+         `office-desk-lamp` reads as furniture. A green tick says "this worked"
+         at least as well and survives being small.
+       · "Something looks wrong" wanted a warning triangle. There is no plain
+         one either: `monitor-warning` and `car-dashboard-warning` are both
+         scenes with a triangle in them. A red X in a circle is unambiguous and
+         is the only red mark in the row.
+     Two blues sit beside each other (the question bubble and the clock) and that
+     is fine — a speech bubble and a clock face are nothing like each other in
+     outline, which is what separates marks at this size, not hue. */
+  "check", // clear — green tick
+  "question-help-message", // hard to follow — a question in a bubble
+  "time-clock-circle", // too long — a clock
+  "task-list-text-1", // needs an example — a clipboard, as the MynaUI one was
+  "delete-2", // something looks wrong — a red cross
 ];
 
 /* The colour a rest-state fill is swapped to.

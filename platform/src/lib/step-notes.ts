@@ -22,6 +22,7 @@
  */
 
 import { type MynaIconName } from "@/components/icons/myna";
+import { type UltimateIconName } from "@/components/icons/ultimate";
 
 export type NoteId = "hard" | "long" | "example" | "wrong" | "clear";
 
@@ -40,17 +41,32 @@ export type NoteId = "hard" | "long" | "example" | "wrong" | "clear";
  * that spelling would let a missing twin through to render nothing at all.
  * Named separately, `MynaIconName` refuses at build time any pair the generator
  * has not actually emitted. */
+/* `mark` is the THIRD field and it is a different job from the other two.
+ * `icon`/`iconOn` are MynaUI, drawn on the menu's own rows, where a monochrome
+ * outline beside a line of text is correct — a coloured fill in a list of five
+ * would sit as heavy as the Duotone marks that were pulled out of this row on
+ * 2026-08-02. `mark` is Streamline Ultimate Colors and is drawn in ONE place:
+ * the collapsed flag, once a reason has been given (owner, 2026-08-08: "find
+ * icons to replace the flag when I tap something, from the same set").
+ *
+ * So the same reason is a clipboard in both families, and that is the point —
+ * the menu row and the flag it collapses to have to be recognisably the same
+ * verdict. Adding a reason means adding all three, and the two type names are
+ * what makes a half-done addition a build error rather than a blank space.
+ * The picks, and the two the free set could not supply, are argued in
+ * scripts/gen-ultimate-icons.mjs. */
 export const NOTES: {
   id: NoteId;
   label: string;
   icon: MynaIconName;
   iconOn: MynaIconName;
+  mark: UltimateIconName;
 }[] = [
-  { id: "clear", label: "Clear", icon: "lamp", iconOn: "lamp-solid" },
-  { id: "hard", label: "Hard to follow", icon: "question-circle", iconOn: "question-circle-solid" },
-  { id: "long", label: "Too long", icon: "clock-1", iconOn: "clock-1-solid" },
-  { id: "example", label: "Needs an example", icon: "clipboard", iconOn: "clipboard-solid" },
-  { id: "wrong", label: "Something looks wrong", icon: "danger-triangle", iconOn: "danger-triangle-solid" },
+  { id: "clear", label: "Clear", icon: "lamp", iconOn: "lamp-solid", mark: "check" },
+  { id: "hard", label: "Hard to follow", icon: "question-circle", iconOn: "question-circle-solid", mark: "question-help-message" },
+  { id: "long", label: "Too long", icon: "clock-1", iconOn: "clock-1-solid", mark: "time-clock-circle" },
+  { id: "example", label: "Needs an example", icon: "clipboard", iconOn: "clipboard-solid", mark: "task-list-text-1" },
+  { id: "wrong", label: "Something looks wrong", icon: "danger-triangle", iconOn: "danger-triangle-solid", mark: "delete-2" },
 ];
 
 const KEY = "booklesss:step-notes:v1";

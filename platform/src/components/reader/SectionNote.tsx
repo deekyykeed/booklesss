@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { MynaIcon } from "@/components/icons/myna";
 import { UltimateIcon } from "@/components/icons/ultimate";
+import { hapticConfirm, hapticTap } from "@/lib/haptics";
 import { needsAccount } from "@/lib/account";
 import { requireAccount } from "@/lib/onboarding";
 import { NOTES, noteFor, setNote, subscribeNotes, type NoteId } from "@/lib/step-notes";
@@ -95,6 +96,7 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
     const next = chosen === id ? null : id;
     /* One write, and the store tells everyone — including this component,
        which no longer keeps a copy to update alongside it. */
+    hapticConfirm(); // the verdict landed — see lib/haptics for the iOS caveat
     setNote(lessonId, sectionId, next);
     setOpen(false);
   };
@@ -124,6 +126,9 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
             requireAccount("note");
             return;
           }
+          /* The lighter tick: opening the menu is a press, not an answer, so it
+             is deliberately not the same buzz the verdict itself gets. */
+          hapticTap();
           setOpen((o) => !o);
         }}
         aria-expanded={open}
@@ -149,21 +154,24 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
             that read?") where a flag makes a claim ("something is wrong here"),
             and the second is what a student actually wants to do mid-read.
             Solid once flagged, like every other mark in this row. */}
-        {/* Streamline Ultimate Colors as of 2026-08-08, the same family as the
-            three faces in the other pod, so the row's four marks come from one
-            set instead of two.
-            ⚠️ AND THAT COSTS SOMETHING WORTH RECORDING: the flag no longer
-            becomes the mark of whatever was flagged. That behaviour was the
-            owner's own idea a day earlier ("the flag to indicate it's been
-            flagged will then change to that icon of the thing they just
-            flagged") and it needs the five menu marks to exist in this family
-            too — they are MynaUI, and Ultimate Colors has no match for several
-            of them. So the flag stays a flag and colours in when a reason has
-            been given, which keeps the "answered" signal without the swap.
-            Restoring the swap means finding five Ultimate Colors marks for the
-            menu, not reverting this line.
-            20px, in step with the three faces. */}
-        <UltimateIcon name="flag" size={20} muted={!chosen} />
+        {/* THE FLAG BECOMES WHAT WAS FLAGGED — restored 2026-08-08 (owner: "find
+            icons to replace the flag when I tap something, from the same set").
+            It was the owner's idea on 2026-08-07, lost for a few hours when this
+            button moved from MynaUI to Streamline Ultimate Colors, and back now
+            that `NOTES` carries a `mark` in this family for each of the five
+            reasons. A tick says an answer was given; the reason's own mark says
+            WHICH, so a reader scrolling back through a step sees which sections
+            they called confusing and which they called too long without opening
+            anything.
+
+            GREY UNTIL ASKED, COLOURED ONCE ANSWERED, and never a grey plate
+            behind it (owner, same message). `muted` is the rest state drawn by
+            the generator: full black line work, no fill. So an unflagged section
+            shows a line-drawn flag, and a flagged one shows its verdict in full
+            colour — the only colour in this pod, which is what makes it
+            findable while scrolling.
+            20px, in step with the three faces in the other pod. */}
+        <UltimateIcon name={active ? active.mark : "flag"} size={20} muted={!chosen} />
         <span className="grasp-label">{label ?? "How did that read?"}</span>
       </button>
 
