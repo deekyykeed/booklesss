@@ -6,10 +6,9 @@ import { gateStepLink } from "@/lib/account";
 import { enrolledCourses } from "@/lib/courses";
 import { labelFor, pathForId } from "@/lib/course";
 import { useIdentity } from "@/lib/identity";
-import { isStudyDay, studyHistory, useProgress, type StudyDay } from "@/lib/progress";
+import { isStudyDay, studyHistory, useProgress } from "@/lib/progress";
 import { overallPerformance, overallScoreHistory } from "@/lib/performance";
 import { ActionBar } from "@/components/ui/ActionBar";
-import { MynaIcon } from "@/components/icons/myna";
 import { SolarIcon } from "@/components/icons/solar";
 import { CoursesSection } from "./CoursesSection";
 import { pickGreeting, rememberGreeting, renderGreeting, type Greeting } from "./greeting";
@@ -282,8 +281,7 @@ export function HomeView({
      still travel as a set. */
   const climb = {
     score: useCountUp(perf?.score ?? 0, hydrated),
-    // No streak entry any more — that tile draws the week as seven squares
-    // (owner, 2026-08-08), and a grid has nothing to count up.
+    streak: useCountUp(streak, hydrated),
     coverage: useCountUp(coverage, hydrated),
     secs: useCountUp(charts.secsWeek, hydrated),
   };
@@ -380,26 +378,25 @@ export function HomeView({
             }
           />
           {/* 2. Streak — the purest reward for turning up: it moves on effort
-              alone and never touches whether anything was understood.
+              alone and never touches whether anything was understood. The chart
+              is a rolling count of the days you showed up.
 
-              THE WEEK, NOT A NUMBER (owner, 2026-08-08: "fit all these 7 dots
-              or squares into the streak stat card replacing the number… a
-              series of 3 by 3 and then the extra one can go in a 3rd row, then
-              a tick for the day actually studied"). Seven squares, Monday
-              first, planned days tinted from the goal's own weekdays — kept
-              vs broken is legible in a way a rolling count never was. The
-              counts move to the footer: the running streak leads it, the best
-              keeps its place beside. */}
+              A week-of-squares grid replaced the number here for a few hours
+              on 2026-08-08 and the owner reverted it same day ("the streak
+              card can go back to what it originally was") — it also stretched
+              every tile in the row, which is why Stat's height is now pinned.
+              Don't re-attempt it inside this tile. */}
           <Stat
             hydrated={hydrated}
             label="Streak"
-            body={<WeekSquares days={days} planned={identity?.target?.weekdays} tone={TONE.streak} />}
+            value={`${Math.round(climb.streak)}`}
+            unit={streak === 1 ? "day" : "days"}
             tone={TONE.streak}
             icon={<SolarIcon name="bolt-bold-duotone" size={20} className="shrink-0" />}
             series={charts.streak}
             foot={
               bestStreak > 0
-                ? { lead: `${streak}d streak`, tail: `${bestStreak} best`, good: streak > 0 }
+                ? { lead: `${bestStreak} best`, tail: "days so far", good: streak > 0 }
                 : { lead: "None", tail: "studied yet", good: false }
             }
           />
@@ -435,25 +432,30 @@ export function HomeView({
             hydrated={hydrated}
             label="Time this week"
             value={charts.secsWeek > 0 ? fmtTime(climb.secs) : "–"}
-            /* "of 5h" — the goal THEY set at onboarding, shown at last (owner,
-               2026-08-08). Only when they set one: lib/performance's fallback
-               target stays internal, because printing it would put a promise
-               in their mouth. And only once there is time to measure against
-               it — "– of 5h" would be the goal scolding an empty week. */
-            unit={goalMins > 0 && charts.secsWeek > 0 ? `of ${fmtTime(goalMins * 60)}` : undefined}
             tone={TONE.time}
             icon={<SolarIcon name="clock-circle-bold-duotone" size={20} className="shrink-0" />}
             series={charts.time}
+            /* THE FOOTER IS THE GOAL (owner, 2026-08-08: it read "+56m first
+               week" — "just say of 7h 30m or whatever the target was"). The
+               goal they set at onboarding, on the bottom line, lit in the
+               tile's hue the week it is actually met. It first rode beside
+               the number as a unit; the owner moved it down here the same
+               day. Only when they set one — lib/performance's fallback
+               target stays internal, because printing it would put a promise
+               in their mouth. The vs-last-week delta survives just for the
+               goalless. */
             foot={
-              minPrev > 0
-                ? {
-                    lead: `${minWeek >= minPrev ? "+" : ""}${minWeek - minPrev}m`,
-                    tail: "vs last week",
-                    good: minWeek >= minPrev && minWeek > 0,
-                  }
-                : minWeek > 0
-                  ? { lead: `+${minWeek}m`, tail: "first week", good: true }
-                  : { lead: "None", tail: "logged yet", good: false }
+              goalMins > 0
+                ? { lead: `of ${fmtTime(goalMins * 60)}`, tail: "", good: minWeek >= goalMins }
+                : minPrev > 0
+                  ? {
+                      lead: `${minWeek >= minPrev ? "+" : ""}${minWeek - minPrev}m`,
+                      tail: "vs last week",
+                      good: minWeek >= minPrev && minWeek > 0,
+                    }
+                  : minWeek > 0
+                    ? { lead: `+${minWeek}m`, tail: "first week", good: true }
+                    : { lead: "None", tail: "logged yet", good: false }
             }
           />
         </div>
@@ -573,7 +575,6 @@ function Stat({
   label,
   value,
   unit,
-  body,
   tone,
   icon,
   series,
@@ -583,11 +584,8 @@ function Stat({
    *  the tile shows a quiet dash rather than a zero pretending to be one. */
   hydrated: boolean;
   label: string;
-  value?: string;
+  value: string;
   unit?: string;
-  /** Takes the figure's place when the tile draws something that isn't a
-   *  number — the streak tile's week of squares. Wins over `value`. */
-  body?: React.ReactNode;
   /** The stat's hue — carries the mark and the sparkline. */
   tone: string;
   icon: React.ReactNode;
@@ -599,7 +597,13 @@ function Stat({
   foot: { lead: string; tail: string; good: boolean };
 }) {
   return (
-    <div className="dash-stat squircle">
+    /* FIXED HEIGHT (owner, 2026-08-08: "take them back to what they were and
+       make them fixed"). 130px is the tile's natural height — 20 label row +
+       28 + 30 value + 8 + 15 foot + 26 padding + 2 border — pinned so no
+       tile's content can ever stretch the whole row again, which is what the
+       short-lived week-squares experiment did. Anything new a tile wants to
+       draw has to fit THIS box, not grow it. */
+    <div className="dash-stat squircle h-[130px]">
       <Spark series={series} tone={tone} />
       {/* Everything readable sits above the backdrop. */}
       <div className="relative">
@@ -610,23 +614,17 @@ function Stat({
           <span className="shrink-0" style={{ color: tone }}>{icon}</span>
         </div>
         {/* mt-7/mt-2: the number sits low, nearer its footer than the title —
-            the air lives between title and figure, not inside the figures.
-            A `body` sits higher (mt-4): three rows of squares are taller than
-            one line of digits, and the tiles share a grid row's height. */}
-        {hydrated && body ? (
-          <div className="mt-4">{body}</div>
-        ) : (
-          <p className="mt-7 flex items-baseline gap-1.5">
-            {hydrated ? (
-              <>
-                <span className="dash-stat-value">{value}</span>
-                {unit && <span className="dash-stat-unit">{unit}</span>}
-              </>
-            ) : (
-              <span className="dash-stat-value" style={{ color: "var(--color-placeholder)" }}>–</span>
-            )}
-          </p>
-        )}
+            the air lives between title and figure, not inside the figures. */}
+        <p className="mt-7 flex items-baseline gap-1.5">
+          {hydrated ? (
+            <>
+              <span className="dash-stat-value">{value}</span>
+              {unit && <span className="dash-stat-unit">{unit}</span>}
+            </>
+          ) : (
+            <span className="dash-stat-value" style={{ color: "var(--color-placeholder)" }}>–</span>
+          )}
+        </p>
         {/* The footer keeps its line even while loading, so the tile doesn't
             change height when the numbers arrive. */}
         <p className="dash-stat-foot">
@@ -647,86 +645,6 @@ function Stat({
           )}
         </p>
       </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ *
- * The streak tile's week: seven squares in a three-column grid — three,
- * three, and the seventh on its own row (owner, 2026-08-08, spelling out the
- * layout). Monday first, matching how `identity.target.weekdays` is stored
- * (0 = Monday, the onboarding day-picker's convention).
- *
- * Three states, all measured, none invented:
- *   studied   — filled in the tile's hue with a tick ("a tick for the day
- *               actually studied"). isStudyDay's own bar, so a square never
- *               claims a day the streak wouldn't count.
- *   planned   — tinted: a day they promised (target.weekdays) that hasn't
- *               happened — still ahead, or missed. The tint against the fill
- *               is the plan against the week, which is the whole point of
- *               drawing days instead of a number.
- *   neither   — a quiet grey letter.
- *
- * No goal set, no weekdays — every unstudied square is the quiet kind, and
- * the grid still reads: which days this week were study days.
- * ------------------------------------------------------------------ */
-
-const DAY_LETTERS = ["M", "T", "W", "T", "F", "S", "S"] as const;
-
-/** This calendar week's dates, Monday first, in the store's own local
- *  yyyy-mm-dd form — progress keys days locally on purpose (a streak is
- *  about the reader's own days), so UTC here would misfile midnight. */
-function weekDatesLocal(): string[] {
-  const p = (n: number) => String(n).padStart(2, "0");
-  const monday = new Date();
-  monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
-  return Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(monday);
-    d.setDate(monday.getDate() + i);
-    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
-  });
-}
-
-function WeekSquares({
-  days,
-  planned,
-  tone,
-}: {
-  days: Record<string, StudyDay>;
-  /** The weekdays they promised at onboarding (0 = Monday), if they did. */
-  planned?: number[];
-  tone: string;
-}) {
-  const dates = weekDatesLocal();
-  const studiedCount = dates.filter((d) => isStudyDay(days[d])).length;
-  return (
-    <div
-      className="grid w-fit grid-cols-3 gap-1"
-      role="img"
-      aria-label={`${studiedCount} of 7 days studied this week`}
-    >
-      {dates.map((date, i) => {
-        const studied = isStudyDay(days[date]);
-        const isPlanned = planned?.includes(i) ?? false;
-        return (
-          <span
-            key={date}
-            className="flex h-4 w-4 items-center justify-center rounded-[5px] text-[8.5px] font-semibold"
-            style={
-              studied
-                ? { backgroundColor: tone, color: "#fff" }
-                : isPlanned
-                  ? {
-                      backgroundColor: `color-mix(in oklab, ${tone} 14%, transparent)`,
-                      color: `color-mix(in oklab, ${tone} 70%, #000)`,
-                    }
-                  : { backgroundColor: "rgba(0, 0, 0, 0.05)", color: "var(--color-placeholder)" }
-            }
-          >
-            {studied ? <MynaIcon name="check" size={10} strokeWidth={2.4} /> : DAY_LETTERS[i]}
-          </span>
-        );
-      })}
     </div>
   );
 }
