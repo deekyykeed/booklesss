@@ -138,6 +138,32 @@ their own UNZA material. Linear unreachable for the TENTH session.)**
       hold the textbooks and HSS scans over GitHub's 100MB limit. Active
       lesson folders carry everything topic-specific; `lesson.md` files note
       what stayed behind and where.
+- [ ] ⚠️ **`pipeline_subjects.course_id` MUST BE SCOPED PER UNIVERSITY BEFORE
+      ANY UNZA COURSE GOES LIVE.** It links a built course to a subject row
+      that several universities share, so setting it would show a UNZA-written
+      course to a ZCAS student as though it were theirs. Null on every row
+      today, so nothing is broken yet. Written into the
+      `unza_ba_economics_year_one` migration so it cannot get lost.
+- [ ] ⚠️ **Macro lessons 3 (Unemployment) and 7 (External Sector) have NO
+      source.** They were planned as "taught from the course modules", and
+      those modules turned out to be University of Lusaka material, now
+      deleted. Get the lecturer's slides before writing either; do not fill
+      from general knowledge (**C-2**).
+- [ ] **The UNZA programme scrape is ~30 short: 141 published, 111 in the
+      pipeline.** Re-run `tools/scrape_unza_programmes.py` and reload before
+      treating the picker's list as the full offering.
+- [ ] **Only BA Economics Year 1 has a timetable.** The same load repeated per
+      programme would give Demography, Development Studies, Sociology and the
+      rest one; `Schools/UNZA/_programme-map.md` is the source. Years 2 to 4
+      of Economics need a department email, students reporting, or the
+      third-party leads (ECN 2215, ECN 2311, ECN 3115).
+- [ ] **`programmeLabel` strips "Bachelor of", so the picker reads "Arts in
+      Economics".** Deliberate when the list was 13 curated rows; at 111 with
+      a search box it reads oddly and the owner hit it live. Owner's call
+      whether to restore the full name.
+- [ ] **The onboarding install step is STILL unverified** (carried from 52),
+      and so is the wrong-password branch of the auth box. The owner signed up
+      live this session, which covers the new-email branch only.
 
 **From session 52 (2026-08-07 into 08, the dashboard-and-front-door day — one
 auth box, install in onboarding, three course tabs. Numbered 52 because sessions
@@ -1191,6 +1217,39 @@ cp1252 stdout dies on ligature characters (U+FB01); wrap stdout in a UTF-8
 TextIOWrapper before any fitz text hits print. `course-data.json` is a LIST
 at top level, not a dict — a walker that assumes `data.items()` silently
 returns nothing.
+
+**Second half of the same session — onboarding, off the owner signing up live.**
+The owner tested as a UNZA Economics student and every step of it found
+something. **Programmes:** `gen-programmes.mjs` read `onboarding_curriculum`,
+which inner-joins the course table, so a programme with no scraped curriculum
+produced no rows and vanished from the picker — 98 of UNZA's 111 and 106 of
+Mulungushi's 107. A second narrow view, `onboarding_programmes`, lists them all
+and selects no code, body or faculty; 55 programmes became 271. **Year:** the
+year question gated on scraped years, which would have skipped it for the 216
+programmes that have none. **Search:** 13 rows became 111, so the picker gained
+a filter matching words in any order, restyled to the underline-and-mark the
+other fields wear. **Curriculum:** UNZA BA (Economics) Year 1 typed in by hand,
+six courses. **And the fix that broke something:** loading one year made the
+year question offer only Year 1, so a third-year could not state their year;
+a curriculum naming fewer than three years is now treated as partial.
+
+**What Worked (second half):** querying the view after every migration rather
+than trusting its success message — that is what caught the CTE bug below.
+Reading `Field.tsx` before styling the search box, which is where the owner's
+"a blank you fill, not a box" decision was already written down. And checking
+the deployed commit against Vercel when the owner reported missing courses,
+which ruled out a stale bundle in one call.
+
+**Dead Ends (second half, do not retry):** **a data-modifying CTE's rows are
+invisible to a sibling CTE reading the same table** — the migration created
+three subject rows and resolved ids in one statement, so three of six courses
+were silently left unlinked and it reported success. Split the write from the
+read. `pipeline_subjects.status` is a checked enum of `live`/`on_disk`/`todo`,
+not free text. And the whole online hunt for a UNZA course list is closed:
+unza.zm says "Coming soon" on every programme page, its DSpace repository holds
+past papers bundled per school per year whose extracted-text file is 121 bytes
+of nothing, and a promising Scribd "ECN & BBA list" is North South University.
+Full write-up in `Schools/UNZA/_programme-map.md`.
 
 ### Session 2026-08-07 into 08 (session 52 — one auth box, install in onboarding, and the dashboard's courses become three tabs)
 

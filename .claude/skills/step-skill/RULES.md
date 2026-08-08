@@ -632,6 +632,21 @@ text, so a mark written into one shows its own syntax.
     source for something the step needs, say so to the owner rather than
     filling it from general knowledge. General knowledge is not wrong; it is
     just not what the paper is set from.
+  - **⚠️ CHECK THE TITLE PAGE, NOT THE FILENAME.** *(added 2026-08-09)* A
+    course folder is a pile of things students shared, and some of them belong
+    to a **different institution entirely**. Two files sitting in a course's
+    own folder under the exactly-right names — one of them literally
+    `<SUBJECT> MODULE.pdf` — were another university's module for another
+    course code, and the plan had routed two whole lessons through them before
+    anyone opened the first page. The same day, a search for a course list
+    returned a document whose title named the right two subjects and whose
+    first page named a university on another continent.
+    A source is this course's only if its own first page says so. Open it,
+    read the header, and **say in the step's header comment which institution
+    each source came from** (**C-2** already asks you to name the files; name
+    where they are from too). Two cheap tells: the same file under two names
+    is usually a re-download of something generic, and a module that never
+    mentions the course's own code is not the course's module.
 - **C-3** Where the lecture works a numeric example, the step works one too —
   with the arithmetic visible, so the reader can follow each line rather than
   trusting the answer.
