@@ -80,6 +80,41 @@ course. It is still sitting in `_pipeline/`.
 
 ---
 
+## Searched online 2026-08-09, and what it settled
+
+The question was whether a reliable course list exists anywhere public. It does
+not, and the search is worth recording so nobody repeats it.
+
+| Source | Result |
+|---|---|
+| `unza.zm` programme pages | **"Coming soon"** on the BA Economics page itself, checked directly. The page also has a content bug: its intro text describes Bachelor of Social Work |
+| `unza.zm/academics/undergraduate/programmes` | **141 programmes**, no course codes anywhere. Links to per-programme pages, which are the "Coming soon" ones |
+| **`dspace.unza.zm`** (UNZA's own repository) | Past papers are real and organised by year, but bundled **per school per year**, not per course. Their DSpace TEXT bitstream, which exists for full-text search, extracts to **121 bytes of nothing** — the uploads are image scans, exactly like the copies on disk. OCR or nothing |
+| Studocu / CourseHero | Name genuine UNZA codes: **ECN 2215** Intermediate Macroeconomics, **ECN 2311** Mathematics for Economics 1, **ECN 3115** Consumer Theory and Demand Functions. Student-uploaded, so leads rather than authority |
+| A Scribd "ECN & BBA list of courses & prerequisites" | **North South University**, not UNZA. The same trap as the University of Lusaka module found in the Macroeconomics sources: a plausible title, the wrong institution |
+
+**⚠️ Our programme scrape is incomplete: 141 published, 111 in the pipeline.**
+About thirty programmes are missing. `tools/scrape_unza_programmes.py` should be
+re-run and reloaded before anyone treats the picker's list as the full offering.
+
+### The structural fact that changes how Year 1 is modelled
+
+Found twice, independently: **UNZA does not admit anyone into Economics in first
+year.** Students enter the School of Humanities under the non-quota programme,
+and those who want Economics must take **microeconomics, macroeconomics and
+mathematics for social sciences** in first year as the prerequisites for
+admission into Economics in **second** year.
+
+Two things follow:
+
+1. **It confirms the Year 1 list loaded into the pipeline** — ECN 1115, ECN 1215
+   and MAT 1110 are exactly those prerequisites, arrived at independently from
+   the course material.
+2. **"BA Economics, Year 1" is a statement of intent, not of enrolment.** The
+   student is in the common first year hoping to qualify. That is the right thing
+   for onboarding to record, because it is what they would say about themselves,
+   but nobody should read the row as "enrolled in Economics".
+
 ## What this unblocks
 
 Onboarding can only offer a Year 1 timetable for a programme the pipeline has
