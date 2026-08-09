@@ -70,10 +70,17 @@ import { SectionNote } from "./SectionNote";
  * see the mapping below for where a fourth value would go.
  *   love → got     hate → not     save for later → almost
  *
- * ORDER: the positive answer is the outermost mark on the right (owner,
- * 2026-08-02, when there were two), because it puts the answer most readers
- * reach for under the thumb already there. "Save for later" sits in the middle
- * on the same logic that put "almost" there — it is the answer that is neither.
+ * ORDER: Save first, APART, then Hate and Love as a pair (owner, 2026-08-09:
+ * "put the save icon a little distance from the other two — so its save,
+ * distance, then the others"). The spacing draws the real grammar of the row:
+ * Hate and Love are two ends of one verdict, Save is a different kind of answer
+ * — a decision about later, not an opinion about the writing — and sitting it
+ * in the middle of the scale made it read as the scale's midpoint, which it is
+ * not. The 2026-08-02 rule survives untouched: Love, the answer most readers
+ * reach for, is still the outermost mark on the right, under the thumb that is
+ * already there. The extra distance is a margin on the Save button itself (see
+ * the map below), ON TOP of the cluster's 22px gap, so tuning the cluster gap
+ * never collapses the separation.
  *
  *   2026-08-09  Lordicon doodles again, and this time they stay put
  *
@@ -159,10 +166,19 @@ const ANSWERS: {
   /* ONE WORD EACH (owner, 2026-08-09: "buy only one word for each"). "Save for
      later" was the odd one out at three words and roughly twice the width of
      its neighbours, which made the middle answer look like the important one.
-     The caption names the mark; the mark carries the meaning. */
-  { id: "not", label: "Hate", icon: "mood-sad", lord: "grasp-not", state: "hover-pinch" },
-  { id: "almost", label: "Save", icon: "bookmark", lord: "grasp-save" },
-  { id: "got", label: "Love", icon: "mood-happy", lord: "grasp-got", state: "hover-smile" },
+     The caption names the mark; the mark carries the meaning.
+
+     NOT "HATE" AND NOT "LOVE" (owner, same day: "the words for those two cant
+     be those. cant have 'love'"). The FEELING framing stays — it is what the
+     drawn faces are — but printed under a study section those two words grade
+     the reader's taste rather than report their read. "Lost" is this row's own
+     oldest negative ("Lost me", 2026-08-02 onward) cut to one word: it blames
+     the section, not the student. "Liked" keeps the warmth at a weight a
+     textbook page can carry. If either word changes again it is one string
+     here — the ids, the storage and the doodles do not move. */
+  { id: "almost", label: "Save", icon: "bookmark", lord: "grasp-save", state: "hover-pinch" },
+  { id: "not", label: "Lost", icon: "mood-sad", lord: "grasp-not", state: "hover-pinch" },
+  { id: "got", label: "Liked", icon: "mood-happy", lord: "grasp-got", state: "hover-smile" },
 ];
 
 /* End-of-section checkpoint — a scale rather than a tick.
@@ -317,7 +333,12 @@ export function Checkpoint({
                    same reason it existed: it was there to recover a word that
                    had been hidden. */
                 data-active={active ? "" : undefined}
-                className="grasp-btn"
+                /* Save stands apart from the Hate/Love pair — see the ORDER
+                   note over ANSWERS. 14px on top of the cluster's 22px gap
+                   makes the seam 36px: enough that the pair reads as a pair,
+                   not so much that Save looks like it belongs to the note
+                   button at the far end of the row. */
+                className={"grasp-btn" + (a.id === "almost" ? " mr-3.5" : "")}
               >
                 {/* The mark sits in its own box rather than in the button, so
                     the hover plate stays a 28px circle around the glyph instead

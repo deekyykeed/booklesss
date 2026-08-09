@@ -48,6 +48,24 @@ const ICONS = [
   "danger-triangle-bold-duotone", // Watch out
   "clipboard-text-bold-duotone", // Example
   "target-bold-duotone", // In the exam
+  /* The checkpoint row's NOTE control (reader/SectionNote.tsx + lib/step-notes)
+     — the flag and the five verdicts it collapses into. Owner, 2026-08-09:
+     "for the flag thing use solar line broken and then go solar duotone when
+     selected." So each mark is a PAIR from two Solar styles: "-broken" is the
+     rest state (a stroke drawing with a gap in its line, greyed by the button's
+     currentColor), "-bold-duotone" the chosen one (two currentColor fills, the
+     back one at .5 — it reads as ink where the button's colour is ink). The
+     pair is listed longhand, both names, for the same reason step-notes never
+     built names from a template: a missing twin must fail THIS script loudly,
+     not render nothing. */
+  "flag-broken", // the unasked note button
+  "lightbulb-broken", // clear
+  "lightbulb-bold-duotone",
+  "question-circle-broken", // hard to follow
+  "question-circle-bold-duotone",
+  "clock-circle-broken", // too long
+  "clipboard-text-broken", // needs an example
+  "danger-triangle-broken", // something looks wrong
 ];
 
 /* The reader's THIRD Solar surface, and a deliberate one (owner, 2026-08-02).

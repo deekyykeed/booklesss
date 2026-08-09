@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
-import { TablerIcon } from "@/components/icons/tabler";
+import { SolarIcon } from "@/components/icons/solar";
 import { hapticConfirm, hapticTap } from "@/lib/haptics";
 import { needsAccount } from "@/lib/account";
 import { requireAccount } from "@/lib/onboarding";
@@ -181,7 +181,14 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
             also what keeps its glyph level with theirs (see `items-start` on the
             checkpoint row). */}
         <span className="grasp-mark">
-          <TablerIcon name={active ? active.mark : "flag"} size={20} muted={!chosen} />
+          {/* SOLAR, IN TWO STYLES (owner, 2026-08-09: "use solar line broken and
+              then go solar duotone when selected"). No `muted` prop in this
+              family — the state IS which drawing you ask for: "-broken" at rest,
+              greyed by the button's currentColor, and the verdict's
+              "-bold-duotone" once flagged, taking ink from
+              `.grasp-btn[data-active]` and shading itself (two fills, the back
+              one at half opacity — no second colour to pass). */}
+          <SolarIcon name={active ? active.markOn : "flag-broken"} size={20} />
         </span>
         <span className="grasp-label">{label ?? "How did that read?"}</span>
       </button>
@@ -243,7 +250,11 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
                   carry an internal drawing rather than two strokes, so they need
                   the extra couple of pixels to stay legible beside a 14.5px
                   label. */}
-              <TablerIcon name={n.mark} size={18} muted={chosen !== n.id} className="shrink-0" />
+              <SolarIcon
+                name={chosen === n.id ? n.markOn : n.mark}
+                size={18}
+                className="shrink-0"
+              />
             </button>
           ))}
         </div>

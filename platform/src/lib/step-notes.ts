@@ -21,7 +21,7 @@
  *   clear     → the "keep" signal, so a rewrite doesn't delete what worked
  */
 
-import { type TablerIconName } from "@/components/icons/tabler";
+import { type SolarIconName } from "@/components/icons/solar";
 
 export type NoteId = "hard" | "long" | "example" | "wrong" | "clear";
 
@@ -46,31 +46,36 @@ export type NoteId = "hard" | "long" | "example" | "wrong" | "clear";
  * attached is exactly the drift that makes the next addition half-done. The
  * MynaUI names are recoverable from git if a monochrome fallback is ever wanted.
  *
- * TABLER (FREE) as of 2026-08-09, moved off Streamline Freehand — which had
- * itself only replaced Ultimate Colors hours earlier — with the rest of the
- * checkpoint row (owner: "switch to the icons from tabler free"). The flag
+ * SOLAR as of 2026-08-09 evening (owner: "for the flag thing use solar line
+ * broken and then go solar duotone when selected"), Tabler for the afternoon
+ * before it, Freehand and Ultimate Colors earlier the same day. The flag
  * collapses into one of these marks, so the menu could not stay in a different
- * family than the button that draws from it.
+ * family than the button that draws from it — that rule has now carried the
+ * whole control through four families in one day.
  *
- * EVERY ROW NOW CARRIES THE PICTURE IT ALWAYS WANTED, which took three families
- * to reach. Ultimate has no plain lightbulb and no plain warning triangle, so
- * "Clear" settled for a green tick and "Something looks wrong" for a red cross.
- * Freehand fixed both and broke the flag instead, having no plain one. Tabler
- * draws all three, so nothing in this table is a substitute for something the
- * set could not supply — the first time that has been true.
- * `TablerIconName` is what makes a typo a build error rather than a blank space
- * in the menu, and the generator pairs each name with its `-filled` twin so a
- * mark can never ship with no selected state. */
+ * TWO NAMES PER REASON, LONGHAND, and the reason is a rule this file already
+ * learned once with MynaUI's `-solid` twins: a template literal
+ * (`${mark}-bold-duotone`) is a plain string to the compiler, and a missing
+ * twin would render nothing with no error. Written out, `SolarIconName` makes
+ * a typo or an absent style a build error. `mark` is the "-broken" style — a
+ * stroke drawing with a gap in its line, greyed through currentColor at rest —
+ * and `markOn` is "-bold-duotone", two currentColor fills with the back one at
+ * half opacity, which is what "selected" looks like in this family.
+ *
+ * Every reason keeps the picture it had under Tabler — bulb, question mark,
+ * clock, clipboard, warning triangle — because Solar draws all five. Only the
+ * hand changed. */
 export const NOTES: {
   id: NoteId;
   label: string;
-  mark: TablerIconName;
+  mark: SolarIconName;
+  markOn: SolarIconName;
 }[] = [
-  { id: "clear", label: "Clear", mark: "bulb" },
-  { id: "hard", label: "Hard to follow", mark: "help-circle" },
-  { id: "long", label: "Too long", mark: "clock" },
-  { id: "example", label: "Needs an example", mark: "clipboard-text" },
-  { id: "wrong", label: "Something looks wrong", mark: "alert-triangle" },
+  { id: "clear", label: "Clear", mark: "lightbulb-broken", markOn: "lightbulb-bold-duotone" },
+  { id: "hard", label: "Hard to follow", mark: "question-circle-broken", markOn: "question-circle-bold-duotone" },
+  { id: "long", label: "Too long", mark: "clock-circle-broken", markOn: "clock-circle-bold-duotone" },
+  { id: "example", label: "Needs an example", mark: "clipboard-text-broken", markOn: "clipboard-text-bold-duotone" },
+  { id: "wrong", label: "Something looks wrong", mark: "danger-triangle-broken", markOn: "danger-triangle-bold-duotone" },
 ];
 
 const KEY = "booklesss:step-notes:v1";
