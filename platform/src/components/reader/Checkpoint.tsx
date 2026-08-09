@@ -159,6 +159,9 @@ import { SectionNote } from "./SectionNote";
 const ANSWERS: {
   id: Grasp;
   label: string;
+  /** The word once chosen — the receipt to `label`'s offer. Falls back to
+   *  `label` where the pair doesn't exist (Lost). */
+  labelOn?: string;
   icon: TablerIconName;
   lord: string;
   state?: string;
@@ -176,9 +179,15 @@ const ANSWERS: {
      the section, not the student. "Liked" keeps the warmth at a weight a
      textbook page can carry. If either word changes again it is one string
      here — the ids, the storage and the doodles do not move. */
-  { id: "almost", label: "Save", icon: "bookmark", lord: "grasp-save", state: "hover-pinch" },
+  /* THE WORD ANSWERS BACK (owner, 2026-08-09: "save should go saved after,
+     same for liked"). At rest a caption is the OFFER — Save, Like — and once
+     chosen it is the RECEIPT: Saved, Liked. The tap visibly changed the
+     sentence, which is the cheapest confirmation there is. "Lost" has no
+     labelOn because it has no imperative — "Lose" is not an offer anyone
+     makes — so it reads as the report it always was, both ways. */
+  { id: "almost", label: "Save", labelOn: "Saved", icon: "bookmark", lord: "grasp-save", state: "hover-pinch" },
   { id: "not", label: "Lost", icon: "mood-sad", lord: "grasp-not", state: "hover-pinch" },
-  { id: "got", label: "Liked", icon: "mood-happy", lord: "grasp-got", state: "hover-smile" },
+  { id: "got", label: "Like", labelOn: "Liked", icon: "mood-happy", lord: "grasp-got", state: "hover-smile" },
 ];
 
 /* End-of-section checkpoint — a scale rather than a tick.
@@ -381,7 +390,7 @@ export function Checkpoint({
                     on its own, and no drawing does. Satoshi, because a word that
                     annotates rather than reads is a container — the owner's
                     2026-08-02 rule. See .grasp-caption. */}
-                <span className="grasp-caption">{a.label}</span>
+                <span className="grasp-caption">{active ? (a.labelOn ?? a.label) : a.label}</span>
               </button>
             );
           })}

@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { SolarIcon } from "@/components/icons/solar";
+import { LordIcon } from "@/components/icons/lordicon";
 import { hapticConfirm, hapticTap } from "@/lib/haptics";
 import { needsAccount } from "@/lib/account";
 import { requireAccount } from "@/lib/onboarding";
@@ -181,14 +182,31 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
             also what keeps its glyph level with theirs (see `items-start` on the
             checkpoint row). */}
         <span className="grasp-mark">
-          {/* SOLAR, IN TWO STYLES (owner, 2026-08-09: "use solar line broken and
-              then go solar duotone when selected"). No `muted` prop in this
-              family — the state IS which drawing you ask for: "-broken" at rest,
-              greyed by the button's currentColor, and the verdict's
-              "-bold-duotone" once flagged, taking ink from
-              `.grasp-btn[data-active]` and shading itself (two fills, the back
-              one at half opacity — no second colour to pass). */}
-          <SolarIcon name={active ? active.markOn : "flag-broken"} size={20} />
+          {/* AN ANIMATED DOODLE, LIKE THE THREE ANSWERS OPPOSITE (owner,
+              2026-08-09: "am i not able to find free lordicons for the flag
+              icons") — the feedback bubble before a verdict, the verdict's own
+              doodle after. Grey at rest through the same
+              `.grasp-btn:not([data-active]) .grasp-mark` grayscale rule the
+              answers use; full doodle colour once flagged. `state` is
+              load-bearing: it parks the Lottie on a drawn frame rather than
+              the empty first frame of `in-reveal`.
+              THE SOLAR PAIR FROM EARLIER TODAY IS THE FALLBACK, exactly as
+              Tabler is for the answers: a Lottie is a fetch, this reader lives
+              on Zambian mobile data, and offline this button must be a static
+              mark, not a hole. The fallback keeps the hue treatment so even
+              that path says chosen-in-colour. */}
+          <LordIcon
+            name={active ? active.lord : "note-feedback"}
+            state={active ? active.lordState : "hover-slide"}
+            size={20}
+            fallback={
+              <SolarIcon
+                name={active ? active.markOn : "flag-broken"}
+                size={20}
+                style={active ? { color: active.hue } : undefined}
+              />
+            }
+          />
         </span>
         <span className="grasp-label">{label ?? "How did that read?"}</span>
       </button>
@@ -233,28 +251,38 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
                   collapses to — so the menu teaches which picture means which
                   verdict, and the collapsed flag is then readable without the
                   menu ever being opened again.
-                  TABLER as of 2026-08-09 — Freehand for a few hours before that,
-                  Ultimate Colors before that. This row was MynaUI for one commit
-                  on the argument that a coloured fill in a list of five text
-                  rows would sit as heavy as the Duotone marks pulled out of this
-                  row on 2026-08-02. That argument was wrong here, and the
-                  difference is the state model: the Duotone marks were filled
-                  ALWAYS, and these are line-drawn until chosen, so an unanswered
-                  menu is five quiet outlines and exactly one of them is ever
-                  solid. It is the same rule as the faces pod, which is the
-                  point — a filled mark means "this is your answer" everywhere in
-                  the row.
-                  `shrink-0` because "Something looks wrong" wraps to two lines
-                  at 230px and the mark must not be squeezed into an ellipse when
-                  it does. 18px, up from the 16 a hairline glyph needed: these
-                  carry an internal drawing rather than two strokes, so they need
-                  the extra couple of pixels to stay legible beside a 14.5px
-                  label. */}
-              <SolarIcon
-                name={chosen === n.id ? n.markOn : n.mark}
-                size={18}
+                  LORDICON DOODLES as of 2026-08-09 evening — the fifth family
+                  in one day (Tabler, Freehand, Ultimate Colors and MynaUI
+                  before it), and the first ANIMATED one, matching the three
+                  answers across the row. The state model every family wore is
+                  unchanged: grey until chosen, colour means "this is your
+                  answer". Here grey is a `grayscale(1)` filter on the wrapping
+                  span — these are filled drawings that bring their own palette,
+                  the exact treatment `.grasp-mark` gives the answer doodles,
+                  and the same reason `colorize` is wrong for them (it flattens
+                  eyes and mouth into the same grey as the head; see
+                  Checkpoint.tsx).
+                  `shrink-0` on the wrapper because "Something looks wrong"
+                  wraps to two lines at 230px and the mark must not be squeezed
+                  when it does. The Solar broken/duotone pair stays as the
+                  offline fallback, hue and all. */}
+              <span
                 className="shrink-0"
-              />
+                style={chosen === n.id ? undefined : { filter: "grayscale(1)" }}
+              >
+                <LordIcon
+                  name={n.lord}
+                  state={n.lordState}
+                  size={18}
+                  fallback={
+                    <SolarIcon
+                      name={chosen === n.id ? n.markOn : n.mark}
+                      size={18}
+                      style={chosen === n.id ? { color: n.hue } : undefined}
+                    />
+                  }
+                />
+              </span>
             </button>
           ))}
         </div>

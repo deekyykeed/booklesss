@@ -65,17 +65,58 @@ export type NoteId = "hard" | "long" | "example" | "wrong" | "clear";
  * Every reason keeps the picture it had under Tabler — bulb, question mark,
  * clock, clipboard, warning triangle — because Solar draws all five. Only the
  * hand changed. */
+/* A HUE PER VERDICT (owner, 2026-08-09: "use the same color styling we are
+ * using for the animated icons — just pick colors that make sense"). The state
+ * model is the Lordicon doodles' exactly: grey line at rest, its OWN colour
+ * once chosen — a duotone shades itself out of one hue, so the hue is the whole
+ * treatment. It also puts a second signal on the collapsed flag: a reader
+ * scrolling back sees not just WHICH verdict they left but its temperature.
+ *
+ * Four of the five are the dashboard stat tiles' hues (TONE in HomeView.tsx),
+ * reused rather than invented because they were VALIDATED as a set — lightness
+ * band, chroma floor, CVD separation, contrast on a light surface — and this is
+ * the same drawing style on the same kind of surface. The fifth is the app's
+ * own error red (the auth form's), because "something looks wrong" is the one
+ * verdict that is a defect report. Green keeps the one meaning it has
+ * everywhere here: this worked. The clock is orange, not the time tile's blue —
+ * same drawing, different sentence: "too long" is an overrun, not a tally. */
+/* THE MARKS ARE ANIMATED LORDICON DOODLES, LIKE THE THREE ANSWERS (owner,
+ * 2026-08-09: "am i not able to find free lordicons for the flag icons — just
+ * need animations that make sense"). All six exist in the free doodle/color
+ * set — `premium: false`, checked by the fetch script, which refuses paid rows
+ * — so nothing had to be cut. Three meanings changed PICTURE to stay inside
+ * the free set, and the substitutions are worth recording:
+ *   · the flag → `messages-feedback`, a feedback bubble. The free set has no
+ *     flag at all — and the bubble is honester: this control was never a
+ *     report-abuse flag, it asks "how did that read?".
+ *   · the bulb ("Clear") → `check`. No bulb in the free set; the tick is what
+ *     Clear meant under Ultimate Colors too.
+ *   · the question mark ("Hard to follow") → `puzzle-pair`. No question mark;
+ *     two puzzle pieces being fitted is "I can't piece this together", which
+ *     is the verdict, drawn.
+ * `lordState` is read off `node scripts/lord-states.mjs`, never guessed — a
+ * wrong name silently plays the wrong animation. All `hover-` states: an `in-`
+ * state starts from an empty frame.
+ *
+ * THE SOLAR PAIR STAYS AS THE FALLBACK, exactly as Tabler does for the three
+ * answers: a Lottie is a fetch, this reader is read on Zambian mobile data,
+ * and a checkpoint on a bad connection must be a static mark, not a hole.
+ * `hue` colours the fallback's chosen state so even the offline path keeps
+ * the answers' grammar: grey at rest, its own colour once chosen. */
 export const NOTES: {
   id: NoteId;
   label: string;
+  lord: string;
+  lordState: string;
   mark: SolarIconName;
   markOn: SolarIconName;
+  hue: string;
 }[] = [
-  { id: "clear", label: "Clear", mark: "lightbulb-broken", markOn: "lightbulb-bold-duotone" },
-  { id: "hard", label: "Hard to follow", mark: "question-circle-broken", markOn: "question-circle-bold-duotone" },
-  { id: "long", label: "Too long", mark: "clock-circle-broken", markOn: "clock-circle-bold-duotone" },
-  { id: "example", label: "Needs an example", mark: "clipboard-text-broken", markOn: "clipboard-text-bold-duotone" },
-  { id: "wrong", label: "Something looks wrong", mark: "danger-triangle-broken", markOn: "danger-triangle-bold-duotone" },
+  { id: "clear", label: "Clear", lord: "note-clear", lordState: "hover-pinch", mark: "lightbulb-broken", markOn: "lightbulb-bold-duotone", hue: "#17754d" },
+  { id: "hard", label: "Hard to follow", lord: "note-hard", lordState: "hover-pinch", mark: "question-circle-broken", markOn: "question-circle-bold-duotone", hue: "#4a3aa7" },
+  { id: "long", label: "Too long", lord: "note-long", lordState: "hover-pinch", mark: "clock-circle-broken", markOn: "clock-circle-bold-duotone", hue: "#eb6834" },
+  { id: "example", label: "Needs an example", lord: "note-example", lordState: "hover-pinch", mark: "clipboard-text-broken", markOn: "clipboard-text-bold-duotone", hue: "#2a78d6" },
+  { id: "wrong", label: "Something looks wrong", lord: "note-wrong", lordState: "hover-pinch", mark: "danger-triangle-broken", markOn: "danger-triangle-bold-duotone", hue: "#b42318" },
 ];
 
 const KEY = "booklesss:step-notes:v1";
