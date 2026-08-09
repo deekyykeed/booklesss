@@ -7,6 +7,8 @@ import { Field } from "@/components/ui/Field";
 import { MynaIcon } from "@/components/icons/myna";
 import { browserClient } from "@/lib/supabase/browser";
 import { referrer } from "@/lib/referral";
+import { containsEmail, MIN_PASSWORD, weakness } from "@/lib/password";
+import { ForgotPassword } from "./ForgotPassword";
 
 /* ------------------------------------------------------------------ *
  * Email and a password. ONE form, and it does not ask which one you are.
@@ -66,12 +68,10 @@ import { referrer } from "@/lib/referral";
  * them is for the network dying, which is a different thing and says so.
  * ------------------------------------------------------------------ */
 
-/** Supabase's own floor is 6. Eight, because the difference costs a student two
- *  characters once and this is the only thing standing in front of their
- *  account. Shown as the placeholder rather than enforced before the first
- *  call: a returning student whose password predates this number must still be
- *  able to sign in with it. */
-const MIN_PASSWORD = 8;
+/* The password rule lives in lib/password, because the reset form applies the
+ * identical one and a floor enforced at one of two doors is not a floor. The
+ * asymmetry that matters — checked when a password is CHOSEN, never when it is
+ * PRESENTED — is argued there and implemented at the fork below. */
 
 /**
  * The two Supabase messages the sequence above BRANCHES on, matched loosely
@@ -106,6 +106,13 @@ function readable(message: string): string {
     return `Passwords need at least ${MIN_PASSWORD} characters.`;
   if (m.includes("rate limit") || m.includes("too many"))
     return "Too many tries. Wait a minute and try again.";
+  /* Supabase's leaked-password protection (Auth → Policies), which checks the
+     password against HaveIBeenPwned. Its own wording is "Password is known to
+     be weak and easy to guess, please choose a different one" — accurate and
+     slightly accusing. This says the same thing as a fact about the internet
+     rather than about the student, and tells them what actually fixes it. */
+  if (m.includes("known to be weak") || m.includes("pwned") || m.includes("easy to guess"))
+    return "That password has appeared in a known data breach. Pick a different one — three unrelated words works well.";
   if (m.includes("email not confirmed"))
     return "Check your email for the confirmation link, then come back.";
   return message || "Couldn't get you in.";
@@ -164,6 +171,12 @@ export function AuthForm({
      nothing because a setting changed is the worst failure this form has, so it
      is handled rather than assumed away. */
   const [checkEmail, setCheckEmail] = useState(false);
+  /* The forgot-password box replaces this form in place rather than navigating.
+     A student who has just been told their password is wrong is one tap from
+     fixing it and one tap back, with the email they already typed carried
+     across — sending them to another page would make them type it again at the
+     exact moment they are already frustrated. */
+  const [forgot, setForgot] = useState(false);
 
   const emailRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
@@ -218,6 +231,25 @@ export function AuthForm({
 
       /* No account with that email, OR the password is wrong. The sign-up is
          the question that tells the two apart. */
+
+      /* THE ONLY PLACE THE PASSWORD RULE RUNS — see the note over `weakness`.
+         We now know this is either a new account or a wrong password, and in
+         both cases refusing a weak string is right: a new account should not be
+         created with one, and a returning student who mistyped is better told
+         their password is wrong (which the message says) than handed a second
+         account. Checked BEFORE the signUp call, so a weak password is never
+         sent to the auth server at all.
+
+         `containsEmail` is separate from `weakness` because only this form has
+         the address to hand — a recovery session knows who you are without the
+         page being told. */
+      const weak = weakness(password) ?? containsEmail(password, mail);
+      if (weak) {
+        setError(weak);
+        setPhase(null);
+        return;
+      }
+
       setPhase("creating");
       const { data, error } = await supabase.auth.signUp({
         email: mail,
@@ -260,6 +292,10 @@ export function AuthForm({
       setError("Couldn't reach the server. Check your connection and try again.");
       setPhase(null);
     }
+  }
+
+  if (forgot) {
+    return <ForgotPassword initialEmail={email} onBack={() => setForgot(false)} />;
   }
 
   if (checkEmail) {
@@ -353,6 +389,21 @@ export function AuthForm({
       <p className="text-[13px] leading-[18px] text-muted">
         New here and we&apos;ll make your account. Already have one and you&apos;re just signed in.
       </p>
+
+      {/* ⚠️ THE DOOR THE ERROR MESSAGE HAS BEEN POINTING AT SINCE 2026-08-07.
+          "Try again, or reset it" was written before there was anything to
+          reset — see ForgotPassword.tsx. Quiet and below the fold of the form
+          on purpose: a combined sign-in/sign-up box is mostly used by people
+          who know their password, and this is the only route out for the ones
+          who don't. */}
+      <button
+        type="button"
+        onClick={() => setForgot(true)}
+        disabled={!!phase}
+        className="self-start text-[13px] leading-[18px] text-muted underline underline-offset-2 transition-colors hover:text-ink disabled:opacity-50"
+      >
+        Forgotten your password?
+      </button>
     </form>
   );
 }
