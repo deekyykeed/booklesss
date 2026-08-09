@@ -106,11 +106,21 @@ label is mine to correct. Linear unreachable again.)**
       it once — an attribution line in `/terms` or the footer is likely
       enough, or a paid seat clears it entirely.
 - [ ] **The dashboard's Performance figure now measures LIKING, not grasp.**
-      The three answers store as `Grasp` (love→got, save→almost, hate→not) so
-      nothing recorded broke — but Performance is computed off those weights,
-      and a section somebody understood perfectly and hated scores zero. Named
-      at the top of `Checkpoint.tsx`. Owner's call: accept the new meaning, or
-      split liking from comprehension into two signals.
+      The verdicts store as `Grasp` (like→got, lost→not) so nothing recorded
+      broke — but Performance is computed off those weights, and a section
+      somebody understood perfectly and hated scores zero. Named at the top of
+      `Checkpoint.tsx`. Owner's call: accept the new meaning, or split liking
+      from comprehension into two signals.
+      **Post-wrap update (same evening): Save no longer writes `almost` — or
+      any grasp at all.** The owner hit the one-slot collision live ("when I
+      tap like the saved goes off") and Save moved to its own store,
+      `lib/saved` (device-local boolean per section, shaped like step-notes).
+      Save and a verdict now coexist; `grasp:"almost"` survives only as a
+      legacy value read as saved and migrated on the next tap, and its 0.5
+      weight in `lib/progress` now covers historical rows alone. Saving an
+      untouched section still credits the checkpoint; un-saving takes the
+      credit back only where no verdict exists. Verified served: Saved and
+      Liked lit simultaneously (`80568cd`).
 - [ ] **The reaction tally is a CLOSED decision, not a missing feature.**
       Counts came off the checkpoint row (owner: reading is a private
       question); the POST and `section_reactions` keep filling for the
@@ -1409,6 +1419,14 @@ validated hues, captions on everything with one-word receipts.
 - **`'unsafe-eval'` cannot come out of the CSP while Lordicons ship** — lottie
   compiles expressions with `new Function`; blocked, every doodle is an empty
   SVG with no visible error. Documented at the line in `next.config.ts`.
+
+**Post-wrap addendum (same evening, `80568cd`):** the owner hit Save being
+evicted by Like — the one-slot `Grasp` design, working as built and wrong as
+designed. Save moved to its own store (`lib/saved`); the full account is in
+the Performance bullet in the session-58 Next Session block above. The
+transferable lesson: **when a UI promises two independent answers, check the
+storage holds two slots — independence is a storage property, and no button
+wiring can add it.**
 
 ### Session 2026-08-09 (session 57 — the popup dies on launch eve, and the loopholes get closed)
 
