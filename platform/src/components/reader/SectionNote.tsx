@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
-import { FreehandIcon } from "@/components/icons/freehand";
+import { TablerIcon } from "@/components/icons/tabler";
 import { hapticConfirm, hapticTap } from "@/lib/haptics";
 import { needsAccount } from "@/lib/account";
 import { requireAccount } from "@/lib/onboarding";
@@ -162,20 +162,27 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
             they called confusing and which they called too long without opening
             anything.
 
-            GREY UNTIL ASKED, COLOURED ONCE ANSWERED, and never a grey plate
-            behind it (owner, same message). `muted` swaps the Freehand LINE
-            drawing for the Freehand DUOTONE one (owner, 2026-08-09). So an
-            unflagged section shows a grey line-drawn flag, and a flagged one
-            shows its verdict in colour — the only colour in this pod, which is
-            what makes it findable while scrolling.
+            GREY UNTIL ASKED, INK ONCE ANSWERED, and never a grey plate behind
+            it (owner, same message). `muted` swaps the Tabler OUTLINE for its
+            `-filled` twin (owner, 2026-08-09: "switch to the icons from tabler
+            free"). So an unflagged section shows a grey outline, and a flagged
+            one shows its verdict as a solid mark — the only filled shape in this
+            pod, which is what makes it findable while scrolling.
             20px, in step with the three marks in the other pod. */}
-        {/* ⚠️ NOT A FLAG SINCE 2026-08-09, and the comments above still say flag
-            because that is what the owner asked for and what the behaviour still
-            is. The Freehand free set has no plain flag — its only one carries
-            `</>` on the pennant and reads as a code icon at 20px. `notes-paper`
-            is the substitute, argued in the generator. The button's job has not
-            changed; only the picture of it has. */}
-        <FreehandIcon name={active ? active.mark : "notes-paper"} size={20} muted={!chosen} />
+        {/* ⚠️ IT IS A FLAG AGAIN, as of the Tabler swap. It was `notes-paper` for
+            a few hours on 2026-08-09 because Streamline Freehand Free draws no
+            plain flag — its only one carries `</>` on the pennant and reads as a
+            code icon at 20px. Tabler draws `flag` and `flag-filled`, so the
+            comments above finally describe the picture as well as the job. */}
+        {/* Boxed like the three answers opposite, so the hover plate is the same
+            28px circle on both ends of the row. This button carries no visible
+            caption — its label is a question before it is answered and a verdict
+            after, which is not a fixed word to set under a mark — so the box is
+            also what keeps its glyph level with theirs (see `items-start` on the
+            checkpoint row). */}
+        <span className="grasp-mark">
+          <TablerIcon name={active ? active.mark : "flag"} size={20} muted={!chosen} />
+        </span>
         <span className="grasp-label">{label ?? "How did that read?"}</span>
       </button>
 
@@ -219,29 +226,24 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
                   collapses to — so the menu teaches which picture means which
                   verdict, and the collapsed flag is then readable without the
                   menu ever being opened again.
-                  STREAMLINE FREEHAND as of 2026-08-09, and Ultimate Colors
-                  before that. This row was MynaUI for one commit on the
-                  argument that a coloured fill in a list of five text rows would
-                  sit as heavy as the Duotone marks pulled out of this row on
-                  2026-08-02. That argument was wrong here, and the difference is
-                  the state model: the Duotone marks were filled ALWAYS, and
-                  these are line-drawn until chosen, so an unanswered menu is
-                  five quiet outlines and exactly one of them ever carries
-                  colour. It is the same rule as the faces pod, which is the
-                  point — colour means "this is your answer" everywhere in the
-                  row.
+                  TABLER as of 2026-08-09 — Freehand for a few hours before that,
+                  Ultimate Colors before that. This row was MynaUI for one commit
+                  on the argument that a coloured fill in a list of five text
+                  rows would sit as heavy as the Duotone marks pulled out of this
+                  row on 2026-08-02. That argument was wrong here, and the
+                  difference is the state model: the Duotone marks were filled
+                  ALWAYS, and these are line-drawn until chosen, so an unanswered
+                  menu is five quiet outlines and exactly one of them is ever
+                  solid. It is the same rule as the faces pod, which is the
+                  point — a filled mark means "this is your answer" everywhere in
+                  the row.
                   `shrink-0` because "Something looks wrong" wraps to two lines
                   at 230px and the mark must not be squeezed into an ellipse when
                   it does. 18px, up from the 16 a hairline glyph needed: these
                   carry an internal drawing rather than two strokes, so they need
                   the extra couple of pixels to stay legible beside a 14.5px
                   label. */}
-              <FreehandIcon
-                name={n.mark}
-                size={18}
-                muted={chosen !== n.id}
-                className="shrink-0"
-              />
+              <TablerIcon name={n.mark} size={18} muted={chosen !== n.id} className="shrink-0" />
             </button>
           ))}
         </div>

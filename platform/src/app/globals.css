@@ -1591,7 +1591,7 @@
      mark is a loose hand-drawn line that overshoots its own corners, so two of
      them at 14px apart read as one sketch — the gap has to clear the overshoot,
      not just the bounding box.
-     ⚠️ 22 is close to the ceiling: `.grasp-btn` is 28px, so at much more than
+     ⚠️ 22 is close to the ceiling: `.grasp-mark` is 28px, so at much more than
      this the three marks stop reading as one set of answers and start reading as
      three unrelated buttons that happen to be near each other. If more air is
      ever wanted, take it from the row's outer margins instead. */
@@ -1599,6 +1599,21 @@
     display: flex;
     align-items: center;
     gap: 22px;
+  }
+  /* THE CAPTIONS RETIRE THE 22 (2026-08-09), for the answers pod only — the note
+     button is a lone mark and keeps it.
+     The number above is a rule about BARE marks: with nothing drawn round them,
+     space was the only thing saying where one control ended. A word under each
+     mark says it instead, and says it better. Holding 22 as well would be paying
+     twice: each button is now 45–70px wide rather than 28, so the gap between
+     the GLYPHS — which is what the reader lines up and what the owner was
+     actually spacing — would swell to roughly 80px and the three answers would
+     stop being one question.
+     12 keeps the captions clearly apart while leaving the marks close enough to
+     read as a set. Two classes, so it beats `.mark-cluster` on specificity
+     regardless of source order. */
+  .grasp-group.mark-cluster {
+    gap: 12px;
   }
   /* No pill, no border, no fill: a hairline glyph sitting on the page.
      The button is still 34px square even though the mark is 20px — the tap
@@ -1615,38 +1630,99 @@
      first job on 2026-08-07 and the box kept charging for it.
      28 keeps the second job — it is still well above the 24px WCAG target
      minimum — and takes the mark-to-edge gap to 10px with the row at 40px. */
+  /* A COLUMN SINCE 2026-08-09 — mark on top, word underneath (owner: "can I have
+     text below them saying what they are"). The button stopped being a fixed
+     square that day and became as wide as its caption, which is why the 28px
+     lives on `.grasp-mark` below rather than here: the tap target grew, the
+     glyph's box did not. `min-width` keeps the note button, which has no visible
+     caption, exactly the square it always was. */
   .grasp-btn {
     display: inline-flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    gap: 4px;
     flex-shrink: 0;
-    height: 28px;
-    width: 28px;
-    border-radius: 999px;
+    min-width: 28px;
+    padding: 0;
     border: 0;
     background: none;
     box-shadow: none;
-    /* ⚠️ THIS IS THE GREY, AND IT IS LOAD-BEARING AGAIN. It was inert for one
-       day: the Ultimate Colors marks this row carried on 2026-08-08 were
-       multicolour and ignored currentColor, so the rest state had to be baked
-       into the generator as a fill swap. The Freehand LINE drawings that replaced
-       them on 2026-08-09 draw in currentColor, which puts "grayed out" back where
-       it belongs — one value, here, beside the rest of the row's colours.
-       Change this and every unchosen mark in the row moves together. The chosen
-       one does not: the Duotone drawing brings its own #020202 and #0c6fff and
-       is unaffected by anything set here (see icons/freehand.tsx). */
+    /* ⚠️ THIS IS THE GREY, AND IT NOW SETS BOTH STATES. It was inert for one day
+       (the Ultimate Colors marks of 2026-08-08 were multicolour and ignored
+       currentColor), then governed the rest state only (Freehand Line drew in
+       currentColor; Freehand Duotone brought its own #020202 and #0c6fff).
+       Tabler draws BOTH the outline and its filled twin in currentColor, so this
+       one value greys every unchosen mark AND every unchosen caption, and the
+       chosen colour is the single override directly below. Nothing about this
+       row's colour is inherited from a foundry any more. */
     color: #9a9aa2;
+  }
+  /* The chosen answer, and the only colour decision left in the row. Ink rather
+     than a hue, for the reason argued at the top of Checkpoint.tsx: a white
+     reading surface does not give a mark a hue, it receives one. The state is
+     already unambiguous without it — the OUTLINE becomes a FILL — so this is
+     weight, not signal. Give it `var(--color-brand-deep)` if a hue is ever
+     wanted; one line, both the mark and its word. */
+  .grasp-btn[data-active] {
+    color: var(--color-ink);
+  }
+  /* The glyph's own box, carved out of the button when the caption arrived. It
+     holds the 28px and the hover plate, so the plate stays a circle round the
+     mark instead of a tall slab behind the whole button. */
+  .grasp-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+    width: 28px;
+    border-radius: 999px;
     transition: background-color 160ms ease;
   }
-  /* The words are gone from the screen but not from the page. Every one of
-     these buttons carries its own aria-label and a title, so a screen reader
-     still hears "Later" and a mouse still gets the tooltip; only the sighted
-     tap-only reader loses the word, which is what was asked for. */
+  /* THE WORD UNDER THE MARK (owner, 2026-08-09: "at the bottom of each a satoshi
+     small text saying what it is").
+     SATOSHI, VIA `--font-container`, and that is the owner's 2026-08-02 rule
+     applied rather than a preference: a sentence someone READS is Aptos, and
+     chrome that frames or annotates one is Satoshi. A caption naming a control
+     is the second thing. Medium (500), like every other container surface here.
+     11px is the smallest rung in the reader and is deliberately below the note
+     menu's 14.5px — these words label a mark that is already on screen, they are
+     not a list of options to read.
+     ⚠️ DARKER THAN ITS OWN MARK AT REST, and that is not an oversight. The
+     button's #9a9aa2 is a grey chosen for a 20px drawing; at 11px it measures
+     about 2.9:1 on white, under the 4.5:1 that small text needs to be read at
+     all. `--color-muted` is 4.9:1. A word set too faint to read is worse than no
+     word, which is the whole thing this caption exists to fix. The chosen state
+     is left to inherit, because ink is darker than this in both cases. */
+     `nowrap` because "Save for later" is the longest of the three by some way
+     and would break to two lines on a narrow phone, making one answer taller
+     than the other two and pushing the row out of alignment. It fits: at 11px
+     the three captions plus their 12px gaps come to roughly 190px, inside the
+     reading column at 390px even after the note button takes its end. */
+  .grasp-caption {
+    font-family: var(--font-container);
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 1;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    color: var(--color-muted);
+  }
+  .grasp-btn[data-active] .grasp-caption {
+    color: inherit;
+  }
+  /* ONE BUTTON STILL HIDES ITS WORD, and only one: the note button, whose label
+     is a question before it is answered and a verdict after ("You said: Too
+     long. Change it"), so there is no fixed caption to set under it. It keeps
+     its aria-label and its tooltip.
+     The three answers opposite no longer use this — their words are on screen in
+     `.grasp-caption` above, and their accessible names come from that text
+     rather than from a parallel aria-label that could drift away from it. */
   /* `.grasp-count`, and the `[data-with-count]` rule that let a button widen from
      a 28px square into a short pill to hold a figure, lived here for one day
      (2026-08-08 → 09) and went with the tally itself — the reasoning is at the
-     top of Checkpoint.tsx. Every button is a fixed square again, which is what
-     the 28px and the `justify-content: center` above are sized for.
+     top of Checkpoint.tsx. The GLYPH is a fixed square again, which is what the
+     28px and the `justify-content: center` on `.grasp-mark` are sized for; the
+     button around it is as wide as its caption.
 
      ONE MEASUREMENT WORTH NOT LOSING, if a number ever comes back beside a mark:
      the padding has to be ASYMMETRIC, 4px on the mark's side and 7px after the
@@ -1679,7 +1755,7 @@
      reader chose — the artefact would come back on the one device it was
      reported from. */
   @media (hover: hover) and (pointer: fine) {
-    .grasp-btn:hover {
+    .grasp-btn:hover .grasp-mark {
       background: #f3f3f1;
     }
   }

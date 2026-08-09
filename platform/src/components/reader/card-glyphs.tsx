@@ -1,6 +1,13 @@
 /* ------------------------------------------------------------------ *
  * Marks for the reader's `cards` block — Streamline Freehand Duotone.
  *
+ * ⚠️ THE ONLY THING LEFT DRAWING THIS FAMILY, since the checkpoint row moved to
+ * Tabler on 2026-08-09. `@iconify-json/streamline-freehand-color` is kept in
+ * package.json for this file alone: the paths below are hand-inlined and there
+ * is no generator to regenerate them from, so the package is the only copy of
+ * the geometry a new card mark would come from. The -line twin went with
+ * gen-freehand-icons.mjs; nothing here needs a rest state.
+ *
  * GENERATED geometry: paths are byte-for-byte from the free "Freehand
  * Duotone" set (Streamline, CC BY 4.0 — attribution owed, as with MynaUI),
  * fetched via the Streamline MCP and moved across by script rather than by

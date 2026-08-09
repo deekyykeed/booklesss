@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { labelFor, nextLessonId, pathForId } from "@/lib/course";
 import { rate, useProgress, type Grasp } from "@/lib/progress";
-import { FreehandIcon, type FreehandIconName } from "@/components/icons/freehand";
+import { TablerIcon, type TablerIconName } from "@/components/icons/tabler";
 import { hapticConfirm } from "@/lib/haptics";
 import { recordReaction } from "@/lib/reactions";
 import { gateStepLink, needsAccount } from "@/lib/account";
@@ -47,6 +47,7 @@ import { SectionNote } from "./SectionNote";
  *
  *   2026-08-08  Streamline Ultimate Colors faces, and THREE of them
  *   2026-08-09  Streamline Freehand, and the question changes underneath them
+ *   2026-08-09  Tabler, and the answers get their words back
  *
  * THE QUESTION IS NO LONGER "HOW MUCH LANDED" (owner, 2026-08-09: "the icons
  * will now be love it, hate it or Save for later"). Every earlier version of
@@ -72,24 +73,31 @@ import { SectionNote } from "./SectionNote";
  * reach for under the thumb already there. "Save for later" sits in the middle
  * on the same logic that put "almost" there — it is the answer that is neither.
  *
- * THE MARKS ARE STREAMLINE FREEHAND, IN TWO SETS (owner, 2026-08-09: "use a
- * grayed out Freehand line Free and then when active use freehand Duotone
- * free"). Unlike the Ultimate faces, whose rest state had to be DERIVED by
- * stripping colour out of one multicolour body, these are two drawings the
- * foundry actually shipped: the Line icon at rest, taking its grey from CSS,
- * and the Duotone icon when chosen, bringing its own #0c6fff accent. See
- * icons/freehand.tsx and its generator.
+ * THE MARKS ARE TABLER, FREE (owner, 2026-08-09: "switch to the icons from
+ * tabler free"). Outline at rest, its `-filled` twin when chosen — the same
+ * two-state shape the row has had since the faces arrived, but drawn by one
+ * family with one naming convention instead of stitched from two packages.
  *
- * ONE ACCENT FOR ALL THREE, not a hue per answer. The free Duotone set draws
- * every icon in the same blue, and that is left alone rather than recoloured:
- * the row already says which answer is yours by being the only coloured mark in
- * it, and three competing hues would make the row an argument rather than a
- * question. Recolouring is one regex in the generator if that turns out wrong.
+ * BOTH STATES ARE `currentColor` NOW, AND THAT IS THE SUBSTANTIVE CHANGE. Every
+ * family this row has worn brought its own colour with it: Ultimate's fills were
+ * baked in, Freehand Duotone arrived carrying #020202 and #0c6fff. Tabler brings
+ * none, so "grey at rest, ink when chosen" is two CSS values in `.grasp-btn` and
+ * nothing in the generated file. The row's ONE-ACCENT-FOR-ALL-THREE rule
+ * survives the move and is no longer inherited from a foundry's palette — it is
+ * a decision, in the place decisions about this row's colours live.
+ *
+ * THE CHOSEN STATE IS INK, NOT A HUE, and that is the third time this codebase
+ * has reached the same conclusion from a different direction (the Duotone marks
+ * pulled out of this row on 2026-08-02, the callout kinds on 2026-08-07). A
+ * white reading surface does not give a mark a hue; a coloured mark on one
+ * imports one. Outline-grey → filled-ink is already an unambiguous signal
+ * because the SHAPE changes, not just the tone. If a hue is ever wanted back it
+ * is one line in globals.css.
  */
-const ANSWERS: { id: Grasp; label: string; icon: FreehandIconName }[] = [
-  { id: "not", label: "Hate it", icon: "smiley-grumpy" },
-  { id: "almost", label: "Save for later", icon: "book-bookmark" },
-  { id: "got", label: "Love it", icon: "smiley-thrilled" },
+const ANSWERS: { id: Grasp; label: string; icon: TablerIconName }[] = [
+  { id: "not", label: "Hate it", icon: "mood-sad" },
+  { id: "almost", label: "Save for later", icon: "bookmark" },
+  { id: "got", label: "Love it", icon: "mood-happy" },
 ];
 
 /* End-of-section checkpoint — a scale rather than a tick.
@@ -169,7 +177,12 @@ export function Checkpoint({
           changed nothing, and why 16px was the first value that drew a visible
           corner. If a container ever comes back here, check the radius against
           half the height before trusting the number. */}
-      <div className="checkpoint-row flex flex-wrap items-center justify-between gap-3">
+      {/* TOP-ALIGNED, not centred, since 2026-08-09. The three answers carry a
+          word under the mark and the note button does not, so the two clusters
+          are different heights; centring them would float the note's flag
+          halfway down beside the gap between the faces and their captions. The
+          marks are what a reader lines up, so the marks are what is aligned. */}
+      <div className="checkpoint-row flex flex-wrap items-start justify-between gap-3">
         <SectionNote lessonId={lessonId} sectionId={checkpointId} />
         <div
           className="grasp-group mark-cluster"
@@ -221,26 +234,45 @@ export function Checkpoint({
                 }}
                 role="radio"
                 aria-checked={active}
-                aria-label={a.label}
-                /* The label is off-screen now (see .grasp-label), so the tooltip
-                   is the only way a mouse reader recovers the word. */
-                title={a.label}
+                /* No aria-label and no title. The word is on screen now, so the
+                   button's accessible name comes from its own text — which is
+                   the better source anyway: a visible label and an aria-label
+                   are two strings that can drift apart, and a screen-reader user
+                   hearing something the sighted reader cannot see is a bug that
+                   nothing on screen will ever reveal. The tooltip went for the
+                   same reason it existed: it was there to recover a word that
+                   had been hidden. */
                 data-active={active ? "" : undefined}
                 className="grasp-btn"
               >
                 {/* 20px. It went to 12 and back on 2026-08-08 (owner), and the
-                    reason is about the button rather than the mark: `.grasp-btn`
+                    reason is about the button rather than the mark: `.grasp-mark`
                     is a fixed 28px, so shrinking the glyph does not shrink the
                     control, it leaves a small mark floating in a full-size
-                    target. 20 in 28 fills its button.
-                    `muted` is the whole state model: it swaps the Freehand LINE
-                    drawing for the Freehand DUOTONE one. Nothing fades and
-                    nothing is filtered — the rest state is a different file, not
-                    a dimmed version of this one.
+                    target. 20 in 28 fills its box.
+                    `muted` is the whole state model: it swaps the Tabler OUTLINE
+                    for its `-filled` twin. Nothing fades and nothing is
+                    filtered — the rest state is a different drawing, not a
+                    dimmed version of this one.
                     SectionNote's flag is the fourth mark in this row and is set
                     to 20 as well. Move the two together. */}
-                <FreehandIcon name={a.icon} size={20} muted={!active} />
-                <span className="grasp-label">{a.label}</span>
+                {/* The mark sits in its own box rather than in the button, so
+                    the hover plate stays a 28px circle around the glyph instead
+                    of growing into a tall rounded slab behind the caption. */}
+                <span className="grasp-mark">
+                  <TablerIcon name={a.icon} size={20} muted={!active} />
+                </span>
+                {/* THE WORD, UNDER THE MARK (owner, 2026-08-09: "can I have text
+                    below them saying what they are… a satoshi small text saying
+                    what it is"). It is the first time these answers have been
+                    readable without tapping one since 2026-08-02, when the words
+                    came off and the marks were left to carry the meaning alone.
+                    Five families in seven days is what that costs: every swap
+                    was an attempt to find a drawing that says "save for later"
+                    on its own, and no drawing does. Satoshi, because a word that
+                    annotates rather than reads is a container — the owner's
+                    2026-08-02 rule. See .grasp-caption. */}
+                <span className="grasp-caption">{a.label}</span>
               </button>
             );
           })}
