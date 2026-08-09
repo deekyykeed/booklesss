@@ -195,10 +195,18 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
               on Zambian mobile data, and offline this button must be a static
               mark, not a hole. The fallback keeps the hue treatment so even
               that path says chosen-in-colour. */}
+          {/* 26/20, THE SAME SPLIT THE THREE ANSWERS USE, and it is not one
+              size (owner, 2026-08-09: "the flag icon looks too small compared
+              to the others" — it shipped at the static marks' 20 and sat
+              visibly smaller than the 26px doodles opposite). A doodle carries
+              air inside its own 192-grid — the drawing floats in its frame —
+              so it needs 26 to LOOK 20; a Solar glyph fills its viewBox edge
+              to edge, so the fallback keeps the row's true 20. Move this pair
+              with Checkpoint's, always. */}
           <LordIcon
             name={active ? active.lord : "note-feedback"}
             state={active ? active.lordState : "hover-slide"}
-            size={20}
+            size={26}
             fallback={
               <SolarIcon
                 name={active ? active.markOn : "flag-broken"}
