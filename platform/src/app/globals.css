@@ -1600,21 +1600,20 @@
     align-items: center;
     gap: 22px;
   }
-  /* THE CAPTIONS RETIRE THE 22 (2026-08-09), for the answers pod only — the note
-     button is a lone mark and keeps it.
-     The number above is a rule about BARE marks: with nothing drawn round them,
-     space was the only thing saying where one control ended. A word under each
-     mark says it instead, and says it better. Holding 22 as well would be paying
-     twice: each button is now 45–70px wide rather than 28, so the gap between
-     the GLYPHS — which is what the reader lines up and what the owner was
-     actually spacing — would swell to roughly 80px and the three answers would
-     stop being one question.
-     12 keeps the captions clearly apart while leaving the marks close enough to
-     read as a set. Two classes, so it beats `.mark-cluster` on specificity
-     regardless of source order. */
-  .grasp-group.mark-cluster {
-    gap: 12px;
-  }
+  /* ⚠️ 22 SURVIVED THE CAPTIONS, BUT ONLY BECAUSE THEY ARE ONE WORD.
+     It was dropped to 12 for a few hours while the answers read "Hate it" /
+     "Save for later" / "Love it": those buttons were 33–67px wide, so holding 22
+     would have pushed the GLYPHS — which is what the reader lines up, and what
+     the owner was actually spacing — roughly 80px apart.
+     One word each (owner, same day) puts every caption at or under the 28px the
+     mark box already claims, so the button is back to a 28px square and 22
+     between them is once again 22 between the marks. The override is deleted
+     rather than set to 22, so there is one number here and not two that must
+     agree.
+     THE RULE THIS LEAVES: this gap is only meaningful while `.grasp-btn`'s width
+     is the mark's. Any caption long enough to widen a button pushes the marks
+     apart by half its own width on each side, and the number needs recomputing
+     from the glyph spacing rather than kept. */
   /* No pill, no border, no fill: a hairline glyph sitting on the page.
      The button is still 34px square even though the mark is 20px — the tap
      target does not shrink just because the decoration went. */
@@ -1678,6 +1677,28 @@
     border-radius: 999px;
     transition: background-color 160ms ease;
   }
+  /* THE REST STATE OF AN ANIMATED MARK, and the reason it is a filter rather
+     than a colour.
+     The three answers are Lordicon doodles — filled drawings that bring their
+     own palette. `colorize`, the player's own tool for this, flattens EVERY
+     colour to the one you give it, so a grey rest state painted the eyes and the
+     mouth the same grey as the head and every face rendered as a blank disc.
+     Grayscale takes the hue out and leaves the drawing, so a resting mark is
+     still a recognisable sad or happy face.
+     NO OPACITY WITH IT. That was tried on this row twice in one afternoon on
+     2026-08-07 and reverted both times (owner: "the other icon is way too dim",
+     then "its inactive state is too subtle, make it stand out more"). A control
+     the reader is invited to change their mind with should not look switched
+     off — losing the colour is the whole signal, and dimming on top of it is a
+     second recession stacked on a first.
+     ⚠️ IT APPLIES TO THE NOTE BUTTON TOO, harmlessly: that mark is a Tabler
+     glyph in `currentColor`, already grey, and grayscale of a grey is itself.
+     The same is true of the Tabler fallbacks inside these three. If anything in
+     this row ever gains a colour at rest ON PURPOSE, this selector is what will
+     silently take it away. */
+  .grasp-btn:not([data-active]) .grasp-mark {
+    filter: grayscale(1);
+  }
   /* THE WORD UNDER THE MARK (owner, 2026-08-09: "at the bottom of each a satoshi
      small text saying what it is").
      SATOSHI, VIA `--font-container`, and that is the owner's 2026-08-02 rule
@@ -1692,12 +1713,12 @@
      about 2.9:1 on white, under the 4.5:1 that small text needs to be read at
      all. `--color-muted` is 4.9:1. A word set too faint to read is worse than no
      word, which is the whole thing this caption exists to fix. The chosen state
-     is left to inherit, because ink is darker than this in both cases. */
-     `nowrap` because "Save for later" is the longest of the three by some way
-     and would break to two lines on a narrow phone, making one answer taller
-     than the other two and pushing the row out of alignment. It fits: at 11px
-     the three captions plus their 12px gaps come to roughly 190px, inside the
-     reading column at 390px even after the note button takes its end. */
+     is left to inherit, because ink is darker than this in both cases.
+     `nowrap` is belt-and-braces now that every caption is a single word — it
+     was load-bearing while "Save for later" was one of them, where a break to
+     two lines made one answer taller than the other two and pushed the row out
+     of alignment. Kept, because the failure it prevents is silent and only shows
+     up on the narrowest phone. */
   .grasp-caption {
     font-family: var(--font-container);
     font-weight: 500;
