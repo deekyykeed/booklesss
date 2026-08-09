@@ -21,7 +21,7 @@
  *   clear     → the "keep" signal, so a rewrite doesn't delete what worked
  */
 
-import { type FreehandIconName } from "@/components/icons/freehand";
+import { type TablerIconName } from "@/components/icons/tabler";
 
 export type NoteId = "hard" | "long" | "example" | "wrong" | "clear";
 
@@ -46,28 +46,31 @@ export type NoteId = "hard" | "long" | "example" | "wrong" | "clear";
  * attached is exactly the drift that makes the next addition half-done. The
  * MynaUI names are recoverable from git if a monochrome fallback is ever wanted.
  *
- * STREAMLINE FREEHAND as of 2026-08-09, moved off Ultimate Colors with the rest
- * of the checkpoint row (owner: "lets use freehand duotone free icons for
- * everything in that row"). The flag collapses into one of these marks, so the
- * menu could not stay in a different family than the button that draws from it.
+ * TABLER (FREE) as of 2026-08-09, moved off Streamline Freehand — which had
+ * itself only replaced Ultimate Colors hours earlier — with the rest of the
+ * checkpoint row (owner: "switch to the icons from tabler free"). The flag
+ * collapses into one of these marks, so the menu could not stay in a different
+ * family than the button that draws from it.
  *
- * TWO ROWS GOT THE PICTURE THEY ALWAYS WANTED. Ultimate has no plain lightbulb
- * and no plain warning triangle, so "Clear" settled for a green tick and
- * "Something looks wrong" for a red cross. Freehand draws both, so the
- * substitutions are gone rather than carried over (they were argued in
- * gen-ultimate-icons.mjs, which went with the family — see git history).
- * `FreehandIconName` is what makes a typo a build error rather than a blank
- * space in the menu. */
+ * EVERY ROW NOW CARRIES THE PICTURE IT ALWAYS WANTED, which took three families
+ * to reach. Ultimate has no plain lightbulb and no plain warning triangle, so
+ * "Clear" settled for a green tick and "Something looks wrong" for a red cross.
+ * Freehand fixed both and broke the flag instead, having no plain one. Tabler
+ * draws all three, so nothing in this table is a substitute for something the
+ * set could not supply — the first time that has been true.
+ * `TablerIconName` is what makes a typo a build error rather than a blank space
+ * in the menu, and the generator pairs each name with its `-filled` twin so a
+ * mark can never ship with no selected state. */
 export const NOTES: {
   id: NoteId;
   label: string;
-  mark: FreehandIconName;
+  mark: TablerIconName;
 }[] = [
-  { id: "clear", label: "Clear", mark: "creativity-idea-bulb" },
-  { id: "hard", label: "Hard to follow", mark: "help-question-circle" },
-  { id: "long", label: "Too long", mark: "time-clock-circle" },
-  { id: "example", label: "Needs an example", mark: "form-edition-clipboard" },
-  { id: "wrong", label: "Something looks wrong", mark: "alerts-warning-triangle" },
+  { id: "clear", label: "Clear", mark: "bulb" },
+  { id: "hard", label: "Hard to follow", mark: "help-circle" },
+  { id: "long", label: "Too long", mark: "clock" },
+  { id: "example", label: "Needs an example", mark: "clipboard-text" },
+  { id: "wrong", label: "Something looks wrong", mark: "alert-triangle" },
 ];
 
 const KEY = "booklesss:step-notes:v1";
