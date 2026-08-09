@@ -21,10 +21,9 @@
 export const authEnabled =
   !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-/* Where the standalone auth pages live. Both still exist — a link in an email,
- * a bookmark, a student typing it — but they are no longer the main way in:
- * every gate calls `requireAccount()` and gets the sheet over the page they
- * were already on (components/auth/AuthGate). See lib/onboarding. */
+/* Where the auth pages live — THE way in, as of 2026-08-09. Every gate calls
+ * `requireAccount()` and is navigated here with `?next=` carrying where they
+ * were (components/auth/AuthRedirect). See lib/onboarding. */
 export const SIGN_IN_URL = "/sign-in";
 export const SIGN_UP_URL = "/sign-up";
 

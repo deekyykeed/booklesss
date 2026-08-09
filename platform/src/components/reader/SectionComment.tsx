@@ -84,9 +84,12 @@ export function StepComments({
   const save = () => {
     /* Same gate as every other recording control (owner's rule, 2026-08-03),
        applied at Save rather than at the textarea: typing costs the reader
-       nothing and the draft survives the sheet — the component stays mounted
-       under it — so what they wrote is still here to save once signed in.
-       The sheet's copy says exactly that. */
+       nothing. KNOWN COST of the 2026-08-09 redirect flow: the gate now
+       navigates to /sign-in, so an unsaved draft does not survive the trip
+       the way it survived the sheet. The round trip does return them to this
+       section (`?next=` keeps the hash) — if this loss shows up in feedback,
+       the fix is stashing the draft in localStorage before the ask, not
+       bringing the sheet back. */
     if (needsAccount()) {
       requireAccount("comment");
       return;

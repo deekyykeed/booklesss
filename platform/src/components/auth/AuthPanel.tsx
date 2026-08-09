@@ -1,12 +1,13 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthForm } from "@/components/auth/AuthForm";
-import type { OnboardingMode } from "@/lib/onboarding";
+import { DEFAULT_NEXT, onboardingHref, safeNext } from "@/lib/next-path";
+import type { OnboardingMode, OnboardingReason } from "@/lib/onboarding";
 
 /* ------------------------------------------------------------------ *
- * The standalone /sign-in and /sign-up pages — the same form the sheet holds,
- * on a page of its own.
+ * The /sign-in and /sign-up pages — THE way in, since 2026-08-09.
  *
  * IT IS THE ONBOARDING PAGE NOW (owner, 2026-08-06: "make the sign up and sign
  * in page look exactly like the onboarding page … still ask the question in the
@@ -29,35 +30,60 @@ import type { OnboardingMode } from "@/lib/onboarding";
  * have. Same shape, same type, different footing — and stating that here is
  * cheaper than a `variant` on Card that only this caller passes.
  *
- * These are NOT the main way in. Every gate in the app calls `requireAccount()`
- * and gets the sheet over whatever the reader was doing, because nobody should
- * lose their place as a reward for signing up (see AuthGate). These pages exist
- * for the ways in that aren't a tap inside the app: a bookmark, a link in a
- * message, somebody typing the URL.
+ * NO LONGER A SIDE DOOR. Until 2026-08-09 every in-app gate opened a sheet
+ * over the page (AuthGate) and these routes existed for bookmarks and typed
+ * URLs. The sheet is gone — a gated tap now NAVIGATES here (see AuthRedirect),
+ * carrying `?next=<where they were>` and `?why=<which gate fired>`. Both are
+ * stranger input and go through `safeNext` / a whitelist before use.
  *
- * NO TOGGLE ANY MORE (2026-08-07). The form itself now tries a sign-in first and
+ * NO TOGGLE ANY MORE (2026-08-07). The form itself tries a sign-in first and
  * only falls back to making an account if there isn't one — see the note atop
  * AuthForm — so a student who lands on /sign-up with an account already just
  * gets signed into it, with no error telling them to go find the other card.
  * `initialMode` survives as what it always half-was: which of two URLs got them
- * here, and so which greeting and which destination-if-new to show. It picks
- * words, not behaviour.
+ * here, and so which greeting to show. It picks words, not behaviour.
  *
- * `after` is a real destination rather than null: arriving here means there was
- * no page behind to return to. Reached via /sign-in it is `/dashboard` — somebody
- * who already has answers goes straight to the app. Reached via /sign-up it is
- * ALSO `/dashboard`, because most people who tap "Sign up" already have an
- * account and are about to be signed into it; `afterNew` is where a genuinely
- * new record goes instead — `/onboarding`, because it has no answers yet and a
- * dashboard drawn from none is a screen of dashes (see RequireOnboarding).
+ * WHERE THE TWO KINDS OF STUDENT LAND. A RETURNING one goes to `next` — the
+ * step or page the gate interrupted, or the dashboard when there is no honest
+ * origin (a bookmark, a typed URL). A NEW one goes into the real onboarding,
+ * always: /onboarding with the same `next` threaded through, so the flow's
+ * finish() returns them to the step they were reading with nothing skipped.
+ * This is the owner's 2026-08-09 call — a new account answers the questions
+ * NOW, not whenever it next reaches for the dashboard.
  * ------------------------------------------------------------------ */
+
+/** The one line above the form when a gate sent them here, chosen by which
+ *  gate it was. Carried from the sheet this page replaced — the words were
+ *  the funnel's best asset and the URL now delivers them. */
+const WHY: Record<OnboardingReason, string> = {
+  checkpoint: "Make an account to keep your answers and your streak.",
+  note: "Make an account so your notes are here next time.",
+  comment: "Make an account to post that.",
+  "next-step": "Make an account to keep reading.",
+  manual: "Your courses, your progress and your notes, on any phone you sign in on.",
+};
+
+const isReason = (v: string | null): v is OnboardingReason =>
+  v !== null && v in WHY;
 
 export function AuthPanel({ initialMode }: { initialMode: OnboardingMode }) {
   const router = useRouter();
-  /* Read straight off the route now, with no state behind it. The toggle that
-     used to flip this is gone — see the note above — and a `useState` nothing
-     sets is a variable pretending to be a control. */
   const signUp = initialMode === "sign-up";
+
+  /* `?next=` and `?why=`, read off `window.location` in an effect rather than
+     `useSearchParams` — that hook forces a Suspense boundary onto the page and
+     dynamic rendering onto a route that is otherwise static (the house pattern;
+     see lib/next-path). Until the effect runs the defaults hold: dashboard for
+     a returning student, plain /onboarding for a new one — which is exactly
+     right for the bookmark/typed-URL arrival that has no query string. */
+  const [next, setNext] = useState(DEFAULT_NEXT);
+  const [why, setWhy] = useState<OnboardingReason>("manual");
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    setNext(safeNext(p.get("next")));
+    const w = p.get("why");
+    if (isReason(w)) setWhy(w);
+  }, []);
 
   return (
     /* The question's own column, to the pixel — max-w-[440px] and 16px of page
@@ -66,8 +92,8 @@ export function AuthPanel({ initialMode }: { initialMode: OnboardingMode }) {
     <div className="mx-auto w-full max-w-[440px] px-4 pb-16">
       {/* Back sits where the flow's does: same height, same pt-6, same left,
           same 13px muted. `router.back()` rather than a route, because there
-          is no one place this page is reached from — a bookmark, the landing
-          CTA, a link in a message. */}
+          is no one place this page is reached from — a gated tap, a bookmark,
+          the landing CTA, a link in a message. */}
       <div className="flex h-9 items-center pt-6">
         <button
           type="button"
@@ -91,12 +117,12 @@ export function AuthPanel({ initialMode }: { initialMode: OnboardingMode }) {
           </h1>
           <p className="mt-2 max-w-[38ch] text-[14px] leading-[1.45] text-muted">
             {signUp
-              ? "Your courses, your progress and your notes, on any phone you sign in on."
+              ? WHY[why]
               : "Sign in and everything picks up where you left it, on whatever phone you're on."}
           </p>
 
           <div className="mt-8">
-            <AuthForm after="/dashboard" afterNew="/onboarding" />
+            <AuthForm after={next} afterNew={onboardingHref(next)} />
           </div>
         </section>
       </div>

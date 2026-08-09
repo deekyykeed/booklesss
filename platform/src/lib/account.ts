@@ -207,8 +207,8 @@ export function clearFreeStep(): void {
  *
  * Everything except a plain left-click is left alone. Cmd/Ctrl/Shift/Alt and
  * the middle button are the reader asking the BROWSER for the link — a new
- * tab, a new window — and answering those with a sheet in the page they were
- * leaving is a control that has misunderstood what it was asked.
+ * tab, a new window — and hijacking those in the page they were leaving is a
+ * control that has misunderstood what it was asked.
  */
 export function gateStepLink(e: React.MouseEvent, href: string): boolean {
   if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return false;

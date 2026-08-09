@@ -477,6 +477,87 @@ const PLATES = [
   { name: "43-echo", bg: TILE, safe: false,
     html: `<div class="frame">${word("Bklsss", { size: 430, color: PAPER, extra: "opacity:.09" })}</div>
       <div style="position:absolute;left:96px;top:320px">${word("Bklsss", { size: 31, color: PAPER })}</div>` },
+
+  /* ================================================================== *
+   * 2026-08-09 — six more, split two ways: three about the LETTERS
+   * (evening) and three about the SYSTEM around them (night). Checked
+   * against all forty-three above before writing; the discards this time
+   * were a letter-spacing specimen (36-bk-rule already owns spacing as a
+   * subject) and a grain plate (Brand/ has no grain.png on disk to embed,
+   * and synthesising a texture to stand for the real one is drawing).
+   * ================================================================== */
+
+  /* 1 — the word broken at its own seam: "Bkl" over "sss". 14-vertical is
+     a letter per row and reads as a banner; this is the word's two halves
+     — the three letters that spell, and the three that hiss — stacked as
+     a lockup. The tight .82 leading makes it a solid block of type. */
+  { name: "46-stack2", bg: CREAM, safe: true,
+    html: `<div class="safebox"><div style="display:flex;flex-direction:column;align-items:flex-start">
+      ${word("Bkl", { size: 330, color: INK })}
+      ${word("sss", { size: 330, color: INK })}
+    </div></div>` },
+
+  /* 2 — the letter that makes it ours. The name is a deliberate
+     misspelling and ONE letter carries that: the third s. 12-macro-sss
+     crops the hiss as texture; this names the culprit, in the only brand
+     hue, inside the word set plain. */
+  { name: "47-third-s", bg: GRADIENT, safe: true,
+    html: `<div class="safebox"><span class="w" style="font-size:185px;color:${INK}">Bklss<span style="color:${PURPLE}">s</span></span></div>` },
+
+  /* 3 — the same letter, two hands. 40-bk-lockup pairs the disc with the
+     word as a SYSTEM; this is narrower — one letter, drawn twice. The
+     word's B is Familjen; the icon's B is Burbank with the bar under it,
+     ratios straight off the disc (thickness .1, offset .2). Baseline-
+     aligned, because the baseline is where two hands can be compared. */
+  { name: "48-two-bs", bg: TILE, safe: true,
+    html: `<div class="safebox"><div style="display:flex;align-items:baseline;gap:96px">
+      ${word("B", { size: 360, color: PAPER })}
+      <span style="font-family:BB,system-ui,sans-serif;font-size:360px;line-height:.82;color:${PAPER};
+        text-decoration:underline;text-decoration-style:solid;text-decoration-thickness:36px;
+        text-underline-offset:72px">B</span>
+    </div></div>` },
+
+  /* 4 — the brand beside its working colours. The four hues below are the
+     dashboard's own stat tones (performance orange, streak purple,
+     coverage green, time blue — validated as a set against the card
+     surface). No plate has ever put the product's palette in a frame, and
+     the claim is the restraint: the word stays ink; colour belongs to the
+     numbers. */
+  { name: "44-palette", bg: GRADIENT, safe: true,
+    html: `<div class="safebox"><div style="display:flex;flex-direction:column;align-items:center;gap:56px">
+      ${word("Bklsss", { size: 150, color: INK })}
+      <div style="display:flex;gap:30px">
+        ${["#eb6834", "#4a3aa7", "#17754d", "#2a78d6"].map((c) =>
+          `<div style="width:46px;height:46px;border-radius:50%;background:${c}"></div>`).join("")}
+      </div>
+    </div></div>` },
+
+  /* 5 — the icon's one gesture, carried across the whole word. The ◯B's
+     bar is what makes the disc ours; no plate has asked whether it scales
+     past one letter. Same ratios as the disc (thickness .1 of the size,
+     offset .2), and "Bklsss" has no descenders, so the bar runs clean. */
+  { name: "49-underscore", bg: CREAM, safe: true,
+    html: `<div class="safebox"><span class="w" style="font-size:150px;color:${INK};
+      text-decoration:underline;text-decoration-style:solid;text-decoration-thickness:15px;
+      text-underline-offset:30px">Bklsss</span></div>` },
+
+  /* 6 — one word, both papers. Every plate so far picks a ground; none has
+     shown that the brand doesn't care. The frame splits at 850 — cream
+     above, the tile black below — and the word sits identical on each,
+     ink on one and paper on the other. */
+  /* safe:false because the measurer reads `.safebox > *` and this plate has
+     no safebox — but the words are inside the safe area BY CONSTRUCTION:
+     left 96, width 752 (96..848), and the two bands run 300–850 and
+     850–1400, which are the safe box's own bounds. */
+  { name: "45-grounds", bg: `linear-gradient(180deg, ${CREAM} 0px, ${CREAM} 850px, ${TILE} 850px, ${TILE} 1920px)`, safe: false,
+    html: `<div style="position:absolute;left:96px;width:${1080 - 96 - 232}px;top:300px;height:550px;
+        display:flex;align-items:center;justify-content:center">
+        ${word("Bklsss", { size: 130, color: INK })}
+      </div>
+      <div style="position:absolute;left:96px;width:${1080 - 96 - 232}px;top:850px;height:550px;
+        display:flex;align-items:center;justify-content:center">
+        ${word("Bklsss", { size: 130, color: PAPER })}
+      </div>` },
 ];
 
 const CHOSEN = PICK.length

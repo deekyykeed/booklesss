@@ -11,16 +11,26 @@
  * time tile's footer became the goal the student set.
  *
  *   row-*    the three answers: doodles, grey at rest, colour = your answer,
- *            one word under each mark
- *   card-*   the course card at the ends of a course's life: Start, Resume,
- *            Done ✓ · Read it again
+ *            one word under each mark. ⚠️ SHOT AND UNPOSTABLE — see below.
+ *   cd-*     the course card at the ends of a course's life: Start, Resume,
+ *            Done ✓ · Read it again. (cd-, not card- — cap-0807 owns card-*,
+ *            and this run clobbered its card-3-done.png before the rename.)
  *   greet-*  the line under the greeting, which is always a comparison now
  *   tile-*   the Time tile, whose footer is the goal
  *
+ * ⚠️ THE ROW SET IS EVIDENCE, NOT SLIDES. At 4b801bc the three Lordicon
+ * players mount an EMPTY 26px div — no SVG inside, no error in the console —
+ * on the production build AND on booklesss.vercel.app itself (probed both).
+ * The shots show three floating words with no marks over them. Rule 10: a
+ * broken control is not a subject. The morning slot moved to the card.
+ *
+ * ⚠️ PRODUCTION SERVE, NOT `next dev`, and not for the service worker: on dev,
+ * lottie-web dies in a loop ("this.elements[i].destroy is not a function" —
+ * StrictMode double-mount) and the step page never settles enough to shoot.
+ *   npm run build && npx next start -p 3101
+ *
  * Shot from C:/bkls-shot pinned to 4b801bc (today's HEAD — the commit that
- * landed the Save doodle's own Lottie, without which that answer draws its
- * Tabler fallback). `next dev` on :3101 is enough; nothing here needs a
- * service worker. Auth stays off in the worktree.
+ * landed the Save doodle's own Lottie). Auth stays off in the worktree.
  *
  * TWO KINDS OF CONTEXT, AND THEY MUST NOT MIX. The greeting is a random pick,
  * so the greet/tile contexts PIN Math.random to hold the same greeting across
@@ -389,9 +399,9 @@ if (wants("card")) {
   };
 
   console.log("the card's three claims ->");
-  await shot("card-1-start.png", CARD_START, { expect: /Start · / });
-  await shot("card-2-resume.png", CARD_MID, { expect: /Resume · / });
-  await shot("card-3-done.png", CARD_DONE, { tab: "Completed", expect: /Read it again/ });
+  await shot("cd-1-start.png", CARD_START, { expect: /Start · / });
+  await shot("cd-2-resume.png", CARD_MID, { expect: /Resume · / });
+  await shot("cd-3-done.png", CARD_DONE, { tab: "Completed", expect: /Read it again/ });
 }
 
 /* ====================================================================== *

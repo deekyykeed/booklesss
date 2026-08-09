@@ -2588,9 +2588,10 @@
 }
 
 /* The onboarding sheet's CSS lived here until 2026-08-03, when the custom
-   sheet was retired for Clerk's own modal ("use clerk stuff"). Clerk is gone
-   (2026-08-05) and the sheet is the app's own again — components/auth/AuthGate
-   and AuthForm, styled inline against the settings sheet's measured spec.
+   sheet was retired for Clerk's own modal ("use clerk stuff"). Clerk went
+   2026-08-05, the app's own sheet (AuthGate) served until 2026-08-09, and now
+   there is no sheet at all: a gated tap navigates to /sign-in, where AuthForm
+   is styled inline on the onboarding page's own surface.
 
    The `.cl-*` overrides that sat here went with it: two Clerk colours that its
    appearance object could not reach, fixed with !important because Clerk

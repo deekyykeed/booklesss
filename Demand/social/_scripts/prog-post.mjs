@@ -1519,6 +1519,77 @@ const CONFIGS = {
     ],
   }),
 
+  /* ================= 2026-08-09 ================= *
+   *
+   * THE DASHBOARD'S DAY. The checkpoint doodles were meant to lead the day and
+   * were shot broken — at 4b801bc the Lordicon players mount an empty div on
+   * production and on the live deploy, so the row-*.png set is evidence for
+   * the bug report, not slides (rule 10). Three dashboard subjects instead.
+   *
+   * 1 — the card's three claims.                               (morning)
+   *
+   * Friday's own PLAN flagged it: a finished course card said "Resume",
+   * pointed at step one and read 0d — indistinguishable from a course never
+   * opened. Settled on the 8th, and the three claims are now three different
+   * pictures: Start (no figures to show, and honest about it), Resume (the
+   * fill IS the progress bar, in the card's own hue — the same hue its
+   * fortnight curve draws), Done (streak gone, green check where the score
+   * was, "Done ✓ · Read it again" pointing at step one, which is where
+   * reading it again starts).
+   *
+   * NOT grouped — all three run the card's full width, same as f-lives. */
+  "d-card": () => ({
+    slot: "1-morning",
+    slides: [
+      object({ img: img("cd-1-start.png"), w: 752 }),
+      object({ img: img("cd-2-resume.png"), w: 752 }),
+      object({ img: img("cd-3-done.png"), w: 752 }),
+    ],
+  }),
+
+  /* 2 — the line under the greeting.                            (midday)
+   *
+   * It counted ("2 sections done across 3 days"); now it compares — against
+   * the goal set at onboarding, paced by the student's own named study days,
+   * or against their own past weeks when no goal exists. Four sentences,
+   * four seeded weeks, one pinned greeting above them so the only thing
+   * moving between slides is the claim.
+   *
+   * `flat` — bare text has no surface, and the wide shadow reads as a smudge
+   * behind letterforms. GROUPED: two states are one line and two are two, so
+   * the alpha boxes differ by a text line's height — one scale and one centre
+   * for the set keeps the greeting pinned in place while the line under it
+   * grows, which is exactly the motion the swipe should show. */
+  "d-line": () => ({
+    slot: "2-midday",
+    slides: [
+      object({ img: img("greet-1-aiming.png"), w: 750, flat: true, group: "dline" }),
+      object({ img: img("greet-2-behind.png"), w: 750, flat: true, group: "dline" }),
+      object({ img: img("greet-3-done.png"), w: 750, flat: true, group: "dline" }),
+      object({ img: img("greet-4-usual.png"), w: 750, flat: true, group: "dline" }),
+    ],
+  }),
+
+  /* 3 — the time tile's footer is the goal.                  (afternoon)
+   *
+   * It read "+56m first week" and the owner's note was to just say what the
+   * target was. So the bottom line is the goal now: absent (the vs-last-week
+   * delta survives for the goalless), grey "of 5h" while the week is short,
+   * lit in the tile's own blue the week it is met. Third question asked of
+   * this tile (8-04: four measures; 8-06: three points in one history) and a
+   * different one: not what it measures, but what it measures AGAINST.
+   *
+   * NOT flat — the tile carries its own border and surface. NOT grouped —
+   * fixed 130px box, identical alpha bounds every state. */
+  "d-tile": () => ({
+    slot: "3-afternoon",
+    slides: [
+      object({ img: img("tile-1-delta.png"), w: 700 }),
+      object({ img: img("tile-2-under.png"), w: 700 }),
+      object({ img: img("tile-3-met.png"), w: 700 }),
+    ],
+  }),
+
   brand: () => ({
     slot: "5-night",
     slides: [

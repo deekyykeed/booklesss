@@ -5,7 +5,7 @@ import { RegisterSW } from "@/components/RegisterSW";
 import { DesktopGate } from "@/components/DesktopGate";
 import { IdentityAssignment } from "@/components/identity/IdentityAssignment";
 import { AccountSignal } from "@/components/auth/AccountSignal";
-import { AuthGate } from "@/components/auth/AuthGate";
+import { AuthRedirect } from "@/components/auth/AuthRedirect";
 import { SettingsSheet } from "@/components/identity/SettingsSheet";
 import { openGraph, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
@@ -223,11 +223,12 @@ export default function RootLayout({
 
             AccountSignal publishes "is anybody signed in" and who they are to
             lib/account, which is what the checkpoint row and the next-step link
-            gate on. AuthGate turns every requireAccount() ask — a checkpoint
-            answer, the next-step gate, the landing card — into the sheet, over
-            whatever page raised it. */}
+            gate on. AuthRedirect turns every requireAccount() ask — a
+            checkpoint answer, the next-step gate — into a navigation to the
+            real /sign-in page, carrying where the reader was so the round trip
+            ends there. The sheet it replaced (AuthGate) went 2026-08-09. */}
         <AccountSignal />
-        <AuthGate />
+        <AuthRedirect />
         {/* Booklesss is a phone app — a wide viewport gets sent to its phone.
             Mounted at the root for the same reason as the identity assignment. */}
         <DesktopGate />

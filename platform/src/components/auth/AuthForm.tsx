@@ -137,28 +137,24 @@ const SAYING: Record<Phase, string> = {
 };
 
 export function AuthForm({
-  initialEmail,
   after,
   afterNew,
-  onDone,
   autoFocus = true,
 }: {
-  initialEmail?: string | null;
-  /** Where a RETURNING student lands. Null means stay put — which is the whole
-   *  point of asking in a sheet rather than on a page. */
+  /** Where a RETURNING student lands — the page a gate interrupted, or the
+   *  dashboard when there is no honest origin. AuthPanel reads it off `?next=`
+   *  through `safeNext`, so by the time it is here it is a path on this site. */
   after?: string | null;
   /** Where a student whose account was just CREATED lands. Defaults to `after`.
-   *  The full-page form sends them to /onboarding, because a new record has no
-   *  answers in it and a dashboard drawn from none is a screen of dashes. The
-   *  sheet leaves it unset on purpose: somebody halfway down a step keeps their
-   *  place, and RequireOnboarding will ask them the moment they reach for the
-   *  dashboard. */
+   *  AuthPanel passes /onboarding with `next` threaded through, because a new
+   *  record has no answers in it and a dashboard drawn from none is a screen
+   *  of dashes — and since 2026-08-09 there is no sheet deferring the
+   *  questions: every new account answers them on the way in. */
   afterNew?: string | null;
-  onDone?: () => void;
   autoFocus?: boolean;
 }) {
   const router = useRouter();
-  const [email, setEmail] = useState(initialEmail ?? "");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   /* Null is idle. One piece of state rather than a `busy` boolean beside a
@@ -210,7 +206,6 @@ export function AuthForm({
        rather than a button that finished and went quiet. */
     const enter = (to: string | null) => {
       setPhase("entering");
-      onDone?.();
       if (to) router.push(to);
       router.refresh();
     };

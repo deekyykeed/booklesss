@@ -410,11 +410,12 @@ export function Checkpoint({
  *
  * It stays a real <Link>: the href is the true destination, so the browser
  * shows it on hover, it opens in a new tab from a long-press, and a crawler
- * follows it. The gate is on the plain left-click only, which is the one the
- * sheet can actually serve.
+ * follows it. The gate is on the plain left-click only, which is the one it
+ * can honestly answer for.
  *
- * `after` carries the destination into the sheet, so signing up lands on the
- * step they were reaching for rather than back at the top of the app.
+ * `after` carries the destination into the redirect (`?next=`), so signing up
+ * — and, for a new account, finishing onboarding — lands on the step they
+ * were reaching for rather than back at the top of the app.
  *
  * ONE FREE STEP IS A GUESS. It is the owner's spec as stated, and it is also
  * the whole funnel in one number — a WhatsApp reader meets this at the end of
@@ -443,7 +444,7 @@ export function StepComplete({ lessonId }: { lessonId: string }) {
       href={href}
       onClick={(e) => {
         /* Prefetched when the gate takes the click, so the moment they finish
-           signing up the step is already there — the sheet's whole promise is
+           signing up the step is already there — the gate's whole promise is
            that they carry on. */
         if (gateStepLink(e, href)) router.prefetch(href);
       }}
