@@ -311,7 +311,13 @@ export function Checkpoint({
                    nothing to nag about, only the same door each time. */
                 onClick={() => {
                   if (needsAccount()) {
-                    requireAccount("checkpoint");
+                    /* The reason is the TAP, not the row (owner, 2026-08-09):
+                       the auth page's heading answers the exact thing they
+                       reached for — "save this for later", "like this" — so
+                       the door doesn't read as a generic sign-up wall. Lost
+                       stays the generic checkpoint reason: "Sign in to say
+                       this lost you" would blame the page on its own heading. */
+                    requireAccount(a.id === "almost" ? "save" : a.id === "got" ? "like" : "checkpoint");
                     return;
                   }
                   /* Called here, in the handler, because a browser ignores

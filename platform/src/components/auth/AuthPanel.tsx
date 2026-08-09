@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthForm } from "@/components/auth/AuthForm";
+import { labelFor, lessonIdForSlug } from "@/lib/course";
 import { DEFAULT_NEXT, onboardingHref, safeNext } from "@/lib/next-path";
 import type { OnboardingMode, OnboardingReason } from "@/lib/onboarding";
 
@@ -52,19 +53,45 @@ import type { OnboardingMode, OnboardingReason } from "@/lib/onboarding";
  * NOW, not whenever it next reaches for the dashboard.
  * ------------------------------------------------------------------ */
 
-/** The one line above the form when a gate sent them here, chosen by which
- *  gate it was. Carried from the sheet this page replaced — the words were
- *  the funnel's best asset and the URL now delivers them. */
-const WHY: Record<OnboardingReason, string> = {
-  checkpoint: "Make an account to keep your answers and your streak.",
-  note: "Make an account so your notes are here next time.",
-  comment: "Make an account to post that.",
-  "next-step": "Make an account to keep reading.",
-  manual: "Your courses, your progress and your notes, on any phone you sign in on.",
+/** THE HEADING ANSWERS THE TAP (owner, 2026-08-09: the page "shouldnt jyst be
+ *  generic like create account — say something like sign in to contiue with
+ *  {step} or to save this for later or to like this"). A reader from a shared
+ *  link who reached for something specific gets a door named after that thing,
+ *  not a sign-up wall. "Sign in", even though the form also creates accounts —
+ *  the line under the button explains the both-jobs behaviour, and "Sign in to
+ *  save this" is a sentence where "Create an account to save this" is a form.
+ *
+ *  `next-step` is special-cased below: where the destination resolves to a
+ *  real step, the heading names it — "Sign in to continue with {step}". */
+const HEADLINE: Record<Exclude<OnboardingReason, "manual">, string> = {
+  save: "Sign in to save this for later",
+  like: "Sign in to like this",
+  note: "Sign in to leave your note",
+  comment: "Sign in to post your comment",
+  checkpoint: "Sign in to keep your answers",
+  "next-step": "Sign in to keep reading",
 };
 
-const isReason = (v: string | null): v is OnboardingReason =>
-  v !== null && v in WHY;
+const isReason = (v: string | null): v is Exclude<OnboardingReason, "manual"> =>
+  v !== null && v in HEADLINE;
+
+/* Layout effect in the browser, plain effect on the server. A gated arrival is
+ * a soft client-side push — the component's very first mount — so the query
+ * read runs BEFORE paint and the reader never sees the generic heading flash
+ * into the specific one. A bare useLayoutEffect would warn during dev SSR; on
+ * the server this is the no-op useEffect and the prerendered HTML keeps the
+ * manual defaults, which is right for the bookmark arrival it serves. */
+const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
+/** The step a `next` path points at, by its sidebar label — or null when the
+ *  path isn't a step (the dashboard, a course page), in which case the plain
+ *  headline reads right anyway. Hash and query are the reader's place within
+ *  the step, not part of its identity. */
+function stepLabel(next: string): string | null {
+  const segs = next.split(/[?#]/)[0].replace(/^\/+/, "").split("/").filter(Boolean);
+  const id = lessonIdForSlug(segs);
+  return id ? labelFor(id) : null;
+}
 
 export function AuthPanel({ initialMode }: { initialMode: OnboardingMode }) {
   const router = useRouter();
@@ -78,12 +105,25 @@ export function AuthPanel({ initialMode }: { initialMode: OnboardingMode }) {
      right for the bookmark/typed-URL arrival that has no query string. */
   const [next, setNext] = useState(DEFAULT_NEXT);
   const [why, setWhy] = useState<OnboardingReason>("manual");
-  useEffect(() => {
+  useIsoLayoutEffect(() => {
     const p = new URLSearchParams(window.location.search);
     setNext(safeNext(p.get("next")));
     const w = p.get("why");
     if (isReason(w)) setWhy(w);
   }, []);
+
+  /* The gate's own sentence where a gate sent them; the plain greeting for a
+     bookmark or typed URL. `why === "manual"` is compared directly (not through
+     a `gated` boolean) so TypeScript narrows it out of HEADLINE's key type. */
+  const step = why === "next-step" ? stepLabel(next) : null;
+  const heading =
+    why === "manual"
+      ? signUp
+        ? "Create your account"
+        : "Welcome back"
+      : step
+        ? `Sign in to continue with ${step}`
+        : HEADLINE[why];
 
   return (
     /* The question's own column, to the pixel — max-w-[440px] and 16px of page
@@ -113,11 +153,11 @@ export function AuthPanel({ initialMode }: { initialMode: OnboardingMode }) {
           {/* The question, in the flow's exact type — 30px display bold, and
               the two-line muted line under it. */}
           <h1 className="font-display text-[30px] font-bold leading-[1.1] tracking-[-0.02em] text-ink">
-            {signUp ? "Create your account" : "Welcome back"}
+            {heading}
           </h1>
           <p className="mt-2 max-w-[38ch] text-[14px] leading-[1.45] text-muted">
-            {signUp
-              ? WHY[why]
+            {why !== "manual" || signUp
+              ? "Your courses, your progress and your notes, on any phone you sign in on."
               : "Sign in and everything picks up where you left it, on whatever phone you're on."}
           </p>
 

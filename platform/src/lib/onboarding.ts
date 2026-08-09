@@ -29,7 +29,20 @@ import { useSyncExternalStore } from "react";
  * returns them there with their scroll offset restored by LessonReader.
  * ------------------------------------------------------------------ */
 
-export type OnboardingReason = "checkpoint" | "note" | "comment" | "next-step" | "manual";
+/* One reason PER SENTENCE THE AUTH PAGE CAN SAY, not per surface (owner,
+ * 2026-08-09: the page "shouldnt jyst be generic like create account — say
+ * something like sign in to contiue with {step} or to save this for later or
+ * to like this"). "save" and "like" are the two checkpoint answers named
+ * individually so the page can answer the exact tap; "checkpoint" survives as
+ * the third answer (Lost) and any future scale change. */
+export type OnboardingReason =
+  | "checkpoint"
+  | "save"
+  | "like"
+  | "note"
+  | "comment"
+  | "next-step"
+  | "manual";
 
 /** Which page the redirect lands on. The form behind both is one box doing
  *  both jobs (see AuthForm), so this chooses the greeting, not the branch. */
