@@ -167,9 +167,12 @@ export function ActionBar(props: Props) {
      white, clipped to the ink. Built here so the two copies cannot drift. */
   const row = (
     <>
-      <span className="min-w-0 truncate text-[13px] leading-5">
+      {/* Satoshi throughout (owner, 2026-08-09): the bar is a container, not
+          reading. The quiet prefix keeps its regular weight — only the label
+          itself is medium, so "Resume · " defers to the step it names. */}
+      <span className="min-w-0 truncate font-container text-[13px] leading-5">
         {prefix && <span className="opacity-55">{prefix}</span>}
-        {children}
+        <span className="font-medium">{children}</span>
       </span>
       {busy ? <Spinner /> : <Arrow />}
     </>
