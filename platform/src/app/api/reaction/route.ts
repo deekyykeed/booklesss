@@ -55,8 +55,12 @@ export async function POST(req: Request) {
     return Response.json({ ok: false, reason: "bad-json" }, { status: 400 });
   }
 
-  const lesson = typeof body.lesson === "string" ? body.lesson : null;
-  const section = typeof body.section === "string" ? body.section : null;
+  /* Length-capped, not just type-checked: these land in indexed text columns,
+     and the longest real id in course-data is ~60 characters. A signed-in
+     browser with a script should not be able to grow the table by megabytes a
+     row — 120 keeps every honest caller and bounds the dishonest one. */
+  const lesson = typeof body.lesson === "string" && body.lesson.length <= 120 ? body.lesson : null;
+  const section = typeof body.section === "string" && body.section.length <= 120 ? body.section : null;
   if (!lesson || !section) return Response.json({ ok: false, reason: "bad-target" }, { status: 400 });
 
   /* Validated against the same list the reader uses, not just "is a string".
