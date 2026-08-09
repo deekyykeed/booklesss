@@ -92,6 +92,22 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
+**From session 57 (2026-08-09 evening — the popup replaced by the real
+sign-in page, and the auth page's heading now answers the tap. Linear
+unreachable again.)**
+
+- [ ] ⚠️ **Supabase → Auth → Rate Limits before the launch blast: the defaults
+      throttle auth calls PER IP (~30/5min), and the one-box form spends TWO
+      calls per new student** — a classroom signing up on one campus Wi-Fi NAT
+      is ~15 accounts per 5 minutes before students start seeing "too many
+      tries". Sits beside the SMTP item below: both are dashboard settings,
+      both bite only on a good launch day.
+- [ ] Test the new gate flow on the phone: open a step in incognito, tap Save
+      → the page should say "Sign in to save this for later" and, after
+      onboarding, land back on the step. Known accepted cost: a typed-but-
+      unsaved comment does not survive the trip (fix if feedback demands it is
+      a localStorage stash in `SectionComment`, not the sheet back).
+
 **From session 56 (2026-08-09, the checkpoint row and an auth security pass.
 Linear unreachable for the THIRTEENTH session.)**
 - [ ] ⚠️ **THREE SUPABASE DASHBOARD SETTINGS ARE THE REMAINING HALF OF THE
@@ -1317,7 +1333,11 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 
 ## Session Log
 
-### Session 2026-08-09 (session 56 — the popup dies on launch eve, and the loopholes get closed)
+### Session 2026-08-09 (session 57 — the popup dies on launch eve, and the loopholes get closed)
+
+*Numbered 57: this entry was first written as 56, and the checkpoint-row +
+security-headers session wrapping in the same tree also claimed 56 in the Next
+Session block. Its numbering is not mine to correct.*
 
 **Done:** The auth popup is gone (owner: a reader arriving through a shared
 step link who taps a gated control "should actually go into onboarding").
@@ -1335,6 +1355,15 @@ RPC, though event-trigger functions can't actually fire that way);
 any signed-in account); `.env.example` rewritten off Clerk. Also the previous
 session's finished-but-uncommitted work (note-verdict doodles/hues,
 Saved/Liked receipt words) caught up and pushed.
+
+**Second pass, same day (owner: "so it doesnt just feel like a boring old sign
+up"):** the auth page's HEADING now answers the exact tap. Save and Like became
+their own `OnboardingReason`s; the next-step gate's heading resolves `?next=`
+through the nav index and names the step ("Sign in to continue with {step}");
+note/comment/checkpoint each get their sentence; a bookmark arrival keeps the
+plain greeting. The query read moved to a layout effect (`useIsoLayoutEffect`)
+so the specific heading is there on first paint rather than flashed in — a
+gated arrival is a soft push, so the swap runs before the browser ever paints.
 
 **What Worked:** The redirect flow cost almost nothing because
 `lib/next-path.ts` already existed — `safeNext`/`onboardingHref`/
