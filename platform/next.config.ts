@@ -56,8 +56,19 @@ const SUPABASE_ORIGIN = (() => {
 
 const CSP = [
   "default-src 'self'",
-  // See the long note above: inline is required by RSC, external script is not.
-  "script-src 'self' 'unsafe-inline'",
+  /* See the long note above: inline is required by RSC, external script is not.
+   *
+   * ⚠️ 'unsafe-eval' IS REQUIRED BY THE LORDICON MARKS, and removing it blanks
+   * them SILENTLY. lottie-web compiles the expressions inside a Lottie file
+   * with `new Function`; blocked, it builds an <svg> with zero layers — no
+   * console violation you'd connect to it, every fetch a 200, and a
+   * `destroy is not a function` crash on unmount. Shipped broken for a few
+   * hours on 2026-08-09: the headers landed after the icons and every mark on
+   * the checkpoint row went invisible in production. Proven by A/B against a
+   * CSP-bypassed browser (1 shadow path vs 14). If the Lordicons ever leave
+   * the app, take 'unsafe-eval' back out — connect-src stays the real
+   * exfiltration guard either way. */
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
   // Tailwind and every `style={{…}}` in the tree are inline styles.
   "style-src 'self' 'unsafe-inline'",
   // Self-hosted via next/font; no CDN is allowed to serve us a face.
