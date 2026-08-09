@@ -518,6 +518,28 @@ Print the css size `isolate()` reports and check the numbers actually differ.
   2026-08-08 callout rows in `neutralize.mjs` are the shape.
 - **A clean scan is not a clean crop.** A step title with no banned word in it
   can still be a lie under the wrong course heading. Read the crop.
+- **A control whose artwork arrives by FETCH can pass every assert and still
+  be a hole.** 2026-08-09: the checkpoint doodles' text (`data-answered`, the
+  captions) satisfied every `expect:` while the three Lordicon players had
+  mounted **empty divs** — no SVG, no console error, identical on the live
+  deploy. Text asserts see text; they cannot see that a mark's box is empty.
+  For any Lottie/canvas/img subject, probe what is INSIDE the mark's element
+  before trusting a run, and read the PNG. (The cause turned out to be the
+  app's CSP missing `'unsafe-eval'`, which lottie-web needs — so the empty
+  box was a production-only failure by construction: the CSP ships only on
+  production builds. Probing the crop turned a would-be post into a bug
+  report the same hour a parallel session fixed; rule 10 caught what no
+  assert did.)
+- **`next dev` cannot photograph this app's Lottie controls.** StrictMode
+  double-mounts the player and lottie-web dies in a destroy loop
+  ("this.elements[i].destroy is not a function") that keeps the step page
+  from settling. Any subject that draws through lottie-web needs the
+  production serve: `npm run build && npx next start -p 3101`.
+- **Capture scripts share one `_source/feature-capture/` namespace — prefix a
+  day's shots uniquely.** 2026-08-09's card shots went out as `card-*.png`
+  and silently overwrote cap-0807's `card-3-done.png` (that name was already
+  taken) before being renamed `cd-*`. The PNGs are gitignored, so a clobbered
+  source shot is only re-shootable if its pin is still written in its PLAN.
 - **Print the offending SENTENCE, not just the banned word** — most hits are a
   substring inside a longer word.
 
