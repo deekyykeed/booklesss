@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { labelFor, nextLessonId, pathForId } from "@/lib/course";
 import { rate, useProgress, type Grasp } from "@/lib/progress";
+import { savedFor, setSaved, subscribeSaved } from "@/lib/saved";
 import { TablerIcon, type TablerIconName } from "@/components/icons/tabler";
 import { LordIcon } from "@/components/icons/lordicon";
 import { hapticConfirm } from "@/lib/haptics";
@@ -156,8 +157,7 @@ import { SectionNote } from "./SectionNote";
  *                                         # default it prints is an `in-` one
  * Until that file exists the fetch 404s and this answer simply keeps drawing its
  * Tabler bookmark, which is exactly what the fallback is for. */
-const ANSWERS: {
-  id: Grasp;
+type AnswerConfig = {
   label: string;
   /** The word once chosen — the receipt to `label`'s offer. Falls back to
    *  `label` where the pair doesn't exist (Lost). */
@@ -165,29 +165,34 @@ const ANSWERS: {
   icon: TablerIconName;
   lord: string;
   state?: string;
-}[] = [
-  /* ONE WORD EACH (owner, 2026-08-09: "buy only one word for each"). "Save for
-     later" was the odd one out at three words and roughly twice the width of
-     its neighbours, which made the middle answer look like the important one.
-     The caption names the mark; the mark carries the meaning.
+};
 
-     NOT "HATE" AND NOT "LOVE" (owner, same day: "the words for those two cant
-     be those. cant have 'love'"). The FEELING framing stays — it is what the
-     drawn faces are — but printed under a study section those two words grade
-     the reader's taste rather than report their read. "Lost" is this row's own
-     oldest negative ("Lost me", 2026-08-02 onward) cut to one word: it blames
-     the section, not the student. "Liked" keeps the warmth at a weight a
-     textbook page can carry. If either word changes again it is one string
-     here — the ids, the storage and the doodles do not move. */
-  /* THE WORD ANSWERS BACK (owner, 2026-08-09: "save should go saved after,
-     same for liked"). At rest a caption is the OFFER — Save, Like — and once
-     chosen it is the RECEIPT: Saved, Liked. The tap visibly changed the
-     sentence, which is the cheapest confirmation there is. "Lost" has no
-     labelOn because it has no imperative — "Lose" is not an offer anyone
-     makes — so it reads as the report it always was, both ways. */
-  { id: "almost", label: "Save", labelOn: "Saved", icon: "bookmark", lord: "grasp-save", state: "hover-pinch" },
+/* ONE WORD EACH (owner, 2026-08-09: "buy only one word for each"); NOT "HATE"
+   AND NOT "LOVE" (same day: "cant have 'love'" — "Lost" blames the section,
+   not the student, and "Like" keeps the warmth at a weight a textbook page can
+   carry); THE WORD ANSWERS BACK (same day: "save should go saved after") — the
+   caption at rest is the OFFER, and once chosen it is the RECEIPT: Saved,
+   Liked. "Lost" has no labelOn because it has no imperative.
+
+   ⚠️ SAVE IS NOT IN THIS LIST, AND THAT IS THE POINT (owner, 2026-08-09
+   evening: "the save should be independent from the lost and like. when I tap
+   like the saved goes off"). It shipped that morning as the third `Grasp`
+   value — one slot per section, so Like really did un-save, by construction
+   rather than by bug. The row's own comments had already called Save a
+   DECISION and Lost/Like a VERDICT; two different questions cannot share one
+   answer slot. Save now lives in lib/saved (its own store, its own toggle,
+   below), the verdict pair keeps the slot, and `grasp: "almost"` survives only
+   as a legacy value this component reads as "saved" and migrates on touch. */
+const SAVE: AnswerConfig = {
+  label: "Save",
+  labelOn: "Saved",
+  icon: "bookmark",
+  lord: "grasp-save",
+  state: "hover-pinch",
+};
+const VERDICTS: (AnswerConfig & { id: Grasp })[] = [
   { id: "not", label: "Lost", icon: "mood-sad", lord: "grasp-not", state: "hover-pinch" },
-  { id: "got", label: "Like", labelOn: "Liked", icon: "mood-happy", lord: "grasp-got", state: "hover-smile" },
+  { id: "got", label: "Like", icon: "mood-happy", lord: "grasp-got", state: "hover-smile", labelOn: "Liked" },
 ];
 
 /* End-of-section checkpoint — a scale rather than a tick.
@@ -209,17 +214,32 @@ export function Checkpoint({
   checkpointId: string;
   heading: string;
 }) {
-  const { hydrated, graspOf, toggle } = useProgress();
+  const { hydrated, graspOf, toggle, isDone } = useProgress();
   // Before hydration the server HTML knows nothing, so everything renders
   // unanswered and settles once localStorage has been read.
-  const chosen = hydrated ? graspOf(lessonId, checkpointId) : null;
+  const rawGrasp = hydrated ? graspOf(lessonId, checkpointId) : null;
+  /* `"almost"` is the LEGACY spelling of "saved" — the one day Save lived in
+     the grasp slot. It never lights a verdict button; it reads as saved below
+     and is migrated into lib/saved by the next tap on either control. */
+  const legacySaved = rawGrasp === "almost";
+  const chosen = legacySaved ? null : rawGrasp;
+
+  /* Save's own state, from its own store — the entire fix for "when I tap like
+     the saved goes off". A boolean primitive, so it is safe as a
+     useSyncExternalStore snapshot. */
+  const savedHere = useSyncExternalStore(
+    subscribeSaved,
+    () => savedFor(lessonId, checkpointId),
+    () => false,
+  );
+  const saved = hydrated && (savedHere || legacySaved);
 
   /* One counter per answer, bumped by its own button. `LordIcon` replays from
      the first frame whenever its `playToken` changes, so this is what makes a
      mark animate — and, because only the pressed button's count moves, the ONLY
      mark that animates is the one under the reader's thumb. See the note over
-     ANSWERS for why `active` cannot do this job. */
-  const [plays, setPlays] = useState<Partial<Record<Grasp, number>>>({});
+     VERDICTS for why `active` cannot do this job. */
+  const [plays, setPlays] = useState<Partial<Record<Grasp | "save", number>>>({});
 
   /* NO TALLY BESIDE THE FACES (owner, 2026-08-09). A count lived here for one
    * day — built 2026-08-08 on the owner's own ask, behind two gates: hidden
@@ -283,15 +303,76 @@ export function Checkpoint({
         <SectionNote lessonId={lessonId} sectionId={checkpointId} />
         <div
           className="grasp-group mark-cluster"
-          role="radiogroup"
+          /* `group`, not `radiogroup`, since Save became independent: three
+             toggle buttons announcing their own pressed state, of which two
+             happen to be mutually exclusive by behaviour. Radio semantics would
+             promise a single choice across all three, which is exactly the
+             contract the owner asked this row to stop keeping. */
+          role="group"
           /* The question a screen reader hears, and it had to change with the
              answers. "How much of X landed?" was the comprehension scale's
-             question, and reading it out before three options that say Hate /
-             Save / Love would offer a scale and then present a choice. */
+             question, and reading it out before options that say Save / Lost /
+             Like would offer a scale and then present a choice. */
           aria-label={`What did you make of "${heading}"?`}
           data-answered={chosen ?? undefined}
         >
-          {ANSWERS.map((a) => {
+          {/* ── SAVE, THE INDEPENDENT TOGGLE ─────────────────────────────
+              Its own store, its own tap, no `recordReaction`: the server table
+              holds ONE grasp per user/section, so recording a save there would
+              clobber the verdict row — the same one-slot collision this button
+              just escaped on the device. What Save still shares with the
+              verdicts is CREDIT: saving an untouched section marks the
+              checkpoint worked (the old model's property, kept — deciding to
+              come back IS engaging with the section), and un-saving a section
+              that has no verdict takes that credit back. Un-saving one that
+              HAS a verdict touches nothing but the bookmark. */}
+          <button
+            type="button"
+            onClick={() => {
+              if (needsAccount()) {
+                requireAccount("save");
+                return;
+              }
+              hapticConfirm();
+              setPlays((p) => ({ ...p, save: (p.save ?? 0) + 1 }));
+              if (saved) {
+                setSaved(lessonId, checkpointId, false);
+                /* Legacy `grasp:"almost"` un-save: toggle() clears both the
+                   stray grasp and the done mark, which is what taking back
+                   your only answer always did. New-store un-save with no
+                   verdict: same take-back. With a verdict: leave progress
+                   alone — the verdict is still an answer. */
+                if (legacySaved || (!chosen && isDone(lessonId, checkpointId)))
+                  toggle(lessonId, checkpointId);
+              } else {
+                setSaved(lessonId, checkpointId, true);
+                if (!isDone(lessonId, checkpointId)) toggle(lessonId, checkpointId);
+              }
+            }}
+            aria-pressed={saved}
+            data-active={saved ? "" : undefined}
+            /* Save stands apart from the verdict pair — see the note over
+               VERDICTS. 14px on top of the cluster's 22px gap makes the seam
+               36px, and now the spacing draws a boundary the STORAGE finally
+               agrees with. */
+            className="grasp-btn mr-3.5"
+          >
+            <span className="grasp-mark">
+              <LordIcon
+                name={SAVE.lord}
+                state={SAVE.state}
+                size={26}
+                playToken={plays.save ?? 0}
+                fallback={<TablerIcon name={SAVE.icon} size={20} muted={!saved} />}
+              />
+            </span>
+            <span className="grasp-caption">{saved ? (SAVE.labelOn ?? SAVE.label) : SAVE.label}</span>
+          </button>
+
+          {/* ── THE VERDICT PAIR ─────────────────────────────────────────
+              Mutually exclusive, second-press-undoes, and the only thing the
+              server's reaction table hears about. */}
+          {VERDICTS.map((a) => {
             const active = chosen === a.id;
             return (
               <button
@@ -302,22 +383,18 @@ export function Checkpoint({
                    reader's to correct. */
                 /* SIGNED OUT, THE TAP DOES NOT LAND (owner, 2026-08-03, off
                    the live app: "shouldn't be able to use these feedback
-                   icons if I'm not signed in"). The first cut recorded the
-                   answer and then offered to keep it, and the owner's tap
-                   stuck while the header still said Sign in — an answered
-                   checkpoint next to a signed-out header reads as a control
-                   that ignored the rule. So the ask replaces the answer, and
-                   it asks on every tap: the tap did nothing, so there is
+                   icons if I'm not signed in"). The ask replaces the answer,
+                   and it asks on every tap: the tap did nothing, so there is
                    nothing to nag about, only the same door each time. */
                 onClick={() => {
                   if (needsAccount()) {
                     /* The reason is the TAP, not the row (owner, 2026-08-09):
                        the auth page's heading answers the exact thing they
-                       reached for — "save this for later", "like this" — so
-                       the door doesn't read as a generic sign-up wall. Lost
-                       stays the generic checkpoint reason: "Sign in to say
-                       this lost you" would blame the page on its own heading. */
-                    requireAccount(a.id === "almost" ? "save" : a.id === "got" ? "like" : "checkpoint");
+                       reached for — "like this" — so the door doesn't read as
+                       a generic sign-up wall. Lost stays the generic
+                       checkpoint reason: "Sign in to say this lost you" would
+                       blame the page on its own heading. */
+                    requireAccount(a.id === "got" ? "like" : "checkpoint");
                     return;
                   }
                   /* Called here, in the handler, because a browser ignores
@@ -328,6 +405,11 @@ export function Checkpoint({
                   /* Past the gate, so a tap that did nothing animates nothing.
                      Only this answer's count moves, so only this mark plays. */
                   setPlays((p) => ({ ...p, [a.id]: (p[a.id] ?? 0) + 1 }));
+                  /* A legacy "almost" is about to be overwritten by rate() —
+                     move the save it represents into its own store FIRST, so
+                     giving a verdict cannot un-save. This is the migration the
+                     saved-store comment promises. */
+                  if (legacySaved) setSaved(lessonId, checkpointId, true);
                   if (active) toggle(lessonId, checkpointId);
                   else rate(lessonId, checkpointId, a.id);
                   /* The server copy, written AFTER the device's. That order is
@@ -337,23 +419,15 @@ export function Checkpoint({
                      reaction back would leave a vote counted forever. */
                   recordReaction(lessonId, checkpointId, active ? null : a.id);
                 }}
-                role="radio"
-                aria-checked={active}
+                aria-pressed={active}
                 /* No aria-label and no title. The word is on screen now, so the
                    button's accessible name comes from its own text — which is
                    the better source anyway: a visible label and an aria-label
                    are two strings that can drift apart, and a screen-reader user
                    hearing something the sighted reader cannot see is a bug that
-                   nothing on screen will ever reveal. The tooltip went for the
-                   same reason it existed: it was there to recover a word that
-                   had been hidden. */
+                   nothing on screen will ever reveal. */
                 data-active={active ? "" : undefined}
-                /* Save stands apart from the Hate/Love pair — see the ORDER
-                   note over ANSWERS. 14px on top of the cluster's 22px gap
-                   makes the seam 36px: enough that the pair reads as a pair,
-                   not so much that Save looks like it belongs to the note
-                   button at the far end of the row. */
-                className={"grasp-btn" + (a.id === "almost" ? " mr-3.5" : "")}
+                className="grasp-btn"
               >
                 {/* The mark sits in its own box rather than in the button, so
                     the hover plate stays a 28px circle around the glyph instead
@@ -367,13 +441,12 @@ export function Checkpoint({
                       a bare outline has no margin of its own and needs the box's.
 
                       No `colorize`. The rest state is a CSS grayscale filter on
-                      `.grasp-mark` — see the warning over ANSWERS for why
+                      `.grasp-mark` — see the warning over VERDICTS for why
                       flattening a filled doodle to one colour erases its face.
 
                       `fallback` is what makes this safe on a slow connection:
                       the Tabler pair draws until the JSON lands, and stays if it
-                      never does. It is also what covers `grasp-save`, whose file
-                      is not in the repo yet.
+                      never does.
 
                       No `autoplay`. A step has a checkpoint per section, so
                       opening one would otherwise set every mark on the page
@@ -386,16 +459,10 @@ export function Checkpoint({
                     fallback={<TablerIcon name={a.icon} size={20} muted={!active} />}
                   />
                 </span>
-                {/* THE WORD, UNDER THE MARK (owner, 2026-08-09: "can I have text
-                    below them saying what they are… a satoshi small text saying
-                    what it is"). It is the first time these answers have been
-                    readable without tapping one since 2026-08-02, when the words
-                    came off and the marks were left to carry the meaning alone.
-                    Five families in seven days is what that costs: every swap
-                    was an attempt to find a drawing that says "save for later"
-                    on its own, and no drawing does. Satoshi, because a word that
-                    annotates rather than reads is a container — the owner's
-                    2026-08-02 rule. See .grasp-caption. */}
+                {/* THE WORD, UNDER THE MARK (owner, 2026-08-09: "a satoshi small
+                    text saying what it is") — offer at rest, receipt once
+                    chosen. Satoshi, because a word that annotates rather than
+                    reads is a container — the owner's 2026-08-02 rule. */}
                 <span className="grasp-caption">{active ? (a.labelOn ?? a.label) : a.label}</span>
               </button>
             );
