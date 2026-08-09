@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { labelFor, nextLessonId, pathForId } from "@/lib/course";
 import { rate, useProgress, type Grasp } from "@/lib/progress";
 import { TablerIcon, type TablerIconName } from "@/components/icons/tabler";
+import { LordIcon } from "@/components/icons/lordicon";
 import { hapticConfirm } from "@/lib/haptics";
 import { recordReaction } from "@/lib/reactions";
 import { gateStepLink, needsAccount } from "@/lib/account";
@@ -73,31 +75,94 @@ import { SectionNote } from "./SectionNote";
  * reach for under the thumb already there. "Save for later" sits in the middle
  * on the same logic that put "almost" there — it is the answer that is neither.
  *
- * THE MARKS ARE TABLER, FREE (owner, 2026-08-09: "switch to the icons from
- * tabler free"). Outline at rest, its `-filled` twin when chosen — the same
- * two-state shape the row has had since the faces arrived, but drawn by one
- * family with one naming convention instead of stitched from two packages.
+ *   2026-08-09  Lordicon doodles again, and this time they stay put
  *
- * BOTH STATES ARE `currentColor` NOW, AND THAT IS THE SUBSTANTIVE CHANGE. Every
- * family this row has worn brought its own colour with it: Ultimate's fills were
- * baked in, Freehand Duotone arrived carrying #020202 and #0c6fff. Tabler brings
- * none, so "grey at rest, ink when chosen" is two CSS values in `.grasp-btn` and
- * nothing in the generated file. The row's ONE-ACCENT-FOR-ALL-THREE rule
- * survives the move and is no longer inherited from a foundry's palette — it is
- * a decision, in the place decisions about this row's colours live.
+ * THE MARKS ARE LORDICON DOODLE-COLOR, ANIMATED (owner, 2026-08-09: "let's go
+ * back to the lordicons i had a few iterations before"). They were here for one
+ * afternoon on 2026-08-07 and came off the same day; the path was kept working
+ * and parked rather than deleted, which is why coming back is a wiring job and
+ * not a rebuild — see WORKSPACE.md "Animated icons", and the long note in
+ * icons/lordicon.tsx for every trap in getting one on screen.
  *
- * THE CHOSEN STATE IS INK, NOT A HUE, and that is the third time this codebase
- * has reached the same conclusion from a different direction (the Duotone marks
- * pulled out of this row on 2026-08-02, the callout kinds on 2026-08-07). A
- * white reading surface does not give a mark a hue; a coloured mark on one
- * imports one. Outline-grey → filled-ink is already an unambiguous signal
- * because the SHAPE changes, not just the tone. If a hue is ever wanted back it
- * is one line in globals.css.
+ * ⚠️ TABLER IS STILL HERE, AS THE FALLBACK, AND THAT IS THE POINT. A Lottie is
+ * a fetch, and this reader is read on Zambian mobile data. `LordIcon` draws
+ * whatever `fallback` gives it until its JSON has landed and leaves it there
+ * forever if the fetch fails, so a checkpoint on a bad connection is a static
+ * Tabler mark rather than a hole. Everything about the row still works in that
+ * state: the outline/filled pair still says which answer is yours. The note
+ * button and its five verdicts opposite are Tabler outright — see the note over
+ * `.grasp-mark` in globals.css for why they did not follow the faces.
+ *
+ * GREY AT REST, ITS OWN COLOURS WHEN CHOSEN — the same state model the row has
+ * had through every family.
+ *
+ * ⚠️ NOT `colorize`, AND THIS WAS BUILT WRONG FIRST. `colorize` is the obvious
+ * tool — it flattens a Lottie to one colour without reloading it, which is the
+ * whole reason this app uses `@lordicon/react` over `@lordicon/element`. It is
+ * also the wrong tool for a FILLED drawing: flattening every colour to one grey
+ * paints the eyes and the mouth the same grey as the head, and the rest state
+ * rendered as a featureless grey disc. Every face in the row was a blank circle
+ * until it was tapped. `colorize` suits a line icon, where the only colour is
+ * the line.
+ *
+ * `filter: grayscale(1)` in CSS instead (see `.grasp-btn:not([data-active])
+ * .grasp-mark`). It takes the hue out and leaves the drawing, so a resting mark
+ * is still a recognisable sad or happy face — which matters more here than in
+ * any previous family, because these are the only marks in this row a reader
+ * cannot identify from their outline alone.
+ *
+ * It also puts the rest state back in CSS, where the rest of the row's colours
+ * live. A `colorize` grey would have had to be a hex in this file kept in step
+ * with `.grasp-btn`'s `color` by hand — one value written twice, which is the
+ * thing moving to Tabler had just fixed.
+ *
+ * THE ANIMATION PLAYS BECAUSE THE TAP HAPPENED, which is why `playToken` is a
+ * per-answer counter rather than `active`. Keyed on `active`, the mark you just
+ * turned OFF would replay too — the previously chosen answer flips true→false in
+ * the same click — so letting go of an answer would animate a mark you did not
+ * touch. The counter only ever changes on the button that was pressed, and only
+ * after the signed-out gate has let the tap through: a tap that did nothing
+ * animates nothing.
+ *
+ * ⚠️ LICENCE, STILL UNSETTLED, AND NOW IT SHIPS. Lordicon's free tier requires
+ * attribution and its paid tiers do not; nothing in this repo records which plan
+ * applies. It was a note on a parked experiment and is now a note on something
+ * students see. Same shape as the Burbank question in PROJECT_MEMORY.
  */
-const ANSWERS: { id: Grasp; label: string; icon: TablerIconName }[] = [
-  { id: "not", label: "Hate it", icon: "mood-sad" },
-  { id: "almost", label: "Save for later", icon: "bookmark" },
-  { id: "got", label: "Love it", icon: "mood-happy" },
+/* `lord` is a file stem under public/reader/icons, named for what the mark
+ * MEANS rather than for Lordicon's catalogue number, so swapping the artwork is
+ * a file replacement touching no code.
+ *
+ * `state` picks one animation out of the several a Lottie holds, and ⚠️ A NAME
+ * THAT DOES NOT MATCH FALLS BACK TO THE DEFAULT SILENTLY — a guess plays the
+ * wrong thing with no error. These two were read off `node scripts/lord-states.mjs`,
+ * never guessed. Both are `hover-` states: an `in-` state plays when an icon
+ * APPEARS and so starts from an empty frame, which on a control already on
+ * screen reads as the mark vanishing and rebuilding itself.
+ *
+ * ⚠️ `grasp-save` HAS NO STATE SET AND NO FILE YET. The owner picked the artwork
+ * — Lordicon `book-bookmark`, doodle/color, catalogue doodle-color-112 — but
+ * lordicon.com and cdn.lordicon.com are both blocked from the environment this
+ * was wired in, so the Lottie could not be fetched. One command lands it:
+ *     node scripts/fetch-lordicon.mjs book-bookmark doodle color grasp-save
+ *     node scripts/lord-states.mjs        # then set `state` below if the
+ *                                         # default it prints is an `in-` one
+ * Until that file exists the fetch 404s and this answer simply keeps drawing its
+ * Tabler bookmark, which is exactly what the fallback is for. */
+const ANSWERS: {
+  id: Grasp;
+  label: string;
+  icon: TablerIconName;
+  lord: string;
+  state?: string;
+}[] = [
+  /* ONE WORD EACH (owner, 2026-08-09: "buy only one word for each"). "Save for
+     later" was the odd one out at three words and roughly twice the width of
+     its neighbours, which made the middle answer look like the important one.
+     The caption names the mark; the mark carries the meaning. */
+  { id: "not", label: "Hate", icon: "mood-sad", lord: "grasp-not", state: "hover-pinch" },
+  { id: "almost", label: "Save", icon: "bookmark", lord: "grasp-save" },
+  { id: "got", label: "Love", icon: "mood-happy", lord: "grasp-got", state: "hover-smile" },
 ];
 
 /* End-of-section checkpoint — a scale rather than a tick.
@@ -123,6 +188,13 @@ export function Checkpoint({
   // Before hydration the server HTML knows nothing, so everything renders
   // unanswered and settles once localStorage has been read.
   const chosen = hydrated ? graspOf(lessonId, checkpointId) : null;
+
+  /* One counter per answer, bumped by its own button. `LordIcon` replays from
+     the first frame whenever its `playToken` changes, so this is what makes a
+     mark animate — and, because only the pressed button's count moves, the ONLY
+     mark that animates is the one under the reader's thumb. See the note over
+     ANSWERS for why `active` cannot do this job. */
+  const [plays, setPlays] = useState<Partial<Record<Grasp, number>>>({});
 
   /* NO TALLY BESIDE THE FACES (owner, 2026-08-09). A count lived here for one
    * day — built 2026-08-08 on the owner's own ask, behind two gates: hidden
@@ -189,9 +261,8 @@ export function Checkpoint({
           role="radiogroup"
           /* The question a screen reader hears, and it had to change with the
              answers. "How much of X landed?" was the comprehension scale's
-             question, and reading it out before three options that say Hate it /
-             Save for later / Love it would offer a scale and then present a
-             choice. */
+             question, and reading it out before three options that say Hate /
+             Save / Love would offer a scale and then present a choice. */
           aria-label={`What did you make of "${heading}"?`}
           data-answered={chosen ?? undefined}
         >
@@ -223,6 +294,9 @@ export function Checkpoint({
                      nothing on iOS, and nothing at all if the reader has asked
                      this app for reduced motion. See lib/haptics. */
                   hapticConfirm();
+                  /* Past the gate, so a tap that did nothing animates nothing.
+                     Only this answer's count moves, so only this mark plays. */
+                  setPlays((p) => ({ ...p, [a.id]: (p[a.id] ?? 0) + 1 }));
                   if (active) toggle(lessonId, checkpointId);
                   else rate(lessonId, checkpointId, a.id);
                   /* The server copy, written AFTER the device's. That order is
@@ -245,22 +319,36 @@ export function Checkpoint({
                 data-active={active ? "" : undefined}
                 className="grasp-btn"
               >
-                {/* 20px. It went to 12 and back on 2026-08-08 (owner), and the
-                    reason is about the button rather than the mark: `.grasp-mark`
-                    is a fixed 28px, so shrinking the glyph does not shrink the
-                    control, it leaves a small mark floating in a full-size
-                    target. 20 in 28 fills its box.
-                    `muted` is the whole state model: it swaps the Tabler OUTLINE
-                    for its `-filled` twin. Nothing fades and nothing is
-                    filtered — the rest state is a different drawing, not a
-                    dimmed version of this one.
-                    SectionNote's flag is the fourth mark in this row and is set
-                    to 20 as well. Move the two together. */}
                 {/* The mark sits in its own box rather than in the button, so
                     the hover plate stays a 28px circle around the glyph instead
                     of growing into a tall rounded slab behind the caption. */}
                 <span className="grasp-mark">
-                  <TablerIcon name={a.icon} size={20} muted={!active} />
+                  {/* 26 IN A 28px BOX, where the Tabler mark under it is 20.
+                      A doodle Lottie is drawn on a 192×192 canvas with its own
+                      margin baked in, so at 20 it would sit visibly smaller than
+                      the static mark it replaces rather than the same size. The
+                      fallback keeps 20 for the same reason, from the other side:
+                      a bare outline has no margin of its own and needs the box's.
+
+                      No `colorize`. The rest state is a CSS grayscale filter on
+                      `.grasp-mark` — see the warning over ANSWERS for why
+                      flattening a filled doodle to one colour erases its face.
+
+                      `fallback` is what makes this safe on a slow connection:
+                      the Tabler pair draws until the JSON lands, and stays if it
+                      never does. It is also what covers `grasp-save`, whose file
+                      is not in the repo yet.
+
+                      No `autoplay`. A step has a checkpoint per section, so
+                      opening one would otherwise set every mark on the page
+                      animating at once. */}
+                  <LordIcon
+                    name={a.lord}
+                    state={a.state}
+                    size={26}
+                    playToken={plays[a.id] ?? 0}
+                    fallback={<TablerIcon name={a.icon} size={20} muted={!active} />}
+                  />
                 </span>
                 {/* THE WORD, UNDER THE MARK (owner, 2026-08-09: "can I have text
                     below them saying what they are… a satoshi small text saying
