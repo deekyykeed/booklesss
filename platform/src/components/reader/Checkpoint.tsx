@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { labelFor, nextLessonId, pathForId } from "@/lib/course";
 import { rate, useProgress, type Grasp } from "@/lib/progress";
-import { UltimateIcon, type UltimateIconName } from "@/components/icons/ultimate";
+import { FreehandIcon, type FreehandIconName } from "@/components/icons/freehand";
 import { hapticConfirm } from "@/lib/haptics";
-import { COUNT_FLOOR, recordReaction, useSectionCounts } from "@/lib/reactions";
+import { recordReaction } from "@/lib/reactions";
 import { gateStepLink, needsAccount } from "@/lib/account";
 import { requireAccount } from "@/lib/onboarding";
 import { SectionNote } from "./SectionNote";
@@ -46,40 +46,50 @@ import { SectionNote } from "./SectionNote";
  * land, yes or no.
  *
  *   2026-08-08  Streamline Ultimate Colors faces, and THREE of them
+ *   2026-08-09  Streamline Freehand, and the question changes underneath them
  *
- * THREE ANSWERS, NOT TWO (owner, 2026-08-08: "3 icons indicating the 3 main
- * reactions someone would have about what they've just read"). This is a
- * restoration rather than a new scale: `Grasp` in lib/progress has always been
- * `got | almost | not` with a weight each (1 / 0.5 / 0), and the middle one has
- * been unreachable from the UI for weeks while the dashboard went on scoring
- * it. Nothing stored changes meaning, and every answer already recorded still
- * reads the same.
+ * THE QUESTION IS NO LONGER "HOW MUCH LANDED" (owner, 2026-08-09: "the icons
+ * will now be love it, hate it or Save for later"). Every earlier version of
+ * this row asked the reader to place themselves on a comprehension scale. These
+ * three are not a scale: two are verdicts on the writing and the third is a
+ * decision about what to do next. That is a real change of question, not a
+ * relabelling, and the drawings follow it — which is why "save for later" is an
+ * object you come back to rather than a face.
  *
- * ORDER: worst to best, left to right, so the positive answer is the outermost
- * mark on the right (owner, 2026-08-02, when there were two). It puts the
- * answer most readers reach for under the thumb already there, and the middle
- * step slots in where it belongs on that scale rather than beside it.
+ * ⚠️ WHAT IT COSTS, WRITTEN DOWN BECAUSE NOTHING ELSE WILL SAY IT. The three
+ * answers still store as `Grasp` (`got | almost | not`, weighted 1 / 0.5 / 0 in
+ * lib/progress), so nothing already recorded breaks and the dashboard keeps
+ * working untouched. But the dashboard's Performance figure is computed off
+ * those weights, and it now measures whether a reader LIKED a section rather
+ * than whether they understood it. A step somebody hated and understood
+ * perfectly scores zero. If Performance is meant to stay a comprehension
+ * measure, this row is no longer its input and the two need separating —
+ * see the mapping below for where a fourth value would go.
+ *   love → got     hate → not     save for later → almost
  *
- * THE FACES ARE STREAMLINE ULTIMATE COLORS (FREE) — owner's pick of family.
- * They are multicolour and ignore currentColor, so `tone` is gone: the marks no
- * longer take a hue from CSS, they arrive with their own. What replaces it is a
- * pair of drawn states, `full` and `rest`, generated together — see
- * icons/ultimate.tsx. An unchosen face keeps all of its black line work and
- * loses only its colour, which is the treatment the owner arrived at on
- * 2026-08-07 (a793eae) after a CSS `grayscale`/`opacity` filter greyed the line
- * work as hard as the fill and made the whole mark faint.
+ * ORDER: the positive answer is the outermost mark on the right (owner,
+ * 2026-08-02, when there were two), because it puts the answer most readers
+ * reach for under the thumb already there. "Save for later" sits in the middle
+ * on the same logic that put "almost" there — it is the answer that is neither.
  *
- * WHY THESE THREE FACES of the ten in the free set: the set has NO neutral or
- * confused face (checked exhaustively), so the middle step had to be built from
- * what exists. Grin / flat mouth / frown is the only trio that reads as one
- * scale. `smiley-mad` is red and furious, which is not what "not yet" means,
- * and `smiley-unhappy-1` is a weaker `smiley-sad-1`, so the bottom two steps
- * would have been the same picture. Full reasoning in the generator.
+ * THE MARKS ARE STREAMLINE FREEHAND, IN TWO SETS (owner, 2026-08-09: "use a
+ * grayed out Freehand line Free and then when active use freehand Duotone
+ * free"). Unlike the Ultimate faces, whose rest state had to be DERIVED by
+ * stripping colour out of one multicolour body, these are two drawings the
+ * foundry actually shipped: the Line icon at rest, taking its grey from CSS,
+ * and the Duotone icon when chosen, bringing its own #0c6fff accent. See
+ * icons/freehand.tsx and its generator.
+ *
+ * ONE ACCENT FOR ALL THREE, not a hue per answer. The free Duotone set draws
+ * every icon in the same blue, and that is left alone rather than recoloured:
+ * the row already says which answer is yours by being the only coloured mark in
+ * it, and three competing hues would make the row an argument rather than a
+ * question. Recolouring is one regex in the generator if that turns out wrong.
  */
-const ANSWERS: { id: Grasp; label: string; icon: UltimateIconName }[] = [
-  { id: "not", label: "Lost me", icon: "smiley-sad-1" },
-  { id: "almost", label: "Sort of", icon: "smiley-disapointed" },
-  { id: "got", label: "Got it", icon: "smiley-happy" },
+const ANSWERS: { id: Grasp; label: string; icon: FreehandIconName }[] = [
+  { id: "not", label: "Hate it", icon: "smiley-grumpy" },
+  { id: "almost", label: "Save for later", icon: "book-bookmark" },
+  { id: "got", label: "Love it", icon: "smiley-thrilled" },
 ];
 
 /* End-of-section checkpoint — a scale rather than a tick.
@@ -106,23 +116,24 @@ export function Checkpoint({
   // unanswered and settles once localStorage has been read.
   const chosen = hydrated ? graspOf(lessonId, checkpointId) : null;
 
-  /* THE TALLY, AND THE TWO GATES ON IT.
+  /* NO TALLY BESIDE THE FACES (owner, 2026-08-09). A count lived here for one
+   * day — built 2026-08-08 on the owner's own ask, behind two gates: hidden
+   * until the reader had answered, and hidden until five people had. Both gates
+   * were right and the thing they were protecting was still wrong.
    *
-   * 1. NOT UNTIL THE READER HAS ANSWERED. Showing "4 said this section lost
-   *    them" before someone answers anchors the answer, and this row exists to
-   *    find out what THEY thought. Every system that does this well reveals the
-   *    count after the vote, and the reason is that a biased answer is worse
-   *    than no answer: it corrupts the one measurement the row is for.
-   * 2. NOT UNTIL FIVE PEOPLE HAVE. `students` had 2 rows the day this shipped,
-   *    so without a floor every face would read "0" on roughly 160 checkpoints.
-   *    See COUNT_FLOOR — this is the same call as MemberCount's floor.
+   * WHAT THE GATES COULD NOT FIX: a number beside a face turns "how did that
+   * land for you" into "here is how it landed for everyone else". Revealing it
+   * after the vote stops it anchoring the answer, but it does not stop the next
+   * section's row being read as a scoreboard — and a reader who sees four
+   * people were lost here arrives at the following section already braced.
+   * The row is a private question and reads better without an audience.
    *
-   * Both gates fail closed, and so does the fetch: counts are null until they
-   * arrive and the row simply has no numbers in it. Nothing about reading or
-   * answering waits on the network. */
-  const counts = useSectionCounts(lessonId, checkpointId);
-  const answered = counts ? counts.got + counts.almost + counts.not : 0;
-  const showCounts = !!chosen && answered >= COUNT_FLOOR;
+   * THE ANSWERS ARE STILL RECORDED. `recordReaction` below is untouched and
+   * `section_reactions` keeps filling, because the valuable half was never the
+   * tally — it is knowing WHICH SECTIONS LOSE PEOPLE, which is a question for
+   * whoever is rewriting the step, not for the person reading it. If the tally
+   * is ever wanted again the data is all there; the read side is in git (the
+   * `useSectionCounts` hook and the GET on /api/reaction). */
 
   /* The comment control is NOT here. It sat beside the note button for one
      revision and the owner moved it out (2026-08-02): commenting lives in the
@@ -163,7 +174,12 @@ export function Checkpoint({
         <div
           className="grasp-group mark-cluster"
           role="radiogroup"
-          aria-label={`How much of "${heading}" landed?`}
+          /* The question a screen reader hears, and it had to change with the
+             answers. "How much of X landed?" was the comprehension scale's
+             question, and reading it out before three options that say Hate it /
+             Save for later / Love it would offer a scale and then present a
+             choice. */
+          aria-label={`What did you make of "${heading}"?`}
           data-answered={chosen ?? undefined}
         >
           {ANSWERS.map((a) => {
@@ -210,7 +226,6 @@ export function Checkpoint({
                    is the only way a mouse reader recovers the word. */
                 title={a.label}
                 data-active={active ? "" : undefined}
-                data-with-count={showCounts ? "" : undefined}
                 className="grasp-btn"
               >
                 {/* 20px. It went to 12 and back on 2026-08-08 (owner), and the
@@ -218,19 +233,13 @@ export function Checkpoint({
                     is a fixed 28px, so shrinking the glyph does not shrink the
                     control, it leaves a small mark floating in a full-size
                     target. 20 in 28 fills its button.
-                    `muted` is the whole state model now that these carry their
-                    own colour: the chosen face is drawn in full, the other two
-                    keep every black line and lose their fills. Nothing fades and
-                    nothing is filtered — see the generator for why a CSS
-                    grayscale was the wrong tool for this.
+                    `muted` is the whole state model: it swaps the Freehand LINE
+                    drawing for the Freehand DUOTONE one. Nothing fades and
+                    nothing is filtered — the rest state is a different file, not
+                    a dimmed version of this one.
                     SectionNote's flag is the fourth mark in this row and is set
                     to 20 as well. Move the two together. */}
-                <UltimateIcon name={a.icon} size={20} muted={!active} />
-                {/* How many readers said this (owner, 2026-08-08). Drawn only
-                    when `showCounts` — see the two gates where it is computed. */}
-                {showCounts && (
-                  <span className="grasp-count tabular-nums">{counts?.[a.id] ?? 0}</span>
-                )}
+                <FreehandIcon name={a.icon} size={20} muted={!active} />
                 <span className="grasp-label">{a.label}</span>
               </button>
             );

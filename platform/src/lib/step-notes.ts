@@ -21,7 +21,7 @@
  *   clear     → the "keep" signal, so a rewrite doesn't delete what worked
  */
 
-import { type UltimateIconName } from "@/components/icons/ultimate";
+import { type FreehandIconName } from "@/components/icons/freehand";
 
 export type NoteId = "hard" | "long" | "example" | "wrong" | "clear";
 
@@ -46,20 +46,28 @@ export type NoteId = "hard" | "long" | "example" | "wrong" | "clear";
  * attached is exactly the drift that makes the next addition half-done. The
  * MynaUI names are recoverable from git if a monochrome fallback is ever wanted.
  *
- * Streamline Ultimate Colors (Free). The picks, and the two the free set could
- * not supply — there is no plain lightbulb and no plain warning triangle — are
- * argued in scripts/gen-ultimate-icons.mjs. `UltimateIconName` is what makes a
- * typo a build error rather than a blank space in the menu. */
+ * STREAMLINE FREEHAND as of 2026-08-09, moved off Ultimate Colors with the rest
+ * of the checkpoint row (owner: "lets use freehand duotone free icons for
+ * everything in that row"). The flag collapses into one of these marks, so the
+ * menu could not stay in a different family than the button that draws from it.
+ *
+ * TWO ROWS GOT THE PICTURE THEY ALWAYS WANTED. Ultimate has no plain lightbulb
+ * and no plain warning triangle, so "Clear" settled for a green tick and
+ * "Something looks wrong" for a red cross. Freehand draws both, so the
+ * substitutions are gone rather than carried over (they were argued in
+ * gen-ultimate-icons.mjs, which went with the family — see git history).
+ * `FreehandIconName` is what makes a typo a build error rather than a blank
+ * space in the menu. */
 export const NOTES: {
   id: NoteId;
   label: string;
-  mark: UltimateIconName;
+  mark: FreehandIconName;
 }[] = [
-  { id: "clear", label: "Clear", mark: "check" },
-  { id: "hard", label: "Hard to follow", mark: "question-help-message" },
+  { id: "clear", label: "Clear", mark: "creativity-idea-bulb" },
+  { id: "hard", label: "Hard to follow", mark: "help-question-circle" },
   { id: "long", label: "Too long", mark: "time-clock-circle" },
-  { id: "example", label: "Needs an example", mark: "task-list-text-1" },
-  { id: "wrong", label: "Something looks wrong", mark: "delete-2" },
+  { id: "example", label: "Needs an example", mark: "form-edition-clipboard" },
+  { id: "wrong", label: "Something looks wrong", mark: "alerts-warning-triangle" },
 ];
 
 const KEY = "booklesss:step-notes:v1";

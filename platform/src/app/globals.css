@@ -1582,16 +1582,23 @@
      What was here until now: a white pill per cluster, border #d4d4d4, full
      radius and the header CircleButton's three-layer shadow. If a container is
      ever wanted again, that is the recipe, and TopBar.tsx is where it lives.
-     GAP 14px, up from the 6 the pill allowed. With no border bounding either
-     cluster the space between marks is the only thing separating one control
-     from the next, so it has to be wider than it was when a pill was doing that
-     job — the same reasoning the row used the last time it sat bare, at 10px.
-     14 because the marks are drawings now rather than two-stroke glyphs, and a
-     drawing needs more air around it before it reads as separate. */
+     GAP 22px, and it has climbed twice for the same reason each time: 6 while a
+     pill bounded each cluster, 14 once the pills came off (2026-08-08), 22 once
+     the marks became Freehand (owner, 2026-08-09: "space those 3 icons some
+     more"). With no border round either cluster the space between marks is the
+     only thing separating one control from the next, so every time the drawing
+     inside got busier the space around it had to grow to keep pace. A Freehand
+     mark is a loose hand-drawn line that overshoots its own corners, so two of
+     them at 14px apart read as one sketch — the gap has to clear the overshoot,
+     not just the bounding box.
+     ⚠️ 22 is close to the ceiling: `.grasp-btn` is 28px, so at much more than
+     this the three marks stop reading as one set of answers and start reading as
+     three unrelated buttons that happen to be near each other. If more air is
+     ever wanted, take it from the row's outer margins instead. */
   .mark-cluster {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 22px;
   }
   /* No pill, no border, no fill: a hairline glyph sitting on the page.
      The button is still 34px square even though the mark is 20px — the tap
@@ -1619,10 +1626,15 @@
     border: 0;
     background: none;
     box-shadow: none;
-    /* Kept for the flag's fallback and for anything monochrome that lands in
-       this row later. The four marks in it are Streamline Ultimate Colors as of
-       2026-08-08 and ignore currentColor entirely, so this no longer tints them:
-       the state is drawn, not coloured (see icons/ultimate.tsx). */
+    /* ⚠️ THIS IS THE GREY, AND IT IS LOAD-BEARING AGAIN. It was inert for one
+       day: the Ultimate Colors marks this row carried on 2026-08-08 were
+       multicolour and ignored currentColor, so the rest state had to be baked
+       into the generator as a fill swap. The Freehand LINE drawings that replaced
+       them on 2026-08-09 draw in currentColor, which puts "grayed out" back where
+       it belongs — one value, here, beside the rest of the row's colours.
+       Change this and every unchosen mark in the row moves together. The chosen
+       one does not: the Duotone drawing brings its own #020202 and #0c6fff and
+       is unaffected by anything set here (see icons/freehand.tsx). */
     color: #9a9aa2;
     transition: background-color 160ms ease;
   }
@@ -1630,34 +1642,16 @@
      these buttons carries its own aria-label and a title, so a screen reader
      still hears "Later" and a mouse still gets the tooltip; only the sighted
      tap-only reader loses the word, which is what was asked for. */
-  /* A MARK WITH A NUMBER BESIDE IT stops being a circle and becomes a short
-     pill. The 28px square is a tap target sized for a mark alone; add a figure
-     and the box has to grow sideways or the number lands on top of the face.
-     Only the width changes — the 28px height, and therefore the tap target, is
-     untouched.
-     Padding is asymmetric on purpose: 4px on the mark's side, 7px after the
+  /* `.grasp-count`, and the `[data-with-count]` rule that let a button widen from
+     a 28px square into a short pill to hold a figure, lived here for one day
+     (2026-08-08 → 09) and went with the tally itself — the reasoning is at the
+     top of Checkpoint.tsx. Every button is a fixed square again, which is what
+     the 28px and the `justify-content: center` above are sized for.
+
+     ONE MEASUREMENT WORTH NOT LOSING, if a number ever comes back beside a mark:
+     the padding has to be ASYMMETRIC, 4px on the mark's side and 7px after the
      figure. A drawn face is visually centred in its own bounding box and a digit
      is not, so equal padding reads as the number crowding the right edge. */
-  .grasp-btn[data-with-count] {
-    width: auto;
-    gap: 4px;
-    padding: 0 7px 0 4px;
-  }
-  /* Smaller than the reading and lighter than the ink: this is a count, not a
-     word the reader has to read. `tabular-nums` in the markup so 9 → 10 does not
-     shift the mark beside it. */
-  .grasp-count {
-    font-size: 12px;
-    line-height: 1;
-    font-weight: 500;
-    color: #6b6b74;
-  }
-  /* The reader's OWN answer carries its colour, so its figure comes up to full
-     ink to sit with it. The other two stay quiet, which is the same
-     one-of-three-is-yours rule the faces follow. */
-  .grasp-btn[data-active] .grasp-count {
-    color: var(--color-ink, #121212);
-  }
   .grasp-label {
     position: absolute;
     width: 1px;

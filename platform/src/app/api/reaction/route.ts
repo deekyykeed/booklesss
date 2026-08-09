@@ -4,14 +4,26 @@ import { authEnabled } from "@/lib/auth";
 import { GRASPS, type Grasp } from "@/lib/progress-shared";
 
 /* ------------------------------------------------------------------ *
- * How a section landed — the server copy, and the counts read back.
+ * How a section landed — the server copy. WRITE ONLY.
  *
  * A reaction has always lived only in the reader's own localStorage. This is the
- * other copy, and it exists for two reasons, in this order:
+ * other copy, and it existed for two reasons:
  *   1. the tally beside each face (owner, 2026-08-08: "numbers after each of the
  *      3 icons … counting how many people thought what about the step")
  *   2. the question a per-device store can never answer: WHICH SECTIONS LOSE
- *      PEOPLE. That one is worth more than the tally.
+ *      PEOPLE.
+ *
+ * REASON 1 IS GONE (owner, 2026-08-09 — see the top of Checkpoint.tsx) and with
+ * it the GET that served it: one request per step returning `{sectionId:
+ * {got,almost,not}}`, tallied in JS because PostgREST cannot GROUP BY without a
+ * view. It is in git if the tally ever returns.
+ *
+ * REASON 2 IS WHY THIS ROUTE STILL EXISTS, and it was always the bigger one. The
+ * table keeps filling. Nothing in the app reads it back — the audience for
+ * "which sections lose people" is whoever rewrites the step, through a query,
+ * not the reader. **A new read path must not become a second tally by accident:**
+ * anything that puts these numbers on a step page is re-opening a decision that
+ * has been made, not adding a feature.
  *
  * THE USER ID COMES FROM THE VERIFIED SESSION, NEVER THE BODY. `currentUserId()`
  * calls `getUser()`, which has the token checked by the auth server rather than
@@ -24,48 +36,6 @@ import { GRASPS, type Grasp } from "@/lib/progress-shared";
  * has lost nothing and must never be shown an error for a tally that did not
  * save. Same contract as /api/profile.
  * ------------------------------------------------------------------ */
-
-/** GET /api/reaction?lesson=<id> → { counts: { [sectionId]: {got,almost,not} } }
- *
- *  One request per STEP, not per section. A step draws a row of faces per
- *  section, so a per-section fetch would be three to six requests for one page.
- *
- *  Counts only. No user ids, no timestamps, nothing that says who said what —
- *  which is what makes it safe to hand to a browser at all. */
-export async function GET(req: Request) {
-  const lesson = new URL(req.url).searchParams.get("lesson");
-  if (!lesson) return Response.json({ ok: false, reason: "no-lesson" }, { status: 400 });
-
-  const sb = admin();
-  if (!sb) return Response.json({ ok: true, counts: {} });
-
-  const { data, error } = await sb
-    .from("section_reactions")
-    .select("section_id, grasp")
-    .eq("lesson_id", lesson);
-
-  if (error || !data) return Response.json({ ok: true, counts: {} });
-
-  /* Tallied here rather than in SQL. A GROUP BY would be the tidier query, but
-     PostgREST cannot express one without a view or an RPC, and this is a handful
-     of rows per lesson — the whole readership is smaller than one step's worth of
-     sections. Revisit if a lesson ever returns thousands. */
-  const counts: Record<string, Record<Grasp, number>> = {};
-  for (const row of data) {
-    const g = row.grasp as Grasp;
-    if (!GRASPS.includes(g)) continue; // a value the check constraint should have refused
-    counts[row.section_id] ??= { got: 0, almost: 0, not: 0 };
-    counts[row.section_id][g] += 1;
-  }
-
-  return Response.json(
-    { ok: true, counts },
-    /* Cached briefly at the edge. A tally does not have to be to-the-second, and
-       without this every step view is a database round trip. Short enough that a
-       reader who answers and reloads sees their own vote counted. */
-    { headers: { "Cache-Control": "public, max-age=0, s-maxage=30, stale-while-revalidate=120" } },
-  );
-}
 
 /** POST /api/reaction — body { lesson, section, grasp }.
  *

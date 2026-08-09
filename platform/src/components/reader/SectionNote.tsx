@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
-import { UltimateIcon } from "@/components/icons/ultimate";
+import { FreehandIcon } from "@/components/icons/freehand";
 import { hapticConfirm, hapticTap } from "@/lib/haptics";
 import { needsAccount } from "@/lib/account";
 import { requireAccount } from "@/lib/onboarding";
@@ -163,13 +163,19 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
             anything.
 
             GREY UNTIL ASKED, COLOURED ONCE ANSWERED, and never a grey plate
-            behind it (owner, same message). `muted` is the rest state drawn by
-            the generator: full black line work, no fill. So an unflagged section
-            shows a line-drawn flag, and a flagged one shows its verdict in full
-            colour — the only colour in this pod, which is what makes it
-            findable while scrolling.
-            20px, in step with the three faces in the other pod. */}
-        <UltimateIcon name={active ? active.mark : "flag"} size={20} muted={!chosen} />
+            behind it (owner, same message). `muted` swaps the Freehand LINE
+            drawing for the Freehand DUOTONE one (owner, 2026-08-09). So an
+            unflagged section shows a grey line-drawn flag, and a flagged one
+            shows its verdict in colour — the only colour in this pod, which is
+            what makes it findable while scrolling.
+            20px, in step with the three marks in the other pod. */}
+        {/* ⚠️ NOT A FLAG SINCE 2026-08-09, and the comments above still say flag
+            because that is what the owner asked for and what the behaviour still
+            is. The Freehand free set has no plain flag — its only one carries
+            `</>` on the pennant and reads as a code icon at 20px. `notes-paper`
+            is the substitute, argued in the generator. The button's job has not
+            changed; only the picture of it has. */}
+        <FreehandIcon name={active ? active.mark : "notes-paper"} size={20} muted={!chosen} />
         <span className="grasp-label">{label ?? "How did that read?"}</span>
       </button>
 
@@ -213,8 +219,8 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
                   collapses to — so the menu teaches which picture means which
                   verdict, and the collapsed flag is then readable without the
                   menu ever being opened again.
-                  STREAMLINE ULTIMATE COLORS as of 2026-08-08 (owner: "and yes I
-                  do want it"). This row was MynaUI for one commit on the
+                  STREAMLINE FREEHAND as of 2026-08-09, and Ultimate Colors
+                  before that. This row was MynaUI for one commit on the
                   argument that a coloured fill in a list of five text rows would
                   sit as heavy as the Duotone marks pulled out of this row on
                   2026-08-02. That argument was wrong here, and the difference is
@@ -230,7 +236,7 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
                   carry an internal drawing rather than two strokes, so they need
                   the extra couple of pixels to stay legible beside a 14.5px
                   label. */}
-              <UltimateIcon
+              <FreehandIcon
                 name={n.mark}
                 size={18}
                 muted={chosen !== n.id}
