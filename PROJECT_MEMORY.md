@@ -92,6 +92,63 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
+**From session 56 (2026-08-09, the checkpoint row and an auth security pass.
+Linear unreachable for the THIRTEENTH session.)**
+- [ ] ⚠️ **THREE SUPABASE DASHBOARD SETTINGS ARE THE REMAINING HALF OF THE
+      SECURITY PASS, AND NONE OF THEM IS A CODE CHANGE.** The code side shipped
+      this session; these cannot be done from a session and are the ones that
+      actually close the biggest hole.
+      1. **Confirm email — OFF, and this is what lets anybody sign up as
+         anybody.** Turning it on is the real fix for account impersonation,
+         and **`AuthForm` already handles it**: the `checkEmail` state was
+         written for exactly this and shows "check your inbox" the moment a
+         sign-up returns no session. It was switched off deliberately
+         (2026-08-05) because free-tier Supabase SMTP is rate-limited to a
+         handful of mails an hour and would strand sign-ups — so this needs a
+         real SMTP provider wired up FIRST (Resend or similar in Auth → SMTP
+         Settings), then the toggle. Doing the toggle alone would break
+         sign-up for a class of students at once.
+      2. **Leaked-password protection — OFF** (Authentication → Policies). It
+         checks a new password against HaveIBeenPwned by k-anonymity prefix.
+         This is the one thing `lib/password` deliberately does NOT do, because
+         doing it in the browser means sending a hash of a half-typed password
+         to a third party. Both forms already turn its error into a sentence,
+         so switching it on needs no code.
+      3. **MFA / TOTP — a decision, not a default.** Supabase supports it
+         (`auth.mfa.enroll`) and nothing here uses it. For a study app with no
+         payment data and no admin surface it is plausibly the wrong trade
+         against sign-up friction; worth revisiting if a paid tier or a real
+         admin console ever lands.
+- [ ] ⚠️ **`/reset-password` MUST BE ADDED TO SUPABASE'S REDIRECT ALLOWLIST or
+      the new reset flow silently does nothing useful.** Authentication → URL
+      Configuration → Redirect URLs needs `https://booklesss.app/reset-password`,
+      the Vercel preview host, and `http://localhost:3000/reset-password`.
+      Supabase falls back to the Site URL for any redirect it does not
+      recognise, so the failure looks like "the emailed link dumps me on the
+      homepage, signed out" rather than like an error. **The reset flow is
+      built and untested end to end for exactly this reason** — everything
+      except the emailed round trip was verified in a browser.
+- [ ] **Three of the five items on the security list did not apply, and the
+      checking is the reusable part.** The session is in a cookie via
+      `@supabase/ssr` and verified with `getUser()`, not `getSession()`, so the
+      localStorage/XSS advice was already answered. **There is no admin concept
+      anywhere in the app** — zero role checks, client or server — so there was
+      no client-side admin gate to move. Login and password-reset brute force
+      is rate-limited by Supabase's own auth server (Auth → Rate Limits), and
+      every one of the app's own three API routes already authenticates through
+      `currentUserId()`. **No app-level limiter was added on purpose**: with no
+      Redis, an in-memory counter resets per serverless instance and a
+      client-side one is bypassed by a reload — both look like security and are
+      not.
+- [ ] **The CSP keeps `script-src 'unsafe-inline'` and there is a specific
+      condition for revisiting it.** Next inlines the RSC flight payload, so a
+      strict policy needs a per-request nonce, which needs middleware on every
+      route, which would make every step page dynamic — and those pages being
+      static is the reader's main performance property. **Revisit the day any
+      user-supplied string is rendered as HTML** (a comment body, a student's
+      note played back, anything from `/api/curriculum` unescaped). Today the
+      only `dangerouslySetInnerHTML` in the app takes build-time constants.
+
 **From session 55 (2026-08-09, the reader-typography day — the vertical ladder,
 and the step title's round trip to Bricolage and back. Numbered 55 because the
 dashboard session had already claimed 54 while in flight in this same tree.
