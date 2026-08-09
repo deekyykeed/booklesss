@@ -1317,6 +1317,56 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 
 ## Session Log
 
+### Session 2026-08-09 (session 56 — the popup dies on launch eve, and the loopholes get closed)
+
+**Done:** The auth popup is gone (owner: a reader arriving through a shared
+step link who taps a gated control "should actually go into onboarding").
+`requireAccount()` survives as the one call every gate makes, but its consumer
+is now `AuthRedirect` — a soft `router.push` to the real `/sign-in`/`/sign-up`
+carrying `?next=` (safeNext-validated both ways) and `?why=` (the gate's
+reason, now the line above the form). Returning student → back where the gate
+interrupted them; new account → the real `/onboarding` with `next` threaded
+through, so `finish()` returns them to the step. `AuthGate` deleted (lives at
+`ddba5b9` and earlier); `AuthForm` lost its sheet-only props. CLAUDE.md's auth
+section updated. Then the pre-launch security sweep: EXECUTE revoked on the
+`rls_auto_enable` event-trigger function (advisor WARN — anon could see it via
+RPC, though event-trigger functions can't actually fire that way);
+`/api/reaction`'s `lesson`/`section` got 120-char caps (were unbounded from
+any signed-in account); `.env.example` rewritten off Clerk. Also the previous
+session's finished-but-uncommitted work (note-verdict doodles/hues,
+Saved/Liked receipt words) caught up and pushed.
+
+**What Worked:** The redirect flow cost almost nothing because
+`lib/next-path.ts` already existed — `safeNext`/`onboardingHref`/
+`nextFromQuery` were built for the dashboard's onboarding bounce, and the new
+flow is the same three functions pointed at two more doors. Reusing the WHY
+copy as `?why=` kept the funnel's words without the popup. Supabase advisors
+via MCP caught the function-grant hole no code read would have.
+
+**Dead Ends (do not retry):** None — but one self-inflicted scrape: `git add
+-A` on the redirect commit swept in the parallel daily-post session's in-flight
+`Demand/social/_scripts` changes (complete files, nothing broke, wrong commit
+message). The wrap skill already forbids exactly this on a shared tree; the
+later hardening commit used `--only -- <paths>` as it should.
+
+**Known cost, accepted:** an unsaved comment draft no longer survives the trip
+to sign-in the way it survived the sheet (noted in `SectionComment.tsx`; the
+fix if feedback demands it is a localStorage stash before the ask, not the
+sheet back).
+
+**Launch-eve flags for the owner (dashboard, not code):**
+
+- [ ] Supabase → Auth → Policies: **leaked-password protection is OFF** (the
+      form already has copy for its error message; may need Pro plan).
+- [ ] Supabase built-in SMTP sends ~2 emails/hour — fine while confirm-email
+      is off, but **password-reset emails run through the same pipe**. Wire
+      custom SMTP (Resend/Brevo free tier) before a real influx, or resets
+      will strand.
+- [ ] Supabase → Auth → Rate Limits: defaults throttle auth calls **per IP**
+      (~30/5min), and the one-box form spends TWO calls per new student — a
+      classroom signing up on one campus Wi-Fi NAT can hit it. Raise sign-up/
+      token limits before a launch-day WhatsApp blast.
+
 ### Session 2026-08-09 (session 55 — the reader gets a vertical ladder, and the title comes back from Bricolage)
 
 *Numbered 55 because the dashboard session was in flight in the same tree and

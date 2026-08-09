@@ -472,11 +472,18 @@ days from Monday to Tuesday never had it travel. A field added to
 
 ### The auth surface is the app's own form, on Supabase — ONE box for both jobs
 
-**Clerk is gone.** `AuthGate` replaced `ClerkGate` on 2026-08-05 and the app
-authenticates against **Supabase** now. `requireAccount()` still works exactly
-as it did — a plain function on a module store, consumed by exactly one
-component that puts a form on screen — because that indirection was never about
-Clerk (see the note in `lib/onboarding.ts`).
+**Clerk is gone** (`AuthGate` replaced `ClerkGate` on 2026-08-05) **and so is
+the sheet** (owner, 2026-08-09, launch eve): a gated tap no longer opens a
+popup over the page. `requireAccount()` survives as the one call every gate
+makes — a plain function on a module store — but its consumer is now
+`AuthRedirect`, which soft-navigates to the real `/sign-in` / `/sign-up` page
+with `?next=<where they were>` and `?why=<which gate>`. A returning student
+signs in and lands back where the gate interrupted them; a NEW account goes
+through the real `/onboarding` (with the same `next` threaded through, so
+`finish()` returns them to the step) instead of having the questions deferred
+to the dashboard. Both params are stranger input and go through `safeNext` /
+a whitelist on both ends (`lib/next-path`). Known cost, accepted: an unsaved
+comment draft no longer survives the trip the way it survived the sheet.
 
 **There is no sign-in / sign-up distinction any more** (owner, 2026-08-07: "i
 dont want to have the user select sign in if they already have an account…
