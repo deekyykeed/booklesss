@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-09 (session 55)
+**Last updated:** 2026-08-09 (session 58)
 
 ---
 
@@ -92,6 +92,36 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
+**From session 58 (2026-08-09, the checkpoint-row day end to end — counts
+off, five icon families in one day ending on Lordicon everywhere, the security
+pass, and the CSP that broke its own icons. Numbered 58 because the parallel
+session's wrap claimed 56 in the log and 57 in its Next Session block; neither
+label is mine to correct. Linear unreachable again.)**
+
+- [ ] ⚠️ **THE LORDICON LICENCE QUESTION IS NOW NINE FILES WIDE AND SHIPS ON
+      EVERY CHECKPOINT.** Three answer doodles plus six note-control doodles,
+      all free-tier (`premium: false`), and Lordicon's free tier requires
+      attribution nothing in the app or repo yet gives. Was one parked control
+      on 2026-08-07; it is the reader's main interaction surface now. Settle
+      it once — an attribution line in `/terms` or the footer is likely
+      enough, or a paid seat clears it entirely.
+- [ ] **The dashboard's Performance figure now measures LIKING, not grasp.**
+      The three answers store as `Grasp` (love→got, save→almost, hate→not) so
+      nothing recorded broke — but Performance is computed off those weights,
+      and a section somebody understood perfectly and hated scores zero. Named
+      at the top of `Checkpoint.tsx`. Owner's call: accept the new meaning, or
+      split liking from comprehension into two signals.
+- [ ] **The reaction tally is a CLOSED decision, not a missing feature.**
+      Counts came off the checkpoint row (owner: reading is a private
+      question); the POST and `section_reactions` keep filling for the
+      which-sections-lose-people query. The GET and `useSectionCounts` are in
+      git. The guard-rail comment in `/api/reaction` says a new read path must
+      not become a second tally by accident.
+- [ ] **Words worth one owner pass on a phone:** Save·Lost·Like at rest,
+      Saved/Liked receipts, "Note" → Clear/Hard/Long/Example/Wrong on the
+      note button. All one string each (`ANSWERS` in Checkpoint, `NOTES` in
+      step-notes) if any read wrong.
+
 **From session 57 (2026-08-09 evening — the popup replaced by the real
 sign-in page, and the auth page's heading now answers the tap. Linear
 unreachable again.)**
@@ -156,14 +186,17 @@ Linear unreachable for the THIRTEENTH session.)**
       Redis, an in-memory counter resets per serverless instance and a
       client-side one is bypassed by a reload — both look like security and are
       not.
-- [ ] **The CSP keeps `script-src 'unsafe-inline'` and there is a specific
-      condition for revisiting it.** Next inlines the RSC flight payload, so a
-      strict policy needs a per-request nonce, which needs middleware on every
-      route, which would make every step page dynamic — and those pages being
-      static is the reader's main performance property. **Revisit the day any
-      user-supplied string is rendered as HTML** (a comment body, a student's
-      note played back, anything from `/api/curriculum` unescaped). Today the
-      only `dangerouslySetInnerHTML` in the app takes build-time constants.
+- [ ] **The CSP keeps `script-src 'unsafe-inline'` — and, since the same
+      evening, `'unsafe-eval'` too.** Inline: Next inlines the RSC flight
+      payload, a strict policy needs a per-request nonce, and a nonce would
+      make every static step page dynamic. Eval: **lottie-web compiles a
+      Lottie's expressions with `new Function`, so without it every Lordicon
+      doodle renders an empty `<svg>` with no visible error** — which is
+      exactly what happened for a few hours on 2026-08-09 when the headers
+      landed after the icons. `connect-src` is the guard that matters (a stolen
+      token has nowhere to POST). **Revisit inline the day any user-supplied
+      string is rendered as HTML; revisit eval the day the Lordicons leave.**
+      Full reasoning in `next.config.ts`.
 
 **From session 55 (2026-08-09, the reader-typography day — the vertical ladder,
 and the step title's round trip to Bricolage and back. Numbered 55 because the
@@ -1332,6 +1365,50 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-09 (session 58 — the checkpoint row end to end, and the CSP that broke its own icons)
+
+**Done:** The whole checkpoint-row arc, plus an auth security pass. **Counts
+off** (owner: no tallies beside the faces) — display, cache, hook and the GET
+deleted; the POST and `section_reactions` keep filling, because
+which-sections-lose-people was always the valuable half. **The security pass:**
+the CSP lost in the July rewrite restored (with HSTS, nosniff, frame-ancestors,
+Referrer- and Permissions-Policy), the password floor made real and shared with
+a new reset flow (`lib/password`, `ForgotPassword`, `/reset-password`) — three
+of the five checklist items did not apply and are recorded as such in the
+session-56 block above. **The icon odyssey:** Freehand built and superseded the
+same afternoon by the parallel session's Tabler/Lordicon work; the evening
+landed Lordicon doodles on the WHOLE row — grasp-save fetched (lordicon.com is
+blocked from cloud sessions, reachable locally), Save·apart·Lost·Like with
+Saved/Liked receipts, the note button animated (feedback bubble + five free
+doodles, chosen off a dump of all 164 free doodle/color names), Solar
+broken/duotone demoted to its offline fallback carrying the stat tiles'
+validated hues, captions on everything with one-word receipts.
+
+**What Worked:**
+- **Piercing the shadow root turned a wrong answer into the right one.** The
+  blank-Lordicon hunt burned hours on version theories because a bypassCSP A/B
+  counted SVGs with `querySelectorAll` — which cannot cross a shadow boundary —
+  and read 0 on both sides. Re-run against
+  `element.shadowRoot.querySelectorAll("svg path")` it gave 1 vs 14 in one run
+  and named the CSP. Promoted to the wrap skill.
+- **Reusing validated colour.** The five verdict hues are the dashboard TONE
+  set plus the auth error red — zero new colour decisions, all pre-validated
+  for this drawing style on a light surface.
+- **`lordicon.com/api/library/icons` as an inventory.** Dumping all 164 free
+  doodle/color names before promising anything turned "no flag, no bulb, no
+  question mark" into three honest substitutions instead of a paid tier or a
+  cut feature.
+
+**Dead Ends (do not retry):**
+- **Five fixes aimed at the player while the CSP was the cause:** lottie-web
+  5.12↔5.13 swaps, `next/dynamic` (drops the ref a class player is driven by),
+  `goToLastFrame` parking, `structuredClone` per instance, and a drew-anything
+  fallback net that CRASHED the row on unmount via lottie's own destroy path.
+  All reverted. The lesson is the invalid probe above, not any of the theories.
+- **`'unsafe-eval'` cannot come out of the CSP while Lordicons ship** — lottie
+  compiles expressions with `new Function`; blocked, every doodle is an empty
+  SVG with no visible error. Documented at the line in `next.config.ts`.
 
 ### Session 2026-08-09 (session 57 — the popup dies on launch eve, and the loopholes get closed)
 
