@@ -176,11 +176,7 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
             code icon at 20px. Tabler draws `flag` and `flag-filled`, so the
             comments above finally describe the picture as well as the job. */}
         {/* Boxed like the three answers opposite, so the hover plate is the same
-            28px circle on both ends of the row. This button carries no visible
-            caption — its label is a question before it is answered and a verdict
-            after, which is not a fixed word to set under a mark — so the box is
-            also what keeps its glyph level with theirs (see `items-start` on the
-            checkpoint row). */}
+            28px circle on both ends of the row. */}
         <span className="grasp-mark">
           {/* AN ANIMATED DOODLE, LIKE THE THREE ANSWERS OPPOSITE (owner,
               2026-08-09: "am i not able to find free lordicons for the flag
@@ -216,7 +212,20 @@ export function SectionNote({ lessonId, sectionId }: { lessonId: string; section
             }
           />
         </span>
-        <span className="grasp-label">{label ?? "How did that read?"}</span>
+        {/* THE WORD UNDER THE MARK, at last on this button too (owner,
+            2026-08-09: "even the flag icon needs text under it — and then when
+            selected we get a 1 word summary of what the user picked"). This
+            button held out caption-less on the argument that its label is a
+            question before an answer and a verdict after, "not a fixed word" —
+            and the answers' own labelOn pattern dissolved that argument the
+            same day: a caption is allowed to answer back. "Note" is the offer;
+            the verdict's `word` is the receipt (Clear / Hard / Long / Example
+            / Wrong — the menu keeps the full sentences). Ink when active via
+            the same `.grasp-btn[data-active] .grasp-caption` rule the answers
+            use. The sr-only `.grasp-label` went with this: the button already
+            carries the full sentence in its aria-label, and a hidden duplicate
+            beside a visible caption is two strings waiting to drift. */}
+        <span className="grasp-caption">{active ? active.word : "Note"}</span>
       </button>
 
       {open && (

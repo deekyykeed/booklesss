@@ -103,20 +103,27 @@ export type NoteId = "hard" | "long" | "example" | "wrong" | "clear";
  * and a checkpoint on a bad connection must be a static mark, not a hole.
  * `hue` colours the fallback's chosen state so even the offline path keeps
  * the answers' grammar: grey at rest, its own colour once chosen. */
+/* `word` is the ONE-WORD caption the collapsed button wears once this verdict
+ * is chosen (owner, 2026-08-09: "when selected we get a 1 word summary of what
+ * the user picked") — the receipt under the mark, exactly what Saved/Liked are
+ * across the row. `label` stays the full sentence the MENU offers: a menu row
+ * has room to say "Needs an example" and should; a caption under a 26px mark
+ * has room for one word and no more. */
 export const NOTES: {
   id: NoteId;
   label: string;
+  word: string;
   lord: string;
   lordState: string;
   mark: SolarIconName;
   markOn: SolarIconName;
   hue: string;
 }[] = [
-  { id: "clear", label: "Clear", lord: "note-clear", lordState: "hover-pinch", mark: "lightbulb-broken", markOn: "lightbulb-bold-duotone", hue: "#17754d" },
-  { id: "hard", label: "Hard to follow", lord: "note-hard", lordState: "hover-pinch", mark: "question-circle-broken", markOn: "question-circle-bold-duotone", hue: "#4a3aa7" },
-  { id: "long", label: "Too long", lord: "note-long", lordState: "hover-pinch", mark: "clock-circle-broken", markOn: "clock-circle-bold-duotone", hue: "#eb6834" },
-  { id: "example", label: "Needs an example", lord: "note-example", lordState: "hover-pinch", mark: "clipboard-text-broken", markOn: "clipboard-text-bold-duotone", hue: "#2a78d6" },
-  { id: "wrong", label: "Something looks wrong", lord: "note-wrong", lordState: "hover-pinch", mark: "danger-triangle-broken", markOn: "danger-triangle-bold-duotone", hue: "#b42318" },
+  { id: "clear", label: "Clear", word: "Clear", lord: "note-clear", lordState: "hover-pinch", mark: "lightbulb-broken", markOn: "lightbulb-bold-duotone", hue: "#17754d" },
+  { id: "hard", label: "Hard to follow", word: "Hard", lord: "note-hard", lordState: "hover-pinch", mark: "question-circle-broken", markOn: "question-circle-bold-duotone", hue: "#4a3aa7" },
+  { id: "long", label: "Too long", word: "Long", lord: "note-long", lordState: "hover-pinch", mark: "clock-circle-broken", markOn: "clock-circle-bold-duotone", hue: "#eb6834" },
+  { id: "example", label: "Needs an example", word: "Example", lord: "note-example", lordState: "hover-pinch", mark: "clipboard-text-broken", markOn: "clipboard-text-bold-duotone", hue: "#2a78d6" },
+  { id: "wrong", label: "Something looks wrong", word: "Wrong", lord: "note-wrong", lordState: "hover-pinch", mark: "danger-triangle-broken", markOn: "danger-triangle-bold-duotone", hue: "#b42318" },
 ];
 
 const KEY = "booklesss:step-notes:v1";
