@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-10 (session 59)
+**Last updated:** 2026-08-10 (session 60)
 
 ---
 
@@ -91,6 +91,74 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 60 (2026-08-10, the durability day — what a student DOES stopped
+dying with their device. Numbered 60 because session 59 was in flight in this
+same tree and had already claimed 59; its block below is not mine to renumber.
+Linear unreachable again — one-time OAuth, and this session is
+non-interactive.)**
+
+- [ ] ⚠️ **THE RATE LIMIT IS THE THING THAT BREAKS A GOOD LAUNCH DAY, and the
+      owner is about to start handing out Treasury Management.** Supabase
+      throttles auth ~30 calls per 5 min **per IP**, and the one-box form spends
+      **two per new student** — so roughly **15 sign-ups per 5 minutes from one
+      campus Wi-Fi NAT** before students start seeing "too many tries" on their
+      first impression of the product. This is the whole difference between
+      "share with a few people" (fine today) and "drop it in a class WhatsApp
+      group" (not yet). Auth → Rate Limits;
+      `https://supabase.com/dashboard/project/qxbcvmzjomfwxvbqzqds/auth/rate-limits`
+- [ ] ⚠️ **THE STUDY-STATE SYNC IS LIVE AND HAS NEVER RUN AGAINST A REAL
+      SIGNED-IN SESSION.** Shipped today (`12b19da`). The merge is proved in
+      isolation — 28 properties, see the log below — and the route's signed-out
+      path is verified live (401 with a reason). What is unproven is the whole
+      loop with a real cookie session: sign in on a second device and confirm
+      the dashboard fills with the first device's studying. **The failure mode
+      is bounded by design** — `ready` in `lib/state-sync` refuses to push until
+      the pull has merged, so a broken sync is a sync that does not happen, not
+      one that deletes. First real sign-in is the test.
+- [ ] ⚠️ **CROSS-DEVICE PASSWORD RESET IS BROKEN, and it is the recovery path
+      that Confirm-email-off depends on.** `@supabase/ssr` hardcodes
+      `flowType: "pkce"` (verified in the package source), so redeeming a reset
+      link needs a **code verifier held in the browser that requested it** —
+      `auth-js` throws `AuthPKCECodeVerifierMissingError` without it, and
+      `_initialize()` only debug-logs that, so the session never establishes and
+      `ResetPasswordForm`'s 4s timeout shows **"This link has expired or has
+      already been used."** That message is FALSE; the link is fine. Request on
+      a laptop, open the mail on a phone → broken. **Same-device works.**
+      The fix, offered and not built: switch the recovery template to
+      `{{ .TokenHash }}`, add `/auth/confirm` calling
+      `verifyOtp({type:'recovery', token_hash})` server-side, allowlist it. No
+      verifier, so any device works. ~30 lines plus one template edit.
+      ⚠️ **`ResetPasswordForm`'s own header comment says the tokens arrive in
+      the URL FRAGMENT (`#access_token=…`) — that is the IMPLICIT flow and is
+      wrong for this client.** That wrong assumption is probably how this was
+      missed; fix the comment in the same change.
+- [ ] **The redirect allowlist was saved today but the round trip is still
+      untested.** All four entries are in (apex, vercel.app, `*.vercel.app`
+      wildcard, localhost:3000) and Site URL is correctly `https://booklesss.app`.
+      Test **same-device** or it will fail for the PKCE reason above and look
+      like the allowlist.
+- [ ] **`course-data.json` is 1.1 MB for 4 courses and is committed.** The
+      reader reads the JSON, not Supabase, so this file is the publish. At 20+
+      courses one monolithic snapshot becomes a build and bundle problem —
+      **split it per course before the UNZA wave, not after.**
+- [ ] **UNZA: the belt exists end to end and no course has ridden it.** PLAN is
+      done (4 courses, 83 steps, slugs collision-checked); WRITE is the
+      bottleneck — zero `.mjs` written. Ship **ECN 1215** alone first (richest
+      sources: outline + IDE module + 19 tutorial sheets + past papers + 39
+      transcripts), seed, publish, claim it on the `unza` row's `course_slugs`.
+      One full pass turns "no reliable system" into a runbook. Leave
+      `pipeline_subjects.course_id` null — it is cross-campus.
+      Then load `Schools/UNZA/_programme-map.md` into the pipeline so UNZA
+      students TICK their courses instead of typing them, and plan **GMS 1035**
+      next (Communication Skills — the whole school takes it, highest reach on
+      the map, still raw in `_pipeline/`).
+- [ ] **A student at a campus with no claimed courses still sees EVERY course.**
+      Deliberate (nobody meets an empty screen), but once a UNZA course ships, a
+      CBU student would be shown it as theirs — which collides with
+      courses-don't-travel. Owner's call then: label it as another campus's, or
+      show unclaimed campuses only the demo course. One filter in
+      `lib/courses.ts:150`.
 
 **From session 59 (2026-08-10, the step's grain changed twice: one concept per
 checkpoint, then the exam and the product both left the page. Numbered 59
@@ -1463,6 +1531,53 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-10 (session 60 — studying stops dying with the device)
+
+**Done:** The storage audit the owner asked for, then the fix it exposed. Four
+stores were device-only — progress, saves, note verdicts and typed comments —
+so a cleared browser wiped a term's work and a second device showed a name and
+courses beside a dashboard claiming the student had never studied. **Four
+tables, one route (`/api/state`, GET pulls, POST pushes), RLS select-own,
+service-role writes** (`12b19da`, schema recorded in `tools/study_state.sql`).
+Also: both WARN-level DB advisors cleared (`auth.uid()` was re-evaluating **per
+row** in the `students` and `student_courses` policies; two unindexed FKs
+covered), two analytics views (`section_signal`, `study_days`), the ActionBar
+put in Satoshi with the step title at medium (`da55b88`), a **404 page that did
+not exist at all** — every miss fell through to Next's bare built-in, no link
+anywhere (`9d31655`) — and CLAUDE.md taught the second system (`0bae2c3`).
+
+**What Worked:**
+- **Proving the merge before it touched a student's history.** No test runner
+  here, so `npx tsc` transpiled `study-state.ts` + `progress-shared.ts` alone
+  into the scratchpad and plain node exercised **28 properties**: both devices'
+  work survives, idempotent to five re-syncs, order-independent, an empty
+  remote erases nothing, stranger input dropped not guessed. Cheap, and the
+  right place to spend the effort — a merge bug is silent and permanent.
+- **Reading the dependency's source instead of trusting the code's comment.**
+  `ResetPasswordForm` says recovery tokens arrive in the URL fragment;
+  `@supabase/ssr` hardcodes `flowType: "pkce"`, which is a `?code=` query and a
+  stored verifier. Grepping `node_modules` found the cross-device break — a
+  real bug — before the owner hit it in a manual test.
+- **Checking production, not localhost, before answering "is it safe to
+  share".** curl against `booklesss.app` confirmed 60 TM steps live, a step
+  200, the new 404 serving its exits, and `/api/state` correctly 401ing. The
+  local build proved none of that.
+- **Supabase docs via MCP for dashboard paths.** The leaked-password toggle is
+  under Sign In / Providers → Email, NOT "Policies" as this file had recorded.
+
+**Dead Ends (do not retry):**
+- ⛔ **Leaked-password protection cannot be enabled on the Free plan.** The
+  toggle renders and the save is refused: *"available on Pro Plans and up"*.
+  Do not retry before Pro. Worse, **the Email provider panel saves as ONE
+  request**, so leaving that toggle flipped silently blocks every other change
+  on the page (password length, requirements, OTP) while showing only the
+  HaveIBeenPwned error.
+- ⛔ **Do not compare merge results with `JSON.stringify` alone.** Nine of the
+  first 28 assertions "failed" on key ORDER, not content, and one on a
+  backwards expectation (a 12:00 comment really is later than a 10:00 one).
+  All nine were the test's fault. Sort keys before comparing — and read the
+  actual output before touching the code the test is accusing.
 
 ### Session 2026-08-10 (session 59 — one concept per checkpoint, and the exam leaves the page)
 
