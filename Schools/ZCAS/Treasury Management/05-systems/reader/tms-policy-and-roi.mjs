@@ -25,7 +25,7 @@ export default {
         },
         {
           type: "p",
-          text: "Limits go in at two strengths. A **hard limit** blocks a breaching deal outright: the screen refuses to book it. A **soft limit** lets the deal through, logs it, alerts the treasurer and demands approval before the next step. Which strength each rule gets is a real decision, because a policy made entirely of hard limits will eventually block something the business genuinely needed.",
+          text: "Limits go in at two strengths. A **hard limit** blocks a breaching deal outright: the screen refuses to book it. A **soft limit** lets the deal through, logs it, alerts the treasurer and demands approval before the deal can proceed. Which strength each rule gets is a real decision, because a policy made entirely of hard limits will eventually block something the business genuinely needed.",
         },
         { type: "h2", text: "What it is worth" },
         {

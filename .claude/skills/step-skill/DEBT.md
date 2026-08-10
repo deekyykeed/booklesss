@@ -78,6 +78,7 @@ unchecked ones get ticked off by someone assuming the list was audited.
 | D-16 | Prose nobody has asked the shorter-version question of — W-17 | 2026-08-07 | open · 0 of 53 |
 | D-17 | Titles in sentence case, hedging where they should name — S-12 | 2026-08-08 | open · **22 of 53** · **all of TM** (2026-08-08) |
 | D-18 | Steps carrying more than one checkpoint — S-1 (revised) | 2026-08-09 | open · **TM converted the same day** (22 steps → 60); 3 courses owe it |
+| D-19 | Steps pinned to the exam, and steps explaining Booklesss — C-12, S-13 | 2026-08-09 | open · **TM clean same day**; CF and SM measured, economics unscanned |
 
 > **Counts moved from 44 to 53 on 2026-08-02.** The nine remaining Treasury
 > Management steps were split into eighteen (S-8), so the course is 21 steps and
@@ -1082,6 +1083,57 @@ the count owing.
 - [ ] corporate-finance — 26 steps, unconverted
 - [ ] strategic-management — 8 steps, unconverted
 - [ ] economics — 30 steps, not reachable from a `.mjs`
+
+### D-19 · steps pinned to the exam, and steps explaining Booklesss · opened 2026-08-09
+**Source:** 2026-08-09 · owner — *"you need to remove references to the exam.
+this should not feel like its just about the exam — remember we are trying to
+help the student understand beyond just academic purposes"*, and *"another rule
+is not to explain to the student how there are 57 steps and how every step ends
+with a question. you are now moving away from the actual course to Booklesss
+mechanics which are only supposed to stay with me."*
+**Rules:** C-12 (new), S-13 (new); W-9's exam clause and S-11's "how to read
+it" row are withdrawn by them, and E-10's `exam` callout kind with them
+**Why it can't wait for a rewrite:** both are about what the product is *for*.
+A step whose stated reason is the paper teaches something that expires the day
+it is sat, and the whole pitch is that the material is the reader's to run a
+business with. The mechanics half is worse than useless: it spends a reader's
+attention on the software, and the software is the one thing they will learn
+without being told.
+**Applies to:** all four courses. Measured 2026-08-09 with `rank.mjs`:
+
+| Course | C-12 | S-13 | `exam` callouts |
+|---|---|---|---|
+| **Treasury Management** | **0** | **0** | **0** |
+| Corporate Finance | 10 | 13 | 2 |
+| Strategic Management | 13 | 10 | 2 |
+| economics | unscanned, no `.mjs` | | |
+
+- [x] **treasury-management — 2026-08-09, same day.** Eleven steps carried it.
+      One whole step was mechanics end to end and was **deleted and rewritten
+      as a subject step**: `one-step-one-sitting` (a step count, what the
+      question button does, where the note button is, that progress is kept)
+      became `policy-and-execution`, which teaches the board/treasury split its
+      own check was already testing. The `exam` callout in
+      `the-decisions-it-hands-you` became a `key` box saying the same
+      discipline without the paper: *"A number on its own is never the answer."*
+      Nine more were single sentences. 60 of 60 at 8/8.
+- [ ] corporate-finance — 10 + 13, and 2 `exam` callouts
+- [ ] strategic-management — 13 + 10, and 2 `exam` callouts. The densest per
+      step, the same way it was for D-10, and the cheapest to clear
+- [ ] economics — not reachable from a `.mjs`
+
+**Three sentences of mine were the S-13 defects**, written the same morning
+while fixing the one-checkpoint seams: *"the two steps after this one are the
+machinery"*, *"the instruments in the two steps after this one"*, *"everything
+in this step is about"*. An author fixing structure thinks in files, and the
+file is the thing the reader must never be shown. **Refer to the material —
+"the two models that follow" — never to the container.**
+
+**The `exam` callout kind stays in the code until the last course is
+converted.** `CALLOUT_KINDS` in `seed-course.mjs` and `CALLOUTS` in
+`LessonView.tsx` both still know it; deleting them now would refuse to seed
+Corporate Finance and Strategic Management, which carry four between them.
+Delete both entries in the change that clears the final one.
 
 **What the conversion actually cost, recorded because the next course pays the
 same bill.** Every TM step URL moved except the three in Getting Started: a

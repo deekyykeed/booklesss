@@ -54,7 +54,8 @@ In practice:
 - **No step is written, edited, split, re-seeded or published without this skill
   open.** Including a one-line fix, and including work that started somewhere
   else and only turned out to touch a step.
-- **RANK before you call anything done** (below). A step below 6/6 is rewritten,
+- **RANK before you call anything done** (below), one step at a time. A step
+  below 8/8 is rewritten,
   not noted.
 - **Anything learned about steps lands here**, in `RULES.md`, `DEBT.md` or
   `LOG.md`, in the same session it is learned. A lesson recorded only in a
@@ -499,7 +500,22 @@ channel, wrong answers on the reader's section checks, and DMs. All of it counts
 
 # RANK — score a step against the rules
 
-## The gate: 6/6, or it gets rewritten
+## Score ONE step at a time. Never the course.
+
+*(owner, 2026-08-09: "scoring should be aggressively one step by step and not
+all at once")* A course grade is a number somebody can make go green without
+having read a page. Point the tool at **one step**, get a verdict per rule with
+the offending sentence quoted, fix it, and only then open the next one.
+
+```bash
+node .claude/skills/step-skill/tools/rank.mjs "…/reader/baumol-model.mjs"   # the real use
+```
+
+Pointed at a folder it does **not** hand back a course score — it hands back a
+**queue**, worst first, and prints the command for the single next step to
+open. Treat that list as a worklist and nothing else.
+
+## The gate: 8/8, or it gets rewritten
 
 *(owner, 2026-08-03 — "if steps fall below they need to be rewritten and made
 better")* Ranking is not a report. It is the check that runs before a step is
@@ -507,19 +523,39 @@ called done, and **a step that scores below the bar is rewritten in that same
 pass.** Not logged, not queued, not left for a session that has more time.
 
 ```bash
-node .claude/skills/step-skill/tools/rank.mjs "Schools/<School>/<Course>"          # what is below 6
+node .claude/skills/step-skill/tools/rank.mjs "Schools/<School>/<Course>"          # the queue, worst first
 node .claude/skills/step-skill/tools/rank.mjs "Schools/<School>/<Course>" --steps  # every step
 ```
 
-Six rules vary per step and are the score out of 6 — **S-1** one section and
-one checkpoint *(added to the score 2026-08-09, the owner's "add it to the
-scoring criteria so i can get other courses like this later")*, **W-8** bold
-budget, **E-8** tappable terms, **C-1** a Zambian anchor, **C-5** an anchor in
-every section, **C-7** a source under every claim. Exit code is the number of
-steps under 6, so it gates a script. A course not yet converted to
+Eight rules vary per step and are the score out of 8 *(all three additions are
+from 2026-08-09, on the owner's "add it to the scoring criteria so i can get
+other courses like this later")*:
+
+| Rule | What it catches |
+|---|---|
+| **S-1** | more than one section, so more than one checkpoint |
+| **W-8** | the bold budget |
+| **E-8** | tappable terms outside 1–3 |
+| **C-1** | no Zambian anchor |
+| **C-5** | a section with no concrete anchor |
+| **C-7** | a section with no outbound source |
+| **C-12** | exam framing anywhere a reader sees, `check` included |
+| **S-13** | Booklesss mechanics: steps, checkpoints, notes, counts |
+
+Exit code is the number of failing rules for one step, or of steps below 8 for
+a folder, so it gates a script either way. A course not yet converted to
 one-checkpoint steps fails S-1 on every step by design — that is its **D-18**
 debt showing, and the pay-down is a course-level conversion pass (TM's, on
 2026-08-09, is the reference), not a per-step patch.
+
+**C-12 and S-13 match phrases, not words, and the calibration is the point.**
+A bare `/marks?/` fires on deutsche marks and mark-to-market; `this course` is
+the student's own word for their module and not a Booklesss feature. Both
+over-broad versions were written and narrowed the same afternoon, because a
+scanner that cries wolf is a scanner the next author stops reading. If a hit is
+genuinely a false positive, **rewrite the sentence anyway where that costs
+nothing** ("before the deal can proceed" for "before the next step") rather
+than weakening the pattern — a permanently red step is worse than either.
 
 **Then rank the course** against all of `RULES.md`, rule by rule with evidence,
 using the table below. Report it as a percentage: **passed ÷ applicable**, where
@@ -607,11 +643,17 @@ not worth reading — and because nothing is *wrong*, a normal review returns
 course-agnostic: it asks nothing about treasury or strategy, so it runs on any
 step in any course.
 
-Thirteen checks, in order. Each has a rule behind it, so a failure is a defect
+Fifteen checks, in order. Each has a rule behind it, so a failure is a defect
 with an id, not an opinion. Checks 8–10 were added 2026-08-02: 7 and 8 are the
 two halves of an opening (readable, then worth reading) and must both pass, 9 is
 the one that catches what sentence-length limits miss, and 10 is the only check
 that looks outside the step it is run on.
+
+**Checks 14 and 15 were added 2026-08-09** and they are the two ways a step can
+be about the wrong thing entirely. Fourteen asks whether the exam is the only
+reason to read it (**C-12**); fifteen asks whether the reader is being shown
+the software instead of the subject (**S-13**). Both survive a step that passes
+every other check, which is why they are read for rather than scanned for.
 
 **Checks 11–13 were added 2026-08-07** and they share a premise the first ten
 only imply: *a reader's attention is the scarce resource, and every one of these
@@ -638,6 +680,8 @@ production; see `reference/disciplines.md` before scoring it a Fail.
 | 11 | **The shorter version** — take each paragraph and rewrite it at half length. Compare the two | The half teaches the same thing, so the full one was spending a reader's attention on nothing | **W-17** |
 | 12 | **Has the reader felt this?** — for every example, name the student and say when they have been near this situation | The honest answer is "nobody reading this has". A ZMW figure on a company nobody has worked for is local, not relatable | **C-10** |
 | 13 | **Does the reader ever do one?** — count the examples the step works *for* them against the ones it hands *over* | Every example is worked. They finish able to follow the method and unable to start it | **C-9** |
+| 14 | **Why would they care if there were no exam?** — cover every sentence that mentions the paper and ask what is left holding the step up | The answer is "they wouldn't". A step whose only stake is a mark teaches something that expires the day they sit it | **C-12** |
+| 15 | **Is any of this about Booklesss?** — read for sentences describing steps, checkpoints, notes, counts or the sidebar | The reader is being given a tour of the software instead of the subject | **S-13** |
 
 **The moves that fix them.** These are what the TM 1.1 rewrite actually did, in
 the order they were worth doing:

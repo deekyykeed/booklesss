@@ -1805,15 +1805,15 @@
             }
           },
           {
-            "id": "one-step-one-sitting",
-            "label": "One Step, One Sitting",
+            "id": "policy-and-execution",
+            "label": "Policy and Execution",
             "lesson": {
-              "title": "One Step, One Sitting",
+              "title": "Policy and Execution",
               "kicker": "Getting Started",
               "sections": [
                 {
-                  "id": "how-to-use-this",
-                  "heading": "How to use this"
+                  "id": "policy-and-execution",
+                  "heading": "Policy and execution"
                 }
               ]
             }

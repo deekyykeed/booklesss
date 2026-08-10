@@ -74,12 +74,12 @@ export default {
         },
         {
           type: "p",
-          text: "Day to day it is two jobs at once: having enough available to meet what is due, and earning something on the part that is not needed yet. Banks pay more the longer you tie money up, and charge more on an overdraft than on a term loan, because flexibility is the thing you are buying. Moving money between accounts is worth doing only when the interest gained beats the cost of the transfer, which is the calculation the rest of this step formalises.",
+          text: "Day to day it is two jobs at once: having enough available to meet what is due, and earning something on the part that is not needed yet. Banks pay more the longer you tie money up, and charge more on an overdraft than on a term loan, because flexibility is the thing you are buying. Moving money between accounts is worth doing only when the interest gained beats the cost of the transfer, which is the calculation the two models ahead formalise.",
         },
         {
           type: "callout",
           kind: "key",
-          text: "Hold cash only until the marginal value of liquidity equals the interest lost. **The two steps after this one are the machinery for finding that point.**",
+          text: "Hold cash only until the marginal value of liquidity equals the interest lost. **The two models that follow are the machinery for finding that point.**",
         },
       ],
       check: {

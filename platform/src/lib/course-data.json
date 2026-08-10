@@ -14363,8 +14363,8 @@
                       "type": "p"
                     },
                     {
-                      "kind": "exam",
-                      "text": "The paper is written the same way. Most marks in the past papers go to a calculation and then to a short recommendation about what the business should actually do. A number with no decision attached to it leaves marks on the table.",
+                      "kind": "key",
+                      "text": "A number on its own is never the answer. Every calculation ahead of you ends in something somebody has to do: cover the exposure or leave it open, take the discount or keep the cash, borrow short or borrow long. Work the figure, then say what you would do with it.",
                       "type": "callout"
                     }
                   ],
@@ -14374,17 +14374,17 @@
             }
           },
           {
-            "id": "one-step-one-sitting",
-            "label": "One Step, One Sitting",
+            "id": "policy-and-execution",
+            "label": "Policy and Execution",
             "lesson": {
-              "title": "One Step, One Sitting",
+              "title": "Policy and Execution",
               "kicker": "Getting Started",
               "sections": [
                 {
-                  "id": "how-to-use-this",
+                  "id": "policy-and-execution",
                   "check": {
                     "answer": 0,
-                    "explain": "The split matters because it is where treasury failures come from. A treasurer choosing their own risk limits is the setup behind most of the famous blow-ups in the syllabus. Policy comes from above, execution and the daily judgement calls sit with treasury, and the line between them is examinable.",
+                    "explain": "The split matters because it is where treasury failures come from. A treasurer choosing their own risk limits is the setup behind most of the famous blow-ups in this field. Policy comes from above; execution and the daily judgement calls sit with treasury, and a company that blurs the line has removed the only thing standing between it and one person's bad week.",
                     "options": [
                       "The board decides how much risk the company will carry, and treasury operates within that: it manages the exposures and the cash, but does not decide the company's appetite for risk on its own",
                       "Treasury has no decisions to make, and simply processes payments the board has approved",
@@ -14395,31 +14395,28 @@
                   },
                   "blocks": [
                     {
-                      "text": "You have started, which is the part most people put off until the week before the exam. From here it is short steps rather than long ones: **each one is a single sitting, and finishing three of them in an evening beats abandoning one halfway.**",
+                      "text": "A treasurer who picks the limit and then trades against it does not have a limit. **The number and the person it restrains cannot be the same person,** and almost every treasury disaster you will read about started with somebody holding both.",
                       "type": "p"
                     },
                     {
-                      "text": "**57 steps sit after this one, and each is a single idea with a single question at the end,** and they run in the order the money does. Getting cash in and keeping it moving. Protecting it from [rates and currencies](https://corporatefinanceinstitute.com/resources/foreign-exchange/foreign-exchange-risk/). What it costs to borrow, and what to do with a surplus. Then the systems that actually move it between banks. A step is roughly five minutes, which makes an evening a real run of them.",
+                      "text": "So the work splits in two. The board decides how much risk the company is willing to carry, which is its [[risk appetite|How much a business is prepared to lose, decided in advance and in writing, before anybody is in a position where losing is on the table. It is a board decision because it is a decision about the whole company, not about one deal.]]. That means how much of the dollar exposure gets covered, how far ahead, which banks are acceptable, and how much may sit with any one of them. **Treasury then executes inside that,** and everything it does day to day is judgement within someone else's boundary.",
                       "type": "p"
                     },
                     {
-                      "text": "Three things worth knowing before you start",
-                      "type": "h2"
+                      "text": "A Zambian mining group's board sets a policy of covering 80% of its dollar costs twelve months ahead. That sentence decides nothing about Tuesday. Treasury still has to choose [forwards or options](https://corporatefinanceinstitute.com/resources/derivatives/forward-contract/), which banks to ask, what a fair spread looks like this week, and whether to cover the remaining 20% when the kwacha moves. **The policy is a fence, not a map.**",
+                      "type": "p"
                     },
                     {
-                      "type": "ul",
-                      "items": [
-                        "Every step ends with one question. Get it wrong and it tells you why the right answer is right, which is the point of it. Nothing is marked and nobody sees it.",
-                        "There is a note button at the end of each step. If something is confusing, too long or looks wrong, say so there. That is the fastest way to get a step rewritten, and it has already changed several.",
-                        "Your place is kept as you go, so you can stop mid-step and come back to the same spot on any device."
-                      ]
+                      "kind": "key",
+                      "text": "Policy comes from above. Execution and every daily judgement call sit with treasury. The line between them is the single most useful thing to know about how the function works.",
+                      "type": "callout"
                     },
                     {
-                      "text": "One habit is worth more than any of that. **When a step works an example, a kwacha figure through a method, work it yourself on paper before reading the answer.** Following a [[worked example|An example the step solves in front of you, every line visible. Its opposite is the unworked one: same method, fresh numbers, and you produce the answer.]] feels like understanding and is not: the exam hands you a blank page, and the only preparation for a blank page is a blank page.",
+                      "text": "You have started, which is the part most people put off. What follows runs in the order the money does. Getting cash in and keeping it moving. Protecting it from [rates and currencies](https://corporatefinanceinstitute.com/resources/foreign-exchange/foreign-exchange-risk/). What it costs to borrow, and what to do with a surplus. Then the systems that move it between banks.",
                       "type": "p"
                     }
                   ],
-                  "heading": "How to use this"
+                  "heading": "Policy and execution"
                 }
               ]
             }
@@ -15170,7 +15167,7 @@
                           "type": "p"
                         },
                         {
-                          "text": "Selling on credit means waiting to be paid, and waiting costs money. This step is about the side of that where you set the terms: how much credit to give, to whom, and what to offer for early payment. The aim is the terms that make the most profit, **not the fewest days outstanding.** A business with no bad debts is usually a business turning away good customers.",
+                          "text": "Selling on credit means waiting to be paid, and waiting costs money. Start on the side where you set the terms: how much credit to give, to whom, and what to offer for early payment. The aim is the terms that make the most profit, **not the fewest days outstanding.** A business with no bad debts is usually a business turning away good customers.",
                           "type": "p"
                         },
                         {
@@ -15706,12 +15703,12 @@
                               "type": "p"
                             },
                             {
-                              "text": "Day to day it is two jobs at once: having enough available to meet what is due, and earning something on the part that is not needed yet. Banks pay more the longer you tie money up, and charge more on an overdraft than on a term loan, because flexibility is the thing you are buying. Moving money between accounts is worth doing only when the interest gained beats the cost of the transfer, which is the calculation the rest of this step formalises.",
+                              "text": "Day to day it is two jobs at once: having enough available to meet what is due, and earning something on the part that is not needed yet. Banks pay more the longer you tie money up, and charge more on an overdraft than on a term loan, because flexibility is the thing you are buying. Moving money between accounts is worth doing only when the interest gained beats the cost of the transfer, which is the calculation the two models ahead formalise.",
                               "type": "p"
                             },
                             {
                               "kind": "key",
-                              "text": "Hold cash only until the marginal value of liquidity equals the interest lost. **The two steps after this one are the machinery for finding that point.**",
+                              "text": "Hold cash only until the marginal value of liquidity equals the interest lost. **The two models that follow are the machinery for finding that point.**",
                               "type": "callout"
                             }
                           ],
@@ -16617,7 +16614,7 @@
                           },
                           "blocks": [
                             {
-                              "text": "Pay ZMW 1,500 today and you keep the right to change your mind in September. Everything in this step is about whether that is worth ZMW 1,500 to you.",
+                              "text": "Pay ZMW 1,500 today and you keep the right to change your mind in September. Everything that follows is about whether that is worth ZMW 1,500 to you.",
                               "type": "p"
                             },
                             {
@@ -16789,7 +16786,7 @@
                         },
                         {
                           "kind": "example",
-                          "text": "Put the two halves of this step together on one invoice. A Lusaka importer owes GBP 250,000. Its bank quotes GBP/USD 1.24 – 1.28 and USD/ZMW 12.40 – 12.60. Work out what the payment costs in kwacha. Do it in two steps rather than one: decide which side of each quote you are on before you multiply anything, and remember there are two spreads here, not one.",
+                          "text": "Put both halves together on one invoice. A Lusaka importer owes GBP 250,000. Its bank quotes GBP/USD 1.24 – 1.28 and USD/ZMW 12.40 – 12.60. Work out what the payment costs in kwacha. Do it in two steps rather than one: decide which side of each quote you are on before you multiply anything, and remember there are two spreads here, not one.",
                           "type": "callout"
                         }
                       ],
@@ -16896,7 +16893,7 @@
                             },
                             {
                               "kind": "key",
-                              "text": "Operational hedges cost little and never expire. **The instruments in the two steps after this one are for the exposure that survives them,** not a substitute for doing this first.",
+                              "text": "Operational hedges cost little and never expire. **The instruments that follow are for the exposure that survives them,** not a substitute for doing this first.",
                               "type": "callout"
                             }
                           ],
@@ -18657,7 +18654,7 @@
                               "type": "p"
                             },
                             {
-                              "text": "Limits go in at two strengths. A **hard limit** blocks a breaching deal outright: the screen refuses to book it. A **soft limit** lets the deal through, logs it, alerts the treasurer and demands approval before the next step. Which strength each rule gets is a real decision, because a policy made entirely of hard limits will eventually block something the business genuinely needed.",
+                              "text": "Limits go in at two strengths. A **hard limit** blocks a breaching deal outright: the screen refuses to book it. A **soft limit** lets the deal through, logs it, alerts the treasurer and demands approval before the deal can proceed. Which strength each rule gets is a real decision, because a policy made entirely of hard limits will eventually block something the business genuinely needed.",
                               "type": "p"
                             },
                             {

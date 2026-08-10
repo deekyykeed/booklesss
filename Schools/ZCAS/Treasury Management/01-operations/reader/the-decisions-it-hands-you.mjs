@@ -44,8 +44,8 @@ export default {
         },
         {
           type: "callout",
-          kind: "exam",
-          text: "The paper is written the same way. Most marks in the past papers go to a calculation and then to a short recommendation about what the business should actually do. A number with no decision attached to it leaves marks on the table.",
+          kind: "key",
+          text: "A number on its own is never the answer. Every calculation ahead of you ends in something somebody has to do: cover the exposure or leave it open, take the discount or keep the cash, borrow short or borrow long. Work the figure, then say what you would do with it.",
         },
       ],
       check: {

@@ -75,7 +75,7 @@ export default {
         },
         {
           type: "p",
-          text: "Selling on credit means waiting to be paid, and waiting costs money. This step is about the side of that where you set the terms: how much credit to give, to whom, and what to offer for early payment. The aim is the terms that make the most profit, **not the fewest days outstanding.** A business with no bad debts is usually a business turning away good customers.",
+          text: "Selling on credit means waiting to be paid, and waiting costs money. Start on the side where you set the terms: how much credit to give, to whom, and what to offer for early payment. The aim is the terms that make the most profit, **not the fewest days outstanding.** A business with no bad debts is usually a business turning away good customers.",
         },
         { type: "h2", text: "Knowing who deserves credit" },
         {

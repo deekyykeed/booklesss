@@ -42,8 +42,28 @@ added above lesson 1 on 2026-08-07 and is three steps now.
 >
 > **Cost, paid rather than asked about:** every step URL moved except the three
 > in Getting Started, so old deep links 404; and checkpoint progress is keyed by
-> step, so ticks on a section that moved out reset. **60 of 60 at 6/6**, every
-> scan at zero, verified against the served HTML rather than the source.
+> step, so ticks on a section that moved out reset.
+
+> **2026-08-09, later — THE EXAM AND THE PRODUCT BOTH LEFT THE PAGE.** The
+> owner: *"remove references to the exam … we are trying to help the student
+> understand beyond just academic purposes"*, and *"not to explain to the
+> student how there are 57 steps and how every step ends with a question …
+> Booklesss mechanics are only supposed to stay with me."* Rules **C-12** and
+> **S-13**, both scored by `rank.mjs`, which is **out of 8** now and scores
+> **one step at a time** rather than handing back a course grade.
+>
+> Eleven steps carried it. One was mechanics end to end and was replaced:
+> `one-step-one-sitting` became **`policy-and-execution`**, which teaches the
+> board/treasury split its own check was already testing. The `exam` callout in
+> `the-decisions-it-hands-you` became a `key` box making the same point without
+> the paper. The syllabus is unchanged — past papers still set coverage
+> (**C-2**), the reader is just never told so.
+>
+> **60 of 60 at 8/8**, every scan at zero, and all 60 pages swept as **served
+> text with the tags stripped** for the banned vocabulary: zero. The probe was
+> checked against Corporate Finance and Strategic Management first, where it
+> finds it on 15 of 34 pages — a zero from a probe that has not been shown to
+> see a positive is worth nothing.
 
 > **2026-08-02 — the whole course was split and re-passed.** Every step is now
 > two to four sections (rule **S-8**): a reader who finishes three short steps

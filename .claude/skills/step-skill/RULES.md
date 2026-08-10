@@ -56,8 +56,11 @@ Ids are stable. A withdrawn rule is struck through, never deleted.
   on your own desk", not "the exam asks you to sort tasks between them". Hand
   over the judgement rather than the mark scheme — say what the choice costs
   them, what they can survive without while small, what they are buying when
-  they hire. Exam framing is allowed where it is genuinely the point (a method
-  the paper demands by name), but it is never the default voice.
+  they hire. ~~Exam framing is allowed where it is genuinely the point (a
+  method the paper demands by name), but it is never the default voice.~~
+  *(withdrawn 2026-08-09 — **C-12** bans it outright. This was the loophole
+  every exam sentence came through, because a sentence about a method always
+  feels like the genuine case.)*
 - **W-10** *(revised 2026-08-01)* Carry W-9 down to the **possessive**, but
   **sparingly**. Where a sentence turns on the reader owning the thing, it is
   *your*: "keeping **your** suppliers paid", not "keeping suppliers paid". Used
@@ -334,7 +337,7 @@ text, so a mark written into one shows its own syntax.
   | `key` *(default)* | Key point | The one sentence that must survive when the section is forgotten (**E-3**) |
   | `warning` | Watch out | The trap. The slip that loses the mark, the assumption that breaks, the thing that looks right |
   | `example` | Example | A case set out to be worked, including the one handed to the reader unworked (**C-9**) |
-  | `exam` | In the exam | What the paper actually does with this: how it is asked, what it awards, the method it demands by name |
+  | ~~`exam`~~ | ~~In the exam~~ | **WITHDRAWN 2026-08-09 by C-12.** Its whole job was to say what the paper does, which is the thing a reader is no longer told. Convert an existing one to `warning` where it named a trap, or to `key` where it stated the rule, and rewrite the sentence to say what the mistake costs in the world. The reader still *draws* the kind (`CALLOUTS` in `LessonView.tsx`, `CALLOUT_KINDS` in `seed-course.mjs`) and both entries get deleted once the last course is converted — deleting them now would refuse to seed Corporate Finance and Strategic Management, which still carry four between them (**D-19**) |
 
   **Measured 2026-08-07: none of the 60 callouts in the 53 authored steps sets
   a kind.** Every box in the product says "Key point", including the ones that
@@ -527,17 +530,18 @@ text, so a mark written into one shows its own syntax.
   | **Where it sits** | What it connects to, in subject terms — what it assumes, what it feeds, which other things they are studying it beside | **Never by course code or school name.** Say "the accounting you already do" |
   | **Where it lands** | What someone who has this does at work, and what someone without it cannot. Named roles, real decisions, real money | This is the "how it elevates them" half, and it must be specific enough to be checkable |
   | **The welcome** | One line congratulating them for starting | **One line.** See below |
-  | **How to read it** | What the reader gives them, named where it is about to be used | **Not a product tour.** See below |
+  | ~~**How to read it**~~ | ~~What the reader gives them~~ | **DELETED 2026-08-09 by S-13.** The product's mechanics stay with the owner. A student meets the interface by using it |
 
   - **Congratulate them once, in a sentence, and mean it.** Starting is the
     hardest part and most people never do, so it is worth saying. A banner, a
     paragraph of encouragement, or an exclamation mark is worse than silence:
     it reads as marketing, and the reader came to study. Earn it by being
     specific about what they have started, not about how great they are.
-  - **Name the features where they are about to be used, not as a list.** "Each
-    section ends with a question — get it wrong and it tells you why" belongs in
-    this step because they meet the first one two screens later. A tour of the
-    interface is furniture (**C-7**'s whole lesson), and a reader skips it.
+  - ~~**Name the features where they are about to be used, not as a list.**~~
+    **WITHDRAWN 2026-08-09 by S-13 — name no feature at all.** The old rule
+    conceded that a tour is furniture and then licensed a smaller tour, which
+    is how Treasury Management ended up with a whole step about question
+    buttons and step counts. The interface introduces itself.
   - **This is NOT a course skeleton, and S-6 still stands.** Do not list the
     lessons or the steps: the sidebar does that, it goes stale, and it is the
     exact thing the owner banned. The difference is that a skeleton says *what
@@ -549,13 +553,43 @@ text, so a mark written into one shows its own syntax.
   - **It is a real step**, with sections and checks like any other (**S-1**,
     **S-4**) — but the checks are about the subject's shape and stakes, not
     about the app. A check on where treasury sits between the business and the
-    banks is fair; a check on where the sidebar is, is not.
+    banks is fair; a check on where the sidebar is, is not (**S-13**).
   - **Two or three one-checkpoint steps in the Getting Started folder**
     *(revised 2026-08-09 — it was one step of two-to-three sections until
     **S-1** changed the grain)*. Each is the shortest kind of step in the
     course; the run must not become the first climb (**S-8**).
   - **The first of them keeps the first slot and the course-intro slug**, and
     its label is the course's own name or something close to it.
+
+- **S-13** **A step teaches the subject. It never describes Booklesss.**
+  *(added 2026-08-09)* The owner: *"another rule is not to explain to the
+  student how there are 57 steps and how every step ends with a question. you
+  are now moving away from the actual course to Booklesss mechanics **which are
+  only supposed to stay with me**."* The product's structure is the author's
+  concern and the owner's. The reader came for treasury, or strategy, or
+  microeconomics, and every sentence spent on the container is a sentence not
+  spent on the subject.
+  - **Never on screen:** how many steps there are, that a step ends in a
+    question, the checkpoint, the note button, the sidebar, that progress is
+    kept, that a link opens another step, how long a step takes, what the
+    reader is for. A student meets all of it by using it, which is the only
+    introduction an interface has ever needed.
+  - **Refer to the MATERIAL, never to the container.** *"The two models that
+    follow"*, not *"the two steps after this one"*. *"The classification
+    above"*, not *"the previous section"*. This is the half that is easy to
+    break by accident: three of these were written into Treasury Management on
+    the day of the one-checkpoint split, while fixing seams, by an author
+    thinking in files.
+  - **C-8 is unaffected and still means what it said.** A step may lean on what
+    an earlier one established, and `[the words](step:its-slug)` is still the
+    way to link. What is banned is *narrating* the structure, not using it.
+    Link the idea; do not announce that it is a step.
+  - **This deletes S-11's "how to read it".** An intro step keeps the stake,
+    where the subject sits, where it lands and one line of welcome. The product
+    tour is gone.
+  - Test: `grep -iE "\b(step|steps|checkpoint|sidebar|section)\b"` over the
+    prose, then read each hit and ask whether it names the subject or the
+    software. `tools/rank.mjs` scores the mechanical half.
 
 - **S-12** **A title is Title Case, and it makes a claim.** *(added 2026-08-08)*
   **S-10** settles which of a step's two names is which; this settles how either
@@ -647,6 +681,11 @@ text, so a mark written into one shows its own syntax.
   | **Module handbook / scheme of work** | The official coverage claim, and what the course says it is for |
   | **Set textbook** | Where to go deeper, and the worked examples the lecture compressed |
 
+  - **Every source in this table is an AUTHORING input, and none of it is ever
+    quoted at the reader** *(added 2026-08-09 with **C-12**)*. The past papers
+    decide what a step covers and how deep it goes; the step never mentions
+    that a paper exists. Read them to set the syllabus, then write as if the
+    subject were the only reason.
   - **Weight them by what they are evidence of.** Where the slides and a past
     paper disagree about how much a topic matters, **the paper wins** — it is
     what the reader is sitting. Where the slides and a textbook disagree about
@@ -859,9 +898,11 @@ text, so a mark written into one shows its own syntax.
   - **Put the answer where they will look after trying, not before.** The
     check's `explain` carries the working, not just the verdict. A reader who
     got it wrong needs the line they missed.
-  - **Take it from the past papers where there are any** (**C-2**). A question
-    the paper has actually asked beats one invented for the step, and the
-    folder usually has a dozen.
+  - **Take it from the past papers where there are any** (**C-2**), **and never
+    say so** (**C-12**). A question the paper has actually asked beats one
+    invented for the step, and the folder usually has a dozen. Where it came
+    from is the author's business: pose it as a situation somebody is in, not
+    as a question somebody was once asked.
   - **Not every step is like this.** A step teaching what a thing *is* has
     nothing to hand over, and inventing a drill for it is worse than leaving
     it. The trigger is whether the exam will ask the reader to produce
@@ -901,6 +942,35 @@ text, so a mark written into one shows its own syntax.
     remote (a 1990s London bank, a US retailer), keep its figures for **E-7**
     and put a reachable case beside it. Do not replace it: the slide is what
     the marker is holding.
+
+- **C-12** **The exam is not the reason. Never pin a step to it.** *(added
+  2026-08-09)* The owner: *"remove references to the exam. this should not feel
+  like its just about the exam — remember we are trying to help the student
+  understand beyond just academic purposes."* A student who only ever hears
+  *this is what the paper wants* learns a thing that expires the day they sit
+  it. The material is theirs to run a business with (**W-9**), and that is the
+  whole product: passing follows from understanding, and a step written the
+  other way round gets neither.
+  - **Banned in anything a reader sees:** *the exam*, *the paper*, *past
+    papers*, *the syllabus*, *examinable*, *the examiner*, *marks* / *mark
+    scheme* / *full marks*, *revision*, *the night before the exam*. Including
+    inside a `check`'s question or its `explain`, which is where it hides.
+  - **What replaces it is the consequence in the world.** Not *"the exam asks
+    you to sort tasks between them"* but *"the first time you decide what to
+    keep on your own desk"*. Not *"this is examinable"* but *"getting this
+    backwards costs you the hedge"*. Every exam sentence is a real-world
+    sentence somebody has not bothered to write yet.
+  - **⚠️ This does NOT change where the syllabus comes from.** **C-2** is
+    untouched: the course's own slides, transcript and past papers still decide
+    what is covered and at what depth, and **C-9** still takes its unworked
+    example from a real past question. Those are **authoring inputs**. The rule
+    is that the reader is never told that is where any of it came from. Cover
+    exactly what the paper covers; say nothing about the paper.
+  - **The `exam` callout kind is withdrawn with this rule** (**E-10**). A box
+    whose only job was to say what the paper does has no job now.
+  - Test: `grep -iE "\b(exam|examinable|examiner|past paper|syllabus|mark
+    scheme|full marks|revision)\b"` over the step returns nothing, and
+    `tools/rank.mjs` scores it.
 
 - **C-11** **Name the discipline before writing, and load its profile.**
   *(added 2026-08-07)* This skill is the house style for **every** Booklesss

@@ -42,7 +42,7 @@
 
 import startHere from "../01-operations/reader/start-here.mjs";
 import theDecisionsItHandsYou from "../01-operations/reader/the-decisions-it-hands-you.mjs";
-import oneStepOneSitting from "../01-operations/reader/one-step-one-sitting.mjs";
+import policyAndExecution from "../01-operations/reader/policy-and-execution.mjs";
 
 import introToTreasury from "../01-operations/reader/intro-to-treasury.mjs";
 import elevenFunctions from "../01-operations/reader/eleven-functions.mjs";
@@ -127,7 +127,7 @@ export default {
           slug: "getting-started-treasury",
           label: "Getting Started",
           defaultOpen: true,
-          children: [startHere, theDecisionsItHandsYou, oneStepOneSitting],
+          children: [startHere, theDecisionsItHandsYou, policyAndExecution],
         },
         /* Three separate frames — what treasury is, how its work divides, how
          * it is governed. Each old step is now the folder over its two parts. */

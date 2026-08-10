@@ -70,7 +70,7 @@ export default {
         {
           type: "callout",
           kind: "key",
-          text: "Operational hedges cost little and never expire. **The instruments in the two steps after this one are for the exposure that survives them,** not a substitute for doing this first.",
+          text: "Operational hedges cost little and never expire. **The instruments that follow are for the exposure that survives them,** not a substitute for doing this first.",
         },
       ],
       check: {

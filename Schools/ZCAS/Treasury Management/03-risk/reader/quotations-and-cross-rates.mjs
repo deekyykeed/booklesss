@@ -46,7 +46,7 @@ export default {
         {
           type: "callout",
           kind: "example",
-          text: "Put the two halves of this step together on one invoice. A Lusaka importer owes GBP 250,000. Its bank quotes GBP/USD 1.24 – 1.28 and USD/ZMW 12.40 – 12.60. Work out what the payment costs in kwacha. Do it in two steps rather than one: decide which side of each quote you are on before you multiply anything, and remember there are two spreads here, not one.",
+          text: "Put both halves together on one invoice. A Lusaka importer owes GBP 250,000. Its bank quotes GBP/USD 1.24 – 1.28 and USD/ZMW 12.40 – 12.60. Work out what the payment costs in kwacha. Do it in two steps rather than one: decide which side of each quote you are on before you multiply anything, and remember there are two spreads here, not one.",
         },
       ],
       check: {

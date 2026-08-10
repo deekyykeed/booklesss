@@ -22,6 +22,58 @@ Quote actual words. A student's phrasing is never rewritten into the owner's.
 
 ---
 
+### 2026-08-09 (later) · treasury-management (whole course) + the skill · owner
+- `content` — "you need to remove references to the exam. this should not feel
+  like its just about the exam — **remember we are trying to help the student
+  understand beyond just academic purposes.**" The exam is no longer allowed to
+  be the reason a reader is given for anything. **C-12** bans the whole
+  vocabulary (exam, the paper, past papers, syllabus, marks, revision) from
+  anything a reader sees, the `check`'s `explain` included, and replaces each
+  one with the consequence in the world. **W-9's exam-framing exception is
+  withdrawn** — it was the loophole every exam sentence came through, because a
+  sentence about a method always feels like the genuine case.
+- `content` — **the syllabus half is untouched and this matters.** C-2 still
+  says the course's own slides and past papers decide what is covered and how
+  deep, and C-9 still takes its unworked example from a real past question.
+  They are **authoring inputs**. The rule is that the reader is never told that
+  is where any of it came from: cover exactly what the paper covers, say
+  nothing about the paper.
+- `structure` — "another rule is not to explain to the student how there are 57
+  steps and how every step ends with a question. you are now moving away from
+  the actual course to Booklesss mechanics **which are only supposed to stay
+  with me.**" **S-13**: a step teaches the subject and never describes the
+  product. This **deletes S-11's "how to read it" row** outright, which had
+  already conceded that a tour is furniture and then licensed a smaller tour.
+  It cost a whole step: `one-step-one-sitting`, written the same morning, was a
+  step count and a description of the question button, and is now
+  `policy-and-execution`, teaching the board/treasury split its own check had
+  always been testing.
+- `structure` — **three of the S-13 defects were written by me that morning**
+  while fixing the one-checkpoint seams: "the two steps after this one are the
+  machinery", "the instruments in the two steps after this one", "everything in
+  this step is about". An author fixing structure thinks in files, and the file
+  is the one thing the reader must never be shown. Refer to the **material**
+  ("the two models that follow"), never to the container.
+- `structure` — "**scoring should be aggressively one step by step and not all
+  at once.**" `rank.mjs` now scores **one step** by default: point it at a
+  `.mjs` and it prints a verdict per rule with the offending sentence quoted.
+  Pointed at a folder it refuses to give a course grade and returns a **queue**,
+  worst first, printing the command for the single next step to open. A course
+  number is a thing somebody can turn green without reading a page.
+- `element` — **two scanner calibrations, both narrowed within the hour, and
+  the lesson is the same both times.** A bare `/marks?/` fired on "having taken
+  in the marks and never delivered the dollars" (Herstatt, 1974, deutsche
+  marks) and on mark-to-market; `this course is about the Tuesday` was flagged
+  as product mechanics when *course* is the student's own word for their
+  module. **A scanner that cries wolf is one the next author stops reading.**
+  Where a hit is a genuine false positive but the rewrite is free, rewrite the
+  sentence ("before the deal can proceed") rather than weakening the pattern:
+  a permanently red step is worse than either.
+→ promoted: **C-12** (new), **S-13** (new), **W-9** (exception withdrawn),
+  **E-10** (`exam` kind withdrawn), **S-11** (row deleted), **C-2** and **C-9**
+  (authoring-input clause), engagement checks **14** and **15** ·
+  debt: **D-19** (TM clean same day; CF 10+13, SM 13+10, economics unscanned)
+
 ### 2026-08-09 · treasury-management (whole course) + the skill · owner
 - `structure` — "to really embrace having bite sized info that is easy to
   understand … id like each step in the case of treasury management to

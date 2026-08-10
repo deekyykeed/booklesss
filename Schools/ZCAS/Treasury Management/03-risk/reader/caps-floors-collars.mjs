@@ -21,7 +21,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Pay ZMW 1,500 today and you keep the right to change your mind in September. Everything in this step is about whether that is worth ZMW 1,500 to you.",
+          text: "Pay ZMW 1,500 today and you keep the right to change your mind in September. Everything that follows is about whether that is worth ZMW 1,500 to you.",
         },
         {
           type: "p",

@@ -161,13 +161,23 @@ content, socials, web:
   `step-feedback` — the writing rules and the debt they create are one state, and
   splitting them meant whichever skill got invoked read half of it.
 
+  **The exam is never the reason, and the product is never the subject.**
+  **C-12** bans the exam vocabulary (the paper, past papers, syllabus, marks,
+  revision) from anything a reader sees — past papers still *set* what a step
+  covers, the reader is just never told so. **S-13** bans Booklesss mechanics:
+  no step counts, no "each step ends with a question", no note button, no
+  sidebar. Both are owner rules from 2026-08-09 and both are scored.
+
   **A step is one small containable concept with ONE checkpoint** (**S-1**,
   rewritten 2026-08-09 on the owner's call: *"only one checkpoint per step …
   the read to that completion of the step is not so far away"*). One section,
   one check, roughly five minutes. A second checkpoint means a second step, and
   the run of them gets a folder — the sidebar tree now nests four or five deep
-  (**S-9**), where it used to stop at two. `rank.mjs` scores out of 6 with S-1
-  first, so an unconverted course fails every step by design.
+  (**S-9**), where it used to stop at two. `rank.mjs` scores **out of 8** and
+  scores **one step at a time** — pointed at a folder it returns a worklist,
+  not a course grade, because a course number can be turned green without
+  anyone having read a page. An unconverted course fails S-1 on every step by
+  design.
 
   **Before the first line of any step: read the material the course came with**
   (**C-2** — slides, transcript, past papers, marking key, assignment brief),
