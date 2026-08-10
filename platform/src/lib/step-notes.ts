@@ -188,3 +188,12 @@ export function setNote(lessonId: string, sectionId: string, note: NoteId | null
 export function allNotes(): Store {
   return read();
 }
+
+/** Overwrite the store with a merged copy from the sync (2026-08-10 — there IS
+ *  somewhere to send them now: `section_notes`, via lib/state-sync). Takes the
+ *  whole store rather than one note, because a merge is a statement about all
+ *  of it. */
+export function replaceNotes(next: Store) {
+  write(next);
+  for (const fn of listeners) fn();
+}

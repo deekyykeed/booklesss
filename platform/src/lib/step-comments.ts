@@ -104,3 +104,11 @@ export function setComment(lessonId: string, sectionId: string, text: string) {
 export function allComments(): Store {
   return read();
 }
+
+/** Overwrite the store with a merged copy from the sync (2026-08-10 — there IS
+ *  somewhere for them to go now: `section_comments`, via lib/state-sync).
+ *  `write` already drops the cache and notifies, which is what makes the
+ *  reader's open comment box redraw with the adopted text. */
+export function replaceComments(next: Store) {
+  write(next);
+}

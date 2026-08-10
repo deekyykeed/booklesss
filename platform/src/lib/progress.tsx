@@ -492,6 +492,54 @@ export function setProgressScope(scope: string | null) {
   load(scope);
 }
 
+/* ------------------------------------------------------------------ *
+ * The sync's three doors. Added 2026-08-10, when progress stopped being
+ * device-local — see lib/state-sync and lib/study-state.
+ *
+ * The header above said "nothing is on the server yet — the shape below is
+ * deliberately what `progress` rows would hold, so syncing later is a
+ * write-through, not a rewrite." This is that later, and the promise held:
+ * `student_progress.state` stores this state verbatim, so nothing in this file
+ * changed shape to get there.
+ * ------------------------------------------------------------------ */
+
+/** What this device holds, for the sync to merge. */
+export function progressState(): State {
+  return snapshot.state;
+}
+
+/** Which bucket is loaded — the signed-in user's id, or null for the shared
+ *  anonymous one. The sync checks this before adopting: merging a student's
+ *  server record into the anonymous bucket would hand their progress to the
+ *  next person who uses the browser signed out. */
+export function progressScope(): string | null {
+  return snapshot.hydrated ? snapshot.scope : null;
+}
+
+/** Overwrite with a merged copy from the sync. Whole-state, because a merge is
+ *  a statement about all of it, and persisted under the CURRENT scope. */
+export function replaceProgress(state: State) {
+  snapshot = { ...snapshot, state };
+  persist(snapshot.scope, state);
+  emit();
+}
+
+/** For the sync to know something changed and schedule a push. The hooks below
+ *  use the module-private `subscribe`; this is the same set, exported for a
+ *  caller that is not a component.
+ *
+ *  It LOADS if nothing has yet, exactly as the private one does. The sync is
+ *  not a component and may well be the first subscriber on a page where no ring
+ *  is drawn — and an unhydrated store reads as empty, which is the one state
+ *  that must never be pushed. */
+export function subscribeProgress(fn: () => void): () => void {
+  listeners.add(fn);
+  if (!snapshot.hydrated) load(snapshot.scope);
+  return () => {
+    listeners.delete(fn);
+  };
+}
+
 /** Consecutive study days ending today (or yesterday — today isn't over). */
 function streakFrom(days: Record<string, StudyDay>): number {
   const cursor = new Date();

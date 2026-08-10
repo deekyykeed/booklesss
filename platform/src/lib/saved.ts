@@ -70,3 +70,25 @@ export function setSaved(lessonId: string, sectionId: string, saved: boolean) {
   write(s);
   for (const fn of listeners) fn();
 }
+
+/* ------------------------------------------------------------------ *
+ * The sync's two doors. Added 2026-08-10, when saves stopped being
+ * device-local — see lib/state-sync.
+ *
+ * The file header above says "nothing here goes to the server", and the reason
+ * it gave has been answered rather than overruled: saves now have their OWN
+ * table (`saved_sections`), so recording one no longer means clobbering a
+ * verdict row. The one-slot problem was the objection, not syncing.
+ * ------------------------------------------------------------------ */
+
+/** Everything saved on this device, for the sync to merge. */
+export function allSaved(): SavedStore {
+  return read();
+}
+
+/** Overwrite the store with a merged copy from the sync. Not a setter — it
+ *  takes the whole store, because a merge is a statement about all of it. */
+export function replaceSaved(next: SavedStore) {
+  write(next);
+  for (const fn of listeners) fn();
+}
