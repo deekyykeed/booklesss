@@ -431,6 +431,12 @@ programme's `years` is empty.
 
 ### Where a Student's Answers Live — and why there are three copies
 
+> **Read this section together with "Where a Student's Studying Lives" below.**
+> This one is about who a student **is**; that one is about what they **did**.
+> They are separate systems with deliberately different merge rules, and the
+> reason is at the top of `lib/study-state.ts`: last-writer-wins is right for an
+> answer and wrong for a record of work.
+
 Onboarding collects a university, a programme, a year and a course list. Each
 copy of that answers a different question, and none of them is redundant:
 
@@ -479,6 +485,72 @@ asked from two directions. They were two hand-written field lists and had
 already drifted — neither compared `target.weekdays`, so a student moving study
 days from Monday to Tuesday never had it travel. A field added to
 `AccountIdentity` and not added to `sameAnswers` silently stops travelling.
+
+### Where a Student's Studying Lives — and why its merge is ADDITIVE
+
+**Until 2026-08-10 only who a student IS travelled with the account.** What they
+DID — progress, saves, note verdicts, typed comments — lived in localStorage
+alone. Clearing a browser wiped a term's work, a new phone started from zero,
+and a student who signed in on a second device got their name and courses back
+beside a dashboard saying they had never studied. The competence-signal north
+star hangs off completion data, and completion data in localStorage is not an
+asset. Four tables now hold it:
+
+| Store | Device key | Table |
+|---|---|---|
+| Saves | `booklesss:saved:v1`, `lib/saved` | `saved_sections` |
+| Note verdicts | `booklesss:step-notes:v1`, `lib/step-notes` | `section_notes` |
+| Typed comments | `booklesss:step-comments:v1`, `lib/step-comments` | `section_comments` |
+| Progress (done, days, touched, grasp, last) | `booklesss:progress:v6`, `lib/progress` | `student_progress.state` (jsonb) |
+
+One route both ways — **`/api/state`**, GET pulls the lot and POST pushes it —
+because the moment that matters is sign-in, when all four have to reconcile at
+once, and four routes make that four round trips before the dashboard is right.
+On Zambian mobile data a dashboard that fills in four stages looks broken. The
+schema and its reasoning are in **`tools/study_state.sql`**; the merge rules and
+their proofs are in **`lib/study-state.ts`**, the client in `lib/state-sync.ts`,
+started by `ProgressScope` (which already owned "which bucket", so it now owns
+"and whose account that bucket is").
+
+**THE MERGE IS ADDITIVE, AND THAT IS THE WHOLE DESIGN.** `students.identity`
+merges last-writer-wins on a clock, which is right for an ANSWER — a student has
+one name and the newer one replaces the older. It is wrong for a RECORD OF WORK:
+two devices do not hold competing claims about which checkpoints were cleared,
+they hold **different halves of one history**. Read three steps on a laptop and
+four on a phone, and last-writer-wins leaves you with whichever synced second.
+So: union the sets, take the max per counter, use a clock only where two copies
+genuinely disagree about one value (comments, and "where was I").
+
+**`max` and not `sum`, which is the tempting one.** The merge has to be
+IDEMPOTENT — summing re-adds what the last sync already sent, so five re-syncs
+become five times the reading. The accepted cost is the honest direction: real
+same-day study on two devices counts once, at whichever did more. Under-counting
+a day is a streak that is true; over-counting flatters, and `STUDY_DAY_MIN_SECS`
+already settled that this app would rather a streak be earned.
+
+⚠️ **NOTHING IS PUSHED UNTIL THE PULL HAS LANDED AND MERGED.** POST is
+authoritative — it makes the server's rows equal the body's, which is what lets
+an un-save actually delete. So a push from a device that has not yet read the
+server would replace a student's whole history with whatever that browser had,
+which on a fresh phone is nothing. **This is the 2026-08-05 bug in the other
+direction** (six sign-ups lost their answers when identity pushed before the
+account read completed); `ready` in `state-sync` is the same guard
+`AccountSignal`'s `accountRead` is, and it is why the store subscriptions are
+attached only *after* the first merge succeeds.
+
+**Known cost, accepted: un-saving does not propagate across devices.** Saves
+merge as a plain union, so a section un-saved on one device is handed back by
+the other. Fixing it needs tombstones kept forever; a save that comes back is a
+mild annoyance, a save that vanishes is what the control exists to prevent. The
+shape to add, if it ever matters, is `removed_at` on `saved_sections` — not a
+cleverer merge.
+
+**Two views make it answer questions**, both `security_invoker`:
+`section_signal` (which sections lose people — verdicts, saves and flags per
+section) and `study_days` (the progress blob shredded into one row per student
+per day, which is what makes storing it as jsonb safe). **Their audience is
+whoever rewrites the step, never the reader** — putting these numbers on a step
+page re-opens the 2026-08-09 decision that reading is a private question.
 
 ### The auth surface is the app's own form, on Supabase — ONE box for both jobs
 
