@@ -8,6 +8,7 @@ import { AccountSignal } from "@/components/auth/AccountSignal";
 import { AuthRedirect } from "@/components/auth/AuthRedirect";
 import { SettingsSheet } from "@/components/identity/SettingsSheet";
 import { openGraph, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 // App chrome and headings use Familjen Grotesk (via --font-display), and so
@@ -233,6 +234,7 @@ export default function RootLayout({
             Mounted at the root for the same reason as the identity assignment. */}
         <DesktopGate />
         <RegisterSW />
+        <SpeedInsights />
       </body>
     </html>
   );
