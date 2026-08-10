@@ -154,16 +154,28 @@ Linear unreachable for the THIRTEENTH session.)**
       SECURITY PASS, AND NONE OF THEM IS A CODE CHANGE.** The code side shipped
       this session; these cannot be done from a session and are the ones that
       actually close the biggest hole.
-      1. **Confirm email — OFF, and this is what lets anybody sign up as
-         anybody.** Turning it on is the real fix for account impersonation,
-         and **`AuthForm` already handles it**: the `checkEmail` state was
-         written for exactly this and shows "check your inbox" the moment a
-         sign-up returns no session. It was switched off deliberately
+      1. **Confirm email — OFF, and DELIBERATELY SO UNTIL THE PRODUCT IS PAID.**
+         ✅ **Owner's decision, 2026-08-10: leave it off for launch; turn it on
+         "when it becomes paid and traffic seems okay."** This is a settled
+         call, not an outstanding action — do not re-raise it as a gap, and do
+         not flip it on without the SMTP work below. **Its trigger condition is
+         a paid tier or real sign-up volume**, whichever lands first.
+         The mechanics for when that day comes: turning it on is the real fix
+         for account impersonation, and **`AuthForm` already handles it** — the
+         `checkEmail` state was written for exactly this and shows "check your
+         inbox" the moment a sign-up returns no session. It was switched off
          (2026-08-05) because free-tier Supabase SMTP is rate-limited to a
-         handful of mails an hour and would strand sign-ups — so this needs a
+         handful of mails an hour and would strand sign-ups, so it needs a
          real SMTP provider wired up FIRST (Resend or similar in Auth → SMTP
          Settings), then the toggle. Doing the toggle alone would break
          sign-up for a class of students at once.
+         **WHAT CARRIES THE RISK IN THE MEANTIME IS THE RESET FLOW**, which
+         makes the allowlist item below the higher priority of the two: with
+         confirmation off, somebody can sign up on an address they do not own,
+         and password reset is the ONLY way the real owner reclaims it (the
+         reset mail goes to the address they actually control). An unallowlisted
+         `/reset-password` means that recovery path silently does not work —
+         so the two items are connected, and the cheap one is unshipped.
       2. **Leaked-password protection — OFF** (Authentication → Policies). It
          checks a new password against HaveIBeenPwned by k-anonymity prefix.
          This is the one thing `lib/password` deliberately does NOT do, because
@@ -176,14 +188,25 @@ Linear unreachable for the THIRTEENTH session.)**
          against sign-up friction; worth revisiting if a paid tier or a real
          admin console ever lands.
 - [ ] ⚠️ **`/reset-password` MUST BE ADDED TO SUPABASE'S REDIRECT ALLOWLIST or
-      the new reset flow silently does nothing useful.** Authentication → URL
-      Configuration → Redirect URLs needs `https://booklesss.app/reset-password`,
-      the Vercel preview host, and `http://localhost:3000/reset-password`.
-      Supabase falls back to the Site URL for any redirect it does not
-      recognise, so the failure looks like "the emailed link dumps me on the
-      homepage, signed out" rather than like an error. **The reset flow is
-      built and untested end to end for exactly this reason** — everything
-      except the emailed round trip was verified in a browser.
+      the new reset flow silently does nothing useful.** Supabase falls back to
+      the Site URL for any redirect it does not recognise, so the failure looks
+      like "the emailed link dumps me on the homepage, signed out" rather than
+      like an error. **The reset flow is built and untested end to end for
+      exactly this reason** — everything except the emailed round trip was
+      verified in a browser.
+      **This is now the highest-priority dashboard item** (raised 2026-08-10):
+      with Confirm email deliberately off until the paid tier, password reset is
+      the only way somebody reclaims an account signed up on their address, and
+      an unallowlisted redirect breaks precisely that path.
+      Page: `https://supabase.com/dashboard/project/qxbcvmzjomfwxvbqzqds/auth/url-configuration`
+      **`ForgotPassword.tsx:70` builds the target from `window.location.origin`,
+      not from `SITE_URL`** — deliberate, so a preview deploy's reset link comes
+      back to that preview — which means EVERY origin the app is served from
+      needs its own entry:
+      `https://booklesss.app/reset-password`,
+      `https://booklesss.vercel.app/reset-password`,
+      `https://*.vercel.app/reset-password` (previews; Supabase accepts the
+      wildcard), and `http://localhost:3000/reset-password`.
 - [ ] **Three of the five items on the security list did not apply, and the
       checking is the reusable part.** The session is in a cookie via
       `@supabase/ssr` and verified with `getUser()`, not `getSession()`, so the
