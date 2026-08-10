@@ -176,12 +176,39 @@ Linear unreachable for the THIRTEENTH session.)**
          reset mail goes to the address they actually control). An unallowlisted
          `/reset-password` means that recovery path silently does not work —
          so the two items are connected, and the cheap one is unshipped.
-      2. **Leaked-password protection — OFF** (Authentication → Policies). It
-         checks a new password against HaveIBeenPwned by k-anonymity prefix.
-         This is the one thing `lib/password` deliberately does NOT do, because
-         doing it in the browser means sending a hash of a half-typed password
-         to a third party. Both forms already turn its error into a sentence,
-         so switching it on needs no code.
+      2. **Leaked-password protection — OFF, and BLOCKED BY THE PLAN, not by
+         us.** ⛔ **Tried 2026-08-10 and it cannot be done on Free:** the toggle
+         renders, and saving it returns *"Failed to update auth configuration:
+         Configuring leaked password protection via HaveIBeenPwned.org is
+         available on Pro Plans and up."* An earlier note here called it "one
+         toggle, no code needed" — the no-code half is right, the toggle half
+         is not. **Do not retry until the project is on Pro.** It rides with
+         the same paid-tier trigger as Confirm email above.
+         ⚠️ **AND IT POISONS THE WHOLE PANEL WHILE ON:** the Email provider page
+         saves as ONE request, so leaving that toggle flipped makes every other
+         change on it (password length, requirements, OTP) fail too, with only
+         the HaveIBeenPwned error shown. Flip it back off before saving anything
+         else there.
+         What it would do, for when Pro lands: checks a new password against
+         HaveIBeenPwned by k-anonymity prefix. It is the one thing `lib/password`
+         deliberately does NOT do, because doing it in the browser means sending
+         a hash of a half-typed password to a third party. Both forms already
+         turn its error into a sentence.
+         **Location correction:** Authentication → **Sign In / Providers →
+         Email**, not "Policies" —
+         `https://supabase.com/dashboard/project/qxbcvmzjomfwxvbqzqds/auth/providers?provider=Email`
+      2b. **Password requirements stays "No required characters"** — owner's
+         call, 2026-08-10, made while the panel above was open. `lib/password.ts`
+         argues the case in its own header: character-class rules push people to
+         `Password1!`, which is weaker than three random words and the first
+         pattern every cracking dictionary tries; length is what buys entropy.
+         **The dashboard and that file must agree**, because the app validates
+         first and Supabase second — a class rule set server-side only would let
+         a student type a genuinely strong passphrase, hear "fine" from our form,
+         and then be refused in Supabase's wording mid-signup. If it is ever
+         turned on, `weakness()` has to grow the same rule in the same change.
+         **Minimum password length 8 already matches `MIN_PASSWORD`; keep them
+         in step in both directions.**
       3. **MFA / TOTP — a decision, not a default.** Supabase supports it
          (`auth.mfa.enroll`) and nothing here uses it. For a study app with no
          payment data and no admin surface it is plausibly the wrong trade
