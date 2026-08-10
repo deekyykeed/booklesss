@@ -10,110 +10,101 @@
  *        "Schools/ZCAS/Treasury Management/reader/course.mjs"
  *   cd platform && npm run gen:course     # mirrors Supabase back into the app
  *
- * `slug` values must be unique across EVERY course in the reader — note the
- * risk steps deliberately avoid Corporate Finance's `interest-rate-risk`,
- * `hedging-interest-rate-risk` and `currency-risk` slugs. seed-course.mjs
- * checks and refuses on collision. That applies to the grouping nodes below
- * too, which is why "Cash" carries the slug `managing-cash`.
+ * `slug` values must be unique across EVERY course in the reader — grouping
+ * nodes included. seed-course.mjs checks and refuses on collision.
  *
- * 2026-08-03 — the lessons grew a grouping level (rule S-9, debt D-6). The S-8
- * splits took this course from 12 steps to 21 without adding a single folder,
- * so Working capital rendered as six equal rows with nothing saying which
- * belonged together. Four of the five lessons now group their siblings by
- * subject; Treasury operations stays flat because its three steps are three
- * separate frames.
+ * 2026-08-09 — THE ONE-CHECKPOINT SPLIT (S-1 revised; owner: "only one
+ * checkpoint per step … a step is a small containable concept a user needs to
+ * understand"). Every section became its own step: 22 steps of 60 sections are
+ * now 60 steps of one section each. Each old multi-section step's name survives
+ * as the folder over its parts (or its parts sit flat where the group above
+ * already named them), so the sidebar tree now runs four levels deep in places:
+ * course → lesson → group → folder → step. Rule S-9's ceiling moved from
+ * three-or-four to four-or-five levels the same day.
  *
- * ⚠️ THIS CHANGED EVERY GROUPED STEP'S URL. A lesson's path is built from every
- * ancestor node (`courseIndex()` in `platform/src/lib/course.ts` walks the full
- * trail), so a folder inserts a segment:
+ * ⚠️ THIS MOVED EVERY STEP'S URL except the three getting-started ones, the
+ * same way the 2026-08-03 grouping did: a path is built from every ancestor
+ * node, so the new folders insert a segment and old paths 404. Every original
+ * step SLUG survives on the first part of its split (S-8), so every
+ * `step:` link and every re-seeded id still resolves. Checkpoint progress is
+ * keyed by step, so a signed-in reader's ticks on a moved section reset; the
+ * owner's standing rule ("a step being improved is the main priority … no
+ * questions asked") covers both costs, and they are recorded here.
  *
- *   /treasury-management/working-capital/cash-management
- *   /treasury-management/working-capital/managing-cash/cash-management
- *
- * The owner accepted that on 2026-08-03: no step link had been shared into a
- * group yet, and the course-level URL — the one that has been shared — is the
- * root node and is untouched. The step `slug` values themselves did not change
- * (S-8), only the path they sit at. Do not repeat this casually once links are
- * circulating: 18 of the 21 steps moved.
- *
- * 2026-08-08 — EVERY NAME IN THIS COLUMN WAS REWRITTEN under rule S-12 (debt
- * D-17): all 22 step titles, the nine lesson and grouping rows below, and all
- * 22 kickers. The owner, reading the course: "a title is supposed to be
- * capitalised properly and seriously … they lack a certain assertiveness."
- *
- * Two changes, and the second is the one that mattered. Names are Title Case
- * now, so a row reads as a name rather than a sentence fragment. And thirteen
- * of the 22 titles ended in a hedged `, and how/what/where…` clause — "Working
- * capital, and how much of it to run" — which is a habit rather than a title;
- * they are the noun phrase the paper uses instead.
- *
- * NO SLUG WAS TOUCHED, here or in any step, so nothing moved and no URL broke.
- * That is the whole reason this was cheap: a title is a display string, and the
- * 2026-08-03 note above is about the one thing that is not.
+ * Older history worth keeping: 2026-08-01 the six-section Treasury operations
+ * step became three (S-8); 2026-08-02 nine five/six-section steps became
+ * eighteen; 2026-08-03 the lessons grew a grouping level (S-9, D-6), moving 18
+ * of 21 URLs; 2026-08-08 every title was rewritten under S-12 (D-17), no slug
+ * touched. The "Getting Started" folder over the intro is the owner's preferred
+ * shape (2026-08-08) and a deliberate exception to S-9's no-folder-for-one-step
+ * rule — it holds three steps now, so the exception has expired on its own.
  */
 
-/* Treasury operations was one six-section step until 2026-08-01; it is three
- * now (rule S-8). The first keeps the `intro-to-treasury` slug, so the URL that
- * was already linked to still opens the course. */
-/* Rule S-11: every course opens with a step about the COURSE rather than
- * about its first topic. Written 2026-08-07, paying debt D-15.
- *
- * 2026-08-08 — IT NOW SITS INSIDE A "Getting started" FOLDER, and that is a
- * deliberate exception to S-9's "do not create a folder for one step" (owner:
- * "intro steps can simply be within a folder so that the bar isn't where it is
- * right now"). It used to be a direct child of the root, which made it the only
- * LEAF at the top level of any course, and the sidebar's active bar is drawn
- * relative to the rail of the folder holding the current row. With no folder
- * there is no rail, and the bar was placed at barLeftFor(-1) = -2.5px: a black
- * sliver clipped by the drawer's own edge, on the first row of the first step
- * every reader opens. The geometry is also fixed independently in Sidebar.tsx,
- * so a top-level leaf no longer draws a stray bar wherever one occurs; this
- * folder is the owner's preferred SHAPE, not the bug fix.
- *
- * `defaultOpen: true` matters and is not decoration. A folder wrapping one step
- * costs a tap, and the tap would land on the very first row of the course; open
- * by default, the step is visible exactly as before and only its indent changes.
- *
- * The folder slug carries a course suffix because grouping-node slugs are unique
- * across EVERY course (see the note above), and the economics course already
- * owns the bare `getting-started`. The label is shared with it on purpose: that
- * course has had a "Getting started" group since it was built, so this is the
- * existing convention rather than a new one.
- *
- * ⚠️ THIS MOVES THE INTRO STEP'S URL, the same way the 2026-08-03 grouping did:
- *   /treasury-management/start-here-treasury
- *   /treasury-management/getting-started-treasury/start-here-treasury
- * The step `slug` is untouched. These three steps were written on 2026-08-07 and
- * nothing in the repo links to their paths, so the cost is zero today. */
 import startHere from "../01-operations/reader/start-here.mjs";
-import introToTreasury from "../01-operations/reader/intro-to-treasury.mjs";
-import treasuryLevelsAndMandate from "../01-operations/reader/treasury-levels-and-mandate.mjs";
-import treasuryControlsAndStructure from "../01-operations/reader/treasury-controls-and-structure.mjs";
+import theDecisionsItHandsYou from "../01-operations/reader/the-decisions-it-hands-you.mjs";
+import oneStepOneSitting from "../01-operations/reader/one-step-one-sitting.mjs";
 
-/* 2026-08-02: the remaining nine steps were split the same way (S-8). Each was
- * five or six sections, which is a climb rather than a sitting. Every original
- * slug is kept on the first part of its pair, so no existing URL breaks. */
+import introToTreasury from "../01-operations/reader/intro-to-treasury.mjs";
+import elevenFunctions from "../01-operations/reader/eleven-functions.mjs";
+import treasuryLevelsAndMandate from "../01-operations/reader/treasury-levels-and-mandate.mjs";
+import costCentreOrProfitCentre from "../01-operations/reader/cost-centre-or-profit-centre.mjs";
+import treasuryControlsAndStructure from "../01-operations/reader/treasury-controls-and-structure.mjs";
+import centralisedOrDecentralised from "../01-operations/reader/centralised-or-decentralised.mjs";
+
 import workingCapitalAndLiquidity from "../02-working-capital/reader/working-capital-and-liquidity.mjs";
+import workingCapitalPolicy from "../02-working-capital/reader/working-capital-policy.mjs";
+import cashConversionCycle from "../02-working-capital/reader/cash-conversion-cycle.mjs";
 import debtorsAndFactoring from "../02-working-capital/reader/debtors-and-factoring.mjs";
+import factoring from "../02-working-capital/reader/factoring.mjs";
 import inventoryAndCreditors from "../02-working-capital/reader/inventory-and-creditors.mjs";
+import inventoryFinancing from "../02-working-capital/reader/inventory-financing.mjs";
+import justInTime from "../02-working-capital/reader/just-in-time.mjs";
 import orderingAndPayingSuppliers from "../02-working-capital/reader/ordering-and-paying-suppliers.mjs";
+import creditorManagement from "../02-working-capital/reader/creditor-management.mjs";
 import cashManagement from "../02-working-capital/reader/cash-management.mjs";
+import baumolModel from "../02-working-capital/reader/baumol-model.mjs";
+import millerOrrModel from "../02-working-capital/reader/miller-orr-model.mjs";
 import cashForecastingAndSurpluses from "../02-working-capital/reader/cash-forecasting-and-surpluses.mjs";
+import surplusesAndOverdrafts from "../02-working-capital/reader/surpluses-and-overdrafts.mjs";
+import cashConcentration from "../02-working-capital/reader/cash-concentration.mjs";
 
 import interestRateRiskManagement from "../03-risk/reader/interest-rate-risk-management.mjs";
+import measuringRateExposure from "../03-risk/reader/measuring-rate-exposure.mjs";
 import interestRateHedgingInstruments from "../03-risk/reader/interest-rate-hedging-instruments.mjs";
+import interestRateSwaps from "../03-risk/reader/interest-rate-swaps.mjs";
+import interestRateFutures from "../03-risk/reader/interest-rate-futures.mjs";
+import capsFloorsCollars from "../03-risk/reader/caps-floors-collars.mjs";
 import foreignExchangeRisk from "../03-risk/reader/foreign-exchange-risk.mjs";
+import quotationsAndCrossRates from "../03-risk/reader/quotations-and-cross-rates.mjs";
+import forwardExchangeRates from "../03-risk/reader/forward-exchange-rates.mjs";
 import hedgingCurrencyRisk from "../03-risk/reader/hedging-currency-risk.mjs";
+import currencyForwardsAndFutures from "../03-risk/reader/currency-forwards-and-futures.mjs";
+import currencyOptions from "../03-risk/reader/currency-options.mjs";
 
 import debtManagement from "../04-investment/reader/debt-management.mjs";
+import sourcesOfDebt from "../04-investment/reader/sources-of-debt.mjs";
+import theMatchingPrinciple from "../04-investment/reader/the-matching-principle.mjs";
 import thePriceOfDebt from "../04-investment/reader/the-price-of-debt.mjs";
+import pricingABond from "../04-investment/reader/pricing-a-bond.mjs";
+import creditRatings from "../04-investment/reader/credit-ratings.mjs";
 import investmentManagement from "../04-investment/reader/investment-management.mjs";
+import investmentPolicy from "../04-investment/reader/investment-policy.mjs";
 import buildingThePortfolio from "../04-investment/reader/building-the-portfolio.mjs";
+import creditAndDiversification from "../04-investment/reader/credit-and-diversification.mjs";
+import portfolioConstruction from "../04-investment/reader/portfolio-construction.mjs";
 
 import clearingAndSettlement from "../05-systems/reader/clearing-and-settlement.mjs";
+import herstatt from "../05-systems/reader/herstatt.mjs";
+import grossAndNetSettlement from "../05-systems/reader/gross-and-net-settlement.mjs";
 import paymentSystemsAndCcps from "../05-systems/reader/payment-systems-and-ccps.mjs";
+import clsAndDvp from "../05-systems/reader/cls-and-dvp.mjs";
+import zambiasPaymentSystems from "../05-systems/reader/zambias-payment-systems.mjs";
 import treasuryManagementSystems from "../05-systems/reader/treasury-management-systems.mjs";
+import tmsCoreFunctions from "../05-systems/reader/tms-core-functions.mjs";
+import frontMiddleBackOffice from "../05-systems/reader/front-middle-back-office.mjs";
 import choosingAndRunningATms from "../05-systems/reader/choosing-and-running-a-tms.mjs";
+import buildOrBuy from "../05-systems/reader/build-or-buy.mjs";
+import tmsPolicyAndRoi from "../05-systems/reader/tms-policy-and-roi.mjs";
 
 export default {
   slug: "treasury-management",
@@ -123,9 +114,9 @@ export default {
   // Sits after strategic management in the sidebar.
   position: 3,
 
-  /* One root node per course, so the reader's combined tree shows "Treasury
-   * Management" as a single collapsible section and URLs read
-   * /treasury-management/<lesson>/<step>. */
+  /* One root node per course. The shape below is the one-checkpoint shape:
+   * where an old step's parts kept its name, the name is a folder; where the
+   * group above already said it, the parts sit flat under the group. */
   tree: [
     {
       slug: "treasury-management",
@@ -136,31 +127,71 @@ export default {
           slug: "getting-started-treasury",
           label: "Getting Started",
           defaultOpen: true,
-          children: [startHere],
+          children: [startHere, theDecisionsItHandsYou, oneStepOneSitting],
         },
-        /* Three separate frames — what treasury is, how its work divides, how it
-         * is governed. No two of them pair, so this lesson stays flat (S-9: do
-         * not create a folder for one step). */
+        /* Three separate frames — what treasury is, how its work divides, how
+         * it is governed. Each old step is now the folder over its two parts. */
         {
           slug: "treasury-operations",
           label: "Treasury Operations",
-          children: [introToTreasury, treasuryLevelsAndMandate, treasuryControlsAndStructure],
+          children: [
+            {
+              slug: "the-treasury-function",
+              label: "The Treasury Function",
+              children: [introToTreasury, elevenFunctions],
+            },
+            {
+              slug: "treasury-levels",
+              label: "The Three Levels of Treasury",
+              children: [treasuryLevelsAndMandate, costCentreOrProfitCentre],
+            },
+            {
+              slug: "treasury-governance",
+              label: "Controls and Governance",
+              children: [treasuryControlsAndStructure, centralisedOrDecentralised],
+            },
+          ],
         },
         {
           slug: "working-capital",
           label: "Working Capital",
           children: [
+            /* The ground truth of the lesson sits flat; the families below it
+             * are folders. Same pattern in Risk and Debt. */
             workingCapitalAndLiquidity,
-            debtorsAndFactoring,
+            workingCapitalPolicy,
+            cashConversionCycle,
+            {
+              slug: "debtors",
+              label: "Debtors and Factoring",
+              children: [debtorsAndFactoring, factoring],
+            },
             {
               slug: "inventory-and-suppliers",
               label: "Inventory and Suppliers",
-              children: [inventoryAndCreditors, orderingAndPayingSuppliers],
+              children: [
+                inventoryAndCreditors,
+                inventoryFinancing,
+                justInTime,
+                orderingAndPayingSuppliers,
+                creditorManagement,
+              ],
             },
             {
               slug: "managing-cash",
               label: "Cash",
-              children: [cashManagement, cashForecastingAndSurpluses],
+              children: [
+                {
+                  slug: "optimal-cash",
+                  label: "Optimal Cash Balances",
+                  children: [cashManagement, baumolModel, millerOrrModel],
+                },
+                {
+                  slug: "forecasting-and-surpluses",
+                  label: "Forecasting and Surpluses",
+                  children: [cashForecastingAndSurpluses, surplusesAndOverdrafts, cashConcentration],
+                },
+              ],
             },
           ],
         },
@@ -171,12 +202,34 @@ export default {
             {
               slug: "interest-rates",
               label: "Interest Rates",
-              children: [interestRateRiskManagement, interestRateHedgingInstruments],
+              children: [
+                interestRateRiskManagement,
+                measuringRateExposure,
+                {
+                  slug: "rate-hedges",
+                  label: "Hedging Instruments",
+                  children: [
+                    interestRateHedgingInstruments,
+                    interestRateSwaps,
+                    interestRateFutures,
+                    capsFloorsCollars,
+                  ],
+                },
+              ],
             },
             {
               slug: "currency",
               label: "Currency",
-              children: [foreignExchangeRisk, hedgingCurrencyRisk],
+              children: [
+                foreignExchangeRisk,
+                quotationsAndCrossRates,
+                forwardExchangeRates,
+                {
+                  slug: "fx-hedges",
+                  label: "Hedging the Exposure",
+                  children: [hedgingCurrencyRisk, currencyForwardsAndFutures, currencyOptions],
+                },
+              ],
             },
           ],
         },
@@ -187,12 +240,29 @@ export default {
             {
               slug: "debt",
               label: "Debt",
-              children: [debtManagement, thePriceOfDebt],
+              children: [
+                debtManagement,
+                sourcesOfDebt,
+                theMatchingPrinciple,
+                {
+                  slug: "price-of-debt",
+                  label: "The Price of Debt",
+                  children: [thePriceOfDebt, pricingABond, creditRatings],
+                },
+              ],
             },
             {
               slug: "investing",
               label: "Investing",
-              children: [investmentManagement, buildingThePortfolio],
+              children: [
+                investmentManagement,
+                investmentPolicy,
+                {
+                  slug: "the-portfolio",
+                  label: "Building the Portfolio",
+                  children: [buildingThePortfolio, creditAndDiversification, portfolioConstruction],
+                },
+              ],
             },
           ],
         },
@@ -203,12 +273,34 @@ export default {
             {
               slug: "payments-and-clearing",
               label: "Payments and Clearing",
-              children: [clearingAndSettlement, paymentSystemsAndCcps],
+              children: [
+                {
+                  slug: "clearing",
+                  label: "Clearing and Settlement",
+                  children: [clearingAndSettlement, herstatt, grossAndNetSettlement],
+                },
+                {
+                  slug: "payment-systems",
+                  label: "Payment Systems",
+                  children: [paymentSystemsAndCcps, clsAndDvp, zambiasPaymentSystems],
+                },
+              ],
             },
             {
               slug: "treasury-systems",
               label: "Treasury Systems",
-              children: [treasuryManagementSystems, choosingAndRunningATms],
+              children: [
+                {
+                  slug: "inside-a-tms",
+                  label: "Inside a TMS",
+                  children: [treasuryManagementSystems, tmsCoreFunctions, frontMiddleBackOffice],
+                },
+                {
+                  slug: "selecting-a-tms",
+                  label: "Selecting a TMS",
+                  children: [choosingAndRunningATms, buildOrBuy, tmsPolicyAndRoi],
+                },
+              ],
             },
           ],
         },

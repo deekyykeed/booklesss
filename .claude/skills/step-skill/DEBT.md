@@ -77,6 +77,7 @@ unchecked ones get ticked off by someone assuming the list was audited.
 | D-15 | Four courses, no course-intro step — S-11 | 2026-08-07 | open · **3 of 4 written same day** · economics is the 4th and has no `.mjs` |
 | D-16 | Prose nobody has asked the shorter-version question of — W-17 | 2026-08-07 | open · 0 of 53 |
 | D-17 | Titles in sentence case, hedging where they should name — S-12 | 2026-08-08 | open · **22 of 53** · **all of TM** (2026-08-08) |
+| D-18 | Steps carrying more than one checkpoint — S-1 (revised) | 2026-08-09 | open · **TM converted the same day** (22 steps → 60); 3 courses owe it |
 
 > **Counts moved from 44 to 53 on 2026-08-02.** The nine remaining Treasury
 > Management steps were split into eighteen (S-8), so the course is 21 steps and
@@ -1046,3 +1047,59 @@ effect rather than as extra work. A hedged tail is what pushed a title past a
 sidebar row in the first place, so removing it collapsed 20 of 22 label/title
 pairs into one string. The two debts have the same root and should be paid in
 one pass on each remaining course.
+
+### D-18 · steps carrying more than one checkpoint · opened 2026-08-09
+**Source:** 2026-08-09 · owner — "to really embrace having bite sized info that
+is easy to understand … id like each step in the case of treasury management to
+practically split the checkpoint, meaning only one checkpoint per step. that
+increases the number of steps for the course but its worth it as the read to
+that completion of the step is not so far away … from now on a step is a small
+containable concept a user needs to understand."
+**Rule:** S-1 (revised), and with it S-2, S-3, S-8, S-9, S-11, E-8's budget
+**Why it can't wait for a rewrite:** it is the grain of the product, not a
+property of any one step. A three-section step asks a reader for three
+checkpoints' worth of attention before it lets them finish anything, and
+finishing is what brings them back. It also fixes something the owner named
+separately: **a comment thread hanging off a three-section step serves three
+concepts at once**, so nobody can tell what is being discussed. One checkpoint
+per step makes every note and every comment belong to exactly one idea.
+**Applies to:** all four courses. Measurable —
+`node .claude/skills/step-skill/tools/rank.mjs <course>` fails any step whose
+section count is not 1, and `S-1 steps not 1 section` in the course totals is
+the count owing.
+
+- [x] **treasury-management — 22 steps of 60 sections → 60 steps of one,
+      2026-08-09.** Every section became a step, verbatim, with its own title,
+      label, kicker and slug. Each old multi-section step's name survives as
+      the folder over its parts, so the tree now runs to five levels in Working
+      capital and Risk (course → lesson → group → family → step). All 22
+      original slugs are kept on the first part of their split (S-8), so every
+      `step:` link and every previously seeded id still resolves — the one
+      exception is `credit-ratings`, which linked to
+      `interest-rate-hedging-instruments` for the SWAP, and that concept now
+      lives at `interest-rate-swaps`; the link was retargeted in the same edit.
+      60 of 60 at 6/6, every scan clean, verified against the served HTML.
+- [ ] corporate-finance — 26 steps, unconverted
+- [ ] strategic-management — 8 steps, unconverted
+- [ ] economics — 30 steps, not reachable from a `.mjs`
+
+**What the conversion actually cost, recorded because the next course pays the
+same bill.** Every TM step URL moved except the three in Getting Started: a
+path is built from its full ancestor trail, so the new folders insert a
+segment and the old paths 404 (checked: `…/debt/the-price-of-debt` now 404s,
+and `…/debt/price-of-debt/the-price-of-debt` is the page). **Checkpoint
+progress is keyed by step**, so a signed-in reader's ticks on a section that
+moved out to its own step reset to unticked. Both were done rather than asked
+about, under "Improve the step. Deal with the consequences." in `SKILL.md`.
+
+**Three things the split did NOT do, and each was a decision.** No prose was
+rewritten to fit the new grain beyond the seams — the sections were already
+written to stand alone, which is why this was a structural edit rather than 60
+rewrites. **The seams were the real work**: twelve sentences pointed at "the
+next section", "this section" or "the last section of this step", all of which
+became false the moment the section was the step, and W-13's fourth ban (no
+name the step has not itself introduced) had to be re-read cold at 38 new
+openings. And **E-8's budget was rescaled rather than enforced** — three to
+eight tappable terms was written for a two-to-four-section step, so on the new
+grain it is one to three; enforcing the old number would have meant stuffing 60
+steps with definitions nobody asked for.

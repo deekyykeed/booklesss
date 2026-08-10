@@ -32,13 +32,19 @@
  * The old name was sentence case and carried the hedged `, and how/what…` tail that 13 of this course's
  * 22 titles shared, and opened on a question word. The slug is
  * untouched, so no URL moved.
+ *
+ * 2026-08-09 — ONE-CHECKPOINT SPLIT (S-1 revised: one step = one concept = one
+ * checkpoint; owner: "only one checkpoint per step"). This file held
+ * 3 sections and now holds one: "The System of Record". The other
+ * section(s) moved to tms-core-functions.mjs, front-middle-back-office.mjs beside this file.
+ * The slug is unchanged, so the URL that was linked to still opens here.
  */
 
 export default {
   slug: "treasury-management-systems",
-  label: "Treasury Management Systems",
-  title: "Treasury Management Systems",
-  kicker: "Systems and Clearing",
+  label: "The System of Record",
+  title: "The System of Record",
+  kicker: "Inside a TMS",
 
   sections: [
     /* ---------------------------------------------------------------- */
@@ -80,111 +86,6 @@ export default {
         answer: 0,
         explain:
           "The two systems answer different questions. The ERP answers \"what happened?\" for the official books. The TMS answers \"where is our cash, what are our positions worth, and what risk are we running, right now?\" Recording a swap is not the same as marking it to market against a limit.",
-      },
-    },
-
-    /* ---------------------------------------------------------------- */
-    {
-      id: "core-functions",
-      heading: "The five core functions",
-      blocks: [
-        {
-          type: "p",
-          text: "At 09:14 a dealer agrees to sell two million US dollars in March at a rate fixed today. By 09:15 that one action has to be [visible in five different places](https://corporatefinanceinstitute.com/resources/accounting/treasury-management/), and in a spreadsheet treasury it gets typed into five of them.",
-        },
-        {
-          type: "p",
-          text: "**Enter the deal once, and let the single record feed everything downstream.** That is the whole design, and the five functions below are just that record's life: it is captured, it joins a position, it is measured for risk, it settles, and it is reported.",
-        },
-        {
-          type: "table",
-          columns: [{ label: "Function" }, { label: "What it does" }],
-          rows: [
-            [
-              "Deal capture",
-              "Every deal, whether a borrowing, an FX sale, a bond purchase or a swap, entered once with full terms: counterparty, amount, rate, maturity, settlement instructions",
-            ],
-            [
-              "Position management",
-              "Deals aggregate into positions: total cash by currency and unit, net FX exposure, debt by counterparty and tenor, investments at cost and current value",
-            ],
-            [
-              "Risk analytics",
-              "Value at Risk, duration, FX and rate sensitivity, counterparty exposure, computed continuously and compared to policy limits, with alerts on breach",
-            ],
-            [
-              "Settlement and reconciliation",
-              "Tracks each deal through clearing to settlement, whether settled, pending or failed, and matches bank confirmations against deal records",
-            ],
-            [
-              "Reporting",
-              "Real-time dashboards of cash, portfolio and risk, plus reports for management, board, auditors and regulators",
-            ],
-          ],
-        },
-        {
-          type: "p",
-          text: "Read the table as one deal moving down it rather than as five modules you buy. That is also how you test a vendor's demonstration: book something on the first screen, and ask to see it arrive on the other four without anyone typing.",
-        },
-      ],
-      check: {
-        question:
-          "In a TMS, a dealer books a swap once and it immediately appears in positions, risk numbers and settlement tracking. What principle is at work?",
-        options: [
-          "Single entry feeding all downstream processes, the design that removes re-keying and the errors it breeds",
-          "Segregation of duties, since one entry means one person controls everything",
-          "Netting, since the swap offsets other deals automatically",
-          "Straight-through settlement, since booking a deal settles it",
-        ],
-        answer: 0,
-        explain:
-          "Deal capture is the root of the system: one authoritative record, consumed by the position, risk, settlement and reporting modules. That is what kills the transposition and version errors of spreadsheet treasury. Booking is not settling, and the settlement module tracks that separately.",
-      },
-    },
-
-    /* ---------------------------------------------------------------- */
-    {
-      id: "offices",
-      heading: "Front, middle and back office",
-      blocks: [
-        {
-          type: "p",
-          text: "One person strikes a trade, decides whether it broke a limit, and confirms it with the bank. That is not three jobs done efficiently. It is one job with no witnesses.",
-        },
-        {
-          type: "p",
-          text: "A treasury system is built in three parts because a treasury department is, and the split is a [control](https://corporatefinanceinstitute.com/resources/accounting/internal-controls/) rather than an org chart.",
-        },
-        {
-          type: "ul",
-          items: [
-            "Front office, the dealers' screens: pricing tools, comparative quotes, deal booking. Where positions are taken.",
-            "Middle office, the risk and control layer: monitors positions, calculates risk, checks limits, enforces policy. Large deals can require its approval before they settle.",
-            "Back office, operations: processes confirmations, reconciles trades to bank statements, manages settlement instructions, chases [[fails|A trade that did not settle when it should have, because cash or securities failed to arrive. Every fail is either an error or the first sign of a counterparty in trouble, so someone has to look at each one.]].",
-          ],
-        },
-        { type: "h2", text: "Why the software enforces it" },
-        {
-          type: "p",
-          text: "[Barings Bank collapsed on 26 February 1995](https://www.fia.org/marketvoice/articles/25-years-ago-barings-offers-hard-lesson-risk-controls) after 233 years, and was sold days later for one pound. A single trader in Singapore had run up losses of around £827 million and hidden them in an account numbered 88888 that nobody else reconciled. He could do it because he dealt the trades and then settled them himself: he was the front office and the back office at once.",
-        },
-        {
-          type: "p",
-          text: "Give dealing, risk checking and settlement to three modules with three sets of users and that combination stops being available to anyone. **A control written into a permission is one nobody has to remember to apply.** It is also the cheapest control you will ever buy, because it costs a configuration decision rather than a headcount.",
-        },
-      ],
-      check: {
-        question:
-          "Why should the user who books deals in the front office module be locked out of the back office's confirmation and settlement functions?",
-        options: [
-          "It enforces segregation of duties, so no one can both create a deal and confirm its settlement, which is the combination that let the Barings losses stay hidden",
-          "Back office screens are too complex for dealers",
-          "Licensing costs, since each module is priced per user",
-          "It speeds the system up by balancing the load",
-        ],
-        answer: 0,
-        explain:
-          "The three-office structure is an old control expressed in software permissions. A dealer who can settle and reconcile their own trades can conceal them, and separated modules with separated users close that path by construction rather than by policy.",
       },
     },
   ],

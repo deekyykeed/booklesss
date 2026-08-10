@@ -28,13 +28,19 @@
  * The old name was sentence case and carried the hedged `, and how/what…` tail that 13 of this course's
  * 22 titles shared, and opened on a question word. The slug is
  * untouched, so no URL moved.
+ *
+ * 2026-08-09 — ONE-CHECKPOINT SPLIT (S-1 revised: one step = one concept = one
+ * checkpoint; owner: "only one checkpoint per step"). This file held
+ * 2 sections and now holds one: "The Economic Order Quantity". The other
+ * section(s) moved to creditor-management.mjs beside this file.
+ * The slug is unchanged, so the URL that was linked to still opens here.
  */
 
 export default {
   slug: "ordering-and-paying-suppliers",
-  label: "Order Quantity and Payment Terms",
-  title: "Order Quantity and Payment Terms",
-  kicker: "Working Capital",
+  label: "The Economic Order Quantity",
+  title: "The Economic Order Quantity",
+  kicker: "Inventory and Suppliers",
 
   sections: [
     /* ---------------------------------------------------------------- */
@@ -98,49 +104,6 @@ export default {
         answer: 0,
         explain:
           "Annual demand is 4,000 × 12 = 48,000 units, so EOQ = √(2 × 48,000 × 40 ÷ 6) = √640,000 = **800 units**, or 60 orders a year, one about every 6 days. Which is also the check on it: 6 days is inside most suppliers' lead times, so this answer survives contact with the real supplier where the lecture's 15-day one nearly did not. 566 units drops the 2 from the numerator. 231 units puts the monthly 4,000 against an annual holding cost, which is the slip the formula invites because it never says over what period a is measured. 60 is the number of orders, not the size of one.",
-      },
-    },
-
-    /* ---------------------------------------------------------------- */
-    {
-      id: "creditor-management",
-      heading: "Creditor management",
-      blocks: [
-        {
-          type: "p",
-          text: "Every extra day you take to pay a supplier is a day of funding you did not have to arrange, did not have to secure and are not paying interest on. **That holds right up until the day it doesn't.**",
-        },
-        {
-          type: "p",
-          text: "Trade credit is normally treated as free finance, so the standard policy is to pay [as late as you can](https://corporatefinanceinstitute.com/resources/accounting/accounts-payable/) while meeting your obligations and keeping the relationship intact. Each extra day of payables shortens the [cash conversion cycle](https://corporatefinanceinstitute.com/resources/accounting/cash-conversion-cycle/) and cuts the working capital the business has to fund.",
-        },
-        {
-          type: "formula",
-          text: "Days Payables = (Payables ÷ Cost of goods sold) × 365",
-          where: ["Measures the average number of days taken to pay suppliers"],
-        },
-        {
-          type: "p",
-          text: "The mechanics mirror debtor management exactly, run backwards. What the formula cannot show you is the ceiling. **Stretch a cash-strapped supplier far enough and they fail, and you have just removed something your production depends on to gain a few days of funding.**",
-        },
-        {
-          type: "callout",
-          kind: "warning",
-          text: "Stretch payables to shorten the cycle. **The limit is the supplier's survival, not the point at which they stop chasing you,** and the second thing you are spending is their [[goodwill|What a supplier is willing to do for you that the contract does not require: the rush order, the last unit, the quiet extension. It is unpriced right up to the day you need it and it is gone.]].",
-        },
-      ],
-      check: {
-        question:
-          "A company stretches supplier payments from 45 to 120 days. Its cash conversion cycle improves sharply, and then its key raw-material supplier collapses. What did the policy miss?",
-        options: [
-          "Supply chain risk, because payables are finance borrowed from suppliers and over-stretching can break the lender you depend on",
-          "Nothing, because a shorter cycle is always worth any cost",
-          "The arithmetic, because longer payables actually lengthen the cycle",
-          "The suppliers should have factored their invoices",
-        ],
-        answer: 0,
-        explain:
-          "Longer payables do shorten the cycle, so the arithmetic worked. What failed is the constraint the metric does not carry: trade credit is finance drawn from companies that can run out of cash themselves. Creditor policy is set against supplier health and relationships, not against the cycle alone.",
       },
     },
   ],

@@ -295,7 +295,9 @@ text, so a mark written into one shows its own syntax.
   one or two sentences, in the house voice, and say why the word matters rather
   than reciting a dictionary — the second sentence is usually the useful one
   ("it stops being arbitrage the moment one leg is left open"). Budget roughly
-  **three to eight per step**: dotted underlines every other line make a
+  **one to three per step** *(revised 2026-08-09: it was three to eight when a
+  step held two to four sections — S-1 changed the grain, and this is the same
+  density on the new one)*: dotted underlines every other line make a
   paragraph unreadable, and a step with none has probably not been read by
   anyone who didn't already know the subject.
 - **E-9** **A short set of *kinds* is `cards`, not a `table`.** A table exists so
@@ -351,13 +353,28 @@ text, so a mark written into one shows its own syntax.
 
 ## S — Structure
 
-- **S-1** *(inherited)* One checkpoint per section — so a section is the unit of
-  "I've got this". If a chunk isn't worth a checkpoint, it isn't a section; fold
-  it into its neighbour as an `h2`.
-- **S-2** A section carries one idea. Two ideas that need two different
-  checkpoint questions are two sections.
-- **S-3** The first section has no rendered heading (the reader shows the step
-  title instead), so it must open the step, not sit as a peer of the others.
+- **S-1** *(revised 2026-08-09)* **One checkpoint per STEP. A step is one small
+  containable concept, finished in one short sitting.** The owner's words:
+  *"from now on a step is a small containable concept a user needs to
+  understand … its worth it as the read to the completion of the step is not
+  so far away."* A step therefore carries **exactly one section and exactly
+  one checkpoint** — the checkpoint is the step's own "I've got this", the
+  completion is never far away, and anything attached to the checkpoint (a
+  note, a comment thread) serves exactly one concept rather than a bundle.
+  If a chunk isn't worth a checkpoint, it isn't a step; fold it into its
+  neighbour as an `h2`. If a draft wants a second checkpoint, it is two steps
+  (**S-8**), and the run of them gets a folder (**S-9**).
+  Measurable: `tools/rank.mjs` fails any step whose section count is not 1.
+  Treasury Management converted the day the rule landed — 22 steps of 60
+  sections became 60 steps of one each; the other courses owe **D-18**.
+- **S-2** *(revised 2026-08-09)* A step carries one idea. Two ideas that need
+  two different checkpoint questions are two steps. (It said "section" until
+  S-1 collapsed the two words into one grain.)
+- **S-3** *(revised 2026-08-09)* A step's one section never renders its
+  `heading` — the reader shows the step title instead. The heading is still
+  required by `seed:course` and is what the checkpoint reads out as its
+  accessible label ("What did you make of …?"), so write it as the concept's
+  own name, facing the same way as the title (**W-16**).
 - **S-4** Write a `check` for every section. A checkpoint without one falls back
   to self-marked "done", which defeats the point — the reader is meant to
   demonstrate the idea, not assert it.
@@ -393,8 +410,10 @@ text, so a mark written into one shows its own syntax.
     worth making can send a downstream bill, and none of them is a reason to
     stop or to ask. See "Improve the step. Deal with the consequences." at the
     top of `SKILL.md`.
-  - **Target 2 to 4 sections per step.** At five, look hard for the seam. At
-    six or more there is definitely one.
+  - **Target ONE section per step** *(revised 2026-08-09 — it said 2 to 4
+    until **S-1** changed the grain)*. A second section IS the seam: it leaves
+    as its own step in the same edit, and the old step's name usually survives
+    as the folder over the parts (**S-9**).
   - Split on a **conceptual seam**, not at the halfway word count. Each part
     must be a thing a reader can hold on its own and name afterwards: *what
     treasury is* / *how the work divides* / *how it is governed*. A part that
@@ -423,9 +442,19 @@ text, so a mark written into one shows its own syntax.
     subject — the three working-capital components, the two hedging instruments
     — that is a folder. The reader gets a name for the group, a collapsed row
     instead of three, and somewhere to stop.
-  - **Three or four levels, not more.** Course → lesson → group → step is the
-    working ceiling. Past that the indentation eats the label on a 390px phone
-    and a reader cannot tell which level they are on.
+  - **Four or five levels** *(revised 2026-08-09; owner: "right now the
+    deepest nest is 2 deep but we are capable of even 4 or 5")*. The
+    one-checkpoint grain (**S-1**) is what spends the extra depth: an old
+    multi-section step becomes a named folder over its parts, so course →
+    lesson → group → concept-family → step is now the normal shape. The 390px
+    indent that set the old three-or-four ceiling has not stopped being real:
+    keep labels short as they go deeper, and do not add a level that names
+    nothing.
+  - **Where the group above already names the family, hang the parts flat**
+    rather than adding a folder that repeats it. Measured in TM's conversion:
+    the ground-truth concept steps sit flat under their lesson or group, and
+    the technique families (the hedging instruments, the price of debt, the
+    cash models) get the folders.
   - **A folder needs a real name, not a number.** "Working capital" groups
     something; "Part 2" groups nothing and costs a row.
   - **Do not create a folder for one step.** A group of one is a step wearing a
@@ -521,10 +550,12 @@ text, so a mark written into one shows its own syntax.
     **S-4**) — but the checks are about the subject's shape and stakes, not
     about the app. A check on where treasury sits between the business and the
     banks is fair; a check on where the sidebar is, is not.
-  - **Two to three sections**, and it is the shortest step in the course.
-    Whatever else it does, it must not become the first climb (**S-8**).
-  - **It keeps the first slot and the first slug**, above the first lesson
-    folder, and its label is the course's own name or something close to it.
+  - **Two or three one-checkpoint steps in the Getting Started folder**
+    *(revised 2026-08-09 — it was one step of two-to-three sections until
+    **S-1** changed the grain)*. Each is the shortest kind of step in the
+    course; the run must not become the first climb (**S-8**).
+  - **The first of them keeps the first slot and the course-intro slug**, and
+    its label is the course's own name or something close to it.
 
 - **S-12** **A title is Title Case, and it makes a claim.** *(added 2026-08-08)*
   **S-10** settles which of a step's two names is which; this settles how either

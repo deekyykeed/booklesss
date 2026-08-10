@@ -34,13 +34,19 @@
  * The old name was sentence case and carried the hedged `, and how/what…` tail that 13 of this course's
  * 22 titles shared, and ended on a bare particle. The slug is
  * untouched, so no URL moved.
+ *
+ * 2026-08-09 — ONE-CHECKPOINT SPLIT (S-1 revised: one step = one concept = one
+ * checkpoint; owner: "only one checkpoint per step"). This file held
+ * 2 sections and now holds one: "The Nature of Interest Rate Risk". The other
+ * section(s) moved to measuring-rate-exposure.mjs beside this file.
+ * The slug is unchanged, so the URL that was linked to still opens here.
  */
 
 export default {
   slug: "interest-rate-risk-management",
-  label: "Interest Rate Risk",
-  title: "Interest Rate Risk",
-  kicker: "Risk",
+  label: "The Nature of Interest Rate Risk",
+  title: "The Nature of Interest Rate Risk",
+  kicker: "Interest Rates",
 
   sections: [
     /* ---------------------------------------------------------------- */
@@ -87,65 +93,6 @@ export default {
         answer: 0,
         explain:
           "Both sides may float and even reprice on the same day, and the firm is still exposed if LIBOR and prime diverge. That divergence between reference rates is basis risk, which is distinct from mismatched dates and from a change in the curve's shape.",
-      },
-    },
-
-    /* ---------------------------------------------------------------- */
-    {
-      id: "measuring",
-      heading: "Measuring the exposure",
-      blocks: [
-        {
-          type: "p",
-          text: "One [[basis point|A hundredth of one percent. Rates are quoted in them because \"the rate went up 50 basis points\" cannot be misread, while \"the rate went up half a percent\" can mean two different things.]] on a ZMW 1 million loan over six months is ZMW 50. That sounds like nothing, right up until you ask how many basis points the MPC has moved in a bad year.",
-        },
-        {
-          type: "p",
-          text: "**You cannot decide whether to hedge until the exposure is a number,** and three tools turn it into one. The first is gap analysis, which groups assets and liabilities by the date they reprice.",
-        },
-        {
-          type: "formula",
-          text: "Gap = RSA − RSL",
-          where: [
-            "RSA = rate-sensitive assets repricing in the period",
-            "RSL = rate-sensitive liabilities repricing in the period",
-          ],
-        },
-        {
-          type: "p",
-          text: "A positive gap means more assets than liabilities reprice, so rising rates lift your net interest income. A negative gap means the reverse. **The sign of the gap tells you which direction to hedge in,** which is the question people usually get wrong before they get the size wrong.",
-        },
-        { type: "h2", text: "Duration, and turning it into money" },
-        {
-          type: "formula",
-          text: "Price change (%) ≈ −Duration × yield change (%)",
-          where: [
-            "Duration = the weighted-average time, in years, to receive a bond's cash flows",
-            "A 5-year-duration bond loses roughly 5% of value if yields rise 1%, meaning 100 basis points",
-          ],
-        },
-        {
-          type: "p",
-          text: "[Duration](https://corporatefinanceinstitute.com/resources/fixed-income/duration/) is the sensitivity measure for anything fixed-income you hold, and basis point value turns it into cash: the effect of a 0.01% move. On ZMW 1 million over six months that is 1,000,000 × 0.0001 × 0.5 = ZMW 50 a year. Small per point, which is the whole reason exposures are quoted this way. Multiply by the number of points you actually fear and it stops being a percentage and becomes a decision.",
-        },
-        {
-          type: "callout",
-          kind: "example",
-          text: "Turn one into a number yourself. In a bank's one-year bucket, ZMW 260 million of assets reprice and ZMW 380 million of liabilities do. The MPC then raises rates by 1.5%. Work the gap, then what it costs over the year. The point of netting them first is that both sides move: the assets earn the new rate too, and the gap is the part of the book where that does not cancel out.",
-        },
-      ],
-      check: {
-        question:
-          "Assets of ZMW 260 million and liabilities of ZMW 380 million reprice within the year, and rates rise 1.5%. What happens to net interest income?",
-        options: [
-          "It falls by about ZMW 1.8 million",
-          "It rises by about ZMW 1.8 million",
-          "It falls by about ZMW 5.7 million",
-          "It falls by about ZMW 9.6 million",
-        ],
-        answer: 0,
-        explain:
-          "Gap = 260 − 380 = −ZMW 120 million, and −120,000,000 × 1.5% = **a fall of ZMW 1.8 million**. A rise of 1.8 million has the size right and the sign backwards: a negative gap means the cost side reprices first, so rising rates hurt. A fall of 5.7 million charges the whole ZMW 380 million with the increase and forgets that the 260 million of assets is earning the new rate as well. Netting them is the entire idea of a gap. A fall of 9.6 million adds the two sides instead of subtracting them, which would make a perfectly matched book the most exposed one rather than the least.",
       },
     },
   ],

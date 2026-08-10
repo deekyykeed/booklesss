@@ -1781,16 +1781,36 @@
             "label": "The Case for Treasury Management",
             "lesson": {
               "title": "The Case for Treasury Management",
-              "kicker": "Treasury Management",
+              "kicker": "Getting Started",
               "sections": [
                 {
                   "id": "the-day-it-falls-due",
                   "heading": "Start here"
-                },
+                }
+              ]
+            }
+          },
+          {
+            "id": "the-decisions-it-hands-you",
+            "label": "The Decisions It Hands You",
+            "lesson": {
+              "title": "The Decisions It Hands You",
+              "kicker": "Getting Started",
+              "sections": [
                 {
                   "id": "what-it-buys-you",
                   "heading": "What you can do with it"
-                },
+                }
+              ]
+            }
+          },
+          {
+            "id": "one-step-one-sitting",
+            "label": "One Step, One Sitting",
+            "lesson": {
+              "title": "One Step, One Sitting",
+              "kicker": "Getting Started",
+              "sections": [
                 {
                   "id": "how-to-use-this",
                   "heading": "How to use this"
@@ -1805,58 +1825,106 @@
         "label": "Treasury Operations",
         "children": [
           {
-            "id": "intro-to-treasury",
+            "id": "the-treasury-function",
             "label": "The Treasury Function",
-            "lesson": {
-              "title": "The Treasury Function",
-              "kicker": "Treasury Operations",
-              "sections": [
-                {
-                  "id": "what-treasury-is",
-                  "heading": "What treasury is"
-                },
-                {
-                  "id": "eleven-functions",
-                  "heading": "The eleven functions of treasury"
+            "children": [
+              {
+                "id": "intro-to-treasury",
+                "label": "Treasury's Job",
+                "lesson": {
+                  "title": "Treasury's Job",
+                  "kicker": "The Treasury Function",
+                  "sections": [
+                    {
+                      "id": "what-treasury-is",
+                      "heading": "What treasury is"
+                    }
+                  ]
                 }
-              ]
-            }
+              },
+              {
+                "id": "eleven-functions",
+                "label": "The Eleven Functions of Treasury",
+                "lesson": {
+                  "title": "The Eleven Functions of Treasury",
+                  "kicker": "The Treasury Function",
+                  "sections": [
+                    {
+                      "id": "eleven-functions",
+                      "heading": "The eleven functions of treasury"
+                    }
+                  ]
+                }
+              }
+            ]
           },
           {
-            "id": "treasury-levels-and-mandate",
+            "id": "treasury-levels",
             "label": "The Three Levels of Treasury",
-            "lesson": {
-              "title": "The Three Levels of Treasury",
-              "kicker": "Treasury Operations",
-              "sections": [
-                {
-                  "id": "task-levels",
-                  "heading": "Strategic, tactical and operational"
-                },
-                {
-                  "id": "cost-vs-profit-centre",
-                  "heading": "Cost centre or profit centre"
+            "children": [
+              {
+                "id": "treasury-levels-and-mandate",
+                "label": "Strategic, Tactical, Operational",
+                "lesson": {
+                  "title": "Strategic, Tactical, Operational",
+                  "kicker": "The Three Levels of Treasury",
+                  "sections": [
+                    {
+                      "id": "task-levels",
+                      "heading": "Strategic, tactical and operational"
+                    }
+                  ]
                 }
-              ]
-            }
+              },
+              {
+                "id": "cost-centre-or-profit-centre",
+                "label": "Cost Centre or Profit Centre",
+                "lesson": {
+                  "title": "Cost Centre or Profit Centre",
+                  "kicker": "The Three Levels of Treasury",
+                  "sections": [
+                    {
+                      "id": "cost-vs-profit-centre",
+                      "heading": "Cost centre or profit centre"
+                    }
+                  ]
+                }
+              }
+            ]
           },
           {
-            "id": "treasury-controls-and-structure",
-            "label": "Treasury Controls and Governance",
-            "lesson": {
-              "title": "Treasury Controls and Governance",
-              "kicker": "Treasury Operations",
-              "sections": [
-                {
-                  "id": "controls",
-                  "heading": "Treasury controls"
-                },
-                {
-                  "id": "centralisation",
-                  "heading": "Centralised, decentralised and hybrid"
+            "id": "treasury-governance",
+            "label": "Controls and Governance",
+            "children": [
+              {
+                "id": "treasury-controls-and-structure",
+                "label": "Treasury Controls",
+                "lesson": {
+                  "title": "Treasury Controls",
+                  "kicker": "Controls and Governance",
+                  "sections": [
+                    {
+                      "id": "controls",
+                      "heading": "Treasury controls"
+                    }
+                  ]
                 }
-              ]
-            }
+              },
+              {
+                "id": "centralised-or-decentralised",
+                "label": "Centralised or Decentralised",
+                "lesson": {
+                  "title": "Centralised or Decentralised",
+                  "kicker": "Controls and Governance",
+                  "sections": [
+                    {
+                      "id": "centralisation",
+                      "heading": "Centralised, decentralised and hybrid"
+                    }
+                  ]
+                }
+              }
+            ]
           }
         ]
       },
@@ -1866,19 +1934,39 @@
         "children": [
           {
             "id": "working-capital-and-liquidity",
-            "label": "Working Capital and Liquidity",
+            "label": "The Nature of Working Capital",
             "lesson": {
-              "title": "Working Capital and Liquidity",
+              "title": "The Nature of Working Capital",
               "kicker": "Working Capital",
               "sections": [
                 {
                   "id": "what-working-capital-is",
                   "heading": "What working capital is"
-                },
+                }
+              ]
+            }
+          },
+          {
+            "id": "working-capital-policy",
+            "label": "Working Capital Policy",
+            "lesson": {
+              "title": "Working Capital Policy",
+              "kicker": "Working Capital",
+              "sections": [
                 {
                   "id": "working-capital-policy",
                   "heading": "Working capital policy"
-                },
+                }
+              ]
+            }
+          },
+          {
+            "id": "cash-conversion-cycle",
+            "label": "The Cash Conversion Cycle",
+            "lesson": {
+              "title": "The Cash Conversion Cycle",
+              "kicker": "Working Capital",
+              "sections": [
                 {
                   "id": "cash-conversion-cycle",
                   "heading": "The cash conversion cycle"
@@ -1887,22 +1975,38 @@
             }
           },
           {
-            "id": "debtors-and-factoring",
+            "id": "debtors",
             "label": "Debtors and Factoring",
-            "lesson": {
-              "title": "Debtors and Factoring",
-              "kicker": "Working Capital",
-              "sections": [
-                {
-                  "id": "debtor-management",
-                  "heading": "Debtor management and cash discounts"
-                },
-                {
-                  "id": "factoring",
-                  "heading": "Factoring and invoice discounting"
+            "children": [
+              {
+                "id": "debtors-and-factoring",
+                "label": "Debtors and Cash Discounts",
+                "lesson": {
+                  "title": "Debtors and Cash Discounts",
+                  "kicker": "Debtors and Factoring",
+                  "sections": [
+                    {
+                      "id": "debtor-management",
+                      "heading": "Debtor management and cash discounts"
+                    }
+                  ]
                 }
-              ]
-            }
+              },
+              {
+                "id": "factoring",
+                "label": "Factoring",
+                "lesson": {
+                  "title": "Factoring and Invoice Discounting",
+                  "kicker": "Debtors and Factoring",
+                  "sections": [
+                    {
+                      "id": "factoring",
+                      "heading": "Factoring and invoice discounting"
+                    }
+                  ]
+                }
+              }
+            ]
           },
           {
             "id": "inventory-and-suppliers",
@@ -1910,19 +2014,39 @@
             "children": [
               {
                 "id": "inventory-and-creditors",
-                "label": "Inventory and Trade Credit",
+                "label": "The Cost of Holding Inventory",
                 "lesson": {
-                  "title": "Inventory and Trade Credit",
-                  "kicker": "Working Capital",
+                  "title": "The Cost of Holding Inventory",
+                  "kicker": "Inventory and Suppliers",
                   "sections": [
                     {
                       "id": "what-inventory-is",
                       "heading": "What inventory is"
-                    },
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "inventory-financing",
+                "label": "Inventory Financing",
+                "lesson": {
+                  "title": "Inventory Financing",
+                  "kicker": "Inventory and Suppliers",
+                  "sections": [
                     {
                       "id": "inventory-financing",
                       "heading": "Financing the inventory"
-                    },
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "just-in-time",
+                "label": "Just-in-Time Purchasing",
+                "lesson": {
+                  "title": "Just-in-Time Purchasing",
+                  "kicker": "Inventory and Suppliers",
+                  "sections": [
                     {
                       "id": "jit",
                       "heading": "Just-in-time purchasing"
@@ -1932,15 +2056,25 @@
               },
               {
                 "id": "ordering-and-paying-suppliers",
-                "label": "Order Quantity and Payment Terms",
+                "label": "The Economic Order Quantity",
                 "lesson": {
-                  "title": "Order Quantity and Payment Terms",
-                  "kicker": "Working Capital",
+                  "title": "The Economic Order Quantity",
+                  "kicker": "Inventory and Suppliers",
                   "sections": [
                     {
                       "id": "eoq",
                       "heading": "The economic order quantity"
-                    },
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "creditor-management",
+                "label": "Creditor Management",
+                "lesson": {
+                  "title": "Creditor Management",
+                  "kicker": "Inventory and Suppliers",
+                  "sections": [
                     {
                       "id": "creditor-management",
                       "heading": "Creditor management"
@@ -1955,48 +2089,100 @@
             "label": "Cash",
             "children": [
               {
-                "id": "cash-management",
+                "id": "optimal-cash",
                 "label": "Optimal Cash Balances",
-                "lesson": {
-                  "title": "Optimal Cash Balances",
-                  "kicker": "Working Capital",
-                  "sections": [
-                    {
-                      "id": "why-cash-management",
-                      "heading": "Why cash management matters"
-                    },
-                    {
-                      "id": "baumol",
-                      "heading": "The Baumol model"
-                    },
-                    {
-                      "id": "miller-orr",
-                      "heading": "The Miller-Orr model"
+                "children": [
+                  {
+                    "id": "cash-management",
+                    "label": "The Cost of Idle Cash",
+                    "lesson": {
+                      "title": "The Cost of Idle Cash",
+                      "kicker": "Optimal Cash Balances",
+                      "sections": [
+                        {
+                          "id": "why-cash-management",
+                          "heading": "Why cash management matters"
+                        }
+                      ]
                     }
-                  ]
-                }
+                  },
+                  {
+                    "id": "baumol-model",
+                    "label": "The Baumol Model",
+                    "lesson": {
+                      "title": "The Baumol Model",
+                      "kicker": "Optimal Cash Balances",
+                      "sections": [
+                        {
+                          "id": "baumol",
+                          "heading": "The Baumol model"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "miller-orr-model",
+                    "label": "The Miller-Orr Model",
+                    "lesson": {
+                      "title": "The Miller-Orr Model",
+                      "kicker": "Optimal Cash Balances",
+                      "sections": [
+                        {
+                          "id": "miller-orr",
+                          "heading": "The Miller-Orr model"
+                        }
+                      ]
+                    }
+                  }
+                ]
               },
               {
-                "id": "cash-forecasting-and-surpluses",
-                "label": "Cash Forecasting and Surpluses",
-                "lesson": {
-                  "title": "Cash Forecasting and Surpluses",
-                  "kicker": "Working Capital",
-                  "sections": [
-                    {
-                      "id": "forecasting",
-                      "heading": "Cash flow forecasting"
-                    },
-                    {
-                      "id": "surpluses-and-overdrafts",
-                      "heading": "Investing surpluses, borrowing shortfalls"
-                    },
-                    {
-                      "id": "cash-concentration",
-                      "heading": "Cash concentration"
+                "id": "forecasting-and-surpluses",
+                "label": "Forecasting and Surpluses",
+                "children": [
+                  {
+                    "id": "cash-forecasting-and-surpluses",
+                    "label": "Cash Flow Forecasting",
+                    "lesson": {
+                      "title": "Cash Flow Forecasting",
+                      "kicker": "Forecasting and Surpluses",
+                      "sections": [
+                        {
+                          "id": "forecasting",
+                          "heading": "Cash flow forecasting"
+                        }
+                      ]
                     }
-                  ]
-                }
+                  },
+                  {
+                    "id": "surpluses-and-overdrafts",
+                    "label": "Surpluses and Overdrafts",
+                    "lesson": {
+                      "title": "Surpluses and Overdrafts",
+                      "kicker": "Forecasting and Surpluses",
+                      "sections": [
+                        {
+                          "id": "surpluses-and-overdrafts",
+                          "heading": "Investing surpluses, borrowing shortfalls"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "cash-concentration",
+                    "label": "Cash Concentration",
+                    "lesson": {
+                      "title": "Cash Concentration",
+                      "kicker": "Forecasting and Surpluses",
+                      "sections": [
+                        {
+                          "id": "cash-concentration",
+                          "heading": "Cash concentration"
+                        }
+                      ]
+                    }
+                  }
+                ]
               }
             ]
           }
@@ -2012,15 +2198,25 @@
             "children": [
               {
                 "id": "interest-rate-risk-management",
-                "label": "Interest Rate Risk",
+                "label": "The Nature of Interest Rate Risk",
                 "lesson": {
-                  "title": "Interest Rate Risk",
-                  "kicker": "Risk",
+                  "title": "The Nature of Interest Rate Risk",
+                  "kicker": "Interest Rates",
                   "sections": [
                     {
                       "id": "what-it-is",
                       "heading": "What interest rate risk is"
-                    },
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "measuring-rate-exposure",
+                "label": "Measuring the Exposure",
+                "lesson": {
+                  "title": "Measuring the Exposure",
+                  "kicker": "Interest Rates",
+                  "sections": [
                     {
                       "id": "measuring",
                       "heading": "Measuring the exposure"
@@ -2029,30 +2225,66 @@
                 }
               },
               {
-                "id": "interest-rate-hedging-instruments",
-                "label": "Hedging Interest Rate Risk",
-                "lesson": {
-                  "title": "Hedging Interest Rate Risk",
-                  "kicker": "Risk",
-                  "sections": [
-                    {
-                      "id": "fras",
-                      "heading": "Forward rate agreements"
-                    },
-                    {
-                      "id": "swaps",
-                      "heading": "Interest rate swaps"
-                    },
-                    {
-                      "id": "futures",
-                      "heading": "Interest rate futures"
-                    },
-                    {
-                      "id": "options",
-                      "heading": "Caps, floors and collars"
+                "id": "rate-hedges",
+                "label": "Hedging Instruments",
+                "children": [
+                  {
+                    "id": "interest-rate-hedging-instruments",
+                    "label": "Forward Rate Agreements",
+                    "lesson": {
+                      "title": "Forward Rate Agreements",
+                      "kicker": "Hedging Instruments",
+                      "sections": [
+                        {
+                          "id": "fras",
+                          "heading": "Forward rate agreements"
+                        }
+                      ]
                     }
-                  ]
-                }
+                  },
+                  {
+                    "id": "interest-rate-swaps",
+                    "label": "Interest Rate Swaps",
+                    "lesson": {
+                      "title": "Interest Rate Swaps",
+                      "kicker": "Hedging Instruments",
+                      "sections": [
+                        {
+                          "id": "swaps",
+                          "heading": "Interest rate swaps"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "interest-rate-futures",
+                    "label": "Interest Rate Futures",
+                    "lesson": {
+                      "title": "Interest Rate Futures",
+                      "kicker": "Hedging Instruments",
+                      "sections": [
+                        {
+                          "id": "futures",
+                          "heading": "Interest rate futures"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "caps-floors-collars",
+                    "label": "Caps, Floors and Collars",
+                    "lesson": {
+                      "title": "Caps, Floors and Collars",
+                      "kicker": "Hedging Instruments",
+                      "sections": [
+                        {
+                          "id": "options",
+                          "heading": "Caps, floors and collars"
+                        }
+                      ]
+                    }
+                  }
+                ]
               }
             ]
           },
@@ -2062,19 +2294,39 @@
             "children": [
               {
                 "id": "foreign-exchange-risk",
-                "label": "Foreign Exchange Risk",
+                "label": "The Three FX Exposures",
                 "lesson": {
-                  "title": "Foreign Exchange Risk",
-                  "kicker": "Risk",
+                  "title": "The Three FX Exposures",
+                  "kicker": "Currency",
                   "sections": [
                     {
                       "id": "three-exposures",
                       "heading": "The three FX exposures"
-                    },
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "quotations-and-cross-rates",
+                "label": "Quotations and Cross Rates",
+                "lesson": {
+                  "title": "Quotations and Cross Rates",
+                  "kicker": "Currency",
+                  "sections": [
                     {
                       "id": "quotations",
                       "heading": "Quotations, spreads and cross rates"
-                    },
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "forward-exchange-rates",
+                "label": "Forward Rates",
+                "lesson": {
+                  "title": "Forward Rates",
+                  "kicker": "Currency",
+                  "sections": [
                     {
                       "id": "forward-rates",
                       "heading": "Forward rates"
@@ -2083,26 +2335,52 @@
                 }
               },
               {
-                "id": "hedging-currency-risk",
-                "label": "Hedging Foreign Exchange Risk",
-                "lesson": {
-                  "title": "Hedging Foreign Exchange Risk",
-                  "kicker": "Risk",
-                  "sections": [
-                    {
-                      "id": "operational-hedges",
-                      "heading": "Hedging without instruments"
-                    },
-                    {
-                      "id": "forwards-and-futures",
-                      "heading": "Hedging with forwards and futures"
-                    },
-                    {
-                      "id": "currency-options",
-                      "heading": "Currency options, and choosing between the tools"
+                "id": "fx-hedges",
+                "label": "Hedging the Exposure",
+                "children": [
+                  {
+                    "id": "hedging-currency-risk",
+                    "label": "Operational Hedges",
+                    "lesson": {
+                      "title": "Operational Hedges",
+                      "kicker": "Hedging the Exposure",
+                      "sections": [
+                        {
+                          "id": "operational-hedges",
+                          "heading": "Hedging without instruments"
+                        }
+                      ]
                     }
-                  ]
-                }
+                  },
+                  {
+                    "id": "currency-forwards-and-futures",
+                    "label": "Currency Forwards and Futures",
+                    "lesson": {
+                      "title": "Currency Forwards and Futures",
+                      "kicker": "Hedging the Exposure",
+                      "sections": [
+                        {
+                          "id": "forwards-and-futures",
+                          "heading": "Hedging with forwards and futures"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "currency-options",
+                    "label": "Currency Options",
+                    "lesson": {
+                      "title": "Currency Options",
+                      "kicker": "Hedging the Exposure",
+                      "sections": [
+                        {
+                          "id": "currency-options",
+                          "heading": "Currency options, and choosing between the tools"
+                        }
+                      ]
+                    }
+                  }
+                ]
               }
             ]
           }
@@ -2118,19 +2396,39 @@
             "children": [
               {
                 "id": "debt-management",
-                "label": "Debt Sources and Maturity",
+                "label": "The Debt Management Function",
                 "lesson": {
-                  "title": "Debt Sources and Maturity",
-                  "kicker": "Debt and Investment",
+                  "title": "The Debt Management Function",
+                  "kicker": "Debt",
                   "sections": [
                     {
                       "id": "the-function",
                       "heading": "The debt management function"
-                    },
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "sources-of-debt",
+                "label": "The Sources of Debt",
+                "lesson": {
+                  "title": "The Sources of Debt",
+                  "kicker": "Debt",
+                  "sections": [
                     {
                       "id": "sources",
                       "heading": "The sources of debt"
-                    },
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "the-matching-principle",
+                "label": "The Matching Principle",
+                "lesson": {
+                  "title": "The Matching Principle",
+                  "kicker": "Debt",
+                  "sections": [
                     {
                       "id": "matching",
                       "heading": "Short against long, and the matching principle"
@@ -2139,26 +2437,52 @@
                 }
               },
               {
-                "id": "the-price-of-debt",
+                "id": "price-of-debt",
                 "label": "The Price of Debt",
-                "lesson": {
-                  "title": "The Price of Debt",
-                  "kicker": "Debt and Investment",
-                  "sections": [
-                    {
-                      "id": "covenants",
-                      "heading": "Loan covenants"
-                    },
-                    {
-                      "id": "bond-pricing",
-                      "heading": "Pricing a bond"
-                    },
-                    {
-                      "id": "credit-ratings",
-                      "heading": "Credit ratings"
+                "children": [
+                  {
+                    "id": "the-price-of-debt",
+                    "label": "Loan Covenants",
+                    "lesson": {
+                      "title": "Loan Covenants",
+                      "kicker": "The Price of Debt",
+                      "sections": [
+                        {
+                          "id": "covenants",
+                          "heading": "Loan covenants"
+                        }
+                      ]
                     }
-                  ]
-                }
+                  },
+                  {
+                    "id": "pricing-a-bond",
+                    "label": "Pricing a Bond",
+                    "lesson": {
+                      "title": "Pricing a Bond",
+                      "kicker": "The Price of Debt",
+                      "sections": [
+                        {
+                          "id": "bond-pricing",
+                          "heading": "Pricing a bond"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "credit-ratings",
+                    "label": "Credit Ratings",
+                    "lesson": {
+                      "title": "Credit Ratings",
+                      "kicker": "The Price of Debt",
+                      "sections": [
+                        {
+                          "id": "credit-ratings",
+                          "heading": "Credit ratings"
+                        }
+                      ]
+                    }
+                  }
+                ]
               }
             ]
           },
@@ -2168,15 +2492,25 @@
             "children": [
               {
                 "id": "investment-management",
-                "label": "Investing Surplus Cash",
+                "label": "Safety, Liquidity, Yield",
                 "lesson": {
-                  "title": "Investing Surplus Cash",
-                  "kicker": "Debt and Investment",
+                  "title": "Safety, Liquidity, Yield",
+                  "kicker": "Investing",
                   "sections": [
                     {
                       "id": "objectives",
                       "heading": "Safety, liquidity, yield, in that order"
-                    },
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "investment-policy",
+                "label": "The Investment Policy Statement",
+                "lesson": {
+                  "title": "The Investment Policy Statement",
+                  "kicker": "Investing",
+                  "sections": [
                     {
                       "id": "policy",
                       "heading": "The investment policy statement"
@@ -2185,26 +2519,52 @@
                 }
               },
               {
-                "id": "building-the-portfolio",
-                "label": "Credit Risk and the Portfolio",
-                "lesson": {
-                  "title": "Credit Risk and the Portfolio",
-                  "kicker": "Debt and Investment",
-                  "sections": [
-                    {
-                      "id": "instruments",
-                      "heading": "The instruments"
-                    },
-                    {
-                      "id": "credit-and-diversification",
-                      "heading": "Credit risk and diversification"
-                    },
-                    {
-                      "id": "portfolio-construction",
-                      "heading": "Constructing the portfolio"
+                "id": "the-portfolio",
+                "label": "Building the Portfolio",
+                "children": [
+                  {
+                    "id": "building-the-portfolio",
+                    "label": "The Money Market Instruments",
+                    "lesson": {
+                      "title": "The Money Market Instruments",
+                      "kicker": "Building the Portfolio",
+                      "sections": [
+                        {
+                          "id": "instruments",
+                          "heading": "The instruments"
+                        }
+                      ]
                     }
-                  ]
-                }
+                  },
+                  {
+                    "id": "credit-and-diversification",
+                    "label": "Credit Risk and Diversification",
+                    "lesson": {
+                      "title": "Credit Risk and Diversification",
+                      "kicker": "Building the Portfolio",
+                      "sections": [
+                        {
+                          "id": "credit-and-diversification",
+                          "heading": "Credit risk and diversification"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "portfolio-construction",
+                    "label": "Constructing the Portfolio",
+                    "lesson": {
+                      "title": "Constructing the Portfolio",
+                      "kicker": "Building the Portfolio",
+                      "sections": [
+                        {
+                          "id": "portfolio-construction",
+                          "heading": "Constructing the portfolio"
+                        }
+                      ]
+                    }
+                  }
+                ]
               }
             ]
           }
@@ -2219,48 +2579,100 @@
             "label": "Payments and Clearing",
             "children": [
               {
-                "id": "clearing-and-settlement",
+                "id": "clearing",
                 "label": "Clearing and Settlement",
-                "lesson": {
-                  "title": "Clearing and Settlement",
-                  "kicker": "Systems and Clearing",
-                  "sections": [
-                    {
-                      "id": "clearing-vs-settlement",
-                      "heading": "Clearing against settlement"
-                    },
-                    {
-                      "id": "herstatt",
-                      "heading": "Settlement risk and Herstatt"
-                    },
-                    {
-                      "id": "gross-vs-net",
-                      "heading": "Gross settlement against net"
+                "children": [
+                  {
+                    "id": "clearing-and-settlement",
+                    "label": "Clearing Against Settlement",
+                    "lesson": {
+                      "title": "Clearing Against Settlement",
+                      "kicker": "Clearing and Settlement",
+                      "sections": [
+                        {
+                          "id": "clearing-vs-settlement",
+                          "heading": "Clearing against settlement"
+                        }
+                      ]
                     }
-                  ]
-                }
+                  },
+                  {
+                    "id": "herstatt",
+                    "label": "Settlement Risk and Herstatt",
+                    "lesson": {
+                      "title": "Settlement Risk and Herstatt",
+                      "kicker": "Clearing and Settlement",
+                      "sections": [
+                        {
+                          "id": "herstatt",
+                          "heading": "Settlement risk and Herstatt"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "gross-and-net-settlement",
+                    "label": "Gross and Net Settlement",
+                    "lesson": {
+                      "title": "Gross and Net Settlement",
+                      "kicker": "Clearing and Settlement",
+                      "sections": [
+                        {
+                          "id": "gross-vs-net",
+                          "heading": "Gross settlement against net"
+                        }
+                      ]
+                    }
+                  }
+                ]
               },
               {
-                "id": "payment-systems-and-ccps",
+                "id": "payment-systems",
                 "label": "Payment Systems",
-                "lesson": {
-                  "title": "Payment Systems and Central Counterparties",
-                  "kicker": "Systems and Clearing",
-                  "sections": [
-                    {
-                      "id": "swift",
-                      "heading": "SWIFT, the messaging layer"
-                    },
-                    {
-                      "id": "cls-and-dvp",
-                      "heading": "Settling both legs at once"
-                    },
-                    {
-                      "id": "zambia-systems",
-                      "heading": "Zambia's payment systems, and the operational rules"
+                "children": [
+                  {
+                    "id": "payment-systems-and-ccps",
+                    "label": "SWIFT, the Messaging Layer",
+                    "lesson": {
+                      "title": "SWIFT, the Messaging Layer",
+                      "kicker": "Payment Systems",
+                      "sections": [
+                        {
+                          "id": "swift",
+                          "heading": "SWIFT, the messaging layer"
+                        }
+                      ]
                     }
-                  ]
-                }
+                  },
+                  {
+                    "id": "cls-and-dvp",
+                    "label": "CLS and Delivery Versus Payment",
+                    "lesson": {
+                      "title": "CLS and Delivery Versus Payment",
+                      "kicker": "Payment Systems",
+                      "sections": [
+                        {
+                          "id": "cls-and-dvp",
+                          "heading": "Settling both legs at once"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "zambias-payment-systems",
+                    "label": "Zambia's Payment Systems",
+                    "lesson": {
+                      "title": "Zambia's Payment Systems",
+                      "kicker": "Payment Systems",
+                      "sections": [
+                        {
+                          "id": "zambia-systems",
+                          "heading": "Zambia's payment systems, and the operational rules"
+                        }
+                      ]
+                    }
+                  }
+                ]
               }
             ]
           },
@@ -2269,48 +2681,100 @@
             "label": "Treasury Systems",
             "children": [
               {
-                "id": "treasury-management-systems",
-                "label": "Treasury Management Systems",
-                "lesson": {
-                  "title": "Treasury Management Systems",
-                  "kicker": "Systems and Clearing",
-                  "sections": [
-                    {
-                      "id": "what-a-tms-is",
-                      "heading": "What a TMS is"
-                    },
-                    {
-                      "id": "core-functions",
-                      "heading": "The five core functions"
-                    },
-                    {
-                      "id": "offices",
-                      "heading": "Front, middle and back office"
+                "id": "inside-a-tms",
+                "label": "Inside a TMS",
+                "children": [
+                  {
+                    "id": "treasury-management-systems",
+                    "label": "The System of Record",
+                    "lesson": {
+                      "title": "The System of Record",
+                      "kicker": "Inside a TMS",
+                      "sections": [
+                        {
+                          "id": "what-a-tms-is",
+                          "heading": "What a TMS is"
+                        }
+                      ]
                     }
-                  ]
-                }
+                  },
+                  {
+                    "id": "tms-core-functions",
+                    "label": "The Five Core Functions",
+                    "lesson": {
+                      "title": "The Five Core Functions",
+                      "kicker": "Inside a TMS",
+                      "sections": [
+                        {
+                          "id": "core-functions",
+                          "heading": "The five core functions"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "front-middle-back-office",
+                    "label": "Front, Middle and Back Office",
+                    "lesson": {
+                      "title": "Front, Middle and Back Office",
+                      "kicker": "Inside a TMS",
+                      "sections": [
+                        {
+                          "id": "offices",
+                          "heading": "Front, middle and back office"
+                        }
+                      ]
+                    }
+                  }
+                ]
               },
               {
-                "id": "choosing-and-running-a-tms",
-                "label": "Selecting a Treasury System",
-                "lesson": {
-                  "title": "Selecting and Running a Treasury System",
-                  "kicker": "Systems and Clearing",
-                  "sections": [
-                    {
-                      "id": "cash-positioning",
-                      "heading": "Cash positioning and connectivity"
-                    },
-                    {
-                      "id": "build-vs-buy",
-                      "heading": "Choosing and implementing one"
-                    },
-                    {
-                      "id": "policy-and-roi",
-                      "heading": "Policy enforcement, and what the system is worth"
+                "id": "selecting-a-tms",
+                "label": "Selecting a TMS",
+                "children": [
+                  {
+                    "id": "choosing-and-running-a-tms",
+                    "label": "Cash Positioning",
+                    "lesson": {
+                      "title": "Cash Positioning and Connectivity",
+                      "kicker": "Selecting a TMS",
+                      "sections": [
+                        {
+                          "id": "cash-positioning",
+                          "heading": "Cash positioning and connectivity"
+                        }
+                      ]
                     }
-                  ]
-                }
+                  },
+                  {
+                    "id": "build-or-buy",
+                    "label": "Build or Buy",
+                    "lesson": {
+                      "title": "Build or Buy",
+                      "kicker": "Selecting a TMS",
+                      "sections": [
+                        {
+                          "id": "build-vs-buy",
+                          "heading": "Choosing and implementing one"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "tms-policy-and-roi",
+                    "label": "Policy Enforcement and ROI",
+                    "lesson": {
+                      "title": "Policy Enforcement and ROI",
+                      "kicker": "Selecting a TMS",
+                      "sections": [
+                        {
+                          "id": "policy-and-roi",
+                          "heading": "Policy enforcement, and what the system is worth"
+                        }
+                      ]
+                    }
+                  }
+                ]
               }
             ]
           }

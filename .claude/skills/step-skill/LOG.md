@@ -22,6 +22,43 @@ Quote actual words. A student's phrasing is never rewritten into the owner's.
 
 ---
 
+### 2026-08-09 · treasury-management (whole course) + the skill · owner
+- `structure` — "to really embrace having bite sized info that is easy to
+  understand … id like each step in the case of treasury management to
+  practically split the checkpoint, meaning only one checkpoint per step. that
+  increases the number of steps for the course but its worth it as the read to
+  that completion of the step is not so far away … **from now on a step is a
+  small containable concept a user needs to understand.**" The grain of the
+  product changes: a step is one concept, one section, one checkpoint. **S-1**
+  is rewritten around it and **S-2**, **S-3**, **S-8** and **S-11** follow it
+  down. TM converted the same day, 22 steps of 60 sections into 60 steps.
+- `structure` — "this doesn encourage further nesting of steps which is fine.
+  right now the deepest nest is 2 deep but we are capable of even 4 or 5 so
+  lets get this done now." **S-9**'s ceiling moves from three-or-four levels to
+  four-or-five. The one-checkpoint grain is what spends the depth: an old
+  multi-section step becomes the named folder over its parts. Where the group
+  above already names the family, the parts hang flat instead — adding a folder
+  that repeats its parent costs a row and says nothing.
+- `structure` — "splitting like this also allows me to **add a comment section
+  that actually serves one section** rather than a whole bunch." Recorded here
+  because it is the reason the rule is not merely about length: a note or a
+  comment thread on a three-section step is a thread about three things at
+  once, and nobody can tell which. This is the argument to reach for if the
+  one-checkpoint grain is ever questioned on cost.
+- `structure` — "add it to the **scoring criteria** so i can get other courses
+  like this later." `rank.mjs` scores out of **6** now, S-1 first, and any step
+  that is not exactly one section fails it. An unconverted course therefore
+  fails every step by design, which is D-18 showing rather than noise.
+- `element` — **E-8's budget was rescaled, not enforced**, and this is the
+  judgement worth logging. Three to eight tappable terms was written for a
+  two-to-four-section step; on the new grain it is one to three. Holding the
+  old number would have meant inventing 300 definitions to satisfy a scanner.
+  A budget written against the old grain has to be re-derived when the grain
+  changes, not obeyed.
+→ promoted: **S-1** (revised), **S-2** (revised), **S-3** (revised),
+  **S-8** (revised), **S-9** (revised), **S-11** (revised), **E-8** (budget) ·
+  debt: **D-18** (TM paid same day; CF, SM and economics owe it)
+
 ### 2026-08-08 · treasury-management (all steps) · owner
 - `structure` — "the titles im coming across are poor… they lack a certain
   assertiveness and feel like they aren't bold or confident. a title is supposed

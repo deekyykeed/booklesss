@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 The original pipeline — source material (PPTX/PDF) → Python ReportLab script → PDF → posted to Slack — still exists and still builds. It is now **provenance and marketing**: lead magnets, business documents, and the PDFs the reader steps were mined from. Slack-as-the-paid-product was dropped (Linear BOO-7, MSA §3.4); do not rebuild paid Slack channels.
 
-**On the reader:** economics, Corporate Finance (25 steps), Strategic Management (7), Treasury Management (12 — Treasury operations was split into three on 2026-08-01). Also on disk: BBA 1110 (UNZA), PDFs only. **Course codes and school names never appear anywhere a student sees** — see the memory index.
+**On the reader:** economics, Corporate Finance (26 steps), Strategic Management (8), Treasury Management (**60** — one concept, one checkpoint, one step, since the 2026-08-09 split; the other courses owe the same conversion, `step-skill/DEBT.md` D-18). Also on disk: BBA 1110 (UNZA), PDFs only. **Course codes and school names never appear anywhere a student sees** — see the memory index.
 **Slack:** free community only; **workspace situation unresolved** (three workspaces; the public invite link points to `bookless10`, whose Pro trial expired, while SM PDFs went to `booklesss20` — see the top of `Operations/workspace.md`). Confirm the target workspace with the owner before posting anything or writing the invite link anywhere. | Website: `booklesss.framer.ai`
 **Founding rate deadline:** April 18, 2026 — **this date has passed.** Do not reference it in new marketing content; ask the owner what offer replaces it.
 
@@ -160,6 +160,14 @@ content, socials, web:
   Consolidated 2026-08-01 from the former `lesson-skill` + `step-skill` +
   `step-feedback` — the writing rules and the debt they create are one state, and
   splitting them meant whichever skill got invoked read half of it.
+
+  **A step is one small containable concept with ONE checkpoint** (**S-1**,
+  rewritten 2026-08-09 on the owner's call: *"only one checkpoint per step …
+  the read to that completion of the step is not so far away"*). One section,
+  one check, roughly five minutes. A second checkpoint means a second step, and
+  the run of them gets a folder — the sidebar tree now nests four or five deep
+  (**S-9**), where it used to stop at two. `rank.mjs` scores out of 6 with S-1
+  first, so an unconverted course fails every step by design.
 
   **Before the first line of any step: read the material the course came with**
   (**C-2** — slides, transcript, past papers, marking key, assignment brief),

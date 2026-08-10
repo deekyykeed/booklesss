@@ -44,13 +44,19 @@
  * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'Deciding how much cash to hold'.
  * The old name was sentence case and did not name the topic the way the paper does. The slug is
  * untouched, so no URL moved.
+ *
+ * 2026-08-09 — ONE-CHECKPOINT SPLIT (S-1 revised: one step = one concept = one
+ * checkpoint; owner: "only one checkpoint per step"). This file held
+ * 3 sections and now holds one: "The Cost of Idle Cash". The other
+ * section(s) moved to baumol-model.mjs, miller-orr-model.mjs beside this file.
+ * The slug is unchanged, so the URL that was linked to still opens here.
  */
 
 export default {
   slug: "cash-management",
-  label: "Optimal Cash Balances",
-  title: "Optimal Cash Balances",
-  kicker: "Working Capital",
+  label: "The Cost of Idle Cash",
+  title: "The Cost of Idle Cash",
+  kicker: "Optimal Cash Balances",
 
   sections: [
     /* ---------------------------------------------------------------- */
@@ -60,7 +66,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Two million kwacha sitting in a non-interest current account for a year, while a 91-day treasury bill pays around 4%, costs you about **ZMW 80,000**. Nobody ever signs off on that decision, which is exactly why it keeps being made.",
+          text: "Two million kwacha sitting in a non-interest current account for a year, while a 91-day [[treasury bill|A short-dated IOU from the government, sold at a discount and repaid at face value. The 91-day kwacha bill's rate is the benchmark for what parked money should be earning.]] pays around 4%, costs you about **ZMW 80,000**. Nobody ever signs off on that decision, which is exactly why it keeps being made.",
         },
         {
           type: "p",
@@ -73,7 +79,7 @@ export default {
         {
           type: "callout",
           kind: "key",
-          text: "Hold cash only until the marginal value of liquidity equals the interest lost. **Everything in this step is machinery for finding that point.**",
+          text: "Hold cash only until the marginal value of liquidity equals the interest lost. **The two steps after this one are the machinery for finding that point.**",
         },
       ],
       check: {
@@ -88,151 +94,6 @@ export default {
         answer: 0,
         explain:
           "Safety is worth holding cash for, up to the point where the extra liquidity stops being used. The ZMW 2 million above any observed need buys no additional safety and forgoes interest every day, which is precisely the opportunity cost cash management exists to cut.",
-      },
-    },
-
-    /* ---------------------------------------------------------------- */
-    {
-      id: "baumol",
-      heading: "The Baumol model",
-      blocks: [
-        {
-          type: "p",
-          text: "Every trip to the deposit account costs ZMW 20 in fees. Every kwacha left in the current account costs 10% a year in interest you did not earn. **Withdraw too often and the fees eat you, withdraw too rarely and the idle cash does.**",
-        },
-        {
-          type: "p",
-          text: "Baumol's model answers that, provided you know what your cash needs will be. It treats cash the way a warehouse treats stock, balancing a fixed cost per trip against the cost of holding what you fetched.",
-        },
-        {
-          type: "p",
-          text: "Its assumptions are its boundaries, so check them before you use it. [[Disbursements|Money going out: the payments a business makes, as opposed to the receipts coming in. Baumol assumes they arrive at a steady rate, which is the assumption most likely to be untrue in a real month.]] have to be known and spread evenly, the [opportunity cost](https://corporatefinanceinstitute.com/resources/accounting/liquidity/) constant, and the transaction fee the same whatever amount you move. **A business with a lumpy, unpredictable month has already broken the first one.**",
-        },
-        {
-          type: "formula",
-          text: "C = √(2AF ÷ O)",
-          where: [
-            "C = optimum cash balance to transfer each time",
-            "A = annual cash disbursements",
-            "F = fixed cost per transaction",
-            "O = opportunity cost, meaning the interest rate",
-          ],
-        },
-        {
-          type: "p",
-          text: "The lecture's ABC Ltd disburses ZMW 300,000 a year, the bank pays 10% on money left on deposit, and each withdrawal costs ZMW 20. C = √(2 × 20 × 300,000 ÷ 0.10) = √120,000,000 ≈ ZMW 11,000.",
-        },
-        {
-          type: "table",
-          columns: [{ label: "Result" }, { label: "Working" }, { label: "Value", align: "right" }],
-          rows: [
-            ["Optimum transfer", "√(2 × 20 × 300,000 ÷ 0.10)", "11,000"],
-            ["Transactions per year", "300,000 ÷ 11,000", "27"],
-            ["Average balance held", "11,000 ÷ 2", "5,500"],
-            ["Annual transaction cost", "27 × 20", "540"],
-            ["Annual opportunity cost", "5,500 × 10%", "550"],
-          ],
-          total: ["Total annual cost", "540 + 550", "1,090"],
-          note: "Amounts in ZMW.",
-        },
-        {
-          type: "p",
-          text: "**At the optimum the two costs almost meet:** ZMW 540 of fees against ZMW 550 of interest given up. That near-equality is the signature of the model working, and it is worth remembering as a check on your own arithmetic. Any larger balance is holding too much idle cash, and any smaller one is paying for too many withdrawals.",
-        },
-        {
-          type: "callout",
-          kind: "example",
-          text: "Now do one. A Lusaka wholesaler pays out ZMW 640,000 a year in a steady stream, each transfer out of the deposit account costs ZMW 25, and money left on deposit earns 8%. Find the optimum transfer, then test it the way the paragraph above does: work out the year's fees and the year's forgone interest separately, and see whether they meet.",
-        },
-      ],
-      check: {
-        question:
-          "What is that wholesaler's optimum transfer: ZMW 640,000 disbursed a year, ZMW 25 per transfer, 8% on deposit?",
-        options: [
-          "ZMW 20,000",
-          "ZMW 14,142",
-          "ZMW 10,000",
-          "ZMW 2,000",
-        ],
-        answer: 0,
-        explain:
-          "C = √(2 × 25 × 640,000 ÷ 0.08) = √400,000,000 = ZMW 20,000. Check it: 640,000 ÷ 20,000 = 32 transfers at ZMW 25 = ZMW 800 of fees, against an average balance of 10,000 × 8% = ZMW 800 of interest forgone. They meet exactly, which is the signature. ZMW 14,142 drops the 2 from the numerator; ZMW 10,000 is the average balance, which is half the transfer rather than the transfer; ZMW 2,000 divides by 8 instead of 0.08. Note also what the formula's shape tells you: F sits inside the root, so if the bank doubled its fee to ZMW 50 the optimum would rise by about 41%, not double.",
-      },
-    },
-
-    /* ---------------------------------------------------------------- */
-    {
-      id: "miller-orr",
-      heading: "The Miller-Orr model",
-      blocks: [
-        {
-          type: "p",
-          text: "Baumol needs to know what your cash flows will be. **You do not know what your cash flows will be.**",
-        },
-        {
-          type: "p",
-          text: "Miller and Orr built for that. Their model is [[stochastic|Built on the assumption that the thing being modelled moves randomly rather than predictably. It does not try to say what tomorrow's balance will be, only how far it is likely to wander.]], so it gives you [three control levels rather than one right balance](https://corporatefinanceinstitute.com/resources/career-map/sell-side/capital-markets/miller-orr-model/).",
-        },
-        {
-          type: "ul",
-          items: [
-            "A lower limit, where you sell [[marketable securities|Short-term investments such as treasury bills that can be turned back into cash quickly and at a known price. They are where a treasury parks money it may need at short notice.]] to raise cash.",
-            "An upper limit, where you buy securities to shed it.",
-            "A return point, which is where you come back to after either move.",
-          ],
-        },
-        {
-          type: "formula",
-          text: "Spread Z = 3 × ∛( 3F𝜎² ÷ 4i )",
-          where: [
-            "F = transaction cost of buying or selling securities",
-            "𝜎² = variance of daily cash flows",
-            "i = daily interest rate",
-            "Upper limit = lower limit + Z;  return point = lower limit + Z ÷ 3",
-          ],
-        },
-        {
-          type: "p",
-          text: "The lecture's figures: a lower limit of ZMW 1,000 set by management, a daily interest rate of 0.025%, and ZMW 20 per securities transaction. Daily cash flows have a standard deviation of ZMW 500, so a variance of 250,000.",
-        },
-        {
-          type: "table",
-          columns: [{ label: "Control level" }, { label: "Working" }, { label: "ZMW", align: "right" }],
-          rows: [
-            ["Lower limit", "set by management", "1,000"],
-            ["Inside the root", "3 × 20 × 250,000 ÷ (4 × 0.00025)", "15,000,000,000"],
-            ["Spread Z", "3 × ∛15,000,000,000 = 3 × 2,466", "7,400"],
-            ["Upper limit", "1,000 + 7,400", "8,400"],
-            ["Return point", "1,000 + 7,400 ÷ 3", "3,467"],
-          ],
-        },
-        {
-          type: "p",
-          text: "Read the three numbers as instructions. Fall to ZMW 1,000 and sell securities until the balance is back to ZMW 3,467. Rise to ZMW 8,400 and buy securities down to the same 3,467. **Between the limits, do nothing,** and that is the real insight: every correction costs ZMW 20, so constant tidying is itself one of the costs the model is minimising.",
-        },
-        {
-          type: "callout",
-          kind: "key",
-          text: "Baumol assumes certainty and Miller-Orr does not. **Real cash flows wander, so Miller-Orr is the one to reach for whenever the flows in front of you are volatile.**",
-        },
-        {
-          type: "callout",
-          kind: "example",
-          text: "Set the levels for a different treasury before you read on. Management fixes the lower limit at ZMW 2,000, each securities transaction costs ZMW 30, daily cash flows have a standard deviation of ZMW 600, and the daily interest rate is 0.03%. Work the spread, then the upper limit, then the return point. Watch two things: the formula wants the variance, not the standard deviation, and every level is measured up from the lower limit rather than from zero.",
-        },
-      ],
-      check: {
-        question:
-          "In that treasury, the balance climbs to the upper limit. What is the return point it should be brought back to?",
-        options: [
-          "ZMW 5,000",
-          "ZMW 3,000",
-          "ZMW 6,500",
-          "ZMW 2,356",
-        ],
-        answer: 0,
-        explain:
-          "Inside the root: 3 × 30 × 360,000 ÷ (4 × 0.0003) = 27,000,000,000, whose cube root is 3,000, so the spread Z = 3 × 3,000 = ZMW 9,000. Upper limit = 2,000 + 9,000 = ZMW 11,000, and the return point = 2,000 + 9,000 ÷ 3 = **ZMW 5,000**, so touching 11,000 means buying ZMW 6,000 of securities. ZMW 3,000 is Z ÷ 3 with the lower limit never added back. ZMW 6,500 puts the return point halfway up the spread instead of a third of the way. That third is the whole asymmetry of the model: running out of cash costs more than parking it. ZMW 2,356 used the ZMW 600 standard deviation where the formula asks for the 360,000 variance.",
       },
     },
   ],

@@ -4,16 +4,22 @@
  *   node .claude/skills/step-skill/tools/rank.mjs "Schools/ZCAS/Treasury Management"
  *   node .claude/skills/step-skill/tools/rank.mjs Schools --steps
  *
- * Five rules vary per step and are the per-step score out of 5:
+ * Six rules vary per step and are the per-step score out of 6:
  *
+ *   S-1   exactly ONE section, so exactly one checkpoint (revised 2026-08-09;
+ *         owner: "only one checkpoint per step … a step is a small containable
+ *         concept". A multi-section step is a conversion job — see D-18)
  *   W-8   bold marks 1-3 things a section, and not terms being defined
- *   E-8   3 to 8 tap-to-define terms in the step
+ *   E-8   1 to 3 tap-to-define terms in the step (rescaled 2026-08-09 with
+ *         S-1 — it was 3 to 8 when a step held two to four sections)
  *   C-1   at least one ZMW / Zambian anchor in the step
  *   C-5   every section carries a figure, a date or a named entity
  *   C-7   every section carries at least one outbound source
  *
- * **A step below 5/5 is rewritten, not noted** (SKILL.md). Exit code is the
- * number of steps under 5, so this gates a script.
+ * **A step below 6/6 is rewritten, not noted** (SKILL.md). Exit code is the
+ * number of steps under 6, so this gates a script. On a course not yet
+ * converted to one-checkpoint steps, every step fails S-1 by design — that is
+ * the course's D-18 debt showing, not noise to silence.
  *
  * The course totals underneath add the rules that are uniform across a course
  * (banned words, em dashes, sentence length, checks, section counts). They are
@@ -71,14 +77,14 @@ const cells = (b) => [
 
 const steps = [];
 let banned = [], longSentences = 0, sentences = 0, sentWords = 0, emDash = 0;
-let noCheck = 0, noExplain = 0, badSectionCount = 0, sectionTotal = 0;
+let noCheck = 0, noExplain = 0, multiSection = 0, sectionTotal = 0;
 
 for (const file of files.sort()) {
   const step = (await import(pathToFileURL(file).href)).default;
   if (!step?.sections) continue;
   const secs = step.sections;
   sectionTotal += secs.length;
-  if (secs.length < 2 || secs.length > 4) badSectionCount++;
+  if (secs.length !== 1) multiSection++;
 
   let terms = 0, zm = false;
   const boldOver = [], bare = [], unsourced = [];
@@ -116,21 +122,22 @@ for (const file of files.sort()) {
   }
 
   const fails = [];
+  if (secs.length !== 1) fails.push(`S-1 ${secs.length} sections`);
   if (boldOver.length) fails.push(`W-8 ${boldOver.join(",")}`);
-  if (terms < 3 || terms > 8) fails.push(`E-8 ${terms}`);
+  if (terms < 1 || terms > 3) fails.push(`E-8 ${terms}`);
   if (!zm) fails.push("C-1");
   if (bare.length) fails.push(`C-5 ${bare.join(",")}`);
   if (unsourced.length) fails.push(`C-7 ${unsourced.join(",")}`);
-  steps.push({ slug: step.slug, score: 5 - fails.length, fails });
+  steps.push({ slug: step.slug, score: 6 - fails.length, fails });
 }
 
 steps.sort((a, b) => a.score - b.score || a.slug.localeCompare(b.slug));
-const under = steps.filter((s) => s.score < 5);
+const under = steps.filter((s) => s.score < 6);
 
 if (SHOW_STEPS || under.length) {
-  console.log("\nPER-STEP  (out of 5: W-8 · E-8 · C-1 · C-5 · C-7)\n");
+  console.log("\nPER-STEP  (out of 6: S-1 · W-8 · E-8 · C-1 · C-5 · C-7)\n");
   for (const s of SHOW_STEPS ? steps : under) {
-    console.log(`  ${s.score}/5  ${s.slug}${s.fails.length ? "   " + s.fails.join(" · ") : ""}`);
+    console.log(`  ${s.score}/6  ${s.slug}${s.fails.length ? "   " + s.fails.join(" · ") : ""}`);
   }
 }
 
@@ -140,10 +147,10 @@ console.log(`  W-1  banned words        ${banned.length}${banned.length ? "  " +
 console.log(`  W-11 em dashes           ${emDash}`);
 console.log(`  W-12 sentences >35 words ${longSentences} · average ${(sentWords / Math.max(sentences, 1)).toFixed(1)}`);
 console.log(`  S-4  sections w/o check  ${noCheck} · checks w/o explain ${noExplain}`);
-console.log(`  S-8  steps outside 2-4   ${badSectionCount}`);
+console.log(`  S-1  steps not 1 section ${multiSection}`);
 
-console.log(`\n--- ${steps.length - under.length} of ${steps.length} steps at 5/5`);
-if (under.length) console.log(`    ${under.length} below. A step below 5/5 is REWRITTEN, not noted.`);
+console.log(`\n--- ${steps.length - under.length} of ${steps.length} steps at 6/6`);
+if (under.length) console.log(`    ${under.length} below. A step below 6/6 is REWRITTEN, not noted.`);
 console.log("    This scores what a script can judge. It cannot see a hook, a");
 console.log("    confusing sentence, or an opening that faces the wrong way.");
 process.exit(Math.min(under.length, 255));

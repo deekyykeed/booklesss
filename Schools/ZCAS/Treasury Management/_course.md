@@ -1,6 +1,6 @@
 # BBF4302 Treasury Management — Course Status
 
-**Last updated:** 2026-08-07
+**Last updated:** 2026-08-09
 
 ---
 
@@ -20,13 +20,30 @@ post PDFs without checking with the owner.
 | Read by the app | `platform/src/lib/course-data.json` (generated, committed) |
 | Publish | `node --env-file=.env.local platform/scripts/seed-course.mjs <course.mjs>` then `npm run gen:course` |
 | House style | `.claude/skills/step-skill/RULES.md` — read before writing a step |
-| URL | `/treasury-management/<lesson>/<step>` |
+| URL | `/treasury-management/<lesson>/<group>/<step>` — up to five levels deep since 2026-08-09 |
 
-**Reader step status — the course is complete: 22 steps, 60 sections, every
-section with a comprehension check.** A course-intro step (`start-here-treasury`,
-rule S-11) was added above lesson 1 on 2026-08-07. The section count is unchanged from the
-12-step version, which is the proof that the split moved the seams and cut
-nothing.
+**Reader step status — the course is complete: 60 steps, one section and one
+checkpoint each.** A course-intro step (`start-here-treasury`, rule S-11) was
+added above lesson 1 on 2026-08-07 and is three steps now.
+
+> **2026-08-09 — THE ONE-CHECKPOINT SPLIT.** The owner: *"only one checkpoint
+> per step … from now on a step is a small containable concept a user needs to
+> understand."* Every section became its own step: **22 steps of 60 sections are
+> now 60 steps of one each**, which is the same 60 sections and the same words.
+> Rule **S-1** was rewritten around it, `rank.mjs` scores out of 6 with S-1
+> first, and the other three courses owe **D-18**.
+>
+> Each old multi-section step's name survives as the **folder** over its parts,
+> so the tree runs to five levels in Working capital and Risk (course → lesson →
+> group → family → step) under the widened **S-9**. All 22 original slugs stayed
+> on the first part of their split, so `step:` links still resolve — one
+> exception, `credit-ratings`' link to the swaps concept, retargeted in the same
+> edit.
+>
+> **Cost, paid rather than asked about:** every step URL moved except the three
+> in Getting Started, so old deep links 404; and checkpoint progress is keyed by
+> step, so ticks on a section that moved out reset. **60 of 60 at 6/6**, every
+> scan at zero, verified against the served HTML rather than the source.
 
 > **2026-08-02 — the whole course was split and re-passed.** Every step is now
 > two to four sections (rule **S-8**): a reader who finishes three short steps

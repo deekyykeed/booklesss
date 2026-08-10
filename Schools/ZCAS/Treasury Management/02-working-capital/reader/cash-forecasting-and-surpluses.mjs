@@ -26,13 +26,19 @@
  * The old name was sentence case and carried the hedged `, and how/what…` tail that 13 of this course's
  * 22 titles shared, and ended on a bare particle. The slug is
  * untouched, so no URL moved.
+ *
+ * 2026-08-09 — ONE-CHECKPOINT SPLIT (S-1 revised: one step = one concept = one
+ * checkpoint; owner: "only one checkpoint per step"). This file held
+ * 3 sections and now holds one: "Cash Flow Forecasting". The other
+ * section(s) moved to surpluses-and-overdrafts.mjs, cash-concentration.mjs beside this file.
+ * The slug is unchanged, so the URL that was linked to still opens here.
  */
 
 export default {
   slug: "cash-forecasting-and-surpluses",
-  label: "Cash Forecasting and Surpluses",
-  title: "Cash Forecasting and Surpluses",
-  kicker: "Working Capital",
+  label: "Cash Flow Forecasting",
+  title: "Cash Flow Forecasting",
+  kicker: "Forecasting and Surpluses",
 
   sections: [
     /* ---------------------------------------------------------------- */
@@ -81,137 +87,6 @@ export default {
         answer: 0,
         explain:
           "α controls how fast the forecast chases the data. At α = 0.9 the forecast is mostly last period's actual, and at α = 0.1 it barely moves. A forecast lagging a genuine trend needs more weight on the new evidence, and a longer moving average does the opposite: it smooths harder and lags more.",
-      },
-    },
-
-    /* ---------------------------------------------------------------- */
-    {
-      id: "surpluses-and-overdrafts",
-      heading: "Investing surpluses, borrowing shortfalls",
-      blocks: [
-        {
-          type: "p",
-          text: "Four questions decide where a surplus goes, and the first one settles most of it: **how long can you genuinely not touch this money?** Then how much of it is there, what will it earn, and what does getting it back early cost.",
-        },
-        {
-          type: "p",
-          text: "Surpluses come from seasonality, from projects landing unevenly, from a recovery nobody expected. What they have in common is that they are temporary, which is why the [money market](https://corporatefinanceinstitute.com/resources/economics/money-market/) rather than anything longer is where they belong.",
-        },
-        {
-          type: "table",
-          columns: [{ label: "Instrument" }, { label: "What it is" }, { label: "Key feature" }],
-          rows: [
-            [
-              "Treasury bills",
-              "Government short-term debt, issued at a discount to par",
-              "Low risk, good liquidity, fixed maturity",
-            ],
-            [
-              "Call deposits",
-              "Interest-paying accounts with a notice period",
-              "Liquidity plus interest, with access on notice",
-            ],
-            [
-              "Term deposits",
-              "Fixed amount for a fixed period, 30 to 120 days, tiered rates",
-              "Better rates for longer commitment, and no early access",
-            ],
-            [
-              "Certificates of deposit",
-              "Fixed-rate bank instruments",
-              "Tradeable on the discount market, so reasonable liquidity",
-            ],
-            [
-              "Money market accounts",
-              "Variable-rate money market investment",
-              "Flexible, market-linked, instant access",
-            ],
-          ],
-        },
-        {
-          type: "formula",
-          text: "T-bill yield = (100 − price) ÷ price × 100    ·    annualised = yield × 365 ÷ days to maturity",
-          where: [
-            "Example: a 91-day bill bought at 99 yields (100 − 99) ÷ 99 = 1.01%, annualised 1.01% × 365 ÷ 91 = 4.05%",
-          ],
-        },
-        { type: "h2", text: "The other direction" },
-        {
-          type: "p",
-          text: "When the forecast shows a shortfall instead, the default tool is the [bank overdraft](https://corporatefinanceinstitute.com/resources/commercial-lending/revolving-credit-facility/): a short-term advance on the current account up to an agreed limit, charged on the balance you actually draw each day. It is flexible, lightly documented, and you pay only for what you use. It is also [[repayable on demand|The bank can ask for all of it back at any time, without having to give a reason. It is what makes an overdraft the wrong place for anything you cannot repay quickly.]], secured, and priced off base rates.",
-        },
-        {
-          type: "p",
-          text: "**The forecast is what keeps that overdraft cheap.** A shortfall you saw three weeks out is funded on terms you negotiated; the same shortfall discovered on the morning is funded on whatever terms are available.",
-        },
-        {
-          type: "callout",
-          kind: "example",
-          text: "Price the alternative before you read on. Your forecast frees ZMW 4 million for exactly 73 days. The bank's call deposit pays 6% a year, and a 73-day treasury bill is on offer at 98. Annualise the bill, then say which one you take. Two traps sit in one line of arithmetic. The yield is measured against what you pay, not against the 100 you get back. And a 73-day return is not an annual one until you scale it.",
-        },
-      ],
-      check: {
-        question:
-          "What does that 73-day treasury bill, bought at 98, yield on an annualised basis?",
-        options: [
-          "About 10.20%",
-          "About 10.00%",
-          "About 2.04%",
-          "About 0.41%",
-        ],
-        answer: 0,
-        explain:
-          "(100 − 98) ÷ 98 = 2.0408% over 73 days, and 365 ÷ 73 = 5, so the annualised yield is 2.0408% × 5 = **10.20%**. Take the bill: it pays better than the 6% call deposit, and because the cash is free for exactly the bill's life its illiquidity never binds, so the extra return costs nothing. 10.00% divides by 100 rather than by the 98 actually paid: that is the discount rate, not the yield, and it is the slip that survives because it is always close enough to look right. 2.04% is the 73-day return left unannualised, which would have you turn down 10.2% for 6%. 0.41% multiplies by 73 ÷ 365 instead of 365 ÷ 73.",
-      },
-    },
-
-    /* ---------------------------------------------------------------- */
-    {
-      id: "cash-concentration",
-      heading: "Cash concentration",
-      blocks: [
-        {
-          type: "p",
-          text: "Eleven accounts across four regions, each holding a bit, and not one of them holding enough to place at a rate worth having. **Scattered money is money you cannot use,** and it is also why nobody in the group can say what the real cash position is.",
-        },
-        {
-          type: "p",
-          text: "[Pooling](https://treasurytoday.com/cash-management/cash-pooling/) fixes it, and there are two families of technique. The difference between them is simply whether the cash physically moves.",
-        },
-        { type: "h2", text: "Physical sweeping" },
-        {
-          type: "p",
-          text: "A zero balance account arrangement sweeps every subsidiary account to nothing at the close of each day, into one concentration account, and funds them back when a subsidiary goes overdrawn. Constant balancing leaves a set minimum in each account and sweeps only what is above it. Trigger balances sweep only once an account crosses a threshold, which means fewer transfers and more cash sitting where it started in between.",
-        },
-        { type: "h2", text: "Notional pooling" },
-        {
-          type: "p",
-          text: "[Notional pooling](https://treasury-management.com/articles/cash-pooling/) moves nothing at all. The bank simply calculates interest across the combined credit and debit balances while each subsidiary keeps daily control of its own money. No [[intercompany loan|A loan from one company in a group to another, which is what a physical sweep creates whether anyone intends it or not. It has to be documented, priced and often taxed, which is administration a notional pool never generates.]] arises, no transfer fees are paid, and a global pool can even offset balances in different currencies without an FX transaction. **The catch is regulatory: notional pooling is not permitted everywhere, including in parts of Africa,** so it is a question for your bank before it is a question for your treasury.",
-        },
-        {
-          type: "table",
-          columns: [{ label: "Feature" }, { label: "Physical sweeping (ZBA)" }, { label: "Notional pooling" }],
-          rows: [
-            ["Funds physically moved", "Yes", "No"],
-            ["Intercompany loans", "May arise", "Not required"],
-            ["Transfer fees", "Per sweep", "None"],
-            ["Subsidiary control of cash", "Lost at day end", "Retained"],
-            ["Regulatory availability", "Generally available", "Restricted in some countries"],
-          ],
-        },
-      ],
-      check: {
-        question:
-          "A group wants pooled interest across its subsidiaries' accounts, but each subsidiary must keep day-to-day control of its own cash. Which technique fits?",
-        options: [
-          "Notional pooling, because interest is computed on the combined balances without moving the funds",
-          "Zero balance accounts, with every account swept to zero daily",
-          "Trigger balances, sweeping above a threshold",
-          "Constant balancing, sweeping above a fixed minimum",
-        ],
-        answer: 0,
-        explain:
-          "All three sweeping variants physically remove cash from subsidiary control at some point in the day. Notional pooling is the only technique that delivers pool-level interest while every account keeps its money, which is exactly the arrangement some regulators restrict.",
       },
     },
   ],

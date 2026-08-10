@@ -46,13 +46,19 @@
  * The old name was sentence case and carried the hedged `, and how/what…` tail that 13 of this course's
  * 22 titles shared, and opened on a question word. The slug is
  * untouched, so no URL moved.
+ *
+ * 2026-08-09 — ONE-CHECKPOINT SPLIT (S-1 revised: one step = one concept = one
+ * checkpoint; owner: "only one checkpoint per step"). This file held
+ * 3 sections and now holds one: "Loan Covenants". The other
+ * section(s) moved to pricing-a-bond.mjs, credit-ratings.mjs beside this file.
+ * The slug is unchanged, so the URL that was linked to still opens here.
  */
 
 export default {
   slug: "the-price-of-debt",
-  label: "The Price of Debt",
-  title: "The Price of Debt",
-  kicker: "Debt and Investment",
+  label: "Loan Covenants",
+  title: "Loan Covenants",
+  kicker: "The Price of Debt",
 
   sections: [
     /* ---------------------------------------------------------------- */
@@ -97,125 +103,6 @@ export default {
         answer: 0,
         explain:
           "Covenants are conditions of the loan, not just a payment schedule. Falling below the ratio is a breach in itself, which gives the lender the right to demand repayment or to charge for waiving it. Watching the headroom before it breaks is the discipline this tests.",
-      },
-    },
-
-    /* ---------------------------------------------------------------- */
-    {
-      id: "bond-pricing",
-      heading: "Pricing a bond",
-      blocks: [
-        {
-          type: "p",
-          text: "Nobody pays a million kwacha for 12% coupons when the market is paying 14%. **The only question is how much less they pay,** and the arithmetic answers it exactly.",
-        },
-        {
-          type: "p",
-          text: "A bond promises a [coupon](https://corporatefinanceinstitute.com/resources/fixed-income/coupon-rate/) each year and its face value at maturity, so its [price](https://corporatefinanceinstitute.com/resources/fixed-income/bond-pricing/) is those cash flows discounted at whatever similar bonds currently yield. The face value is also called [[par|Trading below par is a discount and above it a premium, and which one it is tells you instantly whether rates have risen or fallen since the bond was issued.]]. It is the number the price gets compared against: a market yield above the coupon puts the price below par, and a yield below the coupon puts it above.",
-        },
-        {
-          type: "formula",
-          text: "Price = C ÷ (1+r) + C ÷ (1+r)² + … + (C + FV) ÷ (1+r)ⁿ",
-          where: [
-            "C = annual coupon payment",
-            "r = market yield on similar bonds",
-            "FV = face value repaid at maturity",
-            "n = years to maturity",
-          ],
-        },
-        {
-          type: "p",
-          text: "The lecture's example, corrected: a 5-year bond, face value ZMW 1,000,000, coupon 12% so ZMW 120,000 a year, priced when similar bonds [yield](https://corporatefinanceinstitute.com/resources/fixed-income/yield-to-maturity-ytm/) 14%.",
-        },
-        {
-          type: "table",
-          columns: [{ label: "Year" }, { label: "Cash flow, ZMW", align: "right" }, { label: "Discounted at 14%, ZMW", align: "right" }],
-          rows: [
-            ["1", "120,000", "105,263"],
-            ["2", "120,000", "92,336"],
-            ["3", "120,000", "80,996"],
-            ["4", "120,000", "71,049"],
-            ["5", "1,120,000", "581,690"],
-          ],
-          total: ["Price", "", "931,334"],
-        },
-        {
-          type: "p",
-          text: "About ZMW 931,300, a discount to par, exactly as it has to be. An issuer [selling new debt](step:debt-management) at par into this market simply sets the coupon at 14% instead. **And the longer the maturity and the lower the coupon, the harder the price falls when yields rise,** which is the risk you are carrying the moment your treasury holds bonds rather than issues them.",
-        },
-        {
-          type: "callout",
-          kind: "example",
-          text: "Price one yourself before you read on. A 4-year bond, face value ZMW 500,000, coupon 10% so ZMW 50,000 a year, and similar bonds today yield 13%. Discount each year the way the table above does, and remember that year 4 carries the last coupon and the ZMW 500,000 together.",
-        },
-      ],
-      check: {
-        question:
-          "What is that bond worth today: ZMW 500,000 face value, 10% coupon, 4 years to run, similar bonds yielding 13%?",
-        options: [
-          "About ZMW 455,400",
-          "ZMW 500,000, its face value",
-          "About ZMW 148,700",
-          "About ZMW 506,700",
-        ],
-        answer: 0,
-        explain:
-          "The four coupons discount to 148,724 and the 500,000 repayment discounts to 306,659, so the price is 455,383. It sits below par because the market wants 13% and the bond only pays 10%, which is the inverse move of price and yield in one figure. ZMW 500,000 is what you get by discounting at the coupon rate instead of the market yield, and that slip is dangerous because it always returns par exactly and so looks right. 148,700 leaves out the repayment. 506,700 discounts the repayment but adds the coupons at face.",
-      },
-    },
-
-    /* ---------------------------------------------------------------- */
-    {
-      id: "credit-ratings",
-      heading: "Credit ratings",
-      blocks: [
-        {
-          type: "p",
-          text: "One [[notch|A single step on a rating scale, such as BBB down to BB+. Ratings move a notch at a time, which is why a company defends the notch above a threshold so hard: the next one down changes who is allowed to lend to it.]] down, from BBB to BB, and it is not the interest rate that hurts most. **It is that a large part of your lender pool is no longer permitted to own your paper at all.**",
-        },
-        {
-          type: "p",
-          text: "[Rating agencies](https://corporatefinanceinstitute.com/resources/fixed-income/credit-rating/), meaning Moody's, Standard & Poor's and Fitch, grade how likely a borrower is to default, and that grade prices its debt. The line that matters runs between investment grade and speculative.",
-        },
-        {
-          type: "table",
-          columns: [{ label: "S&P / Fitch" }, { label: "Moody's" }, { label: "Meaning" }],
-          rows: [
-            ["AAA", "Aaa", "Highest credit quality"],
-            ["AA", "Aa", "Very high quality"],
-            ["A", "A", "Upper medium grade"],
-            ["BBB", "Baa", "Medium grade, and the investment-grade floor"],
-            ["BB", "Ba", "Speculative"],
-            ["B", "B", "High default risk"],
-            ["CCC", "Caa", "In or near default"],
-          ],
-        },
-        {
-          type: "p",
-          text: "BBB and above is what most institutions are allowed to hold, so slipping below it shrinks the number of people who can lend to you rather than merely raising what they charge.",
-        },
-        {
-          type: "p",
-          text: "The same grading drives the gaps between borrowers. A AAA name and a BBB name face different [credit spreads](https://corporatefinanceinstitute.com/resources/commercial-lending/credit-risk/), and the gap is not the same size in the fixed market as in the floating one. **That difference between two differences is real money,** and it is what [an interest rate swap](step:interest-rate-hedging-instruments) exists to release.",
-        },
-        { type: "h2", text: "The ceiling you do not control" },
-        {
-          type: "p",
-          text: "The sovereign rating sits above every corporate one in the country. Zambia's government rating sets how the world reads every Zambian borrower, so a downgrade tightens credit and raises rates for the state and for companies alike, as the restructuring years showed in full. **Your cost of debt is built on a floor you do not set,** which is the strongest argument there is for locking funding while conditions are good rather than when you need it.",
-        },
-      ],
-      check: {
-        question:
-          "A company slips from BBB to BB. Beyond a higher interest rate, what changes in its access to debt?",
-        options: [
-          "It falls out of investment grade, so institutional investors restricted to BBB and above can no longer hold its paper, which shrinks its lender pool",
-          "Nothing else, because the rating only affects the rate",
-          "Its existing bonds are cancelled",
-          "It can no longer borrow from banks, only issue bonds",
-        ],
-        answer: 0,
-        explain:
-          "The BBB to BB line is regulatory and mandate-driven rather than reputational: pension funds and insurers are commonly barred from speculative-grade paper. Crossing it does not merely reprice the debt, it removes buyers, which is why issuers defend the boundary so hard.",
       },
     },
   ],

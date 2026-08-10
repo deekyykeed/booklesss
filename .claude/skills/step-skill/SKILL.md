@@ -54,7 +54,7 @@ In practice:
 - **No step is written, edited, split, re-seeded or published without this skill
   open.** Including a one-line fix, and including work that started somewhere
   else and only turned out to touch a step.
-- **RANK before you call anything done** (below). A step below 5/5 is rewritten,
+- **RANK before you call anything done** (below). A step below 6/6 is rewritten,
   not noted.
 - **Anything learned about steps lands here**, in `RULES.md`, `DEBT.md` or
   `LOG.md`, in the same session it is learned. A lesson recorded only in a
@@ -499,7 +499,7 @@ channel, wrong answers on the reader's section checks, and DMs. All of it counts
 
 # RANK — score a step against the rules
 
-## The gate: 5/5, or it gets rewritten
+## The gate: 6/6, or it gets rewritten
 
 *(owner, 2026-08-03 — "if steps fall below they need to be rewritten and made
 better")* Ranking is not a report. It is the check that runs before a step is
@@ -507,14 +507,19 @@ called done, and **a step that scores below the bar is rewritten in that same
 pass.** Not logged, not queued, not left for a session that has more time.
 
 ```bash
-node .claude/skills/step-skill/tools/rank.mjs "Schools/<School>/<Course>"          # what is below 5
+node .claude/skills/step-skill/tools/rank.mjs "Schools/<School>/<Course>"          # what is below 6
 node .claude/skills/step-skill/tools/rank.mjs "Schools/<School>/<Course>" --steps  # every step
 ```
 
-Five rules vary per step and are the score out of 5 — **W-8** bold budget,
-**E-8** tappable terms, **C-1** a Zambian anchor, **C-5** an anchor in every
-section, **C-7** a source under every claim. Exit code is the number of steps
-under 5, so it gates a script.
+Six rules vary per step and are the score out of 6 — **S-1** one section and
+one checkpoint *(added to the score 2026-08-09, the owner's "add it to the
+scoring criteria so i can get other courses like this later")*, **W-8** bold
+budget, **E-8** tappable terms, **C-1** a Zambian anchor, **C-5** an anchor in
+every section, **C-7** a source under every claim. Exit code is the number of
+steps under 6, so it gates a script. A course not yet converted to
+one-checkpoint steps fails S-1 on every step by design — that is its **D-18**
+debt showing, and the pay-down is a course-level conversion pass (TM's, on
+2026-08-09, is the reference), not a per-step patch.
 
 **Then rank the course** against all of `RULES.md`, rule by rule with evidence,
 using the table below. Report it as a percentage: **passed ÷ applicable**, where

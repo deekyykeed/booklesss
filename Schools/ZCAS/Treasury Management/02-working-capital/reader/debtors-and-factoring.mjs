@@ -45,13 +45,19 @@
  * 2026-08-08 — RETITLED under rule S-12 (debt D-17). Was 'Getting the cash in'.
  * The old name was sentence case and ended on a bare particle. The slug is
  * untouched, so no URL moved.
+ *
+ * 2026-08-09 — ONE-CHECKPOINT SPLIT (S-1 revised: one step = one concept = one
+ * checkpoint; owner: "only one checkpoint per step"). This file held
+ * 2 sections and now holds one: "Debtors and Cash Discounts". The other
+ * section(s) moved to factoring.mjs beside this file.
+ * The slug is unchanged, so the URL that was linked to still opens here.
  */
 
 export default {
   slug: "debtors-and-factoring",
-  label: "Debtors and Factoring",
-  title: "Debtors and Factoring",
-  kicker: "Working Capital",
+  label: "Debtors and Cash Discounts",
+  title: "Debtors and Cash Discounts",
+  kicker: "Debtors and Factoring",
 
   sections: [
     /* ---------------------------------------------------------------- */
@@ -69,7 +75,7 @@ export default {
         },
         {
           type: "p",
-          text: "Selling on credit means waiting to be paid, and waiting costs money. This section is about the side of that where you set the terms: how much credit to give, to whom, and what to offer for early payment. The aim is the terms that make the most profit, **not the fewest days outstanding.** A business with no bad debts is usually a business turning away good customers.",
+          text: "Selling on credit means waiting to be paid, and waiting costs money. This step is about the side of that where you set the terms: how much credit to give, to whom, and what to offer for early payment. The aim is the terms that make the most profit, **not the fewest days outstanding.** A business with no bad debts is usually a business turning away good customers.",
         },
         { type: "h2", text: "Knowing who deserves credit" },
         {
@@ -117,72 +123,6 @@ export default {
         answer: 0,
         explain:
           "[1.5 ÷ 98.5] × [365 ÷ 45] = 0.015228 × 8.111 = **12.35%** a year. And notice where that leaves you: 12.35% is CHEAPER than the 20% overdraft, so here you keep the 45 days and let the discount go. That is the opposite of the 2/10 net 30 answer above. The formula decides it, not the reflex. About 12.17% divides by 100 instead of by the 98.5 you would actually pay, which flatters every discount slightly. About 9.26% uses the 60-day net period instead of the 45 days of credit being bought. About 1.52% never annualises, and would have you turn down free money.",
-      },
-    },
-
-    /* ---------------------------------------------------------------- */
-    {
-      id: "factoring",
-      heading: "Factoring and invoice discounting",
-      blocks: [
-        {
-          type: "p",
-          text: "You can sell your invoices, or you can borrow against them without the customers ever knowing. **The difference between those two is not the money.** It is who deals with the customers afterwards.",
-        },
-        {
-          type: "p",
-          text: "A [factor](https://corporatefinanceinstitute.com/resources/commercial-lending/accounts-receivable-factoring/) takes over the sales ledger: it advances a percentage of invoice value straight away, typically 80 to 85%, and pays the rest less its fees once the customer settles. A full-service factor also assesses the customers' credit and chases the overdue ones. Under [[non-recourse|The factor takes the loss if the customer never pays. Under recourse factoring that loss comes back to you, which is why recourse is cheaper and why the word is worth finding in the contract.]] factoring the factor carries the bad-debt risk; with recourse, you still do.",
-        },
-        {
-          type: "p",
-          text: "The lecture prices it. Mutengo Plc invoices ZMW 300,000 a month on an average 2.5-month credit period. The factor charges a 2.5% service fee, advances 85% of invoices at 13% a year, and saves Mutengo ZMW 95,000 a year in administration. The alternative is an overdraft at 12.5% on the same funding.",
-        },
-        {
-          type: "table",
-          columns: [{ label: "Item" }, { label: "ZMW", align: "right" }],
-          rows: [
-            ["Annual sales (300,000 × 12)", "3,600,000"],
-            ["Service fee, 2.5% × 3,600,000", "90,000"],
-            ["Interest, (2.5 ÷ 12) × 3,600,000 × 85% × 13%", "82,875"],
-            ["Total factoring cost", "172,875"],
-            ["Less: administration savings", "(95,000)"],
-          ],
-          subtotals: [3],
-          total: ["Net cost of factoring", "77,875"],
-          note: "The overdraft alternative, 12.5% on the ZMW 637,500 advanced, would cost ZMW 79,688. So factoring saves roughly ZMW 1,800 a year and removes the sales ledger workload entirely.",
-        },
-        {
-          type: "p",
-          text: "**Read that ZMW 1,800 carefully, because it is almost nothing.** On the money alone the two options are a coin toss, and what actually decides it is the administration Mutengo stops doing. Invoice discounting gives the same finance without handing over the ledger: your customers never know a third party is involved, it costs less, and the relationship stays entirely yours.",
-        },
-        {
-          type: "table",
-          columns: [{ label: "" }, { label: "Factoring" }, { label: "Invoice discounting" }],
-          rows: [
-            ["Sales ledger", "Factor manages it", "Company manages it"],
-            ["Customer awareness", "Customers know", "Customers do not know"],
-            ["Cost", "Higher", "Lower"],
-            ["Best for", "Full outsourcing", "Finance only"],
-            ["Credit risk (non-recourse)", "Factor absorbs", "Company retains"],
-          ],
-        },
-        {
-          type: "p",
-          text: "So the choice is really about what you are buying: **finance on its own, or finance plus somebody else running the credit function.** If the ledger is already well run and the customers are relationships worth keeping, factoring is the higher price for a service you have.",
-        },
-      ],
-      check: {
-        question:
-          "A company wants cash against its invoices but insists its customers must never deal with, or know about, a third party. Which product fits?",
-        options: [
-          "Invoice discounting: finance against the ledger while the company keeps managing it, invisibly to customers",
-          "Non-recourse factoring, because the factor absorbs risk invisibly",
-          "Recourse factoring, because recourse means customers are not told",
-          "An overdraft secured on inventory",
-        ],
-        answer: 0,
-        explain:
-          "Customer visibility is the dividing line. A factor takes over the ledger and deals with customers directly, while invoice discounting leaves collection with the company so customers see nothing. Recourse describes who bears the bad-debt risk, not who the customers deal with.",
       },
     },
   ],

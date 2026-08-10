@@ -19,6 +19,17 @@ Move on once the structure is agreed.
 
 A Booklesss course is **Course → Lessons → Steps**.
 
+> **2026-08-09 — the step's grain changed (S-1 revised).** A reader step is now
+> **one small containable concept with exactly one checkpoint**: one section,
+> one check, a roughly five-minute read. What used to be planned as one
+> three-section step is now a named folder holding three steps, so plan slugs
+> and folders at that grain: expect **40–70 steps per course** rather than
+> 12–25, group every run of sibling steps under a folder (**S-9** now allows
+> four or five levels of nesting), and read the old step-count instincts below
+> as *folder* counts. Treasury Management converted the same day — 22 steps of
+> 60 sections became 60 steps. The lesson doctrine is untouched: a lesson is
+> still one mental frame; there are simply more, smaller steps inside it.
+
 - A **step** is one PDF (one thing a student reads, one Slack post).
 - A **lesson** is a grouping of **conceptually similar steps** — steps that share
   **one mental frame** — and it maps to **exactly one Slack channel**.
