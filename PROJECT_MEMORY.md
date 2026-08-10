@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-09 (session 58)
+**Last updated:** 2026-08-10 (session 59)
 
 ---
 
@@ -91,6 +91,44 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 59 (2026-08-10, the step's grain changed twice: one concept per
+checkpoint, then the exam and the product both left the page. Numbered 59
+because the parallel session had not claimed it; that session pushed five
+commits into this tree while this one ran. Linear unreachable again — it needs
+a one-time OAuth authorization and this session is non-interactive.)**
+
+- [ ] ⚠️ **THREE COURSES NOW OWE TWO CONVERSIONS EACH, and they are one job.**
+      **D-18** (one checkpoint per step) and **D-19** (no exam framing, no
+      Booklesss mechanics) both land in the same per-step edit, so pay them
+      together per course rather than sweeping the project twice.
+      | Course | steps | D-18 | D-19 |
+      |---|---|---|---|
+      | Corporate Finance | 26 | not converted | 10 exam + 13 mechanics, 2 `exam` callouts |
+      | Strategic Management | 8 | not converted | 13 exam + 10 mechanics, 2 `exam` callouts |
+      | economics | 30 | not converted | unscanned — no `.mjs` source at all |
+      SM is the cheapest and densest, the same way it was for D-10 (em dashes).
+      **economics cannot be paid at all until it is authored as `.mjs`** — it
+      lives only in `course-data.json`, which is generated.
+- [ ] **Delete the `exam` callout kind in the change that clears the LAST
+      course.** `CALLOUT_KINDS` in `platform/scripts/seed-course.mjs` and
+      `CALLOUTS` in `reader/LessonView.tsx` both still draw it, deliberately:
+      removing it now would refuse to seed CF and SM, which carry four exam
+      callouts between them. It is withdrawn in `RULES.md` (**E-10**) already,
+      so the code is the only thing left.
+- [ ] **Treasury Management's 60 first screens have NOT been read cold**
+      (**D-11**). It scores 60/60 at 8/8 with every scanner clean, which is
+      the exact condition under which the 2026-08-03 `2/10 net 30` opening
+      survived. The number says which step to open, never that a step is good.
+- [ ] **The course-level rank against all of `RULES.md` is stale.** Last run
+      was 40/42 (95%) on 2026-08-03, against the 21-step structure that no
+      longer exists, and three rules have been added since (S-13, C-12, and
+      S-1 rewritten). Re-run it on the 60-step course before quoting a course
+      figure to anyone.
+- [ ] **Checkpoint progress reset for anyone who had ticked a TM section that
+      moved out into its own step.** Progress is keyed by step and 57 of them
+      are new ids. Nothing to fix, but it is the honest answer if a student
+      says their dashboard emptied.
 
 **From session 58 (2026-08-09, the checkpoint-row day end to end — counts
 off, five icon families in one day ending on Lordicon everywhere, the security
@@ -1425,6 +1463,69 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-10 (session 59 — one concept per checkpoint, and the exam leaves the page)
+
+**Done:** The step's grain changed twice in one session, both on owner calls,
+and both are now scored.
+
+**One checkpoint per step** (*"from now on a step is a small containable
+concept a user needs to understand"*). Treasury Management's 22 steps of 60
+sections became **60 steps of one section each**, verbatim — the sections were
+already written to stand alone, so this was a structural edit rather than 60
+rewrites. Each old multi-section step's name survives as the folder over its
+parts, which spends the nesting the owner asked for: the tree runs **five
+levels** in Working capital and Risk where it stopped at two. **S-1** rewritten,
+**S-2/S-3/S-8/S-9/S-11** follow it down, **S-9**'s ceiling raised to four or
+five levels, **E-8**'s term budget rescaled 3–8 → 1–3 for the smaller grain.
+
+**The exam stops being the reason** (*"we are trying to help the student
+understand beyond just academic purposes"*) and **the product stops being the
+subject** (*"Booklesss mechanics are only supposed to stay with me"*).
+**C-12** and **S-13**, both scored. W-9's exam-framing exception withdrawn,
+E-10's `exam` callout kind withdrawn, S-11's "how to read it" row deleted. One
+whole step went with it: `one-step-one-sitting` (a step count and a description
+of the question button) is now `policy-and-execution`, teaching the
+board/treasury split its own check had always been testing.
+
+`rank.mjs` scores **out of 8** and scores **one step at a time** (*"scoring
+should be aggressively one step by step and not all at once"*): pointed at a
+`.mjs` it prints a verdict per rule with the offending sentence quoted, pointed
+at a folder it refuses a course grade and returns a queue. **60 of 60 at 8/8**,
+every scan at zero. Ledgers: **D-18**, **D-19**, and a `LOG.md` entry each.
+
+**What Worked:**
+- **Splitting structurally instead of rewriting.** A string-aware brace matcher
+  over each `.mjs` lifted the section objects out verbatim (skipping strings
+  and comments), so 60 files were generated in one pass with no prose touched.
+  The real work was then the **seams** — twelve sentences pointing at "the next
+  section" that went false the moment the section *was* the step — not the
+  content.
+- **A positive control turned a meaningless zero into a real one.** Sweeping
+  the 60 served pages for banned vocabulary first reported **60 of 60 dirty**:
+  the probe was reading markup, and `checkpoint`/`sidebar` are CSS class names.
+  Stripping tags gave 0 of 60 — which is worthless on its own, so the same
+  probe was run against Corporate Finance and Strategic Management, where it
+  finds the words on **15 of 34** pages. **Same lesson as the 2026-08-09
+  shadow-root A/B, from the other direction: prove the probe can see a positive
+  before believing a negative.**
+- **The queue output changed the work.** Printing `NEXT — open this one, alone`
+  with the exact command kept eleven fixes from becoming one sweep.
+
+**Dead Ends (do not retry):**
+- **Word-based regexes for C-12 and S-13.** A bare `/marks?/` fires on
+  Herstatt taking in **deutsche marks** and on **mark-to-market**; `this course
+  is about the Tuesday` is the student's own word for their module, not a
+  Booklesss feature. The first cut found 58 "defects" across three courses of
+  which about a third were real. Both narrowed to phrases within the hour —
+  **a scanner that cries wolf is one the next author stops reading.** Where a
+  hit is a genuine false positive and the rewrite is free, rewrite the sentence
+  ("before the deal can proceed") rather than weakening the pattern.
+- **Trusting `.next` to survive a rebuild on this tree.** The build died on
+  `EPERM: unlink … /og/treasury-management/…` with **no build process running
+  and no listener** — the OneDrive handle, exactly as this repo's wrap skill
+  describes. PowerShell `Remove-Item -Recurse -Force` cleared it and the
+  rebuild passed; `rm -rf` does not.
 
 ### Session 2026-08-09 (session 58 — the checkpoint row end to end, and the CSP that broke its own icons)
 
