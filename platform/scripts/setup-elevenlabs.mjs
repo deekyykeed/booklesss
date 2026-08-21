@@ -24,6 +24,33 @@
  *      happens.
  */
 
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+/* Read .env.local when the variable is not already in the environment.
+ *
+ * Next loads that file for the app, but a plain `node scripts/…` run does not,
+ * and the instructions in .env.local tell you to paste the key there and then
+ * run `npm run setup:voice` — so without this the documented path fails with
+ * "ELEVENLABS_API_KEY is not set" while the key is sitting right there in the
+ * file it told you to put it in. An explicit env var still wins, so a one-off
+ * `ELEVENLABS_API_KEY=sk_… npm run setup:voice` overrides the file. */
+function loadEnvLocal() {
+  const here = path.dirname(fileURLToPath(import.meta.url));
+  const file = path.join(here, "..", ".env.local");
+  if (!fs.existsSync(file)) return;
+  for (const line of fs.readFileSync(file, "utf8").split(/\r?\n/)) {
+    const m = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=(.*)$/);
+    if (!m) continue;
+    const [, k, v] = m;
+    if (process.env[k] === undefined || process.env[k] === "") {
+      process.env[k] = v.trim().replace(/^["']|["']$/g, "");
+    }
+  }
+}
+loadEnvLocal();
+
 const API = "https://api.elevenlabs.io/v1";
 const KEY = process.env.ELEVENLABS_API_KEY;
 

@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { gateStepLink } from "@/lib/account";
 import type { CourseMeta } from "@/lib/courses";
 import { labelFor, pathForId } from "@/lib/course";
+import { sessionForLesson } from "@/lib/session-nav";
 import { courseStreak, studyHistory, type StudyDay } from "@/lib/progress";
 import { coursePerformance } from "@/lib/performance";
 import { MynaIcon } from "@/components/icons/myna";
@@ -76,6 +77,17 @@ export function CourseCard({
   }, [hydrated, days, course.slug, done, course.totalCheckpoints]);
 
   const started = done > 0;
+
+  /* Where the card's one button goes, and what it calls the destination.
+   *
+   * The session covering `next` — the guided call — with the step page as a
+   * fallback that should never fire. Named here rather than inline because
+   * the href, the click gate and the aria-label must all agree on one
+   * destination; three call sites computing it separately is how a gate ends
+   * up guarding a different page than the link opens. */
+  const session = useMemo(() => sessionForLesson(next), [next]);
+  const openHref = session ? session.path : pathForId(next);
+  const openLabel = session ? session.title : labelFor(next);
 
   return (
     <div className="course-card squircle flex flex-col p-4 lg:p-5">
@@ -152,28 +164,43 @@ export function CourseCard({
         <p className="mt-2 line-clamp-2 text-[12.5px] leading-5 text-muted">{course.subtitle}</p>
 
         {/* The button IS the progress bar: full width, one word, its fill
-            showing how far through the course they are. Pressing it opens
-            the step they'd resume; the aria-label still names that step.
-            It is also the card's only link — the rest of the card is a
-            display, not a target. */}
+            showing how far through the course they are. It is also the card's
+            only link — the rest of the card is a display, not a target.
+
+            IT OPENS THE SESSION, NOT THE STEP (owner, 2026-08-21: "I want to
+            look into my more immersive experience"). The card is the front
+            door to a course from the home page, and pointing the front door at
+            a page of prose is what made the product the reading. It now opens
+            the call covering the step they would have resumed — same place in
+            the course, different way through it. The reading is still one tap
+            further in, from the course page and from the end of the call.
+
+            Falls back to the step page if a step somehow has no session, which
+            should be impossible — every step sits inside a group and every
+            group with steps is a session — but a card whose only button 404s
+            is not the place to find out. */}
         <ActionBar
-          href={pathForId(next)}
+          href={openHref}
           /* The free-step gate (lib/account): a fresh device's first Start is
-             free, a second course's Start on a signed-out device asks. */
-          onClick={(e) => gateStepLink(e, pathForId(next))}
+             free, a second course's Start on a signed-out device asks. The
+             gate follows the destination rather than the step, or the
+             immersive door would be the one way past it. */
+          onClick={(e) => gateStepLink(e, openHref)}
           progress={pct}
           /* The bar's fill in the card's own hue — the same colour its Spark
              draws, so curve and fill read as one course (owner, 2026-08-08). */
           progressTone={tone}
-          prefix={completed ? "Done ✓ · " : started ? "Resume · " : "Start · "}
+          prefix={completed ? "Done ✓ · " : started ? "Resume · " : "Listen · "}
           label={
             completed
-              ? `${course.title} is complete — read it again from the start`
-              : `${started ? "Resume" : "Start"} ${course.title} — ${hydrated ? labelFor(next) : ""}`
+              ? `${course.title} is complete — go through it again`
+              : `${started ? "Resume" : "Start"} ${course.title} — a guided session on ${
+                  hydrated ? openLabel : ""
+                }`
           }
           className="mt-3"
         >
-          {completed ? "Read it again" : hydrated ? labelFor(next) : " "}
+          {completed ? "Go again" : hydrated ? openLabel : " "}
         </ActionBar>
       </div>
 
