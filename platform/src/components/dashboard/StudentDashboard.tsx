@@ -11,7 +11,9 @@ import {
 import { gateStepLink } from "@/lib/account";
 import type { CourseMeta } from "@/lib/courses";
 import { useProgress } from "@/lib/progress";
+import { sessionsUnder } from "@/lib/session-nav";
 import { CompletionRing } from "@/components/reader/CompletionRing";
+import { MynaIcon } from "@/components/icons/myna";
 
 /* ------------------------------------------------------------------ *
  * The course home, read like the index page of a documentation site:
@@ -37,7 +39,16 @@ export function StudentDashboard({ course }: { course: CourseMeta }) {
   const units = useMemo(
     () =>
       course.displayUnitIds
-        .map((id) => ({ id, label: labelFor(id), lessons: lessonsUnder(id) }))
+        .map((id) => ({
+          id,
+          label: labelFor(id),
+          lessons: lessonsUnder(id),
+          /* The level between a unit and a step, which is where a session
+             lives — see sessionsUnder(). Verified to cover every step under
+             every unit exactly once, so listing by session drops nothing and
+             repeats nothing. */
+          sessions: sessionsUnder(id),
+        }))
         .filter((u) => u.lessons.length > 0),
     [course],
   );
@@ -96,8 +107,34 @@ export function StudentDashboard({ course }: { course: CourseMeta }) {
                   {done}/{u.lessons.length}
                 </span>
               </div>
-              <ul className="mt-2 flex flex-col gap-1">
-                {u.lessons.map((id) => (
+              {/* Each run of steps offers both doors — owner's call,
+                  2026-08-21: Listen and Read side by side, the student picks.
+                  The session name is suppressed when the session IS the unit,
+                  because the heading directly above already says it and a row
+                  that repeats the thing you just chose is noise (see the
+                  standing no-redundant-context rule). */}
+              {u.sessions.map((s) => (
+                <div key={s.id} className="mt-3 first:mt-2">
+                  <div className="flex items-center justify-between gap-3 py-1">
+                    {s.id === u.id ? (
+                      <span className="text-xs text-muted">
+                        {s.stepIds.length} {s.stepIds.length === 1 ? "step" : "steps"}
+                      </span>
+                    ) : (
+                      <span className="min-w-0 truncate text-[13px] font-medium text-ink-2">
+                        {s.title}
+                      </span>
+                    )}
+                    <Link
+                      href={s.path}
+                      className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-line-2 px-3 py-1 text-xs font-medium text-ink transition hover:bg-active"
+                    >
+                      <MynaIcon name="microphone" size={13} strokeWidth={1.7} />
+                      Listen · {s.minutes} min
+                    </Link>
+                  </div>
+                  <ul className="flex flex-col gap-1">
+                    {s.stepIds.map((id) => (
                   <li key={id}>
                     {/* Same gate as the sidebar and the step footer — this
                         list is the widest door to every step, and the free-
@@ -119,8 +156,10 @@ export function StudentDashboard({ course }: { course: CourseMeta }) {
                       </svg>
                     </Link>
                   </li>
-                ))}
-              </ul>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </section>
           );
         })}

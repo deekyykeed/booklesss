@@ -439,6 +439,88 @@ exist), **7 University of Greenwich links 404** (`link_status='dead-404'`), and
 which is why `stepsFor` in the onboarding flow skips the year question when a
 programme's `years` is empty.
 
+### Sessions — the voice call that replaced sitting and reading
+
+**A SESSION is a guided call, and it is the second door into every piece of the
+course** (owner, 2026-08-21: the reading was long, the sittings were longer, and
+*"when I'm reading I'm only reading important things that I need to read"* is a
+description of pinned points, not of a step page). A voice agent walks the
+student through a run of steps; the lines worth keeping **pin to the screen and
+stay there**; the student types their own notes beside them. There is **no
+transcript**, deliberately — a transcript is the reading, in pieces.
+
+**A session is ONE LESSON GROUP** — a folder in the sidebar, covering the steps
+directly inside it. Owner's pick, and it is the granularity that makes the
+arithmetic work: Treasury's 60 steps sit in 21 groups, ≈3 steps a call, ≈12
+minutes. A step alone (~5 min) spends more time connecting than teaching; a
+whole unit (~35 min) is the lecture this replaces. **48 sessions across the four
+courses**, verified to cover every step exactly once with no duplicates.
+
+**NOTHING WAS RE-AUTHORED TO GET THIS.** A session is derived from the tree the
+course already has, so all four courses had sessions the day it shipped and a
+new course gets them by being written normally. The two halves:
+
+| File | Job | Safe on the client? |
+|---|---|---|
+| `lib/session-nav.ts` | lists sessions — titles, paths, counts, minutes | **yes**, reads `course-nav.json` |
+| `lib/session.ts` | the BRIEF — beats, pins, system prompt | **no**, server-only guard like `lesson-content.ts` |
+
+**The pin has a FALLBACK LADDER and that is the load-bearing part.** Only a
+minority of sections carry an authored callout — Treasury has 16 across 60
+sections, economics **one** across 69 — so a pin sourced only from callouts
+would leave most beats with a silent screen, which is the whole feature. Order:
+**callout → formula → the section's first sentence**, which always exists. The
+agent may also pin its own line mid-call; the ladder is the floor, not the
+ceiling. `exam` callouts fold into `key` (E-10 withdrew the kind, and C-12
+forbids the agent the vocabulary anyway).
+
+**ONE AGENT SERVES ALL 48 SESSIONS.** The brief goes up as a per-call **client
+override** (`overrides.agent.prompt.prompt` + `firstMessage`), so adding a
+session is authoring content and never touching the ElevenLabs dashboard, and a
+rewritten step changes what the agent teaches on the next call. **Known
+trade-off, accepted:** an override travels through the browser, so a determined
+student could edit it. The agent holds no tools that touch data and no secrets —
+worst case is a student wasting their own call — and the alternative is 48
+dashboard objects that go stale silently.
+
+⚠️ **`platform_settings.client_overrides` MUST be enabled on the agent or every
+session silently gets the placeholder prompt.** It looks like the agent "not
+knowing the material", not like a settings problem. `setup-elevenlabs.mjs` sets
+it; check it first if that ever happens.
+
+**Setup, once** (`.env*` is gitignored, so this is the discoverable copy):
+
+```bash
+cd platform && ELEVENLABS_API_KEY=sk_... npm run setup:voice
+```
+
+It creates the `show_point` client tool and the agent, is safe to re-run
+(reuses by name), and prints the id. Then set **`ELEVENLABS_API_KEY`** and
+**`NEXT_PUBLIC_ELEVENLABS_AGENT_ID`** in `platform/.env.local` *and* in Vercel
+(Production + Preview). Optional: `ELEVENLABS_VOICE_ID`, `ELEVENLABS_LLM`
+(defaults `gpt-4o-mini` — cheap matters at ~12 min of continuous turns; raise it
+if the agent starts skipping beats or forgetting to pin, because **tool-calling
+reliability degrades before conversation quality does and pinning IS the
+feature**).
+
+⚠️ **The API key is server-only.** `/api/agent/token` exchanges it for a
+short-lived token; `NEXT_PUBLIC_` is inlined into the bundle at build, so a
+`NEXT_PUBLIC_ELEVENLABS_API_KEY` would publish the account's billing to every
+visitor. **The agent id is public and safe** — it names which agent, and the
+agent requires authorization.
+
+**With nothing configured the app still builds and every session page still
+renders**; "Start session" answers *"Voice sessions aren't switched on yet"* and
+offers the reading. `/api/agent/token` answers **200 with `ok:false` and a
+reason** — a failed mint is a product state, not an exception.
+
+**Listen and Read sit side by side** (owner's call): every group on a course
+page carries a Listen pill beside its steps. The call surface is **dark with the
+brand green orb**, where the rest of the app is cream — the one liberty taken
+with the design system, so a student can tell which door they walked through
+before reading a word. The orb is **CSS, not an asset and not three.js**
+(`components/study/Orb.tsx`): this is read on Zambian mobile data.
+
 ### Where a Student's Answers Live — and why there are three copies
 
 > **Read this section together with "Where a Student's Studying Lives" below.**

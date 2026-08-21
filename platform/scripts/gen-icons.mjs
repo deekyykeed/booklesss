@@ -161,6 +161,16 @@ const ICONS = [
      empty box. */
   "eye",
   "eye-off",
+  /* The call controls (components/study/SessionCall). A session is a voice
+     call, and its bottom cluster is the one place in the app where the three
+     buttons have to be legible at a glance mid-sentence: mute, end, notes.
+     `microphone-off` and NOT `microphone-slash` — MynaUI names it the first
+     way, same trap as `eye-off` above, and the generator throws on a name the
+     set doesn't carry rather than drawing nothing. */
+  "microphone",
+  "microphone-off",
+  "telephone-off",
+  "pencil",
 ];
 
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "components", "icons", "myna.tsx");
