@@ -445,8 +445,8 @@ export function HomeView({
     /* pb-28. The ask control is fixed to the bottom of the viewport (AskDock),
        so the last thing on the page — the privacy/terms line — would otherwise
        sit permanently underneath it with no way to scroll past. It went to
-       pb-40 for the wide card and its blurred shelf; both are gone, and a 62px
-       button plus its 14px gap needs 76px, so 112px clears it with room. */
+       pb-40 for the wide card and its blurred shelf; both are gone, and a 52px
+       button plus its 14px gap needs 66px, so 112px clears it with room. */
     <div className="mx-auto w-full max-w-[900px] px-4 pb-28 pt-28 md:px-6 md:pt-36">
       <h1 className="font-display text-[30px] font-medium leading-[1.2] tracking-[-0.02em] text-ink">
         {/* The name is no longer appended here. Each greeting decides where it

@@ -41,8 +41,9 @@ import type { AskControls, AskItem, AskPhase, NewAskItem } from "./ask-types";
  *
  * ⚠️ THE HOME SCREEN HAS NO TEXT BOX. Owner, 2026-08-22, on the third version
  * of this: "okay that's too much — switch to just a microphone button bottom
- * left. no more text box." The collapsed state is ONE 62px circle in the bottom
- * left corner and nothing else. It went card → card-under-a-progressive-blur →
+ * left. no more text box", then, on seeing it: "put the icon bottom right and
+ * size it smaller and comfortably". The collapsed state is ONE 52px circle in
+ * the bottom RIGHT corner and nothing else. It went card → card-under-a-progressive-blur →
  * this, and the middle step is the instructive one: the box was too quiet, so
  * it got a blurred shelf to sit on, and the answer to "too quiet" turned out to
  * be less on the screen rather than more behind it. A button that is the only
@@ -87,8 +88,15 @@ const AskEngine = dynamic(() => import("./ask-engine").then((m) => m.AskEngine),
   ssr: false,
 });
 
-/** The button's diameter, and the one number the collapsed geometry needs. */
-const FAB = 62;
+/** The button's diameter, and the one number the collapsed geometry needs.
+ *
+ *  52, down from 62 (owner, 2026-08-22: "size it smaller and comfortably").
+ *  Comfortably is the operative half — 44px is the smallest target a thumb hits
+ *  reliably, so this keeps 8px of margin over the floor rather than shrinking
+ *  until it looks tidy. The glyph came down with it, 26 to 22, which holds the
+ *  same 42% of the disc; scaling the circle alone would have left the mark
+ *  crowding its own edge. */
+const FAB = 52;
 
 export function AskDock() {
   const { identity, hydrated: idHydrated } = useIdentity();
@@ -353,7 +361,7 @@ export function AskDock() {
           tabIndex={open ? -1 : 0}
           aria-hidden={open || undefined}
         >
-          <AskMic size={26} />
+          <AskMic size={22} />
         </button>
 
         {/* ---- the panel above the composer ---- */}
@@ -508,10 +516,12 @@ export function AskDock() {
 
         /* THE MORPH. Four insets and a radius; nothing else moves.
 
-           Collapsed, the shell is a 62px square pinned to the BOTTOM LEFT — the
-           right inset is measured from the far edge, which is what lets one
-           transition drive both the position and the size. Open, it is the
-           viewport.
+           Collapsed, the shell is a 52px square pinned to the BOTTOM RIGHT —
+           the LEFT inset is the one measured from the far edge, which is what
+           lets a single transition drive both the position and the size. Swap
+           the corner by swapping which of the two carries the calc, never by
+           adding a transform: this element's whole animation is its insets, and
+           a transform on top would fight the morph. Open, it is the viewport.
 
            The squircle utility came off this element with the text box. It is
            corner-shape: superellipse(2.4), which is right for a card and wrong
@@ -531,8 +541,8 @@ export function AskDock() {
            disappears at the corners" was. */
         .ask-shell {
           position: absolute;
-          left: var(--ask-edge);
-          right: calc(100% - var(--ask-edge) - var(--ask-fab));
+          left: calc(100% - var(--ask-edge) - var(--ask-fab));
+          right: var(--ask-edge);
           top: calc(100% - var(--ask-fab) - var(--ask-gap));
           bottom: var(--ask-gap);
           display: flex;
@@ -544,21 +554,24 @@ export function AskDock() {
           border: 1px solid transparent;
           border-radius: 999px;
           /* White, and white while collapsed too — the black disc on top is
-             what you actually see at 62px. Holding one value here is what stops
+             what you actually see at 52px. Holding one value here is what stops
              the morph crossfading black to white through 480ms of grey.
              (No backticks anywhere in this block: it is inside a template
              literal, so one would end the string and the parse error lands
              pages away from the comment that caused it.) */
           background-color: #ffffff;
           pointer-events: auto;
-          /* Sized for a 62px button, not for the wide card this used to be: a
+          /* Sized for a 52px button, not for the wide card this used to be: a
              tight contact shadow so the disc sits ON the page, and one soft
              throw so it sits ABOVE it. The card's version needed a third, wider
              stop to separate it from the blur behind it; there is no blur now
-             and a 62px circle wearing a 50px shadow looks like it is falling. */
+             and a small circle wearing a 50px shadow looks like it is falling.
+             The throw came in 2px with the diameter — a shadow held at its old
+             size while the object shrinks reads as the object floating higher,
+             not as the same button made smaller. */
           box-shadow:
             0 2px 4px -1px rgb(0 0 0 / 0.16),
-            0 10px 22px -8px rgb(0 0 0 / 0.28);
+            0 8px 18px -8px rgb(0 0 0 / 0.26);
           transition:
             top var(--ask-morph) var(--ask-ease),
             bottom var(--ask-morph) var(--ask-ease),
@@ -615,7 +628,7 @@ export function AskDock() {
 
            ⚠️ pointer-events: none WHILE COLLAPSED, AND THAT IS NOT A DETAIL.
            This element is flex: 1 1 auto, so with the composer no longer
-           rendered in the collapsed state it now fills the ENTIRE 62px shell
+           rendered in the collapsed state it now fills the ENTIRE 52px shell
            and paints after the disc — and opacity: 0 does not stop an element
            receiving a tap. An invisible empty div swallowed every press on the
            button, which presents as a mic that simply does nothing rather than
