@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MynaIcon } from "@/components/icons/myna";
+import { AskMic } from "./ask-mic";
 import { askFirstMessage, askOpener, askPrompt, type AskContext } from "@/lib/ask";
 import { labelFor } from "@/lib/course";
 import { enrolledCourses } from "@/lib/courses";
@@ -19,23 +20,43 @@ import type { AskControls, AskItem, AskPhase, NewAskItem } from "./ask-types";
  * can just start a voice chat … once someone taps that box, I see some
  * animation that pushes them through into the chat experience."
  *
- * ONE ELEMENT, TWO STATES — the box IS the panel. It does not open a second
- * screen and it does not fade one thing out to fade another in: the same fixed
- * shell grows from a card at the bottom of the page to the whole viewport, and
- * the composer that sat inside the card is the same composer at the bottom of
- * the open panel. Nothing is remounted on the way, which is not only a nicer
- * animation — it is the only version that keeps the KEYBOARD. A student taps
- * the text, a real <textarea> takes focus inside their own tap, iOS opens the
- * keyboard, and the panel expands behind it. Mount the input as part of the
- * opening instead and the focus call lands outside the gesture, which Safari
+ * ONE ELEMENT, TWO STATES — the button IS the panel. It does not open a second
+ * screen: the same fixed shell grows from a circle in the corner to the whole
+ * viewport, and the black disc is a layer inside it that fades as the panel
+ * arrives.
+ *
+ * ⚠️ THE COMPOSER IS NOW MOUNTED ON OPEN, AND THAT USED TO BE A BUG. While the
+ * collapsed state was a text box, the textarea had to be mounted the whole time
+ * or iOS would not open the keyboard — a tap has to land focus on an element
+ * that already exists, inside the student's own gesture, and mounting the input
+ * as part of the opening put the focus call outside the gesture, which Safari
  * answers by doing nothing at all.
  *
- * TWO ROWS, NOT ONE (owner, 2026-08-22, with a reference: "set up the text box
- * to look like this"). The first version was a 58px pill with the placeholder
- * and the button on one line — "way too small". The card is ~112px now: the
- * question gets a line of its own at reading size, and the controls sit under
- * it. That shape is also what makes the morph read, because the collapsed state
- * is already a card rather than a bar.
+ * That constraint died with the text box. The collapsed control is a
+ * MICROPHONE: tapping it starts a call, and nothing wants the keyboard. The
+ * student who then decides to type taps a textarea that is already on screen in
+ * the open panel — a direct gesture on a mounted element, which is the case
+ * that always worked. Put a text field back in the collapsed state and the old
+ * rule comes back with it.
+ *
+ * ⚠️ THE HOME SCREEN HAS NO TEXT BOX. Owner, 2026-08-22, on the third version
+ * of this: "okay that's too much — switch to just a microphone button bottom
+ * left. no more text box." The collapsed state is ONE 62px circle in the bottom
+ * left corner and nothing else. It went card → card-under-a-progressive-blur →
+ * this, and the middle step is the instructive one: the box was too quiet, so
+ * it got a blurred shelf to sit on, and the answer to "too quiet" turned out to
+ * be less on the screen rather than more behind it. A button that is the only
+ * object on a surface never has to compete for notice.
+ *
+ * The veil went with the box (git history has it, ~120 lines of stacked
+ * backdrop-filter). It existed to make a wide card announce itself over
+ * scrolling content; a black circle on cream announces itself unaided, and five
+ * compositing layers on a phone were rent for a problem that no longer exists.
+ *
+ * TYPING SURVIVES, INSIDE THE PANEL. "No more text box" is about the home
+ * screen — the composer is still the bottom of the opened panel, because a
+ * typed turn is billed per message (~$0.003) where a call is billed per minute
+ * (~$0.08), and the cheap transport is worth keeping reachable.
  *
  * NO GREEN, ANYWHERE (owner, same day: "that green, or whatever colour you keep
  * adding, does not match the actual UI that I already have"). The first version
@@ -66,8 +87,8 @@ const AskEngine = dynamic(() => import("./ask-engine").then((m) => m.AskEngine),
   ssr: false,
 });
 
-/** The card's height, and the one number the collapsed geometry needs. */
-const DOCK_H = 112;
+/** The button's diameter, and the one number the collapsed geometry needs. */
+const FAB = 62;
 
 export function AskDock() {
   const { identity, hydrated: idHydrated } = useIdentity();
@@ -291,13 +312,13 @@ export function AskDock() {
   const inCall = engaged && mode === "voice" && (phase === "live" || phase === "connecting");
   const typed = draft.trim().length > 0;
 
-  /* Auto-grow, capped. The card already gives the text a line of its own, so
-     this only matters once a question runs past one. */
+  /* Auto-grow, capped. One cap, not two: the field is mounted only inside the
+     open panel now, so there is no collapsed height to grow from. */
   useEffect(() => {
     const el = field.current;
     if (!el) return;
     el.style.height = "auto";
-    el.style.height = Math.min(el.scrollHeight, open ? 132 : 52) + "px";
+    el.style.height = Math.min(el.scrollHeight, 132) + "px";
   }, [draft, open]);
 
   /* Never on a record that has not finished onboarding. This used to be the
@@ -309,31 +330,32 @@ export function AskDock() {
 
   return (
     <div className="ask-layer" data-open={open}>
-      {/* THE VEIL — the page stops, rather than fading out under a floating
-          card. Five stacked backdrop layers, each blurrier than the one behind
-          it and each masked to start lower, so the blur RAMPS DOWNWARD and is
-          brutal by the time it reaches the box; the sixth layer is a wash in
-          the app's own canvas grey that turns the last strip into a shelf for
-          the white card to sit on. Owner, 2026-08-22: "the textbox does not
-          really announce itself … make the element behind it blur downwards,
-          and then at the bottom make it a very harsh blur." */}
-      <div className="ask-veil" aria-hidden>
-        <span />
-        <span />
-        <span />
-        <span />
-        <span />
-        <span />
-      </div>
-
       <div className="ask-scrim" onClick={close} aria-hidden />
 
       <div
-        className="ask-shell squircle"
+        className="ask-shell"
         role={open ? "dialog" : undefined}
         aria-modal={open || undefined}
         aria-label={open ? "Ask Booklesss" : undefined}
       >
+        {/* THE BUTTON. A layer inside the shell rather than the shell itself,
+            so the disc can fade while the shape keeps morphing — the shell's
+            own background is white throughout and never animates between two
+            colours, which black-to-white across 800px of screen does badly.
+            Hidden from the tree and from tab order once open: it is still in
+            the DOM under the panel, and a focusable control behind a dialog is
+            a keyboard trap. */}
+        <button
+          type="button"
+          onClick={startVoice}
+          className="ask-fab"
+          aria-label="Start a voice chat"
+          tabIndex={open ? -1 : 0}
+          aria-hidden={open || undefined}
+        >
+          <AskMic size={26} />
+        </button>
+
         {/* ---- the panel above the composer ---- */}
         <div className="ask-body">
           {open ? (
@@ -386,23 +408,24 @@ export function AskDock() {
           ) : null}
         </div>
 
-        {/* ---- the composer: the same element in both states ----
-            Two rows, per the owner's reference: the question on its own line at
-            reading size, the controls under it. */}
+        {/* ---- the composer, and only once the panel is open ----
+            Two rows: the question on its own line at reading size, the controls
+            under it. See the header note on why mounting this with the panel is
+            safe now and was not before. */}
+        {open ? (
         <div className="ask-composer">
           <textarea
             ref={field}
             rows={1}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
-            onFocus={openPanel}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
                 send();
               }
             }}
-            placeholder={open ? "Type your question" : opener}
+            placeholder={opener}
             enterKeyHint="send"
             aria-label="Ask a question"
             className="ask-field"
@@ -449,6 +472,7 @@ export function AskDock() {
             </button>
           </div>
         </div>
+        ) : null}
       </div>
 
       <style>{`
@@ -464,6 +488,8 @@ export function AskDock() {
           z-index: 60;                     /* over the 48px header, which is z-50 */
           pointer-events: none;
           --ask-gap: calc(14px + env(safe-area-inset-bottom, 0px));
+          --ask-edge: max(14px, env(safe-area-inset-left, 0px));
+          --ask-fab: ${FAB}px;
           --ask-morph: 480ms;
           --ask-ease: cubic-bezier(0.32, 0.72, 0, 1);
         }
@@ -480,110 +506,24 @@ export function AskDock() {
         }
         .ask-layer[data-open="true"] .ask-scrim { opacity: 1; pointer-events: auto; }
 
-        /* --------------------------------------------------------------
-           THE VEIL. A PROGRESSIVE blur, not one flat pane of frosting: five
-           sibling layers, each with a bigger blur than the last and each masked
-           so it only starts partway down. Siblings paint in order and a later
-           sibling samples everything painted behind it, so the blurs COMPOUND —
-           barely anything at the top of the band, roughly 25px of blur by the
-           time it reaches the card. One 25px pane instead would draw a hard
-           horizontal seam across the page wherever it began, which is the thing
-           this feature exists to avoid.
-
-           THE RAMP IS SPENT BY 52%, NOT BY 100%, and that is the tuning that
-           matters. The band is 230px and the card's top edge is 126px into it —
-           so a ramp spread evenly over the whole height reaches its harshest
-           blur underneath the card, where nobody can see it, and the strip the
-           reader actually looks at is left half-frosted. The stops are packed
-           into the top half instead: full blur lands just as the card starts,
-           and every pixel of the ramp is above it.
-
-           Both -webkit- prefixes are load-bearing. iOS Safari ships
-           backdrop-filter and mask-image under the prefix only, and this is a
-           reader used on phones — unprefixed alone means no veil at all on the
-           devices it was built for.
-
-           It sits BELOW the scrim in the DOM, so opening the panel paints over
-           it, and it fades out anyway: once the shell is the whole viewport
-           there is no page left behind it to quiet down.
-           -------------------------------------------------------------- */
-        .ask-veil {
-          position: absolute;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          /* The card, its gap, and 104px of run-up above it for the ramp. */
-          height: calc(${DOCK_H}px + var(--ask-gap) + 104px);
-          pointer-events: none;
-          transition: opacity 300ms ease;
-        }
-        .ask-layer[data-open="true"] .ask-veil { opacity: 0; }
-
-        .ask-veil > span {
-          position: absolute;
-          inset: 0;
-          display: block;
-        }
-        .ask-veil > span:nth-child(1) {
-          -webkit-backdrop-filter: blur(1px);
-          backdrop-filter: blur(1px);
-          -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgb(0,0,0) 12%);
-          mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgb(0,0,0) 12%);
-        }
-        .ask-veil > span:nth-child(2) {
-          -webkit-backdrop-filter: blur(2px);
-          backdrop-filter: blur(2px);
-          -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 8%, rgb(0,0,0) 22%);
-          mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 8%, rgb(0,0,0) 22%);
-        }
-        .ask-veil > span:nth-child(3) {
-          -webkit-backdrop-filter: blur(5px);
-          backdrop-filter: blur(5px);
-          -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 18%, rgb(0,0,0) 32%);
-          mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 18%, rgb(0,0,0) 32%);
-        }
-        .ask-veil > span:nth-child(4) {
-          -webkit-backdrop-filter: blur(10px);
-          backdrop-filter: blur(10px);
-          -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 28%, rgb(0,0,0) 42%);
-          mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 28%, rgb(0,0,0) 42%);
-        }
-        .ask-veil > span:nth-child(5) {
-          -webkit-backdrop-filter: blur(22px);
-          backdrop-filter: blur(22px);
-          -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 36%, rgb(0,0,0) 52%);
-          mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 36%, rgb(0,0,0) 52%);
-        }
-
-        /* The shelf. Canvas grey, NOT white — the shell is #ffffff, so a white
-           wash under it would be the one thing that undoes all of this: the
-           blur quiets the page, and then the card dissolves into the strip it
-           was meant to stand on. Grey under white is the contrast that lets the
-           box announce itself, and #f5f5f5 is the app's own canvas. */
-        .ask-veil > span:nth-child(6) {
-          background-image: linear-gradient(
-            to bottom,
-            rgba(245, 245, 245, 0) 0%,
-            rgba(245, 245, 245, 0.34) 38%,
-            rgba(245, 245, 245, 0.72) 70%,
-            rgba(245, 245, 245, 0.92) 100%
-          );
-        }
-        /* No backdrop-filter (old Android WebView): the wash carries it alone,
-           so the box still has something to sit on instead of nothing. */
-        @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-          .ask-veil > span:nth-child(6) {
-            background-image: linear-gradient(
-              to bottom,
-              rgba(245, 245, 245, 0) 0%,
-              rgba(245, 245, 245, 0.62) 42%,
-              rgba(245, 245, 245, 0.9) 74%,
-              rgba(245, 245, 245, 0.98) 100%
-            );
-          }
-        }
-
         /* THE MORPH. Four insets and a radius; nothing else moves.
+
+           Collapsed, the shell is a 62px square pinned to the BOTTOM LEFT — the
+           right inset is measured from the far edge, which is what lets one
+           transition drive both the position and the size. Open, it is the
+           viewport.
+
+           The squircle utility came off this element with the text box. It is
+           corner-shape: superellipse(2.4), which is right for a card and wrong
+           for a button: at a 999px radius it draws a rounded square where a
+           circle is wanted, and the shell CLIPS the disc inside it, so the
+           squircle would have won.
+
+           (Note the plain prose above. This is inside a JS template literal and
+           a backtick in a COMMENT ends the string just as well as one in a
+           declaration — the parse error then lands pages later, at the opening
+           style tag. The file header has said so since August; it still caught
+           the edit that wrote this block.)
 
            The border and the radius are on THIS element, together. See the
            header note — a ring drawn on an inner layer with no radius of its
@@ -591,9 +531,9 @@ export function AskDock() {
            disappears at the corners" was. */
         .ask-shell {
           position: absolute;
-          left: max(14px, calc(50% - 300px));
-          right: max(14px, calc(50% - 300px));
-          top: calc(100% - ${DOCK_H}px - var(--ask-gap));
+          left: var(--ask-edge);
+          right: calc(100% - var(--ask-edge) - var(--ask-fab));
+          top: calc(100% - var(--ask-fab) - var(--ask-gap));
           bottom: var(--ask-gap);
           display: flex;
           flex-direction: column;
@@ -601,27 +541,24 @@ export function AskDock() {
           /* --color-line-2, a step darker than the app's usual hairline. The
              box floats over a blurred shelf now rather than sitting in the
              page, and at #dfdfdf its top edge dissolved into the wash. */
-          border: 1px solid var(--color-line-2);
-          border-radius: 26px;
-          /* White, not --color-card. That token is #fcfcfb and is meant for a
-             card sitting on the grey canvas; this one floats on the frosted
-             white content surface, where the two values are within one step of
-             each other and the card stops reading as a card.
+          border: 1px solid transparent;
+          border-radius: 999px;
+          /* White, and white while collapsed too — the black disc on top is
+             what you actually see at 62px. Holding one value here is what stops
+             the morph crossfading black to white through 480ms of grey.
              (No backticks anywhere in this block: it is inside a template
              literal, so one would end the string and the parse error lands
              pages away from the comment that caused it.) */
           background-color: #ffffff;
           pointer-events: auto;
-          /* THREE STOPS, not two, and much deeper than --shadow-lift — that
-             token is sized for a card sitting IN the page, and this one has to
-             read as hovering over it. A contact shadow to seat the edge, a
-             mid-throw to give it height, and a wide dark spread that separates
-             it from the blurred shelf underneath. Owner, 2026-08-22: the box
-             "does not really announce itself … also add a shadow to it." */
+          /* Sized for a 62px button, not for the wide card this used to be: a
+             tight contact shadow so the disc sits ON the page, and one soft
+             throw so it sits ABOVE it. The card's version needed a third, wider
+             stop to separate it from the blur behind it; there is no blur now
+             and a 62px circle wearing a 50px shadow looks like it is falling. */
           box-shadow:
-            0 1px 2px -1px rgb(0 0 0 / 0.12),
-            0 8px 18px -6px rgb(0 0 0 / 0.18),
-            0 26px 50px -20px rgb(0 0 0 / 0.34);
+            0 2px 4px -1px rgb(0 0 0 / 0.16),
+            0 10px 22px -8px rgb(0 0 0 / 0.28);
           transition:
             top var(--ask-morph) var(--ask-ease),
             bottom var(--ask-morph) var(--ask-ease),
@@ -634,8 +571,31 @@ export function AskDock() {
         .ask-layer[data-open="true"] .ask-shell {
           left: 0; right: 0; top: 0; bottom: 0;
           border-radius: 0;
-          border-color: transparent;
           box-shadow: none;
+        }
+
+        /* THE DISC. Fills the shell, so collapsed it IS the button and open it
+           is a black square being cropped away behind the panel — hence the
+           opacity, which is gone well before the shape stops moving. */
+        .ask-fab {
+          position: absolute;
+          inset: 0;
+          display: grid;
+          place-items: center;
+          border-radius: inherit;
+          background-color: var(--color-btn);
+          color: #ffffff;
+          transition:
+            opacity 200ms ease,
+            background-color 160ms ease,
+            transform 140ms ease;
+        }
+        .ask-fab:active { transform: scale(0.94); }
+        .ask-fab:hover { background-color: #000000; }
+        .ask-layer[data-open="true"] .ask-fab {
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 140ms ease;
         }
         /* On a wide screen the panel is a centred card, not a takeover — the
            same morph, stopped short of the edges. */
@@ -651,9 +611,19 @@ export function AskDock() {
           }
         }
 
-        /* The panel. Squeezed to nothing while collapsed — the flex column is
-           what puts the composer on the bottom edge in BOTH states without
-           positioning it twice. */
+        /* The panel.
+
+           ⚠️ pointer-events: none WHILE COLLAPSED, AND THAT IS NOT A DETAIL.
+           This element is flex: 1 1 auto, so with the composer no longer
+           rendered in the collapsed state it now fills the ENTIRE 62px shell
+           and paints after the disc — and opacity: 0 does not stop an element
+           receiving a tap. An invisible empty div swallowed every press on the
+           button, which presents as a mic that simply does nothing rather than
+           as anything you would think to look for in CSS.
+
+           It used to be squeezed to nothing by the composer sitting under it,
+           which is why this was never needed before. Re-mount anything in the
+           collapsed state and check this again. */
         .ask-body {
           position: relative;
           flex: 1 1 auto;
@@ -662,10 +632,11 @@ export function AskDock() {
           flex-direction: column;
           overflow: hidden;
           opacity: 0;
+          pointer-events: none;
           transition: opacity 260ms ease 140ms;
           contain: layout paint;
         }
-        .ask-layer[data-open="true"] .ask-body { opacity: 1; }
+        .ask-layer[data-open="true"] .ask-body { opacity: 1; pointer-events: auto; }
 
         .ask-topbar {
           display: flex;
@@ -763,10 +734,6 @@ export function AskDock() {
           display: flex;
           flex-direction: column;
           gap: 6px;
-          padding: 16px 14px 14px 20px;
-          transition: padding var(--ask-morph) var(--ask-ease);
-        }
-        .ask-layer[data-open="true"] .ask-composer {
           padding: 12px 14px calc(14px + env(safe-area-inset-bottom, 0px)) 20px;
         }
 
@@ -801,14 +768,12 @@ export function AskDock() {
           .ask-shell,
           .ask-body,
           .ask-scrim,
-          .ask-veil,
-          .ask-composer { transition: none !important; }
+          .ask-fab { transition: none !important; }
         }
         html[data-motion="reduced"] .ask-shell,
         html[data-motion="reduced"] .ask-body,
         html[data-motion="reduced"] .ask-scrim,
-        html[data-motion="reduced"] .ask-veil,
-        html[data-motion="reduced"] .ask-composer { transition: none !important; }
+        html[data-motion="reduced"] .ask-fab { transition: none !important; }
       `}</style>
     </div>
   );
