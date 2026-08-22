@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-10 (session 60)
+**Last updated:** 2026-08-22 (session 61)
 
 ---
 
@@ -91,6 +91,33 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 61 (2026-08-22, the home screen learns to talk. Linear WAS
+reachable this time — BOO-35 closed, BOO-40/41/42 opened, so the items below
+are only the ones without a ticket.)**
+
+- [ ] ⚠️ **VOICE COULD NOT WORK IN PRODUCTION UNTIL TODAY, AND NOBODY WOULD HAVE
+      GUESSED WHY.** `Permissions-Policy: microphone=()` denies the capability
+      to EVERY origin including ours, so `getUserMedia` rejected with
+      `NotAllowedError` *after* the student had already granted permission — the
+      app then said "Booklesss needs your microphone", which reads as the
+      student's fault. Fixed to `microphone=(self)`, and `connect-src` now names
+      `api.elevenlabs.io` and `livekit.rtc.elevenlabs.io`. **This means the
+      SESSION calls shipped on 2026-08-21 have never actually run on a phone in
+      production.** Worth ten minutes with a real handset before Treasury
+      Management goes to anyone.
+- [ ] **PR #178 is open and unmerged** (`claude/session-screen-styling-ng89h7`):
+      it moves the session call screen off dark-and-green onto the app's own
+      light surface and relights the orb as a pearl, and it puts the step title
+      on Urbanist. The ask box shipped today already went light, so the two
+      agree rather than fight — but the branch has been sitting since before
+      this session and someone should decide it.
+- [ ] **The `.mjs` ask-box preview route is gone but the pattern is worth
+      keeping.** Verifying anything behind `RequireOnboarding` needs a seeded
+      `booklesss:identity:v1` in localStorage (Playwright `addInitScript`);
+      `school: "other"` + `schoolName` is the only school value that passes
+      without the generated school index, and `whatsapp` must survive
+      `normalisePhone`. Cost two failed runs to work out.
 
 **From session 60 (2026-08-10, the durability day — what a student DOES stopped
 dying with their device. Numbered 60 because session 59 was in flight in this
@@ -1531,6 +1558,72 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-22 (session 61 — the home screen learns to talk)
+
+**Done:**
+- **The ask box.** A rounded card at the bottom of `/dashboard` that morphs into
+  a full-screen panel — tap the text to type, tap the black circle to start a
+  voice chat. One fixed shell animating four insets and a radius; nothing
+  remounts on the way, which is what keeps focus and therefore the iOS keyboard.
+  `home/AskDock.tsx` + `home/ask-engine.tsx` (dynamic import, so the WebRTC
+  stack stays out of the dashboard bundle) + `lib/ask.ts` (client-safe, unlike
+  `lib/session.ts`).
+- **Two transports, one agent.** A call is WebRTC on a conversation token; a
+  typed conversation is a signed WebSocket with `text_only` — billed **per
+  message (~$0.003)** rather than per minute, and it streams the answer word by
+  word. Both verified end to end against the live account.
+- **Three production bugs fixed**, all found by serving rather than reading:
+  `Permissions-Policy: microphone=()` (denies the mic to our own origin),
+  `connect-src` missing both ElevenLabs hosts, and `setup-elevenlabs.mjs`
+  writing its override permissions to a field the API accepts and discards.
+- **Rebuilt after the owner's first look**: it rode the scroll, was too small,
+  wore colours the app does not have, and its border vanished at the corners.
+- **Researched the hosting question** and recorded the decision as BOO-41.
+
+**What Worked:**
+- **Listening for `securitypolicyviolation` in the page during a real call** is
+  the only way to learn which hosts a vendor SDK dials. `livekit.rtc.elevenlabs.io`
+  appears nowhere in this repo — our server mints the token — so it cannot be
+  found by reading code.
+- **Reading the entity back after a write.** ElevenLabs answers 200 for a PATCH
+  into `platform_settings.client_overrides`, a field it does not read; the one
+  it reads back is `platform_settings.overrides.conversation_config_override`.
+  The setup script now prints what stuck, not what was sent.
+- **Making a probe prove it can see a positive.** A scroll test that scrolled
+  nothing reported "the dock stayed put" and would have passed the exact bug it
+  was written for. Asserting the scroller actually moved turned it into
+  evidence — and incidentally revealed that the *document* scrolls on a phone
+  while `#content-surface` scrolls on desktop, so the modal scroll-lock was
+  holding the wrong element.
+- **Sampling a transition per frame** rather than screenshotting it. Two
+  screenshots 220ms apart looked identical and suggested no animation; a
+  per-frame read of the element's own rect showed it was animating fine and
+  merely front-loaded, which is a different fix.
+
+**Dead Ends (do not retry):**
+- **`cat > file <<'EOF'` for a ~680-line TSX file** — dies with `unexpected EOF
+  while looking for matching` even with a correctly quoted delimiter appearing
+  once. Nothing is written. Use the Write tool for anything long.
+- **`git show origin/main:.claude/CLAUDE.md` in Git Bash** — the argument is
+  path-mangled to `origin\main;.claude\CLAUDE.md` and fails naming something
+  nobody typed. Use `MSYS_NO_PATHCONV=1`, or `git grep … origin/main -- <path>`.
+- **A `useEffect` guard ref that is set but never cleared in the cleanup** —
+  under StrictMode the first run marks itself started and is cancelled by its
+  own teardown while the second returns early, so the connection is never
+  opened. No socket, no request, no error; it looks exactly like an agent that
+  will not answer.
+- **A backtick inside a CSS comment in a colocated `<style>` template** — it
+  ends the template literal, and the parse error lands at the opening `<style>`
+  tag pages away from the cause.
+- **`Omit<AskItem, "id">` over a union** — Omit does not distribute; it collapses
+  to the shared keys, so a variant's own field silently stops being legal and
+  the error names the wrong thing.
+
+**Next:** BOO-40/41/42 in Linear; the non-ticketed items are at the top of Next
+Session above.
+
+---
 
 ### Session 2026-08-10 (session 60 — studying stops dying with the device)
 

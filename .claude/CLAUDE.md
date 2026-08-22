@@ -189,7 +189,15 @@ content, socials, web:
   layout, render the 9:16 carousels, write the day's `PLAN.md`. Its `RULES.md`
   holds the accumulated framing/copy rules and is where the owner's reactions get
   written back. Output lands in `Demand/social/posts/<week>/<day>/`.
-- **`design-system`** — Web/UI only (Framer, landing pages). Not for step work.
+- **`design-system`** — **anything drawn on a screen: the Next.js app included**,
+  not just Framer and landing pages. Its colour section is a summary of
+  `platform/src/app/globals.css` and now says so; it also carries the
+  engineering traps that present as design bugs (`backdrop-filter` creating a
+  containing block for `position: fixed`, a border on an inner layer vanishing
+  at the corners, a backtick ending a CSS-in-JS template). **Read it before
+  building a component.** This line used to say "Web/UI only (Framer, landing
+  pages)", which is why a new dashboard surface got built in August without it
+  and came out wearing colours the app does not have. Not for step work.
 
 ### Platform Icons (Next.js)
 

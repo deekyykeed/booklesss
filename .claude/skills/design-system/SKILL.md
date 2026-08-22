@@ -30,18 +30,52 @@ Adapt these dynamically based on what the user requests.
 
 ## Colour system
 
-### Booklesss brand palette
-| Role | Value |
-|------|-------|
-| Canvas | `#F9FAFB` warm-neutral (never clinical blue-white) |
-| Surface / card | `#FFFFFF` |
-| Primary text | `#18181B` zinc-950 — never pure black |
-| Secondary text | `#71717A` steel |
-| Tertiary / meta | `#94A3B8` muted slate |
-| Border / divider | `rgba(226,232,240,0.5)` whisper |
-| Amber accent | `#C17E3A` — primary brand accent |
-| Navy | `#1B2A4A` — cover / strong emphasis |
-| Teal | `#0E6B6B` — secondary accent |
+> ⚠️ **`platform/src/app/globals.css` IS THE PALETTE. This file is a summary of
+> it, and a summary can go stale — read the tokens before you use them.**
+>
+> This section used to list an amber/navy/teal palette on a `#F9FAFB` canvas.
+> **None of those values exist in the app.** On 2026-08-22 a new surface was
+> built for `/dashboard` against this table plus whatever was nearest to hand,
+> and the owner's first reaction was *"that green, or whatever colour you keep
+> adding, does not match the actual UI that I already have."* It cost a full
+> rebuild. A wrong map is worse than no map.
+
+### The tokens the app actually defines
+Use the CSS variable, never the hex — a literal is a value that stops following
+the token the day somebody changes it.
+
+| Token | Value | Job |
+|---|---|---|
+| `--color-canvas` | `#f5f5f5` | app background |
+| `--color-card` | `#fcfcfb` | cards sitting ON the canvas |
+| `--color-line` | `#dfdfdf` | hairlines, dividers |
+| `--color-line-2` | `#d4d4d4` | pills, tags, circle buttons |
+| `--color-ink` | `#171717` | primary text |
+| `--color-ink-2` | `#525252` | tertiary text |
+| `--color-muted` | `#707070` | secondary text |
+| `--color-placeholder` | `#b2b2b2` | input placeholders |
+| `--color-active` | `#ededed` | selected row, quiet circle buttons |
+| `--color-btn` | `#0b0b0b` | THE primary action — solid black |
+| `--color-brand` | `#3ecf8e` | the Booklesss green |
+| `--color-brand-deep` | `#17754d` | that green, readable as text on white |
+| `--color-danger` | `#8d2525` | inline error/link red |
+
+Depth is `--shadow-lift` (a block of content on the reading surface) and
+`--shadow-chip` (a control that should read as pressable). Both are deliberately
+tiny; nothing blurs past 10px. If two stacked cards' shadows meet in a 12px gap,
+the shadow is too big.
+
+### ⚠️ The brand green is a MARK, not a UI colour
+`--color-brand` draws the logo and a couple of accents. **It is not the colour of
+buttons, surfaces or controls.** The app is cream, white and ink; the one action
+that matters on any screen is `--color-btn`, the same value the header's circle
+buttons and `.btn[data-variant="primary"]` use.
+
+The one standing exception is the **session call screen** (`/study/…`), which is
+dark with a green orb — a deliberate liberty so a student can tell Listen from
+Read before reading a word. **Do not treat that screen as licence.** A second
+surface borrowed it in August and had to be rebuilt. And note it is itself under
+review: PR #178 moves the session screen back onto the app's own light surface.
 
 ### Accent selection rule
 Max ONE accent colour per project. Never mix. Saturation below 80%.
@@ -54,6 +88,53 @@ Max ONE accent colour per project. Never mix. Saturation below 80%.
 
 ---
 
+## Engineering traps that look like design bugs
+
+Each of these was paid for in a real session. They present as "the CSS is
+wrong" and none of them is.
+
+### `backdrop-filter` makes an element a containing block for `position: fixed`
+Exactly as `transform`, `filter`, `perspective`, `contain` and `will-change` do.
+In this app `#content-surface` carries `backdrop-filter: blur(16px)` **and is the
+scroller**, so anything `position: fixed` rendered inside it is fixed to a box
+that scrolls — it rides the page. Symptom, verbatim: *"when I scroll up or down
+it moves with the screen instead of being fixed."* Nothing about the element is
+wrong; it is in the wrong parent. **Fixed chrome goes in the layout, outside
+`<main>`.**
+
+### A border drawn on an inner layer disappears at the corners
+If the radius lives on the shell (with `overflow: hidden`) and the edge is an
+`inset 0 0 0 1px` shadow on a child that has no radius of its own, you get a
+square ring inside a round clip and the border vanishes at all four corners:
+*"there's a difference in radius between the white container and the border."*
+**Put `border` and `border-radius` on the same element** — one element cannot
+disagree with itself.
+
+### Which element scrolls depends on the viewport width
+`#content-surface` is the scroller on desktop; the **document** is the scroller
+on a phone. A modal scroll-lock has to hold both. A probe that only locked
+`#content-surface` moved nothing at 390px wide and would have passed a panel you
+could still scroll the page behind — see the probe rule below.
+
+### A backtick inside a CSS-in-JS `<style>` template ends the string
+Including one inside a CSS *comment*. The parse error surfaces at the opening
+`<style>` tag, pages away from the comment that caused it. Never write a token
+name in backticks inside a colocated style block.
+
+### Choose easing for the DISTANCE, not the house default
+The app's `cubic-bezier(0.16, 1, 0.3, 1)` is right for a 200px sweep across an
+ActionBar and reads as a jump cut over 800px of screen — a per-frame probe had it
+71% of the way home 119ms into a 560ms transition. A full-screen morph wants
+something like `cubic-bezier(0.32, 0.72, 0, 1)`.
+
+### Verify by SERVING, and make the probe prove it can see a positive
+A typecheck and a lint are static; neither resolves a module at runtime nor
+parses a stylesheet. And a measurement that reads the same on both sides of an
+A/B is void — if the "working" case also reads zero, fix the probe, not the
+theory.
+
+---
+
 ## Typography
 
 ### Font stack (priority order)
@@ -62,7 +143,12 @@ Max ONE accent colour per project. Never mix. Saturation below 80%.
 - **Mono:** `Geist Mono`, `JetBrains Mono` — for code, metadata, timestamps
 
 ### Banned fonts
-- `Inter` — banned in all premium contexts
+- `Inter` — banned in NEW marketing/editorial work. ⚠️ **Not a rule about the
+  app**: `--font-sans` in `globals.css` IS Inter and is the whole of the app's
+  chrome (header, sidebars, dashboard, settings). The app's four faces are
+  Inter, Familjen Grotesk (`--font-display`), Aptos (`--font-content`, the
+  reading) and Satoshi (`--font-container`, chrome that frames a sentence).
+  Match the surface you are building on; do not "fix" it to something else.
 - Generic serifs (`Times New Roman`, `Georgia`, `Garamond`) — banned in dashboards/software
 - If serif is needed for editorial: use `Fraunces`, `Instrument Serif`, or `Editorial New` only
 
