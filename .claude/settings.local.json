@@ -82,6 +82,8 @@
   },
   "enabledMcpjsonServers": [
     "design-bridge",
-    "supabase"
-  ]
+    "supabase",
+    "linear-server"
+  ],
+  "enableAllProjectMcpServers": true
 }
