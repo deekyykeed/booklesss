@@ -530,20 +530,62 @@ through one lesson group; this is the unscripted one — a student taps it becau
 something is on their mind.
 
 **ONE ELEMENT, TWO STATES.** `home/AskDock.tsx` is a single fixed shell that
-animates its four insets and its radius from a 58px pill to the viewport, with
-two background skins (cream pill, dark call surface) cross-faded underneath
-because a gradient cannot be transitioned. **Nothing is remounted on the way,
-and that is load-bearing rather than pretty**: the composer inside the pill is
-the composer at the bottom of the open panel, so a tap focuses a real
-`<textarea>` inside the student's own gesture and iOS opens the keyboard. Mount
-the input as part of the opening instead and the focus call lands outside the
-gesture, which Safari answers by doing nothing.
+animates its four insets and its radius from a ~112px card to the viewport.
+**Nothing is remounted on the way, and that is load-bearing rather than
+pretty**: the composer inside the card is the composer at the bottom of the
+open panel, so a tap focuses a real `<textarea>` inside the student's own
+gesture and iOS opens the keyboard. Mount the input as part of the opening
+instead and the focus call lands outside the gesture, which Safari answers by
+doing nothing.
+
+⚠️ **IT MUST BE RENDERED IN `dashboard/layout.tsx`, OUTSIDE `<main>` — never in
+the page.** `#content-surface` carries `backdrop-filter: blur(16px)`, which
+makes it a **containing block for `position: fixed` descendants** exactly as a
+`transform` would, and it is also the scroller. A "fixed" element rendered
+inside it is fixed to a box that scrolls, so it rides the page: *"when I scroll
+up or down it moves with the screen instead of being fixed"* (owner,
+2026-08-22). Nothing about the element was wrong; it was in the wrong parent.
+Anything else fixed on this page belongs beside it.
+
+**THE PALETTE IS THE APP'S, AND THE FIRST VERSION'S WAS NOT.** It shipped
+wearing the session call's dark-green surface, its brand-green mic and the
+orb — *"that green, or whatever colour you keep adding, does not match the
+actual UI that I already have"*. It is white on `--color-line` now, ink text,
+one `--color-btn` circle, `--color-active` for the mute beside it during a
+call, and the orb is replaced by a five-bar **level meter in `--color-ink`**
+(same job — something is happening and it follows the voice — in a colour this
+surface already uses). Nothing new enters the palette to draw it.
+
+**TWO ROWS, ONE LIVE BUTTON**, off the owner's own reference: the question gets
+a line at 17px, the controls sit under it. The black circle is never disabled —
+its glyph says what it does (microphone with nothing typed, arrow once there
+is, handset during a call). It briefly had a permanent second circle with the
+primary greyed out until you typed, which made the first thing on the home
+screen two dead-looking circles and no invitation.
+
+⚠️ **The scroll lock must hold BOTH scrollers.** Which one actually scrolls
+depends on width: `#content-surface` on desktop, the document itself on a
+phone. Measured, not assumed — a probe that scrolled only `#content-surface`
+moved nothing at 390px wide and would have passed a panel you could still
+scroll the page behind.
 
 The easing is **`cubic-bezier(0.32, 0.72, 0, 1)`, deliberately not the app's
 usual `(0.16, 1, 0.3, 1)`** — that curve is right for a 200px sweep across an
 ActionBar and reads as a jump cut over 800px of screen. Measured, not guessed: a
 per-frame probe had the house curve 71% of the way home 119ms into a 560ms
 transition.
+
+⚠️ **The edge treatment lives on the shell, with the radius.** It was an
+`inset 0 0 0 1px` shadow on a background layer that had no radius of its own,
+clipped by the shell's `overflow: hidden` — a square ring inside a round clip,
+so the border **vanished at all four corners** (*"there's a difference in
+radius between the white container and the border"*). A real `border` on the
+element that owns the `border-radius` cannot disagree with itself.
+
+⚠️ **No backticks inside that component's `<style>` template.** It is a JS
+template literal, so a backtick in a CSS *comment* ends the string, and the
+parse error surfaces pages later at the opening `<style>` tag rather than at
+the comment that caused it.
 
 | File | Job | Cost on first paint |
 |---|---|---|

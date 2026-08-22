@@ -1,3 +1,4 @@
+import { AskDock } from "@/components/home/AskDock";
 import { TopBar } from "@/components/TopBar";
 import { MobileNavProvider, MobileScrim } from "@/components/reader/MobileNav";
 import { ProgressScope } from "@/components/reader/ProgressScope";
@@ -40,6 +41,17 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
             {children}
           </div>
         </main>
+        {/* ⚠️ OUTSIDE <main>, AND THAT IS THE ONLY PLACE IT WORKS. The ask box
+            is `position: fixed`, and `#content-surface` carries
+            `backdrop-filter: blur(16px)` — which makes it a CONTAINING BLOCK
+            for fixed-position descendants, exactly like a transform would. It
+            is also the scroller. So a "fixed" element rendered inside it is
+            fixed to a box that scrolls, and rides the page instead of the
+            viewport. It shipped that way for an afternoon on 2026-08-22:
+            "when I scroll up or down it moves with the screen instead of being
+            fixed". Nothing about the element was wrong; it was in the wrong
+            parent. Anything else fixed on this page belongs here too. */}
+        <AskDock />
       </MobileNavProvider>
     </>
   );

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { AskDock } from "@/components/home/AskDock";
 import { HomeView } from "@/components/home/HomeView";
 import { HomeViewWithUser } from "@/components/home/HomeViewWithUser";
 import { RequireAccount } from "@/components/auth/RequireAccount";
@@ -32,14 +31,12 @@ export default function DashboardPage() {
       {/* And no finished onboarding, no dashboard either (owner, 2026-08-04) —
           this page is the answers, drawn. Until they exist it renders nothing
           and sends the student to /onboarding to give them. */}
-      {/* The ask box, and it is INSIDE the onboarding gate on purpose. The
-          agent is handed the student's name and their courses; before those
-          answers exist it would be a box offering to talk about nothing, on a
-          screen that is about to redirect. */}
-      <RequireOnboarding>
-        {authEnabled ? <HomeViewWithUser /> : <HomeView />}
-        <AskDock />
-      </RequireOnboarding>
+      {/* The ask box used to be here, inside the gate. It is in the LAYOUT now,
+          outside `#content-surface`, because that element is a containing block
+          for fixed positioning — see the note there. It gates itself on the
+          same answers this component does, so it still never appears on a
+          record that has not finished onboarding. */}
+      <RequireOnboarding>{authEnabled ? <HomeViewWithUser /> : <HomeView />}</RequireOnboarding>
     </>
   );
 }

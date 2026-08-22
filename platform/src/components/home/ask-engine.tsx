@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ConversationProvider, useConversation } from "@elevenlabs/react";
 import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
-import { Orb, type OrbState } from "@/components/study/Orb";
 import type { AskControls, AskItem, AskPhase, NewAskItem, PinKind } from "./ask-types";
 
 /* ------------------------------------------------------------------ *
@@ -26,10 +25,19 @@ import type { AskControls, AskItem, AskPhase, NewAskItem, PinKind } from "./ask-
  *
  * WHAT IS ON SCREEN DIFFERS BY MODE, and that is the product decision, not a
  * layout convenience:
- *   · a CALL shows the orb and the pinned points, and NO transcript. A running
- *     transcript is the reading this replaces, in pieces (see study/PointStack).
+ *   · a CALL shows the level meter and the pinned points, and NO transcript. A
+ *     running transcript is the reading this replaces, in pieces.
  *   · a TYPED conversation is the transcript, because that is what typing is —
  *     with the same pinned cards landing inline where they were made.
+ *
+ * IT IS DRAWN IN THE APP'S OWN PALETTE (owner, 2026-08-22: "that green, or
+ * whatever colour you keep adding, does not match the actual UI that I already
+ * have"). The first version borrowed the session call's dark surface and its
+ * green orb. Nothing here introduces a colour — ink on card, on the app's
+ * hairline, exactly like the reader's callouts. The presence during a call is a
+ * five-bar LEVEL METER in `--color-ink` rather than the orb, for the same
+ * reason: the orb is a saturated green sphere, which is the single loudest
+ * thing this palette could put on a white panel.
  * ------------------------------------------------------------------ */
 
 /** Why a conversation could not start, in the words a student should see. */
@@ -94,7 +102,6 @@ function Engine({
   onReady,
 }: AskEngineProps) {
   const [phase, setPhase] = useState<AskPhase>("connecting");
-  const [awaiting, setAwaiting] = useState(false);
   /* The answer as it is being written. Held here rather than pushed into the
    * thread, because it is not a thread item yet — it is replaced wholesale by
    * the finished text when `agent_response` lands. */
@@ -105,7 +112,13 @@ function Engine({
    * session opens. Holding them in a ref means the map it captured is never
    * stale and never a reason to re-open the session. */
   const cb = useRef({ onItem, onPhase, onError, onReady });
-  cb.current = { onItem, onPhase, onError, onReady };
+  /* Updated in an effect, not during render — writing a ref while rendering is
+   * a real hazard (React may render without committing) and the linter is
+   * right to refuse it. One render late costs nothing here: every reader of
+   * this map is an SDK event arriving over a socket, long after the commit. */
+  useEffect(() => {
+    cb.current = { onItem, onPhase, onError, onReady };
+  });
 
   const setBoth = useCallback((p: AskPhase) => {
     setPhase(p);
@@ -144,7 +157,6 @@ function Engine({
       if (mode !== "text" || source !== "ai") return;
       const body = (message ?? "").trim();
       if (!body) return;
-      setAwaiting(false);
       setStream("");
       cb.current.onItem({ role: "agent", text: body });
     },
@@ -158,7 +170,6 @@ function Engine({
     onAgentChatResponsePart: (part) => {
       if (mode !== "text") return;
       if (part?.type === "start") {
-        setAwaiting(false);
         setStream("");
         return;
       }
@@ -168,8 +179,9 @@ function Engine({
 
   const { status, isSpeaking, startSession, endSession, sendUserMessage, setMuted } = conversation;
 
-  /* Loudness for the orb, read through a getter so nothing here re-renders on
-   * it — see the note at the top of Orb.tsx. */
+  /* Loudness for the meter, read through a getter so nothing here re-renders on
+   * it — the value changes sixty times a second and is written straight onto a
+   * CSS variable. */
   const getLevel = useCallback(() => {
     try {
       const data = isSpeaking
@@ -237,11 +249,7 @@ function Engine({
         const res = await fetch("/api/agent/token" + (mode === "text" ? "?mode=text" : ""), {
           cache: "no-store",
         });
-        const data = (await res.json()) as {
-          ok?: boolean;
-          credential?: string;
-          reason?: string;
-        };
+        const data = (await res.json()) as { ok?: boolean; credential?: string; reason?: string };
         if (!data.ok || !data.credential) {
           if (cancelled) return;
           cb.current.onError(REASONS[data.reason ?? "failed"] ?? REASONS.failed);
@@ -319,7 +327,6 @@ function Engine({
     sentInitial.current = true;
     try {
       sendUserMessage(initialMessage);
-      setAwaiting(true);
     } catch {
       cb.current.onError(REASONS.failed);
     }
@@ -340,7 +347,6 @@ function Engine({
       send: (text: string) => {
         try {
           sendUserMessage(text);
-          if (mode === "text") setAwaiting(true);
         } catch {
           cb.current.onError(REASONS.failed);
         }
@@ -362,23 +368,24 @@ function Engine({
     };
     cb.current.onReady(controls);
     return () => cb.current.onReady(null);
-  }, [mode, sendUserMessage, endSession, setMuted]);
+  }, [sendUserMessage, endSession, setMuted]);
 
   /* ---- the screen ------------------------------------------------ */
 
-  const orbState: OrbState =
-    phase === "connecting" || status === "connecting"
-      ? "connecting"
-      : phase === "live"
-        ? isSpeaking
-          ? "speaking"
-          : "listening"
-        : "idle";
+  /* DERIVED, not state. "We are waiting on an answer" is exactly "the last
+   * thing in the thread is the student's own line and nothing has started
+   * arriving yet" — so it needs no flag, no setter, and no effect setting one.
+   * It was three setAwaiting calls, one of them inside an effect, which is the
+   * shape the linter objects to and it was right: a flag that can be computed
+   * is a flag that can disagree with the thing it describes. */
+  const awaiting =
+    mode === "text" && !stream && items[items.length - 1]?.role === "you";
 
+  const live = phase === "live";
   const stateWord =
-    phase === "connecting"
+    phase === "connecting" || status === "connecting"
       ? "Connecting…"
-      : phase === "live"
+      : live
         ? isSpeaking
           ? "Speaking…"
           : "Listening…"
@@ -387,8 +394,8 @@ function Engine({
   return mode === "voice" ? (
     <VoiceBody
       stateWord={stateWord}
-      orbState={orbState}
-      getLevel={phase === "live" ? getLevel : undefined}
+      live={live}
+      getLevel={live ? getLevel : undefined}
       items={items}
     />
   ) : (
@@ -402,53 +409,77 @@ function Engine({
 }
 
 /* ------------------------------------------------------------------ *
- * The call: an orb, a word, and what it decided was worth keeping.
+ * The call: a word, a level meter, and what it decided was worth keeping.
  * ------------------------------------------------------------------ */
 function VoiceBody({
   stateWord,
-  orbState,
+  live,
   getLevel,
   items,
 }: {
   stateWord: string;
-  orbState: OrbState;
+  live: boolean;
   getLevel?: () => number;
   items: AskItem[];
 }) {
   const pins = items.filter((i) => i.role === "pin");
   return (
     <div className="ask-voice">
+      <LevelMeter getLevel={getLevel} live={live} />
       <p className="ask-state">{stateWord}</p>
-      <div className="ask-orb">
-        <Orb state={orbState} size={168} getLevel={getLevel} />
-      </div>
       <div className="ask-thread ask-thread-voice">
         {pins.length ? (
           pins.map((p) => <PinCard key={p.id} text={p.text} kind={p.kind as PinKind} />)
         ) : (
           <p className="ask-hint">Anything worth keeping will stay here.</p>
         )}
-        <Anchor dep={pins.length} />
+        <Anchor dep={pins.length * 1000} />
       </div>
-      <style>{`
-        .ask-voice {
-          flex: 1 1 auto;
-          min-height: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-        .ask-state {
-          font-family: var(--font-container);
-          font-weight: 500;
-          font-size: 13px;
-          letter-spacing: 0.01em;
-          color: rgba(255, 255, 255, 0.45);
-          flex: 0 0 auto;
-        }
-        .ask-orb { margin-top: 14px; flex: 0 0 auto; }
-        .ask-thread-voice { margin-top: 18px; }
-      `}</style>
+    </div>
+  );
+}
+
+/**
+ * Five ink bars that follow the voice.
+ *
+ * This replaces the session screen's orb here, and the reason is the palette
+ * rather than the drawing: an orb is a big saturated sphere, and this panel is
+ * white with ink on it. A meter says the same thing — something is happening,
+ * and it is responding to sound — in the one colour this surface already uses.
+ *
+ * The level is polled on an animation frame and written to a CSS variable, so
+ * it never touches React. Re-rendering a component sixty times a second to move
+ * five bars is how a call starts dropping frames on a mid-range Android.
+ */
+function LevelMeter({ getLevel, live }: { getLevel?: () => number; live: boolean }) {
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !getLevel) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let frame = 0;
+    let smoothed = 0;
+    const tick = () => {
+      /* Eased towards the reading rather than set to it. Raw frequency data is
+       * spiky enough that bars bound directly to it flicker instead of moving. */
+      const next = Math.max(0, Math.min(1, getLevel() || 0));
+      smoothed += (next - smoothed) * 0.22;
+      el.style.setProperty("--lvl", smoothed.toFixed(3));
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [getLevel]);
+
+  /* Tallest in the middle, so the shape reads as a voice rather than a chart. */
+  const weights = [0.42, 0.72, 1, 0.72, 0.42];
+  return (
+    <div ref={ref} className="ask-meter" data-live={live} aria-hidden>
+      {weights.map((w, i) => (
+        <span key={i} style={{ "--w": w } as React.CSSProperties} />
+      ))}
     </div>
   );
 }
@@ -523,13 +554,7 @@ function PinCard({ text, kind }: { text: string; kind: PinKind }) {
   const mark = MARKS[kind] ?? MARKS.point;
   return (
     <div className="ask-pin">
-      <MynaIcon
-        name={mark.icon}
-        size={15}
-        strokeWidth={1.6}
-        className="mt-[3px] shrink-0"
-        style={{ color: "#171717" }}
-      />
+      <MynaIcon name={mark.icon} size={15} strokeWidth={1.6} className="ask-pin-mark" />
       <div className="min-w-0">
         <div className="ask-pin-label">{mark.label}</div>
         <p className="ask-pin-text">{text}</p>
@@ -545,9 +570,7 @@ function PinCard({ text, kind }: { text: string; kind: PinKind }) {
  * someone reads is Aptos (`--font-content`), and chrome that frames or
  * annotates a sentence is Satoshi (`--font-container`). So the agent's answer
  * and the student's own question are Aptos — they are the reading — while the
- * pin card, its label and the state word are Satoshi. A pinned card is a
- * container holding a sentence, which is the same call already made for
- * callouts in the reader and for the point stack in a session. */
+ * pin card, its label and the state word are Satoshi. */
 function ThreadStyles() {
   return (
     <style>{`
@@ -565,17 +588,17 @@ function ThreadStyles() {
       }
       .ask-thread::-webkit-scrollbar { width: 0; height: 0; }
 
-      /* The student's own question. Right-aligned and boxed, because in a
-         two-voice thread the only thing that reliably says who is speaking is
-         which edge the text starts from. */
+      /* The student's own question. Right-aligned and boxed in the app's own
+         selected-row grey, because in a two-voice thread the only thing that
+         reliably says who is speaking is which edge the text starts from. */
       .ask-you {
         align-self: flex-end;
         max-width: 84%;
         font-family: var(--font-content);
         font-size: 15px;
         line-height: 1.5;
-        color: #fff;
-        background: rgba(255, 255, 255, 0.12);
+        color: var(--color-ink);
+        background-color: var(--color-active);
         border-radius: 18px 18px 6px 18px;
         padding: 10px 14px;
         white-space: pre-wrap;
@@ -587,7 +610,7 @@ function ThreadStyles() {
         font-family: var(--font-content);
         font-size: 15.5px;
         line-height: 1.62;
-        color: rgba(255, 255, 255, 0.9);
+        color: var(--color-ink);
         white-space: pre-wrap;
       }
 
@@ -596,35 +619,36 @@ function ThreadStyles() {
         font-size: 13px;
         line-height: 1.6;
         text-align: center;
-        color: rgba(255, 255, 255, 0.32);
+        color: var(--color-muted);
         padding: 0 24px;
       }
 
-      /* A pin, in the light card the point stack already uses — the one thing
-         on a dark call surface that is meant to read as written down. */
+      /* A pin, in the same card-on-a-hairline the reader gives a callout. */
       .ask-pin {
         display: flex;
         gap: 11px;
+        border: 1px solid var(--color-line);
         border-radius: 16px;
         padding: 12px 14px;
-        background: rgba(255, 255, 255, 0.94);
-        box-shadow: 0 1px 2px -1px rgb(0 0 0 / 0.25), 0 12px 28px -18px rgb(0 0 0 / 0.55);
+        background-color: rgba(255, 255, 255, 0.75);
+        box-shadow: var(--shadow-lift);
         animation: ask-pin-in 380ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
       }
+      .ask-pin-mark { margin-top: 3px; flex: 0 0 auto; color: var(--color-ink); }
       .ask-pin-label {
         font-family: var(--font-container);
         font-size: 10px;
         font-weight: 600;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: #737373;
+        color: var(--color-muted);
       }
       .ask-pin-text {
         font-family: var(--font-container);
         font-weight: 500;
         font-size: 14px;
         line-height: 1.45;
-        color: #171717;
+        color: var(--color-ink);
         margin-top: 4px;
       }
       @keyframes ask-pin-in {
@@ -632,27 +656,77 @@ function ThreadStyles() {
         to   { opacity: 1; transform: none; }
       }
 
+      /* ---- the call ---- */
+      .ask-voice {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .ask-state {
+        font-family: var(--font-container);
+        font-weight: 500;
+        font-size: 13px;
+        color: var(--color-muted);
+        flex: 0 0 auto;
+        margin-top: 14px;
+      }
+      .ask-thread-voice { margin-top: 18px; }
+
+      .ask-meter {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        height: 64px;
+        flex: 0 0 auto;
+        margin-top: 8px;
+      }
+      .ask-meter span {
+        width: 7px;
+        border-radius: 999px;
+        background-color: var(--color-ink);
+        /* 10px at silence, up to 10 + 44 * weight at full voice. Height rather
+           than scaleY: a 7px bar with a full radius squashes its own caps under
+           a vertical scale, and five squashed capsules read as a glitch. */
+        height: calc(10px + (var(--w) * var(--lvl, 0) * 44px));
+        transition: height 90ms linear;
+      }
+      /* Before it connects there is no audio to follow, so the bars breathe
+         instead of sitting still — the same job the orb's idle state does. */
+      .ask-meter[data-live="false"] span {
+        animation: ask-meter-idle 1.5s ease-in-out infinite;
+        animation-delay: calc(var(--w) * -0.5s);
+      }
+      @keyframes ask-meter-idle {
+        0%, 100% { height: 10px; }
+        50%      { height: 26px; }
+      }
+
       .ask-dots { display: flex; gap: 5px; padding: 4px 2px; }
       .ask-dots span {
         width: 6px;
         height: 6px;
         border-radius: 999px;
-        background: rgba(255, 255, 255, 0.45);
+        background-color: var(--color-line-2);
         animation: ask-dot 1.1s ease-in-out infinite;
       }
       .ask-dots span:nth-child(2) { animation-delay: 0.16s; }
       .ask-dots span:nth-child(3) { animation-delay: 0.32s; }
       @keyframes ask-dot {
-        0%, 60%, 100% { opacity: 0.28; transform: translateY(0); }
+        0%, 60%, 100% { opacity: 0.35; transform: translateY(0); }
         30%           { opacity: 1;    transform: translateY(-3px); }
       }
 
       @media (prefers-reduced-motion: reduce) {
         .ask-pin { animation: none; }
-        .ask-dots span { animation: none; opacity: 0.5; }
+        .ask-dots span { animation: none; opacity: 0.6; }
+        .ask-meter span { animation: none; transition: none; }
       }
       html[data-motion="reduced"] .ask-pin { animation: none; }
-      html[data-motion="reduced"] .ask-dots span { animation: none; opacity: 0.5; }
+      html[data-motion="reduced"] .ask-dots span { animation: none; opacity: 0.6; }
+      html[data-motion="reduced"] .ask-meter span { animation: none; transition: none; }
     `}</style>
   );
 }
