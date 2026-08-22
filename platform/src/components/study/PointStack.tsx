@@ -22,6 +22,13 @@ import type { Pin } from "@/lib/session-notes";
  * job: a sentence someone reads is Aptos, and chrome that frames or annotates a
  * sentence is Satoshi. A pinned card frames a spoken sentence, so it is a
  * container — the same call already made for callouts and cards in the reader.
+ *
+ * A CARD HERE IS THE APP'S CARD (2026-08-22). These used to be white glass
+ * slabs with a heavy drop shadow, because the surface behind them was black
+ * and nothing lighter would have separated. On the app's own frosted surface
+ * that shadow is the smudge --shadow-lift exists to have stopped: same tokens
+ * as every other card in the app — --color-card on a --color-line hairline,
+ * lifted by --shadow-lift and nothing more.
  */
 
 const MARKS: Record<Pin["kind"], { icon: MynaIconName; label: string }> = {
@@ -50,7 +57,7 @@ export function PointStack({ pins }: { pins: Pin[] }) {
 
   if (!count) {
     return (
-      <p className="font-container px-6 text-center text-[13px] leading-relaxed text-white/35">
+      <p className="font-container px-6 text-center text-[13px] leading-relaxed text-muted">
         Points worth keeping will appear here as you go.
       </p>
     );
@@ -63,13 +70,8 @@ export function PointStack({ pins }: { pins: Pin[] }) {
         return (
           <div
             key={p.at + ":" + i}
-            className="point-card flex gap-3 rounded-2xl px-4 py-3.5"
+            className="point-card squircle flex gap-3 rounded-2xl border border-line bg-card px-4 py-3.5 shadow-lift"
             style={{
-              /* A light glass card on the dark surface — the reference decks
-               * all do this, and it is what keeps the points readable as TEXT
-               * while the surface behind them stays a call. */
-              background: "rgba(255,255,255,0.94)",
-              boxShadow: "0 1px 2px -1px rgb(0 0 0 / 0.25), 0 12px 28px -18px rgb(0 0 0 / 0.55)",
               /* Only the newest animates. Replaying the entrance on all of them
                * every time one lands makes the stack twitch. */
               animation: i === count - 1 ? "point-in 380ms cubic-bezier(0.2,0.8,0.2,1) both" : undefined,
@@ -80,13 +82,13 @@ export function PointStack({ pins }: { pins: Pin[] }) {
               size={16}
               strokeWidth={1.6}
               className="mt-0.5 shrink-0"
-              style={{ color: "#171717" }}
+              style={{ color: "var(--color-ink)" }}
             />
             <div className="min-w-0">
-              <div className="font-container text-[10px] font-semibold uppercase tracking-[0.08em] text-neutral-500">
+              <div className="font-container text-[10px] font-semibold uppercase tracking-[0.08em] text-muted">
                 {mark.label}
               </div>
-              <p className="font-container mt-1 text-[14px] font-medium leading-[1.45] text-neutral-900">
+              <p className="font-container mt-1 text-[14px] font-medium leading-[1.45] text-ink">
                 {p.text}
               </p>
             </div>
