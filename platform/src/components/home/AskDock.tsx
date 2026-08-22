@@ -309,6 +309,23 @@ export function AskDock() {
 
   return (
     <div className="ask-layer" data-open={open}>
+      {/* THE VEIL — the page stops, rather than fading out under a floating
+          card. Five stacked backdrop layers, each blurrier than the one behind
+          it and each masked to start lower, so the blur RAMPS DOWNWARD and is
+          brutal by the time it reaches the box; the sixth layer is a wash in
+          the app's own canvas grey that turns the last strip into a shelf for
+          the white card to sit on. Owner, 2026-08-22: "the textbox does not
+          really announce itself … make the element behind it blur downwards,
+          and then at the bottom make it a very harsh blur." */}
+      <div className="ask-veil" aria-hidden>
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
+
       <div className="ask-scrim" onClick={close} aria-hidden />
 
       <div
@@ -463,6 +480,109 @@ export function AskDock() {
         }
         .ask-layer[data-open="true"] .ask-scrim { opacity: 1; pointer-events: auto; }
 
+        /* --------------------------------------------------------------
+           THE VEIL. A PROGRESSIVE blur, not one flat pane of frosting: five
+           sibling layers, each with a bigger blur than the last and each masked
+           so it only starts partway down. Siblings paint in order and a later
+           sibling samples everything painted behind it, so the blurs COMPOUND —
+           barely anything at the top of the band, roughly 25px of blur by the
+           time it reaches the card. One 25px pane instead would draw a hard
+           horizontal seam across the page wherever it began, which is the thing
+           this feature exists to avoid.
+
+           THE RAMP IS SPENT BY 52%, NOT BY 100%, and that is the tuning that
+           matters. The band is 230px and the card's top edge is 126px into it —
+           so a ramp spread evenly over the whole height reaches its harshest
+           blur underneath the card, where nobody can see it, and the strip the
+           reader actually looks at is left half-frosted. The stops are packed
+           into the top half instead: full blur lands just as the card starts,
+           and every pixel of the ramp is above it.
+
+           Both -webkit- prefixes are load-bearing. iOS Safari ships
+           backdrop-filter and mask-image under the prefix only, and this is a
+           reader used on phones — unprefixed alone means no veil at all on the
+           devices it was built for.
+
+           It sits BELOW the scrim in the DOM, so opening the panel paints over
+           it, and it fades out anyway: once the shell is the whole viewport
+           there is no page left behind it to quiet down.
+           -------------------------------------------------------------- */
+        .ask-veil {
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          /* The card, its gap, and 104px of run-up above it for the ramp. */
+          height: calc(${DOCK_H}px + var(--ask-gap) + 104px);
+          pointer-events: none;
+          transition: opacity 300ms ease;
+        }
+        .ask-layer[data-open="true"] .ask-veil { opacity: 0; }
+
+        .ask-veil > span {
+          position: absolute;
+          inset: 0;
+          display: block;
+        }
+        .ask-veil > span:nth-child(1) {
+          -webkit-backdrop-filter: blur(1px);
+          backdrop-filter: blur(1px);
+          -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgb(0,0,0) 12%);
+          mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgb(0,0,0) 12%);
+        }
+        .ask-veil > span:nth-child(2) {
+          -webkit-backdrop-filter: blur(2px);
+          backdrop-filter: blur(2px);
+          -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 8%, rgb(0,0,0) 22%);
+          mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 8%, rgb(0,0,0) 22%);
+        }
+        .ask-veil > span:nth-child(3) {
+          -webkit-backdrop-filter: blur(5px);
+          backdrop-filter: blur(5px);
+          -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 18%, rgb(0,0,0) 32%);
+          mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 18%, rgb(0,0,0) 32%);
+        }
+        .ask-veil > span:nth-child(4) {
+          -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+          -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 28%, rgb(0,0,0) 42%);
+          mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 28%, rgb(0,0,0) 42%);
+        }
+        .ask-veil > span:nth-child(5) {
+          -webkit-backdrop-filter: blur(22px);
+          backdrop-filter: blur(22px);
+          -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 36%, rgb(0,0,0) 52%);
+          mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 36%, rgb(0,0,0) 52%);
+        }
+
+        /* The shelf. Canvas grey, NOT white — the shell is #ffffff, so a white
+           wash under it would be the one thing that undoes all of this: the
+           blur quiets the page, and then the card dissolves into the strip it
+           was meant to stand on. Grey under white is the contrast that lets the
+           box announce itself, and #f5f5f5 is the app's own canvas. */
+        .ask-veil > span:nth-child(6) {
+          background-image: linear-gradient(
+            to bottom,
+            rgba(245, 245, 245, 0) 0%,
+            rgba(245, 245, 245, 0.34) 38%,
+            rgba(245, 245, 245, 0.72) 70%,
+            rgba(245, 245, 245, 0.92) 100%
+          );
+        }
+        /* No backdrop-filter (old Android WebView): the wash carries it alone,
+           so the box still has something to sit on instead of nothing. */
+        @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+          .ask-veil > span:nth-child(6) {
+            background-image: linear-gradient(
+              to bottom,
+              rgba(245, 245, 245, 0) 0%,
+              rgba(245, 245, 245, 0.62) 42%,
+              rgba(245, 245, 245, 0.9) 74%,
+              rgba(245, 245, 245, 0.98) 100%
+            );
+          }
+        }
+
         /* THE MORPH. Four insets and a radius; nothing else moves.
 
            The border and the radius are on THIS element, together. See the
@@ -478,7 +598,10 @@ export function AskDock() {
           display: flex;
           flex-direction: column;
           overflow: hidden;
-          border: 1px solid var(--color-line);
+          /* --color-line-2, a step darker than the app's usual hairline. The
+             box floats over a blurred shelf now rather than sitting in the
+             page, and at #dfdfdf its top edge dissolved into the wash. */
+          border: 1px solid var(--color-line-2);
           border-radius: 26px;
           /* White, not --color-card. That token is #fcfcfb and is meant for a
              card sitting on the grey canvas; this one floats on the frosted
@@ -489,10 +612,16 @@ export function AskDock() {
              pages away from the comment that caused it.) */
           background-color: #ffffff;
           pointer-events: auto;
-          /* Deliberately deeper than --shadow-lift, which is sized for a card
-             sitting IN the page. This one floats over scrolling content and has
-             to read as above it. */
-          box-shadow: 0 1px 2px -1px rgb(0 0 0 / 0.06), 0 12px 32px -12px rgb(0 0 0 / 0.16);
+          /* THREE STOPS, not two, and much deeper than --shadow-lift — that
+             token is sized for a card sitting IN the page, and this one has to
+             read as hovering over it. A contact shadow to seat the edge, a
+             mid-throw to give it height, and a wide dark spread that separates
+             it from the blurred shelf underneath. Owner, 2026-08-22: the box
+             "does not really announce itself … also add a shadow to it." */
+          box-shadow:
+            0 1px 2px -1px rgb(0 0 0 / 0.12),
+            0 8px 18px -6px rgb(0 0 0 / 0.18),
+            0 26px 50px -20px rgb(0 0 0 / 0.34);
           transition:
             top var(--ask-morph) var(--ask-ease),
             bottom var(--ask-morph) var(--ask-ease),
@@ -672,11 +801,13 @@ export function AskDock() {
           .ask-shell,
           .ask-body,
           .ask-scrim,
+          .ask-veil,
           .ask-composer { transition: none !important; }
         }
         html[data-motion="reduced"] .ask-shell,
         html[data-motion="reduced"] .ask-body,
         html[data-motion="reduced"] .ask-scrim,
+        html[data-motion="reduced"] .ask-veil,
         html[data-motion="reduced"] .ask-composer { transition: none !important; }
       `}</style>
     </div>
