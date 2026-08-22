@@ -18,26 +18,36 @@
      Use it as `font-container`; `font-content` stays the reading. */
   --font-container: var(--font-satoshi), var(--font-inter), system-ui, sans-serif;
 
-  /* THE TITLE OF A STEP, and only that. Familjen Grotesk at 600.
+  /* THE TITLE OF A STEP, and only that. Urbanist at 600 (2026-08-22).
 
-     BACK ON FAMILJEN, SAME DAY IT LEFT (owner, 2026-08-08: "i want to move away
-     from familjen font titles i want to use bricolage grotesk", then, having
-     seen it, "bring the title back to familjen"). Bricolage is a display face
-     with real personality in its letterforms, and at 30px directly over a
-     column of Aptos it announced itself instead of the title.
+     THE FOURTH FACE THIS TOKEN HAS WORN, AND THE HISTORY IS THE ARGUMENT FOR
+     THE TOKEN. Familjen 500 → Bricolage 600 → Familjen 600 (all on 2026-08-08:
+     "i want to move away from familjen font titles i want to use bricolage
+     grotesk", then, having seen it, "bring the title back to familjen") →
+     Urbanist 600 now, off a font post the owner sent: "take a break from
+     Poppins and Montserrat". Every one of those was this single line.
 
-     THE TOKEN STAYS, and that is the point of naming tokens for the job. The
-     face here changed twice in one afternoon and both changes were this one
-     line — which is exactly the argument the --font-mark / --font-hero-meta
-     block below makes. It resolves to the same stack as --font-display today
-     and is still not the same thing: that token is every heading and all the
-     app chrome, and a step title is one element somebody is deliberately
-     choosing a face for.
+     WHY URBANIST AND NOT ANOTHER BRICOLAGE. What went wrong last time was not
+     the weight and not the idea of leaving Familjen — it was that a step title
+     sits directly over a column of Aptos it must not compete with, and a
+     display face with that much character in its letterforms announces itself
+     instead of the words. Urbanist is the quiet kind of geometric: low
+     contrast, near-circular bowls, almost no quirk outside the a and the y. It
+     changes the title without asking to be looked at.
 
-     THE WEIGHT DID NOT COME BACK. It was 500 before this morning and stays at
-     600: the complaint that started all this was that titles "aren't bold or
-     confident", and only the typeface half of the answer was withdrawn. */
-  --font-title: var(--font-familjen), var(--font-inter), ui-sans-serif, sans-serif;
+     Registered in layout.tsx at 600 alone. Corey Hu, SIL Open Font Licence.
+
+     THIS IS NOT --font-display, and the two resolving differently now makes
+     that visible where before it was only an argument: that token is every
+     heading and all the app chrome, and this is the one element somebody keeps
+     deliberately choosing a face for.
+
+     THE WEIGHT HAS NOT MOVED SINCE 2026-08-08. It was 500 that morning and
+     stays at 600: the complaint that started all this was that titles "aren't
+     bold or confident", and only the typeface half of the answer was ever
+     withdrawn. */
+  --font-title: var(--font-urbanist), var(--font-familjen), var(--font-inter), ui-sans-serif,
+    sans-serif;
 
   /* THE FRONT DOOR ONLY (2026-08-06), measured off the owner's Framer design.
      Named for the job they do on that page rather than for the typeface, so a

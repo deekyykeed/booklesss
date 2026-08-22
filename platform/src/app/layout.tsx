@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Familjen_Grotesk, Rubik, Bricolage_Grotesque } from "next/font/google";
+import { Inter, Familjen_Grotesk, Rubik, Bricolage_Grotesque, Urbanist } from "next/font/google";
 import localFont from "next/font/local";
 import { RegisterSW } from "@/components/RegisterSW";
 import { DesktopGate } from "@/components/DesktopGate";
@@ -136,6 +136,33 @@ const bricolage = Bricolage_Grotesque({
   display: "swap",
 });
 
+/* URBANIST — the step title's face as of 2026-08-22 (owner's pick, off a font
+ * post: "take a break from Poppins and Montserrat"). Corey Hu, SIL Open Font
+ * Licence, so it costs nothing to ship and nothing to keep.
+ *
+ * IT IS THE FOURTH FACE TRIED ON --font-title AND THE CASE IS THE ONE BRICOLAGE
+ * LOST. A step title sits directly over a column of Aptos it must not compete
+ * with; Bricolage came off it the same afternoon it went on because a face with
+ * that much personality in its letterforms announces itself instead of the
+ * words. Urbanist is the opposite kind of geometric — low contrast, near-circular
+ * bowls, almost no quirk outside the a and the y — so it can be a title without
+ * becoming the thing you look at. That is the whole reason to expect this one to
+ * stick where Bricolage did not.
+ *
+ * 600 AND ONLY 600, because `font-title` is drawn at `font-semibold` in both
+ * places that use it (the reader's <h1> at 30px, the session screen's at 15px)
+ * and nowhere else. Urbanist is a variable family upstream with nine weights;
+ * naming the one stop takes a static instance instead of shipping an axis to
+ * every reader on Zambian mobile data. If the title ever wants a second weight,
+ * add the stop here in the same edit — and if the title goes back to Familjen,
+ * delete this block, or the app keeps fetching a face nothing draws. */
+const urbanist = Urbanist({
+  subsets: ["latin"],
+  weight: ["600"],
+  variable: "--font-urbanist",
+  display: "swap",
+});
+
 /* The origin every piece of metadata is made absolute against — og:image,
  * og:url, canonical. A crawler arrives with no origin to resolve a relative
  * path against, so this has to be a real host.
@@ -195,7 +222,7 @@ export default function RootLayout({
   const document = (
     <html
       lang="en"
-      className={`${inter.variable} ${familjen.variable} ${aptos.variable} ${satoshi.variable} ${burbank.variable} ${rubik.variable} ${bricolage.variable} h-full`}
+      className={`${inter.variable} ${familjen.variable} ${aptos.variable} ${satoshi.variable} ${burbank.variable} ${rubik.variable} ${bricolage.variable} ${urbanist.variable} h-full`}
     >
       <head>
         {/* Sets data-motion before first paint, so a reader who asked for a
