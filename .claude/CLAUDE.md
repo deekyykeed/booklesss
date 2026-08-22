@@ -521,6 +521,91 @@ with the design system, so a student can tell which door they walked through
 before reading a word. The orb is **CSS, not an asset and not three.js**
 (`components/study/Orb.tsx`): this is read on Zambian mobile data.
 
+### The Ask Box — the third door, on the home screen
+
+**A rounded box docks at the bottom of `/dashboard`** (owner, 2026-08-22). Tap
+the text and it opens into a full-screen panel with the keyboard already up; tap
+the microphone and the same box becomes a call. A session is a *scripted* walk
+through one lesson group; this is the unscripted one — a student taps it because
+something is on their mind.
+
+**ONE ELEMENT, TWO STATES.** `home/AskDock.tsx` is a single fixed shell that
+animates its four insets and its radius from a 58px pill to the viewport, with
+two background skins (cream pill, dark call surface) cross-faded underneath
+because a gradient cannot be transitioned. **Nothing is remounted on the way,
+and that is load-bearing rather than pretty**: the composer inside the pill is
+the composer at the bottom of the open panel, so a tap focuses a real
+`<textarea>` inside the student's own gesture and iOS opens the keyboard. Mount
+the input as part of the opening instead and the focus call lands outside the
+gesture, which Safari answers by doing nothing.
+
+The easing is **`cubic-bezier(0.32, 0.72, 0, 1)`, deliberately not the app's
+usual `(0.16, 1, 0.3, 1)`** — that curve is right for a 200px sweep across an
+ActionBar and reads as a jump cut over 800px of screen. Measured, not guessed: a
+per-frame probe had the house curve 71% of the way home 119ms into a 560ms
+transition.
+
+| File | Job | Cost on first paint |
+|---|---|---|
+| `home/AskDock.tsx` | the box, the morph, the composer | plain React |
+| `home/ask-engine.tsx` | the ElevenLabs conversation | **dynamic import** |
+| `home/ask-types.ts` | the contract between them | types only |
+| `lib/ask.ts` | the prompt, **client-safe** unlike `lib/session.ts` | reads the nav, not the prose |
+
+**NOTHING CONNECTS UNTIL THERE IS SOMETHING TO SAY.** Opening the panel costs no
+network — the engine mounts on the first sent message or the first tap of the
+mic. Two reasons, the second being the real one: the SDK carries a WebRTC stack
+that has no business in the dashboard bundle, and a conversation opened because
+somebody glanced at the box is a conversation the account is billed for.
+`ask-types.ts` exists so `AskDock` can never import the engine as a value.
+
+**TWO TRANSPORTS, ONE AGENT, AND THEY ARE NOT INTERCHANGEABLE.** A call is
+WebRTC on a conversation token; a typed conversation is a **signed WebSocket**
+with `textOnly` — which is what stops the account paying to synthesise speech
+nobody will hear, and it is billed **per message (~$0.003) rather than per minute
+(~$0.08)**. `/api/agent/token` mints whichever the caller asks for
+(`?mode=text`); the SDK will not convert one into the other, so switching means
+remounting the engine, which is exactly what the mic button does. Typing into a
+*live call* is different and allowed — `sendUserMessage` sends it as a user turn
+and the agent answers out loud.
+
+A typed answer **streams** (`onAgentChatResponsePart`) and is replaced by the
+finished text when `agent_response` lands. A call keeps **no transcript** — only
+the pinned points — for the reason `study/PointStack.tsx` gives: a transcript is
+the reading this replaces, in pieces.
+
+⚠️ **THREE TRAPS, ALL PAID FOR ON 2026-08-22, none visible from reading the code:**
+
+- **`Permissions-Policy: microphone=()` denies the microphone to THIS origin
+  too.** An empty allowlist is not "no opinion", it is "nobody, including self",
+  so `getUserMedia` rejects with `NotAllowedError` *after* the student has said
+  yes in the browser's own prompt. Voice sessions could not open a microphone in
+  production from the day the headers shipped; the app said "Booklesss needs your
+  microphone", which is the one message that makes it look like the student's
+  fault. It is `microphone=(self)` now.
+- **`connect-src` must name BOTH ElevenLabs hosts**: `api.elevenlabs.io` for the
+  typed socket and **`livekit.rtc.elevenlabs.io`** for a call's signalling and
+  media. That second host appears nowhere in this repo — our server mints the
+  token and the SDK is handed the URL — so it cannot be found by reading the
+  code. It was found by listening for `securitypolicyviolation` during a real
+  call, which is the method to reuse if a regional host ever appears. Named
+  hosts, not `*.elevenlabs.io`: this directive is the exfiltration guard.
+- **A React StrictMode double-mount can cancel the only run.** A `useEffect`
+  that starts a connection behind a `started` ref must **clear that ref in its
+  cleanup**. Otherwise the first run marks itself started and is cancelled by its
+  own teardown, and the second returns early because the ref says a run already
+  happened — no socket, no request, no error, and it looks exactly like an agent
+  that will not answer.
+
+**And the setup script was writing its permissions into a field the API does not
+read.** `platform_settings.client_overrides` returns 200 and stores nothing; the
+field read back is **`platform_settings.overrides.conversation_config_override`**,
+and `first_message` is a **sibling** of `prompt`, not a key inside it — nested
+wrongly, the whole `prompt` subtree is discarded, so a PATCH meant to add one
+permission silently removes the one that was working. `setup-elevenlabs.mjs` now
+reads the agent back and prints what actually stuck. **A 200 from that endpoint
+says the request parsed, not that the setting exists.**
+
 ### Where a Student's Answers Live — and why there are three copies
 
 > **Read this section together with "Where a Student's Studying Lives" below.**
