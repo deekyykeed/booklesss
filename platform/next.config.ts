@@ -75,8 +75,32 @@ const CSP = [
   "font-src 'self' data:",
   // data: for inlined SVG and the OG card; blob: for canvas captures.
   "img-src 'self' data: blob:",
-  // THE ONE THAT MATTERS: where script may send data. Us, and Supabase.
-  `connect-src 'self' ${SUPABASE_ORIGIN} ${SUPABASE_ORIGIN.replace("https://", "wss://")}`.trim(),
+  /* THE ONE THAT MATTERS: where script may send data. Us, Supabase, and the
+     two hosts a conversation actually dials.
+ 
+     ⚠️ VOICE NEEDS BOTH ELEVENLABS HOSTS, and the failure is a console-only
+     refusal that surfaces as "That didn't connect":
+       · `api.elevenlabs.io` — the signed WebSocket a TYPED conversation runs on;
+       · `livekit.rtc.elevenlabs.io` — the WebRTC signalling and media host a
+         CALL is handed by the conversation token. Our own server mints the
+         token, so this host never appears in our code and cannot be found by
+         reading it — it was found by listening for `securitypolicyviolation`
+         during a real call.
+ 
+     Named hosts rather than `*.elevenlabs.io` on purpose: this directive is the
+     exfiltration guard, and the narrower it stays the more it is worth. If
+     ElevenLabs ever hands out a regional media host, it will announce itself as
+     a connect-src violation naming the host — add that one, do not widen to the
+     wildcard. */
+  [
+    "connect-src 'self'",
+    SUPABASE_ORIGIN,
+    SUPABASE_ORIGIN.replace("https://", "wss://"),
+    "https://api.elevenlabs.io wss://api.elevenlabs.io",
+    "https://livekit.rtc.elevenlabs.io wss://livekit.rtc.elevenlabs.io",
+  ]
+    .filter(Boolean)
+    .join(" "),
   // No Flash, no <object>, no <embed>.
   "object-src 'none'",
   // Stops injected markup rewriting every relative URL on the page.
@@ -103,9 +127,23 @@ const SECURITY_HEADERS = [
   /* Send the full URL within our own site, only the origin off it — so a step
      path never leaks into a third party's logs. */
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  /* The app asks for none of these. Denying them means an injected iframe or
-     script cannot ask on our behalf. */
-  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()" },
+  /* ⚠️ `microphone=(self)`, NOT `microphone=()`, AND THAT IS THE WHOLE FEATURE.
+     An empty allowlist denies the capability to EVERY origin including this
+     one, so `navigator.mediaDevices.getUserMedia({ audio: true })` rejects with
+     `NotAllowedError: Permission denied` even after the student has said yes in
+     the browser's own prompt. This line was written when nothing here asked for
+     a device and was not revisited when voice sessions shipped, so a call could
+     not open a microphone in production at all — the app showed "Booklesss
+     needs your microphone", which is the one message that makes it look like
+     the student's fault.
+
+     Everything else stays denied, and `self` is as narrow as this can be: a
+     third-party iframe still cannot ask on our behalf, because it is not this
+     origin. */
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(self), geolocation=(), payment=(), usb=()",
+  },
 ];
 
 const nextConfig: NextConfig = {

@@ -171,6 +171,12 @@ const ICONS = [
   "microphone-off",
   "telephone-off",
   "pencil",
+  /* The home screen's ask box (components/home/AskDock). Its one round button
+     is a microphone, a send arrow or a hang-up depending on what is happening,
+     so the send mark has to hold its own against `microphone` at the same 40px
+     — an arrow rather than a paper plane for that reason, and UP rather than
+     right because the thread it joins is above it. */
+  "arrow-up",
 ];
 
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "components", "icons", "myna.tsx");

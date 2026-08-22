@@ -192,6 +192,75 @@ const PLACEHOLDER_PROMPT =
   "want to go over. Never mention exams, marks or revision, and never name a " +
   "school or a course code.";
 
+/* THE LOAD-BEARING PERMISSION, in one place because two things need it.
+ *
+ * `prompt` + `first_message` are what let one agent serve every session and
+ * every question asked from the home screen — the brief travels up per call.
+ * `text_only` is what lets the ask box hold a TYPED conversation without the
+ * account paying to synthesise speech nobody will hear.
+ *
+ * Without it, an override is refused and the SOCKET IS CLOSED: code 1008,
+ * "Override for field 'prompt' is not allowed by config". On WebRTC the same
+ * refusal is quieter — the call runs on PLACEHOLDER_PROMPT, which looks like
+ * the agent "not knowing the material" rather than like a settings problem.
+ * Either way it is the first thing to check.
+ *
+ * ⚠️ THE FIELD IS `platform_settings.overrides.conversation_config_override`,
+ * AND THE SHAPE MIRRORS THE AGENT'S OWN CONFIG. Two traps, both paid for on
+ * 2026-08-22:
+ *
+ *   · this was written as `client_overrides.conversation_config`. A PATCH with
+ *     that key returns 200 and stores NOTHING under it — the name the API reads
+ *     back is the one above.
+ *   · `first_message` is a SIBLING of `prompt`, not a key inside it. Written as
+ *     `prompt: { prompt: true, first_message: true }` the whole `prompt` subtree
+ *     is discarded, so `prompt.prompt` lands as FALSE — which is how a PATCH
+ *     meant to add one permission silently removed the one that was working.
+ *
+ * Which is why ensureAgent reads the agent back and prints what actually
+ * stuck. A 200 from this endpoint says the request parsed, not that the
+ * setting exists. */
+const OVERRIDES = {
+  conversation_config_override: {
+    agent: { prompt: { prompt: true }, first_message: true },
+    conversation: { text_only: true },
+  },
+};
+
+/** What the agent really has, straight from the API. `null` if it cannot say. */
+async function readOverrides(agentId) {
+  const res = await call("/convai/agents/" + agentId);
+  const o = res.json?.platform_settings?.overrides?.conversation_config_override;
+  if (!o) return null;
+  return {
+    prompt: o.agent?.prompt?.prompt === true,
+    first_message: o.agent?.first_message === true,
+    text_only: o.conversation?.text_only === true,
+  };
+}
+
+/** Sets the permissions and REPORTS WHAT STUCK, never what was sent. */
+async function confirmOverrides(agentId) {
+  const patch = await call("/convai/agents/" + agentId, {
+    method: "PATCH",
+    body: JSON.stringify({ platform_settings: { overrides: OVERRIDES } }),
+  });
+  if (!patch.ok) {
+    console.log("  ⚠ override PATCH failed (" + patch.status + "): " + patch.text.slice(0, 200));
+  }
+  const got = await readOverrides(agentId);
+  if (!got) {
+    console.log("  ⚠ could not read the agent's overrides back — check them in the dashboard");
+    return;
+  }
+  const missing = Object.entries(got).filter(([, v]) => !v).map(([k]) => k);
+  console.log(
+    missing.length
+      ? "  ⚠ overrides NOT set: " + missing.join(", ") + " — sessions or the ask box will not work"
+      : "  · overrides confirmed (prompt, first_message, text_only)",
+  );
+}
+
 async function ensureAgent(toolId) {
   const list = await call("/convai/agents?page_size=100");
   if (list.ok) {
@@ -199,6 +268,12 @@ async function ensureAgent(toolId) {
     const found = agents.find((a) => a?.name === AGENT_NAME);
     if (found?.agent_id) {
       console.log("  · agent " + AGENT_NAME + " already exists → " + found.agent_id);
+      /* REPAIR, don't just report. This script's contract is that re-running it
+       * is safe and brings the account up to date; an agent created before
+       * text_only was needed would otherwise stay half-configured forever, and
+       * the symptom — a typed conversation whose socket closes on 1008 — points
+       * at the app rather than at a setting. */
+      await confirmOverrides(found.agent_id);
       return { id: found.agent_id, created: false };
     }
   }
@@ -223,13 +298,10 @@ async function ensureAgent(toolId) {
         max_duration_seconds: 1200,
       },
     },
-    platform_settings: {
-      /* THE LOAD-BEARING SETTING. Without it, overrides are ignored silently
-       * and every session gets PLACEHOLDER_PROMPT. */
-      client_overrides: {
-        conversation_config: { agent: { prompt: { prompt: true, first_message: true } } },
-      },
-    },
+    /* See OVERRIDES above — the permission without which every override is
+       refused. Read back and reported by confirmOverrides after creation, for
+       the reason documented there. */
+    platform_settings: { overrides: OVERRIDES },
   };
 
   const res = await call("/convai/agents/create", { method: "POST", body: JSON.stringify(body) });
@@ -237,6 +309,7 @@ async function ensureAgent(toolId) {
     throw new Error("agent create failed (" + res.status + "): " + res.text.slice(0, 400));
   }
   console.log("  · agent " + AGENT_NAME + " created → " + res.json.agent_id);
+  await confirmOverrides(res.json.agent_id);
   return { id: res.json.agent_id, created: true };
 }
 

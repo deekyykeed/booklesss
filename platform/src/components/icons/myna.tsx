@@ -77,7 +77,8 @@ export type MynaIconName =
   | "microphone"
   | "microphone-off"
   | "telephone-off"
-  | "pencil";
+  | "pencil"
+  | "arrow-up";
 
 /* Path bodies only — a 24-grid viewBox is added by the component. Each keeps
  * stroke="currentColor", so an icon takes the colour of the text around it. */
@@ -222,6 +223,8 @@ const BODIES: Record<MynaIconName, string> = {
     '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m7.565 16.435l3.119-3.119L21 3M10.684 13.316c1.53 1.556 3.701 2.484 4.916 1.205c1.334-1.404 3.075.038 4.342.767c2.536 1.46-.004 5.451-2.214 5.67c-3.657.36-7.376-1.606-10.163-4.523M3 21l4.565-4.565M5.5 13.845c-1.447-2.193-2.374-4.634-2.497-6.93c-.115-2.139 3.666-5.501 5.389-3.066c.918 1.298 2.576 3.064 1.108 4.609c-.493.519-.628 1.186-.51 1.897"/>',
   "pencil":
     '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.774 10.221L8.801 20.2a2.73 2.73 0 0 1-1.933.8H3v-3.844c0-.724.288-1.419.8-1.931m5 4.974l-5-4.974m0 0l9.983-9.995m0 0l1.426-1.428a2.733 2.733 0 0 1 3.867-.001l1.126 1.127a2.733 2.733 0 0 1 0 3.865l-1.428 1.428M13.783 5.23l4.991 4.991"/>',
+  "arrow-up":
+    '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19.5v-15m6 5.625L12 4.5l-6 5.625"/>',
 };
 
 /**

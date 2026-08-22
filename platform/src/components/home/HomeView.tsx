@@ -442,7 +442,10 @@ export function HomeView({
        signed-out strangers (the Google OAuth branding fix), and it moved to
        the real landing at "/" the same day when the dashboard moved to
        /dashboard. This page is only ever the student's own home now. */
-    <div className="mx-auto w-full max-w-[900px] px-4 pb-10 pt-28 md:px-6 md:pt-36">
+    /* pb-28, up from pb-10: the ask box is fixed to the bottom of the viewport
+       (AskDock), so the last thing on the page — the privacy/terms line — would
+       otherwise sit permanently underneath it with no way to scroll past. */
+    <div className="mx-auto w-full max-w-[900px] px-4 pb-28 pt-28 md:px-6 md:pt-36">
       <h1 className="font-display text-[30px] font-medium leading-[1.2] tracking-[-0.02em] text-ink">
         {/* The name is no longer appended here. Each greeting decides where it
             goes — front, back, or not at all — so the line reads as written
