@@ -5,7 +5,6 @@ import { useMemo } from "react";
 import { gateStepLink } from "@/lib/account";
 import type { CourseMeta } from "@/lib/courses";
 import { labelFor, pathForId } from "@/lib/course";
-import { sessionForLesson } from "@/lib/session-nav";
 import { courseStreak, studyHistory, type StudyDay } from "@/lib/progress";
 import { coursePerformance } from "@/lib/performance";
 import { MynaIcon } from "@/components/icons/myna";
@@ -80,14 +79,12 @@ export function CourseCard({
 
   /* Where the card's one button goes, and what it calls the destination.
    *
-   * The session covering `next` — the guided call — with the step page as a
-   * fallback that should never fire. Named here rather than inline because
+   * The step they are on — the reading. Named here rather than inline because
    * the href, the click gate and the aria-label must all agree on one
    * destination; three call sites computing it separately is how a gate ends
    * up guarding a different page than the link opens. */
-  const session = useMemo(() => sessionForLesson(next), [next]);
-  const openHref = session ? session.path : pathForId(next);
-  const openLabel = session ? session.title : labelFor(next);
+  const openHref = pathForId(next);
+  const openLabel = labelFor(next);
 
   return (
     <div className="course-card squircle flex flex-col p-4 lg:p-5">
@@ -167,18 +164,15 @@ export function CourseCard({
             showing how far through the course they are. It is also the card's
             only link — the rest of the card is a display, not a target.
 
-            IT OPENS THE SESSION, NOT THE STEP (owner, 2026-08-21: "I want to
-            look into my more immersive experience"). The card is the front
-            door to a course from the home page, and pointing the front door at
-            a page of prose is what made the product the reading. It now opens
-            the call covering the step they would have resumed — same place in
-            the course, different way through it. The reading is still one tap
-            further in, from the course page and from the end of the call.
-
-            Falls back to the step page if a step somehow has no session, which
-            should be impossible — every step sits inside a group and every
-            group with steps is a session — but a card whose only button 404s
-            is not the place to find out. */}
+            IT OPENS THE STEP, NOT THE SESSION (owner, 2026-08-23). It briefly
+            opened the guided call instead (2026-08-21) and that is withdrawn:
+            the call surface is dark with a green orb where the whole app is
+            cream, so the home screen's front door handed the student a page
+            that does not look like the product they are in. Same reaction the
+            ask box got — "that green, or whatever colour you keep adding, does
+            not match the actual UI that I already have" — reached a second
+            time and from the other direction. The voice door is the ask box on
+            the home screen now; it wears the app's own palette. */}
         <ActionBar
           href={openHref}
           /* The free-step gate (lib/account): a fresh device's first Start is
@@ -190,13 +184,11 @@ export function CourseCard({
           /* The bar's fill in the card's own hue — the same colour its Spark
              draws, so curve and fill read as one course (owner, 2026-08-08). */
           progressTone={tone}
-          prefix={completed ? "Done ✓ · " : started ? "Resume · " : "Listen · "}
+          prefix={completed ? "Done ✓ · " : started ? "Resume · " : "Start · "}
           label={
             completed
               ? `${course.title} is complete — go through it again`
-              : `${started ? "Resume" : "Start"} ${course.title} — a guided session on ${
-                  hydrated ? openLabel : ""
-                }`
+              : `${started ? "Resume" : "Start"} ${course.title} at ${hydrated ? openLabel : ""}`
           }
           className="mt-3"
         >

@@ -13,7 +13,6 @@ import type { CourseMeta } from "@/lib/courses";
 import { useProgress } from "@/lib/progress";
 import { sessionsUnder } from "@/lib/session-nav";
 import { CompletionRing } from "@/components/reader/CompletionRing";
-import { MynaIcon } from "@/components/icons/myna";
 
 /* ------------------------------------------------------------------ *
  * The course home, read like the index page of a documentation site:
@@ -107,9 +106,15 @@ export function StudentDashboard({ course }: { course: CourseMeta }) {
                   {done}/{u.lessons.length}
                 </span>
               </div>
-              {/* Each run of steps offers both doors — owner's call,
-                  2026-08-21: Listen and Read side by side, the student picks.
-                  The session name is suppressed when the session IS the unit,
+              {/* The groups still structure the page — this is the course's
+                  own tree, not a session artefact — but the Listen pill that
+                  sat on each of them is GONE (owner, 2026-08-23). It opened
+                  the dark call surface, which is the one page in the app that
+                  does not wear the app's palette, and the same call from the
+                  course card went with it. The voice door is the ask box on
+                  the home screen.
+
+                  The group name is suppressed when the group IS the unit,
                   because the heading directly above already says it and a row
                   that repeats the thing you just chose is noise (see the
                   standing no-redundant-context rule). */}
@@ -125,13 +130,6 @@ export function StudentDashboard({ course }: { course: CourseMeta }) {
                         {s.title}
                       </span>
                     )}
-                    <Link
-                      href={s.path}
-                      className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-line-2 px-3 py-1 text-xs font-medium text-ink transition hover:bg-active"
-                    >
-                      <MynaIcon name="microphone" size={13} strokeWidth={1.7} />
-                      Listen · {s.minutes} min
-                    </Link>
                   </div>
                   <ul className="flex flex-col gap-1">
                     {s.stepIds.map((id) => (
