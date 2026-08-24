@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Familjen_Grotesk, Rubik, Bricolage_Grotesque } from "next/font/google";
 import localFont from "next/font/local";
 import { RegisterSW } from "@/components/RegisterSW";
+import { AppEnter } from "@/components/AppEnter";
+import { MorphSurface } from "@/components/MorphSurface";
 import { DesktopGate } from "@/components/DesktopGate";
 import { IdentityAssignment } from "@/components/identity/IdentityAssignment";
 import { AccountSignal } from "@/components/auth/AccountSignal";
@@ -233,6 +235,16 @@ export default function RootLayout({
         {/* Booklesss is a phone app — a wide viewport gets sent to its phone.
             Mounted at the root for the same reason as the identity assignment. */}
         <DesktopGate />
+        {/* Stamps <html data-entered> once the opening stagger has landed, so
+            the app arrives smoothly on an open or a reload and does NOT
+            re-stage itself on every client-side navigation. See AppEnter. */}
+        <AppEnter />
+        {/* The course card growing into its voice screen. Mounted HERE, at the
+            root, and that is the whole reason it is a module store rather than
+            component state: the router unmounts the dashboard tree mid-morph,
+            so an overlay rendered beside the card would vanish at exactly the
+            moment it is meant to be covering the handover. See lib/morph. */}
+        <MorphSurface />
         <RegisterSW />
         <SpeedInsights />
       </body>

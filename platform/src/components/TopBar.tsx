@@ -34,7 +34,7 @@ export function TopBar({
   breadcrumbSlot?: React.ReactNode;
 }) {
   return (
-    <header className="app-header fixed inset-x-0 top-0 z-50 flex h-12 items-center justify-between gap-2.5 border-b border-line px-4">
+    <header className="app-header app-enter-top fixed inset-x-0 top-0 z-50 flex h-12 items-center justify-between gap-2.5 border-b border-line px-4">
       {/* left cluster — the logo lockup sits apart from the breadcrumb */}
       <div className="flex min-w-0 items-center gap-5">
         {/* logo lockup: the wordmark IS the logo — no mark. Mobile adds the

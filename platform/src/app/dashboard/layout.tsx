@@ -36,7 +36,22 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
         </div>
         <TopBar orgName="Bklsss" />
         <MobileScrim />
-        <main className="content-frame no-rightbar no-leftbar">
+        {/* THE APP ARRIVES RATHER THAN APPEARING (owner, 2026-08-23: opening
+            or reloading "shouldn't just feel like it's just kind of jumped
+            onto the screen"). Index 2 puts the content behind the header,
+            which carries `app-enter-top` on its own element — see globals.css
+            for why the chrome's index is a default on the class rather than
+            passed in, and AppEnter for why the whole thing runs once per
+            document instead of on every navigation back here.
+
+            The ask box is deliberately NOT staggered. It is `position: fixed`
+            and already animates its own insets and radius; a second transform
+            on the same element during the opening would fight the morph it
+            plays when tapped. */}
+        <main
+          className="content-frame no-rightbar no-leftbar app-enter"
+          style={{ ["--enter-i" as string]: 2 }}
+        >
           <div id="content-surface" className="content-surface no-scrollbar">
             {children}
           </div>

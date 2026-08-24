@@ -929,6 +929,33 @@
        difference is a single point of alpha, invisible as a colour and only
        ever felt as which surface is the one you press. */
     background-color: rgba(255, 255, 255, 0.99);
+    /* LIT FROM ABOVE (owner, 2026-08-23: "add some gradient to the course card
+       so that it actually looks good in a sort of 3D way").
+       Three layers, painted back to front, and every one of them is a light
+       cue rather than a decoration:
+
+       1. THE HUE POOLS ON THE FLOOR. The Spark already washes the course's own
+          colour across the bottom RIGHT half of the card (see Spark's `from`
+          default of 0.5). This puts the same hue in the bottom LEFT, so the two
+          meet and the card reads as standing on a floor of its own colour
+          rather than as a chart stuck to a white box. Deliberately weak — the
+          curve is the figure, this is the room it sits in.
+       2. THE SPECULAR, TOP LEFT. A soft white bloom off the top edge. This is
+          the layer that does the actual 3D work: a surface with no brightest
+          point reads as flat no matter how the rest of it ramps.
+       3. THE BODY, ON A DIAGONAL. 163deg rather than straight down, so the
+          falloff crosses the card instead of banding it. #ffffff to #f1f0ec —
+          a warm grey, borrowed off --color-canvas's neighbourhood, because a
+          neutral grey bottom against this cream page reads as dirty.
+
+       `--card-tone` is set inline per course by CourseCard, and falls back to
+       the same violet lib/tones.ts uses for an unclaimed course, so the class
+       is never dependent on a caller remembering to pass it. */
+    --card-tone: #4a3aa7;
+    background-image:
+      radial-gradient(130% 96% at 4% 112%, color-mix(in oklab, var(--card-tone) 11%, transparent) 0%, transparent 58%),
+      radial-gradient(78% 52% at 20% -10%, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0) 72%),
+      linear-gradient(163deg, #ffffff 0%, #fbfbfa 44%, #f1f0ec 100%);
     /* ONE SOFT SHADOW, NOT TWO (owner, 2026-08-07: "the shadow is too harsh
        close to the card itself and it looks like a second border").
        It was `0 1px 2px rgba(0,0,0,.06)` PLUS a wide one. That first layer is
@@ -941,19 +968,591 @@
        only ever appears BELOW and AWAY from the edge, and the card lifts
        without anything touching its outline. */
     box-shadow: 0 10px 28px -10px rgba(0, 0, 0, 0.14);
-    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
   }
-  /* The card lifts only when the pointer is over the one thing that is
-     clickable. It used to lift on hovering anywhere, which was honest when the
-     whole card was a link and is a lie now that only the button is: a card that
-     responds to your pointer is telling you to press it. */
-  .course-card:has(.action-bar:hover) {
+  /* THE WHOLE CARD LIFTS AGAIN, and the rule it reverses is worth stating.
+     On 2026-08-07 the lift was narrowed to `:has(.action-bar:hover)` because
+     the card had TWO destinations — a stretched link to the course home and a
+     Resume button inside it going somewhere else — so a card that responded to
+     the pointer anywhere was promising a target that a tap a few pixels off
+     would miss.
+     It has ONE destination now (owner, 2026-08-23: "when I tap the course card
+     … the whole thing grows into a full-screen page"), and the card itself is
+     that target. A surface you can press anywhere should say so everywhere. */
+  .course-card:hover {
     border-color: var(--color-line-2);
     /* The same single soft shadow, lifted — see the rule above for why the
        tight contact layer is gone from both states. Keeping it here would put
        the double border back the moment anybody hovered. */
     box-shadow: 0 14px 32px -10px rgba(0, 0, 0, 0.2);
   }
+  /* Pressed. 0.4% is almost nothing as a measurement and is the whole of the
+     tactility on a phone, where there is no hover to have felt first: the card
+     gives under the thumb and the shadow tightens with it, which is the only
+     moment the drop shadow is doing literal work rather than atmosphere.
+     `transform` is on the transition list for this alone — a card that eases
+     back up over 200ms reads as sprung; one that snaps reads as broken. */
+  .course-card[data-pressable="true"]:active {
+    transform: scale(0.994);
+    box-shadow: 0 6px 18px -10px rgba(0, 0, 0, 0.16);
+  }
+  /* The card is a target, so its own cursor says so — but the ActionBar inside
+     it is still a real link with its own affordances, and nothing here should
+     make the two look like different offers. */
+  .course-card[data-pressable="true"] {
+    cursor: pointer;
+  }
+  /* ---------------------------------------------------------------- *
+   * THE APP ARRIVING — the first paint after an open or a reload.
+   *
+   * Owner, 2026-08-23: "when I open the whole app or I reload, it is kind of
+   * not really what I'd like to see … let's have [the app] coming in nicely and
+   * smoothly so that it doesn't just feel like it's just kind of jumped onto
+   * the screen."
+   *
+   * It is a stagger, not a splash. Nothing covers the screen, nothing is
+   * delayed, nothing has to finish before the app is usable — the pieces are
+   * live from the first frame and simply arrive in the order you would read
+   * them. A curtain would have cost 600-800ms on every single reload for a
+   * logo the student has already seen.
+   *
+   * ⚠️ IT RUNS ONCE PER DOCUMENT, AND THAT GUARD IS THE WHOLE DESIGN.
+   * `<AppEnter>` stamps `data-entered` on <html> once the last piece has
+   * landed, and every rule here is scoped to its absence. Without that, a CSS
+   * animation re-fires on every mount — so tapping back to the dashboard would
+   * re-stage the whole screen, which is a page transition pretending to be an
+   * app launch. A reload clears the attribute, which is exactly the event the
+   * owner named.
+   *
+   * `--enter-i` is the reading order, set by the caller. The step is 55ms:
+   * under ~40 the pieces read as one block moving together, over ~80 the last
+   * one feels late.
+   * ---------------------------------------------------------------- */
+  @keyframes appEnter {
+    from {
+      opacity: 0;
+      /* 10px, and it moves UP. A piece sliding down reads as dropping into
+         place; sliding up reads as rising to meet you, which is the difference
+         between the app landing on the student and the student arriving at
+         it. */
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  html:not([data-entered]) .app-enter {
+    animation: appEnter 560ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--enter-i, 0) * 55ms);
+  }
+  /* The chrome comes in from its own edge rather than from below — a sidebar
+     that rises is a sidebar that briefly is not where a sidebar goes. */
+  @keyframes appEnterLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-14px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes appEnterTop {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  /* The chrome's indices default HERE rather than being passed in. The header
+     and the sidebar are `position: fixed`, so neither can be wrapped in a
+     styled div without that div becoming their containing block — which means
+     no caller can hand them an inline `--enter-i`. A chrome element also wants
+     the same place in the order on every route it appears on, so a default is
+     the more honest home for it anyway. Header first (0), sidebar second (1);
+     the content it frames follows at 2. */
+  html:not([data-entered]) .app-enter-left {
+    animation: appEnterLeft 560ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--enter-i, 1) * 55ms);
+  }
+  html:not([data-entered]) .app-enter-top {
+    animation: appEnterTop 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--enter-i, 0) * 55ms);
+  }
+  /* The one control that should arrive LAST and arrive differently: it is the
+     invitation, so it swells into place instead of sliding. */
+  @keyframes appEnterPop {
+    from {
+      opacity: 0;
+      transform: scale(0.72);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  html:not([data-entered]) .app-enter-pop {
+    animation: appEnterPop 480ms cubic-bezier(0.32, 1.35, 0.5, 1) both;
+    animation-delay: calc(var(--enter-i, 0) * 55ms);
+  }
+  /* Two ways to ask for a still page and both are honoured: the OS setting,
+     and this app's own toggle, which the root layout stamps as
+     `:root[data-motion="reduced"]` before first paint. Listed together rather
+     than folded into the block near the top of this file because these rules
+     are already conditional on `:not([data-entered])`, and a selector that has
+     to carry both conditions is clearer next to what it turns off. */
+  :root[data-motion="reduced"] .app-enter,
+  :root[data-motion="reduced"] .app-enter-left,
+  :root[data-motion="reduced"] .app-enter-top,
+  :root[data-motion="reduced"] .app-enter-pop {
+    animation: none !important;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html:not([data-entered]) .app-enter,
+    html:not([data-entered]) .app-enter-left,
+    html:not([data-entered]) .app-enter-top,
+    html:not([data-entered]) .app-enter-pop {
+      animation: none;
+    }
+  }
+
+  /* ---------------------------------------------------------------- *
+   * THE CARD GROWING INTO A PAGE.
+   *
+   * Owner, 2026-08-23: "when I tap the course card, I prefer that the whole
+   * thing grows into a full-screen page, but it will still be a different
+   * page."
+   *
+   * Both halves of that sentence are load-bearing and they pull against each
+   * other: it must LOOK like one continuous object, and it must BE a real
+   * route with a real URL that a student can reload, share and go back from.
+   *
+   * So the morph is a portalled clone, not a page transition. On tap a fixed
+   * element is drawn at the card's exact measured rect wearing the card's own
+   * gradient, then its four insets and its radius animate to the viewport;
+   * when it has filled the screen the router pushes the real page underneath
+   * it. The seam is invisible because the clone's final colour IS the voice
+   * page's background — there is a frame where both are on screen and they are
+   * the same flat surface.
+   *
+   * ⚠️ IT MUST BE PORTALLED TO <body>. `#content-surface` carries
+   * `backdrop-filter: blur(16px)`, which makes it a containing block for
+   * `position: fixed` descendants exactly as a `transform` would — the same
+   * trap AskDock hit on 2026-08-22. A "fixed" clone rendered inside the
+   * scroller is fixed to a box that scrolls, so it would ride the page while
+   * trying to fill the screen.
+   *
+   * The easing is AskDock's long-sweep curve, not the app's usual
+   * (0.16, 1, 0.3, 1): that one is tuned for a 200px move and reads as a jump
+   * cut across a whole viewport.
+   * ---------------------------------------------------------------- */
+  .card-morph {
+    position: fixed;
+    z-index: 90;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    background-color: rgba(255, 255, 255, 0.99);
+    box-shadow: 0 10px 28px -10px rgba(0, 0, 0, 0.14);
+    transition:
+      inset 620ms cubic-bezier(0.32, 0.72, 0, 1),
+      border-radius 620ms cubic-bezier(0.32, 0.72, 0, 1),
+      background-color 620ms ease,
+      border-color 300ms ease,
+      box-shadow 300ms ease;
+    will-change: inset, border-radius;
+  }
+  /* Filled. The border and the lift go with the corners — a full-bleed surface
+     with a hairline round it is a card that has merely got very large. */
+  .card-morph[data-full="true"] {
+    inset: 0 !important;
+    border-radius: 0;
+    border-color: transparent;
+    box-shadow: none;
+    background-color: var(--color-canvas);
+  }
+  /* What is drawn INSIDE the clone: the card's title, held still while the box
+     grows around it, then handed over. It fades rather than scales — text that
+     scales through a 620ms morph is text that is blurry for 620ms. */
+  .card-morph-label {
+    transition: opacity 260ms ease;
+  }
+  .card-morph[data-full="true"] .card-morph-label {
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card-morph {
+      transition: none;
+    }
+  }
+
+  /* ---------------------------------------------------------------- *
+   * THE COURSE'S VOICE SCREEN — /session/<course>.
+   *
+   * Owner, 2026-08-23: a box at the top asking whether to carry on, the rest
+   * "mostly blank, especially when starting", and "a glowing sort of effect
+   * … from the bottom, showing that the microphone is being heard."
+   *
+   * Three bands, and the middle one is the largest on purpose. The blank is
+   * not a layout that has not been finished — it is the room the student is
+   * being invited to speak into, and it is where a pinned point will land once
+   * the agent has something to say.
+   *
+   * THE APP'S OWN PALETTE. --color-canvas, ink, one --color-btn circle. /study
+   * is dark with a green orb and this is not, because the owner has already
+   * rejected exactly that import once (2026-08-22, on the ask box: "that
+   * green, or whatever colour you keep adding, does not match the actual UI
+   * that I already have"). The only colour here is --voice-tone, which is the
+   * COURSE'S own hue off lib/tones — the same value the card that grew into
+   * this screen was already wearing.
+   * ---------------------------------------------------------------- */
+  .vox-screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--color-canvas);
+  }
+  .vox-top {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: max(14px, env(safe-area-inset-top)) 16px 0;
+  }
+  .vox-back,
+  .vox-back-spacer {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    flex: none;
+  }
+  .vox-back {
+    border-radius: 999px;
+    color: var(--color-ink-2);
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .vox-back:hover {
+    background: var(--color-active);
+    color: var(--color-ink);
+  }
+  /* The course name is a receipt, not a heading — the student just tapped this
+     course. It is here so a reloaded or shared URL says where it landed, which
+     is why it is centred and quiet rather than set as a title. */
+  .vox-course {
+    min-width: 0;
+    flex: 1;
+    text-align: center;
+    font-family: var(--font-container);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* THE OFFER. A white card on the canvas, the same two whites the course card
+     uses, so this reads as the object that grew rather than as a new one. */
+  .vox-offer {
+    position: relative;
+    z-index: 2;
+    margin: 18px 16px 0;
+    padding: 18px 18px 16px;
+    border: 1px solid var(--color-line);
+    border-radius: 26px;
+    background: #ffffff;
+    box-shadow: 0 10px 28px -14px rgba(0, 0, 0, 0.16);
+  }
+  .vox-offer-line {
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    color: var(--color-ink);
+  }
+  /* Before hydration. It says what it is doing rather than showing a grey bar:
+     the box is small enough that a skeleton would be a grey box the same size
+     as the box, which communicates nothing. */
+  .vox-offer-wait {
+    color: var(--color-placeholder);
+    font-weight: 500;
+  }
+  /* What they would be carrying on with. Bigger than the question above it,
+     because the question is a formality and this is the actual information. */
+  .vox-offer-what {
+    margin-top: 10px;
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    color: var(--color-ink);
+  }
+  .vox-offer-meta {
+    margin-top: 5px;
+    font-family: var(--font-container);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--color-muted);
+  }
+  /* TWO ANSWERS, THE SAME SIZE. The owner asked for a box "asking them whether
+     they'd like to continue with what they're doing or not" — that is a
+     question with two answers, so a student who does not want to carry on must
+     not have to hunt for a small grey way out of a screen that has already
+     decided for them. Different weights, same footprint. */
+  .vox-offer-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .vox-go,
+  .vox-alt {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
+    padding: 0 20px;
+    border-radius: 999px;
+    font-family: var(--font-container);
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  }
+  .vox-go {
+    flex: 1;
+    background: var(--color-btn);
+    color: #ffffff;
+  }
+  .vox-go:hover {
+    background: #000000;
+  }
+  .vox-go:active,
+  .vox-alt:active {
+    transform: scale(0.985);
+  }
+  .vox-alt {
+    border: 1px solid var(--color-line);
+    color: var(--color-ink-2);
+    background: transparent;
+  }
+  .vox-alt:hover {
+    border-color: var(--color-line-2);
+    background: var(--color-active);
+  }
+
+  /* The other sessions. A list, capped so the box can never grow past the
+     blank it sits above — a course with 21 groups would otherwise push the
+     glow off the screen entirely. */
+  .vox-pick {
+    margin-top: 12px;
+    max-height: 42vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  /* A <button>, not a link — choosing a session loads it onto THIS screen
+     rather than navigating, so it acts and does not go anywhere. `width: 100%`
+     and the left alignment are what a button needs and an anchor does not; a
+     row that only fills its text is a row whose right-hand time is nowhere
+     near the right edge. */
+  .vox-pick-row {
+    width: 100%;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 11px 2px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .vox-pick li:last-child .vox-pick-row {
+    border-bottom: 0;
+  }
+  .vox-pick-title {
+    min-width: 0;
+    font-family: var(--font-container);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .vox-pick-meta {
+    flex: none;
+    font-family: var(--font-container);
+    font-size: 12px;
+    color: var(--color-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .vox-pick-row:hover .vox-pick-title {
+    color: var(--color-btn);
+  }
+
+  /* Chosen. The box stops asking and becomes a receipt — what this screen is
+     now about — so the blank below gets its room back. Same size as the
+     question it replaces, so nothing on the screen jumps when it swaps. */
+  .vox-offer-now {
+    font-size: 21px;
+    letter-spacing: -0.015em;
+  }
+  /* A brief that would not load. Sits inside the offer rather than replacing
+     it: the student's choice is still on screen and still re-tappable, which
+     is the difference between "try again" and "start over". */
+  .vox-offer-failed {
+    margin-top: 8px;
+    color: var(--color-danger);
+  }
+
+  /* THE BLANK. */
+  .vox-stage {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 28px;
+    min-height: 0;
+  }
+  /* The greeting, as text. It is here whether or not the audio played — a
+     browser that refuses to autoplay after a navigation is the normal case on
+     iOS, not an error, so the words can never be carried by the sound alone. */
+  .vox-said {
+    max-width: 30ch;
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+    color: var(--color-ink-2);
+    text-wrap: balance;
+  }
+
+  /* THE LIGHT.
+   *
+   * Two stacked radial gradients anchored below the bottom edge, so what is on
+   * screen is the upper arc of something larger — light spilling in rather
+   * than a shape sitting there. `--glow` (0..1) is written every frame by
+   * BottomGlow straight onto the node; nothing here re-renders to animate.
+   *
+   * ⚠️ NO `filter: blur()`. A blur radius wide enough to soften a full-width
+   * shape is a per-frame GPU readback and was the most expensive thing on this
+   * screen when measured. A radial-gradient costs nothing and, this soft, is
+   * indistinguishable.
+   *
+   * Height and opacity both ride the level: brightness alone reads as a lamp
+   * on a dimmer, and it is the RISE that says a voice was heard. */
+  .vox-glow {
+    position: absolute;
+    z-index: 1;
+    left: -10%;
+    right: -10%;
+    bottom: 0;
+    height: calc(180px + var(--glow, 0) * 34vh);
+    pointer-events: none;
+    opacity: calc(0.35 + var(--glow, 0) * 0.65);
+    background:
+      radial-gradient(
+        62% 100% at 50% 128%,
+        color-mix(in oklab, var(--glow-tone, #4a3aa7) 62%, transparent) 0%,
+        color-mix(in oklab, var(--glow-tone, #4a3aa7) 22%, transparent) 42%,
+        transparent 76%
+      ),
+      radial-gradient(
+        96% 100% at 50% 136%,
+        color-mix(in oklab, var(--glow-tone, #4a3aa7) 26%, transparent) 0%,
+        transparent 72%
+      );
+    /* The height is written 60 times a second. Without this the compositor
+       re-lays-out the band on every frame instead of just repainting it. */
+    will-change: height, opacity;
+  }
+  /* Dormant is deliberately dimmer than the level alone would make it. The
+     breath exists to say "not dead"; anything brighter starts to look like it
+     is hearing something, which is the one thing this state must not claim. */
+  .vox-glow[data-state="dormant"] {
+    opacity: calc(0.22 + var(--glow, 0) * 0.3);
+  }
+
+  /* THE FOOT. */
+  .vox-foot {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 0 20px max(22px, env(safe-area-inset-bottom));
+  }
+  .vox-mic {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 62px;
+    height: 62px;
+    border-radius: 999px;
+    background: var(--color-btn);
+    color: #ffffff;
+    box-shadow: 0 10px 26px -12px rgba(0, 0, 0, 0.5);
+    transition: transform 0.16s ease, background-color 0.16s ease;
+  }
+  .vox-mic:active {
+    transform: scale(0.94);
+  }
+  /* Listening. The button inverts rather than tinting, so the state is legible
+     at a glance on a phone in sunlight — and it borrows --color-active, which
+     is the surface this app already uses for "this one is the current one". */
+  .vox-mic[aria-pressed="true"] {
+    background: var(--color-active);
+    color: var(--color-ink);
+    box-shadow: 0 6px 18px -12px rgba(0, 0, 0, 0.4);
+  }
+  .vox-status {
+    min-height: 18px;
+    text-align: center;
+    font-family: var(--font-container);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--color-muted);
+    text-wrap: balance;
+  }
+  .vox-read {
+    font-family: var(--font-container);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--color-ink-2);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--color-line-2);
+  }
+  .vox-read:hover {
+    color: var(--color-ink);
+  }
+  /* Development only — previews the "agent is talking" light without an agent.
+     Rendered behind a NODE_ENV check in CourseVoice, so it cannot ship. */
+  .vox-devtoggle {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 3;
+    padding: 4px 9px;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    background: #fff;
+    font-family: var(--font-container);
+    font-size: 11px;
+    color: var(--color-muted);
+  }
+
   /* ---------------------------------------------------------------- *
    * .btn — the app's one button, generalised out of .course-resume.
    *

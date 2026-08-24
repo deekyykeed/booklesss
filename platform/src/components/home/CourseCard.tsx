@@ -1,10 +1,11 @@
 "use client";
 
 import { ActionBar } from "@/components/ui/ActionBar";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { gateStepLink } from "@/lib/account";
 import type { CourseMeta } from "@/lib/courses";
-import { labelFor, pathForId } from "@/lib/course";
+import { labelFor } from "@/lib/course";
+import { beginMorphFrom } from "@/lib/morph";
 import { courseStreak, studyHistory, type StudyDay } from "@/lib/progress";
 import { coursePerformance } from "@/lib/performance";
 import { MynaIcon } from "@/components/icons/myna";
@@ -77,17 +78,71 @@ export function CourseCard({
 
   const started = done > 0;
 
-  /* Where the card's one button goes, and what it calls the destination.
+  /* Where the card goes, and what it calls the destination.
    *
-   * The step they are on — the reading. Named here rather than inline because
-   * the href, the click gate and the aria-label must all agree on one
-   * destination; three call sites computing it separately is how a gate ends
-   * up guarding a different page than the link opens. */
-  const openHref = pathForId(next);
+   * THE COURSE'S VOICE SCREEN (owner, 2026-08-23: "when I tap the course card,
+   * I prefer that the whole thing grows into a full-screen page … that's where
+   * the voice chat experience is going to live").
+   *
+   * This is the third destination this button has had in two days and the
+   * history is the argument. It pointed at the READING; on 2026-08-21 it moved
+   * to the guided session at /study; earlier today it was moved back to the
+   * reading, because /study is dark with a green orb and the home screen's
+   * front door should not hand a student a page that looks like a different
+   * product. That reasoning was right and is preserved — what was wrong with
+   * /study was its SURFACE, not the idea of a voice door on the card.
+   * /session/<course> is that door in the app's own palette, and it opens with
+   * an offer rather than by starting to talk at anybody.
+   *
+   * Named once because the href, the click gate, the morph and the aria-label
+   * must all agree on one destination; four call sites computing it separately
+   * is how a gate ends up guarding a different page than the link opens. */
+  const openHref = `/session/${course.slug}`;
   const openLabel = labelFor(next);
+  /* THE MORPH. The card measures itself and hands its own geometry and its own
+   * computed background to the overlay mounted in the root layout, which grows
+   * that clone to fill the viewport and pushes the route underneath it. See
+   * lib/morph for why the overlay cannot live in this component.
+   *
+   * `beginMorphFrom` returns false when it declines — a reader who asked for a
+   * still page, or a card with nothing measurable to grow from. FALLING
+   * THROUGH TO THE ORDINARY NAVIGATION IS THE POINT: a student who cannot see
+   * an animation must never be a student who cannot open a course. */
+  const shell = useRef<HTMLDivElement>(null);
+  const open = (e: React.MouseEvent) => {
+    /* The browser's own gestures stay the browser's. A middle-click, a
+       cmd/ctrl-click or a shift-click asks for a new tab or window, and a tab
+       that opens onto a morph already half-played is worse than one that
+       simply opens. */
+    if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) {
+      return;
+    }
+    if (!shell.current) return;
+    if (!beginMorphFrom(shell.current, openHref, course.title)) return;
+    /* The morph owns the navigation from here — MorphSurface pushes the route
+       partway through the growth. Letting the <Link> follow as well would put
+       two entries in the history for one tap, so Back would land the student
+       on the page they just left. */
+    e.preventDefault();
+  };
 
   return (
-    <div className="course-card squircle flex flex-col p-4 lg:p-5">
+    <div
+      ref={shell}
+      className="course-card squircle flex flex-col p-4 lg:p-5"
+      /* The course's own hue, read by the card's gradient — and by the light at
+         the bottom of the screen it grows into, so the two match because they
+         are the same value rather than because anyone remembered. */
+      style={{ ["--card-tone" as string]: tone }}
+      data-pressable="true"
+      onClick={(e) => {
+        /* The bar inside the card is a real link and answers for itself.
+           Without this check a tap on it would start a morph AND follow the
+           link, which is the two-destinations-in-one-shape problem the card
+           already had once. */
+        if ((e.target as HTMLElement).closest("a,button")) return;
+        open(e);
+      }}>
       {/* This course's reading over the last fortnight, drawn exactly as the
           stat tiles draw theirs: a backdrop in the course's own hue, anchored
           to the card's bottom edge behind the text, curve kept to the right
@@ -179,7 +234,13 @@ export function CourseCard({
              free, a second course's Start on a signed-out device asks. The
              gate follows the destination rather than the step, or the
              immersive door would be the one way past it. */
-          onClick={(e) => gateStepLink(e, openHref)}
+          onClick={(e) => {
+            /* The gate first — a signed-out device's second course still has
+               to ask before it goes anywhere, and a morph that plays and then
+               lands on a sign-in page is a promise broken mid-animation. */
+            gateStepLink(e, openHref);
+            open(e);
+          }}
           progress={pct}
           /* The bar's fill in the card's own hue — the same colour its Spark
              draws, so curve and fill read as one course (owner, 2026-08-08). */

@@ -53,6 +53,11 @@ const ICONS = [
   "sun",
   "moon",
   "chevron-right",
+  /* The way out of a course's voice screen (/session/<course>, 2026-08-23).
+     Its twin was already here for the sidebar; a back arrow drawn as a
+     rotated chevron-right is a transform on every render and an icon whose
+     name disagrees with what it draws. */
+  "chevron-left",
   // home rail destinations
   "layout-dashboard",
   "layout-dashboard-solid",
