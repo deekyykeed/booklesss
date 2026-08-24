@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-22 (session 61)
+**Last updated:** 2026-08-23 (session 62)
 
 ---
 
@@ -91,6 +91,34 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 62 (2026-08-23, the course card grows into a room you can talk
+in. Linear reachable — BOO-40 updated, BOO-43 opened, a note left on BOO-35
+pointing at the wiring seam, so the items below are only what has no ticket.)**
+
+- [ ] ⚠️ **THE ELEVENLABS AGENT IS NOT CONNECTED — BY DESIGN THIS SESSION, BUT
+      IT IS THE VERY NEXT THING.** `/session/<course>`'s `CourseVoice.tsx` has
+      a marked `connect()` seam inside `choose()`: the brief (prompt +
+      firstMessage) is already fetched per session, the microphone is already
+      opened from inside the tap gesture, and the glow already reads real input
+      level. What's missing is minting a token at `/api/agent/token` and
+      starting the conversation. See the comment left on BOO-35 for the exact
+      hookup.
+- [ ] **BOO-43: the greeting's voice is 402ing.** `/api/agent/greet` reaches
+      ElevenLabs correctly with the real key already in `.env.local`, and gets
+      "free users cannot use library voices via the API" on the default Rachel
+      voice. Fails soft (chime still plays, text still shows) so nothing is
+      visibly broken, but the spoken "welcome back" the owner asked for won't
+      actually speak until `ELEVENLABS_VOICE_ID` points at a voice this
+      account owns, or the plan is upgraded.
+- [ ] **`/session/<course>` is a new route and a new cost surface** — see the
+      note added to BOO-40. Whatever conversation cap gets built for the ask
+      box needs to cover this door too.
+- [ ] The dev-only "speak" toggle at the bottom-right of `/session/<course>`
+      (behind `NODE_ENV === "development"`) previews the glow's speaking
+      cadence with no agent connected. Delete it in the same change that wires
+      up `connect()` — it will be dead weight once the real `onModeChange`
+      exists to drive `talking`.
 
 **From session 61 (2026-08-22, the home screen learns to talk. Linear WAS
 reachable this time — BOO-35 closed, BOO-40/41/42 opened, so the items below

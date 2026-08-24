@@ -133,6 +133,30 @@ parses a stylesheet. And a measurement that reads the same on both sides of an
 A/B is void — if the "working" case also reads zero, fix the probe, not the
 theory.
 
+### Wrapping a `position: fixed` element in an animated `<div>` breaks it the same way `backdrop-filter` does
+The header and sidebar are both `fixed`. An "enter" stagger built by wrapping
+each in `<div className="app-enter-top" style={{animationDelay}}>` looked
+harmless and would have made both drift for the length of the animation —
+`animation`/`transform` on an ancestor makes it a containing block for fixed
+descendants, exactly like the `backdrop-filter` trap above, just arriving from
+the animation side instead of the blur side. **Put the animation class on the
+fixed element itself, never on a wrapper**, and if the caller can't reach
+inside the component to pass a per-instance delay, default the delay on the
+class in CSS instead (`animation-delay: calc(var(--enter-i, 1) * 55ms)`) — a
+piece of fixed chrome wants the same stagger position everywhere it's used
+anyway.
+
+### `dynamic = "force-static"` makes `searchParams`/`req.url` query params permanently empty
+A force-static route has no request at render time, so every caller reads the
+same empty snapshot — `new URL(req.url).searchParams.get("id")` returns `null`
+for every request, including ones with a real id on it. It built clean and
+typechecked clean; only serving it and hitting the endpoint showed every
+response coming back `{ok:false, reason:"no-id"}`. If a static/prerendered
+route needs a per-request value, that value has to be a **path segment**
+(`generateStaticParams` + `[id]`), never a query string — a segment is part of
+the route so it survives prerendering, a query param is part of the request
+which prerendering has none of.
+
 ---
 
 ## Typography
