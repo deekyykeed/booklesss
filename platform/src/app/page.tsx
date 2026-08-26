@@ -374,8 +374,20 @@ export default function LandingPage() {
               } as React.CSSProperties
             }
           >
+            {/* THE FRONT DOOR OPENS ON THE QUESTIONS, NOT THE PASSWORD (owner,
+                2026-08-26). This pointed at /sign-up, which asked a stranger for
+                an email and a password before it had asked them anything about
+                themselves. It is /onboarding now: eleven questions first, the
+                account last (see app/onboarding/page.tsx).
+
+                /sign-up is NOT dead and must not be redirected away — it is
+                still where a gated tap lands, via AuthRedirect, and that path is
+                deliberately kept short. Somebody who tapped "save this" halfway
+                down a step is answering a different question than somebody who
+                came here to start; making them sit eleven questions to save one
+                section is how that tap stops being worth making. */}
             <Link
-              href={authEnabled ? "/sign-up" : "/dashboard"}
+              href={authEnabled ? "/onboarding" : "/dashboard"}
               className="rounded-[33px] bg-[linear-gradient(120deg,rgb(255,255,255)_0%,rgba(255,255,255,0.75)_100%)] p-2 transition-transform duration-200 active:scale-[0.97]"
             >
               <span className="flex items-center justify-center rounded-full bg-black px-6 py-3 pr-5 shadow-[var(--shadow-hero-cta)]">

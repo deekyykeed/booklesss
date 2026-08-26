@@ -43,6 +43,7 @@ import { Button } from "@/components/ui/Button";
 import { FIELD } from "@/components/ui/Field";
 import { WhatsAppMark } from "@/components/icons/whatsapp";
 import { MynaIcon } from "@/components/icons/myna";
+import { AuthForm } from "@/components/auth/AuthForm";
 import { AvatarPicker } from "@/components/identity/AvatarPicker";
 import { type AvatarId } from "@/components/identity/avatars";
 import { useInstall } from "@/lib/install";
@@ -174,7 +175,8 @@ type Step =
   | "target"
   | "window"
   | "install"
-  | "heard";
+  | "heard"
+  | "account";
 
 /**
  * The questions, in order. Every student gets all five.
@@ -219,6 +221,23 @@ type Step =
  * browser with no install story at all) never sees a gap where it would have
  * been, and one who is sees it as one more thing before the last one, not
  * after it.
+ *
+ * "account" IS LAST, AND IT IS THE PASSWORD (owner, 2026-08-26: "this actual
+ * thing with the password needs to now be at the end of onboarding … so meaning
+ * the onboarding flow comes first"). Until today the email and password were the
+ * FIRST thing a new student met — /sign-up made the account and handed over to
+ * these questions — and the note at the top of this file argued for that order
+ * at some length. That argument is reversed now, deliberately: a stranger is
+ * asked what they study before they are asked to commit to anything, and the
+ * account is what saves the answers they have already given rather than the toll
+ * gate in front of them.
+ *
+ * IT IS DATA-DEPENDENT LIKE THE REST, which is what lets ONE flow serve both
+ * doors. `asks` returns it only for somebody we positively know is signed OUT,
+ * so the front-door student answers eleven questions and then makes an account,
+ * while a student who arrived from a gated tap — who already made one on the way
+ * in, see AuthForm — is skipped past it and `finish` simply leaves. No branch,
+ * no second definition of "done", and the two paths cannot drift apart.
  */
 const ORDER: Step[] = [
   "you",
@@ -232,6 +251,7 @@ const ORDER: Step[] = [
   "window",
   "install",
   "heard",
+  "account",
 ];
 
 /* WHEN THE HARD STUFF GOES IN (owner, 2026-08-04: "ask what time of the day they
@@ -380,8 +400,22 @@ function asDraft(identity: Identity | null): Draft {
  * through the same three callers as `prog` for the same reason `prog` is:
  * one predicate deciding for everyone downstream, not a question each caller
  * answers for itself.
+ *
+ * `signedOut` IS THE FOURTH, and it is `signedIn === false` rather than
+ * `!signedIn` — the distinction lib/account documents and RequireOnboarding
+ * makes in the same words: "we haven't heard yet" is not "signed out". Read the
+ * loose way, the account step would be asked for the beat before the session
+ * resolves, so a student arriving from a gated tap with an account already made
+ * would watch a password form appear and then vanish. Skipped while unknown, it
+ * appears only once the answer is really in.
  */
-function asks(step: Step, d: Draft, prog: Programme | undefined, installOK: boolean): boolean {
+function asks(
+  step: Step,
+  d: Draft,
+  prog: Programme | undefined,
+  installOK: boolean,
+  signedOut: boolean,
+): boolean {
   /* Ask unless the programme's OWN timetable says the question is meaningless.
      Three cases, and the middle one is the reason this is not just
      `prog.years.length > 0`: no programme picked (typed) asks 1–6; a programme
@@ -395,23 +429,45 @@ function asks(step: Step, d: Draft, prog: Programme | undefined, installOK: bool
   if (step === "year") return !prog || !prog.courses.length || prog.years.length > 0;
   if (step === "semester") return semestersFor(prog, d.year).length > 1;
   if (step === "install") return installOK;
+  if (step === "account") return signedOut;
   return true;
 }
 
 /** The next question this student is actually asked, skipping any that do not
- *  apply. The last one answers itself — `finish` leaves for the dashboard. */
-function stepAfter(from: Step, d: Draft, prog: Programme | undefined, installOK: boolean): Step {
+ *  apply. The last one answers itself — `finish` either opens the account step
+ *  or leaves for the dashboard, depending on whether there is one yet. */
+function stepAfter(
+  from: Step,
+  d: Draft,
+  prog: Programme | undefined,
+  installOK: boolean,
+  signedOut: boolean,
+): Step {
   for (let i = ORDER.indexOf(from) + 1; i < ORDER.length; i++) {
-    if (asks(ORDER[i], d, prog, installOK)) return ORDER[i];
+    if (asks(ORDER[i], d, prog, installOK, signedOut)) return ORDER[i];
   }
-  return ORDER[ORDER.length - 1];
+  /* The last step this student is actually ASKED, not the last in the list —
+     "account" is skipped for anyone already signed in, and falling back to it
+     blindly would put a signed-in student on a password form after the install
+     question. Walking backwards finds "heard" for them and "account" for
+     everybody else. */
+  for (let i = ORDER.length - 1; i >= 0; i--) {
+    if (asks(ORDER[i], d, prog, installOK, signedOut)) return ORDER[i];
+  }
+  return ORDER[0];
 }
 
 /** The previous one they were actually asked. Back has to skip exactly what
  *  forward skipped, or it lands on a card with nothing in it. */
-function stepBefore(from: Step, d: Draft, prog: Programme | undefined, installOK: boolean): Step {
+function stepBefore(
+  from: Step,
+  d: Draft,
+  prog: Programme | undefined,
+  installOK: boolean,
+  signedOut: boolean,
+): Step {
   for (let i = ORDER.indexOf(from) - 1; i >= 0; i--) {
-    if (asks(ORDER[i], d, prog, installOK)) return ORDER[i];
+    if (asks(ORDER[i], d, prog, installOK, signedOut)) return ORDER[i];
   }
   return ORDER[0];
 }
@@ -423,10 +479,23 @@ function stepBefore(from: Step, d: Draft, prog: Programme | undefined, installOK
  *  Note that "install" has no case below, deliberately — there is nothing
  *  saved to check it against, so it is never the answer this returns. A
  *  student resuming a half-finished record is resuming the DATA questions;
- *  install is only ever reached by moving forward through the live flow. */
-function firstGap(d: Draft, steps: Step[], prog: Programme | undefined, installOK: boolean): Step {
+ *  install is only ever reached by moving forward through the live flow.
+ *
+ *  "heard" DOES have one now, where it used to be the bare fallback. It had no
+ *  case because it was the last step and returning it meant "nothing left to
+ *  ask" — true right up until something came after it. Left as the fallback it
+ *  would strand a signed-out student who answered everything on the question
+ *  they had already answered, with the account step they still need sitting one
+ *  past it and no way to reach it but Back-then-forward. */
+function firstGap(
+  d: Draft,
+  steps: Step[],
+  prog: Programme | undefined,
+  installOK: boolean,
+  signedOut: boolean,
+): Step {
   for (const s of steps) {
-    if (!asks(s, d, prog, installOK)) continue;
+    if (!asks(s, d, prog, installOK, signedOut)) continue;
     if (s === "you" && !d.name.trim()) return s;
     if (s === "school" && (!d.school || (d.school === OTHER_SCHOOL && !d.schoolName.trim()))) return s;
     /* Same shape as the school question above it: picking "not listed" is not
@@ -445,8 +514,12 @@ function firstGap(d: Draft, steps: Step[], prog: Programme | undefined, installO
     if (s === "whatsapp" && !normalisePhone(d.whatsapp)) return s;
     if (s === "target" && !d.target.weekdays?.length) return s;
     if (s === "window" && !d.studyWindow) return s;
+    if (s === "heard" && !d.heardFrom) return s;
   }
-  return "heard";
+  /* Everything answered. That means the account step for a student who has no
+     account yet, and "heard" — the last question, sitting there answered — for
+     one who has. */
+  return asks("account", d, prog, installOK, signedOut) ? "account" : "heard";
 }
 
 export function OnboardingFlow() {
@@ -487,6 +560,11 @@ export function OnboardingFlow() {
   /** Whether there is anything to offer at all — the one thing `asks()` needs
    *  to know about this browser. */
   const installOK = canInstall || showIosHelp;
+  /** The other thing `asks()` needs, and the reason it is `=== false` rather
+   *  than `!signedIn` is argued over `asks` itself: unknown is not signed out,
+   *  and treating it as one flashes a password form at a student who has an
+   *  account. */
+  const signedOut = signedIn === false;
   /** The native prompt is a modal the OS draws; this is only for the moment
    *  between tapping and it resolving, so the button says something rather
    *  than sitting there looking unpressed. */
@@ -563,7 +641,8 @@ export function OnboardingFlow() {
    * moves nothing. After the first advance `stepPick` is set and this is not
    * consulted at all.
    */
-  const step = stepPick ?? (hydrated ? firstGap(asDraft(identity), ORDER, prog, installOK) : "school");
+  const step =
+    stepPick ?? (hydrated ? firstGap(asDraft(identity), ORDER, prog, installOK, signedOut) : "school");
 
   /** Whether this student is on the typed path — no curriculum on file for
    *  their programme, so their answers are the curriculum. The majority case;
@@ -687,14 +766,18 @@ export function OnboardingFlow() {
     setDraft({ ...d, ...patch });
   }
 
-  /* This page is for somebody who has just made an account. Anyone who lands
-     here without one came from a stale link — send them to the front door,
-     where the sign-up card is. `=== false` rather than falsy: null means Clerk
-     has not reported yet, and bouncing a student mid-handshake would throw
-     away the answers they are about to give. */
-  useEffect(() => {
-    if (signedIn === false) router.replace("/");
-  }, [signedIn, router]);
+  /* NO BOUNCE FOR A SIGNED-OUT STUDENT ANY MORE (owner, 2026-08-26). This used
+     to read `if (signedIn === false) router.replace("/")`, on the rule that
+     "someone who has not signed in cannot be on the onboarding ever"
+     (2026-08-04) — correct for as long as the account was made BEFORE these
+     questions, and exactly backwards now that it is made after them. A signed-
+     out student is no longer a stale link; they are the ordinary case, and the
+     account step at the end of ORDER is where they stop being one.
+
+     Nothing replaces it, deliberately. There is no state this page needs an
+     account for: every answer is written to localStorage as it is given (see
+     `save`), and AccountSignal carries the lot up the moment one exists. The
+     page is now readable by anybody, which is what the front door requires. */
 
   /* Which courses to offer. A school narrows the list; "not listed" and no
      answer both mean the whole library (coursesForSchool reads null that
@@ -778,6 +861,21 @@ export function OnboardingFlow() {
 
   function finish(source: HeardFrom) {
     save({ coursesChosen: true, heardFrom: source });
+
+    /* THE ANSWERS ARE DOWN; NOW THEY NEED SOMEWHERE TO LIVE. A student with no
+       account has one more screen to go (see ORDER) and this is the hand-over
+       to it — the same beat as every other advance, so the source they just
+       tapped is on screen long enough to have been seen, and then the password.
+
+       `save` above has already run, which is what makes leaving at this point
+       safe in the other direction too: somebody who closes the tab on the
+       account screen keeps all eleven answers on the device, and giving the
+       same browser an account later adopts them rather than starting over. */
+    if (signedOut) {
+      afterBeat(() => goTo("account"));
+      return;
+    }
+
     /* BACK WHERE THEY CAME FROM, not always the dashboard (owner, 2026-08-06:
        "as long as it redirects to the right page the user came from and keeps
        the scroll position"). Whoever sent them here put the origin in `?next=`;
@@ -810,7 +908,7 @@ export function OnboardingFlow() {
        Back would otherwise land on the previous question and then get dragged
        forward again by a timer the student can't see. */
     cancelAdvance();
-    goTo(stepBefore(step, d, prog, installOK), "back");
+    goTo(stepBefore(step, d, prog, installOK, signedOut), "back");
   }
 
   /* The pending tap-to-advance, so it can be called off. */
@@ -847,7 +945,7 @@ export function OnboardingFlow() {
        here would decide the next question against the PREVIOUS degree — which
        is the same one-answer-behind bug the `patch` argument on `save` exists
        to prevent. */
-    const next = stepAfter(step, { ...d, ...patch }, nextProg, installOK);
+    const next = stepAfter(step, { ...d, ...patch }, nextProg, installOK, signedOut);
     afterBeat(() => goTo(next));
   }
 
@@ -1678,7 +1776,15 @@ export function OnboardingFlow() {
         {step === "heard" && (
           <Card
             title="How did you hear about us?"
-            why="Last one. Tap whichever is closest, then you're in."
+            /* "Last one" is only true for a student who already has an account
+               — everybody else has the password after this, and a screen that
+               promises to be the end and then produces another one is the small
+               dishonesty that makes a form feel longer than it is. */
+            why={
+              signedOut
+                ? "Last question. Tap whichever is closest, then save your answers."
+                : "Last one. Tap whichever is closest, then you're in."
+            }
             /* IT DOES NOT FINISH ON THE TAP (owner, 2026-08-04: "dont auto select
                the how did you hear about us part"). It used to answer and leave
                in one gesture, which on the LAST screen means a student taps a row
@@ -1695,7 +1801,7 @@ export function OnboardingFlow() {
                 disabled={!heardFrom}
                 onClick={() => heardFrom && finish(heardFrom)}
               >
-                {heardFrom ? "Done" : "Pick one to finish"}
+                {heardFrom ? (signedOut ? "Continue" : "Done") : "Pick one to finish"}
               </Button>
             }
           >
@@ -1705,6 +1811,40 @@ export function OnboardingFlow() {
               label={(id) => SOURCES.find((x) => x.id === id)?.title ?? String(id)}
               onPick={(id) => edit({ heardFrom: id as HeardFrom })}
             />
+          </Card>
+        )}
+
+        {/* THE PASSWORD, LAST (owner, 2026-08-26). Everything above this is
+            answered by a stranger; this is where they become a student with an
+            account, and the eleven answers already on the device go up with
+            them the moment AccountSignal sees a session.
+
+            NO `actions` ON THE CARD, and that is not an oversight. Card portals
+            its action to the fixed bar at the bottom of the screen, which is
+            right for a thirty-row course list and wrong for two fields — the
+            same argument components/auth/AuthPanel makes for not reusing Card
+            at all. AuthForm brings its own button and it sits under the
+            password, where the eye already is.
+
+            WHAT IT ASKS FOR IS UNCHANGED, and that is the point of routing it
+            through AuthForm rather than building a second pair of fields here.
+            One box that signs in OR creates, one password rule, one set of
+            error sentences, one forgotten-password door — see the note atop
+            AuthForm. A student who turns out to have an account already is
+            simply signed into it, which on this screen is exactly right: their
+            fresh answers are the newer ones and the merge in lib/identity hands
+            it to them on `updatedAt`, so the eleven questions they just sat
+            through are not thrown away by having been here before. */}
+        {step === "account" && (
+          <Card
+            title="Save your answers"
+            why="An email and a password, and your plan follows you to any phone you sign in on."
+          >
+            {/* Both destinations are the same one. AuthForm splits them because
+                a NEW account normally owes us these questions — but they have
+                just been answered, so there is nowhere to divert to and a new
+                account goes exactly where a returning one does. */}
+            <AuthForm after={nextFromQuery()} afterNew={nextFromQuery()} autoFocus={false} />
           </Card>
         )}
       </div>

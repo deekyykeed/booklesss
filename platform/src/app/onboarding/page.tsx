@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
-import { authEnabled } from "@/lib/auth";
-import { currentUserId } from "@/lib/supabase/server";
 import { OnboardingFlow } from "@/components/onboarding/OnboardingFlow";
 
-/* The questions, asked straight after the account is made. Reached from the
- * sign-up card on "/"; see components/onboarding/OnboardingFlow for the design.
+/* The questions — and, since 2026-08-26, the account at the end of them. This
+ * is the front door now: "Get started" on "/" comes straight here, a stranger
+ * answers eleven questions, and the last screen is the email and password that
+ * save them. See components/onboarding/OnboardingFlow for the design and for
+ * why the account step is data-dependent rather than a branch.
  *
  * IT WEARS THE APP'S BACKGROUND, not a page colour of its own (owner,
  * 2026-08-03: "use the same background mechanics I use on the dashboard — the
@@ -31,39 +31,33 @@ export const metadata: Metadata = {
 };
 
 /**
- * NOBODY WITHOUT AN ACCOUNT GETS HERE (owner, 2026-08-04: "someone who has not
- * signed in cannot be on the onboarding ever").
+ * ANYBODY GETS HERE NOW, AND THAT IS THE CHANGE (owner, 2026-08-26).
  *
- * OnboardingFlow already redirected a signed-out visitor from the client, and
- * that is not the same thing: it fires after Clerk has reported, so the first
- * question is on screen for a beat before they are thrown off it. A bounce, not
- * a gate. Checked on the server, the page is never drawn at all.
+ * This page used to open with a server-side gate — `currentUserId()`, and
+ * `redirect("/")` for anyone without one — under the rule "someone who has not
+ * signed in cannot be on the onboarding ever" (owner, 2026-08-04). That rule
+ * was right for as long as the account was made FIRST and these questions came
+ * after it. The order is reversed now: the account is the LAST screen of this
+ * flow, so a signed-out visitor is not someone who slipped past a door, they
+ * are the person this page was built for.
  *
- * ON THE PAGE RATHER THAN IN THE MIDDLEWARE, which was the first attempt and
- * the wrong one. The rule it settled on outlived the auth provider that taught
- * it: protect access as close to the resource as possible. `proxy.ts` refreshes
- * the session and decides nothing — putting a gate on the path every request
- * takes, to guard one page, is work done everywhere for a rule that applies in
- * one place.
+ * The gate could not simply be relaxed, either — it had to go. Left in place it
+ * would have redirected every new student away from the front door before the
+ * first question was drawn, which is the whole funnel.
  *
- * THE CLIENT REDIRECT STAYS. It covers what this cannot — a session that ends
- * while the tab is open, long after this ran. Two mechanisms for two moments.
+ * NOTHING GUARDS THIS PAGE, AND NOTHING NEEDS TO. There is no privileged data
+ * here: every question is answered into localStorage (see OnboardingFlow's
+ * `save`), and the answers only reach an account once one exists, through
+ * AccountSignal, under RLS on the student's own row. A stranger filling this in
+ * and closing the tab has written to their own browser and nowhere else.
  *
- * This makes the route dynamic, which is the correct cost and only for this
- * page: a session cannot be checked at build time. Every lesson stays static,
- * which is the thing that actually matters on a Zambian connection, and this is
- * a page each student sees once, behind a sign-up.
+ * IT IS STATIC AGAIN. The old gate read a session, which cannot be done at
+ * build time and made this the one dynamic route in the app. Removing it hands
+ * the page back to the prerender — which matters more here than it did
+ * anywhere: this is now the first thing a new student loads, often on a Zambian
+ * mobile connection, and it no longer waits on a session lookup to draw.
  */
-export default async function OnboardingPage() {
-  if (authEnabled) {
-    const userId = await currentUserId();
-    /* To the landing page, where the sign-up card is — the same place the
-       client redirect and RequireAccount both send people. A gate that lands
-       somebody somewhere the rest of the app never sends them reads as an
-       error rather than as a door. */
-    if (!userId) redirect("/");
-  }
-
+export default function OnboardingPage() {
   return (
     <>
       <div className="bg-waves" aria-hidden="true">
