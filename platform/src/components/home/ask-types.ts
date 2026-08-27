@@ -44,4 +44,19 @@ export type AskControls = {
   send: (text: string) => void;
   hangUp: () => void;
   setMuted: (muted: boolean) => void;
+  /**
+   * Loudness, 0..1, right now.
+   *
+   * A GETTER, NOT A VALUE, and that is the whole reason it is on the controls
+   * rather than being pushed up as a prop: it changes sixty times a second and
+   * is written straight onto a CSS variable. Handing it up as state would
+   * re-render whatever holds it on every frame, which on a mid-range Android is
+   * how a call starts dropping them.
+   *
+   * Added 2026-08-27 for the home dock, whose big button draws the meter
+   * ITSELF — the engine renders no panel there (`chrome: "none"`), so the bars
+   * are no longer inside the component that owns the audio graph. Returns 0
+   * before the graph exists, which is the first few frames of every call.
+   */
+  getLevel: () => number;
 };

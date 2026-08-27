@@ -10,10 +10,10 @@ import { isStudyDay, studyHistory, useProgress } from "@/lib/progress";
 import { overallPerformance, overallScoreHistory } from "@/lib/performance";
 import { ActionBar } from "@/components/ui/ActionBar";
 import { SolarIcon } from "@/components/icons/solar";
-import { CoursesSection } from "./CoursesSection";
-import { pickGreeting, rememberGreeting, renderGreeting, type Greeting } from "./greeting";
+import { CoursesSection } from "../CoursesSection";
+import { pickGreeting, rememberGreeting, renderGreeting, type Greeting } from "../greeting";
 import { OfflineTools } from "./OfflineTools";
-import { Spark } from "./Spark";
+import { Spark } from "../Spark";
 
 
 /* ------------------------------------------------------------------ *

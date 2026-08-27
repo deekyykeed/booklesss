@@ -15,6 +15,7 @@
     "gen:mingcute": "node scripts/gen-mingcute-icons.mjs",
     "gen:tabler": "node scripts/gen-tabler-icons.mjs",
     "gen:solar": "node scripts/gen-solar-icons.mjs",
+    "gen:plump": "node scripts/gen-plump-icons.mjs",
     "gen:avatars": "node scripts/gen-avatars.mjs",
     "gen:qr": "node scripts/gen-qr.mjs",
     "gen:favicons": "node scripts/gen-favicons.mjs",

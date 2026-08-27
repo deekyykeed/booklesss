@@ -233,6 +233,20 @@ Most icons in `platform/` come from the **MynaUI** set (by Praveen Juge) via the
   **This replaced a standing "never do this" and the reasoning is worth keeping.** The rule used to be *do not extend `AVATARS` to the full set — twelve is already 27.8KB in a client component, ~100 would ship ~250KB to every reader.* That was correct **about inlining**, which is what the module did. The answer was never a smaller set, it was to stop shipping artwork as code — the school crests hit the identical wall the same day and took the identical fix (200KB of base64 → 1.6KB of ids). **The same trap is still live in `home/card-glyphs.tsx` and `home/plump-glyphs.tsx`**; if either needs to grow, move it to `public/` rather than trimming it.
 
   Old ids are **aliased, not renamed** (`LEGACY` in the generator): the first twelve were hand-named and don't all match their icon — `smiley` is `love-smiley`, `dice` is `dices` — so a stored id would otherwise resolve to nothing and a student would silently lose their face. The generator throws if an alias ever points at an icon the set has dropped.
+- The **home screen** is **Streamline Plump** (owner's pick, 2026-08-27: *"use
+  plump icons from streamline free icons"*) — the four dock marks and the
+  sessions list's play glyph. `<PlumpIcon name="home-1" />` from
+  `platform/src/components/icons/plump.tsx`, generated like the rest (`ICONS` in
+  `scripts/gen-plump-icons.mjs` → `npm run gen:plump`). **Its two layers are CSS
+  variables, not `currentColor`**: every Plump Color icon is drawn in exactly two
+  flat values (`#8fbffa` light, `#2859c5` dark), and flattening them to one
+  colour erases the drawing — so the generator rewrites them to `--plump-light`
+  and `--plump-dark` and the caller passes a **pair**. That is what gives the
+  dock a real off/on grammar out of ONE set, which is the lesson `ultimate.tsx`
+  and `freehand.tsx` both paid for. The generator throws on a name whose body
+  carries neither colour. Plump was already here twice by hand — the course
+  cards' gradient marks (`home/plump-glyphs.tsx`) and the ask microphone
+  (`home/ask-mic.tsx`); both are independent and untouched.
 - The reader sidebar's **lesson caret** is **Mingcute** (owner's pick, 2026-07-31): `<MingcuteIcon name="down-small-line" />` from `platform/src/components/icons/mingcute.tsx`, generated the same way (`ICONS` in `scripts/gen-mingcute-icons.mjs` → `npm run gen:mingcute`). Mingcute's grid draws a much smaller mark than MynaUI's at the same size and strokes it at 2 rather than 1.5, so anything borrowed from it needs its `size`/`strokeWidth` set against the MynaUI icons beside it. Keep this set narrow — MynaUI is still the system.
 - **Solar** (by 480 Design) is on **two** surfaces plus one fallback: `/workspace` in Solar **Linear**, the dashboard's four **stat cards** in Solar **Duotone** (owner's pick, 2026-08-01), and — as of 2026-08-09 — the note control's **offline fallback** in Solar **Broken**/**Bold Duotone** (a stroke drawing with a deliberate gap at rest, the duotone in the verdict's own inline hue when chosen; it draws only while the Lordicon Lottie hasn't loaded). That last one passes its hue inline and sits on a white surface, which the standing lesson below forbids for a *primary* mark — allowed here because fallback duty is exactly the "carrying its own hue" case, and it exists to be replaced by artwork that does the same. It was on a third — the reader's **callout kinds**, 2026-08-02 to 2026-08-07 — and **that is now MynaUI in ink** (owner: *"the icon should be a black mynaui icon"*), with the mark moved to the left of the sentence rather than sitting on a line of its own. **The standing lesson below was reached a second time and from the other direction:** a callout is a white box, so it never gave its mark a hue, and a filled Duotone glyph was importing one. The four names were still in `gen-icons.mjs` from when kinds first shipped, so nothing had to be regenerated to come back. `<SolarIcon name="chart-2-bold-duotone" />` from `platform/src/components/icons/solar.tsx`, generated like the rest (`ICONS` in `scripts/gen-solar-icons.mjs` → `npm run gen:solar`). A `-bold-duotone` name draws two `currentColor` fills, the back one at `opacity .5`, so the mark shades itself out of whatever hue its tile sets — no second colour to pass. **The standing lesson, now confirmed twice: Duotone belongs on a tile that gives it its own hue, not on a white surface and not in a row of outline chrome.** On 2026-08-02 the reader briefly had three Duotone marks in the checkpoint row (a thumbs pair on the answers, a bubble on the note button) and the owner moved all three back to MynaUI the same day, because Duotone is *filled* and sat heavy beside the hairlines around it. The callout was argued at the time to be the other case — a mark alone on a container carrying its own hue, like the stat tiles. **Five days of reading it said otherwise**: the stat tile is a coloured tile and a callout is a white box, so the callout was not giving the mark a hue, the mark was bringing one in. The dashboard tiles are the only place left where the argument actually holds. Adding a third surface is a decision, not a convenience.
 
@@ -529,7 +543,127 @@ with the design system, so a student can tell which door they walked through
 before reading a word. The orb is **CSS, not an asset and not three.js**
 (`components/study/Orb.tsx`): this is read on Zambian mobile data.
 
-### The Ask Box — the third door, on the home screen
+### The home screen — one list, one button (2026-08-27)
+
+**`/dashboard` is "Your sessions" and a big black circle, and that is the whole
+screen.** Owner's sketch, sent on paper: the wordmark and two circles across the
+top (the app's own `TopBar`, untouched), the words *Your sessions*, a couple of
+cards, a lot of air, and a row of circles at the foot of the phone with a
+noticeably bigger one in the middle. The brief with it was three lines — archive
+what is there, use **Streamline Plump** for the marks, and *"a big button which
+is the main call to action for a student to then interface with a voice agent"*.
+
+**THE OLD DASHBOARD IS PARKED, NOT DELETED.** The greeting, the four stat tiles
+with their sparklines, the courses grid and the offline tools are in
+`platform/src/components/home/archive/`, with a README naming what replaced
+each. They still compile, so putting one back is an import — the same parking
+`HomeSidebar.tsx` got in August. The **courses grid is live**, one tab across at
+`/dashboard/courses`, rendering the same `CoursesSection` with the same props;
+only the stat tiles and the offline tools are actually out of the product
+(owner: *"drop it for now"*). `TONE` in the archived `HomeView.tsx` is still what
+`lib/step-notes.ts` means by the four validated hues — do not delete that file
+without moving the comment.
+
+**THE SURFACE HAS ITS OWN PALETTE, AND IT IS SCOPED.** Owner's four values:
+`#f9f9f7` background, `#ffffff`, `#f0efeb`, and `#da7757` as the accent —
+`--color-home-bg` / `-raise` / `-sunk` and `--color-accent` (plus
+`--color-accent-soft`, the same hue at 90% lightness for a fill behind a mark).
+They are **warm** where the app's greys are neutral, which is exactly why they
+are applied to one surface whole rather than substituted into `--color-canvas`:
+a half-applied warm palette is the temperature drift the design system warns
+about, where nobody can point at a culprit because every near-miss is
+defensible. `.content-surface-home` is the scope; the reader and every course
+page are untouched.
+
+**The accent is the first UI colour this app has had, and it does not displace
+`--color-btn`.** Black is still the primary action — the big call button is
+black. `#da7757` marks the *current* thing: the dock row you are on, the read
+part of a session's bar. Different jobs, so they can share a screen.
+
+**⚠️ ENTERING A CALL CHANGES THREE THINGS AND NOTHING ELSE MOVES** (owner:
+*"I don't want too many changes to happen on screen when a user goes from the
+normal to a chat mode, just that necessary minimal changes happen like the
+button having audio waves or bars"*). The microphone in the button becomes a
+five-bar **level meter**, a line of text appears saying where the call is, and
+pins stack above the row. The sessions list stays where it was, at the scroll
+offset it was at — no scrim, no scroll lock, no dialog, no history entry. You
+can walk to the courses tab mid-call and keep talking.
+
+That claim is **measured, not asserted**: a Playwright pass snapshots every
+card's box, both scrollers and the dock's own geometry, presses the button and
+compares. It reads `cards unmoved: true`, `dock unmoved: true`, scroll
+`0/260 → 0/260`. Re-run it before changing the dock's layout.
+
+**⚠️ AND THE THING THAT MAKES IT TRUE IS THAT THE CALL'S CHROME IS OUT OF FLOW.**
+`.dock-above` is `position: absolute; bottom: 100%`. In flow, in a column pinned
+to the bottom of the viewport, the state line alone moved the four marks and the
+call button **26px** the instant a call opened — the button leaving from under
+the thumb that just pressed it. Pins would do it again, and worse.
+
+| File | Job | Cost on first paint |
+|---|---|---|
+| `home/SessionsHome.tsx` | the list — round-robin across the student's courses | plain React |
+| `home/HomeDock.tsx` | four marks, the big button, the call | plain React |
+| `home/CoursesTab.tsx` / `home/SavedTab.tsx` | the two other destinations | plain React |
+| `home/ask-engine.tsx` | the ElevenLabs conversation, `chrome="none"` | **dynamic import** |
+
+**NOTHING WAS AUTHORED TO FILL THE LIST.** `lib/session-nav` derives a session
+from the lesson tree a course already has, so all four courses had cards the day
+this shipped. The order is **round-robin across courses**, not course-by-course:
+Treasury has 21 sessions and Strategic Management 3, and concatenating them
+would give a student taking both a home screen that is six cards of Treasury.
+
+**The dock's four rows all go somewhere that exists**, which is the test the
+parked home rail failed (four of its six rows were SOON placeholders). Home,
+Courses, **Saved** and You. Saved got a page in the same change — `lib/saved` has
+held the records since 2026-08-09 and `lib/state-sync` has carried them between
+devices since 2026-08-10, and there was nowhere to read them back.
+
+**⚠️ `savedSnapshot()`, NEVER `allSaved()`, IN A COMPONENT.** `allSaved` parses
+JSON and returns a fresh object every call, which is not a legal
+`useSyncExternalStore` getter — a snapshot that never compares equal to the last
+one re-renders forever. It went unnoticed for as long as the only reader was
+`savedFor`, which returns a boolean.
+
+**⚠️ THE DOCK GATES ON `authEnabled` TOO, AND HALF A GATE IS A TRAP.** It lives
+in the layout, so it must repeat the page's own decision independently — and
+`RequireOnboarding` answers `if (!authEnabled) return children`. `AskDock` only
+ever copied the `onboardingComplete` half, which was harmless for a floating
+microphone and is not harmless for the screen's entire navigation: a keyless
+build (every local run, every preview with no env) drew the sessions list with
+no nav under it and no way to reach another tab.
+
+**⚠️ THE SURFACE NEEDS `min-height: calc(100dvh - var(--header-h))`.** Below
+768px the document is the scroller, so `.content-surface` is set to
+`height: auto` and stops where its content does. On a short page — Saved with
+nothing saved — the app shell's `--color-canvas` showed through as a grey band
+across the bottom third. It was invisible before only because this surface used
+to be translucent over the same grey. `dvh`, not `vh`: on iOS the difference is
+the URL bar, which is the band being fixed.
+
+**`.bg-waves` is not rendered on this route.** The drifting blobs exist to be
+seen through a frosted `#content-surface`, and this surface is flat and opaque.
+`#content-surface` also drops its `backdrop-filter` here — which stops it being
+a containing block for `position: fixed`. **That is not permission to move the
+dock inside `<main>`**: it is one CSS line from coming back, and the failure is
+silent.
+
+**What did NOT survive: the typed conversation.** `AskDock` had a second
+transport — a signed WebSocket with `textOnly`, billed per message (~$0.003)
+rather than per minute (~$0.08) — and the sketch has no text box and no panel to
+put one in. The engine still supports both transports unchanged; adding typing
+back is a composer, not a protocol. Everything in the section below about
+transports, tokens, CSP hosts and the StrictMode guard is **still current** —
+only the box it describes is archived.
+
+### The Ask Box — ARCHIVED 2026-08-27, and still the reference for the traps
+
+**Superseded by the home screen above; `home/AskDock.tsx` is in `home/archive/`.**
+Kept in full because every ⚠️ below was paid for and every one of them still
+applies to `HomeDock` — the transports, the token route, the two ElevenLabs
+hosts in the CSP, the `Permissions-Policy` microphone trap and the StrictMode
+double-mount guard are all in `ask-engine.tsx`, which is shared and unchanged.
+
 
 **A rounded box docks at the bottom of `/dashboard`** (owner, 2026-08-22). Tap
 the text and it opens into a full-screen panel with the keyboard already up; tap
@@ -597,7 +731,7 @@ the comment that caused it.
 
 | File | Job | Cost on first paint |
 |---|---|---|
-| `home/AskDock.tsx` | the box, the morph, the composer | plain React |
+| `home/archive/AskDock.tsx` | the box, the morph, the composer — **archived** | plain React |
 | `home/ask-engine.tsx` | the ElevenLabs conversation | **dynamic import** |
 | `home/ask-types.ts` | the contract between them | types only |
 | `lib/ask.ts` | the prompt, **client-safe** unlike `lib/session.ts` | reads the nav, not the prose |

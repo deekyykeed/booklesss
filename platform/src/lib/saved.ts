@@ -47,6 +47,39 @@ function write(s: SavedStore) {
 
 const listeners = new Set<() => void>();
 
+/* ------------------------------------------------------------------ *
+ * The snapshot, cached — added 2026-08-27 with /dashboard/saved.
+ *
+ * ⚠️ `read()` PARSES JSON AND RETURNS A NEW OBJECT EVERY CALL, so it cannot be
+ * a `useSyncExternalStore` getter: a snapshot that never compares equal to the
+ * last one re-renders forever. Nothing noticed while the only reader was
+ * `savedFor`, which returns a boolean — a primitive, and safe by construction.
+ * A page that lists the whole store needed the object itself, so the object is
+ * cached here and invalidated by the two writers below.
+ *
+ * The server snapshot is a frozen constant rather than `{}`: a fresh empty
+ * object per call is the same identity trap wearing a smaller hat, and it would
+ * only bite during hydration, which is the hardest place to see it.
+ * ------------------------------------------------------------------ */
+const EMPTY: SavedStore = Object.freeze({});
+
+let snapshot: SavedStore | null = null;
+
+function changed() {
+  snapshot = null;
+  for (const fn of listeners) fn();
+}
+
+/** Everything saved on this device, stable between writes. */
+export function savedSnapshot(): SavedStore {
+  return (snapshot ??= read());
+}
+
+/** What the server renders, and what a browser with no localStorage sees. */
+export function savedServerSnapshot(): SavedStore {
+  return EMPTY;
+}
+
 /** For useSyncExternalStore. Returns the unsubscribe, as it must. */
 export function subscribeSaved(fn: () => void): () => void {
   listeners.add(fn);
@@ -68,7 +101,7 @@ export function setSaved(lessonId: string, sectionId: string, saved: boolean) {
   if (Object.keys(forLesson).length) s[lessonId] = forLesson;
   else delete s[lessonId];
   write(s);
-  for (const fn of listeners) fn();
+  changed();
 }
 
 /* ------------------------------------------------------------------ *
@@ -90,5 +123,5 @@ export function allSaved(): SavedStore {
  *  takes the whole store, because a merge is a statement about all of it. */
 export function replaceSaved(next: SavedStore) {
   write(next);
-  for (const fn of listeners) fn();
+  changed();
 }

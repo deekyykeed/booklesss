@@ -78,6 +78,41 @@
   --color-danger: #8d2525;          /* red inline link           */
   --color-btn: #0b0b0b;             /* solid black button        */
 
+  /* ---------------------------------------------------------------- *
+   * THE HOME SCREEN'S OWN NEUTRALS AND ITS ONE ACCENT.
+   *
+   * Owner's values, 2026-08-27, given alongside the sketch of the new
+   * dashboard: "#f9f9f7 for backgrounds. #da7757 for the accent #ffffff,
+   * #f0efeb". Three neutrals and one accent, and they are WARM where the rest
+   * of the app is neutral grey — #f9f9f7 carries a little yellow where
+   * --color-canvas at #f5f5f5 carries none.
+   *
+   * ⚠️ THEY ARE SCOPED TO /dashboard, NOT SUBSTITUTED FOR THE APP'S. Nothing
+   * outside `.home-surface` and the home dock reads them. Repainting
+   * --color-canvas would take the reader, the sidebar and every course page
+   * with it, and none of those were what the owner was looking at. The design
+   * system's warning about temperature drift (a wash of near-miss greys nobody
+   * can point at) is exactly what a half-applied palette produces, so this one
+   * is applied whole, on one surface, and the app's own tokens are untouched.
+   *
+   * THE ACCENT IS THE FIRST UI COLOUR THIS APP HAS HAD, and it does not
+   * displace --color-btn. Black is still the primary action — the big call
+   * button on the home screen is black. #da7757 marks the CURRENT thing: the
+   * dock row you are on, a session card's rule. hsl(14 63% 60%), so it clears
+   * the 80%-saturation ceiling with room to spare.
+   * ---------------------------------------------------------------- */
+  --color-home-bg: #f9f9f7;         /* the home surface itself   */
+  --color-home-raise: #ffffff;      /* a card lifted off it      */
+  --color-home-sunk: #f0efeb;       /* a hairline, a quiet fill  */
+  --color-accent: #da7757;          /* the current row, the mark */
+  /* The accent at reading strength, for a fill BEHIND a mark rather than the
+     mark itself. Derived from #da7757 rather than invented: the same hue and
+     saturation lifted to 90% lightness, which is where a tint stops competing
+     with 13px type sitting on it. Its own token because a fill and a stroke
+     that must stay the same colour are two places one hex would have to be
+     written, and the second one is always the one that drifts. */
+  --color-accent-soft: #f6ded4;
+
   /* Two steps of lift, and only two.
    *
    * `lift` raises a block of content off the reading surface — a table, a
@@ -3196,3 +3231,512 @@
    appearance object could not reach, fixed with !important because Clerk
    injected its stylesheet after this one. There is no third-party stylesheet to
    out-specify any more, which is most of the point. */
+
+/* ================================================================== *
+ * THE HOME SCREEN — /dashboard, /dashboard/courses, /dashboard/saved
+ *
+ * Drawn from the owner's sketch, 2026-08-27: a wordmark and two circles at the
+ * top (the app's own TopBar, untouched), the words "Your sessions", a couple of
+ * cards, a lot of air, and a row of circles at the foot of the phone with a
+ * noticeably bigger one in the middle.
+ *
+ * ⚠️ ITS PALETTE IS THE OWNER'S FOUR VALUES AND NOTHING ELSE — #f9f9f7,
+ * #ffffff, #f0efeb, #da7757, as --color-home-bg / -raise / -sunk and
+ * --color-accent. They are WARM where the app's greys are neutral, which is the
+ * whole reason this is scoped to one surface rather than swapped into
+ * --color-canvas: half-applying a warm palette is exactly the temperature drift
+ * the design system warns about, where nobody can point at a culprit because
+ * every individual near-miss is defensible. Do not reach for --color-canvas or
+ * --color-card in this section, and do not reach for these outside it.
+ *
+ * The one value here that is not the owner's is the black on the call button.
+ * --color-btn is still the primary action everywhere in this app; the accent
+ * marks the CURRENT thing (the dock row you are on, the part of a session
+ * already read), which is a different job and is why they can share a screen.
+ * ================================================================== */
+
+/* The scroller, on this surface only. Flat and opaque where every other route
+   is frosted glass over drifting blobs — the layout stops rendering .bg-waves
+   here, so a translucent panel would be sampling a plain background at the cost
+   of a full-screen blur on a phone.
+
+   ⚠️ Dropping backdrop-filter also stops this element being a containing block
+   for `position: fixed`. That is a side effect, not a licence: the dock still
+   lives in the layout, outside <main>, because this line is one edit away from
+   coming back and the breakage it causes is silent. */
+.content-surface-home {
+  background-color: var(--color-home-bg);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  /* ⚠️ IT MUST FILL THE SCREEN EVEN WHEN THE CONTENT DOES NOT. Below 768px the
+     document is the scroller, so `.content-surface` is set to `height: auto`
+     and grows with what is in it — on a short page (Saved with nothing saved:
+     434px of content in an 844px viewport) the surface simply stopped, and the
+     app shell's own --color-canvas showed through underneath as a grey band
+     across the bottom third. Invisible until now only because this surface used
+     to be translucent over the same grey.
+
+     `dvh`, not `vh`: on iOS Safari the two differ by the height of the URL bar,
+     and the difference is exactly the band this is fixing. */
+  min-height: calc(100dvh - var(--header-h));
+}
+
+.home-surface {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 22px 16px 0;
+  /* Clear of the dock, which floats over this and is about 96px tall including
+     the button that stands proud of the row. Without this the last card sits
+     under the call button on a short phone and cannot be reached. */
+  padding-bottom: calc(124px + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 768px) {
+  .home-surface {
+    padding: 34px 28px calc(124px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ---- the heading ------------------------------------------------ */
+
+.home-head {
+  margin-bottom: 26px;
+}
+
+.home-title {
+  font-family: var(--font-display);
+  font-size: 27px;
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: -0.022em;
+  color: var(--color-ink);
+}
+
+.home-sub {
+  margin-top: 7px;
+  max-width: 44ch;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+/* ---- the cards -------------------------------------------------- */
+
+.home-cards {
+  display: grid;
+  /* Explicit at BOTH widths. An implicit column is `auto`-sized, and `auto`
+     floors at min-content — one nowrap line inside reports its whole width and
+     the track grows to fit a string that was always going to wrap. The
+     dashboard's stat tiles never had this bug precisely because their template
+     was written out; see the design system's note. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+
+@media (min-width: 640px) {
+  .home-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.home-card {
+  display: flex;
+  flex-direction: column;
+  /* A grid item carries `min-width: auto` of its own and will overflow a track
+     that is perfectly sized. Both clamps are needed and people apply one. */
+  min-width: 0;
+  padding: 18px 18px 16px;
+  border: 1px solid var(--color-home-sunk);
+  border-radius: 22px;
+  background-color: var(--color-home-raise);
+  box-shadow: var(--shadow-lift);
+  transition:
+    transform 160ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 160ms ease;
+}
+
+.home-card:hover {
+  border-color: var(--color-line-2);
+}
+
+/* Tactile push, not a lift — a card the thumb is on should go down. */
+.home-card:active {
+  transform: scale(0.988);
+}
+
+.home-card-kicker {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-placeholder);
+  /* One line. A two-line unit name pushes every card in the row taller than the
+     one beside it, and the grid then has a ragged bottom edge. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-card-title {
+  margin-top: 8px;
+  font-family: var(--font-display);
+  font-size: 18.5px;
+  font-weight: 600;
+  line-height: 1.26;
+  letter-spacing: -0.015em;
+  color: var(--color-ink);
+}
+
+.home-card-meta {
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: var(--color-muted);
+}
+
+/* Drawn on every card, empty when nothing is done — see the component. */
+.home-card-bar {
+  display: block;
+  margin-top: 16px;
+  height: 3px;
+  border-radius: 999px;
+  background-color: var(--color-home-sunk);
+  overflow: hidden;
+}
+
+.home-card-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background-color: var(--color-accent);
+  transform-origin: left center;
+  transition: transform 460ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.home-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.home-card-done {
+  font-size: 12px;
+  color: var(--color-ink-2);
+}
+
+.home-card-go {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+/* ---- the placeholder -------------------------------------------- */
+
+/* Same box, same border, same radius, same shadow — only the FILL differs. Every
+   property that changes at the swap is a separate visible change, and a card
+   that changes three times on one load reads as broken rather than loading. */
+.home-card-ghost {
+  gap: 10px;
+  min-height: 132px;
+}
+
+.ghost-line {
+  display: block;
+  height: 10px;
+  border-radius: 999px;
+  background-color: var(--color-home-sunk);
+  animation: home-ghost 1.4s ease-in-out infinite;
+}
+
+.ghost-line.ghost-lg {
+  height: 15px;
+}
+
+@keyframes home-ghost {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.45; }
+}
+
+/* ---- nothing to show -------------------------------------------- */
+
+.home-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 46px 20px;
+  border: 1px solid var(--color-home-sunk);
+  border-radius: 22px;
+  background-color: var(--color-home-raise);
+  text-align: center;
+}
+
+.home-empty-line {
+  font-size: 14.5px;
+  color: var(--color-ink-2);
+}
+
+.home-empty-cta {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ================================================================== *
+ * THE DOCK — four marks, one button.
+ *
+ * ⚠️ GOING INTO A CALL CHANGES THREE THINGS AND NOTHING ELSE MOVES (owner:
+ * "I don't want too many changes to happen on screen when a user goes from the
+ * normal to a chat mode, just that necessary minimal changes happen like the
+ * button having audio waves or bars"). The microphone becomes a meter, a line
+ * of text appears under the row, and pins stack above it. The sessions list
+ * behind stays exactly where it was, at the scroll position it was at — there
+ * is no scrim, no scroll lock and no dialog here, which is the whole difference
+ * from the AskDock this replaces.
+ * ================================================================== */
+
+.home-dock-layer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60; /* over the 48px header, which is z-50 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  pointer-events: none;
+}
+
+/* The content has to stop being legible before it reaches the circles, and the
+   sketch draws no bar behind them — so the surface fades out under the dock
+   instead of a pill being drawn around it. A gradient, deliberately not a
+   backdrop-filter: this element sits over the scroller on a phone, and a
+   full-width blur that composites every frame of a scroll is the one thing on
+   this screen that would cost real battery. */
+.home-dock-layer::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* 190px and opaque by two thirds. Measured off a phone rather than guessed:
+     at 148px with the midpoint at 46% a card's kicker was still fully legible
+     under the row of marks, which reads as content trapped behind the dock
+     rather than as content running out of the screen. */
+  height: 190px;
+  background: linear-gradient(
+    to bottom,
+    rgb(249 249 247 / 0) 0%,
+    rgb(249 249 247 / 0.72) 34%,
+    rgb(249 249 247 / 1) 66%,
+    rgb(249 249 247 / 1) 100%
+  );
+  pointer-events: none;
+}
+
+.home-dock-layer > * {
+  position: relative;
+  pointer-events: auto;
+}
+
+/* ⚠️ OUT OF FLOW, ON PURPOSE. Everything a call puts on screen — the pins, the
+   error, the state line — stacks here, above the row and outside its layout.
+   In flow, in a column pinned to the bottom of the viewport, each of these
+   pushes the row up as it appears and drops it back as it goes: the state line
+   on its own moved the four marks and the call button 26px at the instant a
+   call opened, which is the button leaving from under the thumb that just
+   pressed it. `bottom: 100%` is the top of the layer's padding box, so the row
+   itself never moves and these arrive in the space above it — over content the
+   fade has already dimmed. */
+.dock-above {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  pointer-events: none;
+}
+
+.dock-above > * {
+  pointer-events: auto;
+}
+
+.home-dock {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.dock-link {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  background-color: transparent;
+  transition: background-color 200ms ease;
+}
+
+/* Two signals for the current row, not one — the mark takes the accent AND the
+   disc behind it fills. Plump is drawn with 3-unit strokes on a 48 grid, which
+   is heavy type by any other name, and the design system's rule holds: a colour
+   pair that separates cleanly at regular weight stops separating once the thing
+   wearing it gets heavier. */
+.dock-link[data-current] {
+  background-color: var(--color-accent-soft);
+}
+
+.dock-link:active {
+  transform: scale(0.94);
+}
+
+/* THE BUTTON. Bigger than the marks either side of it because it is an action
+   and they are places — and black, because --color-btn is still what a primary
+   action is in this app. The accent marks what is current; it does not get
+   promoted to a button just because the screen it is on is new. */
+.dock-call {
+  display: grid;
+  place-items: center;
+  width: 66px;
+  height: 66px;
+  border-radius: 999px;
+  background-color: var(--color-btn);
+  color: #ffffff;
+  /* Sized for a 66px circle: one tight contact layer so it sits ON the surface,
+     one soft throw so it sits ABOVE it. No third, wider stop — a small disc
+     wearing a 50px shadow looks like it is falling rather than resting. */
+  box-shadow:
+    0 2px 4px -1px rgb(0 0 0 / 0.16),
+    0 8px 18px -8px rgb(0 0 0 / 0.26);
+  transition:
+    transform 160ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 260ms ease;
+}
+
+.dock-call:active {
+  transform: scale(0.95);
+}
+
+/* The one change the owner asked for by name. A ring rather than a colour swap:
+   the disc staying black through the transition is what keeps this reading as
+   the same button in a second state, instead of as a different control that
+   appeared where the first one was. */
+.home-dock-layer[data-live] .dock-call {
+  box-shadow:
+    0 2px 4px -1px rgb(0 0 0 / 0.16),
+    0 8px 18px -8px rgb(0 0 0 / 0.26),
+    0 0 0 4px var(--color-accent-soft);
+}
+
+/* ---- the bars --------------------------------------------------- */
+
+.dock-meter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 30px;
+}
+
+.dock-meter span {
+  width: 3.5px;
+  border-radius: 999px;
+  background-color: #ffffff;
+  /* 6px at silence, up to 6 + 22 * weight at full voice. HEIGHT rather than
+     scaleY, and the reason is the same one the ask panel's meter gives: a 4px
+     bar with a full radius squashes its own caps under a vertical scale, and
+     five squashed capsules read as a glitch rather than as a voice. The level
+     itself is written to --lvl on an animation frame and never touches React. */
+  height: calc(6px + (var(--w) * var(--lvl, 0) * 22px));
+  transition: height 90ms linear;
+}
+
+/* Before it connects there is nothing to follow, so the bars breathe. This is
+   the state a student sees while the token is minted and the socket opens —
+   about a second on a good connection and rather more on mobile data, which is
+   long enough that five motionless bars read as a call that failed. */
+.dock-meter:not([data-live]) span {
+  animation: dock-meter-idle 1.5s ease-in-out infinite;
+  animation-delay: calc(var(--w) * -0.5s);
+}
+
+@keyframes dock-meter-idle {
+  0%, 100% { height: 6px; }
+  50%      { height: 17px; }
+}
+
+/* ---- what the call says ------------------------------------------ */
+
+.dock-state {
+  font-size: 12.5px;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.dock-error {
+  max-width: calc(100% - 32px);
+  padding: 7px 14px;
+  border: 1px solid var(--color-home-sunk);
+  border-radius: 999px;
+  background-color: var(--color-home-raise);
+  font-size: 12.5px;
+  color: var(--color-danger);
+  text-align: center;
+}
+
+/* The pinned points — the only thing a call leaves on screen. There is no
+   transcript, here or on the session screen, for the same reason: a running
+   transcript is the reading this replaces, in pieces. */
+.dock-pins {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: min(460px, calc(100% - 32px));
+}
+
+.dock-pin {
+  padding: 10px 13px;
+  border: 1px solid var(--color-home-sunk);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 14px;
+  background-color: var(--color-home-raise);
+  box-shadow: var(--shadow-chip);
+  font-family: var(--font-container);
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--color-ink);
+  animation: dock-pin-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes dock-pin-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* The app's own reduced-motion switch and the OS preference, both. Nothing here
+   is hidden or delayed when they are set — only the travel is skipped, and the
+   meter still moves, because the meter IS the information. */
+@media (prefers-reduced-motion: reduce) {
+  .ghost-line,
+  .dock-meter:not([data-live]) span { animation: none; }
+  .dock-pin { animation-duration: 1ms; }
+  .home-card-bar > span,
+  .home-card,
+  .dock-call,
+  .dock-link { transition: none; }
+}
+
+:root[data-motion="reduced"] .ghost-line,
+:root[data-motion="reduced"] .dock-meter:not([data-live]) span {
+  animation: none;
+}

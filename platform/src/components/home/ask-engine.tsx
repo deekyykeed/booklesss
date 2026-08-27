@@ -74,6 +74,25 @@ export type AskEngineProps = {
   onPhase: (phase: AskPhase) => void;
   onError: (message: string | null) => void;
   onReady: (controls: AskControls | null) => void;
+  /**
+   * Whether this engine draws anything.
+   *
+   * "panel" is the ask panel: a level meter and the pinned points on a call, a
+   * transcript on a typed conversation. "none" is the home dock (2026-08-27),
+   * where the owner asked that entering a chat change as little on screen as
+   * possible — "just that necessary minimal changes happen like the button
+   * having audio waves or bars". There the bars are inside the big button and
+   * the pins are the dock's own, so the engine is pure machinery: it opens the
+   * conversation, hands back `controls` (including `getLevel`) and renders
+   * nothing at all.
+   *
+   * A PROP RATHER THAN A SECOND COMPONENT, because everything above this line
+   * — two transports, the StrictMode guard, the mic-before-token ordering, the
+   * hang-up-on-unmount — is the part that is expensive to get right, and a
+   * headless copy of it would be a copy of exactly the code that has bugs
+   * worth not having twice.
+   */
+  chrome?: "panel" | "none";
 };
 
 export function AskEngine(props: AskEngineProps) {
@@ -84,7 +103,8 @@ export function AskEngine(props: AskEngineProps) {
   return (
     <ConversationProvider>
       <Engine {...props} />
-      <ThreadStyles />
+      {/* The panel's stylesheet, and only when there is a panel. */}
+      {props.chrome === "none" ? null : <ThreadStyles />}
     </ConversationProvider>
   );
 }
@@ -100,6 +120,7 @@ function Engine({
   onPhase,
   onError,
   onReady,
+  chrome = "panel",
 }: AskEngineProps) {
   const [phase, setPhase] = useState<AskPhase>("connecting");
   /* The answer as it is being written. Held here rather than pushed into the
@@ -365,10 +386,14 @@ function Engine({
           /* as above */
         }
       },
+      /* Handed out rather than rendered, so a caller that draws its own meter
+         (the home dock's big button) reads the same numbers this panel does
+         without either of them re-rendering for it. */
+      getLevel,
     };
     cb.current.onReady(controls);
     return () => cb.current.onReady(null);
-  }, [sendUserMessage, endSession, setMuted]);
+  }, [sendUserMessage, endSession, setMuted, getLevel]);
 
   /* ---- the screen ------------------------------------------------ */
 
@@ -390,6 +415,12 @@ function Engine({
           ? "Speaking…"
           : "Listening…"
         : "Call over";
+
+  /* HEADLESS. Every hook above has already run — this is the last statement in
+     the component for exactly that reason, since an early return placed any
+     higher would change the hook order between the two chrome modes. The dock
+     draws the bars and the pins itself; see the `chrome` prop's note. */
+  if (chrome === "none") return null;
 
   return mode === "voice" ? (
     <VoiceBody
