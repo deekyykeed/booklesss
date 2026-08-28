@@ -64,7 +64,27 @@ const PHONE_MAX_SHORT_SIDE = 600;
  * for a narrower reason — Clerk routed its OAuth callback under /sign-in's
  * catch-all — which stopped applying when those routes were flattened on
  * 2026-08-05. The exemption is still right; only the reason changed.) */
-const SKIP = ["/workspace", "/settings", "/privacy", "/terms", "/sign-in", "/sign-up"];
+/* /dashboard JOINED THIS LIST ON 2026-08-28, WHEN IT BECAME A DESKTOP LAYOUT.
+ * The gate exists because a phone screen stretched to 1440px "will not look
+ * good and it will look very scrappy" — which was true of every surface this
+ * app had. The dashboard shell is the first one built the other way round: a
+ * fixed 288px column and a pane, ported from a desktop reference, which
+ * collapses to a drawer on a phone rather than being a phone layout let loose
+ * on a monitor. Blocking it would have meant shipping a desktop UI nobody with
+ * a desktop can reach.
+ *
+ * The prefix rule covers /dashboard/courses and /dashboard/saved, which render
+ * inside the same shell. READING a step is still phone-only — the reader has
+ * had no desktop pass and is not part of this change. */
+const SKIP = [
+  "/workspace",
+  "/settings",
+  "/privacy",
+  "/terms",
+  "/sign-in",
+  "/sign-up",
+  "/dashboard",
+];
 
 /** Exact paths that skip the gate — "/" can't go in SKIP, whose prefix rule
  *  would exempt every route in the app. */
