@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude UI — recreation</title>
+<style>
+/* ============================================================
+   FONTS
+   The two faces claude.ai serves, with the app's own fallback
+   stacks behind them (Georgia for the serif, system-ui for sans).
+   ============================================================ */
+@font-face{font-family:"anthropic-sans";font-weight:300 800;font-display:swap;
+  src:url("https://assets-proxy.anthropic.com/claude-ai/v2/assets/v1/cc27851ad-DDVos-BJ.woff2") format("woff2");}
+@font-face{font-family:"anthropic-sans";font-weight:300 800;font-style:italic;font-display:swap;
+  src:url("https://assets-proxy.anthropic.com/claude-ai/v2/assets/v1/c9d3a3a49-CJtkx3-S.woff2") format("woff2");}
+@font-face{font-family:"anthropic-serif";font-weight:300 800;font-display:swap;
+  src:url("https://assets-proxy.anthropic.com/claude-ai/v2/assets/v1/c66fc489e-2VcCjn5t.woff2") format("woff2");}
+
+/* ============================================================
+   TOKENS — values read straight off the live app
+   ============================================================ */
+:root{
+  --font-sans:"anthropic-sans",system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --font-serif:"anthropic-serif",Georgia,"Times New Roman",Times,serif;
+
+  --page-bg:#fcfcfb;            /* body / main pane           */
+  --sidebar-bg:#fafaf9;         /* aside                      */
+  --surface-3:#ffffff;          /* composer shell             */
+  --row-selected:#edece8;       /* active nav row             */
+  --row-hover:rgba(11,11,11,.05);
+  --track:#f6f6f4;              /* composer segmented track   */
+  --track-header:rgba(11,11,11,.05);
+
+  --text-100:#0b0b0b;           /* primary                    */
+  --text-200:#52514e;           /* secondary                  */
+  --text-300:#898781;           /* tertiary / placeholder     */
+  --text-stop:#141413;
+
+  --border:rgba(11,11,11,.1);
+  --clay:#d97757;
+
+  --radius:8px;
+  --row-h:32px;
+
+  /* motion — lifted verbatim from the app */
+  --ease:cubic-bezier(.4,0,.2,1);
+  --dur:.2s;                    /* composer state change      */
+  --dur-fast:60ms;              /* --cds-dur-fast             */
+  --dur-slow:.45s;              /* --cds-dur-slow             */
+  --spring:linear(0,.2459,.6526,.9468,1.0764,1.0915,1.0585,
+           1.0219,.9993,.9914,.9921,.9957,.9988,1.0004,1);
+  --fill-ghost-hover:rgba(11,11,11,.05);   /* --cds-fill-ghost-hover */
+
+  /* composer shadow parts */
+  --cmp-ring:rgba(31,31,30,.15);           /* hsl(60 2% 12% / .15) */
+  --cmp-glow:rgba(0,0,0,.035);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--page-bg);
+  color:var(--text-100);
+  font-family:var(--font-sans);
+  font-size:14px;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+
+/* icon helper ------------------------------------------------------------- */
+.sprite{position:absolute;width:0;height:0;overflow:hidden}
+.i{display:block;flex:0 0 auto;width:20px;height:20px;
+   fill:none;stroke:currentColor;stroke-width:1.25;
+   stroke-linecap:round;stroke-linejoin:round}
+.i-16{width:16px;height:16px;stroke-width:1.3}
+.i-12{width:12px;height:12px;stroke-width:1.6}
+
+/* ghost buttons ------------------------------------------------------------
+   The app paints the hover fill on a separate absolutely-positioned layer
+   (.cds-btn-squish) so that pressing squishes the *fill*, not the icon.
+   Same trick here, with a ::before layer.                                    */
+.row,.empty-row,.icon-btn,.icon-btn-sm,.head-btn,.cbtn,.model-btn,.voice .caret{
+  position:relative;isolation:isolate;
+}
+.row::before,.icon-btn::before,.icon-btn-sm::before,.head-btn::before,
+.cbtn::before,.model-btn::before,.voice .caret::before{
+  content:"";position:absolute;inset:0;z-index:-1;
+  border-radius:inherit;background-color:transparent;
+  transform-origin:50% center;
+  transition:background-color .1s var(--ease),
+             transform var(--dur-slow) var(--spring);
+}
+.row:hover::before,.icon-btn:hover::before,.icon-btn-sm:hover::before,
+.head-btn:hover::before,.cbtn:hover::before,.model-btn:hover::before,
+.voice .caret:hover::before{background-color:var(--fill-ghost-hover)}
+
+.row:active::before,.icon-btn:active::before,.icon-btn-sm:active::before,
+.head-btn:active::before,.cbtn:active::before,.model-btn:active::before,
+.voice .caret:active::before{
+  transition:transform var(--dur-fast) ease-out;
+  transform:scale(.975);
+}
+@media (prefers-reduced-motion:reduce){
+  .row::before,.icon-btn::before,.icon-btn-sm::before,.head-btn::before,
+  .cbtn::before,.model-btn::before,.voice .caret::before{transition:none}
+}
+
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* ============================================================
+   SIDEBAR — 288px, #fafaf9, 1px right border
+   ============================================================ */
+.sidebar{
+  width:288px;flex:0 0 288px;
+  background:var(--sidebar-bg);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+}
+
+.sb-head{height:44px;flex:0 0 44px;display:flex;align-items:center;padding:0 10px 0 16px}
+.wordmark{font-family:var(--font-serif);font-size:20px;font-weight:500;letter-spacing:-.005em}
+.grow{flex:1}
+
+/* segmented control (header switch + composer Chat/Cowork) ---------------- */
+.seg{display:inline-flex;align-items:center;padding:1px;border-radius:7px;position:relative}
+.seg-header{background:var(--track-header);height:28px}
+.seg-item{
+  position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;
+  height:26px;border-radius:5px;color:var(--text-300);white-space:nowrap;
+}
+.seg-item{transition:color .1s var(--ease),background-color .1s var(--ease),box-shadow .1s var(--ease)}
+.seg-item.is-active{background:#fff;color:var(--text-100);
+  box-shadow:0 0 0 1px rgba(11,11,11,.1) inset,0 1px 2px 0 rgba(0,0,0,.05);}
+.seg-header .seg-item{width:34px}
+.dot{position:absolute;top:3px;right:5px;width:5px;height:5px;border-radius:50%;background:var(--clay)}
+
+/* nav body ---------------------------------------------------------------- */
+.sb-body{flex:1;min-height:0;overflow-y:auto;padding:0 11px 0 8px;display:flex;flex-direction:column}
+.rows{display:flex;flex-direction:column;gap:1px}
+
+.row{
+  display:flex;align-items:center;gap:8px;
+  height:var(--row-h);border-radius:var(--radius);
+  padding:0 2px;color:var(--text-200);font-size:14px;
+}
+.slot{width:28px;flex:0 0 28px;display:flex;align-items:center;justify-content:center}
+.label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.row-new{margin-top:4px;background:var(--row-selected);color:var(--text-100);padding-right:4px}
+.row-new:hover::before{background-color:transparent}
+.row-new .kbd{font-size:12px;color:var(--text-300);letter-spacing:.02em}
+.row-new .icon-btn-sm{opacity:0;transition:opacity .12s}
+.row-new:hover .icon-btn-sm{opacity:1}
+
+.icon-btn-sm{width:24px;height:24px;border-radius:6px;display:inline-flex;align-items:center;
+  justify-content:center;color:var(--text-200);flex:0 0 24px}
+
+/* section labels ---------------------------------------------------------- */
+.sec{margin-top:29px}
+.sec-head{
+  display:flex;align-items:center;height:24px;border-radius:var(--radius);
+  padding:4px 0 4px 6px;color:var(--text-300);font-size:13px;
+}
+.sec-head .caret{margin-left:4px;opacity:0;transition:opacity .12s}
+.sec-head:hover .caret{opacity:1}
+.sec-head .caret.always{opacity:1}
+
+.hairline{border-top:1px solid var(--border)}
+
+.empty-row{display:flex;align-items:center;gap:8px;height:var(--row-h);border-radius:var(--radius);
+  padding:0 2px;color:var(--text-300);font-size:14px}
+
+/* footer ------------------------------------------------------------------ */
+.sb-foot{flex:0 0 auto;padding:0 11px 12px 8px}
+.sb-foot .hairline{margin-bottom:6px}
+.user-row{display:flex;align-items:center;height:var(--row-h);margin-top:16px}
+.user-btn:hover{background:var(--fill-ghost-hover)}
+.user-btn{display:flex;align-items:center;gap:8px;height:var(--row-h);border-radius:var(--radius);padding:0 6px 0 2px}
+.avatar{width:24px;height:24px;border-radius:50%;flex:0 0 24px;
+  background:radial-gradient(circle at 32% 30%,#8fb1e8,#4a6fc9 72%)}
+.user-name{font-size:14px;color:var(--text-100)}
+.user-plan{font-size:14px;color:var(--text-300);margin-left:-4px}
+.user-btn .i-12{color:var(--text-300);margin-left:2px}
+.foot-icons{margin-left:auto;display:flex;align-items:center}
+.icon-btn{width:32px;height:32px;border-radius:var(--radius);display:inline-flex;
+  align-items:center;justify-content:center;color:var(--text-200)}
+
+/* ============================================================
+   MAIN PANE
+   ============================================================ */
+.pane{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--page-bg)}
+.pane-head{height:48px;flex:0 0 48px;display:flex;align-items:center;padding:0 12px 0 24px}
+.head-btn{width:32px;height:32px;border-radius:var(--radius);display:inline-flex;
+  align-items:center;justify-content:center;color:var(--text-100)}
+
+.pane-scroll{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column}
+.pane-inner{
+  width:100%;max-width:1280px;margin:16px auto 0;padding:0 56px;
+  flex:1;display:flex;flex-direction:column;justify-content:center;
+}
+@media (max-width:900px){.pane-inner{padding:0 32px}}
+@media (max-width:640px){.pane-inner{padding:0 16px}}
+.center{width:100%;max-width:40rem;margin:0 auto}
+
+/* greeting ---------------------------------------------------------------- */
+.greeting{display:flex;align-items:center;justify-content:center;gap:12px;
+  margin-bottom:36px;user-select:none}
+.greeting .spark{width:36px;height:36px;flex:0 0 36px;display:block}
+.greeting .txt{
+  font-family:var(--font-serif);
+  font-size:clamp(26px,3.7vw,37.08px);
+  font-weight:330;line-height:1.25;color:var(--text-100);white-space:nowrap;
+}
+
+/* composer ---------------------------------------------------------------- */
+/* ============================================================
+   THE COMPOSER AND ITS THREE STATES
+   Straight off the live element:
+
+     rest          0 .25rem 1.25rem rgb(0 0 0/3.5%),
+                   0 0 0 1px hsl(60 2% 12%/.15)
+     hover         same blur, ring goes .15 -> .3
+     focus-within  ring .3  AND  blur alpha 3.5% -> 7.5%
+
+   transition: background-color, border-color, box-shadow, opacity
+               200ms cubic-bezier(.4,0,.2,1)
+
+   The hover rule is deliberately suppressed while the pointer sits on a
+   button/link/label inside the box — the app writes it as
+   hover:[&:not(:where(:has(button:hover,a:hover,[role=button]:hover,label:hover)))]
+   so mousing over "+" or the model picker does NOT light the whole frame.
+   ============================================================ */
+.composer{
+  background:var(--surface-3);
+  border-radius:14px;
+  padding:10px;
+  box-shadow:0 .25rem 1.25rem 0 var(--cmp-glow),
+             0 0 0 1px var(--cmp-ring);
+  transition:background-color var(--dur) var(--ease),
+             border-color     var(--dur) var(--ease),
+             box-shadow       var(--dur) var(--ease),
+             opacity          var(--dur) var(--ease);
+}
+
+/* hover — ring only, and not when hovering an interactive child */
+.composer:hover:not(:has(button:hover,a:hover,[role="button"]:hover,label:hover)){
+  --cmp-ring:rgba(31,31,30,.3);
+}
+
+/* focus-within — ring darkens and the drop shadow roughly doubles.
+   Listed after hover so it wins when both are true.                */
+.composer:focus-within{
+  --cmp-ring:rgba(31,31,30,.3);
+  --cmp-glow:rgba(0,0,0,.075);
+}
+
+@media (prefers-reduced-motion:reduce){.composer{transition:none}}
+.editor{
+  min-height:54px;max-height:384px;overflow-y:auto;
+  padding:5px 0 5px 10px;
+  font-size:16px;line-height:22px;color:var(--text-100);
+  outline:none;
+}
+.editor:empty::before{content:attr(data-placeholder);color:var(--text-300)}
+
+.bar{display:flex;align-items:center;height:32px;margin-top:8px}
+.bar-left{display:flex;align-items:center;gap:8px}
+.bar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+
+.cbtn{width:32px;height:32px;border-radius:var(--radius);display:inline-flex;
+  align-items:center;justify-content:center;color:var(--text-100)}
+
+.seg-composer{background:var(--track);height:28px}
+.seg-composer .seg-item{padding:0 10px;font-size:13px}
+
+.model-btn{
+  height:32px;border-radius:var(--radius);padding:0 8px;
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;color:var(--text-200);white-space:nowrap;
+}
+.model-btn .muted{color:var(--text-300)}
+
+.voice{display:inline-flex;align-items:center}
+.voice .caret{width:20px;height:32px;border-radius:var(--radius);display:inline-flex;
+  align-items:center;justify-content:center;color:var(--text-100);margin-left:-5px}
+
+/* stop pill --------------------------------------------------------------- */
+.stop-wrap{display:flex;justify-content:center;padding:26px 0 34px}
+.stop{
+  display:inline-flex;align-items:center;gap:8px;
+  height:46px;padding:12px 16px;border-radius:12px;
+  background:#faf9f5;color:var(--text-stop);
+  font-size:14px;font-weight:600;
+  border:1px solid rgba(31,30,29,.4);
+  box-shadow:0 40px 80px 0 rgba(217,119,87,.24),0 4px 14px 0 rgba(217,119,87,.24);
+}
+</style>
+</head>
+<body>
+
+<!-- ================= ICON SPRITE ================= -->
+<svg class="sprite" aria-hidden="true"><defs>
+  <symbol id="ic-plus" viewBox="0 0 20 20"><path d="M10 4.4v11.2M4.4 10h11.2"/></symbol>
+  <symbol id="ic-projects" viewBox="0 0 20 20">
+    <rect x="3.4" y="4.2" width="13.2" height="2.9" rx="1"/>
+    <path d="M4.8 7.1v6.6a2 2 0 0 0 2 2h6.4a2 2 0 0 0 2-2V7.1"/>
+    <path d="M8.4 10.2h3.2"/></symbol>
+  <symbol id="ic-artifacts" viewBox="0 0 20 20">
+    <circle cx="7.2" cy="7.2" r="3.1"/>
+    <rect x="9.4" y="10.1" width="6.4" height="6.4" rx="1.7"/>
+    <path d="M4.3 16.5h2.6"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 20 20">
+    <circle cx="10" cy="10" r="6.9"/><path d="M10 10V5.9M10 10h3"/></symbol>
+  <symbol id="ic-briefcase" viewBox="0 0 20 20">
+    <rect x="3" y="6.4" width="14" height="9.4" rx="2"/>
+    <path d="M7.6 6.4V5.2A1.3 1.3 0 0 1 8.9 3.9h2.2a1.3 1.3 0 0 1 1.3 1.3v1.2"/>
+    <path d="M3 10.4h14"/></symbol>
+  <symbol id="ic-pin" viewBox="0 0 20 20">
+    <path d="M11.9 2.9l5.2 5.2M13.5 4.5 9 6.7l-3.3 3.3 4.3 4.3L13.3 11l2.2-4.5M6.6 13.4 3.2 16.8"/></symbol>
+  <symbol id="ic-chevron-right" viewBox="0 0 20 20"><path d="M7.5 4.5 13 10l-5.5 5.5"/></symbol>
+  <symbol id="ic-chevron-down" viewBox="0 0 20 20"><path d="M4.5 7.5 10 13l5.5-5.5"/></symbol>
+  <symbol id="ic-sliders" viewBox="0 0 20 20">
+    <path d="M7 3.2v4.1M7 11.2v5.6M13 3.2v6.1M13 13.2v3.6"/>
+    <circle cx="7" cy="9.3" r="1.9"/><circle cx="13" cy="11.3" r="1.9"/></symbol>
+  <symbol id="ic-palette" viewBox="0 0 20 20">
+    <path d="M10 2.6a7.4 7.4 0 1 0 0 14.8c1 0 1.6-.7 1.6-1.5 0-.5-.2-.8-.5-1.1-.3-.3-.5-.6-.5-1.1 0-.8.7-1.5 1.5-1.5h1.3a4 4 0 0 0 4-4c0-3.1-3.3-5.6-7.4-5.6Z"/>
+    <circle cx="6.6" cy="9.6" r=".95" fill="currentColor" stroke="none"/>
+    <circle cx="8.9" cy="6.4" r=".95" fill="currentColor" stroke="none"/>
+    <circle cx="12.6" cy="6.9" r=".95" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="ic-download" viewBox="0 0 20 20">
+    <path d="M10 3.4v8.4M6.4 8.6 10 12.2l3.6-3.6M3.8 15.6h12.4"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 20 20">
+    <circle cx="9" cy="9" r="5.4"/><path d="M12.9 12.9l3.6 3.6"/></symbol>
+  <symbol id="ic-panel" viewBox="0 0 20 20">
+    <rect x="2.9" y="3.6" width="14.2" height="12.8" rx="2.2"/><path d="M8.3 3.6v12.8"/></symbol>
+  <symbol id="ic-bubbles" viewBox="0 0 20 20">
+    <path d="M13.9 11.4a5.6 5.6 0 0 0-5.7-8.1A5.6 5.6 0 0 0 3.6 9c0 1 .3 2 .8 2.8L3.6 15l3.3-.8a5.6 5.6 0 0 0 7-2.8Z"/>
+    <path d="M8.6 13.3a5 5 0 0 0 4.5 2.8c.8 0 1.6-.2 2.3-.5l2.9.7-.7-2.7c.4-.7.6-1.5.6-2.4a5 5 0 0 0-2.4-4.3"/></symbol>
+  <symbol id="ic-code" viewBox="0 0 20 20">
+    <path d="M7.2 6.6 3.8 10l3.4 3.4M12.8 6.6 16.2 10l-3.4 3.4M11.3 5.2 8.7 14.8"/></symbol>
+  <symbol id="ic-mic" viewBox="0 0 20 20">
+    <rect x="7.6" y="2.6" width="4.8" height="9" rx="2.4"/>
+    <path d="M4.9 9.6a5.1 5.1 0 0 0 10.2 0M10 14.7v2.7"/></symbol>
+  <symbol id="ic-edit-square" viewBox="0 0 20 20">
+    <path d="M8.8 3.9H5.4a2 2 0 0 0-2 2v8.7a2 2 0 0 0 2 2h8.7a2 2 0 0 0 2-2v-3.4"/>
+    <path d="M14.1 3.2 16.8 5.9 10.6 12l-3.2.5.5-3.2 6.2-6.1Z"/></symbol>
+  <symbol id="ic-record" viewBox="0 0 20 20">
+    <circle cx="10" cy="10" r="7.1"/><circle cx="10" cy="10" r="3.1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="ic-ghost" viewBox="0 0 20 20">
+    <path fill="currentColor" stroke="none" d="M6.99951 8.66672C7.5518 8.66672 7.99951 9.11443 7.99951 9.66672C7.9993 10.2188 7.55166 10.6667 6.99951 10.6667C6.44736 10.6667 5.99973 10.2188 5.99951 9.66672C5.99951 9.11443 6.44723 8.66672 6.99951 8.66672Z"/>
+    <path fill="currentColor" stroke="none" d="M12.9995 8.66672C13.5518 8.66672 13.9995 9.11443 13.9995 9.66672C13.9993 10.2188 13.5517 10.6667 12.9995 10.6667C12.4474 10.6667 11.9997 10.2188 11.9995 9.66672C11.9995 9.11443 12.4472 8.66672 12.9995 8.66672Z"/>
+    <path fill="currentColor" stroke="none" d="M10 2C14.326 2.00018 17.9998 5.67403 18 10V17.3123C17.9997 17.5427 17.8411 17.8079 17.6172 17.8623C17.3932 17.9165 17.1614 17.7456 17.0557 17.5408C16.7805 17.007 16.3658 16.5937 16.062 16.2878C15.7793 16.0034 15.4503 15.8338 14.9771 15.8337C14.2092 15.8339 13.4371 16.3862 12.9487 17.53C12.8701 17.7138 12.6887 17.8621 12.4888 17.8623C12.2888 17.8623 12.1076 17.7138 12.0288 17.53C11.5404 16.386 10.7674 15.8339 9.99951 15.8337C9.23161 15.8339 8.45959 16.386 7.97119 17.53C7.89253 17.7138 7.71118 17.8621 7.51123 17.8623C7.31122 17.8623 7.13006 17.7138 7.05127 17.53C6.56296 16.3862 5.78982 15.834 5.02197 15.8337C4.54861 15.8338 4.21974 16.0032 3.93701 16.2878C3.63309 16.5937 3.21952 17.0715 2.94434 17.6055C2.83865 17.8103 2.60589 17.9165 2.38184 17.8623C2.15801 17.8079 2.00033 17.6073 2 17.377V10C2.00018 5.67403 5.67403 2.00018 10 2ZM10 3C6.22631 3.00018 3.00018 6.22631 3 10V15.8633C3.0205 15.8414 3.20696 15.6049 3.22803 15.5837C3.67524 15.1336 4.251 14.8338 5.02197 14.8337C6.03838 14.8341 6.90232 15.4025 7.51025 16.2937C8.11828 15.4018 8.9824 14.8338 9.99951 14.8337C11.0163 14.8338 11.8798 15.4022 12.4878 16.2937C13.0959 15.4018 13.9601 14.8339 14.9771 14.8337C15.7481 14.8338 16.3247 15.1336 16.772 15.5837C16.772 15.5837 16.9796 15.812 17 15.8337V10C16.9998 6.22631 13.7737 3.00018 10 3Z"/></symbol>
+</defs></svg>
+
+<div class="app">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar">
+    <div class="sb-head">
+      <a class="wordmark" href="#">Claude</a>
+      <span class="grow"></span>
+      <div class="seg seg-header">
+        <button class="seg-item is-active"><svg class="i i-16"><use href="#ic-bubbles"/></svg></button>
+        <button class="seg-item"><svg class="i i-16"><use href="#ic-code"/></svg><span class="dot"></span></button>
+      </div>
+    </div>
+
+    <div class="sb-body">
+      <div class="rows">
+        <a class="row row-new" href="#">
+          <span class="slot"><svg class="i i-16"><use href="#ic-plus"/></svg></span>
+          <span class="label">New</span>
+          <span class="kbd">Ctrl&#8679;O</span>
+          <button class="icon-btn-sm"><svg class="i i-16"><use href="#ic-edit-square"/></svg></button>
+        </a>
+        <a class="row" href="#">
+          <span class="slot"><svg class="i"><use href="#ic-projects"/></svg></span>
+          <span class="label">Projects</span>
+        </a>
+        <a class="row" href="#">
+          <span class="slot"><svg class="i"><use href="#ic-artifacts"/></svg></span>
+          <span class="label">Artifacts</span>
+        </a>
+        <a class="row" href="#">
+          <span class="slot"><svg class="i"><use href="#ic-clock"/></svg></span>
+          <span class="label">Scheduled</span>
+        </a>
+        <a class="row" href="#">
+          <span class="slot"><svg class="i"><use href="#ic-briefcase"/></svg></span>
+          <span class="label">Customize</span>
+        </a>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head">
+          <span>Projects</span>
+          <svg class="i i-12 caret"><use href="#ic-chevron-right"/></svg>
+          <span class="grow"></span>
+          <button class="icon-btn-sm"><svg class="i i-16"><use href="#ic-plus"/></svg></button>
+        </div>
+        <div class="empty-row">
+          <span class="slot"><svg class="i"><use href="#ic-pin"/></svg></span>
+          <span>Pin projects to keep them here</span>
+        </div>
+      </div>
+
+      <div class="hairline" style="margin-top:10px"></div>
+
+      <div class="sec-head" style="margin-top:10px">
+        <span>Chats and tasks</span>
+        <svg class="i i-12 caret always"><use href="#ic-chevron-right"/></svg>
+        <span class="grow"></span>
+        <button class="icon-btn-sm"><svg class="i i-16"><use href="#ic-sliders"/></svg></button>
+      </div>
+    </div>
+
+    <div class="sb-foot">
+      <div class="hairline"></div>
+      <a class="row" href="#">
+        <span class="slot"><svg class="i"><use href="#ic-palette"/></svg></span>
+        <span class="label">Design</span>
+      </a>
+      <div class="user-row">
+        <button class="user-btn">
+          <span class="avatar"></span>
+          <span class="user-name">Deeky</span>
+          <span class="user-plan">&nbsp;&middot; Pro</span>
+          <svg class="i i-12"><use href="#ic-chevron-down"/></svg>
+        </button>
+        <div class="foot-icons">
+          <button class="icon-btn"><svg class="i i-16"><use href="#ic-download"/></svg></button>
+          <button class="icon-btn"><svg class="i i-16"><use href="#ic-search"/></svg></button>
+          <button class="icon-btn"><svg class="i i-16"><use href="#ic-panel"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN PANE ================= -->
+  <div class="pane">
+    <header class="pane-head">
+      <span class="grow"></span>
+      <button class="head-btn" aria-label="Use incognito">
+        <svg class="i"><use href="#ic-ghost"/></svg>
+      </button>
+    </header>
+
+    <div class="pane-scroll">
+      <div class="pane-inner">
+        <div class="center">
+
+          <div class="greeting">
+            <svg class="spark" viewBox="0 0 100 100" aria-hidden="true">
+              <path fill="#d97757" d="m19.6 66.5 19.7-11 .3-1-.3-.5h-1l-3.3-.2-11.2-.3L14 53l-9.5-.5-2.4-.5L0 49l.2-1.5 2-1.3 2.9.2 6.3.5 9.5.6 6.9.4L38 49.1h1.6l.2-.7-.5-.4-.4-.4L29 41l-10.6-7-5.6-4.1-3-2-1.5-2-.6-4.2 2.7-3 3.7.3.9.2 3.7 2.9 8 6.1L37 36l1.5 1.2.6-.4.1-.3-.7-1.1L33 25l-6-10.4-2.7-4.3-.7-2.6c-.3-1-.4-2-.4-3l3-4.2L28 0l4.2.6L33.8 2l2.6 6 4.1 9.3L47 29.9l2 3.8 1 3.4.3 1h.7v-.5l.5-7.2 1-8.7 1-11.2.3-3.2 1.6-3.8 3-2L61 2.6l2 2.9-.3 1.8-1.1 7.7L59 27.1l-1.5 8.2h.9l1-1.1 4.1-5.4 6.9-8.6 3-3.5L77 13l2.3-1.8h4.3l3.1 4.7-1.4 4.9-4.4 5.6-3.7 4.7-5.3 7.1-3.2 5.7.3.4h.7l12-2.6 6.4-1.1 7.6-1.3 3.5 1.6.4 1.6-1.4 3.4-8.2 2-9.6 2-14.3 3.3-.2.1.2.3 6.4.6 2.8.2h6.8l12.6 1 3.3 2 1.9 2.7-.3 2-5.1 2.6-6.8-1.6-16-3.8-5.4-1.3h-.8v.4l4.6 4.5 8.3 7.5L89 80.1l.5 2.4-1.3 2-1.4-.2-9.2-7-3.6-3-8-6.8h-.5v.7l1.8 2.7 9.8 14.7.5 4.5-.7 1.4-2.6 1-2.7-.6-5.8-8-6-9-4.7-8.2-.5.4-2.9 30.2-1.3 1.5-3 1.2-2.5-2-1.4-3 1.4-6.2 1.6-8 1.3-6.4 1.2-7.9.7-2.6v-.2H49L43 72l-9 12.3-7.2 7.6-1.7.7-3-1.5.3-2.8L24 86l10-12.8 6-7.9 4-4.6-.1-.5h-.3L17.2 77.4l-4.7.6-2-2 .2-3 1-1 8-5.5Z"/>
+            </svg>
+            <span class="txt">Good evening, Deeky</span>
+          </div>
+
+          <div class="composer">
+            <div class="editor" contenteditable="true" data-placeholder="How can I help you today?"></div>
+
+            <div class="bar">
+              <div class="bar-left">
+                <button class="cbtn" aria-label="Add files, connectors">
+                  <svg class="i"><use href="#ic-plus"/></svg>
+                </button>
+                <div class="seg seg-composer">
+                  <button class="seg-item is-active">Chat</button>
+                  <button class="seg-item">Cowork</button>
+                </div>
+              </div>
+
+              <div class="bar-right">
+                <button class="model-btn"><span>Sonnet 5</span><span class="muted">Medium</span></button>
+                <div class="voice">
+                  <button class="cbtn" aria-label="Dictate"><svg class="i"><use href="#ic-mic"/></svg></button>
+                  <button class="caret" aria-label="Voice input"><svg class="i i-12"><use href="#ic-chevron-down"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stop-wrap">
+            <button class="stop">
+              <svg class="i i-16"><use href="#ic-record"/></svg>
+              Stop Claude
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  document.querySelectorAll('.seg').forEach(function (seg) {
+    seg.addEventListener('click', function (e) {
+      var item = e.target.closest('.seg-item');
+      if (!item) return;
+      seg.querySelectorAll('.seg-item').forEach(function (i) { i.classList.remove('is-active'); });
+      item.classList.add('is-active');
+    });
+  });
+</script>
+</body>
+</html>
