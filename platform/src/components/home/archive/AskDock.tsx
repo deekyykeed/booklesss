@@ -3,14 +3,14 @@
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MynaIcon } from "@/components/icons/myna";
-import { AskMic } from "./ask-mic";
+import { AskMic } from "../ask-mic";
 import { askFirstMessage, askOpener, askPrompt, type AskContext } from "@/lib/ask";
 import { labelFor } from "@/lib/course";
 import { enrolledCourses } from "@/lib/courses";
 import { hapticTap } from "@/lib/haptics";
 import { onboardingComplete, useIdentity } from "@/lib/identity";
 import { daysStudiedIn, useProgress } from "@/lib/progress";
-import type { AskControls, AskItem, AskPhase, NewAskItem } from "./ask-types";
+import type { AskControls, AskItem, AskPhase, NewAskItem } from "../ask-types";
 
 /* ------------------------------------------------------------------ *
  * The box at the bottom of the home screen.
@@ -84,7 +84,7 @@ import type { AskControls, AskItem, AskPhase, NewAskItem } from "./ask-types";
 
 /* Loaded on first use, never on the dashboard's first paint. `ssr: false`
  * because it touches getUserMedia and opens a socket the moment it mounts. */
-const AskEngine = dynamic(() => import("./ask-engine").then((m) => m.AskEngine), {
+const AskEngine = dynamic(() => import("../ask-engine").then((m) => m.AskEngine), {
   ssr: false,
 });
 

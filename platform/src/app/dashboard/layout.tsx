@@ -1,4 +1,4 @@
-import { AskDock } from "@/components/home/AskDock";
+import { HomeDock } from "@/components/home/HomeDock";
 import { TopBar } from "@/components/TopBar";
 import { MobileNavProvider, MobileScrim } from "@/components/reader/MobileNav";
 import { ProgressScope } from "@/components/reader/ProgressScope";
@@ -16,12 +16,32 @@ import { ProgressScope } from "@/components/reader/ProgressScope";
  *
  * `components/home/HomeSidebar.tsx` stays on disk untouched. Putting it back is
  * this import and this one line, which is the whole point of parking rather
- * than removing — the rows become real as the features land.
+ * than removing — the rows become real as the features land. THE HOME DOCK
+ * BELOW IS NOT THAT RAIL COMING BACK by another route: its four rows all go
+ * somewhere that exists today, which was the rail's problem and is the test any
+ * fifth row has to pass.
  *
  * `hasLeftPanel={false}` is what stops the header drawing a hamburger onto an
  * empty drawer, and stops a right-swipe pulling one open. `no-leftbar` reclaims
  * the desktop gutter the rail used to occupy, mirroring `no-rightbar` next to
  * it.
+ *
+ * ⚠️ THE HOME SURFACE HAS ITS OWN PALETTE AND ITS OWN BACKGROUND, both applied
+ * here (owner, 2026-08-27, with the sketch: "#f9f9f7 for backgrounds. #da7757
+ * for the accent #ffffff, #f0efeb"). The TOKENS are global (globals.css, next
+ * to the app's own) because the dock reads them from outside this tree; only
+ * the SURFACE is scoped, by `.content-surface-home` on the scroller. Two
+ * consequences worth knowing before editing either:
+ *
+ *   · `.bg-waves` IS NOT RENDERED HERE ANY MORE. The drifting blobs exist to be
+ *     seen through the frosted `#content-surface`; this surface is a flat warm
+ *     off-white, so they would be six animated elements nobody can see. Every
+ *     other route still has them.
+ *   · `#content-surface` DROPS ITS `backdrop-filter` on this surface, which
+ *     also stops it being a containing block for `position: fixed`. Do NOT read
+ *     that as permission to move the dock inside `<main>`. It is one CSS line
+ *     away from returning, and the failure it causes is silent — see the dock's
+ *     own header, and AskDock's before it.
  */
 export default function HomeLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -29,11 +49,6 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
       {/* See the reader layout — a module store, so no provider and no guard. */}
       <ProgressScope />
       <MobileNavProvider hasRightPanel={false} hasLeftPanel={false}>
-        <div className="bg-waves" aria-hidden="true">
-          {Array.from({ length: 6 }, (_, i) => (
-            <span key={i} />
-          ))}
-        </div>
         <TopBar orgName="Bklsss" />
         <MobileScrim />
         {/* THE APP ARRIVES RATHER THAN APPEARING (owner, 2026-08-23: opening
@@ -44,29 +59,29 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
             passed in, and AppEnter for why the whole thing runs once per
             document instead of on every navigation back here.
 
-            The ask box is deliberately NOT staggered. It is `position: fixed`
-            and already animates its own insets and radius; a second transform
-            on the same element during the opening would fight the morph it
-            plays when tapped. */}
+            The dock is deliberately NOT staggered. It is `position: fixed`, an
+            animation on it would make it a containing block for the call
+            button's own layers, and it is the one thing on the screen that
+            should already be there when the screen arrives. */}
         <main
           className="content-frame no-rightbar no-leftbar app-enter"
           style={{ ["--enter-i" as string]: 2 }}
         >
-          <div id="content-surface" className="content-surface no-scrollbar">
+          <div id="content-surface" className="content-surface content-surface-home no-scrollbar">
             {children}
           </div>
         </main>
-        {/* ⚠️ OUTSIDE <main>, AND THAT IS THE ONLY PLACE IT WORKS. The ask box
-            is `position: fixed`, and `#content-surface` carries
-            `backdrop-filter: blur(16px)` — which makes it a CONTAINING BLOCK
-            for fixed-position descendants, exactly like a transform would. It
-            is also the scroller. So a "fixed" element rendered inside it is
-            fixed to a box that scrolls, and rides the page instead of the
-            viewport. It shipped that way for an afternoon on 2026-08-22:
-            "when I scroll up or down it moves with the screen instead of being
-            fixed". Nothing about the element was wrong; it was in the wrong
-            parent. Anything else fixed on this page belongs here too. */}
-        <AskDock />
+        {/* ⚠️ OUTSIDE <main>, AND THAT IS THE ONLY PLACE IT WORKS. See the
+            note above and the dock's own header: `#content-surface` is the
+            scroller, and on every other surface it is also a backdrop-filter
+            element — which makes it a containing block for fixed-position
+            descendants exactly like a transform would. A "fixed" element
+            rendered inside it is fixed to a box that scrolls, and rides the
+            page instead of the viewport. It shipped that way for an afternoon
+            on 2026-08-22: "when I scroll up or down it moves with the screen
+            instead of being fixed". Anything else fixed on this page belongs
+            here too. */}
+        <HomeDock />
       </MobileNavProvider>
     </>
   );
