@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-23 (session 62)
+**Last updated:** 2026-08-28 (session 63)
 
 ---
 
@@ -91,6 +91,49 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 63 (2026-08-28, ElevenLabs credentials + a live regression
+found while wrapping. Linear reachable — BOO-44 opened Urgent; everything
+below has no ticket.)**
+
+- [ ] ⚠️⚠️ **BOO-44 — URGENT, LIVE NOW: the home screen sends every card into
+      the dark call screen.** PR #182 (merged today, `f3ae377`/`46f6d30`)
+      rebuilt `/dashboard` into `SessionsHome.tsx` — "Your sessions" is now the
+      ENTIRE home screen. Its cards still resolve through `sessionsForCourse()`
+      (`lib/session-nav.ts`) to `/study/<slug>`, which is the original dark
+      (`#101512`) / green (`#3ecf8e`) `SessionCall.tsx` — the exact screen the
+      owner asked removed from the course card earlier this same session
+      (`ca2a50f`). Session 62's `/session/<course>` (2026-08-24) was built
+      specifically to replace `/study` with a light-surface room, but
+      `SessionsHome` was never repointed at it. Not a one-line fix: `/session/
+      <course>` is deliberately course-level ("continue where you stopped, or
+      start elsewhere") while `SessionsHome` lists distinct per-topic sessions
+      with their own minute counts — see BOO-44 for the full trace and the
+      reasoning against a quick href swap.
+- [ ] **Branch `claude/session-screen-styling-ng89h7` (PR #178) is still
+      unmerged**, last commit `f040fc2` 2026-08-22 — it relights `SessionCall`/
+      `/study` onto the app's own surface. Merging it would neutralize BOO-44's
+      visual complaint everywhere `/study` is still reachable, without
+      resolving the granularity mismatch. Worth doing regardless.
+- [ ] **Two sessions landed on main without a memory log entry** (`e6d4030`,
+      2026-08-26, the onboarding/password-order rewrite; PR #182, 2026-08-27–28,
+      the dashboard rebuild). Neither ran wrap-session END, so there is no
+      "What Worked"/"Dead Ends" record for either — worth pulling their PR
+      descriptions into the log retroactively if anything in them would change
+      how future sessions approach onboarding or the dashboard.
+- [ ] **Vercel env was missing `ELEVENLABS_API_KEY`, `NEXT_PUBLIC_
+      ELEVENLABS_AGENT_ID` (both environments) and `NEXT_PUBLIC_
+      SUPABASE_ANON_KEY` (Preview only)** — added this session via `vercel env
+      add`, then production was redeployed so the build-time `NEXT_PUBLIC_`
+      value actually landed (confirmed live: `/api/agent/token` now returns
+      `{"ok":true,"mode":"voice",...}` with a real signed room token). Two
+      dead Clerk keys (`CLERK_SECRET_KEY`, `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`)
+      are still sitting in both Vercel environments from before the 2026-08-05
+      migration — safe to delete, not done this session.
+- [ ] **ElevenLabs is still free tier** — 632/10,000 characters, resets
+      2026-09-14. Matches BOO-40 (cap conversation cost). Worth checking what
+      the paid tier actually costs before this goes to real students, since
+      10k chars/month is roughly ten minutes of speech total across everyone.
 
 **From session 62 (2026-08-23, the course card grows into a room you can talk
 in. Linear reachable — BOO-40 updated, BOO-43 opened, a note left on BOO-35
@@ -1586,6 +1629,53 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-28 (session 63 — credentials, and a live regression caught before it aged)
+
+**Done:**
+- **Course card + course-page session links removed.** The card's button and
+  every lesson group's Listen pill opened `/study` — dark surface, green
+  button — which the owner asked removed mid-session. Both now open the
+  reading. Build verified, then verified live against `booklesss.app` with a
+  positive control (61 real step links on the probed page) so the zero-count
+  result meant something. Committed `ca2a50f`.
+- **ElevenLabs + Vercel env reconciled.** Audited every var the codebase
+  actually reads (`process.env.*` grep) against `.env.local` and both Vercel
+  environments. Found `ELEVENLABS_API_KEY` / `NEXT_PUBLIC_ELEVENLABS_AGENT_ID`
+  missing from both, and `NEXT_PUBLIC_SUPABASE_ANON_KEY` missing from Preview.
+  Owner rotated the ElevenLabs key mid-session (verified live against the
+  ElevenLabs API both before and after); added all three to Vercel via
+  `vercel env add`, then `vercel redeploy`'d production so the build-time
+  `NEXT_PUBLIC_` value actually took (adding the env var alone doesn't touch
+  an already-built deployment). Confirmed end to end: `/api/agent/token` on
+  production now returns a real signed room token.
+- **Caught a live regression during the wrap-end reconcile, not the owner.**
+  Local was 2 commits behind remote at wrap time. The intervening work (session
+  62's `/session/<course>` room, then PR #182's dashboard rebuild into
+  `SessionsHome.tsx`) turned out to have quietly reopened the exact thing just
+  removed — see BOO-44. Filed Urgent rather than silently patched: the fix
+  isn't a one-line href swap (course-level room vs. per-topic session list are
+  genuinely different granularities), so this is a decision for the owner, not
+  a wrap-time edit.
+
+**What Worked:**
+- **Testing a credential against the real provider before trusting it.** Both
+  before and after the owner edited `.env.local`, hitting ElevenLabs'
+  `/v1/user/subscription` and `/v1/convai/agents/<id>` directly confirmed the
+  key was live and the agent's `client_overrides` were actually wired, instead
+  of trusting that a key *looking* right meant it worked.
+- **A positive control before trusting a zero.** `grep -c "Listen ·"` returning
+  0 on the served production page meant nothing until the same page was shown
+  to contain 61 real step links — proof the probe could see something, not
+  just that it found nothing.
+- **Checking `git log <mine>..origin/main` before wrapping**, on a project
+  this memory already flags as OneDrive-shared (`project_onedrive_git_hazard`).
+  It surfaced BOO-44 — a regression that would otherwise have shipped
+  invisibly into this same wrap's "clean and pushed" confirmation.
+
+**Dead Ends (do not retry):**
+- None this session — the redeploy-after-env-add step is a genuine gotcha
+  (see Next Session) rather than a dead end, since it worked once identified.
 
 ### Session 2026-08-22 (session 61 — the home screen learns to talk)
 

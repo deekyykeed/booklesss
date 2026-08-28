@@ -24,3 +24,6 @@ __pycache__/
 Demand/social/posts/**/*.png
 Demand/social/_source/feature-capture/*.png
 Demand/social/_preview/**/*.png
+
+# JetBrains IDE metadata — machine-local, not project state.
+.idea/
