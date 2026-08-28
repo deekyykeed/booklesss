@@ -72,7 +72,13 @@ const CSP = [
   // Tailwind and every `style={{…}}` in the tree are inline styles.
   "style-src 'self' 'unsafe-inline'",
   // Self-hosted via next/font; no CDN is allowed to serve us a face.
-  "font-src 'self' data:",
+  /* assets-proxy.anthropic.com serves the two faces the reference UI on
+     /dashboard is set in. Without it the page renders in the Georgia /
+     system-ui fallback stack and stops being the thing it is a copy of.
+     ⚠️ Those are Anthropic's licensed webfonts on Anthropic's CDN — fine
+     while this is a reference surface to build forward from, and the first
+     thing to settle before it goes in front of a student. */
+  "font-src 'self' data: https://assets-proxy.anthropic.com",
   // data: for inlined SVG and the OG card; blob: for canvas captures.
   "img-src 'self' data: blob:",
   /* THE ONE THAT MATTERS: where script may send data. Us, Supabase, and the
