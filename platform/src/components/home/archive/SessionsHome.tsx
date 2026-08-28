@@ -7,7 +7,7 @@ import { enrolledCourses } from "@/lib/courses";
 import { useIdentity } from "@/lib/identity";
 import { useProgress } from "@/lib/progress";
 import { sessionsForCourse, type SessionRef } from "@/lib/session-nav";
-import { courseTone } from "./tones";
+import { courseTone } from "../tones";
 
 /* ------------------------------------------------------------------ *
  * The home screen, 2026-08-27 — drawn from the owner's sketch.

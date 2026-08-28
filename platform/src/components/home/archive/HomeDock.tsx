@@ -5,14 +5,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PlumpIcon, type PlumpIconName } from "@/components/icons/plump";
-import { AskMic } from "./ask-mic";
+import { AskMic } from "../ask-mic";
 import { askFirstMessage, askPrompt, type AskContext } from "@/lib/ask";
 import { labelFor } from "@/lib/course";
 import { hapticTap } from "@/lib/haptics";
 import { authEnabled } from "@/lib/auth";
 import { onboardingComplete, useIdentity } from "@/lib/identity";
 import { daysStudiedIn, useProgress } from "@/lib/progress";
-import type { AskControls, AskItem, AskPhase, NewAskItem } from "./ask-types";
+import type { AskControls, AskItem, AskPhase, NewAskItem } from "../ask-types";
 
 /* ------------------------------------------------------------------ *
  * The bottom of the home screen: four small marks, one big button.
@@ -58,7 +58,7 @@ import type { AskControls, AskItem, AskPhase, NewAskItem } from "./ask-types";
  * panel to put one in. The engine still supports both; see `archive/README.md`.
  * ------------------------------------------------------------------ */
 
-const AskEngine = dynamic(() => import("./ask-engine").then((m) => m.AskEngine), {
+const AskEngine = dynamic(() => import("../ask-engine").then((m) => m.AskEngine), {
   ssr: false,
 });
 
