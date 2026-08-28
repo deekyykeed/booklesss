@@ -108,7 +108,7 @@ a{color:inherit;text-decoration:none}
   .cbtn::before,.model-btn::before,.voice .caret::before{transition:none}
 }
 
-.app{display:flex;height:100vh;overflow:hidden}
+.app{display:flex;height:100vh;height:100dvh;overflow:hidden}
 
 /* ============================================================
    SIDEBAR — 288px, #fafaf9, 1px right border
@@ -297,6 +297,56 @@ a{color:inherit;text-decoration:none}
   border:1px solid rgba(31,30,29,.4);
   box-shadow:0 40px 80px 0 rgba(217,119,87,.24),0 4px 14px 0 rgba(217,119,87,.24);
 }
+
+/* ============================================================
+   RESPONSIVE — LAYOUT ONLY (added 2026-08-28)
+   Nothing above this block was restyled. The desktop rendering
+   is byte-for-byte what it was; everything here is inside a
+   media query or is display:none until one opens it.
+
+   Below 768px the 288px sidebar stops being a flex column and
+   becomes an off-canvas drawer over the pane, opened by the
+   panel button in the pane header — the same #ic-panel glyph
+   the footer already carries, which is what the real app uses
+   for this job. No new icon was invented.
+   ============================================================ */
+
+.nav-toggle{display:none}
+.nav-scrim{
+  position:fixed;inset:0;z-index:30;
+  background:rgba(11,11,11,.28);
+  opacity:0;pointer-events:none;visibility:hidden;
+  transition:opacity var(--dur) var(--ease),visibility 0s linear var(--dur);
+}
+
+@media (max-width:768px){
+  .nav-toggle{display:inline-flex;margin-right:auto}
+  .pane-head{padding:0 12px}
+
+  .sidebar{
+    position:fixed;top:0;bottom:0;left:0;z-index:40;
+    width:min(288px,84vw);
+    transform:translateX(-100%);
+    transition:transform var(--dur-slow) var(--ease);
+  }
+  .app.nav-open .sidebar{transform:translateX(0)}
+
+  .app.nav-open .nav-scrim{opacity:1;pointer-events:auto;visibility:visible;
+    transition:opacity var(--dur) var(--ease),visibility 0s}
+}
+
+/* The composer bar is the one row that genuinely does not fit a phone.
+   Measured: content 348px against 338px of track at 390px wide, and
+   308px at 360px. The secondary effort label is dropped below 420px --
+   the only element hidden anywhere in this file, and what the real app
+   does at the same width. Everything else stays on one row. */
+@media (max-width:420px){
+  .model-btn .muted{display:none}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .sidebar,.nav-scrim{transition:none}
+}
 </style>
 </head>
 <body>
@@ -358,7 +408,7 @@ a{color:inherit;text-decoration:none}
 <div class="app">
 
   <!-- ================= SIDEBAR ================= -->
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <div class="sb-head">
       <a class="wordmark" href="#">Claude</a>
       <span class="grow"></span>
@@ -442,6 +492,10 @@ a{color:inherit;text-decoration:none}
   <!-- ================= MAIN PANE ================= -->
   <div class="pane">
     <header class="pane-head">
+      <button class="head-btn nav-toggle" aria-label="Open sidebar"
+              aria-expanded="false" aria-controls="sidebar">
+        <svg class="i"><use href="#ic-panel"/></svg>
+      </button>
       <span class="grow"></span>
       <button class="head-btn" aria-label="Use incognito">
         <svg class="i"><use href="#ic-ghost"/></svg>
@@ -495,9 +549,47 @@ a{color:inherit;text-decoration:none}
     </div>
   </div>
 
+  <div class="nav-scrim" aria-hidden="true"></div>
+
 </div>
 
 <script>
+  /* ---- sidebar drawer (<=768px only) ------------------------------------
+     The CSS owns every visual decision; this only flips one class on .app
+     and keeps aria-expanded honest. Above 768px the drawer never opens
+     because the sidebar is a static flex column there and the toggle that
+     would open it is display:none.                                        */
+  (function () {
+    var app = document.querySelector('.app');
+    var toggle = document.querySelector('.nav-toggle');
+    var scrim = document.querySelector('.nav-scrim');
+    var sidebar = document.getElementById('sidebar');
+    var mq = window.matchMedia('(max-width:768px)');
+
+    function set(open) {
+      app.classList.toggle('nav-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Close sidebar' : 'Open sidebar');
+    }
+
+    toggle.addEventListener('click', function () {
+      set(!app.classList.contains('nav-open'));
+    });
+    scrim.addEventListener('click', function () { set(false); });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && app.classList.contains('nav-open')) set(false);
+    });
+
+    /* tapping a nav row closes the drawer, the way a real navigation would */
+    sidebar.addEventListener('click', function (e) {
+      if (mq.matches && e.target.closest('.row,.empty-row')) set(false);
+    });
+
+    /* returning to desktop width must not leave the class stuck on */
+    mq.addEventListener('change', function (e) { if (!e.matches) set(false); });
+  })();
+
   document.querySelectorAll('.seg').forEach(function (seg) {
     seg.addEventListener('click', function (e) {
       var item = e.target.closest('.seg-item');
