@@ -3929,7 +3929,7 @@
    ============================================================ */
 .cui .composer{
   background:var(--surface-3);
-  border-radius:14px;
+  border-radius:22px;
   padding:10px;
   box-shadow:0 .25rem 1.25rem 0 var(--cmp-glow),
              0 0 0 1px var(--cmp-ring);
@@ -4087,6 +4087,6 @@
 @supports (corner-shape: squircle) {
   .cui .composer {
     corner-shape: squircle;
-    border-radius: 18px;
+    border-radius: 28px;
   }
 }
