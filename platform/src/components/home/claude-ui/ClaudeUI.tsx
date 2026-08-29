@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /* ------------------------------------------------------------------ *
  * THE REFERENCE UI, VERBATIM.
@@ -37,6 +37,18 @@ export function ClaudeUI() {
   const [composerSeg, setComposerSeg] = useState(0);
   const [navOpen, setNavOpen] = useState(false);
 
+  const appRef = useRef<HTMLDivElement | null>(null);
+  const sideRef = useRef<HTMLElement | null>(null);
+  const scrimRef = useRef<HTMLDivElement | null>(null);
+  /* The gesture listeners are attached once and read the drawer's state
+     through a ref — re-subscribing four native listeners on every toggle
+     would drop a touch that lands mid-swap. */
+  const openRef = useRef(navOpen);
+
+  useEffect(() => {
+    openRef.current = navOpen;
+  }, [navOpen]);
+
   useEffect(() => {
     if (!navOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -45,6 +57,142 @@ export function ClaudeUI() {
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [navOpen]);
+
+  /* ---- SWIPE THE DRAWER (phone widths only) -------------------------
+   * The drawer FOLLOWS THE FINGER rather than toggling at the end of one.
+   * A swipe that only fires on release is a button with extra steps: you
+   * cannot tell how far you have to go, you cannot change your mind, and a
+   * half-pull looks like the app ignoring you.
+   *
+   * ⚠️ THE POSITION IS WRITTEN STRAIGHT TO THE DOM DURING THE DRAG, never
+   * through React state. A setState per touchmove is a re-render per frame,
+   * which is how a drag starts stuttering on a mid-range Android — the same
+   * reason the level meter in the archived dock polls into a CSS variable.
+   *
+   * ⚠️ AND THE LISTENERS ARE NATIVE, WITH `passive: false` ON THE MOVE.
+   * React attaches touch handlers passively at the root, so `preventDefault`
+   * inside an `onTouchMove` prop is ignored and the page scrolls underneath
+   * the drag. There is no warning; it just does not work.
+   */
+  useEffect(() => {
+    const app = appRef.current;
+    const side = sideRef.current;
+    const scrim = scrimRef.current;
+    if (!app || !side || !scrim) return;
+
+    const mq = window.matchMedia("(max-width: 768px)");
+    /** How close to the left edge a pull must start while the drawer is shut. */
+    const EDGE = 32;
+    /** Travel before the gesture's axis is decided. */
+    const LOCK = 8;
+    /** Fraction of the drawer past which release opens it. */
+    const SETTLE = 0.4;
+    /** px/ms that decides the direction regardless of how far it got. */
+    const FLICK = 0.4;
+
+    let candidate = false;
+    let axis: "" | "x" | "y" = "";
+    let x0 = 0;
+    let y0 = 0;
+    let w = 288;
+    let wasOpen = false;
+    let lastX = 0;
+    let lastT = 0;
+    let vx = 0;
+
+    const paint = (p: number) => {
+      side.style.transition = "none";
+      side.style.transform = `translateX(${-(1 - p) * w}px)`;
+      scrim.style.transition = "none";
+      scrim.style.opacity = String(p);
+      scrim.style.visibility = "visible";
+      scrim.style.pointerEvents = p > 0.1 ? "auto" : "none";
+    };
+
+    const release = (open: boolean) => {
+      /* Hand the element back to CSS, but name the end position explicitly
+         first. Clearing the inline transform in the same frame the class
+         changes would snap to the OLD class value and animate from there —
+         the drawer would jump shut and then slide open. */
+      side.style.transition = "";
+      side.style.transform = open ? "translateX(0)" : "translateX(-100%)";
+      scrim.style.transition = "";
+      scrim.style.opacity = "";
+      scrim.style.visibility = "";
+      scrim.style.pointerEvents = "";
+      setNavOpen(open);
+      window.setTimeout(() => {
+        side.style.transform = "";
+      }, 460);
+    };
+
+    const onStart = (e: TouchEvent) => {
+      candidate = false;
+      axis = "";
+      if (!mq.matches || e.touches.length !== 1) return;
+      const t = e.touches[0];
+      wasOpen = openRef.current;
+      /* Shut, the pull has to begin at the edge: a rightward swipe anywhere
+         in the pane would fight the content under it. Open, anywhere is fair
+         game, because the drawer is the thing under the finger. */
+      if (!wasOpen && t.clientX > EDGE) return;
+      w = side.getBoundingClientRect().width || 288;
+      x0 = lastX = t.clientX;
+      y0 = t.clientY;
+      lastT = e.timeStamp;
+      vx = 0;
+      candidate = true;
+    };
+
+    const onMove = (e: TouchEvent) => {
+      if (!candidate || e.touches.length !== 1) return;
+      const t = e.touches[0];
+      const dx = t.clientX - x0;
+      const dy = t.clientY - y0;
+
+      if (!axis) {
+        if (Math.abs(dx) < LOCK && Math.abs(dy) < LOCK) return;
+        /* Whichever axis moved further wins, decided once and not revisited.
+           A drawer that grabs a gesture meant as a scroll is worse than one
+           that misses the occasional swipe. */
+        axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+        if (axis === "y") {
+          candidate = false;
+          return;
+        }
+      }
+
+      const dt = e.timeStamp - lastT;
+      if (dt > 0) vx = (t.clientX - lastX) / dt;
+      lastX = t.clientX;
+      lastT = e.timeStamp;
+
+      /* Only now the gesture is certainly horizontal. Preventing default any
+         earlier would eat the page's vertical scrolling. */
+      e.preventDefault();
+      paint(Math.max(0, Math.min(1, ((wasOpen ? w : 0) + dx) / w)));
+    };
+
+    const onEnd = () => {
+      const wasDrag = candidate && axis === "x";
+      candidate = false;
+      axis = "";
+      if (!wasDrag) return;
+      const p = Math.max(0, Math.min(1, ((wasOpen ? w : 0) + (lastX - x0)) / w));
+      release(Math.abs(vx) > FLICK ? vx > 0 : p > SETTLE);
+    };
+
+    app.addEventListener("touchstart", onStart, { passive: true });
+    app.addEventListener("touchmove", onMove, { passive: false });
+    app.addEventListener("touchend", onEnd, { passive: true });
+    app.addEventListener("touchcancel", onEnd, { passive: true });
+    return () => {
+      app.removeEventListener("touchstart", onStart);
+      app.removeEventListener("touchmove", onMove);
+      app.removeEventListener("touchend", onEnd);
+      app.removeEventListener("touchcancel", onEnd);
+    };
+  }, []);
 
   return (
     <div className="cui">
@@ -143,9 +291,9 @@ export function ClaudeUI() {
         </defs>
       </svg>
 
-      <div className={"app" + (navOpen ? " nav-open" : "")}>
+      <div className={"app" + (navOpen ? " nav-open" : "")} ref={appRef}>
         {/* ================= SIDEBAR ================= */}
-        <aside className="sidebar" id="cui-sidebar">
+        <aside className="sidebar" id="cui-sidebar" ref={sideRef}>
           <div className="sb-head">
             <a className="wordmark" href="#">
               Claude
@@ -401,7 +549,12 @@ export function ClaudeUI() {
           </div>
         </div>
 
-        <div className="nav-scrim" aria-hidden="true" onClick={() => setNavOpen(false)} />
+        <div
+          className="nav-scrim"
+          aria-hidden="true"
+          ref={scrimRef}
+          onClick={() => setNavOpen(false)}
+        />
       </div>
     </div>
   );

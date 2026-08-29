@@ -3974,3 +3974,22 @@
 }@media (prefers-reduced-motion:reduce){.cui .sidebar, .cui .nav-scrim{transition:none}
 }
 
+
+/* ---- the drawer's swipe gesture (2026-08-28) ----------------------
+ * The one thing added to the reference UI rather than transcribed from it:
+ * on phone widths the sidebar can be pulled open and pushed shut, and it
+ * tracks the finger the whole way (see the effect in ClaudeUI.tsx).
+ *
+ * ⚠️ `touch-action: pan-y pinch-zoom` IS WHAT MAKES THE PULL POSSIBLE. The
+ * default `auto` lets the browser claim a horizontal drag for its own
+ * scrolling before any handler sees it, so the drawer would follow the
+ * finger only intermittently. Naming the two gestures the page still wants
+ * hands horizontal movement to us and keeps vertical scrolling and
+ * pinch-zoom exactly as they were — dropping `pinch-zoom` from this list
+ * would quietly take zoom away from anyone who needs it to read.
+ * ------------------------------------------------------------------ */
+@media (max-width: 768px) {
+  .cui .app {
+    touch-action: pan-y pinch-zoom;
+  }
+}
