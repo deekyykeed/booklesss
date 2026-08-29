@@ -342,7 +342,11 @@ export function ClaudeUI() {
               aria-controls="cui-sidebar"
               onClick={() => setNavOpen((v) => !v)}
             >
-              <MynaIcon name="sidebar" className="i" />
+              {/* A hamburger, not the panel glyph the reference used here
+                  (owner, 2026-08-29). The panel mark is still in the sidebar
+                  footer, where it means "this rail" — one mark standing for two
+                  different things in two places was the ambiguity worth losing. */}
+              <MynaIcon name="menu" className="i" />
             </button>
             <span className="grow" />
             <button className="head-btn" aria-label="Use incognito">
