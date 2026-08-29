@@ -133,10 +133,20 @@ export function ResourcePacks({
                       two states. The fill and the text colour carry the rest —
                       three signals, because a checkbox at 20px on a warm grey
                       row is genuinely hard to read at a glance. */}
+                  {/* ⚠️ THE SAME MARK AS THE CHIP, AND IT FOLLOWED THE CHIP
+                      (2026-08-29). This row wore `folder-library` while the
+                      control that opened it was a Resources button in the
+                      composer bar — the mark named the CONTAINER, which was
+                      correct for a button standing for "packs, plural". The
+                      owner moved the control up into the source row above the
+                      composer and asked for a PDF mark on it, so a pack is
+                      now drawn as a PDF one tap away and as a folder the tap
+                      after. One meaning, one mark: the glyph you tap in this
+                      list is the glyph that appears on the chip. */}
                   {on ? (
                     <HugeIcon name="check-circle-solid" className="i" />
                   ) : (
-                    <HugeIcon name="folder-library" className="i" />
+                    <HugeIcon name="pdf" className="i" />
                   )}
                 </span>
                 <span className="rp-text">

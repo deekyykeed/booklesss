@@ -3804,6 +3804,18 @@
   --border:rgba(11,11,11,.1);
   --clay:#d97757;
 
+  /* ⚠️ THE ONE APP TOKEN THIS SCOPE READS, and it has a name so it stays
+     countable. `.cui` is deliberately sealed off from the app's palette —
+     nothing in here may reach for --color-canvas, --color-ink or
+     --color-accent, and nothing outside may reach for these. The wordmark is
+     the exception the owner asked for (2026-08-29): the surface is a
+     transcription of somebody else's app, but the NAME on it is ours, and
+     Familjen Grotesk is what our name is set in everywhere it appears — the
+     reader's headings, the OG card, the social posters. --font-display
+     resolves from :root, which `.cui` never redefines. If a second crossing
+     is ever wanted, it gets a line here too rather than an inline var(). */
+  --font-brand:var(--font-display);
+
   --radius:8px;
   --row-h:32px;
 
@@ -3877,12 +3889,24 @@
   background:var(--sidebar-bg);
   border-right:1px solid var(--border);
   display:flex;flex-direction:column;
-}.cui .sb-head{height:44px;flex:0 0 44px;display:flex;align-items:center;padding:0 10px 0 16px}.cui .wordmark{font-family:var(--font-serif);font-size:20px;font-weight:500;letter-spacing:-.005em}.cui .grow{flex:1}/* segmented control (header switch + composer Chat/Cowork) ---------------- */
-.cui .seg{display:inline-flex;align-items:center;padding:1px;border-radius:7px;position:relative}.cui .seg-header{background:var(--track-header);height:28px}.cui .seg-item{
+}.cui .sb-head{height:44px;flex:0 0 44px;display:flex;align-items:center;padding:0 10px 0 16px}/* ⚠️ THE BRAND FACE, NOT THE REFERENCE'S SERIF (owner, 2026-08-29). The
+   metrics are the reference's and stay — 20px/500 with the same negative
+   tracking, because the word changed and the slot did not. --font-brand is
+   declared in the token block above; see the note there for why this is the
+   one value in `.cui` that comes from outside it. Familjen is a grotesk where
+   the serif was, so it sits lower and reads wider at the same size; the
+   tracking is what keeps it inside the 44px head. */
+.cui .wordmark{font-family:var(--font-brand);font-size:20px;font-weight:500;letter-spacing:-.005em}.cui .grow{flex:1}/* segmented control ------------------------------------------------------- */
+/* ⚠️ `.seg-header` AND `.dot` ARE GONE (owner, 2026-08-29: "remove that set of
+   icons on the right side of the logo"). The base `.seg` / `.seg-item` rules
+   stay — they are the `.cui` system's third component pattern and the spec in
+   design-system/SKILL.md still points at them — but nothing on the surface
+   draws one today. Delete them too if a second surface goes by without one. */
+.cui .seg{display:inline-flex;align-items:center;padding:1px;border-radius:7px;position:relative}.cui .seg-item{
   position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;
   height:26px;border-radius:5px;color:var(--text-300);white-space:nowrap;
 }.cui .seg-item{transition:color .1s var(--ease),background-color .1s var(--ease),box-shadow .1s var(--ease)}.cui .seg-item.is-active{background:#fff;color:var(--text-100);
-  box-shadow:0 0 0 1px rgba(11,11,11,.1) inset,0 1px 2px 0 rgba(0,0,0,.05);}.cui .seg-header .seg-item{width:34px}.cui .dot{position:absolute;top:3px;right:5px;width:5px;height:5px;border-radius:50%;background:var(--clay)}/* nav body ---------------------------------------------------------------- */
+  box-shadow:0 0 0 1px rgba(11,11,11,.1) inset,0 1px 2px 0 rgba(0,0,0,.05);}/* nav body ---------------------------------------------------------------- */
 .cui .sb-body{flex:1;min-height:0;overflow-y:auto;padding:0 11px 0 8px;display:flex;flex-direction:column}.cui .rows{display:flex;flex-direction:column;gap:1px}.cui .row{
   display:flex;align-items:center;gap:8px;
   height:var(--row-h);border-radius:var(--radius);
@@ -4411,4 +4435,190 @@
    squeeze the icon and the count. */
 @media (max-width:359px){
   .cui .res-btn{max-width:none}
+}
+
+
+/* ==================================================================
+ * THE HOME SCREEN GROWS A MIDDLE (2026-08-29)
+ *
+ * Owner: the greeting moves to the top; a few quick actions appear under it —
+ * "getting into a project or into a recent session if it was incomplete";
+ * and the resource pack moves out of the composer bar into a source row above
+ * the box, as a chip with a PDF mark and the pack's own name.
+ *
+ * The page was a greeting floating in the middle of an empty pane with a
+ * composer docked under it. Everything here is downstream of that emptiness
+ * being filled: once there is a list in the middle, a centred greeting sits
+ * between the header and the list belonging to neither, and the composer's
+ * bar is no longer the only place a control can live.
+ * ================================================================== */
+
+/* ---- the column is top-aligned now --------------------------------
+ * `justify-content: center` was right for a pane holding one element. With
+ * quick actions under the greeting it would centre the PAIR, which pushes the
+ * greeting down as the list grows and moves the page's title every time the
+ * data behind it changes. Start at the top and let the list grow downward.
+ * ------------------------------------------------------------------ */
+.cui .pane-inner{justify-content:flex-start}
+
+/* Left, not centred — and the whole column agrees on one left edge. The
+   greeting, the quick-action rows, the source chips and the composer are all
+   inside `.center`, so they line up at every width; centring the one element
+   with no box around it would be the only thing out of alignment. */
+.cui .greeting{justify-content:flex-start;margin-bottom:32px}
+
+/* ---- quick actions ------------------------------------------------
+ * ⚠️ ROWS, NOT CARDS, AND THAT IS THE WHOLE DESIGN DECISION. The composer is
+ * still the call to action; these exist so a student who is mid-something
+ * does not have to type their way back to it. A grid of tiles under a
+ * greeting becomes the primary thing on the screen by sheer area, and the
+ * primary thing is the box at the bottom. A row is a list item — available,
+ * not insistent.
+ *
+ * It is pattern 2 from the `.cui` system grown to two lines, exactly as the
+ * resource-pack modal's rows are: same 8px gap, same fixed 28px slot, same
+ * ghost fill on a `::before` at z-index -1. Only the height changes, because
+ * a meta line needs the room. No fifth pattern was invented.
+ * ------------------------------------------------------------------ */
+.cui .qa-head{
+  height:32px;display:flex;align-items:center;
+  font-size:13px;color:var(--text-300);
+  padding:0 12px;
+}
+.cui .qa-list{display:flex;flex-direction:column;gap:2px}
+.cui .qa-row{
+  position:relative;isolation:isolate;
+  display:flex;align-items:center;gap:8px;
+  padding:10px 12px;border-radius:var(--radius);
+  color:var(--text-200);
+}
+.cui .qa-row::before{
+  content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;
+  background-color:transparent;transform-origin:50% center;
+  transition:background-color var(--dur-fast) var(--ease),
+             transform var(--dur-slow) var(--spring);
+}
+.cui .qa-row:hover::before{background-color:var(--fill-ghost-hover)}
+.cui .qa-row:active::before{
+  transition:transform var(--dur-fast) ease-out;transform:scale(.99);
+}
+.cui .qa-slot{
+  width:28px;flex:0 0 28px;display:flex;align-items:center;justify-content:center;
+  color:var(--text-300);
+}
+.cui .qa-row:hover .qa-slot{color:var(--text-100)}
+.cui .qa-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+/* The title is --text-100 at rest, unlike a nav row's label. A nav row is a
+   destination among five identical ones and earns its emphasis by being
+   current; a quick action is a NAME — the thing you are being offered — and
+   the meta line under it is what carries the secondary weight. */
+.cui .qa-title{
+  font-size:14px;line-height:20px;font-weight:500;color:var(--text-100);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.cui .qa-meta{
+  font-size:13px;line-height:18px;color:var(--text-300);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+/* The chevron appears on hover on a pointer device and is ALWAYS THERE on a
+   touch one, where there is no hover to reveal it. `any-hover` rather than
+   `hover` so a laptop with a touchscreen still gets the reveal. */
+.cui .qa-go{flex:0 0 auto;color:var(--text-300)}
+@media (any-hover:hover){
+  .cui .qa-go{opacity:0;transition:opacity var(--dur-fast) var(--ease)}
+  .cui .qa-row:hover .qa-go{opacity:1}
+}
+@media (prefers-reduced-motion:reduce){
+  .cui .qa-row::before,.cui .qa-go{transition:none}
+}
+
+/* ---- the source row, above the composer ---------------------------
+ * Owner's reference is the Claude Code phone app: a chip naming what the
+ * conversation reads from, and a `+` beside it to add another, both sitting
+ * above the box rather than inside it. Ours names a resource pack.
+ *
+ * ⚠️ IT SHARES THE COMPOSER'S COLUMN AND ITS DOCK. Both are inside `.center`
+ * inside `.composer-dock`, so the row cannot drift out of alignment with the
+ * box it belongs to, and it is pinned to the foot of the pane with it rather
+ * than scrolling away — the source is part of the composer's state, and state
+ * that scrolls off is state a student stops trusting.
+ * ------------------------------------------------------------------ */
+.cui .src-row{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:8px;min-width:0;
+}
+/* A circle, where every other icon button on this surface is an 8px square.
+   ⚠️ THAT IS THE REFERENCE'S OWN SHAPE AND IT IS DOING A JOB: the row's two
+   controls are a button and a pill, and a squared `+` beside a 999px chip
+   reads as two unrelated things that happen to be adjacent. Round beside
+   round is one row. It is still 32px, which is the rule that does not bend. */
+.cui .src-add{
+  position:relative;isolation:isolate;flex:0 0 32px;
+  width:32px;height:32px;border-radius:999px;
+  display:inline-flex;align-items:center;justify-content:center;
+  color:var(--text-200);
+}
+.cui .src-add::before{
+  content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;
+  background-color:var(--surface-3);
+  box-shadow:0 0 0 1px var(--border) inset;
+  transform-origin:50% center;
+  transition:background-color var(--dur-fast) var(--ease),
+             transform var(--dur-slow) var(--spring);
+}
+.cui .src-add:hover::before{background-color:var(--row-selected)}
+.cui .src-add:active::before{
+  transition:transform var(--dur-fast) ease-out;transform:scale(.94);
+}
+@media (prefers-reduced-motion:reduce){.cui .src-add::before{transition:none}}
+
+/* ---- and Resources changes its dress with its address -------------
+ * ⚠️ THE FILL BELOW REVERSES THE ONE ARGUED FOR EARLIER IN THIS FILE, AND FOR
+ * THE REASON THAT ARGUMENT ACTUALLY GAVE. The block above says the pill takes
+ * `--track` because it sits inside the composer, where a groove is the value
+ * that already means "a control sits here" on white. That reasoning was about
+ * the SURFACE UNDER IT, not about the control — and the control moved. Out
+ * here it sits on `--page-bg` with nothing behind it, and `--track` (#f6f6f4)
+ * against `#fcfcfb` is a two-value difference nobody can see: the pill would
+ * have no edge at rest, which is the exact failure the ghost version had.
+ *
+ * So it takes `--surface-3` and a hairline — the same lifted-panel grammar
+ * the composer eight pixels below it uses, so the row and the box read as one
+ * object. Nothing new enters the palette either way.
+ *
+ * Everything else about the control is untouched and is still load-bearing:
+ * the label is the pack's own name, the "+N" counts OTHERS, the cap is in
+ * `ch` because it bounds text, and the label is what gives when the row
+ * narrows. Those were all paid for while it lived in the bar.
+ * ------------------------------------------------------------------ */
+.cui .src-row .res-btn{
+  flex:0 1 auto;min-width:0;
+  color:var(--text-200);
+}
+.cui .src-row .res-btn::before{
+  background-color:var(--surface-3);
+  box-shadow:0 0 0 1px var(--border) inset;
+}
+.cui .src-row .res-btn:hover::before{background-color:var(--row-selected)}
+
+/* ⚠️ THE CAP IS RELEASED OUT HERE. In the composer bar the pill shared 340px
+ * of track with a model button, a microphone and a caret, so 34ch was what
+ * stopped a long pack name pushing a control off the row. This row holds a
+ * 32px circle and nothing else — the pack name may have the whole width, and
+ * capping it here would truncate a name the space could have shown. It still
+ * ellipsises rather than wrapping: the row is one line, and a two-line source
+ * row moves the composer down every time a longer pack is picked.
+ */
+.cui .src-row .res-btn{max-width:none}
+
+/* Below 360px the word is dropped from the pill everywhere else on this
+   surface (the rule is up in the composer-bar block). It must NOT be dropped
+   here: this row has the width, and a bare PDF mark beside a bare `+` says
+   nothing at all about what the conversation is reading from. */
+@media (max-width:359px){
+  .cui .src-row .res-btn{padding:0 10px 0 8px}
+  .cui .src-row .res-label{
+    position:static;width:auto;height:auto;margin:0;
+    overflow:hidden;clip-path:none;
+  }
 }

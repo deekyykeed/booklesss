@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { HugeIcon } from "@/components/icons/huge";
 import { ResourcePacks } from "./ResourcePacks";
 import { packsSnapshot } from "@/lib/resource-packs";
+import { quickActionsSnapshot } from "@/lib/quick-actions";
 
 /* ------------------------------------------------------------------ *
  * THE REFERENCE UI, VERBATIM.
@@ -46,7 +47,6 @@ import { packsSnapshot } from "@/lib/resource-packs";
  * ------------------------------------------------------------------ */
 
 export function ClaudeUI() {
-  const [headerSeg, setHeaderSeg] = useState(0);
   const [navOpen, setNavOpen] = useState(false);
 
   /* Which resource packs this session explains against. A Set because the
@@ -351,30 +351,39 @@ export function ClaudeUI() {
         {/* ================= SIDEBAR ================= */}
         <aside className="sidebar" id="cui-sidebar" ref={sideRef}>
           <div className="sb-head">
-            {/* The reference's own wordmark style — --font-serif at 20px/500
-                with the same negative tracking — carrying our name instead of
-                its. The face is deliberately untouched: it is the one place on
-                this surface where the serif appears at all, and swapping it
-                would change the sidebar's whole voice rather than its word. */}
+            {/* ⚠️ THE WORDMARK IS THE ONE PLACE `.cui` REACHES OUT OF ITSELF,
+                and it is a deliberate crossing rather than a leak (owner,
+                2026-08-29: "where we have the Bklsss logo change that to
+                familigen font"). The note here used to argue the opposite —
+                that the reference's serif was untouchable because it is the
+                only serif on the surface and swapping it changes the
+                sidebar's voice. That was right about the voice and wrong
+                about whose voice it is: everything else on this page is a
+                transcription of somebody else's app, but the NAME is ours,
+                and Familjen Grotesk is what our name is set in everywhere
+                else it appears — the reader's headings, the OG card, the
+                social posters. A brand that wears a borrowed face in the one
+                spot the brand is written is the drift, not the fix.
+
+                The face comes in through `--font-brand`, declared in the
+                `.cui` token block beside the palette. Nothing else in this
+                tree may reach for an app token; this is the exception and it
+                has a name so it stays countable.
+
+                The reference's own metrics are kept — 20px/500 with the same
+                negative tracking — because it is the word that changed, not
+                the slot it sits in. */}
             <a className="wordmark" href="#">
               Bklsss
             </a>
             <span className="grow" />
-            <div className="seg seg-header">
-              <button
-                className={"seg-item" + (headerSeg === 0 ? " is-active" : "")}
-                onClick={() => setHeaderSeg(0)}
-              >
-                <HugeIcon name="chat-messages" className="i i-16" />
-              </button>
-              <button
-                className={"seg-item" + (headerSeg === 1 ? " is-active" : "")}
-                onClick={() => setHeaderSeg(1)}
-              >
-                <HugeIcon name="code" className="i i-16" />
-                <span className="dot" />
-              </button>
-            </div>
+            {/* The chat/code segmented pair that sat here is GONE (owner,
+                2026-08-29: "remove that set of icons on the right side of the
+                logo"). It was the reference's own control and it switched
+                between two modes this product does not have — a toggle whose
+                two positions are identical is a control that can only ever
+                mislead. Nothing replaced it: the header is a name and the
+                space beside it, which is what the sidebar needed. */}
           </div>
 
           <div className="sb-body">
@@ -499,6 +508,25 @@ export function ClaudeUI() {
           <div className="pane-scroll">
             <div className="pane-inner">
               <div className="center">
+                {/* ---- THE GREETING SITS AT THE TOP NOW ----------------
+                    Owner, 2026-08-29: "that greeting will move up into the
+                    top, right below the sidebar icon on mobile."
+
+                    It was centred in the pane, vertically and horizontally,
+                    which is right for a screen whose only content is a
+                    composer — the eye lands in the middle and the box is
+                    under it. This screen now has a middle: the quick actions
+                    below. A greeting floating between the hamburger and a
+                    list of rows belongs to neither, so it goes to the top and
+                    left, where it reads as the page's own title and the rows
+                    hang off it.
+
+                    ⚠️ THE LEFT EDGE IS SHARED WITH EVERYTHING BELOW IT. The
+                    greeting, the quick-action rows and the composer are all
+                    in `.center`, so they line up down one column at every
+                    width. Centring the greeting alone would put the one
+                    element with no box around it out of alignment with the
+                    two that have one. */}
                 <div className="greeting">
                   <svg className="spark" viewBox="0 0 100 100" aria-hidden="true">
                     <path
@@ -509,6 +537,50 @@ export function ClaudeUI() {
                   <span className="txt">Good evening, Deeky</span>
                 </div>
 
+                {/* ---- QUICK ACTIONS ----------------------------------
+                    Owner, same message: "a few quick actions like getting
+                    into a project or into a recent session if it was
+                    incomplete."
+
+                    THE COMPOSER IS STILL THE CALL TO ACTION, and these are
+                    built not to compete with it. They are ROWS, not cards —
+                    pattern 2 from the `.cui` system grown to two lines, the
+                    same shape the resource-pack modal took — because a grid
+                    of tiles under a greeting reads as the primary thing on
+                    the screen, and the primary thing is the box at the
+                    bottom. A row is a list item: available, not insistent.
+
+                    ⚠️ THE ROWS ARE PLACEHOLDER DATA THAT DESCRIBES WORK
+                    NOBODY DID — see the warning at the top of
+                    `lib/quick-actions.ts`. "3 of 4 steps · yesterday" is an
+                    assertion about the person reading it, which is a step
+                    beyond the packs' invented names. Safe only while this
+                    surface is ungated and unrouted; the person putting the
+                    auth gates back is the person who has to fix it.
+
+                    They resolve to `#`, like every other link in this
+                    transcription. The routing question that BOO-46 holds is
+                    unchanged and these do not answer it. */}
+                <div className="qa">
+                  <div className="qa-head">Pick up where you left off</div>
+                  <div className="qa-list">
+                    {quickActionsSnapshot().map((a) => (
+                      <a className="qa-row" href={a.href} key={a.id}>
+                        <span className="qa-slot">
+                          <HugeIcon
+                            name={a.kind === "session" ? "headphones" : "folder"}
+                            className="i"
+                          />
+                        </span>
+                        <span className="qa-text">
+                          <span className="qa-title">{a.title}</span>
+                          <span className="qa-meta">{a.meta}</span>
+                        </span>
+                        <HugeIcon name="chevron-right" className="i i-16 qa-go" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -530,6 +602,64 @@ export function ClaudeUI() {
               that rule. */}
           <div className="composer-dock">
             <div className="center">
+            {/* ---- THE SOURCE ROW, ABOVE THE BOX ---------------------
+                Owner, 2026-08-29, sending a shot of the Claude Code phone
+                app: "add the other plus icon as it is in here and the
+                buttons next to it — instead of the github repo I want that
+                to be the data pack. add a pdf icon instead and the name of
+                the data pack."
+
+                In that app the row says what the conversation is ABOUT
+                before you have typed a word: a repository chip sits above
+                the box, and the `+` beside it adds another source. This is
+                the same row with our own noun in it — a resource pack — and
+                the noun is the one this codebase already uses ("was calling
+                them resource packs before").
+
+                ⚠️ RESOURCES MOVED OUT OF THE COMPOSER BAR, IT WAS NOT
+                DUPLICATED. It was a filled pill inside the white box beside
+                the model button; there is exactly one of it and it is here
+                now. Two controls picking the same packs is how a student
+                learns that one of them is lying.
+
+                Which changes its dress, because the surface under it
+                changed. In the box it took `--track`, the groove that means
+                "a control sits here" on white. Out here it sits on
+                `--page-bg` with nothing behind it, and a groove-coloured
+                pill on an off-white page has no edge at all — so it takes
+                `--surface-3` and a hairline, which is the same lifted-panel
+                grammar the composer under it uses. Nothing new enters the
+                palette.
+
+                The `+` opens the same picker the chip does. That is the
+                reference's own arrangement and it is honest here: the chip
+                reports what is chosen, the `+` is the invitation to choose
+                more, and a student who taps either gets the list. */}
+            <div className="src-row">
+              <button
+                className="src-add"
+                onClick={() => setPacksOpen(true)}
+                aria-haspopup="dialog"
+                aria-expanded={packsOpen}
+                aria-label="Add a resource pack"
+              >
+                <HugeIcon name="plus" className="i i-16" />
+              </button>
+              <button
+                className={"res-btn" + (packs.size ? " is-on" : "")}
+                onClick={() => setPacksOpen(true)}
+                aria-haspopup="dialog"
+                aria-expanded={packsOpen}
+                aria-label={resLabel.aria}
+                title={packs.size > 1 ? resLabel.full : undefined}
+              >
+                <HugeIcon name="pdf" className="i i-16" />
+                <span className="res-label">{resLabel.word}</span>
+                {resLabel.more > 0 && (
+                  <span className="res-count">+{resLabel.more}</span>
+                )}
+              </button>
+            </div>
             <div className="composer">
               <div
                 ref={editorRef}
@@ -541,26 +671,13 @@ export function ClaudeUI() {
 
               <div className="bar">
                 <div className="bar-left">
+                  {/* The in-box `+` stays — it is attachments and connectors,
+                      which is a different job from the source row's `+` above
+                      (that one names what the whole conversation reads from;
+                      this one adds a file to the message being typed). Both
+                      are in the owner's reference shot for the same reason. */}
                   <button className="cbtn" aria-label="Add files, connectors">
                     <HugeIcon name="plus" className="i" />
-                  </button>
-                  {/* Resources, where Chat/Cowork used to be (owner,
-                      2026-08-29). It is a BUTTON and not a segmented control
-                      because it does not pick between two modes — it opens a
-                      picker and comes back carrying what was picked. */}
-                  <button
-                    className={"res-btn" + (packs.size ? " is-on" : "")}
-                    onClick={() => setPacksOpen(true)}
-                    aria-haspopup="dialog"
-                    aria-expanded={packsOpen}
-                    aria-label={resLabel.aria}
-                    title={packs.size > 1 ? resLabel.full : undefined}
-                  >
-                    <HugeIcon name="folder-library" className="i i-16" />
-                    <span className="res-label">{resLabel.word}</span>
-                    {resLabel.more > 0 && (
-                      <span className="res-count">+{resLabel.more}</span>
-                    )}
                   </button>
                 </div>
 

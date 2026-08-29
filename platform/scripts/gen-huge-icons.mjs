@@ -94,14 +94,8 @@ const ICONS = {
      `pin`'s angled one: at 20px in a slot beside upright chrome, the diagonal
      tail reads as noise. `bookmark` stays because the Saved tab means it. */
   pin: "pin-02",
-  /* The composer's Resources button. NOT `folder` — that is Projects in the
-     sidebar two rows up, and the same mark for two different things is how a
-     vocabulary stops meaning anything. A pack is a folder of folders. */
-  "folder-library": "folder-library",
   config: "preference-horizontal", // the filter beside "Chats and tasks"
   paint: "paint-brush-01", // Design
-  "chat-messages": "bubble-chat", // the sidebar header's chat mode
-  code: "source-code", // its code mode
   edit: "pencil-edit-02", // compose, on the New row
   "clock-1": "clock-01", // Scheduled
   "layout-dashboard": "dashboard-square-01", // Home
@@ -111,6 +105,24 @@ const ICONS = {
      with it — a vocabulary entry called "ghost" pointing at a hat and glasses
      is the kind of drift that makes the next person distrust the map. */
   incognito: "incognito",
+
+  /* The composer's resource-pack chip (2026-08-29). NOT `folder-library` —
+     that mark named the CONTROL when it lived in the composer bar and stood
+     for "packs, plural, pick some". The chip names one pack, and a pack is
+     PDFs; the owner asked for the file's own mark rather than a container's,
+     the way the reference chip wears the source it carries. `pdf-01` is the
+     page with the letters, which is legible at 16 where `pdf-02`'s smaller
+     lettering is not. */
+  pdf: "pdf-01",
+
+  /* Quick actions on the home screen. `headphones` is a session, and it is
+     the one mark in the app that already means "listen rather than read" —
+     the course page's Listen pill sits beside a run of steps for the same
+     reason. `folder` above is a project, deliberately the same mark the
+     sidebar's Projects row wears: a quick action into a project and the rail
+     that lists them are the same destination, so the same glyph is correct
+     here where a second one would be drift. */
+  headphones: "headphones",
 };
 
 /* ⚠️ GLYPHS THE SET DOES NOT HAVE, drawn on Hugeicons' own 24 grid at its own
