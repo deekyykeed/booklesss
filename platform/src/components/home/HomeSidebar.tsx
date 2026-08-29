@@ -1,4 +1,4 @@
-import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
+import { HugeIcon, type HugeIconName } from "@/components/icons/huge";
 import { SLACK_INVITE_URL } from "@/lib/links";
 import { HomeNavLink } from "./HomeNavLink";
 import { SlackMark } from "./SlackMark";
@@ -22,7 +22,7 @@ type Item = {
   href?: string;
   external?: boolean;
   /** MynaUI base name — the variant is picked by state, see glyphFor. */
-  icon?: MynaIconName;
+  icon?: HugeIconName;
   /** Brand marks aren't in MynaUI at all (see SlackMark). */
   brand?: React.ReactNode;
 };
@@ -49,8 +49,8 @@ const ITEMS: Item[] = [
 function glyphFor(item: Item, active: boolean) {
   if (item.brand) return item.brand;
   if (!item.icon) return null;
-  const name = (active ? `${item.icon}-solid` : item.icon) as MynaIconName;
-  return <MynaIcon name={name} size={17} />;
+  const name = (active ? `${item.icon}-solid` : item.icon) as HugeIconName;
+  return <HugeIcon name={name} size={17} />;
 }
 
 export function HomeSidebar({ active = "dashboard" }: { active?: string }) {

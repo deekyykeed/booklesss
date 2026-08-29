@@ -10,7 +10,7 @@ import {
   useState,
 } from "react";
 import type { Section } from "@/lib/course";
-import { MynaIcon } from "@/components/icons/myna";
+import { HugeIcon } from "@/components/icons/huge";
 
 /* Reader shell state, shared by both sidebars, the header's hamburger, and the
  * tap-to-close scrim. It owns three things:
@@ -322,7 +322,7 @@ export function MobileMenuButton() {
       aria-expanded={open}
       className="-ml-2 grid h-8 w-8 place-items-center rounded-lg text-ink transition-colors hover:bg-active md:hidden"
     >
-      <MynaIcon name="menu" size={16} />
+      <HugeIcon name="menu" size={16} />
     </button>
   );
 }

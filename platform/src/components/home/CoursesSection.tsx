@@ -25,7 +25,7 @@ import { applyOrder, saveCourseOrder, useCourseOrder } from "@/lib/course-order"
 import { pendingCourses, programmeBySlug } from "@/lib/programmes";
 import type { CourseMeta } from "@/lib/courses";
 import type { StudyDay } from "@/lib/progress";
-import { MynaIcon } from "@/components/icons/myna";
+import { HugeIcon } from "@/components/icons/huge";
 import { CourseCard } from "./CourseCard";
 import { PipelineCard } from "./PipelineCard";
 import { courseTone } from "./tones";
@@ -644,7 +644,7 @@ function TabRow({
         aria-label="Sort courses"
         className="shrink-0 text-placeholder"
       >
-        <MynaIcon name="sort" size={18} />
+        <HugeIcon name="sort" size={18} />
       </button>
     </div>
   );

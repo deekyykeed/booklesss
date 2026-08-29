@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { MynaIcon } from "@/components/icons/myna";
+import { HugeIcon } from "@/components/icons/huge";
 import { ActionBar } from "@/components/ui/ActionBar";
 import { pathForId } from "@/lib/course";
 import { enrolledCourses } from "@/lib/courses";
@@ -178,7 +178,7 @@ export function OfflineTools() {
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-start gap-2.5">
           <span className="shrink-0 pt-0.5 text-ink-2">
-            <MynaIcon name="download" size={18} />
+            <HugeIcon name="download" size={18} />
           </span>
           <div className="min-w-0">
             <p className="text-[14px] font-medium text-ink">Study without data</p>

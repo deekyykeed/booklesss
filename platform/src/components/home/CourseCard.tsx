@@ -8,7 +8,7 @@ import { labelFor } from "@/lib/course";
 import { beginMorphFrom } from "@/lib/morph";
 import { courseStreak, studyHistory, type StudyDay } from "@/lib/progress";
 import { coursePerformance } from "@/lib/performance";
-import { MynaIcon } from "@/components/icons/myna";
+import { HugeIcon } from "@/components/icons/huge";
 import { CardMark, StreakMark } from "./card-glyphs";
 import { Spark } from "./Spark";
 
@@ -188,7 +188,7 @@ export function CourseCard({
               style={{ color: "var(--color-brand-deep)" }}
               title="Course complete — every checkpoint answered"
             >
-              <MynaIcon name="check-circle-solid" size={22} />
+              <HugeIcon name="check-circle-solid" size={22} />
               <span className="sr-only">course complete</span>
             </span>
           ) : (

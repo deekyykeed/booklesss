@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { MynaIcon } from "@/components/icons/myna";
+import { HugeIcon } from "@/components/icons/huge";
 
 /* ------------------------------------------------------------------ *
  * THE REFERENCE UI, VERBATIM.
@@ -223,13 +223,13 @@ export function ClaudeUI() {
                 className={"seg-item" + (headerSeg === 0 ? " is-active" : "")}
                 onClick={() => setHeaderSeg(0)}
               >
-                <MynaIcon name="chat-messages" className="i i-16" />
+                <HugeIcon name="chat-messages" className="i i-16" />
               </button>
               <button
                 className={"seg-item" + (headerSeg === 1 ? " is-active" : "")}
                 onClick={() => setHeaderSeg(1)}
               >
-                <MynaIcon name="code" className="i i-16" />
+                <HugeIcon name="code" className="i i-16" />
                 <span className="dot" />
               </button>
             </div>
@@ -239,35 +239,35 @@ export function ClaudeUI() {
             <div className="rows">
               <a className="row row-new" href="#">
                 <span className="slot">
-                  <MynaIcon name="plus" className="i i-16" />
+                  <HugeIcon name="plus" className="i i-16" />
                 </span>
                 <span className="label">New</span>
                 <span className="kbd">Ctrl⇧O</span>
                 <button className="icon-btn-sm">
-                  <MynaIcon name="edit" className="i i-16" />
+                  <HugeIcon name="edit" className="i i-16" />
                 </button>
               </a>
               <a className="row" href="#">
                 <span className="slot">
-                  <MynaIcon name="folder" className="i" />
+                  <HugeIcon name="folder" className="i" />
                 </span>
                 <span className="label">Projects</span>
               </a>
               <a className="row" href="#">
                 <span className="slot">
-                  <MynaIcon name="component" className="i" />
+                  <HugeIcon name="component" className="i" />
                 </span>
                 <span className="label">Artifacts</span>
               </a>
               <a className="row" href="#">
                 <span className="slot">
-                  <MynaIcon name="clock-1" className="i" />
+                  <HugeIcon name="clock-1" className="i" />
                 </span>
                 <span className="label">Scheduled</span>
               </a>
               <a className="row" href="#">
                 <span className="slot">
-                  <MynaIcon name="briefcase" className="i" />
+                  <HugeIcon name="briefcase" className="i" />
                 </span>
                 <span className="label">Customize</span>
               </a>
@@ -276,15 +276,15 @@ export function ClaudeUI() {
             <div className="sec">
               <div className="sec-head">
                 <span>Projects</span>
-                <MynaIcon name="chevron-right" className="i i-12 caret" />
+                <HugeIcon name="chevron-right" className="i i-12 caret" />
                 <span className="grow" />
                 <button className="icon-btn-sm">
-                  <MynaIcon name="plus" className="i i-16" />
+                  <HugeIcon name="plus" className="i i-16" />
                 </button>
               </div>
               <div className="empty-row">
                 <span className="slot">
-                  <MynaIcon name="bookmark" className="i" />
+                  <HugeIcon name="bookmark" className="i" />
                 </span>
                 <span>Pin projects to keep them here</span>
               </div>
@@ -294,10 +294,10 @@ export function ClaudeUI() {
 
             <div className="sec-head" style={{ marginTop: 10 }}>
               <span>Chats and tasks</span>
-              <MynaIcon name="chevron-right" className="i i-12 caret always" />
+              <HugeIcon name="chevron-right" className="i i-12 caret always" />
               <span className="grow" />
               <button className="icon-btn-sm">
-                <MynaIcon name="config" className="i i-16" />
+                <HugeIcon name="config" className="i i-16" />
               </button>
             </div>
           </div>
@@ -306,7 +306,7 @@ export function ClaudeUI() {
             <div className="hairline" />
             <a className="row" href="#">
               <span className="slot">
-                <MynaIcon name="paint" className="i" />
+                <HugeIcon name="paint" className="i" />
               </span>
               <span className="label">Design</span>
             </a>
@@ -315,17 +315,17 @@ export function ClaudeUI() {
                 <span className="avatar" />
                 <span className="user-name">Deeky</span>
                 <span className="user-plan">&nbsp;· Pro</span>
-                <MynaIcon name="chevron-down" className="i i-12" />
+                <HugeIcon name="chevron-down" className="i i-12" />
               </button>
               <div className="foot-icons">
                 <button className="icon-btn">
-                  <MynaIcon name="download" className="i i-16" />
+                  <HugeIcon name="download" className="i i-16" />
                 </button>
                 <button className="icon-btn">
-                  <MynaIcon name="search" className="i i-16" />
+                  <HugeIcon name="search" className="i i-16" />
                 </button>
                 <button className="icon-btn">
-                  <MynaIcon name="sidebar" className="i i-16" />
+                  <HugeIcon name="sidebar" className="i i-16" />
                 </button>
               </div>
             </div>
@@ -346,11 +346,11 @@ export function ClaudeUI() {
                   (owner, 2026-08-29). The panel mark is still in the sidebar
                   footer, where it means "this rail" — one mark standing for two
                   different things in two places was the ambiguity worth losing. */}
-              <MynaIcon name="menu" className="i" />
+              <HugeIcon name="menu" className="i" />
             </button>
             <span className="grow" />
             <button className="head-btn" aria-label="Use incognito">
-              <MynaIcon name="ghost-indifferent" className="i" />
+              <HugeIcon name="incognito" className="i" />
             </button>
           </header>
 
@@ -399,7 +399,7 @@ export function ClaudeUI() {
               <div className="bar">
                 <div className="bar-left">
                   <button className="cbtn" aria-label="Add files, connectors">
-                    <MynaIcon name="plus" className="i" />
+                    <HugeIcon name="plus" className="i" />
                   </button>
                   <div className="seg seg-composer">
                     <button
@@ -424,10 +424,10 @@ export function ClaudeUI() {
                   </button>
                   <div className="voice">
                     <button className="cbtn" aria-label="Dictate">
-                      <MynaIcon name="microphone" className="i" />
+                      <HugeIcon name="microphone" className="i" />
                     </button>
                     <button className="caret" aria-label="Voice input">
-                      <MynaIcon name="chevron-down" className="i i-12" />
+                      <HugeIcon name="chevron-down" className="i i-12" />
                     </button>
                   </div>
                 </div>

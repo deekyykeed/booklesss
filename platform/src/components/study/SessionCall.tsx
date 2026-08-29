@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { ConversationProvider, useConversation } from "@elevenlabs/react";
-import { MynaIcon } from "@/components/icons/myna";
+import { HugeIcon } from "@/components/icons/huge";
 import { Orb, type OrbState } from "./Orb";
 import { PointStack } from "./PointStack";
 import {
@@ -274,7 +274,7 @@ function CallScreen({
           className="grid h-9 w-9 place-items-center rounded-full bg-white/10 transition hover:bg-white/20"
           aria-label="Leave this session"
         >
-          <MynaIcon name="chevron-right" size={17} className="rotate-180" style={{ color: "#fff" }} />
+          <HugeIcon name="chevron-right" size={17} className="rotate-180" style={{ color: "#fff" }} />
         </Link>
         <div className="min-w-0 flex-1 text-center">
           {kicker ? (
@@ -291,7 +291,7 @@ function CallScreen({
           aria-label={notesOpen ? "Hide your notes" : "Write a note"}
           aria-pressed={notesOpen}
         >
-          <MynaIcon name="pencil" size={16} style={{ color: notesOpen ? "#3ecf8e" : "#fff" }} />
+          <HugeIcon name="pencil" size={16} style={{ color: notesOpen ? "#3ecf8e" : "#fff" }} />
         </button>
       </header>
 
@@ -346,7 +346,7 @@ function CallScreen({
                   className="font-container flex items-center justify-between rounded-xl bg-white/[0.06] px-3.5 py-2.5 text-[13px] font-medium text-white/80 transition hover:bg-white/[0.12]"
                 >
                   {s.title}
-                  <MynaIcon name="chevron-right" size={15} style={{ color: "rgba(255,255,255,0.4)" }} />
+                  <HugeIcon name="chevron-right" size={15} style={{ color: "rgba(255,255,255,0.4)" }} />
                 </Link>
               ))}
             </div>
@@ -388,17 +388,17 @@ function CallScreen({
           {phase === "live" ? (
             <>
               <RoundButton onClick={toggleMute} label={muted ? "Unmute" : "Mute"} tone="dim">
-                <MynaIcon
+                <HugeIcon
                   name={muted ? "microphone-off" : "microphone"}
                   size={19}
                   style={{ color: muted ? "#ff8f8f" : "#fff" }}
                 />
               </RoundButton>
               <RoundButton onClick={finish} label="End the session" tone="end" big>
-                <MynaIcon name="telephone-off" size={22} style={{ color: "#fff" }} />
+                <HugeIcon name="telephone-off" size={22} style={{ color: "#fff" }} />
               </RoundButton>
               <RoundButton onClick={() => setNotesOpen(true)} label="Write a note" tone="dim">
-                <MynaIcon name="pencil" size={18} style={{ color: "#fff" }} />
+                <HugeIcon name="pencil" size={18} style={{ color: "#fff" }} />
               </RoundButton>
             </>
           ) : (

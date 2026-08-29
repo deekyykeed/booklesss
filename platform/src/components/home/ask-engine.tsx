@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ConversationProvider, useConversation } from "@elevenlabs/react";
-import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
+import { HugeIcon, type HugeIconName } from "@/components/icons/huge";
 import type { AskControls, AskItem, AskPhase, NewAskItem, PinKind } from "./ask-types";
 
 /* ------------------------------------------------------------------ *
@@ -53,7 +53,7 @@ const REASONS: Record<string, string> = {
 /* Deliberately the same marks the reader draws for the same ideas — a key
  * point should not wear one glyph when it is read and another when it is
  * heard. Mirrors MARKS in study/PointStack. */
-const MARKS: Record<PinKind, { icon: MynaIconName; label: string }> = {
+const MARKS: Record<PinKind, { icon: HugeIconName; label: string }> = {
   key: { icon: "key", label: "Key point" },
   warning: { icon: "danger-triangle", label: "Watch out" },
   example: { icon: "clipboard", label: "Example" },
@@ -585,7 +585,7 @@ function PinCard({ text, kind }: { text: string; kind: PinKind }) {
   const mark = MARKS[kind] ?? MARKS.point;
   return (
     <div className="ask-pin">
-      <MynaIcon name={mark.icon} size={15} strokeWidth={1.6} className="ask-pin-mark" />
+      <HugeIcon name={mark.icon} size={15} strokeWidth={1.6} className="ask-pin-mark" />
       <div className="min-w-0">
         <div className="ask-pin-label">{mark.label}</div>
         <p className="ask-pin-text">{text}</p>

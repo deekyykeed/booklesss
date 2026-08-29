@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Avatar, resolveAvatar, type AvatarId } from "./avatars";
 import { AvatarPicker } from "./AvatarPicker";
 import { CoursePicker, SchoolPicker, SETTINGS_EVENT } from "./pickers";
-import { MynaIcon } from "@/components/icons/myna";
+import { HugeIcon } from "@/components/icons/huge";
 import { clearFreeStep, useSignedIn } from "@/lib/account";
 import { browserClient } from "@/lib/supabase/browser";
 import { coursesForSchool } from "@/lib/courses";
@@ -266,7 +266,7 @@ export function SettingsSheet() {
               className="grid h-7 w-7 place-items-center rounded-[8px] bg-transparent transition-colors hover:bg-[rgba(11,11,11,0.05)]"
               style={{ color: INK }}
             >
-              <MynaIcon name="x" size={18} strokeWidth={1.6} />
+              <HugeIcon name="x" size={18} strokeWidth={1.6} />
             </button>
           </div>
 
@@ -585,7 +585,7 @@ function Row({
       {control}
       {onClick && (
         <span className={"shrink-0 transition-transform " + (expanded ? "rotate-180" : "")} style={{ color: MUTED }}>
-          <MynaIcon name="chevron-down" size={16} />
+          <HugeIcon name="chevron-down" size={16} />
         </span>
       )}
     </span>

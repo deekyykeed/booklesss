@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
+import { HugeIcon, type HugeIconName } from "@/components/icons/huge";
 import type { Pin } from "@/lib/session-notes";
 
 /* The points, stacked.
@@ -24,7 +24,7 @@ import type { Pin } from "@/lib/session-notes";
  * container — the same call already made for callouts and cards in the reader.
  */
 
-const MARKS: Record<Pin["kind"], { icon: MynaIconName; label: string }> = {
+const MARKS: Record<Pin["kind"], { icon: HugeIconName; label: string }> = {
   /* Deliberately the same marks the reader draws for the same ideas — see
    * CALLOUTS in reader/LessonView.tsx. A key point should not wear one glyph
    * when it is read and a different one when it is heard. */
@@ -75,7 +75,7 @@ export function PointStack({ pins }: { pins: Pin[] }) {
               animation: i === count - 1 ? "point-in 380ms cubic-bezier(0.2,0.8,0.2,1) both" : undefined,
             }}
           >
-            <MynaIcon
+            <HugeIcon
               name={mark.icon}
               size={16}
               strokeWidth={1.6}
