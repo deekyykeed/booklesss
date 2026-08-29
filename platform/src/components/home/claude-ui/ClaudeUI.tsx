@@ -209,8 +209,13 @@ export function ClaudeUI() {
         {/* ================= SIDEBAR ================= */}
         <aside className="sidebar" id="cui-sidebar" ref={sideRef}>
           <div className="sb-head">
+            {/* The reference's own wordmark style — --font-serif at 20px/500
+                with the same negative tracking — carrying our name instead of
+                its. The face is deliberately untouched: it is the one place on
+                this surface where the serif appears at all, and swapping it
+                would change the sidebar's whole voice rather than its word. */}
             <a className="wordmark" href="#">
-              Claude
+              Bklsss
             </a>
             <span className="grow" />
             <div className="seg seg-header">
@@ -358,53 +363,72 @@ export function ClaudeUI() {
                   <span className="txt">Good evening, Deeky</span>
                 </div>
 
-                <div className="composer">
-                  <div
-                    className="editor"
-                    contentEditable
-                    suppressContentEditableWarning
-                    data-placeholder="How can I help you today?"
-                  />
+              </div>
+            </div>
+          </div>
 
-                  <div className="bar">
-                    <div className="bar-left">
-                      <button className="cbtn" aria-label="Add files, connectors">
-                        <MynaIcon name="plus" className="i" />
-                      </button>
-                      <div className="seg seg-composer">
-                        <button
-                          className={"seg-item" + (composerSeg === 0 ? " is-active" : "")}
-                          onClick={() => setComposerSeg(0)}
-                        >
-                          Chat
-                        </button>
-                        <button
-                          className={"seg-item" + (composerSeg === 1 ? " is-active" : "")}
-                          onClick={() => setComposerSeg(1)}
-                        >
-                          Cowork
-                        </button>
-                      </div>
-                    </div>
+          {/* ---- THE COMPOSER, PINNED TO THE FOOT OF THE PANE ----
+              ⚠️ NOT `position: fixed`, and it did not need to be. `.pane` is
+              already a flex column whose middle child is the scroller, so a
+              sibling after it sits at the bottom by construction — always
+              visible, never overlapping the reading, and correctly inset by the
+              sidebar on desktop because it lives inside the pane rather than
+              the viewport.
 
-                    <div className="bar-right">
-                      <button className="model-btn">
-                        <span>Sonnet 5</span>
-                        <span className="muted">Medium</span>
-                      </button>
-                      <div className="voice">
-                        <button className="cbtn" aria-label="Dictate">
-                          <MynaIcon name="microphone" className="i" />
-                        </button>
-                        <button className="caret" aria-label="Voice input">
-                          <MynaIcon name="chevron-down" className="i i-12" />
-                        </button>
-                      </div>
-                    </div>
+              Fixed would have worked today and been a liability tomorrow: any
+              ancestor that later gains a transform, a filter or a
+              backdrop-filter silently becomes its containing block and the
+              thing rides the scroll. This surface has stayed free of fixed
+              positioning on purpose — see the note in globals.css — and a
+              bottom-docked composer is exactly the case that usually breaks
+              that rule. */}
+          <div className="composer-dock">
+            <div className="center">
+            <div className="composer">
+              <div
+                className="editor"
+                contentEditable
+                suppressContentEditableWarning
+                data-placeholder="How can I help you today?"
+              />
+
+              <div className="bar">
+                <div className="bar-left">
+                  <button className="cbtn" aria-label="Add files, connectors">
+                    <MynaIcon name="plus" className="i" />
+                  </button>
+                  <div className="seg seg-composer">
+                    <button
+                      className={"seg-item" + (composerSeg === 0 ? " is-active" : "")}
+                      onClick={() => setComposerSeg(0)}
+                    >
+                      Chat
+                    </button>
+                    <button
+                      className={"seg-item" + (composerSeg === 1 ? " is-active" : "")}
+                      onClick={() => setComposerSeg(1)}
+                    >
+                      Cowork
+                    </button>
                   </div>
                 </div>
 
+                <div className="bar-right">
+                  <button className="model-btn">
+                    <span>Sonnet 5</span>
+                    <span className="muted">Medium</span>
+                  </button>
+                  <div className="voice">
+                    <button className="cbtn" aria-label="Dictate">
+                      <MynaIcon name="microphone" className="i" />
+                    </button>
+                    <button className="caret" aria-label="Voice input">
+                      <MynaIcon name="chevron-down" className="i i-12" />
+                    </button>
+                  </div>
+                </div>
               </div>
+            </div>
             </div>
           </div>
         </div>
