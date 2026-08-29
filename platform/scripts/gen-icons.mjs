@@ -17,6 +17,21 @@ import { dirname, join } from "node:path";
  * obvious. `-solid` is MynaUI's filled variant, which the sidebars use to mark
  * the current row — line at rest, solid when active. */
 const ICONS = [
+  /* The dashboard shell (/dashboard). These replaced the reference UI's
+     hand-drawn sprite on 2026-08-29 — nineteen paths somebody had eyeballed
+     onto a 20-grid, with no set behind them and no way to add a twentieth
+     that matched. MynaUI's 24-grid at its native stroke 1.5 renders the
+     IDENTICAL 1.25px on-screen stroke at 20px, which is why the swap cost
+     nothing visually: 1.5 x 20/24 = 1.25. */
+  "folder", // Projects
+  "component", // Artifacts
+  "briefcase", // Customize
+  "config", // the filter beside "Chats and tasks"
+  "paint", // Design
+  "chat-messages", // the sidebar header's chat mode
+  "code", // its code mode
+  "edit", // compose, on the New row
+  "ghost-indifferent", // incognito, in the pane header
   // chrome: header, search, drawers, rails
   "search",
   "question-circle",
