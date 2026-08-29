@@ -556,7 +556,8 @@ before reading a word. The orb is **CSS, not an asset and not three.js**
 ### The dashboard IS the reference UI (2026-08-28/29)
 
 **`/dashboard` is `claudeuiclone.html`** — the owner's recreation of the
-claude.ai desktop shell, sitting in the repo root, transcribed into
+claude.ai desktop shell, kept with its state captures in
+**`_dev/reference-ui/`** (moved off the repo root 2026-08-29), transcribed into
 `components/home/claude-ui/ClaudeUI.tsx` and scoped under `.cui` in
 `globals.css`. Owner's call, twice, after a first attempt adapted it instead:
 *"replacement and not redesign… so that it is 100% the ui. that's where I want

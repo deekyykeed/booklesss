@@ -95,7 +95,8 @@ Max ONE accent colour per project. Never mix. Saturation below 80%.
 
 ## The `.cui` system — what `/dashboard` is built from *(2026-08-29)*
 
-**`/dashboard` is a transcription of `claudeuiclone.html`** (repo root), scoped
+**`/dashboard` is a transcription of `claudeuiclone.html`**
+(`_dev/reference-ui/`, moved off the repo root 2026-08-29), scoped
 under `.cui` in `globals.css`. Owner's call, 2026-08-28: *"100% the ui, that's
 where I want to start from."* It is the surface every new app page should now be
 built to match, so this section is the spec — read it before adding a page, a

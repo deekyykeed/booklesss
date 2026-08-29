@@ -26,6 +26,8 @@
 
   --page-bg:#fcfcfb;            /* body / main pane           */
   --sidebar-bg:#fafaf9;         /* aside                      */
+  --surface-1:#fcfcfb;          /* card at rest               */
+  --surface-2:#ffffff;          /* card on hover              */
   --surface-3:#ffffff;          /* composer shell             */
   --row-selected:#edece8;       /* active nav row             */
   --row-hover:rgba(11,11,11,.05);
@@ -45,12 +47,18 @@
 
   /* motion — lifted verbatim from the app */
   --ease:cubic-bezier(.4,0,.2,1);
+  --ease-out:cubic-bezier(.165,.84,.44,1);  /* --cds-ease-out */
   --dur:.2s;                    /* composer state change      */
   --dur-fast:60ms;              /* --cds-dur-fast             */
   --dur-slow:.45s;              /* --cds-dur-slow             */
   --spring:linear(0,.2459,.6526,.9468,1.0764,1.0915,1.0585,
            1.0219,.9993,.9914,.9921,.9957,.9988,1.0004,1);
-  --fill-ghost-hover:rgba(11,11,11,.05);   /* --cds-fill-ghost-hover */
+  --fill-ghost-hover:rgba(11,11,11,.05);   /* --cds-fill-ghost-hover  */
+  --fill-secondary:rgba(255,255,255,.1);   /* --cds-fill-secondary    */
+  --fill-secondary-hover:rgba(11,11,11,.05);
+  --fill-primary:#0b0b0b;
+  --fill-primary-hover:#2c2c2a;
+  --ring-card:rgba(11,11,11,.1);           /* --cds-ring-color        */
 
   /* composer shadow parts */
   --cmp-ring:rgba(31,31,30,.15);           /* hsl(60 2% 12% / .15) */
@@ -58,6 +66,7 @@
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
 html,body{height:100%}
 body{
   background:var(--page-bg);
@@ -108,7 +117,7 @@ a{color:inherit;text-decoration:none}
   .cbtn::before,.model-btn::before,.voice .caret::before{transition:none}
 }
 
-.app{display:flex;height:100vh;height:100dvh;overflow:hidden}
+.app{display:flex;height:100vh;overflow:hidden}
 
 /* ============================================================
    SIDEBAR — 288px, #fafaf9, 1px right border
@@ -149,8 +158,10 @@ a{color:inherit;text-decoration:none}
 .slot{width:28px;flex:0 0 28px;display:flex;align-items:center;justify-content:center}
 .label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-.row-new{margin-top:4px;background:var(--row-selected);color:var(--text-100);padding-right:4px}
-.row-new:hover::before{background-color:transparent}
+.row-new{margin-top:4px;padding-right:4px}
+.row.is-selected{background:var(--row-selected);color:var(--text-100)}
+.row.is-selected::before{background-color:transparent!important}
+
 .row-new .kbd{font-size:12px;color:var(--text-300);letter-spacing:.02em}
 .row-new .icon-btn-sm{opacity:0;transition:opacity .12s}
 .row-new:hover .icon-btn-sm{opacity:1}
@@ -299,53 +310,95 @@ a{color:inherit;text-decoration:none}
 }
 
 /* ============================================================
-   RESPONSIVE — LAYOUT ONLY (added 2026-08-28)
-   Nothing above this block was restyled. The desktop rendering
-   is byte-for-byte what it was; everything here is inside a
-   media query or is display:none until one opens it.
-
-   Below 768px the 288px sidebar stops being a flex column and
-   becomes an off-canvas drawer over the pane, opened by the
-   panel button in the pane header — the same #ic-panel glyph
-   the footer already carries, which is what the real app uses
-   for this job. No new icon was invented.
+   PROJECTS PAGE
    ============================================================ */
-
-.nav-toggle{display:none}
-.nav-scrim{
-  position:fixed;inset:0;z-index:30;
-  background:rgba(11,11,11,.28);
-  opacity:0;pointer-events:none;visibility:hidden;
-  transition:opacity var(--dur) var(--ease),visibility 0s linear var(--dur);
+.app.sidebar-hidden .sidebar{display:none}
+.sb-toggle{display:none}
+.app.sidebar-hidden .sb-toggle{display:inline-flex}
+.sb-toggle .dot-new{
+  position:absolute;top:2px;right:0;width:6px;height:6px;
+  border-radius:50%;background:#2a78d6;
 }
+.view[hidden]{display:none}
+/* the incognito button only exists on the chat screen */
 
-@media (max-width:768px){
-  .nav-toggle{display:inline-flex;margin-right:auto}
-  .pane-head{padding:0 12px}
-
-  .sidebar{
-    position:fixed;top:0;bottom:0;left:0;z-index:40;
-    width:min(288px,84vw);
-    transform:translateX(-100%);
-    transition:transform var(--dur-slow) var(--ease);
-  }
-  .app.nav-open .sidebar{transform:translateX(0)}
-
-  .app.nav-open .nav-scrim{opacity:1;pointer-events:auto;visibility:visible;
-    transition:opacity var(--dur) var(--ease),visibility 0s}
+.proj-page{width:100%;padding:0 40px 64px}
+.proj-head{display:flex;align-items:center;height:48px;margin-bottom:44px}
+.proj-title{
+  font-family:var(--font-serif);
+  font-size:24px;font-weight:500;color:var(--text-100);letter-spacing:-.01em;
 }
+.proj-actions{margin-left:auto;display:flex;align-items:center;gap:12px}
 
-/* The composer bar is the one row that genuinely does not fit a phone.
-   Measured: content 348px against 338px of track at 390px wide, and
-   308px at 360px. The secondary effort label is dropped below 420px --
-   the only element hidden anywhere in this file, and what the real app
-   does at the same width. Everything else stays on one row. */
-@media (max-width:420px){
-  .model-btn .muted{display:none}
+/* --- secondary button (search, sort) ------------------------------------
+   The app builds these from two stacked layers: a squish layer, and inside
+   it the fill layer that carries background + ring and transitions them
+   over --cds-dur-fast (60ms) with --cds-ease-out.                          */
+.btn-sec,.btn-pri{
+  position:relative;isolation:isolate;
+  height:32px;border-radius:var(--radius);padding:0 12px;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  font-size:14px;white-space:nowrap;
 }
+.btn-sec{color:var(--text-100)}
+.btn-pri{color:#fff;font-weight:500}
+.btn-sec.is-icon{width:32px;padding:0}
+
+.btn-sec::before,.btn-pri::before{
+  content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;
+  transform-origin:50% center;
+  transition:background-color var(--dur-fast) var(--ease-out),
+             box-shadow       var(--dur-fast) var(--ease-out),
+             transform        var(--dur-slow) var(--spring);
+}
+.btn-sec::before{
+  background-color:var(--fill-secondary);
+  box-shadow:inset 0 0 0 1px rgba(11,11,11,.1),0 1px 2px 0 rgba(0,0,0,.05);
+}
+.btn-sec:hover::before{background-color:var(--fill-secondary-hover)}
+.btn-pri::before{inset:.5px;background-color:var(--fill-primary)}
+.btn-pri:hover::before{background-color:var(--fill-primary-hover)}
+.btn-sec:active::before,.btn-pri:active::before{
+  transition:transform var(--dur-fast) ease-out;transform:scale(.975);
+}
+.btn-sec .muted{color:var(--text-300)}
+
+/* --- the cards ----------------------------------------------------------
+   card    : bg --cds-surface-1, ring inset 0 0 0 1px rgba(11,11,11,.1),
+             radius calc(--cds-radius + 4px) = 12px, padding 16, min-h 7rem
+   hover   : bg -> --cds-surface-2 (#fff). No transition on the app's card,
+             so this swaps instantly here too.
+   press   : the WRAPPER scales to .98 over --cds-dur-fast and releases over
+             --cds-dur-base ease-out — written upstream as
+             has-[a:active]:scale-[0.98] has-[a:active]:duration-fast        */
+.cards{
+  list-style:none;display:grid;gap:24px;
+  grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+}
+.card-wrap{
+  position:relative;height:100%;
+  transition:transform var(--dur) ease-out;
+}
+.card-wrap:has(a:active){transform:scale(.98);transition-duration:var(--dur-fast)}
+
+.card{
+  display:flex;flex-direction:column;gap:8px;
+  height:100%;min-height:112px;padding:16px;
+  border-radius:calc(var(--radius) + 4px);
+  background-color:var(--surface-1);
+  box-shadow:inset 0 0 0 1px var(--ring-card);
+  outline:none;
+}
+.card-wrap:hover .card{background-color:var(--surface-2)}
+.card-title{font-size:14px;font-weight:500;line-height:20px;color:var(--text-100);overflow:hidden}
+.card-desc{
+  font-size:14px;line-height:20px;color:var(--text-200);
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.card-date{margin-top:auto;font-size:13px;line-height:17px;color:var(--text-300)}
 
 @media (prefers-reduced-motion:reduce){
-  .sidebar,.nav-scrim{transition:none}
+  .card-wrap,.btn-sec::before,.btn-pri::before{transition:none}
 }
 </style>
 </head>
@@ -405,10 +458,10 @@ a{color:inherit;text-decoration:none}
     <path fill="currentColor" stroke="none" d="M10 2C14.326 2.00018 17.9998 5.67403 18 10V17.3123C17.9997 17.5427 17.8411 17.8079 17.6172 17.8623C17.3932 17.9165 17.1614 17.7456 17.0557 17.5408C16.7805 17.007 16.3658 16.5937 16.062 16.2878C15.7793 16.0034 15.4503 15.8338 14.9771 15.8337C14.2092 15.8339 13.4371 16.3862 12.9487 17.53C12.8701 17.7138 12.6887 17.8621 12.4888 17.8623C12.2888 17.8623 12.1076 17.7138 12.0288 17.53C11.5404 16.386 10.7674 15.8339 9.99951 15.8337C9.23161 15.8339 8.45959 16.386 7.97119 17.53C7.89253 17.7138 7.71118 17.8621 7.51123 17.8623C7.31122 17.8623 7.13006 17.7138 7.05127 17.53C6.56296 16.3862 5.78982 15.834 5.02197 15.8337C4.54861 15.8338 4.21974 16.0032 3.93701 16.2878C3.63309 16.5937 3.21952 17.0715 2.94434 17.6055C2.83865 17.8103 2.60589 17.9165 2.38184 17.8623C2.15801 17.8079 2.00033 17.6073 2 17.377V10C2.00018 5.67403 5.67403 2.00018 10 2ZM10 3C6.22631 3.00018 3.00018 6.22631 3 10V15.8633C3.0205 15.8414 3.20696 15.6049 3.22803 15.5837C3.67524 15.1336 4.251 14.8338 5.02197 14.8337C6.03838 14.8341 6.90232 15.4025 7.51025 16.2937C8.11828 15.4018 8.9824 14.8338 9.99951 14.8337C11.0163 14.8338 11.8798 15.4022 12.4878 16.2937C13.0959 15.4018 13.9601 14.8339 14.9771 14.8337C15.7481 14.8338 16.3247 15.1336 16.772 15.5837C16.772 15.5837 16.9796 15.812 17 15.8337V10C16.9998 6.22631 13.7737 3.00018 10 3Z"/></symbol>
 </defs></svg>
 
-<div class="app">
+<div class="app" id="app">
 
   <!-- ================= SIDEBAR ================= -->
-  <aside class="sidebar" id="sidebar">
+  <aside class="sidebar">
     <div class="sb-head">
       <a class="wordmark" href="#">Claude</a>
       <span class="grow"></span>
@@ -420,13 +473,13 @@ a{color:inherit;text-decoration:none}
 
     <div class="sb-body">
       <div class="rows">
-        <a class="row row-new" href="#">
+        <a class="row row-new is-selected" href="#" data-go="chat">
           <span class="slot"><svg class="i i-16"><use href="#ic-plus"/></svg></span>
           <span class="label">New</span>
           <span class="kbd">Ctrl&#8679;O</span>
           <button class="icon-btn-sm"><svg class="i i-16"><use href="#ic-edit-square"/></svg></button>
         </a>
-        <a class="row" href="#">
+        <a class="row" href="#" data-go="projects">
           <span class="slot"><svg class="i"><use href="#ic-projects"/></svg></span>
           <span class="label">Projects</span>
         </a>
@@ -483,7 +536,7 @@ a{color:inherit;text-decoration:none}
         <div class="foot-icons">
           <button class="icon-btn"><svg class="i i-16"><use href="#ic-download"/></svg></button>
           <button class="icon-btn"><svg class="i i-16"><use href="#ic-search"/></svg></button>
-          <button class="icon-btn"><svg class="i i-16"><use href="#ic-panel"/></svg></button>
+          <button class="icon-btn" id="hide-sidebar" aria-label="Hide sidebar"><svg class="i i-16"><use href="#ic-panel"/></svg></button>
         </div>
       </div>
     </div>
@@ -491,19 +544,19 @@ a{color:inherit;text-decoration:none}
 
   <!-- ================= MAIN PANE ================= -->
   <div class="pane">
-    <header class="pane-head">
-      <button class="head-btn nav-toggle" aria-label="Open sidebar"
-              aria-expanded="false" aria-controls="sidebar">
-        <svg class="i"><use href="#ic-panel"/></svg>
+    <header class="pane-head" style="padding-left:8px">
+      <button class="head-btn sb-toggle" id="show-sidebar" aria-label="Show sidebar">
+        <svg class="i i-16"><use href="#ic-panel"/></svg>
+        <span class="dot-new"></span>
       </button>
       <span class="grow"></span>
-      <button class="head-btn" aria-label="Use incognito">
+      <button class="head-btn" id="btn-ghost" aria-label="Use incognito">
         <svg class="i"><use href="#ic-ghost"/></svg>
       </button>
     </header>
 
     <div class="pane-scroll">
-      <div class="pane-inner">
+      <div class="pane-inner view" data-view="chat">
         <div class="center">
 
           <div class="greeting">
@@ -546,49 +599,94 @@ a{color:inherit;text-decoration:none}
 
         </div>
       </div>
+
+      <!-- ============ PROJECTS ============ -->
+      <div class="proj-page view" data-view="projects" hidden>
+        <div class="proj-head">
+          <h1 class="proj-title">Projects</h1>
+          <div class="proj-actions">
+            <button class="btn-sec is-icon" aria-label="Search projects">
+              <svg class="i"><use href="#ic-search"/></svg>
+            </button>
+            <button class="btn-sec">
+              <span class="muted">Sort by</span><span>Last updated</span>
+              <svg class="i i-16"><use href="#ic-chevron-down"/></svg>
+            </button>
+            <button class="btn-pri">New project</button>
+          </div>
+        </div>
+
+        <ul class="cards">
+          <li class="card-wrap"><a class="card" href="#">
+            <div class="card-title">Content</div>
+            <div class="card-date"><time>Mar 10</time></div></a></li>
+
+          <li class="card-wrap"><a class="card" href="#">
+            <div class="card-title">Khadzika Operations</div>
+            <div class="card-date"><time>Mar 6</time></div></a></li>
+
+          <li class="card-wrap"><a class="card" href="#">
+            <div class="card-title">Corporate Finance</div>
+            <div class="card-date"><time>Mar 2</time></div></a></li>
+
+          <li class="card-wrap"><a class="card" href="#">
+            <div class="card-title">Strategic Management</div>
+            <div class="card-date"><time>Mar 2</time></div></a></li>
+
+          <li class="card-wrap"><a class="card" href="#">
+            <div class="card-title">Dissertation</div>
+            <div class="card-desc">To write a complete dissertation paper with the topic &ldquo;An examination of factors influencing the adoption of AI-powered learning technologies among accounting students&rdquo;</div>
+            <div class="card-date"><time>Feb 24</time></div></a></li>
+
+          <li class="card-wrap"><a class="card" href="#">
+            <div class="card-title">Booklesss</div>
+            <div class="card-desc">An online community of students who want to find ways of making school a lot easier and more engaging. These are people who have recognized that the current system is not working for them.</div>
+            <div class="card-date"><time>Feb 2</time></div></a></li>
+
+          <li class="card-wrap"><a class="card" href="#">
+            <div class="card-title">Career</div>
+            <div class="card-date"><time>Jan 5</time></div></a></li>
+
+          <li class="card-wrap"><a class="card" href="#">
+            <div class="card-title">Farm</div>
+            <div class="card-date"><time>Dec 23, 2025</time></div></a></li>
+
+          <li class="card-wrap"><a class="card" href="#">
+            <div class="card-title">IA Course</div>
+            <div class="card-date"><time>Dec 15, 2025</time></div></a></li>
+
+          <li class="card-wrap"><a class="card" href="#">
+            <div class="card-title">Innovation &amp; Entrepreneurship</div>
+            <div class="card-date"><time>Nov 29, 2025</time></div></a></li>
+        </ul>
+      </div>
     </div>
   </div>
-
-  <div class="nav-scrim" aria-hidden="true"></div>
 
 </div>
 
 <script>
-  /* ---- sidebar drawer (<=768px only) ------------------------------------
-     The CSS owns every visual decision; this only flips one class on .app
-     and keeps aria-expanded honest. Above 768px the drawer never opens
-     because the sidebar is a static flex column there and the toggle that
-     would open it is display:none.                                        */
-  (function () {
-    var app = document.querySelector('.app');
-    var toggle = document.querySelector('.nav-toggle');
-    var scrim = document.querySelector('.nav-scrim');
-    var sidebar = document.getElementById('sidebar');
-    var mq = window.matchMedia('(max-width:768px)');
+  // view switching + sidebar collapse, mirroring the real app's own controls
+  var app = document.getElementById('app');
 
-    function set(open) {
-      app.classList.toggle('nav-open', open);
-      toggle.setAttribute('aria-expanded', String(open));
-      toggle.setAttribute('aria-label', open ? 'Close sidebar' : 'Open sidebar');
-    }
-
-    toggle.addEventListener('click', function () {
-      set(!app.classList.contains('nav-open'));
+  function show(view) {
+    document.querySelectorAll('.view').forEach(function (v) {
+      v.hidden = v.dataset.view !== view;
     });
-    scrim.addEventListener('click', function () { set(false); });
-
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && app.classList.contains('nav-open')) set(false);
+    document.getElementById('btn-ghost').hidden = view !== 'chat';
+    document.querySelectorAll('[data-go]').forEach(function (a) {
+      a.classList.toggle('is-selected', a.dataset.go === view);
     });
-
-    /* tapping a nav row closes the drawer, the way a real navigation would */
-    sidebar.addEventListener('click', function (e) {
-      if (mq.matches && e.target.closest('.row,.empty-row')) set(false);
-    });
-
-    /* returning to desktop width must not leave the class stuck on */
-    mq.addEventListener('change', function (e) { if (!e.matches) set(false); });
-  })();
+  }
+  document.querySelectorAll('[data-go]').forEach(function (a) {
+    a.addEventListener('click', function (e) { e.preventDefault(); show(a.dataset.go); });
+  });
+  document.getElementById('hide-sidebar').addEventListener('click', function () {
+    app.classList.add('sidebar-hidden');
+  });
+  document.getElementById('show-sidebar').addEventListener('click', function () {
+    app.classList.remove('sidebar-hidden');
+  });
 
   document.querySelectorAll('.seg').forEach(function (seg) {
     seg.addEventListener('click', function (e) {

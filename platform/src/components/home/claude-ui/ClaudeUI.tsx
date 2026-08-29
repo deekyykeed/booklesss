@@ -6,7 +6,7 @@ import { HugeIcon } from "@/components/icons/huge";
 /* ------------------------------------------------------------------ *
  * THE REFERENCE UI, VERBATIM.
  *
- * This is `claudeuiclone.html` from the repo root, transcribed into JSX. Class
+ * This is `claudeuiclone.html` from `_dev/reference-ui/`, transcribed into JSX. Class
  * names, structure and every value in the stylesheet are the file's. It is
  * deliberately NOT wired to Booklesss: the owner asked for a replacement rather
  * than an adaptation — "100% the ui, that's where I want to start from" — so
@@ -14,14 +14,16 @@ import { HugeIcon } from "@/components/icons/huge";
  * button still says Sonnet 5, and the greeting is still the reference's. Those
  * are the starting point, to be replaced deliberately rather than guessed at.
  *
- * TWO THINGS HAVE MOVED OFF IT SINCE (2026-08-29, owner):
- *   · the icons are MynaUI, not the file's hand-drawn 19-symbol sprite. The
- *     swap was free because the grids agree — MynaUI's native 1.5 stroke on a
- *     24 viewBox renders the same 1.25px at 20px that the sprite's 1.25 on a
- *     20 viewBox did. The `.i` / `.i-16` / `.i-12` classes still own the
- *     weight; see the icon block in globals.css for why it is set on the
- *     children rather than on the svg.
+ * WHAT HAS MOVED OFF IT SINCE (2026-08-29, owner):
+ *   · the icons are Hugeicons Free, not the file's hand-drawn 19-symbol
+ *     sprite. They were MynaUI for part of the same day; the reasoning for
+ *     the first swap holds for this one — the grids agree, so the `.i` /
+ *     `.i-16` / `.i-12` classes still own the weight, and it is set on the
+ *     paths rather than on the svg (the sets put stroke-width on each path as
+ *     a presentation attribute, which beats an inherited declaration).
  *   · the "Stop Claude" pill is gone. Nothing replaced it.
+ *   · the composer takes focus on arrival, and the drawer can be pulled from
+ *     anywhere rather than the left edge — both owner requests, both below.
  *
  * ⚠️ NOTHING IN THIS TREE READS THE APP'S DESIGN TOKENS, AND THAT IS THE POINT.
  * The stylesheet ships its own palette (`--page-bg`, `--clay`, `--text-100` …)
@@ -49,6 +51,7 @@ export function ClaudeUI() {
   const appRef = useRef<HTMLDivElement | null>(null);
   const sideRef = useRef<HTMLElement | null>(null);
   const scrimRef = useRef<HTMLDivElement | null>(null);
+  const editorRef = useRef<HTMLDivElement | null>(null);
   /* The gesture listeners are attached once and read the drawer's state
      through a ref — re-subscribing four native listeners on every toggle
      would drop a touch that lands mid-swap. */
@@ -66,6 +69,65 @@ export function ClaudeUI() {
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [navOpen]);
+
+  /* ---- THE COMPOSER TAKES FOCUS ON ARRIVAL --------------------------
+   * Owner, 2026-08-29: "I should just start typing." Landing here with the
+   * caret already in the box and nothing to click first is the whole point
+   * of the screen — the composer is the only thing on it you can act on.
+   *
+   * THE DELAY IS DELIBERATE AND IS NOT A GUESS AT PAINT TIME. Focusing on
+   * the same frame the page mounts reads as a glitch: the caret is blinking
+   * before the greeting has settled, and on a slow phone it lands mid-layout
+   * and the box jumps. 450ms is after the surface is visibly still and well
+   * before anyone has decided what to type.
+   *
+   * ⚠️ IT MUST NOT STEAL A FOCUS THE STUDENT ALREADY CHOSE. 450ms is long
+   * enough to click the sidebar, open the drawer, or start scrolling, and a
+   * caret that yanks itself back mid-action is worse than no autofocus at
+   * all. Any pointer, key or touch before the timer fires cancels it.
+   *
+   * ⚠️ ON iOS THIS PLACES THE CARET BUT DOES NOT RAISE THE KEYBOARD, and no
+   * amount of code changes that. Safari opens the keyboard only for a focus
+   * that happens inside a real user gesture — the same rule the archived ask
+   * box was built around (it kept ONE element across its open so the tap and
+   * the focus were the same gesture). A timer is by definition not a gesture.
+   * Desktop gets a live caret and typing works; a phone gets the caret and
+   * the student still taps once. Do not "fix" this with a fake click.
+   */
+  useEffect(() => {
+    /** After the surface has visibly settled, before anyone starts typing. */
+    const SETTLE_MS = 450;
+
+    let cancelled = false;
+    const cancel = () => {
+      cancelled = true;
+    };
+
+    /* Capture phase, so a click on the sidebar cancels before its own
+       handler runs and regardless of where in the tree it lands. */
+    const opts = { capture: true, once: true } as const;
+    window.addEventListener("pointerdown", cancel, opts);
+    window.addEventListener("keydown", cancel, opts);
+    window.addEventListener("touchstart", cancel, opts);
+    window.addEventListener("wheel", cancel, opts);
+
+    const t = window.setTimeout(() => {
+      /* Re-check rather than trusting the timer: the drawer may have opened,
+         and focusing a box behind a scrim is focus nobody can see. */
+      if (cancelled || openRef.current) return;
+      const el = editorRef.current;
+      if (!el || el.contains(document.activeElement)) return;
+      el.focus({ preventScroll: true });
+    }, SETTLE_MS);
+
+    return () => {
+      window.clearTimeout(t);
+      window.removeEventListener("pointerdown", cancel, opts);
+      window.removeEventListener("keydown", cancel, opts);
+      window.removeEventListener("touchstart", cancel, opts);
+      window.removeEventListener("wheel", cancel, opts);
+    };
+  }, []);
 
   /* ---- SWIPE THE DRAWER (phone widths only) -------------------------
    * The drawer FOLLOWS THE FINGER rather than toggling at the end of one.
@@ -90,8 +152,6 @@ export function ClaudeUI() {
     if (!app || !side || !scrim) return;
 
     const mq = window.matchMedia("(max-width: 768px)");
-    /** How close to the left edge a pull must start while the drawer is shut. */
-    const EDGE = 32;
     /** Travel before the gesture's axis is decided. */
     const LOCK = 8;
     /** Fraction of the drawer past which release opens it. */
@@ -135,16 +195,43 @@ export function ClaudeUI() {
       }, 460);
     };
 
+    /* ⚠️ THE PULL STARTS ANYWHERE ON THE PAGE, NOT AT THE EDGE (owner,
+     * 2026-08-29: "I should be able to swipe anywhere on the page").
+     *
+     * It used to require the first touch within 32px of the left edge, on the
+     * reasoning that a rightward swipe mid-pane would fight the content under
+     * it. In practice there IS no content under it that wants a horizontal
+     * drag — the pane is one vertical column — so the gate was rejecting the
+     * gesture almost everywhere a thumb naturally lands, and the drawer read
+     * as broken rather than as edge-only.
+     *
+     * What actually needs protecting is narrower than "the whole pane", and
+     * it is these two, checked at the point the finger goes down:
+     *   · a horizontally scrollable ancestor, which owns its own x-axis;
+     *   · the composer, where a touch-drag is how you select text.
+     * The axis lock below still guards vertical scrolling everywhere else. */
+    const ownsHorizontal = (from: EventTarget | null) => {
+      let n = from instanceof Node ? from : null;
+      while (n && n !== app) {
+        if (n instanceof HTMLElement) {
+          if (n === editorRef.current) return true;
+          if (n.scrollWidth > n.clientWidth + 1) {
+            const ox = getComputedStyle(n).overflowX;
+            if (ox === "auto" || ox === "scroll") return true;
+          }
+        }
+        n = n.parentNode;
+      }
+      return false;
+    };
+
     const onStart = (e: TouchEvent) => {
       candidate = false;
       axis = "";
       if (!mq.matches || e.touches.length !== 1) return;
       const t = e.touches[0];
       wasOpen = openRef.current;
-      /* Shut, the pull has to begin at the edge: a rightward swipe anywhere
-         in the pane would fight the content under it. Open, anywhere is fair
-         game, because the drawer is the thing under the finger. */
-      if (!wasOpen && t.clientX > EDGE) return;
+      if (!wasOpen && ownsHorizontal(e.target)) return;
       w = side.getBoundingClientRect().width || 288;
       x0 = lastX = t.clientX;
       y0 = t.clientY;
@@ -166,6 +253,15 @@ export function ClaudeUI() {
            that misses the occasional swipe. */
         axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
         if (axis === "y") {
+          candidate = false;
+          return;
+        }
+        /* Horizontal, but the wrong way: shut and pulling left, there is
+           nothing to reveal. Let it go rather than swallow it — now that a
+           pull can start anywhere, claiming every leftward drag on the page
+           would eat gestures the pane may want later, and `preventDefault`
+           on a drag that paints nothing is a dead spot under the finger. */
+        if (!wasOpen && dx < 0) {
           candidate = false;
           return;
         }
@@ -390,6 +486,7 @@ export function ClaudeUI() {
             <div className="center">
             <div className="composer">
               <div
+                ref={editorRef}
                 className="editor"
                 contentEditable
                 suppressContentEditableWarning

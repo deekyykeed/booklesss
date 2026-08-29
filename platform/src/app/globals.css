@@ -3744,7 +3744,7 @@
 /* ==================================================================
  * THE REFERENCE UI, SCOPED (2026-08-28)
  *
- * Everything below is `claudeuiclone.html`'s stylesheet, unmodified except
+ * Everything below is `_dev/reference-ui/claudeuiclone.html`'s stylesheet, unmodified except
  * that every selector is prefixed with `.cui`. The owner asked for the
  * dashboard to BE that UI — "100% the ui, that's where I want to start from" —
  * so this is a transcription, not an adaptation, and nothing in it was mapped
