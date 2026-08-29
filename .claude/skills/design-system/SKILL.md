@@ -278,6 +278,27 @@ is an 8px square. That is the reference's own shape and it is load-bearing: the
 row is a button beside a 999px chip, and a squared `+` there reads as two
 unrelated things that happen to be adjacent. It is still 32px.
 
+**Anything claiming to be made of the composer's material takes its whole
+edge** (2026-08-29, owner: the quick-action icons get a tile of the input box's
+colour and corner; the source chips get its border "and all"). That means the
+two-part shadow — `0 .25rem 1.25rem var(--cmp-glow)` **plus**
+`0 0 0 1px var(--cmp-ring)` — not `--border`, and **not the ring alone**:
+`--border` is `rgba(11,11,11,.1)` and `--cmp-ring` is `rgba(31,31,30,.15)`,
+which is invisible in isolation and very visible eight pixels above a box
+wearing the other one. Ring-only gives a flat sticker above a lifted panel. It
+also means **hover is ring-only**: the composer's `.15 → .3` and no fill
+change, because a control that claims the material cannot behave differently
+from it on the one interaction they share. The press-scale still applies.
+
+**⚠️ The radius travels as a RATIO, never as a number, and the ceiling is what
+enforces it.** A radius can never exceed half the element's height. The
+composer is 114px so 28/36 has room; the quick-action tile is 40px, where
+anything past 20 closes into a circle — so copying 28/36 across gives *no*
+corner, not the composer's corner. That tile takes **12 round / 15 squircle**,
+the same ~1.28 ratio at 60% of its own ceiling. The sequence so far, all at
+that ratio: **12/15** (40px tile) → **22/28** (modal panel) → **28/36**
+(composer).
+
 **The header's segmented pair is gone**, and with it `.seg-header` and `.dot`.
 The base `.seg` / `.seg-item` rules stay — pattern 3 below is still the spec —
 but nothing on the surface draws one today.

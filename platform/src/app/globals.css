@@ -4467,10 +4467,19 @@
  * ------------------------------------------------------------------ */
 .cui .pane-inner{justify-content:flex-start}
 
-/* Left, not centred — and the whole column agrees on one left edge. The
-   greeting, the quick-action rows, the source chips and the composer are all
-   inside `.center`, so they line up at every width; centring the one element
-   with no box around it would be the only thing out of alignment. */
+/* Left, not centred. The greeting, the quick-action block, the source chips
+   and the composer all sit in `.center`, so the column is the same at every
+   width; centring the one element with no box around it would be the only
+   thing out of alignment.
+
+   ⚠️ TWO EDGES, NOT ONE, and the difference is deliberate. The greeting, the
+   chips and the composer sit ON the column edge; the quick-action heading and
+   rows sit 12px INSIDE it, because a row's hover fill needs padding or it
+   crops the label — that inset is the `.cui` row convention and the sidebar's
+   nav rows take it too. It reads as a list indented under its title, which is
+   what it is. It went from a technicality to something visible the moment the
+   icons got tiles, so: match the ROW when adding to that block, and the
+   COLUMN when adding beside the composer. */
 .cui .greeting{justify-content:flex-start;margin-bottom:32px}
 
 /* ---- and the greeting is set in the brand face, sized for the job
@@ -4558,11 +4567,54 @@
 .cui .qa-row:active::before{
   transition:transform var(--dur-fast) ease-out;transform:scale(.99);
 }
+/* ---- the icon sits in a tile made of the composer's material -------
+ * Owner, 2026-08-29: "give a bit of character — have the icons for those
+ * recent items wrapped in a container that is the same colour as the input
+ * box, with its exact radius and superellipse style."
+ *
+ * ⚠️ THE CORNER IS THE COMPOSER'S, THE NUMBER IS NOT, AND IT CANNOT BE. The
+ * radius ceiling is half the element's height: the composer is 114px tall so
+ * 28/36 has 21px of headroom, but this tile is 40px, where anything past 20
+ * closes the corners into a circle. Copying 28/36 across would not give the
+ * composer's corner, it would give no corner at all — and a circle is the one
+ * shape this must not be, because the source row eight inches below it is
+ * circles and they mean something else.
+ *
+ * So it takes the SAME CURVE at this size: **12 round / 15 squircle**, the
+ * ~1.28 ratio the whole system uses (14/18 → 22/28 → 28/36), at 60% of the
+ * ceiling — visibly rounded, still a square. That is what the spec means by
+ * "a panel that is not the composer's size should not wear the composer's
+ * corner": the ratio travels, the number does not.
+ *
+ * ⚠️ AND IT NEEDS THE RING TO EXIST AT ALL. `--surface-3` is #ffffff on a
+ * #fcfcfb page — a three-value difference, invisible. This is the identical
+ * trap the Resources pill hit when it moved out of the composer, and it takes
+ * the identical fix: the composer's own ring, so the tile reads as a piece of
+ * the same material rather than as a white patch.
+ *
+ * The slot grew 28 → 40, which is the one place these rows leave the `.cui`
+ * row spec's fixed 28px icon slot. A 20px glyph in a 28px tile has 4px of air
+ * and reads as a cramped box rather than a container.
+ * ------------------------------------------------------------------ */
 .cui .qa-slot{
-  width:28px;flex:0 0 28px;display:flex;align-items:center;justify-content:center;
-  color:var(--text-300);
+  width:40px;flex:0 0 40px;height:40px;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--surface-3);
+  border-radius:12px;
+  box-shadow:0 0 0 1px var(--cmp-ring);
+  color:var(--text-200);
+  transition:box-shadow var(--dur) var(--ease);
 }
-.cui .qa-row:hover .qa-slot{color:var(--text-100)}
+@supports (corner-shape: squircle){
+  .cui .qa-slot{corner-shape:squircle;border-radius:15px}
+}
+/* Hover darkens the ring and the glyph, the way the composer's hover is a
+   ring and nothing else. The row's own ghost fill still runs behind it. */
+.cui .qa-row:hover .qa-slot{
+  --cmp-ring:rgba(31,31,30,.3);
+  color:var(--text-100);
+}
+@media (prefers-reduced-motion:reduce){.cui .qa-slot{transition:none}}
 .cui .qa-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
 /* The title is --text-100 at rest, unlike a nav row's label. A nav row is a
    destination among five identical ones and earns its emphasis by being
@@ -4617,12 +4669,12 @@
 .cui .src-add::before{
   content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;
   background-color:var(--surface-3);
-  box-shadow:0 0 0 1px var(--border) inset;
+  box-shadow:0 .25rem 1.25rem 0 var(--cmp-glow),
+             0 0 0 1px var(--cmp-ring);
   transform-origin:50% center;
-  transition:background-color var(--dur-fast) var(--ease),
+  transition:box-shadow var(--dur) var(--ease),
              transform var(--dur-slow) var(--spring);
 }
-.cui .src-add:hover::before{background-color:var(--row-selected)}
 .cui .src-add:active::before{
   transition:transform var(--dur-fast) ease-out;transform:scale(.94);
 }
@@ -4646,6 +4698,27 @@
  * the label is the pack's own name, the "+N" counts OTHERS, the cap is in
  * `ch` because it bounds text, and the label is what gives when the row
  * narrows. Those were all paid for while it lived in the bar.
+ *
+ * ⚠️ THE EDGE IS THE COMPOSER'S OWN, NOT `--border` (owner, 2026-08-29: the
+ * same border colour and all as the input box, but still circular). It was a
+ * 1px inset `--border` — `rgba(11,11,11,.1)`, the hairline every rule and
+ * divider on this surface uses. The composer's ring is `--cmp-ring`,
+ * `rgba(31,31,30,.15)`, and it carries `--cmp-glow` under it. Half a percent
+ * apart in alpha and a different hue, which is invisible on its own and very
+ * visible eight pixels above a box wearing the other one: two whites with two
+ * nearly-identical edges reads as a rendering fault, not as a system.
+ *
+ * "And all" means the GLOW as well as the ring — the composer's edge is a
+ * two-part shadow, and taking only the ring gives a flat sticker above a
+ * lifted panel. Both controls are drop shadows now rather than inset ones,
+ * which is what lets the glow sit outside the shape at all.
+ *
+ * ⚠️ HOVER IS RING-ONLY, and the `--row-selected` fill they used to take is
+ * GONE. The input box does not change colour when you reach for it; its ring
+ * goes .15 → .3 and nothing else moves. A control claiming to be made of the
+ * composer's material cannot behave differently from it on the one interaction
+ * they both have. The press-scale stays — that is the `.cui` ghost-button
+ * pattern and it is the only feedback a phone gets.
  * ------------------------------------------------------------------ */
 .cui .src-row .res-btn{
   flex:0 1 auto;min-width:0;
@@ -4653,9 +4726,16 @@
 }
 .cui .src-row .res-btn::before{
   background-color:var(--surface-3);
-  box-shadow:0 0 0 1px var(--border) inset;
+  box-shadow:0 .25rem 1.25rem 0 var(--cmp-glow),
+             0 0 0 1px var(--cmp-ring);
+  transition:box-shadow var(--dur) var(--ease),
+             transform var(--dur-slow) var(--spring);
 }
-.cui .src-row .res-btn:hover::before{background-color:var(--row-selected)}
+/* The ring darkens on hover exactly as the composer's does. Set on the BUTTON
+   rather than on `::before`, so the custom property cascades into the layer
+   that actually draws the shadow. */
+.cui .src-add:hover,
+.cui .src-row .res-btn:hover{--cmp-ring:rgba(31,31,30,.3)}
 
 /* ⚠️ THE CAP IS RELEASED OUT HERE. In the composer bar the pill shared 340px
  * of track with a model button, a microphone and a caret, so 34ch was what
