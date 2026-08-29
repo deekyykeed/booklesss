@@ -584,7 +584,18 @@ anything real.**
 
 **The home screen has a middle now** (owner, 2026-08-29). The greeting moved
 from the centre of the pane to the **top left**, under the hamburger, where it
-reads as the page's title; under it sit **quick actions** — a short list of
+reads as the page's title — **no starburst, Familjen Grotesk at 500,
+`clamp(26px, 7.2vw, 30px)`**, since the owner removed the reference's orange
+mark and asked for the line to be sized for its new job. Two traps that cost a
+pass and are invisible in the code: the reference's weight **330 cannot be
+drawn by Familjen** (its variable axis starts at 400, so it clamped up in
+silence), and the old `3.7vw` middle term was **dead on every phone** — 14px at
+390, under the floor, so the vw branch never ran — the same shape as the 520px
+query that once hid the Resources label on every real device. ⚠️ **`--clay` now
+draws nothing on this surface**: the starburst and the sidebar's unread dot
+were its only two consumers and both went the same day, so the palette is
+monochrome on screen and the token is kept for a future accent rather than a
+current one. Under the greeting sit **quick actions** — a short list of
 rows, one per unfinished session or project, so a student mid-something does
 not have to type their way back in. They are **rows, not cards**: the composer
 is still the call to action, and a grid of tiles under a greeting takes that
