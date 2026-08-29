@@ -3827,9 +3827,33 @@
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
 }.cui button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}.cui a{color:inherit;text-decoration:none}/* icon helper ------------------------------------------------------------- */
-.cui .sprite{position:absolute;width:0;height:0;overflow:hidden}.cui .i{display:block;flex:0 0 auto;width:20px;height:20px;
-   fill:none;stroke:currentColor;stroke-width:1.25;
-   stroke-linecap:round;stroke-linejoin:round}.cui .i-16{width:16px;height:16px;stroke-width:1.3}.cui .i-12{width:12px;height:12px;stroke-width:1.6}/* ghost buttons ------------------------------------------------------------
+/* ---- ICONS (MynaUI since 2026-08-29) ------------------------------
+   The sprite is gone; these classes now dress <MynaIcon>. Sizes are the
+   reference's, and so are the on-screen stroke weights — 1.25px / 1.04px /
+   0.96px — but the numbers had to change to keep them, because MynaUI draws
+   on a 24 grid where the sprite drew on a 20:
+
+       on-screen stroke = stroke-width x rendered size / viewBox
+
+   1.5 x 20/24 = 1.25, which is exactly what .i had. MynaUI's own default is
+   1.5, so the 20px case needed no correction at all — the two systems agree
+   by arithmetic, which is what made the swap free.
+
+   ⚠️ THE WIDTH IS SET ON THE CHILDREN, NOT THE SVG. MynaUI puts
+   stroke-width on each path as a presentation attribute, and a declaration
+   on an element always beats a value inherited from its parent — so setting
+   it on .i alone does nothing at all and the set's 1.5 wins in silence.
+   That is also why the stroke gets HEAVIER as the icon gets smaller: it is
+   compensating for the shrinking viewBox, and the apparent weight is
+   constant. -------------------------------------------------------- */
+.cui .i{display:block;flex:0 0 auto;width:20px;height:20px;
+   fill:none;stroke:currentColor;
+   stroke-linecap:round;stroke-linejoin:round}
+.cui .i > *{stroke-width:1.5}
+.cui .i-16{width:16px;height:16px}
+.cui .i-16 > *{stroke-width:1.56}
+.cui .i-12{width:12px;height:12px}
+.cui .i-12 > *{stroke-width:1.92}/* ghost buttons ------------------------------------------------------------
    The app paints the hover fill on a separate absolutely-positioned layer
    (.cds-btn-squish) so that pressing squishes the *fill*, not the icon.
    Same trick here, with a ::before layer.                                    */
@@ -3933,14 +3957,7 @@
   font-size:13px;color:var(--text-200);white-space:nowrap;
 }.cui .model-btn .muted{color:var(--text-300)}.cui .voice{display:inline-flex;align-items:center}.cui .voice .caret{width:20px;height:32px;border-radius:var(--radius);display:inline-flex;
   align-items:center;justify-content:center;color:var(--text-100);margin-left:-5px}/* stop pill --------------------------------------------------------------- */
-.cui .stop-wrap{display:flex;justify-content:center;padding:26px 0 34px}.cui .stop{
-  display:inline-flex;align-items:center;gap:8px;
-  height:46px;padding:12px 16px;border-radius:12px;
-  background:#faf9f5;color:var(--text-stop);
-  font-size:14px;font-weight:600;
-  border:1px solid rgba(31,30,29,.4);
-  box-shadow:0 40px 80px 0 rgba(217,119,87,.24),0 4px 14px 0 rgba(217,119,87,.24);
-}/* ============================================================
+/* ============================================================
    RESPONSIVE — LAYOUT ONLY (added 2026-08-28)
    Nothing above this block was restyled. The desktop rendering
    is byte-for-byte what it was; everything here is inside a
@@ -3953,9 +3970,27 @@
    for this job. No new icon was invented.
    ============================================================ */
 
-.cui .nav-toggle{display:none}.cui .nav-scrim{
+.cui .nav-toggle{display:none}/* The scrim behind an open drawer. It BLURS rather than mostly darkening
+   (owner, 2026-08-29): the tint dropped from .28 to .12, and the separation
+   is now carried by a 10px backdrop blur. Dimming alone has to go quite dark
+   before a light UI reads as "behind" something, and dark-over-cream turns
+   muddy long before it gets there; blur says "not this layer" at almost no
+   cost in contrast, so the page stays legible underneath instead of being
+   hidden by it.
+
+   ⚠️ backdrop-filter makes an element a containing block for `position:
+   fixed` DESCENDANTS. This one has none, and the sidebar is its SIBLING at a
+   higher z-index — so the drawer is not blurred and is not trapped. Do not
+   nest anything positioned inside this element.
+
+   ⚠️ It is a full-screen blur on a phone, which is the most expensive thing
+   on this surface. It is affordable only because it exists for the few
+   seconds a drawer is open. Do not reach for it on anything persistent. */
+.cui .nav-scrim{
   position:absolute;inset:0;z-index:30;
-  background:rgba(11,11,11,.28);
+  background:rgba(11,11,11,.12);
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
   opacity:0;pointer-events:none;visibility:hidden;
   transition:opacity var(--dur) var(--ease),visibility 0s linear var(--dur);
 }@media (max-width:768px){.cui .nav-toggle{display:inline-flex;margin-right:auto}.cui .pane-head{padding:0 12px}.cui .sidebar{

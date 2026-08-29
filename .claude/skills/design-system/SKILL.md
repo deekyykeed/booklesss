@@ -40,6 +40,11 @@ Adapt these dynamically based on what the user requests.
 > adding, does not match the actual UI that I already have."* It cost a full
 > rebuild. A wrong map is worse than no map.
 
+> **`/dashboard` is the exception and has its own palette.** Everything below
+> describes the app proper — the reader, the course pages, settings. The
+> dashboard shell reads none of it; see "The `.cui` system" further down, and
+> keep the two apart.
+
 ### The tokens the app actually defines
 Use the CSS variable, never the hex — a literal is a value that stops following
 the token the day somebody changes it.
@@ -85,6 +90,170 @@ Max ONE accent colour per project. Never mix. Saturation below 80%.
 - Pure black `#000000` — always off-black or zinc-950
 - Oversaturated accents above 80% saturation
 - Mixed warm/cool grey systems in the same project
+
+---
+
+## The `.cui` system — what `/dashboard` is built from *(2026-08-29)*
+
+**`/dashboard` is a transcription of `claudeuiclone.html`** (repo root), scoped
+under `.cui` in `globals.css`. Owner's call, 2026-08-28: *"100% the ui, that's
+where I want to start from."* It is the surface every new app page should now be
+built to match, so this section is the spec — read it before adding a page, a
+panel or a control to that tree.
+
+**⚠️ IT DOES NOT USE THE TOKENS IN THE SECTION BELOW.** `.cui` ships its own
+palette and reads none of `--color-canvas`, `--color-ink`, `--color-accent`.
+That is deliberate and it cuts both ways: **do not reach for app tokens inside
+`.cui`, and do not reach for `.cui` tokens outside it.** Two warm near-identical
+palettes bleeding into each other is the temperature drift this file already
+warns about, where every individual near-miss is defensible.
+
+### Tokens — the whole palette, and there is no other
+
+| Token | Value | Job |
+|---|---|---|
+| `--page-bg` | `#fcfcfb` | the main pane |
+| `--sidebar-bg` | `#fafaf9` | the sidebar, one step deeper than the pane |
+| `--surface-3` | `#ffffff` | the composer, and anything lifted off the pane |
+| `--row-selected` | `#edece8` | the current nav row |
+| `--row-hover` / `--fill-ghost-hover` | `rgba(11,11,11,.05)` | every hover fill |
+| `--track` | `#f6f6f4` | a segmented control's groove |
+| `--track-header` | `rgba(11,11,11,.05)` | the sidebar header's groove |
+| `--text-100` | `#0b0b0b` | primary |
+| `--text-200` | `#52514e` | secondary — nav labels at rest |
+| `--text-300` | `#898781` | tertiary, placeholders, section headings |
+| `--border` | `rgba(11,11,11,.1)` | every hairline |
+| `--clay` | `#d97757` | the ONE accent |
+
+**The clay is a mark, not a UI colour.** It draws the spark in the greeting and
+the unread dot, and nothing else — no buttons, no fills, no links. The same rule
+the brand green has in the app proper.
+
+**Three greys of text, and they do real work.** A nav label sits at `--text-200`
+and goes `--text-100` when its row is current; a section heading is `--text-300`
+permanently. Do not introduce a fourth.
+
+### Geometry
+
+- `--radius: 8px` on rows, ghost buttons and icon buttons. **14px** on the
+  composer, **7px** on a segmented control's shell and **5px** on its thumb.
+  Nothing else gets a radius of its own.
+- `--row-h: 32px` is the nav row, the icon button and the segmented control's
+  height. A control that is not 32px tall needs a reason.
+- The sidebar is **288px**, with `padding: 0 11px 0 8px` — asymmetric on purpose,
+  because the icon slot already carries visual left padding.
+- The pane's column is `max-width: 40rem` centred, inside `padding: 0 56px`
+  stepping to 32px under 900 and 16px under 640.
+- Hairlines are `1px solid var(--border)` and never a shadow.
+
+### Type
+
+`--font-sans` (anthropic-sans) for everything, `--font-serif` for the greeting
+and the wordmark **only**. Sizes: 14px nav label, 13px section heading and
+segmented control, 16px composer editor, `clamp(26px, 3.7vw, 37px)` greeting.
+
+**⚠️ 16px on the composer editor is not a taste decision** — iOS Safari zooms
+the viewport on focus for anything smaller, and does not zoom back out. Any new
+text input on this surface is 16px.
+
+### The four component patterns
+
+Everything on the page is one of these. Build a fifth only when none fits.
+
+**1. Ghost button.** The hover fill is painted on a `::before` layer at
+`z-index: -1`, with `isolation: isolate` on the parent, so that pressing squishes
+the *fill* and not the glyph. `transform: scale(.975)` on `:active`, over
+`--dur-fast` (60ms) out and `--dur-slow` (.45s) with the `--spring` easing back.
+**Scaling the button itself instead makes the icon look blurred rather than
+pressed.**
+
+**2. Row.** 32px, `gap: 8px`, a fixed 28px icon slot, then a label that
+`text-overflow: ellipsis`. Selected state is a `--row-selected` fill *and* the
+label going to `--text-100` — two signals, per the selected-state rule below.
+
+**3. Segmented control.** A `--track` groove with 1px of padding; the active
+item is white with `box-shadow: 0 0 0 1px rgba(11,11,11,.1) inset, 0 1px 2px
+rgba(0,0,0,.05)`. **The thumb is the item's own background, not a sliding
+element** — simpler, and it cannot desynchronise from the selection.
+
+**4. Composer / raised panel.** `--surface-3`, 14px radius, and an edge that is
+part of the shadow rather than a border:
+
+```css
+box-shadow: 0 .25rem 1.25rem 0 rgba(0,0,0,.035),   /* glow */
+            0 0 0 1px rgba(31,31,30,.15);          /* ring */
+```
+
+Three states, and the third is the one people forget:
+
+| state | ring | glow |
+|---|---|---|
+| rest | `.15` | `.035` |
+| hover | `.3` | `.035` |
+| focus-within | `.3` | `.075` |
+
+**⚠️ Hover is suppressed while the pointer is over a control inside the panel**,
+via `:hover:not(:has(button:hover, a:hover, [role="button"]:hover, label:hover))`.
+Without it, reaching for a button lights the whole frame, which reads as though
+the container were the thing about to activate.
+
+### Icons — MynaUI, and the arithmetic that keeps them consistent
+
+`<MynaIcon name="…" className="i" />`. Add a name to `ICONS` in
+`scripts/gen-icons.mjs`, run `npm run gen:icons`. Three sizes, and the classes
+are the only place weight is tuned:
+
+| class | size | stroke-width | on screen |
+|---|---|---|---|
+| `.i` | 20px | 1.5 | 1.25px |
+| `.i-16` | 16px | 1.56 | 1.04px |
+| `.i-12` | 12px | 1.92 | 0.96px |
+
+`on-screen stroke = stroke-width × rendered size ÷ viewBox`, and MynaUI's
+viewBox is 24. **The stroke number goes UP as the icon gets smaller** — it is
+compensating for the shrinking viewBox so apparent weight stays constant. A new
+size follows the same formula; do not eyeball it.
+
+**⚠️ The width is set on the CHILDREN (`.i > *`), never on the `<svg>`.** MynaUI
+puts `stroke-width` on each path as a presentation attribute, and a declaration
+on an element always beats a value inherited from its parent — so setting it on
+`.i` alone does nothing at all and the set's own 1.5 wins in silence.
+
+This replaced a hand-drawn 19-symbol sprite on 2026-08-29 at zero visual cost,
+because `1.5 × 20/24 = 1.25` is exactly what the sprite used. **The lesson is
+the general one: prefer one real set with a naming convention over hand-drawn
+geometry, and check whether the grids agree before assuming a swap will show.**
+
+### Overlays — blur, don't darken *(owner, 2026-08-29)*
+
+An open drawer or modal puts a scrim over the page: **`rgba(11,11,11,.12)` with
+`backdrop-filter: blur(10px)`**, not a heavy tint.
+
+Dimming alone has to go quite dark before a light UI reads as *behind* something,
+and dark-over-cream turns muddy long before it gets there. Blur says "not this
+layer" at almost no cost in contrast, so the page underneath stays legible
+instead of being hidden.
+
+**⚠️ Two things about `backdrop-filter` here.** It makes the element a containing
+block for `position: fixed` descendants — so the scrim must have none, and the
+drawer is a *sibling* at a higher z-index (40 over 30), not a child. And it is a
+full-screen blur on a phone, the most expensive thing on the surface: affordable
+only because it lives for the few seconds an overlay is open. **Never put one on
+persistent chrome.**
+
+### Motion
+
+`--ease: cubic-bezier(.4,0,.2,1)` for state changes at `--dur: .2s`. The drawer
+travels over `.42s`. `--spring` (a `linear()` curve) is for a press releasing,
+nothing else. Everything transition-based is disabled under
+`prefers-reduced-motion`.
+
+### Nothing on this surface is `position: fixed`
+
+The sidebar is a flex column that becomes `position: absolute` against `.app`
+below 768px; the composer sits in the flow of its pane. That is deliberate and it
+retires the containing-block trap described in the next section — **keep it that
+way when you add chrome.**
 
 ---
 
