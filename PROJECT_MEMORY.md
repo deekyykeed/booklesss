@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-28 (session 63)
+**Last updated:** 2026-08-29 (session 64)
 
 ---
 
@@ -91,6 +91,47 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 64 (2026-08-28/29, the dashboard became the reference UI.
+Linear NOT reachable — `linear-server` needs a one-time OAuth and this session
+is non-interactive, so nothing below has a ticket and BOO-44 could not be
+closed by hand.)**
+
+- [ ] ⚠️ **BOO-44 IS CLOSED BY DELETION, AND THE TICKET DOES NOT KNOW.** Its
+      complaint was that `SessionsHome`'s cards resolved to the dark `/study`
+      call screen. Those cards no longer exist — `/dashboard` is the reference
+      UI and links nowhere. Close it as superseded, but **the routing question
+      it raised is unresolved and now invisible**: `/study/<slug>` is still
+      built, still reachable by URL, still dark-and-green, and PR #178 (which
+      relights it) is still unmerged. Nothing links to it, so nobody will
+      notice it is wrong.
+- [ ] ⚠️ **THE AUTH GATES ARE OFF `/dashboard`.** `RequireAccount` and
+      `RequireOnboarding` were removed so the surface could be looked at at
+      all — with either in place it redirects and renders nothing. Nothing on
+      the page reads a student's record today, so this is safe *today*. **It
+      stops being safe the moment the page renders anything real**, and the
+      person adding that content is the one who has to remember. The reasoning
+      for gating it (owner, 2026-08-03) has not changed.
+- [ ] ⚠️ **`font-src` now allows `assets-proxy.anthropic.com`** — Anthropic's
+      licensed webfonts, on Anthropic's CDN, fetched by our production app.
+      Fine for a reference surface being built forward from; **settle it before
+      a student sees the page.** Either vendor a licensed face or accept the
+      fallback stack, which is a visible downgrade (the serif greeting becomes
+      Georgia).
+- [ ] **`/dashboard/courses` and `/dashboard/saved` have no navigation.** They
+      share the now-bare dashboard layout and lost the dock with it. Reachable
+      by URL, otherwise orphaned. The fix is a route group (`(tabs)/` with its
+      own layout) — explicitly NOT a top bar back over the dashboard.
+- [ ] **Two icon choices are judgement calls worth a second look:**
+      `bookmark` for "Pin projects" (MynaUI's only pin is a map-pin, wrong
+      meaning) and `paint` for Design.
+- [ ] **The swipe wants a real handset.** Synthetic touch events prove the
+      gesture fires and declines correctly; they cannot say whether it *feels*
+      right. `SETTLE` (0.4) and `FLICK` (0.4 px/ms) at the top of the gesture
+      effect are the two numbers to tune.
+- [ ] **Still carried from session 63:** the two dead Clerk keys in both Vercel
+      environments are still there, and ElevenLabs is still free tier
+      (632/10,000 chars, resets 2026-09-14).
 
 **From session 63 (2026-08-28, ElevenLabs credentials + a live regression
 found while wrapping. Linear reachable — BOO-44 opened Urgent; everything
@@ -1629,6 +1670,96 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-28/29 (session 64 — the dashboard became the reference UI)
+
+**Done:**
+- **Made `claudeuiclone.html` responsive** (PR #183). It was desktop-only — a
+  288px flex sidebar with no media query, so a 390px phone gave the sidebar 288
+  of its pixels and left 102 for the composer. Below 768px it became an
+  off-canvas drawer, reusing the `#ic-panel` glyph the footer already carried
+  rather than inventing an icon. **Desktop parity was proven, not asserted:**
+  the original and the updated file rendered byte-identical 1440×900
+  screenshots, 63,174 bytes each.
+- **Built the dashboard as an adaptation — and it was the wrong reading**
+  (PR #184). The reference's slots were mapped onto Booklesss content: sessions
+  into the sidebar's recents slot, the composer wired to the ElevenLabs agent,
+  the app's own palette and faces. It worked and it was not what was asked for.
+- **Replaced it with the UI itself** (PR #185), on the owner's correction:
+  *"replacement and not redesign… so that it is 100% the ui."* Transcribed
+  verbatim, scoped under `.cui`. **Every measured element matches the source
+  file to the pixel at 1440 and 390** — sidebar, greeting, composer, stop pill,
+  same x/y/w/h; 0.16% of pixels differ, on glyph edges only.
+- **`/dashboard` left `DesktopGate`'s block list.** Found by rendering the page
+  and getting "Made for your phone" instead — a desktop UI nobody with a
+  desktop could reach.
+- **The drawer became a pull, not a toggle** (PR #186), tracking the finger,
+  with the three negative cases tested as carefully as the positive ones.
+- **Icons swapped to MynaUI, Stop Claude removed, the scrim reworked to blur
+  rather than darken, and `design-system/SKILL.md` given a full `.cui`
+  section** so other pages can be built to match.
+
+**What Worked:**
+- **Pixel-diffing the route against the source file**, rather than eyeballing
+  it. Element geometry matched exactly; the 0.16% residual was then chased far
+  enough to classify it (glyph rasterisation — no compositing ancestor,
+  `-webkit-font-smoothing` identical on both sides) instead of being waved
+  through or panicked over.
+- **Doing the arithmetic before assuming an icon swap would show.**
+  `on-screen stroke = stroke-width × size ÷ viewBox` said MynaUI's native 1.5
+  on a 24 grid equals the sprite's 1.25 on a 20 grid exactly. Measured on the
+  running page afterwards: 1.250 / 1.040 / 0.960px, the sprite's values to
+  three decimals.
+- **Testing the gestures that must NOT fire.** A swipe from mid-screen and a
+  vertical drag from the edge both leaving the drawer shut is as much the
+  feature as the pull working, and neither would have been noticed broken.
+- **Believing the owner's correction immediately** rather than defending the
+  first build. The adaptation was good work aimed at the wrong target; the
+  replacement took one pass because the target was finally clear.
+
+**Dead Ends (do not retry):**
+- **Adapting the reference instead of transcribing it** (PR #184, superseded by
+  #185 within the hour). Mapping Claude's slots onto Booklesss content produced
+  a defensible screen that was not the thing asked for. When someone supplies a
+  reference and says "use this", find out whether they mean *as a source* or
+  *as the artifact* before writing anything — the two readings share no code.
+- **Trusting React's `onTouchMove` for a drag.** React attaches touch handlers
+  passively at the root, so `preventDefault` inside the prop is ignored, the
+  page scrolls under the finger, and nothing warns. Native listeners with
+  `passive: false`.
+- **Setting `stroke-width` on the `<svg>` for a MynaUI icon.** The set puts it
+  on each path as a presentation attribute, and a declaration on an element
+  beats an inherited one — so the rule does nothing at all and 1.5 wins in
+  silence. Target the children.
+- **Rebuilding while a `next start` is still serving the old `.next`.** Chunks
+  404/500 with a MIME-type error that looks like a code fault and is not. Kill
+  the server (`pkill -f next-server`, not just `next start`) before rebuilding,
+  or serve on a fresh port.
+
+### Sessions 2026-08-26 and 2026-08-27/28 — RECONSTRUCTED, not logged at the time
+
+Neither ran wrap-session END, so there is no first-hand record. This is read
+back off the commits and PR descriptions in session 64 and is **thinner than a
+real entry** — it exists so the gap is visible rather than silent.
+
+- **`e6d4030`, 2026-08-26 — "The questions come first and the password comes
+  last."** The onboarding/password-order rewrite. Its reasoning survives in
+  CLAUDE.md's auth section: sign-in is attempted before sign-up so a returning
+  student is never mailed a confirmation link on login, and there is one
+  Continue button rather than a sign-in/sign-up fork.
+- **PR #182, 2026-08-27/28 — the dashboard rebuilt as one session list and one
+  voice button.** Drawn from the owner's paper sketch. Almost all of it was
+  superseded on 2026-08-28/29 (session 64) and now sits in
+  `components/home/archive/` — `SessionsHome.tsx`, `HomeDock.tsx`. **What it
+  left behind that still matters:** the `.content-surface-home` palette, the
+  `savedSnapshot()`/`allSaved()` rule, the dock's `authEnabled` gating lesson,
+  and the out-of-flow `.dock-above` finding. All are documented in CLAUDE.md
+  and none depend on the components being live.
+
+**The lesson is the process one:** two sessions of real architectural work
+landed on main with no "What Worked" or "Dead Ends" record, and it took a third
+session to notice. The wrap is what turns work into something the next session
+can use.
 
 ### Session 2026-08-28 (session 63 — credentials, and a live regression caught before it aged)
 
