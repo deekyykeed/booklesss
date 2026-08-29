@@ -4137,29 +4137,41 @@
  * Owner: the composer's Chat/Cowork pair becomes one Resources button, and
  * tapping it opens a full modal of resource packs to select as context.
  *
- * The button is `.cui` pattern 1 (ghost button) with a label — the hover fill
- * on a `::before` at z-index -1 under `isolation: isolate`, so pressing
- * squishes the fill and not the glyph.
+ * ⚠️ IT IS A FILLED PILL, NOT A GHOST BUTTON, and that reverses what this file
+ * said an hour earlier. The note here read "the button never takes a fill of
+ * its own: it sits inside the composer, and a filled control in there reads as
+ * the composer's own state." That was wrong twice over — the owner sent the
+ * real app's composer, where the model and effort controls are exactly this:
+ * light filled pills on the composer's white, and they read as buttons rather
+ * than as the composer. A ghost control on a white panel has no edge at rest,
+ * so it only looks like a button once you are already touching it.
+ *
+ * The fill is `--track`, the segmented control's groove — the one value in
+ * this palette that already means "a control sits here", so nothing new
+ * enters. Radius is a pill: 999px, not `--radius`. This is the one control on
+ * the surface whose width is content, and a pill is the shape that survives
+ * that; an 8px corner on a 250px-wide element reads as a text field.
  * ------------------------------------------------------------------ */
 .cui .res-btn{
   position:relative;isolation:isolate;
-  height:32px;border-radius:var(--radius);padding:0 10px;
+  height:32px;border-radius:999px;padding:0 10px 0 8px;
   display:inline-flex;align-items:center;gap:6px;
   font-size:13px;color:var(--text-200);white-space:nowrap;
 }
 .cui .res-btn::before{
   content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;
-  background-color:transparent;transform-origin:50% center;
+  background-color:var(--track);transform-origin:50% center;
   transition:background-color var(--dur-fast) var(--ease),
              transform var(--dur-slow) var(--spring);
 }
-.cui .res-btn:hover::before{background-color:var(--fill-ghost-hover)}
+.cui .res-btn:hover::before{background-color:var(--row-selected)}
 .cui .res-btn:active::before{
   transition:transform var(--dur-fast) ease-out;transform:scale(.975);
 }
-/* Selected carries TWO signals, per the spec — the text goes to primary AND a
-   count appears. The button never takes a fill of its own: it sits inside the
-   composer, and a filled control in there reads as the composer's own state. */
+/* Selected still carries two signals — the text goes to primary and the count
+   appears. The pill itself does not change colour: it is the same control
+   either way, and a filled control that also changes hue on selection is two
+   statements where one will do. */
 .cui .res-btn.is-on{color:var(--text-100)}
 .cui .res-count{
   min-width:18px;height:18px;padding:0 5px;border-radius:9px;
@@ -4306,8 +4318,22 @@
  *      element that can never give ground.
  *   3. labels go last, and only labels — never a control.
  * ------------------------------------------------------------------ */
-.cui .bar{flex-wrap:wrap;height:auto;min-height:32px;row-gap:8px}
-.cui .bar-left,.cui .bar-right{min-width:0}
+/* ⚠️ ONE ROW, ALWAYS — owner, 2026-08-29: "keep it one line".
+   This briefly wrapped, so that a long pack name could be read in full. It
+   was the wrong trade: the composer grew a row and the model button fell
+   underneath, which is a bigger, more surprising change to the screen than a
+   truncated name is a loss. The name lives in the modal one tap away and in
+   the tooltip; the row's shape is on screen the whole time.
+
+   Nothing is allowed to wrap, so ONE child has to absorb every narrowing —
+   the Resources pill, because it is the only one whose width is content
+   rather than a fixed control. `bar-right` is pinned; `bar-left` and the pill
+   may shrink; the pill's icon and count are pinned inside it so the label is
+   what actually gives. */
+.cui .bar{flex-wrap:nowrap;height:auto;min-height:32px}
+.cui .bar-left{min-width:0;flex:0 1 auto}
+.cui .bar-right{min-width:0;flex:0 0 auto}
+.cui .res-btn{flex:0 1 auto}
 /* `min-width:0` is what actually lets a flex child shrink — the default
    `min-width:auto` pins it to its content however narrow the track gets. */
 .cui .model-btn{min-width:0;overflow:hidden}
@@ -4377,21 +4403,10 @@
 /* Narrow: the word goes and the icon stays, which is the owner's own rule for
    this control. With the label gone the cap has nothing to bound, so it is
    released — otherwise it would squeeze the icon and the count. */
-/* ⚠️ ON A PHONE THE BAR WRAPS RATHER THAN THE NAME BEING SHREDDED, and that
-   is the opposite of what was tried first. Tightening the cap to 18ch/14ch
-   kept everything on one row and left the label 38px — "Corpo…", about four
-   characters. A name truncated past recognition is not a name, and the whole
-   reason the button wears one is so you can see which pack is loaded.
-
-   There is genuinely not room at 360px for a 175px name beside the model
-   button and the microphone, so something has to give. `flex-wrap` on the bar
-   is what gives: bar-left takes a line and the name gets the full ~344px,
-   bar-right drops beneath it still right-aligned. The composer grows by one
-   row, and only while a long name is selected — "Resources" alone stays on
-   one line at every phone width. */
-@media (max-width:520px){
-  .cui .res-btn{max-width:30ch}
-}
+/* No phone cap. With the bar pinned to one row the pill is already bounded by
+   the track it has to share, and a `max-width` on top of that would truncate
+   a name earlier than the space actually requires. The desktop cap above
+   still applies, where there IS slack to give away. */
 /* Released once the word is gone — with nothing to bound it would only
    squeeze the icon and the count. */
 @media (max-width:359px){
