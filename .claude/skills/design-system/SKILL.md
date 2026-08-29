@@ -109,6 +109,15 @@ That is deliberate and it cuts both ways: **do not reach for app tokens inside
 palettes bleeding into each other is the temperature drift this file already
 warns about, where every individual near-miss is defensible.
 
+**There is exactly ONE exception and it has a name: `--font-brand`.** Declared
+in the `.cui` token block, resolving to the app's `--font-display`, and used by
+the wordmark alone — Familjen Grotesk, owner's call 2026-08-29. The surface is
+a transcription of somebody else's app, but the NAME on it is ours, and a brand
+wearing a borrowed face in the one place the brand is written is the drift, not
+the fix. **If a second crossing is ever wanted it gets a token there too**, so
+the exceptions stay countable; an inline `var(--font-display)` in a rule is how
+this seal quietly stops existing.
+
 ### Tokens — the whole palette, and there is no other
 
 | Token | Value | Job |
@@ -223,6 +232,37 @@ box-shadow follows the border shape.** This is also why the corner cannot be cut
 with `clip-path`, which would slice the ring and the glow off.
 Without it, reaching for a button lights the whole frame, which reads as though
 the container were the thing about to activate.
+
+### The home screen is patterns 2 and 1, not a fifth *(2026-08-29, evening)*
+
+The greeting moved to the **top left** of the pane and quick actions appeared
+under it, so `.pane-inner` is `justify-content: flex-start` rather than
+`center`. Three things that generalise:
+
+- **A list under a greeting is ROWS, not cards.** The composer is the call to
+  action; a grid of tiles takes that job by area alone. Quick actions are
+  **pattern 2 grown to two lines** (title at `--text-100`, meta at
+  `--text-300`), the same growth the modal's pack rows took.
+- **One left edge for the whole column.** Greeting, rows, source chips and
+  composer all sit inside `.center`, so they line up at every width. The
+  greeting is the only element with no box around it — centring *it* would be
+  the one thing out of alignment.
+- **A control's dress follows its SURFACE, not its identity.** The Resources
+  pill was `--track` (the groove that means "a control sits here") while it
+  lived on the composer's white. Moved to the source row on `--page-bg`,
+  `--track` (#f6f6f4) against #fcfcfb is a two-value difference nobody can see
+  — so it takes `--surface-3` plus a hairline, the same lifted-panel grammar as
+  the composer below it. **Nothing new entered the palette in either
+  direction.** When you move a control, re-derive its fill from where it lands.
+
+The source row's `+` is the one **circle** on a surface where every icon button
+is an 8px square. That is the reference's own shape and it is load-bearing: the
+row is a button beside a 999px chip, and a squared `+` there reads as two
+unrelated things that happen to be adjacent. It is still 32px.
+
+**The header's segmented pair is gone**, and with it `.seg-header` and `.dot`.
+The base `.seg` / `.seg-item` rules stay — pattern 3 below is still the spec —
+but nothing on the surface draws one today.
 
 ### The modal is patterns 4 and 2, not a fifth *(2026-08-29, the resource packs)*
 

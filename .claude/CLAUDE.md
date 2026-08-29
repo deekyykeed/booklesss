@@ -209,6 +209,18 @@ Most icons in `platform/` come from **Hugeicons Free** (MIT) via **Hugeicons' ow
 
 ⚠️ **THE NAMES ARE THE APP'S VOCABULARY, NOT THE SET'S.** Call sites say `name="chevron-down"`, not `name="arrow-down-01"`; the map from one to the other lives in `scripts/gen-huge-icons.mjs` and nowhere else. That indirection is what made the MynaUI → Hugeicons swap a column of edits in the generator instead of a rename across two dozen components — keep it that way, and do not let a set's own naming leak into a component.
 
+**The `.cui` surface's own entries moved on 2026-08-29 evening:** `pdf`
+(`pdf-01`) is a resource pack — on the source-row chip *and* on the modal row
+it opens, because one meaning gets one mark — `headphones` is a session in the
+quick-action list, the same "listen rather than read" the course page's Listen
+pill means, and `feedback` (`chat-feedback-01`) is the pane header's button.
+`folder-library`, `chat-messages`, `code` and `incognito` went out in the same
+change, each with the control that was the only thing drawing it. **The
+feedback entry is `-01` on purpose**: the set's plain `chat-feedback` is a
+bubble with three DOTS, which is the universal "someone is typing" — a chat
+mark, in the one corner of a chat app's shell where a student looks for help.
+`-01` writes two lines inside the bubble, which is a posted message.
+
 ⚠️ **THERE ARE NO FILLED TWINS.** MynaUI's `-solid` variants marked a selected row (line at rest, solid when active); Hugeicons Free is stroke-only. Exactly one place used one — the course card's completion mark — and it reads lighter now. **Any surface that needs a selected state must get its second signal from somewhere other than a fill** (a background, a rule, a colour), which is what the sidebars already do.
 
 ⚠️ **STROKE WIDTHS ARE NORMALISED TO 1.5 BY THE GENERATOR.** Most of Hugeicons is drawn at 1.5, but a handful carry 1.45, 2, 2.5 or 3 — mixed in one row that reads as a wobble rather than a choice, and it makes the `strokeWidth` prop behave differently icon to icon.
@@ -570,9 +582,47 @@ deliberately, not guessed at. Nothing on the page reads a student's data, which
 is why the auth gates came off it — **they go back the moment it renders
 anything real.**
 
-**⚠️ IT READS NONE OF THE APP'S TOKENS, AND NOTHING READS ITS.** `.cui` ships
-its own palette (`--page-bg`, `--sidebar-bg`, `--clay`, three greys of text) and
-never touches `--color-canvas` / `--color-ink` / `--color-accent`. The scoping
+**The home screen has a middle now** (owner, 2026-08-29). The greeting moved
+from the centre of the pane to the **top left**, under the hamburger, where it
+reads as the page's title; under it sit **quick actions** — a short list of
+rows, one per unfinished session or project, so a student mid-something does
+not have to type their way back in. They are **rows, not cards**: the composer
+is still the call to action, and a grid of tiles under a greeting takes that
+job by sheer area.
+
+**Above the composer is a SOURCE ROW** — a circular `+` and a chip carrying the
+selected resource pack's own name behind a PDF mark, off the owner's shot of
+the Claude Code phone app, where a repository chip sits above the box. The
+Resources control **moved** there out of the composer bar; it was not
+duplicated, and its dress changed with its address (a `--track` groove has no
+edge on `--page-bg`, so out here it is `--surface-3` plus a hairline, the same
+lifted-panel grammar the composer uses). The chat/code segmented pair beside
+the wordmark is **gone** — it switched between two modes this product does not
+have.
+
+⚠️ **`lib/quick-actions.ts` IS PLACEHOLDER DATA THAT DESCRIBES WORK NOBODY
+DID**, and that is a step past `lib/resource-packs.ts`'s invented pack names:
+"3 of 4 steps · yesterday" is an assertion about the person reading it. Both
+files are seams — the UI reads one function and nothing else — and both are
+safe only while this surface is ungated and unrouted.
+
+**The pane header's button is FEEDBACK** (owner, 2026-08-29), where the
+reference drew an incognito hat. ⚠️ **The board behind it is not built, and
+building it is what puts the auth gates back on this route** — a board reads
+students' posts and their votes, which is the first real data anything on
+`/dashboard` would touch, and an upvote that does not know who is voting counts
+the same person forever.
+
+**⚠️ IT READS NONE OF THE APP'S TOKENS, AND NOTHING READS ITS — with ONE named
+exception.** `.cui` ships its own palette (`--page-bg`, `--sidebar-bg`,
+`--clay`, three greys of text) and never touches `--color-canvas` /
+`--color-ink` / `--color-accent`. The exception is **`--font-brand`**, declared
+in the `.cui` token block and resolving to `--font-display`: the wordmark is
+set in **Familjen Grotesk** (owner, 2026-08-29), because the surface is a
+transcription of somebody else's app but the *name* on it is ours, and Familjen
+is what our name is set in everywhere else it appears. It has a token so the
+crossing stays countable — a second one gets a line there too, never an inline
+`var()`. The scoping
 is the whole safety argument: the reference carries a global reset
 (`*{margin:0;padding:0}`), sizes the document and defines a full `:root`
 palette, so unscoped it would restyle every page in the app. `*` became
