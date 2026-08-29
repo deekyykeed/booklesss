@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { HugeIcon } from "@/components/icons/huge";
+import { ResourcePacks } from "./ResourcePacks";
 
 /* ------------------------------------------------------------------ *
  * THE REFERENCE UI, VERBATIM.
@@ -45,8 +46,21 @@ import { HugeIcon } from "@/components/icons/huge";
 
 export function ClaudeUI() {
   const [headerSeg, setHeaderSeg] = useState(0);
-  const [composerSeg, setComposerSeg] = useState(0);
   const [navOpen, setNavOpen] = useState(false);
+
+  /* Which resource packs this session explains against. A Set because the
+     picker is multi-select and order carries no meaning — the modal renders
+     in the packs' own order, not in the order they were ticked, so a student
+     re-opening it finds the list where they left it. */
+  const [packsOpen, setPacksOpen] = useState(false);
+  const [packs, setPacks] = useState<ReadonlySet<string>>(() => new Set());
+  const togglePack = useCallback((id: string) => {
+    setPacks((prev) => {
+      const next = new Set(prev);
+      if (!next.delete(id)) next.add(id);
+      return next;
+    });
+  }, []);
 
   const appRef = useRef<HTMLDivElement | null>(null);
   const sideRef = useRef<HTMLElement | null>(null);
@@ -380,7 +394,7 @@ export function ClaudeUI() {
               </div>
               <div className="empty-row">
                 <span className="slot">
-                  <HugeIcon name="bookmark" className="i" />
+                  <HugeIcon name="pin" className="i" />
                 </span>
                 <span>Pin projects to keep them here</span>
               </div>
@@ -498,20 +512,22 @@ export function ClaudeUI() {
                   <button className="cbtn" aria-label="Add files, connectors">
                     <HugeIcon name="plus" className="i" />
                   </button>
-                  <div className="seg seg-composer">
-                    <button
-                      className={"seg-item" + (composerSeg === 0 ? " is-active" : "")}
-                      onClick={() => setComposerSeg(0)}
-                    >
-                      Chat
-                    </button>
-                    <button
-                      className={"seg-item" + (composerSeg === 1 ? " is-active" : "")}
-                      onClick={() => setComposerSeg(1)}
-                    >
-                      Cowork
-                    </button>
-                  </div>
+                  {/* Resources, where Chat/Cowork used to be (owner,
+                      2026-08-29). It is a BUTTON and not a segmented control
+                      because it does not pick between two modes — it opens a
+                      picker and comes back carrying a count. */}
+                  <button
+                    className={"res-btn" + (packs.size ? " is-on" : "")}
+                    onClick={() => setPacksOpen(true)}
+                    aria-haspopup="dialog"
+                    aria-expanded={packsOpen}
+                  >
+                    <HugeIcon name="folder-library" className="i i-16" />
+                    <span className="res-label">Resources</span>
+                    {packs.size > 0 && (
+                      <span className="res-count">{packs.size}</span>
+                    )}
+                  </button>
                 </div>
 
                 <div className="bar-right">
@@ -539,6 +555,17 @@ export function ClaudeUI() {
           aria-hidden="true"
           ref={scrimRef}
           onClick={() => setNavOpen(false)}
+        />
+
+        {/* ⚠️ INSIDE `.app`, NOT INSIDE THE PANE. `.rp-scrim` is
+            `position: absolute` against `.app` for the same reason the drawer
+            is: `.pane-scroll` is a scroller, and a modal parented to a
+            scroller rides the page. Same trap the ask box paid for. */}
+        <ResourcePacks
+          open={packsOpen}
+          selected={packs}
+          onToggle={togglePack}
+          onClose={() => setPacksOpen(false)}
         />
       </div>
     </div>

@@ -4131,3 +4131,202 @@
      bounce is what lets a phone reveal the seam the sizing just closed. */
   overscroll-behavior: none;
 }
+
+
+/* ---- RESOURCES, and the packs it opens (2026-08-29) ---------------
+ * Owner: the composer's Chat/Cowork pair becomes one Resources button, and
+ * tapping it opens a full modal of resource packs to select as context.
+ *
+ * The button is `.cui` pattern 1 (ghost button) with a label — the hover fill
+ * on a `::before` at z-index -1 under `isolation: isolate`, so pressing
+ * squishes the fill and not the glyph.
+ * ------------------------------------------------------------------ */
+.cui .res-btn{
+  position:relative;isolation:isolate;
+  height:32px;border-radius:var(--radius);padding:0 10px;
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;color:var(--text-200);white-space:nowrap;
+}
+.cui .res-btn::before{
+  content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;
+  background-color:transparent;transform-origin:50% center;
+  transition:background-color var(--dur-fast) var(--ease),
+             transform var(--dur-slow) var(--spring);
+}
+.cui .res-btn:hover::before{background-color:var(--fill-ghost-hover)}
+.cui .res-btn:active::before{
+  transition:transform var(--dur-fast) ease-out;transform:scale(.975);
+}
+/* Selected carries TWO signals, per the spec — the text goes to primary AND a
+   count appears. The button never takes a fill of its own: it sits inside the
+   composer, and a filled control in there reads as the composer's own state. */
+.cui .res-btn.is-on{color:var(--text-100)}
+.cui .res-count{
+  min-width:18px;height:18px;padding:0 5px;border-radius:9px;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--text-100);color:#fff;
+  font-size:11px;line-height:1;font-variant-numeric:tabular-nums;
+}
+
+/* ---- the modal ---------------------------------------------------- */
+/* Absolute against `.app`, never fixed: `.pane-scroll` is a scroller and a
+   fixed child of one rides the page. */
+.cui .rp-scrim{
+  position:absolute;inset:0;z-index:60;
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;
+  background:rgba(11,11,11,.28);
+}
+.cui .rp-panel{
+  width:100%;max-width:34rem;
+  max-height:min(560px,100%);
+  display:flex;flex-direction:column;
+  background:var(--surface-3);
+  border-radius:22px;
+  box-shadow:0 .25rem 1.25rem 0 rgba(0,0,0,.075),
+             0 0 0 1px rgba(31,31,30,.15);
+  outline:none;
+}
+/* The radius is a PAIR and both halves move together — a squircle reads
+   tighter than a round corner at the same number, so 22 round is 28 squircle
+   at the ~1.28 ratio the composer's 28/36 uses. */
+@supports (corner-shape: squircle){
+  .cui .rp-panel{corner-shape:squircle;border-radius:28px}
+}
+
+.cui .rp-head{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:20px 16px 12px 20px;
+}
+.cui .rp-heading{flex:1;min-width:0}
+.cui .rp-title{font-size:16px;font-weight:500;color:var(--text-100);letter-spacing:-.01em}
+.cui .rp-sub{margin-top:2px;font-size:13px;color:var(--text-300)}
+
+.cui .rp-list{
+  flex:1;min-height:0;overflow-y:auto;
+  padding:4px 12px 12px;
+  display:flex;flex-direction:column;gap:2px;
+}
+/* A pack is pattern 2 (row) grown to two lines. It keeps the 8px gap and the
+   fixed 28px slot; only the height changes, because a blurb needs the room. */
+.cui .rp-row{
+  position:relative;isolation:isolate;
+  display:flex;align-items:flex-start;gap:8px;
+  width:100%;padding:10px 12px;border-radius:var(--radius);
+  text-align:left;color:var(--text-200);
+}
+.cui .rp-row::before{
+  content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;
+  background-color:transparent;
+  transition:background-color var(--dur-fast) var(--ease);
+}
+.cui .rp-row:hover::before{background-color:var(--fill-ghost-hover)}
+.cui .rp-row.is-on::before{background-color:var(--row-selected)}
+.cui .rp-row.is-on{color:var(--text-100)}
+.cui .rp-slot{
+  width:28px;flex:0 0 28px;display:flex;align-items:center;justify-content:center;
+  padding-top:1px;color:var(--text-300);
+}
+.cui .rp-row.is-on .rp-slot{color:var(--text-100)}
+.cui .rp-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.cui .rp-name{
+  font-size:14px;line-height:20px;font-weight:500;color:inherit;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.cui .rp-blurb{
+  font-size:13px;line-height:18px;color:var(--text-300);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.cui .rp-count{
+  flex:0 0 auto;padding-top:1px;
+  font-size:13px;line-height:20px;color:var(--text-300);
+  font-variant-numeric:tabular-nums;
+}
+
+.cui .rp-foot{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px 16px 20px;
+  border-top:1px solid var(--border);
+}
+.cui .rp-tally{flex:1;min-width:0;font-size:13px;color:var(--text-300)}
+.cui .rp-done{
+  position:relative;isolation:isolate;
+  height:32px;border-radius:var(--radius);padding:0 14px;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:500;color:#fff;
+}
+.cui .rp-done::before{
+  content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;
+  background-color:var(--text-100);transform-origin:50% center;
+  transition:background-color var(--dur-fast) var(--ease),
+             transform var(--dur-slow) var(--spring);
+}
+.cui .rp-done:hover::before{background-color:#2c2c2a}
+.cui .rp-done:active::before{
+  transition:transform var(--dur-fast) ease-out;transform:scale(.975);
+}
+@media (prefers-reduced-motion:reduce){
+  .cui .res-btn::before,.cui .rp-row::before,.cui .rp-done::before{transition:none}
+}
+
+/* On a phone the panel stops floating and takes the bottom of the screen — a
+   centred card with 24px of scrim either side wastes the width the blurbs
+   need, and a sheet puts Done under the thumb that opened it. */
+@media (max-width:640px){
+  .cui .rp-scrim{align-items:flex-end;padding:0}
+  .cui .rp-panel{
+    max-width:none;
+    max-height:min(80svh,100%);
+    border-radius:22px 22px 0 0;
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+}
+@supports (corner-shape: squircle){
+  @media (max-width:640px){
+    .cui .rp-panel{border-radius:28px 28px 0 0}
+  }
+}
+
+
+/* ---- THE COMPOSER BAR FITS EVERY WIDTH (2026-08-29) ---------------
+ * Owner: "the input box should also be fully responsive."
+ *
+ * IT WAS ONE NOWRAP ROW WITH ONE ESCAPE HATCH, and adding Resources spent
+ * what little slack was left. The only concession was hiding the model
+ * button's effort label under 420px; past that the row simply overflowed,
+ * because every child is nowrap and nothing was allowed to shrink. The
+ * measurement in the old comment — 348px of content against 338px of track at
+ * 390px wide — was already the row losing.
+ *
+ * Three mechanisms, in the order a real narrowing hits them, so the box
+ * degrades a step at a time rather than falling off a cliff:
+ *   1. the bar may WRAP. `bar-right` keeps its `margin-left:auto`, so it stays
+ *      pushed right on one line and drops to a second line as a group.
+ *   2. the model button may SHRINK and ellipsise, rather than being the one
+ *      element that can never give ground.
+ *   3. labels go last, and only labels — never a control.
+ * ------------------------------------------------------------------ */
+.cui .bar{flex-wrap:wrap;height:auto;min-height:32px;row-gap:8px}
+.cui .bar-left,.cui .bar-right{min-width:0}
+/* `min-width:0` is what actually lets a flex child shrink — the default
+   `min-width:auto` pins it to its content however narrow the track gets. */
+.cui .model-btn{min-width:0;overflow:hidden}
+.cui .model-btn > span{overflow:hidden;text-overflow:ellipsis}
+
+@media (max-width:520px){
+  /* The Resources label goes before the model name does: the icon plus a
+     count still says what the control is and whether anything is selected,
+     which is more than "Sonnet" alone would say. */
+  .cui .res-btn{padding:0 8px}
+  .cui .res-label{
+    position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+    overflow:hidden;clip-path:inset(50%);white-space:nowrap;
+  }
+}
+@media (max-width:400px){
+  /* Last resort, and it is layout only — every control is still on screen and
+     still 32px, which is the rule that does not bend. */
+  .cui .composer{padding:8px}
+  .cui .editor{padding-left:8px}
+  .cui .bar-left,.cui .bar-right{gap:4px}
+}

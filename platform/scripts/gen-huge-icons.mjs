@@ -86,7 +86,18 @@ const ICONS = {
   folder: "folder-01", // Projects
   component: "component", // Artifacts
   briefcase: "briefcase-01", // Customize
-  bookmark: "bookmark-01", // "Pin projects to keep them here"
+  bookmark: "bookmark-01", // the Saved tab
+  /* "Pin projects to keep them here". A REAL PUSH-PIN, as of 2026-08-29 —
+     this row wore `bookmark` only because MynaUI's sole pin was a map-pin and
+     a bookmark was the least wrong thing left. Hugeicons Free has the actual
+     glyph, so the stand-in goes. `pin-02` is the upright thumbtack rather than
+     `pin`'s angled one: at 20px in a slot beside upright chrome, the diagonal
+     tail reads as noise. `bookmark` stays because the Saved tab means it. */
+  pin: "pin-02",
+  /* The composer's Resources button. NOT `folder` — that is Projects in the
+     sidebar two rows up, and the same mark for two different things is how a
+     vocabulary stops meaning anything. A pack is a folder of folders. */
+  "folder-library": "folder-library",
   config: "preference-horizontal", // the filter beside "Chats and tasks"
   paint: "paint-brush-01", // Design
   "chat-messages": "bubble-chat", // the sidebar header's chat mode
