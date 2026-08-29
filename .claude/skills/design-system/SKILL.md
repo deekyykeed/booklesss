@@ -224,6 +224,80 @@ with `clip-path`, which would slice the ring and the glow off.
 Without it, reaching for a button lights the whole frame, which reads as though
 the container were the thing about to activate.
 
+### The modal is patterns 4 and 2, not a fifth *(2026-08-29, the resource packs)*
+
+A full-screen picker looked like it needed a new pattern and did not. The panel
+is **pattern 4** (raised panel) and each row is **pattern 2** grown to two
+lines — same 8px gap, same fixed 28px slot, only the height changes because a
+description needs the room. Reach for the existing two before inventing.
+
+Three things it settled that the next overlay inherits:
+
+- **The radius pair scales with the panel.** The composer is 28 round / 36
+  squircle; a smaller panel takes **22 round / 28 squircle** — the same ~1.28
+  ratio, not the composer's numbers copied across. A panel that is not the
+  composer's size should not wear the composer's corner.
+- **Below 640px it stops floating and becomes a bottom sheet.** A centred card
+  with 24px of scrim either side wastes the width the content needs, and a
+  sheet puts the confirm button under the thumb that opened the control. Square
+  off the bottom corners when it docks.
+- **Give focus back on close.** Store `document.activeElement` on open and
+  restore it in the effect's cleanup. Without it, dismissing drops focus to
+  `<body>` — and on this surface the composer is supposed to hold the caret, so
+  closing a modal silently undoes the autofocus.
+
+### A control that reports a selection wears the selection *(owner, 2026-08-29)*
+
+The composer's Resources button says **"Resources"** with nothing chosen and
+**the pack's name** once something is. *"The selected pack will actually become
+the new word there when selected."* Nothing chosen is the invitation; something
+chosen is the answer.
+
+Two rules that came out of building it, both of which generalise to any
+control that names what is inside it:
+
+- **⚠️ THE NAME COMES FROM THE LIST'S OWN ORDER, NEVER THE ORDER THINGS WERE
+  PICKED.** Otherwise the word jumps to whatever was touched last, and a
+  control meant to *report state* looks like it is *reacting to the click*.
+  Render the picker in the same order so the word always names the row nearest
+  the top.
+- **A count beside a name is "+N others", not the total.** "+2" reads as "and
+  two more"; a bare "3" next to one name reads as a contradiction. Put the full
+  list in `title` and `aria-label`.
+- **⚠️ A LABEL THAT BECOMES DATA IS UNBOUNDED, AND IT WAS NOT BEFORE.** A fixed
+  noun can size itself; a name cannot. **Cap the button AND ellipsise the
+  label — one without the other does nothing**, because a flex child with no
+  width limit simply grows and `text-overflow` never fires. Cap in `ch` (it is
+  bounding text) and remember the cap sits on the *button*, so the icon, gaps
+  and count eat into it: 22ch left only 101px for the label and cut a name
+  mid-word. Size the cap against the longest real name, not against the
+  shortest.
+
+### The composer bar must survive every width, and it wraps before it hides
+
+It shipped as one `white-space: nowrap` row with a single escape hatch (hiding
+the model button's effort label under 420px), which was already losing —
+measured at 348px of content against 338px of track at 390px wide. Adding one
+control spent the rest.
+
+Three mechanisms, applied in the order a real narrowing hits them, so it
+degrades a step at a time instead of falling off a cliff:
+
+1. **The bar may wrap.** `flex-wrap: wrap` with `row-gap: 8px`; `bar-right`
+   keeps `margin-left: auto` so it stays pushed right on one line and drops as
+   a group.
+2. **The widest non-control may shrink.** `min-width: 0` is what actually
+   allows it — the default `min-width: auto` pins a flex child to its content
+   however narrow the track gets.
+3. **Labels go last, and only labels.** Never a control. Every button stays on
+   screen and stays 32px; that is the rule that does not bend.
+
+**Prove it by sweeping, and prove the sweep.** Measure `scrollWidth >
+clientWidth` on the bar and the composer, plus `documentElement.scrollWidth >
+innerWidth`, at every width that matters — and then **revert the fix in the
+running page and confirm the probe reads dirty**. A sweep that cannot report a
+failure is not evidence of passing.
+
 ### Icons — Hugeicons Free, and the arithmetic that keeps them consistent
 
 `<HugeIcon name="…" className="i" />`. Add a name to `ICONS` in
@@ -331,6 +405,16 @@ A typecheck and a lint are static; neither resolves a module at runtime nor
 parses a stylesheet. And a measurement that reads the same on both sides of an
 A/B is void — if the "working" case also reads zero, fix the probe, not the
 theory.
+
+**When a behaviour is too fast to observe, widen its window rather than reason
+about it.** A 450ms autofocus guard could not be tested honestly — the
+tool round-trip is ~660ms, so every simulated interaction landed after the
+timer had already fired, and the test "passed" while proving nothing.
+Temporarily raising the constant to 3000ms made the guard observable
+(interaction at 1133ms → focus never taken), and it went straight back
+afterwards. **Put the real value back in the same session and grep for the
+test marker before committing** — a widened constant left in is a bug that
+looks like a design decision.
 
 ### Wrapping a `position: fixed` element in an animated `<div>` breaks it the same way `backdrop-filter` does
 The header and sidebar are both `fixed`. An "enter" stagger built by wrapping

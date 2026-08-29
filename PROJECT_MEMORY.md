@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-29 (session 64)
+**Last updated:** 2026-08-29 (session 65)
 
 ---
 
@@ -91,6 +91,44 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 65 (2026-08-29, the composer learns to be used. Linear REACHABLE
+this session — BOO-44 closed, BOO-45 and BOO-46 opened — so the items below are
+only what has no ticket.)**
+
+- [ ] ⚠️ **THE RESOURCE PACKS ARE PLACEHOLDER DATA AND THE PICKER LOOKS REAL.**
+      `lib/resource-packs.ts` ships six invented packs; nothing in this app
+      stores an uploaded PDF — no table, no bucket, no import path. The modal
+      reads `listPacks()` and nothing else, so wiring real storage is a change
+      to that one file, but **until then a student could select context that
+      does not exist.** This is safe only while `/dashboard` is a reference
+      surface nobody is sent to. It stops being safe on the same day the gates
+      go back on.
+- [ ] ⚠️ **THE COMPOSER'S AUTOFOCUS CANNOT RAISE AN iOS KEYBOARD, and the
+      owner asked for the keyboard.** Delivered: the caret lands in the box
+      450ms after arrival, cancelled by any interaction first. Not delivered on
+      iPhone: Safari opens the keyboard only for a focus inside a real user
+      gesture, and a timer is not one — so a phone gets the caret and still
+      needs one tap. Verified in the browser, not assumed. **Do not "fix" this
+      with a synthetic click**; the only real answer is the archived ask box's
+      shape, where the tap that opens the surface IS the focus.
+- [ ] **`/dashboard` still has no auth gates**, still allows
+      `assets-proxy.anthropic.com` in `font-src`, and `/dashboard/courses` +
+      `/dashboard/saved` still have no navigation. All three carried unchanged
+      from session 64 — nothing this session touched them, and the Resources
+      work did not make any of them more urgent.
+- [ ] **The Projects cards were designed and NOT built.** `proj.png` and
+      `cardstates.png` (now in `_dev/reference-ui/`) carry the grid and its
+      exact interaction values. The recommendation put to the owner and not yet
+      answered: point the reference sidebar's **Projects** row — which links to
+      `#` today — at `/dashboard/courses`, restyled as `.cui` cards. It solves
+      the orphaned-navigation item above at the same time. The open question is
+      whether a card is a COURSE (4 cards, matches the existing grid) or a
+      SESSION (48 cards, denser, but re-opens the `/study` routing in BOO-46).
+- [ ] **Still carried from session 63:** the two dead Clerk keys in both Vercel
+      environments, and ElevenLabs still on free tier (632/10,000 chars, resets
+      2026-09-14).
+
 
 **From session 64 (2026-08-28/29, the dashboard became the reference UI.
 Linear NOT reachable — `linear-server` needs a one-time OAuth and this session
@@ -1670,6 +1708,90 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-08-29 (session 65 — the composer learns to be used)
+
+**Done:**
+- **Filed the reference UI.** `claudeuiclone.html` and its three state captures
+  moved from the repo root into `_dev/reference-ui/` with a README, and the
+  four places that called it "repo root" were repointed. **The grep came
+  first** — the design-system skill, CLAUDE.md, `ClaudeUI.tsx` and
+  `globals.css` all name it, so moving it blind would have left four wrong
+  paths in the two files a future session reads before touching this surface.
+- **The composer takes focus on arrival** (owner: *"I should just start
+  typing"*). 450ms, cancelled by any pointer/key/touch/wheel first, re-checked
+  against the drawer at fire time. **The iOS keyboard half is not deliverable
+  in code** and is written into the file as such.
+- **The drawer pulls from anywhere.** `EDGE = 32` required the first touch
+  within 32px of the left edge, which rejected the gesture almost everywhere a
+  thumb lands. Replaced with two narrow guards — a horizontally scrollable
+  ancestor, and the composer, where a touch-drag is text selection — and a
+  leftward drag while shut now releases rather than swallowing.
+- **A real pin in the sidebar.** Hugeicons Free has an actual push-pin where
+  MynaUI's only one was a map-pin, which is why that row wore a bookmark.
+  `pin-02` (upright thumbtack) over `pin` (angled). **`bookmark` stayed** —
+  SavedTab uses it and means it, so this added a key rather than renaming one.
+- **Resources replaced Chat/Cowork**, with a full modal of selectable packs,
+  and **the button wears the selected pack's name** rather than a fixed noun.
+  Placeholder data behind a named seam (`lib/resource-packs.ts`).
+- **The composer bar fits every width**, 1280 down to 280, which it did not
+  before and would not have survived the new button.
+- Closed **BOO-44** as superseded after verifying it on disk; carved the part
+  that outlives it into **BOO-46** (`/study` orphaned, still dark-and-green,
+  PR #178 still unmerged). Opened **BOO-45** for the owner's deferred
+  generated-presentation idea.
+
+**What Worked:**
+- **Widening a timing window to test a guard, then putting it back.** The
+  autofocus cancel could not be exercised honestly — the tool round-trip is
+  ~660ms against a 450ms timer, so the interaction always landed after the
+  timer had fired and the test "passed" while proving nothing. Temporarily
+  setting `SETTLE_MS` to 3000 made the guard testable (interaction at 1133ms →
+  editor never focused), and it went back to 450 immediately after. Cheaper
+  than reasoning about it, and it is the difference between verified and
+  assumed.
+- **Validating the probe by reverting the fix in the live page.** The
+  nine-width overflow sweep read clean everywhere, which is exactly what a
+  broken probe reads. Setting `flex-wrap: nowrap` and `min-width: auto` back
+  on the running page made it report dirty, then restoring gave clean again —
+  so the sweep is evidence. Same habit that the shadow-root and content-sweep
+  entries below were built from, applied before being bitten rather than
+  after.
+- **Grepping for a call site before renaming an icon key.** `bookmark` looked
+  like it existed only for the pin row — its own generator comment said so.
+  SavedTab was the second user, and renaming the key would have silently
+  changed an unrelated screen's icon with nothing failing.
+- **Suspecting the test before the code.** A `scrollLockReleased: false` in an
+  interaction suite was a stale capture in the assertion, not a bug; direct
+  measurement showed the lock engaging and releasing correctly on both
+  scrollers. Printing the real values cost one command.
+
+**Dead Ends (do not retry):**
+- **A heredoc for a long CSS block.** `cat >> globals.css <<'CSSEOF'` with
+  ~190 lines died on `unexpected EOF while looking for matching '` despite a
+  correctly quoted delimiter appearing exactly once. **This is already in the
+  wrap-session skill and was walked into anyway** — the rule is "anything long
+  goes through Write", and 190 lines of CSS is long. Nothing was written, so
+  it cost only a retry; the recovery is Write to the scratchpad then `cat` the
+  file on.
+- **`require('@hugeicons/core-free-icons')`** — the package is `type: module`,
+  so CJS require fails. `node --input-type=module -e` then failed too because
+  **the package was declared in `package.json` but not installed locally**; the
+  app still builds because `huge.tsx` is generated and committed, so only the
+  generator needs it. `npm install` first (4 min on this tree).
+- **Importing the whole set to search it.** `import * as free` on 14,716
+  exports took over two minutes and was killed. The package ships one file per
+  icon in `dist/types/`, so `ls | grep -E "^Pin"` answers the same question
+  instantly.
+- **Trusting `elementFromPoint` to explain something visible in a
+  screenshot.** A dark circle appeared over the modal's footer; hit-testing
+  returned the modal at those coordinates and `body > *` held no overlay. It
+  is the **Next.js dev indicator**, drawn outside the page and absent from
+  production — and it was in a screenshot taken *before* the modal existed,
+  which is what settled it. Check whether an artefact predates the change
+  before debugging it.
+
+---
 
 ### Session 2026-08-28/29 (session 64 — the dashboard became the reference UI)
 
