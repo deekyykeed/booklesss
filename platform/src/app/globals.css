@@ -4313,10 +4313,18 @@
 .cui .model-btn{min-width:0;overflow:hidden}
 .cui .model-btn > span{overflow:hidden;text-overflow:ellipsis}
 
-@media (max-width:520px){
-  /* The Resources label goes before the model name does: the icon plus a
-     count still says what the control is and whether anything is selected,
-     which is more than "Sonnet" alone would say. */
+/* ⚠️ THE WORD SURVIVES ON A PHONE. IT IS THE POINT OF THE CONTROL.
+   This hid the label under 520px, which sounded like "narrow screens" and is
+   actually EVERY PHONE — 360, 375, 390, 412 and 430 are all under it, so the
+   word never appeared on a real device and the composer showed a bare icon.
+   Caught on the owner's own handset at 16:45, after a nine-width sweep had
+   called it correct: the sweep measured overflow, and a label hidden on
+   purpose does not overflow. A layout probe cannot see a legibility bug.
+
+   Icon-only is now a floor for genuinely tiny viewports, not a phone rule.
+   Below 360px the label is dropped rather than the row losing a control; the
+   icon plus the "+N" still says what it is and that something is selected. */
+@media (max-width:359px){
   .cui .res-btn{padding:0 8px}
   .cui .res-label{
     position:absolute;width:1px;height:1px;padding:0;margin:-1px;
@@ -4369,6 +4377,23 @@
 /* Narrow: the word goes and the icon stays, which is the owner's own rule for
    this control. With the label gone the cap has nothing to bound, so it is
    released — otherwise it would squeeze the icon and the count. */
+/* ⚠️ ON A PHONE THE BAR WRAPS RATHER THAN THE NAME BEING SHREDDED, and that
+   is the opposite of what was tried first. Tightening the cap to 18ch/14ch
+   kept everything on one row and left the label 38px — "Corpo…", about four
+   characters. A name truncated past recognition is not a name, and the whole
+   reason the button wears one is so you can see which pack is loaded.
+
+   There is genuinely not room at 360px for a 175px name beside the model
+   button and the microphone, so something has to give. `flex-wrap` on the bar
+   is what gives: bar-left takes a line and the name gets the full ~344px,
+   bar-right drops beneath it still right-aligned. The composer grows by one
+   row, and only while a long name is selected — "Resources" alone stays on
+   one line at every phone width. */
 @media (max-width:520px){
+  .cui .res-btn{max-width:30ch}
+}
+/* Released once the word is gone — with nothing to bound it would only
+   squeeze the icon and the count. */
+@media (max-width:359px){
   .cui .res-btn{max-width:none}
 }
