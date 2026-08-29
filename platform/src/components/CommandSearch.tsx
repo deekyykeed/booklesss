@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
-import { highlight, loadSearchIndex, search, searchIndexReady } from "@/lib/search";
+import { highlight, loadSearchIndex, relaxQuery, search, searchIndexReady } from "@/lib/search";
 import { scrollToSection } from "@/lib/scroll-to-section";
 import { HugeIcon } from "@/components/icons/huge";
 
@@ -81,6 +81,19 @@ export function CommandSearch() {
      Removing it would freeze every open palette on title-only results. */
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const results = useMemo(() => search(query), [query, indexed]);
+
+  /* Only computed on a dead end — a handful of extra passes over the index, in
+     the one state where the panel has nothing else to draw. */
+  const relaxed = useMemo(
+    () => (query.trim() && !results.length ? relaxQuery(query) : []),
+    /* `results.length` alone is not enough to catch the deep index landing:
+       it only moves if the deeper index turns a dead end into a hit. A query
+       that stays empty can still gain a viable RELAXATION once section bodies
+       are in, so this needs `indexed` for the same reason the memo above does.
+       The disable sits here because the rule reports on the dep array. */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [query, indexed, results.length],
+  );
 
   const close = useCallback(() => setOpen(false), []);
   const go = useCallback(
@@ -238,9 +251,60 @@ export function CommandSearch() {
               </div>
 
               <ul ref={listRef} className="max-h-[380px] overflow-y-auto scroll-thin p-2">
+                {/* THE DEAD END, AND THE WAY OUT OF IT.
+                    This said "Nothing matches X" and stopped, which is the one
+                    thing an empty state must not do — it names the problem and
+                    hands back no move. `relaxQuery` asks the index which
+                    shorter search would have worked, so every chip below is a
+                    search that has already been run and is known to land
+                    somewhere. Where there is no shorter search to offer (a
+                    single word, or words the course simply doesn't use), the
+                    way out is the list the palette shows for an empty query —
+                    so the button clears it rather than navigating away. */}
                 {results.length === 0 && (
-                  <li className="px-3 py-8 text-center text-sm text-muted">
-                    Nothing matches “{query.trim()}”.
+                  <li className="px-3 py-7 text-center">
+                    <p className="text-sm text-ink">Nothing matches “{query.trim()}”.</p>
+                    {relaxed.length > 0 ? (
+                      <>
+                        <p className="mx-auto mt-1.5 max-w-[34ch] text-[13px] leading-5 text-muted">
+                          Every word has to appear in the same place. Try a shorter search:
+                        </p>
+                        <div className="mt-3 flex flex-wrap justify-center gap-1.5">
+                          {relaxed.map((r) => (
+                            <button
+                              key={r.query}
+                              type="button"
+                              onClick={() => {
+                                setQuery(r.query);
+                                setActive(0);
+                                inputRef.current?.focus();
+                              }}
+                              className="flex items-center gap-1.5 rounded-full border border-line px-2.5 py-1 text-[13px] text-ink transition-colors hover:bg-active"
+                            >
+                              {r.query}
+                              <span className="text-[11px] text-placeholder">{r.count}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <p className="mx-auto mt-1.5 max-w-[34ch] text-[13px] leading-5 text-muted">
+                          Nothing in this course uses that word.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setQuery("");
+                            setActive(0);
+                            inputRef.current?.focus();
+                          }}
+                          className="mt-3 rounded-full border border-line px-3 py-1 text-[13px] text-ink transition-colors hover:bg-active"
+                        >
+                          Show every lesson
+                        </button>
+                      </>
+                    )}
                   </li>
                 )}
                 {results.map((item, i) => (

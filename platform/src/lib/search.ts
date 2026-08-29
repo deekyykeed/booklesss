@@ -253,3 +253,59 @@ export function search(query: string, limit = 40): Hit[] {
   hits.sort((a, b) => b.score - a.score);
   return hits.slice(0, limit);
 }
+
+/* ------------------------------------------------------------------ *
+ * WHAT TO OFFER WHEN NOTHING MATCHES
+ *
+ * `search()` is an AND over the terms — every word must appear in the same
+ * record, which is what stops "opportunity cost" dragging in every mention of
+ * "cost". The cost of that is the commonest dead end in the palette: a query
+ * where each word is in the course but no single section holds them all comes
+ * back with nothing, and the panel used to say so and stop there.
+ *
+ * A dead end is the one thing an empty state must not be, so instead of
+ * guessing at what the student meant, this asks the index. It drops one term
+ * at a time (widest repair first, since it keeps the most of what they typed)
+ * and only if no n-1 subset survives does it fall back to single terms. Every
+ * suggestion returned has been RUN — the count beside it is real, so the
+ * palette never offers a search that leads to another blank.
+ *
+ * A one-word query gets nothing back on purpose: there is no narrower search
+ * to offer, and dropping its only term would hand `search("")` back, which
+ * returns BROWSE — every lesson in the course, dressed up as a match. The
+ * caller shows a browse affordance in that case instead.
+ * ------------------------------------------------------------------ */
+
+export type Relaxation = {
+  /** The narrower query to run — a subset of the words the student typed. */
+  query: string;
+  /** How many hits it actually returns. Never zero. */
+  count: number;
+};
+
+export function relaxQuery(query: string, limit = 3): Relaxation[] {
+  const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  if (terms.length < 2) return [];
+
+  const seen = new Set<string>();
+  const rank = (a: Relaxation, b: Relaxation) => b.count - a.count;
+
+  const run = (subsets: string[][]): Relaxation[] => {
+    const out: Relaxation[] = [];
+    for (const sub of subsets) {
+      const q = sub.join(" ");
+      if (!q || seen.has(q)) continue;
+      seen.add(q);
+      const count = search(q).length;
+      if (count) out.push({ query: q, count });
+    }
+    return out.sort(rank).slice(0, limit);
+  };
+
+  // Widest repair first: keep every word but one.
+  const dropOne = run(terms.map((_, i) => terms.filter((_, j) => j !== i)));
+  if (dropOne.length) return dropOne;
+
+  // Nothing survives losing a single word — offer the words on their own.
+  return run(terms.map((t) => [t]));
+}
