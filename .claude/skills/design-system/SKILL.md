@@ -133,11 +133,16 @@ this seal quietly stops existing.
 | `--text-200` | `#52514e` | secondary — nav labels at rest |
 | `--text-300` | `#898781` | tertiary, placeholders, section headings |
 | `--border` | `rgba(11,11,11,.1)` | every hairline |
-| `--clay` | `#d97757` | the ONE accent |
+| `--clay` | `#d97757` | the ONE accent — **and it currently draws nothing** |
 
-**The clay is a mark, not a UI colour.** It draws the spark in the greeting and
-the unread dot, and nothing else — no buttons, no fills, no links. The same rule
-the brand green has in the app proper.
+**The clay is a mark, not a UI colour** — no buttons, no fills, no links, the
+same rule the brand green has in the app proper. ⚠️ **As of 2026-08-29 it has
+no consumer at all**: it drew the sidebar's unread dot and the greeting's
+starburst, and the owner removed both (the segmented pair on 29 Aug, the spark
+the same evening — *"remove the orange logo thing"*). The token is kept because
+the surface will want an accent again, but **this palette is monochrome on
+screen today**, and a first re-use is a decision about what earns the one
+accent, not a free choice of colour.
 
 **Three greys of text, and they do real work.** A nav label sits at `--text-200`
 and goes `--text-100` when its row is current; a section heading is `--text-300`
@@ -159,9 +164,22 @@ permanently. Do not introduce a fourth.
 
 ### Type
 
-`--font-sans` (anthropic-sans) for everything, `--font-serif` for the greeting
-and the wordmark **only**. Sizes: 14px nav label, 13px section heading and
-segmented control, 16px composer editor, `clamp(26px, 3.7vw, 37px)` greeting.
+`--font-sans` (anthropic-sans) for everything; **`--font-brand` (Familjen
+Grotesk) for the wordmark and the greeting, and `--font-serif` for nothing** —
+both moved onto the brand face on 2026-08-29, which is why that token is the
+one crossing out of `.cui`. Sizes: 14px nav label, 13px section heading and
+segmented control, 16px composer editor, `clamp(26px, 7.2vw, 30px)` greeting at
+weight **500** and `-0.02em`.
+
+**⚠️ Two traps the greeting paid for, both invisible in the code.** The
+reference asked for weight **330**, which Familjen's variable axis (400–700)
+cannot draw — it clamped up silently, so the number described nothing on
+screen; check a face's axis before carrying a weight across a swap. And the old
+`3.7vw` middle term was **dead on every phone**: at 390px it computes to 14px,
+under the floor, so the vw branch never ran and every handset got the minimum.
+That is the same shape as the 520px query that hid the Resources label on every
+real device. **When a clamp's middle term is meant to scale a phone, compute it
+at 360/390/430 before trusting it.**
 
 **⚠️ 16px on the composer editor is not a taste decision** — iOS Safari zooms
 the viewport on focus for anything smaller, and does not zoom back out. Any new

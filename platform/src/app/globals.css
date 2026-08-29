@@ -3802,6 +3802,13 @@
   --text-stop:#141413;
 
   --border:rgba(11,11,11,.1);
+  /* ⚠️ THE ACCENT, AND IT DRAWS NOTHING AS OF 2026-08-29. It had two
+     consumers, the sidebar's unread dot and the greeting's starburst, and the
+     owner removed both the same day ("remove that set of icons on the right
+     side of the logo", then "remove the orange logo thing"). The token stays
+     because the surface will want an accent again; until it does, this palette
+     is monochrome on screen, and the first re-use is a decision about what
+     earns the one accent rather than a free reach for a colour. */
   --clay:#d97757;
 
   /* ⚠️ THE ONE APP TOKEN THIS SCOPE READS, and it has a name so it stays
@@ -3928,11 +3935,10 @@
   width:100%;max-width:1280px;margin:16px auto 0;padding:0 56px;
   flex:1;display:flex;flex-direction:column;justify-content:center;
 }@media (max-width:900px){.cui .pane-inner{padding:0 32px}}@media (max-width:640px){.cui .pane-inner{padding:0 16px}}.cui .center{width:100%;max-width:40rem;margin:0 auto}/* greeting ---------------------------------------------------------------- */
-.cui .greeting{display:flex;align-items:center;justify-content:center;gap:12px;
-  margin-bottom:36px;user-select:none}.cui .greeting .spark{width:36px;height:36px;flex:0 0 36px;display:block}.cui .greeting .txt{
-  font-family:var(--font-serif);
+.cui .greeting{display:flex;align-items:center;justify-content:center;
+  margin-bottom:36px;user-select:none}.cui .greeting .txt{
   font-size:clamp(26px,3.7vw,37.08px);
-  font-weight:330;line-height:1.25;color:var(--text-100);white-space:nowrap;
+  line-height:1.25;color:var(--text-100);white-space:nowrap;
 }/* composer ---------------------------------------------------------------- */
 /* ============================================================
    THE COMPOSER AND ITS THREE STATES
@@ -4466,6 +4472,56 @@
    inside `.center`, so they line up at every width; centring the one element
    with no box around it would be the only thing out of alignment. */
 .cui .greeting{justify-content:flex-start;margin-bottom:32px}
+
+/* ---- and the greeting is set in the brand face, sized for the job
+ * (2026-08-29, owner: the orange mark goes and the line gets sized properly).
+ *
+ * ⚠️ THREE VALUES MOVED TOGETHER AND NONE OF THEM SURVIVES ALONE.
+ *
+ * FACE. `--font-brand` — the second and last use of the one token that
+ * crosses into `.cui`, and it lands where the first one did: on our own name.
+ * With the reference's starburst removed, the line IS the page's identity,
+ * and leaving it in a serif nothing else on the surface uses made it read as
+ * a caption for a logo that is no longer there.
+ *
+ * WEIGHT. The reference asked for **330**, which Familjen cannot draw — the
+ * variable axis starts at 400, so 330 silently clamped up and the number was
+ * a lie about what was on screen. It is **500** now: a real instance of the
+ * face, the same weight the wordmark takes, and one step under the 600 the
+ * reader gives a step title. 600 here would make the greeting the heaviest
+ * thing on a page whose next-largest text is 14px.
+ *
+ * SIZE. `clamp(26px, 7.2vw, 30px)`, down from `clamp(26px, 3.7vw, 37.08px)`.
+ * The old ceiling was measured off a CENTRED serif in an empty pane, where
+ * the line was the only thing on screen and had the width to be a hero; it is
+ * a top-left page title above a list now, and a grotesk reads visibly larger
+ * than a serif at the same size because its x-height carries more of the em.
+ * At 37 in Familjen the greeting stopped being a title and became a headline.
+ *
+ * ⚠️ THE MIDDLE TERM IS THE ONE THAT MATTERS AND 3.7vw WAS DEAD ON A PHONE.
+ * At 390px, 3.7vw is 14px — under the floor, so every handset got the 26px
+ * minimum and the vw term never ran. This is the same shape as the 520px
+ * media query that hid the Resources label on every real device: a rule
+ * written for "narrow screens" that in practice only ever fires one branch.
+ * 7.2vw lands 28px at 390 and 26 at 360, reaches the 30 ceiling at 417, and
+ * still floors at 26 on a 320 — so the line actually scales across the widths
+ * this thing is read at. Chosen by looking at 24/26/28/30 side by side on a
+ * 390 handset, not by arithmetic: 24 sat too close to the 14px rows under it
+ * to read as a title at all.
+ *
+ * TRACKING. -0.02em, because a grotesk at display size sets loose; the
+ * wordmark takes -0.005em at 20px and the need grows with the size.
+ *
+ * `white-space: nowrap` is inherited from the rule above and stays: the line
+ * is short and a two-line greeting would move everything under it. Measured
+ * at 320px, the narrowest width this surface targets — see the check below.
+ * ------------------------------------------------------------------ */
+.cui .greeting .txt{
+  font-family:var(--font-brand);
+  font-size:clamp(26px,7.2vw,30px);
+  font-weight:500;
+  letter-spacing:-.02em;
+}
 
 /* ---- quick actions ------------------------------------------------
  * ⚠️ ROWS, NOT CARDS, AND THAT IS THE WHOLE DESIGN DECISION. The composer is
