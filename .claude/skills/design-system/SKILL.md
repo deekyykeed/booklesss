@@ -135,9 +135,10 @@ permanently. Do not introduce a fourth.
 
 ### Geometry
 
-- `--radius: 8px` on rows, ghost buttons and icon buttons. **14px** on the
-  composer, **7px** on a segmented control's shell and **5px** on its thumb.
-  Nothing else gets a radius of its own.
+- `--radius: 8px` on rows, ghost buttons and icon buttons. **28px round / 36px
+  squircle** on the composer (see below — the pair moves together), **7px** on a
+  segmented control's shell and **5px** on its thumb. Nothing else gets a radius
+  of its own.
 - `--row-h: 32px` is the nav row, the icon button and the segmented control's
   height. A control that is not 32px tall needs a reason.
 - The sidebar is **288px**, with `padding: 0 11px 0 8px` — asymmetric on purpose,
@@ -176,8 +177,8 @@ item is white with `box-shadow: 0 0 0 1px rgba(11,11,11,.1) inset, 0 1px 2px
 rgba(0,0,0,.05)`. **The thumb is the item's own background, not a sliding
 element** — simpler, and it cannot desynchronise from the selection.
 
-**4. Composer / raised panel.** `--surface-3`, 14px radius, and an edge that is
-part of the shadow rather than a border:
+**4. Composer / raised panel.** `--surface-3`, a squircled radius, and an edge
+that is part of the shadow rather than a border:
 
 ```css
 box-shadow: 0 .25rem 1.25rem 0 rgba(0,0,0,.035),   /* glow */
@@ -194,6 +195,31 @@ Three states, and the third is the one people forget:
 
 **⚠️ Hover is suppressed while the pointer is over a control inside the panel**,
 via `:hover:not(:has(button:hover, a:hover, [role="button"]:hover, label:hover))`.
+
+**⚠️ THE RADIUS IS A PAIR AND BOTH HALVES MOVE TOGETHER.** `corner-shape:
+squircle` sits behind `@supports`, and a squircle at a given radius reads
+visibly TIGHTER than a round corner at the same number — the superellipse spends
+part of the radius easing into the turn instead of meeting the edge at a
+tangent. Measured at the reference's original 14, the squircle needed 18 to
+match, and the ~1.28 ratio has held at every bump since (14/18 → 22/28 →
+**28/36**, the owner's, all on 2026-08-29). Scale both by it; never raise one
+alone, or Safari and Firefox — which have no `corner-shape` today — inherit a
+number chosen to compensate for a curve they will not draw.
+
+```css
+.cui .composer { border-radius: 28px }                    /* round fallback */
+@supports (corner-shape: squircle) {
+  .cui .composer { corner-shape: squircle; border-radius: 36px }
+}
+```
+
+**The ceiling is half the panel's height.** The composer is 114px tall with one
+line in it, so 36 has 21px of headroom; past 57 the corners meet and it is a
+pill. A further bump needs the panel to grow with it.
+
+**The edge survives the corner because it is the ring in the `box-shadow`, and a
+box-shadow follows the border shape.** This is also why the corner cannot be cut
+with `clip-path`, which would slice the ring and the glow off.
 Without it, reaching for a button lights the whole frame, which reads as though
 the container were the thing about to activate.
 

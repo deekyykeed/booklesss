@@ -3929,7 +3929,7 @@
    ============================================================ */
 .cui .composer{
   background:var(--surface-3);
-  border-radius:22px;
+  border-radius:28px;
   padding:10px;
   box-shadow:0 .25rem 1.25rem 0 var(--cmp-glow),
              0 0 0 1px var(--cmp-ring);
@@ -4072,13 +4072,21 @@
  * superellipse — the continuous curve Apple's hardware and icons use, where
  * the straight edge eases into the turn instead of meeting it at a tangent.
  *
- * ⚠️ IT IS BEHIND @supports, AND THE RADIUS CHANGES WITH IT. A squircle at a
- * given radius reads visibly TIGHTER than a round corner at the same number —
- * compared side by side, squircle 14 looked flatter than the round 14 it
- * replaces, and 18 is where the apparent softness matches. So the two have to
- * move together: browsers without corner-shape (Safari and Firefox today) keep
- * the reference's exact round 14 rather than inheriting a radius that was
- * chosen to compensate for a curve they will not draw.
+ * ⚠️ IT IS BEHIND @supports, AND THE RADIUS MOVES WITH IT — AS A PAIR, NEVER
+ * ONE OF THEM. A squircle at a given radius reads visibly TIGHTER than a round
+ * corner at the same number, because the superellipse spends part of the radius
+ * easing into the turn. Measured at the reference's 14, the squircle needed 18
+ * to match; the ratio has held at every step since (14/18 → 22/28 → 28/36,
+ * roughly 1.28), so scale both by it rather than picking a new pair by eye.
+ * Browsers without corner-shape (Safari and Firefox today) get the round number
+ * and must not inherit a radius chosen to compensate for a curve they will not
+ * draw.
+ *
+ * 28/36 is the third bump, all three the owner's (2026-08-29). The ceiling is
+ * half the composer's height — past that the corners meet and the box is a
+ * pill, not a rounded rectangle. The box is ~118px tall with one line of text,
+ * so 36 has room; a fourth bump does not, and would need the composer to grow
+ * with it.
  *
  * The edge survives because it is the ring in the composer's box-shadow, and a
  * box-shadow follows the border shape — this is also why the corner could not
@@ -4087,7 +4095,7 @@
 @supports (corner-shape: squircle) {
   .cui .composer {
     corner-shape: squircle;
-    border-radius: 28px;
+    border-radius: 36px;
   }
 }
 
