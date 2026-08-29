@@ -3869,7 +3869,7 @@
   transition:transform var(--dur-fast) ease-out;
   transform:scale(.975);
 }@media (prefers-reduced-motion:reduce){.cui .row::before, .cui .icon-btn::before, .cui .icon-btn-sm::before, .cui .head-btn::before, .cui .cbtn::before, .cui .model-btn::before, .cui .voice .caret::before{transition:none}
-}.cui .app{display:flex;height:100vh;height:100dvh;overflow:hidden;position:relative}/* ============================================================
+}.cui .app{display:flex;height:100vh;height:100svh;overflow:hidden;position:relative}/* ============================================================
    SIDEBAR — 288px, #fafaf9, 1px right border
    ============================================================ */
 .cui .sidebar{
@@ -4089,4 +4089,37 @@
     corner-shape: squircle;
     border-radius: 28px;
   }
+}
+
+
+/* ---- the shell is sized in svh, not dvh (2026-08-29) ---------------
+ * ⚠️ `dvh` CUT THE TOP AND THE BOTTOM OFF ON A REAL PHONE, and no fixed
+ * viewport reproduces it. `dvh` is the viewport AS IT CURRENTLY IS, so on
+ * Android Chrome it grows when the URL bar retracts and shrinks when it comes
+ * back — the shell is laid out against the LARGE viewport while the SMALL one
+ * is what you can see, and the difference is a scrollable band roughly the
+ * height of the browser chrome. Scrolled one way the header goes; the other,
+ * the composer.
+ *
+ * `svh` is the viewport with the browser UI SHOWN — the smallest it ever
+ * gets — so the shell can never be taller than what is visible, whatever the
+ * URL bar is doing. The cost is the opposite and much cheaper: when the bar
+ * retracts there is a little space left at the foot.
+ *
+ * ⚠️ WHICH IS WHY `.cui` NEEDS ITS OWN BACKGROUND. That leftover space is
+ * outside `.app`, so without this it shows the app shell's own grey canvas as
+ * a band under the composer — the same bug `.content-surface-home` had, from
+ * the same cause. `min-height` keeps the ground under it at any height.
+ *
+ * The order of the two `height` declarations is load-bearing: `vh` first as
+ * the ancient fallback, `svh` last so it wins wherever it is understood.
+ * Putting `dvh` back after it re-opens the bug.
+ * ------------------------------------------------------------------ */
+.cui {
+  background: var(--page-bg);
+  min-height: 100vh;
+  min-height: 100svh;
+  /* No rubber-band on this surface — it is a fixed-height app shell, and the
+     bounce is what lets a phone reveal the seam the sizing just closed. */
+  overscroll-behavior: none;
 }
