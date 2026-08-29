@@ -4066,3 +4066,27 @@
    left in it — so it centres in the space above the dock rather than being
    pushed off-centre by a box that is no longer its sibling. */
 .cui .pane-inner { padding-bottom: 8px; }
+
+/* ---- the composer's corners are a squircle (2026-08-29) -----------
+ * `corner-shape: squircle` turns the corner from a circular arc into a
+ * superellipse — the continuous curve Apple's hardware and icons use, where
+ * the straight edge eases into the turn instead of meeting it at a tangent.
+ *
+ * ⚠️ IT IS BEHIND @supports, AND THE RADIUS CHANGES WITH IT. A squircle at a
+ * given radius reads visibly TIGHTER than a round corner at the same number —
+ * compared side by side, squircle 14 looked flatter than the round 14 it
+ * replaces, and 18 is where the apparent softness matches. So the two have to
+ * move together: browsers without corner-shape (Safari and Firefox today) keep
+ * the reference's exact round 14 rather than inheriting a radius that was
+ * chosen to compensate for a curve they will not draw.
+ *
+ * The edge survives because it is the ring in the composer's box-shadow, and a
+ * box-shadow follows the border shape — this is also why the corner could not
+ * be done with `clip-path`, which would have cut the ring and the glow off.
+ * ------------------------------------------------------------------ */
+@supports (corner-shape: squircle) {
+  .cui .composer {
+    corner-shape: squircle;
+    border-radius: 18px;
+  }
+}
