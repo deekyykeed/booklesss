@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { HugeIcon } from "@/components/icons/huge";
 import { ResourcePacks } from "./ResourcePacks";
+import { packsSnapshot } from "@/lib/resource-packs";
 
 /* ------------------------------------------------------------------ *
  * THE REFERENCE UI, VERBATIM.
@@ -61,6 +62,37 @@ export function ClaudeUI() {
       return next;
     });
   }, []);
+
+  /* ---- THE BUTTON WEARS WHAT IS SELECTED ----------------------------
+   * Owner, 2026-08-29: "the selected pack will actually become the new word
+   * there when selected." So the label is not a fixed noun with a number
+   * beside it — it is the pack. Nothing selected and it says Resources, which
+   * is the invitation; one selected and it says which one, which is the
+   * answer.
+   *
+   * ⚠️ THE NAME COMES FROM THE PACKS' OWN ORDER, NOT THE ORDER THEY WERE
+   * TICKED. Ticking a second pack must not relabel the button to the new one
+   * — the word would jump to whatever was touched last, which makes a control
+   * that is meant to report state look like it is reacting to the click. The
+   * modal renders in the same order, so the word always names the row nearest
+   * the top of the list.
+   *
+   * `more` is how many OTHERS, not the total. Beside a name, "+2" reads as
+   * "and two more"; a bare "3" beside one name reads as a contradiction. */
+  const resLabel = useMemo(() => {
+    if (packs.size === 0) {
+      return { word: "Resources", more: 0, full: "Resources", aria: "Resources — nothing selected" };
+    }
+    const chosen = packsSnapshot().filter((p) => packs.has(p.id));
+    const names = chosen.map((p) => p.name);
+    const full = names.join(", ");
+    return {
+      word: names[0],
+      more: names.length - 1,
+      full,
+      aria: `Resources — ${full}`,
+    };
+  }, [packs]);
 
   const appRef = useRef<HTMLDivElement | null>(null);
   const sideRef = useRef<HTMLElement | null>(null);
@@ -515,17 +547,19 @@ export function ClaudeUI() {
                   {/* Resources, where Chat/Cowork used to be (owner,
                       2026-08-29). It is a BUTTON and not a segmented control
                       because it does not pick between two modes — it opens a
-                      picker and comes back carrying a count. */}
+                      picker and comes back carrying what was picked. */}
                   <button
                     className={"res-btn" + (packs.size ? " is-on" : "")}
                     onClick={() => setPacksOpen(true)}
                     aria-haspopup="dialog"
                     aria-expanded={packsOpen}
+                    aria-label={resLabel.aria}
+                    title={packs.size > 1 ? resLabel.full : undefined}
                   >
                     <HugeIcon name="folder-library" className="i i-16" />
-                    <span className="res-label">Resources</span>
-                    {packs.size > 0 && (
-                      <span className="res-count">{packs.size}</span>
+                    <span className="res-label">{resLabel.word}</span>
+                    {resLabel.more > 0 && (
+                      <span className="res-count">+{resLabel.more}</span>
                     )}
                   </button>
                 </div>

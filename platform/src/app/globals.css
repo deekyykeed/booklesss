@@ -4330,3 +4330,45 @@
   .cui .editor{padding-left:8px}
   .cui .bar-left,.cui .bar-right{gap:4px}
 }
+
+
+/* ---- the Resources label is a pack name once one is picked --------
+ * Owner, 2026-08-29: "the selected pack will actually become the new word
+ * there when selected."
+ *
+ * ⚠️ WHICH MAKES THE LABEL UNBOUNDED, AND IT WAS NOT BEFORE. "Resources" is
+ * nine characters and could be left to size itself; "Strategic Management
+ * readings" is twenty-nine and would push the model button and the microphone
+ * off the row on a phone. So the label ellipsises and the button is capped —
+ * without BOTH, `text-overflow` never fires, because a flex child with no
+ * width limit simply grows.
+ *
+ * The cap is in `ch` rather than px because it is bounding TEXT — it tracks
+ * the font if that ever moves. It sits on the BUTTON, so the icon, the gaps
+ * and the "+N" are inside it and the label gets what is left: at 22ch that
+ * left about 101px and truncated "Corporate Finance handouts" mid-word, which
+ * is a name you cannot read. 34ch leaves the label ~190px, enough for every
+ * placeholder name at 13px.
+ *
+ * It is a CEILING, not a width. Below it the button is its content; above it
+ * the label ellipsises. Narrow widths are handled before it ever binds — the
+ * bar wraps, the model button shrinks, and under 520px the word is gone
+ * entirely — so raising it costs nothing on a phone. Long names lose their
+ * tail rather than the row losing a control; the modal is one tap away with
+ * the full name, and `title` carries it on desktop hover.
+ * ------------------------------------------------------------------ */
+.cui .res-btn{min-width:0;max-width:34ch}
+.cui .res-label{
+  min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+/* The count is "+N others" and must never be what gets truncated — it is the
+   only sign that the word is naming one of several. */
+.cui .res-count{flex:0 0 auto}
+.cui .res-btn > svg{flex:0 0 auto}
+
+/* Narrow: the word goes and the icon stays, which is the owner's own rule for
+   this control. With the label gone the cap has nothing to bound, so it is
+   released — otherwise it would squeeze the icon and the count. */
+@media (max-width:520px){
+  .cui .res-btn{max-width:none}
+}
