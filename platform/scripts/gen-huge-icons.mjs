@@ -99,12 +99,21 @@ const ICONS = {
   edit: "pencil-edit-02", // compose, on the New row
   "clock-1": "clock-01", // Scheduled
   "layout-dashboard": "dashboard-square-01", // Home
-  /* The pane header's privacy button. The reference drew a ghost and MynaUI
-     had one; this set does not, and `incognito` names what the control
-     actually does rather than what it used to look like. The KEY was renamed
-     with it — a vocabulary entry called "ghost" pointing at a hat and glasses
-     is the kind of drift that makes the next person distrust the map. */
-  incognito: "incognito",
+  /* The pane header's button. It was the reference's own privacy control
+     (`incognito`, a hat and glasses) and is now FEEDBACK — owner, 2026-08-29,
+     pointing at the board it will open. The entry is named for the job, not
+     for the drawing, which is why the swap is one line here rather than a
+     rename at the call site.
+
+     `chat-feedback-01` and NOT `chat-feedback`: the set draws the first as a
+     bubble with two written LINES and the second with three DOTS, and dots
+     are the universal "someone is typing" — a chat mark, on a surface that is
+     a chat app's shell, in the one corner a student would look for help. A
+     bubble with writing in it is a posted message, which is what a feedback
+     board holds. It also keeps the grammar the reader already uses: the note
+     control under a step is a feedback bubble, and this is that same act at
+     product scale. */
+  feedback: "chat-feedback-01",
 
   /* The composer's resource-pack chip (2026-08-29). NOT `folder-library` —
      that mark named the CONTROL when it lived in the composer bar and stood

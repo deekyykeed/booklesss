@@ -500,8 +500,24 @@ export function ClaudeUI() {
               <HugeIcon name="menu" className="i" />
             </button>
             <span className="grow" />
-            <button className="head-btn" aria-label="Use incognito">
-              <HugeIcon name="incognito" className="i" />
+            {/* ---- FEEDBACK, WHERE THE INCOGNITO HAT WAS ------------
+                Owner, 2026-08-29: "switch it for a feedback icon — that will
+                later lead to a feedback board with upvotes and all."
+
+                THE BOARD IS NOT BUILT AND THIS BUTTON DOES NOTHING YET, like
+                every other control in this transcription. The icon changes
+                now because the CORNER changes meaning now: the reference's
+                privacy control is one of the labels this surface was always
+                going to replace deliberately rather than guess at, and this
+                is the owner naming what replaces it.
+
+                ⚠️ WHEN THE BOARD IS BUILT IT READS STUDENTS' POSTS AND THEIR
+                VOTES, which is the first real data anything on `/dashboard`
+                would touch — so it is the change that puts `RequireAccount`
+                and `RequireOnboarding` back on this route. An upvote needs to
+                know who is voting or it counts the same person forever. */}
+            <button className="head-btn" aria-label="Feedback">
+              <HugeIcon name="feedback" className="i" />
             </button>
           </header>
 

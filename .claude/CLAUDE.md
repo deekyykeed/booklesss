@@ -211,10 +211,15 @@ Most icons in `platform/` come from **Hugeicons Free** (MIT) via **Hugeicons' ow
 
 **The `.cui` surface's own entries moved on 2026-08-29 evening:** `pdf`
 (`pdf-01`) is a resource pack — on the source-row chip *and* on the modal row
-it opens, because one meaning gets one mark — and `headphones` is a session in
-the quick-action list, the same "listen rather than read" the course page's
-Listen pill means. `folder-library`, `chat-messages` and `code` went out in the
-same change, each with the control that was the only thing drawing it.
+it opens, because one meaning gets one mark — `headphones` is a session in the
+quick-action list, the same "listen rather than read" the course page's Listen
+pill means, and `feedback` (`chat-feedback-01`) is the pane header's button.
+`folder-library`, `chat-messages`, `code` and `incognito` went out in the same
+change, each with the control that was the only thing drawing it. **The
+feedback entry is `-01` on purpose**: the set's plain `chat-feedback` is a
+bubble with three DOTS, which is the universal "someone is typing" — a chat
+mark, in the one corner of a chat app's shell where a student looks for help.
+`-01` writes two lines inside the bubble, which is a posted message.
 
 ⚠️ **THERE ARE NO FILLED TWINS.** MynaUI's `-solid` variants marked a selected row (line at rest, solid when active); Hugeicons Free is stroke-only. Exactly one place used one — the course card's completion mark — and it reads lighter now. **Any surface that needs a selected state must get its second signal from somewhere other than a fill** (a background, a rule, a colour), which is what the sidebars already do.
 
@@ -600,6 +605,13 @@ DID**, and that is a step past `lib/resource-packs.ts`'s invented pack names:
 "3 of 4 steps · yesterday" is an assertion about the person reading it. Both
 files are seams — the UI reads one function and nothing else — and both are
 safe only while this surface is ungated and unrouted.
+
+**The pane header's button is FEEDBACK** (owner, 2026-08-29), where the
+reference drew an incognito hat. ⚠️ **The board behind it is not built, and
+building it is what puts the auth gates back on this route** — a board reads
+students' posts and their votes, which is the first real data anything on
+`/dashboard` would touch, and an upvote that does not know who is voting counts
+the same person forever.
 
 **⚠️ IT READS NONE OF THE APP'S TOKENS, AND NOTHING READS ITS — with ONE named
 exception.** `.cui` ships its own palette (`--page-bg`, `--sidebar-bg`,
