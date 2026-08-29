@@ -3,7 +3,7 @@
 import { useSignedIn } from "@/lib/account";
 import { authEnabled } from "@/lib/auth";
 import { requireAccount } from "@/lib/onboarding";
-import { MynaIcon } from "@/components/icons/myna";
+import { HugeIcon } from "@/components/icons/huge";
 import { HeaderAvatar } from "./identity/HeaderAvatar";
 
 /* ------------------------------------------------------------------ *
@@ -62,7 +62,7 @@ export function Account() {
       title="Sign in"
       className="grid h-8 w-8 place-items-center rounded-full border border-[#d4d4d4] bg-white text-muted shadow-[0_0.6px_0.6px_-1.25px_rgba(0,0,0,0.18),0_2.3px_2.3px_-2.5px_rgba(0,0,0,0.16),0_10px_10px_-3.75px_rgba(0,0,0,0.06)] transition-colors hover:text-ink"
     >
-      <MynaIcon name="user" size={17} strokeWidth={1.5} />
+      <HugeIcon name="user" size={17} strokeWidth={1.5} />
     </button>
   );
 }

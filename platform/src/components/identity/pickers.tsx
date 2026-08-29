@@ -1,7 +1,7 @@
 "use client";
 
 import { useId } from "react";
-import { MynaIcon } from "@/components/icons/myna";
+import { HugeIcon } from "@/components/icons/huge";
 import type { CourseMeta } from "@/lib/courses";
 import type { ProgrammeCourse, YearGroup } from "@/lib/programmes";
 import { OTHER_SCHOOL, SCHOOLS, type SchoolChoice } from "@/lib/schools";
@@ -47,7 +47,7 @@ export const SEARCHABLE = 6;
 export function Tick({ on }: { on: boolean }) {
   return (
     <span className="grid h-5 w-5 shrink-0 place-items-center">
-      {on ? <GradientCheck /> : <span className="text-line-2"><MynaIcon name="square" size={20} /></span>}
+      {on ? <GradientCheck /> : <span className="text-line-2"><HugeIcon name="square" size={20} /></span>}
     </span>
   );
 }
@@ -201,7 +201,7 @@ export function Search({
   return (
     <div className="relative">
       <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-placeholder">
-        <MynaIcon name="search" size={17} />
+        <HugeIcon name="search" size={17} />
       </span>
       <input
         type="text"
@@ -224,7 +224,7 @@ export function Search({
           aria-label="Clear search"
           className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-muted transition-colors hover:bg-active hover:text-ink"
         >
-          <MynaIcon name="x" size={16} />
+          <HugeIcon name="x" size={16} />
         </button>
       )}
     </div>
@@ -356,7 +356,7 @@ export function SchoolPicker({
               Other
             </span>
             <span className="shrink-0 text-muted">
-              <MynaIcon name="plus" size={14} />
+              <HugeIcon name="plus" size={14} />
             </span>
           </span>
         </button>

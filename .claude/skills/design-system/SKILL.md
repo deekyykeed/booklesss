@@ -197,10 +197,12 @@ via `:hover:not(:has(button:hover, a:hover, [role="button"]:hover, label:hover))
 Without it, reaching for a button lights the whole frame, which reads as though
 the container were the thing about to activate.
 
-### Icons — MynaUI, and the arithmetic that keeps them consistent
+### Icons — Hugeicons Free, and the arithmetic that keeps them consistent
 
-`<MynaIcon name="…" className="i" />`. Add a name to `ICONS` in
-`scripts/gen-icons.mjs`, run `npm run gen:icons`. Three sizes, and the classes
+`<HugeIcon name="…" className="i" />`. Add a name to `ICONS` in
+`scripts/gen-huge-icons.mjs`, run `npm run gen:icons`. **The keys are the app's
+own vocabulary, not the set's** — `chevron-down`, not `arrow-down-01` — so the
+generator is the only file that knows which library is underneath. Three sizes, and the classes
 are the only place weight is tuned:
 
 | class | size | stroke-width | on screen |
@@ -209,12 +211,13 @@ are the only place weight is tuned:
 | `.i-16` | 16px | 1.56 | 1.04px |
 | `.i-12` | 12px | 1.92 | 0.96px |
 
-`on-screen stroke = stroke-width × rendered size ÷ viewBox`, and MynaUI's
-viewBox is 24. **The stroke number goes UP as the icon gets smaller** — it is
+`on-screen stroke = stroke-width × rendered size ÷ viewBox`, and the set's
+viewBox is 24 (as MynaUI's was before it — which is why swapping sets in August
+cost no re-measuring). **The stroke number goes UP as the icon gets smaller** — it is
 compensating for the shrinking viewBox so apparent weight stays constant. A new
 size follows the same formula; do not eyeball it.
 
-**⚠️ The width is set on the CHILDREN (`.i > *`), never on the `<svg>`.** MynaUI
+**⚠️ The width is set on the CHILDREN (`.i > *`), never on the `<svg>`.** The set
 puts `stroke-width` on each path as a presentation attribute, and a declaration
 on an element always beats a value inherited from its parent — so setting it on
 `.i` alone does nothing at all and the set's own 1.5 wins in silence.

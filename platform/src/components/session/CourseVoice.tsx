@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { MynaIcon } from "@/components/icons/myna";
+import { HugeIcon } from "@/components/icons/huge";
 import { AskMic } from "@/components/home/ask-mic";
 import { courseTone } from "@/components/home/tones";
 import { BottomGlow, type GlowState } from "./BottomGlow";
@@ -292,7 +292,7 @@ export function CourseVoice({
           would be the chrome this route left the dashboard group to escape. */}
       <header className="vox-top">
         <Link href="/dashboard" className="vox-back" aria-label="Back to your courses">
-          <MynaIcon name="chevron-left" size={19} />
+          <HugeIcon name="chevron-left" size={19} />
         </Link>
         {/* The course, quietly. Not a heading — the student just tapped this
             course and knows what they tapped. It is here so a reloaded or
@@ -418,7 +418,7 @@ export function CourseVoice({
           aria-label={mic === "listening" ? "Stop listening" : "Talk"}
         >
           {mic === "listening" ? (
-            <MynaIcon name="microphone-off" size={22} />
+            <HugeIcon name="microphone-off" size={22} />
           ) : (
             <AskMic size={22} />
           )}

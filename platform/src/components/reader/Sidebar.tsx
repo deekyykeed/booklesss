@@ -20,8 +20,7 @@ import { gateStepLink } from "@/lib/account";
 import { courseForNode } from "@/lib/courses";
 import { useProgress } from "@/lib/progress";
 import { CompletionRing } from "./CompletionRing";
-import { MynaIcon } from "@/components/icons/myna";
-import { MingcuteIcon } from "@/components/icons/mingcute";
+import { HugeIcon } from "@/components/icons/huge";
 
 const STEP = 18;
 const RAIL = 2;
@@ -107,17 +106,18 @@ const useIso = typeof document !== "undefined" ? useLayoutEffect : useEffect;
 /* One glyph, rotated rather than swapped for a second one, so the arrow turns
  * as the group opens instead of cutting to a different mark.
  *
- * Mingcute rather than MynaUI — the owner's pick for this one caret (the set's
- * "Down Small Line", which rotated is its "Right Small Line"). It is a much
- * smaller mark inside the same 24-grid than MynaUI's chevron: 5.7 units across
- * where MynaUI's is 12. Hence the larger box and the lighter stroke — 22px at
- * 1.5 keeps the drawn glyph legible and its weight in step with the MynaUI
- * icons it sits beside, which would otherwise read as two different sets. */
+ * ⚠️ THIS WAS A MINGCUTE CARET UNTIL 2026-08-29, and the swap to Hugeicons
+ * changed how big it reads. Mingcute's "Down Small Line" is 5.7 units across
+ * inside the 24-grid where a normal chevron is 12, which is why it was drawn
+ * at 22px — the box had to grow for the small glyph to be legible. Hugeicons'
+ * chevron is a full-size mark, so it comes back to the app's own 20px and
+ * needs no compensation. It is a more prominent caret than the one it
+ * replaces; that was a deliberate pick once, and is worth a look. */
 function Chevron({ open, active }: { open: boolean; active?: boolean }) {
   return (
-    <MingcuteIcon
-      name="down-small-line"
-      size={22}
+    <HugeIcon
+      name="chevron-down"
+      size={20}
       strokeWidth={1.5}
       className={
         "shrink-0 transition-transform duration-200 " +
@@ -128,7 +128,7 @@ function Chevron({ open, active }: { open: boolean; active?: boolean }) {
   );
 }
 function PanelIcon() {
-  return <MynaIcon name="sidebar" size={18} />;
+  return <HugeIcon name="sidebar" size={18} />;
 }
 
 /* Measured-height expand/collapse — animates from 0 to the content's real
@@ -198,7 +198,7 @@ type Ctx = {
  * the same glyph the home rail marks Dashboard with, so the way out of a course
  * looks the same from either side. */
 function DashboardGlyph() {
-  return <MynaIcon name="layout-dashboard" size={17} className="shrink-0" />;
+  return <HugeIcon name="layout-dashboard" size={17} className="shrink-0" />;
 }
 
 /* Per-step completion, at the end of its row. Always rendered so the row width

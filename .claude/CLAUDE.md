@@ -201,14 +201,24 @@ content, socials, web:
 
 ### Platform Icons (Next.js)
 
-Most icons in `platform/` come from the **MynaUI** set (by Praveen Juge) via the local `@iconify-json/mynaui` package — no MCP, no network. MynaUI became the system on 2026-07-30 (owner's call): the course cards had worn it since they were built, and the rest of the chrome was moved onto it to match. The old `src/lib/icon.tsx` renderer was removed then and has not come back.
+Most icons in `platform/` come from **Hugeicons Free** (MIT) via **Hugeicons' own `@hugeicons/core-free-icons`** package — the official free tier, 14,716 exports, not a third-party mirror (Iconify's copy of the set carries ~5,065). No MCP, no network. It replaced **MynaUI** on 2026-08-29 (owner's call) and the swap was cheap for one reason: both are stroke sets on a **24 grid at 1.5**, so nothing had to be re-measured. MynaUI had been the system since 2026-07-30; `src/components/icons/myna.tsx` and `mingcute.tsx` are gone with it, in git rather than parked.
 
-**To use an icon:** `<MynaIcon name="search" />` from `platform/src/components/icons/myna.tsx` — plain name for MynaUI Line, `-solid` for its filled twin (what the sidebars mark the current row with). Optional props: `size`, `strokeWidth`, `className`, `style`. Browse names at [icones.js.org/collection/mynaui](https://icones.js.org/collection/mynaui).
+**To use an icon:** `<HugeIcon name="search" />` from `platform/src/components/icons/huge.tsx`. Optional props: `size`, `strokeWidth`, `className`, `style`. Browse the set at [icones.js.org/collection/hugeicons](https://icones.js.org/collection/hugeicons).
+
+**Why generate instead of `@hugeicons/react`:** their component is the official path and would work — the set tree-shakes. It was not taken because every call site would then import an icon *symbol* (`import { Search01Icon } from …`) instead of naming one (`name="search"`), and because generating keeps the runtime at zero: the bodies are strings in the module, no library ships to the browser.
+
+⚠️ **THE NAMES ARE THE APP'S VOCABULARY, NOT THE SET'S.** Call sites say `name="chevron-down"`, not `name="arrow-down-01"`; the map from one to the other lives in `scripts/gen-huge-icons.mjs` and nowhere else. That indirection is what made the MynaUI → Hugeicons swap a column of edits in the generator instead of a rename across two dozen components — keep it that way, and do not let a set's own naming leak into a component.
+
+⚠️ **THERE ARE NO FILLED TWINS.** MynaUI's `-solid` variants marked a selected row (line at rest, solid when active); Hugeicons Free is stroke-only. Exactly one place used one — the course card's completion mark — and it reads lighter now. **Any surface that needs a selected state must get its second signal from somewhere other than a fill** (a background, a rule, a colour), which is what the sidebars already do.
+
+⚠️ **STROKE WIDTHS ARE NORMALISED TO 1.5 BY THE GENERATOR.** Most of Hugeicons is drawn at 1.5, but a handful carry 1.45, 2, 2.5 or 3 — mixed in one row that reads as a wobble rather than a choice, and it makes the `strokeWidth` prop behave differently icon to icon.
+
+**A glyph the set does not have** goes in `CUSTOM` in the generator, drawn on the same 24 grid at the same 1.5 so it sits in a row with the rest. There is currently **one**: the drawer's hamburger (owner's sketch, 2026-08-29 — wider spacing than `menu-01` and a short third bar; Hugeicons has eleven menu variants and none is that). Keep that map as close to empty as possible: every entry is a drawing nobody else maintains, which is the debt the hand-drawn sprite this set replaced had run up.
 
 **That module is generated.** Adding an icon = add the name to `ICONS` in `platform/scripts/gen-icons.mjs`, run `npm run gen:icons`, done. Only the paths actually drawn are inlined, which is why it works in client components — importing the 2,650-icon set into one would ship the lot to the browser. Never hand-edit the generated file; unknown names fail the generator loudly rather than rendering nothing.
 
 **Five exceptions, all deliberate:**
-- The composer's attachment chips use **Streamline Ultimate Colors (Free)** file-type badges (`reader/file-icons.tsx`) and the course cards use **Streamline Plump** gradient marks (`home/plump-glyphs.tsx`, `home/course-glyphs.tsx`). Both are multicolour on purpose — the colour is what carries the meaning — so they keep their own fills rather than following `currentColor`. CC BY 4.0, attribution still owed (as with MynaUI).
+- The composer's attachment chips use **Streamline Ultimate Colors (Free)** file-type badges (`reader/file-icons.tsx`) and the course cards use **Streamline Plump** gradient marks (`home/plump-glyphs.tsx`, `home/course-glyphs.tsx`). Both are multicolour on purpose — the colour is what carries the meaning — so they keep their own fills rather than following `currentColor`. CC BY 4.0, attribution still owed.
 - The reader's **three checkpoint answers** are **Lordicon doodles, animated** (owner's pick, 2026-08-09: *"let's go back to the lordicons i had a few iterations before"*) — grey at rest via `filter: grayscale(1)`, their own colours when chosen, and the tapped one plays. Self-hosted Lotties in `public/reader/icons/`, drawn by `<LordIcon>`; the full path and its traps are in **WORKSPACE.md → "Animated icons"**, and the licence there is **unsettled and now shipping**. Two things that cost a rebuild: **`colorize` erases a filled drawing** (it flattens *every* colour, so a grey rest state paints the eyes the same grey as the head — use a CSS filter), and **replay must key on a per-icon counter, not on "am I chosen"**, or the mark you just turned off replays too.
 
   **Tabler is the `fallback` under them, and that is load-bearing** — a Lottie is a fetch, and this reader is read on Zambian mobile data. `LordIcon` draws the fallback until its JSON lands and leaves it there forever if the fetch fails, so a bad connection gets a static Tabler mark rather than a hole.
@@ -247,10 +257,10 @@ Most icons in `platform/` come from the **MynaUI** set (by Praveen Juge) via the
   carries neither colour. Plump was already here twice by hand — the course
   cards' gradient marks (`home/plump-glyphs.tsx`) and the ask microphone
   (`home/ask-mic.tsx`); both are independent and untouched.
-- The reader sidebar's **lesson caret** is **Mingcute** (owner's pick, 2026-07-31): `<MingcuteIcon name="down-small-line" />` from `platform/src/components/icons/mingcute.tsx`, generated the same way (`ICONS` in `scripts/gen-mingcute-icons.mjs` → `npm run gen:mingcute`). Mingcute's grid draws a much smaller mark than MynaUI's at the same size and strokes it at 2 rather than 1.5, so anything borrowed from it needs its `size`/`strokeWidth` set against the MynaUI icons beside it. Keep this set narrow — MynaUI is still the system.
+- The reader sidebar's **lesson caret** was **Mingcute** from 2026-07-31 until the Hugeicons swap on 2026-08-29, and that whole set existed for that one mark. Mingcute's "Down Small Line" is 5.7 units across inside the 24 grid where a normal chevron is 12, which is why it was drawn at 22px — the box had to grow for a small glyph to stay legible. It is the app's own `chevron-down` at 20px now and needs no compensation, but it is a **more prominent caret than the one it replaces**; that smallness was a deliberate pick once and is worth a look.
 - **Solar** (by 480 Design) is on **two** surfaces plus one fallback: `/workspace` in Solar **Linear**, the dashboard's four **stat cards** in Solar **Duotone** (owner's pick, 2026-08-01), and — as of 2026-08-09 — the note control's **offline fallback** in Solar **Broken**/**Bold Duotone** (a stroke drawing with a deliberate gap at rest, the duotone in the verdict's own inline hue when chosen; it draws only while the Lordicon Lottie hasn't loaded). That last one passes its hue inline and sits on a white surface, which the standing lesson below forbids for a *primary* mark — allowed here because fallback duty is exactly the "carrying its own hue" case, and it exists to be replaced by artwork that does the same. It was on a third — the reader's **callout kinds**, 2026-08-02 to 2026-08-07 — and **that is now MynaUI in ink** (owner: *"the icon should be a black mynaui icon"*), with the mark moved to the left of the sentence rather than sitting on a line of its own. **The standing lesson below was reached a second time and from the other direction:** a callout is a white box, so it never gave its mark a hue, and a filled Duotone glyph was importing one. The four names were still in `gen-icons.mjs` from when kinds first shipped, so nothing had to be regenerated to come back. `<SolarIcon name="chart-2-bold-duotone" />` from `platform/src/components/icons/solar.tsx`, generated like the rest (`ICONS` in `scripts/gen-solar-icons.mjs` → `npm run gen:solar`). A `-bold-duotone` name draws two `currentColor` fills, the back one at `opacity .5`, so the mark shades itself out of whatever hue its tile sets — no second colour to pass. **The standing lesson, now confirmed twice: Duotone belongs on a tile that gives it its own hue, not on a white surface and not in a row of outline chrome.** On 2026-08-02 the reader briefly had three Duotone marks in the checkpoint row (a thumbs pair on the answers, a bubble on the note button) and the owner moved all three back to MynaUI the same day, because Duotone is *filled* and sat heavy beside the hairlines around it. The callout was argued at the time to be the other case — a mark alone on a container carrying its own hue, like the stat tiles. **Five days of reading it said otherwise**: the stat tile is a coloured tile and a callout is a white box, so the callout was not giving the mark a hue, the mark was bringing one in. The dashboard tiles are the only place left where the argument actually holds. Adding a third surface is a decision, not a convenience.
 
-Everything else monochrome is MynaUI.
+Everything else monochrome is Hugeicons.
 
 ### Domain, Link Previews and Sharing (Next.js)
 
@@ -358,7 +368,7 @@ It lives in three places: the ladder comment and the two `h2` renderers in `read
 
 **They are free on every other route.** `next/font` emits a `@font-face` per family and a browser fetches a face only when something rendered actually asks for it; `/` is the only page that does. **Do not reach for these inside the app** — the four faces above are the system, and the front door is a deliberate exception, not a widened palette.
 
-Everything else monochrome is MynaUI.
+Everything else monochrome is Hugeicons.
 
 **Never** hardcode Framer CDN URLs for icons — always inline SVG so icons respond to `color` CSS.
 
@@ -627,14 +637,14 @@ is retired here. Keep it retired.
   a full-screen blur on a phone, affordable only because it lives for the
   seconds an overlay is open. **Never on persistent chrome.**
 
-**The icons are MynaUI, not the reference's sprite** (2026-08-29). The file
+**The icons are the app's set, not the reference's sprite** (2026-08-29). The file
 shipped 19 paths eyeballed onto a 20 grid with no set behind them. The swap was
 free because the grids agree: `on-screen stroke = stroke-width × size ÷
-viewBox`, and MynaUI's native 1.5 on a 24 viewBox is `1.5 × 20/24 = 1.25` —
+viewBox`, and the set's native 1.5 on a 24 viewBox is `1.5 × 20/24 = 1.25` —
 exactly what the sprite had. `.i` / `.i-16` / `.i-12` still own the weight
 (1.5 / 1.56 / 1.92, going **up** as the icon shrinks, to hold apparent weight
 constant). ⚠️ **The width is set on the children (`.i > *`), never the `<svg>`**
-— MynaUI puts `stroke-width` on each path, and a declaration on an element
+— the set puts `stroke-width` on each path, and a declaration on an element
 beats a value inherited from its parent, so setting it on `.i` does nothing and
 the set's 1.5 wins in silence. The "Stop Claude" pill was removed in the same
 change.

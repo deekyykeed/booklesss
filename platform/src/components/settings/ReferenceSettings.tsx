@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
+import { HugeIcon, type HugeIconName } from "@/components/icons/huge";
 
 /* ------------------------------------------------------------------ *
  * The reference settings dialog, reproduced.
@@ -140,7 +140,7 @@ export function ReferenceSettings() {
               className="grid h-7 w-7 place-items-center rounded-[8px] border-0 bg-transparent transition-colors hover:bg-[rgba(11,11,11,0.05)]"
               style={{ color: INK }}
             >
-              <MynaIcon name="x" size={18} strokeWidth={1.6} />
+              <HugeIcon name="x" size={18} strokeWidth={1.6} />
             </button>
           </div>
 
@@ -378,7 +378,7 @@ function Select({ value, label }: { value: string; label: string }) {
     >
       <span style={{ fontSize: 14, fontWeight: 400, lineHeight: "20px", color: INK }}>{value}</span>
       <span style={{ color: MUTED }}>
-        <MynaIcon name="chevron-down" size={16} />
+        <HugeIcon name="chevron-down" size={16} />
       </span>
     </button>
   );
@@ -434,7 +434,7 @@ function IconSegmented({
 }: {
   value: string;
   onChange: (v: string) => void;
-  options: { id: string; icon: MynaIconName; label: string }[];
+  options: { id: string; icon: HugeIconName; label: string }[];
   label: string;
 }) {
   return (
@@ -457,7 +457,7 @@ function IconSegmented({
               boxShadow: on ? "0 1px 2px rgba(11,11,11,0.10)" : "none",
             }}
           >
-            <MynaIcon name={o.icon} size={16} strokeWidth={1.5} />
+            <HugeIcon name={o.icon} size={16} strokeWidth={1.5} />
           </button>
         );
       })}

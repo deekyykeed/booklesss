@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
+import { HugeIcon, type HugeIconName } from "@/components/icons/huge";
 import { Account } from "./Account";
 import { CommandSearch } from "./CommandSearch";
 import { ShareControl } from "./ShareControl";
@@ -8,7 +8,7 @@ import { MobileMenuButton } from "./reader/MobileNav";
 /* Shared, fixed 48px header. Transparent so the blob backdrop shows through;
  * the only boxy element is the 1px #dfdfdf bottom hairline. px-16, space-between. */
 
-function CircleButton({ icon, label, className = "" }: { icon: MynaIconName; label: string; className?: string }) {
+function CircleButton({ icon, label, className = "" }: { icon: HugeIconName; label: string; className?: string }) {
   return (
     <button
       type="button"
@@ -19,7 +19,7 @@ function CircleButton({ icon, label, className = "" }: { icon: MynaIconName; lab
         className
       }
     >
-      <MynaIcon name={icon} size={16} />
+      <HugeIcon name={icon} size={16} />
     </button>
   );
 }
@@ -78,7 +78,7 @@ export function TopBar({
               {orgName}
             </span>
           </Link>
-          <MynaIcon name="chevron-down" size={14} className="hidden text-muted md:block" />
+          <HugeIcon name="chevron-down" size={14} className="hidden text-muted md:block" />
         </div>
 
         {/* desktop only — on mobile the drawer carries navigation instead */}

@@ -42,7 +42,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { FIELD } from "@/components/ui/Field";
 import { WhatsAppMark } from "@/components/icons/whatsapp";
-import { MynaIcon } from "@/components/icons/myna";
+import { HugeIcon } from "@/components/icons/huge";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { AvatarPicker } from "@/components/identity/AvatarPicker";
 import { type AvatarId } from "@/components/identity/avatars";
@@ -1206,7 +1206,7 @@ export function OnboardingFlow() {
                 with `FIELD`; the three must never disagree. */}
             {allProgrammes.length > 8 && (
               <div className="mb-4 flex items-center gap-2 border-b-2 border-line transition-colors focus-within:border-ink">
-                <MynaIcon name="search" size={18} className="shrink-0 text-placeholder" />
+                <HugeIcon name="search" size={18} className="shrink-0 text-placeholder" />
                 <input
                   value={progQuery}
                   onChange={(e) => setProgQuery(e.target.value)}
@@ -1764,7 +1764,7 @@ export function OnboardingFlow() {
               ].map((line) => (
                 <div key={line} className="flex items-start gap-2.5">
                   <span className="mt-0.5 shrink-0 text-ink-2">
-                    <MynaIcon name="check" size={16} />
+                    <HugeIcon name="check" size={16} />
                   </span>
                   <p className="text-[14px] leading-5 text-ink-2">{line}</p>
                 </div>

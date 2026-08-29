@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { MynaIcon } from "@/components/icons/myna";
+import { HugeIcon } from "@/components/icons/huge";
 import { AskMic } from "../ask-mic";
 import { askFirstMessage, askOpener, askPrompt, type AskContext } from "@/lib/ask";
 import { labelFor } from "@/lib/course";
@@ -371,7 +371,7 @@ export function AskDock() {
               <div className="ask-topbar">
                 <span className="ask-title">Ask</span>
                 <button type="button" onClick={close} className="ask-quiet-btn" aria-label="Close">
-                  <MynaIcon name="x" size={17} />
+                  <HugeIcon name="x" size={17} />
                 </button>
               </div>
 
@@ -451,7 +451,7 @@ export function AskDock() {
                 aria-label={muted ? "Unmute" : "Mute"}
                 aria-pressed={muted}
               >
-                <MynaIcon name={muted ? "microphone-off" : "microphone"} size={19} />
+                <HugeIcon name={muted ? "microphone-off" : "microphone"} size={19} />
               </button>
             ) : null}
 
@@ -473,7 +473,7 @@ export function AskDock() {
               className="ask-primary-btn ask-circle"
               aria-label={typed ? "Send" : inCall ? "End the call" : "Start a voice chat"}
             >
-              <MynaIcon
+              <HugeIcon
                 name={typed ? "arrow-up" : inCall ? "telephone-off" : "microphone"}
                 size={19}
               />

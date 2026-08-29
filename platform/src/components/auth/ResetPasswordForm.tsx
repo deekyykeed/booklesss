@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
-import { MynaIcon } from "@/components/icons/myna";
+import { HugeIcon } from "@/components/icons/huge";
 import { browserClient } from "@/lib/supabase/browser";
 import { MIN_PASSWORD, weakness } from "@/lib/password";
 
@@ -171,7 +171,7 @@ export function ResetPasswordForm() {
             className="grid h-7 w-7 shrink-0 place-items-center rounded-[6px] bg-transparent text-muted transition-colors hover:bg-active"
             tabIndex={-1}
           >
-            <MynaIcon name={show ? "eye-off" : "eye"} size={16} strokeWidth={1.6} />
+            <HugeIcon name={show ? "eye-off" : "eye"} size={16} strokeWidth={1.6} />
           </button>
         }
       />

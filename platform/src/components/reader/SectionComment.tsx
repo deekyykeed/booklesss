@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { Section } from "@/lib/course";
-import { MynaIcon } from "@/components/icons/myna";
+import { HugeIcon } from "@/components/icons/huge";
 import { needsAccount } from "@/lib/account";
 import { requireAccount } from "@/lib/onboarding";
 import {
@@ -165,7 +165,7 @@ export function StepComments({
               className="squircle rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-active"
             >
               <span className="flex items-center gap-1.5 text-[11.5px] text-muted">
-                <MynaIcon name="message-dots" size={12} strokeWidth={1.6} />
+                <HugeIcon name="message-dots" size={12} strokeWidth={1.6} />
                 <span className="min-w-0 flex-1 truncate">{s.heading}</span>
               </span>
               {/* Two lines of what was written — enough to recognise it,

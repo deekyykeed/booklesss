@@ -9,7 +9,7 @@ import {
   type Lesson,
 } from "@/lib/course";
 import { links, runs, STEP_SCHEME, type Run } from "@/lib/emphasis";
-import { MynaIcon, type MynaIconName } from "@/components/icons/myna";
+import { HugeIcon, type HugeIconName } from "@/components/icons/huge";
 import { CardGlyph, isCardGlyph } from "./card-glyphs";
 import { CodePlayground } from "./CodePlayground";
 import { Checkpoint, StepComplete } from "./Checkpoint";
@@ -140,7 +140,7 @@ const CARD_TONES = ["#eb6834", "#4a3aa7", "#17754d", "#2a78d6"];
  * reader still hears "In the exam", and a mouse still gets it. What is lost is
  * specific to a sighted, tap-only reader meeting a mark for the first time,
  * which is the same open question the label-less checkpoint row carries. */
-const CALLOUTS: Record<CalloutKind, { label: string; icon: MynaIconName }> = {
+const CALLOUTS: Record<CalloutKind, { label: string; icon: HugeIconName }> = {
   key: { label: "Key point", icon: "key" },
   warning: { label: "Watch out", icon: "danger-triangle" },
   example: { label: "Example", icon: "clipboard" },
@@ -514,7 +514,7 @@ function renderBlock(b: Block) {
             first line rather than on its own box — with 27px of leading, top
             edge to top edge sits the mark visibly high. */}
         <div className="flex h-[27px] shrink-0 items-center text-ink" title={kind.label}>
-          <MynaIcon name={kind.icon} size={14} />
+          <HugeIcon name={kind.icon} size={14} />
           {/* Off-screen, not absent: the mark has no text of its own, so this
               is what a screen reader announces. Same trick as .grasp-label. */}
           <span className="grasp-label">{kind.label}</span>
