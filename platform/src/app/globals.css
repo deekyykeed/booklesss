@@ -4028,3 +4028,41 @@
     touch-action: pan-y pinch-zoom;
   }
 }
+
+/* ---- the composer's dock (2026-08-29) -----------------------------
+ * The composer sits at the foot of the pane rather than in the scroll,
+ * so it is always reachable and the greeting scrolls behind it.
+ *
+ * ⚠️ IT IS NOT `position: fixed`, AND IT DELIBERATELY DOES NOT NEED TO BE.
+ * `.pane` is a flex column — header, scroller, this — so a sibling after
+ * the scroller lands at the bottom by construction. That gets three things
+ * free that a fixed element has to be told: it is inset by the sidebar on
+ * desktop (it lives inside the pane, not the viewport), it can never overlap
+ * the content above it, and it cannot be captured by an ancestor that later
+ * gains a transform or a backdrop-filter. A bottom-docked composer is the
+ * usual reason a surface's first `position: fixed` appears; this one does
+ * not, and the rule stays intact.
+ *
+ * Its horizontal metrics mirror `.pane-inner` exactly — same max-width, same
+ * stepped padding — so the composer stays in the same column as the greeting
+ * above it at every width. Change one and change the other.
+ * ------------------------------------------------------------------ */
+.cui .composer-dock {
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 8px 56px calc(20px + env(safe-area-inset-bottom, 0px));
+  background: var(--page-bg);
+}
+@media (max-width: 900px) {
+  .cui .composer-dock { padding-left: 32px; padding-right: 32px; }
+}
+@media (max-width: 640px) {
+  .cui .composer-dock { padding-left: 16px; padding-right: 16px; }
+}
+
+/* With the composer gone from the scroller, the greeting is the only thing
+   left in it — so it centres in the space above the dock rather than being
+   pushed off-centre by a box that is no longer its sibling. */
+.cui .pane-inner { padding-bottom: 8px; }
