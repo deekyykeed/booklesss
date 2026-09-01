@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-29 (session 65)
+**Last updated:** 2026-09-01 (session 66)
 
 ---
 
@@ -91,6 +91,22 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 66 (2026-09-01, a short session — no Booklesss work. One
+Khadzika email drafted; `linear-server`, Slack, Attio and design-bridge all
+unauthorized, so nothing could be ticketed.)**
+
+- [ ] **A Gmail draft is waiting to be sent, and it is INCOMPLETE.** "HYTORC
+      comment on test certificate — MXTP03", to Vincent Nambo at BIA, cc
+      Hendrix Mumba, Noah Gondwe and the three internal addresses. **The PDF is
+      not attached** — this session can read Gmail but cannot pull an
+      attachment out of it, so the file (`HYTORC COMMENT ON TEST CERTIFICATE -
+      MXTP03.pdf`, on Doc's 12:57 mail of 2026-09-01) has to be added by hand
+      before sending. The covering line says the comment answers "the
+      calibration query raised on your side" — written without opening the PDF,
+      so it is worth checking against what the document actually says.
+- [ ] **Everything below from session 65 carried unchanged** — nothing this
+      session touched the platform.
 
 **From session 65 (2026-08-29, the composer learns to be used. Linear REACHABLE
 this session — BOO-44 closed, BOO-45 and BOO-46 opened — so the items below are
@@ -1708,6 +1724,30 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-09-01 (session 66 — a BIA email, and four connectors that would not authorize)
+
+**Done:**
+- **Drafted HYTORC's test-certificate comment through to BIA.** Doc asked for
+  the MXTP03 comment to go to BIA "to whom it may concern"; the owner named
+  Vincent Nambo, with Hendrix Mumba and Noah Gondwe copied. Left as a Gmail
+  draft rather than a forward, on the owner's call, so Doc's internal line
+  ("Dikhilani, can you send this to BIA…") does not travel to the customer.
+
+**Not done, and why:**
+- **The PDF could not be attached.** The Gmail connector in this session reads
+  messages and attachment *metadata*; there is no attachment-download tool, so
+  the bytes never reach a draft. Forwarding was the only way to carry the file
+  automatically and that was declined for the reason above. The owner attaches
+  it by hand.
+- **The covering note was written without reading the attachment**, for the
+  same reason. It claims nothing about the document's contents beyond its
+  title.
+- **No Linear ticket.** `linear-server` needs a one-time OAuth and this session
+  is non-interactive; Slack, Attio and design-bridge are in the same state.
+
+**Nothing in `platform/` was touched**, so every open item from session 65
+stands exactly as written.
 
 ### Session 2026-08-29 (session 65 — the composer learns to be used)
 
