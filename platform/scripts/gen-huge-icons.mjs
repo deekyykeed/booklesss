@@ -111,6 +111,24 @@ const ICONS = {
      with it — a vocabulary entry called "ghost" pointing at a hat and glasses
      is the kind of drift that makes the next person distrust the map. */
   incognito: "incognito",
+
+  // Settings modal nav + Projects/Artifacts pages (2026-09-13)
+  "user-circle": "user-circle", // Settings: Account
+  shield: "shield-01", // Settings: Privacy
+  "credit-card": "credit-card", // Settings: Billing
+  "chart-bar": "chart-column", // Settings: Usage
+  toolbox: "toolbox", // Settings: Capabilities
+  brain: "brain", // Settings: Memory
+  globe: "globe", // Settings: Claude in Chrome
+  puzzle: "puzzle", // Settings: Plugins
+  grid: "grid", // Settings: Connectors
+  file: "file-01", // Settings: Skills
+  "info-circle": "information-circle", // neutral/amber info boxes
+  refresh: "refresh-01", // Usage: "last updated" refresh
+  dots: "more-horizontal", // Artifacts card "more options"
+  lock: "lock", // Artifacts card: private
+  "arrow-up-right": "arrow-up-right-01", // external-link rows (API keys, Manage)
+  rows: "layout-list", // Settings: Cowork
 };
 
 /* ⚠️ GLYPHS THE SET DOES NOT HAVE, drawn on Hugeicons' own 24 grid at its own

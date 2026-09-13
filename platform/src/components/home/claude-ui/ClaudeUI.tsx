@@ -3,7 +3,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { HugeIcon } from "@/components/icons/huge";
 import { ResourcePacks } from "./ResourcePacks";
+import { SettingsModal } from "./SettingsModal";
+import { ProjectsPage } from "./ProjectsPage";
+import { ArtifactsPage } from "./ArtifactsPage";
 import { packsSnapshot } from "@/lib/resource-packs";
+
+type View = "chat" | "projects" | "artifacts";
 
 /* ------------------------------------------------------------------ *
  * THE REFERENCE UI, VERBATIM.
@@ -48,6 +53,8 @@ import { packsSnapshot } from "@/lib/resource-packs";
 export function ClaudeUI() {
   const [headerSeg, setHeaderSeg] = useState(0);
   const [navOpen, setNavOpen] = useState(false);
+  const [view, setView] = useState<View>("chat");
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   /* Which resource packs this session explains against. A Set because the
      picker is multi-select and order carries no meaning — the modal renders
@@ -379,7 +386,14 @@ export function ClaudeUI() {
 
           <div className="sb-body">
             <div className="rows">
-              <a className="row row-new" href="#">
+              <a
+                className="row row-new"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setView("chat");
+                }}
+              >
                 <span className="slot">
                   <HugeIcon name="plus" className="i i-16" />
                 </span>
@@ -389,13 +403,27 @@ export function ClaudeUI() {
                   <HugeIcon name="edit" className="i i-16" />
                 </button>
               </a>
-              <a className="row" href="#">
+              <a
+                className={"row" + (view === "projects" ? " is-selected" : "")}
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setView("projects");
+                }}
+              >
                 <span className="slot">
                   <HugeIcon name="folder" className="i" />
                 </span>
                 <span className="label">Projects</span>
               </a>
-              <a className="row" href="#">
+              <a
+                className={"row" + (view === "artifacts" ? " is-selected" : "")}
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setView("artifacts");
+                }}
+              >
                 <span className="slot">
                   <HugeIcon name="component" className="i" />
                 </span>
@@ -453,7 +481,12 @@ export function ClaudeUI() {
               <span className="label">Design</span>
             </a>
             <div className="user-row">
-              <button className="user-btn">
+              <button
+                className="user-btn"
+                onClick={() => setSettingsOpen(true)}
+                aria-haspopup="dialog"
+                aria-expanded={settingsOpen}
+              >
                 <span className="avatar" />
                 <span className="user-name">Deeky</span>
                 <span className="user-plan">&nbsp;· Pro</span>
@@ -491,26 +524,31 @@ export function ClaudeUI() {
               <HugeIcon name="menu" className="i" />
             </button>
             <span className="grow" />
-            <button className="head-btn" aria-label="Use incognito">
-              <HugeIcon name="incognito" className="i" />
-            </button>
+            {view === "chat" && (
+              <button className="head-btn" aria-label="Use incognito">
+                <HugeIcon name="incognito" className="i" />
+              </button>
+            )}
           </header>
 
           <div className="pane-scroll">
-            <div className="pane-inner">
-              <div className="center">
-                <div className="greeting">
-                  <svg className="spark" viewBox="0 0 100 100" aria-hidden="true">
-                    <path
-                      fill="#d97757"
-                      d="m19.6 66.5 19.7-11 .3-1-.3-.5h-1l-3.3-.2-11.2-.3L14 53l-9.5-.5-2.4-.5L0 49l.2-1.5 2-1.3 2.9.2 6.3.5 9.5.6 6.9.4L38 49.1h1.6l.2-.7-.5-.4-.4-.4L29 41l-10.6-7-5.6-4.1-3-2-1.5-2-.6-4.2 2.7-3 3.7.3.9.2 3.7 2.9 8 6.1L37 36l1.5 1.2.6-.4.1-.3-.7-1.1L33 25l-6-10.4-2.7-4.3-.7-2.6c-.3-1-.4-2-.4-3l3-4.2L28 0l4.2.6L33.8 2l2.6 6 4.1 9.3L47 29.9l2 3.8 1 3.4.3 1h.7v-.5l.5-7.2 1-8.7 1-11.2.3-3.2 1.6-3.8 3-2L61 2.6l2 2.9-.3 1.8-1.1 7.7L59 27.1l-1.5 8.2h.9l1-1.1 4.1-5.4 6.9-8.6 3-3.5L77 13l2.3-1.8h4.3l3.1 4.7-1.4 4.9-4.4 5.6-3.7 4.7-5.3 7.1-3.2 5.7.3.4h.7l12-2.6 6.4-1.1 7.6-1.3 3.5 1.6.4 1.6-1.4 3.4-8.2 2-9.6 2-14.3 3.3-.2.1.2.3 6.4.6 2.8.2h6.8l12.6 1 3.3 2 1.9 2.7-.3 2-5.1 2.6-6.8-1.6-16-3.8-5.4-1.3h-.8v.4l4.6 4.5 8.3 7.5L89 80.1l.5 2.4-1.3 2-1.4-.2-9.2-7-3.6-3-8-6.8h-.5v.7l1.8 2.7 9.8 14.7.5 4.5-.7 1.4-2.6 1-2.7-.6-5.8-8-6-9-4.7-8.2-.5.4-2.9 30.2-1.3 1.5-3 1.2-2.5-2-1.4-3 1.4-6.2 1.6-8 1.3-6.4 1.2-7.9.7-2.6v-.2H49L43 72l-9 12.3-7.2 7.6-1.7.7-3-1.5.3-2.8L24 86l10-12.8 6-7.9 4-4.6-.1-.5h-.3L17.2 77.4l-4.7.6-2-2 .2-3 1-1 8-5.5Z"
-                    />
-                  </svg>
-                  <span className="txt">Good evening, Deeky</span>
+            {view === "chat" && (
+              <div className="pane-inner">
+                <div className="center">
+                  <div className="greeting">
+                    <svg className="spark" viewBox="0 0 100 100" aria-hidden="true">
+                      <path
+                        fill="#d97757"
+                        d="m19.6 66.5 19.7-11 .3-1-.3-.5h-1l-3.3-.2-11.2-.3L14 53l-9.5-.5-2.4-.5L0 49l.2-1.5 2-1.3 2.9.2 6.3.5 9.5.6 6.9.4L38 49.1h1.6l.2-.7-.5-.4-.4-.4L29 41l-10.6-7-5.6-4.1-3-2-1.5-2-.6-4.2 2.7-3 3.7.3.9.2 3.7 2.9 8 6.1L37 36l1.5 1.2.6-.4.1-.3-.7-1.1L33 25l-6-10.4-2.7-4.3-.7-2.6c-.3-1-.4-2-.4-3l3-4.2L28 0l4.2.6L33.8 2l2.6 6 4.1 9.3L47 29.9l2 3.8 1 3.4.3 1h.7v-.5l.5-7.2 1-8.7 1-11.2.3-3.2 1.6-3.8 3-2L61 2.6l2 2.9-.3 1.8-1.1 7.7L59 27.1l-1.5 8.2h.9l1-1.1 4.1-5.4 6.9-8.6 3-3.5L77 13l2.3-1.8h4.3l3.1 4.7-1.4 4.9-4.4 5.6-3.7 4.7-5.3 7.1-3.2 5.7.3.4h.7l12-2.6 6.4-1.1 7.6-1.3 3.5 1.6.4 1.6-1.4 3.4-8.2 2-9.6 2-14.3 3.3-.2.1.2.3 6.4.6 2.8.2h6.8l12.6 1 3.3 2 1.9 2.7-.3 2-5.1 2.6-6.8-1.6-16-3.8-5.4-1.3h-.8v.4l4.6 4.5 8.3 7.5L89 80.1l.5 2.4-1.3 2-1.4-.2-9.2-7-3.6-3-8-6.8h-.5v.7l1.8 2.7 9.8 14.7.5 4.5-.7 1.4-2.6 1-2.7-.6-5.8-8-6-9-4.7-8.2-.5.4-2.9 30.2-1.3 1.5-3 1.2-2.5-2-1.4-3 1.4-6.2 1.6-8 1.3-6.4 1.2-7.9.7-2.6v-.2H49L43 72l-9 12.3-7.2 7.6-1.7.7-3-1.5.3-2.8L24 86l10-12.8 6-7.9 4-4.6-.1-.5h-.3L17.2 77.4l-4.7.6-2-2 .2-3 1-1 8-5.5Z"
+                      />
+                    </svg>
+                    <span className="txt">Good evening, Deeky</span>
+                  </div>
                 </div>
-
               </div>
-            </div>
+            )}
+            {view === "projects" && <ProjectsPage />}
+            {view === "artifacts" && <ArtifactsPage />}
           </div>
 
           {/* ---- THE COMPOSER, PINNED TO THE FOOT OF THE PANE ----
@@ -527,7 +565,9 @@ export function ClaudeUI() {
               thing rides the scroll. This surface has stayed free of fixed
               positioning on purpose — see the note in globals.css — and a
               bottom-docked composer is exactly the case that usually breaks
-              that rule. */}
+              that rule. Only on the chat view — Projects and Artifacts have
+              their own top-right actions instead, same as the reference. */}
+          {view === "chat" && (
           <div className="composer-dock">
             <div className="center">
             <div className="composer">
@@ -582,6 +622,7 @@ export function ClaudeUI() {
             </div>
             </div>
           </div>
+          )}
         </div>
 
         <div
@@ -601,6 +642,7 @@ export function ClaudeUI() {
           onToggle={togglePack}
           onClose={() => setPacksOpen(false)}
         />
+        <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
       </div>
     </div>
   );
