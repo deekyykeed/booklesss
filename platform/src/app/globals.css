@@ -4889,9 +4889,16 @@
 }
 @media (max-width:640px){
   .cui .settings-overlay{padding:16px}
+  /* ⚠️ A FIXED HEIGHT, NOT `auto` — the same reason desktop's dialog is a
+     fixed 536px rather than sized to whichever panel is open. `auto` let the
+     dialog grow and shrink panel to panel (tall for Connectors' item list,
+     short for Billing), so switching tabs visibly resized and repositioned
+     the whole card — a floating, centered dialog that jumps size on every
+     tap reads as broken, not responsive. `80svh` is fixed regardless of
+     content; `.sc-body` is already the scroller for whatever doesn't fit. */
   .cui .settings-dialog{
     width:100%;max-width:400px;
-    height:auto;max-height:88vh;
+    height:80svh;max-height:calc(100% - 32px);
     border-radius:12px;
     flex-direction:column;
   }
