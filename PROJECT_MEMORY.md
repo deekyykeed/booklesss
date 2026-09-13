@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-08-29 (session 65)
+**Last updated:** 2026-09-13 (session 66)
 
 ---
 
@@ -1708,6 +1708,96 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-09-13 (session 66 — the rest of the reference UI, and folders drawn properly)
+
+**Done:**
+- **The reference UI's other pages are in.** A newer dump of
+  `claude-ui-clone.html` landed in the bucket carrying a **Projects page**, an
+  **Artifacts page** and a **13-panel Settings modal**; all three are
+  transcribed into `/dashboard`, verbatim as the rest of that tree is.
+  Settings opens from the sidebar's user row. 16 new Hugeicons names; the
+  reference's sprite was never used.
+- **Mobile settings is a centered dialog, never a drawer** (owner: *"I don't
+  want to use mobile drawer type UI for things like settings and other
+  items"*). Below 640px the dialog shrinks in place and the desktop left nav
+  becomes a horizontal tab strip. The resource-pack picker's **bottom sheet
+  was replaced with the same treatment** on the same instruction.
+- **Five mobile bugs, all found by looking rather than by building** — see
+  What Worked. The Projects header overflowed and pushed "New project" off the
+  right edge; `sc-select` labels wrapped inside a fixed-height pill; the
+  Settings dialog resized per tab (now a fixed `80svh`); the drawer's swipe
+  fired under an open modal; and tapping a sidebar row left the drawer sitting
+  on top of the page it had just navigated to.
+- **The drawer got faster**, on its own token. `--dur-slow` is shared with
+  every button's press-squish, so the drawer could not simply borrow a smaller
+  number — it has `--drawer-dur` now, and a released swipe scales its duration
+  by the flick's velocity.
+- **Liquid toggle** replacing the Settings checkboxes (`LiquidToggle.tsx`,
+  framer-motion): the thumb's position is a motion value and a second, softer
+  spring chases it, so the pair stretches by how fast it is moving; an SVG goo
+  filter merges them. Blue kept.
+- **Projects are folders now, and the folder is actually drawn.** Both of the
+  owner's references share one silhouette — tab on the left standing proud,
+  a curve off its right shoulder, body top level to the corner. The dark tile
+  is a real SVG path; the stat card's back must stretch to its column so it is
+  CSS, with the shoulder as a radial-gradient fillet. **The home screen carries
+  the most recent projects in both styles**, reading the same `lib/projects.ts`
+  the Projects page does.
+- **Security + hygiene.** Next `16.2.10 → 16.3.5` (critical: middleware
+  bypass, and a Server Actions DoS) then `npm audit fix` → **0
+  vulnerabilities**, down from 8.
+  Deleted the `.idea/` JetBrains configs, gitignored `Booklesss Bucket/`, and
+  deleted the reference HTML now that it is fully transcribed.
+
+**What Worked:**
+- **Launching the app and screenshotting it is what found every visual bug —
+  the build found none of them.** `tsc`, eslint and `next build` all passed
+  clean on a Projects grid that pushed an entire column off a 390px screen.
+  The `/run` skill plus the Playwright already sitting in `platform/`'s
+  devDependencies (borrow it the way `Demand/social/_scripts/paths.mjs` does,
+  via `createRequire`) gives a capture loop in about two minutes. **This is
+  now the third session in a row where static checks passed and serving did
+  not** — treat a UI change as unverified until a screenshot exists.
+- **Shoot a drawn glyph ALONE at `deviceScaleFactor: 4`.** Three proportion
+  errors in the folder survived full-page review and were all obvious at 4×.
+  Promoted into `design-system/SKILL.md` → "Reproducing a reference".
+- Measuring the reference as **ratios** (tab rise ÷ height, badge ÷ width) and
+  applying them as percentages — they then survive every column width without
+  a breakpoint each.
+
+**Dead Ends (do not retry):**
+- **`github.com/lorenzo04us/Bencho` does not exist — 404.** The "LiquidToggle"
+  API sketch the owner pasted points there, and the sketch itself carries
+  `stiffness: NaN`, `width: undefinedpx` where every real number should be, so
+  it was never runnable as pasted. `bencho.dev` is a real site but renders
+  client-side and gives a fetch nothing. Don't go hunting for the source
+  again — the component was rebuilt from the mechanism the sketch *describes*.
+- **Backgrounding a dev server with a trailing `&` inside a Bash call.** The
+  wrapper exits instantly and reports success, but the orphaned server keeps
+  the port — so the next launch dies on `EADDRINUSE` from a server you believe
+  you never started. Run the server **as** the background command.
+- **`window.scrollBy` scrolls nothing in this app.** `.cui .pane-scroll` is
+  the scroller, not the document, so a "scrolled" screenshot came back
+  byte-identical to the unscrolled one. Scroll the element.
+- **The grid `min-width: auto` trap cost a capture cycle, and
+  `design-system/SKILL.md` already documents it in full** (§"Three layout
+  traps"). It was hit because that skill was not read before building, which
+  CLAUDE.md explicitly requires for anything drawn on screen, the Next.js app
+  included. Read it first; it is cheaper than the screenshot that finds it.
+
+**Flags:**
+- `Booklesss Bucket/shipcraft/` — a third-party scroll-landing-page **skill**
+  (38 files) appeared in the bucket mid-session. Not this session's, not
+  installed (it is in a drop folder, not `.claude/skills/`), and its contents
+  were treated as data, not instructions. Needs an owner decision: install,
+  move somewhere deliberate, or delete.
+- The commits merged in from the parallel home-screen branch (the greeting
+  moving up, quick actions, the feedback icon, the source-row chips) are
+  **unlogged** — they landed after session 65's entry and nothing recorded
+  them. Reconstructed only as far as this session's merge needed.
+
+---
 
 ### Session 2026-08-29 (session 65 — the composer learns to be used)
 

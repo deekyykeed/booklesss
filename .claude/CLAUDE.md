@@ -663,6 +663,30 @@ question is unchanged and still open**, since nothing now links there at all.
   licensed faces on Anthropic's CDN — fine for a reference surface, and **the
   first thing to settle before a student sees it.**
 
+**It has three more pages since 2026-09-13**, from a later dump of the same
+reference file: a **Projects page**, an **Artifacts page** and a **13-panel
+Settings modal** (opened from the sidebar's user row). Same rule as everything
+else here — transcribed, not adapted, and wired to nothing. `lib/projects.ts`
+is the one list both the Projects page and the home screen's "Recent projects"
+block read, so they cannot disagree about what is newest.
+
+⚠️ **ON A PHONE, A MODAL ON THIS SURFACE IS A CENTERED DIALOG — NEVER A
+DRAWER** (owner, 2026-09-13: *no mobile-drawer treatment "for things like
+settings and other items"*). Below 640px the Settings dialog shrinks in place
+at a **fixed** `80svh` — fixed because sizing it to its panel made it resize
+and re-centre on every tab — and its desktop left nav becomes a horizontal tab
+strip. The resource-pack picker's bottom sheet was replaced with the same
+treatment on the same instruction. The sidebar's own off-canvas drawer is the
+one exception, because it is navigation rather than a modal.
+
+**The folders are drawn, not iconised** (`components/home/claude-ui/Folder.tsx`).
+Both of the owner's references share one silhouette: a tab on the LEFT standing
+taller than the body, a curve falling off its right shoulder, then the body's
+top edge level to the corner. The dark tile is a real SVG path; the stat card's
+back has to stretch to its column, so that one is CSS with the shoulder as a
+radial-gradient fillet — a stretched SVG smears that curve. Proportions are
+percentages of the folder, not px, so they hold at any column width.
+
 **`/dashboard` also left `DesktopGate`'s block list.** That gate exists because
 a phone layout stretched to 1440px "will not look good and it will look very
 scrappy"; this is the first surface built the other way round — a desktop

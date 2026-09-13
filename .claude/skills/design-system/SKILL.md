@@ -856,6 +856,28 @@ screenshot: the owner's own draft was four lines and 184px where every
 alternative was two lines and 92px. A layout fact beats a copy opinion, and it
 costs one Playwright loop over `h1.textContent`.
 
+**Screenshot a DRAWN MARK on its own, at `deviceScaleFactor: 4`.**
+*(2026-09-13, the project folders.)* A glyph judged inside a page screenshot
+is judged at about 100px across, and at that size a wrong drawing looks fine.
+Three separate errors survived a full-page review and all three were obvious
+the moment the element was shot alone at 4×: the folder's tab ran to 35% of
+the width where the reference's runs to half, the file-type badges were nearly
+twice the reference's proportion, and the sheets inside were big enough to
+read as paper with a folder behind it rather than a folder with something in
+it.
+
+```js
+await page.locator(".ftile-folder").first()
+  .screenshot({ path: "zoom-tile.png" });   // ctx at deviceScaleFactor: 4
+```
+
+**Then measure the reference the same way rather than eyeballing the pair.**
+The corrections that stuck were ratios read off the reference image — tab
+rise ÷ folder height, badge width ÷ folder width — and applied as percentages,
+not as pixels. That is also what makes them survive a resize: the badges are
+`width: 14%` of the folder, so they hold at every column width instead of
+needing a breakpoint each.
+
 ---
 
 ## Three layout traps that look like design bugs *(2026-08-06, 2026-08-09)*

@@ -27,3 +27,9 @@ Demand/social/_preview/**/*.png
 
 # JetBrains IDE metadata — machine-local, not project state.
 .idea/
+
+# The drop box. Reference dumps, downloaded skills, anything pasted in to be
+# read once and mined — it is an inbox, not project state, and it showed up as
+# untracked in every git status until this line. Whatever earns a place in the
+# project gets moved out of here and committed on its own terms.
+Booklesss Bucket/
