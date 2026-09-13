@@ -109,6 +109,15 @@ That is deliberate and it cuts both ways: **do not reach for app tokens inside
 palettes bleeding into each other is the temperature drift this file already
 warns about, where every individual near-miss is defensible.
 
+**There is exactly ONE exception and it has a name: `--font-brand`.** Declared
+in the `.cui` token block, resolving to the app's `--font-display`, and used by
+the wordmark alone — Familjen Grotesk, owner's call 2026-08-29. The surface is
+a transcription of somebody else's app, but the NAME on it is ours, and a brand
+wearing a borrowed face in the one place the brand is written is the drift, not
+the fix. **If a second crossing is ever wanted it gets a token there too**, so
+the exceptions stay countable; an inline `var(--font-display)` in a rule is how
+this seal quietly stops existing.
+
 ### Tokens — the whole palette, and there is no other
 
 | Token | Value | Job |
@@ -124,11 +133,16 @@ warns about, where every individual near-miss is defensible.
 | `--text-200` | `#52514e` | secondary — nav labels at rest |
 | `--text-300` | `#898781` | tertiary, placeholders, section headings |
 | `--border` | `rgba(11,11,11,.1)` | every hairline |
-| `--clay` | `#d97757` | the ONE accent |
+| `--clay` | `#d97757` | the ONE accent — **and it currently draws nothing** |
 
-**The clay is a mark, not a UI colour.** It draws the spark in the greeting and
-the unread dot, and nothing else — no buttons, no fills, no links. The same rule
-the brand green has in the app proper.
+**The clay is a mark, not a UI colour** — no buttons, no fills, no links, the
+same rule the brand green has in the app proper. ⚠️ **As of 2026-08-29 it has
+no consumer at all**: it drew the sidebar's unread dot and the greeting's
+starburst, and the owner removed both (the segmented pair on 29 Aug, the spark
+the same evening — *"remove the orange logo thing"*). The token is kept because
+the surface will want an accent again, but **this palette is monochrome on
+screen today**, and a first re-use is a decision about what earns the one
+accent, not a free choice of colour.
 
 **Three greys of text, and they do real work.** A nav label sits at `--text-200`
 and goes `--text-100` when its row is current; a section heading is `--text-300`
@@ -150,9 +164,22 @@ permanently. Do not introduce a fourth.
 
 ### Type
 
-`--font-sans` (anthropic-sans) for everything, `--font-serif` for the greeting
-and the wordmark **only**. Sizes: 14px nav label, 13px section heading and
-segmented control, 16px composer editor, `clamp(26px, 3.7vw, 37px)` greeting.
+`--font-sans` (anthropic-sans) for everything; **`--font-brand` (Familjen
+Grotesk) for the wordmark and the greeting, and `--font-serif` for nothing** —
+both moved onto the brand face on 2026-08-29, which is why that token is the
+one crossing out of `.cui`. Sizes: 14px nav label, 13px section heading and
+segmented control, 16px composer editor, `clamp(26px, 7.2vw, 30px)` greeting at
+weight **500** and `-0.02em`.
+
+**⚠️ Two traps the greeting paid for, both invisible in the code.** The
+reference asked for weight **330**, which Familjen's variable axis (400–700)
+cannot draw — it clamped up silently, so the number described nothing on
+screen; check a face's axis before carrying a weight across a swap. And the old
+`3.7vw` middle term was **dead on every phone**: at 390px it computes to 14px,
+under the floor, so the vw branch never ran and every handset got the minimum.
+That is the same shape as the 520px query that hid the Resources label on every
+real device. **When a clamp's middle term is meant to scale a phone, compute it
+at 360/390/430 before trusting it.**
 
 **⚠️ 16px on the composer editor is not a taste decision** — iOS Safari zooms
 the viewport on focus for anything smaller, and does not zoom back out. Any new
@@ -223,6 +250,58 @@ box-shadow follows the border shape.** This is also why the corner cannot be cut
 with `clip-path`, which would slice the ring and the glow off.
 Without it, reaching for a button lights the whole frame, which reads as though
 the container were the thing about to activate.
+
+### The home screen is patterns 2 and 1, not a fifth *(2026-08-29, evening)*
+
+The greeting moved to the **top left** of the pane and quick actions appeared
+under it, so `.pane-inner` is `justify-content: flex-start` rather than
+`center`. Three things that generalise:
+
+- **A list under a greeting is ROWS, not cards.** The composer is the call to
+  action; a grid of tiles takes that job by area alone. Quick actions are
+  **pattern 2 grown to two lines** (title at `--text-100`, meta at
+  `--text-300`), the same growth the modal's pack rows took.
+- **One left edge for the whole column.** Greeting, rows, source chips and
+  composer all sit inside `.center`, so they line up at every width. The
+  greeting is the only element with no box around it — centring *it* would be
+  the one thing out of alignment.
+- **A control's dress follows its SURFACE, not its identity.** The Resources
+  pill was `--track` (the groove that means "a control sits here") while it
+  lived on the composer's white. Moved to the source row on `--page-bg`,
+  `--track` (#f6f6f4) against #fcfcfb is a two-value difference nobody can see
+  — so it takes `--surface-3` plus a hairline, the same lifted-panel grammar as
+  the composer below it. **Nothing new entered the palette in either
+  direction.** When you move a control, re-derive its fill from where it lands.
+
+The source row's `+` is the one **circle** on a surface where every icon button
+is an 8px square. That is the reference's own shape and it is load-bearing: the
+row is a button beside a 999px chip, and a squared `+` there reads as two
+unrelated things that happen to be adjacent. It is still 32px.
+
+**Anything claiming to be made of the composer's material takes its whole
+edge** (2026-08-29, owner: the quick-action icons get a tile of the input box's
+colour and corner; the source chips get its border "and all"). That means the
+two-part shadow — `0 .25rem 1.25rem var(--cmp-glow)` **plus**
+`0 0 0 1px var(--cmp-ring)` — not `--border`, and **not the ring alone**:
+`--border` is `rgba(11,11,11,.1)` and `--cmp-ring` is `rgba(31,31,30,.15)`,
+which is invisible in isolation and very visible eight pixels above a box
+wearing the other one. Ring-only gives a flat sticker above a lifted panel. It
+also means **hover is ring-only**: the composer's `.15 → .3` and no fill
+change, because a control that claims the material cannot behave differently
+from it on the one interaction they share. The press-scale still applies.
+
+**⚠️ The radius travels as a RATIO, never as a number, and the ceiling is what
+enforces it.** A radius can never exceed half the element's height. The
+composer is 114px so 28/36 has room; the quick-action tile is 40px, where
+anything past 20 closes into a circle — so copying 28/36 across gives *no*
+corner, not the composer's corner. That tile takes **12 round / 15 squircle**,
+the same ~1.28 ratio at 60% of its own ceiling. The sequence so far, all at
+that ratio: **12/15** (40px tile) → **22/28** (modal panel) → **28/36**
+(composer).
+
+**The header's segmented pair is gone**, and with it `.seg-header` and `.dot`.
+The base `.seg` / `.seg-item` rules stay — pattern 3 below is still the spec —
+but nothing on the surface draws one today.
 
 ### The modal is patterns 4 and 2, not a fifth *(2026-08-29, the resource packs)*
 
