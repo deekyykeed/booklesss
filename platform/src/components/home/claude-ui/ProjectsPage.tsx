@@ -1,37 +1,108 @@
 "use client";
 
-import { HugeIcon } from "@/components/icons/huge";
+import { HugeIcon, type HugeIconName } from "@/components/icons/huge";
 
 /* ------------------------------------------------------------------ *
- * PROJECTS — the reference's `.proj-page`, transcribed verbatim (card
- * titles, dates and descriptions included). What the "Projects" sidebar row
- * has always been meant to open; it just went to `href="#"` until this
- * round of the reference landed. Not wired to Booklesss — same rule as the
- * rest of this tree, see ClaudeUI.tsx.
+ * PROJECTS, AS FOLDERS (2026-09-13) — owner, looking at this page's own mock
+ * data (Corporate Finance, Strategic Management, Booklesss…): "this is what
+ * I'm seeing if [these] can be projects — a collection of course files and
+ * all." Restyled as folders off two reference screenshots: the first four
+ * cards carry the file-count/storage/last-updated stat panel, the rest a
+ * plain dark folder tile with small file-type badges peeking out of it —
+ * "just need the way the folders are done, copy as they are." Content and
+ * routing are unchanged; this is a repaint of the same ten mock projects.
  * ------------------------------------------------------------------ */
 
-const PROJECTS: { title: string; desc?: string; date: string }[] = [
-  { title: "Content", date: "Mar 10" },
-  { title: "Khadzika Operations", date: "Mar 6" },
-  { title: "Corporate Finance", date: "Mar 2" },
-  { title: "Strategic Management", date: "Mar 2" },
-  {
-    title: "Dissertation",
-    desc: "To write a complete dissertation paper with the topic “An examination of factors influencing the adoption of AI-powered learning technologies among accounting students”",
-    date: "Feb 24",
-  },
-  {
-    title: "Booklesss",
-    desc: "An online community of students who want to find ways of making school a lot easier and more engaging. These are people who have recognized that the current system is not working for them.",
-    date: "Feb 2",
-  },
-  { title: "Career", date: "Jan 5" },
-  { title: "Farm", date: "Dec 23, 2025" },
-  { title: "IA Course", date: "Dec 15, 2025" },
-  { title: "Innovation & Entrepreneurship", date: "Nov 29, 2025" },
+type Project = {
+  title: string;
+  files: number;
+  storage: string;
+  updated: string;
+  badges: [HugeIconName, HugeIconName];
+};
+
+const PROJECTS: Project[] = [
+  { title: "Content", files: 23, storage: "656MB", updated: "2 days ago", badges: ["file", "pdf"] },
+  { title: "Khadzika Operations", files: 41, storage: "1.2GB", updated: "6 days ago", badges: ["pdf", "file"] },
+  { title: "Corporate Finance", files: 26, storage: "310MB", updated: "1 week ago", badges: ["file", "pdf"] },
+  { title: "Strategic Management", files: 8, storage: "94MB", updated: "1 week ago", badges: ["pdf", "file"] },
+  { title: "Dissertation", files: 14, storage: "48MB", updated: "3 weeks ago", badges: ["file", "pdf"] },
+  { title: "Booklesss", files: 60, storage: "2.1GB", updated: "1 month ago", badges: ["pdf", "file"] },
+  { title: "Career", files: 5, storage: "12MB", updated: "2 months ago", badges: ["file", "pdf"] },
+  { title: "Farm", files: 3, storage: "8MB", updated: "3 months ago", badges: ["pdf", "file"] },
+  { title: "IA Course", files: 19, storage: "220MB", updated: "3 months ago", badges: ["file", "pdf"] },
+  { title: "Innovation & Entrepreneurship", files: 11, storage: "36MB", updated: "4 months ago", badges: ["pdf", "file"] },
 ];
 
+/* ---- style 1 — the stat-panel folder (first four) ------------------- */
+function StatFolderCard({ p }: { p: Project }) {
+  return (
+    <li className="fcard-wrap">
+      <a className="fcard" href="#">
+        <span className="fcard-tab" aria-hidden="true" />
+        <span className="fcard-panel">
+          <span className="fcard-head">
+            <HugeIcon name="folder" className="i" />
+            <span className="fcard-title">{p.title}</span>
+          </span>
+          <span className="fcard-stats">
+            <span className="fcard-stat">
+              <span className="fcard-stat-label">
+                <HugeIcon name="file" className="i i-16" />
+                Files
+              </span>
+              <span className="fcard-leader" aria-hidden="true" />
+              <span className="fcard-stat-value">{p.files}</span>
+            </span>
+            <span className="fcard-stat">
+              <span className="fcard-stat-label">
+                <HugeIcon name="hard-drive" className="i i-16" />
+                Storage
+              </span>
+              <span className="fcard-leader" aria-hidden="true" />
+              <span className="fcard-stat-value">{p.storage}</span>
+            </span>
+            <span className="fcard-stat">
+              <span className="fcard-stat-label">
+                <HugeIcon name="clock-1" className="i i-16" />
+                Last updated
+              </span>
+              <span className="fcard-leader" aria-hidden="true" />
+              <span className="fcard-stat-value">{p.updated}</span>
+            </span>
+          </span>
+        </span>
+      </a>
+    </li>
+  );
+}
+
+/* ---- style 2 — the dark folder tile (the rest) ----------------------- */
+function DarkFolderTile({ p }: { p: Project }) {
+  return (
+    <li className="ftile-wrap">
+      <a className="ftile" href="#">
+        <span className="ftile-folder" aria-hidden="true">
+          <span className="ftile-back" />
+          <span className="ftile-front" />
+          <span className="ftile-badge ftile-badge-a">
+            <HugeIcon name={p.badges[0]} className="i i-16" />
+          </span>
+          <span className="ftile-badge ftile-badge-b">
+            <HugeIcon name={p.badges[1]} className="i i-16" />
+          </span>
+        </span>
+        <span className="ftile-title">{p.title}</span>
+        <span className="ftile-meta">{p.files} Files</span>
+      </a>
+    </li>
+  );
+}
+
 export function ProjectsPage() {
+  const first = PROJECTS.slice(0, 4);
+  const rest = PROJECTS.slice(4);
+
   return (
     <div className="proj-page">
       <div className="proj-head">
@@ -50,16 +121,11 @@ export function ProjectsPage() {
       </div>
 
       <ul className="cards">
-        {PROJECTS.map((p) => (
-          <li className="card-wrap" key={p.title}>
-            <a className="card" href="#">
-              <div className="card-title">{p.title}</div>
-              {p.desc && <div className="card-desc">{p.desc}</div>}
-              <div className="card-date">
-                <time>{p.date}</time>
-              </div>
-            </a>
-          </li>
+        {first.map((p) => (
+          <StatFolderCard p={p} key={p.title} />
+        ))}
+        {rest.map((p) => (
+          <DarkFolderTile p={p} key={p.title} />
         ))}
       </ul>
     </div>

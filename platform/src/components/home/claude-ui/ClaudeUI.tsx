@@ -256,21 +256,44 @@ export function ClaudeUI() {
       scrim.style.pointerEvents = p > 0.1 ? "auto" : "none";
     };
 
+    /* Base and floor for the release animation, both well under --dur-slow
+       (450ms) — that variable is shared with every button's press-squish
+       spring elsewhere on this surface, so the drawer needed its own number
+       rather than a faster shared one. Matches --drawer-dur in globals.css,
+       which is what a plain button tap (hamburger, scrim) uses via the CSS
+       class transition; a released swipe goes through this instead so it can
+       scale with how fast the finger was actually moving. */
+    const RELEASE_MS = 220;
+    const RELEASE_FLOOR_MS = 90;
+
     const release = (open: boolean) => {
-      /* Hand the element back to CSS, but name the end position explicitly
-         first. Clearing the inline transform in the same frame the class
-         changes would snap to the OLD class value and animate from there —
-         the drawer would jump shut and then slide open. */
-      side.style.transition = "";
+      /* A hard flick keeps its own momentum into the settle: the faster the
+         swipe, the quicker the drawer finishes, down to a floor so it never
+         reads as an instant cut. A slow drag that merely crossed the
+         open/close threshold on release gets the base speed, not the
+         discount — it wasn't a flick.
+
+         Name the end position AND the duration explicitly, on both the
+         drawer and the scrim, rather than clearing to CSS and letting the
+         class change take it from wherever `paint()` left it — that raced
+         the scrim's opacity against the class update landing and could flash
+         it to fully-hidden for a frame before the transition even started. */
+      const dur = Math.max(RELEASE_FLOOR_MS, RELEASE_MS - Math.abs(vx) * 260);
+      side.style.transition = `transform ${dur}ms var(--ease)`;
       side.style.transform = open ? "translateX(0)" : "translateX(-100%)";
-      scrim.style.transition = "";
-      scrim.style.opacity = "";
-      scrim.style.visibility = "";
-      scrim.style.pointerEvents = "";
+      scrim.style.transition = `opacity ${dur}ms var(--ease)`;
+      scrim.style.opacity = open ? "1" : "0";
+      scrim.style.visibility = "visible";
+      scrim.style.pointerEvents = open ? "auto" : "none";
       setNavOpen(open);
       window.setTimeout(() => {
+        side.style.transition = "";
         side.style.transform = "";
-      }, 460);
+        scrim.style.transition = "";
+        scrim.style.opacity = "";
+        scrim.style.visibility = "";
+        scrim.style.pointerEvents = "";
+      }, dur + 20);
     };
 
     /* ⚠️ THE PULL STARTS ANYWHERE ON THE PAGE, NOT AT THE EDGE (owner,

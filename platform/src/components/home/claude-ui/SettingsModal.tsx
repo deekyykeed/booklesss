@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { HugeIcon, type HugeIconName } from "@/components/icons/huge";
+import { LiquidToggle } from "./LiquidToggle";
 
 /* ------------------------------------------------------------------ *
  * SETTINGS — the reference's "Round 6" modal, transcribed verbatim (every
@@ -52,7 +53,7 @@ const PANELS: { id: PanelId; label: string; icon: HugeIconName }[] = [
 ];
 
 function Toggle({ defaultChecked = false }: { defaultChecked?: boolean }) {
-  return <input type="checkbox" className="toggle" defaultChecked={defaultChecked} />;
+  return <LiquidToggle defaultChecked={defaultChecked} />;
 }
 
 export function SettingsModal({ open, onClose }: { open: boolean; onClose: () => void }) {

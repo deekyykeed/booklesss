@@ -149,6 +149,7 @@ const ICONS = {
   dots: "more-horizontal", // Artifacts card "more options"
   lock: "lock", // Artifacts card: private
   "arrow-up-right": "arrow-up-right-01", // external-link rows (API keys, Manage)
+  "hard-drive": "hard-drive", // Projects folder card: Storage stat
   rows: "layout-list", // Settings: Cowork
   /* Used to be the sidebar's chat/code segmented pair, gone with it
      (2026-08-29). Kept for the Settings nav's "Claude Code" row, which is
