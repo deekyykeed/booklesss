@@ -4326,22 +4326,18 @@
   .cui .res-btn::before,.cui .rp-row::before,.cui .rp-done::before{transition:none}
 }
 
-/* On a phone the panel stops floating and takes the bottom of the screen — a
-   centred card with 24px of scrim either side wastes the width the blurbs
-   need, and a sheet puts Done under the thumb that opened it. */
+/* On a phone the panel STAYS a floating, centered dialog and only shrinks —
+ * never a bottom sheet. It used to dock to the bottom edge, full-bleed, on
+ * the reasoning that a centred card wastes the width the blurbs need; the
+ * owner reversed that call, 2026-09-13: no drawer/sheet treatment on mobile
+ * for settings "or anything like it" — this is that "anything like it". The
+ * corner radius is untouched (it stays the full round/squircle pair on
+ * every side, not the top-only shape a sheet needs), and the panel keeps the
+ * base rule's centering — only the scrim's margin and the panel's max
+ * height narrow for the smaller viewport. */
 @media (max-width:640px){
-  .cui .rp-scrim{align-items:flex-end;padding:0}
-  .cui .rp-panel{
-    max-width:none;
-    max-height:min(80svh,100%);
-    border-radius:22px 22px 0 0;
-    padding-bottom:env(safe-area-inset-bottom,0px);
-  }
-}
-@supports (corner-shape: squircle){
-  @media (max-width:640px){
-    .cui .rp-panel{border-radius:28px 28px 0 0}
-  }
+  .cui .rp-scrim{padding:16px}
+  .cui .rp-panel{max-height:min(80svh,100%)}
 }
 
 
