@@ -4534,6 +4534,17 @@
   grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
   align-items:start;
 }
+/* ⚠️ WITHOUT THIS, A LONG TITLE BLOWS THE COLUMN WIDER THAN THE VIEWPORT.
+   `1fr` expands to `minmax(auto,1fr)`, and a grid item's default min-width
+   is `auto` — the width of its content at its widest UNBREAKABLE line. Every
+   `white-space:nowrap` title in this grid (Khadzika Operations, Strategic
+   Management, Innovation & Entrepreneurship…) is exactly such a line, so
+   whichever column those titles land in was forced wider than its 1fr share
+   to fit them — on a phone, wider than the screen. `min-width:0` is what
+   actually lets a grid/flex item shrink below its content; it is what makes
+   the title's own `overflow:hidden;text-overflow:ellipsis` reachable at all
+   instead of the column just growing to avoid ever needing it. */
+.cui .fcard-wrap,.cui .ftile-wrap{min-width:0}
 
 /* ---- style 1: the stat-panel folder ---------------------------------- */
 .cui .fcard{
@@ -4554,14 +4565,15 @@
   background:var(--surface-2);border-radius:16px;padding:18px;
   box-shadow:0 10px 24px -10px rgba(11,11,11,.16),inset 0 0 0 1px var(--ring-card);
 }
-.cui .fcard-head{display:flex;align-items:center;gap:8px}
-.cui .fcard-head .i{color:var(--text-300)}
+.cui .fcard-head{display:flex;align-items:center;gap:8px;min-width:0}
+.cui .fcard-head .i{color:var(--text-300);flex-shrink:0}
 .cui .fcard-title{
+  min-width:0;
   font-size:16px;font-weight:600;color:var(--text-100);
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
-.cui .fcard-stats{display:flex;flex-direction:column;gap:10px}
-.cui .fcard-stat{display:flex;align-items:baseline;gap:8px}
+.cui .fcard-stats{display:flex;flex-direction:column;gap:10px;min-width:0}
+.cui .fcard-stat{display:flex;align-items:baseline;gap:8px;min-width:0}
 .cui .fcard-stat-label{
   display:inline-flex;align-items:center;gap:6px;
   font-size:13px;color:var(--text-300);white-space:nowrap;
