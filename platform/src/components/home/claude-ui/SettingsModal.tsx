@@ -238,7 +238,7 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
                   <div className="sc-row">
                     <span className="sc-row-label">What best describes your work?</span>
                     <button className="sc-select">
-                      Finance
+                      <span className="sc-select-label">Finance</span>
                       <HugeIcon name="chevron-down" className="i i-12" />
                     </button>
                   </div>
@@ -484,7 +484,7 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
                       <span className="sc-toggle-label">Tool access mode</span>
                     </div>
                     <button className="sc-select" style={{ minWidth: 180 }}>
-                      Load tools when needed
+                      <span className="sc-select-label">Load tools when needed</span>
                       <HugeIcon name="chevron-down" className="i i-12" />
                     </button>
                   </div>
@@ -529,7 +529,7 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
                       <div className="sc-sub-card" style={{ marginTop: 8 }}>
                         <span>Domain allowlist</span>
                         <button className="sc-select" style={{ minWidth: 120 }}>
-                          All domains
+                          <span className="sc-select-label">All domains</span>
                           <HugeIcon name="chevron-down" className="i i-12" />
                         </button>
                       </div>
@@ -624,7 +624,7 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
                       <span className="sc-toggle-label">Light theme</span>
                     </div>
                     <button className="sc-select">
-                      Claude Light
+                      <span className="sc-select-label">Claude Light</span>
                       <HugeIcon name="chevron-down" className="i i-12" />
                     </button>
                   </div>
@@ -633,7 +633,7 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
                       <span className="sc-toggle-label">Dark theme</span>
                     </div>
                     <button className="sc-select">
-                      Claude Dark
+                      <span className="sc-select-label">Claude Dark</span>
                       <HugeIcon name="chevron-down" className="i i-12" />
                     </button>
                   </div>
@@ -709,7 +709,7 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
                       <span className="sc-toggle-label">Preferred browser</span>
                     </div>
                     <button className="sc-select">
-                      Chrome (Claude in Chrome)
+                      <span className="sc-select-label">Chrome (Claude in Chrome)</span>
                       <HugeIcon name="chevron-down" className="i i-12" />
                     </button>
                   </div>
@@ -758,7 +758,7 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
                     <span className="sc-toggle-label">Default for all sites</span>
                   </div>
                   <button className="sc-select">
-                    Allow all sites
+                    <span className="sc-select-label">Allow all sites</span>
                     <HugeIcon name="chevron-down" className="i i-12" />
                   </button>
                 </div>

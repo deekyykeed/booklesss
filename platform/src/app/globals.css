@@ -4610,7 +4610,22 @@
 }
 
 @media (max-width:900px){.cui .proj-page{padding-left:32px;padding-right:32px}}
-@media (max-width:640px){.cui .proj-page{padding-left:16px;padding-right:16px}}
+/* ⚠️ THE HEADER ROW DOES NOT FIT A PHONE AT ONE LINE, AND NOTHING WAS LOSING
+ * GROUND TO MAKE ROOM. Title + search + "Sort by Last updated" + "New
+ * project" is comfortably wide enough on desktop and was never given a
+ * narrower fallback — on a ~390px phone the actions overflow the row and
+ * the primary button (the one control a student actually needs) gets
+ * pushed off the right edge, hidden rather than scrollable. Wrap, the same
+ * mechanism the composer bar and the greeting/quick-actions column already
+ * use elsewhere on this surface: the actions drop to their own full-width
+ * row under the title rather than spilling past the viewport. */
+@media (max-width:640px){
+  .cui .proj-page{padding-left:16px;padding-right:16px}
+  .cui .proj-head{flex-wrap:wrap;row-gap:12px;height:auto;margin-bottom:24px}
+  .cui .proj-head.tight{margin-bottom:16px}
+  .cui .proj-actions{margin-left:0;width:100%;justify-content:flex-end;flex-wrap:wrap;row-gap:8px}
+  .cui .tabs{flex-wrap:wrap;row-gap:8px}
+}
 
 /* ==================================================================
  * SETTINGS MODAL
@@ -4731,6 +4746,16 @@
   padding:0 8px 0 12px;font:inherit;font-size:14px;
   color:var(--text-100);min-width:140px;
   position:relative;isolation:isolate;
+}
+/* ⚠️ WITHOUT THIS THE LABEL WRAPS INSTEAD OF SHRINKING, and a wrapped label
+ * inside a fixed 32px-tall pill spills text past its own box — the "Chrome
+ * (Claude in Chrome)" / "Preferred browser" row on a phone. `.sc-select`
+ * already goes `min-width:0` below, which lets the flex item shrink; this is
+ * what the freed space is actually used for — the label truncates with an
+ * ellipsis and the chevron stays put, rather than both fighting for room. */
+.cui .sc-select-label{
+  min-width:0;flex:1;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
 .cui .sc-select::before{
   content:"";position:absolute;inset:0;z-index:-1;
