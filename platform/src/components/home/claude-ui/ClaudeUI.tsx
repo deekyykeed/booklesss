@@ -114,6 +114,31 @@ export function ClaudeUI() {
     openRef.current = navOpen;
   }, [navOpen]);
 
+  /* ⚠️ THE SWIPE GESTURE MUST NOT FIRE UNDER AN OPEN MODAL. The touch
+     listeners below are bound to `.app`, and both `SettingsModal` and
+     `ResourcePacks` render as children of `.app` (so their scrim can sit
+     `position: absolute` against it rather than `fixed` — see the note by
+     their render calls). A touch anywhere on a full-screen overlay still
+     bubbles up to `.app`, so without this a finger dragging inside Settings
+     or the resource-pack picker was also dragging the sidebar drawer open
+     behind it. Read through a ref for the same reason `openRef` is: the
+     listeners are attached once, not re-subscribed on every open/close. */
+  const modalOpenRef = useRef(false);
+  useEffect(() => {
+    modalOpenRef.current = settingsOpen || packsOpen;
+  }, [settingsOpen, packsOpen]);
+
+  /* Tapping a destination closes the drawer with it. On a phone the drawer
+     sits ABOVE the pane (`position: absolute`, higher z-index — see the
+     sidebar's mobile rules in globals.css), so switching `view` underneath
+     an open drawer changed the page but left it hidden behind the sidebar
+     until a second tap dismissed it. `setNavOpen` is a no-op on desktop,
+     where the sidebar isn't a drawer to begin with. */
+  const goView = useCallback((v: View) => {
+    setView(v);
+    setNavOpen(false);
+  }, []);
+
   useEffect(() => {
     if (!navOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -281,6 +306,7 @@ export function ClaudeUI() {
     const onStart = (e: TouchEvent) => {
       candidate = false;
       axis = "";
+      if (modalOpenRef.current) return;
       if (!mq.matches || e.touches.length !== 1) return;
       const t = e.touches[0];
       wasOpen = openRef.current;
@@ -400,7 +426,7 @@ export function ClaudeUI() {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  setView("chat");
+                  goView("chat");
                 }}
               >
                 <span className="slot">
@@ -417,7 +443,7 @@ export function ClaudeUI() {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  setView("projects");
+                  goView("projects");
                 }}
               >
                 <span className="slot">
@@ -430,7 +456,7 @@ export function ClaudeUI() {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  setView("artifacts");
+                  goView("artifacts");
                 }}
               >
                 <span className="slot">
