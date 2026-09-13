@@ -6,8 +6,10 @@ import { ResourcePacks } from "./ResourcePacks";
 import { SettingsModal } from "./SettingsModal";
 import { ProjectsPage } from "./ProjectsPage";
 import { ArtifactsPage } from "./ArtifactsPage";
+import { StatFolderCard, DarkFolderTile } from "./Folder";
 import { packsSnapshot } from "@/lib/resource-packs";
 import { quickActionsSnapshot } from "@/lib/quick-actions";
+import { recent } from "@/lib/projects";
 
 type View = "chat" | "projects" | "artifacts";
 
@@ -686,6 +688,34 @@ export function ClaudeUI() {
                       </a>
                     ))}
                   </div>
+                </div>
+
+                {/* ---- RECENT PROJECTS, IN BOTH FOLDERS ----------------
+                    Owner, 2026-09-13: "I want the most recent projects on
+                    the home page, of both types of folders." So the two
+                    newest get the stat-panel folder — the one with room to
+                    say how much is in it — and the four behind them the
+                    plain tile, which is the shape that survives being small.
+                    Same components the Projects page uses and the same
+                    ordering (`recent()`), so the two screens cannot drift
+                    about which project is newest.
+
+                    Two lists rather than one grid, for the reason the
+                    Projects page gives: one auto-fill grid would size its
+                    columns off the smaller card and drop stat panels into a
+                    row of tiles. */}
+                <div className="qa">
+                  <div className="qa-head">Recent projects</div>
+                  <ul className="cards cards-stat">
+                    {recent(2).map((p) => (
+                      <StatFolderCard p={p} key={p.title} />
+                    ))}
+                  </ul>
+                  <ul className="cards cards-tile">
+                    {recent(6).slice(2).map((p) => (
+                      <DarkFolderTile p={p} key={p.title} />
+                    ))}
+                  </ul>
                 </div>
                 </div>
               </div>
