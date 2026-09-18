@@ -21,20 +21,18 @@ import { OG_DIMENSIONS, SITE_HOST, SITE_NAME } from "./site";
 /* Two faces, and they do the two jobs the social posters split them into: the
  * title is DISPLAY and everything around it is chrome.
  *
- * Familjen Grotesk is the app's display face, and it took a conversion to get
- * here. next/font/google serves it as woff2 and Satori reads only ttf/otf/woff,
- * so `assets/FamiljenGrotesk-Medium.ttf` is the latin subset the app already
- * ships, instanced at wght 500 and re-flavoured to a plain TTF:
+ * Ranade (Fontshare / Indian Type Foundry) is the app's display face since
+ * 2026-09-18, replacing Familjen Grotesk. No conversion needed this time —
+ * Ranade ships as real static cuts (Fontshare's own `.ttf` files, downloaded
+ * straight off their CDN), where Familjen was a variable font that had to be
+ * instanced to a fixed weight before Satori (which reads only ttf/otf/woff
+ * and does not apply a variable wght axis) could render it correctly.
  *
- *   python3 -c "from fontTools.ttLib import TTFont; from fontTools.varLib \
- *     import instancer; f=TTFont('Demand/social/_source/fonts/familjen-grotesk.woff2'); \
- *     instancer.instantiateVariableFont(f,{'wght':500},inplace=True); \
- *     f.flavor=None; f.save('platform/assets/FamiljenGrotesk-Medium.ttf')"
- *
- * INSTANCED, not handed over as a variable font — Satori's variable-axis
- * support does not reliably apply a wght, so a variable file renders at its
- * default 400 whatever the CSS asks for. Pinning the axis in the file is what
- * makes the weight survive.
+ * `assets/Ranade-Medium.ttf` and `assets/Ranade-Bold.ttf` are real 500 and
+ * 700 cuts, both registered under the "Display" name below — an improvement
+ * on the Familjen setup, which only ever had one instanced weight (500) and
+ * asked Satori to render it at `fontWeight: 700` anyway with no second face
+ * to actually fulfil that.
  *
  * Satoshi stays for the eyebrow, subtitle and footer: those frame the title
  * rather than being it, which is the owner's content/container rule (2026-08-02)
@@ -44,15 +42,17 @@ import { OG_DIMENSIONS, SITE_HOST, SITE_NAME } from "./site";
 const FONT_DIR = join(process.cwd(), "assets");
 
 async function faces() {
-  const [bold, medium, display] = await Promise.all([
+  const [bold, medium, displayMedium, displayBold] = await Promise.all([
     readFile(join(FONT_DIR, "Satoshi-Bold.ttf")),
     readFile(join(FONT_DIR, "Satoshi-Medium.ttf")),
-    readFile(join(FONT_DIR, "FamiljenGrotesk-Medium.ttf")),
+    readFile(join(FONT_DIR, "Ranade-Medium.ttf")),
+    readFile(join(FONT_DIR, "Ranade-Bold.ttf")),
   ]);
   return [
     { name: "Satoshi", data: medium, weight: 500 as const, style: "normal" as const },
     { name: "Satoshi", data: bold, weight: 700 as const, style: "normal" as const },
-    { name: "Display", data: display, weight: 500 as const, style: "normal" as const },
+    { name: "Display", data: displayMedium, weight: 500 as const, style: "normal" as const },
+    { name: "Display", data: displayBold, weight: 700 as const, style: "normal" as const },
   ];
 }
 
@@ -77,9 +77,13 @@ async function faces() {
  *   − 50 eyebrow and its margin            = 318 for the title
  *
  * One line at any size the length picks, two under ~100, three under ~62.
- * Familjen Grotesk at 500 averages about 0.46 of its point size per character
- * at these widths; CHAR_W only has to be right enough to catch the wrap.
- * --------------------------------------------------------------------- */
+ * 0.46 was measured against Familjen Grotesk at 500 and left unchanged for
+ * the 2026-09-18 Ranade swap — CHAR_W only has to be right enough to catch
+ * the wrap, and Ranade's real Bold cut renders narrower at these sizes than
+ * Familjen's instanced 500 file did (checked against the longest title in
+ * the course content, 42 characters, and the shortest course names — both
+ * wrap correctly with room to spare). Re-measure if a future title ever
+ * comes out tight against CONTENT_W. */
 const CONTENT_W = 1056;
 const CHAR_W = 0.46;
 

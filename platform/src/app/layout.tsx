@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Familjen_Grotesk, Rubik, Bricolage_Grotesque } from "next/font/google";
+import { Inter, Rubik, Bricolage_Grotesque } from "next/font/google";
 import localFont from "next/font/local";
 import { RegisterSW } from "@/components/RegisterSW";
 import { AppEnter } from "@/components/AppEnter";
@@ -13,10 +13,10 @@ import { openGraph, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
-// App chrome and headings use Familjen Grotesk (via --font-display), and so
-// does a step title — through its own token, --font-title, which exists so that
-// face is one line to change. The Ernon face is still in src/fonts/ if it's
-// ever wanted back — re-register it with next/font/local and put --font-ernon
+// App chrome and headings use Ranade (via --font-display), and so does a step
+// title — through its own token, --font-title, which exists so that face is
+// one line to change. The Ernon face is still in src/fonts/ if it's ever
+// wanted back — re-register it with next/font/local and put --font-ernon
 // at the front of --font-display.
 
 // Self-hosted at build time by next/font — no Google round-trip, no CLS.
@@ -26,9 +26,28 @@ const inter = Inter({
   display: "swap",
 });
 
-const familjen = Familjen_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-familjen",
+/* Ranade (Fontshare / Indian Type Foundry, ITF Free Font Licence) replaced
+ * Familjen Grotesk here 2026-09-18 — owner's call, no reason recorded beyond
+ * moving off a face used "a while." Self-hosted rather than next/font/google
+ * because Ranade isn't a Google font; same reasoning as Satoshi below (a
+ * CDN link would make the app's headings a hard dependency on someone else's
+ * uptime).
+ *
+ * ⚠️ RANADE HAS NO 600 CUT — Fontshare ships it at 300/400/500/700 only,
+ * where Familjen was a variable font with the whole 400–700 axis. Every
+ * `font-weight: 600` in this app (the step title's `--font-title`, several
+ * section headings) resolves to the nearest heavier registered weight per
+ * the CSS font-matching spec, which is 700 here — so those elements render
+ * visibly bolder than they did under Familjen. Not a bug to route around;
+ * it's the honest result of swapping a variable face for a static one, and
+ * it's what "Ranade" actually looks like at those spots. */
+const ranade = localFont({
+  src: [
+    { path: "../fonts/ranade.woff2", weight: "400", style: "normal" },
+    { path: "../fonts/ranade-medium.woff2", weight: "500", style: "normal" },
+    { path: "../fonts/ranade-bold.woff2", weight: "700", style: "normal" },
+  ],
+  variable: "--font-ranade",
   display: "swap",
 });
 
@@ -197,7 +216,7 @@ export default function RootLayout({
   const document = (
     <html
       lang="en"
-      className={`${inter.variable} ${familjen.variable} ${aptos.variable} ${satoshi.variable} ${burbank.variable} ${rubik.variable} ${bricolage.variable} h-full`}
+      className={`${inter.variable} ${ranade.variable} ${aptos.variable} ${satoshi.variable} ${burbank.variable} ${rubik.variable} ${bricolage.variable} h-full`}
     >
       <head>
         {/* Sets data-motion before first paint, so a reader who asked for a

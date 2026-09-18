@@ -9,7 +9,10 @@ import { HugeIcon } from "@/components/icons/huge";
  * too — it never filters the grid — so the same is true here.
  * ------------------------------------------------------------------ */
 
-const ARTIFACTS: { title: string; ago: string; private?: boolean }[] = [
+/* Exported so the home screen can show a few of these directly, below the
+ * greeting — same list, same card, so the two surfaces can't disagree about
+ * what an artifact looks like. See ClaudeUI's home section. */
+export const ARTIFACTS: { title: string; ago: string; private?: boolean }[] = [
   {
     title: "Step 2.1 · Working Capital & Liquidity Management — Booklesss",
     ago: "Edited 2 months ago",
@@ -43,6 +46,35 @@ const ARTIFACTS: { title: string; ago: string; private?: boolean }[] = [
 
 const TABS = ["All", "Yours", "Shared with you"];
 
+/** One artifact card — the `.art-*` classes from the reference, pulled out so
+ *  the home screen's slice and this page's full grid render the same card. */
+export function ArtifactCard({ a }: { a: (typeof ARTIFACTS)[number] }) {
+  return (
+    <li className="art-wrap">
+      <div className="art-card">
+        <a className="art-link" href="#" aria-label={a.title} />
+        <div className="art-preview" />
+        <div className="art-divider" />
+        <div className="art-foot">
+          <div className="art-title">{a.title}</div>
+          <div className="art-meta">
+            {a.private && (
+              <>
+                <HugeIcon name="lock" className="i i-12" />
+                <span>&middot;</span>
+              </>
+            )}
+            <span>{a.ago}</span>
+          </div>
+        </div>
+      </div>
+      <button className="art-menu" aria-label="More options">
+        <HugeIcon name="dots" className="i" />
+      </button>
+    </li>
+  );
+}
+
 export function ArtifactsPage() {
   const [tab, setTab] = useState(0);
 
@@ -72,28 +104,7 @@ export function ArtifactsPage() {
 
       <ul className="art-grid">
         {ARTIFACTS.map((a, i) => (
-          <li className="art-wrap" key={i}>
-            <div className="art-card">
-              <a className="art-link" href="#" aria-label={a.title} />
-              <div className="art-preview" />
-              <div className="art-divider" />
-              <div className="art-foot">
-                <div className="art-title">{a.title}</div>
-                <div className="art-meta">
-                  {a.private && (
-                    <>
-                      <HugeIcon name="lock" className="i i-12" />
-                      <span>&middot;</span>
-                    </>
-                  )}
-                  <span>{a.ago}</span>
-                </div>
-              </div>
-            </div>
-            <button className="art-menu" aria-label="More options">
-              <HugeIcon name="dots" className="i" />
-            </button>
-          </li>
+          <ArtifactCard a={a} key={i} />
         ))}
       </ul>
     </div>

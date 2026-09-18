@@ -5,11 +5,12 @@ import { HugeIcon } from "@/components/icons/huge";
 import { ResourcePacks } from "./ResourcePacks";
 import { SettingsModal } from "./SettingsModal";
 import { ProjectsPage } from "./ProjectsPage";
-import { ArtifactsPage } from "./ArtifactsPage";
-import { StatFolderCard, DarkFolderTile } from "./Folder";
+import { ArtifactsPage, ARTIFACTS, ArtifactCard } from "./ArtifactsPage";
 import { packsSnapshot } from "@/lib/resource-packs";
-import { quickActionsSnapshot } from "@/lib/quick-actions";
-import { recent } from "@/lib/projects";
+import { CoursesSection } from "../CoursesSection";
+import { enrolledCourses } from "@/lib/courses";
+import { useIdentity } from "@/lib/identity";
+import { useProgress } from "@/lib/progress";
 
 type View = "chat" | "projects" | "artifacts";
 
@@ -57,6 +58,13 @@ export function ClaudeUI() {
   const [navOpen, setNavOpen] = useState(false);
   const [view, setView] = useState<View>("chat");
   const [settingsOpen, setSettingsOpen] = useState(false);
+
+  /* The real course cards, same data CoursesTab feeds them at
+     /dashboard/courses — this is that component's home before it moved,
+     brought back under the greeting rather than re-derived. */
+  const { identity } = useIdentity();
+  const { hydrated, doneCount, isComplete, days } = useProgress();
+  const mine = useMemo(() => enrolledCourses(identity?.courses), [identity]);
 
   /* Which resource packs this session explains against. A Set because the
      picker is multi-select and order carries no meaning — the modal renders
@@ -645,77 +653,40 @@ export function ClaudeUI() {
                   <span className="txt">Good evening, Deeky</span>
                 </div>
 
-                {/* ---- QUICK ACTIONS ----------------------------------
-                    Owner, same message: "a few quick actions like getting
-                    into a project or into a recent session if it was
-                    incomplete."
-
-                    THE COMPOSER IS STILL THE CALL TO ACTION, and these are
-                    built not to compete with it. They are ROWS, not cards —
-                    pattern 2 from the `.cui` system grown to two lines, the
-                    same shape the resource-pack modal took — because a grid
-                    of tiles under a greeting reads as the primary thing on
-                    the screen, and the primary thing is the box at the
-                    bottom. A row is a list item: available, not insistent.
-
-                    ⚠️ THE ROWS ARE PLACEHOLDER DATA THAT DESCRIBES WORK
-                    NOBODY DID — see the warning at the top of
-                    `lib/quick-actions.ts`. "3 of 4 steps · yesterday" is an
-                    assertion about the person reading it, which is a step
-                    beyond the packs' invented names. Safe only while this
-                    surface is ungated and unrouted; the person putting the
-                    auth gates back is the person who has to fix it.
-
-                    They resolve to `#`, like every other link in this
-                    transcription. The routing question that BOO-46 holds is
-                    unchanged and these do not answer it. */}
+                {/* ---- A FEW ARTIFACTS, THE SAME CARD AS THE ARTIFACTS
+                    PAGE ----------------------------------------------
+                    Owner, 2026-09-18: scrap the quick-action rows and the
+                    folders that stood in for "recent work" here, and show
+                    real Artifacts cards instead. Same list, same
+                    `ArtifactCard` the Artifacts tab renders — a slice of it,
+                    not a separate invented set, so this row and that page
+                    can't disagree about what's recent. */}
                 <div className="qa">
-                  <div className="qa-head">Pick up where you left off</div>
-                  <div className="qa-list">
-                    {quickActionsSnapshot().map((a) => (
-                      <a className="qa-row" href={a.href} key={a.id}>
-                        <span className="qa-slot">
-                          <HugeIcon
-                            name={a.kind === "session" ? "headphones" : "folder"}
-                            className="i"
-                          />
-                        </span>
-                        <span className="qa-text">
-                          <span className="qa-title">{a.title}</span>
-                          <span className="qa-meta">{a.meta}</span>
-                        </span>
-                        <HugeIcon name="chevron-right" className="i i-16 qa-go" />
-                      </a>
+                  <div className="qa-head">Artifacts</div>
+                  <ul className="art-grid">
+                    {ARTIFACTS.slice(0, 3).map((a, i) => (
+                      <ArtifactCard a={a} key={i} />
                     ))}
-                  </div>
+                  </ul>
                 </div>
 
-                {/* ---- RECENT PROJECTS, IN BOTH FOLDERS ----------------
-                    Owner, 2026-09-13: "I want the most recent projects on
-                    the home page, of both types of folders." So the two
-                    newest get the stat-panel folder — the one with room to
-                    say how much is in it — and the four behind them the
-                    plain tile, which is the shape that survives being small.
-                    Same components the Projects page uses and the same
-                    ordering (`recent()`), so the two screens cannot drift
-                    about which project is newest.
-
-                    Two lists rather than one grid, for the reason the
-                    Projects page gives: one auto-fill grid would size its
-                    columns off the smaller card and drop stat panels into a
-                    row of tiles. */}
+                {/* ---- YOUR COURSES, BACK ON THE HOME SCREEN -----------
+                    This is `CoursesSection` — the real course cards, with
+                    real progress, that lived here before the 2026-08-27
+                    sketch moved them to their own tab (see CoursesTab.tsx,
+                    which still renders the same component at
+                    /dashboard/courses). Bringing them back under the
+                    greeting rather than re-deriving them keeps the one
+                    component both screens agree on. */}
                 <div className="qa">
-                  <div className="qa-head">Recent projects</div>
-                  <ul className="cards cards-stat">
-                    {recent(2).map((p) => (
-                      <StatFolderCard p={p} key={p.title} />
-                    ))}
-                  </ul>
-                  <ul className="cards cards-tile">
-                    {recent(6).slice(2).map((p) => (
-                      <DarkFolderTile p={p} key={p.title} />
-                    ))}
-                  </ul>
+                  <div className="qa-head">Your courses</div>
+                  <CoursesSection
+                    mine={mine}
+                    hydrated={hydrated}
+                    doneCount={doneCount}
+                    isComplete={isComplete}
+                    days={days}
+                  />
                 </div>
                 </div>
               </div>

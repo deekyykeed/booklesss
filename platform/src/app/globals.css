@@ -2,11 +2,11 @@
 
 /* ------------------------------------------------------------------ *
  * Booklesss design tokens — measured from the Framer source project.
- * Light-only surface. Hairline borders. Inter + Familjen Grotesk.
+ * Light-only surface. Hairline borders. Inter + Ranade.
  * ------------------------------------------------------------------ */
 @theme {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-display: var(--font-familjen), var(--font-inter), ui-sans-serif, sans-serif;
+  --font-display: var(--font-ranade), var(--font-inter), ui-sans-serif, sans-serif;
   --font-nav: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   /* The reading face — the sentences a student actually reads. */
   --font-content: var(--font-aptos), "Aptos", var(--font-inter), system-ui, sans-serif;
@@ -18,13 +18,15 @@
      Use it as `font-container`; `font-content` stays the reading. */
   --font-container: var(--font-satoshi), var(--font-inter), system-ui, sans-serif;
 
-  /* THE TITLE OF A STEP, and only that. Familjen Grotesk at 600.
+  /* THE TITLE OF A STEP, and only that. Ranade, requested at 600 — see
+     layout.tsx for why that resolves to Ranade's 700 cut (it has no 600).
 
-     BACK ON FAMILJEN, SAME DAY IT LEFT (owner, 2026-08-08: "i want to move away
-     from familjen font titles i want to use bricolage grotesk", then, having
-     seen it, "bring the title back to familjen"). Bricolage is a display face
-     with real personality in its letterforms, and at 30px directly over a
-     column of Aptos it announced itself instead of the title.
+     BACK ON THE SAME FACE AS THE REST OF THE APP, SAME DAY IT LEFT (owner,
+     2026-08-08: "i want to move away from familjen font titles i want to use
+     bricolage grotesk", then, having seen it, "bring the title back to
+     familjen"). Bricolage is a display face with real personality in its
+     letterforms, and at 30px directly over a column of Aptos it announced
+     itself instead of the title.
 
      THE TOKEN STAYS, and that is the point of naming tokens for the job. The
      face here changed twice in one afternoon and both changes were this one
@@ -34,10 +36,13 @@
      app chrome, and a step title is one element somebody is deliberately
      choosing a face for.
 
-     THE WEIGHT DID NOT COME BACK. It was 500 before this morning and stays at
-     600: the complaint that started all this was that titles "aren't bold or
-     confident", and only the typeface half of the answer was withdrawn. */
-  --font-title: var(--font-familjen), var(--font-inter), ui-sans-serif, sans-serif;
+     THE WEIGHT DID NOT COME BACK, WHEN THIS WAS FAMILJEN. It was 500 before
+     the Bricolage detour and stayed at 600 after: the complaint that started
+     all this was that titles "aren't bold or confident", and only the
+     typeface half of the answer was withdrawn. The 2026-09-18 swap to Ranade
+     didn't touch this line at all — the 600 request is unchanged, only the
+     face underneath it and the cut that 600 now resolves to. */
+  --font-title: var(--font-ranade), var(--font-inter), ui-sans-serif, sans-serif;
 
   /* THE FRONT DOOR ONLY (2026-08-06), measured off the owner's Framer design.
      Named for the job they do on that page rather than for the typeface, so a
@@ -53,14 +58,14 @@
      reason: a face somebody is TRYING needs one line to change its mind on.
      Bricolage has already been put on and taken off the step title once
      today — if it comes off the tabs too, this line goes back to
-     var(--font-familjen) and nothing else in the app moves. */
-  --font-tab: var(--font-bricolage), var(--font-familjen), ui-sans-serif, sans-serif;
-  --font-mark: var(--font-burbank), var(--font-familjen), ui-sans-serif, sans-serif;
+     var(--font-ranade) and nothing else in the app moves. */
+  --font-tab: var(--font-bricolage), var(--font-ranade), ui-sans-serif, sans-serif;
+  --font-mark: var(--font-burbank), var(--font-ranade), ui-sans-serif, sans-serif;
   --font-hero-meta: var(--font-rubik), var(--font-inter), system-ui, sans-serif;
   /* Bricolage. Was `--font-hero-cta`, named for the only thing wearing it; the
      owner moved the headline onto it too (2026-08-06: "use bricolage for the
      hero text"), so the name had to stop describing one caller. */
-  --font-hero: var(--font-bricolage), var(--font-familjen), ui-sans-serif, sans-serif;
+  --font-hero: var(--font-bricolage), var(--font-ranade), ui-sans-serif, sans-serif;
 
   --color-canvas: #f5f5f5;          /* app background — hsl(0,0%,96%) */
   --color-card: #fcfcfb;            /* stat cards                */
@@ -5191,112 +5196,15 @@
   letter-spacing:-.02em;
 }
 
-/* ---- quick actions ------------------------------------------------
- * ⚠️ ROWS, NOT CARDS, AND THAT IS THE WHOLE DESIGN DECISION. The composer is
- * still the call to action; these exist so a student who is mid-something
- * does not have to type their way back to it. A grid of tiles under a
- * greeting becomes the primary thing on the screen by sheer area, and the
- * primary thing is the box at the bottom. A row is a list item — available,
- * not insistent.
- *
- * It is pattern 2 from the `.cui` system grown to two lines, exactly as the
- * resource-pack modal's rows are: same 8px gap, same fixed 28px slot, same
- * ghost fill on a `::before` at z-index -1. Only the height changes, because
- * a meta line needs the room. No fifth pattern was invented.
- * ------------------------------------------------------------------ */
+/* ---- the home screen's section labels ------------------------------
+ * `.qa-head` is the one survivor of the quick-actions/folders rows this
+ * screen used to carry (both scrapped 2026-09-18, see ClaudeUI.tsx) — kept
+ * because the Artifacts slice and the course grid below the greeting still
+ * need the same small label-over-a-list treatment. */
 .cui .qa-head{
   height:32px;display:flex;align-items:center;
   font-size:13px;color:var(--text-300);
   padding:0 12px;
-}
-.cui .qa-list{display:flex;flex-direction:column;gap:2px}
-.cui .qa-row{
-  position:relative;isolation:isolate;
-  display:flex;align-items:center;gap:8px;
-  padding:10px 12px;border-radius:var(--radius);
-  color:var(--text-200);
-}
-.cui .qa-row::before{
-  content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;
-  background-color:transparent;transform-origin:50% center;
-  transition:background-color var(--dur-fast) var(--ease),
-             transform var(--dur-slow) var(--spring);
-}
-.cui .qa-row:hover::before{background-color:var(--fill-ghost-hover)}
-.cui .qa-row:active::before{
-  transition:transform var(--dur-fast) ease-out;transform:scale(.99);
-}
-/* ---- the icon sits in a tile made of the composer's material -------
- * Owner, 2026-08-29: "give a bit of character — have the icons for those
- * recent items wrapped in a container that is the same colour as the input
- * box, with its exact radius and superellipse style."
- *
- * ⚠️ THE CORNER IS THE COMPOSER'S, THE NUMBER IS NOT, AND IT CANNOT BE. The
- * radius ceiling is half the element's height: the composer is 114px tall so
- * 28/36 has 21px of headroom, but this tile is 40px, where anything past 20
- * closes the corners into a circle. Copying 28/36 across would not give the
- * composer's corner, it would give no corner at all — and a circle is the one
- * shape this must not be, because the source row eight inches below it is
- * circles and they mean something else.
- *
- * So it takes the SAME CURVE at this size: **12 round / 15 squircle**, the
- * ~1.28 ratio the whole system uses (14/18 → 22/28 → 28/36), at 60% of the
- * ceiling — visibly rounded, still a square. That is what the spec means by
- * "a panel that is not the composer's size should not wear the composer's
- * corner": the ratio travels, the number does not.
- *
- * ⚠️ AND IT NEEDS THE RING TO EXIST AT ALL. `--surface-3` is #ffffff on a
- * #fcfcfb page — a three-value difference, invisible. This is the identical
- * trap the Resources pill hit when it moved out of the composer, and it takes
- * the identical fix: the composer's own ring, so the tile reads as a piece of
- * the same material rather than as a white patch.
- *
- * The slot grew 28 → 40, which is the one place these rows leave the `.cui`
- * row spec's fixed 28px icon slot. A 20px glyph in a 28px tile has 4px of air
- * and reads as a cramped box rather than a container.
- * ------------------------------------------------------------------ */
-.cui .qa-slot{
-  width:40px;flex:0 0 40px;height:40px;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--surface-3);
-  border-radius:12px;
-  box-shadow:0 0 0 1px var(--cmp-ring);
-  color:var(--text-200);
-  transition:box-shadow var(--dur) var(--ease);
-}
-@supports (corner-shape: squircle){
-  .cui .qa-slot{corner-shape:squircle;border-radius:15px}
-}
-/* Hover darkens the ring and the glyph, the way the composer's hover is a
-   ring and nothing else. The row's own ghost fill still runs behind it. */
-.cui .qa-row:hover .qa-slot{
-  --cmp-ring:rgba(31,31,30,.3);
-  color:var(--text-100);
-}
-@media (prefers-reduced-motion:reduce){.cui .qa-slot{transition:none}}
-.cui .qa-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
-/* The title is --text-100 at rest, unlike a nav row's label. A nav row is a
-   destination among five identical ones and earns its emphasis by being
-   current; a quick action is a NAME — the thing you are being offered — and
-   the meta line under it is what carries the secondary weight. */
-.cui .qa-title{
-  font-size:14px;line-height:20px;font-weight:500;color:var(--text-100);
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
-.cui .qa-meta{
-  font-size:13px;line-height:18px;color:var(--text-300);
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
-/* The chevron appears on hover on a pointer device and is ALWAYS THERE on a
-   touch one, where there is no hover to reveal it. `any-hover` rather than
-   `hover` so a laptop with a touchscreen still gets the reveal. */
-.cui .qa-go{flex:0 0 auto;color:var(--text-300)}
-@media (any-hover:hover){
-  .cui .qa-go{opacity:0;transition:opacity var(--dur-fast) var(--ease)}
-  .cui .qa-row:hover .qa-go{opacity:1}
-}
-@media (prefers-reduced-motion:reduce){
-  .cui .qa-row::before,.cui .qa-go{transition:none}
 }
 
 /* ---- the source row, above the composer ---------------------------
