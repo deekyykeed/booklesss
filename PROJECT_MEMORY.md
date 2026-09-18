@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-09-13 (session 66)
+**Last updated:** 2026-09-19 (session 67)
 
 ---
 
@@ -92,6 +92,34 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
+**From session 67 (2026-09-19, Ranade + the home screen's real cards. Linear
+NOT reachable this session — `linear-server` needs a one-time OAuth and this
+session is non-interactive, so nothing below has a ticket.)**
+
+- [ ] **Ranade has no 600 weight.** Fontshare ships it at 300/400/500/700
+      only, where Familjen was a variable font with the full axis. Every
+      `font-weight: 600` in the app (step titles via `--font-title`, several
+      section headings) now resolves to Ranade's 700 cut per the CSS
+      font-matching spec — visibly bolder than before. Documented inline in
+      `layout.tsx` and `globals.css`; not fixed, because there's nothing to
+      fix short of a different font or a synthesized weight. Worth a look if
+      it reads too heavy in practice.
+- [ ] **The Vercel GitHub webhook sat on a push for ~36 minutes with no
+      visible failed/queued deployment in between** (push landed on GitHub at
+      21:41, the READY deployment is stamped 22:18 — confirmed via
+      `list_deployments`, nothing in between). Resolved on its own; no project
+      setting was changed to fix it. If it happens again and takes longer than
+      ~10 minutes, check Vercel's Deployments tab before assuming the Git
+      connection needs reconnecting — this session nearly went down a much
+      riskier path (see Dead Ends) chasing a problem that turned out to be a
+      slow webhook, not a broken one.
+- [ ] Still carried, unchanged: `/dashboard` has no auth gates, still allows
+      `assets-proxy.anthropic.com` in `font-src`; `/dashboard/courses` and
+      `/dashboard/saved` still have no navigation (the sidebar's Projects row
+      still points at the internal folders mock, not at either route); the two
+      dead Clerk keys in both Vercel environments; ElevenLabs still on free
+      tier.
+
 **From session 65 (2026-08-29, the composer learns to be used. Linear REACHABLE
 this session — BOO-44 closed, BOO-45 and BOO-46 opened — so the items below are
 only what has no ticket.)**
@@ -117,14 +145,16 @@ only what has no ticket.)**
       `/dashboard/saved` still have no navigation. All three carried unchanged
       from session 64 — nothing this session touched them, and the Resources
       work did not make any of them more urgent.
-- [ ] **The Projects cards were designed and NOT built.** `proj.png` and
-      `cardstates.png` (now in `_dev/reference-ui/`) carry the grid and its
-      exact interaction values. The recommendation put to the owner and not yet
-      answered: point the reference sidebar's **Projects** row — which links to
-      `#` today — at `/dashboard/courses`, restyled as `.cui` cards. It solves
-      the orphaned-navigation item above at the same time. The open question is
-      whether a card is a COURSE (4 cards, matches the existing grid) or a
-      SESSION (48 cards, denser, but re-opens the `/study` routing in BOO-46).
+- [x] ~~The Projects cards were designed and NOT built.~~ → Answered a
+      different way in session 67 (2026-09-18/19): real cards now render on
+      the **home screen** itself (a few `ArtifactCard`s, then the actual
+      `CourseCard`/`CoursesSection` grid, replacing the quick-action rows and
+      the mock folders) — the "COURSE vs SESSION" question resolved to COURSE,
+      the 4-card grid. **The original recommendation is still not done**,
+      and the orphan it names is still open: the sidebar's **Projects** row
+      still links to the internal `ProjectsPage` (folders mock), not to
+      `/dashboard/courses`, so `/dashboard/courses` and `/dashboard/saved`
+      **still have no navigation** — carry that part forward.
 - [ ] **Still carried from session 63:** the two dead Clerk keys in both Vercel
       environments, and ElevenLabs still on free tier (632/10,000 chars, resets
       2026-09-14).
@@ -1708,6 +1738,89 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-09-19 (session 67 — Ranade replaces Familjen, and the home screen's mocks become real cards)
+
+**Done:**
+- **Ranade (Fontshare) replaces Familjen Grotesk** as `--font-display` app-wide
+  — self-hosted, real Medium/Bold TTF cuts rather than an instanced variable
+  font. Also swapped in the OG share-card renderer (`lib/og.tsx`), which
+  needed real ttf/otf files anyway; the two-weight registration there is
+  actually more correct than the old Familjen setup, which had one instanced
+  weight standing in for both 500 and 700. Verified by rendering real share
+  cards through the dev server (home + the longest step title in the course
+  content, 42 chars) rather than trusting the build alone.
+- **The dashboard home screen's quick-action rows and mock folder cards are
+  gone.** Owner: scratch everything below the greeting except the composer.
+  Replaced with a few real `ArtifactCard`s (same data the Artifacts tab
+  renders) and, under those, the actual `CourseCard`/`CoursesSection` grid —
+  the same component `CoursesTab.tsx` still uses at `/dashboard/courses`,
+  now also on the home screen. This is the "COURSE vs SESSION" question from
+  session 65's Next Session list, answered: COURSE. Deleted
+  `lib/quick-actions.ts` (fully unused now) and the dead `.qa-row`/`.qa-slot`
+  CSS block it and the folders left behind.
+- **`.claude/skills/flute/SKILL.md` added, reference-only, nothing installed**
+  — owner asked about github.com/webprodigies-org/flute (React → cinematic
+  3D video). Scoped to "skill only for now" per the owner's own answer to a
+  clarifying question; the skill documents install steps, the CLI, and where
+  it'd fit (a video-shot twin of `daily-post`'s static carousels) for whenever
+  it's actually wanted.
+- **Chased a Vercel deploy that looked stuck.** The owner's push sat on
+  Vercel for ~36 minutes with nothing in the deployment list at all — not
+  even a failed/queued attempt — before it resolved on its own. See Dead Ends
+  for what NOT to do while waiting on one of these again.
+
+**What Worked:**
+- Rendering actual `/og/*.png` cards through a **pre-existing dev server
+  already running on :3000** (not one I started) to verify the font swap,
+  rather than trusting build+lint. Found nothing wrong, but the discipline is
+  what CLAUDE.md itself asks for and it's how the two-weight OG font
+  registration got checked before shipping.
+- Extracting `ArtifactCard` out of `ArtifactsPage.tsx` so the home screen's
+  slice and the full Artifacts grid render off one component — avoids the
+  "two lists disagree" trap this codebase has hit before.
+- `curl "https://api.fontshare.com/v2/css?f[]=ranade@300,400,500,700"` to
+  find Fontshare's real CDN file URLs (both `.woff2` and `.ttf` from the same
+  hash path) — no manual download page needed, and it's how the OG card got
+  real static cuts instead of another instanced-variable-font conversion.
+
+**Dead Ends (do not retry):**
+- **Deploying from the repo ROOT with `vercel --prod`, when the project's
+  Root Directory is a subfolder (`platform`).** Showed
+  `Uploading [--------------------] (0.0B/10GB)` and sat there — this repo
+  has multi-GB gitignored content at the root (`Schools/UNZA/_pipeline/`,
+  `_textbooks/`) that a plain `.gitignore`-based CLI scan from the root may
+  not exclude the way `git` itself does. Killed before it finished; real size
+  and cause unconfirmed, but not worth re-testing given what could be in that
+  upload. **Copying the linked project's `.vercel/project.json` to the repo
+  root to make `vercel build`/`vercel deploy` resolve `rootDirectory`
+  correctly is fine — running `vercel deploy`'s SOURCE upload from there is
+  not.** Use `vercel build` (pure local compute, resolves the path correctly
+  from repo root, uploads nothing) + `vercel deploy --prebuilt` (uploads only
+  `.vercel/output`, bounded regardless of repo size) if a CLI deploy is ever
+  genuinely needed again.
+- **Running `vercel build`/`vercel deploy` from INSIDE the subfolder that
+  `.vercel/project.json` already lives in, when that project also has a
+  remote Root Directory setting.** The CLI fetches the remote setting and
+  joins it to `cwd` — `.../platform` + rootDirectory `"platform"` →
+  `.../platform/platform`, "package.json not found." Deploy commands for this
+  project must run from the repo root with the link file placed there too.
+- **Trying to fix it at all, past the first sign the webhook was just slow.**
+  36 minutes is a long wait but not evidence of a broken Git connection — no
+  failed/queued deployment ever appeared, and it resolved on its own with
+  zero intervention. The CLI detour cost real time and, worse, needed real
+  production secrets locally: `vercel pull` returns a masked literal string
+  (`"[SENSITIVE]"`) for any env var marked Sensitive in the dashboard, which
+  crashes a local `next build` deep inside app code with no hint that
+  masking is the cause (`Invalid supabaseUrl`, not "env var missing"). Patched
+  it by copying the real values in from the already-present `.env.local`
+  (same Supabase project, same values, nothing new exposed) — correct in
+  substance, but should have been flagged to the owner in the same turn
+  rather than left for them to notice by opening the file in their editor.
+  **Next time a push seems slow to deploy: check Vercel's Deployments tab for
+  a queued/building entry before reaching for the CLI at all.**
+
+---
 
 ### Session 2026-09-13 (session 66 — the rest of the reference UI, and folders drawn properly)
 
