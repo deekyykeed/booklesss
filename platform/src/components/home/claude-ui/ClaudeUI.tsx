@@ -5,12 +5,15 @@ import { HugeIcon } from "@/components/icons/huge";
 import { ResourcePacks } from "./ResourcePacks";
 import { SettingsModal } from "./SettingsModal";
 import { ProjectsPage } from "./ProjectsPage";
-import { ArtifactsPage, ARTIFACTS, ArtifactCard } from "./ArtifactsPage";
+import { ArtifactsPage } from "./ArtifactsPage";
+import {
+  ProjectHomeCard,
+  ProjectOverview,
+  ProjectKnowledge,
+  CustomInstructionsModal,
+} from "./ProjectDetail";
 import { packsSnapshot } from "@/lib/resource-packs";
-import { CoursesSection } from "../CoursesSection";
-import { enrolledCourses } from "@/lib/courses";
-import { useIdentity } from "@/lib/identity";
-import { useProgress } from "@/lib/progress";
+import { recent, type Project } from "@/lib/projects";
 
 type View = "chat" | "projects" | "artifacts";
 
@@ -59,12 +62,27 @@ export function ClaudeUI() {
   const [view, setView] = useState<View>("chat");
   const [settingsOpen, setSettingsOpen] = useState(false);
 
-  /* The real course cards, same data CoursesTab feeds them at
-     /dashboard/courses — this is that component's home before it moved,
-     brought back under the greeting rather than re-derived. */
-  const { identity } = useIdentity();
-  const { hydrated, doneCount, isComplete, days } = useProgress();
-  const mine = useMemo(() => enrolledCourses(identity?.courses), [identity]);
+  /* ---- A PROJECT, OPENED FROM THE HOME SCREEN ------------------------
+   * Owner, 2026-09-19, off ten screenshots of the real app's own Projects
+   * flow: tap a card and it opens into an overview (memory, knowledge,
+   * custom instructions, chats) without the composer ever leaving. `view`
+   * stays "chat" the whole time — this is state INSIDE that view, not a
+   * fourth view, which is what lets the dock's existing
+   * `view === "chat"` gate keep covering it for free. See ProjectDetail.tsx
+   * for the "why" behind what got simplified out of the reference. */
+  const [openProject, setOpenProject] = useState<Project | null>(null);
+  const [projectSub, setProjectSub] = useState<"overview" | "knowledge">("overview");
+  const [instOpen, setInstOpen] = useState(false);
+
+  const closeProject = useCallback(() => {
+    setOpenProject(null);
+    setProjectSub("overview");
+  }, []);
+
+  const projectBack = useCallback(() => {
+    if (projectSub === "knowledge") setProjectSub("overview");
+    else closeProject();
+  }, [projectSub, closeProject]);
 
   /* Which resource packs this session explains against. A Set because the
      picker is multi-select and order carries no meaning — the modal renders
@@ -147,6 +165,11 @@ export function ClaudeUI() {
   const goView = useCallback((v: View) => {
     setView(v);
     setNavOpen(false);
+    /* A sidebar tap is a fresh destination — an open project left behind
+       would otherwise reappear, stale, the next time `view` lands back on
+       "chat" (the "New" row does exactly that). */
+    setOpenProject(null);
+    setProjectSub("overview");
   }, []);
 
   useEffect(() => {
@@ -578,20 +601,40 @@ export function ClaudeUI() {
         {/* ================= MAIN PANE ================= */}
         <div className="pane">
           <header className="pane-head">
-            <button
-              className="head-btn nav-toggle"
-              aria-label={navOpen ? "Close sidebar" : "Open sidebar"}
-              aria-expanded={navOpen}
-              aria-controls="cui-sidebar"
-              onClick={() => setNavOpen((v) => !v)}
-            >
-              {/* A hamburger, not the panel glyph the reference used here
-                  (owner, 2026-08-29). The panel mark is still in the sidebar
-                  footer, where it means "this rail" — one mark standing for two
-                  different things in two places was the ambiguity worth losing. */}
-              <HugeIcon name="menu" className="i" />
-            </button>
+            {/* ---- INSIDE A PROJECT, THE CORNER IS BACK, NOT THE DRAWER --
+                Owner's reference: a chevron replaces the hamburger the moment
+                a project is open, at every width — the drawer and "which
+                project" are unrelated questions, so the hamburger's own
+                `.nav-toggle` (desktop-hidden) is the wrong button to repurpose
+                here rather than a second, always-visible one. */}
+            {openProject ? (
+              <button className="head-btn" aria-label="Back" onClick={projectBack}>
+                <HugeIcon name="chevron-left" className="i" />
+              </button>
+            ) : (
+              <button
+                className="head-btn nav-toggle"
+                aria-label={navOpen ? "Close sidebar" : "Open sidebar"}
+                aria-expanded={navOpen}
+                aria-controls="cui-sidebar"
+                onClick={() => setNavOpen((v) => !v)}
+              >
+                {/* A hamburger, not the panel glyph the reference used here
+                    (owner, 2026-08-29). The panel mark is still in the sidebar
+                    footer, where it means "this rail" — one mark standing for two
+                    different things in two places was the ambiguity worth losing. */}
+                <HugeIcon name="menu" className="i" />
+              </button>
+            )}
             <span className="grow" />
+            {openProject && projectSub === "knowledge" && (
+              <span className="pane-head-title">Project Knowledge</span>
+            )}
+            {openProject && (
+              <button className="head-btn" aria-label="Project options">
+                <HugeIcon name="dots" className="i" />
+              </button>
+            )}
             {/* ---- FEEDBACK, WHERE THE INCOGNITO HAT WAS ------------
                 Owner, 2026-08-29: "switch it for a feedback icon — that will
                 later lead to a feedback board with upvotes and all."
@@ -610,8 +653,9 @@ export function ClaudeUI() {
                 know who is voting or it counts the same person forever.
 
                 Only on the chat view — Projects and Artifacts do not have a
-                feedback corner in the reference either. */}
-            {view === "chat" && (
+                feedback corner in the reference either. Also not while a
+                project is open, which has its own "..." in the same corner. */}
+            {view === "chat" && !openProject && (
               <button className="head-btn" aria-label="Feedback">
                 <HugeIcon name="feedback" className="i" />
               </button>
@@ -641,53 +685,65 @@ export function ClaudeUI() {
                     width. Centring the greeting alone would put the one
                     element with no box around it out of alignment with the
                     two that have one. */}
-                <div className="greeting">
-                  {/* The clay starburst is GONE (owner, 2026-08-29). It was
-                      the reference's own mark and the one place `--clay`
-                      appeared on this surface at all — which was the argument
-                      for keeping it and is now the argument against: a single
-                      orange glyph, borrowed from another product's brand,
-                      sitting beside our own name in our own face. The
-                      greeting is the whole element now, so it carries the
-                      line on its own rather than being a caption to a logo. */}
-                  <span className="txt">Good evening, Deeky</span>
-                </div>
+                {!openProject && (
+                  <div className="greeting">
+                    {/* The clay starburst is GONE (owner, 2026-08-29). It was
+                        the reference's own mark and the one place `--clay`
+                        appeared on this surface at all — which was the argument
+                        for keeping it and is now the argument against: a single
+                        orange glyph, borrowed from another product's brand,
+                        sitting beside our own name in our own face. The
+                        greeting is the whole element now, so it carries the
+                        line on its own rather than being a caption to a logo. */}
+                    <span className="txt">Good evening, Deeky</span>
+                  </div>
+                )}
 
-                {/* ---- A FEW ARTIFACTS, THE SAME CARD AS THE ARTIFACTS
-                    PAGE ----------------------------------------------
-                    Owner, 2026-09-18: scrap the quick-action rows and the
-                    folders that stood in for "recent work" here, and show
-                    real Artifacts cards instead. Same list, same
-                    `ArtifactCard` the Artifacts tab renders — a slice of it,
-                    not a separate invented set, so this row and that page
-                    can't disagree about what's recent. */}
-                <div className="qa">
-                  <div className="qa-head">Artifacts</div>
+                {/* ---- THE HOME CARDS ARE PROJECTS NOW, NOT ARTIFACTS -----
+                    Owner, 2026-09-19: two card sets were sitting here for
+                    comparison — the real `ArtifactCard` slice and the
+                    `CoursesSection` grid underneath it. The course grid "don't
+                    really nice" and is gone (still lives at
+                    `/dashboard/courses` via `CoursesTab.tsx`, just not
+                    re-derived here); the `Artifacts` label above the other set
+                    is gone too, because these cards aren't naming artifacts any
+                    more — they open a PROJECT. Same `.art-card` shape
+                    (squircled, see globals.css), same "one component, no
+                    disagreeing lists" logic, but the DATA is now `PROJECTS`
+                    (`lib/projects.ts` — the list `ProjectsPage`'s folder cards
+                    already use), because a chat title was never a project
+                    name and these titles need to be.
+
+                    Tapping a card does not navigate to a new route — it swaps
+                    what `.pane-inner` shows while `view` stays "chat", which
+                    is the whole trick behind the composer never unmounting on
+                    the way in. See the state comment by `openProject` above. */}
+                {!openProject && (
                   <ul className="art-grid">
-                    {ARTIFACTS.slice(0, 3).map((a, i) => (
-                      <ArtifactCard a={a} key={i} />
+                    {recent(3).map((p) => (
+                      <ProjectHomeCard
+                        p={p}
+                        key={p.title}
+                        onOpen={() => {
+                          setOpenProject(p);
+                          setProjectSub("overview");
+                        }}
+                      />
                     ))}
                   </ul>
-                </div>
+                )}
 
-                {/* ---- YOUR COURSES, BACK ON THE HOME SCREEN -----------
-                    This is `CoursesSection` — the real course cards, with
-                    real progress, that lived here before the 2026-08-27
-                    sketch moved them to their own tab (see CoursesTab.tsx,
-                    which still renders the same component at
-                    /dashboard/courses). Bringing them back under the
-                    greeting rather than re-deriving them keeps the one
-                    component both screens agree on. */}
-                <div className="qa">
-                  <div className="qa-head">Your courses</div>
-                  <CoursesSection
-                    mine={mine}
-                    hydrated={hydrated}
-                    doneCount={doneCount}
-                    isComplete={isComplete}
-                    days={days}
+                {openProject && projectSub === "overview" && (
+                  <ProjectOverview
+                    project={openProject}
+                    onOpenKnowledge={() => setProjectSub("knowledge")}
+                    onOpenInstructions={() => setInstOpen(true)}
+                    onNewChat={() => editorRef.current?.focus()}
                   />
-                </div>
+                )}
+                {openProject && projectSub === "knowledge" && (
+                  <ProjectKnowledge project={openProject} />
+                )}
                 </div>
               </div>
             )}
@@ -778,7 +834,11 @@ export function ClaudeUI() {
                 className="editor"
                 contentEditable
                 suppressContentEditableWarning
-                data-placeholder="How can I help you today?"
+                data-placeholder={
+                  openProject
+                    ? `Chat with Claude in ${openProject.title}…`
+                    : "How can I help you today?"
+                }
               />
 
               <div className="bar">
@@ -832,6 +892,11 @@ export function ClaudeUI() {
           onClose={() => setPacksOpen(false)}
         />
         <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+        <CustomInstructionsModal
+          open={instOpen}
+          project={openProject}
+          onClose={() => setInstOpen(false)}
+        />
       </div>
     </div>
   );
