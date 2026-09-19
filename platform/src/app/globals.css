@@ -3965,7 +3965,7 @@
   align-items:center;justify-content:center;color:var(--text-200)}/* ============================================================
    MAIN PANE
    ============================================================ */
-.cui .pane{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--page-bg)}.cui .pane-head{height:48px;flex:0 0 48px;display:flex;align-items:center;padding:0 12px 0 24px}.cui .head-btn{width:32px;height:32px;border-radius:var(--radius);display:inline-flex;
+.cui .pane{position:relative;flex:1;min-width:0;display:flex;flex-direction:column;background:var(--page-bg)}.cui .pane-head{height:48px;flex:0 0 48px;display:flex;align-items:center;padding:0 12px 0 24px}.cui .head-btn{width:32px;height:32px;border-radius:var(--radius);display:inline-flex;
   align-items:center;justify-content:center;color:var(--text-100)}.cui .pane-scroll{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column}.cui .pane-inner{
   width:100%;max-width:1280px;margin:16px auto 0;padding:0 56px;
   flex:1;display:flex;flex-direction:column;justify-content:center;
@@ -4094,31 +4094,41 @@
   }
 }
 
-/* ---- the composer's dock (2026-08-29) -----------------------------
+/* ---- the composer's dock (2026-08-29, overlap+blur 2026-09-19) -----
  * The composer sits at the foot of the pane rather than in the scroll,
- * so it is always reachable and the greeting scrolls behind it.
+ * so it is always reachable.
  *
- * ⚠️ IT IS NOT `position: fixed`, AND IT DELIBERATELY DOES NOT NEED TO BE.
- * `.pane` is a flex column — header, scroller, this — so a sibling after
- * the scroller lands at the bottom by construction. That gets three things
- * free that a fixed element has to be told: it is inset by the sidebar on
- * desktop (it lives inside the pane, not the viewport), it can never overlap
- * the content above it, and it cannot be captured by an ancestor that later
- * gains a transform or a backdrop-filter. A bottom-docked composer is the
- * usual reason a surface's first `position: fixed` appears; this one does
- * not, and the rule stays intact.
+ * It used to be a flex sibling after the scroller — never overlapping,
+ * painted on a flat `--page-bg` rectangle. Owner, 2026-09-19: scrolled
+ * content hitting that rectangle read as a hard-edged block sitting behind
+ * the composer, not as the page continuing underneath it. The fix is the
+ * opposite of the old rule: let content scroll BEHIND the dock and blur
+ * as it goes, so the page dissolves into the composer rather than being
+ * clipped by a colored panel.
  *
- * Its horizontal metrics mirror `.pane-inner` exactly — same max-width, same
- * stepped padding — so the composer stays in the same column as the greeting
- * above it at every width. Change one and change the other.
+ * That means `.pane-scroll` now runs the full height of `.pane` and this
+ * sits on top of its bottom edge — `position: absolute`, not `fixed`.
+ * The distinction that mattered for `fixed` still holds here: `.pane` is
+ * the positioned ancestor (not the viewport), it is not itself a scroller
+ * and it never gains a transform or backdrop-filter, so this cannot be
+ * captured or ride a scroll the way a `fixed` dock could. It has no
+ * background of its own any more — see `::before` below for the blur.
+ *
+ * Its horizontal metrics still mirror `.pane-inner` exactly — same
+ * max-width, same stepped padding — so the composer stays in the same
+ * column as the content above it at every width. Change one and change
+ * the other.
  * ------------------------------------------------------------------ */
 .cui .composer-dock {
-  flex: 0 0 auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
   padding: 8px 56px calc(20px + env(safe-area-inset-bottom, 0px));
-  background: var(--page-bg);
 }
 @media (max-width: 900px) {
   .cui .composer-dock { padding-left: 32px; padding-right: 32px; }
@@ -4127,10 +4137,45 @@
   .cui .composer-dock { padding-left: 16px; padding-right: 16px; }
 }
 
-/* With the composer gone from the scroller, the greeting is the only thing
-   left in it — so it centres in the space above the dock rather than being
-   pushed off-centre by a box that is no longer its sibling. */
-.cui .pane-inner { padding-bottom: 8px; }
+/* ---- the blur, not a block --------------------------------------
+ * The dock itself carries no fill any more; this pseudo-element is the
+ * whole effect. It reaches ABOVE the dock's own box (`top` is negative)
+ * so there is a run-up of real scrolled content to blur before it ever
+ * reaches the composer — a fade with nothing to fade would just be a
+ * softer-edged block, which is the same complaint with better anti-
+ * aliasing. `mask-image` ramps the blur's own opacity from nothing at
+ * the top of that run-up to full at the composer's feet, which is what
+ * reads as content dissolving rather than being switched off.
+ *
+ * `pointer-events: none` because this is decoration behind the composer
+ * and the source row, both of which sit later in the DOM and keep their
+ * own opaque backgrounds (`--surface-3`) — they are unaffected by the
+ * mask and stay fully legible; only the empty dock padding around them,
+ * and the run-up above, show the blurred page through.
+ * ------------------------------------------------------------------ */
+.cui .composer-dock::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: -120px;
+  z-index: -1;
+  pointer-events: none;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  mask-image: linear-gradient(to bottom, transparent, #000 46%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 46%);
+}
+
+/* The dock is out of flow now, so `.pane-scroll` no longer gets shortened
+   by its height automatically — reserve that room here instead, or the
+   last card would sit permanently under the fully-opaque composer rather
+   than merely passing through the blur above it. ~154px of dock content
+   (composer + source row) plus the safe-area inset it also pads for. */
+.cui .pane-inner {
+  padding-bottom: calc(190px + env(safe-area-inset-bottom, 0px));
+}
 
 /* ---- the composer's corners are a squircle (2026-08-29) -----------
  * `corner-shape: squircle` turns the corner from a circular arc into a
