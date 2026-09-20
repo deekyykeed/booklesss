@@ -29,26 +29,30 @@ import type { Project } from "@/lib/projects";
  * a nearby icon standing in for a different noun.
  * ------------------------------------------------------------------ */
 
-/** The home screen's project card — the `.art-card` shape (now squircled,
- *  see globals.css), reused for real `Project` data instead of Artifacts'
- *  chat titles. Same trap this codebase avoids everywhere else: one card
- *  component so the home slice and any future full list can't disagree. */
-export function ProjectHomeCard({ p, onOpen }: { p: Project; onOpen: () => void }) {
+/** The project card — the reference's own `.card` (proj.png / cardstates.png),
+ *  not `.art-card`: that shape belongs to Artifacts (a thumbnail over a
+ *  title), and pressing it into service for Projects on 2026-09-19, after a
+ *  hand-drawn folder design was tried and dropped the same week, was the
+ *  same mistake twice — neither is what the reference actually drew for a
+ *  project. This is, so ProjectsPage and the home screen share it rather
+ *  than disagreeing about what a project card looks like. `onOpen` is
+ *  optional because ProjectsPage's own cards don't navigate yet, same as
+ *  the reference's. */
+export function ProjectCard({ p, onOpen }: { p: Project; onOpen?: () => void }) {
   return (
-    <li className="art-wrap">
-      <div className="art-card">
-        <button className="art-link" aria-label={`Open ${p.title}`} onClick={onOpen} />
-        <div className="art-preview" />
-        <div className="art-divider" />
-        <div className="art-foot">
-          <div className="art-title">{p.title}</div>
-          <div className="art-meta">
-            <span>{p.files} files</span>
-            <span>&middot;</span>
-            <span>{p.updated}</span>
-          </div>
-        </div>
-      </div>
+    <li className="card-wrap">
+      <a
+        className="card"
+        href="#"
+        onClick={(e) => {
+          e.preventDefault();
+          onOpen?.();
+        }}
+      >
+        <div className="card-title">{p.title}</div>
+        {p.desc && <div className="card-desc">{p.desc}</div>}
+        <div className="card-date">{p.updated}</div>
+      </a>
     </li>
   );
 }

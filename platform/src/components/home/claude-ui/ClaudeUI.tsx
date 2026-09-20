@@ -7,7 +7,7 @@ import { SettingsModal } from "./SettingsModal";
 import { ProjectsPage } from "./ProjectsPage";
 import { ArtifactsPage } from "./ArtifactsPage";
 import {
-  ProjectHomeCard,
+  ProjectCard,
   ProjectOverview,
   ProjectKnowledge,
   CustomInstructionsModal,
@@ -707,21 +707,29 @@ export function ClaudeUI() {
                     `/dashboard/courses` via `CoursesTab.tsx`, just not
                     re-derived here); the `Artifacts` label above the other set
                     is gone too, because these cards aren't naming artifacts any
-                    more — they open a PROJECT. Same `.art-card` shape
-                    (squircled, see globals.css), same "one component, no
-                    disagreeing lists" logic, but the DATA is now `PROJECTS`
-                    (`lib/projects.ts` — the list `ProjectsPage`'s folder cards
-                    already use), because a chat title was never a project
-                    name and these titles need to be.
+                    more — they open a PROJECT. DATA is `PROJECTS`
+                    (`lib/projects.ts` — the same list `ProjectsPage` reads),
+                    because a chat title was never a project name and these
+                    titles need to be.
+
+                    ⚠️ THE CARD ITSELF CHANGED ON 2026-09-20. It briefly reused
+                    `.art-card` (Artifacts' own thumbnail-over-title shape) and
+                    before that a hand-drawn folder — the owner called both
+                    "designs that don't work" and asked for the cards that
+                    actually shipped with the reference UI. `ProjectCard` in
+                    `./ProjectDetail` is the reference's plain `.card`
+                    (proj.png / cardstates.png), the same component
+                    `ProjectsPage` renders its full grid with, so the two
+                    surfaces can't disagree about what a project looks like.
 
                     Tapping a card does not navigate to a new route — it swaps
                     what `.pane-inner` shows while `view` stays "chat", which
                     is the whole trick behind the composer never unmounting on
                     the way in. See the state comment by `openProject` above. */}
                 {!openProject && (
-                  <ul className="art-grid">
+                  <ul className="cards">
                     {recent(3).map((p) => (
-                      <ProjectHomeCard
+                      <ProjectCard
                         p={p}
                         key={p.title}
                         onOpen={() => {

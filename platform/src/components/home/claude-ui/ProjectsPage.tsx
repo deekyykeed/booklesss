@@ -2,25 +2,17 @@
 
 import { HugeIcon } from "@/components/icons/huge";
 import { PROJECTS } from "@/lib/projects";
-import { StatFolderCard, DarkFolderTile } from "./Folder";
+import { ProjectCard } from "./ProjectDetail";
 
 /* ------------------------------------------------------------------ *
- * PROJECTS, AS FOLDERS — owner, looking at this page's own mock data
- * (Corporate Finance, Strategic Management, Booklesss…): "this is what I'm
- * seeing if [these] can be projects — a collection of course files and all."
- *
- * ⚠️ TWO GRIDS, NOT ONE MIXED GRID. The two card styles have very different
- * natural widths, and in a single auto-fill grid the column count is set by
- * whichever minimum is smaller — so the four stat cards would spill into a
- * row of tiles at most widths and each row's height would be set by whatever
- * tall card happened to land in it. Separate lists let each style keep its
- * own column rhythm.
+ * PROJECTS — the reference's own grid (proj.png), one card style, one list.
+ * A hand-drawn folder pair sat here from 2026-09-13 to 2026-09-20; the owner
+ * called both "designs that don't work" and asked for the cards that
+ * actually shipped with the UI back. See git history if either is ever
+ * wanted again — ProjectCard in ./ProjectDetail is the replacement.
  * ------------------------------------------------------------------ */
 
 export function ProjectsPage() {
-  const first = PROJECTS.slice(0, 4);
-  const rest = PROJECTS.slice(4);
-
   return (
     <div className="proj-page">
       <div className="proj-head">
@@ -38,15 +30,9 @@ export function ProjectsPage() {
         </div>
       </div>
 
-      <ul className="cards cards-stat">
-        {first.map((p) => (
-          <StatFolderCard p={p} key={p.title} />
-        ))}
-      </ul>
-
-      <ul className="cards cards-tile">
-        {rest.map((p) => (
-          <DarkFolderTile p={p} key={p.title} />
+      <ul className="cards">
+        {PROJECTS.map((p) => (
+          <ProjectCard p={p} key={p.title} />
         ))}
       </ul>
     </div>
