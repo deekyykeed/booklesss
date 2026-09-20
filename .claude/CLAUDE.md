@@ -735,6 +735,31 @@ beats a value inherited from its parent, so setting it on `.i` does nothing and
 the set's 1.5 wins in silence. The "Stop Claude" pill was removed in the same
 change.
 
+**Paper (app.paper.design, file "Booklesss") is now the design source of
+truth for this surface** (owner, 2026-09-20, replacing Framer — the old
+read-only/no-positional/no-upload Framer rules don't carry over: full editing
+in Paper is normal). The home screen's course row (`.home-course-card*` in
+globals.css) is the first thing built this way — every value copied 1:1 from
+Paper's own computed styles rather than derived from `--radius`/`--surface`.
+Two traps paid for getting it there, both worth knowing before the next one:
+
+- **A new `.cui` class name can collide with an existing GLOBAL one.** The
+  first pass named the row's cards `.course-card`, which is already owned,
+  unscoped, by the real `CourseCard.tsx` (the squircle cards with the purple
+  gradient background, used at `/dashboard/courses`) — `.cui .course-card`
+  would have outranked it on specificity for the properties it set, but every
+  property it left alone (the gradient `background-image`, the `border`)
+  would have bled through onto the new card. Caught only by diffing the
+  *compiled* CSS after a real build, not by reading the source. Prefix
+  anything new here distinctly (`.home-course-card`) rather than trusting a
+  name looks free.
+- **A literal `*/` inside a CSS comment's TEXT closes the comment early** —
+  same class of bug as a backtick inside a JS template literal. Writing
+  `--surface-*/--ring-card` in a comment (meaning "surface, star, slash
+  ring-card") produced `CssSyntaxError: Unknown word --ring-card`, because the
+  parser read the comment as ending at that `*/`. Avoid an asterisk
+  immediately before a slash in any CSS comment.
+
 ### The Ask Box — ARCHIVED 2026-08-27, and still the reference for the traps
 
 **Superseded by the home screen above; `home/AskDock.tsx` is in `home/archive/`.**

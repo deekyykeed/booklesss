@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-09-19 (session 67)
+**Last updated:** 2026-09-20 (session 68)
 
 ---
 
@@ -91,6 +91,26 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 68 (2026-09-20, Paper replaces Framer as design source of
+truth. Linear NOT reachable this session — same one-time-OAuth gap as 67, so
+nothing below has a ticket.)**
+
+- [ ] **3 of the 4 home-screen course cards share one generic photo**
+      (`course-flowers.webp`) — only Treasury Management has its own
+      (`course-crystal.jpg`), because that's what existed in the Paper
+      mockup at the time. If the owner wants a distinct image per course,
+      add the art to Paper's course cards first (Paper is now the source of
+      truth for this row) and re-pull via `get_fill_image`.
+- [ ] **The home course cards don't do anything when tapped.** Deliberate for
+      now — the old "project overview" panel they used to open has nothing
+      true to show for a real course (fake file counts) — but it reads as a
+      dead click. Worth deciding what a tap SHOULD do (open the course? a
+      preview?) rather than leaving it inert indefinitely.
+- [ ] **A right-hand rail (288px, sidebar's own chrome mirrored) exists in
+      Paper only**, carved out of the dashboard's existing 1440px width —
+      nothing built into the app yet. Owner was "trying to see what I can do
+      with the space"; no direction given yet on what goes in it.
 
 **From session 67 (2026-09-19, Ranade + the home screen's real cards. Linear
 NOT reachable this session — `linear-server` needs a one-time OAuth and this
@@ -1738,6 +1758,69 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-09-20 (session 68 — Paper becomes the design source of truth, Framer retired)
+
+**Done:**
+- **Owner moved off Framer entirely, onto Paper** (app.paper.design, file
+  "Booklesss"). Removed the `design-bridge` MCP entry (the Framer relay) from
+  `.mcp.json` and committed it. Memory updated: the three old Framer-only
+  rules (read-only, no positional edits, no uploads) marked SUPERSEDED with a
+  pointer to a new `project_design_tool_paper_not_framer` memory — they still
+  apply if Framer is ever reconnected, just not to Paper.
+- **The dashboard home screen's mock "Projects" row is now real courses.**
+  Off a Paper mockup, `.cui`'s top card row swapped `lib/projects.ts`'s
+  placeholder titles (Content, Khadzika Operations…) for the 4 real courses
+  in `lib/courses.ts`, each with a photo pulled from Paper
+  (`platform/public/dashboard/course-{crystal,flowers}.*`). Two passes:
+  first a rough version reusing the shared `.card` shape, then a second pass
+  making Paper the literal source of truth — every value on the new
+  `.home-course-card*` (200px width, 16px radius, the two-layer shadow, the
+  folder glyph, 1px divider, exact type sizes) copied 1:1 from Paper's own
+  `get_computed_styles`, not derived from the shared `--radius`/`--surface`
+  tokens. Mobile collapses to one column, on request. These cards no longer
+  open the "project overview" panel — that panel's fake file-count shape has
+  nothing true to say about a real course, so tapping does nothing for now.
+  Both passes verified with a real `npm run build` + `next start` + curl of
+  the served HTML/CSS, not just typecheck.
+- **Explored a right-hand rail in Paper** (an empty 288px panel, sidebar's
+  own chrome mirrored to the other edge) at the owner's request to "see what
+  I can do with the space" — corrected once from growing the artboard wider
+  (1440→1728) to instead carving the rail out of the EXISTING 1440px width
+  (the main pane's flex-grow absorbs the difference automatically). Paper
+  only; nothing built into the app from this yet.
+
+**What Worked:**
+- **Diffing the COMPILED CSS after a real build**, not just reading the
+  source, caught a real bug before it shipped: the first pass named the new
+  card `.course-card`, which turns out to already be a global (unscoped)
+  class owned by the actual `CourseCard.tsx` component (squircle shape,
+  purple gradient background, used at `/dashboard/courses`). `.cui
+  .course-card`'s higher specificity would have won on the properties it set
+  but let the gradient `background-image` and the `border` bleed straight
+  through from the other rule. A `sed` rename fixed it — and then over-fixed
+  it, briefly renaming the REAL component's selectors too, caught by the same
+  build+diff discipline before it was committed.
+- Pulling exact values (colors, px, shadow) out of Paper via
+  `get_computed_styles`/`get_fill_image`/`get_jsx` rather than eyeballing a
+  screenshot — this is what "Paper is the source of truth" has to mean in
+  practice, and it's how the card ended up pixel-matching without back and
+  forth.
+
+**Dead Ends (do not retry):**
+- **A literal `*/` inside a CSS comment's own TEXT closes the comment
+  early** — wrote `--surface-*/--ring-card` meaning "surface, star, slash,
+  ring-card" and the parser read it as the comment ending at that `*/`,
+  producing `CssSyntaxError: Unknown word --ring-card` several lines later.
+  Same class of bug as a backtick inside a JS template literal (already in
+  this file). Avoid an asterisk immediately before a slash in any CSS
+  comment.
+- **Naming a new `.cui` class without grepping globals.css for the bare name
+  first.** Cost a full extra build-diff-fix cycle this session; see the
+  `.course-card` collision above. Addendum written to CLAUDE.md so the next
+  session doesn't rediscover it from scratch.
+
+---
 
 ### Session 2026-09-19 (session 67 — Ranade replaces Familjen, and the home screen's mocks become real cards)
 
