@@ -7,15 +7,24 @@ import { SettingsModal } from "./SettingsModal";
 import { ProjectsPage } from "./ProjectsPage";
 import { ArtifactsPage } from "./ArtifactsPage";
 import {
-  ProjectCard,
   ProjectOverview,
   ProjectKnowledge,
   CustomInstructionsModal,
 } from "./ProjectDetail";
 import { packsSnapshot } from "@/lib/resource-packs";
-import { recent, type Project } from "@/lib/projects";
+import { type Project } from "@/lib/projects";
+import { COURSES } from "@/lib/courses";
 
 type View = "chat" | "projects" | "artifacts";
+
+/** Card art for the home screen's course row — the two photos the owner put
+ *  on this row's Paper mockup, kept as local files rather than hot-linking
+ *  Paper's own asset host. Treasury Management got its own image there;
+ *  every other course fell back to the mockup's generic one. */
+const COURSE_ART: Record<string, string> = {
+  "treasury-management": "/dashboard/course-crystal.jpg",
+};
+const COURSE_ART_FALLBACK = "/dashboard/course-flowers.webp";
 
 /* ------------------------------------------------------------------ *
  * THE REFERENCE UI, VERBATIM.
@@ -699,44 +708,36 @@ export function ClaudeUI() {
                   </div>
                 )}
 
-                {/* ---- THE HOME CARDS ARE PROJECTS NOW, NOT ARTIFACTS -----
-                    Owner, 2026-09-19: two card sets were sitting here for
-                    comparison — the real `ArtifactCard` slice and the
-                    `CoursesSection` grid underneath it. The course grid "don't
-                    really nice" and is gone (still lives at
-                    `/dashboard/courses` via `CoursesTab.tsx`, just not
-                    re-derived here); the `Artifacts` label above the other set
-                    is gone too, because these cards aren't naming artifacts any
-                    more — they open a PROJECT. DATA is `PROJECTS`
-                    (`lib/projects.ts` — the same list `ProjectsPage` reads),
-                    because a chat title was never a project name and these
-                    titles need to be.
+                {/* ---- THE HOME CARDS ARE COURSES, NOT PROJECTS -----------
+                    Owner, 2026-09-20, off a Paper mockup: swap the mock
+                    `PROJECTS` row (Content / Khadzika Operations / …) for the
+                    4 real courses (`lib/courses.ts`), each with the photo the
+                    mockup put on it (COURSE_ART above).
 
-                    ⚠️ THE CARD ITSELF CHANGED ON 2026-09-20. It briefly reused
-                    `.art-card` (Artifacts' own thumbnail-over-title shape) and
-                    before that a hand-drawn folder — the owner called both
-                    "designs that don't work" and asked for the cards that
-                    actually shipped with the reference UI. `ProjectCard` in
-                    `./ProjectDetail` is the reference's plain `.card`
-                    (proj.png / cardstates.png), the same component
-                    `ProjectsPage` renders its full grid with, so the two
-                    surfaces can't disagree about what a project looks like.
-
-                    Tapping a card does not navigate to a new route — it swaps
-                    what `.pane-inner` shows while `view` stays "chat", which
-                    is the whole trick behind the composer never unmounting on
-                    the way in. See the state comment by `openProject` above. */}
+                    These cards don't open the project overview panel below —
+                    that panel's "files" / "Custom instructions" shape is
+                    built for a fake AI project and has nothing true to say
+                    about a real course, so a course card doesn't try to force
+                    it. `openProject` stays wired for whatever the sidebar's
+                    Projects row eventually opens (still the folders mock —
+                    see WORKSPACE/PROJECT_MEMORY), it's just no longer this
+                    row's job. */}
                 {!openProject && (
                   <ul className="cards">
-                    {recent(3).map((p) => (
-                      <ProjectCard
-                        p={p}
-                        key={p.title}
-                        onOpen={() => {
-                          setOpenProject(p);
-                          setProjectSub("overview");
-                        }}
-                      />
+                    {COURSES.map((c) => (
+                      <li className="card-wrap" key={c.slug}>
+                        <div className="card card-course">
+                          <img
+                            className="card-course-img"
+                            src={COURSE_ART[c.slug] ?? COURSE_ART_FALLBACK}
+                            alt=""
+                          />
+                          <div className="card-course-body">
+                            <div className="card-title">{c.title}</div>
+                            <div className="card-desc">{c.subtitle}</div>
+                          </div>
+                        </div>
+                      </li>
                     ))}
                   </ul>
                 )}
