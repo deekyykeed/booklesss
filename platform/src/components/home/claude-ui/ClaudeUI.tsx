@@ -714,6 +714,16 @@ export function ClaudeUI() {
                     4 real courses (`lib/courses.ts`), each with the photo the
                     mockup put on it (COURSE_ART above).
 
+                    PAPER IS THE SOURCE OF TRUTH FOR THIS CARD (owner,
+                    2026-09-20): every value in `.home-course-card*` below —
+                    the 200px width, the 16px radius, the two-layer shadow,
+                    the folder glyph sitting in the image's bottom-left
+                    corner — is copied 1:1 from the Paper file's own computed
+                    styles, not derived from the shared `--radius`/`--surface`
+                    tokens `.card` uses elsewhere. A future change to this
+                    card should happen in Paper first, then get copied down
+                    the same way.
+
                     These cards don't open the project overview panel below —
                     that panel's "files" / "Custom instructions" shape is
                     built for a fake AI project and has nothing true to say
@@ -723,18 +733,37 @@ export function ClaudeUI() {
                     see WORKSPACE/PROJECT_MEMORY), it's just no longer this
                     row's job. */}
                 {!openProject && (
-                  <ul className="cards">
+                  <ul className="home-course-cards">
                     {COURSES.map((c) => (
-                      <li className="card-wrap" key={c.slug}>
-                        <div className="card card-course">
-                          <img
-                            className="card-course-img"
-                            src={COURSE_ART[c.slug] ?? COURSE_ART_FALLBACK}
-                            alt=""
-                          />
-                          <div className="card-course-body">
-                            <div className="card-title">{c.title}</div>
-                            <div className="card-desc">{c.subtitle}</div>
+                      <li className="home-course-card-wrap" key={c.slug}>
+                        <div className="home-course-card">
+                          <div
+                            className="home-course-card-img"
+                            style={{ backgroundImage: `url(${COURSE_ART[c.slug] ?? COURSE_ART_FALLBACK})` }}
+                          >
+                            {/* The reference's own placeholder-thumbnail glyph
+                                (a folder, not a Booklesss mark) — every card
+                                in the Paper source carries it regardless of
+                                whether the photo behind it is real. */}
+                            <svg
+                              width="30"
+                              height="26"
+                              viewBox="0 0 24 24"
+                              className="home-course-card-folder"
+                              aria-hidden
+                            >
+                              <path
+                                d="M8 7H16.75C18.857 7 19.91 7 20.667 7.506C20.994 7.724 21.276 8.006 21.494 8.333C22 9.09 22 10.143 22 12.25C22 15.761 22 17.517 21.157 18.778C20.793 19.324 20.324 19.793 19.778 20.157C18.517 21 16.761 21 13.25 21H12C7.286 21 4.929 21 3.464 19.535C2 18.071 2 15.714 2 11V7.944C2 6.128 2 5.22 2.38 4.538C2.651 4.052 3.052 3.651 3.538 3.38C4.22 3 5.128 3 6.944 3C8.108 3 8.69 3 9.199 3.191C10.362 3.627 10.842 4.684 11.367 5.733L12 7"
+                                fill="none"
+                                stroke="#D9D0BE"
+                                strokeWidth="1.6"
+                              />
+                            </svg>
+                          </div>
+                          <div className="home-course-card-divider" />
+                          <div className="home-course-card-body">
+                            <div className="home-course-card-title">{c.title}</div>
+                            <div className="home-course-card-meta">{c.subtitle}</div>
                           </div>
                         </div>
                       </li>

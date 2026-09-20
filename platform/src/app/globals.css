@@ -4610,15 +4610,42 @@
 }
 .cui .card-date{margin-top:auto;font-size:13px;line-height:17px;color:var(--text-300)}
 
-/* The home screen's course row (2026-09-20): a photo on top, edge to edge,
-   clipped by the card's own radius via overflow:hidden — the text keeps the
-   standard .card padding, just moved into its own wrapper below the image. */
-.cui .card.card-course{padding:0;overflow:hidden}
-.cui .card-course-img{width:100%;height:100px;object-fit:cover;display:block}
-.cui .card-course-body{display:flex;flex-direction:column;gap:6px;padding:16px}
+/* ---- the home screen's course row -------------------------------------
+ * PAPER IS THE SOURCE OF TRUTH HERE (owner, 2026-09-20): every value below
+ * is copied 1:1 from that file's computed styles, not derived from the
+ * shared --radius, --surface or --ring-card tokens the way .card above is.
+ * Edit the Paper file first, then copy the numbers down — don't hand-tune
+ * these independently or the two will drift.
+ * ------------------------------------------------------------------ */
+.cui .home-course-cards{list-style:none;display:flex;flex-wrap:wrap;gap:16px}
+.cui .home-course-card-wrap{transition:transform var(--dur) ease-out}
+.cui .home-course-card-wrap:has(.home-course-card:active){transform:scale(.98);transition-duration:var(--dur-fast)}
+.cui .home-course-card{
+  display:flex;flex-direction:column;width:200px;flex-shrink:0;
+  border-radius:16px;overflow:hidden;background-color:var(--surface-2);
+  box-shadow:0 0.25px 1.25px rgba(0,0,0,.035),0 0 0 1px rgba(31,31,30,.15);
+}
+.cui .home-course-card-img{
+  height:100px;flex-shrink:0;display:flex;align-items:flex-end;padding:14px;
+  background-size:cover;background-position:50%;
+}
+.cui .home-course-card-folder{flex-shrink:0}
+.cui .home-course-card-divider{height:1px;flex-shrink:0;background-color:rgba(11,11,11,.078)}
+.cui .home-course-card-body{display:flex;flex-direction:column;gap:3px;padding:12px 14px}
+.cui .home-course-card-title{font-size:14px;font-weight:600;line-height:18px;color:var(--text-100)}
+.cui .home-course-card-meta{
+  font-size:12px;font-weight:400;line-height:16px;color:var(--text-300);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+/* "on a mobile breakpoint i just need one column" (owner, 2026-09-20) — the
+   200px card goes full width and the row stacks instead of wrapping. */
+@media (max-width:640px){
+  .cui .home-course-cards{flex-direction:column}
+  .cui .home-course-card{width:100%}
+}
 
 @media (prefers-reduced-motion:reduce){
-  .cui .card-wrap,.cui .btn-sec::before,.cui .btn-pri::before{transition:none}
+  .cui .card-wrap,.cui .home-course-card-wrap,.cui .btn-sec::before,.cui .btn-pri::before{transition:none}
 }
 
 @media (max-width:640px){
