@@ -1,411 +1,494 @@
-import type { Metadata } from "next";
-import Image from "next/image";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
-import { authEnabled } from "@/lib/auth";
-import { openGraph, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
+import { openGraph, SITE_NAME } from "@/lib/site";
 import { ToApp } from "@/components/landing/landing-bits";
-import { TrustedFaces } from "@/components/landing/TrustedFaces";
-import { MemberCount } from "@/components/landing/MemberCount";
+import { Reveal } from "@/components/site/Reveal";
 
 /* ------------------------------------------------------------------ *
- * The front door. One screen, and nothing under it.
+ * The front door, rebuilt for the pivot (owner, 2026-09-29): "Booklesss is
+ * now for general AI education to help people run their business with AI."
  *
- * THE DESIGN IS THE OWNER'S, drawn in Framer (project "Booklesss RESERVE",
- * page "/") and read off the canvas on 2026-08-06 — layout, type, colour,
- * shadows and timing are all measured from that file rather than interpreted.
- * If it needs to change, change it there first and re-read it; a value edited
- * only here goes stale the next time anyone looks at the source.
+ * The look is carried over from the video-hero site the owner specified the
+ * same day (website/ at the repo root): a fullscreen looping film, glass
+ * controls, Instrument Serif display type over Inter, a deep navy page. It is
+ * scoped under `.site` in globals.css, like `.cui` is for /dashboard, so none
+ * of its tokens reach the app and none of the app's reach it.
  *
- * WHAT THIS REPLACED, so the reasoning isn't lost: a scrolling page with a
- * headline, an inline sign-up card, a "Meet Booklesss" paragraph and three
- * feature sections each carrying a screenshot of the real app. The owner's
- * call (2026-08-06) was hero only — "a very simple landing page".
+ * WHAT THIS REPLACED: the one-screen student landing drawn in Framer
+ * ("Booklesss RESERVE", 2026-08-06) — photo hero, trusted-faces row, member
+ * count. It is in git; TrustedFaces and MemberCount went with it.
  *
- * ⚠️ THE OAUTH CONSTRAINT THIS BREAKS, ON PURPOSE. Google's OAuth branding
- * review rejected this app twice in August 2026 because the home page did not
- * name the product, describe what it does, or link the privacy policy without
- * JavaScript. The previous page existed in that shape to pass it, and Google
- * sign-in is currently OFF in production as the workaround. This page carries
- * the name and a one-line description in static HTML, but no privacy link and
- * no fuller explanation — so turning Google sign-in back on needs either a
- * footer here or a different verification URL. Raised with the owner before
- * this shipped; the decision was to ship it.
+ * STILL A SERVER COMPONENT, and still readable with no JavaScript: Google's
+ * OAuth branding review rejected this app twice for a home page that did not
+ * name the product, say what it does, or link the privacy policy without JS.
+ * All three are in the static HTML now (the footer carries /privacy), which
+ * is what turning Google sign-in back on was waiting for.
  *
- * STILL A SERVER COMPONENT. The entrance is CSS keyframes with per-element
- * delays (see globals.css → "the front door's entrance"), so the page itself
- * needs no JavaScript at all. Two children do: ToApp, which renders nothing,
- * and TrustedFaces, whose row is driven by state. MemberCount used to be a
- * third and is not any more — its number is read on the server now.
+ * ⚠️ NOTHING HERE STATES A FACT ABOUT THE BUSINESS THAT ISN'T TRUE: no price,
+ * no learner count, no testimonials, no location claim. Add those only once
+ * the owner has given the real ones.
  * ------------------------------------------------------------------ */
 
+const DESCRIPTION =
+  "Short, practical lessons that show business owners how to use AI on the work they already do.";
+
 export const metadata: Metadata = {
-  title: { absolute: SITE_NAME },
-  description:
-    "Booklesss is a course reader: university study notes rewritten as short steps you read on your phone, with checkpoints that track your studying.",
+  title: { absolute: `${SITE_NAME} — AI for the business you already run` },
+  description: DESCRIPTION,
   alternates: { canonical: "/" },
-  openGraph: openGraph({ title: SITE_NAME, description: SITE_DESCRIPTION, path: "/" }),
+  openGraph: openGraph({ title: SITE_NAME, description: DESCRIPTION, path: "/" }),
 };
 
-/* Ten minutes, and this is the ONLY thing on the page that needs a clock:
- * MemberCount reads the row count of `students` on the server, so the page has
- * to be rebuilt occasionally for that number to move. Everything else here is
- * static markup and CSS.
- *
- * ISR rather than a per-visitor read, deliberately. `dynamic = "force-dynamic"`
- * would put a database round trip in front of every single first impression, to
- * refresh a number that changes a few times a week — and would take the front
- * door down with Supabase if Supabase ever went down. With `revalidate`, a
- * visitor is always served static HTML; at most one of them, once every ten
- * minutes, pays for the refresh in the background. */
-export const revalidate = 600;
+export const viewport: Viewport = { themeColor: "#002a43" };
 
-/* The five faces above "Trusted by Students". Template stock photography that
- * came with the design, downscaled from the 3–6MP originals Framer was serving
- * to the 96px they are actually drawn at (3.5MB → 17KB for the set).
- *
- * They are photographs of nobody in particular, over a line claiming students
- * trust us. Flagged to the owner on 2026-08-06 and kept deliberately. The
- * honest version is public/avatars/ — the same 200 Kameleon discs students are
- * actually assigned — and swapping to it is this array plus a rounded <img>. */
-/* The five faces themselves now live in components/landing/TrustedFaces, with
-   the arrive/scoot/depart motion that draws them. */
+const VIDEO_SRC =
+  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4";
 
-/** The headline, one span per word, because the design plays it in a word at a
- *  time. Splitting in the markup rather than at runtime is what keeps the page
- *  a server component — and it keeps the whole line in the HTML, so it is
- *  still one readable sentence to a crawler that runs no CSS. */
-/**
- * The Framer file's own headline, restored on the owner's call (2026-08-06:
- * "then revert to my original title and subtitle") after a round of
- * alternatives were tried in the live hero.
- *
- * Still nested by LINE rather than flat, which is what that round bought.
- * Left to wrap on its own this breaks "Learn 2X faster with / Booklesss",
- * dropping the product's name alone onto the second line; breaking after "2X"
- * gives two balanced lines. A headline is five words long — letting the browser
- * choose where it folds is leaving the only typographic decision on the page to
- * chance.
- *
- * Recorded rather than re-argued: "2X" is a measurement nobody here has taken.
- * Raised, and the owner's call is to keep it.
- */
-const HEADLINE: string[][] = [
-  ["Learn", "2X", "faster"],
-  ["with", "Booklesss"],
+/** Where every "start" button goes. One constant, because the destination is
+ *  the open question: /sign-up today still runs the student onboarding
+ *  (university, programme, year), which a shop owner has no answers to. */
+const START_HREF = "/sign-up";
+
+const NAV = [
+  { label: "How it works", href: "#how" },
+  { label: "What you'll learn", href: "#learn" },
+  { label: "A lesson", href: "#lesson" },
+  { label: "Questions", href: "#faq" },
 ];
 
-/** Framer's word stagger: 50ms per token. */
-const WORD_STEP = 0.05;
+const TOOLS = [
+  "ChatGPT",
+  "Claude",
+  "Gemini",
+  "Microsoft Copilot",
+  "Canva",
+  "Google Sheets",
+  "WhatsApp Business",
+];
 
-export default function LandingPage() {
+const STEPS = [
+  {
+    title: "Pick the job",
+    body: "Start from the work, not the tool: pricing a quote, chasing an invoice, answering the same customer question for the fortieth time.",
+  },
+  {
+    title: "Read one short step",
+    body: "One idea, one worked example, about five minutes. Written for a phone, so it fits between customers.",
+  },
+  {
+    title: "Try it on your own business",
+    body: "Every step ends with something to do: a prompt to run on your own numbers, your own messages, your own stock list.",
+  },
+  {
+    title: "Check the answer",
+    body: "AI is confident and sometimes wrong. You learn what to verify, what never to paste in, and when to do it yourself.",
+  },
+];
+
+/* Bento, not three equal columns: wide/narrow, then narrow/wide, then again,
+ * so the eye zig-zags down the grid instead of reading a table. */
+const TRACKS = [
+  {
+    kicker: "Sales & marketing",
+    title: "Get noticed without hiring an agency",
+    body: "Product descriptions, a week of social posts in one sitting, a price list customers can actually read, follow-ups that don't sound like a robot wrote them.",
+    wide: true,
+  },
+  {
+    kicker: "Money & admin",
+    title: "Less time on paperwork",
+    body: "Quotes, invoices, a cash-flow sheet from a pile of receipts, and a plain-English read of a contract before you sign it.",
+  },
+  {
+    kicker: "Customer service",
+    title: "Answer faster, in your voice",
+    body: "WhatsApp replies, a list of answers to what everyone asks, and a calm first draft when a customer is angry.",
+  },
+  {
+    kicker: "Your own assistant",
+    title: "An AI that already knows your business",
+    body: "Set one up with your prices, products and tone, so you stop explaining the business from scratch every time you open a chat.",
+    wide: true,
+  },
+  {
+    kicker: "Operations",
+    title: "Run the week, not the chaos",
+    body: "Stock lists, staff rosters, supplier emails, and step-by-step procedures a new hire can follow on day one.",
+    wide: true,
+  },
+  {
+    kicker: "Judgement",
+    title: "Know when not to trust it",
+    body: "What never to share, how to catch a made-up fact, and which answers a person should give.",
+  },
+];
+
+const AUDIENCE = [
+  {
+    who: "Shop owners and traders",
+    line: "Orders, stock and customers coming in on WhatsApp all day.",
+  },
+  {
+    who: "Freelancers and consultants",
+    line: "Proposals, invoices and follow-ups, done in the gaps between client work.",
+  },
+  {
+    who: "Small teams",
+    line: "A handful of people who each lose an hour a day to the same admin.",
+  },
+  {
+    who: "Managers told to “use AI”",
+    line: "With no one to show them where to start or what it is actually good for.",
+  },
+];
+
+const FAQ = [
+  {
+    q: "Do I need to know anything about AI?",
+    a: "No. The first steps assume you have never opened one. If you can send a WhatsApp message, you can do this.",
+  },
+  {
+    q: "Do I have to pay for an AI tool?",
+    a: "Most lessons work on the free versions of ChatGPT, Claude or Gemini. Where a paid feature genuinely helps, the lesson says so and shows the free way round it.",
+  },
+  {
+    q: "Is it safe to put my business information into AI?",
+    a: "Some of it. A whole lesson covers what never to paste in — customer ID numbers, passwords, bank details — and how to get the same result without it.",
+  },
+  {
+    q: "How long does it take?",
+    a: "Each step is about five minutes, and each one is useful on its own. Do one today and use it this afternoon.",
+  },
+  {
+    q: "Can I learn on my phone?",
+    a: "That is how it is built. Every lesson reads on a phone first, so it fits in a queue, on a bus or behind the counter.",
+  },
+];
+
+const serif = "font-[family-name:var(--font-instrument)]";
+
+function Eyebrow({ children }: { children: React.ReactNode }) {
+  return <p className="site-eyebrow">{children}</p>;
+}
+
+export default function Home() {
   return (
-    /* THE MARK RIDES THE TOP; THE TEXT IS BACK WHERE IT WAS.
-       The logo moved up on the owner's call (2026-08-06: "move Booklesss and
-       the actual logo to the top") and stays there. The pitch went down with it
-       in the same pass and came straight back — "no, revert the positioning of
-       the text": dropping it to 56px put the headline, the subtitle and the
-       button in a block at the very bottom of the frame, which opens the middle
-       but crowds the foot. Framer's 140px is the value that holds; only the top
-       changed. The safe-area insets are added rather than assumed: on a notched
-       phone in a PWA this is the top and bottom of the screen.
-
-       THE WHOLE COMPOSITION THEN SAT LOWER (owner, 2026-08-07: "drop
-       everything on the screen lower"). Both paddings moved it, in opposite
-       directions: the top pushes the mark down, the bottom lets the pitch
-       fall. They moved by DIFFERENT amounts on purpose — 28→52px at the head,
-       140→100px at the foot — because the same instruction asked for more air
-       under the mark too, and with `justify-between` the space between the two
-       blocks is simply whatever is left over.
-
-       THEN "leave the logo where it is and move everything down a little
-       more" — one lever only, since the mark's position is set by pt alone
-       (the top of the flex-1 content box, which `justify-between` pins the
-       mark to) and touching it again would move the one thing this ask
-       excludes. pb is the only property that moves the pitch without moving
-       the mark: less padding below the content box means the box itself
-       grows taller and its bottom — where the pitch sits — lands nearer the
-       screen edge. 100→80px, and the gap the last change opened under the
-       mark grows by the same 20px, since that gap is what pb isn't spending
-       any more. */
-    <main className="relative flex min-h-dvh w-full flex-col items-center justify-end overflow-clip bg-black px-4 pt-[calc(3.25rem+env(safe-area-inset-top))] pb-[calc(80px+env(safe-area-inset-bottom))]">
+    <div className="site">
       <ToApp />
 
-      {/* ---- the backdrop ----
-          Three layers, painted bottom to top: the photograph, a gradient that
-          drowns its lower half in black so white type has somewhere solid to
-          sit, and a noise tile over both.
-
-          No z-index on either this or the content beside it. Both are
-          positioned and both are z-index auto, so DOM order alone decides:
-          this comes first and the content paints over it. Stacking here is one
-          less thing to reason about than three competing layer numbers. */}
-      <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
-        <Image
-          src="/landing/hero/photo.jpg"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
+      {/* ---- hero ---------------------------------------------------- */}
+      <header className="relative flex min-h-dvh flex-col overflow-hidden">
+        <video
+          className="absolute inset-0 z-0 h-full w-full object-cover"
+          src={VIDEO_SRC}
+          autoPlay
+          loop
+          muted
+          playsInline
+          aria-hidden="true"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_42%,rgb(0,0,0)_100%)]" />
-        {/* Tiled at its native 256px rather than stretched to cover. Framer
-            scales the same PNG across the whole frame, which at this size
-            turns 1px grain into 3px blotches; repeating it is what the texture
-            is for and it holds up at any viewport. */}
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{ backgroundImage: "url(/landing/hero/noise.png)", backgroundSize: "256px" }}
-        />
-      </div>
 
-      {/* ---- the content ----
-          Top and bottom of the screen, pushed apart. The design is a 390px
-          phone; the column is capped just above that and centred so a laptop
-          gets the same composition on a full-bleed photo rather than a hero
-          stretched sideways. "/" is exempt from the DesktopGate, so a desktop
-          render is a real case, not a hypothetical. */}
-      <div className="relative flex h-full w-full max-w-[430px] flex-1 flex-col items-center justify-between gap-8">
-        {/* ---- the mark ---- */}
-        <div className="flex flex-col items-center gap-2.5">
-          {/* The B is 40px on a 50px disc that clips it, and the clipping is the
-              design: the 10px-offset underline runs past the bottom of the
-              circle, so what is left is a solid bar with its ends cut by the
-              curve. Do not relax the overflow or it escapes as a full rule.
-
-              LINE HEIGHT IS 50px, NOT THE DESIGN'S 1.4em, AND THAT IS A FIX
-              RATHER THAN A DEVIATION. 1.4em is a 56px line box in a 50px disc;
-              Framer centres it at -3px, but a grid or flex item TALLER than its
-              container is aligned to the start edge instead of centred — the
-              engine refusing to push content out of the top where it could not
-              be scrolled back to. So `place-items-center` silently yields y=0,
-              the glyph sits 3px low, and the bar falls off the bottom of the
-              circle. Setting the line box to the disc's own height puts the
-              baseline exactly where the design has it (half-leading 5px from
-              50, vs Framer's 8px from 56 on a box starting 3px higher — the
-              same 85px) and nothing overflows, so no alignment rule applies.
-              Measured against a screenshot of the Framer page, not derived. */}
-          {/* THE 1px BLACK RING is the owner's (2026-08-06), and it does nothing
-              here on purpose: black on black against a dark photograph. It is
-              for everywhere else this mark is about to go — "i actually want to
-              experiment using that logo on the page as my actual logo exactly
-              as it is, just add a 1px black border to the whole thing". On a
-              white surface the ring is what gives the disc an edge instead of
-              letting it read as a hole. Defining it here, where the mark is
-              drawn, means the version that travels already has it. */}
-          <div className="hero-in grid size-[50px] place-items-center overflow-clip rounded-full border border-black bg-black shadow-[var(--shadow-hero-disc)] [--rise-blur:0px] [--rise-dur:0.4s] [--rise:0px]">
-            <span className="font-mark text-[40px] leading-[50px] text-white underline decoration-solid decoration-[5px] underline-offset-[10px]">
-              B
-            </span>
-          </div>
-          {/* No underline on the wordmark. Framer's canvas carries a stale
-              text-decoration on this node that its own render ignores — checked
-              against a screenshot of the page before dropping it. */}
-          <p
-            className="hero-in hero-shade font-mark text-[22px] leading-[1.2em] tracking-[-0.03em] text-white"
-            style={{ animationDelay: "0.05s" }}
-          >
+        <nav className="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-6 sm:px-8">
+          <Link href="/" className={`${serif} text-3xl tracking-tight text-[var(--s-fg)]`}>
             Booklesss
-          </p>
-        </div>
+          </Link>
+          <ul className="hidden items-center gap-8 md:flex">
+            {NAV.map((n) => (
+              <li key={n.href}>
+                <a href={n.href} className="site-link text-sm">
+                  {n.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <Link href={START_HREF} className="liquid-glass site-press rounded-full px-6 py-2.5 text-sm text-[var(--s-fg)]">
+            Start learning
+          </Link>
+        </nav>
 
-        {/* ---- the pitch ---- */}
-        <div className="flex w-full flex-col items-center gap-8">
-          {/* Five faces, 31px each, overlapping by 6px — and they keep arriving
-              (owner, 2026-08-06: "id like the student profile pics to cycle
-              round. cycle then stay then cycle. as more students come from the
-              left more disappear on the right").
-
-              The window is exactly five discs wide; the track inside it is ten,
-              stepping one disc at a time and holding between steps. The hold is
-              the point — a face that never stops moving is a ticker, and a
-              ticker reads as decoration rather than as people showing up.
-              Timing and the seamless wrap are in globals.css → .faces-track. */}
-          {/* CLOSER TO THE HEADLINE THAN THE OTHER TWO GAPS (owner, 2026-08-07:
-              "reduce the space between the profile pic container closer to the
-              title text"). The negative margin rather than a smaller gap on the
-              parent, because that gap also sets subtitle→button: this stack has
-              three children and only the first join was asked to tighten. 32px
-              less 12px = 20px, so the faces and the line under them read as
-              belonging to the headline instead of floating between it and the
-              mark. */}
-          <div className="-mb-3 flex flex-col items-center gap-2">
-            {/* Overlapping discs with the photograph showing through the gap
-                between them, a new student growing in on the left as the
-                oldest shrinks away on the right. The mechanic is all in
-                components/landing/TrustedFaces and the CSS beside it. */}
-            <div className="hero-in" style={{ animationDelay: "0.2s" }}>
-              <TrustedFaces />
-            </div>
-            <p
-              className="hero-in hero-shade font-hero-meta text-[14px] leading-[1.3em] text-[#dedede]"
-              style={{ "--rise": "20px", "--rise-blur": "10px", "--rise-dur": "0.7s", animationDelay: "0.25s" } as React.CSSProperties}
-            >
-              Trusted by Students
-            </p>
-          </div>
-
-          <div className="flex w-full flex-col items-center gap-4">
-            {/* NO mix-blend-mode, and the design file says otherwise on purpose.
-                The Framer node carries `blendingMode: exclusion`, but Framer
-                wraps this content in a z-indexed layer, which makes it its own
-                stacking context — and an element only blends with what is
-                painted beneath it INSIDE that context. The photograph is
-                outside it, so Framer's own render draws this line solid white.
-                Checked against a screenshot of the page rather than the canvas.
-
-                Implementing the attribute faithfully therefore produces
-                something the owner has never seen: over the skin tones in the
-                middle of the photo, exclusion turns white into muddy blue-grey
-                and the headline gets noticeably harder to read. The rendered
-                design is the design. */}
-            {/* BRICOLAGE, THE BUTTON'S FACE (owner, 2026-08-06: "use bricolage
-                for the hero text"). It was Familjen Grotesk, which is the app's
-                heading face and correct inside the app — on the front door it
-                made the headline and the button look like they came from two
-                different pages. One weight is registered, 800, so this is the
-                same cut the button wears rather than a lighter instance of it;
-                at 42px that is heavy on purpose. */}
-            <h1 className="hero-shade text-center font-hero text-[42px] leading-[46px] font-extrabold tracking-[-0.03em] text-white sm:text-[48px] sm:leading-[52px]">
-              {/* One block per line, words inside. The stagger counts across
-                  the whole headline rather than restarting per line — the
-                  reveal follows the sentence, not the layout — so the delay is
-                  the running word index, not the index within its line. */}
-              {HEADLINE.map((line, li) => (
-                <span key={li} className="block">
-                  {line.map((word, wi) => {
-                    const n = HEADLINE.slice(0, li).reduce((t, l) => t + l.length, 0) + wi;
-                    return (
-                      <span
-                        key={word}
-                        className="hero-in hero-word"
-                        style={{ animationDelay: `${n * WORD_STEP}s` }}
-                      >
-                        {word}
-                        {wi < line.length - 1 ? " " : ""}
-                      </span>
-                    );
-                  })}
-                </span>
-              ))}
-            </h1>
-            {/* THE ONLY SENTENCE ON THE PAGE THAT SAYS WHAT THIS IS — the whole
-                of what a stranger, a crawler, or an OAuth reviewer gets.
-
-                ⚠️ IT DESCRIBES A PRODUCT WE DO NOT HAVE. Three claims off the
-                Framer template, of which the app does one: there is no
-                coaching, real-time or otherwise, and "analyze your performance"
-                oversells a score on a dashboard. It was briefly swapped for the
-                previous landing page's own subline — already written, already
-                true, and identical to this page's `description` metadata — and
-                the owner reverted it (2026-08-06: "revert to my original title
-                and subtitle").
-
-                That is his call and it stands. Left here so the next person to
-                read this file knows the line is aspirational rather than
-                descriptive, and does not go looking for the coaching feature.
-                The true version is one string away:
-                "Your whole course, rewritten as short steps you read on your
-                phone." */}
-            {/* RUBIK (owner, 2026-08-06: "still use rubik for the subtitle
-                text"). It was Aptos — the reading face, which belongs inside a
-                step and nowhere near a hero. Rubik puts it in the same voice as
-                "Trusted by Students" just above it, so the two quiet lines read
-                as one register under the headline.
-
-                DIMMED, THEN BROUGHT BACK UP. "Dim the subtitle text" took it to
-                white/70 regular; "increase the opacity and weight" is the
-                correction, and both are right — at 70% regular over a
-                photograph the line was quiet to the point of being work to
-                read. 90% at a real 500 keeps it clearly subordinate to the
-                headline while staying a sentence rather than a texture.
-                A transparent white rather than a grey: on a photograph a grey
-                goes muddy where the picture is light, while white at an alpha
-                holds the same relationship to whatever is behind it. */}
-            <p
-              className="hero-in hero-shade max-w-[90%] text-center font-hero-meta text-[16px] leading-[1.45] font-medium text-white/90"
-              style={{ "--rise": "20px", "--rise-blur": "10px", "--rise-dur": "0.7s", animationDelay: "0.25s" } as React.CSSProperties}
-            >
-              Track your academic progress, analyze your performance, and get real-time coaching, all
-              on your phone.
-            </p>
-          </div>
-
-          {/* ---- the one thing to do ----
-              A black pill inside a lighter one: the outer gradient is the rim,
-              the inner is the button.
-
-              USED TO ARRIVE A FULL SECOND AFTER THE REST, on the Framer file's
-              own timing — the page finishes settling, THEN offers the tap.
-              Owner, 2026-08-07, watching it live: "the button awkwardly comes
-              in later than it should... and its slower." Both complaints are
-              the same gap. Everything above it is fully in by ~1.0s (the
-              faces and the last headline word both land there), so a 1s delay
-              plus a 1s rise of its own meant nothing moved on screen for a
-              beat, and then the one element built to be NOTICED took twice as
-              long as any other to do it — on cubic-bezier(0.44, 0, 0.56, 1),
-              an ease-IN-out that leaves the rest of the row's fast-out curve
-              for a slow, symmetric one.
-
-              Now: delay 0.45s, so it starts moving while the headline and the
-              two quiet lines under it are still settling rather than after —
-              a cascade, not a relay race with a baton drop in the middle.
-              Duration 0.7s, matching Trusted-by and the subtitle rather than
-              doubling them. No `--rise-ease` override, so it falls through to
-              `.hero-in`'s own default — the fast-out curve everything else on
-              the page already uses; the slow ease-in-out was the other half
-              of why this one element read as a different kind of motion.
-              `--rise` stays 48px: the bigger travel is still what marks this
-              as the last, largest gesture, it just no longer takes a second
-              to make it.
-
-              Framer points this at /category, a route on the marketing site
-              that has no counterpart here. The app's answer is the sign-up
-              flow; on a build with no auth keys /sign-up 404s, so it falls
-              back to the dashboard rather than to a dead end. */}
-          <div
-            className="hero-in flex w-full flex-col items-center"
-            style={
-              {
-                "--rise": "48px",
-                "--rise-blur": "0px",
-                "--rise-dur": "0.7s",
-                animationDelay: "0.45s",
-              } as React.CSSProperties
-            }
+        <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 pt-16 pb-32 text-center">
+          <p className="site-eyebrow animate-fade-rise">AI for the business you already run</p>
+          <h1
+            className={`${serif} animate-fade-rise mt-6 max-w-6xl text-5xl leading-[0.95] font-normal tracking-[-2.46px] text-[var(--s-fg)] sm:text-7xl md:text-8xl`}
           >
-            {/* THE FRONT DOOR OPENS ON THE QUESTIONS, NOT THE PASSWORD (owner,
-                2026-08-26). This pointed at /sign-up, which asked a stranger for
-                an email and a password before it had asked them anything about
-                themselves. It is /onboarding now: eleven questions first, the
-                account last (see app/onboarding/page.tsx).
-
-                /sign-up is NOT dead and must not be redirected away — it is
-                still where a gated tap lands, via AuthRedirect, and that path is
-                deliberately kept short. Somebody who tapped "save this" halfway
-                down a step is answering a different question than somebody who
-                came here to start; making them sit eleven questions to save one
-                section is how that tap stops being worth making. */}
+            Run your business <em className="not-italic text-[var(--s-muted)]">with AI,</em> not{" "}
+            <em className="not-italic text-[var(--s-muted)]">around it.</em>
+          </h1>
+          <p className="animate-fade-rise-delay mt-8 max-w-2xl text-base leading-relaxed text-[var(--s-muted)] sm:text-lg">
+            Short, practical lessons that show owners and small teams how to use AI on real work —
+            quotes, stock, customer messages, the books. Five minutes a step, on your phone. No
+            coding, no jargon.
+          </p>
+          <div className="animate-fade-rise-delay-2 mt-12 flex flex-col items-center gap-5 sm:flex-row sm:gap-8">
             <Link
-              href={authEnabled ? "/onboarding" : "/dashboard"}
-              className="rounded-[33px] bg-[linear-gradient(120deg,rgb(255,255,255)_0%,rgba(255,255,255,0.75)_100%)] p-2 transition-transform duration-200 active:scale-[0.97]"
+              href={START_HREF}
+              className="liquid-glass site-press rounded-full px-14 py-5 text-base text-[var(--s-fg)]"
             >
-              <span className="flex items-center justify-center rounded-full bg-black px-6 py-3 pr-5 shadow-[var(--shadow-hero-cta)]">
-                <span className="font-hero text-[16px] leading-[1.7em] font-extrabold text-white select-none">
-                  Get started now
-                </span>
-              </span>
+              Start learning
             </Link>
-            {/* Under the button, in the same quiet register as the trust line
-                above the headline — the two pieces of social proof on this page
-                should sound like each other. The number is now the real row
-                count of `students`, and MemberCount draws NOTHING until that
-                count clears its floor, so this slot is empty on purpose today.
-                Read its header before putting anything back in it. */}
-            <MemberCount />
+            <a href="#lesson" className="site-link text-base">
+              See a lesson first →
+            </a>
           </div>
         </div>
-      </div>
-    </main>
+      </header>
+
+      <main>
+        {/* ---- tools strip ------------------------------------------- */}
+        <section aria-label="Tools covered" className="site-rule px-6 py-10">
+          <div className="mx-auto flex max-w-7xl flex-col items-center gap-5 md:flex-row md:justify-between">
+            <p className="text-sm text-[var(--s-muted)]">Works with tools you can open today</p>
+            <ul className="flex flex-wrap justify-center gap-x-8 gap-y-3">
+              {TOOLS.map((t) => (
+                <li key={t} className={`${serif} text-xl text-[var(--s-fg)]/80`}>
+                  {t}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* ---- statement --------------------------------------------- */}
+        <section className="px-6 py-28 md:py-40">
+          <Reveal className="mx-auto max-w-5xl">
+            <p
+              className={`${serif} text-4xl leading-[1.05] tracking-[-1px] text-[var(--s-fg)] sm:text-5xl md:text-6xl`}
+            >
+              Everyone says AI will change business.{" "}
+              <em className="not-italic text-[var(--s-muted)]">
+                Almost nobody shows you what to type on Monday morning.
+              </em>
+            </p>
+            <p className="mt-10 max-w-2xl text-lg leading-relaxed text-[var(--s-muted)]">
+              Booklesss is that Monday morning. Every lesson starts from a job you already do, gives
+              you the exact words to hand the AI, and tells you what to check before you trust the
+              answer.
+            </p>
+          </Reveal>
+        </section>
+
+        {/* ---- how it works ------------------------------------------ */}
+        <section id="how" className="site-rule scroll-mt-8 px-6 py-28 md:py-36">
+          <div className="mx-auto grid max-w-7xl gap-14 md:grid-cols-[1fr_1.4fr] md:gap-20">
+            <Reveal className="md:sticky md:top-16 md:self-start">
+              <Eyebrow>How it works</Eyebrow>
+              <h2 className={`${serif} mt-5 text-4xl leading-[1] tracking-[-1px] sm:text-6xl`}>
+                Learn it on a job, <em className="not-italic text-[var(--s-muted)]">not in theory.</em>
+              </h2>
+            </Reveal>
+            <ol className="grid gap-4">
+              {STEPS.map((s, i) => (
+                <Reveal as="li" key={s.title} delay={i * 80} className="site-panel rounded-3xl p-7 sm:p-9">
+                  <div className="flex items-baseline gap-5">
+                    <span className={`${serif} text-2xl text-[var(--s-muted)]`}>
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <div>
+                      <h3 className="text-lg font-medium text-[var(--s-fg)]">{s.title}</h3>
+                      <p className="mt-2 leading-relaxed text-[var(--s-muted)]">{s.body}</p>
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        {/* ---- tracks ------------------------------------------------ */}
+        <section id="learn" className="site-rule scroll-mt-8 px-6 py-28 md:py-36">
+          <div className="mx-auto max-w-7xl">
+            <Reveal className="max-w-3xl">
+              <Eyebrow>What you&apos;ll learn</Eyebrow>
+              <h2 className={`${serif} mt-5 text-4xl leading-[1] tracking-[-1px] sm:text-6xl`}>
+                Six parts of the business, <em className="not-italic text-[var(--s-muted)]">one skill.</em>
+              </h2>
+            </Reveal>
+            <div className="mt-16 grid grid-cols-1 gap-4 md:grid-cols-3">
+              {TRACKS.map((t, i) => (
+                <Reveal
+                  key={t.kicker}
+                  delay={(i % 2) * 80}
+                  className={`site-panel flex min-w-0 flex-col justify-between rounded-3xl p-8 sm:p-10 ${
+                    t.wide ? "md:col-span-2" : ""
+                  }`}
+                >
+                  <p className="text-xs tracking-[0.18em] text-[var(--s-muted)] uppercase">{t.kicker}</p>
+                  <div className="mt-12">
+                    <h3 className={`${serif} text-3xl leading-[1.05] text-[var(--s-fg)] sm:text-4xl`}>
+                      {t.title}
+                    </h3>
+                    <p className="mt-4 max-w-xl leading-relaxed text-[var(--s-muted)]">{t.body}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ---- a lesson ---------------------------------------------- */}
+        <section id="lesson" className="site-rule scroll-mt-8 px-6 py-28 md:py-36">
+          <div className="mx-auto grid max-w-7xl items-center gap-14 md:grid-cols-2 md:gap-20">
+            <Reveal>
+              <Eyebrow>A lesson, start to finish</Eyebrow>
+              <h2 className={`${serif} mt-5 text-4xl leading-[1] tracking-[-1px] sm:text-6xl`}>
+                A week of orders, <em className="not-italic text-[var(--s-muted)]">counted in a minute.</em>
+              </h2>
+              <p className="mt-8 max-w-lg text-lg leading-relaxed text-[var(--s-muted)]">
+                This is the shape of every step: the mess you already have, the words to give the
+                AI, what comes back, and the one check that tells you whether to trust it.
+              </p>
+              <Link href={START_HREF} className="site-link mt-10 inline-block text-base">
+                Start with this one →
+              </Link>
+            </Reveal>
+
+            <Reveal delay={120} className="site-panel rounded-[2rem] p-3">
+              <div className="site-card rounded-[1.6rem] p-6 sm:p-8">
+                <p className="text-xs tracking-[0.18em] text-[var(--s-muted)] uppercase">Step · Operations</p>
+                <h3 className={`${serif} mt-3 text-3xl leading-[1.05] text-[var(--s-fg)]`}>
+                  Turn a week of WhatsApp orders into a stock list
+                </h3>
+
+                <div className="mt-7 grid gap-5 text-[15px] leading-relaxed">
+                  <div>
+                    <p className="site-label">You paste in</p>
+                    <div className="site-well mt-2 rounded-2xl p-4 text-[var(--s-fg)]/85">
+                      <p>Mrs Banda: 2 × 25kg mealie meal, 1 × cooking oil 2L</p>
+                      <p>Chola: sugar 2kg ×3 pls, and the oil</p>
+                      <p>Mr Phiri: same as last week</p>
+                      <p className="mt-1 text-[var(--s-muted)]">…and 21 more messages this week</p>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="site-label">You ask</p>
+                    <p className="mt-2 text-[var(--s-fg)]">
+                      “List every product ordered this week with the total quantity of each, largest
+                      first. Flag any order you can&apos;t read.”
+                    </p>
+                  </div>
+                  <div>
+                    <p className="site-label">You get</p>
+                    <table className="mt-2 w-full text-left">
+                      <tbody className="text-[var(--s-fg)]">
+                        <tr className="site-row">
+                          <td className="py-2">Mealie meal, 25kg</td>
+                          <td className="py-2 text-right whitespace-nowrap">14 bags</td>
+                        </tr>
+                        <tr className="site-row">
+                          <td className="py-2">Cooking oil, 2L</td>
+                          <td className="py-2 text-right whitespace-nowrap">9</td>
+                        </tr>
+                        <tr className="site-row">
+                          <td className="py-2">Sugar, 2kg</td>
+                          <td className="py-2 text-right whitespace-nowrap">6</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p className="mt-2 text-[var(--s-muted)]">
+                      1 unclear — “same as last week” (Mr Phiri)
+                    </p>
+                  </div>
+                  <div className="site-well rounded-2xl p-4">
+                    <p className="site-label">Check before you trust it</p>
+                    <p className="mt-1 text-[var(--s-fg)]">
+                      Add up one product yourself. If it matches, the rest usually does.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ---- who it's for ------------------------------------------ */}
+        <section className="site-rule px-6 py-28 md:py-36">
+          <div className="mx-auto grid max-w-7xl gap-14 md:grid-cols-[1fr_1.4fr] md:gap-20">
+            <Reveal>
+              <Eyebrow>Who it&apos;s for</Eyebrow>
+              <h2 className={`${serif} mt-5 text-4xl leading-[1] tracking-[-1px] sm:text-6xl`}>
+                People who run things, <em className="not-italic text-[var(--s-muted)]">not people who code.</em>
+              </h2>
+            </Reveal>
+            <ul>
+              {AUDIENCE.map((a, i) => (
+                <Reveal as="li" key={a.who} delay={i * 60} className="site-row py-7 first:pt-0">
+                  <p className={`${serif} text-3xl text-[var(--s-fg)]`}>{a.who}</p>
+                  <p className="mt-2 leading-relaxed text-[var(--s-muted)]">{a.line}</p>
+                </Reveal>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* ---- FAQ --------------------------------------------------- */}
+        <section id="faq" className="site-rule scroll-mt-8 px-6 py-28 md:py-36">
+          <div className="mx-auto max-w-3xl">
+            <Reveal>
+              <Eyebrow>Questions</Eyebrow>
+              <h2 className={`${serif} mt-5 text-4xl leading-[1] tracking-[-1px] sm:text-6xl`}>
+                Before you start.
+              </h2>
+            </Reveal>
+            <div className="mt-12">
+              {FAQ.map((f) => (
+                <details key={f.q} className="site-faq site-row group">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-lg text-[var(--s-fg)]">
+                    {f.q}
+                    <span
+                      aria-hidden="true"
+                      className="text-2xl leading-none text-[var(--s-muted)] transition-transform duration-300 group-open:rotate-45"
+                    >
+                      +
+                    </span>
+                  </summary>
+                  <p className="-mt-2 pb-7 leading-relaxed text-[var(--s-muted)]">{f.a}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ---- closing CTA ------------------------------------------- */}
+        <section className="site-rule px-6 py-32 text-center md:py-44">
+          <Reveal className="mx-auto flex max-w-4xl flex-col items-center">
+            <h2
+              className={`${serif} text-5xl leading-[0.95] tracking-[-2px] text-[var(--s-fg)] sm:text-7xl md:text-8xl`}
+            >
+              Monday morning, <em className="not-italic text-[var(--s-muted)]">sorted.</em>
+            </h2>
+            <p className="mt-8 max-w-xl text-lg leading-relaxed text-[var(--s-muted)]">
+              Pick one job you did by hand last week. By the end of the first step, you&apos;ll
+              have done it with AI.
+            </p>
+            <Link
+              href={START_HREF}
+              className="liquid-glass site-press mt-12 rounded-full px-14 py-5 text-base text-[var(--s-fg)]"
+            >
+              Start learning
+            </Link>
+          </Reveal>
+        </section>
+      </main>
+
+      <footer className="site-rule px-6 py-10">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 text-sm text-[var(--s-muted)] md:flex-row">
+          <p>
+            <span className={`${serif} mr-3 text-xl text-[var(--s-fg)]`}>Booklesss</span>
+            Practical AI lessons for people who run businesses.
+          </p>
+          <nav aria-label="Legal" className="flex gap-6">
+            <Link href="/privacy" className="site-link">
+              Privacy
+            </Link>
+            <Link href="/terms" className="site-link">
+              Terms
+            </Link>
+            <Link href="/sign-in" className="site-link">
+              Sign in
+            </Link>
+          </nav>
+        </div>
+      </footer>
+    </div>
   );
 }

@@ -81,6 +81,10 @@ const CSP = [
   "font-src 'self' data: https://assets-proxy.anthropic.com",
   // data: for inlined SVG and the OG card; blob: for canvas captures.
   "img-src 'self' data: blob:",
+  /* The home page's background film is served from this one CloudFront host.
+     Without the directive, media falls back to default-src 'self' and the
+     <video> silently draws nothing — the navy under it is all anyone sees. */
+  "media-src 'self' https://d8j0ntlcm91z4.cloudfront.net",
   /* THE ONE THAT MATTERS: where script may send data. Us, Supabase, and the
      two hosts a conversation actually dials.
  

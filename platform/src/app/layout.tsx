@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Rubik, Bricolage_Grotesque } from "next/font/google";
+import { Inter, Rubik, Bricolage_Grotesque, Instrument_Serif } from "next/font/google";
 import localFont from "next/font/local";
 import { RegisterSW } from "@/components/RegisterSW";
 import { AppEnter } from "@/components/AppEnter";
@@ -157,6 +157,18 @@ const bricolage = Bricolage_Grotesque({
   display: "swap",
 });
 
+/* Instrument Serif draws the display type on "/" and nowhere else — the
+ * marketing site for Booklesss as AI education for business (2026-09-29).
+ * Like Rubik and Bricolage it costs nothing on routes that don't ask for it:
+ * next/font emits the @font-face, the browser only fetches what is drawn. */
+const instrument = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-instrument",
+  display: "swap",
+});
+
 /* The origin every piece of metadata is made absolute against — og:image,
  * og:url, canonical. A crawler arrives with no origin to resolve a relative
  * path against, so this has to be a real host.
@@ -216,7 +228,7 @@ export default function RootLayout({
   const document = (
     <html
       lang="en"
-      className={`${inter.variable} ${ranade.variable} ${aptos.variable} ${satoshi.variable} ${burbank.variable} ${rubik.variable} ${bricolage.variable} h-full`}
+      className={`${inter.variable} ${ranade.variable} ${aptos.variable} ${satoshi.variable} ${burbank.variable} ${rubik.variable} ${bricolage.variable} ${instrument.variable} h-full`}
     >
       <head>
         {/* Sets data-motion before first paint, so a reader who asked for a

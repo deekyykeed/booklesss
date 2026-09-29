@@ -192,16 +192,6 @@
   initial-value: 0%;
 }
 
-/* The radius of the hole one avatar punches in the one behind it. Registered
- * for the same reason: it has to CLOSE smoothly on the disc that stops being
- * overlapped, and an unregistered property would snap it shut. Not inherited —
- * each disc owns its own, and the rightmost one animates its away. */
-@property --cut {
-  syntax: "<length>";
-  inherits: false;
-  initial-value: 23px;
-}
-
 /* Voice-glow blob colours. Registered as real <color>s (not the raw "r g b"
    triplets they used to be) so they can be TRANSITIONED — an unregistered
    custom property jumps between values, which made a colour reshuffle snap.
@@ -430,11 +420,7 @@
      add a selector when a new animation lands. The attribute selector outranks
      every target here, so placement in the file doesn't matter. */
   :root[data-motion="reduced"] .bg-waves span,
-  :root[data-motion="reduced"] .hero-in,
   :root[data-motion="reduced"] .bar-spinner,
-  :root[data-motion="reduced"] .face-slot[data-state],
-  :root[data-motion="reduced"] .face-slot[data-state] .face-disc,
-  :root[data-motion="reduced"] .count-tick,
   :root[data-motion="reduced"] .lesson-fade,
   :root[data-motion="reduced"] .onboard-step,
   :root[data-motion="reduced"] .account-skeleton::after,
@@ -1803,145 +1789,6 @@
     animation: barSpin 700ms linear infinite;
   }
 
-  /* ---------------------------------------------------------------- *
-   * The trusted-by row: overlapping discs, arriving one at a time.
-   *
-   * THE RING IS A HOLE, NOT A COLOUR (owner, 2026-08-06: "remove the white
-   * border, what i'd like is to see through the gaps between them, and
-   * increase what will be looking like the invisible border"). The design drew
-   * a 1px white stroke to separate the overlapping discs, which puts a colour
-   * on top of a photograph. Instead every disc has the circle of its RIGHT-HAND
-   * NEIGHBOUR punched out of it, three pixels wider than that neighbour — so
-   * the separation is a gap you see the picture through, and it costs nothing
-   * on top of the image.
-   *
-   * The cut is at 52px because the neighbour's centre is 32px (one step) right
-   * of this disc's own centre at 20px; its radius is 23 = the 20px disc radius
-   * plus a 3px ring. Change the disc size or the step and both numbers move.
-   *
-   * The RIGHTMOST disc has nothing overlapping it, so its cut has to close as
-   * the disc that was covering it shrinks away — otherwise a bite appears out
-   * of its side with nothing in front of it. That is what `--cut` is registered
-   * for: an unregistered custom property is a string and jumps, so the hole
-   * would pop shut instead of closing.
-   * ---------------------------------------------------------------- */
-  .face-slot {
-    position: relative;
-    display: block;
-    width: 32px;
-    flex: none;
-  }
-  .face-disc {
-    display: block;
-    width: 40px;
-    height: 40px;
-    /* THE DISC IS WIDER THAN ITS SLOT, WHICH IS THE POINT — 40px of face in a
-       32px step is what makes them overlap. Tailwind's preflight sets
-       `img { max-width: 100% }`, and 100% here is the 32px slot, so the disc
-       rendered 32 x 40: an oval. `width` does not override a max-width; only
-       max-width does. Every overlapping image in this row depends on this
-       line. */
-    max-width: none;
-    border-radius: 9999px;
-    object-fit: cover;
-    /* Above the disc to its left, so the overlap falls the way the design has
-       it — each new face in front of the one before. */
-    position: relative;
-    -webkit-mask-image: radial-gradient(circle var(--cut) at 52px 20px, transparent 99%, #000 100%);
-    mask-image: radial-gradient(circle var(--cut) at 52px 20px, transparent 99%, #000 100%);
-  }
-
-  /* One gesture, one duration. The slot opening is the "scoot" — the discs to
-     its right are pushed along by ordinary layout rather than by being animated
-     themselves, so the row can never get out of step with itself.
-
-     420ms, DOWN FROM 700 (owner, 2026-08-07: "that animation as a whole is too
-     slow... speed up the motion of appearing and disappearing and moving
-     over"). The interval between arrivals (`TICK` in TrustedFaces.tsx) is
-     untouched — that is the "cycle, stay, cycle" rhythm and was never the
-     complaint. It is the four numbers below, moved together so the gesture
-     stays one motion rather than drifting out of sync with itself. 420ms is
-     what count-tick beside it already uses — the row now moves at the same
-     speed as the number under it.
-
-     faceDiscIn LOST ITS OVERSHOOT (owner: "remove that bounce... it overgrows
-     then resizes dont like that"). cubic-bezier(0.34, 1.56, 0.64, 1) is a
-     back-out ease — the `1.56` is the curve travelling PAST 1 before
-     settling, which on a `scale()` is a disc that grows bigger than its final
-     size and shrinks back down. That is the bounce, not a bug in how it was
-     tuned. The other three animations here were already plain ease-outs and
-     never bounced; this brings the fourth in line with them. */
-  @keyframes faceSlotOpen {
-    from { width: 0; }
-    to { width: 32px; }
-  }
-  @keyframes faceSlotShut {
-    from { width: 32px; }
-    to { width: 0; }
-  }
-  @keyframes faceDiscIn {
-    from { transform: scale(0); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-  @keyframes faceDiscOut {
-    from { transform: scale(1); opacity: 1; }
-    to { transform: scale(0); opacity: 0; }
-  }
-  @keyframes faceCutClose {
-    from { --cut: 23px; }
-    to { --cut: 0px; }
-  }
-
-  .face-slot[data-state="in"] {
-    animation: faceSlotOpen 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  .face-slot[data-state="in"] .face-disc {
-    animation: faceDiscIn 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  .face-slot[data-state="out"] {
-    animation: faceSlotShut 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  .face-slot[data-state="out"] .face-disc {
-    animation: faceDiscOut 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  .face-slot[data-state="last"] .face-disc {
-    animation: faceCutClose 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
-  /* One more member. Rises and fades in where the old number was, so the change
-     is something you SEE rather than something you notice later — which is the
-     entire reason the count moves at all. Short, because it fires while a
-     visitor is reading something else on the page. */
-  @keyframes countTick {
-    from {
-      opacity: 0;
-      transform: translateY(7px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  .count-tick {
-    animation: countTick 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    /* The count still climbs — it is information, not decoration — it just
-       stops announcing itself. */
-    .count-tick,
-    .face-slot[data-state],
-    .face-slot[data-state] .face-disc {
-      animation: none;
-    }
-    /* The row is still six items with a spare at each end; without the
-       entrance the arriving one must simply be there and the departing one
-       must simply not be. */
-    .face-slot[data-state="in"] { width: 32px; }
-    .face-slot[data-state="out"] { width: 0; }
-    .face-slot[data-state="out"] .face-disc { opacity: 0; }
-    .face-slot[data-state="last"] .face-disc { --cut: 0px; }
-  }
 
 
   @media (prefers-reduced-motion: reduce) {
@@ -3095,72 +2942,6 @@
        it belongs to. */
   }
 
-  /* ---- the front door's entrance ------------------------------------- *
-     The Framer design does not just lay the hero out, it plays it in: the
-     headline arrives a word at a time, the lines under it a line at a time,
-     and the button last, a full second behind everything else. Shipping the
-     layout without the timing ships a different design — the stagger is most
-     of why the page reads as considered rather than as a photo with text on.
-
-     ONE KEYFRAME, THREE DIALS. Every element rises, de-blurs and fades from
-     the same @keyframes; each caller sets how far (--rise), how soft
-     (--rise-blur), how long (--rise-dur), how eased (--rise-ease) and how
-     late (animation-delay, inline, because a word's delay is its index).
-     Custom properties resolve per-element inside a keyframe, so the one
-     animation covers a 12px word and a 48px button without a second copy.
-
-     PURE CSS, so the page stays a server component. The words are already
-     split into spans in the markup; nothing here needs the browser to think.
-     `both` holds the from-state before the delay elapses — without it every
-     element paints in place first and then jumps back to start. */
-  @keyframes heroRise {
-    from {
-      opacity: 0;
-      transform: translateY(var(--rise, 12px));
-      filter: blur(var(--rise-blur, 4px));
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-      filter: blur(0);
-    }
-  }
-  .hero-in {
-    animation: heroRise var(--rise-dur, 0.8s) var(--rise-ease, cubic-bezier(0.12, 0.23, 0.17, 0.98))
-      both;
-  }
-  /* A word of the headline. inline-block because translateY does nothing to an
-     inline box, and the trailing space has to survive the split — it lives on
-     the span rather than between them, so the line still wraps naturally. */
-  .hero-word {
-    display: inline-block;
-    white-space: pre;
-  }
-
-  /* Type standing on a photograph (owner, 2026-08-06: "add a shadow to the text
-     that helps it stand out more").
-   *
-   * TWO LAYERS DOING DIFFERENT JOBS. The tight one is a contact shadow — it
-   * puts a dark edge immediately under the strokes, which is what stops white
-   * type dissolving where it crosses a highlight. The wide one is a haze that
-   * darkens the photo generally behind the words without reading as a shadow
-   * at all. One layer cannot do both: tight enough to hold an edge is too small
-   * to lift the background, and wide enough to lift it looks like fog.
-   *
-   * Deliberately not a scrim rectangle behind the text. The design's whole
-   * point is that the photograph runs uninterrupted behind the words; a panel
-   * would be the container the front door does not have. */
-  .hero-shade {
-    text-shadow:
-      0 1px 2px rgb(0 0 0 / 0.38),
-      0 2px 18px rgb(0 0 0 / 0.45);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .hero-in {
-      animation: none;
-    }
-  }
 }
 
 /* ---- desktop gate ---------------------------------------------------- *
@@ -5390,4 +5171,178 @@
     position:static;width:auto;height:auto;margin:0;
     overflow:hidden;clip-path:none;
   }
+}
+
+/* ==================================================================== *
+ * .site — the front door (app/page.tsx), rebuilt 2026-09-29 for the pivot
+ * to AI education for business owners.
+ *
+ * Scoped exactly like .cui: its own palette, read by nothing outside it, and
+ * reading none of the app's tokens. The values are the owner's spec for the
+ * video-hero site (website/ at the repo root): a deep navy page, white type,
+ * a muted grey for the second half of every headline, and the liquid-glass
+ * edge on anything pressable.
+ *
+ * Unlayered on purpose, like .cui, so a Tailwind utility on the same element
+ * never has to win a layer fight to mean what it says.
+ * ==================================================================== */
+.site {
+  --s-bg: hsl(201 100% 13%);
+  --s-fg: hsl(0 0% 100%);
+  --s-muted: hsl(240 4% 66%);
+  --s-line: hsl(0 0% 100% / 0.1);
+  --s-panel: hsl(0 0% 100% / 0.035);
+  --s-card: hsl(201 100% 9%);
+  --s-well: hsl(0 0% 100% / 0.05);
+  background: var(--s-bg);
+  color: var(--s-fg);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+}
+.site ::selection {
+  background: hsl(0 0% 100% / 0.2);
+}
+
+.site-eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--s-muted);
+}
+.site-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--s-muted);
+}
+.site-link {
+  color: var(--s-muted);
+  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.site-link:hover,
+.site-link:focus-visible {
+  color: var(--s-fg);
+}
+.site-press {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.site-press:hover {
+  transform: scale(1.03);
+}
+.site-press:active {
+  transform: scale(0.98);
+}
+.site-rule {
+  border-top: 1px solid var(--s-line);
+}
+.site-row {
+  border-bottom: 1px solid var(--s-line);
+}
+/* A panel is a hairline and a whisper of fill, never a shadow: on navy a
+   drop shadow is invisible and a glow is the banned neon. */
+.site-panel {
+  background: var(--s-panel);
+  box-shadow: inset 0 0 0 1px var(--s-line);
+}
+/* The inner core of the lesson mock's double bezel. */
+.site-card {
+  background: var(--s-card);
+  box-shadow: inset 0 1px 1px hsl(0 0% 100% / 0.08);
+}
+.site-well {
+  background: var(--s-well);
+}
+.site-faq summary::-webkit-details-marker {
+  display: none;
+}
+
+/* The owner's liquid-glass, verbatim. */
+.liquid-glass {
+  background: rgba(255, 255, 255, 0.01);
+  background-blend-mode: luminosity;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: none;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.4px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0.15) 20%,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0) 60%,
+    rgba(255, 255, 255, 0.15) 80%,
+    rgba(255, 255, 255, 0.45) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.site .animate-fade-rise {
+  animation: fade-rise 0.8s ease-out both;
+}
+.site .animate-fade-rise-delay {
+  animation: fade-rise 0.8s ease-out 0.2s both;
+}
+.site .animate-fade-rise-delay-2 {
+  animation: fade-rise 0.8s ease-out 0.4s both;
+}
+
+/* Scroll entrances (components/site/Reveal). "idle" is the server's state and
+   is fully visible; only a block Reveal has confirmed is below the fold gets
+   "waiting", so nothing is ever hidden from a crawler or a no-JS visitor. */
+.site [data-reveal] {
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.site [data-reveal="waiting"] {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site .animate-fade-rise,
+  .site .animate-fade-rise-delay,
+  .site .animate-fade-rise-delay-2 {
+    animation: none;
+  }
+  .site [data-reveal] {
+    transition: none;
+  }
+  .site [data-reveal="waiting"] {
+    opacity: 1;
+    transform: none;
+  }
+}
+:root[data-motion="reduced"] .site .animate-fade-rise,
+:root[data-motion="reduced"] .site .animate-fade-rise-delay,
+:root[data-motion="reduced"] .site .animate-fade-rise-delay-2 {
+  animation: none;
+}
+:root[data-motion="reduced"] .site [data-reveal="waiting"] {
+  opacity: 1;
+  transform: none;
 }
