@@ -80,8 +80,11 @@ const CSP = [
      thing to settle before it goes in front of a student. */
   "font-src 'self' data: https://assets-proxy.anthropic.com",
   // data: for inlined SVG and the OG card; blob: for canvas captures.
-  "img-src 'self' data: blob:",
-  /* The home page's background film is served from this one CloudFront host.
+  /* images.higgs.ai serves the one portrait on /design2 (the NovaAI
+     reference page); nothing else in the app loads a remote image. */
+  "img-src 'self' data: blob: https://images.higgs.ai",
+  /* The background films on "/" and /design2 are served from this one
+     CloudFront host.
      Without the directive, media falls back to default-src 'self' and the
      <video> silently draws nothing — the navy under it is all anyone sees. */
   "media-src 'self' https://d8j0ntlcm91z4.cloudfront.net",

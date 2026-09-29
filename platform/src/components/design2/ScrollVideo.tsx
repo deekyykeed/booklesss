@@ -1,8 +1,14 @@
+"use client";
+
 import { useEffect, useRef, useState } from 'react'
 
 export const HERO_VIDEO =
   'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260729_102822_0e6c87e8-c141-4744-bf32-ad30db296371.mp4'
-const POSTER = '/hero-poster.jpg'
+/** First-frame still shown until the video has a frame. None exists yet: save
+ *  one to public/design2/hero-poster.jpg and point this at it. A path to a
+ *  missing file is worse than none — the 404 lands before hydration, so
+ *  onError never runs and the browser draws a broken-image frame. */
+const POSTER: string | null = null
 
 const MAX_FRAMES = 90
 const MIN_FRAMES = 24
@@ -59,7 +65,7 @@ export function ScrollVideo() {
 
   const [hasFrame, setHasFrame] = useState(false)
   const [cacheReady, setCacheReady] = useState(false)
-  const [posterOk, setPosterOk] = useState(true)
+  const [posterOk, setPosterOk] = useState(POSTER !== null)
 
   // Scroll → target progress.
   useEffect(() => {
@@ -193,7 +199,7 @@ export function ScrollVideo() {
 
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-[#0a0a0a]">
-      {posterOk && (
+      {POSTER && posterOk && (
         <img
           src={POSTER}
           alt=""

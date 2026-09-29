@@ -1,6 +1,6 @@
-import { ChevronRight } from 'lucide-react'
-import { Badge } from '../components/Badge'
-import { Reveal } from '../components/Reveal'
+import { ChevronRight } from './icons'
+import { Badge } from './Badge'
+import { Reveal } from './Reveal'
 
 const CAPABILITIES = [
   {
@@ -70,7 +70,7 @@ export function SectionTwo() {
               delay={300 + i * 110}
               className={`group flex gap-5 py-5 ${i < CAPABILITIES.length - 1 ? 'border-b border-white/15' : ''}`}
             >
-              <span className="pt-1 font-mono text-[11px] tracking-[0.15em] text-white/55">
+              <span className="pt-1 text-[11px] tracking-[0.15em] text-white/55">
                 {String(i + 1).padStart(2, '0')}
               </span>
               <div>

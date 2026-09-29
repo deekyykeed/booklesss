@@ -84,6 +84,8 @@ const SKIP = [
   "/sign-in",
   "/sign-up",
   "/dashboard",
+  /* A desktop-first reference page (the NovaAI recreation), 2026-09-29. */
+  "/design2",
 ];
 
 /** Exact paths that skip the gate — "/" can't go in SKIP, whose prefix rule

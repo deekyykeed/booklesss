@@ -1,4 +1,4 @@
-import { Hexagon } from 'lucide-react'
+import { Hexagon } from './icons'
 import { Reveal } from './Reveal'
 
 const LINKS = [
@@ -25,7 +25,7 @@ export function Navbar() {
               <a href={link.href} className="text-sm text-white/85 transition-colors duration-300 hover:text-white">
                 {link.label}
                 {link.count !== undefined && (
-                  <sup className="ml-0.5 font-mono text-[10px] text-white/60">{link.count}</sup>
+                  <sup className="ml-0.5 text-[10px] text-white/60">{link.count}</sup>
                 )}
               </a>
             </Reveal>
