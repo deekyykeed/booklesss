@@ -81,6 +81,10 @@ const CSP = [
   "font-src 'self' data: https://assets-proxy.anthropic.com",
   // data: for inlined SVG and the OG card; blob: for canvas captures.
   "img-src 'self' data: blob:",
+  /* /design3's hero film is served from this one CloudFront host. Without
+     the directive, media falls back to default-src 'self' and the <video>
+     silently draws nothing. */
+  "media-src 'self' https://d8j0ntlcm91z4.cloudfront.net",
   /* THE ONE THAT MATTERS: where script may send data. Us, Supabase, and the
      two hosts a conversation actually dials.
  
@@ -159,6 +163,12 @@ const nextConfig: NextConfig = {
    * Booklesss to its home screen keeps the old start_url until the manifest
    * is re-fetched. Without this, tapping the installed icon opens a 404.
    * Permanent, so browsers and the CDN stop asking. */
+  /* /design3 is one self-contained HTML file in public/ (owner's spec,
+     2026-09-29: "a single index.html, no build step"). Next serves public/
+     files only at their exact path, so the clean URL needs this. */
+  async rewrites() {
+    return [{ source: "/design3", destination: "/design3/index.html" }];
+  },
   async redirects() {
     return [{ source: "/home", destination: "/dashboard", permanent: true }];
   },
