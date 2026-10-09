@@ -87,7 +87,11 @@ def saw_stack(freq, n, detune=0.12, voices=5):
 # ---------------------------------------------------------------- music bed
 BPM = 96
 BEAT = 60 / BPM
-BARS = 24                  # 24 bars at 96 = 60 s, longer than any explainer
+import sys
+# bars at 96 BPM: 2.5 s each. Default 24 (60 s); pass seconds to make a longer
+# bed so a long explainer never hears the bed's own fade-in/out as a loop seam:
+#   python scripts/gen-audio.py 300
+BARS = max(24, int(float(sys.argv[1]) / (BEAT * 4)) + 2) if len(sys.argv) > 1 else 24
 LEN = int(SR * BEAT * 4 * BARS)
 
 # Am9 - Fmaj7 - Cmaj7 - G6, voiced low and close: warm, unresolved, not sad.

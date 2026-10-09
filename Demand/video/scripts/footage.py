@@ -107,7 +107,7 @@ def transcribe(slug, media, model_name="small.en"):
 
     path = os.path.join(odir(slug), "raw-words.json")
     with open(path, "w", encoding="utf-8") as f:
-        json.dump({"duration": info.duration, "words": words}, f, indent=1)
+        json.dump({"duration": info.duration, "media": os.path.abspath(media), "words": words}, f, indent=1)
     print(f"{len(words)} words over {info.duration:.1f}s -> {os.path.relpath(path, ROOT)}")
 
 
@@ -170,16 +170,66 @@ def propose(slug, pad_before=0.10, pad_after=0.16, max_gap=0.30):
         for i in man.get("undrop", []):
             drop.pop(i, None)
 
-    # 5. keep ranges: kept words, padded, with pauses squeezed to max_gap
+    # 5. keep ranges: kept words, padded, with pauses squeezed to max_gap.
+    #    Noise-aware: a cough or clear between two kept words (found by
+    #    scripts/find-noises.py — Whisper never transcribes them) is never
+    #    bridged and never caught in a pad. The owner's first cut kept a cough
+    #    between "cognition," and "your ability", inside a 0.28 s gap that the
+    #    old rule merged without looking.
+    npath = os.path.join(odir(slug), "noises.json")
+    noises = []
+    if os.path.exists(npath):
+        noises = [(n["start"], n["end"]) for n in json.load(open(npath, encoding="utf-8")) if n.get("uncovered")]
+
+    def noise_in(a, b):
+        return [(s, e) for s, e in noises if s < b and e > a]
+
     kept = [w for i, w in enumerate(words) if i not in drop]
-    keep = []
+    keep = []  # [start, end, first_word_start, last_word_end]
+    prev_end = None
     for w in kept:
         s, e = max(0.0, w["start"] - pad_before), w["end"] + pad_after
-        if keep and s - keep[-1][1] <= max_gap:
+        between = noise_in(prev_end, w["start"]) if prev_end is not None else []
+        if between:
+            s = max(s, max(n[1] for n in between) + 0.02)
+        # never let the trailing pad reach into a noise after this word
+        # (including one that starts just INSIDE the word: Whisper often ends a
+        # word a few hundredths into the cough that follows it)
+        ahead = [n for n in noises if n[1] > w["end"] and n[0] < e]
+        if ahead:
+            # cut at the noise's onset, even if that trims the last few
+            # hundredths of the word's decay: a click of cough is worse
+            e = max(w["start"] + 0.1, min(n[0] for n in ahead) - 0.01)
+        if keep and s - keep[-1][1] <= max_gap and not between:
             keep[-1][1] = max(keep[-1][1], e)
+            keep[-1][3] = w["end"]
         else:
-            keep.append([s, e])
-    keep = [[round(s, 3), round(e, 3)] for s, e in keep]
+            if keep and between:
+                keep[-1][1] = min(keep[-1][1], max(keep[-1][3] + 0.02, min(n[0] for n in between) - 0.02))
+            keep.append([s, e, w["start"], w["end"]])
+        prev_end = w["end"]
+
+    # snap every cut point to the quietest 10 ms nearby (never into a word),
+    # so a join lands in a breath-gap rather than on the tail of a syllable
+    media_audio = raw.get("media")
+    if media_audio and os.path.exists(media_audio):
+        a = load_pcm(media_audio)
+        hop = SR // 100
+        nfr = len(a) // hop
+        rms = np.sqrt(np.mean(a[: nfr * hop].reshape(nfr, hop) ** 2, axis=1) + 1e-12)
+
+        def quiet(t, lo, hi):
+            i0, i1 = max(0, int(lo * 100)), min(nfr - 1, int(hi * 100))
+            if i1 <= i0:
+                return t
+            return (i0 + int(np.argmin(rms[i0 : i1 + 1]))) / 100
+
+        # inward only: a cut may move INTO its own pad, never out past it —
+        # outward is where the coughs and breaths the pad was clamped against are
+        for r in keep:
+            r[0] = quiet(r[0], r[0], min(r[0] + 0.06, r[2] - 0.02))
+            r[1] = quiet(r[1], min(r[1], max(r[1] - 0.06, r[3] + 0.01)), r[1])
+    keep = [[round(s, 3), round(e, 3)] for s, e, _, _ in keep]
 
     edl = {"keep": keep, "dropped": sorted(({"i": i, "word": words[i]["word"], "at": words[i]["start"], "why": r} for i, r in drop.items()), key=lambda d: d["i"])}
     d = odir(slug)
@@ -279,6 +329,92 @@ def cut(slug, media):
     print(f"cut {acc:.1f}s -> public/recordings/{slug}.mp4 (+ .audio.wav), {len(words)} words -> src/explainers/{slug}/words.json")
 
 
+# ---------------------------------------------------------------- recut
+def recut(slug, old_edl_path, stabilize=False):
+    """Re-make the cut from the PREVIOUS cut instead of the raw take.
+
+    Decoding a phone's 4K HEVC is the slow part of `cut` (35 min for 5 min of
+    take). When a new edit only removes more — every new piece lies inside a
+    piece of the old cut, which is true when the changes are extra drops and
+    tighter joins — the old 1080p cut already holds every frame needed. Raw
+    times are mapped onto the old cut's timeline and trimmed from it.
+
+    stabilize: two-pass vidstab — OFF by default, and measure before turning it
+    on. On the first take the "shake" the owner saw was the edit's own effects
+    (film weave, push-ins, heat flashes), not the camera: tracked features on
+    the wall wobbled 0.7 px. vidstab then locked onto the speaker's gestures
+    and ADDED up to 11.5 px of sideways sway. Only for genuinely handheld
+    footage; check wall features after, not phase correlation (a smooth wall
+    gradient biases phaseCorrelate into a phantom 2 px/frame drift)."""
+    d = odir(slug)
+    rec = os.path.join(ROOT, "public", "recordings")
+    old = json.load(open(old_edl_path, encoding="utf-8"))["keep"]
+    new = json.load(open(os.path.join(d, "edl.json"), encoding="utf-8"))["keep"]
+    src_v = os.path.join(rec, f"{slug}.cut1.mp4")
+    src_a = os.path.join(rec, f"{slug}.cut1.audio.wav")
+    if not os.path.exists(src_v):
+        os.replace(os.path.join(rec, f"{slug}.mp4"), src_v)
+        os.replace(os.path.join(rec, f"{slug}.audio.wav"), src_a)
+
+    offs, acc = [], 0.0
+    for s, e in old:
+        offs.append((s, e, acc))
+        acc += e - s
+
+    def to_old(t):
+        for s, e, a in offs:
+            if s - 0.02 <= t <= e + 0.02:  # the 10 ms snapping grid can land a hair outside
+                return a + min(max(t, s), e) - s
+        sys.exit(f"raw time {t:.3f} is outside the old cut — this edit can't be made from it; use `cut` on the raw take")
+
+    pieces = [(to_old(s), to_old(e)) for s, e in new]
+    F = 0.004
+    vf, af, cat = [], [], ""
+    for k, (s, e) in enumerate(pieces):
+        vf.append(f"[0:v]trim=start={s:.4f}:end={e:.4f},setpts=PTS-STARTPTS[v{k}]")
+        af.append(f"[1:a]atrim=start={s:.4f}:end={e:.4f},asetpts=PTS-STARTPTS,afade=t=in:d={F},afade=t=out:st={max(0, e - s - F):.4f}:d={F}[a{k}]")
+        cat += f"[v{k}][a{k}]"
+    graph = ";".join(vf + af) + f";{cat}concat=n={len(pieces)}:v=1:a=1[vc][ac];[vc]fps={FPS},setsar=1[vo];[ac]asplit=2[ac1][ac2]"
+    gfile = os.path.join(d, "recut.filter")
+    open(gfile, "w").write(graph)
+    tmp = os.path.join(d, "recut-tmp.mp4")
+    mp4 = os.path.join(rec, f"{slug}.mp4")
+    wav = os.path.join(rec, f"{slug}.audio.wav")
+    subprocess.run(
+        ["ffmpeg", "-v", "error", "-y", "-i", src_v, "-i", src_a, "-/filter_complex", gfile,
+         "-map", "[vo]", "-map", "[ac1]", "-c:v", "libx264", "-crf", "12", "-preset", "veryfast", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "320k", tmp,
+         "-map", "[ac2]", "-c:a", "pcm_s24le", wav],
+        check=True,
+    )
+    if stabilize:
+        trf = os.path.join(d, "stab.trf").replace("\\", "/").replace(":", "\\:")
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", tmp, "-vf", f"vidstabdetect=shakiness=5:accuracy=15:result='{trf}'", "-f", "null", "-"], check=True)
+        vf2 = f"vidstabtransform=input='{trf}':smoothing=30:zoom=4:optzoom=0:interpol=bicubic,unsharp=5:5:0.4:5:5:0"
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", tmp, "-vf", vf2, "-c:v", "libx264", "-crf", "15", "-preset", "medium", "-pix_fmt", "yuv420p", "-c:a", "copy", mp4], check=True)
+        os.remove(tmp)
+    else:
+        os.replace(tmp, mp4)
+
+    # words onto the new cut's timeline
+    raw = json.load(open(os.path.join(d, "raw-words.json"), encoding="utf-8"))
+    dropped = {x["i"] for x in json.load(open(os.path.join(d, "edl.json"), encoding="utf-8"))["dropped"]}
+    noffs, nacc = [], 0.0
+    for s, e in new:
+        noffs.append((s, e, nacc))
+        nacc += e - s
+    words = []
+    for i, w in enumerate(raw["words"]):
+        if i in dropped:
+            continue
+        for s, e, a in noffs:
+            if s - 0.02 <= w["start"] < e:
+                words.append({"word": w["word"], "start": round(max(w["start"], s) - s + a, 3), "end": round(min(w["end"], e) - s + a, 3)})
+                break
+    xdir = os.path.join(ROOT, "src", "explainers", slug)
+    json.dump(words, open(os.path.join(xdir, "words.json"), "w", encoding="utf-8"), indent=1)
+    print(f"recut {nacc:.1f}s from the old cut{' + stabilised' if stabilize else ''} -> public/recordings/{slug}.mp4, {len(words)} words")
+
+
 # ---------------------------------------------------------------- faces
 YUNET = "https://github.com/opencv/opencv_zoo/raw/main/models/face_detection_yunet/face_detection_yunet_2023mar.onnx"
 
@@ -342,5 +478,7 @@ if __name__ == "__main__":
         cut(slug, sys.argv[3])
     elif cmd == "faces":
         faces(slug)
+    elif cmd == "recut":
+        recut(slug, sys.argv[3], stabilize="--stabilize" in sys.argv)
     else:
         sys.exit(__doc__)

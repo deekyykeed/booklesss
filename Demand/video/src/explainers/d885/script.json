@@ -12,11 +12,11 @@
         "optimize",
         "details"
       ],
-      "say": "So, let's talk about the biological basis of cognition, shall we? So, for those of you guys that don't know, thinking, which is also referred to as cognition, is a biological process, and understanding this biological process is very important if you want to learn how to optimize it. I'm not gonna sit here and pretend to give you guys some sort of, you know, biological lecture 101 or something like that, so I'm gonna spare you most of the details. Instead, I just want to leave you with probably one of the most useful definitions I found so far,"
+      "say": "So, let's talk about the biological basis of cognition, shall we? So, for those of you guys that don't know, thinking, which is also referred to as cognition, is a biological process, and understanding this biological process is very important if you want to learn how to optimize it. I'm not gonna sit here and pretend to give you guys some sort of, biological lecture 101 or something like that, so I'm gonna spare you most of the details. Instead, I just want to leave you with probably one of the most useful definitions I found so far,"
     },
     {
       "show": "anim",
-      "in": "thermal",
+      "in": "cut",
       "scene": "trio",
       "title": {
         "text": "cognition =",
@@ -42,16 +42,8 @@
       "say": "cognition, your ability to think, is composed of three parts. You have your attention, your working memory, and then you have your executive function."
     },
     {
-      "show": "you",
-      "in": "punch",
-      "em": [
-        "byproduct"
-      ],
-      "say": "Now put this in another way, any thought that you have, even the thoughts that you're having right now, are a byproduct of three things,"
-    },
-    {
       "show": "anim",
-      "in": "thermal",
+      "in": "whip",
       "scene": "flood",
       "title": {
         "text": "the gatekeeper",
@@ -95,7 +87,7 @@
     },
     {
       "show": "you",
-      "in": "punch",
+      "in": "cut",
       "em": [
         "aware"
       ],
@@ -103,7 +95,7 @@
     },
     {
       "show": "anim",
-      "in": "thermal",
+      "in": "cut",
       "scene": "spotlight",
       "items": [
         {
@@ -152,17 +144,8 @@
       "say": "Because attention is like a spotlight. Your brain can put that spotlight on the things that it wants you to attend to."
     },
     {
-      "show": "you",
-      "in": "punch",
-      "em": [
-        "gatekeeper",
-        "spotlight"
-      ],
-      "say": "So attention is like a gatekeeper. Like that spotlight that just chooses what it is in our environment we're actually going to be letting in."
-    },
-    {
       "show": "anim",
-      "in": "thermal",
+      "in": "whip",
       "scene": "bench",
       "label": "working memory",
       "steps": [
@@ -213,11 +196,11 @@
           "on": "repeat"
         }
       ],
-      "say": "Your working memory is the next step, your working memory is like a workbench. If you've ever worked with machinery or tools, you know that workbench can typically hold a few things simultaneously. But the whole idea of a workbench is that you put something on the workbench, you work on it, you finish it, and then you put it away, you clear the workbench so that somebody else, or let's say you in the future, can put new items on the workbench and repeat that process again."
+      "say": "your working memory is like a workbench. If you've ever worked with machinery or tools, you know that workbench can typically hold a few things simultaneously. But the whole idea of a workbench is that you put something on the workbench, you work on it, you finish it, and then you put it away, you clear the workbench so that somebody else, or let's say you in the future, can put new items on the workbench and repeat that process again."
     },
     {
       "show": "you",
-      "in": "punch",
+      "in": "cut",
       "em": [
         "workbench",
         "executive"
@@ -226,7 +209,7 @@
     },
     {
       "show": "anim",
-      "in": "thermal",
+      "in": "cut",
       "scene": "cards",
       "cards": [
         {
@@ -259,7 +242,7 @@
     },
     {
       "show": "you",
-      "in": "punch",
+      "in": "cut",
       "em": [
         "foreman",
         "managers"
@@ -268,7 +251,7 @@
     },
     {
       "show": "anim",
-      "in": "thermal",
+      "in": "cut",
       "scene": "meters",
       "title": {
         "text": "the problem",
@@ -326,17 +309,17 @@
     },
     {
       "show": "you",
-      "in": "punch",
+      "in": "cut",
       "em": [
         "fuzzy",
         "fragile",
         "problem"
       ],
-      "say": "in Practice this leads to you feeling a little bit fuzzy all the time You know you really struggle focusing on anything that is actually important you struggle with carrying an idea through to its logical conclusion A lot of the times things probably feel confusing or necessarily difficult and things like maybe this video I just feel like they're moving a little bit too fast This can often frustrate you constantly and leave you in an emotionally fragile state, which I'll cover more During this playlist. So how do you actually fix this, this sounds like a very big problem, right?"
+      "say": "in Practice this leads to you feeling a little bit fuzzy all the time You know you really struggle focusing on anything that is actually important you struggle with carrying an idea through to its logical conclusion A lot of the times things probably feel confusing or necessarily difficult This can often frustrate you constantly and leave you in an emotionally fragile state, which I'll cover more During this playlist. So how do you actually fix this, this sounds like a very big problem, right?"
     },
     {
       "show": "anim",
-      "in": "thermal",
+      "in": "cut",
       "scene": "meters",
       "title": {
         "text": "bonus stats",
@@ -406,7 +389,7 @@
     },
     {
       "show": "you",
-      "in": "punch",
+      "in": "cut",
       "em": [
         "circadian"
       ],
@@ -414,7 +397,7 @@
     },
     {
       "show": "anim",
-      "in": "whip",
+      "in": "cut",
       "scene": "meters",
       "title": {
         "text": "level up",
@@ -479,7 +462,7 @@
     },
     {
       "show": "you",
-      "in": "punch",
+      "in": "cut",
       "em": [
         "software",
         "playlist",
@@ -489,7 +472,7 @@
     },
     {
       "show": "anim",
-      "in": "thermal",
+      "in": "cut",
       "scene": "cards",
       "cards": [
         {
@@ -531,7 +514,7 @@
     },
     {
       "show": "you",
-      "in": "punch",
+      "in": "cut",
       "em": [
         "metabolically"
       ],
@@ -539,7 +522,7 @@
     },
     {
       "show": "anim",
-      "in": "thermal",
+      "in": "cut",
       "scene": "ratio",
       "icon": "brain",
       "parts": [
@@ -551,15 +534,15 @@
         {
           "label": "of all energy",
           "pct": 20,
-          "on": "20"
+          "on": "obviously"
         }
       ],
       "stress": "disproportionate",
-      "say": "this illustration over here despite having a very small share of body mass only about 2 % or so it can consume up to 20 % of all energy usage and obviously this is very disproportionate"
+      "say": "this illustration over here and obviously this is very disproportionate"
     },
     {
       "show": "you",
-      "in": "punch",
+      "in": "cut",
       "em": [
         "energy"
       ],

@@ -36,7 +36,7 @@ const SFX: Record<TransitionKind, { file: string; lead: number; vol: number } | 
   whip: { file: "whoosh", lead: 9, vol: 0.55 },
   slam: { file: "slam", lead: 4, vol: 0.6 },
   ink: { file: "ink", lead: 18, vol: 0.55 },
-  cut: { file: "punch", lead: 0, vol: 0.35 },
+  cut: { file: "whoosh", lead: 6, vol: 0.16 },
 };
 
 export const Explainer: React.FC<ExplainerProps> = ({ slug, footage, faces }) => {
@@ -45,14 +45,14 @@ export const Explainer: React.FC<ExplainerProps> = ({ slug, footage, faces }) =>
   const tone = EXPLAINERS[slug].script.tone ?? "dark";
   const music = musicVolume(beats, duration);
 
-  // subtle gate weave: the whole picture drifts a pixel or two, like film
-  const weaveX = Math.sin(frame * 1.3) * 0.8 + Math.sin(frame * 0.37) * 0.9;
-  const weaveY = Math.cos(frame * 1.1) * 0.7;
+  // (there was a film gate-weave here — a pixel or two of drift on the whole
+  // picture. Removed 2026-10-09: on real footage it added to the camera's own
+  // bounce and the owner called the camera beats "too shaky".)
 
   return (
     <AbsoluteFill style={{ background: K.ink }}>
       <ThermalDefs />
-      <AbsoluteFill style={{ transform: `translate(${weaveX}px, ${weaveY}px) scale(1.004)` }}>
+      <AbsoluteFill>
         {beats.map((b, i) => {
           const next = beats[i + 1];
           const kindIn: TransitionKind = b.in ?? "cut";
@@ -86,28 +86,30 @@ export const Explainer: React.FC<ExplainerProps> = ({ slug, footage, faces }) =>
       <FadeIO frame={frame} duration={duration} />
 
       {/* ---------------- sound
-       * With your footage: YOUR audio and nothing else — no music, no sfx, no
-       * ducking (owner, 2026-10-09: "don't do anything to the sound at all").
-       * scripts/mux-audio.mjs then swaps the original stream back in bit for
-       * bit, so even Remotion's re-encode doesn't touch it.
-       * Without footage (placeholder cut): TTS voice + the beat-locked score
-       * + sfx. */}
-      {footage ? (
-        <Audio src={staticFile(footage)} />
-      ) : (
-        <PlaceholderMix slug={slug} beats={beats} music={music} />
-      )}
+       * The VOICE is never processed. With footage, this render carries only
+       * the music bed and the sound effects; scripts/mux-audio.mjs lays the
+       * take's own cut audio on top at unity gain (owner, 2026-10-09: "don't
+       * do anything to the sound" — then, the same day, "add background music,
+       * not too loud, and some sound effects": the music goes UNDER the voice,
+       * the voice itself is untouched).
+       * Without footage (placeholder cut): TTS voice + music + sfx here. */}
+      <ScoreMix slug={slug} beats={beats} music={music} voice={!footage} />
     </AbsoluteFill>
   );
 };
 
-const PlaceholderMix: React.FC<{ slug: string; beats: TimedBeat[]; music: (f: number) => number }> = ({ slug, beats, music }) => {
+const ScoreMix: React.FC<{ slug: string; beats: TimedBeat[]; music: (f: number) => number; voice: boolean }> = ({
+  slug,
+  beats,
+  music,
+  voice,
+}) => {
   // the score written to this edit's grid if it has been generated, else the generic bed
   const scored = getStaticFiles().some((f) => f.name === `explainers/${slug}/music.wav`);
   return (
     <>
-      <Audio src={staticFile(`explainers/${slug}/voice.wav`)} />
-      <Audio src={staticFile(scored ? `explainers/${slug}/music.wav` : "music/bed.wav")} volume={(f) => music(f)} />
+      {voice ? <Audio src={staticFile(`explainers/${slug}/voice.wav`)} /> : null}
+      <Audio loop src={staticFile(scored ? `explainers/${slug}/music.wav` : "music/bed.wav")} volume={(f) => music(f)} />
       {beats.slice(1).map((b, i) => {
         const s = SFX[b.in ?? "cut"];
         if (!s) return null;
@@ -265,11 +267,11 @@ const Overlay: React.FC<{ frame: number; kind: TransitionKind; at: number; cx?: 
     );
   }
 
-  if (kind === "punch" || kind === "cut") {
+  if (kind === "punch") {
     // two frames of near-white: the "shutter" of a hard cut
     const a = interpolate(t, [0, 1, 3], [0.55, 0.25, 0], clamp);
     if (t < 0 || a <= 0) return null;
-    return <AbsoluteFill style={{ pointerEvents: "none", background: K.white, opacity: kind === "cut" ? a * 0.6 : a }} />;
+    return <AbsoluteFill style={{ pointerEvents: "none", background: K.white, opacity: a }} />;
   }
 
   if (kind === "whip") {
@@ -306,8 +308,8 @@ const FadeIO: React.FC<{ frame: number; duration: number }> = ({ frame, duration
 /* Music sits around -18 dB under speech and comes up between lines. A rolling
  * average over ±6 frames makes the ducking glide instead of chattering. */
 function musicVolume(beats: TimedBeat[], duration: number) {
-  const UP = 0.32;
-  const DOWN = 0.11;
+  const UP = 0.13;
+  const DOWN = 0.06;
   const raw = Array.from({ length: duration }, (_, f) => (speaking(beats, f) ? DOWN : UP));
   const smooth = raw.map((_, f) => {
     let s = 0;
@@ -358,6 +360,21 @@ function sceneSounds(b: TimedBeat): { at: number; file: string; vol: number }[] 
         file: i === all.length - 1 ? "hit" : "slam",
         vol: i === all.length - 1 ? 0.5 : 0.28,
       }));
+    case "trio":
+      return triggers(b, (x.items as { on: string }[]).map((t) => t.on)).map((at) => ({ at, file: "pop", vol: 0.3 }));
+    case "flood":
+      return triggers(b, (x.items as { on: string }[]).map((t) => t.on)).map((at) => ({ at, file: "type", vol: 0.3 }));
+    case "spotlight":
+      return triggers(b, (x.moves as { on: string }[]).map((m) => m.on)).map((at) => ({ at: at - 3, file: "whoosh", vol: 0.12 }));
+    case "bench":
+      return triggers(b, (x.steps as { on: string; do: string }[]).map((s) => s.on)).map((at, i) => {
+        const kind = (x.steps as unknown as { do: string }[])[i].do;
+        return kind === "done" ? { at, file: "hit", vol: 0.3 } : kind === "clear" ? { at, file: "whoosh", vol: 0.16 } : { at: at + 7, file: "slam", vol: 0.16 };
+      });
+    case "meters":
+      return triggers(b, (x.keys as { on: string }[]).map((k) => k.on)).map((at) => ({ at, file: "pop", vol: 0.24 }));
+    case "ratio":
+      return triggers(b, (x.parts as { on: string }[]).map((p) => p.on)).map((at, i) => ({ at, file: i === 0 ? "pop" : "hit", vol: i === 0 ? 0.3 : 0.32 }));
     default:
       return [];
   }

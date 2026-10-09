@@ -355,213 +355,75 @@ const IconPill: React.FC<{ frame: number; at: number; icon: string; size: number
 
 /* ---------------------------------------------------------------- the track */
 
-export const TypeTrack: React.FC<{ frame: number; beat: TimedBeat; beatIndex: number; face: Face; tone?: Tone }> = ({
-  tone = "dark",
-  ...rest
-}) => (
-  <ToneCtx.Provider value={toneOf(tone)}>
-    <Track {...rest} />
-  </ToneCtx.Provider>
-);
+/* Where the subtitles sit: one fixed block below the face, the same place on
+ * every camera beat. Owner, 2026-10-09, after the first real edit: "have the
+ * subtitles in one place instead of the around my face thing … below the face
+ * … white". A fixed place means no face tracking is needed — the presenter is
+ * framed the same way every take (head in the upper half of a 9:16 frame). */
+const CAPTION_TOP = 1170;
+const CAPTION_X = 120;
+const CAPTION_W = 840;
+const CAPTION_SIZE = 62;
+const WHITE = "#FFFFFF";
 
-const Track: React.FC<{ frame: number; beat: TimedBeat; beatIndex: number; face: Face }> = ({ frame, beat, beatIndex, face }) => {
-  const toneC = React.useContext(ToneCtx);
+export const TypeTrack: React.FC<{ frame: number; beat: TimedBeat; beatIndex: number; face?: Face; tone?: Tone }> = ({
+  frame,
+  beat,
+  beatIndex,
+}) => {
   const ps = phrases(beat, beatIndex);
   const idx = ps.reduce((acc, p, i) => (frame >= p.start - 3 ? i : acc), -1);
   if (idx < 0) return null;
   const p = ps[idx];
   const next = ps[idx + 1];
-  const exit = next ? interpolate(frame, [next.start - 6, next.start - 2], [1, 0], clamp) : 1;
-  const em = p.toks.find((t) => t.em);
-  const before = em ? p.toks.slice(0, p.toks.indexOf(em)) : p.toks;
-  const after = em ? p.toks.slice(p.toks.indexOf(em) + 1) : [];
-
-  // the space around the face, inside the platform-safe box (x 90..870, y 300..1450)
-  const L = 90;
-  const R = 870;
-  const top = { y0: 300, y1: Math.max(330, face.y - 6) };
-  const chestY = Math.min(1320, face.y + face.h + 34);
-  const leftW = Math.max(0, face.x - 24 - L);
-  const topH = top.y1 - top.y0;
-  const roomLeft = leftW >= 170;
-
-  const wrap = (child: React.ReactNode) => (
-    <div style={{ position: "absolute", inset: 0, opacity: exit, filter: exit < 1 ? `blur(${(1 - exit) * 8}px)` : undefined }}>
-      {child}
+  // a phrase clears just before the next begins, and fades after the last word
+  const exit = next ? interpolate(frame, [next.start - 5, next.start - 2], [1, 0], clamp) : 1;
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left: CAPTION_X,
+        width: CAPTION_W,
+        top: CAPTION_TOP,
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "center",
+        columnGap: CAPTION_SIZE * 0.26,
+        rowGap: CAPTION_SIZE * 0.12,
+        opacity: exit,
+      }}
+    >
+      {p.toks.map((t, i) => {
+        const q = pop(frame, t.f, 5);
+        return (
+          <span
+            key={i}
+            style={{
+              display: "inline-block",
+              fontFamily: sat,
+              fontWeight: 700,
+              fontSize: CAPTION_SIZE,
+              lineHeight: 1.08,
+              letterSpacing: "-0.02em",
+              color: WHITE,
+              // white on any background: a tight edge plus a soft spread, so it
+              // holds on the cream wall as well as on the shirt
+              textShadow: "0 0 3px rgba(0,0,0,0.75), 0 2px 6px rgba(0,0,0,0.55), 0 4px 24px rgba(0,0,0,0.45)",
+              opacity: q,
+              transform: `translateY(${(1 - q) * 10}px)`,
+            }}
+          >
+            {t.text}
+          </span>
+        );
+      })}
     </div>
   );
-
-  // the headline word, as big as the space above the head allows
-  const headline = (t: Tok, mark: Mark) => {
-    const len = Math.max(2, t.text.length);
-    const per = mark === "tiles" ? 0.74 : 0.58;
-    const size = Math.round(Math.min(240, topH * 0.82, (R - L) / (per * len)));
-    return (
-      <div
-        style={{
-          position: "absolute",
-          left: L,
-          width: R - L,
-          top: top.y0,
-          height: topH,
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "center",
-          paddingBottom: 10,
-        }}
-      >
-        <Word frame={frame} t={t} size={size} weight={700} mark={mark} />
-      </div>
-    );
-  };
-
-  // small words beside the face, on its left — only when there's room
-  const side = (toks: Tok[], size = 52) =>
-    roomLeft && toks.length ? (
-      <div
-        style={{
-          position: "absolute",
-          left: L,
-          width: leftW,
-          top: face.y + face.h * 0.3,
-          display: "flex",
-          flexWrap: "wrap",
-          columnGap: 12,
-          rowGap: 6,
-        }}
-      >
-        {toks.map((t, i) => (
-          <Word key={i} frame={frame} t={t} size={size} />
-        ))}
-      </div>
-    ) : null;
-
-  const chestRow = (toks: Tok[], size = 56) =>
-    toks.length ? (
-      <div
-        style={{
-          position: "absolute",
-          left: L,
-          width: R - L,
-          top: chestY,
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          columnGap: 16,
-          rowGap: 10,
-        }}
-      >
-        {toks.map((t, i) => (
-          <Word key={i} frame={frame} t={t} size={size} />
-        ))}
-      </div>
-    ) : null;
-
-  if (p.look === "braces") {
-    const open = interpolate(frame, [p.start - 4, p.start + 2], [0, 1], { ...clamp, easing: out });
-    const close = interpolate(frame, [p.end, p.end + 5], [0, 1], { ...clamp, easing: out });
-    const leave = next ? interpolate(frame, [next.start - 14, next.start - 4], [0, 1], { ...clamp, easing: out }) : 0;
-    const size = 58;
-    const brace = (ch: string, q: number, dx: number) => (
-      <span
-        style={{
-          fontFamily: sat,
-          fontWeight: 400,
-          fontSize: size * 1.3,
-          color: toneC.fg,
-          opacity: q,
-          transform: `translateX(${(1 - q) * dx}px)`,
-          display: "inline-block",
-          lineHeight: 1,
-        }}
-      >
-        {ch}
-      </span>
-    );
-    return wrap(
-      <div style={{ position: "absolute", left: L, width: R - L, top: chestY, display: "flex", justifyContent: "center" }}>
-        <div style={{ position: "relative", display: "inline-flex", alignItems: "center", gap: 18, padding: "14px 26px" }}>
-          {[0, 1, 2, 3].map((c) => (
-            <span
-              key={c}
-              style={{
-                position: "absolute",
-                width: 8,
-                height: 8,
-                background: toneC.fg,
-                left: c % 2 ? undefined : -6,
-                right: c % 2 ? -6 : undefined,
-                top: c < 2 ? -6 : undefined,
-                bottom: c < 2 ? undefined : -6,
-                opacity: open,
-              }}
-            />
-          ))}
-          {brace("{", open, -20)}
-          <span style={{ display: "inline-flex", flexWrap: "wrap", gap: 14, maxWidth: 600, justifyContent: "center" }}>
-            {p.toks.map((t, i) => (
-              <Word key={i} frame={frame} t={t} size={size} />
-            ))}
-          </span>
-          {brace("}", close, 20)}
-          {leave > 0
-            ? [-1, 1].map((d) => (
-                <span
-                  key={d}
-                  style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: d < 0 ? -40 - leave * 60 : undefined,
-                    right: d > 0 ? -40 - leave * 60 : undefined,
-                    width: 46,
-                    height: 3,
-                    background: RED,
-                    opacity: 1 - leave * 0.6,
-                  }}
-                />
-              ))
-            : null}
-        </div>
-      </div>,
-    );
-  }
-
-  if (p.look === "scatter") {
-    // the first words beside the face, the rest across the chest; the key word
-    // heavier and circled in red pen
-    const n = roomLeft ? Math.min(2, p.toks.length - 1) : 0;
-    return wrap(
-      <>
-        {side(p.toks.slice(0, n), 56)}
-        <div
-          style={{
-            position: "absolute",
-            left: L,
-            width: R - L,
-            top: chestY,
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "baseline",
-            columnGap: 18,
-            rowGap: 8,
-          }}
-        >
-          {p.toks.slice(n).map((t, i) => (
-            <Word key={i} frame={frame} t={t} size={t.em ? 104 : 58} weight={t.em ? 700 : 500} loop={!!t.em} />
-          ))}
-        </div>
-      </>,
-    );
-  }
-
-  // box / underline / tiles / figure: the key word huge above the head with its
-  // mark; the words before it beside the face, the words after across the chest
-  const mark: Mark = p.look === "figure" ? "box" : (p.look as Mark);
-  return wrap(
-    <>
-      {em ? headline(em, mark) : null}
-      {side(roomLeft ? before : [])}
-      {chestRow(roomLeft ? after : [...before, ...after])}
-    </>,
-  );
 };
+
+/* the old layouts (headline marks, braces, scatter around the face) live in
+ * git history at 48172b6 — retired for camera beats by the owner's call */
+void Word;
+void IconPill;
+void ToneCtx;
+void toneOf;
