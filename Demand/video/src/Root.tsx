@@ -8,10 +8,36 @@ import { PRODUCT_DEMO_DURATION, ProductDemo } from "./compositions/ProductDemo";
 import { DemoSheet, SHEET_H, SHEET_W } from "./compositions/DemoSheet";
 import { IN_ACTION_DURATION, InAction } from "./compositions/InAction";
 import { FPS, TOTAL, defaultDemoProps, demoSchema } from "./schema";
+import { Explainer } from "./explainer/Explainer";
+import { ExplainerSheet, XSHEET_H, XSHEET_W } from "./explainer/ExplainerSheet";
+import { EXPLAINERS } from "./explainers";
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      {/* Explainers — you on camera cutting full-screen to animation, timed
+          to the voice. One composition per script in src/explainers/. */}
+      {Object.keys(EXPLAINERS).map((slug) => (
+        <Composition
+          key={slug}
+          id={`Explainer-${slug}`}
+          component={Explainer}
+          durationInFrames={EXPLAINERS[slug].timeline.duration}
+          fps={30}
+          width={1080}
+          height={1920}
+          defaultProps={{ slug, footage: null as string | null }}
+        />
+      ))}
+      <Composition
+        id="ExplainerSheet"
+        component={ExplainerSheet}
+        durationInFrames={1}
+        fps={30}
+        width={XSHEET_W}
+        height={XSHEET_H}
+        defaultProps={{ slug: "present-value" }}
+      />
       {/* 9:16 — Instagram/TikTok/WhatsApp status. Matches the still carousels. */}
       <Composition
         id="DemoVertical"

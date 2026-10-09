@@ -28,6 +28,8 @@ gitignored.
 | `DemoWide` | 1920×1080 | 11.5s | the same, 16:9 |
 | `DemoSheet` | — | still | **QA board**: 15 moments of `InAction` as one image |
 | `ContactSheet` | — | still | **QA board**: every capture in `public/app` at once |
+| `Explainer-<slug>` | 1080×1920 | from the voice | **explainers** — you ↔ animation, timed to the VO (see below) |
+| `ExplainerSheet` | — | still | **QA board** for an explainer; `seams: true` for the transitions |
 
 ```bash
 npm run render:action      # InAction     -> out/booklesss-in-action.mp4
@@ -49,6 +51,82 @@ That's fifteen moments of the real composition in a single image. It works
 by wrapping the same component in `<Sequence from={-n}>` — a negative offset
 means each tile sees frame `n` at sheet frame 0. No intermediate video, nothing
 to clean up. `ContactSheet` does the same for the source captures.
+
+## Explainers — you on camera, cutting to animation, timed to your voice
+
+The "launch film" look (paper vs ink, small typed lowercase, pixel objects,
+pen marks, heat-map people, grain) applied to a teaching video. **You and the
+animation always take the full screen — never split-screen.** The voice is the
+clock: every animated element lands on a specific spoken word.
+
+```text
+src/explainers/<slug>/script.json   what is said, beat by beat, and what fills the screen
+src/explainers/<slug>/words.json    when each word is said  (generated — see below)
+src/explainer/                      the engine: align, scenes, presenter, transitions, look
+```
+
+A beat in `script.json`:
+
+```json
+{ "show": "anim", "in": "whip", "scene": "calc",
+  "say": "...is a hundred over one point one. Ninety kwacha, ninety one.",
+  "steps": [ { "text": "K100", "on": "hundred" }, { "text": "÷ 1.10", "on": "over" },
+             { "text": "K90.91", "on": "ninety", "result": true } ] }
+```
+
+`show` is `you` or `anim`. `in` is the transition into the beat. `on` is the
+word an element lands on. Scenes: `formula`, `calc`, `bars`, `cards`, `spell`.
+
+| transition | between | what it does |
+| --- | --- | --- |
+| `thermal` | you → anim | you heat up into a heat map, a glow swallows the frame |
+| `punch` | anim → you | hard cut, small push-in, the heat cools off you |
+| `whip` · `slam` · `ink` · `cut` | anim → anim | whip pan · black bar · ink drop · hard cut |
+
+### Make one
+
+```bash
+npm run gen:audio                              # music bed + sfx, once (regenerable, gitignored bed)
+npm run voice:placeholder -- present-value     # TTS stand-in voice + words.json
+npm run qa:explainer                           # 24-frame QA board -> out/_explainer-qa.png
+npm run render:explainer                       # render + master to -14 LUFS -> out/explainer-present-value.mp4
+```
+
+Seam check — three frames round every transition:
+`npx remotion still ExplainerSheet out/_seams.png --props='{"slug":"present-value","seams":true}'`
+
+### When the real footage arrives
+
+1. Record the script in **one continuous take**, 9:16, 1080×1920. Put it in
+   `public/recordings/<slug>.mp4` (gitignored).
+2. **Light yourself brighter than the wall behind you** — a dark background
+   and a light on your face. The thermal transition maps brightness to heat,
+   so this is what makes it work with no cutting-out.
+3. Generate `words.json` from the take with Whisper (`pip install openai-whisper`),
+   word timestamps on — same `[{word,start,end}]` shape the TTS script writes.
+4. Render with `--props='{"slug":"<slug>","footage":"recordings/<slug>.mp4"}'`.
+   Your audio replaces the TTS; the placeholder silhouette and its tag disappear.
+
+Alignment is forgiving: if Whisper writes "10%" where the script says "ten
+percent", those words are placed by interpolation between their neighbours.
+
+### Gotchas, paid for
+
+- **Windows TTS word positions are wrong across punctuation** — it overstates
+  every comma and full-stop pause and the error compounds down a beat. The
+  placeholder script speaks phrase by phrase and times each from its real audio
+  length for that reason. Do not "simplify" it back to one `Speak()` per beat.
+- **An answer spoken last in a beat is on screen only until the next beat's
+  first word.** Leave the beat room after its payoff, or move the payoff earlier.
+- **Two renders at once** halve the speed and write the same file. Check
+  `Get-Process remotion` before starting one.
+- The first launch of headless Chrome sometimes times out at 25s; a re-run works.
+- Remotion's mix comes out quiet (~-20 LUFS). `scripts/master.mjs` is the
+  two-pass loudnorm to -14 LUFS / -1.5 dBTP; `render:explainer` runs it.
+
+All art, music and sound here is generated in this folder — pixel objects in
+`src/explainer/pixels.tsx`, music and sfx by `scripts/gen-audio.py`. Nothing to
+license or credit.
 
 ## Safe areas
 

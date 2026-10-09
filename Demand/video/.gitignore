@@ -7,3 +7,9 @@ out/
 public/recordings/*
 !public/recordings/.gitkeep
 public/app/
+
+# Explainer audio that the scripts regenerate in seconds — the recipe is
+# tracked (scripts/voice-placeholder.ps1, scripts/gen-audio.py), the output isn't.
+# The 60s music bed alone is ~11 MB of WAV.
+public/explainers/*/voice.wav
+public/music/

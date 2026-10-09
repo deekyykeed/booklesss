@@ -1,0 +1,92 @@
+{
+  "slug": "present-value",
+  "title": "Present value",
+  "note": "One beat = one thing said. `show` is what fills the screen while it is said: `you` (camera) or `anim`. `in` is the transition INTO the beat. Every `on` is a word in that beat's `say` — the element lands when that word is spoken. Edit `say`, re-run the voice step, and the whole edit re-times itself.",
+  "tail": 1.4,
+  "beats": [
+    {
+      "show": "you",
+      "say": "A hundred kwacha next year is not worth a hundred kwacha today. Here is the maths."
+    },
+    {
+      "show": "anim",
+      "in": "thermal",
+      "scene": "formula",
+      "say": "Present value equals future value, divided by one plus r, to the power of n. Where r is the rate per year, and n is the number of years.",
+      "terms": [
+        { "id": "pv", "on": "present" },
+        { "id": "eq", "on": "equals" },
+        { "id": "fv", "on": "future" },
+        { "id": "bar", "on": "divided" },
+        { "id": "base", "on": "plus" },
+        { "id": "exp", "on": "power" }
+      ],
+      "defs": [
+        { "id": "r", "on": "rate", "label": "rate per year" },
+        { "id": "n", "on": "number", "label": "number of years" }
+      ]
+    },
+    {
+      "show": "you",
+      "in": "punch",
+      "say": "Say your bank pays ten percent a year."
+    },
+    {
+      "show": "anim",
+      "in": "whip",
+      "scene": "calc",
+      "say": "Then a hundred kwacha, one year out, is a hundred over one point one. Ninety kwacha, ninety one.",
+      "steps": [
+        { "text": "K100", "on": "hundred" },
+        { "text": "÷ 1.10", "on": "over" },
+        { "text": "K90.91", "on": "ninety", "result": true }
+      ]
+    },
+    {
+      "show": "anim",
+      "in": "slam",
+      "scene": "bars",
+      "say": "Two years out, eighty two sixty four. Three years, seventy five thirteen.",
+      "bars": [
+        { "label": "now", "value": 100, "on": null },
+        { "label": "1 yr", "value": 90.91, "on": null },
+        { "label": "2 yrs", "value": 82.64, "on": "eighty" },
+        { "label": "3 yrs", "value": 75.13, "on": "seventy" }
+      ]
+    },
+    {
+      "show": "you",
+      "in": "punch",
+      "say": "The further away the money, the less it is worth today. That is discounting."
+    },
+    {
+      "show": "anim",
+      "in": "ink",
+      "scene": "cards",
+      "say": "Net present value. Bond prices. Loan repayments.",
+      "cards": [
+        { "text": "npv.", "on": "net", "icon": "chart" },
+        { "text": "bonds.", "on": "bond", "icon": "bond" },
+        { "text": "loans.", "on": "loan", "icon": "bank" }
+      ]
+    },
+    {
+      "show": "anim",
+      "in": "cut",
+      "scene": "spell",
+      "say": "All of it runs on this one line.",
+      "tokens": [
+        { "text": "PV", "on": "runs", "icon": "coin" },
+        { "text": "=", "on": "on", "icon": "note" },
+        { "text": "FV", "on": "this", "icon": "hourglass" },
+        { "text": "÷", "on": "one", "icon": "calculator" },
+        { "text": "(1+r)ⁿ", "on": "line", "icon": null }
+      ]
+    },
+    {
+      "show": "you",
+      "in": "punch",
+      "say": "Next one is net present value. DM me NPV and I will send it to you."
+    }
+  ]
+}

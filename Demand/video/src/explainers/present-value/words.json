@@ -1,0 +1,642 @@
+[
+    {
+        "word":  "A",
+        "start":  0.477,
+        "end":  0.604
+    },
+    {
+        "word":  "hundred",
+        "start":  0.604,
+        "end":  1.197
+    },
+    {
+        "word":  "kwacha",
+        "start":  1.197,
+        "end":  1.722
+    },
+    {
+        "word":  "next",
+        "start":  1.722,
+        "end":  2.112
+    },
+    {
+        "word":  "year",
+        "start":  2.112,
+        "end":  2.404
+    },
+    {
+        "word":  "is",
+        "start":  2.404,
+        "end":  2.622
+    },
+    {
+        "word":  "not",
+        "start":  2.622,
+        "end":  2.907
+    },
+    {
+        "word":  "worth",
+        "start":  2.907,
+        "end":  3.259
+    },
+    {
+        "word":  "a",
+        "start":  3.259,
+        "end":  3.342
+    },
+    {
+        "word":  "hundred",
+        "start":  3.342,
+        "end":  3.919
+    },
+    {
+        "word":  "kwacha",
+        "start":  3.919,
+        "end":  4.085
+    },
+    {
+        "word":  "today",
+        "start":  4.035,
+        "end":  4.085
+    },
+    {
+        "word":  "Here",
+        "start":  4.531,
+        "end":  4.831
+    },
+    {
+        "word":  "is",
+        "start":  4.831,
+        "end":  5.019
+    },
+    {
+        "word":  "the",
+        "start":  5.019,
+        "end":  5.139
+    },
+    {
+        "word":  "maths",
+        "start":  5.139,
+        "end":  5.839
+    },
+    {
+        "word":  "Present",
+        "start":  6.556,
+        "end":  7.148
+    },
+    {
+        "word":  "value",
+        "start":  7.148,
+        "end":  7.681
+    },
+    {
+        "word":  "equals",
+        "start":  7.681,
+        "end":  8.258
+    },
+    {
+        "word":  "future",
+        "start":  8.258,
+        "end":  8.798
+    },
+    {
+        "word":  "value",
+        "start":  8.798,
+        "end":  9.169
+    },
+    {
+        "word":  "divided",
+        "start":  9.355,
+        "end":  9.925
+    },
+    {
+        "word":  "by",
+        "start":  9.925,
+        "end":  10.18
+    },
+    {
+        "word":  "one",
+        "start":  10.18,
+        "end":  10.495
+    },
+    {
+        "word":  "plus",
+        "start":  10.495,
+        "end":  10.93
+    },
+    {
+        "word":  "r",
+        "start":  10.93,
+        "end":  11.328
+    },
+    {
+        "word":  "to",
+        "start":  11.515,
+        "end":  11.657
+    },
+    {
+        "word":  "the",
+        "start":  11.657,
+        "end":  11.777
+    },
+    {
+        "word":  "power",
+        "start":  11.777,
+        "end":  12.295
+    },
+    {
+        "word":  "of",
+        "start":  12.295,
+        "end":  12.445
+    },
+    {
+        "word":  "n",
+        "start":  12.445,
+        "end":  13.048
+    },
+    {
+        "word":  "Where",
+        "start":  13.234,
+        "end":  13.579
+    },
+    {
+        "word":  "r",
+        "start":  13.579,
+        "end":  13.834
+    },
+    {
+        "word":  "is",
+        "start":  13.834,
+        "end":  14.014
+    },
+    {
+        "word":  "the",
+        "start":  14.014,
+        "end":  14.172
+    },
+    {
+        "word":  "rate",
+        "start":  14.172,
+        "end":  14.457
+    },
+    {
+        "word":  "per",
+        "start":  14.457,
+        "end":  14.644
+    },
+    {
+        "word":  "year",
+        "start":  14.644,
+        "end":  15.107
+    },
+    {
+        "word":  "and",
+        "start":  15.294,
+        "end":  15.549
+    },
+    {
+        "word":  "n",
+        "start":  15.549,
+        "end":  15.804
+    },
+    {
+        "word":  "is",
+        "start":  15.804,
+        "end":  15.984
+    },
+    {
+        "word":  "the",
+        "start":  15.984,
+        "end":  16.112
+    },
+    {
+        "word":  "number",
+        "start":  16.112,
+        "end":  16.562
+    },
+    {
+        "word":  "of",
+        "start":  16.562,
+        "end":  16.719
+    },
+    {
+        "word":  "years",
+        "start":  16.719,
+        "end":  17.322
+    },
+    {
+        "word":  "Say",
+        "start":  17.849,
+        "end":  18.231
+    },
+    {
+        "word":  "your",
+        "start":  18.231,
+        "end":  18.419
+    },
+    {
+        "word":  "bank",
+        "start":  18.419,
+        "end":  18.831
+    },
+    {
+        "word":  "pays",
+        "start":  18.831,
+        "end":  19.266
+    },
+    {
+        "word":  "ten",
+        "start":  19.266,
+        "end":  19.581
+    },
+    {
+        "word":  "percent",
+        "start":  19.581,
+        "end":  20.129
+    },
+    {
+        "word":  "a",
+        "start":  20.129,
+        "end":  20.211
+    },
+    {
+        "word":  "year",
+        "start":  20.211,
+        "end":  20.356
+    },
+    {
+        "word":  "Then",
+        "start":  20.883,
+        "end":  21.168
+    },
+    {
+        "word":  "a",
+        "start":  21.168,
+        "end":  21.243
+    },
+    {
+        "word":  "hundred",
+        "start":  21.243,
+        "end":  21.828
+    },
+    {
+        "word":  "kwacha",
+        "start":  21.828,
+        "end":  22.528
+    },
+    {
+        "word":  "one",
+        "start":  22.793,
+        "end":  23.115
+    },
+    {
+        "word":  "year",
+        "start":  23.115,
+        "end":  23.408
+    },
+    {
+        "word":  "out",
+        "start":  23.408,
+        "end":  24.108
+    },
+    {
+        "word":  "is",
+        "start":  24.317,
+        "end":  24.542
+    },
+    {
+        "word":  "a",
+        "start":  24.542,
+        "end":  24.617
+    },
+    {
+        "word":  "hundred",
+        "start":  24.617,
+        "end":  25.24
+    },
+    {
+        "word":  "over",
+        "start":  25.24,
+        "end":  25.585
+    },
+    {
+        "word":  "one",
+        "start":  25.585,
+        "end":  25.9
+    },
+    {
+        "word":  "point",
+        "start":  25.9,
+        "end":  26.297
+    },
+    {
+        "word":  "one",
+        "start":  26.297,
+        "end":  26.57
+    },
+    {
+        "word":  "Ninety",
+        "start":  26.757,
+        "end":  27.282
+    },
+    {
+        "word":  "kwacha",
+        "start":  27.282,
+        "end":  27.982
+    },
+    {
+        "word":  "ninety",
+        "start":  28.396,
+        "end":  28.921
+    },
+    {
+        "word":  "one",
+        "start":  28.921,
+        "end":  29.621
+    },
+    {
+        "word":  "Two",
+        "start":  30.221,
+        "end":  30.408
+    },
+    {
+        "word":  "years",
+        "start":  30.408,
+        "end":  30.828
+    },
+    {
+        "word":  "out",
+        "start":  30.828,
+        "end":  31.528
+    },
+    {
+        "word":  "eighty",
+        "start":  31.745,
+        "end":  32.128
+    },
+    {
+        "word":  "two",
+        "start":  32.128,
+        "end":  32.435
+    },
+    {
+        "word":  "sixty",
+        "start":  32.435,
+        "end":  33.035
+    },
+    {
+        "word":  "four",
+        "start":  33.035,
+        "end":  33.573
+    },
+    {
+        "word":  "Three",
+        "start":  33.76,
+        "end":  34.142
+    },
+    {
+        "word":  "years",
+        "start":  34.142,
+        "end":  34.842
+    },
+    {
+        "word":  "seventy",
+        "start":  35.284,
+        "end":  35.982
+    },
+    {
+        "word":  "five",
+        "start":  35.982,
+        "end":  36.447
+    },
+    {
+        "word":  "thirteen",
+        "start":  36.447,
+        "end":  37.147
+    },
+    {
+        "word":  "The",
+        "start":  37.674,
+        "end":  37.809
+    },
+    {
+        "word":  "further",
+        "start":  37.809,
+        "end":  38.319
+    },
+    {
+        "word":  "away",
+        "start":  38.319,
+        "end":  38.746
+    },
+    {
+        "word":  "the",
+        "start":  38.746,
+        "end":  38.866
+    },
+    {
+        "word":  "money",
+        "start":  38.866,
+        "end":  39.422
+    },
+    {
+        "word":  "the",
+        "start":  39.608,
+        "end":  39.744
+    },
+    {
+        "word":  "less",
+        "start":  39.744,
+        "end":  40.081
+    },
+    {
+        "word":  "it",
+        "start":  40.081,
+        "end":  40.208
+    },
+    {
+        "word":  "is",
+        "start":  40.208,
+        "end":  40.411
+    },
+    {
+        "word":  "worth",
+        "start":  40.411,
+        "end":  40.771
+    },
+    {
+        "word":  "today",
+        "start":  40.771,
+        "end":  41.316
+    },
+    {
+        "word":  "That",
+        "start":  41.503,
+        "end":  41.773
+    },
+    {
+        "word":  "is",
+        "start":  41.773,
+        "end":  41.983
+    },
+    {
+        "word":  "discounting",
+        "start":  41.983,
+        "end":  42.683
+    },
+    {
+        "word":  "Net",
+        "start":  43.588,
+        "end":  43.88
+    },
+    {
+        "word":  "present",
+        "start":  43.88,
+        "end":  44.39
+    },
+    {
+        "word":  "value",
+        "start":  44.39,
+        "end":  45.09
+    },
+    {
+        "word":  "Bond",
+        "start":  45.432,
+        "end":  45.822
+    },
+    {
+        "word":  "prices",
+        "start":  45.822,
+        "end":  46.522
+    },
+    {
+        "word":  "Loan",
+        "start":  47.047,
+        "end":  47.414
+    },
+    {
+        "word":  "repayments",
+        "start":  47.414,
+        "end":  48.114
+    },
+    {
+        "word":  "All",
+        "start":  49.106,
+        "end":  49.361
+    },
+    {
+        "word":  "of",
+        "start":  49.361,
+        "end":  49.496
+    },
+    {
+        "word":  "it",
+        "start":  49.496,
+        "end":  49.669
+    },
+    {
+        "word":  "runs",
+        "start":  49.669,
+        "end":  50.051
+    },
+    {
+        "word":  "on",
+        "start":  50.051,
+        "end":  50.239
+    },
+    {
+        "word":  "this",
+        "start":  50.239,
+        "end":  50.516
+    },
+    {
+        "word":  "one",
+        "start":  50.516,
+        "end":  50.831
+    },
+    {
+        "word":  "line",
+        "start":  50.831,
+        "end":  51.254
+    },
+    {
+        "word":  "Next",
+        "start":  51.781,
+        "end":  52.216
+    },
+    {
+        "word":  "one",
+        "start":  52.216,
+        "end":  52.478
+    },
+    {
+        "word":  "is",
+        "start":  52.478,
+        "end":  52.673
+    },
+    {
+        "word":  "net",
+        "start":  52.673,
+        "end":  52.936
+    },
+    {
+        "word":  "present",
+        "start":  52.936,
+        "end":  53.446
+    },
+    {
+        "word":  "value",
+        "start":  53.446,
+        "end":  54.014
+    },
+    {
+        "word":  "DM",
+        "start":  54.2,
+        "end":  54.68
+    },
+    {
+        "word":  "me",
+        "start":  54.68,
+        "end":  54.875
+    },
+    {
+        "word":  "NPV",
+        "start":  54.875,
+        "end":  55.575
+    },
+    {
+        "word":  "and",
+        "start":  55.663,
+        "end":  55.88
+    },
+    {
+        "word":  "I",
+        "start":  55.88,
+        "end":  56.015
+    },
+    {
+        "word":  "will",
+        "start":  56.015,
+        "end":  56.218
+    },
+    {
+        "word":  "send",
+        "start":  56.218,
+        "end":  56.623
+    },
+    {
+        "word":  "it",
+        "start":  56.623,
+        "end":  56.795
+    },
+    {
+        "word":  "to",
+        "start":  56.795,
+        "end":  56.893
+    },
+    {
+        "word":  "you",
+        "start":  56.843,
+        "end":  56.893
+    }
+]
