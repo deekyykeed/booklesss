@@ -78,6 +78,27 @@ export const ThermalDefs: React.FC = () => (
           <feFuncB type="table" tableValues="0.03 0.03 0.04 0.06 0.22 0.82" />
         </feComponentTransfer>
       </filter>
+      {/* the same heat map for footage shot against a LIGHT wall, where the
+          person is darker than the background: invert luminance first, so the
+          person still runs hot and the wall goes cold. (The first real take
+          was a cream office wall: the plain ramp lit the wall and left the
+          person dark, the opposite of the look.) */}
+      <filter id="thermalInv" colorInterpolationFilters="sRGB">
+        <feColorMatrix
+          type="matrix"
+          values="0.3 0.59 0.11 0 0  0.3 0.59 0.11 0 0  0.3 0.59 0.11 0 0  0 0 0 1 0"
+        />
+        <feComponentTransfer>
+          <feFuncR type="linear" slope="-1.9" intercept="1.62" />
+          <feFuncG type="linear" slope="-1.9" intercept="1.62" />
+          <feFuncB type="linear" slope="-1.9" intercept="1.62" />
+        </feComponentTransfer>
+        <feComponentTransfer>
+          <feFuncR type="table" tableValues="0.04 0.30 0.78 0.98 1 1" />
+          <feFuncG type="table" tableValues="0.03 0.04 0.13 0.42 0.78 0.96" />
+          <feFuncB type="table" tableValues="0.03 0.03 0.04 0.06 0.22 0.82" />
+        </feComponentTransfer>
+      </filter>
       {/* ragged edge for the ink blob transition */}
       <filter id="inkEdge" x="-20%" y="-20%" width="140%" height="140%">
         <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="3" seed="4" />

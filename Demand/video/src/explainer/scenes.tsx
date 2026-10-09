@@ -34,7 +34,15 @@ export const Typed: React.FC<{ frame: number; beat: TimedBeat; color: string; to
   color,
   top = 330,
 }) => {
-  const shown = beat.words.filter((w) => frame >= w.f - 1);
+  // only the phrase being said — from the last sentence break, at most ~14
+  // words — so a long beat never piles up into a paragraph over the scene
+  const said = beat.words.filter((w) => frame >= w.f - 1);
+  let from = 0;
+  said.forEach((w, i) => {
+    if (i < said.length - 1 && /[.?!]$/.test(w.text)) from = i + 1;
+  });
+  if (said.length - from > 14) from = said.length - 14;
+  const shown = said.slice(from);
   return (
     <div
       style={{

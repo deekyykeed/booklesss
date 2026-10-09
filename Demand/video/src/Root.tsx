@@ -44,7 +44,15 @@ export const RemotionRoot: React.FC = () => {
         fps={30}
         width={XSHEET_W}
         height={XSHEET_H}
-        defaultProps={{ slug: "present-value" }}
+        defaultProps={{ slug: "present-value", footage: null as string | null, faces: null as number[][] | null }}
+        // same face-track pickup as the explainers, so a QA board of real
+        // footage shows the subtitles where the render will put them
+        calculateMetadata={async ({ props }) => {
+          if (!props.footage || props.faces) return { props };
+          const res = await fetch(staticFile(props.footage.replace(/\.mp4$/, ".faces.json")));
+          const faces = res.ok ? ((await res.json()).boxes as number[][]) : null;
+          return { props: { ...props, faces } };
+        }}
       />
       {/* 9:16 — Instagram/TikTok/WhatsApp status. Matches the still carousels. */}
       <Composition

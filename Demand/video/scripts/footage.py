@@ -157,7 +157,20 @@ def propose(slug, pad_before=0.10, pad_after=0.16, max_gap=0.30):
                     drop[i] = "retake"
                 break
 
-    # 4. keep ranges: kept words, padded, with pauses squeezed to max_gap
+    # 4. the editor's calls, which win over the automatic pass:
+    #    out/<slug>/manual.json  {"undrop": [i, ...], "drop": [[from, to, "why"], ...]}
+    #    (word indices from raw-words.json, inclusive). Kept as a file so the
+    #    judgement is recorded and the cut can be re-made from scratch.
+    mpath = os.path.join(odir(slug), "manual.json")
+    if os.path.exists(mpath):
+        man = json.load(open(mpath, encoding="utf-8"))
+        for a, b, *why in man.get("drop", []):
+            for i in range(a, b + 1):
+                drop[i] = why[0] if why else "edit"
+        for i in man.get("undrop", []):
+            drop.pop(i, None)
+
+    # 5. keep ranges: kept words, padded, with pauses squeezed to max_gap
     kept = [w for i, w in enumerate(words) if i not in drop]
     keep = []
     for w in kept:

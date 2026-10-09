@@ -24,7 +24,7 @@ export type Beat = {
   [key: string]: unknown;
 };
 
-export type Script = { slug: string; title: string; tail: number; beats: Beat[] };
+export type Script = { slug: string; title: string; tail: number; beats: Beat[]; tone?: "dark" | "light" };
 
 export type TimedWord = { text: string; f: number; fEnd: number };
 

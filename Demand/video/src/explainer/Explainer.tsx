@@ -3,7 +3,10 @@ import { AbsoluteFill, Audio, Easing, getStaticFiles, interpolate, Sequence, sta
 import { speaking, triggers, type TimedBeat, type TransitionKind } from "./align";
 import { Grain, K, ThermalDefs, Vignette } from "./look";
 import { Presenter } from "./Presenter";
-import { SCENES } from "./scenes";
+import { SCENES as CALC_SCENES } from "./scenes";
+import { MIND_SCENES } from "./scenes-mind";
+
+const SCENES = { ...CALC_SCENES, ...MIND_SCENES };
 import { EXPLAINERS, type ExplainerProps } from "../explainers";
 
 /* An explainer: you on camera, cutting FULL SCREEN to animation and back.
@@ -39,6 +42,7 @@ const SFX: Record<TransitionKind, { file: string; lead: number; vol: number } | 
 export const Explainer: React.FC<ExplainerProps> = ({ slug, footage, faces }) => {
   const frame = useCurrentFrame();
   const { beats, duration } = EXPLAINERS[slug].timeline;
+  const tone = EXPLAINERS[slug].script.tone ?? "dark";
   const music = musicVolume(beats, duration);
 
   // subtle gate weave: the whole picture drifts a pixel or two, like film
@@ -56,11 +60,25 @@ export const Explainer: React.FC<ExplainerProps> = ({ slug, footage, faces }) =>
           const from = b.at - (i === 0 ? 0 : PRE[kindIn]);
           if (frame < from || frame >= b.until) return null;
           return (
-            <BeatLayer key={i} frame={frame} beat={b} kindIn={kindIn} kindOut={kindOut} next={next} footage={footage} faces={faces} first={i === 0} />
+            <BeatLayer key={i} frame={frame} beat={b} kindIn={kindIn} kindOut={kindOut} next={next} footage={footage} faces={faces} tone={tone} first={i === 0} />
           );
         })}
         {beats.slice(1).map((b, i) => (
-          <Overlay key={i} frame={frame} kind={b.in ?? "cut"} at={b.at} />
+          // the glow starts on the face: tracked box when there's footage,
+          // the stand-in's head otherwise
+          (() => {
+            const fb = faces?.[Math.min(b.at, faces.length - 1)];
+            return (
+              <Overlay
+                key={i}
+                frame={frame}
+                kind={b.in ?? "cut"}
+                at={b.at}
+                cx={fb ? fb[0] + fb[2] / 2 : 540}
+                cy={fb ? fb[1] + fb[3] / 2 : 860}
+              />
+            );
+          })()
         ))}
       </AbsoluteFill>
       <Vignette />
@@ -118,8 +136,9 @@ const BeatLayer: React.FC<{
   kindOut: TransitionKind | null;
   footage?: string | null;
   faces?: number[][] | null;
+  tone: "dark" | "light";
   first: boolean;
-}> = ({ frame, beat, next, kindIn, kindOut, footage, faces, first }) => {
+}> = ({ frame, beat, next, kindIn, kindOut, footage, faces, tone, first }) => {
   const tIn = frame - beat.at; // negative while mounting early
   const tOut = next ? frame - next.at : -999; // approaches 0 at the hand-off
 
@@ -161,7 +180,7 @@ const BeatLayer: React.FC<{
   return (
     <AbsoluteFill style={{ ...style, transform, filter: blur > 0.3 ? `blur(${blur}px)` : undefined }}>
       {beat.show === "you" ? (
-        <Presenter frame={frame} beat={beat} heat={heat} footage={footage} faces={faces} />
+        <Presenter frame={frame} beat={beat} heat={heat} footage={footage} faces={faces} tone={tone} />
       ) : Scene ? (
         <Scene frame={frame} beat={beat} />
       ) : null}
@@ -175,33 +194,32 @@ const BAR_W = 520;
 /* the slam bar's trailing edge x, as a function of time around the boundary */
 const slamTrail = (t: number) => interpolate(t, [-PRE.slam, 6], [-BAR_W, 1080 + 40], { ...clamp, easing: ease });
 
-const Overlay: React.FC<{ frame: number; kind: TransitionKind; at: number }> = ({ frame, kind, at }) => {
+const Overlay: React.FC<{ frame: number; kind: TransitionKind; at: number; cx?: number; cy?: number }> = ({
+  frame,
+  kind,
+  at,
+  cx = 540,
+  cy = 860,
+}) => {
   const t = frame - at;
   if (t < -24 || t > 14) return null;
 
   if (kind === "thermal") {
-    // a red-orange glow blooms from the face and swallows the frame, then clears
-    const grow = interpolate(t, [-7, 0], [0.05, 2.6], { ...clamp, easing: Easing.in(Easing.quad) });
+    // a red-orange glow blooms from the FACE (tracked, when there's footage)
+    // and swallows the frame, then clears. Drawn as a gradient at its real
+    // size every frame — scaling up a small blurred disc instead rasterised
+    // into hard concentric rings, a target over the face.
+    const r = interpolate(t, [-7, 0], [40, 2600], { ...clamp, easing: Easing.in(Easing.quad) });
     const fade = interpolate(t, [0, 9], [1, 0], clamp);
     if (t < -7 || fade <= 0) return null;
     return (
-      <AbsoluteFill style={{ pointerEvents: "none", opacity: fade }}>
-        <div
-          style={{
-            position: "absolute",
-            left: 540,
-            top: 860,
-            width: 1000,
-            height: 1000,
-            marginLeft: -500,
-            marginTop: -500,
-            borderRadius: "50%",
-            transform: `scale(${grow})`,
-            background: `radial-gradient(circle, #FFD25A 0%, #FF7A1A 22%, ${K.red} 48%, rgba(120,10,0,0.95) 70%, rgba(19,18,17,0) 100%)`,
-            filter: "blur(20px)",
-          }}
-        />
-      </AbsoluteFill>
+      <AbsoluteFill
+        style={{
+          pointerEvents: "none",
+          opacity: fade,
+          background: `radial-gradient(circle ${r}px at ${cx}px ${cy}px, #FFD25A 0%, #FF7A1A 22%, ${K.red} 48%, rgba(120,10,0,0.95) 70%, rgba(19,18,17,0) 100%)`,
+        }}
+      />
     );
   }
 

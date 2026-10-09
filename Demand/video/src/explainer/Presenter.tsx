@@ -2,7 +2,7 @@ import React from "react";
 import { AbsoluteFill, OffthreadVideo, staticFile } from "remotion";
 import type { TimedBeat } from "./align";
 import { K, sat } from "./look";
-import { TypeTrack, type Face } from "./TypeTrack";
+import { TypeTrack, type Face, type Tone } from "./TypeTrack";
 
 /* The presenter — you, on camera, full screen. Never split-screen.
  *
@@ -30,7 +30,9 @@ export const Presenter: React.FC<{
   footage?: string | null;
   /** per-frame face boxes for the footage (scripts/footage.py faces) */
   faces?: number[][] | null;
-}> = ({ frame, beat, heat, footage, faces }) => {
+  /** what the footage is shot against: "light" flips the subtitle colours and the heat ramp */
+  tone?: Tone;
+}> = ({ frame, beat, heat, footage, faces, tone = "dark" }) => {
   const talking = beat.words.some((w) => frame >= w.f && frame <= w.fEnd + 2);
   const cover = { width: "100%", height: "100%", objectFit: "cover" as const };
   const fb = faces?.[Math.min(frame, faces.length - 1)];
@@ -50,14 +52,14 @@ export const Presenter: React.FC<{
           <StandInFigure frame={frame} talking={talking} />
         </>
       )}
-      <TypeTrack frame={frame} beat={beat} beatIndex={beat.index} face={face} />
+      <TypeTrack frame={frame} beat={beat} beatIndex={beat.index} face={face} tone={tone} />
     </>
   );
 
   return (
     <AbsoluteFill style={{ background: K.ink }}>
       <AbsoluteFill style={{ opacity: 1 - heat }}>{picture}</AbsoluteFill>
-      {heat > 0.001 ? <AbsoluteFill style={{ opacity: heat, filter: "url(#thermal)" }}>{picture}</AbsoluteFill> : null}
+      {heat > 0.001 ? <AbsoluteFill style={{ opacity: heat, filter: tone === "light" ? "url(#thermalInv)" : "url(#thermal)" }}>{picture}</AbsoluteFill> : null}
       {footage ? null : <PlaceholderTag frame={frame} talking={talking} fade={1 - heat} />}
     </AbsoluteFill>
   );

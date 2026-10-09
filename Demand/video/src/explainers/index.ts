@@ -1,6 +1,8 @@
 import { align, type Script, type Word } from "../explainer/align";
 import pvScript from "./present-value/script.json";
 import pvWords from "./present-value/words.json";
+import cogScript from "./d885/script.json";
+import cogWords from "./d885/words.json";
 
 /* Every explainer: its script (what is said, what fills the screen) and its
  * word timings (when each word is said). To add one, make a folder beside
@@ -22,5 +24,10 @@ export const EXPLAINERS = {
   "present-value": {
     script: pvScript as unknown as Script,
     timeline: align(pvScript as unknown as Script, pvWords as Word[], FPS),
+  },
+  // the biological basis of cognition — the owner's own take (A001_10091126_D885)
+  d885: {
+    script: cogScript as unknown as Script,
+    timeline: align(cogScript as unknown as Script, cogWords as Word[], FPS),
   },
 } as Record<string, { script: Script; timeline: ReturnType<typeof align> }>;

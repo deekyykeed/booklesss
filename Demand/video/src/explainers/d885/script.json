@@ -1,0 +1,549 @@
+{
+  "slug": "d885",
+  "title": "The biological basis of cognition",
+  "tail": 1.2,
+  "tone": "light",
+  "beats": [
+    {
+      "show": "you",
+      "em": [
+        "cognition",
+        "biological",
+        "optimize",
+        "details"
+      ],
+      "say": "So, let's talk about the biological basis of cognition, shall we? So, for those of you guys that don't know, thinking, which is also referred to as cognition, is a biological process, and understanding this biological process is very important if you want to learn how to optimize it. I'm not gonna sit here and pretend to give you guys some sort of, you know, biological lecture 101 or something like that, so I'm gonna spare you most of the details. Instead, I just want to leave you with probably one of the most useful definitions I found so far,"
+    },
+    {
+      "show": "anim",
+      "in": "thermal",
+      "scene": "trio",
+      "title": {
+        "text": "cognition =",
+        "on": "cognition"
+      },
+      "items": [
+        {
+          "text": "attention",
+          "icon": "eye",
+          "on": "attention"
+        },
+        {
+          "text": "working memory",
+          "icon": "bench",
+          "on": "working"
+        },
+        {
+          "text": "executive function",
+          "icon": "hardhat",
+          "on": "executive"
+        }
+      ],
+      "say": "cognition, your ability to think, is composed of three parts. You have your attention, your working memory, and then you have your executive function."
+    },
+    {
+      "show": "you",
+      "in": "punch",
+      "em": [
+        "byproduct"
+      ],
+      "say": "Now put this in another way, any thought that you have, even the thoughts that you're having right now, are a byproduct of three things,"
+    },
+    {
+      "show": "anim",
+      "in": "thermal",
+      "scene": "flood",
+      "title": {
+        "text": "the gatekeeper",
+        "on": "gatekeeper"
+      },
+      "items": [
+        {
+          "text": "headset",
+          "icon": "headset",
+          "on": "headsets"
+        },
+        {
+          "text": "your screen",
+          "icon": "phone",
+          "on": "computer"
+        },
+        {
+          "text": "the desk",
+          "icon": "bench",
+          "on": "desk"
+        },
+        {
+          "text": "noise",
+          "on": "noises"
+        },
+        {
+          "text": "wind",
+          "on": "wind"
+        },
+        {
+          "text": "birds",
+          "icon": "bird",
+          "on": "birds"
+        },
+        {
+          "text": "family",
+          "on": "family"
+        }
+      ],
+      "say": "The first is attention itself, and a good way of picturing attention is like a gatekeeper that lets in a small slice of the incredible amount of sensory information that is constantly flooding your brain from the outside world. Think things like the feeling of the headsets in your ear if you're wearing any, or where your computer is, or your wrists on the desk, or the various background noises outside, the wind, the flapping of birds, sounds from your family members, whatever it may be."
+    },
+    {
+      "show": "you",
+      "in": "punch",
+      "em": [
+        "aware"
+      ],
+      "say": "All this is constantly flooding into your brain, but you're not constantly aware of it. Why?"
+    },
+    {
+      "show": "anim",
+      "in": "thermal",
+      "scene": "spotlight",
+      "items": [
+        {
+          "text": "headset",
+          "icon": "headset"
+        },
+        {
+          "text": "screen",
+          "icon": "phone"
+        },
+        {
+          "text": "the task",
+          "icon": "book"
+        },
+        {
+          "text": "birds",
+          "icon": "bird"
+        },
+        {
+          "text": "the time",
+          "icon": "clock"
+        },
+        {
+          "text": "an idea",
+          "icon": "bulb"
+        }
+      ],
+      "moves": [
+        {
+          "to": 1,
+          "on": "spotlight"
+        },
+        {
+          "to": 3,
+          "on": "brain"
+        },
+        {
+          "to": 5,
+          "on": "spotlight"
+        },
+        {
+          "to": 2,
+          "on": "attend"
+        }
+      ],
+      "say": "Because attention is like a spotlight. Your brain can put that spotlight on the things that it wants you to attend to."
+    },
+    {
+      "show": "you",
+      "in": "punch",
+      "em": [
+        "gatekeeper",
+        "spotlight"
+      ],
+      "say": "So attention is like a gatekeeper. Like that spotlight that just chooses what it is in our environment we're actually going to be letting in."
+    },
+    {
+      "show": "anim",
+      "in": "thermal",
+      "scene": "bench",
+      "label": "working memory",
+      "steps": [
+        {
+          "do": "put",
+          "icon": "book",
+          "on": "machinery"
+        },
+        {
+          "do": "put",
+          "icon": "calculator",
+          "on": "few"
+        },
+        {
+          "do": "put",
+          "icon": "bulb",
+          "on": "simultaneously"
+        },
+        {
+          "do": "clear",
+          "on": "But"
+        },
+        {
+          "do": "put",
+          "icon": "book",
+          "on": "something"
+        },
+        {
+          "do": "work",
+          "on": "work"
+        },
+        {
+          "do": "done",
+          "on": "finish"
+        },
+        {
+          "do": "clear",
+          "on": "clear"
+        },
+        {
+          "do": "put",
+          "icon": "bulb",
+          "on": "new"
+        },
+        {
+          "do": "put",
+          "icon": "phone",
+          "on": "repeat"
+        }
+      ],
+      "say": "Your working memory is the next step, your working memory is like a workbench. If you've ever worked with machinery or tools, you know that workbench can typically hold a few things simultaneously. But the whole idea of a workbench is that you put something on the workbench, you work on it, you finish it, and then you put it away, you clear the workbench so that somebody else, or let's say you in the future, can put new items on the workbench and repeat that process again."
+    },
+    {
+      "show": "you",
+      "in": "punch",
+      "em": [
+        "workbench",
+        "executive"
+      ],
+      "say": "That is what working memory is, and that's an excellent way of conceptualizing it. The next is your executive function."
+    },
+    {
+      "show": "anim",
+      "in": "thermal",
+      "scene": "cards",
+      "cards": [
+        {
+          "text": "contractor.",
+          "icon": "hardhat",
+          "on": "contractor"
+        },
+        {
+          "text": "decides.",
+          "icon": "bench",
+          "on": "decide"
+        }
+      ],
+      "say": "The best way I found of conceptualizing executive function is like a contractor, a general contractor. If you guys have experience with construction, these are the people who ultimately decide what goes on to the workbench and who works on what on the workbench."
+    },
+    {
+      "show": "you",
+      "in": "punch",
+      "em": [
+        "foreman",
+        "managers"
+      ],
+      "say": "All these things are flooding into your working memory from your attention because it's a gatekeeper that permits things. And then the executive function is the one that is the foreman, the one that decides what gets thrown out, when you should stop one task and move on to another, etc. There are the project managers of your thinking"
+    },
+    {
+      "show": "anim",
+      "in": "thermal",
+      "scene": "meters",
+      "title": {
+        "text": "the problem",
+        "on": "problem"
+      },
+      "bars": [
+        {
+          "text": "attention",
+          "icon": "eye"
+        },
+        {
+          "text": "working memory",
+          "icon": "bench"
+        },
+        {
+          "text": "executive function",
+          "icon": "hardhat"
+        }
+      ],
+      "keys": [
+        {
+          "on": "now",
+          "values": [
+            0.85,
+            0.85,
+            0.85
+          ]
+        },
+        {
+          "on": "attention",
+          "values": [
+            0.1,
+            0.85,
+            0.85
+          ]
+        },
+        {
+          "on": "poor",
+          "values": [
+            0.1,
+            0.18,
+            0.85
+          ]
+        },
+        {
+          "on": "functional",
+          "values": [
+            0.1,
+            0.18,
+            0.22
+          ]
+        }
+      ],
+      "say": "now the problem is in case you haven't noticed Majority of human beings currently operate with next to no attention very poor working memory and not very functional executive function"
+    },
+    {
+      "show": "you",
+      "in": "punch",
+      "em": [
+        "fuzzy",
+        "fragile",
+        "problem"
+      ],
+      "say": "in Practice this leads to you feeling a little bit fuzzy all the time You know you really struggle focusing on anything that is actually important you struggle with carrying an idea through to its logical conclusion A lot of the times things probably feel confusing or necessarily difficult and things like maybe this video I just feel like they're moving a little bit too fast This can often frustrate you constantly and leave you in an emotionally fragile state, which I'll cover more During this playlist. So how do you actually fix this, this sounds like a very big problem, right?"
+    },
+    {
+      "show": "anim",
+      "in": "thermal",
+      "scene": "meters",
+      "title": {
+        "text": "bonus stats",
+        "on": "bonus"
+      },
+      "sources": [
+        {
+          "text": "software",
+          "icon": "floppy",
+          "on": "software"
+        },
+        {
+          "text": "hardware",
+          "icon": "chip",
+          "on": "hardware"
+        }
+      ],
+      "bars": [
+        {
+          "text": "executive function",
+          "icon": "hardhat"
+        },
+        {
+          "text": "working memory",
+          "icon": "bench"
+        },
+        {
+          "text": "attention",
+          "icon": "eye"
+        }
+      ],
+      "keys": [
+        {
+          "on": "But",
+          "values": [
+            0.22,
+            0.18,
+            0.1
+          ]
+        },
+        {
+          "on": "executive",
+          "values": [
+            0.65,
+            0.18,
+            0.1
+          ]
+        },
+        {
+          "on": "working",
+          "values": [
+            0.65,
+            0.6,
+            0.1
+          ]
+        },
+        {
+          "on": "attention",
+          "values": [
+            0.65,
+            0.6,
+            0.62
+          ]
+        }
+      ],
+      "say": "But did you know you can actually pour bonus stats from various software and hardware optimization that I'll teach you throughout this playlist directly into the skills of your executive function, your working memory, and your attention."
+    },
+    {
+      "show": "you",
+      "in": "punch",
+      "em": [
+        "circadian"
+      ],
+      "say": "You can find certain things like hardware improvements, circadian rhythm improvements, and so on."
+    },
+    {
+      "show": "anim",
+      "in": "whip",
+      "scene": "meters",
+      "title": {
+        "text": "level up",
+        "on": "level"
+      },
+      "sources": [
+        {
+          "text": "free wins",
+          "icon": "battery",
+          "on": "wins"
+        }
+      ],
+      "bars": [
+        {
+          "text": "attention",
+          "icon": "eye"
+        },
+        {
+          "text": "working memory",
+          "icon": "bench"
+        },
+        {
+          "text": "executive function",
+          "icon": "hardhat"
+        }
+      ],
+      "keys": [
+        {
+          "on": "And",
+          "values": [
+            0.62,
+            0.6,
+            0.65
+          ]
+        },
+        {
+          "on": "attention",
+          "values": [
+            0.9,
+            0.6,
+            0.65
+          ]
+        },
+        {
+          "on": "working",
+          "values": [
+            0.9,
+            0.88,
+            0.65
+          ]
+        },
+        {
+          "on": "executive",
+          "values": [
+            0.9,
+            0.88,
+            0.92
+          ]
+        }
+      ],
+      "say": "And then in time, you can distribute these free wins to parts like your attention, your working memory and your executive function to allow you to level up each of these"
+    },
+    {
+      "show": "you",
+      "in": "punch",
+      "em": [
+        "software",
+        "playlist",
+        "version"
+      ],
+      "say": "then we can also take various software wins which are problem -solving techniques so on and so forth to also fundamentally improve your executive function as well and that is simply all we're going to be doing in this playlist literally going through finding all the extra bonus stats that you're leaving on the table and then combine them to make the best version of you you've ever seen."
+    },
+    {
+      "show": "anim",
+      "in": "thermal",
+      "scene": "cards",
+      "cards": [
+        {
+          "text": "the brain.",
+          "icon": "brain",
+          "on": "biology"
+        },
+        {
+          "text": "expensive.",
+          "icon": "battery",
+          "on": "expensive"
+        }
+      ],
+      "say": "So we're just going to cover a little bit about the biology of the human brain. So in case you didn't already know the human brain is extremely expensive."
+    },
+    {
+      "show": "anim",
+      "in": "whip",
+      "scene": "ratio",
+      "icon": "brain",
+      "parts": [
+        {
+          "label": "of body weight",
+          "pct": 2,
+          "on": "2"
+        },
+        {
+          "label": "of energy at rest",
+          "pct": 20,
+          "on": "20"
+        }
+      ],
+      "say": "It only makes up about 2 % of our total body weight but at the same time it can consume up to 20 % of our total body energy consumption at rest"
+    },
+    {
+      "show": "you",
+      "in": "punch",
+      "em": [
+        "metabolically"
+      ],
+      "say": "so this makes the brain the most metabolically expensive tissue in the human body and you can see this through"
+    },
+    {
+      "show": "anim",
+      "in": "thermal",
+      "scene": "ratio",
+      "icon": "brain",
+      "parts": [
+        {
+          "label": "of body mass",
+          "pct": 2,
+          "on": "2"
+        },
+        {
+          "label": "of all energy",
+          "pct": 20,
+          "on": "20"
+        }
+      ],
+      "stress": "disproportionate",
+      "say": "this illustration over here despite having a very small share of body mass only about 2 % or so it can consume up to 20 % of all energy usage and obviously this is very disproportionate"
+    },
+    {
+      "show": "you",
+      "in": "punch",
+      "em": [
+        "energy"
+      ],
+      "say": "a very small and light organ but one that requires a lot of energy to fuel"
+    }
+  ]
+}

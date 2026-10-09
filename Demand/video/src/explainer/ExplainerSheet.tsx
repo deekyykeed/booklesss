@@ -20,7 +20,13 @@ const LABEL_H = 50;
 export const XSHEET_W = COLS * TILE_W + 14 * (COLS + 1);
 export const XSHEET_H = ROWS * (TILE_H + LABEL_H) + 14 * (ROWS + 1);
 
-export const ExplainerSheet: React.FC<{ slug: string; marks?: number[]; seams?: boolean }> = ({ slug, marks, seams }) => {
+export const ExplainerSheet: React.FC<{ slug: string; marks?: number[]; seams?: boolean; footage?: string | null; faces?: number[][] | null }> = ({
+  slug,
+  marks,
+  seams,
+  footage = null,
+  faces = null,
+}) => {
   const { beats, duration } = EXPLAINERS[slug].timeline;
   const n = COLS * ROWS;
   /* seams: three frames around every transition (before, during, after) —
@@ -41,7 +47,7 @@ export const ExplainerSheet: React.FC<{ slug: string; marks?: number[]; seams?: 
               <div style={{ width: TILE_W, height: TILE_H, overflow: "hidden", position: "relative", borderRadius: 4 }}>
                 <div style={{ position: "absolute", width: 1080, height: 1920, transform: `scale(${TILE_W / 1080})`, transformOrigin: "0 0" }}>
                   <Sequence from={-f} layout="none">
-                    <Explainer slug={slug} footage={null} />
+                    <Explainer slug={slug} footage={footage} faces={faces} />
                   </Sequence>
                 </div>
               </div>

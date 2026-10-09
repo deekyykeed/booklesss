@@ -29,6 +29,17 @@ import { Pixel } from "./pixels";
  * moves it with the camera. */
 
 const IVORY = "#F6F2E9";
+const INK = "#15120F";
+
+/* tone: what the type sits on. "dark" footage gets ivory type with a dark
+ * shadow; "light" footage (a bright wall) gets ink type with a light halo —
+ * ivory on a cream wall disappears. Red boxes and tiles keep ivory either way. */
+export type Tone = "dark" | "light";
+const ToneCtx = React.createContext<{ fg: string; halo: string }>({ fg: IVORY, halo: "0 2px 22px rgba(0,0,0,0.5)" });
+const toneOf = (t: Tone) =>
+  t === "light"
+    ? { fg: INK, halo: "0 0 2px rgba(250,246,238,0.9), 0 0 18px rgba(250,246,238,0.85)" }
+    : { fg: IVORY, halo: "0 1px 3px rgba(0,0,0,0.55), 0 2px 22px rgba(0,0,0,0.5)" };
 const RED = K.red;
 const out = Easing.bezier(0.16, 1, 0.3, 1);
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
@@ -130,6 +141,20 @@ function toTokens(beat: TimedBeat): Tok[] {
       }
     }
     const w = words[i];
+    // Whisper writes "2 %" as two words: one figure
+    if (/^\d+(\.\d+)?$/.test(w.text) && /^%/.test(words[i + 1]?.text ?? "")) {
+      toks.push({ text: `${w.text}%`, f: w.f, fEnd: words[i + 1].fEnd, num: true });
+      i += 2;
+      continue;
+    }
+    // ...and "problem -solving" as two: join a word that starts with a hyphen
+    if (/^-/.test(w.text) && toks.length) {
+      const prev = toks[toks.length - 1];
+      prev.text += w.text.replace(/[,;:]$/, "");
+      prev.fEnd = w.fEnd;
+      i++;
+      continue;
+    }
     toks.push({ text: w.text.replace(/[,;:]$/, ""), f: w.f, fEnd: w.fEnd, em: em.has(bare(w.text)) });
     i++;
   }
@@ -198,6 +223,7 @@ const Word: React.FC<{ frame: number; t: Tok; size: number; weight?: number; mar
   mark = null,
   loop = false,
 }) => {
+  const tone = React.useContext(ToneCtx);
   const p = pop(frame, t.f);
   const icon = ICON_FOR[bare(t.text)];
   const markP = interpolate(frame, [t.f, t.f + 7], [0, 1], { ...clamp, easing: out });
@@ -209,8 +235,8 @@ const Word: React.FC<{ frame: number; t: Tok; size: number; weight?: number; mar
     fontSize: size,
     lineHeight: 1,
     letterSpacing: weight >= 700 ? "-0.035em" : "-0.01em",
-    color: IVORY,
-    textShadow: mark === "box" ? undefined : "0 2px 22px rgba(0,0,0,0.5)",
+    color: mark === "box" ? IVORY : tone.fg,
+    textShadow: mark === "box" ? undefined : tone.halo,
     opacity: p,
     transform: `translateY(${(1 - p) * 14}px) scale(${0.9 + 0.1 * p})`,
     filter: p < 1 ? `blur(${(1 - p) * 6}px)` : undefined,
@@ -329,12 +355,17 @@ const IconPill: React.FC<{ frame: number; at: number; icon: string; size: number
 
 /* ---------------------------------------------------------------- the track */
 
-export const TypeTrack: React.FC<{ frame: number; beat: TimedBeat; beatIndex: number; face: Face }> = ({
-  frame,
-  beat,
-  beatIndex,
-  face,
-}) => {
+export const TypeTrack: React.FC<{ frame: number; beat: TimedBeat; beatIndex: number; face: Face; tone?: Tone }> = ({
+  tone = "dark",
+  ...rest
+}) => (
+  <ToneCtx.Provider value={toneOf(tone)}>
+    <Track {...rest} />
+  </ToneCtx.Provider>
+);
+
+const Track: React.FC<{ frame: number; beat: TimedBeat; beatIndex: number; face: Face }> = ({ frame, beat, beatIndex, face }) => {
+  const toneC = React.useContext(ToneCtx);
   const ps = phrases(beat, beatIndex);
   const idx = ps.reduce((acc, p, i) => (frame >= p.start - 3 ? i : acc), -1);
   if (idx < 0) return null;
@@ -385,7 +416,7 @@ export const TypeTrack: React.FC<{ frame: number; beat: TimedBeat; beatIndex: nu
   };
 
   // small words beside the face, on its left — only when there's room
-  const side = (toks: Tok[], size = 46) =>
+  const side = (toks: Tok[], size = 52) =>
     roomLeft && toks.length ? (
       <div
         style={{
@@ -405,7 +436,7 @@ export const TypeTrack: React.FC<{ frame: number; beat: TimedBeat; beatIndex: nu
       </div>
     ) : null;
 
-  const chestRow = (toks: Tok[], size = 50) =>
+  const chestRow = (toks: Tok[], size = 56) =>
     toks.length ? (
       <div
         style={{
@@ -430,14 +461,14 @@ export const TypeTrack: React.FC<{ frame: number; beat: TimedBeat; beatIndex: nu
     const open = interpolate(frame, [p.start - 4, p.start + 2], [0, 1], { ...clamp, easing: out });
     const close = interpolate(frame, [p.end, p.end + 5], [0, 1], { ...clamp, easing: out });
     const leave = next ? interpolate(frame, [next.start - 14, next.start - 4], [0, 1], { ...clamp, easing: out }) : 0;
-    const size = 54;
+    const size = 58;
     const brace = (ch: string, q: number, dx: number) => (
       <span
         style={{
           fontFamily: sat,
           fontWeight: 400,
           fontSize: size * 1.3,
-          color: IVORY,
+          color: toneC.fg,
           opacity: q,
           transform: `translateX(${(1 - q) * dx}px)`,
           display: "inline-block",
@@ -457,7 +488,7 @@ export const TypeTrack: React.FC<{ frame: number; beat: TimedBeat; beatIndex: nu
                 position: "absolute",
                 width: 8,
                 height: 8,
-                background: IVORY,
+                background: toneC.fg,
                 left: c % 2 ? undefined : -6,
                 right: c % 2 ? -6 : undefined,
                 top: c < 2 ? -6 : undefined,
@@ -501,7 +532,7 @@ export const TypeTrack: React.FC<{ frame: number; beat: TimedBeat; beatIndex: nu
     const n = roomLeft ? Math.min(2, p.toks.length - 1) : 0;
     return wrap(
       <>
-        {side(p.toks.slice(0, n), 50)}
+        {side(p.toks.slice(0, n), 56)}
         <div
           style={{
             position: "absolute",
@@ -516,7 +547,7 @@ export const TypeTrack: React.FC<{ frame: number; beat: TimedBeat; beatIndex: nu
           }}
         >
           {p.toks.slice(n).map((t, i) => (
-            <Word key={i} frame={frame} t={t} size={t.em ? 92 : 52} weight={t.em ? 700 : 500} loop={!!t.em} />
+            <Word key={i} frame={frame} t={t} size={t.em ? 104 : 58} weight={t.em ? 700 : 500} loop={!!t.em} />
           ))}
         </div>
       </>,
