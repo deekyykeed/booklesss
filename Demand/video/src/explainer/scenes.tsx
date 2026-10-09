@@ -28,12 +28,18 @@ const landStyle = (p: number, from = 1.45): React.CSSProperties => ({
 
 /* The line being said, typed out small at the top as it's spoken — the
  * subtitle and the texture at once. Lowercase, block cursor. */
+const SCENE_CAPTIONS = false;
+
 export const Typed: React.FC<{ frame: number; beat: TimedBeat; color: string; top?: number }> = ({
   frame,
   beat,
   color,
   top = 330,
 }) => {
+  // OFF: owner, 2026-10-09 — "don't do subtitles during animations"; the
+  // camera-beat subtitles (TypeTrack) are the only ones. Kept as a component so
+  // every scene's call site stays put; flip SCENE_CAPTIONS to bring it back.
+  if (!SCENE_CAPTIONS) return null;
   // only the phrase being said — from the last sentence break, at most ~14
   // words — so a long beat never piles up into a paragraph over the scene
   const said = beat.words.filter((w) => frame >= w.f - 1);

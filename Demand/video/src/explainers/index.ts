@@ -3,6 +3,8 @@ import pvScript from "./present-value/script.json";
 import pvWords from "./present-value/words.json";
 import cogScript from "./d885/script.json";
 import cogWords from "./d885/words.json";
+import cognitionScript from "./cognition/script.json";
+import cognitionWords from "./cognition/words.json";
 
 /* Every explainer: its script (what is said, what fills the screen) and its
  * word timings (when each word is said). To add one, make a folder beside
@@ -29,5 +31,10 @@ export const EXPLAINERS = {
   d885: {
     script: cogScript as unknown as Script,
     timeline: align(cogScript as unknown as Script, cogWords as Word[], FPS),
+  },
+  // the same explainer, cut by the owner themselves (bucket 2026-10-09-231324844) — the one to post
+  cognition: {
+    script: cognitionScript as unknown as Script,
+    timeline: align(cognitionScript as unknown as Script, cognitionWords as Word[], FPS),
   },
 } as Record<string, { script: Script; timeline: ReturnType<typeof align> }>;

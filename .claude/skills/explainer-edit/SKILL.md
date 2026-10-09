@@ -22,7 +22,9 @@ before improvising. Code and commands: `Demand/video/README.md`.
    between them ("a normal flip to the animation and back"). Animation →
    animation may whip.
 4. **Full screen only.** Never split-screen person/animation.
-5. **Subtitles on camera beats: white, one fixed place, below the face.**
+5. **Subtitles on camera beats ONLY: white, one fixed place, below the face.**
+   None over the animations (owner, 2026-10-09: "dont do subtitles during
+   animations… the bits where i was in frame, those are good").
    Word by word as spoken, short phrases. No face tracking, no layouts around
    the head, no colour marks. Figures as figures (K100, 2%).
 6. **No background removal**, ever.
@@ -32,7 +34,9 @@ before improvising. Code and commands: `Demand/video/README.md`.
    speaker's gestures and added 11.5 px of sway. Measure first (tracked wall
    features, not phase correlation) and stabilise only real handheld footage
    (`recut … --stabilize`).
-8. **Cut every cough, silence, false start, filler, slip — and every repeat.**
+8. **If the owner hands over a take they cut themselves, don't re-cut it** —
+   transcribe, animate, render. Otherwise: **cut every cough, silence, false
+   start, filler, slip — and every repeat.**
    Read the whole cut transcript before rendering: it must make sense start to
    finish and never say the same point twice.
 
