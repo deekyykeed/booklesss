@@ -1,6 +1,6 @@
 ---
 name: explainer-edit
-description: Edit the owner's raw talking-head take into a finished 9:16 explainer — cut the silences, coughs, mistakes and repeats, stabilise, cut full-screen to pixel-art animation on the words, white subtitles below the face, music + sfx under an untouched voice. Use whenever the owner drops a raw video in the bucket and says "edit this", "edit the video", "make the explainer", "cut this take", or asks for changes to an explainer already made. Covers Demand/video (Remotion) end to end. Not for still carousels (daily-post) or course steps (step-skill).
+description: Edit the owner's raw talking-head take into a finished 9:16 explainer — cut the silences, coughs, mistakes and repeats, plain-cut full-screen to pixel-art animation on the words, white subtitles below the face, music + sfx under an untouched voice. Use whenever the owner drops a raw video in the bucket and says "edit this", "edit the video", "make the explainer", "cut this take", or asks for changes to an explainer already made. Covers Demand/video (Remotion) end to end. Not for still carousels (daily-post) or course steps (step-skill).
 ---
 
 # Explainer edit — the house method
