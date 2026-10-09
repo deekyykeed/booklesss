@@ -34,6 +34,14 @@ const iconPx = (name: string, maxW: number, maxH: number) => {
   return Math.max(2, Math.floor(Math.min(maxW / s.w, maxH / s.h)));
 };
 
+/* Resolve a title and a list of cues INDEPENDENTLY. triggers() searches its
+ * list in order, each word after the last — right for a run of cues, wrong for
+ * a title: a title on a late word ("level up") made every cue after it search
+ * past the end and land on the beat's last word, so bars sat empty for six
+ * seconds in the first real render. */
+const cue = (beat: TimedBeat, on: string | null | undefined) => (on ? triggers(beat, [on])[0] : beat.at);
+const cues = (beat: TimedBeat, ons: (string | null | undefined)[]) => (ons.length ? triggers(beat, ons) : []);
+
 /* ================================================================ trio
  * A thing made of parts: an optional title, then each part lands as it's
  * named — its object on the left, its name on the right.
@@ -43,7 +51,7 @@ type Trio = { title?: { text: string; on: string }; items: { text: string; icon:
 
 export const TrioScene: React.FC<SceneProps> = ({ frame, beat }) => {
   const b = beat as unknown as TimedBeat & Trio;
-  const ts = triggers(beat, [b.title?.on ?? null, ...b.items.map((i) => i.on)]);
+  const ts = [cue(beat, b.title?.on), ...cues(beat, b.items.map((i) => i.on))];
   const titleAt = b.title ? ts[0] : beat.at;
   const rows = b.items.length;
   const top = 620;
@@ -99,7 +107,7 @@ type Flood = { title?: { text: string; on: string }; items: { text: string; icon
 
 export const FloodScene: React.FC<SceneProps> = ({ frame, beat }) => {
   const b = beat as unknown as TimedBeat & Flood;
-  const ts = triggers(beat, [b.title?.on ?? null, ...b.items.map((i) => i.on)]);
+  const ts = [cue(beat, b.title?.on), ...cues(beat, b.items.map((i) => i.on))];
   const t = frame - beat.at;
   const GATE_Y = 1240;
   const GAP_L = 470;
@@ -369,7 +377,7 @@ type Meters = {
 export const MetersScene: React.FC<SceneProps> = ({ frame, beat }) => {
   const b = beat as unknown as TimedBeat & Meters;
   const srcs = b.sources ?? [];
-  const ts = triggers(beat, [b.title?.on ?? null, ...b.keys.map((k) => k.on), ...srcs.map((s) => s.on)]);
+  const ts = [cue(beat, b.title?.on), ...cues(beat, b.keys.map((k) => k.on)), ...cues(beat, srcs.map((s) => s.on))];
   const keyAt = b.keys.map((_, i) => ts[1 + i]);
   const srcAt = srcs.map((_, i) => ts[1 + b.keys.length + i]);
   // current level of bar j: glide between consecutive keys over 14 frames
@@ -470,7 +478,7 @@ type Ratio = { icon?: string; parts: { label: string; pct: number; on: string }[
 
 export const RatioScene: React.FC<SceneProps> = ({ frame, beat }) => {
   const b = beat as unknown as TimedBeat & Ratio;
-  const ts = triggers(beat, [...b.parts.map((p) => p.on), b.stress ?? null]);
+  const ts = [...cues(beat, b.parts.map((p) => p.on)), b.stress ? cue(beat, b.stress) : beat.at];
   const stressAt = b.stress ? ts[b.parts.length] : -1;
   const CELL = 33;
   return (
@@ -490,7 +498,7 @@ export const RatioScene: React.FC<SceneProps> = ({ frame, beat }) => {
         return (
           <div key={i} style={{ position: "absolute", left: x0, top: 800, width: 10 * CELL + 9 * 4, opacity: p > 0 ? 1 : 0.25 }}>
             <div style={{ position: "relative", fontFamily: sat, fontWeight: 700, fontSize: 150, letterSpacing: -6, color: last ? K.red : K.ink, ...land(p, 1.3) }}>
-              {Math.round(interpolate(frame, [at, at + 16], [0, part.pct], clamp))}%
+              {Math.max(1, Math.ceil(interpolate(frame, [at, at + 16], [0, part.pct], clamp)))}%
               {last && stressAt > 0 ? <PenLoop rx={150} ry={80} seed={4} progress={interpolate(frame, [stressAt, stressAt + 12], [0, 1], clamp)} width={6} /> : null}
             </div>
             <div style={{ fontFamily: sat, fontWeight: 500, fontSize: 38, color: K.ink, margin: "6px 0 26px" }}>{part.label}</div>

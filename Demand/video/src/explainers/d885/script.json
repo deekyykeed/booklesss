@@ -168,17 +168,17 @@
       "steps": [
         {
           "do": "put",
+          "icon": "brain",
+          "on": "workbench"
+        },
+        {
+          "do": "put",
           "icon": "book",
-          "on": "machinery"
+          "on": "tools"
         },
         {
           "do": "put",
           "icon": "calculator",
-          "on": "few"
-        },
-        {
-          "do": "put",
-          "icon": "bulb",
           "on": "simultaneously"
         },
         {
@@ -230,14 +230,29 @@
       "scene": "cards",
       "cards": [
         {
+          "text": "executive function.",
+          "icon": "hardhat",
+          "on": "executive"
+        },
+        {
           "text": "contractor.",
           "icon": "hardhat",
           "on": "contractor"
         },
         {
-          "text": "decides.",
+          "text": "construction.",
           "icon": "bench",
+          "on": "construction"
+        },
+        {
+          "text": "decides.",
+          "icon": "brain",
           "on": "decide"
+        },
+        {
+          "text": "the workbench.",
+          "icon": "bench",
+          "on": "workbench"
         }
       ],
       "say": "The best way I found of conceptualizing executive function is like a contractor, a general contractor. If you guys have experience with construction, these are the people who ultimately decide what goes on to the workbench and who works on what on the workbench."
@@ -478,9 +493,14 @@
       "scene": "cards",
       "cards": [
         {
-          "text": "the brain.",
+          "text": "biology.",
           "icon": "brain",
           "on": "biology"
+        },
+        {
+          "text": "the brain.",
+          "icon": "brain",
+          "on": "know"
         },
         {
           "text": "expensive.",
@@ -526,7 +546,7 @@
         {
           "label": "of body mass",
           "pct": 2,
-          "on": "2"
+          "on": "illustration"
         },
         {
           "label": "of all energy",
