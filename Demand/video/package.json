@@ -18,7 +18,10 @@
     "voice:placeholder": "powershell -ExecutionPolicy Bypass -File scripts/voice-placeholder.ps1",
     "gen:audio": "python scripts/gen-audio.py",
     "render:explainer": "remotion render Explainer-present-value out/explainer-present-value.raw.mp4 && node scripts/master.mjs out/explainer-present-value.raw.mp4 out/explainer-present-value.mp4",
-    "qa:explainer": "remotion still ExplainerSheet out/_explainer-qa.png"
+    "qa:explainer": "remotion still ExplainerSheet out/_explainer-qa.png",
+    "export:pixels": "node scripts/export-pixels.mjs",
+    "footage": "python scripts/footage.py",
+    "mux": "node scripts/mux-audio.mjs"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.499",

@@ -2,6 +2,7 @@ import React from "react";
 import { AbsoluteFill, OffthreadVideo, staticFile } from "remotion";
 import type { TimedBeat } from "./align";
 import { K, sat } from "./look";
+import { TypeTrack, type Face } from "./TypeTrack";
 
 /* The presenter — you, on camera, full screen. Never split-screen.
  *
@@ -19,21 +20,38 @@ import { K, sat } from "./look";
  * picture. Both copies render from the same source, so the heat-map lines up
  * with you pixel for pixel. */
 
+/* where the stand-in's head is — the subtitles are laid out around it */
+const STAND_IN_FACE: Face = { x: 325, y: 590, w: 430, h: 540 };
+
 export const Presenter: React.FC<{
   frame: number;
   beat: TimedBeat;
   heat: number;
   footage?: string | null;
-}> = ({ frame, beat, heat, footage }) => {
+  /** per-frame face boxes for the footage (scripts/footage.py faces) */
+  faces?: number[][] | null;
+}> = ({ frame, beat, heat, footage, faces }) => {
   const talking = beat.words.some((w) => frame >= w.f && frame <= w.fEnd + 2);
-  const picture = footage ? (
-    <OffthreadVideo
-      src={staticFile(footage)}
-      muted
-      style={{ width: "100%", height: "100%", objectFit: "cover" }}
-    />
-  ) : (
-    <StandIn frame={frame} talking={talking} />
+  const cover = { width: "100%", height: "100%", objectFit: "cover" as const };
+  const fb = faces?.[Math.min(frame, faces.length - 1)];
+  const face: Face = fb ? { x: fb[0], y: fb[1], w: fb[2], h: fb[3] } : STAND_IN_FACE;
+
+  /* The subtitles are part of the picture, not laid over the finished frame:
+   * the whole stack is what the thermal filter heats and the punch-in moves. */
+  const picture = (
+    <>
+      {footage ? (
+        <AbsoluteFill>
+          <OffthreadVideo src={staticFile(footage)} muted style={cover} />
+        </AbsoluteFill>
+      ) : (
+        <>
+          <StandInRoom />
+          <StandInFigure frame={frame} talking={talking} />
+        </>
+      )}
+      <TypeTrack frame={frame} beat={beat} beatIndex={beat.index} face={face} />
+    </>
   );
 
   return (
@@ -41,31 +59,32 @@ export const Presenter: React.FC<{
       <AbsoluteFill style={{ opacity: 1 - heat }}>{picture}</AbsoluteFill>
       {heat > 0.001 ? <AbsoluteFill style={{ opacity: heat, filter: "url(#thermal)" }}>{picture}</AbsoluteFill> : null}
       {footage ? null : <PlaceholderTag frame={frame} talking={talking} fade={1 - heat} />}
-      <Captions frame={frame} beat={beat} fade={1 - heat} />
     </AbsoluteFill>
   );
 };
 
 /* ---------------------------------------------------------------- stand-in */
 
-const StandIn: React.FC<{ frame: number; talking: boolean }> = ({ frame, talking }) => {
+const StandInRoom: React.FC = () => (
+  <AbsoluteFill
+    style={{
+      background: "radial-gradient(ellipse 70% 55% at 30% 30%, #4A423B 0%, #2B2622 45%, #151210 100%)",
+    }}
+  >
+    {/* key light spill on the back wall */}
+    <AbsoluteFill
+      style={{ background: "radial-gradient(circle at 75% 25%, rgba(255,220,180,0.10), transparent 40%)" }}
+    />
+  </AbsoluteFill>
+);
+
+const StandInFigure: React.FC<{ frame: number; talking: boolean }> = ({ frame, talking }) => {
   // breathing + a small nod while speaking, so the shot isn't a still
   const breathe = Math.sin(frame / 22) * 3;
   const nod = talking ? Math.sin(frame / 3.2) * 2.2 : 0;
   const sway = Math.sin(frame / 37) * 6;
   return (
-    <AbsoluteFill
-      style={{
-        background:
-          "radial-gradient(ellipse 70% 55% at 30% 30%, #4A423B 0%, #2B2622 45%, #151210 100%)",
-      }}
-    >
-      {/* key light spill on the back wall */}
-      <AbsoluteFill
-        style={{
-          background: "radial-gradient(circle at 75% 25%, rgba(255,220,180,0.10), transparent 40%)",
-        }}
-      />
+    <AbsoluteFill>
       <svg
         viewBox="0 0 1080 1920"
         width="100%"
@@ -167,52 +186,3 @@ const Meter: React.FC<{ frame: number; on: boolean }> = ({ frame, on }) => (
     })}
   </span>
 );
-
-/* ---------------------------------------------------------------- captions */
-
-/* Burned-in captions for the camera beats — most people watch with the sound
- * off. Small, lowercase, word by word as it's said (never ahead of the voice),
- * in chunks of up to four words that break at punctuation. */
-const Captions: React.FC<{ frame: number; beat: TimedBeat; fade: number }> = ({ frame, beat, fade }) => {
-  const chunks: { start: number; words: typeof beat.words }[] = [];
-  let cur: typeof beat.words = [];
-  beat.words.forEach((w, i) => {
-    cur.push(w);
-    const brk = /[.,?!]$/.test(w.text) || cur.length === 4 || i === beat.words.length - 1;
-    if (brk) {
-      chunks.push({ start: cur[0].f, words: cur });
-      cur = [];
-    }
-  });
-  const chunk = [...chunks].reverse().find((c) => frame >= c.start - 2);
-  if (!chunk) return null;
-
-  return (
-    <div
-      style={{
-        position: "absolute",
-        left: 90,
-        right: 210,
-        top: 1330,
-        opacity: fade,
-        fontFamily: sat,
-        fontWeight: 700,
-        fontSize: 58,
-        lineHeight: 1.15,
-        letterSpacing: -0.5,
-        color: K.white,
-        textShadow: "0 2px 18px rgba(0,0,0,0.55)",
-      }}
-    >
-      {chunk.words.map((w, i) => {
-        const shown = frame >= w.f - 1;
-        const active = frame >= w.f - 1 && frame <= w.fEnd + 2;
-        return (
-          <span key={i} style={{ opacity: shown ? (active ? 1 : 0.72) : 0 }}>
-            {w.text.toLowerCase().replace(/[.,]$/, "")}{" "}
-          </span>
-        );
-      })}
-    </div>
-  );
-};

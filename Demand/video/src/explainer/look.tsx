@@ -21,6 +21,10 @@ export const K = {
 
 export const SATOSHI = "Satoshi";
 export const sat = `"${SATOSHI}", "Inter", -apple-system, "Segoe UI", sans-serif`;
+/* The luxury register — editorial serif, used for the ONE word per phrase that
+ * carries it. Instrument Serif, OFL (licence beside the files in public/fonts). */
+export const SERIF = "Instrument Serif";
+export const serif = `"${SERIF}", Georgia, "Times New Roman", serif`;
 
 const fontHandle = delayRender("Loading Satoshi");
 Promise.all([
@@ -29,6 +33,14 @@ Promise.all([
   loadFont({
     family: SATOSHI,
     url: staticFile("fonts/Satoshi-Regular-Italic.ttf"),
+    weight: "400",
+    style: "italic",
+    format: "truetype",
+  }),
+  loadFont({ family: SERIF, url: staticFile("fonts/InstrumentSerif-Regular.ttf"), weight: "400", format: "truetype" }),
+  loadFont({
+    family: SERIF,
+    url: staticFile("fonts/InstrumentSerif-Italic.ttf"),
     weight: "400",
     style: "italic",
     format: "truetype",

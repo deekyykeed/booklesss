@@ -1,5 +1,5 @@
 import React from "react";
-import { AbsoluteFill, Audio, Easing, interpolate, Sequence, staticFile, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Audio, Easing, getStaticFiles, interpolate, Sequence, staticFile, useCurrentFrame } from "remotion";
 import { speaking, triggers, type TimedBeat, type TransitionKind } from "./align";
 import { Grain, K, ThermalDefs, Vignette } from "./look";
 import { Presenter } from "./Presenter";
@@ -36,7 +36,7 @@ const SFX: Record<TransitionKind, { file: string; lead: number; vol: number } | 
   cut: { file: "punch", lead: 0, vol: 0.35 },
 };
 
-export const Explainer: React.FC<ExplainerProps> = ({ slug, footage }) => {
+export const Explainer: React.FC<ExplainerProps> = ({ slug, footage, faces }) => {
   const frame = useCurrentFrame();
   const { beats, duration } = EXPLAINERS[slug].timeline;
   const music = musicVolume(beats, duration);
@@ -56,7 +56,7 @@ export const Explainer: React.FC<ExplainerProps> = ({ slug, footage }) => {
           const from = b.at - (i === 0 ? 0 : PRE[kindIn]);
           if (frame < from || frame >= b.until) return null;
           return (
-            <BeatLayer key={i} frame={frame} beat={b} kindIn={kindIn} kindOut={kindOut} next={next} footage={footage} first={i === 0} />
+            <BeatLayer key={i} frame={frame} beat={b} kindIn={kindIn} kindOut={kindOut} next={next} footage={footage} faces={faces} first={i === 0} />
           );
         })}
         {beats.slice(1).map((b, i) => (
@@ -67,13 +67,29 @@ export const Explainer: React.FC<ExplainerProps> = ({ slug, footage }) => {
       <Grain frame={frame} />
       <FadeIO frame={frame} duration={duration} />
 
-      {/* ---------------- sound */}
+      {/* ---------------- sound
+       * With your footage: YOUR audio and nothing else — no music, no sfx, no
+       * ducking (owner, 2026-10-09: "don't do anything to the sound at all").
+       * scripts/mux-audio.mjs then swaps the original stream back in bit for
+       * bit, so even Remotion's re-encode doesn't touch it.
+       * Without footage (placeholder cut): TTS voice + the beat-locked score
+       * + sfx. */}
       {footage ? (
         <Audio src={staticFile(footage)} />
       ) : (
-        <Audio src={staticFile(`explainers/${slug}/voice.wav`)} />
+        <PlaceholderMix slug={slug} beats={beats} music={music} />
       )}
-      <Audio src={staticFile("music/bed.wav")} volume={(f) => music(f)} />
+    </AbsoluteFill>
+  );
+};
+
+const PlaceholderMix: React.FC<{ slug: string; beats: TimedBeat[]; music: (f: number) => number }> = ({ slug, beats, music }) => {
+  // the score written to this edit's grid if it has been generated, else the generic bed
+  const scored = getStaticFiles().some((f) => f.name === `explainers/${slug}/music.wav`);
+  return (
+    <>
+      <Audio src={staticFile(`explainers/${slug}/voice.wav`)} />
+      <Audio src={staticFile(scored ? `explainers/${slug}/music.wav` : "music/bed.wav")} volume={(f) => music(f)} />
       {beats.slice(1).map((b, i) => {
         const s = SFX[b.in ?? "cut"];
         if (!s) return null;
@@ -88,7 +104,7 @@ export const Explainer: React.FC<ExplainerProps> = ({ slug, footage }) => {
           <Audio src={staticFile(`sfx/${s.file}.wav`)} volume={s.vol} />
         </Sequence>
       ))}
-    </AbsoluteFill>
+    </>
   );
 };
 
@@ -101,8 +117,9 @@ const BeatLayer: React.FC<{
   kindIn: TransitionKind;
   kindOut: TransitionKind | null;
   footage?: string | null;
+  faces?: number[][] | null;
   first: boolean;
-}> = ({ frame, beat, next, kindIn, kindOut, footage, first }) => {
+}> = ({ frame, beat, next, kindIn, kindOut, footage, faces, first }) => {
   const tIn = frame - beat.at; // negative while mounting early
   const tOut = next ? frame - next.at : -999; // approaches 0 at the hand-off
 
@@ -144,7 +161,7 @@ const BeatLayer: React.FC<{
   return (
     <AbsoluteFill style={{ ...style, transform, filter: blur > 0.3 ? `blur(${blur}px)` : undefined }}>
       {beat.show === "you" ? (
-        <Presenter frame={frame} beat={beat} heat={heat} footage={footage} />
+        <Presenter frame={frame} beat={beat} heat={heat} footage={footage} faces={faces} />
       ) : Scene ? (
         <Scene frame={frame} beat={beat} />
       ) : null}

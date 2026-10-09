@@ -95,20 +95,40 @@ npm run render:explainer                       # render + master to -14 LUFS -> 
 Seam check — three frames round every transition:
 `npx remotion still ExplainerSheet out/_seams.png --props='{"slug":"present-value","seams":true}'`
 
-### When the real footage arrives
+### Editing your raw footage
 
-1. Record the script in **one continuous take**, 9:16, 1080×1920. Put it in
-   `public/recordings/<slug>.mp4` (gitignored).
-2. **Light yourself brighter than the wall behind you** — a dark background
-   and a light on your face. The thermal transition maps brightness to heat,
-   so this is what makes it work with no cutting-out.
-3. Generate `words.json` from the take with Whisper (`pip install openai-whisper`),
-   word timestamps on — same `[{word,start,end}]` shape the TTS script writes.
-4. Render with `--props='{"slug":"<slug>","footage":"recordings/<slug>.mp4"}'`.
-   Your audio replaces the TTS; the placeholder silhouette and its tag disappear.
+```bash
+npm run footage -- transcribe <slug> "path/to/raw.mp4"   # verbatim words, ums kept
+npm run footage -- propose <slug>                        # proposed cut -> out/<slug>/edit.md
+#   read edit.md; adjust out/<slug>/edl.json by hand (retakes are a judgement call)
+npm run footage -- cut <slug> "path/to/raw.mp4"          # 9:16 30fps cut + its audio + words.json
+npm run footage -- faces <slug>                          # face box per frame, for the subtitles
+#   write src/explainers/<slug>/script.json from the cut transcript; list it in src/explainers/index.ts
+npx remotion render Explainer-<slug> out/<slug>.raw.mp4 --props='{"slug":"<slug>","footage":"recordings/<slug>.mp4"}'
+npm run mux -- <slug>                                    # -> out/<slug>.mp4 with YOUR sound
+```
 
-Alignment is forgiving: if Whisper writes "10%" where the script says "ten
-percent", those words are placed by interpolation between their neighbours.
+- **Your sound is never processed** (owner, 2026-10-09). No music, no sfx, no
+  ducking, no loudness pass on a footage render: `mux` swaps the take's own cut
+  track back in. The only thing done to it is cutting, with a 4 ms fade at
+  each join so the joins don't click.
+- **Silences, ums, stutters and retakes** are found by `propose`: a retake is
+  an utterance whose opening you say again soon after — the later one is kept.
+  Whisper is prompted with disfluent text so it keeps the ums it would
+  otherwise tidy away.
+- **Subtitles are set around your face**, not across it (`src/explainer/TypeTrack.tsx`).
+  `faces` is detection only — nothing is cut out of the picture; no background
+  removal (owner, 2026-10-09).
+- Model weights (`models/`, the YuNet face detector) are gitignored and
+  re-downloaded by `footage.py` if missing. Whisper models live in the
+  Hugging Face cache (small.en, medium.en pre-fetched).
+
+### Pixel assets
+
+`npm run export:pixels` writes every object in `src/explainer/pixel-art.ts` to
+`public/assets/pixel/` as `<name>.svg` + `<name>@16x.png`, plus `_sheet.png`.
+Fifteen so far: coin, note, calculator, hourglass, bank, chart, bond, book,
+gradcap, phone, clock, wallet, bulb, receipt, piggy.
 
 ### Gotchas, paid for
 

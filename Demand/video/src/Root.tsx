@@ -1,5 +1,5 @@
 import React from "react";
-import { Composition } from "remotion";
+import { Composition, staticFile } from "remotion";
 import { DemoVertical } from "./compositions/DemoVertical";
 import { DemoWide } from "./compositions/DemoWide";
 import { SIDEBAR_DEMO_DURATION, SidebarDemo } from "./compositions/SidebarDemo";
@@ -26,7 +26,15 @@ export const RemotionRoot: React.FC = () => {
           fps={30}
           width={1080}
           height={1920}
-          defaultProps={{ slug, footage: null as string | null }}
+          defaultProps={{ slug, footage: null as string | null, faces: null as number[][] | null }}
+          // with real footage, pick up its face track (scripts/footage.py faces)
+          // so the subtitles can be laid out around the head
+          calculateMetadata={async ({ props }) => {
+            if (!props.footage || props.faces) return { props };
+            const res = await fetch(staticFile(props.footage.replace(/\.mp4$/, ".faces.json")));
+            const faces = res.ok ? ((await res.json()).boxes as number[][]) : null;
+            return { props: { ...props, faces } };
+          }}
         />
       ))}
       <Composition

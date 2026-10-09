@@ -13,3 +13,6 @@ public/app/
 # The 60s music bed alone is ~11 MB of WAV.
 public/explainers/*/voice.wav
 public/music/
+
+# downloaded model weights (face detector) — fetched by scripts/footage.py if missing
+models/

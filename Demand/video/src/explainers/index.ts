@@ -11,6 +11,9 @@ export type ExplainerProps = {
   /** a file in public/, e.g. "recordings/present-value.mp4" — your real take.
    *  Null renders the placeholder presenter over the TTS voice. */
   footage?: string | null;
+  /** per-frame face boxes [x,y,w,h] for the footage — loaded from
+   *  public/recordings/<slug>.faces.json by calculateMetadata, never typed by hand */
+  faces?: number[][] | null;
 };
 
 const FPS = 30;
