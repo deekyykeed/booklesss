@@ -1,0 +1,274 @@
+{
+  "slug": "brain-budget",
+  "title": "Your brain is on a budget",
+  "tail": 1.2,
+  "tone": "light",
+  "beats": [
+    {
+      "show": "you",
+      "say": "If something is expensive energetically, then evolution and other pressures will always force it to minimize its costs, right? And your brain is no exception to that."
+    },
+    {
+      "show": "anim",
+      "in": "cut",
+      "scene": "trio",
+      "title": {
+        "text": "your brain prefers",
+        "on": "prefer"
+      },
+      "items": [
+        {
+          "text": "a habit",
+          "icon": "hourglass",
+          "on": "habit"
+        },
+        {
+          "text": "a guess",
+          "icon": "bulb",
+          "on": "guess"
+        },
+        {
+          "text": "the old",
+          "icon": "book",
+          "on": "old"
+        }
+      ],
+      "say": "That means that if your brain will always prefer a habit to a decision, it'll prefer a guess to a calculation, it'll prefer, you know, the old to the new, and so on."
+    },
+    {
+      "show": "anim",
+      "in": "cut",
+      "scene": "cards",
+      "cards": [
+        {
+          "text": "budgeting.",
+          "icon": "wallet",
+          "on": "budgeting"
+        },
+        {
+          "text": "a spreadsheet.",
+          "icon": "chart",
+          "on": "spreadsheet"
+        },
+        {
+          "text": "spend as little as possible.",
+          "icon": "coin",
+          "on": "little"
+        },
+        {
+          "text": "energy is a resource.",
+          "icon": "battery",
+          "on": "resource"
+        }
+      ],
+      "say": "You can think of this as your brain just budgeting its energy, you know, like a spreadsheet or something like that, trying to spend as little energy as humanly possible assuming energy is a resource."
+    },
+    {
+      "show": "anim",
+      "in": "cut",
+      "scene": "cards",
+      "cards": [
+        {
+          "text": "chunking.",
+          "icon": "brain",
+          "on": "chunking"
+        },
+        {
+          "text": "implementation intentions.",
+          "icon": "clock",
+          "on": "implementation"
+        },
+        {
+          "text": "stinginess.",
+          "icon": "piggy",
+          "on": "stinginess"
+        }
+      ],
+      "say": "Many of the techniques that I'm going to be discussing with you guys things like chunking or implementation intentions and so on and so forth they just work because they exploit this inherent stinginess which is"
+    },
+    {
+      "show": "you",
+      "in": "cut",
+      "say": "currently operating on default but you know you can learn to utilize it and to think more clearly and be more effective."
+    },
+    {
+      "show": "anim",
+      "in": "cut",
+      "scene": "cards",
+      "cards": [
+        {
+          "text": "fixed.",
+          "icon": "battery",
+          "on": "fixed"
+        },
+        {
+          "text": "all day.",
+          "icon": "clock",
+          "on": "throughout"
+        },
+        {
+          "text": "hard tasks.",
+          "icon": "calculator",
+          "on": "difficult"
+        },
+        {
+          "text": "easy tasks.",
+          "icon": "lamp",
+          "on": "simple"
+        }
+      ],
+      "say": "Now much more surprising than that is that your brain's energy consumption is actually fixed. What I mean by this is that throughout the day there's no increase in how in whole brain energy consumption during difficult tasks compared to simple and easy tasks"
+    },
+    {
+      "show": "anim",
+      "in": "cut",
+      "scene": "ratio",
+      "icon": "brain",
+      "parts": [
+        {
+          "label": "extra on a hard task",
+          "pct": 5,
+          "on": "5"
+        }
+      ],
+      "say": "at most any energy consumption difference caps out at around 5 % or so now this has interesting implications"
+    },
+    {
+      "show": "you",
+      "in": "cut",
+      "say": "because it means that from a"
+    },
+    {
+      "show": "anim",
+      "in": "cut",
+      "scene": "meters",
+      "title": {
+        "text": "energy burned",
+        "on": "burn"
+      },
+      "bars": [
+        {
+          "text": "a calculus problem",
+          "icon": "calculator"
+        },
+        {
+          "text": "staring out the window",
+          "icon": "lamp"
+        }
+      ],
+      "keys": [
+        {
+          "on": "metabolic",
+          "values": [
+            0.1,
+            0.1
+          ]
+        },
+        {
+          "on": "calculus",
+          "values": [
+            0.8,
+            0.1
+          ]
+        },
+        {
+          "on": "window",
+          "values": [
+            0.8,
+            0.8
+          ]
+        }
+      ],
+      "say": "metabolic perspective you may you burn just as much energy solving a calculus problem and just really wrecking your brain with it then you would if you were just to stare out the window and do nothing this is why I think it makes sense, you know,"
+    },
+    {
+      "show": "you",
+      "in": "cut",
+      "say": "to improve your ability to think and be effective"
+    },
+    {
+      "show": "anim",
+      "in": "cut",
+      "scene": "cards",
+      "cards": [
+        {
+          "text": "burning anyway.",
+          "icon": "battery",
+          "on": "burning"
+        },
+        {
+          "text": "use them effectively.",
+          "icon": "bulb",
+          "on": "effectively"
+        },
+        {
+          "text": "and efficiently.",
+          "icon": "chart",
+          "on": "efficiently"
+        }
+      ],
+      "say": "because the core reality is from a metabolic perspective, your brain is going to be burning those calories anyway. Why not use those calories as effectively and as efficiently as possible?"
+    },
+    {
+      "show": "you",
+      "in": "cut",
+      "say": "Part of me feels like as an animal I have a moral and ethical duty to use every"
+    },
+    {
+      "show": "anim",
+      "in": "cut",
+      "scene": "cards",
+      "cards": [
+        {
+          "text": "every calorie.",
+          "icon": "battery",
+          "on": "calories"
+        },
+        {
+          "text": "impact the world.",
+          "icon": "bulb",
+          "on": "world"
+        }
+      ],
+      "say": "one of those damn calories in a way such that I can positively impact the world and I"
+    },
+    {
+      "show": "you",
+      "in": "cut",
+      "say": "think that if If you were to understand that perspective as well, it can motivate you to learn how to think clearly as well."
+    },
+    {
+      "show": "anim",
+      "in": "cut",
+      "scene": "cards",
+      "cards": [
+        {
+          "text": "expensive.",
+          "icon": "battery",
+          "on": "expensive"
+        },
+        {
+          "text": "always on.",
+          "icon": "bulb",
+          "on": "always"
+        },
+        {
+          "text": "stingy.",
+          "icon": "piggy",
+          "on": "stingy"
+        },
+        {
+          "text": "on a budget.",
+          "icon": "wallet",
+          "on": "budgets"
+        }
+      ],
+      "say": "For now, just know that the brain is expensive, it is always on, it is also very stingy and it budgets its energy as much as possible, typically by reducing the total capacity at all times."
+    },
+    {
+      "show": "you",
+      "in": "cut",
+      "say": "All of this puts you under a very strong constraint or optimization pressure which if you want to think clearly you have to maneuver."
+    }
+  ]
+}

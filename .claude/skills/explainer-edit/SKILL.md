@@ -16,11 +16,16 @@ before improvising. Code and commands: `Demand/video/README.md`.
    fade so they don't click. `mux-audio.mjs` lays the take's own cut track on
    top at unity gain.
 2. **Music + sound effects go UNDER the voice** — "not too loud". Bed ~24 dB
-   under speech (`UP 0.13 / DOWN 0.06` in Explainer.tsx), soft whoosh on cuts,
-   small pops/hits on animation cues.
-3. **Camera ↔ animation is a plain cut.** No heat-map, glow, flash or push-in
-   between them ("a normal flip to the animation and back"). Animation →
-   animation may whip.
+   under speech (`UP 0.13 / DOWN 0.06` in Explainer.tsx), small pops/hits/typing
+   on animation cues. **No whoosh, anywhere** (owner, 2026-10-13: "i dont like
+   the whooshy transitions, the noise isnt good") — a cut is silent, and no
+   scene plays a whoosh between its cards. `SFX.cut` is `null` and the scene
+   whooshes are gone from `sceneSounds`; don't add them back.
+3. **Every transition is a plain cut — `"in": "cut"` on every beat.** Camera ↔
+   animation AND animation → animation. No heat-map, glow, flash, push-in, and
+   **no whip** (same note, 2026-10-13 — the whip slide is the "whooshy
+   transition" as much as its sound is). `whip`/`slam`/`ink`/`thermal`/`punch`
+   still exist in the engine for old explainers; never put them in a plan.
 4. **Full screen only.** Never split-screen person/animation.
 5. **Subtitles on camera beats ONLY: white, one fixed place, below the face.**
    None over the animations (owner, 2026-10-09: "dont do subtitles during
@@ -83,6 +88,13 @@ Keep the previous EDL as `edl-cut1.json` before re-proposing.
 - **Beats:** open on camera; every concept gets its own full-screen animation
   cued to the words that name it; come back to camera between concepts. Give a
   long stretch of speech enough cues (cards every ~3 s) or the picture freezes.
+- **Hold the payoff.** A figure or a "both end up equal" bar that lands on the
+  beat's LAST words is on screen for under a second before the cut back to
+  camera (brain-budget, 2026-10-13: the 5% and the calculus-vs-window meters).
+  Start the next camera beat a few words later so the payoff sits ~3 s.
+- **Owner's own cut:** `out/<slug>/edl.json` is `{"keep": [[0, <duration>]],
+  "dropped": []}`, then `cut` only conforms it to 30 fps (a 1080p cut takes a
+  minute, not 35).
 - **Background:** a light wall behind the owner → set `"tone": "light"` in the
   plan (affects scene type colours only now that subtitles are always white).
 

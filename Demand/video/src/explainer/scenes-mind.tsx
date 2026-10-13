@@ -493,7 +493,8 @@ export const RatioScene: React.FC<SceneProps> = ({ frame, beat }) => {
         const at = ts[i];
         const p = pop(frame, at);
         const filled = Math.round(interpolate(frame, [at, at + 16], [0, part.pct], clamp));
-        const x0 = i === 0 ? 96 : 512;
+        // one part alone sits centred; two sit side by side
+        const x0 = b.parts.length === 1 ? (1080 - (10 * CELL + 9 * 4)) / 2 : i === 0 ? 96 : 512;
         const last = i === b.parts.length - 1;
         return (
           <div key={i} style={{ position: "absolute", left: x0, top: 800, width: 10 * CELL + 9 * 4, opacity: p > 0 ? 1 : 0.25 }}>

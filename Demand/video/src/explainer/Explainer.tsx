@@ -36,7 +36,8 @@ const SFX: Record<TransitionKind, { file: string; lead: number; vol: number } | 
   whip: { file: "whoosh", lead: 9, vol: 0.55 },
   slam: { file: "slam", lead: 4, vol: 0.6 },
   ink: { file: "ink", lead: 18, vol: 0.55 },
-  cut: { file: "whoosh", lead: 6, vol: 0.16 },
+  // a plain cut is silent — owner, 2026-10-13: no whoosh anywhere, "the noise isnt good"
+  cut: null,
 };
 
 export const Explainer: React.FC<ExplainerProps> = ({ slug, footage, faces }) => {
@@ -348,8 +349,7 @@ function sceneSounds(b: TimedBeat): { at: number; file: string; vol: number }[] 
         .filter((_, i) => (x.bars as { on: string | null }[])[i].on)
         .map((at) => ({ at, file: "pop", vol: 0.3 }));
     case "cards":
-      return triggers(b, x.cards.map((c) => c.on)).flatMap((at, i) => [
-        ...(i > 0 ? [{ at: at - 6, file: "whoosh", vol: 0.3 }] : []),
+      return triggers(b, x.cards.map((c) => c.on)).flatMap((at) => [
         { at, file: "type", vol: 0.45 },
         { at: at + 2, file: "type", vol: 0.35 },
         { at: at + 4, file: "type", vol: 0.35 },
@@ -365,12 +365,12 @@ function sceneSounds(b: TimedBeat): { at: number; file: string; vol: number }[] 
     case "flood":
       return triggers(b, (x.items as { on: string }[]).map((t) => t.on)).map((at) => ({ at, file: "type", vol: 0.3 }));
     case "spotlight":
-      return triggers(b, (x.moves as { on: string }[]).map((m) => m.on)).map((at) => ({ at: at - 3, file: "whoosh", vol: 0.12 }));
+      return [];
     case "bench":
       return triggers(b, (x.steps as { on: string; do: string }[]).map((s) => s.on)).map((at, i) => {
         const kind = (x.steps as unknown as { do: string }[])[i].do;
-        return kind === "done" ? { at, file: "hit", vol: 0.3 } : kind === "clear" ? { at, file: "whoosh", vol: 0.16 } : { at: at + 7, file: "slam", vol: 0.16 };
-      });
+        return kind === "done" ? { at, file: "hit", vol: 0.3 } : kind === "clear" ? null : { at: at + 7, file: "slam", vol: 0.16 };
+      }).filter((s): s is { at: number; file: string; vol: number } => s !== null);
     case "meters":
       return triggers(b, (x.keys as { on: string }[]).map((k) => k.on)).map((at) => ({ at, file: "pop", vol: 0.24 }));
     case "ratio":
