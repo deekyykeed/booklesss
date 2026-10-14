@@ -2,227 +2,283 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
 <style>
-/* Layout: one column of decisions — today's allowance, then the buckets, then the ledger that fed them. */
+/* Layout: a phone app. Three tabs (Today, Buckets, Activity) under one column, an Add button, charts drawn from the same numbers as the text. */
 :root {
   --bg: #f2f3ef;
-  --surface: #ffffff;
+  --surface: #fcfcfb;
   --ink: #17201b;
-  --muted: #5d6862;
-  --line: #dde1da;
-  --brass: #9a6a12;
-  --brass-soft: #f3e7cc;
-  --good: #2f7a4d;
-  --bad: #b23a2e;
-  --bad-soft: #f7dfdb;
-  --locked: #44506a;
+  --ink-2: #4a544e;
+  --muted: #6b756f;
+  --line: #e1e4de;
+  --grid: #eceee9;
+  --accent: #17201b;
+  --on-accent: #fcfcfb;
+  --good: #0f7a2f;
+  --bad: #c0362f;
+  --bad-soft: #f8e2df;
+  --warn-soft: #f6ecd3;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4; --s6: #008300;
   --font-ui: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-num: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #121714; --surface: #1a211d; --ink: #e9ede8; --muted: #9aa59e; --line: #2c3530;
-    --brass: #e0b45a; --brass-soft: #3a2f18; --good: #6cc48f; --bad: #f08b7e; --bad-soft: #3d2320; --locked: #a9b5d4;
+    --bg: #121412; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #9a9a90; --line: #2d2f2b; --grid: #262825;
+    --accent: #f0efec; --on-accent: #121412; --good: #5cc77d; --bad: #f07b72; --bad-soft: #3a2220; --warn-soft: #352d18;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #008300;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #121714; --surface: #1a211d; --ink: #e9ede8; --muted: #9aa59e; --line: #2c3530;
-  --brass: #e0b45a; --brass-soft: #3a2f18; --good: #6cc48f; --bad: #f08b7e; --bad-soft: #3d2320; --locked: #a9b5d4;
+  --bg: #121412; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #9a9a90; --line: #2d2f2b; --grid: #262825;
+  --accent: #f0efec; --on-accent: #121412; --good: #5cc77d; --bad: #f07b72; --bad-soft: #3a2220; --warn-soft: #352d18;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #008300;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
-body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); font-size: 15px; line-height: 1.5; }
-.wrap { max-width: 980px; margin: 0 auto; padding: 28px 16px 64px; display: flex; flex-direction: column; gap: 36px; }
-h1, h2 { margin: 0; text-wrap: balance; }
-h1 { font-size: 15px; font-weight: 600; letter-spacing: .02em; }
-h2 { font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); font-size: 15px; line-height: 1.45; }
+.app { max-width: 520px; margin: 0 auto; padding: 18px 16px calc(96px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 16px; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
 .num { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .muted { color: var(--muted); }
+.small { font-size: 13px; }
 button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
-:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--s1); outline-offset: 2px; }
 
-header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-header .sync { font-size: 13px; color: var(--muted); }
+.top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.top h1 { font-size: 20px; font-weight: 700; letter-spacing: -.01em; }
+.top .sync { font-size: 12px; color: var(--muted); text-align: right; }
 
-/* Today */
-.today { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 24px; align-items: end; }
-.today .big { font-family: var(--font-num); font-size: clamp(40px, 9vw, 68px); font-weight: 600; line-height: 1; letter-spacing: -.02em; }
-.today .big small { font-size: .45em; font-weight: 500; color: var(--muted); margin-right: 4px; }
-.today .lede { margin: 10px 0 0; color: var(--muted); max-width: 46ch; }
-.split { display: flex; flex-direction: column; gap: 8px; }
-.split .row { display: flex; justify-content: space-between; gap: 12px; padding-block: 8px; border-bottom: 1px solid var(--line); }
-.split .row:last-child { border-bottom: 0; }
-.warn { color: var(--bad); }
-.pos { color: var(--good); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.card-head h2 { font-size: 13px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
 
-/* Buckets */
-.section { display: flex; flex-direction: column; gap: 14px; }
-.section-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-.buckets { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
-.bucket { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-.bucket.over { border-color: var(--bad); }
-.bucket-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.bucket-name { font-weight: 600; }
-.tag { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; white-space: nowrap; }
-.tag.lock { color: var(--locked); border: 1px solid currentColor; }
-.tag.spend { color: var(--brass); background: var(--brass-soft); }
-.bucket-bal { font-family: var(--font-num); font-size: 24px; font-weight: 600; }
-.meter { height: 6px; border-radius: 999px; background: var(--line); overflow: hidden; }
-.meter i { display: block; height: 100%; background: var(--brass); border-radius: inherit; }
-.bucket.locked .meter i { background: var(--locked); }
-.bucket.over .meter i { background: var(--bad); }
-.bucket-meta { font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
-.bucket-desc { font-size: 13px; color: var(--muted); margin: 0; }
+/* Hero */
+.hero .big { font-family: var(--font-num); font-size: clamp(44px, 13vw, 60px); font-weight: 600; line-height: 1; letter-spacing: -.03em; }
+.hero .big small { font-size: .42em; color: var(--muted); font-weight: 500; margin-right: 2px; }
+.hero .sub { color: var(--ink-2); }
+.meter { height: 8px; border-radius: 999px; background: var(--grid); overflow: hidden; }
+.meter i { display: block; height: 100%; border-radius: inherit; background: var(--ink); }
+.meter.over i { background: var(--bad); }
+.hero-foot { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; color: var(--muted); }
+.pills { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.pill { border-radius: 12px; background: var(--bg); padding: 10px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.pill .lbl { font-size: 12px; line-height: 1.25; color: var(--muted); display: flex; align-items: flex-start; gap: 6px; min-height: 2.5em; }
+.pill .lbl .dot { margin-top: 3px; }
+.pill .val { font-family: var(--font-num); font-weight: 600; font-size: 15px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
 
-.notice { background: var(--brass-soft); border-radius: 10px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+/* Stacked bar + legend */
+.stack { display: flex; gap: 2px; height: 22px; }
+.stack span { border-radius: 4px; min-width: 3px; }
+.legend { display: flex; flex-direction: column; }
+.legend .row { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding-block: 9px; border-bottom: 1px solid var(--line); }
+.legend .row:last-child { border-bottom: 0; }
+.legend .name { min-width: 0; }
+.legend .lock { font-size: 11px; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; margin-left: 6px; }
+.legend .pct { color: var(--muted); font-size: 13px; min-width: 3.5em; text-align: right; }
+
+/* Charts */
+.chart { position: relative; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { font-family: var(--font-num); font-size: 11px; fill: var(--muted); }
+.tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--on-accent); font-size: 12px; line-height: 1.35; padding: 6px 9px; border-radius: 8px; white-space: nowrap; transform: translate(-50%, calc(-100% - 10px)); z-index: 2; }
+.tip b { font-family: var(--font-num); font-weight: 600; }
+.verdict { font-weight: 600; }
+.verdict.good { color: var(--good); }
+.verdict.bad { color: var(--bad); }
+.key { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+.key span { display: inline-flex; align-items: center; gap: 6px; }
+.key i { width: 18px; height: 0; border-top: 2px solid var(--s1); display: inline-block; }
+.key i.dash { border-top: 2px dashed var(--muted); }
+.key i.bar { height: 10px; width: 10px; border: 0; border-radius: 2px; background: var(--s1); }
+
+.notice { border-radius: 12px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; gap: 12px; background: var(--warn-soft); font-size: 14px; }
 .notice.bad { background: var(--bad-soft); }
+.linkbtn { background: none; border: 0; font-weight: 600; text-decoration: underline; padding: 0; white-space: nowrap; }
 
-/* Ledger */
-.tablewrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
-table { width: 100%; border-collapse: collapse; min-width: 620px; }
-th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: middle; }
-th { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
-tr:last-child td { border-bottom: 0; }
-td.amt { text-align: right; font-family: var(--font-num); white-space: nowrap; }
-th.amt { text-align: right; }
-td.desc { min-width: 0; }
-td.desc .who { font-weight: 500; }
-td.desc .note { font-size: 13px; color: var(--muted); }
-.chip { font-size: 12px; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); white-space: nowrap; }
-select.chip { max-width: 160px; }
+/* Buckets tab */
+.jars { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.jar { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.jar.over { border-color: var(--bad); }
+.jar .jname { font-weight: 600; display: flex; align-items: center; gap: 7px; min-width: 0; }
+.jar .jname span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.jar .jbal { font-family: var(--font-num); font-size: 20px; font-weight: 600; }
+.jar .jbar { height: 6px; border-radius: 999px; background: var(--grid); overflow: hidden; }
+.jar .jbar i { display: block; height: 100%; border-radius: inherit; }
+.jar .jmeta { font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 1px; }
+.tag { font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
+/* Activity */
+.day { display: flex; flex-direction: column; }
+.day-head { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; padding: 14px 2px 6px; }
+.tx { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.tx:last-child { border-bottom: 0; }
+.tx .who { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tx .amt { font-family: var(--font-num); text-align: right; font-weight: 600; }
+.tx .amt.in { color: var(--good); }
+.tx .line2 { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.chip { font-size: 12px; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); display: inline-flex; align-items: center; gap: 6px; max-width: 70%; }
+select.chip { max-width: 70%; }
 select.chip.unsorted { border-color: var(--bad); color: var(--bad); }
-.del { background: none; border: 0; color: var(--muted); font-size: 13px; padding: 4px 6px; border-radius: 6px; }
-.del:hover, .del.arm { color: var(--bad); }
-.empty { padding: 28px 16px; text-align: center; color: var(--muted); }
-.filters { display: flex; gap: 6px; flex-wrap: wrap; }
-.filters button { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 4px 12px; font-size: 13px; }
-.filters button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.del { background: none; border: 0; color: var(--muted); font-size: 12px; padding: 4px 6px; border-radius: 6px; }
+.del.arm { color: var(--bad); font-weight: 600; }
+.filters { display: flex; gap: 6px; }
+.filters button { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 12px; font-size: 13px; }
+.filters button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.empty { padding: 24px 8px; text-align: center; color: var(--muted); }
 
 /* Forms */
-.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
-.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
 label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
-input, select { border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 8px 10px; min-width: 0; }
-.btn { border: 0; background: var(--ink); color: var(--bg); border-radius: 8px; padding: 9px 16px; font-weight: 600; }
-.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
-.btn:disabled { opacity: .5; cursor: default; }
-.actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-.status { font-size: 13px; color: var(--muted); }
-.pct-row { display: grid; grid-template-columns: minmax(0, 1fr) 90px 110px; gap: 10px; align-items: center; }
-.pct-row input[type="number"] { text-align: right; font-family: var(--font-num); }
-.pct-row .check { flex-direction: row; align-items: center; gap: 6px; }
-details summary { cursor: pointer; font-weight: 600; }
-.how ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; max-width: 70ch; }
+input, select { border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 10px 12px; min-width: 0; }
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.form-grid .full { grid-column: 1 / -1; }
+.seg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: var(--bg); border-radius: 12px; padding: 4px; gap: 4px; }
+.seg button { border: 0; background: none; border-radius: 9px; padding: 8px 4px; font-size: 13px; font-weight: 500; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+.btn { border: 0; background: var(--accent); color: var(--on-accent); border-radius: 12px; padding: 12px 18px; font-weight: 600; }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn.wide { width: 100%; }
+.status { font-size: 13px; color: var(--muted); min-height: 1.3em; }
+.status.warn { color: var(--bad); }
+.pct-row { display: grid; grid-template-columns: 14px minmax(0, 1fr) 72px auto; gap: 10px; align-items: center; }
+.pct-row input[type="number"] { text-align: right; font-family: var(--font-num); padding-inline: 8px; }
+.pct-row .check { flex-direction: row; align-items: center; gap: 5px; font-size: 12px; }
 
-@media (max-width: 640px) {
-  .today { grid-template-columns: minmax(0, 1fr); }
-  .pct-row { grid-template-columns: minmax(0, 1fr) 76px; }
-  .pct-row .check { grid-column: 1 / -1; }
+/* Tab bar + add */
+.tabbar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--line); padding: 6px 16px calc(6px + env(safe-area-inset-bottom, 0px)); z-index: 10; }
+.tabbar-in { max-width: 520px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr 64px 1fr; align-items: center; }
+.tab { background: none; border: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 12px; color: var(--muted); padding: 6px 0; }
+.tab svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.tab[aria-selected="true"] { color: var(--ink); font-weight: 600; }
+.addbtn { width: 52px; height: 52px; border-radius: 50%; border: 0; background: var(--accent); color: var(--on-accent); justify-self: center; display: grid; place-items: center; }
+.addbtn svg { width: 24px; height: 24px; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; fill: none; }
+
+/* Add dialog: centred, never a drawer */
+.scrim { position: fixed; inset: 0; background: rgba(10, 12, 10, .45); z-index: 20; display: grid; place-items: center; padding: 16px; }
+.dialog { width: 100%; max-width: 440px; max-height: 88svh; overflow-y: auto; background: var(--surface); border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+.dialog-head { display: flex; justify-content: space-between; align-items: center; }
+.dialog-head h2 { font-size: 17px; }
+.x { background: none; border: 0; font-size: 22px; line-height: 1; padding: 4px 8px; color: var(--muted); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .meter i, .jar .jbar i { transition: width .45s ease; }
 }
-@media (prefers-reduced-motion: no-preference) { .meter i { transition: width .4s ease; } }
 </style>
 
-<div class="wrap">
-  <header>
+<div class="app">
+  <div class="top">
     <h1>Money Buckets</h1>
     <span class="sync" id="sync">Connecting…</span>
-  </header>
+  </div>
 
-  <section class="today" aria-labelledby="today-h">
-    <div>
-      <h2 id="today-h">Safe to spend today</h2>
-      <div class="big" id="today-big"><small>K</small>0.00</div>
-      <p class="lede" id="today-lede">What your spendable buckets can afford today if they have to last until the end of the month.</p>
+  <!-- TODAY -->
+  <section id="view-today" class="app" style="padding:0;gap:16px" aria-label="Today">
+    <div class="card hero">
+      <div class="card-head"><h2>Safe to spend today</h2><span class="small muted" id="day-of"></span></div>
+      <div class="big" id="hero-big"><small>K</small>0.00</div>
+      <div class="meter" id="hero-meter"><i style="width:0%"></i></div>
+      <div class="hero-foot"><span id="hero-spent">K0.00 spent today</span><span id="hero-limit"></span></div>
+      <div class="pills" id="hero-pills"></div>
     </div>
-    <div class="split" id="today-split"></div>
-  </section>
 
-  <div id="notices" class="section" hidden></div>
+    <div id="notices" style="display:flex;flex-direction:column;gap:8px" hidden></div>
 
-  <section class="section" aria-labelledby="buckets-h">
-    <div class="section-head">
-      <h2 id="buckets-h">Buckets</h2>
-      <span class="muted num" id="total-line"></span>
+    <div class="card">
+      <div class="card-head"><h2>Where your money sits</h2><span class="num" id="total"></span></div>
+      <div class="stack" id="stack" role="img"></div>
+      <div class="legend" id="legend"></div>
     </div>
-    <div class="buckets" id="buckets"></div>
-  </section>
 
-  <section class="section" aria-labelledby="ledger-h">
-    <div class="section-head">
-      <h2 id="ledger-h">Ledger</h2>
-      <div class="filters" id="filters">
-        <button type="button" data-f="month" aria-pressed="true">This month</button>
-        <button type="button" data-f="unsorted" aria-pressed="false">Unsorted</button>
-        <button type="button" data-f="all" aria-pressed="false">Everything</button>
-      </div>
-    </div>
-    <div class="tablewrap">
-      <table>
-        <thead><tr><th>Date</th><th>What</th><th>Bucket</th><th class="amt">Amount</th><th><span class="muted" style="font-weight:400">&nbsp;</span></th></tr></thead>
-        <tbody id="ledger"></tbody>
-      </table>
+    <div class="card">
+      <div class="card-head"><h2>Month path</h2><span class="small verdict" id="path-verdict"></span></div>
+      <p class="small muted" style="margin:0" id="path-explain">Spendable money left each day, against the pace that makes it last to the end of the month.</p>
+      <div class="chart" id="path-chart"></div>
+      <div class="key"><span><i></i>Money left</span><span><i class="dash"></i>Pace to last the month</span></div>
     </div>
   </section>
 
-  <section class="section" aria-labelledby="add-h">
-    <h2 id="add-h">Add an entry</h2>
-    <form class="panel" id="add-form" novalidate>
-      <div class="form-grid">
-        <label for="f-kind">Type
-          <select id="f-kind">
-            <option value="income">Money in (gets split)</option>
-            <option value="spend" selected>Money out</option>
-            <option value="move">Move between buckets</option>
-          </select>
-        </label>
-        <label for="f-amount">Amount (K)
-          <input id="f-amount" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" required>
-        </label>
-        <label for="f-date">Date
-          <input id="f-date" type="date" required>
-        </label>
-        <label for="f-bucket" id="l-bucket">Bucket
-          <select id="f-bucket"></select>
-        </label>
-        <label for="f-to" id="l-to" hidden>Into
-          <select id="f-to"></select>
-        </label>
-        <label for="f-who">From / to
-          <input id="f-who" type="text" placeholder="e.g. Shoprite, ZESCO, client name">
-        </label>
-        <label for="f-note">Note
-          <input id="f-note" type="text" placeholder="optional">
-        </label>
-      </div>
-      <div class="actions">
-        <button class="btn" type="submit" id="f-save">Save entry</button>
-        <span class="status" id="f-status" role="status"></span>
-      </div>
-    </form>
-  </section>
-
-  <section class="section" aria-labelledby="split-h">
-    <h2 id="split-h">How money in gets split</h2>
-    <form class="panel" id="pct-form" novalidate>
-      <p class="muted" style="margin:0">Every time money comes in, it is divided across the buckets by these percentages. Locked buckets are left out of "safe to spend". Changing the split only affects money that arrives after the change.</p>
-      <div id="pct-rows" class="section" style="gap:10px"></div>
-      <div class="actions">
-        <button class="btn" type="submit" id="pct-save">Save split</button>
+  <!-- BUCKETS -->
+  <section id="view-buckets" class="app" style="padding:0;gap:16px" aria-label="Buckets" hidden>
+    <div class="jars" id="jars"></div>
+    <form class="card" id="pct-form" novalidate>
+      <div class="card-head"><h2>How money in gets split</h2></div>
+      <p class="small muted" style="margin:0">Every payment you receive is divided by these percentages. Locked buckets are left out of "safe to spend". A change only affects money that arrives afterwards.</p>
+      <div id="pct-rows" style="display:flex;flex-direction:column;gap:10px"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
         <span class="status num" id="pct-total"></span>
+        <button class="btn" type="submit" id="pct-save">Save split</button>
       </div>
     </form>
   </section>
 
-  <section class="section how" aria-labelledby="how-h">
-    <h2 id="how-h">The daily routine</h2>
-    <ol>
-      <li>At the end of the day, open your MoMo app and take the transaction history or download the statement (CSV, PDF or screenshots all work).</li>
-      <li>Send it to Claude in chat and say "update my buckets".</li>
-      <li>Claude adds each transaction here, splits money in across the buckets and puts each payment in the bucket it came out of. Anything it is unsure about lands in Unsorted for you to pick.</li>
-      <li>Check "safe to spend today" before you spend tomorrow.</li>
-    </ol>
+  <!-- ACTIVITY -->
+  <section id="view-activity" class="app" style="padding:0;gap:16px" aria-label="Activity" hidden>
+    <div class="card">
+      <div class="card-head"><h2>Spending by day</h2><span class="small num muted" id="bars-total"></span></div>
+      <div class="chart" id="bars-chart"></div>
+      <div class="key"><span><i class="bar"></i>Spent that day</span><span><i class="dash"></i>Today's daily limit</span></div>
+    </div>
+    <div class="card" style="gap:0">
+      <div class="card-head" style="padding-bottom:4px">
+        <h2>Transactions</h2>
+        <div class="filters" id="filters">
+          <button type="button" data-f="month" aria-pressed="true">Month</button>
+          <button type="button" data-f="unsorted" aria-pressed="false">Unsorted</button>
+          <button type="button" data-f="all" aria-pressed="false">All</button>
+        </div>
+      </div>
+      <div id="ledger"></div>
+    </div>
   </section>
+</div>
+
+<nav class="tabbar" aria-label="Sections">
+  <div class="tabbar-in" role="tablist">
+    <button class="tab" role="tab" data-tab="today" aria-selected="true">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v4.5l3 2"/></svg>Today</button>
+    <button class="tab" role="tab" data-tab="buckets" aria-selected="false">
+      <svg viewBox="0 0 24 24"><path d="M5 8h14l-1.4 11.2a1.5 1.5 0 0 1-1.5 1.3H7.9a1.5 1.5 0 0 1-1.5-1.3z"/><path d="M8 8a4 4 0 0 1 8 0"/></svg>Buckets</button>
+    <button class="addbtn" type="button" id="open-add" aria-label="Add an entry"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+    <button class="tab" role="tab" data-tab="activity" aria-selected="false">
+      <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Activity</button>
+  </div>
+</nav>
+
+<div class="scrim" id="add-scrim" hidden>
+  <form class="dialog" id="add-form" role="dialog" aria-modal="true" aria-labelledby="add-h" novalidate>
+    <div class="dialog-head"><h2 id="add-h">Add an entry</h2><button type="button" class="x" id="close-add" aria-label="Close">×</button></div>
+    <div class="seg" id="f-kind" role="group" aria-label="Type">
+      <button type="button" data-k="spend" aria-pressed="true">Money out</button>
+      <button type="button" data-k="income" aria-pressed="false">Money in</button>
+      <button type="button" data-k="move" aria-pressed="false">Move</button>
+    </div>
+    <div class="form-grid">
+      <label for="f-amount" class="full">Amount (K)
+        <input id="f-amount" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" required>
+      </label>
+      <label for="f-bucket" id="l-bucket"><span id="l-bucket-t">Bucket</span>
+        <select id="f-bucket"></select>
+      </label>
+      <label for="f-to" id="l-to" hidden>Into
+        <select id="f-to"></select>
+      </label>
+      <label for="f-date">Date
+        <input id="f-date" type="date" required>
+      </label>
+      <label for="f-who" class="full"><span id="l-who-t">Paid to</span>
+        <input id="f-who" type="text" placeholder="e.g. Shoprite, ZESCO, a client">
+      </label>
+      <label for="f-note" class="full">Note
+        <input id="f-note" type="text" placeholder="optional">
+      </label>
+    </div>
+    <p class="small muted" id="f-preview" style="margin:0" hidden></p>
+    <button class="btn wide" type="submit" id="f-save">Save</button>
+    <span class="status" id="f-status" role="status"></span>
+  </form>
 </div>
 
 <script>
@@ -234,256 +290,464 @@ const DEFAULT_BUCKETS = [
   { id: "growth", name: "Growth",           pct: 10, locked: false, desc: "Ads, equipment, new projects. Plan before spending." },
   { id: "profit", name: "Savings",          pct: 10, locked: true,  desc: "Never spent. Moved to savings at month end." },
 ];
-
-const state = { buckets: DEFAULT_BUCKETS, txs: [], filter: "month", db: null, canWrite: true, live: false };
+const state = { buckets: DEFAULT_BUCKETS, txs: [], filter: "month", tab: "today", kind: "spend", db: null, canWrite: true, live: false };
 const $ = (id) => document.getElementById(id);
+const SVGNS = "http://www.w3.org/2000/svg";
 
-const money = (n) => {
+/* Colour follows the bucket's position in the saved list, never its rank by size. */
+const colorOf = (id) => {
+  const i = state.buckets.findIndex((b) => b.id === id);
+  return i < 0 ? "var(--muted)" : `var(--s${(i % 6) + 1})`;
+};
+const money = (n, opts = {}) => {
   const v = Math.round((Number(n) || 0) * 100) / 100;
-  const s = Math.abs(v).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const dec = opts.whole ? 0 : 2;
+  const s = Math.abs(v).toLocaleString("en-US", { minimumFractionDigits: dec, maximumFractionDigits: dec });
   return (v < 0 ? "−K" : "K") + s;
 };
-const todayStr = () => {
-  const d = new Date();
-  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-};
+const pad = (n) => String(n).padStart(2, "0");
+const dstr = (d) => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+const todayStr = () => dstr(new Date());
 const monthKey = (s) => (s || "").slice(0, 7);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-const bucketName = (id) => (state.buckets.find((b) => b.id === id) || {}).name || (id === "unsorted" ? "Unsorted" : id);
+const bucketOf = (id) => state.buckets.find((b) => b.id === id);
+const bucketName = (id) => (bucketOf(id) || {}).name || "Unsorted";
+const isSorted = (t) => !!bucketOf(t.bucket);
 
 function splitIncome(amount) {
   const alloc = {};
   let given = 0;
   state.buckets.forEach((b, i) => {
-    const share = i === state.buckets.length - 1
-      ? Math.round((amount - given) * 100) / 100
-      : Math.round(amount * b.pct) / 100;
+    const share = i === state.buckets.length - 1 ? Math.round((amount - given) * 100) / 100 : Math.round(amount * b.pct) / 100;
     alloc[b.id] = share;
     given += share;
   });
   return alloc;
 }
 
-/* All money maths in one place: every number on the page comes from here. */
+/* Each transaction's effect on each bucket. Unsorted spending counts against spendable money, since that is where it most likely came from. */
+function effects(t) {
+  const amt = Number(t.amount) || 0, fee = Number(t.fee) || 0;
+  if (t.kind === "income") return t.alloc || splitIncome(amt);
+  if (t.kind === "spend") return { [isSorted(t) ? t.bucket : "unsorted"]: -(amt + fee) };
+  if (t.kind === "move") return { [t.bucket]: -amt, [t.to]: amt };
+  return {};
+}
+const spendableIds = () => new Set(state.buckets.filter((b) => !b.locked).map((b) => b.id).concat("unsorted"));
+
 function compute() {
-  const bal = {}, inMonth = {}, outMonth = {}, outToday = {};
-  state.buckets.forEach((b) => { bal[b.id] = 0; inMonth[b.id] = 0; outMonth[b.id] = 0; outToday[b.id] = 0; });
-  bal.unsorted = 0; outMonth.unsorted = 0;
+  const now = new Date();
   const today = todayStr(), month = monthKey(today);
-  const sources = {};
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const dayNum = now.getDate();
+  const daysLeft = lastDay - dayNum + 1;
+  const spendIds = spendableIds();
+  const bal = { unsorted: 0 }, outMonth = {}, outToday = {};
+  state.buckets.forEach((b) => { bal[b.id] = 0; outMonth[b.id] = 0; outToday[b.id] = 0; });
+  outMonth.unsorted = 0; outToday.unsorted = 0;
   let monthIn = 0, monthOut = 0;
+  const spendByDay = new Array(lastDay + 1).fill(0);
+  const deltaByDay = new Array(lastDay + 1).fill(0);   // change in spendable money, this month
+  const spentSpendableByDay = new Array(lastDay + 1).fill(0);
+  let spendableBefore = 0;                              // spendable money carried in from before this month
+  let firstDay = null;
   for (const t of state.txs) {
-    const amt = Number(t.amount) || 0;
-    const fee = Number(t.fee) || 0;
-    const thisMonth = monthKey(t.date) === month;
-    if (t.kind === "income") {
-      const alloc = t.alloc || splitIncome(amt);
-      for (const [k, v] of Object.entries(alloc)) {
-        bal[k] = (bal[k] || 0) + v;
-        if (thisMonth) inMonth[k] = (inMonth[k] || 0) + v;
-      }
-      if (thisMonth) { monthIn += amt; const s = t.source || t.who || "Other"; sources[s] = (sources[s] || 0) + amt; }
-    } else if (t.kind === "spend") {
-      const k = t.bucket && (t.bucket in bal) ? t.bucket : "unsorted";
-      bal[k] -= amt + fee;
-      if (thisMonth) { outMonth[k] = (outMonth[k] || 0) + amt + fee; monthOut += amt + fee; }
-      if (t.date === today && k in outToday) outToday[k] += amt + fee;
-    } else if (t.kind === "move") {
-      if (t.bucket in bal) bal[t.bucket] -= amt;
-      if (t.to in bal) bal[t.to] += amt;
+    const e = effects(t);
+    for (const [k, v] of Object.entries(e)) bal[k] = (bal[k] || 0) + v;
+    const sDelta = Object.entries(e).reduce((a, [k, v]) => a + (spendIds.has(k) ? v : 0), 0);
+    const inMonth = monthKey(t.date) === month;
+    if (!inMonth) { if ((t.date || "") < today) spendableBefore += sDelta; continue; }
+    const d = Number(t.date.slice(8, 10));
+    deltaByDay[d] += sDelta;
+    firstDay = firstDay === null ? d : Math.min(firstDay, d);
+    const amt = Number(t.amount) || 0, fee = Number(t.fee) || 0;
+    if (t.kind === "income") monthIn += amt;
+    if (t.kind === "spend") {
+      const k = isSorted(t) ? t.bucket : "unsorted";
+      outMonth[k] += amt + fee; monthOut += amt + fee; spendByDay[d] += amt + fee;
+      if (spendIds.has(k)) spentSpendableByDay[d] += amt + fee;
+      if (t.date === today) outToday[k] += amt + fee;
     }
   }
-  const last = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
-  const daysLeft = last - new Date().getDate() + 1;
+  const spendable = state.buckets.filter((b) => !b.locked);
   const allowance = {};
-  state.buckets.filter((b) => !b.locked).forEach((b) => {
+  spendable.forEach((b) => {
     const startOfDay = bal[b.id] + outToday[b.id];
-    allowance[b.id] = { perDay: startOfDay / daysLeft, left: startOfDay / daysLeft - outToday[b.id], spentToday: outToday[b.id] };
+    allowance[b.id] = { perDay: startOfDay / daysLeft, left: startOfDay / daysLeft - outToday[b.id] };
   });
+  const limit = spendable.reduce((a, b) => a + allowance[b.id].perDay, 0);
+  const spentToday = spendable.reduce((a, b) => a + outToday[b.id], 0) + outToday.unsorted;
+  const leftToday = Math.max(0, limit - spentToday);
+
+  // Month path: spendable money at the end of each day so far, and the straight pace line to zero on the last day.
+  const start = spendableBefore !== 0 ? 1 : firstDay;
+  const path = [];
+  if (start !== null) {
+    let run = spendableBefore;
+    for (let d = 1; d <= dayNum; d++) { run += deltaByDay[d]; if (d >= start) path.push({ d, v: run }); }
+  }
+  let pace = null;
+  if (path.length) {
+    const startVal = path[0].v + spentSpendableByDay[path[0].d];
+    pace = { d0: path[0].d, v0: startVal, d1: lastDay };
+  }
   const total = Object.values(bal).reduce((a, b) => a + b, 0);
-  return { bal, inMonth, outMonth, allowance, daysLeft, total, monthIn, monthOut, sources };
+  return { bal, outMonth, allowance, limit, spentToday, leftToday, daysLeft, dayNum, lastDay, total, monthIn, monthOut, spendByDay, path, pace };
 }
 
+function paceAt(p, d) { return p.v0 * (1 - (d - p.d0) / (p.d1 - p.d0 || 1)); }
+
+/* ---------- Charts ---------- */
+function el(tag, attrs, parent) {
+  const n = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) n.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+function niceMax(v) {
+  if (v <= 0) return 10;
+  const p = Math.pow(10, Math.floor(Math.log10(v)));
+  const m = v / p;
+  return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p;
+}
+function dayTicks(last) { return [1, 8, 15, 22, last].filter((d, i, a) => a.indexOf(d) === i && (d === last || last - d >= 3)); }
+function monthLabel(d) { const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), d).toLocaleDateString("en-GB", { day: "numeric", month: "short" }); }
+
+function frame(host, H) {
+  host.innerHTML = "";
+  const W = Math.max(280, host.clientWidth || 320);
+  const m = { l: 46, r: 10, t: 12, b: 24 };
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img" }, host);
+  const tip = document.createElement("div"); tip.className = "tip"; tip.hidden = true; host.appendChild(tip);
+  return { svg, tip, W, H, m, iw: W - m.l - m.r, ih: H - m.t - m.b };
+}
+function yAxis(f, yMax, y) {
+  for (let i = 0; i <= 4; i++) {
+    const v = (yMax / 4) * i, yy = y(v);
+    el("line", { x1: f.m.l, x2: f.W - f.m.r, y1: yy, y2: yy, stroke: i ? "var(--grid)" : "var(--line)", "stroke-width": 1 }, f.svg);
+    el("text", { x: f.m.l - 8, y: yy + 4, "text-anchor": "end" }, f.svg).textContent = "K" + Math.round(v).toLocaleString("en-US");
+  }
+}
+function xAxis(f, last, x) {
+  for (const d of dayTicks(last)) el("text", { x: x(d), y: f.H - 6, "text-anchor": "middle" }, f.svg).textContent = monthLabel(d);
+}
+function placeTip(f, px, py, html) {
+  f.tip.innerHTML = html; f.tip.hidden = false;
+  const half = f.tip.offsetWidth / 2;
+  const left = Math.min(Math.max(px, half), f.W - half);
+  f.tip.style.left = left + "px"; f.tip.style.top = py + "px";
+}
+
+function drawPath(c) {
+  const host = $("path-chart");
+  if (!c.path.length) { host.innerHTML = `<div class="empty">Your month path appears once there is money recorded.</div>`; $("path-verdict").textContent = ""; return; }
+  const f = frame(host, 210);
+  const yMax = niceMax(Math.max(c.pace.v0, ...c.path.map((p) => p.v), 1));
+  const yMin = Math.min(0, ...c.path.map((p) => p.v));
+  const x = (d) => f.m.l + ((d - 1) / Math.max(1, c.lastDay - 1)) * f.iw;
+  const y = (v) => f.m.t + (1 - (v - yMin) / (yMax - yMin)) * f.ih;
+  f.svg.setAttribute("aria-label", "Spendable money left each day this month, compared with the pace that lasts to month end");
+  yAxis(f, yMax, (v) => y(v));
+  xAxis(f, c.lastDay, x);
+  // pace line
+  el("line", { x1: x(c.pace.d0), y1: y(c.pace.v0), x2: x(c.pace.d1), y2: y(0), stroke: "var(--muted)", "stroke-width": 1.5, "stroke-dasharray": "4 4" }, f.svg);
+  // actual: step line, since money moves in jumps
+  let d = `M${x(c.path[0].d)},${y(c.pace.v0)}`;
+  for (const p of c.path) d += ` L${x(p.d)},${y(p.v)}`;
+  if (c.path.length === 1) d += ` L${x(c.path[0].d) + 2},${y(c.path[0].v)}`;
+  const area = d + ` L${x(c.path[c.path.length - 1].d)},${y(Math.max(0, yMin))} L${x(c.path[0].d)},${y(Math.max(0, yMin))} Z`;
+  el("path", { d: area, fill: "var(--s1)", "fill-opacity": 0.12, stroke: "none" }, f.svg);
+  el("path", { d, fill: "none", stroke: "var(--s1)", "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }, f.svg);
+  const last = c.path[c.path.length - 1];
+  el("circle", { cx: x(last.d), cy: y(last.v), r: 5, fill: "var(--s1)", stroke: "var(--surface)", "stroke-width": 2 }, f.svg);
+  el("circle", { cx: x(c.pace.d1), cy: y(0), r: 3.5, fill: "var(--muted)" }, f.svg);
+
+  const ideal = paceAt(c.pace, last.d);
+  const diff = last.v - ideal;
+  const v = $("path-verdict");
+  if (Math.abs(diff) < 0.5) { v.textContent = "On pace"; v.className = "small verdict good"; }
+  else if (diff > 0) { v.textContent = "▲ Ahead by " + money(diff); v.className = "small verdict good"; }
+  else { v.textContent = "▼ Behind by " + money(-diff); v.className = "small verdict bad"; }
+
+  // hover: crosshair + tooltip, snapped to recorded days
+  const cross = el("line", { y1: f.m.t, y2: f.m.t + f.ih, stroke: "var(--ink-2)", "stroke-width": 1, visibility: "hidden" }, f.svg);
+  const hit = el("rect", { x: f.m.l, y: f.m.t, width: f.iw, height: f.ih, fill: "transparent" }, f.svg);
+  const show = (ev) => {
+    const r = f.svg.getBoundingClientRect();
+    const px = (ev.clientX - r.left) * (f.W / r.width);
+    const day = Math.round(1 + ((px - f.m.l) / f.iw) * (c.lastDay - 1));
+    const p = c.path.reduce((best, q) => (Math.abs(q.d - day) < Math.abs(best.d - day) ? q : best), c.path[0]);
+    cross.setAttribute("x1", x(p.d)); cross.setAttribute("x2", x(p.d)); cross.setAttribute("visibility", "visible");
+    placeTip(f, x(p.d) * (r.width / f.W), y(p.v) * (r.width / f.W),
+      `${esc(monthLabel(p.d))}<br>Left <b>${esc(money(p.v))}</b><br>Pace <b>${esc(money(paceAt(c.pace, p.d)))}</b>`);
+  };
+  hit.addEventListener("pointermove", show);
+  hit.addEventListener("pointerdown", show);
+  hit.addEventListener("pointerleave", () => { f.tip.hidden = true; cross.setAttribute("visibility", "hidden"); });
+}
+
+function drawBars(c) {
+  const host = $("bars-chart");
+  const f = frame(host, 190);
+  const vals = c.spendByDay.slice(1);
+  const yMax = niceMax(Math.max(c.limit, ...vals, 1));
+  const slot = f.iw / c.lastDay;
+  const bw = Math.max(3, slot - 2);
+  const x = (d) => f.m.l + (d - 1) * slot + (slot - bw) / 2;
+  const y = (v) => f.m.t + (1 - v / yMax) * f.ih;
+  f.svg.setAttribute("aria-label", "Money spent on each day this month, with today's daily limit");
+  yAxis(f, yMax, y);
+  for (const d of dayTicks(c.lastDay)) el("text", { x: x(d) + bw / 2, y: f.H - 6, "text-anchor": "middle" }, f.svg).textContent = monthLabel(d);
+  const base = y(0);
+  for (let d = 1; d <= c.lastDay; d++) {
+    const v = c.spendByDay[d];
+    if (v <= 0) continue;
+    const h = Math.max(2, base - y(v)), r = Math.min(4, bw / 2, h);
+    const top = base - h, x0 = x(d), x1 = x0 + bw;
+    // rounded data end, square at the baseline
+    el("path", { d: `M${x0},${base} V${top + r} Q${x0},${top} ${x0 + r},${top} H${x1 - r} Q${x1},${top} ${x1},${top + r} V${base} Z`,
+      fill: v > c.limit && c.limit > 0 ? "var(--bad)" : "var(--s1)" }, f.svg);
+  }
+  if (c.limit > 0) {
+    el("line", { x1: f.m.l, x2: f.W - f.m.r, y1: y(c.limit), y2: y(c.limit), stroke: "var(--ink-2)", "stroke-width": 1.5, "stroke-dasharray": "4 4" }, f.svg);
+    el("text", { x: f.W - f.m.r, y: y(c.limit) - 6, "text-anchor": "end" }, f.svg).textContent = "limit " + money(c.limit, { whole: c.limit >= 100 });
+  }
+  const today = el("rect", { x: x(c.dayNum) - 1, y: f.m.t, width: bw + 2, height: f.ih, fill: "var(--ink)", "fill-opacity": 0.05 }, f.svg);
+  f.svg.insertBefore(today, f.svg.firstChild);
+  const hit = el("rect", { x: f.m.l, y: f.m.t, width: f.iw, height: f.ih, fill: "transparent" }, f.svg);
+  const show = (ev) => {
+    const r = f.svg.getBoundingClientRect();
+    const px = (ev.clientX - r.left) * (f.W / r.width);
+    const d = Math.min(c.lastDay, Math.max(1, Math.floor((px - f.m.l) / slot) + 1));
+    const v = c.spendByDay[d];
+    const over = c.limit > 0 && v > c.limit ? ` · over by ${esc(money(v - c.limit))}` : "";
+    placeTip(f, (x(d) + bw / 2) * (r.width / f.W), y(Math.max(v, 0)) * (r.width / f.W), `${esc(monthLabel(d))}<br>Spent <b>${esc(money(v))}</b>${over}`);
+  };
+  hit.addEventListener("pointermove", show);
+  hit.addEventListener("pointerdown", show);
+  hit.addEventListener("pointerleave", () => { f.tip.hidden = true; });
+  $("bars-total").textContent = money(c.monthOut) + " this month";
+}
+
+/* ---------- Views ---------- */
 function render() {
   const c = compute();
+  state.last = c;
   const spendable = state.buckets.filter((b) => !b.locked);
-  const leftToday = spendable.reduce((a, b) => a + Math.max(0, c.allowance[b.id].left), 0);
-  $("today-big").innerHTML = "<small>K</small>" + esc(money(leftToday).replace(/^−?K/, ""));
-  $("today-lede").textContent = state.txs.length
-    ? `What your spendable buckets can afford today so they last the ${c.daysLeft} day${c.daysLeft === 1 ? "" : "s"} left this month.`
-    : "Nothing recorded yet. Send Claude your MoMo history, or add your current balance below as money in.";
-  $("today-split").innerHTML = spendable.map((b) => {
+  $("day-of").textContent = `Day ${c.dayNum} of ${c.lastDay}`;
+  $("hero-big").innerHTML = "<small>K</small>" + esc(money(c.leftToday).slice(1));
+  const used = c.limit > 0 ? Math.min(100, (c.spentToday / c.limit) * 100) : 0;
+  $("hero-meter").className = "meter" + (c.spentToday > c.limit ? " over" : "");
+  $("hero-meter").firstElementChild.style.width = used + "%";
+  $("hero-spent").textContent = money(c.spentToday) + " spent today";
+  $("hero-limit").textContent = c.limit > 0 ? "limit " + money(c.limit) + " · " + c.daysLeft + " days left" : "";
+  $("hero-pills").innerHTML = spendable.map((b) => {
     const a = c.allowance[b.id];
-    const cls = a.left < 0 ? "warn" : "";
-    const detail = a.spentToday > 0 ? `${money(a.spentToday)} spent of ${money(a.perDay)}` : `${money(a.perDay)} a day`;
-    return `<div class="row"><span>${esc(b.name)}<br><span class="muted" style="font-size:13px">${esc(detail)}</span></span><span class="num ${cls}">${esc(money(a.left))}</span></div>`;
-  }).join("") + `<div class="row"><span class="muted">This month</span><span class="num"><span class="pos">+${esc(money(c.monthIn))}</span> / <span class="warn">−${esc(money(c.monthOut))}</span></span></div>`;
+    return `<div class="pill"><span class="lbl"><span class="dot" style="background:${colorOf(b.id)}"></span>${esc(b.name)}</span><span class="val ${a.left < 0 ? "verdict bad" : ""}">${esc(money(a.left))}</span></div>`;
+  }).join("");
+  if (!state.txs.length) $("hero-limit").textContent = "Add the money you have to start";
 
-  // Notices: what needs the owner today.
+  // notices
   const notes = [];
-  const unsortedCount = state.txs.filter((t) => t.kind === "spend" && !(state.buckets.some((b) => b.id === t.bucket))).length;
-  if (unsortedCount) notes.push(`<div class="notice bad"><span><strong>${unsortedCount}</strong> payment${unsortedCount === 1 ? "" : "s"} still need a bucket.</span><button type="button" class="btn ghost" data-go="unsorted">Sort them</button></div>`);
+  const unsorted = state.txs.filter((t) => t.kind === "spend" && !isSorted(t)).length;
+  if (unsorted) notes.push(`<div class="notice bad"><span>${unsorted} payment${unsorted === 1 ? "" : "s"} need${unsorted === 1 ? "s" : ""} a bucket.</span><button type="button" class="linkbtn" data-go="unsorted">Sort</button></div>`);
   const over = state.buckets.filter((b) => c.bal[b.id] < -0.005);
-  if (over.length) notes.push(`<div class="notice bad"><span>${over.map((b) => `<strong>${esc(b.name)}</strong>`).join(", ")} ${over.length === 1 ? "is" : "are"} overspent. Move money in from another bucket, or slow down until the next payment comes in.</span></div>`);
-  const srcs = Object.entries(c.sources).sort((a, b) => b[1] - a[1]);
-  if (srcs.length) notes.push(`<div class="notice"><span>Money in this month: ${srcs.slice(0, 4).map(([s, v]) => `${esc(s)} <span class="num">${esc(money(v))}</span>`).join(" · ")}</span></div>`);
+  if (over.length) notes.push(`<div class="notice bad"><span>Overspent: ${over.map((b) => esc(b.name)).join(", ")}. Move money in from another bucket.</span></div>`);
   $("notices").innerHTML = notes.join("");
   $("notices").hidden = !notes.length;
 
-  $("total-line").textContent = "Total held " + money(c.total) + (c.bal.unsorted ? ` (incl. ${money(c.bal.unsorted)} unsorted)` : "");
-  $("buckets").innerHTML = state.buckets.map((b) => {
-    const bal = c.bal[b.id];
-    const got = c.inMonth[b.id] || 0;
-    const fill = got > 0 ? Math.max(0, Math.min(100, (bal / got) * 100)) : (bal > 0 ? 100 : 0);
-    const isOver = bal < -0.005;
-    const tag = b.locked ? `<span class="tag lock">Locked</span>` : `<span class="tag spend">Spendable</span>`;
-    return `<article class="bucket ${b.locked ? "locked" : ""} ${isOver ? "over" : ""}">
-      <div class="bucket-top"><span class="bucket-name">${esc(b.name)}</span>${tag}</div>
-      <div class="bucket-bal ${isOver ? "warn" : ""}">${esc(money(bal))}</div>
-      <div class="meter" role="img" aria-label="${Math.round(fill)}% of this month's share left"><i style="width:${fill}%"></i></div>
-      <div class="bucket-meta"><span>${b.pct}% of money in</span><span class="num">−${esc(money(c.outMonth[b.id] || 0))} this month</span></div>
-      <p class="bucket-desc">${esc(b.desc || "")}</p>
+  // stacked bar + legend
+  $("total").textContent = money(c.total);
+  const pos = state.buckets.map((b) => ({ b, v: Math.max(0, c.bal[b.id]) }));
+  const posSum = pos.reduce((a, p) => a + p.v, 0);
+  $("stack").setAttribute("aria-label", "Share of your money in each bucket");
+  $("stack").innerHTML = posSum > 0
+    ? pos.filter((p) => p.v > 0).map((p) => `<span style="flex:${p.v} 1 0;background:${colorOf(p.b.id)}" title="${esc(p.b.name)} ${esc(money(p.v))}"></span>`).join("")
+    : `<span style="flex:1;background:var(--grid)"></span>`;
+  $("legend").innerHTML = state.buckets.map((b) => {
+    const v = c.bal[b.id];
+    const share = posSum > 0 ? Math.round((Math.max(0, v) / posSum) * 100) + "%" : "—";
+    return `<div class="row"><span class="dot" style="background:${colorOf(b.id)}"></span><span class="name">${esc(b.name)}${b.locked ? `<span class="lock">locked</span>` : ""}</span><span class="num ${v < 0 ? "verdict bad" : ""}">${esc(money(v))}</span><span class="pct num">${share}</span></div>`;
+  }).join("") + (c.bal.unsorted ? `<div class="row"><span class="dot" style="background:var(--muted)"></span><span class="name">Unsorted</span><span class="num verdict bad">${esc(money(c.bal.unsorted))}</span><span class="pct"></span></div>` : "");
+
+  if (state.tab === "today") drawPath(c);
+  if (state.tab === "activity") drawBars(c);
+  renderJars(c);
+  renderLedger();
+  renderSelects();
+}
+
+function renderJars(c) {
+  $("jars").innerHTML = state.buckets.map((b) => {
+    const v = c.bal[b.id];
+    const ref = Math.max(v + (c.outMonth[b.id] || 0), v, 0.01);
+    const fill = Math.max(0, Math.min(100, (v / ref) * 100));
+    const a = c.allowance[b.id];
+    const meta = b.locked
+      ? `<span>${b.pct}% of money in</span><span>Kept aside</span>`
+      : `<span>${esc(money(a.perDay))} a day</span><span>${esc(money(c.outMonth[b.id] || 0))} spent this month</span>`;
+    return `<article class="jar ${v < -0.005 ? "over" : ""}">
+      <div class="jname"><span class="dot" style="background:${colorOf(b.id)}"></span><span>${esc(b.name)}</span></div>
+      <span class="tag">${b.locked ? "Locked" : "Spendable"} · ${b.pct}%</span>
+      <div class="jbal ${v < 0 ? "verdict bad" : ""}">${esc(money(v))}</div>
+      <div class="jbar" role="img" aria-label="${Math.round(fill)}% of this month's money in ${esc(b.name)} still there"><i style="width:${fill}%;background:${colorOf(b.id)}"></i></div>
+      <div class="jmeta">${meta}</div>
     </article>`;
   }).join("");
-
-  renderLedger();
-  renderBucketSelects();
+  if (!document.activeElement || !document.activeElement.closest("#pct-form")) renderPctRows();
 }
 
 function renderLedger() {
   const month = monthKey(todayStr());
   let rows = state.txs.slice();
   if (state.filter === "month") rows = rows.filter((t) => monthKey(t.date) === month);
-  if (state.filter === "unsorted") rows = rows.filter((t) => t.kind === "spend" && !state.buckets.some((b) => b.id === t.bucket));
+  if (state.filter === "unsorted") rows = rows.filter((t) => t.kind === "spend" && !isSorted(t));
   rows.sort((a, b) => (b.date || "").localeCompare(a.date || "") || (b.time || "").localeCompare(a.time || ""));
-  const opts = (sel) => state.buckets.map((b) => `<option value="${esc(b.id)}" ${b.id === sel ? "selected" : ""}>${esc(b.name)}</option>`).join("");
   if (!rows.length) {
-    const msg = state.filter === "unsorted" ? "Every payment has a bucket." : state.live ? "No entries yet. Send Claude your MoMo history to fill this in." : "Waiting for your data…";
-    $("ledger").innerHTML = `<tr><td colspan="5" class="empty">${msg}</td></tr>`;
+    $("ledger").innerHTML = `<div class="empty">${state.filter === "unsorted" ? "Every payment has a bucket." : state.live ? "Nothing yet. Send Claude your MoMo history, or tap + to add an entry." : "Loading…"}</div>`;
     return;
   }
-  $("ledger").innerHTML = rows.map((t) => {
-    const amt = Number(t.amount) || 0, fee = Number(t.fee) || 0;
-    let bucketCell, amtCell;
-    if (t.kind === "income") {
-      bucketCell = `<span class="chip">Split</span>`;
-      amtCell = `<span class="pos">+${esc(money(amt))}</span>`;
-    } else if (t.kind === "move") {
-      bucketCell = `<span class="chip">${esc(bucketName(t.bucket))} → ${esc(bucketName(t.to))}</span>`;
-      amtCell = esc(money(amt));
-    } else {
-      const sorted = state.buckets.some((b) => b.id === t.bucket);
-      bucketCell = state.canWrite
-        ? `<select class="chip ${sorted ? "" : "unsorted"}" data-id="${esc(t._id)}" aria-label="Bucket for ${esc(t.who || "payment")}">${sorted ? "" : `<option value="" selected>Pick a bucket</option>`}${opts(t.bucket)}</select>`
-        : `<span class="chip">${esc(bucketName(t.bucket))}</span>`;
-      amtCell = `−${esc(money(amt + fee))}` + (fee ? `<div class="muted" style="font-size:12px">incl. ${esc(money(fee))} fee</div>` : "");
-    }
-    const d = t.date ? new Date(t.date + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : "";
-    return `<tr>
-      <td class="num muted" style="white-space:nowrap">${esc(d)}${t.time ? `<div style="font-size:12px">${esc(t.time)}</div>` : ""}</td>
-      <td class="desc"><div class="who">${esc(t.who || (t.kind === "income" ? "Money in" : "Payment"))}</div>${t.note ? `<div class="note">${esc(t.note)}</div>` : ""}</td>
-      <td>${bucketCell}</td>
-      <td class="amt">${amtCell}</td>
-      <td>${state.canWrite ? `<button type="button" class="del" data-del="${esc(t._id)}">Delete</button>` : ""}</td>
-    </tr>`;
+  const byDay = {};
+  rows.forEach((t) => (byDay[t.date] = byDay[t.date] || []).push(t));
+  const opts = (sel) => state.buckets.map((b) => `<option value="${esc(b.id)}" ${b.id === sel ? "selected" : ""}>${esc(b.name)}</option>`).join("");
+  $("ledger").innerHTML = Object.keys(byDay).map((day) => {
+    const list = byDay[day];
+    const out = list.filter((t) => t.kind === "spend").reduce((a, t) => a + (Number(t.amount) || 0) + (Number(t.fee) || 0), 0);
+    const label = day ? new Date(day + "T00:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }) : "";
+    return `<div class="day"><div class="day-head"><span>${esc(label)}</span><span class="num">${out ? "−" + esc(money(out)) : ""}</span></div>${list.map(txRow(opts)).join("")}</div>`;
   }).join("");
 }
-
-function renderBucketSelects() {
-  const opts = state.buckets.map((b) => `<option value="${esc(b.id)}">${esc(b.name)}</option>`).join("");
-  for (const id of ["f-bucket", "f-to"]) {
-    const el = $(id), keep = el.value;
-    el.innerHTML = opts;
-    if (keep) el.value = keep;
+const txRow = (opts) => (t) => {
+  const amt = Number(t.amount) || 0, fee = Number(t.fee) || 0;
+  let amtHtml, chip;
+  if (t.kind === "income") {
+    amtHtml = `<span class="amt in">+${esc(money(amt))}</span>`;
+    chip = `<span class="chip">Split across buckets</span>`;
+  } else if (t.kind === "move") {
+    amtHtml = `<span class="amt">${esc(money(amt))}</span>`;
+    chip = `<span class="chip"><span class="dot" style="background:${colorOf(t.bucket)}"></span>${esc(bucketName(t.bucket))} → ${esc(bucketName(t.to))}</span>`;
+  } else {
+    amtHtml = `<span class="amt">−${esc(money(amt + fee))}</span>`;
+    chip = state.canWrite
+      ? `<select class="chip ${isSorted(t) ? "" : "unsorted"}" data-id="${esc(t._id)}" aria-label="Bucket for ${esc(t.who || "payment")}">${isSorted(t) ? "" : `<option value="" selected>Pick a bucket</option>`}${opts(t.bucket)}</select>`
+      : `<span class="chip">${esc(bucketName(t.bucket))}</span>`;
   }
-  if (!document.activeElement || !document.activeElement.closest("#pct-form")) renderPctRows();
-}
+  const who = t.who || (t.kind === "income" ? "Money in" : t.kind === "move" ? "Moved" : "Payment");
+  const sub = [t.time, t.note, fee ? "incl. " + money(fee) + " fee" : ""].filter(Boolean).join(" · ");
+  return `<div class="tx"><span class="who">${esc(who)}</span>${amtHtml}
+    ${sub ? `<span class="small muted" style="grid-column:1/-1">${esc(sub)}</span>` : ""}
+    <div class="line2">${chip}${state.canWrite ? `<button type="button" class="del" data-del="${esc(t._id)}">Delete</button>` : ""}</div></div>`;
+};
 
+function renderSelects() {
+  const opts = state.buckets.map((b) => `<option value="${esc(b.id)}">${esc(b.name)}</option>`).join("");
+  for (const id of ["f-bucket", "f-to"]) { const s = $(id), keep = s.value; s.innerHTML = opts; if (keep) s.value = keep; }
+}
 function renderPctRows() {
   $("pct-rows").innerHTML = state.buckets.map((b, i) => `
     <div class="pct-row">
-      <label for="pct-name-${i}">Bucket<input id="pct-name-${i}" type="text" value="${esc(b.name)}"></label>
-      <label for="pct-val-${i}">%<input id="pct-val-${i}" type="number" min="0" max="100" step="1" value="${b.pct}"></label>
-      <label class="check" for="pct-lock-${i}"><input id="pct-lock-${i}" type="checkbox" ${b.locked ? "checked" : ""}> Locked</label>
+      <span class="dot" style="background:${colorOf(b.id)}"></span>
+      <label for="pct-name-${i}" class="sr"><input id="pct-name-${i}" type="text" value="${esc(b.name)}" aria-label="Bucket name"></label>
+      <label for="pct-val-${i}"><input id="pct-val-${i}" type="number" min="0" max="100" step="1" value="${b.pct}" aria-label="${esc(b.name)} percent"></label>
+      <label class="check" for="pct-lock-${i}"><input id="pct-lock-${i}" type="checkbox" ${b.locked ? "checked" : ""}>Lock</label>
     </div>`).join("");
   updatePctTotal();
 }
 function readPct() {
-  return state.buckets.map((b, i) => ({
-    ...b,
-    name: ($("pct-name-" + i).value || b.name).trim(),
-    pct: Number($("pct-val-" + i).value) || 0,
-    locked: $("pct-lock-" + i).checked,
-  }));
+  return state.buckets.map((b, i) => ({ ...b, name: ($("pct-name-" + i).value || b.name).trim(), pct: Number($("pct-val-" + i).value) || 0, locked: $("pct-lock-" + i).checked }));
 }
 function updatePctTotal() {
   const total = readPct().reduce((a, b) => a + b.pct, 0);
-  $("pct-total").textContent = `Total ${total}%` + (total === 100 ? "" : " — must add up to 100%");
-  $("pct-total").className = "status num " + (total === 100 ? "" : "warn");
+  $("pct-total").textContent = total === 100 ? "Adds up to 100%" : `${total}% · must add up to 100%`;
+  $("pct-total").className = "status num" + (total === 100 ? "" : " warn");
   $("pct-save").disabled = total !== 100 || !state.canWrite;
 }
 
-/* Events */
+/* ---------- Events ---------- */
+function setTab(tab) {
+  state.tab = tab;
+  for (const t of ["today", "buckets", "activity"]) $("view-" + t).hidden = t !== tab;
+  document.querySelectorAll(".tab").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.tab === tab)));
+  if (state.last) { if (tab === "today") drawPath(state.last); if (tab === "activity") drawBars(state.last); }
+  window.scrollTo({ top: 0 });
+}
+document.querySelectorAll(".tab").forEach((b) => b.addEventListener("click", () => setTab(b.dataset.tab)));
+let rt;
+window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => state.last && (state.tab === "today" ? drawPath(state.last) : state.tab === "activity" && drawBars(state.last)), 150); });
+
 $("filters").addEventListener("click", (e) => {
-  const b = e.target.closest("button[data-f]");
-  if (!b) return;
+  const b = e.target.closest("button[data-f]"); if (!b) return;
   state.filter = b.dataset.f;
-  for (const x of $("filters").querySelectorAll("button")) x.setAttribute("aria-pressed", String(x === b));
+  $("filters").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
   renderLedger();
 });
 $("notices").addEventListener("click", (e) => {
-  const b = e.target.closest("[data-go]");
-  if (!b) return;
-  $("filters").querySelector(`[data-f="${b.dataset.go}"]`).click();
-  $("ledger-h").scrollIntoView({ behavior: "smooth", block: "start" });
+  if (!e.target.closest("[data-go]")) return;
+  setTab("activity");
+  $("filters").querySelector('[data-f="unsorted"]').click();
 });
 $("ledger").addEventListener("change", async (e) => {
   const sel = e.target.closest("select[data-id]");
   if (!sel || !state.db || !sel.value) return;
   sel.disabled = true;
   try { await state.db.doc("tx/" + sel.dataset.id).update({ bucket: sel.value }); }
-  catch (err) { sel.disabled = false; $("sync").textContent = "Could not save that change. Try again."; }
+  catch { sel.disabled = false; $("sync").textContent = "Could not save that change"; }
 });
 $("ledger").addEventListener("click", async (e) => {
   const b = e.target.closest("button[data-del]");
   if (!b || !state.db) return;
   if (!b.classList.contains("arm")) {
-    b.classList.add("arm"); b.textContent = "Sure?";
+    b.classList.add("arm"); b.textContent = "Tap again to delete";
     setTimeout(() => { b.classList.remove("arm"); b.textContent = "Delete"; }, 3000);
     return;
   }
   b.disabled = true;
   try { await state.db.doc("tx/" + b.dataset.del).delete(); }
-  catch (err) { b.disabled = false; $("sync").textContent = "Could not delete that entry."; }
+  catch { b.disabled = false; $("sync").textContent = "Could not delete that entry"; }
 });
-$("f-kind").addEventListener("change", () => {
-  const k = $("f-kind").value;
+
+function setKind(k) {
+  state.kind = k;
+  $("f-kind").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.k === k)));
   $("l-bucket").hidden = k === "income";
   $("l-to").hidden = k !== "move";
-  $("l-bucket").firstChild.textContent = k === "move" ? "Out of" : "Bucket";
-});
+  $("l-bucket-t").textContent = k === "move" ? "Out of" : "Bucket";
+  $("l-who-t").textContent = k === "income" ? "From (which business or client)" : k === "move" ? "Reason" : "Paid to";
+  updatePreview();
+}
+function updatePreview() {
+  const amt = Number($("f-amount").value);
+  const p = $("f-preview");
+  if (state.kind !== "income" || !(amt > 0)) { p.hidden = true; return; }
+  const a = splitIncome(amt);
+  p.innerHTML = "Splits into " + state.buckets.map((b) => `${esc(b.name)} <span class="num">${esc(money(a[b.id]))}</span>`).join(" · ");
+  p.hidden = false;
+}
+$("f-kind").addEventListener("click", (e) => { const b = e.target.closest("button[data-k]"); if (b) setKind(b.dataset.k); });
+$("f-amount").addEventListener("input", updatePreview);
+function openAdd() { $("add-scrim").hidden = false; $("f-status").textContent = ""; $("f-date").value = $("f-date").value || todayStr(); setTimeout(() => $("f-amount").focus(), 30); }
+function closeAdd() { $("add-scrim").hidden = true; }
+$("open-add").addEventListener("click", openAdd);
+$("close-add").addEventListener("click", closeAdd);
+$("add-scrim").addEventListener("click", (e) => { if (e.target === $("add-scrim")) closeAdd(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("add-scrim").hidden) closeAdd(); });
 $("add-form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const amount = Number($("f-amount").value);
-  const kind = $("f-kind").value;
+  const amount = Number($("f-amount").value), kind = state.kind;
   if (!(amount > 0)) { $("f-status").textContent = "Enter an amount above zero."; return; }
   if (kind === "move" && $("f-bucket").value === $("f-to").value) { $("f-status").textContent = "Pick two different buckets."; return; }
-  if (!state.db) { $("f-status").textContent = "Saving is not available here. Open the page signed in to claude.ai."; return; }
-  const doc = {
-    kind, amount, date: $("f-date").value || todayStr(),
-    who: $("f-who").value.trim(), note: $("f-note").value.trim(), origin: "manual", createdAt: new Date().toISOString(),
-  };
-  if (kind === "income") { doc.alloc = splitIncome(amount); doc.source = doc.who || "Other"; }
-  else doc.bucket = $("f-bucket").value;
+  if (!state.db) { $("f-status").textContent = "Saving needs you signed in to claude.ai."; return; }
+  const doc = { kind, amount, date: $("f-date").value || todayStr(), who: $("f-who").value.trim(), note: $("f-note").value.trim(), origin: "manual", createdAt: new Date().toISOString() };
+  if (kind === "income") { doc.alloc = splitIncome(amount); doc.source = doc.who || "Other"; } else doc.bucket = $("f-bucket").value;
   if (kind === "move") doc.to = $("f-to").value;
   $("f-save").disabled = true;
   try {
     await state.db.collection("tx").add(doc);
-    $("f-status").textContent = "Saved.";
-    $("f-amount").value = ""; $("f-who").value = ""; $("f-note").value = "";
+    $("f-amount").value = ""; $("f-who").value = ""; $("f-note").value = ""; updatePreview();
+    closeAdd();
   } catch (err) {
     $("f-status").textContent = err && err.code === "quota_exceeded" ? "The ledger is full. Ask Claude to archive old months." : "Could not save. Check your connection and try again.";
-  } finally { $("f-save").disabled = !state.canWrite; }
+  } finally { $("f-save").disabled = false; }
 });
 $("pct-form").addEventListener("input", updatePctTotal);
 $("pct-form").addEventListener("submit", async (e) => {
@@ -491,30 +755,26 @@ $("pct-form").addEventListener("submit", async (e) => {
   const buckets = readPct();
   if (buckets.reduce((a, b) => a + b.pct, 0) !== 100 || !state.db) return;
   $("pct-save").disabled = true;
-  try {
-    await state.db.doc("settings/buckets").set({ buckets, updatedAt: new Date().toISOString() });
-    $("pct-total").textContent = "Saved. New money in will use this split.";
-  } catch (err) { $("pct-total").textContent = "Could not save the split."; }
+  try { await state.db.doc("settings/buckets").set({ buckets, updatedAt: new Date().toISOString() }); $("pct-total").textContent = "Saved"; }
+  catch { $("pct-total").textContent = "Could not save the split"; }
   finally { $("pct-save").disabled = false; }
 });
 
-/* Boot */
+/* ---------- Boot ---------- */
 $("f-date").value = todayStr();
+setKind("spend");
 render();
 (async () => {
   const db = window.claude && window.claude.use ? await window.claude.use("db") : null;
   if (!db) {
     state.canWrite = false;
-    $("sync").textContent = "Read-only preview. Open this page signed in to claude.ai to see your money.";
+    $("sync").textContent = "Preview only. Open signed in to see your money.";
     render();
     return;
   }
   state.db = db;
   const user = await window.claude.use("user");
-  if (user && typeof user.isOwner === "function" && !user.isOwner()) {
-    state.canWrite = false;
-    $("sync").textContent = "Only the owner can see this page's money.";
-  }
+  if (user && typeof user.isOwner === "function" && !user.isOwner()) { state.canWrite = false; $("sync").textContent = "Owner only"; }
   db.doc("settings/buckets").onSnapshot((snap) => {
     const d = snap.exists ? snap.data() : null;
     if (d && Array.isArray(d.buckets) && d.buckets.length) state.buckets = d.buckets.map((b) => ({ ...b }));
@@ -524,10 +784,8 @@ render();
     state.txs = snap.docs.map((d) => ({ ...d.data(), _id: d.id }));
     state.live = true;
     const latest = state.txs.filter((t) => t.origin === "statement").map((t) => t.date).sort().pop();
-    if (state.canWrite) $("sync").textContent = latest ? `Statement data up to ${new Date(latest + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : "Live";
+    if (state.canWrite) $("sync").textContent = latest ? "Up to " + new Date(latest + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : "Live";
     render();
-  }, (err) => {
-    $("sync").textContent = err && err.code === "revoked" ? "Access to this page changed." : "Lost connection to your data. Reload to try again.";
-  });
+  }, (err) => { $("sync").textContent = err && err.code === "revoked" ? "Access changed" : "Offline. Reload to retry"; });
 })();
 </script>
