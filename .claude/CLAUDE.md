@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Booklesss** is an edtech product for Zambian university finance/business courses. **The course reader at `booklesss.vercel.app` is the product** (`platform/`, Next.js 16 + Supabase): a student reads steps there, ticks checkpoints and says how each section landed. Steps are authored as `.mjs` beside the lesson they belong to and published with `npm run seed:course` → `npm run gen:course`.
 
+**Booklesss is a Partnr product** (owner, 2026-10-15). Partnr is the company, and Basket Plans, the WhatsApp API concept and Money Buckets sit under it beside Booklesss; Partnr's own `CLAUDE.md` maps them. **Ownership changed and nothing else did:** the name a student sees is still Booklesss, the domain is still booklesss.app, and the repo, Supabase project, Vercel project and secrets are still this product's own. Do not put Partnr's name on a student-facing surface. That is undecided, and it is the owner's call.
+
 The original pipeline — source material (PPTX/PDF) → Python ReportLab script → PDF → posted to Slack — still exists and still builds. It is now **provenance and marketing**: lead magnets, business documents, and the PDFs the reader steps were mined from. Slack-as-the-paid-product was dropped (Linear BOO-7, MSA §3.4); do not rebuild paid Slack channels.
 
 **On the reader:** economics, Corporate Finance (26 steps), Strategic Management (8), Treasury Management (**60** — one concept, one checkpoint, one step, since the 2026-08-09 split; the other courses owe the same conversion, `step-skill/DEBT.md` D-18). Also on disk: BBA 1110 (UNZA), PDFs only. **Course codes and school names never appear anywhere a student sees** — see the memory index.
