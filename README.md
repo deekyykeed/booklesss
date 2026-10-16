@@ -2,7 +2,7 @@
 
 **One sentence:** Booklesss sells branded PDF study notes plus a Slack community to Zambian university students (ZCAS, UNZA), at K360/month for one course or K600/month for everything.
 
-**Owned by Partnr** (2026-10-15). Partnr is the company, and Booklesss is one of its products along with Basket Plans and Money Buckets. Students still see Booklesss, and the domain, repo and Supabase project are unchanged. Partnr's own `CLAUDE.md` maps the rest.
+**Owned by Partnr** (2026-10-15). Partnr is the company, and Booklesss is one of its agent-run businesses, beside Basket Plans; the client web design studio is the part Deeky runs by hand. Students still see Booklesss, and the domain, repo and Supabase project are unchanged. The `CLAUDE.md` in the parent `Desktop/Partnr/` folder maps the rest.
 
 This file is the map. Read top to bottom and you know the state of the business, where everything lives, and what to do next. Keep it honest — update it when reality changes.
 
