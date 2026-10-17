@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-09-20 (session 68)
+**Last updated:** 2026-10-17 (session 69)
 
 ---
 
@@ -91,6 +91,26 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 69 (2026-10-15→17, Partnr becomes the company. Linear NOT
+reachable: `linear-server` still needs its one-time OAuth, so nothing below
+has a ticket. Most of the session's work was in the studio repo, which logs
+it in its own PROJECT_MEMORY.)**
+
+- [ ] **Run `move_to_partnr.py` with VS Code and Claude CLOSED**
+      (`python C:/Users/deeky/OneDrive/Desktop/deekymvula/move_to_partnr.py`).
+      It moves this repo to `Desktop/Partnr/agents/Booklesss`, takes `Partnr/` and
+      `Basket-Plans/` out of it, and copies Claude memory and settings to the
+      new paths. Until it runs, never commit `Partnr/` or `Basket-Plans/` here.
+      Close VS Code on the second machine first; the move syncs through OneDrive.
+- [ ] **Do NOT merge `claude/budget-spending-tracker-mr7n72`.** Money Buckets
+      was removed (owner: it was only for his own expenses). Delete the branch
+      when convenient. Its private claude.ai page still exists.
+- [ ] **7 `Demand/video/public/sfx/*.wav` files, regenerated 2026-10-09 and never
+      committed.** Owner to say whether to keep them or discard them.
+- [ ] **`Booklesss Bucket/brain-budget.mp4` (56MB) is still in the bucket.** It is
+      the raw take behind the 13 Oct explainer cut; file or delete it.
+- [ ] The explainer work of 9–13 Oct has no session-log entry.
 
 **From session 68 (2026-09-20, Paper replaces Framer as design source of
 truth. Linear NOT reachable this session — same one-time-OAuth gap as 67, so
@@ -1758,6 +1778,28 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-10-15→17 (session 69 — Partnr becomes the company, and the Desktop splits into agents/ and studio/)
+
+**Done:** Owner: "everything becomes Partnr". Asked what that meant, he chose
+ownership only: Partnr is the company, and Booklesss and Basket Plans are its
+**agent-run** businesses. Client web design (Partnr Studio) is the one part he
+delivers by hand. Booklesss keeps its name, domain, repo, Supabase and Vercel;
+no student-facing surface changes. The layout `Desktop/Partnr/{agents,studio,
+brand,site,_shared}` is decided, and `move_to_partnr.py` (tested dry, not run)
+replaces `finish_move.py`. Booklesss CLAUDE.md and README now say all this
+(d96925f). Money Buckets was built, filed and removed within the session. The
+rest of the session was studio work: the AMC concept, AMC's logo as a vector,
+the studio repo reorganised (see the studio's own PROJECT_MEMORY).
+**What Worked:** Asking ONE multiple-choice question about what "become Partnr"
+means before touching anything. Readings ranged from a doc edit to a domain
+migration, and the owner picked the cheapest. Testing the move script's path
+rewriting on the real `settings.local.json` (repoint twice and check nothing
+changes, JSON still parses) before anyone runs it.
+**Dead Ends (do not retry):** A Git Bash heredoc with `\\` inside a Python raw
+string arrives as a single `\` (SyntaxError on `\U`), so write any script with
+backslashes through the Write tool. Ripgrep over the whole Booklesss tree timed
+out again; `git grep` per repo was instant.
 
 ### Session 2026-09-20 (session 68 — Paper becomes the design source of truth, Framer retired)
 
