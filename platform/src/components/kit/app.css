@@ -488,7 +488,7 @@
   justify-content: space-between;
   gap: 12px;
 }
-.kit-mk-section h3 {
+.kit-mk-section > header h3 {
   margin: 0;
   font-size: 20px;
   font-weight: 500;
