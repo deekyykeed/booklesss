@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { HugeIcon, type HugeIconName } from "@/components/icons/huge";
 import { GlassButton, HappyFolder, PlusMark, Surface, useCountUp } from "./primitives";
 import { squircleClip } from "./squircle";
@@ -246,14 +246,6 @@ const REFERENCE_MENU: FolderAction[] = [
   { label: "Delete", danger: true },
 ];
 
-/* The widest a title can run before it meets the dots: 346.5 less its 38px
- * inset less 30 of air. A longer name steps its size down until it fits on
- * the one line the card is drawn for, so "Strategic Management" is the same
- * card as "Happy Files", not a taller one. */
-const TITLE_ROOM = 278;
-const TITLE_MAX = 44;
-const TITLE_MIN = 22;
-
 function CountUp({ n, run, fixed }: { n: number; run: boolean; fixed?: boolean }) {
   const v = useCountUp(n, run);
   return <>{fixed ? n : v}</>;
@@ -270,8 +262,6 @@ export function FilesCard({
   stats = REFERENCE_STATS,
   actions = REFERENCE_MENU,
   onOpen,
-  titleSize,
-  onTitleFit,
 }: {
   state?: "hover" | "selected" | "menu";
   title?: string;
@@ -280,46 +270,12 @@ export function FilesCard({
   actions?: FolderAction[];
   /** Given, a tap on the card opens instead of selecting it. */
   onOpen?: () => void;
-  /** A size shared across a grid of cards, so every title is one size. */
-  titleSize?: number;
-  /** Reports the largest size at which this title fits its one line. */
-  onTitleFit?: (size: number, title: string) => void;
 }) {
   const [ref, seen] = useInView<HTMLDivElement>();
   const [menu, setMenu] = useState(state === "menu");
   const [selected, setSelected] = useState(state === "selected");
   const [title, setTitle] = useState(initialTitle);
   const [editing, setEditing] = useState(false);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const [size, setSize] = useState(TITLE_MAX);
-
-  // Re-measure once the face has loaded: a fallback face fits differently.
-  const [fonts, setFonts] = useState(0);
-  useEffect(() => {
-    let live = true;
-    document.fonts?.ready.then(() => live && setFonts(1));
-    return () => {
-      live = false;
-    };
-  }, []);
-
-  useLayoutEffect(() => {
-    const el = titleRef.current;
-    if (!el || editing) return;
-    let fs = TITLE_MAX;
-    el.style.fontSize = `${fs}px`;
-    el.style.lineHeight = `${fs}px`;
-    while (fs > TITLE_MIN && el.scrollWidth > TITLE_ROOM) {
-      fs -= 1;
-      el.style.fontSize = `${fs}px`;
-      el.style.lineHeight = `${fs}px`;
-    }
-    el.style.fontSize = "";
-    el.style.lineHeight = "";
-    onTitleFit?.(fs, title);
-    setSize(titleSize ? Math.min(titleSize, fs) : fs);
-  }, [title, editing, fonts, titleSize, onTitleFit]);
-
   useEffect(() => {
     if (!menu || state === "menu") return;
     const away = (e: PointerEvent) => {
@@ -389,7 +345,7 @@ export function FilesCard({
         </div>
       )}
       <span className="kit-new">{eyebrow}</span>
-      <h3 ref={titleRef} className="kit-files-title" style={size !== TITLE_MAX ? { fontSize: size, lineHeight: `${size}px`, top: 216 + (TITLE_MAX - size) / 2 } : undefined}>
+      <h3 className="kit-files-title" title={editing ? undefined : title}>
         {editing ? (
           <input
             autoFocus

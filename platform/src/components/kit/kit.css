@@ -1130,6 +1130,11 @@
   letter-spacing: -0.025em;
   color: #000000;
   white-space: nowrap;
+  /* A name too long for the card's one line ends in an ellipsis, at the
+   * card's own size (owner, 2026-10-18: "truncate text that doesn't fit"). */
+  max-width: 278px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .kit-files-title input {
