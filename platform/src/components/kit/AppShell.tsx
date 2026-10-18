@@ -93,6 +93,7 @@ export function AppShell({ className }: { className?: string }) {
           onPick={pick}
           onClose={() => setOpen(false)}
           compact={!full}
+          flush
         />
       </div>
 

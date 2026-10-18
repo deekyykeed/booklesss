@@ -102,6 +102,9 @@ type Props = {
   compact?: boolean;
   /** The app's copy on the cards (courses, not invoices). */
   app?: boolean;
+  /** No panel of its own: no glass, rim, radius or shadow — the sidebar is
+   * part of the app's floor, not a card floating on it (owner, 2026-10-18). */
+  flush?: boolean;
 };
 
 const CARD_COPY = {
@@ -119,6 +122,7 @@ export function RonSidebar({
   onClose,
   compact,
   app,
+  flush,
 }: Props = {}) {
   const [ownActive, setOwnActive] = useState<string | null>("files");
   const controlled = activeProp !== undefined;
@@ -140,7 +144,12 @@ export function RonSidebar({
   const add = (id: string) => setSubs((s) => ({ ...s, [id]: (s[id] ?? 0) + 1 }));
 
   return (
-    <div className="kit-ron-frame" data-compact={compact ? "" : undefined} style={compact ? undefined : { clipPath: FRAME_CLIP }}>
+    <div
+      className="kit-ron-frame"
+      data-compact={compact ? "" : undefined}
+      data-flush={flush ? "" : undefined}
+      style={compact || flush ? undefined : { clipPath: FRAME_CLIP }}
+    >
       {closed && (
         <button type="button" className="kit-ron-reopen" onClick={() => setClosed(false)}>
           <HugeIcon name="sidebar" size={18} />
@@ -148,7 +157,7 @@ export function RonSidebar({
         </button>
       )}
       <aside className="kit-ron" data-closed={closed ? "" : undefined} aria-label="Sidebar">
-        {!compact && <Surface w={503} h={917} r={24} s={0.6} kind="glass" />}
+        {!compact && !flush && <Surface w={503} h={917} r={24} s={0.6} kind="glass" />}
         <div className="kit-ron-logo">
           <span className="kit-ron-mark" aria-hidden>
             <i />
