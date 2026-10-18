@@ -67,7 +67,7 @@
      hero text"), so the name had to stop describing one caller. */
   --font-hero: var(--font-bricolage), var(--font-ranade), ui-sans-serif, sans-serif;
 
-  --color-canvas: #f5f5f5;          /* app background — hsl(0,0%,96%) */
+  --color-canvas: #e8e8eb;          /* app background — the Ron sidebar's glass (owner, 2026-10-18); was #f5f5f5 */
   --color-card: #fcfcfb;            /* stat cards                */
   --color-line: #dfdfdf;            /* header / sidebar dividers  */
   --color-line-2: #d4d4d4;          /* pills, tags, circle buttons*/

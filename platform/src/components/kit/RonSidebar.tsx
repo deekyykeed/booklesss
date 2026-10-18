@@ -28,7 +28,8 @@ function CardSurface({ h, bottom, top = WHITE_TOP }: { h: number; bottom: string
  * away and leaves a button to bring it back; the cards lift, the invoices
  * fan out and the report stack rises when hovered. */
 
-type Item = { id: string; icon: HugeIconName; label: string; add?: boolean };
+export type SidebarItem = { id: string; icon: HugeIconName; label: string; add?: boolean };
+type Item = SidebarItem;
 
 const NAV: Item[] = [
   { id: "dashboard", icon: "nav-home", label: "Main Dashboard" },
@@ -82,21 +83,64 @@ function Row({
   );
 }
 
-export function RonSidebar() {
-  const [active, setActive] = useState<string | null>("files");
+/* What the app passes when the sidebar is its real navigation (AppShell)
+ * rather than the reference on /components. Every prop is optional, so the
+ * reference renders exactly as it did. */
+type Props = {
+  brand?: string;
+  title?: string;
+  nav?: Item[];
+  foot?: Item[];
+  /** Controlled selection: pass both, or neither for the reference's own. */
+  active?: string | null;
+  onPick?: (id: string | null) => void;
+  /** The header ×. Given, it replaces the reference's slide-away (the shell
+   * uses it to close the drawer). */
+  onClose?: () => void;
+  /** One column, 275 wide and as tall as its parent: the drawer and the
+   * docked sidebar on a narrow desktop. The cards column is left out. */
+  compact?: boolean;
+  /** The app's copy on the cards (courses, not invoices). */
+  app?: boolean;
+};
+
+const CARD_COPY = {
+  reference: { insight: "AI Insights", files: [["Invoices", "193 files"], ["Reporting", "271 files"], ["Analysis", "295 files"], ["Overview", "421 files"]] },
+  app: { insight: "This week", files: [["Finance", "24 courses"], ["Economics", "18 courses"], ["Accounting", "31 courses"], ["Tech", "42 courses"]] },
+} as const;
+
+export function RonSidebar({
+  brand = "celoxis",
+  title = "Managment Overview",
+  nav = NAV,
+  foot = FOOT,
+  active: activeProp,
+  onPick,
+  onClose,
+  compact,
+  app,
+}: Props = {}) {
+  const [ownActive, setOwnActive] = useState<string | null>("files");
+  const controlled = activeProp !== undefined;
+  const active = controlled ? activeProp : ownActive;
+  const setActive = (id: string | null) => {
+    if (!controlled) setOwnActive(id);
+    onPick?.(id);
+  };
+  const copy = CARD_COPY[app ? "app" : "reference"];
   const [query, setQuery] = useState("");
   const [subs, setSubs] = useState<Record<string, number>>({});
   const [closed, setClosed] = useState(false);
 
   const shown = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return q ? NAV.filter((n) => n.label.toLowerCase().includes(q)) : NAV;
-  }, [query]);
+    return q ? nav.filter((n) => n.label.toLowerCase().includes(q)) : nav;
+  }, [query, nav]);
 
   const add = (id: string) => setSubs((s) => ({ ...s, [id]: (s[id] ?? 0) + 1 }));
 
   return (
-    <div className="kit-ron-frame" style={{ clipPath: FRAME_CLIP }}>
+    <div className="kit-ron-frame" data-compact={compact ? "" : undefined} style={compact ? undefined : { clipPath: FRAME_CLIP }}>
       {closed && (
         <button type="button" className="kit-ron-reopen" onClick={() => setClosed(false)}>
           <HugeIcon name="sidebar" size={18} />
@@ -104,19 +148,19 @@ export function RonSidebar() {
         </button>
       )}
       <aside className="kit-ron" data-closed={closed ? "" : undefined} aria-label="Sidebar">
-        <Surface w={503} h={917} r={24} s={0.6} kind="glass" />
+        {!compact && <Surface w={503} h={917} r={24} s={0.6} kind="glass" />}
         <div className="kit-ron-logo">
           <span className="kit-ron-mark" aria-hidden>
             <i />
             <i />
             <i />
           </span>
-          celoxis
+          {brand}
         </div>
         <button
           type="button"
           className="kit-ron-icon"
-          style={{ left: 410.5, top: 15.5, transform: "scaleX(-1)" }}
+          style={{ left: compact ? 172 : 410.5, top: 15.5, transform: "scaleX(-1)" }}
           aria-label="Sign out"
         >
           <HugeIcon name="sign-out" size={21} strokeWidth={1.75} />
@@ -124,9 +168,9 @@ export function RonSidebar() {
         <button
           type="button"
           className="kit-ron-icon"
-          style={{ left: 455, top: 16 }}
+          style={{ left: compact ? 216 : 455, top: 16 }}
           aria-label="Close sidebar"
-          onClick={() => setClosed(true)}
+          onClick={() => (onClose ? onClose() : setClosed(true))}
         >
           <HugeIcon name="x" size={18} strokeWidth={1.75} />
         </button>
@@ -135,7 +179,7 @@ export function RonSidebar() {
           <button type="button" className="kit-ron-back" aria-label="Back">
             <HugeIcon name="back" size={24} strokeWidth={1.6} />
           </button>
-          <h3>Managment Overview</h3>
+          <h3>{title}</h3>
         </div>
 
         <label className="kit-ron-search">
@@ -149,7 +193,7 @@ export function RonSidebar() {
         </label>
 
         <div className="kit-ron-rule" style={{ left: 16, top: 247, width: 180 }} />
-        <div className="kit-ron-col-rule" />
+        {!compact && <div className="kit-ron-col-rule" />}
 
         <nav className="kit-ron-nav">
           {shown.map((item) => (
@@ -172,10 +216,13 @@ export function RonSidebar() {
           {shown.length === 0 && <div className="kit-ron-empty">Nothing matches “{query}”</div>}
         </nav>
 
-        <div className="kit-ron-rule" style={{ left: 30, top: 616, width: 170 }} />
+        <div
+          className="kit-ron-rule"
+          style={compact ? { left: 30, bottom: 160, width: 170 } : { left: 30, top: 616, width: 170 }}
+        />
 
         <div className="kit-ron-bottom">
-          {FOOT.map((item) => (
+          {foot.map((item) => (
             <Row
               key={item.id}
               item={item}
@@ -186,6 +233,7 @@ export function RonSidebar() {
           ))}
         </div>
 
+        {!compact && (
         <div className="kit-ron-cards">
           <button type="button" className="kit-ron-card kit-ron-insight">
             <CardSurface h={190} top="rgba(245,190,210,0.5)" bottom="rgba(175,190,240,0.55)" />
@@ -197,20 +245,32 @@ export function RonSidebar() {
                 ))}
               </span>
             </span>
-            <strong>AI Insights</strong>
+            <strong>{copy.insight}</strong>
             <span className="kit-ron-chev" aria-hidden>
               <HugeIcon name="chevron-right" size={14} strokeWidth={1.9} />
             </span>
             {/* The reference's own four lines, so the bold lands where it does there. */}
-            <p>
-              The Company&apos;s
-              <br />
-              profitability for the third
-              <br />
-              quarter <b>Increased by</b>
-              <br />
-              <b>27.1% - 31.2%</b>
-            </p>
+            {app ? (
+              <p>
+                You watched
+                <br />
+                5 lessons and passed
+                <br />
+                <b>4 of 5 quick</b>
+                <br />
+                <b>checks</b>
+              </p>
+            ) : (
+              <p>
+                The Company&apos;s
+                <br />
+                profitability for the third
+                <br />
+                quarter <b>Increased by</b>
+                <br />
+                <b>27.1% - 31.2%</b>
+              </p>
+            )}
           </button>
 
           <div className="kit-ron-group kit-ron-group--invoices">
@@ -229,8 +289,8 @@ export function RonSidebar() {
             </span>
             <button type="button" className="kit-ron-card kit-ron-card--file">
               <CardSurface h={83} bottom="rgba(170,180,230,0.45)" />
-              <strong>Invoices</strong>
-              <small>193 files</small>
+              <strong>{copy.files[0][0]}</strong>
+              <small>{copy.files[0][1]}</small>
               <span className="kit-ron-chev" aria-hidden>
                 <HugeIcon name="chevron-right" size={14} strokeWidth={1.9} />
               </span>
@@ -247,8 +307,8 @@ export function RonSidebar() {
             </span>
             <button type="button" className="kit-ron-card kit-ron-card--file">
               <CardSurface h={89} bottom="rgba(240,185,205,0.55)" />
-              <strong>Reporting</strong>
-              <small>271 files</small>
+              <strong>{copy.files[1][0]}</strong>
+              <small>{copy.files[1][1]}</small>
               <span className="kit-ron-chev" aria-hidden>
                 <HugeIcon name="chevron-right" size={14} strokeWidth={1.9} />
               </span>
@@ -257,21 +317,22 @@ export function RonSidebar() {
 
           <button type="button" className="kit-ron-card kit-ron-card--file">
             <CardSurface h={88} bottom="rgba(180,185,215,0.38)" />
-            <strong>Analysis</strong>
-            <small>295 files</small>
+            <strong>{copy.files[2][0]}</strong>
+            <small>{copy.files[2][1]}</small>
             <span className="kit-ron-chev" aria-hidden>
               <HugeIcon name="chevron-right" size={14} strokeWidth={1.9} />
             </span>
           </button>
           <button type="button" className="kit-ron-card kit-ron-card--file">
             <CardSurface h={88} bottom="rgba(180,185,215,0.38)" />
-            <strong>Overview</strong>
-            <small>421 files</small>
+            <strong>{copy.files[3][0]}</strong>
+            <small>{copy.files[3][1]}</small>
             <span className="kit-ron-chev" aria-hidden>
               <HugeIcon name="chevron-right" size={14} strokeWidth={1.9} />
             </span>
           </button>
         </div>
+        )}
       </aside>
     </div>
   );

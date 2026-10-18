@@ -1,10 +1,13 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
+import { HugeIcon } from "@/components/icons/huge";
+import { CategoryBar, type CategoryLook } from "./CategoryBar";
 import { Button, CallBar, Fit } from "./primitives";
 import { AvatarTile, BookCall, BriefCard, FilesCard, NudgeCard, PlusTile } from "./JayWidgets";
 import { RonSidebar } from "./RonSidebar";
 import "./kit.css";
+import "./app.css";
 
 /* /components — the live half of the Paper page "Components". The board shows
  * every piece still; this page shows what each one does. Phone first: every
@@ -32,7 +35,22 @@ const SWATCHES: [string, string][] = [
  * component on the page shrinks by the same factor. */
 const PAIR = 575;
 
+const LOOKS: [CategoryLook, string][] = [
+  ["duotone", "Solar · Bold Duotone"],
+  ["bold", "Solar · Bold"],
+  ["plump", "Streamline · Plump"],
+];
+
+const TODS = [
+  { tod: "morning", label: "Morning", icon: "sun" },
+  { tod: "evening", label: "Evening", icon: "sun-cloud" },
+  { tod: "night", label: "Night", icon: "moon" },
+] as const;
+
 export function ComponentsShowcase({ className }: { className?: string }) {
+  const [cats, setCats] = useState<Record<string, string>>({});
+  const catOf = (k: string) => cats[k] ?? "finance";
+  const setCat = (k: string) => (id: string) => setCats((c) => ({ ...c, [k]: id }));
   const main = useRef<HTMLElement>(null);
   const wrap = useRef<HTMLDivElement>(null);
 
@@ -173,6 +191,66 @@ export function ComponentsShowcase({ className }: { className?: string }) {
             <div className="kit-btn-row">
               <CallBar />
             </div>
+          </div>
+        </section>
+
+        <section className="kit-section">
+          <header>
+            <h2>Buttons by time of day</h2>
+            <span className="kit-hint">Morning is the original · evening is a sunset · night is moonlit</span>
+          </header>
+          <div className="kit-tods">
+            {TODS.map((t) => (
+              <div key={t.tod} className="kit-tod" data-tod={t.tod}>
+                <span className="kit-tod-head">
+                  <HugeIcon name={t.icon} size={16} strokeWidth={1.75} />
+                  {t.label}
+                </span>
+                <div className="kit-btn-row">
+                  <Button size="md" icon="play">
+                    Start
+                  </Button>
+                  <Button variant="soft" size="md">
+                    Not now
+                  </Button>
+                  <Button size="md" icon="plus" iconOnly label="Add" />
+                  <Button variant="soft" size="md" icon="dots" iconOnly label="More" />
+                </div>
+                <div className="kit-btn-row">
+                  <Button size="sm">Book a Call</Button>
+                  <Button size="sm" state="pressed">
+                    Pressed
+                  </Button>
+                  <Button variant="soft" size="sm" disabled>
+                    Disabled
+                  </Button>
+                </div>
+                <div className="kit-btn-row">
+                  <CallBar />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="kit-section">
+          <header>
+            <h2>Category selector</h2>
+            <span className="kit-hint">Three icon sets · tap to choose · scrolls sideways on a phone</span>
+          </header>
+          {LOOKS.map(([look, name]) => (
+            <div key={look} className="kit-cat-demo">
+              <span>{name}</span>
+              <CategoryBar look={look} value={catOf(look)} onChange={setCat(look)} />
+            </div>
+          ))}
+          <div className="kit-cat-demo">
+            <span>Tiles · Solar Bold Duotone</span>
+            <CategoryBar layout="tiles" value={catOf("tiles")} onChange={setCat("tiles")} />
+          </div>
+          <div className="kit-cat-demo">
+            <span>Tiles · Streamline Plump</span>
+            <CategoryBar layout="tiles" look="plump" value={catOf("tiles-p")} onChange={setCat("tiles-p")} />
           </div>
         </section>
 

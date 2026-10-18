@@ -40,6 +40,19 @@ const ICONS = [
   // The sessions list.
   "button-play-circle", // "Listen" on a session card
   "voice-scan-1", // the empty state, when a student has no sessions yet
+  // Marketplace category selector, the Plump version of the Solar row
+  "dashboard-1",
+  "wallet",
+  "calculator-1",
+  "graph-bar-increase",
+  "bag-suitcase-4",
+  "code-monitor-2",
+  "paint-palette",
+  "erlenmeyer-flask",
+  "justice-scale-2",
+  "medical-bag",
+  "lightbulb",
+  "feather-pen",
 ];
 
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "components", "icons", "plump.tsx");

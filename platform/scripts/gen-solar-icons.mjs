@@ -66,6 +66,33 @@ const ICONS = [
   "clock-circle-broken", // too long
   "clipboard-text-broken", // needs an example
   "danger-triangle-broken", // something looks wrong
+  /* Marketplace category selector (owner, 2026-10-18: "category selectors
+     with icons … solar bold or duotone"). Duotone for the chip's mark, -bold
+     kept beside each so the selector can be shown in either. */
+  "widget-bold-duotone",
+  "widget-bold",
+  "wallet-money-bold-duotone",
+  "wallet-money-bold",
+  "calculator-bold-duotone",
+  "calculator-bold",
+  "graph-up-bold-duotone",
+  "graph-up-bold",
+  "case-bold-duotone",
+  "case-bold",
+  "code-square-bold-duotone",
+  "code-square-bold",
+  "palette-bold-duotone",
+  "palette-bold",
+  "test-tube-bold-duotone",
+  "test-tube-bold",
+  "library-bold-duotone", // Law — Solar has no scales; a columned building reads as a court
+  "library-bold",
+  "stethoscope-bold-duotone",
+  "stethoscope-bold",
+  "lightbulb-bolt-bold-duotone",
+  "lightbulb-bolt-bold",
+  "pen-new-square-bold-duotone",
+  "pen-new-square-bold",
 ];
 
 /* The reader's THIRD Solar surface, and a deliberate one (owner, 2026-08-02).

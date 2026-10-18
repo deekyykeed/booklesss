@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { ClaudeUI } from "@/components/home/claude-ui/ClaudeUI";
+import { AppShell } from "@/components/kit/AppShell";
+import { kitFonts } from "@/components/kit/fonts";
 import { openGraph, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -8,22 +9,18 @@ export const metadata: Metadata = {
   openGraph: openGraph({ title: SITE_NAME, description: SITE_DESCRIPTION, path: "/dashboard" }),
 };
 
-/* /dashboard IS THE REFERENCE UI, as of 2026-08-28. Not adapted, not remapped —
- * the owner asked for a replacement to work forward from: "100% the ui, that's
- * where I want to start from."
+/* /dashboard IS THE APP BUILT FROM THE KIT, as of 2026-10-18 evening: the
+ * Ron sidebar as the real navigation (a pulled drawer on a phone) and the
+ * marketplace's first page behind it (owner: "build out the first page of the
+ * marketplace — I want to see what I'm dealing with on desktop and mobile").
+ * Studio and My courses inside it are the video framework from earlier the
+ * same day. The claude.ai reference it replaced is ClaudeUI.tsx, kept because
+ * the studio components still live in its folder.
  *
- * ⚠️ THE GATES ARE GONE FROM THIS PAGE, DELIBERATELY. <RequireAccount> and
- * <RequireOnboarding> render nothing and redirect, so with either in place the
- * page could not be looked at without a finished account — which defeats a
- * surface whose only current purpose is to be looked at and built on. Nothing
- * here reads a student's data, so there is nothing to protect yet. THEY GO BACK
- * THE MOMENT THIS RENDERS ANYTHING REAL: the screen it replaced was gated, and
- * the reasoning (owner, 2026-08-03: reading a shared step stays open to
- * everyone, but the dashboard is the student's own record) has not changed.
- *
- * What it replaced — one session list and a voice button, and the shell that
- * briefly wrapped it — is in `components/home/archive/`.
+ * ⚠️ STILL UNGATED, for the reason the reference was: nothing here reads a
+ * student's data yet (the courses are placeholders). The gates go back the
+ * moment it renders anything real.
  */
 export default function DashboardPage() {
-  return <ClaudeUI />;
+  return <AppShell className={kitFonts} />;
 }
