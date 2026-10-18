@@ -54,7 +54,7 @@ export function ToApp() {
   const through = signedIn === true || (!authEnabled && hydrated && daysStudied > 0);
 
   useEffect(() => {
-    if (through) router.replace("/dashboard");
+    if (through) router.replace("/marketplace");
   }, [through, router]);
 
   return null;

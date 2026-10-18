@@ -155,6 +155,14 @@ const ICONS = {
      (2026-08-29). Kept for the Settings nav's "Claude Code" row, which is
      its only caller now. */
   code: "source-code",
+
+  // the marketplace (/marketplace, 2026-10-18) — play and star are drawn
+  // filled by the page's CSS (`.mk-fill path { fill: currentColor }`), since
+  // the set has no solid twins
+  home: "home-03",
+  play: "play",
+  star: "star",
+  bell: "notification-03",
 };
 
 /* ⚠️ GLYPHS THE SET DOES NOT HAVE, drawn on Hugeicons' own 24 grid at its own

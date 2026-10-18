@@ -1,0 +1,242 @@
+/* The learner marketplace, 1:1 with the Paper boards "Learner — Marketplace
+   (desktop)" and "(mobile)". Every class is prefixed mk- so nothing here can
+   collide with a global name (the .course-card lesson in CLAUDE.md).
+
+   The widget recipes (shell, pill, featured gradient, folder) are copied from
+   Paper's computed styles on "BUILD — Widgets", with the shadows scaled to
+   the smaller size. The gradients use "in oklab" interpolation exactly as
+   Paper wrote them. */
+
+.mk {
+  --mk-ground: #e3e3e3;
+  --mk-ink: #000000;
+  --mk-grey: #9a9a9a;
+  --mk-stat: #717173;
+  --mk-shell: linear-gradient(in oklab 180deg, oklab(98.2% 0 0) 0%, oklab(97.3% 0 0) 50%, oklab(97.9% 0 0) 80%, oklab(99.1% 0 0) 100%);
+  --mk-shell-shadow: #ffffffe6 0 0 0 1.5px inset, #ffffff8c 0 0 5px 2px inset, #ffffffd9 0 -7px 9px -4px inset, #0000000a 0 1px 2px;
+  --mk-pill: radial-gradient(ellipse 28% 32% at 94% 4% in oklab, oklab(96.3% 0.010 0.003 / 95%) 0%, oklab(96.3% 0.010 0.003 / 0%) 100%),
+    radial-gradient(ellipse 40% 55% at 100% 86% in oklab, oklab(77.8% 0.101 -0.053 / 95%) 0%, oklab(77.8% 0.101 -0.053 / 0%) 100%),
+    radial-gradient(ellipse 45% 30% at 86% 36% in oklab, oklab(78.2% 0.117 0.050 / 90%) 0%, oklab(78.2% 0.117 0.050 / 0%) 100%),
+    linear-gradient(in oklab 180deg, oklab(83% 0.060 0.092) 0%, oklab(82.2% 0.068 0.087) 14%, oklab(80.8% 0.083 0.071) 25%, oklab(77.8% 0.091 0.026) 36%, oklab(71.3% 0.087 -0.062) 45%, oklab(62.9% 0.061 -0.155) 53%, oklab(58.9% 0.031 -0.207) 62%, oklab(58.8% 0.019 -0.224) 75%, oklab(59.2% 0.011 -0.221) 100%);
+  --mk-pill-shadow: #ffffff99 0 1px 2px inset, #ffffff2e 0 -1px 2px inset, #505fff66 0 8px 16px;
+
+  min-height: 100svh;
+  font-family: var(--font-sans), Inter, system-ui, sans-serif;
+  color: var(--mk-ink);
+  -webkit-font-smoothing: antialiased;
+  /* The Parrot ground, as real gradients (owner: it ships on the site). */
+  background-color: #cfc886;
+  background-image: radial-gradient(ellipse 55% 45% at 72% 0% in oklab, oklab(73.9% 0.092 0.064) 0%, oklab(73.9% 0.092 0.064 / 0%) 100%),
+    radial-gradient(ellipse 45% 60% at 0% 15% in oklab, oklab(84.2% -0.054 0.094) 0%, oklab(84.2% -0.054 0.094 / 0%) 100%),
+    radial-gradient(ellipse 50% 50% at 100% 100% in oklab, oklab(83.2% -0.042 0.091) 0%, oklab(83.2% -0.042 0.091 / 0%) 100%),
+    linear-gradient(in oklab 180deg, oklab(79% 0.019 0.080) 0%, oklab(81% -0.004 0.082) 100%);
+  background-attachment: fixed;
+  padding: 40px;
+}
+:where(.mk) *, :where(.mk) *::before, :where(.mk) *::after { box-sizing: border-box; }
+:where(.mk) :is(p, h1, h2, h3) { margin: 0; }
+:where(.mk) a { color: inherit; text-decoration: none; }
+:where(.mk) button { font: inherit; color: inherit; border: 0; background: none; padding: 0; cursor: pointer; }
+.mk b { font-weight: 600; color: var(--mk-ink); }
+.mk-fill path { fill: currentColor; }
+
+/* ---------- the device frame (desktop) ---------- */
+.mk-frame {
+  max-width: 1460px;
+  margin: 0 auto;
+  display: flex;
+  gap: 18px;
+  padding: 10px 10px 10px 19px;
+  border-radius: 48px;
+  border: 2px solid #ffffffbf;
+  background-image: linear-gradient(in oklab 180deg, oklab(93.5% -0.025 0.037) 0%, oklab(92.4% -0.003 0.035) 55%, oklab(91.1% 0.009 0.031) 100%);
+  box-shadow: #785a282e 0 30px 60px;
+}
+.mk-rail { width: 56px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; padding: 9px 0; }
+.mk-rail-logo {
+  width: 56px; height: 56px; border-radius: 50%; background: #fff;
+  display: grid; place-items: center; font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 22px;
+}
+.mk-rail-nav { margin-top: auto; margin-bottom: auto; display: flex; flex-direction: column; gap: 10px; }
+.mk-rail-foot { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.mk-rail-btn { width: 56px; height: 56px; border-radius: 50%; background: #fff; display: grid; place-items: center; color: #121212; }
+.mk-rail-btn.is-on { background: #121212; color: #fff; }
+.mk-rail-me { width: 54px; height: 54px; border-radius: 50%; overflow: hidden; background: #e7e7e7; border: 2px solid #fff; }
+.mk-rail-me img, .mk-me-ring img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.mk-panel {
+  flex: 1; min-width: 0;
+  border-radius: 40px;
+  background: var(--mk-ground);
+  padding: 20px 20px 28px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+/* ---------- the widget shell ---------- */
+.mk-shell { background-image: var(--mk-shell); box-shadow: var(--mk-shell-shadow); position: relative; }
+.mk-pill {
+  background-image: var(--mk-pill); box-shadow: var(--mk-pill-shadow);
+  color: #fff; font-weight: 500; letter-spacing: -0.02em;
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  transition: transform 160ms ease, filter 160ms ease;
+}
+.mk-pill:hover { filter: brightness(1.04); }
+.mk-pill:active { transform: scale(0.97); }
+
+/* ---------- top row ---------- */
+.mk-top { display: grid; grid-template-columns: minmax(0, 640fr) minmax(0, 421fr) 110px 110px; gap: 12px; }
+.mk-greet { height: 110px; border-radius: 44px; padding: 22px 32px 0 30px; }
+.mk-greet-head { display: flex; align-items: center; gap: 8px; font-size: 15px; line-height: 22px; font-weight: 700; letter-spacing: -0.01em; color: #c3c3c3; }
+.mk-greet-line { margin-top: 8px; max-width: 330px; font-size: 19px; line-height: 24px; font-weight: 500; color: var(--mk-grey); padding-left: 2px; }
+
+.mk-search { height: 110px; border-radius: 44px; display: flex; align-items: center; padding: 0 14px 0 28px; gap: 10px; cursor: text; }
+.mk-search-icon { color: #bdbdbd; flex-shrink: 0; }
+.mk-search input {
+  flex: 1; min-width: 0; border: 0; outline: 0; background: transparent;
+  font: inherit; font-size: 18px; font-weight: 500; color: var(--mk-ink);
+}
+.mk-search input::placeholder { color: #a6a6a6; }
+.mk-pill-search { width: 148px; height: 82px; border-radius: 41px; font-size: 21px; padding-top: 4px; flex-shrink: 0; }
+
+.mk-square { height: 110px; border-radius: 40px; display: grid; place-items: center; }
+.mk-me-ring { width: 58px; height: 58px; border-radius: 50%; overflow: hidden; border: 1px solid #cfcfcf; background: #e7e7e7; box-shadow: #fffffff2 0 1px 1px; }
+
+.mk-plus { position: relative; display: grid; place-items: center; }
+.mk-plus svg { position: relative; filter: blur(0.6px); }
+.mk-plus-glow { position: absolute; inset: 30% 10% -10%; border-radius: 50%; background: #5f64ff52; filter: blur(9px); }
+
+/* ---------- featured + collections ---------- */
+.mk-row { display: grid; grid-template-columns: minmax(0, 620fr) minmax(0, 336fr) minmax(0, 336fr); gap: 12px; }
+
+.mk-featured { position: relative; height: 400px; border-radius: 72px; background: #fff; box-shadow: #00000009 0 0 0 1px; overflow: hidden; }
+.mk-featured-glow {
+  position: absolute; inset: 8px; border-radius: 64px;
+  background-image: radial-gradient(ellipse 16% 20% at 0% 0% in oklab, oklab(95.7% 0.009 0.034 / 90%) 0%, oklab(95.7% 0.009 0.034 / 0%) 100%),
+    linear-gradient(in oklab 203deg, oklab(96% 0.002 -0.0006) 0%, oklab(96% 0.002 -0.0006) 21%, oklab(93% 0.022 0.007 / 95%) 26%, oklab(86.9% 0.059 0.028 / 85%) 30%, oklab(80.3% 0.089 0.066 / 50%) 34%, oklab(80.3% 0.089 0.066 / 0%) 39%),
+    radial-gradient(ellipse 50% 42% at 96% 62% in oklab, oklab(80.3% 0.100 0.026 / 92%) 0%, oklab(80.3% 0.100 0.026 / 0%) 100%),
+    radial-gradient(ellipse 34% 22% at 100% 100% in oklab, oklab(80.5% 0.071 -0.062 / 95%) 0%, oklab(80.5% 0.071 -0.062 / 0%) 100%),
+    linear-gradient(in oklab 180deg, oklab(86.1% 0.033 0.106) 0%, oklab(85% 0.042 0.103) 22%, oklab(82.8% 0.063 0.085) 34%, oklab(80.5% 0.081 0.062) 41%, oklab(78.9% 0.087 0.042) 47%, oklab(78.1% 0.082 0.014) 54%, oklab(74.9% 0.075 -0.039) 62%, oklab(69.6% 0.062 -0.103) 71%, oklab(67.1% 0.041 -0.145) 80%, oklab(62.5% 0.016 -0.183) 90%, oklab(60.3% 0.006 -0.199) 100%);
+  box-shadow: #ffffff80 0 8px 14px -4px inset;
+}
+.mk-featured-eyebrow { position: absolute; left: 46px; top: 42px; font-size: 13px; line-height: 16px; font-weight: 700; letter-spacing: 0.06em; color: #ffffffd9; }
+.mk-featured-title { position: absolute; left: 44px; top: 64px; font-size: 64px; line-height: 72px; font-weight: 700; letter-spacing: -0.04em; color: #fff; }
+.mk-featured-play {
+  position: absolute; right: 48px; top: 46px; width: 74px; height: 74px; border-radius: 50%;
+  background: #fff; display: grid; place-items: center; box-shadow: #505fff33 0 8px 18px; color: #000;
+}
+.mk-featured-ghost { position: absolute; left: 62px; right: 62px; top: 196px; height: 64px; border-radius: 32px; background: #ffffff57; box-shadow: #ffffffd9 0 1px 0 inset; }
+.mk-note { position: absolute; left: 20px; right: 20px; bottom: 18px; height: 168px; border-radius: 56px; background: #fff; padding: 34px 34px 0 30px; }
+.mk-note-head { display: flex; align-items: center; font-size: 15px; line-height: 22px; font-weight: 700; color: #c3c3c3; }
+.mk-note-head .mk-sun { margin-right: 8px; }
+.mk-note-line { margin-top: 16px; padding-left: 4px; max-width: 470px; font-size: 20px; line-height: 28px; font-weight: 500; color: var(--mk-grey); }
+
+.mk-collection { height: 400px; border-radius: 72px; display: block; padding: 46px 40px 0; transition: transform 200ms ease; }
+.mk-collection:hover { transform: translateY(-2px); }
+.mk-folder { position: relative; width: 150px; height: 128px; }
+.mk-folder-glow { position: absolute; left: 10px; top: 81px; width: 130px; height: 52px; border-radius: 30px; background: #696eff6b; filter: blur(14px); }
+.mk-folder-ledge {
+  position: absolute; left: 0; top: 38px; width: 150px; height: 90px; border-radius: 23px;
+  background-image: linear-gradient(in oklab 90deg, oklab(77.6% 0.020 -0.108) 0%, oklab(69.7% 0.023 -0.160) 8%, oklab(69.2% 0.017 -0.162) 50%, oklab(71% 0.020 -0.150) 70%, oklab(75% 0.032 -0.121) 86%, oklab(79.9% 0.040 -0.076) 100%);
+  box-shadow: #ffffff73 0 -1px 2px inset, #ffffff2e 0 0 0 1px inset;
+}
+.mk-folder-face { position: absolute; left: 0; top: 0; width: 150px; height: 108px; }
+.mk-dots { position: absolute; right: 47px; top: 50px; display: flex; flex-direction: column; gap: 8px; }
+.mk-dots i { width: 7px; height: 7px; border-radius: 50%; background: #000; display: block; }
+.mk-collection-tag { display: block; margin-top: 40px; font-size: 15px; line-height: 20px; font-weight: 700; color: #bbbbbb; }
+.mk-collection-name { display: block; margin-top: 2px; font-size: 42px; line-height: 48px; font-weight: 700; letter-spacing: -0.015em; }
+.mk-collection-sub { display: block; margin-top: 6px; font-size: 14px; line-height: 18px; font-weight: 500; color: var(--mk-grey); padding-left: 1px; }
+.mk-stats { display: flex; gap: 22px; margin-top: 26px; padding-left: 1px; font-size: 20px; line-height: 24px; font-weight: 500; color: var(--mk-stat); }
+.mk-stats span { display: inline-flex; align-items: center; gap: 7px; }
+.mk-stat-mark { width: 21px; height: 16px; }
+.mk-stat-doc { width: 14px; }
+
+/* ---------- popular ---------- */
+.mk-head { display: flex; align-items: baseline; justify-content: space-between; padding: 6px 20px 0 10px; }
+.mk-head h2 { font-size: 22px; line-height: 28px; font-weight: 700; letter-spacing: -0.015em; }
+.mk-head a { font-size: 15px; font-weight: 500; color: var(--mk-grey); }
+.mk-courses { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.mk-course { height: 300px; border-radius: 44px; padding: 10px; }
+.mk-course-img { width: 100%; height: 150px; border-radius: 34px; object-fit: cover; display: block; }
+.mk-tag {
+  position: absolute; left: 24px; top: 24px; height: 26px; padding: 0 11px; border-radius: 13px;
+  background: #ffffffe6; display: flex; align-items: center; font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+}
+.mk-tag-dark { background: #000; color: #fff; }
+.mk-course-title { margin: 16px 14px 0; font-size: 17px; line-height: 22px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mk-course-meta { margin: 2px 14px 0; font-size: 13px; line-height: 18px; font-weight: 500; color: var(--mk-grey); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mk-course-foot { position: absolute; left: 14px; right: 24px; bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
+.mk-pill-sm { width: 120px; height: 48px; border-radius: 24px; font-size: 15px; letter-spacing: 0; }
+.mk-rating { display: inline-flex; align-items: center; gap: 5px; font-size: 15px; font-weight: 600; }
+.mk-star { color: #fdc201; }
+
+.mk-tabs { display: none; }
+
+/* ---------- a narrower desktop ---------- */
+@media (max-width: 1280px) and (min-width: 900px) {
+  .mk { padding: 24px; }
+  .mk-featured-title { font-size: 52px; }
+  .mk-collection { padding: 40px 30px 0; }
+  .mk-collection-name { font-size: 34px; }
+  .mk-dots { right: 34px; }
+  .mk-courses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ---------- the phone board ---------- */
+@media (max-width: 899px) {
+  .mk { background: var(--mk-ground); padding: 16px 16px calc(112px + env(safe-area-inset-bottom)); }
+  .mk-frame { display: block; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; max-width: 480px; }
+  .mk-rail, .mk-create { display: none; }
+  .mk-panel { background: none; padding: 0; border-radius: 0; gap: 12px; }
+
+  .mk-top { grid-template-columns: minmax(0, 1fr) 68px; }
+  .mk-greet { grid-column: 1 / -1; height: 96px; border-radius: 36px; padding: 19px 24px 0 22px; }
+  .mk-greet-head { font-size: 13px; line-height: 20px; gap: 6px; }
+  .mk-greet-head .mk-sun { width: 18px; height: 18px; }
+  .mk-greet-line { margin-top: 5px; font-size: 16px; line-height: 20px; max-width: 290px; }
+  .mk-search { height: 72px; border-radius: 30px; padding: 0 9px 0 20px; gap: 8px; }
+  .mk-search input { font-size: 16px; }
+  .mk-pill-search { width: 106px; height: 54px; border-radius: 27px; font-size: 16px; padding-top: 2px; }
+  .mk-me { height: 72px; border-radius: 30px; }
+  .mk-me-ring { width: 40px; height: 40px; }
+
+  .mk-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .mk-featured { grid-column: 1 / -1; height: 320px; border-radius: 56px; }
+  .mk-featured-glow { inset: 7px; border-radius: 50px; }
+  .mk-featured-eyebrow { left: 32px; top: 34px; font-size: 11px; line-height: 14px; }
+  .mk-featured-title { left: 30px; top: 52px; font-size: 44px; line-height: 50px; }
+  .mk-featured-play { right: 30px; top: 32px; width: 52px; height: 52px; }
+  .mk-featured-play svg { width: 17px; height: 17px; }
+  .mk-featured-ghost { left: 40px; right: 40px; top: 150px; height: 50px; }
+  .mk-note { left: 14px; right: 14px; bottom: 14px; height: 142px; border-radius: 44px; padding: 25px 24px 0 22px; }
+  .mk-note-head { font-size: 12px; line-height: 20px; }
+  .mk-note-head .mk-sun { width: 18px; height: 18px; margin-right: 6px; }
+  .mk-note-line { margin-top: 10px; padding-left: 2px; font-size: 16px; line-height: 21px; max-width: 260px; }
+
+  .mk-collection { height: 236px; border-radius: 44px; padding: 26px 22px 0; }
+  .mk-folder { transform: scale(0.613); transform-origin: 0 0; height: 78px; }
+  .mk-dots { right: 22px; top: 30px; gap: 5px; }
+  .mk-dots i { width: 5px; height: 5px; }
+  .mk-collection-tag { margin-top: 20px; font-size: 11px; line-height: 14px; }
+  .mk-collection-name { font-size: 24px; line-height: 30px; }
+  .mk-collection-sub { margin-top: 2px; font-size: 12px; line-height: 16px; }
+  .mk-stats { gap: 16px; margin-top: 10px; font-size: 14px; line-height: 18px; }
+  .mk-stats span { gap: 6px; }
+  .mk-stat-mark { width: 14px; height: 11px; }
+  .mk-stat-doc { width: 9px; }
+
+  .mk-head { padding: 8px 8px 0; }
+  .mk-head h2 { font-size: 20px; line-height: 26px; }
+  .mk-head a { font-size: 14px; }
+  .mk-courses { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+
+  .mk-tabs {
+    display: flex; align-items: center; justify-content: space-between;
+    position: fixed; z-index: 20; left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom));
+    max-width: 448px; margin: 0 auto;
+    height: 76px; border-radius: 38px; padding: 0 12px;
+    box-shadow: var(--mk-shell-shadow), #0000001a 0 6px 18px;
+  }
+  .mk-tab { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; color: #8a8a8a; position: relative; }
+  .mk-tab.is-on { background: #000; color: #fff; }
+  .mk-tab-bell::after { content: ""; position: absolute; left: 30px; top: 13px; width: 8px; height: 8px; border-radius: 50%; background: #ff6b5e; }
+}
