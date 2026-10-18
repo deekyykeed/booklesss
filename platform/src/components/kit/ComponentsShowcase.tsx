@@ -1,5 +1,6 @@
 "use client";
 
+import { useLayoutEffect, useRef } from "react";
 import { Fit } from "./primitives";
 import { AvatarTile, BookCall, BriefCard, FilesCard, GlassButtonState, NudgeCard, PlusTile } from "./JayWidgets";
 import { RonSidebar } from "./RonSidebar";
@@ -25,10 +26,35 @@ const SWATCHES: [string, string][] = [
   ["Blue", "#5C68FE"],
 ];
 
+/* The widest pair that shares a row on a phone: the brief (382.5) beside the
+ * avatar (166) with the 26.5 gutter between — and Happy Files (346.5) beside
+ * the add tile (201.5) comes to the same 575. Below that column width every
+ * component on the page shrinks by the same factor. */
+const PAIR = 575;
+
 export function ComponentsShowcase({ className }: { className?: string }) {
+  const main = useRef<HTMLElement>(null);
+  const wrap = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const host = main.current;
+    const col = wrap.current;
+    if (!host || !col) return;
+    const set = () => {
+      // 1px under the column so the pairs never round over and wrap.
+      const s = Math.min(1, (col.clientWidth - 1) / PAIR);
+      host.style.setProperty("--kit-s", s.toFixed(4));
+      host.dataset.ready = "";
+    };
+    set();
+    const ro = new ResizeObserver(set);
+    ro.observe(col);
+    return () => ro.disconnect();
+  }, []);
+
   return (
-    <main className={`kit ${className ?? ""}`}>
-      <div className="kit-wrap">
+    <main ref={main} className={`kit ${className ?? ""}`}>
+      <div ref={wrap} className="kit-wrap">
         <header className="kit-head">
           <h1>Components</h1>
           <p>

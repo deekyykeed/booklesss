@@ -1,51 +1,161 @@
 "use client";
 
-import {
-  useId,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-  type PointerEvent,
-  type ReactNode,
-} from "react";
+import { useId, useLayoutEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from "react";
+import { folderPath, squircleClip, squirclePath } from "./squircle";
 
-/* Scales a fixed-size widget down to the width it is given, never up. The
- * widgets are drawn at the reference's own 1x size (half the Paper board's
- * @2x), so on a phone a 563px card has to shrink to ~358px without
- * reflowing — `zoom` rather than `transform: scale` because zoom also shrinks
- * the box the widget occupies, so the page below it moves up with it.
- * Hidden until measured, then faded in, so a phone never paints the
- * full-size widget overflowing for a frame before hydration. */
+/* A widget at its drawn size. Every Fit on the page shares ONE scale, set on
+ * .kit as --kit-s by the showcase (the column width ÷ 575, the width of the
+ * widest pair of widgets that share a row on a phone). It used to be one
+ * scale per widget, each shrunk to fit the screen on its own — so on a phone
+ * Book a Call lost a third of its size while the avatar kept all of its, and
+ * the set stopped reading as one set (owner, 2026-10-18: "things are scaled
+ * up too much or too little"). `zoom` rather than transform because zoom also
+ * shrinks the box, so what follows moves up with it. */
 export function Fit({ w, children }: { w: number; children: ReactNode }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [zoom, setZoom] = useState(1);
-  const [ready, setReady] = useState(false);
-
-  useLayoutEffect(() => {
-    const host = ref.current?.parentElement;
-    if (!host) return;
-    const measure = () => {
-      setZoom(Math.min(1, host.clientWidth / w));
-      setReady(true);
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(host);
-    return () => ro.disconnect();
-  }, [w]);
-
   return (
-    <div
-      ref={ref}
-      className="kit-fit"
-      data-ready={ready ? "" : undefined}
-      style={{ width: w, zoom } as CSSProperties}
-    >
+    <div className="kit-fit" style={{ width: w }}>
       {children}
     </div>
   );
 }
+
+/* ---------------------------------------------------------------- surfaces */
+
+type SurfaceKind = "tile" | "white" | "glass" | "card";
+
+type Glow = { top?: string; bottom?: string };
+
+/* The body of a card, drawn as a squircle in SVG — CSS cannot draw the shape,
+ * and a clip-path would cut away the rim and the glows that make these read as
+ * glass. Every layer is the same path, so the rim and the glow follow the
+ * corner exactly:
+ *
+ *   tile  — the Jay soft tile: #F6F6F6 rising to white at the base, a 1px
+ *           white rim, a white glow along the bottom edge. Optional layers
+ *           (opacity 0 until the card's CSS turns them on): a lift shadow, a
+ *           selection ring, a pressed inner shade.
+ *   white — the brief card's white frame.
+ *   glass — the Ron panel: translucent lavender-grey, a top rim, a long soft
+ *           drop shadow.
+ *   card  — a Ron card: near-white with a white hairline and two coloured
+ *           glows, one above and one below.
+ *
+ * Sits behind the card's content (z-index -1 inside the card's own stacking
+ * context — the card must be `isolation: isolate`). */
+export function Surface({
+  w,
+  h,
+  r,
+  s = 0.8,
+  kind = "tile",
+  glow,
+}: {
+  w: number;
+  h: number;
+  r: number | [number, number, number, number];
+  s?: number;
+  kind?: SurfaceKind;
+  glow?: Glow;
+}) {
+  const uid = useId().replace(/[^a-zA-Z0-9]/g, "");
+  const id = (x: string) => `sf${uid}${x}`;
+  const url = (x: string) => `url(#${id(x)})`;
+  const d = squirclePath(w, h, r, s);
+  const blur = (x: string, dev: number) => (
+    <filter id={id(x)} x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation={dev} />
+    </filter>
+  );
+
+  /* Exactly the card's box, with the shadows and rings drawn past it through
+   * overflow: visible. A padded viewBox would make the box itself wider than
+   * the card, and near the screen edge that box became a sideways scroll. */
+  return (
+    <svg
+      className="kit-surface"
+      width={w}
+      height={h}
+      viewBox={`0 0 ${w} ${h}`}
+      style={{ left: 0, top: 0 }}
+      aria-hidden="true"
+      focusable="false"
+    >
+      <defs>
+        <clipPath id={id("c")}>
+          <path d={d} />
+        </clipPath>
+        {kind === "tile" && (
+          <linearGradient id={id("f")} x1="0" y1="0" x2="0" y2={h} gradientUnits="userSpaceOnUse">
+            <stop offset="0" stopColor="#F8F8F8" />
+            <stop offset="0.55" stopColor="#F6F6F6" />
+            <stop offset="0.86" stopColor="#F7F7F7" />
+            <stop offset="1" stopColor="#FFFFFF" />
+          </linearGradient>
+        )}
+        {kind === "glass" && (
+          <linearGradient id={id("f")} x1="0" y1="0" x2="0" y2={h} gradientUnits="userSpaceOnUse">
+            <stop offset="0" stopColor="#EEEDF2" stopOpacity="0.94" />
+            <stop offset="0.55" stopColor="#E8E8EB" stopOpacity="0.94" />
+            <stop offset="1" stopColor="#E5E5E7" stopOpacity="0.96" />
+          </linearGradient>
+        )}
+        <linearGradient id={id("low")} x1="0" y1={h - 26} x2="0" y2={h} gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#FFFFFF" stopOpacity="0" />
+          <stop offset="1" stopColor="#FFFFFF" stopOpacity="1" />
+        </linearGradient>
+        <linearGradient id={id("rim")} x1="0" y1="0" x2="0" y2={h} gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#FFFFFF" stopOpacity="0.9" />
+          <stop offset="0.35" stopColor="#FFFFFF" stopOpacity="0.45" />
+          <stop offset="1" stopColor="#FFFFFF" stopOpacity="0.25" />
+        </linearGradient>
+        {blur("b4", 4)}
+        {blur("b6", 6)}
+        {blur("b12", 12)}
+        {blur("b26", 26)}
+      </defs>
+
+      {kind === "tile" && (
+        <>
+          <path className="kit-sf-lift" d={d} fill="rgba(90,90,140,0.14)" filter={url("b12")} transform="translate(0 12)" />
+          <path className="kit-sf-ring" d={d} fill="none" stroke="rgba(94,104,255,0.32)" strokeWidth="10" />
+          <path className="kit-sf-ring" d={d} fill="none" stroke="#FFFFFF" strokeWidth="4" />
+          <path d={d} fill={url("f")} />
+          <g clipPath={url("c")}>
+            <path d={d} fill="none" stroke="#FFFFFF" strokeWidth="2" />
+            <path d={d} fill="none" stroke={url("low")} strokeWidth="16" filter={url("b4")} />
+            <path className="kit-sf-press" d={d} fill="none" stroke="rgba(0,0,0,0.07)" strokeWidth="12" filter={url("b6")} transform="translate(0 4)" />
+          </g>
+        </>
+      )}
+
+      {kind === "white" && <path d={d} fill="#FFFFFF" />}
+
+      {kind === "glass" && (
+        <>
+          <path d={d} fill="rgba(60,55,80,0.16)" filter={url("b26")} transform="translate(0 24)" />
+          <path d={d} fill={url("f")} />
+          <g clipPath={url("c")}>
+            <path d={d} fill="none" stroke={url("rim")} strokeWidth="2" />
+          </g>
+        </>
+      )}
+
+      {kind === "card" && (
+        <>
+          {glow?.top && <path className="kit-sf-glow-t" d={d} fill={glow.top} filter={url("b6")} transform="translate(0 -3)" />}
+          {glow?.bottom && <path className="kit-sf-glow-b" d={d} fill={glow.bottom} filter={url("b6")} transform="translate(0 5)" />}
+          <path d={d} fill="none" stroke="rgba(255,255,255,0.95)" strokeWidth="2" />
+          <path className="kit-sf-card" d={d} fill="#FBFBFD" />
+        </>
+      )}
+    </svg>
+  );
+}
+
+/* ---------------------------------------------------------------- glass button */
+
+/* Measured off the reference: radius 40 at smoothing 0.6 (rmse 1.7px). */
+const BUTTON_CLIP = squircleClip(263, 125, 40, 0.6);
 
 /* The gradient glass button: a face, a lip under it (the button's thickness)
  * and a glow under that. The face's top-right sheen follows the pointer —
@@ -92,24 +202,26 @@ export function GlassButton({
       aria-label={label}
     >
       <span className="kit-gbtn-glow" aria-hidden />
-      <span className="kit-gbtn-lip" aria-hidden />
-      <span ref={face} className="kit-gbtn-face">
+      <span className="kit-gbtn-lip" style={{ clipPath: BUTTON_CLIP }} aria-hidden />
+      <span ref={face} className="kit-gbtn-face" style={{ clipPath: BUTTON_CLIP }}>
         {children}
       </span>
     </button>
   );
 }
 
+/* ---------------------------------------------------------------- happy files */
+
 /* Happy Files' folder, drawn as vectors. The face is a mesh of blurred colour
  * blobs clipped to the silhouette (peach top-left, coral right, a blue dome
  * rising from the bottom), under a cream inner glow along the top contour and
  * a thin peach halo outside it; the lip under it is the folder's thickness.
- * Every value was matched against the reference crop by rendering both side
- * by side, so change one and re-check. The ids are per-instance (useId) —
- * three folders on one page would otherwise share one set of filters. */
-const TOP = "M0 62 A62 62 0 0 1 62 0 H112 C130 0 134 45 154 45 H228 A58 58 0 0 1 286 103";
-const LIP = `${TOP} V186 A58 58 0 0 1 228 244 H58 A58 58 0 0 1 0 186 Z`;
-const FACE = `${TOP} V146 A58 58 0 0 1 228 204 H58 A58 58 0 0 1 0 146 Z`;
+ * The silhouette's corners are squircles too (folderPath). Every value was
+ * matched against the reference crop by rendering both side by side, so
+ * change one and re-check. The ids are per-instance (useId) — several folders
+ * on one page would otherwise share one set of filters. */
+const LIP = folderPath(244);
+const FACE = folderPath(204);
 
 export function HappyFolder({ className, style }: { className?: string; style?: CSSProperties }) {
   const uid = useId().replace(/[^a-zA-Z0-9]/g, "");
@@ -173,6 +285,8 @@ export function HappyFolder({ className, style }: { className?: string; style?: 
     </svg>
   );
 }
+
+/* ---------------------------------------------------------------- plus */
 
 /* The plus on the add tile: two capsules sharing one blue core, warm on the
  * top arm, pink on the right, lavender on the left. */

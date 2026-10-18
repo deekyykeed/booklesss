@@ -2,7 +2,13 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { HugeIcon } from "@/components/icons/huge";
-import { GlassButton, HappyFolder, PlusMark, useCountUp } from "./primitives";
+import { GlassButton, HappyFolder, PlusMark, Surface, useCountUp } from "./primitives";
+import { squircleClip } from "./squircle";
+
+/* The Jay tiles' corner, measured off the reference: radius 62.5 at smoothing
+ * 0.8 (1x). Every tile in the set shares it, tall or short. */
+const TILE_R = 62.5;
+const TILE_S = 0.8;
 
 /* The Jay widget set, live. Each widget is the Paper board "Widgets — Jay set
  * (1:1)" at half size, plus what a still frame cannot show: the stepper
@@ -56,6 +62,7 @@ export function BookCall() {
 
   return (
     <div className="kit-tile kit-call">
+      <Surface w={563} h={168.5} r={TILE_R} s={TILE_S} />
       <div className="kit-call-value" aria-live="polite">
         <span key={MINUTES[i]} className="kit-call-num" data-dir={dir}>
           {MINUTES[i]}
@@ -83,6 +90,7 @@ export function BookCall() {
 export function GlassButtonState({ state }: { state: "rest" | "hover" | "pressed" | "disabled" }) {
   return (
     <div className="kit-tile kit-state-cell">
+      <Surface w={320} h={165} r={TILE_R} s={TILE_S} />
       <div style={{ position: "absolute", left: 28.5, top: 15 }}>
         <GlassButton state={state === "hover" || state === "pressed" ? state : undefined} disabled={state === "disabled"}>
           <span className="kit-gbtn-label">Book a Call</span>
@@ -97,6 +105,7 @@ export function GlassButtonState({ state }: { state: "rest" | "hover" | "pressed
 export function AvatarTile() {
   return (
     <button type="button" className="kit-tile kit-avatar" aria-label="Your profile">
+      <Surface w={166} h={168.5} r={TILE_R} s={TILE_S} />
       <span className="kit-avatar-ring">
         <HugeIcon name="user" size={32} />
       </span>
@@ -118,6 +127,14 @@ const NOTES: ReactNode[] = [
 ];
 
 type Clock = { t: string; ap: string; hour: number };
+
+/* The brief's squircles: the gradient panel inside the white frame, the two
+ * ghost cards behind the note, and the note itself (rounder at the base,
+ * where it sits inside the frame's corner). */
+const PANEL_CLIP = squircleClip(370.5, 331.5, 63.5, 0.85);
+const GHOST_CLIP = squircleClip(276, 55, 32, 0.75);
+const GHOST_FAR_CLIP = squircleClip(221, 55, 28, 0.75);
+const NOTE_CLIP = squircleClip(350.5, 153, [44, 44, 52, 52], 0.75);
 
 function readClock(): Clock {
   const d = new Date();
@@ -205,14 +222,15 @@ export function BriefCard({ stack = 2, fixed }: { stack?: 1 | 2 | 3; fixed?: Clo
       onClick={next}
       aria-label="Show the next note"
     >
-      <span className="kit-brief-panel" aria-hidden />
+      <Surface w={382.5} h={344} r={69} s={0.85} kind="white" />
+      <span className="kit-brief-panel" style={{ clipPath: PANEL_CLIP }} aria-hidden />
       <span className="kit-brief-time">
         <b>{shown.t}</b>
         <i>{shown.ap}</i>
       </span>
-      {stack >= 3 && <span className="kit-ghost kit-ghost--far" aria-hidden />}
-      {stack >= 2 && <span className="kit-ghost" aria-hidden />}
-      <span className="kit-note">
+      {stack >= 3 && <span className="kit-ghost kit-ghost--far" style={{ clipPath: GHOST_FAR_CLIP }} aria-hidden />}
+      {stack >= 2 && <span className="kit-ghost" style={{ clipPath: GHOST_CLIP }} aria-hidden />}
+      <span className="kit-note" style={{ clipPath: NOTE_CLIP }}>
         <span className="kit-eyebrow">
           <Greeting hour={shown.hour} name="JAY" />
         </span>
@@ -264,6 +282,7 @@ export function FilesCard({ state }: { state?: "hover" | "selected" | "menu" }) 
         setSelected((s) => !s);
       }}
     >
+      <Surface w={346.5} h={344} r={TILE_R} s={TILE_S} />
       <HappyFolder className="kit-folder" />
       <button
         type="button"
@@ -357,6 +376,7 @@ export function PlusTile() {
   };
   return (
     <button type="button" className="kit-tile kit-plus" onClick={add} aria-label="Add">
+      <Surface w={201.5} h={188} r={TILE_R} s={TILE_S} />
       <span className="kit-plus-glow" aria-hidden />
       <PlusMark className="kit-plus-mark" />
       {ripples.map((k) => (
@@ -395,6 +415,7 @@ export function NudgeCard() {
   let left = typed;
   return (
     <div ref={ref} className="kit-tile kit-nudge">
+      <Surface w={527} h={188.5} r={TILE_R} s={TILE_S} />
       <span className="kit-eyebrow">
         <Greeting hour={hour} name="X’IES" size={28} />
       </span>

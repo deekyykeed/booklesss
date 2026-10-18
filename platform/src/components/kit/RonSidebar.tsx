@@ -2,6 +2,20 @@
 
 import { useMemo, useState } from "react";
 import { HugeIcon, type HugeIconName } from "@/components/icons/huge";
+import { Surface } from "./primitives";
+import { squircleClip } from "./squircle";
+
+/* Squircles for the frame, the panel and the cards. Ron's radii (24 panel,
+ * 22 card) at iOS smoothing. */
+const FRAME_CLIP = squircleClip(519, 933, 32, 0.6);
+const ART_CLIP = squircleClip(191, 190, 22, 0.6);
+const STACK_BACK_CLIP = squircleClip(195, 96, 22, 0.6);
+const STACK_FRONT_CLIP = squircleClip(203, 86, 22, 0.6);
+const WHITE_TOP = "rgba(255,255,255,0.75)";
+
+function CardSurface({ h, bottom, top = WHITE_TOP }: { h: number; bottom: string; top?: string }) {
+  return <Surface w={191} h={h} r={22} s={0.6} kind="card" glow={{ top, bottom }} />;
+}
 
 /* The Ron sidebar direction (owner, 2026-10-18: "I'm thinking this direction
  * for the sidebar"), rebuilt from the Paper board "Sidebar — Ron direction
@@ -82,7 +96,7 @@ export function RonSidebar() {
   const add = (id: string) => setSubs((s) => ({ ...s, [id]: (s[id] ?? 0) + 1 }));
 
   return (
-    <div className="kit-ron-frame">
+    <div className="kit-ron-frame" style={{ clipPath: FRAME_CLIP }}>
       {closed && (
         <button type="button" className="kit-ron-reopen" onClick={() => setClosed(false)}>
           <HugeIcon name="sidebar" size={18} />
@@ -90,6 +104,7 @@ export function RonSidebar() {
         </button>
       )}
       <aside className="kit-ron" data-closed={closed ? "" : undefined} aria-label="Sidebar">
+        <Surface w={503} h={917} r={24} s={0.6} kind="glass" />
         <div className="kit-ron-logo">
           <span className="kit-ron-mark" aria-hidden>
             <i />
@@ -173,11 +188,14 @@ export function RonSidebar() {
 
         <div className="kit-ron-cards">
           <button type="button" className="kit-ron-card kit-ron-insight">
-            <span className="kit-ron-dots" aria-hidden />
-            <span className="kit-ron-pixels" aria-hidden>
-              {Array.from({ length: 12 }, (_, k) => (
-                <i key={k} />
-              ))}
+            <CardSurface h={190} top="rgba(245,190,210,0.5)" bottom="rgba(175,190,240,0.55)" />
+            <span className="kit-ron-art" style={{ clipPath: ART_CLIP }} aria-hidden>
+              <span className="kit-ron-dots" />
+              <span className="kit-ron-pixels">
+                {Array.from({ length: 12 }, (_, k) => (
+                  <i key={k} />
+                ))}
+              </span>
             </span>
             <strong>AI Insights</strong>
             <span className="kit-ron-chev" aria-hidden>
@@ -210,6 +228,7 @@ export function RonSidebar() {
               <i style={{ width: 44 }} />
             </span>
             <button type="button" className="kit-ron-card kit-ron-card--file">
+              <CardSurface h={83} bottom="rgba(170,180,230,0.45)" />
               <strong>Invoices</strong>
               <small>193 files</small>
               <span className="kit-ron-chev" aria-hidden>
@@ -219,14 +238,15 @@ export function RonSidebar() {
           </div>
 
           <div className="kit-ron-group kit-ron-group--reporting">
-            <span className="kit-ron-stack kit-ron-stack--back" aria-hidden />
-            <span className="kit-ron-stack kit-ron-stack--front" aria-hidden>
+            <span className="kit-ron-stack kit-ron-stack--back" style={{ clipPath: STACK_BACK_CLIP }} aria-hidden />
+            <span className="kit-ron-stack kit-ron-stack--front" style={{ clipPath: STACK_FRONT_CLIP }} aria-hidden>
               <i style={{ width: 38 }} />
               <i style={{ width: 150, height: 1 }} />
               <i style={{ width: 30 }} />
               <i style={{ width: 22 }} />
             </span>
             <button type="button" className="kit-ron-card kit-ron-card--file">
+              <CardSurface h={89} bottom="rgba(240,185,205,0.55)" />
               <strong>Reporting</strong>
               <small>271 files</small>
               <span className="kit-ron-chev" aria-hidden>
@@ -236,6 +256,7 @@ export function RonSidebar() {
           </div>
 
           <button type="button" className="kit-ron-card kit-ron-card--file">
+            <CardSurface h={88} bottom="rgba(180,185,215,0.38)" />
             <strong>Analysis</strong>
             <small>295 files</small>
             <span className="kit-ron-chev" aria-hidden>
@@ -243,6 +264,7 @@ export function RonSidebar() {
             </span>
           </button>
           <button type="button" className="kit-ron-card kit-ron-card--file">
+            <CardSurface h={88} bottom="rgba(180,185,215,0.38)" />
             <strong>Overview</strong>
             <small>421 files</small>
             <span className="kit-ron-chev" aria-hidden>

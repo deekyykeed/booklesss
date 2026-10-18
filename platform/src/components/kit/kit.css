@@ -19,8 +19,9 @@
   --kit-blue: #5c68fe;
   --kit-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --kit-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --kit-sans: var(--font-inter), Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --kit-geo: var(--font-urbanist), Urbanist, var(--kit-sans);
+  /* Rubik is the main face (owner, 2026-10-18), the sidebar included. */
+  --kit-sans: var(--font-kit-main), Rubik, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --kit-geo: var(--kit-sans);
   --kit-mono: var(--font-dm-mono), "DM Mono", ui-monospace, monospace;
 
   min-height: 100svh;
@@ -134,26 +135,53 @@
  * 27px gutters. On a phone each widget is scaled to the column by <Fit>. */
 .kit-stage {
   width: 100%;
-  max-width: 756px;
+  max-width: calc(756px * var(--kit-s, 1));
   display: flex;
   flex-wrap: wrap;
-  gap: 27px 26.5px;
+  gap: calc(27px * var(--kit-s, 1)) calc(26.5px * var(--kit-s, 1));
 }
 
+/* Narrower than the reference's 756px column, the six pair up the way their
+ * widths allow at the shared scale: Book a Call alone, brief + avatar,
+ * Happy Files + add, the nudge alone. */
+@media (max-width: 800px) {
+  .kit-stage > :nth-child(1) {
+    order: 1;
+  }
+  .kit-stage > :nth-child(3) {
+    order: 2;
+  }
+  .kit-stage > :nth-child(2) {
+    order: 3;
+  }
+  .kit-stage > :nth-child(4) {
+    order: 4;
+  }
+  .kit-stage > :nth-child(5) {
+    order: 5;
+  }
+  .kit-stage > :nth-child(6) {
+    order: 6;
+  }
+}
+
+/* One scale for every component on the page (--kit-s, set by the showcase),
+ * so on a phone the set shrinks as a set instead of piece by piece. */
 .kit-fit {
   flex: none;
+  zoom: var(--kit-s, 1);
   opacity: 0;
   transition: opacity 0.35s var(--kit-ease);
 }
 
-.kit-fit[data-ready] {
+.kit[data-ready] .kit-fit {
   opacity: 1;
 }
 
 .kit-states {
   display: flex;
   flex-wrap: wrap;
-  gap: 18px;
+  gap: calc(22px * var(--kit-s, 1));
 }
 
 .kit-state {
@@ -182,14 +210,26 @@
 
 .kit-tile {
   position: relative;
+  isolation: isolate;
   border-radius: 62px;
-  background: linear-gradient(180deg, #f8f8f8 0%, #f6f6f6 55%, #f7f7f7 86%, #ffffff 100%);
-  box-shadow:
-    inset 0 1px 0 #ffffff,
-    inset 0 -8px 8px -4px rgba(255, 255, 255, 0.95),
-    inset 1px 0 0.5px rgba(255, 255, 255, 0.7),
-    inset -1px 0 0.5px rgba(255, 255, 255, 0.7);
-  transition: box-shadow 0.3s var(--kit-ease), transform 0.3s var(--kit-ease);
+  transition: transform 0.3s var(--kit-ease);
+}
+
+/* The squircle body every card stands on (<Surface>, primitives.tsx). It sits
+ * under the card's content inside the card's own stacking context, and its
+ * optional layers wait at opacity 0 for the card's state to turn them on. */
+.kit-surface {
+  position: absolute;
+  z-index: -1;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.kit-sf-lift,
+.kit-sf-ring,
+.kit-sf-press {
+  opacity: 0;
+  transition: opacity 0.3s var(--kit-ease);
 }
 
 .kit-tile--tall {
@@ -241,7 +281,7 @@
   right: 0;
   top: 0;
   height: 125px;
-  border-radius: 43px;
+  border-radius: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -517,9 +557,8 @@
   position: relative;
   width: 382.5px;
   height: 344px;
-  border-radius: 75px;
-  background: #ffffff;
-  box-shadow: inset 0 -1px 1.5px rgba(0, 0, 0, 0.035);
+  border-radius: 69px;
+  isolation: isolate;
   overflow: hidden;
   cursor: pointer;
   text-align: left;
@@ -592,9 +631,8 @@
   top: 175px;
   width: 350.5px;
   height: 153px;
-  border-radius: 46px 46px 56px 56px;
+  border-radius: 44px 44px 52px 52px;
   background: #ffffff;
-  box-shadow: 0 -3px 9px rgba(150, 80, 120, 0.06);
   transition: transform 0.42s var(--kit-ease), opacity 0.36s var(--kit-ease);
 }
 
@@ -676,12 +714,8 @@
   cursor: pointer;
 }
 
-.kit-files[data-selected] {
-  box-shadow:
-    inset 0 1px 0 #ffffff,
-    inset 0 -9px 9px -4px rgba(255, 255, 255, 0.95),
-    0 0 0 2px #ffffff,
-    0 0 0 5px rgba(94, 104, 255, 0.3);
+.kit-files[data-selected] .kit-sf-ring {
+  opacity: 1;
 }
 
 .kit-folder {
@@ -698,16 +732,17 @@
   .kit-files:hover .kit-folder {
     transform: translateY(-6px);
   }
-  .kit-files:hover {
-    box-shadow:
-      inset 0 1px 0 #ffffff,
-      inset 0 -9px 9px -4px rgba(255, 255, 255, 0.95),
-      0 12px 25px rgba(90, 90, 140, 0.1);
+  .kit-files:hover .kit-sf-lift {
+    opacity: 1;
   }
 }
 
 .kit-files[data-state="hover"] .kit-folder {
   transform: translateY(-6px);
+}
+
+.kit-files[data-state="hover"] .kit-sf-lift {
+  opacity: 1;
 }
 
 .kit-dots {
@@ -916,10 +951,9 @@
   transition-duration: 0.12s;
 }
 
-.kit-plus:active {
-  box-shadow:
-    inset 0 2.5px 6px rgba(0, 0, 0, 0.06),
-    inset 0 -5px 6px -3px rgba(255, 255, 255, 0.95);
+.kit-plus:active .kit-sf-press,
+.kit-plus[data-state="pressed"] .kit-sf-press {
+  opacity: 1;
 }
 
 .kit-plus[data-state="hover"] .kit-plus-mark {
@@ -1022,6 +1056,7 @@
   width: 519px;
   height: 933px;
   border-radius: 32px;
+  isolation: isolate;
   overflow: hidden;
   background: linear-gradient(180deg, #dcdae0 0%, #d5d3da 100%);
   font-family: var(--kit-geo);
@@ -1043,13 +1078,7 @@
   width: 503px;
   height: 917px;
   border-radius: 24px;
-  background: linear-gradient(180deg, rgba(238, 237, 242, 0.92) 0%, rgba(232, 232, 235, 0.92) 55%, rgba(229, 229, 231, 0.94) 100%);
-  -webkit-backdrop-filter: blur(30px);
-  backdrop-filter: blur(30px);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.85),
-    inset 1px 0 0 rgba(255, 255, 255, 0.5),
-    0 24px 60px rgba(60, 55, 80, 0.14);
+  isolation: isolate;
   color: #1e1e22;
   transition: transform 0.55s var(--kit-ease), opacity 0.4s var(--kit-ease);
 }
@@ -1409,22 +1438,32 @@
   flex: none;
   width: 191px;
   border-radius: 22px;
-  background: #fbfbfd;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.9),
-    0 -2px 8px rgba(255, 255, 255, 0.6),
-    0 5px 12px rgba(180, 185, 215, 0.22);
+  isolation: isolate;
   text-align: left;
-  transition: transform 0.35s var(--kit-spring), box-shadow 0.3s var(--kit-ease), background 0.3s var(--kit-ease);
+  transition: transform 0.35s var(--kit-spring);
+}
+
+.kit-ron-card .kit-sf-glow-b {
+  opacity: 0.8;
+  transform: translate(0, 5px);
+  transition: opacity 0.3s var(--kit-ease), transform 0.35s var(--kit-ease);
+}
+
+.kit-ron-card .kit-sf-glow-t {
+  transform: translate(0, -3px);
+}
+
+.kit-ron-card .kit-sf-card {
+  transition: fill 0.2s var(--kit-ease);
 }
 
 @media (hover: hover) {
   .kit-ron-card:hover {
     transform: translateY(-4px);
-    box-shadow:
-      0 0 0 1px rgba(255, 255, 255, 0.95),
-      0 -2px 10px rgba(255, 255, 255, 0.7),
-      0 14px 26px rgba(150, 160, 220, 0.32);
+  }
+  .kit-ron-card:hover .kit-sf-glow-b {
+    opacity: 1;
+    transform: translate(0, 11px);
   }
   .kit-ron-card:hover .kit-ron-chev {
     background: #ffffff;
@@ -1434,7 +1473,10 @@
 
 .kit-ron-card:active {
   transform: scale(0.97);
-  background: #f6f6f8;
+}
+
+.kit-ron-card:active .kit-sf-card {
+  fill: #f6f6f8;
 }
 
 .kit-ron-card--file {
@@ -1475,12 +1517,15 @@
 
 .kit-ron-insight {
   height: 190px;
-  overflow: hidden;
   padding: 20px 19px;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.9),
-    0 -3px 10px rgba(245, 190, 210, 0.35),
-    0 4px 12px rgba(175, 190, 240, 0.4);
+}
+
+/* The dot field and the pixel mark, clipped to the card's own squircle so
+ * the dots stop where the corner does. */
+.kit-ron-art {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
 
 .kit-ron-insight strong {
@@ -1687,10 +1732,6 @@
   top: 86px;
   height: 89px;
   padding-top: 24px;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.9),
-    0 -2px 8px rgba(255, 255, 255, 0.6),
-    0 6px 14px rgba(240, 185, 205, 0.38);
 }
 
 .kit-ron-cards > .kit-ron-card--file + .kit-ron-card--file {
@@ -1738,6 +1779,28 @@
   height: 70px;
   border-radius: 26px;
   background: linear-gradient(90deg, #ffb57c 0%, #ff9c8c 22%, #e89da4 38%, #d08abc 50%, #927edd 64%, #6363f9 80%, #5c68fe 100%);
+}
+
+/* The few shapes CSS still draws — the folder menu, the token chips, the
+ * small documents — take the native squircle where the browser has it
+ * (Chrome 139+); elsewhere they keep a plain radius, within a pixel at
+ * these sizes. */
+@supports (corner-shape: squircle) {
+  .kit-menu,
+  .kit-swatch div,
+  .kit-gradient,
+  .kit-ron-doc {
+    corner-shape: squircle;
+  }
+  .kit-menu {
+    border-radius: 34px;
+  }
+  .kit-swatch div {
+    border-radius: 30px;
+  }
+  .kit-gradient {
+    border-radius: 36px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
