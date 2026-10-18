@@ -385,6 +385,21 @@
   color: #8a8a8a;
 }
 
+/* The sheen's position is a registered property so it can be transitioned:
+ * a press slides the white to the left and a release slides it home, rather
+ * than the white jumping to wherever the finger landed (owner, 2026-10-18:
+ * "the white disappears … I'd rather it just move to the left"). */
+@property --mx {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 88%;
+}
+@property --my {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 6%;
+}
+
 /* The sizes live here, not inline, so the app can bring every button down
  * to the small one on a phone (app.css). */
 .kit-btn[data-size="sm"] { --h: 36px; --lip: 3px; --fs: 14px; --px: 14px; --icon: 16px; }
@@ -420,7 +435,12 @@
   font-weight: 600;
   letter-spacing: -0.01em;
   white-space: nowrap;
-  transition: transform 0.22s var(--kit-spring), filter 0.2s var(--kit-ease), background 0.2s var(--kit-ease);
+  transition:
+    transform 0.28s var(--kit-ease),
+    filter 0.24s var(--kit-ease),
+    background 0.2s var(--kit-ease),
+    --mx 0.32s var(--kit-ease),
+    --my 0.32s var(--kit-ease);
 }
 
 .kit-btn[data-icon-only] .kit-btn-face {
@@ -497,17 +517,24 @@
   background: linear-gradient(180deg, #ffffff 0%, #fafafa 55%, #f6f6f6 100%);
 }
 
+/* The press: quick but eased, never a cut (owner: "shouldn't be abrupt — it
+ * must feel smooth but still fast"). 140ms down on an ease-out, the release
+ * rides the face's own 280ms back up. */
 .kit-btn--glass:active:not(:disabled) .kit-btn-face,
 .kit-btn--glass[data-state="pressed"] .kit-btn-face {
-  transform: translateY(calc(var(--lip) * 0.7));
-  filter: brightness(0.96);
-  transition-duration: 0.08s;
+  --mx: 16%;
+  --my: 8%;
+  transform: translateY(calc(var(--lip) * 0.7)) scale(0.985);
+  filter: brightness(0.97);
+  transition-duration: 0.14s, 0.14s, 0.14s, 0.22s, 0.22s;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.35, 1);
 }
 
 .kit-btn--glass:active:not(:disabled) .kit-btn-glow,
 .kit-btn--glass[data-state="pressed"] .kit-btn-glow {
-  opacity: 0.5;
-  transform: scale(0.92);
+  opacity: 0.6;
+  transform: scale(0.94);
+  transition-duration: 0.14s;
 }
 
 .kit-btn--soft:active:not(:disabled) .kit-btn-face,
@@ -515,7 +542,8 @@
   transform: translateY(1px);
   background: linear-gradient(180deg, #f1f1f1 0%, #f4f4f4 100%);
   box-shadow: inset 0 1.5px 3px rgba(0, 0, 0, 0.07);
-  transition-duration: 0.08s;
+  transition-duration: 0.14s;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.35, 1);
 }
 
 .kit-btn:disabled {
