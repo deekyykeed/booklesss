@@ -270,6 +270,8 @@ export function FilesCard({
   stats = REFERENCE_STATS,
   actions = REFERENCE_MENU,
   onOpen,
+  titleSize,
+  onTitleFit,
 }: {
   state?: "hover" | "selected" | "menu";
   title?: string;
@@ -278,6 +280,10 @@ export function FilesCard({
   actions?: FolderAction[];
   /** Given, a tap on the card opens instead of selecting it. */
   onOpen?: () => void;
+  /** A size shared across a grid of cards, so every title is one size. */
+  titleSize?: number;
+  /** Reports the largest size at which this title fits its one line. */
+  onTitleFit?: (size: number, title: string) => void;
 }) {
   const [ref, seen] = useInView<HTMLDivElement>();
   const [menu, setMenu] = useState(state === "menu");
@@ -286,6 +292,16 @@ export function FilesCard({
   const [editing, setEditing] = useState(false);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const [size, setSize] = useState(TITLE_MAX);
+
+  // Re-measure once the face has loaded: a fallback face fits differently.
+  const [fonts, setFonts] = useState(0);
+  useEffect(() => {
+    let live = true;
+    document.fonts?.ready.then(() => live && setFonts(1));
+    return () => {
+      live = false;
+    };
+  }, []);
 
   useLayoutEffect(() => {
     const el = titleRef.current;
@@ -300,8 +316,9 @@ export function FilesCard({
     }
     el.style.fontSize = "";
     el.style.lineHeight = "";
-    setSize(fs);
-  }, [title, editing]);
+    onTitleFit?.(fs, title);
+    setSize(titleSize ? Math.min(titleSize, fs) : fs);
+  }, [title, editing, fonts, titleSize, onTitleFit]);
 
   useEffect(() => {
     if (!menu || state === "menu") return;

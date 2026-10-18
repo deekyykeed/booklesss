@@ -604,6 +604,17 @@
 .kit-mk-fit {
   width: 100%;
 }
+/* The card is scaled to its column, and the menu would shrink with it to
+ * the point of being unreadable (owner: "the popup is so ridiculously
+ * small"). It undoes the card's scale so it is always drawn at its real
+ * size, and anchors to the card's right edge so the larger menu stays on
+ * screen. --kit-z is the card's scale, set by FitCard. */
+.kit-mk-fit .kit-menu {
+  zoom: calc(1 / var(--kit-z, 1));
+  left: auto;
+  right: calc(31.5px * var(--kit-z, 1));
+  top: calc(98px * var(--kit-z, 1));
+}
 .kit-mk-folder {
   position: relative;
   display: flex;

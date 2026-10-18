@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useCallback, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { HugeIcon } from "@/components/icons/huge";
 import { COURSES as REAL } from "@/lib/courses";
@@ -82,7 +82,7 @@ function FitCard({ children }: { children: ReactNode }) {
     return () => ro.disconnect();
   }, []);
   return (
-    <div ref={box} className="kit-mk-fit">
+    <div ref={box} className="kit-mk-fit" style={{ "--kit-z": z || 1 } as CSSProperties}>
       <div style={{ zoom: z || 1, opacity: z ? 1 : 0, width: CARD_W }}>{children}</div>
     </div>
   );
@@ -121,6 +121,15 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
   const featured = shown[0] ?? COURSES[0];
   const catLabel = catOf(cat).label;
   const open = (id: string) => router.push(`/${id}`);
+  /* ONE TITLE SIZE FOR THE WHOLE GRID (owner: "why are some titles bigger
+   * than others"): each card reports the largest size its name fits at, and
+   * every card is drawn at the smallest of those. */
+  const [fits, setFits] = useState<Record<string, number>>({});
+  const fitTitle = useCallback(
+    (fs: number, title: string) => setFits((m) => (m[title] === fs ? m : { ...m, [title]: fs })),
+    [],
+  );
+  const titleSize = Math.min(44, ...Object.values(fits));
 
   return (
     <div className="kit-mk">
@@ -203,6 +212,8 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
                       { label: "Share" },
                     ]}
                     onOpen={() => open(c.id)}
+                    titleSize={titleSize}
+                    onTitleFit={fitTitle}
                   />
                 </FitCard>
               </li>
