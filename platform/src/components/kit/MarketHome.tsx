@@ -71,8 +71,12 @@ function greeting(h: number) {
  * fixed scale and STRETCHED sideways to the row's width (owner, 2026-10-18:
  * "by one column I mean stretch the cards, so they are not cramped"). */
 const CARD_W = 346.5;
-const PHONE_Z = 0.72;
 const PHONE = "(max-width: 899px)";
+/* The phone's scale is the one a two-across grid gave the card (owner:
+ * "keep the font size") — half the row less the gap — so the type is exactly
+ * the size it was before the grid went to one column; only the width grew. */
+const PHONE_GAP = 12;
+const phoneZ = (col: number) => (col - PHONE_GAP) / 2 / CARD_W;
 function FitCard({ children }: { children: (width: number) => ReactNode }) {
   const box = useRef<HTMLDivElement>(null);
   const [fit, setFit] = useState({ z: 0, w: CARD_W });
@@ -81,7 +85,10 @@ function FitCard({ children }: { children: (width: number) => ReactNode }) {
     if (!el) return;
     const set = () => {
       const col = el.clientWidth;
-      if (window.matchMedia(PHONE).matches) setFit({ z: PHONE_Z, w: col / PHONE_Z });
+      if (window.matchMedia(PHONE).matches) {
+        const z = phoneZ(col);
+        setFit({ z, w: col / z });
+      }
       else setFit({ z: col / CARD_W, w: CARD_W });
     };
     set();
