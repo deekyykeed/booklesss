@@ -190,6 +190,7 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
                 <FitCard>
                   <FilesCard
                     title={c.title}
+                    description={c.subtitle}
                     eyebrow={catOf(c.cat).id === "all" ? "COURSE" : catOf(c.cat).label.toUpperCase()}
                     stats={[
                       { icon: "image", n: c.units, label: "units", kind: "image" },

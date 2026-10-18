@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { HugeIcon, type HugeIconName } from "@/components/icons/huge";
 import { GlassButton, HappyFolder, PlusMark, Surface, useCountUp } from "./primitives";
 import { squircleClip } from "./squircle";
@@ -246,6 +246,9 @@ const REFERENCE_MENU: FolderAction[] = [
   { label: "Delete", danger: true },
 ];
 
+/* The card with a description line: one 22px line more than the reference. */
+const FILES_H_DESC = 370;
+
 function CountUp({ n, run, fixed }: { n: number; run: boolean; fixed?: boolean }) {
   const v = useCountUp(n, run);
   return <>{fixed ? n : v}</>;
@@ -259,6 +262,7 @@ export function FilesCard({
   state,
   title: initialTitle = "Happy Files",
   eyebrow = "NEW",
+  description,
   stats = REFERENCE_STATS,
   actions = REFERENCE_MENU,
   onOpen,
@@ -266,6 +270,9 @@ export function FilesCard({
   state?: "hover" | "selected" | "menu";
   title?: string;
   eyebrow?: string;
+  /** One line under the title, cut with an ellipsis. The card grows by one
+   * line to hold it; without it the card is the reference's height. */
+  description?: string;
   stats?: FolderStat[];
   actions?: FolderAction[];
   /** Given, a tap on the card opens instead of selecting it. */
@@ -292,6 +299,27 @@ export function FilesCard({
     };
   }, [menu, state]);
 
+  /* KEEP THE MENU ON SCREEN (owner, 2026-10-18: "let the popup open better,
+   * not going off the screen"). Once it has opened, measure where it landed
+   * and slide it back inside the viewport with 8px to spare — sideways first,
+   * then up if it would run off the bottom. The shift is divided by the
+   * menu's own effective scale, since it may sit inside a zoomed card. */
+  const menuRef = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const el = menuRef.current;
+    if (!menu || !el) return;
+    el.style.translate = "";
+    const r = el.getBoundingClientRect();
+    const k = r.width / (el.offsetWidth || r.width) || 1;
+    const pad = 8;
+    let dx = 0;
+    let dy = 0;
+    if (r.left < pad) dx = pad - r.left;
+    else if (r.right > window.innerWidth - pad) dx = window.innerWidth - pad - r.right;
+    if (r.bottom > window.innerHeight - pad) dy = Math.max(pad - r.top, window.innerHeight - pad - r.bottom);
+    if (dx || dy) el.style.translate = `${dx / k}px ${dy / k}px`;
+  }, [menu]);
+
   const danger = actions.findIndex((a) => a.danger);
 
   return (
@@ -300,6 +328,7 @@ export function FilesCard({
       className="kit-tile kit-tile--tall kit-files"
       data-state={state === "hover" ? "hover" : undefined}
       data-selected={selected ? "" : undefined}
+      data-desc={description ? "" : undefined}
       role={onOpen ? "link" : undefined}
       tabIndex={onOpen ? 0 : undefined}
       aria-label={onOpen ? `Open ${title}` : undefined}
@@ -310,7 +339,7 @@ export function FilesCard({
         else setSelected((s) => !s);
       }}
     >
-      <Surface w={346.5} h={344} r={TILE_R} s={TILE_S} />
+      <Surface w={346.5} h={description ? FILES_H_DESC : 344} r={TILE_R} s={TILE_S} />
       <HappyFolder className="kit-folder" />
       <button
         type="button"
@@ -324,7 +353,7 @@ export function FilesCard({
         <i />
       </button>
       {menu && (
-        <div className="kit-menu" role="menu">
+        <div ref={menuRef} className="kit-menu" role="menu">
           {actions.map((a, i) => (
             <span key={a.label} style={{ display: "contents" }}>
               {i === danger && i > 0 && <hr />}
@@ -368,6 +397,11 @@ export function FilesCard({
           title
         )}
       </h3>
+      {description && (
+        <p className="kit-files-desc" title={description}>
+          {description}
+        </p>
+      )}
       <div className="kit-stats">
         {stats.map((st, i) => (
           <span key={i} className={`kit-stat kit-stat--${st.kind ?? "file"}`} title={`${st.n} ${st.label}`}>
