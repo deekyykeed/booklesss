@@ -1,8 +1,8 @@
 "use client";
 
 import { useLayoutEffect, useRef } from "react";
-import { Fit } from "./primitives";
-import { AvatarTile, BookCall, BriefCard, FilesCard, GlassButtonState, NudgeCard, PlusTile } from "./JayWidgets";
+import { Button, CallBar, Fit } from "./primitives";
+import { AvatarTile, BookCall, BriefCard, FilesCard, NudgeCard, PlusTile } from "./JayWidgets";
 import { RonSidebar } from "./RonSidebar";
 import "./kit.css";
 
@@ -90,20 +90,89 @@ export function ComponentsShowcase({ className }: { className?: string }) {
           </div>
         </section>
 
+        {/* Real sizes, never scaled: a button is the same size on a phone as
+            anywhere else. The widget's button above stays widget-sized. */}
         <section className="kit-section">
           <header>
-            <h2>Glass button</h2>
-            <span className="kit-hint">Rest · hover · pressed · disabled</span>
+            <h2>Buttons</h2>
+            <span className="kit-hint">36 · 44 · 52 tall · icons 16 / 20</span>
           </header>
-          <div className="kit-states">
-            {(["rest", "hover", "pressed", "disabled"] as const).map((s) => (
-              <div key={s} className="kit-state">
-                <Fit w={320}>
-                  <GlassButtonState state={s} />
-                </Fit>
-                <span>{s}</span>
-              </div>
-            ))}
+
+          <div className="kit-btn-group">
+            <span>Glass · primary</span>
+            <div className="kit-btn-row">
+              <Button size="sm">Book a Call</Button>
+              <Button size="md">Book a Call</Button>
+              <Button size="lg">Book a Call</Button>
+            </div>
+          </div>
+
+          <div className="kit-btn-group">
+            <span>Soft · secondary</span>
+            <div className="kit-btn-row">
+              <Button variant="soft" size="sm">
+                Not now
+              </Button>
+              <Button variant="soft" size="md">
+                Not now
+              </Button>
+              <Button variant="soft" size="lg">
+                Not now
+              </Button>
+            </div>
+          </div>
+
+          <div className="kit-btn-group">
+            <span>With an icon · icon only</span>
+            <div className="kit-btn-row">
+              <Button size="md" icon="play">
+                Start
+              </Button>
+              <Button variant="soft" size="md" icon="plus">
+                New folder
+              </Button>
+              <Button size="md" icon="plus" iconOnly label="Add" />
+              <Button variant="soft" size="md" icon="dots" iconOnly label="More" />
+              <Button variant="soft" size="sm" icon="search" iconOnly label="Search" />
+              <Button variant="soft" size="sm" icon="user" iconOnly label="Profile" />
+            </div>
+          </div>
+
+          <div className="kit-btn-group">
+            <span>Rest · hover · pressed · disabled</span>
+            <div className="kit-btn-row">
+              <Button size="md">Book a Call</Button>
+              <Button size="md" state="hover">
+                Book a Call
+              </Button>
+              <Button size="md" state="pressed">
+                Book a Call
+              </Button>
+              <Button size="md" disabled>
+                Book a Call
+              </Button>
+            </div>
+            <div className="kit-btn-row">
+              <Button variant="soft" size="md">
+                Not now
+              </Button>
+              <Button variant="soft" size="md" state="hover">
+                Not now
+              </Button>
+              <Button variant="soft" size="md" state="pressed">
+                Not now
+              </Button>
+              <Button variant="soft" size="md" disabled>
+                Not now
+              </Button>
+            </div>
+          </div>
+
+          <div className="kit-btn-group">
+            <span>In use · the widget as a control</span>
+            <div className="kit-btn-row">
+              <CallBar />
+            </div>
           </div>
         </section>
 

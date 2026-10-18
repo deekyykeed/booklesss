@@ -192,12 +192,6 @@
   max-width: 100%;
 }
 
-.kit-state-cell {
-  width: 320px;
-  height: 165px;
-  border-radius: 60px;
-}
-
 .kit-state > span {
   font-family: var(--kit-mono);
   font-size: 11px;
@@ -361,6 +355,252 @@
 
 .kit-gbtn:disabled .kit-gbtn-glow {
   opacity: 0;
+}
+
+/* ---------------------------------------------------------------- buttons (usable sizes) */
+
+/* The app's buttons: the widget's glass and the soft tile material at control
+ * sizes (36 / 44 / 52). Proportions follow the widget's button — radius
+ * 0.32 × height, lip 0.08 × height — so a small one is the same object, not a
+ * different style. The squircle (--sq) is set by <Button> once measured; the
+ * border-radius is the shape until then. */
+.kit-btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 14px 16px;
+}
+
+.kit-btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.kit-btn-group > span {
+  font-family: var(--kit-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8a8a8a;
+}
+
+.kit-btn {
+  position: relative;
+  display: inline-flex;
+  vertical-align: top;
+  padding-bottom: var(--lip);
+  border-radius: calc(var(--h) * 0.32);
+  touch-action: manipulation;
+}
+
+.kit-btn-face {
+  --mx: 88%;
+  --my: 6%;
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: var(--h);
+  padding: 0 var(--px);
+  border-radius: calc(var(--h) * 0.32);
+  clip-path: var(--sq, none);
+  font-size: var(--fs);
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  transition: transform 0.22s var(--kit-spring), filter 0.2s var(--kit-ease), background 0.2s var(--kit-ease);
+}
+
+.kit-btn[data-icon-only] .kit-btn-face {
+  width: var(--h);
+  padding: 0;
+}
+
+.kit-btn--glass .kit-btn-face {
+  color: #ffffff;
+  background:
+    radial-gradient(34% 46% at var(--mx) var(--my), rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(45% 55% at 100% 22%, rgba(255, 150, 145, 0.7) 0%, rgba(255, 150, 145, 0) 100%),
+    radial-gradient(38% 55% at 100% 96%, rgba(160, 135, 240, 0.75) 0%, rgba(160, 135, 240, 0) 100%),
+    linear-gradient(180deg, #ffb57c 0%, #ffb386 14%, #ffad8d 22%, #f7a698 29%, #ea9da5 35%, #d58eba 41%, #b582d0 47%, #9479de 53%, #7a6cee 59%, #6865f7 65%, #5f67fd 75%, #5c6cff 90%, #5d6fff 100%);
+  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.6);
+}
+
+.kit-btn-lip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--lip);
+  height: var(--h);
+  border-radius: calc(var(--h) * 0.32);
+  clip-path: var(--sq, none);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0) 85%, rgba(255, 255, 255, 0.4) 100%),
+    linear-gradient(90deg, #8b8ffd 0%, #8394fb 45%, #b0a8f6 100%);
+  pointer-events: none;
+}
+
+.kit-btn-glow {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 42%;
+  height: 72%;
+  border-radius: 999px;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(98, 110, 255, 0.55) 0%, rgba(98, 110, 255, 0.2) 55%, rgba(98, 110, 255, 0) 100%);
+  filter: blur(calc(var(--h) * 0.14));
+  pointer-events: none;
+  transition: opacity 0.25s var(--kit-ease), transform 0.25s var(--kit-ease);
+}
+
+.kit-btn--soft {
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.05)) drop-shadow(0 3px 6px rgba(0, 0, 0, 0.05));
+}
+
+.kit-btn--soft .kit-btn-face {
+  color: var(--kit-ink);
+  background: linear-gradient(180deg, #fdfdfd 0%, #f7f7f7 55%, #f4f4f4 100%);
+  box-shadow: inset 0 1px 0 #ffffff, inset 0 -3px 4px -2px rgba(255, 255, 255, 0.9);
+}
+
+@media (hover: hover) {
+  .kit-btn--glass:hover:not(:disabled) .kit-btn-face {
+    transform: translateY(-1.5px);
+    filter: brightness(1.05) saturate(1.08);
+  }
+  .kit-btn--glass:hover:not(:disabled) .kit-btn-glow {
+    transform: scale(1.08, 1.15);
+  }
+  .kit-btn--soft:hover:not(:disabled) .kit-btn-face {
+    background: linear-gradient(180deg, #ffffff 0%, #fafafa 55%, #f6f6f6 100%);
+  }
+}
+
+.kit-btn--glass[data-state="hover"] .kit-btn-face {
+  transform: translateY(-1.5px);
+  filter: brightness(1.05) saturate(1.08);
+}
+
+.kit-btn--soft[data-state="hover"] .kit-btn-face {
+  background: linear-gradient(180deg, #ffffff 0%, #fafafa 55%, #f6f6f6 100%);
+}
+
+.kit-btn--glass:active:not(:disabled) .kit-btn-face,
+.kit-btn--glass[data-state="pressed"] .kit-btn-face {
+  transform: translateY(calc(var(--lip) * 0.7));
+  filter: brightness(0.96);
+  transition-duration: 0.08s;
+}
+
+.kit-btn--glass:active:not(:disabled) .kit-btn-glow,
+.kit-btn--glass[data-state="pressed"] .kit-btn-glow {
+  opacity: 0.5;
+  transform: scale(0.92);
+}
+
+.kit-btn--soft:active:not(:disabled) .kit-btn-face,
+.kit-btn--soft[data-state="pressed"] .kit-btn-face {
+  transform: translateY(1px);
+  background: linear-gradient(180deg, #f1f1f1 0%, #f4f4f4 100%);
+  box-shadow: inset 0 1.5px 3px rgba(0, 0, 0, 0.07);
+  transition-duration: 0.08s;
+}
+
+.kit-btn:disabled {
+  cursor: not-allowed;
+}
+
+.kit-btn--glass:disabled .kit-btn-face,
+.kit-btn--glass:disabled .kit-btn-lip {
+  filter: grayscale(1) brightness(1.18);
+  opacity: 0.6;
+}
+
+.kit-btn--glass:disabled .kit-btn-glow {
+  opacity: 0;
+}
+
+.kit-btn--soft:disabled .kit-btn-face {
+  color: #b5b5b5;
+}
+
+/* The widget as a control: stepper + glass button on one soft bar. */
+.kit-bar {
+  --h: 64px;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  height: 64px;
+  padding: 0 10px 0 22px;
+  border-radius: 20px;
+  clip-path: var(--sq, none);
+  background: linear-gradient(180deg, #fafafa 0%, #f6f6f6 55%, #fbfbfb 100%);
+  box-shadow: inset 0 1px 0 #ffffff, inset 0 -4px 5px -2px rgba(255, 255, 255, 0.95);
+}
+
+.kit-bar .kit-btn {
+  margin-left: 6px;
+}
+
+.kit-bar-value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.kit-bar-value b {
+  min-width: 25px;
+  font-size: 22px;
+  line-height: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  animation: kit-roll-up 0.3s var(--kit-ease);
+}
+
+.kit-bar-value b[data-dir="-1"] {
+  animation-name: kit-roll-down;
+}
+
+.kit-bar-value span {
+  font-size: 18px;
+  line-height: 18px;
+  font-weight: 500;
+  color: #a6a6a6;
+}
+
+.kit-bar-step {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.kit-bar-step button {
+  width: 28px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  color: #b4b4b4;
+  border-radius: 6px;
+  transition: color 0.2s var(--kit-ease), transform 0.2s var(--kit-ease);
+}
+
+@media (hover: hover) {
+  .kit-bar-step button:hover:not(:disabled) {
+    color: #6f6f6f;
+  }
+}
+
+.kit-bar-step button:active:not(:disabled) {
+  transform: scale(0.85);
+}
+
+.kit-bar-step button:disabled {
+  color: #e0e0e0;
+  cursor: default;
 }
 
 /* ---------------------------------------------------------------- 1 · book a call */

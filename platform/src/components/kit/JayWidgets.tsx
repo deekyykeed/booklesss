@@ -86,20 +86,6 @@ export function BookCall() {
   );
 }
 
-/* A forced-state copy of the glass button, for the states row. */
-export function GlassButtonState({ state }: { state: "rest" | "hover" | "pressed" | "disabled" }) {
-  return (
-    <div className="kit-tile kit-state-cell">
-      <Surface w={320} h={165} r={TILE_R} s={TILE_S} />
-      <div style={{ position: "absolute", left: 28.5, top: 15 }}>
-        <GlassButton state={state === "hover" || state === "pressed" ? state : undefined} disabled={state === "disabled"}>
-          <span className="kit-gbtn-label">Book a Call</span>
-        </GlassButton>
-      </div>
-    </div>
-  );
-}
-
 /* ---------------------------------------------------------------- 2 · avatar */
 
 export function AvatarTile() {

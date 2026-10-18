@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useLayoutEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from "react";
+import { HugeIcon, type HugeIconName } from "@/components/icons/huge";
 import { folderPath, squircleClip, squirclePath } from "./squircle";
 
 /* A widget at its drawn size. Every Fit on the page shares ONE scale, set on
@@ -207,6 +208,166 @@ export function GlassButton({
         {children}
       </span>
     </button>
+  );
+}
+
+/* ---------------------------------------------------------------- buttons at usable sizes */
+
+/* The widget's glass button is 125px tall — right for the widget it lives
+ * in, and no use as a button (owner, 2026-10-18: "I just don't think button
+ * sizes are usable — too big"). These are the app's buttons: the same glass
+ * (and the same soft tile material for the quiet one) at control sizes, with
+ * the same proportions — corner radius 0.32 × height at iOS smoothing, lip
+ * 0.08 × height, the glow under it — and 16/20px icons. Width follows the
+ * label, so the squircle is measured off the face and shared with the lip
+ * through --sq. */
+export type ButtonSize = "sm" | "md" | "lg";
+
+const SIZES: Record<ButtonSize, { h: number; lip: number; fs: number; px: number; icon: number }> = {
+  sm: { h: 36, lip: 3, fs: 14, px: 14, icon: 16 },
+  md: { h: 44, lip: 3.5, fs: 15, px: 18, icon: 20 },
+  lg: { h: 52, lip: 4, fs: 16, px: 22, icon: 20 },
+};
+
+/** Sets --sq on `host` to a squircle the size of `box`, kept current as it resizes. */
+function useSquircleVar(r: (h: number) => number, s = 0.6) {
+  const host = useRef<HTMLElement | null>(null);
+  const box = useRef<HTMLElement | null>(null);
+  useLayoutEffect(() => {
+    const b = box.current;
+    const hst = host.current ?? b;
+    if (!b || !hst) return;
+    const apply = () => {
+      const w = b.offsetWidth;
+      const h = b.offsetHeight;
+      if (w && h) hst.style.setProperty("--sq", squircleClip(w, h, r(h), s));
+    };
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(b);
+    return () => ro.disconnect();
+  }, [r, s]);
+  return { host, box };
+}
+
+const RADIUS = (h: number) => h * 0.32;
+
+export function Button({
+  variant = "glass",
+  size = "md",
+  icon,
+  iconOnly,
+  label,
+  children,
+  state,
+  disabled,
+  onClick,
+}: {
+  variant?: "glass" | "soft";
+  size?: ButtonSize;
+  icon?: HugeIconName;
+  iconOnly?: boolean;
+  label?: string;
+  children?: ReactNode;
+  state?: "hover" | "pressed";
+  disabled?: boolean;
+  onClick?: () => void;
+}) {
+  const cfg = SIZES[size];
+  const { host, box } = useSquircleVar(RADIUS);
+  const glass = variant === "glass";
+
+  const follow = (e: PointerEvent<HTMLButtonElement>) => {
+    const el = box.current;
+    if (!el || state || !glass) return;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty("--mx", `${Math.max(8, Math.min(92, ((e.clientX - r.left) / r.width) * 100))}%`);
+    el.style.setProperty("--my", `${Math.max(2, Math.min(60, ((e.clientY - r.top) / r.height) * 100))}%`);
+  };
+  const rest = () => {
+    box.current?.style.removeProperty("--mx");
+    box.current?.style.removeProperty("--my");
+  };
+
+  return (
+    <button
+      ref={(el) => {
+        host.current = el;
+      }}
+      type="button"
+      className={`kit-btn kit-btn--${variant}`}
+      data-state={state}
+      data-icon-only={iconOnly ? "" : undefined}
+      disabled={disabled}
+      onClick={onClick}
+      onPointerMove={follow}
+      onPointerLeave={rest}
+      aria-label={iconOnly ? label : undefined}
+      style={
+        {
+          "--h": `${cfg.h}px`,
+          "--lip": glass ? `${cfg.lip}px` : "0px",
+          "--fs": `${cfg.fs}px`,
+          "--px": `${cfg.px}px`,
+        } as CSSProperties
+      }
+    >
+      {glass && <span className="kit-btn-glow" aria-hidden />}
+      {glass && <span className="kit-btn-lip" aria-hidden />}
+      <span
+        ref={(el) => {
+          box.current = el;
+        }}
+        className="kit-btn-face"
+      >
+        {icon && <HugeIcon name={icon} size={cfg.icon} strokeWidth={1.75} />}
+        {!iconOnly && <span>{children ?? label}</span>}
+      </span>
+    </button>
+  );
+}
+
+/* The Book a Call widget's working parts at control size — a minutes stepper
+ * with 16px chevrons and a medium glass button on one soft bar. What the
+ * widget becomes when it is a control in the app rather than a card. */
+const BAR_MINUTES = [15, 30, 45, 60, 90];
+
+export function CallBar() {
+  const [i, setI] = useState(1);
+  const [dir, setDir] = useState<1 | -1>(1);
+  const [booked, setBooked] = useState(false);
+  const { host, box } = useSquircleVar(RADIUS);
+  const step = (d: 1 | -1) => {
+    setDir(d);
+    setBooked(false);
+    setI((v) => Math.min(BAR_MINUTES.length - 1, Math.max(0, v + d)));
+  };
+  return (
+    <div
+      ref={(el) => {
+        host.current = el;
+        box.current = el;
+      }}
+      className="kit-bar"
+    >
+      <span className="kit-bar-value" aria-live="polite">
+        <b key={BAR_MINUTES[i]} data-dir={dir}>
+          {BAR_MINUTES[i]}
+        </b>
+        <span>mins</span>
+      </span>
+      <span className="kit-bar-step">
+        <button type="button" aria-label="Longer call" disabled={i === BAR_MINUTES.length - 1} onClick={() => step(1)}>
+          <HugeIcon name="arrow-up" size={16} strokeWidth={2} />
+        </button>
+        <button type="button" aria-label="Shorter call" disabled={i === 0} onClick={() => step(-1)}>
+          <HugeIcon name="chevron-down" size={16} strokeWidth={2} />
+        </button>
+      </span>
+      <Button size="md" onClick={() => setBooked((b) => !b)}>
+        {booked ? "Booked" : "Book a Call"}
+      </Button>
+    </div>
   );
 }
 
