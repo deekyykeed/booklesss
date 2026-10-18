@@ -286,6 +286,23 @@
   transition: transform 0.28s var(--kit-spring), filter 0.25s var(--kit-ease);
 }
 
+/* The widget button's light, where its white spot was: the same blurred rim
+ * as the app buttons, at the widget's scale (125 tall, about 2.8 times a md
+ * button). */
+.kit-gbtn-face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset -5px 5px 6px -1px rgba(255, 245, 236, 0.75),
+    inset -20px 20px 26px -12px rgba(255, 245, 236, 0.55);
+  filter: blur(1.6px);
+  -webkit-mask-image: linear-gradient(225deg, #000 0%, #000 30%, rgba(0, 0, 0, 0.35) 56%, transparent 78%);
+  mask-image: linear-gradient(225deg, #000 0%, #000 30%, rgba(0, 0, 0, 0.35) 56%, transparent 78%);
+}
+
 .kit-gbtn-label {
   font-size: 35px;
   line-height: 35px;
@@ -393,9 +410,14 @@
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
+  /* Built the way the folder's rim is (HappyFolder: a wide stroke blurred 6
+   * under a thin one blurred 2, both #FFF5EC): a wide soft glow, and a thin
+   * line on top of it, softened — light, not a drawn edge (owner, 2026-10-18:
+   * "that curving line should be blurry … look at the folder"). */
   box-shadow:
-    inset -1.5px 1.5px 0 var(--rim, rgba(255, 255, 255, 0.95)),
-    inset -5px 5px 7px -3px var(--rim-soft, rgba(255, 255, 255, 0.55));
+    inset -2px 2px 2.5px -0.5px var(--rim, rgba(255, 245, 236, 0.8)),
+    inset -8px 8px 10px -5px var(--rim-soft, rgba(255, 245, 236, 0.6));
+  filter: blur(0.7px);
   -webkit-mask-image: linear-gradient(225deg, #000 0%, #000 32%, rgba(0, 0, 0, 0.35) 58%, transparent 80%);
   mask-image: linear-gradient(225deg, #000 0%, #000 32%, rgba(0, 0, 0, 0.35) 58%, transparent 80%);
   transition: transform 0.28s var(--kit-ease), opacity 0.28s var(--kit-ease);

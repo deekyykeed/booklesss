@@ -788,12 +788,12 @@
     linear-gradient(180deg, #ffcf78 0%, #ffb36a 14%, #ff9a6a 24%, #f9806f 33%, #ec6c7c 42%, #d75e8c 51%, #bb549a 60%, #9b4ba4 70%, #7f44a8 82%, #6a3fa6 100%);
 }
 [data-tod="evening"] .kit-btn--glass {
-  --rim: rgba(255, 242, 214, 0.95);
-  --rim-soft: rgba(255, 226, 180, 0.55);
+  --rim: rgba(255, 238, 206, 0.8);
+  --rim-soft: rgba(255, 222, 176, 0.6);
 }
 [data-tod="night"] .kit-btn--glass {
-  --rim: rgba(205, 212, 255, 0.75);
-  --rim-soft: rgba(170, 180, 255, 0.4);
+  --rim: rgba(205, 212, 255, 0.65);
+  --rim-soft: rgba(170, 180, 255, 0.45);
 }
 [data-tod="evening"] .kit-btn-lip {
   background:
