@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useLayoutEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from "react";
+import { useId, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { HugeIcon, type HugeIconName } from "@/components/icons/huge";
 import { folderPath, squircleClip, squirclePath } from "./squircle";
 
@@ -159,9 +159,9 @@ export function Surface({
 const BUTTON_CLIP = squircleClip(263, 125, 40, 0.6);
 
 /* The gradient glass button: a face, a lip under it (the button's thickness)
- * and a glow under that. The face's top-right sheen follows the pointer —
- * the one thing the Paper board cannot show. `state` forces a look for the
- * states row; left out, the button is live. */
+ * and a glow under that. No white sheen spot: the owner had it removed
+ * (2026-10-18), so nothing follows the pointer. `state` forces a look for
+ * the states row; left out, the button is live. */
 export function GlassButton({
   children,
   onClick,
@@ -177,20 +177,6 @@ export function GlassButton({
 }) {
   const face = useRef<HTMLSpanElement>(null);
 
-  const follow = (e: PointerEvent<HTMLButtonElement>) => {
-    const el = face.current;
-    if (!el || state) return;
-    const r = el.getBoundingClientRect();
-    const x = ((e.clientX - r.left) / r.width) * 100;
-    const y = ((e.clientY - r.top) / r.height) * 100;
-    el.style.setProperty("--mx", `${Math.max(8, Math.min(92, x))}%`);
-    el.style.setProperty("--my", `${Math.max(2, Math.min(60, y))}%`);
-  };
-  const rest = () => {
-    face.current?.style.removeProperty("--mx");
-    face.current?.style.removeProperty("--my");
-  };
-
   return (
     <button
       type="button"
@@ -198,8 +184,6 @@ export function GlassButton({
       data-state={state}
       disabled={disabled}
       onClick={onClick}
-      onPointerMove={follow}
-      onPointerLeave={rest}
       aria-label={label}
     >
       <span className="kit-gbtn-glow" aria-hidden />

@@ -268,8 +268,6 @@
 }
 
 .kit-gbtn-face {
-  --mx: 91%;
-  --my: 4%;
   position: absolute;
   left: 0;
   right: 0;
@@ -281,7 +279,6 @@
   justify-content: center;
   padding-top: 9px;
   background:
-    radial-gradient(30% 36% at var(--mx) var(--my), rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0) 100%),
     radial-gradient(45% 55% at 100% 22%, rgba(255, 150, 145, 0.7) 0%, rgba(255, 150, 145, 0) 100%),
     radial-gradient(38% 55% at 100% 96%, rgba(160, 135, 240, 0.75) 0%, rgba(160, 135, 240, 0) 100%),
     linear-gradient(180deg, #ffb57c 0%, #ffb386 14%, #ffad8d 22%, #f7a698 29%, #ea9da5 35%, #d58eba 41%, #b582d0 47%, #9479de 53%, #7a6cee 59%, #6865f7 65%, #5f67fd 75%, #5c6cff 90%, #5d6fff 100%);
@@ -429,8 +426,6 @@
 }
 
 .kit-btn-face {
-  --mx: 88%;
-  --my: 6%;
   position: relative;
   z-index: 1;
   display: inline-flex;
