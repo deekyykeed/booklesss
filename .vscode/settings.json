@@ -1,0 +1,20 @@
+{
+  // Pylance only needs the build scripts (Schools/**/sources, tools/, Brand/,
+  // _dev/step-generator). Everything below is media, scratch, or another
+  // business's folder, and enumerating it on OneDrive is what stalls analysis.
+  "python.analysis.exclude": [
+    "**/_pipeline",
+    "**/_textbooks",
+    "**/_video-archive",
+    "_dev/tmp",
+    "platform/.next",
+    "Demand/video",
+    "Basket-Plans",
+    "Partnr",
+    "Booklesss Bucket",
+    "Video Projects",
+    "Dissertation",
+    "My Finances",
+    "website"
+  ]
+}
