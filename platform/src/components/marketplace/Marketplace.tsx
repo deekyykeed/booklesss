@@ -167,7 +167,7 @@ export function Marketplace() {
             </div>
             <label className="mk-shell mk-search">
               <HugeIcon name="search" size={22} className="mk-search-icon" />
-              <input type="search" placeholder="Search courses" aria-label="Search courses" />
+              <input type="search" placeholder="Search" aria-label="Search courses" />
               <button type="button" className="mk-pill mk-pill-search">Explore</button>
             </label>
             <button type="button" className="mk-shell mk-square mk-create" aria-label="Create a course">
