@@ -624,14 +624,6 @@
  * small"). It undoes the card's scale so it is always drawn at its real
  * size, and anchors to the card's right edge so the larger menu stays on
  * screen. --kit-z is the card's scale, set by FitCard. */
-/* The description is the one line /components never had, so it has no size
- * to inherit, and at a phone's scale its 18 card units came out at 11px
- * (owner: "the description is ridiculously small"). It never draws under
- * 15px real; where the card is at full size it stays 18. */
-.kit-mk-fit .kit-files-desc {
-  font-size: max(18px, calc(15px / var(--kit-z, 1)));
-  line-height: 1.3;
-}
 .kit-mk-fit .kit-menu {
   zoom: calc(1 / var(--kit-z, 1));
   left: auto;

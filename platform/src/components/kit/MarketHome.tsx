@@ -74,7 +74,7 @@ function greeting(h: number) {
  * is drawn. */
 const CARD_W = 346.5;
 const PAIR = 575;
-function FitCard({ children }: { children: (width: number) => ReactNode }) {
+function FitCard({ children }: { children: (width: number, scale: number) => ReactNode }) {
   const box = useRef<HTMLDivElement>(null);
   const [fit, setFit] = useState({ z: 0, w: CARD_W });
   useLayoutEffect(() => {
@@ -95,7 +95,7 @@ function FitCard({ children }: { children: (width: number) => ReactNode }) {
   const { z, w } = fit;
   return (
     <div ref={box} className="kit-mk-fit" style={{ "--kit-z": z || 1 } as CSSProperties}>
-      <div style={{ zoom: z || 1, opacity: z ? 1 : 0, width: w }}>{children(w)}</div>
+      <div style={{ zoom: z || 1, opacity: z ? 1 : 0, width: w }}>{children(w, z || 1)}</div>
     </div>
   );
 }
@@ -200,9 +200,10 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
             {shown.map((c) => (
               <li key={c.id}>
                 <FitCard>
-                  {(w) => (
+                  {(w, z) => (
                   <FilesCard
                     width={w}
+                    scale={z}
                     title={c.title}
                     description={c.subtitle}
                     eyebrow={catOf(c.cat).id === "all" ? "COURSE" : catOf(c.cat).label.toUpperCase()}

@@ -246,9 +246,6 @@ const REFERENCE_MENU: FolderAction[] = [
   { label: "Delete", danger: true },
 ];
 
-/* The card with a description line: one 22px line more than the reference. */
-const FILES_H_DESC = 370;
-
 function CountUp({ n, run, fixed }: { n: number; run: boolean; fixed?: boolean }) {
   const v = useCountUp(n, run);
   return <>{fixed ? n : v}</>;
@@ -267,6 +264,7 @@ export function FilesCard({
   actions = REFERENCE_MENU,
   onOpen,
   width = 346.5,
+  scale = 1,
 }: {
   state?: "hover" | "selected" | "menu";
   title?: string;
@@ -282,6 +280,11 @@ export function FilesCard({
    * cramped"). The folder, type and stats keep their places on the left;
    * the dots stay pinned to the right edge; titles get the extra room. */
   width?: number;
+  /** The zoom the card is drawn at. The description never draws under 15px
+   * real (owner: "the description is ridiculously small"), so at a small
+   * scale its line is taller in card units and the card grows to keep the
+   * reference's spacing around it. */
+  scale?: number;
 }) {
   const [ref, seen] = useInView<HTMLDivElement>();
   const [menu, setMenu] = useState(state === "menu");
@@ -327,6 +330,14 @@ export function FilesCard({
 
   const danger = actions.findIndex((a) => a.danger);
 
+  // The description's line, the stats under it and the card's height,
+  // all in card units. 268 is where the line starts; the stats keep 14px
+  // real below it and the reference's 61 units of card below them.
+  const descFont = Math.max(18, 15 / scale);
+  const descLine = descFont * 1.3;
+  const statsTop = 268 + descLine + 14 / scale;
+  const cardH = description ? Math.round(statsTop + 61) : 344;
+
   return (
     <div
       ref={ref}
@@ -334,7 +345,11 @@ export function FilesCard({
       data-state={state === "hover" ? "hover" : undefined}
       data-selected={selected ? "" : undefined}
       data-desc={description ? "" : undefined}
-      style={width !== 346.5 ? ({ width, "--files-w": `${width}px` } as React.CSSProperties) : undefined}
+      style={
+        width !== 346.5 || description
+          ? ({ width, height: cardH, "--files-w": `${width}px` } as React.CSSProperties)
+          : undefined
+      }
       role={onOpen ? "link" : undefined}
       tabIndex={onOpen ? 0 : undefined}
       aria-label={onOpen ? `Open ${title}` : undefined}
@@ -345,7 +360,7 @@ export function FilesCard({
         else setSelected((s) => !s);
       }}
     >
-      <Surface w={width} h={description ? FILES_H_DESC : 344} r={TILE_R} s={TILE_S} />
+      <Surface w={width} h={cardH} r={TILE_R} s={TILE_S} />
       <HappyFolder className="kit-folder" />
       <button
         type="button"
@@ -404,11 +419,11 @@ export function FilesCard({
         )}
       </h3>
       {description && (
-        <p className="kit-files-desc" title={description}>
+        <p className="kit-files-desc" title={description} style={{ fontSize: descFont, lineHeight: `${descLine}px` }}>
           {description}
         </p>
       )}
-      <div className="kit-stats">
+      <div className="kit-stats" style={description ? { top: statsTop } : undefined}>
         {stats.map((st, i) => (
           <span key={i} className={`kit-stat kit-stat--${st.kind ?? "file"}`} title={`${st.n} ${st.label}`}>
             <HugeIcon name={st.icon} size={20} />

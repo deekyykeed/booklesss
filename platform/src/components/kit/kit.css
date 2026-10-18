@@ -1156,9 +1156,6 @@
 /* The one-line description under a folder's title (owner, 2026-10-18: "a
  * one line description and then truncate"). The card grows to 370 for it and
  * the stats move down by the same 26, so their spacing is the reference's. */
-.kit-files[data-desc] {
-  height: 370px;
-}
 .kit-files-desc {
   position: absolute;
   left: 38.5px;
@@ -1172,9 +1169,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-.kit-files[data-desc] .kit-stats {
-  top: 309px;
 }
 
 .kit-stats {
