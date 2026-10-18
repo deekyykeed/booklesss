@@ -611,7 +611,9 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  /* A column is never narrower than the card is drawn (--card-min, set by
+   * FitCard); the card stretches to whatever is left over. */
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--card-min, 346.5px)), 1fr));
   gap: 20px;
 }
 .kit-mk-fit {
@@ -622,13 +624,6 @@
  * small"). It undoes the card's scale so it is always drawn at its real
  * size, and anchors to the card's right edge so the larger menu stays on
  * screen. --kit-z is the card's scale, set by FitCard. */
-/* The description is the card's smallest type, so at a phone's scale it
- * would come out near 9px. It never draws under 13px real (18 card units is
- * its size wherever the card is large enough). */
-.kit-mk-fit .kit-files-desc {
-  font-size: max(18px, calc(13px / var(--kit-z, 1)));
-  line-height: 1.25;
-}
 .kit-mk-fit .kit-menu {
   zoom: calc(1 / var(--kit-z, 1));
   left: auto;

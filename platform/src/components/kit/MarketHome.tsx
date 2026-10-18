@@ -65,35 +65,31 @@ function greeting(h: number) {
   return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
 }
 
-/* The folder card is drawn at 346.5 wide. In a grid of several columns it
- * is scaled to its column. On a phone, where the grid is one column, it is
- * NOT scaled up to fill the row — that only made it tall — but drawn at a
- * fixed scale and STRETCHED sideways to the row's width (owner, 2026-10-18:
- * "by one column I mean stretch the cards, so they are not cramped"). */
+/* THE CARD IS DRAWN AT THE SAME SCALE AS ON /components (owner, 2026-10-18:
+ * "keep the font size the same even in the component thing") — the kit's
+ * one rule, min(1, (column - 1) / 575), read off the grid's width — so a
+ * title here is exactly the size it is on the Components page on the same
+ * screen. The card is never scaled to fit its column: it is STRETCHED
+ * sideways to it, and the grid's columns are never narrower than the card
+ * is drawn. */
 const CARD_W = 346.5;
-const PHONE = "(max-width: 899px)";
-/* The phone's scale is the one a two-across grid gave the card (owner:
- * "keep the font size") — half the row less the gap — so the type is exactly
- * the size it was before the grid went to one column; only the width grew. */
-const PHONE_GAP = 12;
-const phoneZ = (col: number) => (col - PHONE_GAP) / 2 / CARD_W;
+const PAIR = 575;
 function FitCard({ children }: { children: (width: number) => ReactNode }) {
   const box = useRef<HTMLDivElement>(null);
   const [fit, setFit] = useState({ z: 0, w: CARD_W });
   useLayoutEffect(() => {
     const el = box.current;
-    if (!el) return;
+    const grid = el?.closest(".kit-mk-grid") as HTMLElement | null;
+    if (!el || !grid) return;
     const set = () => {
-      const col = el.clientWidth;
-      if (window.matchMedia(PHONE).matches) {
-        const z = phoneZ(col);
-        setFit({ z, w: col / z });
-      }
-      else setFit({ z: col / CARD_W, w: CARD_W });
+      const z = Math.min(1, (grid.clientWidth - 1) / PAIR);
+      grid.style.setProperty("--card-min", `${CARD_W * z}px`);
+      setFit({ z, w: Math.max(CARD_W, el.clientWidth / z) });
     };
     set();
     const ro = new ResizeObserver(set);
     ro.observe(el);
+    ro.observe(grid);
     return () => ro.disconnect();
   }, []);
   const { z, w } = fit;
