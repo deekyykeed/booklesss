@@ -266,6 +266,7 @@ export function FilesCard({
   stats = REFERENCE_STATS,
   actions = REFERENCE_MENU,
   onOpen,
+  width = 346.5,
 }: {
   state?: "hover" | "selected" | "menu";
   title?: string;
@@ -277,6 +278,10 @@ export function FilesCard({
   actions?: FolderAction[];
   /** Given, a tap on the card opens instead of selecting it. */
   onOpen?: () => void;
+  /** Stretch the card sideways (owner: "stretch the cards so they are not
+   * cramped"). The folder, type and stats keep their places on the left;
+   * the dots stay pinned to the right edge; titles get the extra room. */
+  width?: number;
 }) {
   const [ref, seen] = useInView<HTMLDivElement>();
   const [menu, setMenu] = useState(state === "menu");
@@ -329,6 +334,7 @@ export function FilesCard({
       data-state={state === "hover" ? "hover" : undefined}
       data-selected={selected ? "" : undefined}
       data-desc={description ? "" : undefined}
+      style={width !== 346.5 ? ({ width, "--files-w": `${width}px` } as React.CSSProperties) : undefined}
       role={onOpen ? "link" : undefined}
       tabIndex={onOpen ? 0 : undefined}
       aria-label={onOpen ? `Open ${title}` : undefined}
@@ -339,7 +345,7 @@ export function FilesCard({
         else setSelected((s) => !s);
       }}
     >
-      <Surface w={346.5} h={description ? FILES_H_DESC : 344} r={TILE_R} s={TILE_S} />
+      <Surface w={width} h={description ? FILES_H_DESC : 344} r={TILE_R} s={TILE_S} />
       <HappyFolder className="kit-folder" />
       <button
         type="button"

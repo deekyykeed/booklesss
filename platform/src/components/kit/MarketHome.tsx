@@ -65,25 +65,34 @@ function greeting(h: number) {
   return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
 }
 
-/* The folder card is drawn at 346.5 wide; this scales it to its grid
- * column, whatever the column is, so the card is the same object on a phone
- * and a desktop. */
+/* The folder card is drawn at 346.5 wide. In a grid of several columns it
+ * is scaled to its column. On a phone, where the grid is one column, it is
+ * NOT scaled up to fill the row — that only made it tall — but drawn at a
+ * fixed scale and STRETCHED sideways to the row's width (owner, 2026-10-18:
+ * "by one column I mean stretch the cards, so they are not cramped"). */
 const CARD_W = 346.5;
-function FitCard({ children }: { children: ReactNode }) {
+const PHONE_Z = 0.72;
+const PHONE = "(max-width: 899px)";
+function FitCard({ children }: { children: (width: number) => ReactNode }) {
   const box = useRef<HTMLDivElement>(null);
-  const [z, setZ] = useState(0);
+  const [fit, setFit] = useState({ z: 0, w: CARD_W });
   useLayoutEffect(() => {
     const el = box.current;
     if (!el) return;
-    const set = () => setZ(el.clientWidth / CARD_W);
+    const set = () => {
+      const col = el.clientWidth;
+      if (window.matchMedia(PHONE).matches) setFit({ z: PHONE_Z, w: col / PHONE_Z });
+      else setFit({ z: col / CARD_W, w: CARD_W });
+    };
     set();
     const ro = new ResizeObserver(set);
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
+  const { z, w } = fit;
   return (
     <div ref={box} className="kit-mk-fit" style={{ "--kit-z": z || 1 } as CSSProperties}>
-      <div style={{ zoom: z || 1, opacity: z ? 1 : 0, width: CARD_W }}>{children}</div>
+      <div style={{ zoom: z || 1, opacity: z ? 1 : 0, width: w }}>{children(w)}</div>
     </div>
   );
 }
@@ -188,7 +197,9 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
             {shown.map((c) => (
               <li key={c.id}>
                 <FitCard>
+                  {(w) => (
                   <FilesCard
+                    width={w}
                     title={c.title}
                     description={c.subtitle}
                     eyebrow={catOf(c.cat).id === "all" ? "COURSE" : catOf(c.cat).label.toUpperCase()}
@@ -205,6 +216,7 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
                     ]}
                     onOpen={() => open(c.id)}
                   />
+                  )}
                 </FitCard>
               </li>
             ))}

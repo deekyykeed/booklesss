@@ -1029,7 +1029,8 @@
 
 .kit-dots {
   position: absolute;
-  left: 287px;
+  /* Pinned to the right edge, so a stretched card keeps them in the corner. */
+  left: calc(var(--files-w, 346.5px) - 59.5px);
   top: 30px;
   width: 32px;
   height: 63px;
@@ -1040,6 +1041,17 @@
   justify-content: center;
   gap: 9.25px;
   transition: background 0.2s var(--kit-ease);
+}
+
+/* A bigger hit area than the drawing (owner, 2026-10-18: "the hit area for
+ * the 3 dots is poor"): an invisible pad of 18 either side and 14 above and
+ * below, so the target is 68 by 91 card units — about 49 by 65px on a phone,
+ * past the 44px a thumb needs — while the dots look exactly as they did. */
+.kit-dots::before {
+  content: "";
+  position: absolute;
+  inset: -14px -18px;
+  border-radius: 24px;
 }
 
 .kit-dots i {
@@ -1132,7 +1144,7 @@
   white-space: nowrap;
   /* A name too long for the card's one line ends in an ellipsis, at the
    * card's own size (owner, 2026-10-18: "truncate text that doesn't fit"). */
-  max-width: 278px;
+  max-width: calc(var(--files-w, 346.5px) - 68.5px);
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -1157,7 +1169,7 @@
   left: 38.5px;
   top: 268px;
   margin: 0;
-  max-width: 278px;
+  max-width: calc(var(--files-w, 346.5px) - 68.5px);
   font-size: 18px;
   line-height: 22px;
   font-weight: 500;
