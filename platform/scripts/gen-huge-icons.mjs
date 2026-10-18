@@ -173,6 +173,25 @@ const ICONS = {
   volume: "volume-high",
   previous: "previous",
   next: "next",
+
+  // the components kit (/components, 2026-10-18) — the Jay widget set and the
+  // Ron sidebar, each mark the nearest Hugeicon to the reference's own glyph.
+  // The three stat marks (image / video / file) are filled by the kit's CSS.
+  "sun-cloud": "sun-cloud-02", // the brief card's afternoon greeting
+  image: "image-01", // Happy Files: images count
+  "sign-out": "logout-01", // sidebar header, drawn mirrored
+  back: "arrow-left-02", // sidebar title row
+  "nav-home": "home-05",
+  "nav-files": "folder-03",
+  "nav-portfolio": "briefcase-06",
+  "nav-tasks": "checkmark-square-02",
+  "nav-distribution": "filter-horizontal",
+  "nav-indicators": "analytics-01",
+  "nav-accounting": "scan",
+  "nav-more": "more-horizontal-circle-01",
+  mail: "mail-01",
+  settings: "settings-02",
+  add: "add-01", // the thin + on a sidebar row
 };
 
 /* ⚠️ GLYPHS THE SET DOES NOT HAVE, drawn on Hugeicons' own 24 grid at its own

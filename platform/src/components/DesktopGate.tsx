@@ -85,6 +85,7 @@ const SKIP = [
   "/sign-up",
   "/dashboard",
   "/marketplace",
+  "/components",
 ];
 
 /** Exact paths that skip the gate — "/" can't go in SKIP, whose prefix rule
