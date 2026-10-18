@@ -385,6 +385,14 @@
   color: #8a8a8a;
 }
 
+/* The sizes live here, not inline, so the app can bring every button down
+ * to the small one on a phone (app.css). */
+.kit-btn[data-size="sm"] { --h: 36px; --lip: 3px; --fs: 14px; --px: 14px; --icon: 16px; }
+.kit-btn[data-size="md"] { --h: 44px; --lip: 3.5px; --fs: 15px; --px: 18px; --icon: 20px; }
+.kit-btn[data-size="lg"] { --h: 52px; --lip: 4px; --fs: 16px; --px: 22px; --icon: 20px; }
+.kit-btn.kit-btn--soft { --lip: 0px; }
+.kit-btn-face > svg { width: var(--icon); height: var(--icon); }
+
 .kit-btn {
   position: relative;
   display: inline-flex;

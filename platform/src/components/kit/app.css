@@ -160,6 +160,39 @@
   color: var(--kit-ink);
 }
 
+/* ---------------------------------------------------------------- buttons on a phone
+ * EVERY BUTTON IN THE APP IS THE SMALL ONE ON A PHONE (owner, 2026-10-18:
+ * "see the smallest button — work with that one in the app, a little bigger
+ * on bigger screens, but for mobile use this — for all button sizes"). A
+ * button asked for at md or lg keeps that size from 900px up. The chips
+ * follow, so a row of controls is one height. */
+@media (max-width: 899px) {
+  .kit-app .kit-btn[data-size] {
+    --h: 36px;
+    --lip: 3px;
+    --fs: 14px;
+    --px: 14px;
+    --icon: 16px;
+  }
+  .kit-app .kit-btn.kit-btn--soft {
+    --lip: 0px;
+  }
+  .kit-app .kit-cat-item {
+    height: 36px;
+    padding: 0 13px 0 10px;
+    gap: 7px;
+    font-size: 14px;
+  }
+  .kit-app .kit-cat-mark svg {
+    width: 18px;
+    height: 18px;
+  }
+  .kit-app .kit-mk-search {
+    height: 36px;
+    border-radius: 18px;
+  }
+}
+
 /* ---------------------------------------------------------------- category selector */
 .kit-cat {
   display: flex;

@@ -303,14 +303,7 @@ export function Button({
       onPointerMove={follow}
       onPointerLeave={rest}
       aria-label={iconOnly ? label : undefined}
-      style={
-        {
-          "--h": `${cfg.h}px`,
-          "--lip": glass ? `${cfg.lip}px` : "0px",
-          "--fs": `${cfg.fs}px`,
-          "--px": `${cfg.px}px`,
-        } as CSSProperties
-      }
+      data-size={size}
     >
       {glass && <span className="kit-btn-glow" aria-hidden />}
       {glass && <span className="kit-btn-lip" aria-hidden />}
