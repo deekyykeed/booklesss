@@ -21,7 +21,9 @@
     "qa:explainer": "remotion still ExplainerSheet out/_explainer-qa.png",
     "export:pixels": "node scripts/export-pixels.mjs",
     "footage": "python scripts/footage.py",
-    "mux": "node scripts/mux-audio.mjs"
+    "mux": "node scripts/mux-audio.mjs",
+    "covers": "node scripts/covers.mjs",
+    "covers:styles": "node scripts/covers-styles.mjs"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.499",

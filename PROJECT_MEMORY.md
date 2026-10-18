@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-10-17 (session 69)
+**Last updated:** 2026-10-18 (session 70)
 
 ---
 
@@ -91,6 +91,31 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 70 (2026-10-18, the video pivot gets an app: the kit, the Ron
+sidebar shell and the marketplace's first page at /dashboard. Linear NOT
+reachable: `linear-server` still needs its one-time OAuth, so nothing below
+has a ticket.)**
+
+- [ ] **Evening and night buttons exist on /components only.** Owner was asked
+      whether the app should switch to them by the clock; no answer yet.
+- [ ] **Desktop folder titles truncate at 44px** ("Corporate Fina…") because
+      the cards draw at the Components page's own scale. A smaller desktop
+      size has to change /components too, so it stays one rule.
+- [ ] **Saved, Creators, More, Notifications, Settings and Account** in the
+      app sidebar show a "Built next" placeholder. Explore, My courses and
+      Studio work.
+- [ ] **Still placeholder on the marketplace:** the Creators row (invented
+      names) and the covers. "Continue watching" was removed; bring it back
+      only when it reads real progress.
+- [ ] **/dashboard is ungated** (no student data yet). Gates go back the
+      moment it reads anything real.
+- [ ] **Studio and My courses render inside the kit shell in a `.cui`
+      wrapper** and have not been looked at there. Check them visually.
+- [ ] **Never start a server on the owner's PC** (low RAM): typecheck or
+      build locally, verify on booklesss.app.
+- [ ] The 7 `Demand/video/public/sfx/*.wav` files are still uncommitted
+      (carried from session 69, owner to decide).
 
 **From session 69 (2026-10-15→17, Partnr becomes the company. Linear NOT
 reachable: `linear-server` still needs its one-time OAuth, so nothing below
@@ -1778,6 +1803,51 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-10-18 (session 70 — the kit, the app shell and the marketplace's first page)
+
+**Done:** Booklesss pivots to AI-made video courses, so the app is now built
+from a component kit, designed in Paper ("Booklesss Platform" file) and live
+at **/components**. The kit holds the Jay widget set, the Ron sidebar,
+squircle corners, Rubik as the main face, buttons at 36/44/52, evening and
+night button variants, and a category selector shown in three icon sets.
+**Solar Bold won.**
+
+**/dashboard is now the app.** Its background is the sidebar's own glass
+grey (#EEEDF2 → #E5E5E7, also `--color-canvas`). The Ron sidebar is the
+navigation, sitting flush with no panel. It has no logo, no page title and no
+close on the active row. On a phone it is a swipe drawer (`lib/use-swipe-drawer`).
+Explore is the marketplace: a greeting, search, category chips, a featured
+course, and the four REAL courses as Happy Files folder cards. FilesCard
+became a real component (title, eyebrow, one-line description, stats, menu,
+open). Studio and My courses are the video framework inside the shell.
+
+Phone buttons are all the small size. The glass button's light is now a
+blurred rim built like the folder's (the white spot is gone).
+
+Demand/video cover generators (Remotion) were committed at this wrap.
+
+**What Worked:**
+- Verifying on the live site with Playwright, polling for a marker only the
+  new build has, then reading the screenshot.
+- Measuring the real type size and comparing it with /components on the same
+  viewport. That is what settled the card-size argument.
+- An inset box-shadow plus a 225deg mask, softened with `filter: blur`, made
+  a rim light that turns the corner.
+- A CSS `zoom` on a wrapper with a width prop on the component: the box
+  stretches while the type keeps its size.
+
+**Dead Ends (do not retry):**
+- **Zooming a fixed-size component to fill its column.** The type swung from
+  22px to 45px and the owner rejected it three times. Stretch the box and keep
+  the Components page's scale (memory: `feedback_component_type_size_fixed`).
+- **Shrinking each title until it fits.** It gave every card a different size.
+  Truncate at one size instead.
+- **A descendant selector like `.kit-mk-section h3`** reached into the cards
+  and restyled their titles. Use `> header h3`.
+- **Running `next dev` on the owner's PC.** Forbidden for RAM.
+- **Checking `:active` CSS through CDP touch events in headless Chromium.**
+  The pressed state never registered, so the probe proves nothing.
 
 ### Session 2026-10-15→17 (session 69 — Partnr becomes the company, and the Desktop splits into agents/ and studio/)
 

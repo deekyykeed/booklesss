@@ -93,7 +93,44 @@ Max ONE accent colour per project. Never mix. Saturation below 80%.
 
 ---
 
-## The `.cui` system — what `/dashboard` is built from *(2026-08-29)*
+## The kit: what `/dashboard` is built from *(2026-10-18)*
+
+The video app is built from a component kit. It is designed in Paper (file
+"Booklesss Platform", page "Components") and live at **/components**. The code
+is `platform/src/components/kit/`, scoped under `.kit`, with the shell and
+marketplace styles in `kit/app.css`. `/dashboard` renders `AppShell`.
+
+- **App background is the Ron sidebar's own glass:** #EEEDF2 → #E8E8EB →
+  #E5E5E7 (`--kit-app-grad`, flat `--kit-app-bg` #E8E8EB, and
+  `--color-canvas`). #E0E0E0 is only the board behind the widgets on
+  /components.
+- **The sidebar is part of the floor.** In the app it has no panel, rim,
+  radius or shadow. It also has no logo, no page title and no × on the active
+  row (`flush` and `minimal` props on `RonSidebar`). Below 900px it is the
+  pulled drawer from `lib/use-swipe-drawer`.
+- **A component keeps its /components type size wherever it is used.** The
+  kit's one scale rule is `min(1, (column − 1) / 575)`. To make a component
+  wider, STRETCH it (a `width` prop, controls pinned right); never zoom it to
+  fill. Zooming swung the folder card's titles from 22px to 45px, and the
+  owner rejected it three times. After any layout change, measure the
+  rendered type against /components on the same viewport and look at the
+  screenshot.
+- **Text that doesn't fit truncates at one size.** Do not shrink each title
+  to fit; that gives a grid of mismatched sizes.
+- **Buttons:** sm 36 / md 44 / lg 52 tall, sizes set by `data-size` in CSS.
+  On a phone every app button is sm. The glass light is a blurred rim down
+  the right edge curving into the top, built like the folder's. There is no
+  white spot and nothing follows the pointer. A press is eased (140ms down,
+  280ms back), never a cut.
+- **Category icons are Solar Bold** (`CategoryBar`, default `look="bold"`).
+- **A popup inside a scaled card undoes the scale** (`zoom: calc(1 /
+  var(--kit-z))`) and keeps itself on screen after opening. Small marks get
+  an invisible hit pad (`::before`) of at least 44px real.
+- **Never write a descendant selector that can reach into a component**
+  (`.kit-mk-section h3` restyled every card title). Use a child path
+  (`> header h3`).
+
+## The `.cui` system — the claude.ai reference *(2026-08-29; no longer `/dashboard` since 2026-10-18, still what Studio and My courses are built from)*
 
 **`/dashboard` is a transcription of `claudeuiclone.html`**
 (`_dev/reference-ui/`, moved off the repo root 2026-08-29), scoped

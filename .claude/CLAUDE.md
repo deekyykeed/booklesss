@@ -569,6 +569,8 @@ before reading a word. The orb is **CSS, not an asset and not three.js**
 
 ### The dashboard IS the reference UI (2026-08-28/29)
 
+> **SUPERSEDED on 2026-10-18:** `/dashboard` now renders the kit app (`components/kit/AppShell.tsx`): the Ron sidebar as navigation and the marketplace's first page. Its rules are in `design-system/SKILL.md` → "The kit". What follows describes `ClaudeUI.tsx`, which is no longer routed; its `studio/` components still render inside the kit shell.
+
 **`/dashboard` is `claudeuiclone.html`** — the owner's recreation of the
 claude.ai desktop shell, kept with its state captures in
 **`_dev/reference-ui/`** (moved off the repo root 2026-08-29), transcribed into

@@ -11,10 +11,34 @@ import { FPS, TOTAL, defaultDemoProps, demoSchema } from "./schema";
 import { Explainer } from "./explainer/Explainer";
 import { ExplainerSheet, XSHEET_H, XSHEET_W } from "./explainer/ExplainerSheet";
 import { EXPLAINERS } from "./explainers";
+import { COVER_H, COVER_W, Cover } from "./covers/Cover";
+import { COVERS } from "./covers/covers";
+import { STYLE_H, STYLE_W, StyleCover } from "./covers/styles";
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      {/* Lesson covers — one still per video, drawn in the explainer look.
+          npm run covers renders every row of src/covers/covers.ts. */}
+      <Composition
+        id="Cover"
+        component={Cover}
+        durationInFrames={1}
+        fps={FPS}
+        width={COVER_W}
+        height={COVER_H}
+        defaultProps={COVERS.b1}
+      />
+      {/* The twenty animation styles, one test frame each (npm run covers:styles). */}
+      <Composition
+        id="StyleCover"
+        component={StyleCover}
+        durationInFrames={1}
+        fps={FPS}
+        width={STYLE_W}
+        height={STYLE_H}
+        defaultProps={{ look: "neon" as const }}
+      />
       {/* Explainers — you on camera cutting full-screen to animation, timed
           to the voice. One composition per script in src/explainers/. */}
       {Object.keys(EXPLAINERS).map((slug) => (
