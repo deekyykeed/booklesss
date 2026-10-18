@@ -5,6 +5,8 @@ import { HugeIcon } from "@/components/icons/huge";
 import { ResourcePacks } from "./ResourcePacks";
 import { SettingsModal } from "./SettingsModal";
 import { ProjectsPage } from "./ProjectsPage";
+import { ExplorePage } from "./studio/ExplorePage";
+import { StudioPage } from "./studio/StudioPage";
 import { ArtifactsPage } from "./ArtifactsPage";
 import {
   ProjectOverview,
@@ -15,7 +17,7 @@ import { packsSnapshot } from "@/lib/resource-packs";
 import { type Project } from "@/lib/projects";
 import { COURSES } from "@/lib/courses";
 
-type View = "chat" | "projects" | "artifacts";
+type View = "chat" | "projects" | "artifacts" | "explore" | "studio";
 
 /** Card art for the home screen's course row — the two photos the owner put
  *  on this row's Paper mockup, kept as local files rather than hot-linking
@@ -503,6 +505,34 @@ export function ClaudeUI() {
                   <HugeIcon name="edit" className="i i-16" />
                 </button>
               </a>
+              {/* The video framework (owner, 2026-10-18): Explore is the
+                  learner's side, Studio the creator's. See studio/. */}
+              <a
+                className={"row" + (view === "explore" ? " is-selected" : "")}
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  goView("explore");
+                }}
+              >
+                <span className="slot">
+                  <HugeIcon name="compass" className="i" />
+                </span>
+                <span className="label">Explore</span>
+              </a>
+              <a
+                className={"row" + (view === "studio" ? " is-selected" : "")}
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  goView("studio");
+                }}
+              >
+                <span className="slot">
+                  <HugeIcon name="video" className="i" />
+                </span>
+                <span className="label">Studio</span>
+              </a>
               <a
                 className={"row" + (view === "projects" ? " is-selected" : "")}
                 href="#"
@@ -787,6 +817,8 @@ export function ClaudeUI() {
             )}
             {view === "projects" && <ProjectsPage />}
             {view === "artifacts" && <ArtifactsPage />}
+            {view === "explore" && <ExplorePage />}
+            {view === "studio" && <StudioPage />}
           </div>
 
           {/* ---- THE COMPOSER, PINNED TO THE FOOT OF THE PANE ----

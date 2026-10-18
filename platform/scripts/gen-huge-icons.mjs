@@ -163,6 +163,16 @@ const ICONS = {
   play: "play",
   star: "star",
   bell: "notification-03",
+
+  // the video studio and Explore (/dashboard, 2026-10-18)
+  pause: "pause",
+  video: "video-01", // Studio row
+  compass: "compass-01", // Explore row
+  upload: "upload-01",
+  trash: "delete-02",
+  volume: "volume-high",
+  previous: "previous",
+  next: "next",
 };
 
 /* ⚠️ GLYPHS THE SET DOES NOT HAVE, drawn on Hugeicons' own 24 grid at its own

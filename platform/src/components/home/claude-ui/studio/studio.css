@@ -1,0 +1,191 @@
+/* The video studio, Explore and the player, inside /dashboard.
+   Built from the .cui patterns (design-system/SKILL.md): rows, ghost and
+   filled buttons, raised panels, hairlines. Nothing new enters the .cui
+   palette for the CHROME. The one exception is the video stage itself: a
+   stage is the course's own picture, not app chrome, so each style preset
+   carries its own colours there, the way a course card carries its photo.
+
+   Type direction for the stage and the page titles is the owner's Pinterest
+   reference (editorial: a large serif title, small spaced mono labels, warm
+   grey). Prefix: st-. */
+
+/* ---------- page heads reuse .proj-page / .proj-head ---------- */
+.cui .st-eyebrow {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-300);
+}
+.cui .st-lede { margin-top: -28px; margin-bottom: 32px; max-width: 36rem; font-size: 14px; line-height: 21px; color: var(--text-200); }
+
+/* ---------- course cards (Explore + Studio list) ---------- */
+.cui .st-grid { list-style: none; display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.cui .st-card {
+  display: flex; flex-direction: column; width: 100%; text-align: left;
+  border-radius: 16px; overflow: hidden; background: var(--surface-2);
+  box-shadow: 0 0.25px 1.25px rgba(0, 0, 0, .035), 0 0 0 1px rgba(31, 31, 30, .15);
+  transition: transform var(--dur) ease-out, box-shadow var(--dur) var(--ease);
+}
+.cui .st-card:hover { box-shadow: 0 0.25px 1.25px rgba(0, 0, 0, .035), 0 0 0 1px rgba(31, 31, 30, .3); }
+.cui .st-card:active { transform: scale(.98); transition-duration: var(--dur-fast); }
+.cui .st-card-body { display: flex; flex-direction: column; gap: 3px; padding: 12px 14px 14px; border-top: 1px solid rgba(11, 11, 11, .078); }
+.cui .st-card-title { font-size: 14px; font-weight: 600; line-height: 18px; color: var(--text-100); }
+.cui .st-card-meta { font-size: 12px; line-height: 16px; color: var(--text-300); }
+.cui .st-badge {
+  align-self: flex-start; margin-bottom: 4px; height: 20px; padding: 0 8px; border-radius: 10px;
+  display: inline-flex; align-items: center; font-size: 11px; font-weight: 500; color: var(--text-200); background: var(--row-selected);
+}
+.cui .st-badge.is-live { background: var(--text-100); color: #fff; }
+
+/* ---------- empty state: rows, not tiles ---------- */
+.cui .st-steps-intro { list-style: none; display: flex; flex-direction: column; gap: 2px; max-width: 34rem; margin-bottom: 24px; }
+.cui .st-steps-intro li { display: flex; gap: 12px; align-items: flex-start; padding: 10px 8px; border-radius: var(--radius); }
+.cui .st-num { width: 28px; flex-shrink: 0; font-family: ui-monospace, Menlo, monospace; font-size: 12px; line-height: 20px; color: var(--text-300); }
+.cui .st-steps-intro b { display: block; font-size: 14px; font-weight: 500; line-height: 20px; color: var(--text-100); }
+.cui .st-steps-intro span { font-size: 13px; line-height: 19px; color: var(--text-300); }
+
+/* ---------- the editor ---------- */
+.cui .st-ed-head { display: flex; align-items: center; gap: 12px; height: 48px; margin-bottom: 20px; }
+.cui .st-title-input {
+  flex: 1; min-width: 0; border: 0; outline: 0; background: transparent;
+  font-family: var(--font-serif); font-size: 24px; font-weight: 500; letter-spacing: -.01em; color: var(--text-100);
+}
+.cui .st-tabs { display: flex; gap: 2px; padding: 1px; border-radius: 7px; background: var(--track); width: max-content; max-width: 100%; overflow-x: auto; margin-bottom: 28px; }
+.cui .st-tab { height: 30px; padding: 0 12px; border-radius: 5px; font-size: 13px; color: var(--text-200); white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+.cui .st-tab.is-on { background: #fff; color: var(--text-100); box-shadow: 0 0 0 1px rgba(11, 11, 11, .1) inset, 0 1px 2px rgba(0, 0, 0, .05); }
+.cui .st-tab:disabled { color: var(--text-300); cursor: not-allowed; }
+.cui .st-tab .st-num { width: auto; font-size: 11px; line-height: 1; }
+
+.cui .st-panel {
+  background: var(--surface-3); border-radius: 22px; padding: 20px;
+  box-shadow: 0 .25rem 1.25rem 0 rgba(0, 0, 0, .035), 0 0 0 1px rgba(31, 31, 30, .15);
+}
+@supports (corner-shape: squircle) { .cui .st-panel { corner-shape: squircle; border-radius: 28px; } }
+.cui .st-textarea {
+  width: 100%; min-height: 280px; resize: vertical; border: 0; outline: 0; background: transparent;
+  font: inherit; font-size: 16px; line-height: 24px; color: var(--text-100);
+}
+.cui .st-textarea::placeholder { color: var(--text-300); }
+.cui .st-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; row-gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.cui .st-bar .st-grow { flex: 1; }
+.cui .st-hint { font-size: 13px; color: var(--text-300); }
+.cui .st-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; flex-wrap: wrap; }
+.cui .btn-pri:disabled { opacity: .35; cursor: not-allowed; }
+.cui .st-file { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+/* outline */
+.cui .st-lessons { display: flex; flex-direction: column; gap: 16px; }
+.cui .st-lesson-head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.cui .st-lesson-title { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-size: 16px; font-weight: 500; color: var(--text-100); }
+.cui .st-scene { display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid var(--border); }
+.cui .st-scene-text { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; resize: none; font: inherit; font-size: 16px; line-height: 22px; color: var(--text-200); field-sizing: content; min-height: 44px; }
+.cui .st-quiz { margin-top: 10px; padding: 12px; border-radius: 12px; background: var(--track); font-size: 13px; line-height: 19px; color: var(--text-200); }
+.cui .st-quiz b { color: var(--text-100); font-weight: 500; }
+
+/* style picker */
+.cui .st-styles { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.cui .st-style { text-align: left; border-radius: 16px; padding: 8px; background: var(--surface-3); box-shadow: 0 0 0 1px rgba(31, 31, 30, .15); }
+.cui .st-style.is-on { box-shadow: 0 0 0 2px var(--text-100); }
+.cui .st-style-name { display: block; margin: 10px 6px 2px; font-size: 14px; font-weight: 500; color: var(--text-100); }
+.cui .st-style-blurb { display: block; margin: 0 6px 6px; font-size: 12px; line-height: 16px; color: var(--text-300); }
+
+/* voice */
+.cui .st-voices { display: flex; flex-direction: column; gap: 2px; max-height: 320px; overflow-y: auto; }
+.cui .st-voice { height: 40px; padding: 0 10px; border-radius: var(--radius); display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-200); text-align: left; }
+.cui .st-voice:hover { background: var(--row-hover); }
+.cui .st-voice.is-on { background: var(--row-selected); color: var(--text-100); }
+.cui .st-voice small { margin-left: auto; font-size: 12px; color: var(--text-300); }
+.cui .st-seg { display: inline-flex; padding: 1px; border-radius: 7px; background: var(--track); }
+
+/* ---------- the stage: one scene of a video ---------- */
+/* The container is the BOX, not the stage: a cqw in an element's own padding
+   resolves against its nearest ancestor container, so a stage that was its
+   own container sized its padding off the viewport. */
+.cui .st-stage-box { container-type: inline-size; width: 100%; }
+.cui .st-stage {
+  position: relative; aspect-ratio: 16 / 9; width: 100%; overflow: hidden; border-radius: 12px;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 7cqw 8cqw;
+}
+.cui .st-stage-eyebrow { position: absolute; left: 8cqw; top: 6cqw; font-family: ui-monospace, Menlo, monospace; font-size: max(7px, 1.6cqw); letter-spacing: .16em; text-transform: uppercase; opacity: .6; }
+.cui .st-stage-mark { position: absolute; right: 8cqw; top: 6cqw; font-family: var(--font-brand); font-size: max(8px, 1.9cqw); font-weight: 600; opacity: .55; }
+.cui .st-stage-h { font-family: var(--font-serif); font-size: max(13px, 6.4cqw); line-height: 1.05; letter-spacing: -.02em; font-weight: 400; }
+.cui .st-stage-rule { width: 9cqw; height: 2px; margin: 3.2cqw 0; background: currentColor; opacity: .35; }
+.cui .st-stage-line { max-width: 70cqw; font-size: max(8px, 2.4cqw); line-height: 1.45; opacity: .85; }
+.cui .st-stage-line + .st-stage-line { margin-top: 1.4cqw; }
+.cui .st-stage-foot { position: absolute; left: 8cqw; right: 8cqw; bottom: 5cqw; display: flex; justify-content: space-between; font-family: ui-monospace, Menlo, monospace; font-size: max(7px, 1.4cqw); letter-spacing: .14em; text-transform: uppercase; opacity: .5; }
+.cui .st-stage-in { animation: st-in .5s cubic-bezier(.32, .72, 0, 1) both; }
+@keyframes st-in { from { opacity: 0; transform: translateY(2cqw); } to { opacity: 1; transform: none; } }
+
+.cui .st-style-editorial { background: #e7e5e0; color: #161513; }
+.cui .st-style-whiteboard { background: #ffffff; color: #111; box-shadow: inset 0 0 0 1px rgba(11, 11, 11, .08); }
+.cui .st-style-whiteboard .st-stage-h { font-family: var(--font-brand); font-weight: 600; letter-spacing: -.03em; }
+.cui .st-style-chalk { background: radial-gradient(120% 90% at 30% 20%, #335a46 0%, #22402f 60%, #1b3326 100%); color: #f3f1e6; }
+.cui .st-style-chalk .st-stage-h { font-family: var(--font-brand); font-weight: 500; }
+.cui .st-style-night { background: #121212; color: #f2efe8; }
+.cui .st-style-night .st-stage-rule { background: #d97757; opacity: 1; }
+
+/* ---------- the player ---------- */
+.cui .st-player { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 20px; align-items: start; }
+.cui .st-screen { position: relative; border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 1px rgba(31, 31, 30, .15); }
+.cui .st-screen .st-stage { border-radius: 0; }
+.cui .st-controls { display: flex; align-items: center; gap: 4px; margin-top: 10px; }
+.cui .st-ctl { width: 32px; height: 32px; border-radius: var(--radius); display: grid; place-items: center; color: var(--text-200); }
+.cui .st-ctl:hover { background: var(--row-hover); color: var(--text-100); }
+.cui .st-ctl.is-main { background: var(--text-100); color: #fff; border-radius: 50%; }
+.cui .st-ctl.is-main:hover { background: #2a2a2a; color: #fff; }
+.cui .st-fill path { fill: currentColor; }
+.cui .st-progress { flex: 1; display: flex; gap: 3px; margin: 0 8px; }
+.cui .st-progress i { flex: 1; height: 3px; border-radius: 2px; background: var(--border); display: block; }
+.cui .st-progress i.is-done { background: var(--text-100); }
+.cui .st-progress i.is-quiz { flex: 0 0 8px; background: transparent; box-shadow: inset 0 0 0 1.5px var(--text-300); }
+.cui .st-progress i.is-quiz.is-done { background: var(--text-100); box-shadow: none; }
+.cui .st-time { font-size: 12px; color: var(--text-300); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.cui .st-caption { margin-top: 12px; font-size: 14px; line-height: 21px; color: var(--text-200); min-height: 42px; }
+
+.cui .st-chapters { display: flex; flex-direction: column; gap: 2px; }
+.cui .st-chapter { display: flex; gap: 8px; align-items: flex-start; padding: 8px; border-radius: var(--radius); text-align: left; font-size: 14px; line-height: 20px; color: var(--text-200); }
+.cui .st-chapter:hover { background: var(--row-hover); }
+.cui .st-chapter.is-on { background: var(--row-selected); color: var(--text-100); }
+.cui .st-chapter small { display: block; font-size: 12px; color: var(--text-300); }
+
+/* the in-video check: a raised panel over the stage, scrim blurs */
+.cui .st-quiz-layer {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 4%;
+  background: rgba(11, 11, 11, .12); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+.cui .st-quiz-card {
+  width: 100%; max-width: 30rem; background: var(--surface-3); border-radius: 22px; padding: 18px;
+  box-shadow: 0 .25rem 1.25rem 0 rgba(0, 0, 0, .075), 0 0 0 1px rgba(31, 31, 30, .15); color: var(--text-100);
+  animation: st-pop .35s cubic-bezier(.32, .72, 0, 1) both;
+}
+@keyframes st-pop { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
+.cui .st-quiz-q { margin: 8px 0 14px; font-size: 15px; line-height: 22px; }
+.cui .st-opts { display: flex; flex-direction: column; gap: 6px; }
+.cui .st-opt { height: 40px; padding: 0 12px; border-radius: 10px; text-align: left; font-size: 14px; color: var(--text-100); box-shadow: inset 0 0 0 1px var(--border); display: flex; align-items: center; justify-content: space-between; }
+.cui .st-opt:hover:not(:disabled) { background: var(--row-hover); }
+.cui .st-opt.is-right { box-shadow: inset 0 0 0 1.5px #1f8a4c; color: #1f8a4c; }
+.cui .st-opt.is-wrong { box-shadow: inset 0 0 0 1.5px #c2412d; color: #c2412d; }
+.cui .st-opt:disabled { cursor: default; }
+.cui .st-quiz-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; font-size: 13px; color: var(--text-300); }
+
+.cui .st-done { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; background: rgba(252, 252, 251, .92); color: var(--text-100); text-align: center; padding: 6%; }
+.cui .st-done h3 { font-family: var(--font-serif); font-size: 24px; font-weight: 400; }
+.cui .st-done p { font-size: 14px; color: var(--text-200); }
+
+@media (max-width: 900px) {
+  .cui .st-player { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  /* A phone's stage is ~200px tall, too short to hold a question and three
+     answers, so the check drops UNDER the picture instead of over it. The
+     video is still stopped; it just stays visible. */
+  .cui .st-screen { overflow: visible; box-shadow: none; }
+  .cui .st-screen .st-stage { border-radius: 12px; box-shadow: 0 0 0 1px rgba(31, 31, 30, .15); }
+  .cui .st-quiz-layer { position: static; padding: 12px 0 0; background: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .cui .st-done { position: static; margin-top: 12px; border-radius: 16px; box-shadow: 0 0 0 1px rgba(31, 31, 30, .15); }
+  .cui .st-lede { margin-top: -32px; }
+  .cui .st-panel { padding: 14px; }
+  .cui .st-ed-head { flex-wrap: wrap; height: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cui .st-stage-in, .cui .st-quiz-card { animation: none; }
+}
