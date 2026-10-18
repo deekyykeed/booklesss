@@ -50,7 +50,8 @@ export function CategoryMark({ c, look, size }: { c: Category; look: CategoryLoo
 export function CategoryBar({
   value,
   onChange,
-  look = "duotone",
+  // Solar Bold won the pick (owner, 2026-10-18: "solar bold wins by far").
+  look = "bold",
   layout = "chips",
   categories = CATEGORIES,
 }: {

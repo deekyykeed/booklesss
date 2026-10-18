@@ -106,7 +106,7 @@ function Cover({ c, big }: { c: Course; big?: boolean }) {
   return (
     <span className="kit-mk-cover" style={{ "--hue": cat.hue } as CSSProperties} aria-hidden>
       <span className="kit-mk-cover-mark">
-        <CategoryMark c={cat} look="duotone" size={big ? 44 : 28} />
+        <CategoryMark c={cat} look="bold" size={big ? 44 : 28} />
       </span>
       <span className="kit-mk-cover-play">
         <HugeIcon name="play" size={big ? 22 : 16} strokeWidth={1.75} />
