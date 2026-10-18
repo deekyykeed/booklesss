@@ -52,16 +52,16 @@
   background-image: linear-gradient(in oklab 180deg, oklab(93.5% -0.025 0.037) 0%, oklab(92.4% -0.003 0.035) 55%, oklab(91.1% 0.009 0.031) 100%);
   box-shadow: #785a282e 0 30px 60px;
 }
-.mk-rail { width: 56px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; padding: 9px 0; }
+.mk-rail { width: 44px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; padding: 9px 0; }
 .mk-rail-logo {
-  width: 56px; height: 56px; border-radius: 50%; background: #fff;
-  display: grid; place-items: center; font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 22px;
+  width: 44px; height: 44px; border-radius: 50%; background: #fff;
+  display: grid; place-items: center; font-family: var(--font-display), sans-serif; font-weight: 600; font-size: 18px;
 }
 .mk-rail-nav { margin-top: auto; margin-bottom: auto; display: flex; flex-direction: column; gap: 10px; }
 .mk-rail-foot { display: flex; flex-direction: column; gap: 10px; align-items: center; }
-.mk-rail-btn { width: 56px; height: 56px; border-radius: 50%; background: #fff; display: grid; place-items: center; color: #121212; }
+.mk-rail-btn { width: 44px; height: 44px; border-radius: 50%; background: #fff; display: grid; place-items: center; color: #121212; }
 .mk-rail-btn.is-on { background: #121212; color: #fff; }
-.mk-rail-me { width: 54px; height: 54px; border-radius: 50%; overflow: hidden; background: #e7e7e7; border: 2px solid #fff; }
+.mk-rail-me { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background: #e7e7e7; border: 2px solid #fff; }
 .mk-rail-me img, .mk-me-ring img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .mk-panel {
@@ -84,22 +84,22 @@
 .mk-pill:active { transform: scale(0.97); }
 
 /* ---------- top row ---------- */
-.mk-top { display: grid; grid-template-columns: minmax(0, 640fr) minmax(0, 421fr) 110px 110px; gap: 12px; }
-.mk-greet { height: 110px; border-radius: 44px; padding: 22px 32px 0 30px; }
-.mk-greet-head { display: flex; align-items: center; gap: 8px; font-size: 15px; line-height: 22px; font-weight: 700; letter-spacing: -0.01em; color: #c3c3c3; }
-.mk-greet-line { margin-top: 8px; max-width: 330px; font-size: 19px; line-height: 24px; font-weight: 500; color: var(--mk-grey); padding-left: 2px; }
+.mk-top { display: grid; grid-template-columns: minmax(0, 640fr) minmax(0, 421fr) 88px 88px; gap: 12px; }
+.mk-greet { height: 88px; border-radius: 36px; padding: 16px 28px 0 26px; }
+.mk-greet-head { display: flex; align-items: center; gap: 8px; font-size: 13px; line-height: 20px; font-weight: 700; letter-spacing: -0.01em; color: #c3c3c3; }
+.mk-greet-line { margin-top: 4px; max-width: 300px; font-size: 16px; line-height: 22px; font-weight: 500; color: var(--mk-grey); padding-left: 2px; }
 
-.mk-search { height: 110px; border-radius: 44px; display: flex; align-items: center; padding: 0 14px 0 28px; gap: 10px; cursor: text; }
+.mk-search { height: 88px; border-radius: 36px; display: flex; align-items: center; padding: 0 20px 0 24px; gap: 10px; cursor: text; }
 .mk-search-icon { color: #bdbdbd; flex-shrink: 0; }
 .mk-search input {
   flex: 1; min-width: 0; border: 0; outline: 0; background: transparent;
-  font: inherit; font-size: 18px; font-weight: 500; color: var(--mk-ink);
+  font: inherit; font-size: 15px; font-weight: 500; color: var(--mk-ink);
 }
 .mk-search input::placeholder { color: #a6a6a6; }
-.mk-pill-search { width: 148px; height: 82px; border-radius: 41px; font-size: 21px; padding-top: 4px; flex-shrink: 0; }
+.mk-pill-search { width: 104px; height: 44px; border-radius: 22px; font-size: 15px; flex-shrink: 0; }
 
-.mk-square { height: 110px; border-radius: 40px; display: grid; place-items: center; }
-.mk-me-ring { width: 58px; height: 58px; border-radius: 50%; overflow: hidden; border: 1px solid #cfcfcf; background: #e7e7e7; box-shadow: #fffffff2 0 1px 1px; }
+.mk-square { height: 88px; border-radius: 36px; display: grid; place-items: center; }
+.mk-me-ring { width: 44px; height: 44px; border-radius: 50%; overflow: hidden; border: 1px solid #cfcfcf; background: #e7e7e7; box-shadow: #fffffff2 0 1px 1px; }
 
 .mk-plus { position: relative; display: grid; place-items: center; }
 .mk-plus svg { position: relative; filter: blur(0.6px); }
@@ -121,12 +121,12 @@
 .mk-featured-eyebrow { position: absolute; left: 46px; top: 42px; font-size: 13px; line-height: 16px; font-weight: 700; letter-spacing: 0.06em; color: #ffffffd9; }
 .mk-featured-title { position: absolute; left: 44px; top: 64px; font-size: 64px; line-height: 72px; font-weight: 700; letter-spacing: -0.04em; color: #fff; }
 .mk-featured-play {
-  position: absolute; right: 48px; top: 46px; width: 74px; height: 74px; border-radius: 50%;
+  position: absolute; right: 44px; top: 42px; width: 48px; height: 48px; border-radius: 50%;
   background: #fff; display: grid; place-items: center; box-shadow: #505fff33 0 8px 18px; color: #000;
 }
 .mk-featured-ghost { position: absolute; left: 62px; right: 62px; bottom: 140px; height: 64px; border-radius: 32px; background: #ffffff57; box-shadow: #ffffffd9 0 1px 0 inset; }
 .mk-note { position: absolute; left: 20px; right: 20px; bottom: 18px; height: 168px; border-radius: 56px; background: #fff; padding: 34px 34px 0 30px; }
-.mk-note-head { display: flex; align-items: center; font-size: 15px; line-height: 22px; font-weight: 700; color: #c3c3c3; }
+.mk-note-head { display: flex; align-items: center; font-size: 13px; line-height: 22px; font-weight: 700; color: #c3c3c3; }
 .mk-note-head .mk-sun { margin-right: 8px; }
 .mk-note-line { margin-top: 16px; padding-left: 4px; max-width: 470px; font-size: 20px; line-height: 28px; font-weight: 500; color: var(--mk-grey); }
 
@@ -164,12 +164,11 @@
 .mk-tag-dark { background: #000; color: #fff; }
 .mk-course-title { margin: 16px 14px 0; font-size: 17px; line-height: 22px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mk-course-meta { margin: 2px 14px 0; font-size: 13px; line-height: 18px; font-weight: 500; color: var(--mk-grey); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mk-course-foot { position: absolute; left: 14px; right: 24px; bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
-.mk-pill-sm { width: 120px; height: 48px; border-radius: 24px; font-size: 15px; letter-spacing: 0; }
+.mk-course-foot { position: absolute; left: 24px; right: 24px; bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
+.mk-pill-sm { width: 92px; height: 36px; border-radius: 18px; font-size: 14px; letter-spacing: 0; }
 .mk-rating { display: inline-flex; align-items: center; gap: 5px; font-size: 15px; font-weight: 600; }
 .mk-star { color: #fdc201; }
 
-.mk-tabs { display: none; }
 
 /* ---------- the four breakpoints ----------
    desktop  1280 and up   the Paper desktop board as drawn
@@ -180,7 +179,7 @@
 /* ---------- laptop ---------- */
 @media (max-width: 1279px) and (min-width: 900px) {
   .mk { padding: 24px; }
-  .mk-top { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 110px; }
+  .mk-top { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 88px; }
   .mk-create { display: none; }
   .mk-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .mk-featured { grid-column: 1 / -1; height: 360px; }
@@ -191,33 +190,31 @@
 
 /* ---------- the phone board ---------- */
 @media (max-width: 899px) {
-  .mk { background: var(--mk-ground); padding: 16px 16px calc(112px + env(safe-area-inset-bottom)); }
+  .mk { background: var(--mk-ground); padding: 16px 16px calc(24px + env(safe-area-inset-bottom)); }
   .mk-frame { display: block; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; max-width: 480px; }
   .mk-rail, .mk-create { display: none; }
   .mk-panel { background: none; padding: 0; border-radius: 0; gap: 12px; }
 
-  .mk-top { grid-template-columns: minmax(0, 1fr) 68px; }
+  .mk-top { grid-template-columns: minmax(0, 1fr) 60px; }
   .mk-greet { grid-column: 1 / -1; height: 96px; border-radius: 36px; padding: 19px 24px 0 22px; }
   .mk-greet-head { font-size: 13px; line-height: 20px; gap: 6px; }
-  .mk-greet-head .mk-sun { width: 18px; height: 18px; }
   .mk-greet-line { margin-top: 5px; font-size: 16px; line-height: 20px; max-width: 290px; }
-  .mk-search { height: 72px; border-radius: 30px; padding: 0 9px 0 20px; gap: 8px; }
+  .mk-search { height: 60px; border-radius: 26px; padding: 0 10px 0 18px; gap: 8px; }
   .mk-search input { font-size: 16px; }
-  .mk-pill-search { width: 106px; height: 54px; border-radius: 27px; font-size: 16px; padding-top: 2px; }
-  .mk-me { height: 72px; border-radius: 30px; }
-  .mk-me-ring { width: 40px; height: 40px; }
+  .mk-pill-search { width: 84px; height: 40px; border-radius: 20px; font-size: 14px; }
+  .mk-me { height: 60px; border-radius: 26px; }
+  .mk-me-ring { width: 36px; height: 36px; }
 
   .mk-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .mk-featured { grid-column: 1 / -1; height: 320px; border-radius: 56px; }
   .mk-featured-glow { inset: 7px; border-radius: 50px; }
   .mk-featured-eyebrow { left: 32px; top: 34px; font-size: 11px; line-height: 14px; }
   .mk-featured-title { left: 30px; top: 52px; font-size: 44px; line-height: 50px; }
-  .mk-featured-play { right: 30px; top: 32px; width: 52px; height: 52px; }
-  .mk-featured-play svg { width: 17px; height: 17px; }
+  .mk-featured-play { right: 28px; top: 30px; width: 44px; height: 44px; }
   .mk-featured-ghost { left: 40px; right: 40px; bottom: 120px; height: 50px; }
   .mk-note { left: 14px; right: 14px; bottom: 14px; height: 142px; border-radius: 44px; padding: 25px 24px 0 22px; }
   .mk-note-head { font-size: 12px; line-height: 20px; }
-  .mk-note-head .mk-sun { width: 18px; height: 18px; margin-right: 6px; }
+  .mk-note-head .mk-sun { margin-right: 6px; }
   .mk-note-line { margin-top: 10px; padding-left: 2px; font-size: 16px; line-height: 21px; max-width: 260px; }
 
   .mk-collection { height: 236px; border-radius: 44px; padding: 26px 22px 0; }
@@ -237,29 +234,58 @@
   .mk-head a { font-size: 14px; }
   .mk-courses { grid-template-columns: minmax(0, 1fr); gap: 10px; }
 
-  .mk-tabs {
-    display: flex; align-items: center; justify-content: space-between;
-    position: fixed; z-index: 20; left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom));
-    max-width: 448px; margin: 0 auto;
-    height: 76px; border-radius: 38px; padding: 0 12px;
-    box-shadow: var(--mk-shell-shadow), #0000001a 0 6px 18px;
-  }
-  .mk-tab { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; color: #8a8a8a; position: relative; }
-  .mk-tab.is-on { background: #000; color: #fff; }
-  .mk-tab-bell::after { content: ""; position: absolute; left: 30px; top: 13px; width: 8px; height: 8px; border-radius: 50%; background: #ff6b5e; }
 }
 
 /* ---------- tablet: the phone board, wider ---------- */
 @media (max-width: 899px) and (min-width: 600px) {
-  .mk { padding: 24px 24px calc(120px + env(safe-area-inset-bottom)); }
+  .mk { padding: 24px 24px calc(32px + env(safe-area-inset-bottom)); }
   .mk-frame { max-width: 820px; }
   .mk-featured { height: 340px; }
   .mk-note-line { max-width: 460px; }
   .mk-collection { height: 260px; }
   .mk-courses { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-  .mk-tabs { max-width: 420px; }
 }
 
 /* HugeIcon draws strokes; without this the svg's default black fill paints
    every outline solid. */
-.mk :is(.mk-rail-btn, .mk-tab, .mk-search) svg { fill: none; }
+.mk :is(.mk-rail-btn, .mk-drawer-row, .mk-search) svg { fill: none; }
+
+/* ---------- the pulled drawer (below 900px) ----------
+   Same mechanics as the /dashboard sidebar: lib/use-swipe-drawer.ts drives
+   it during a drag, these classes own the resting states and a tap. The
+   scrim blurs rather than darkens and is the drawer's SIBLING, never its
+   parent (a backdrop-filter element is a containing block for fixed
+   children). */
+.mk-drawer, .mk-scrim { display: none; }
+@media (max-width: 899px) {
+  .mk-scrim {
+    display: block; position: fixed; inset: 0; z-index: 30;
+    background: rgba(11, 11, 11, 0.12);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 220ms cubic-bezier(0.32, 0.72, 0, 1), visibility 0s linear 220ms;
+  }
+  .mk.nav-open .mk-scrim { opacity: 1; visibility: visible; pointer-events: auto; transition-delay: 0s; }
+  .mk-drawer {
+    display: flex; flex-direction: column; position: fixed; z-index: 40; left: 0; top: 0; bottom: 0;
+    width: min(288px, 84vw); padding: calc(20px + env(safe-area-inset-top)) 14px calc(20px + env(safe-area-inset-bottom));
+    border-radius: 0 36px 36px 0;
+    background-image: var(--mk-shell); box-shadow: var(--mk-shell-shadow), #0000001f 8px 0 32px;
+    transform: translateX(-100%);
+    transition: transform 220ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .mk.nav-open .mk-drawer { transform: translateX(0); }
+  .mk-drawer-head { display: flex; align-items: center; gap: 10px; padding: 0 6px 18px; }
+  .mk-drawer-head .mk-rail-logo { box-shadow: #0000000d 0 1px 2px; }
+  .mk-drawer-word { font-family: var(--font-display), sans-serif; font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+  .mk-drawer-nav { display: flex; flex-direction: column; gap: 2px; }
+  .mk-drawer-row {
+    height: 44px; border-radius: 22px; padding: 0 14px; display: flex; align-items: center; gap: 12px;
+    font-size: 15px; font-weight: 500; color: #3a3a3a; width: 100%; text-align: left;
+  }
+  .mk-drawer-row.is-on { background: #000; color: #fff; }
+  .mk-drawer-me { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 8px 6px; }
+  .mk-drawer-me span:last-child { display: flex; flex-direction: column; line-height: 18px; }
+  .mk-drawer-me b { font-size: 14px; }
+  .mk-drawer-me small { font-size: 12px; color: var(--mk-grey); }
+}

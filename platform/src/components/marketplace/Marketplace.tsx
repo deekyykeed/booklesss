@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useId } from "react";
+import { useId, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { HugeIcon } from "@/components/icons/huge";
 import { avatarSrc } from "@/components/identity/avatars";
 import { useIdentity } from "@/lib/identity";
 import { COLLECTIONS, FEATURED, POPULAR, type MarketCollection, type MarketCourse } from "@/lib/marketplace";
+import { useSwipeDrawer } from "@/lib/use-swipe-drawer";
 import "./marketplace.css";
 
 /* The learner marketplace. Every surface is one of the owner's widgets
@@ -122,11 +124,11 @@ function CourseCard({ c }: { c: MarketCourse }) {
       <p className="mk-course-meta">by {c.creator} · {c.lessons} lessons · {c.minutes} min</p>
       <div className="mk-course-foot">
         <button type="button" className="mk-pill mk-pill-sm">
-          <HugeIcon name="play" size={13} className="mk-fill" />
+          <HugeIcon name="play" size={16} className="mk-fill" />
           Watch
         </button>
         <span className="mk-rating">
-          <HugeIcon name="star" size={15} className="mk-fill mk-star" />
+          <HugeIcon name="star" size={16} className="mk-fill mk-star" />
           {c.rating.toFixed(1)}
         </span>
       </div>
@@ -134,20 +136,77 @@ function CourseCard({ c }: { c: MarketCourse }) {
   );
 }
 
+const NAV = [
+  { href: "/marketplace", icon: "home", label: "Marketplace", on: true },
+  { href: "/dashboard/courses", icon: "book-open", label: "My courses", on: false },
+  { href: "/dashboard/saved", icon: "bookmark", label: "Saved", on: false },
+] as const;
+
+/** Below this the rail is gone and the drawer is the navigation. */
+const DRAWER_QUERY = "(max-width: 899px)";
+
 export function Marketplace() {
   const { identity } = useIdentity();
   const name = (identity?.name ?? "").toUpperCase();
   const face = identity ? avatarSrc(identity.avatar) : null;
+  const router = useRouter();
+
+  /* THE PHONE HAS NO BOTTOM BAR (owner, 2026-10-18): a right swipe anywhere
+     on the page pulls the drawer, exactly as on /dashboard. The avatar tile
+     is the tap way in, for anyone who doesn't know to swipe. */
+  const [navOpen, setNavOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const drawerRef = useRef<HTMLElement | null>(null);
+  const scrimRef = useRef<HTMLDivElement | null>(null);
+  useSwipeDrawer({ root: rootRef, side: drawerRef, scrim: scrimRef, open: navOpen, setOpen: setNavOpen, query: DRAWER_QUERY });
+
+  const onMe = () => {
+    if (window.matchMedia(DRAWER_QUERY).matches) setNavOpen(true);
+    else router.push("/settings");
+  };
 
   return (
-    <div className="mk">
+    <div className={"mk" + (navOpen ? " nav-open" : "")} ref={rootRef}>
+      <div className="mk-scrim" ref={scrimRef} onClick={() => setNavOpen(false)} aria-hidden />
+      <aside className="mk-drawer" ref={drawerRef} aria-label="Main" aria-hidden={!navOpen}>
+        <div className="mk-drawer-head">
+          <span className="mk-rail-logo">B</span>
+          <span className="mk-drawer-word">Booklesss</span>
+        </div>
+        <nav className="mk-drawer-nav">
+          {NAV.map((n) => (
+            <Link key={n.href} href={n.href} className={"mk-drawer-row" + (n.on ? " is-on" : "")} onClick={() => setNavOpen(false)}>
+              <HugeIcon name={n.icon} size={20} />
+              {n.label}
+            </Link>
+          ))}
+          <button type="button" className="mk-drawer-row">
+            <HugeIcon name="bell" size={20} />
+            Notifications
+          </button>
+          <button type="button" className="mk-drawer-row">
+            <HugeIcon name="plus" size={20} />
+            Create a course
+          </button>
+        </nav>
+        <Link href="/settings" className="mk-drawer-me" onClick={() => setNavOpen(false)}>
+          <span className="mk-rail-me">{face && <img src={face} alt="" />}</span>
+          <span>
+            <b>{identity?.name ?? "You"}</b>
+            <small>Settings</small>
+          </span>
+        </Link>
+      </aside>
+
       <div className="mk-frame">
         <nav className="mk-rail" aria-label="Main">
           <span className="mk-rail-logo">B</span>
           <div className="mk-rail-nav">
-            <Link href="/marketplace" className="mk-rail-btn is-on" aria-label="Marketplace"><HugeIcon name="home" size={20} /></Link>
-            <Link href="/dashboard/courses" className="mk-rail-btn" aria-label="My courses"><HugeIcon name="book-open" size={20} /></Link>
-            <Link href="/dashboard/saved" className="mk-rail-btn" aria-label="Saved"><HugeIcon name="bookmark" size={20} /></Link>
+            {NAV.map((n) => (
+              <Link key={n.href} href={n.href} className={"mk-rail-btn" + (n.on ? " is-on" : "")} aria-label={n.label}>
+                <HugeIcon name={n.icon} size={20} />
+              </Link>
+            ))}
           </div>
           <div className="mk-rail-foot">
             <button type="button" className="mk-rail-btn" aria-label="Notifications"><HugeIcon name="bell" size={20} /></button>
@@ -156,26 +215,25 @@ export function Marketplace() {
             </Link>
           </div>
         </nav>
-
         <main className="mk-panel">
           <section className="mk-top">
             <div className="mk-shell mk-greet">
-              <p className="mk-greet-head"><Sun size={22} />{greeting()}{name ? ` ${name}` : ""}</p>
+              <p className="mk-greet-head"><Sun size={16} />{greeting()}{name ? ` ${name}` : ""}</p>
               <p className="mk-greet-line">
                 <span>You should</span> <b>try a free course</b> <span>today, what do you think?</span>
               </p>
             </div>
             <label className="mk-shell mk-search">
-              <HugeIcon name="search" size={22} className="mk-search-icon" />
+              <HugeIcon name="search" size={20} className="mk-search-icon" />
               <input type="search" placeholder="Search" aria-label="Search courses" />
               <button type="button" className="mk-pill mk-pill-search">Explore</button>
             </label>
             <button type="button" className="mk-shell mk-square mk-create" aria-label="Create a course">
-              <Plus size={42} />
+              <Plus size={24} />
             </button>
-            <Link href="/settings" className="mk-shell mk-square mk-me" aria-label="Your account">
+            <button type="button" className="mk-shell mk-square mk-me" aria-label="Your account" onClick={onMe}>
               <span className="mk-me-ring">{face && <img src={face} alt="" />}</span>
-            </Link>
+            </button>
           </section>
 
           <section className="mk-row">
@@ -184,12 +242,12 @@ export function Marketplace() {
               <p className="mk-featured-eyebrow">FEATURED · FREE · {FEATURED.lessons} LESSONS</p>
               <h1 className="mk-featured-title">{FEATURED.title}</h1>
               <button type="button" className="mk-featured-play" aria-label={`Play ${FEATURED.title}`}>
-                <HugeIcon name="play" size={22} className="mk-fill" />
+                <HugeIcon name="play" size={20} className="mk-fill" />
               </button>
               <div className="mk-featured-ghost" />
               <div className="mk-note">
                 <p className="mk-note-head">
-                  <Sun size={22} />
+                  <Sun size={16} />
                   <span style={{ color: "#DEDAC6" }}>T</span><span style={{ color: "#D3D1C6" }}>O</span>
                   <span>DAY&apos;S PICK · {FEATURED.creator.toUpperCase()}</span>
                 </p>
@@ -211,13 +269,6 @@ export function Marketplace() {
         </main>
       </div>
 
-      <nav className="mk-shell mk-tabs" aria-label="Main">
-        <Link href="/marketplace" className="mk-tab is-on" aria-label="Marketplace"><HugeIcon name="home" size={22} /></Link>
-        <Link href="/dashboard/courses" className="mk-tab" aria-label="My courses"><HugeIcon name="book-open" size={22} /></Link>
-        <button type="button" className="mk-tab" aria-label="Create a course"><Plus size={32} /></button>
-        <Link href="/dashboard/saved" className="mk-tab" aria-label="Saved"><HugeIcon name="bookmark" size={22} /></Link>
-        <button type="button" className="mk-tab mk-tab-bell" aria-label="Notifications"><HugeIcon name="bell" size={22} /></button>
-      </nav>
     </div>
   );
 }
