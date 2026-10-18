@@ -17,12 +17,12 @@
  *
  * WHAT SURVIVES: a path on this site. One leading slash, no scheme, no host,
  * and not `/onboarding` itself — which would be a loop rather than an exit.
- * Everything else falls back to the marketplace, because a student who has just
+ * Everything else falls back to the dashboard, because a student who has just
  * answered ten questions must land somewhere real whatever the URL said.
  * ------------------------------------------------------------------ */
 
 /** Where a student goes when there is no honest origin to return to. */
-export const DEFAULT_NEXT = "/marketplace";
+export const DEFAULT_NEXT = "/dashboard";
 
 /** A path is a URL's worth of characters at most; anything longer is not a
  *  route on this site, it is somebody probing. */
