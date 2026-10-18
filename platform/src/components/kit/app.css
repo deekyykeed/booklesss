@@ -765,9 +765,11 @@
   .kit-mk-creators {
     grid-auto-columns: 96px;
   }
+  /* One course per row on a phone (owner, 2026-10-18), so each folder card
+   * is drawn near its full size. */
   .kit-mk-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
   }
 }
 
