@@ -200,7 +200,6 @@ export function GlassButton({
       onClick={onClick}
       onPointerMove={follow}
       onPointerLeave={rest}
-      onPointerDown={rest}
       aria-label={label}
     >
       <span className="kit-gbtn-glow" aria-hidden />
@@ -278,21 +277,6 @@ export function Button({
   const { host, box } = useSquircleVar(RADIUS);
   const glass = variant === "glass";
 
-  // A mouse drags the sheen with it; a finger never does — on touch the
-  // press rule in kit.css slides it left instead, and an inline position
-  // would beat that rule.
-  const follow = (e: PointerEvent<HTMLButtonElement>) => {
-    const el = box.current;
-    if (!el || state || !glass || e.pointerType !== "mouse" || e.buttons) return;
-    const r = el.getBoundingClientRect();
-    el.style.setProperty("--mx", `${Math.max(8, Math.min(92, ((e.clientX - r.left) / r.width) * 100))}%`);
-    el.style.setProperty("--my", `${Math.max(2, Math.min(60, ((e.clientY - r.top) / r.height) * 100))}%`);
-  };
-  const rest = () => {
-    box.current?.style.removeProperty("--mx");
-    box.current?.style.removeProperty("--my");
-  };
-
   return (
     <button
       ref={(el) => {
@@ -304,8 +288,6 @@ export function Button({
       data-icon-only={iconOnly ? "" : undefined}
       disabled={disabled}
       onClick={onClick}
-      onPointerMove={follow}
-      onPointerLeave={rest}
       aria-label={iconOnly ? label : undefined}
       data-size={size}
     >

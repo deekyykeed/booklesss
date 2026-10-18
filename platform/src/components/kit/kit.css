@@ -385,19 +385,30 @@
   color: #8a8a8a;
 }
 
-/* The sheen's position is a registered property so it can be transitioned:
- * a press slides the white to the left and a release slides it home, rather
- * than the white jumping to wherever the finger landed (owner, 2026-10-18:
- * "the white disappears … I'd rather it just move to the left"). */
-@property --mx {
-  syntax: "<percentage>";
-  inherits: true;
-  initial-value: 88%;
+/* THE LIGHT IS A RIM, NOT A SPOT (owner, 2026-10-18: "make it cover a line
+ * — the right side and curve into the top, like actual light is hitting
+ * it"). An inset highlight on the face's right and top edges that turns the
+ * corner between them, fading out towards the left and the bottom. A press
+ * moves it only slightly ("the light needs to only move slightly"). */
+.kit-btn--glass .kit-btn-face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset -1.5px 1.5px 0 var(--rim, rgba(255, 255, 255, 0.95)),
+    inset -5px 5px 7px -3px var(--rim-soft, rgba(255, 255, 255, 0.55));
+  -webkit-mask-image: linear-gradient(225deg, #000 0%, #000 32%, rgba(0, 0, 0, 0.35) 58%, transparent 80%);
+  mask-image: linear-gradient(225deg, #000 0%, #000 32%, rgba(0, 0, 0, 0.35) 58%, transparent 80%);
+  transition: transform 0.28s var(--kit-ease), opacity 0.28s var(--kit-ease);
 }
-@property --my {
-  syntax: "<percentage>";
-  inherits: true;
-  initial-value: 6%;
+.kit-btn--glass:active:not(:disabled) .kit-btn-face::after,
+.kit-btn--glass[data-state="pressed"] .kit-btn-face::after {
+  transform: translate(-1.5px, 1px);
+  opacity: 0.85;
+  transition-duration: 0.14s;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.35, 1);
 }
 
 /* The sizes live here, not inline, so the app can bring every button down
@@ -438,9 +449,7 @@
   transition:
     transform 0.28s var(--kit-ease),
     filter 0.24s var(--kit-ease),
-    background 0.2s var(--kit-ease),
-    --mx 0.32s var(--kit-ease),
-    --my 0.32s var(--kit-ease);
+    background 0.2s var(--kit-ease);
 }
 
 .kit-btn[data-icon-only] .kit-btn-face {
@@ -451,7 +460,6 @@
 .kit-btn--glass .kit-btn-face {
   color: #ffffff;
   background:
-    radial-gradient(34% 46% at var(--mx) var(--my), rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 100%),
     radial-gradient(45% 55% at 100% 22%, rgba(255, 150, 145, 0.7) 0%, rgba(255, 150, 145, 0) 100%),
     radial-gradient(38% 55% at 100% 96%, rgba(160, 135, 240, 0.75) 0%, rgba(160, 135, 240, 0) 100%),
     linear-gradient(180deg, #ffb57c 0%, #ffb386 14%, #ffad8d 22%, #f7a698 29%, #ea9da5 35%, #d58eba 41%, #b582d0 47%, #9479de 53%, #7a6cee 59%, #6865f7 65%, #5f67fd 75%, #5c6cff 90%, #5d6fff 100%);
@@ -522,11 +530,9 @@
  * rides the face's own 280ms back up. */
 .kit-btn--glass:active:not(:disabled) .kit-btn-face,
 .kit-btn--glass[data-state="pressed"] .kit-btn-face {
-  --mx: 16%;
-  --my: 8%;
   transform: translateY(calc(var(--lip) * 0.7)) scale(0.985);
   filter: brightness(0.97);
-  transition-duration: 0.14s, 0.14s, 0.14s, 0.22s, 0.22s;
+  transition-duration: 0.14s;
   transition-timing-function: cubic-bezier(0.25, 0.8, 0.35, 1);
 }
 
