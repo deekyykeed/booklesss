@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import { HugeIcon } from "@/components/icons/huge";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { HugeIcon, type HugeIconName } from "@/components/icons/huge";
 import { GlassButton, HappyFolder, PlusMark, Surface, useCountUp } from "./primitives";
 import { squircleClip } from "./squircle";
 
@@ -230,16 +230,78 @@ export function BriefCard({ stack = 2, fixed }: { stack?: 1 | 2 | 3; fixed?: Clo
 
 /* ---------------------------------------------------------------- 4 · happy files */
 
-export function FilesCard({ state }: { state?: "hover" | "selected" | "menu" }) {
+export type FolderStat = { icon: HugeIconName; n: number; label: string; kind?: "image" | "video" | "file" };
+export type FolderAction = { label: string; danger?: boolean; onPick?: () => void; rename?: boolean };
+
+const REFERENCE_STATS: FolderStat[] = [
+  { icon: "image", n: 88, label: "images", kind: "image" },
+  { icon: "video", n: 24, label: "videos", kind: "video" },
+  { icon: "file", n: 9, label: "files", kind: "file" },
+  { icon: "video", n: 89, label: "clips", kind: "video" },
+];
+const REFERENCE_MENU: FolderAction[] = [
+  { label: "Open" },
+  { label: "Rename", rename: true },
+  { label: "Share" },
+  { label: "Delete", danger: true },
+];
+
+/* The widest a title can run before it meets the dots: 346.5 less its 38px
+ * inset less 30 of air. A longer name steps its size down until it fits on
+ * the one line the card is drawn for, so "Strategic Management" is the same
+ * card as "Happy Files", not a taller one. */
+const TITLE_ROOM = 278;
+const TITLE_MAX = 44;
+const TITLE_MIN = 22;
+
+function CountUp({ n, run, fixed }: { n: number; run: boolean; fixed?: boolean }) {
+  const v = useCountUp(n, run);
+  return <>{fixed ? n : v}</>;
+}
+
+/** The Happy Files card, as a component (owner, 2026-10-18: "the format
+ * should be exactly as the Happy Files component is — it's a component").
+ * With no props it is the reference, copy and all; the marketplace passes a
+ * real course's name, its counts and an open action. */
+export function FilesCard({
+  state,
+  title: initialTitle = "Happy Files",
+  eyebrow = "NEW",
+  stats = REFERENCE_STATS,
+  actions = REFERENCE_MENU,
+  onOpen,
+}: {
+  state?: "hover" | "selected" | "menu";
+  title?: string;
+  eyebrow?: string;
+  stats?: FolderStat[];
+  actions?: FolderAction[];
+  /** Given, a tap on the card opens instead of selecting it. */
+  onOpen?: () => void;
+}) {
   const [ref, seen] = useInView<HTMLDivElement>();
   const [menu, setMenu] = useState(state === "menu");
   const [selected, setSelected] = useState(state === "selected");
-  const [title, setTitle] = useState("Happy Files");
+  const [title, setTitle] = useState(initialTitle);
   const [editing, setEditing] = useState(false);
-  const images = useCountUp(88, seen);
-  const videos = useCountUp(24, seen);
-  const files = useCountUp(9, seen);
-  const clips = useCountUp(89, seen);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const [size, setSize] = useState(TITLE_MAX);
+
+  useLayoutEffect(() => {
+    const el = titleRef.current;
+    if (!el || editing) return;
+    let fs = TITLE_MAX;
+    el.style.fontSize = `${fs}px`;
+    el.style.lineHeight = `${fs}px`;
+    while (fs > TITLE_MIN && el.scrollWidth > TITLE_ROOM) {
+      fs -= 1;
+      el.style.fontSize = `${fs}px`;
+      el.style.lineHeight = `${fs}px`;
+    }
+    el.style.fontSize = "";
+    el.style.lineHeight = "";
+    setSize(fs);
+  }, [title, editing]);
 
   useEffect(() => {
     if (!menu || state === "menu") return;
@@ -257,15 +319,22 @@ export function FilesCard({ state }: { state?: "hover" | "selected" | "menu" }) 
     };
   }, [menu, state]);
 
+  const danger = actions.findIndex((a) => a.danger);
+
   return (
     <div
       ref={ref}
       className="kit-tile kit-tile--tall kit-files"
       data-state={state === "hover" ? "hover" : undefined}
       data-selected={selected ? "" : undefined}
+      role={onOpen ? "link" : undefined}
+      tabIndex={onOpen ? 0 : undefined}
+      aria-label={onOpen ? `Open ${title}` : undefined}
+      onKeyDown={(e) => onOpen && e.target === e.currentTarget && e.key === "Enter" && onOpen()}
       onClick={(e) => {
         if (state || (e.target as Element).closest(".kit-dots, .kit-menu, input")) return;
-        setSelected((s) => !s);
+        if (onOpen) onOpen();
+        else setSelected((s) => !s);
       }}
     >
       <Surface w={346.5} h={344} r={TILE_R} s={TILE_S} />
@@ -283,30 +352,27 @@ export function FilesCard({ state }: { state?: "hover" | "selected" | "menu" }) 
       </button>
       {menu && (
         <div className="kit-menu" role="menu">
-          <button type="button" role="menuitem" onClick={() => setMenu(false)}>
-            Open
-          </button>
-          <button
-            type="button"
-            role="menuitem"
-            onClick={() => {
-              setMenu(false);
-              setEditing(true);
-            }}
-          >
-            Rename
-          </button>
-          <button type="button" role="menuitem" onClick={() => setMenu(false)}>
-            Share
-          </button>
-          <hr />
-          <button type="button" role="menuitem" className="kit-danger" onClick={() => setMenu(false)}>
-            Delete
-          </button>
+          {actions.map((a, i) => (
+            <span key={a.label} style={{ display: "contents" }}>
+              {i === danger && i > 0 && <hr />}
+              <button
+                type="button"
+                role="menuitem"
+                className={a.danger ? "kit-danger" : undefined}
+                onClick={() => {
+                  setMenu(false);
+                  if (a.rename) setEditing(true);
+                  a.onPick?.();
+                }}
+              >
+                {a.label}
+              </button>
+            </span>
+          ))}
         </div>
       )}
-      <span className="kit-new">NEW</span>
-      <h3 className="kit-files-title">
+      <span className="kit-new">{eyebrow}</span>
+      <h3 ref={titleRef} className="kit-files-title" style={size !== TITLE_MAX ? { fontSize: size, lineHeight: `${size}px`, top: 216 + (TITLE_MAX - size) / 2 } : undefined}>
         {editing ? (
           <input
             autoFocus
@@ -330,22 +396,12 @@ export function FilesCard({ state }: { state?: "hover" | "selected" | "menu" }) 
         )}
       </h3>
       <div className="kit-stats">
-        <span className="kit-stat kit-stat--image">
-          <HugeIcon name="image" size={20} />
-          {state ? 88 : images}
-        </span>
-        <span className="kit-stat kit-stat--video">
-          <HugeIcon name="video" size={20} />
-          {state ? 24 : videos}
-        </span>
-        <span className="kit-stat kit-stat--file">
-          <HugeIcon name="file" size={20} />
-          {state ? 9 : files}
-        </span>
-        <span className="kit-stat kit-stat--video">
-          <HugeIcon name="video" size={20} />
-          {state ? 89 : clips}
-        </span>
+        {stats.map((st, i) => (
+          <span key={i} className={`kit-stat kit-stat--${st.kind ?? "file"}`} title={`${st.n} ${st.label}`}>
+            <HugeIcon name={st.icon} size={20} />
+            <CountUp n={st.n} run={seen} fixed={!!state} />
+          </span>
+        ))}
       </div>
     </div>
   );

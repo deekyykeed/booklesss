@@ -598,8 +598,11 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 26px 18px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+.kit-mk-fit {
+  width: 100%;
 }
 .kit-mk-folder {
   position: relative;
@@ -740,7 +743,7 @@
   }
   .kit-mk-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 22px 12px;
+    gap: 12px;
   }
 }
 
