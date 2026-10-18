@@ -64,6 +64,19 @@
   display: none;
 }
 
+/* With the logo and the page title gone, the search and the list move up
+ * into the space they left: the search level with the header buttons' row
+ * below, the list under its rule. */
+.kit-ron-frame[data-minimal] .kit-ron-search {
+  top: 66px;
+}
+.kit-ron-frame[data-minimal] .kit-ron-nav {
+  top: 135px;
+}
+.kit-ron-frame[data-minimal]:not([data-compact]) .kit-ron-nav {
+  height: 473px;
+}
+
 /* ---------------------------------------------------------------- app shell */
 .kit.kit-app {
   padding: 0;

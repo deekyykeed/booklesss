@@ -94,6 +94,7 @@ export function AppShell({ className }: { className?: string }) {
           onClose={() => setOpen(false)}
           compact={!full}
           flush
+          minimal
         />
       </div>
 

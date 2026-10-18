@@ -54,12 +54,14 @@ function Row({
   onPick,
   onClear,
   onAdd,
+  clearable = true,
 }: {
   item: Item;
   active: boolean;
   onPick: () => void;
   onClear: () => void;
   onAdd?: () => void;
+  clearable?: boolean;
 }) {
   return (
     <div className="kit-ron-row" data-active={active ? "" : undefined}>
@@ -67,7 +69,7 @@ function Row({
         <HugeIcon name={item.icon} size={19} strokeWidth={1.75} />
         <span>{item.label}</span>
       </button>
-      {active ? (
+      {active && clearable ? (
         <button type="button" className="kit-ron-close" aria-label={`Close ${item.label}`} onClick={onClear}>
           <HugeIcon name="x" size={15} strokeWidth={1.9} />
         </button>
@@ -105,6 +107,10 @@ type Props = {
   /** No panel of its own: no glass, rim, radius or shadow — the sidebar is
    * part of the app's floor, not a card floating on it (owner, 2026-10-18). */
   flush?: boolean;
+  /** No logo, no big page title, no close beside the active row — the app's
+   * sidebar (owner, 2026-10-18: "the x next to the nav button should go, the
+   * Explore big words at the top must go, and the logo must go"). */
+  minimal?: boolean;
 };
 
 const CARD_COPY = {
@@ -123,6 +129,7 @@ export function RonSidebar({
   compact,
   app,
   flush,
+  minimal,
 }: Props = {}) {
   const [ownActive, setOwnActive] = useState<string | null>("files");
   const controlled = activeProp !== undefined;
@@ -148,6 +155,7 @@ export function RonSidebar({
       className="kit-ron-frame"
       data-compact={compact ? "" : undefined}
       data-flush={flush ? "" : undefined}
+      data-minimal={minimal ? "" : undefined}
       style={compact || flush ? undefined : { clipPath: FRAME_CLIP }}
     >
       {closed && (
@@ -158,6 +166,7 @@ export function RonSidebar({
       )}
       <aside className="kit-ron" data-closed={closed ? "" : undefined} aria-label="Sidebar">
         {!compact && !flush && <Surface w={503} h={917} r={24} s={0.6} kind="glass" />}
+        {!minimal && (
         <div className="kit-ron-logo">
           <span className="kit-ron-mark" aria-hidden>
             <i />
@@ -166,6 +175,7 @@ export function RonSidebar({
           </span>
           {brand}
         </div>
+        )}
         <button
           type="button"
           className="kit-ron-icon"
@@ -184,12 +194,14 @@ export function RonSidebar({
           <HugeIcon name="x" size={18} strokeWidth={1.75} />
         </button>
 
+        {!minimal && (
         <div className="kit-ron-title">
           <button type="button" className="kit-ron-back" aria-label="Back">
             <HugeIcon name="back" size={24} strokeWidth={1.6} />
           </button>
           <h3>{title}</h3>
         </div>
+        )}
 
         <label className="kit-ron-search">
           <HugeIcon name="search" size={20} strokeWidth={1.75} />
@@ -201,7 +213,7 @@ export function RonSidebar({
           />
         </label>
 
-        <div className="kit-ron-rule" style={{ left: 16, top: 247, width: 180 }} />
+        <div className="kit-ron-rule" style={{ left: 16, top: minimal ? 126 : 247, width: 180 }} />
         {!compact && <div className="kit-ron-col-rule" />}
 
         <nav className="kit-ron-nav">
@@ -213,6 +225,7 @@ export function RonSidebar({
                 onPick={() => setActive(item.id)}
                 onClear={() => setActive(null)}
                 onAdd={item.add ? () => add(item.id) : undefined}
+                clearable={!minimal}
               />
               {Array.from({ length: subs[item.id] ?? 0 }, (_, k) => (
                 <div key={k} className="kit-ron-sub">
@@ -238,6 +251,7 @@ export function RonSidebar({
               active={active === item.id}
               onPick={() => setActive(item.id)}
               onClear={() => setActive(null)}
+              clearable={!minimal}
             />
           ))}
         </div>
