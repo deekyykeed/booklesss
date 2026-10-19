@@ -108,12 +108,28 @@ marketplace styles in `kit/app.css`. `/dashboard` renders `AppShell`.
   radius or shadow. It also has no logo, no page title and no × on the active
   row (`flush` and `minimal` props on `RonSidebar`). Below 900px it is the
   pulled drawer from `lib/use-swipe-drawer`.
-- **A component keeps its /components type size wherever it is used.** The
-  kit's one scale rule is `min(1, (column − 1) / 575)`. To make a component
-  wider, STRETCH it (a `width` prop, controls pinned right); never zoom it to
-  fill. Zooming swung the folder card's titles from 22px to 45px, and the
-  owner rejected it three times. After any layout change, measure the
-  rendered type against /components on the same viewport and look at the
+- **REAL SIZES, in Paper and in code (2026-10-19).** A number means the size
+  on screen, as in Framer. Paper is drawn at 1x on "Kit · 1x — real sizes",
+  and the @2x boards are archived. The code uses the same px and never
+  `zoom`s a component to fit; a wider column stretches the box and the type
+  stays put (`FolderCard`, `width: 100%`).
+
+  | Use | Size |
+  |---|---|
+  | Greeting | 30/36 |
+  | Card title | 28/32 |
+  | Section heading | 22/28 |
+  | **Reading text: nav, meta, menus, search. The floor.** | **16/22** |
+  | Stats | 16/20 |
+  | All-caps label (the only text under 16) | 13/16 |
+
+  Icons are 18px in the sidebar and beside 16px text.
+
+  Before this, the Jay board was @2x and the card was zoomed to fit. One
+  title was 88px in Paper, 44px in code and 27px on a phone, and the owner
+  could not say "make it 22px". The Jay widget stage on /components is the
+  one reference still drawn that way, and it is labelled. After any layout
+  change, measure the rendered px on the live site and look at the
   screenshot.
 - **Text that doesn't fit truncates at one size.** Do not shrink each title
   to fit; that gives a grid of mismatched sizes.
