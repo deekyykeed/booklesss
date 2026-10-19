@@ -2,7 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { HugeIcon, type HugeIconName } from "@/components/icons/huge";
-import { Button, HappyFolder, Surface, useCountUp } from "./primitives";
+import { HappyFolder, Surface, useCountUp } from "./primitives";
 
 /* The folder card at REAL SIZE (owner, 2026-10-19: "in Paper everything is
  * way too scaled up … bring Paper back to proportions; the smallest text for
@@ -190,12 +190,15 @@ export function FolderCard({
         ))}
         {/* In the row, not floating (owner, 2026-10-19: "don't make the
             button float, just stack it in the same row"). */}
+        {/* The play is the Done bead from Filter idea 7 (owner, 2026-10-19:
+            "just the icon container and the icon as the play button"): a
+            40px purple bead, a lighter fill, a darker core, the play glyph. */}
         {onOpen && (
-          <span className="kit-fc-start">
-            <Button size="sm" icon="play" onClick={onOpen}>
-              Start
-            </Button>
-          </span>
+          <button type="button" className="kit-fc-play" aria-label={`Start ${title}`} onClick={onOpen}>
+            <span className="kit-fc-play-fill" aria-hidden />
+            <span className="kit-fc-play-core" aria-hidden />
+            <HugeIcon name="play" size={17} strokeWidth={2.4} />
+          </button>
         )}
       </div>
     </div>
