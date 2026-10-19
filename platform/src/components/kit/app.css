@@ -164,7 +164,7 @@
     transition-delay: 0s;
   }
   .kit-app-main {
-    padding: calc(16px + env(safe-area-inset-top)) 16px 72px;
+    padding: calc(20px + env(safe-area-inset-top)) 24px 72px;
   }
   .kit-app-bar {
     display: flex;
@@ -734,9 +734,71 @@
     width: 240px;
   }
 }
+/* BREAKPOINTS, as modelled in Paper ("Marketplace" page, 2026-10-19):
+ *   >= 1280  sidebar docked, full                 · 3-across grid
+ *   900-1279 sidebar docked, one column           · 2-across grid
+ *   640-899  TABLET: sidebar is the swipe drawer  · 2-across grid,
+ *            featured card still side by side, 24px gutters, 44px controls
+ *   < 640    PHONE: greeting wraps under menu/search/account, featured card
+ *            stacks, one card per row, 36px controls, 16px gutters */
+/* Breakpoints, as modelled on the Paper "Marketplace" page (2026-10-19):
+ * 1440 and 1024 have the sidebar docked; 768 puts it behind a menu button
+ * (the pulled drawer) but keeps the desktop arrangement: one top row, the
+ * featured card side by side, two cards across; only a phone (under 640)
+ * wraps the greeting under the top row, stacks the featured card and puts
+ * one card per row. */
 @media (max-width: 899px) {
   .kit-mk-menu {
     display: inline-flex;
+  }
+  .kit-mk-search {
+    width: 220px;
+  }
+  .kit-mk-hero {
+    gap: 20px;
+  }
+}
+@media (min-width: 640px) and (max-width: 899px) {
+  .kit-app-main {
+    padding: calc(20px + env(safe-area-inset-top)) 24px 72px;
+  }
+}
+@media (max-width: 639px) {
+  .kit-mk-top {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .kit-mk-hello {
+    order: 3;
+    flex-basis: 100%;
+  }
+  .kit-mk-search {
+    flex: 1;
+    width: auto;
+  }
+  .kit-mk-hero {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 10px;
+  }
+  .kit-mk-hero-body {
+    padding: 4px 8px 10px;
+  }
+  .kit-mk-rail {
+    grid-auto-columns: 82%;
+  }
+  .kit-mk-creators {
+    grid-auto-columns: 112px;
+  }
+  /* One course per row on a phone, stretched to the row. */
+  .kit-mk-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+}
+@media (max-width: 639px) {
+  .kit-app-main {
+    padding: calc(16px + env(safe-area-inset-top)) 16px 72px;
   }
   .kit-mk-top {
     flex-wrap: wrap;
@@ -764,8 +826,6 @@
   .kit-mk-creators {
     grid-auto-columns: 112px;
   }
-  /* One course per row on a phone (owner, 2026-10-18), so each folder card
-   * is drawn near its full size. */
   .kit-mk-grid {
     grid-template-columns: minmax(0, 1fr);
     gap: 16px;
