@@ -73,8 +73,23 @@
 .kit-ron-frame[data-minimal] .kit-ron-nav {
   top: 135px;
 }
-.kit-ron-frame[data-minimal]:not([data-compact]) .kit-ron-nav {
-  height: 473px;
+.kit-ron-frame[data-minimal] .kit-ron-nav {
+  height: auto;
+  bottom: 176px;
+}
+
+/* The full two-column sidebar in the app is as tall as the screen, not
+ * zoomed to fit it: the nav and the cards column scroll inside it, so every
+ * size stays the real one. */
+.kit-ron-frame[data-flush]:not([data-compact]) {
+  height: 100%;
+}
+.kit-ron-frame[data-flush]:not([data-compact]) .kit-ron {
+  height: calc(100% - 16px);
+}
+.kit-ron-frame[data-flush]:not([data-compact]) .kit-ron-cards {
+  height: auto;
+  bottom: 0;
 }
 
 /* ---------------------------------------------------------------- app shell */
@@ -96,9 +111,6 @@
   top: 0;
   flex: none;
   height: 100svh;
-}
-.kit-app-side > .kit-ron-frame:not([data-compact]) {
-  zoom: var(--side-z, 1);
 }
 .kit-app-main {
   flex: 1;
@@ -192,9 +204,9 @@
   }
   .kit-app .kit-cat-item {
     height: 36px;
-    padding: 0 13px 0 10px;
+    padding: 0 14px 0 10px;
     gap: 7px;
-    font-size: 14px;
+    font-size: 16px;
   }
   .kit-app .kit-cat-mark svg {
     width: 18px;
@@ -234,7 +246,7 @@
   height: 44px;
   padding: 0 16px 0 12px;
   border-radius: 14px;
-  font-size: 14.5px;
+  font-size: 16px;
   font-weight: 500;
   color: #2a2a30;
   background: linear-gradient(180deg, #fdfdfd 0%, #f7f7f7 55%, #f4f4f4 100%);
@@ -337,7 +349,8 @@
 }
 .kit-mk-hello p {
   margin: 2px 0 0;
-  font-size: 15px;
+  font-size: 16px;
+  line-height: 22px;
   color: var(--kit-count);
 }
 .kit-mk-search {
@@ -361,7 +374,7 @@
   flex: 1;
   min-width: 0;
   font: inherit;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--kit-ink);
   caret-color: var(--kit-blue);
   background: none;
@@ -393,16 +406,17 @@
   padding: 8px 18px 8px 0;
 }
 .kit-mk-eyebrow {
-  font-family: var(--kit-mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--hue);
 }
 .kit-mk-hero h2 {
   margin: 0;
-  font-size: 32px;
-  line-height: 36px;
+  font-size: 28px;
+  line-height: 32px;
   font-weight: 500;
   letter-spacing: -0.02em;
 }
@@ -411,12 +425,14 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 22px;
   font-weight: 500;
 }
 .kit-mk-meta {
   margin: 0;
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 22px;
   color: var(--kit-count);
 }
 .kit-mk-hero-cta {
@@ -503,18 +519,20 @@
 }
 .kit-mk-section > header h3 {
   margin: 0;
-  font-size: 20px;
+  font-size: 22px;
+  line-height: 28px;
   font-weight: 500;
   letter-spacing: -0.01em;
 }
 .kit-mk-section > header > span {
-  font-size: 13px;
+  font-size: 16px;
   color: var(--kit-count);
 }
 .kit-mk-empty {
   margin: 0;
   padding: 28px 0;
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 22px;
   color: var(--kit-count);
 }
 
@@ -611,24 +629,10 @@
   margin: 0;
   padding: 0;
   display: grid;
-  /* A column is never narrower than the card is drawn (--card-min, set by
-   * FitCard); the card stretches to whatever is left over. */
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--card-min, 346.5px)), 1fr));
+  /* Real-size cards: a column is never narrower than 320px, and the card
+   * fills what is left over. The type does not change with the width. */
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
   gap: 20px;
-}
-.kit-mk-fit {
-  width: 100%;
-}
-/* The card is scaled to its column, and the menu would shrink with it to
- * the point of being unreadable (owner: "the popup is so ridiculously
- * small"). It undoes the card's scale so it is always drawn at its real
- * size, and anchors to the card's right edge so the larger menu stays on
- * screen. --kit-z is the card's scale, set by FitCard. */
-.kit-mk-fit .kit-menu {
-  zoom: calc(1 / var(--kit-z, 1));
-  left: auto;
-  right: calc(31.5px * var(--kit-z, 1));
-  top: calc(98px * var(--kit-z, 1));
 }
 .kit-mk-folder {
   position: relative;
@@ -695,7 +699,7 @@
 }
 
 .kit-mk-creators {
-  grid-auto-columns: 112px;
+  grid-auto-columns: 120px;
 }
 .kit-mk-creator {
   display: flex;
@@ -707,12 +711,13 @@
 }
 .kit-mk-creator strong {
   margin-top: 4px;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 500;
-  line-height: 16px;
+  line-height: 20px;
 }
 .kit-mk-creator small {
-  font-size: 12px;
+  font-size: 16px;
+  line-height: 20px;
   color: var(--kit-count);
 }
 
@@ -741,10 +746,6 @@
     order: 3;
     flex-basis: 100%;
   }
-  .kit-mk-hello h1 {
-    font-size: 26px;
-    line-height: 32px;
-  }
   .kit-mk-search {
     flex: 1;
     width: auto;
@@ -757,15 +758,11 @@
   .kit-mk-hero-body {
     padding: 4px 8px 10px;
   }
-  .kit-mk-hero h2 {
-    font-size: 26px;
-    line-height: 30px;
-  }
   .kit-mk-rail {
     grid-auto-columns: 82%;
   }
   .kit-mk-creators {
-    grid-auto-columns: 96px;
+    grid-auto-columns: 112px;
   }
   /* One course per row on a phone (owner, 2026-10-18), so each folder card
    * is drawn near its full size. */
@@ -931,4 +928,189 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #8a8a8a;
+}
+
+/* ---------------------------------------------------------------- folder card, real size
+ * FolderCard.tsx. Every value is the size on screen and the same number as
+ * the Paper board "Kit · 1x — real sizes". Nothing here is zoomed: the card
+ * is as wide as its column, the type never changes size with it. */
+.kit-fc {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 122px 24px 24px;
+  border-radius: 38px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.3s var(--kit-ease);
+}
+.kit-fc[data-selected] .kit-sf-ring,
+.kit-fc:focus-visible .kit-sf-ring {
+  opacity: 1;
+}
+.kit-fc:focus-visible {
+  outline: none;
+}
+.kit-fc-folder {
+  position: absolute;
+  left: 3px;
+  top: 10px;
+  width: 132px;
+  height: 126px;
+  pointer-events: none;
+  transition: transform 0.4s var(--kit-spring);
+}
+@media (hover: hover) {
+  .kit-fc:hover .kit-fc-folder {
+    transform: translateY(-4px);
+  }
+  .kit-fc:hover .kit-sf-lift {
+    opacity: 1;
+  }
+}
+.kit-fc[data-state="hover"] .kit-fc-folder {
+  transform: translateY(-4px);
+}
+.kit-fc[data-state="hover"] .kit-sf-lift {
+  opacity: 1;
+}
+.kit-fc:active {
+  transform: scale(0.985);
+}
+
+/* Three 5px dots in a 20 × 34 box, top right; the hit area is 44 × 58. */
+.kit-fc-dots {
+  position: absolute;
+  right: 24px;
+  top: 24px;
+  width: 20px;
+  height: 34px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 0;
+  transition: background 0.2s var(--kit-ease);
+}
+.kit-fc-dots::before {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  border-radius: 22px;
+}
+.kit-fc-dots i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--kit-ink);
+}
+.kit-fc-dots[aria-expanded="true"],
+.kit-fc-dots:active {
+  background: rgba(10, 10, 10, 0.06);
+}
+
+.kit-fc-menu {
+  position: absolute;
+  z-index: 5;
+  right: 16px;
+  top: 64px;
+  width: 180px;
+  padding: 6px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.86);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 15px 30px rgba(40, 40, 80, 0.16);
+  transform-origin: 90% 0%;
+  animation: kit-pop 0.24s var(--kit-spring);
+  cursor: default;
+}
+.kit-fc-menu button {
+  height: 40px;
+  border-radius: 14px;
+  padding: 0 12px;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--kit-ink);
+  transition: background 0.15s var(--kit-ease);
+}
+.kit-fc-menu button:hover,
+.kit-fc-menu button:focus-visible {
+  background: #f2f2f4;
+}
+.kit-fc-menu hr {
+  border: 0;
+  height: 1px;
+  background: #ededf0;
+  margin: 3px 10px;
+}
+
+.kit-fc-eyebrow {
+  align-self: flex-start;
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #c9c2ae 0%, #bdbbb6 30%, #bababa 60%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.kit-fc-title {
+  margin: 2px 0 0;
+  font-size: 28px;
+  line-height: 32px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: #000000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kit-fc-desc {
+  margin: 4px 0 0;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 500;
+  color: #8e8e93;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kit-fc-stats {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 12px;
+}
+.kit-fc-stats .kit-stat {
+  gap: 6px;
+  font-size: 16px;
+  line-height: 20px;
+}
+@supports (corner-shape: squircle) {
+  .kit-fc { corner-shape: squircle; border-radius: 60px; }
+}
+
+/* /components: the real-size kit pieces, shown exactly as the app draws them. */
+.kit-fc-states {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 20px;
+}
+.kit-side-demo {
+  width: 275px;
+  max-width: 100%;
+  height: 680px;
+  padding: 0 0 0 8px;
+  border-radius: 32px;
+  background: var(--kit-app-grad);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
 }

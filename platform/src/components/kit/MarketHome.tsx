@@ -1,11 +1,11 @@
 "use client";
 
-import { useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { HugeIcon } from "@/components/icons/huge";
 import { COURSES as REAL } from "@/lib/courses";
 import { CATEGORIES, CategoryBar, CategoryMark } from "./CategoryBar";
-import { FilesCard } from "./JayWidgets";
+import { FolderCard } from "./FolderCard";
 import { Button } from "./primitives";
 
 /* The marketplace's first page (owner, 2026-10-18: "build out the first page
@@ -18,7 +18,7 @@ import { Button } from "./primitives";
  * THE FOLDERS ARE THE REAL COURSES (owner, 2026-10-18: "the folders are
  * supposed to be actual real courses — Corporate Finance and so on"), read
  * from lib/courses, so a course added there appears here with nothing to
- * touch. Each is the Happy Files card (JayWidgets FilesCard) with the
+ * touch. Each is the folder card (FolderCard, real size) with the
  * course's own name and counts. The creators row is still placeholder. */
 
 type Course = {
@@ -63,41 +63,6 @@ const initials = (n: string) => n.split(" ").map((p) => p[0]).join("");
 
 function greeting(h: number) {
   return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
-}
-
-/* THE CARD IS DRAWN AT THE SAME SCALE AS ON /components (owner, 2026-10-18:
- * "keep the font size the same even in the component thing") — the kit's
- * one rule, min(1, (column - 1) / 575), read off the grid's width — so a
- * title here is exactly the size it is on the Components page on the same
- * screen. The card is never scaled to fit its column: it is STRETCHED
- * sideways to it, and the grid's columns are never narrower than the card
- * is drawn. */
-const CARD_W = 346.5;
-const PAIR = 575;
-function FitCard({ children }: { children: (width: number, scale: number) => ReactNode }) {
-  const box = useRef<HTMLDivElement>(null);
-  const [fit, setFit] = useState({ z: 0, w: CARD_W });
-  useLayoutEffect(() => {
-    const el = box.current;
-    const grid = el?.closest(".kit-mk-grid") as HTMLElement | null;
-    if (!el || !grid) return;
-    const set = () => {
-      const z = Math.min(1, (grid.clientWidth - 1) / PAIR);
-      grid.style.setProperty("--card-min", `${CARD_W * z}px`);
-      setFit({ z, w: Math.max(CARD_W, el.clientWidth / z) });
-    };
-    set();
-    const ro = new ResizeObserver(set);
-    ro.observe(el);
-    ro.observe(grid);
-    return () => ro.disconnect();
-  }, []);
-  const { z, w } = fit;
-  return (
-    <div ref={box} className="kit-mk-fit" style={{ "--kit-z": z || 1 } as CSSProperties}>
-      <div style={{ zoom: z || 1, opacity: z ? 1 : 0, width: w }}>{children(w, z || 1)}</div>
-    </div>
-  );
 }
 
 /* A placeholder cover: the category's hue as a soft wash and its mark. */
@@ -199,11 +164,7 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
           <ul className="kit-mk-grid">
             {shown.map((c) => (
               <li key={c.id}>
-                <FitCard>
-                  {(w, z) => (
-                  <FilesCard
-                    width={w}
-                    scale={z}
+                <FolderCard
                     title={c.title}
                     description={c.subtitle}
                     eyebrow={catOf(c.cat).id === "all" ? "COURSE" : catOf(c.cat).label.toUpperCase()}
@@ -219,9 +180,7 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
                       { label: "Share" },
                     ]}
                     onOpen={() => open(c.id)}
-                  />
-                  )}
-                </FitCard>
+                />
               </li>
             ))}
           </ul>

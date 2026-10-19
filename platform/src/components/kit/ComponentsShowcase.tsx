@@ -6,6 +6,8 @@ import { CategoryBar, type CategoryLook } from "./CategoryBar";
 import { Button, CallBar, Fit } from "./primitives";
 import { AvatarTile, BookCall, BriefCard, FilesCard, NudgeCard, PlusTile } from "./JayWidgets";
 import { RonSidebar } from "./RonSidebar";
+import { FolderCard, type FolderStat } from "./FolderCard";
+import { APP_FOOT, APP_NAV } from "./AppShell";
 import "./kit.css";
 import "./app.css";
 
@@ -34,6 +36,20 @@ const SWATCHES: [string, string][] = [
  * the add tile (201.5) comes to the same 575. Below that column width every
  * component on the page shrinks by the same factor. */
 const PAIR = 575;
+
+const FOLDER_STATS: FolderStat[] = [
+  { icon: "image", n: 6, label: "units", kind: "image" },
+  { icon: "video", n: 26, label: "steps", kind: "video" },
+  { icon: "file", n: 128, label: "quick checks", kind: "file" },
+  { icon: "video", n: 2, label: "hours", kind: "video" },
+];
+
+const FOLDER_STATES: [undefined | "hover" | "selected" | "menu", string][] = [
+  [undefined, "Rest"],
+  ["hover", "Hover (lifted)"],
+  ["selected", "Selected"],
+  ["menu", "Menu open"],
+];
 
 const LOOKS: [CategoryLook, string][] = [
   ["duotone", "Solar · Bold Duotone"],
@@ -84,7 +100,7 @@ export function ComponentsShowcase({ className }: { className?: string }) {
         <section className="kit-section">
           <header>
             <h2>Widgets</h2>
-            <span className="kit-hint">Tap the arrows, the card, the dots</span>
+            <span className="kit-hint">The Jay reference set, shrunk to fit this screen · the real-size kit is below</span>
           </header>
           <div className="kit-stage">
             <Fit w={563}>
@@ -284,38 +300,33 @@ export function ComponentsShowcase({ className }: { className?: string }) {
         <section className="kit-section">
           <header>
             <h2>Folder card</h2>
-            <span className="kit-hint">Rest · hover · selected · menu open</span>
+            <span className="kit-hint">Real size · title 28 · description 16 · stats 16 with 18px icons</span>
           </header>
-          <div className="kit-states">
-            <div className="kit-state">
-              <Fit w={346.5}>
-                <FilesCard state="hover" />
-              </Fit>
-              <span>Hover (lifted)</span>
-            </div>
-            <div className="kit-state">
-              <Fit w={346.5}>
-                <FilesCard state="selected" />
-              </Fit>
-              <span>Selected</span>
-            </div>
-            <div className="kit-state">
-              <Fit w={346.5}>
-                <FilesCard state="menu" />
-              </Fit>
-              <span>Menu open</span>
-            </div>
+          <div className="kit-fc-states">
+            {FOLDER_STATES.map(([state, label]) => (
+              <div key={label} className="kit-state">
+                <FolderCard
+                  state={state}
+                  title="Corporate Finance"
+                  eyebrow="FINANCE"
+                  description="Investment appraisal, cost of capital, valuation and risk."
+                  stats={FOLDER_STATS}
+                  actions={[{ label: "Open" }, { label: "Save" }, { label: "Share" }]}
+                />
+                <span>{label}</span>
+              </div>
+            ))}
           </div>
         </section>
 
         <section className="kit-section">
           <header>
             <h2>Sidebar</h2>
-            <span className="kit-hint">Tap a row, a +, the search or the ×</span>
+            <span className="kit-hint">Real size, as the app draws it · 16px rows · 18px icons</span>
           </header>
-          <Fit w={519}>
-            <RonSidebar />
-          </Fit>
+          <div className="kit-side-demo">
+            <RonSidebar app compact flush minimal brand="booklesss" title="Explore" nav={APP_NAV} foot={APP_FOOT} />
+          </div>
         </section>
 
         <section className="kit-section">

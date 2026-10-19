@@ -66,18 +66,18 @@ function Row({
   return (
     <div className="kit-ron-row" data-active={active ? "" : undefined}>
       <button type="button" className="kit-ron-hit" onClick={onPick} aria-current={active ? "page" : undefined}>
-        <HugeIcon name={item.icon} size={19} strokeWidth={1.75} />
+        <HugeIcon name={item.icon} size={18} />
         <span>{item.label}</span>
       </button>
       {active && clearable ? (
         <button type="button" className="kit-ron-close" aria-label={`Close ${item.label}`} onClick={onClear}>
-          <HugeIcon name="x" size={15} strokeWidth={1.9} />
+          <HugeIcon name="x" size={16} />
         </button>
       ) : (
         item.add &&
         onAdd && (
           <button type="button" className="kit-ron-add" aria-label={`Add to ${item.label}`} onClick={onAdd}>
-            <HugeIcon name="add" size={16} strokeWidth={1.5} />
+            <HugeIcon name="add" size={18} />
           </button>
         )
       )}
@@ -139,6 +139,7 @@ export function RonSidebar({
     onPick?.(id);
   };
   const copy = CARD_COPY[app ? "app" : "reference"];
+  const searchLabel = minimal ? "Search" : "Search by system";
   const [query, setQuery] = useState("");
   const [subs, setSubs] = useState<Record<string, number>>({});
   const [closed, setClosed] = useState(false);
@@ -182,7 +183,7 @@ export function RonSidebar({
           style={{ left: compact ? 172 : 410.5, top: 15.5, transform: "scaleX(-1)" }}
           aria-label="Sign out"
         >
-          <HugeIcon name="sign-out" size={21} strokeWidth={1.75} />
+          <HugeIcon name="sign-out" size={18} />
         </button>
         <button
           type="button"
@@ -191,7 +192,7 @@ export function RonSidebar({
           aria-label="Close sidebar"
           onClick={() => (onClose ? onClose() : setClosed(true))}
         >
-          <HugeIcon name="x" size={18} strokeWidth={1.75} />
+          <HugeIcon name="x" size={18} />
         </button>
 
         {!minimal && (
@@ -204,12 +205,12 @@ export function RonSidebar({
         )}
 
         <label className="kit-ron-search">
-          <HugeIcon name="search" size={20} strokeWidth={1.75} />
+          <HugeIcon name="search" size={18} />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by system"
-            aria-label="Search by system"
+            placeholder={searchLabel}
+            aria-label={searchLabel}
           />
         </label>
 
@@ -240,7 +241,7 @@ export function RonSidebar({
 
         <div
           className="kit-ron-rule"
-          style={compact ? { left: 30, bottom: 160, width: 170 } : { left: 30, top: 616, width: 170 }}
+          style={compact || minimal ? { left: 30, bottom: 160, width: 170 } : { left: 30, top: 616, width: 170 }}
         />
 
         <div className="kit-ron-bottom">

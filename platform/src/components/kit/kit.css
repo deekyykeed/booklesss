@@ -1548,13 +1548,13 @@
   position: absolute;
   left: 10px;
   top: 167px;
-  width: 228px;
-  height: 43px;
+  width: 235px;
+  height: 44px;
   border-radius: 22px;
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding-left: 9px;
+  gap: 12px;
+  padding-left: 14px;
   padding-right: 12px;
   background: rgba(255, 255, 255, 0.22);
   color: #2a2a30;
@@ -1569,8 +1569,8 @@
 .kit-ron-search input {
   flex: 1;
   min-width: 0;
-  font-size: 12.5px;
-  line-height: 16px;
+  font-size: 16px;
+  line-height: 20px;
   color: #1e1e22;
   caret-color: var(--kit-blue);
 }
@@ -1602,8 +1602,10 @@
   height: 352px;
   overflow-y: auto;
   scrollbar-width: none;
-  font-size: 13.5px;
-  line-height: 18px;
+  /* 16px rows, 18px icons (owner, 2026-10-19: "the smallest text for
+   * reading I go 16px, and icon sizes are 18px in the sidebar"). */
+  font-size: 16px;
+  line-height: 20px;
   color: #3c3c42;
 }
 
@@ -1613,20 +1615,20 @@
 
 .kit-ron-row {
   position: relative;
-  height: 43.3px;
+  height: 44px;
 }
 
 .kit-ron-row > .kit-ron-hit {
   position: absolute;
-  left: 10px;
+  left: 8px;
   top: 2px;
-  width: 193px;
-  height: 39px;
+  width: 199px;
+  height: 40px;
   border-radius: 20px;
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding-left: 10px;
+  gap: 14px;
+  padding-left: 12px;
   text-align: left;
   color: #2a2a30;
   transition: background 0.22s var(--kit-ease), box-shadow 0.22s var(--kit-ease), color 0.22s var(--kit-ease);
@@ -1656,8 +1658,8 @@
 
 .kit-ron-close {
   position: absolute;
-  left: 205px;
-  top: 1.5px;
+  left: 211px;
+  top: 2px;
   width: 40px;
   height: 40px;
   border-radius: 20px;
@@ -1671,8 +1673,8 @@
 
 .kit-ron-add {
   position: absolute;
-  left: 207px;
-  top: 5.5px;
+  left: 211px;
+  top: 6px;
   width: 32px;
   height: 32px;
   border-radius: 16px;
@@ -1699,9 +1701,9 @@
   height: 34px;
   display: flex;
   align-items: center;
-  padding-left: 55px;
+  padding-left: 52px;
   gap: 10px;
-  font-size: 12.5px;
+  font-size: 16px;
   color: #6f6f75;
   animation: kit-slide-down 0.32s var(--kit-ease);
 }
@@ -1733,7 +1735,7 @@
 
 .kit-ron-empty {
   padding: 12px 20px;
-  font-size: 12.5px;
+  font-size: 16px;
   color: #9c9ca2;
 }
 
@@ -1747,7 +1749,7 @@
 }
 
 .kit-ron-bottom .kit-ron-row > .kit-ron-hit {
-  gap: 20px;
+  gap: 14px;
 }
 
 .kit-ron-cards {

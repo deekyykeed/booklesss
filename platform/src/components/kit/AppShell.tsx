@@ -14,7 +14,7 @@ import "./app.css";
  * and to work on mobile with the same functionality as the Booklesss sidebar
  * I had before, where you swipe"). The Ron sidebar is the real navigation:
  *
- *   ≥ 1280px  the whole two-column panel, docked, scaled to the screen height
+ *   ≥ 1280px  the whole two-column panel, docked, as tall as the screen
  *   900–1279  its first column alone (compact), docked
  *   < 900     the compact column as a PULLED DRAWER — lib/use-swipe-drawer,
  *             the same hook and the same numbers as the old sidebar: it
@@ -25,7 +25,7 @@ import "./app.css";
  * (components/home/claude-ui/studio); they are .cui components, so they sit
  * inside a .cui wrapper with its page colour cleared. */
 
-const NAV: SidebarItem[] = [
+export const APP_NAV: SidebarItem[] = [
   { id: "explore", icon: "nav-home", label: "Explore" },
   { id: "library", icon: "nav-files", label: "My courses" },
   { id: "studio", icon: "video", label: "Studio", add: true },
@@ -34,7 +34,7 @@ const NAV: SidebarItem[] = [
   { id: "more", icon: "nav-more", label: "More" },
 ];
 
-const FOOT: SidebarItem[] = [
+export const APP_FOOT: SidebarItem[] = [
   { id: "notifications", icon: "mail", label: "Notifications" },
   { id: "settings", icon: "settings", label: "Settings" },
   { id: "account", icon: "user", label: "Account" },
@@ -42,7 +42,6 @@ const FOOT: SidebarItem[] = [
 
 const DRAWER = "(max-width: 899px)";
 const FULL = "(min-width: 1280px)";
-const FRAME_H = 933;
 
 export function AppShell({ className }: { className?: string }) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -57,21 +56,15 @@ export function AppShell({ className }: { className?: string }) {
 
   useEffect(() => {
     const mq = window.matchMedia(FULL);
-    const sync = () => {
-      setFull(mq.matches);
-      const z = Math.min(1, (window.innerHeight - 16) / FRAME_H);
-      rootRef.current?.style.setProperty("--side-z", z.toFixed(4));
-    };
+    // Real sizes: the full sidebar is as tall as the screen and scrolls
+    // inside, never zoomed to fit (owner, 2026-10-19).
+    const sync = () => setFull(mq.matches);
     sync();
     mq.addEventListener("change", sync);
-    window.addEventListener("resize", sync);
-    return () => {
-      mq.removeEventListener("change", sync);
-      window.removeEventListener("resize", sync);
-    };
+    return () => mq.removeEventListener("change", sync);
   }, []);
 
-  const all = [...NAV, ...FOOT];
+  const all = [...APP_NAV, ...APP_FOOT];
   const label = all.find((n) => n.id === page)?.label ?? "Explore";
 
   const pick = (id: string | null) => {
@@ -87,8 +80,8 @@ export function AppShell({ className }: { className?: string }) {
           app
           brand="booklesss"
           title={label}
-          nav={NAV}
-          foot={FOOT}
+          nav={APP_NAV}
+          foot={APP_FOOT}
           active={page}
           onPick={pick}
           onClose={() => setOpen(false)}
