@@ -62,38 +62,55 @@ export function CategoryBar({
   look?: CategoryLook;
   layout?: "chips" | "tiles";
   categories?: Category[];
-  /** Given, a dashed "Add Filter" chip sits right after the first chip. */
+  /** Given, a dashed "Add Filter" chip sits in front of the track. */
   onAdd?: () => void;
 }) {
-  return (
-    <div className={`kit-cat kit-cat--${layout}`} role="radiogroup" aria-label="Categories">
-      {categories.map((c, i) => {
-        const on = c.id === value;
-        return (
-          <span key={c.id} style={{ display: "contents" }}>
-          <button
-            type="button"
-            role="radio"
-            aria-checked={on}
-            className="kit-cat-item"
-            data-on={on ? "" : undefined}
-            style={{ "--hue": c.hue } as CSSProperties}
-            onClick={() => onChange(c.id)}
-          >
-            <span className="kit-cat-mark">
-              <CategoryMark c={c} look={look} size={layout === "tiles" ? 30 : 16} />
-            </span>
-            <span className="kit-cat-label">{c.label}</span>
-          </button>
-          {i === 0 && onAdd && layout === "chips" && (
-            <button type="button" className="kit-cat-item kit-cat-add" onClick={onAdd}>
-              <HugeIcon name="add" size={16} />
-              Add Filter
-            </button>
-          )}
+  const items = categories.map((c) => {
+    const on = c.id === value;
+    return (
+      <button
+        key={c.id}
+        type="button"
+        role="radio"
+        aria-checked={on}
+        className="kit-cat-item"
+        data-on={on ? "" : undefined}
+        style={{ "--hue": c.hue } as CSSProperties}
+        onClick={() => onChange(c.id)}
+      >
+        <span className="kit-cat-face">
+          <span className="kit-cat-mark">
+            <CategoryMark c={c} look={look} size={layout === "tiles" ? 30 : 16} />
           </span>
-        );
-      })}
+          <span className="kit-cat-label">{c.label}</span>
+        </span>
+      </button>
+    );
+  });
+
+  if (layout === "tiles") {
+    return (
+      <div className="kit-cat kit-cat--tiles" role="radiogroup" aria-label="Categories">
+        {items}
+      </div>
+    );
+  }
+
+  /* Filter idea 9 (owner, 2026-10-19: "try these"): the categories sit in
+   * one raised capsule track, and the chosen one is PRESSED into it, lit
+   * along its top edge in the category's own hue. "Add Filter" stands
+   * outside the track, in front of it. */
+  return (
+    <div className="kit-cat kit-cat--chips">
+      {onAdd && (
+        <button type="button" className="kit-cat-item kit-cat-add" onClick={onAdd}>
+          <HugeIcon name="add" size={16} />
+          Add Filter
+        </button>
+      )}
+      <div className="kit-cat-track" role="radiogroup" aria-label="Categories">
+        {items}
+      </div>
     </div>
   );
 }
