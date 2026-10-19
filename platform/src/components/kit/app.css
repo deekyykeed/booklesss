@@ -223,7 +223,8 @@
   transition: transform 0.22s var(--kit-spring), background 0.2s var(--kit-ease), color 0.2s var(--kit-ease), border-color 0.2s var(--kit-ease);
   touch-action: manipulation;
 }
-.kit-cat-add {
+.kit-cat-item.kit-cat-add,
+.kit-app .kit-cat-item.kit-cat-add {
   border: 1.5px dashed #dcdcdc;
   background: transparent;
   box-shadow: none;
