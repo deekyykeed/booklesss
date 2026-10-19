@@ -118,6 +118,9 @@ const counts: Record<string, number> = COURSES.reduce(
  * the folder. The four real courses are in the frosted-icon pin's style (ink
  * shape, grey layer behind); the next four are drawn off the folder itself.
  * Every other course keeps the folder until it gets one. */
+/* Bump when an icon file is replaced, or browsers keep the cached one. */
+const ART_VERSION = 2;
+
 const COURSE_ART = new Set([
   "economics",
   "corporate-finance",
@@ -232,7 +235,7 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
                       { label: "Share" },
                     ]}
                     onOpen={() => open(c.id)}
-                    art={COURSE_ART.has(c.id) ? `/kit/courses/${c.id}.png` : undefined}
+                    art={COURSE_ART.has(c.id) ? `/kit/courses/${c.id}.png?v=${ART_VERSION}` : undefined}
                 />
               </li>
             ))}
