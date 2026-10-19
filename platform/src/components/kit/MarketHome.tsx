@@ -185,7 +185,9 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
 
       <section className="kit-mk-section">
         <header>
-          <h3>{q ? `Results for “${q}”` : cat === "all" ? "Courses" : `${catLabel} courses`}</h3>
+          {/* The Filters button already names the category, so the heading
+              stays "Courses" — a long category made it wrap three deep. */}
+          <h3>{q ? `Results for “${q}”` : "Courses"}</h3>
           <span>
             {shown.length} {shown.length === 1 ? "course" : "courses"}
           </span>
