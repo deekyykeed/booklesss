@@ -95,7 +95,6 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
         (!t || c.title.toLowerCase().includes(t) || c.subtitle.toLowerCase().includes(t)),
     );
   }, [cat, q]);
-  const featured = shown[0] ?? COURSES[0];
   const catLabel = catOf(cat).label;
   const open = (id: string) => router.push(`/${id}`);
 
@@ -122,34 +121,8 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
         </span>
       </header>
 
-      <CategoryBar value={cat} onChange={setCat} />
+      <CategoryBar value={cat} onChange={setCat} onAdd={() => {}} />
 
-      {featured && (
-        <section className="kit-mk-hero" style={{ "--hue": hueOf(featured.cat) } as CSSProperties}>
-          <Cover c={featured} big />
-          <div className="kit-mk-hero-body">
-            <span className="kit-mk-eyebrow">Featured{cat === "all" ? "" : ` in ${catLabel}`}</span>
-            <h2>{featured.title}</h2>
-            <p className="kit-mk-by">{featured.subtitle}</p>
-            <p className="kit-mk-meta">
-              {featured.units} units · {featured.steps} steps · about {Math.round(featured.mins / 60)} hours
-            </p>
-            <div className="kit-mk-hero-cta">
-              <Button size="md" icon="play" onClick={() => open(featured.id)}>
-                Start
-              </Button>
-              <Button
-                variant="soft"
-                size="md"
-                icon="bookmark"
-                onClick={() => setSaved((s) => ({ ...s, [featured.id]: !s[featured.id] }))}
-              >
-                {saved[featured.id] ? "Saved" : "Save"}
-              </Button>
-            </div>
-          </div>
-        </section>
-      )}
 
       <section className="kit-mk-section">
         <header>

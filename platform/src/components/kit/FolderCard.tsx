@@ -2,7 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { HugeIcon, type HugeIconName } from "@/components/icons/huge";
-import { HappyFolder, Surface, useCountUp } from "./primitives";
+import { Button, HappyFolder, Surface, useCountUp } from "./primitives";
 
 /* The folder card at REAL SIZE (owner, 2026-10-19: "in Paper everything is
  * way too scaled up … bring Paper back to proportions; the smallest text for
@@ -148,9 +148,7 @@ export function FolderCard({
           aria-expanded={menu}
           onClick={() => !state && setMenu((m) => !m)}
         >
-          <i />
-          <i />
-          <i />
+          <HugeIcon name="more-vertical" size={24} strokeWidth={2} />
         </button>
       )}
       {menu && (
@@ -185,10 +183,19 @@ export function FolderCard({
       <div className="kit-fc-stats">
         {stats.map((st, i) => (
           <span key={i} className={`kit-stat kit-stat--${st.kind ?? "file"}`} title={`${st.n} ${st.label}`}>
-            <HugeIcon name={st.icon} size={18} />
+            <HugeIcon name={st.icon} size={16} />
             <Count n={st.n} run={seen} fixed={!!state} />
           </span>
         ))}
+        {/* In the row, not floating (owner, 2026-10-19: "don't make the
+            button float, just stack it in the same row"). */}
+        {onOpen && (
+          <span className="kit-fc-start">
+            <Button size="sm" icon="play" onClick={onOpen}>
+              Start
+            </Button>
+          </span>
+        )}
       </div>
     </div>
   );

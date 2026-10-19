@@ -1,6 +1,7 @@
 "use client";
 
 import type { CSSProperties } from "react";
+import { HugeIcon } from "@/components/icons/huge";
 import { PlumpIcon, type PlumpIconName } from "@/components/icons/plump";
 import { SolarIcon, type SolarIconName } from "@/components/icons/solar";
 
@@ -54,20 +55,23 @@ export function CategoryBar({
   look = "bold",
   layout = "chips",
   categories = CATEGORIES,
+  onAdd,
 }: {
   value: string;
   onChange: (id: string) => void;
   look?: CategoryLook;
   layout?: "chips" | "tiles";
   categories?: Category[];
+  /** Given, a dashed "Add Filter" chip sits right after the first chip. */
+  onAdd?: () => void;
 }) {
   return (
     <div className={`kit-cat kit-cat--${layout}`} role="radiogroup" aria-label="Categories">
-      {categories.map((c) => {
+      {categories.map((c, i) => {
         const on = c.id === value;
         return (
+          <span key={c.id} style={{ display: "contents" }}>
           <button
-            key={c.id}
             type="button"
             role="radio"
             aria-checked={on}
@@ -77,10 +81,17 @@ export function CategoryBar({
             onClick={() => onChange(c.id)}
           >
             <span className="kit-cat-mark">
-              <CategoryMark c={c} look={look} size={layout === "tiles" ? 30 : 20} />
+              <CategoryMark c={c} look={look} size={layout === "tiles" ? 30 : 16} />
             </span>
             <span className="kit-cat-label">{c.label}</span>
           </button>
+          {i === 0 && onAdd && layout === "chips" && (
+            <button type="button" className="kit-cat-item kit-cat-add" onClick={onAdd}>
+              <HugeIcon name="add" size={16} />
+              Add Filter
+            </button>
+          )}
+          </span>
         );
       })}
     </div>

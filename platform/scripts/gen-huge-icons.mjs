@@ -192,6 +192,7 @@ const ICONS = {
   mail: "mail-01",
   settings: "settings-02",
   add: "add-01", // the thin + on a sidebar row
+  "more-vertical": "more-vertical", // the folder card's options, the real glyph (owner: "get an actual Hugeicon")
 };
 
 /* ⚠️ GLYPHS THE SET DOES NOT HAVE, drawn on Hugeicons' own 24 grid at its own
