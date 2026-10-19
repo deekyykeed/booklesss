@@ -19,8 +19,9 @@
   --kit-blue: #5c68fe;
   --kit-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --kit-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  /* Rubik is the main face (owner, 2026-10-18), the sidebar included. */
-  --kit-sans: var(--font-kit-main), Rubik, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Inter is the main face (owner, 2026-10-19, off the Paper dashboard board;
+   * Rubik before that) — the root layout's instance, the sidebar included. */
+  --kit-sans: var(--font-inter), Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
   --kit-geo: var(--kit-sans);
   --kit-mono: var(--font-dm-mono), "DM Mono", ui-monospace, monospace;
 

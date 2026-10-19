@@ -646,16 +646,21 @@
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
   gap: 20px;
 }
-/* A title may run to two lines, so a card fills its row and its stats sit
- * on the bottom edge — neighbours share a height whatever their title did. */
+/* A title may run to two lines, so a card fills its row and its text block
+ * hangs from the bottom (owner, 2026-10-19: "align the title and subtitle to
+ * the bottom so if it's one word it sits lower") — the slack goes above the
+ * eyebrow, and neighbours share a height whatever their title did. */
 .kit-mk-grid > li {
   display: flex;
 }
 .kit-mk-grid .kit-fc {
   flex: 1;
 }
-.kit-mk-grid .kit-fc-stats {
+.kit-mk-grid .kit-fc-eyebrow {
   margin-top: auto;
+}
+.kit-mk-grid .kit-fc-stats {
+  margin-top: 0;
   padding-top: 20px;
 }
 .kit-mk-folder {
