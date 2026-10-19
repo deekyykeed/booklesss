@@ -1219,9 +1219,13 @@
   font-weight: 700;
   letter-spacing: -0.025em;
   color: #000000;
-  white-space: nowrap;
+  /* Two lines before the ellipsis (owner, 2026-10-19): "Strategic
+   * Management" was cut at one line on a two-up phone card. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   overflow: hidden;
-  text-overflow: ellipsis;
+  overflow-wrap: anywhere;
 }
 .kit-fc-desc {
   margin: 4px 0 0;
