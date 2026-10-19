@@ -1243,6 +1243,11 @@
   -webkit-line-clamp: 2;
   overflow: hidden;
   overflow-wrap: anywhere;
+  /* Always two lines tall (owner: "fixed to accommodate two lines even if
+   * there's only one, so there is no change in height"); a one-line title
+   * sits at the bottom of the box, against its description. */
+  min-height: calc(2 * 1.2em);
+  -webkit-box-pack: end;
 }
 .kit-fc-desc {
   margin: 4px 0 0;
