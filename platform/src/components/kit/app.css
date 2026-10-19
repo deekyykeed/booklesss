@@ -191,7 +191,7 @@
  * on bigger screens, but for mobile use this — for all button sizes"). A
  * button asked for at md or lg keeps that size from 900px up. The chips
  * follow, so a row of controls is one height. */
-@media (max-width: 899px) {
+@media (max-width: 639px) {
   .kit-app .kit-btn[data-size] {
     --h: 36px;
     --lip: 3px;
