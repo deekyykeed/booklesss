@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { memo, useId, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { HugeIcon, type HugeIconName } from "@/components/icons/huge";
 import { folderPath, squircleClip, squirclePath } from "./squircle";
 
@@ -43,7 +43,9 @@ type Glow = { top?: string; bottom?: string };
  *
  * Sits behind the card's content (z-index -1 inside the card's own stacking
  * context — the card must be `isolation: isolate`). */
-export function Surface({
+/* Memoised: its props are numbers and strings, and it is the costliest thing
+ * on a card (blurred SVG layers), so a parent re-render must not redraw it. */
+export const Surface = memo(function Surface({
   w,
   h,
   r,
@@ -151,7 +153,7 @@ export function Surface({
       )}
     </svg>
   );
-}
+});
 
 /* ---------------------------------------------------------------- glass button */
 

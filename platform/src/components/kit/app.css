@@ -535,6 +535,11 @@
   font-size: 16px;
   color: var(--kit-count);
 }
+.kit-mk-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
 .kit-mk-empty {
   margin: 0;
   padding: 28px 0;

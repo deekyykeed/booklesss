@@ -130,7 +130,7 @@ export function FolderCard({
       {art ? (
         <img className="kit-fc-art" src={art} alt="" draggable={false} />
       ) : (
-        <img className="kit-fc-folder" src="/kit/happy-folder.svg" alt="" draggable={false} />
+        <img className="kit-fc-folder" src="/kit/happy-folder.svg" alt="" width={132} height={126} loading="lazy" decoding="async" draggable={false} />
       )}
       {actions.length > 0 && (
         <button

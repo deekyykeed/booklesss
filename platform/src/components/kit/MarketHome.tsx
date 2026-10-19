@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type CSSProperties } from "react";
+import { useDeferredValue, useEffect, useMemo, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { HugeIcon } from "@/components/icons/huge";
 import { COURSES as REAL } from "@/lib/courses";
@@ -114,6 +114,8 @@ const counts: Record<string, number> = COURSES.reduce(
   { all: COURSES.length } as Record<string, number>,
 );
 
+const PAGE = 8;
+
 const CREATORS = ["Chanda Mwila", "Kondwani Mulenga", "Natasha Phiri", "Bwalya Zulu", "Luyando Sakala", "Musonda Kabwe"];
 
 const hueOf = (cat: string) => CATEGORIES.find((c) => c.id === cat)?.hue ?? "#5c68fe";
@@ -145,15 +147,25 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
   const [q, setQ] = useState("");
   const [saved, setSaved] = useState<Record<string, boolean>>({});
   const hour = useMemo(() => new Date().getHours(), []);
+  // Typing stays instant; the grid catches up a beat later.
+  const dq = useDeferredValue(q);
 
   const shown = useMemo(() => {
-    const t = q.trim().toLowerCase();
+    const t = dq.trim().toLowerCase();
     return COURSES.filter(
       (c) =>
         (cat === "all" || c.cat === cat) &&
         (!t || c.title.toLowerCase().includes(t) || c.subtitle.toLowerCase().includes(t)),
     );
-  }, [cat, q]);
+  }, [cat, dq]);
+  /* A page of cards at a time (owner, 2026-10-19: "showing all the courses
+   * at once may slow it down too much … I don't expect people to scroll
+   * much since we have filters"). Every card is an SVG surface with blurred
+   * layers and a glass button, so 33 at once was the page's real cost. A new
+   * filter or search starts back at one page. */
+  const [limit, setLimit] = useState(PAGE);
+  useEffect(() => setLimit(PAGE), [cat, dq]);
+  const page = shown.slice(0, limit);
   const catLabel = catOf(cat).label;
   // A placeholder has no page, so opening it goes nowhere.
   const open = (id: string) => {
@@ -197,7 +209,7 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
           <p className="kit-mk-empty">No {catLabel.toLowerCase()} course yet. Make the first one in Studio.</p>
         ) : (
           <ul className="kit-mk-grid">
-            {shown.map((c) => (
+            {page.map((c) => (
               <li key={c.id}>
                 <FolderCard
                     title={c.title}
@@ -221,6 +233,13 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
               </li>
             ))}
           </ul>
+        )}
+        {shown.length > limit && (
+          <div className="kit-mk-more">
+            <Button variant="soft" size="md" icon="chevron-down" onClick={() => setLimit((n) => n + PAGE)}>
+              See more
+            </Button>
+          </div>
         )}
       </section>
 
