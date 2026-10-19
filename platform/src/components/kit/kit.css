@@ -1224,11 +1224,16 @@
 /* Solar duotone on the course card (owner, 2026-10-19, off the frosted-icon
  * pin): the front layer is ink, the back layer a light grey rather than the
  * set's half-strength ink. */
+/* Solar Bold Duotone, recoloured to the frosted-icon pin: Solar draws the
+ * big shape as the faint back layer and the details in front, so the back
+ * layer goes solid ink and the details go white — a dark shape with white
+ * cut-outs, which is the pin. */
 .kit-fc .kit-stat svg {
-  color: #1a1a1a;
+  color: #ffffff;
 }
 .kit-fc .kit-stat svg [opacity] {
-  opacity: 0.22;
+  opacity: 1;
+  fill: #1a1a1a;
 }
 
 /* ---------------------------------------------------------------- 5 · plus */
