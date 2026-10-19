@@ -854,8 +854,8 @@
     gap: 10px;
   }
   .kit-mk-grid .kit-fc {
-    padding: 76px 14px 16px;
-    border-radius: 18px;
+    padding: 76px 14px 13px;
+    border-radius: 22px;
   }
   .kit-mk-grid .kit-fc-folder {
     left: 0;
@@ -908,7 +908,7 @@
   .kit-mk-grid .kit-fc-stats .kit-stat {
     gap: 3px;
     font-size: 11px;
-    line-height: 16px;
+    line-height: 13px;
   }
   .kit-mk-grid .kit-fc-stats .kit-stat svg {
     width: 12px;
@@ -1090,8 +1090,8 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  padding: 132px 24px 28px;
-  border-radius: 24px;
+  padding: 132px 24px 24px;
+  border-radius: 31px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: transform 0.3s var(--kit-ease);
