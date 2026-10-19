@@ -30,7 +30,57 @@ type Course = {
   steps: number;
   checks: number;
   mins: number;
+  /** Not a real course yet: it has no page to open. */
+  placeholder?: boolean;
 };
+
+/* PLACEHOLDER COURSES (owner, 2026-10-19: "add a bunch more courses so I
+ * can properly filter them"). Enough of them, spread across every
+ * category, for the filter popup to mean something. None of these has a
+ * page — Start and Open do nothing on them — and every number is made up.
+ * Delete rows here as real courses replace them. */
+const PLACEHOLDERS: Course[] = [
+  // finance
+  { id: "ph-financial-management", title: "Financial Management", subtitle: "Capital structure, dividends and the cost of money.", cat: "finance", units: 7, steps: 34, checks: 34, mins: 170 },
+  { id: "ph-investment-analysis", title: "Investment Analysis", subtitle: "Reading a company before you put money in it.", cat: "finance", units: 5, steps: 22, checks: 22, mins: 110 },
+  { id: "ph-personal-finance", title: "Personal Finance", subtitle: "Budgets, savings and debt on a kwacha salary.", cat: "finance", units: 4, steps: 16, checks: 16, mins: 80 },
+  // accounting
+  { id: "ph-financial-accounting", title: "Financial Accounting", subtitle: "From the first journal entry to a full set of statements.", cat: "accounting", units: 8, steps: 40, checks: 40, mins: 200 },
+  { id: "ph-management-accounting", title: "Management Accounting", subtitle: "Costing, budgeting and the numbers managers run on.", cat: "accounting", units: 6, steps: 28, checks: 28, mins: 140 },
+  { id: "ph-auditing", title: "Auditing", subtitle: "How an auditor decides whether the books can be trusted.", cat: "accounting", units: 5, steps: 24, checks: 24, mins: 120 },
+  { id: "ph-taxation", title: "Taxation", subtitle: "Income tax, VAT and PAYE the way ZRA applies them.", cat: "accounting", units: 6, steps: 30, checks: 30, mins: 150 },
+  // economics
+  { id: "ph-microeconomics", title: "Microeconomics", subtitle: "Prices, markets and the choices behind them.", cat: "economics", units: 6, steps: 30, checks: 30, mins: 150 },
+  { id: "ph-macroeconomics", title: "Macroeconomics", subtitle: "Inflation, the kwacha, interest rates and growth.", cat: "economics", units: 6, steps: 28, checks: 28, mins: 140 },
+  { id: "ph-development-economics", title: "Development Economics", subtitle: "Why some economies grow and others stall.", cat: "economics", units: 5, steps: 20, checks: 20, mins: 100 },
+  // business
+  { id: "ph-marketing-principles", title: "Marketing Principles", subtitle: "Customers, positioning and the four Ps in practice.", cat: "business", units: 5, steps: 24, checks: 24, mins: 120 },
+  { id: "ph-operations-management", title: "Operations Management", subtitle: "Getting things made and delivered without waste.", cat: "business", units: 6, steps: 26, checks: 26, mins: 130 },
+  { id: "ph-human-resource-management", title: "Human Resource Management", subtitle: "Hiring, paying, developing and keeping people.", cat: "business", units: 5, steps: 22, checks: 22, mins: 110 },
+  { id: "ph-business-communication", title: "Business Communication", subtitle: "Emails, reports and meetings that get a decision.", cat: "business", units: 4, steps: 14, checks: 14, mins: 70 },
+  // tech
+  { id: "ph-intro-to-programming", title: "Introduction to Programming", subtitle: "Variables, loops and your first working program.", cat: "tech", units: 6, steps: 32, checks: 32, mins: 160 },
+  { id: "ph-data-analysis-excel", title: "Data Analysis with Excel", subtitle: "Pivot tables, lookups and charts that answer questions.", cat: "tech", units: 4, steps: 18, checks: 18, mins: 90 },
+  { id: "ph-information-systems", title: "Management Information Systems", subtitle: "How businesses run on software, and what breaks.", cat: "tech", units: 5, steps: 20, checks: 20, mins: 100 },
+  // design
+  { id: "ph-visual-design", title: "Introduction to Visual Design", subtitle: "Type, colour, space and why a layout feels right.", cat: "design", units: 4, steps: 18, checks: 18, mins: 90 },
+  { id: "ph-ux-fundamentals", title: "UX Fundamentals", subtitle: "Designing for the person on the other side of the screen.", cat: "design", units: 5, steps: 22, checks: 22, mins: 110 },
+  // science
+  { id: "ph-business-statistics", title: "Business Statistics", subtitle: "Averages, probability and tests you can defend.", cat: "science", units: 6, steps: 28, checks: 28, mins: 140 },
+  { id: "ph-quantitative-methods", title: "Quantitative Methods", subtitle: "The maths behind forecasts, loans and decisions.", cat: "science", units: 5, steps: 24, checks: 24, mins: 120 },
+  // law
+  { id: "ph-business-law", title: "Business Law", subtitle: "Contracts, companies and what a signature commits you to.", cat: "law", units: 6, steps: 26, checks: 26, mins: 130 },
+  { id: "ph-commercial-law", title: "Commercial Law", subtitle: "Sale of goods, agency and negotiable instruments.", cat: "law", units: 5, steps: 22, checks: 22, mins: 110 },
+  // health
+  { id: "ph-health-economics", title: "Health Economics", subtitle: "Paying for care when there is never enough money.", cat: "health", units: 4, steps: 16, checks: 16, mins: 80 },
+  { id: "ph-public-health", title: "Public Health Basics", subtitle: "Disease, prevention and the numbers that track them.", cat: "health", units: 5, steps: 20, checks: 20, mins: 100 },
+  // startups
+  { id: "ph-entrepreneurship", title: "Entrepreneurship", subtitle: "From an idea to a business that pays its own rent.", cat: "startups", units: 5, steps: 22, checks: 22, mins: 110 },
+  { id: "ph-business-plan", title: "Writing a Business Plan", subtitle: "The plan a bank or an investor will actually read.", cat: "startups", units: 3, steps: 12, checks: 12, mins: 60 },
+  // writing
+  { id: "ph-academic-writing", title: "Academic Writing", subtitle: "Essays and reports that argue instead of describe.", cat: "writing", units: 4, steps: 16, checks: 16, mins: 80 },
+  { id: "ph-research-methods", title: "Research Methods", subtitle: "Asking a question the data can answer.", cat: "writing", units: 5, steps: 22, checks: 22, mins: 110 },
+];
 
 /* Which category chip each real course answers to. A course missing here
  * still shows under All. */
@@ -44,16 +94,20 @@ const CATEGORY_OF: Record<string, string> = {
 /* A step is one concept and one checkpoint, about five minutes to read. */
 const MINS_PER_STEP = 5;
 
-const COURSES: Course[] = REAL.map((c) => ({
-  id: c.slug,
-  title: c.title,
-  subtitle: c.subtitle,
-  cat: CATEGORY_OF[c.slug] ?? "all",
-  units: c.displayUnitIds.length,
-  steps: c.lessonIds.length,
-  checks: c.totalCheckpoints,
-  mins: c.lessonIds.length * MINS_PER_STEP,
-}));
+/* The real courses first, then the placeholders. */
+const COURSES: Course[] = [
+  ...REAL.map((c) => ({
+    id: c.slug,
+    title: c.title,
+    subtitle: c.subtitle,
+    cat: CATEGORY_OF[c.slug] ?? "all",
+    units: c.displayUnitIds.length,
+    steps: c.lessonIds.length,
+    checks: c.totalCheckpoints,
+    mins: c.lessonIds.length * MINS_PER_STEP,
+  })),
+  ...PLACEHOLDERS.map((c) => ({ ...c, placeholder: true })),
+];
 
 const counts: Record<string, number> = COURSES.reduce(
   (n, c) => ({ ...n, [c.cat]: (n[c.cat] ?? 0) + 1 }),
@@ -101,7 +155,10 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
     );
   }, [cat, q]);
   const catLabel = catOf(cat).label;
-  const open = (id: string) => router.push(`/${id}`);
+  // A placeholder has no page, so opening it goes nowhere.
+  const open = (id: string) => {
+    if (!COURSES.find((c) => c.id === id)?.placeholder) router.push(`/${id}`);
+  };
 
   return (
     <div className="kit-mk">
