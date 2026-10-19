@@ -53,7 +53,10 @@ export function FolderCard({
   actions = [],
   onOpen,
   state,
+  art,
 }: {
+  /** A course's own icon (public/kit/courses), in place of the folder. */
+  art?: string;
   title: string;
   eyebrow?: string;
   /** One line, cut with an ellipsis. */
@@ -124,7 +127,11 @@ export function FolderCard({
           when I scroll"). Inline, every card carried its own six blur filters
           and a dozen blurred shapes, and 33 cards of that repainted on every
           scroll. As an <img> the browser rasterises it once and caches it. */}
-      <img className="kit-fc-folder" src="/kit/happy-folder.svg" alt="" draggable={false} />
+      {art ? (
+        <img className="kit-fc-art" src={art} alt="" draggable={false} />
+      ) : (
+        <img className="kit-fc-folder" src="/kit/happy-folder.svg" alt="" draggable={false} />
+      )}
       {actions.length > 0 && (
         <button
           type="button"

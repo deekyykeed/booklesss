@@ -845,6 +845,12 @@
     width: 76px;
     height: 72px;
   }
+  .kit-mk-grid .kit-fc-art {
+    left: 12px;
+    top: 10px;
+    width: 58px;
+    height: 58px;
+  }
   .kit-mk-grid .kit-fc-dots {
     right: 6px;
     top: 6px;
@@ -1088,7 +1094,17 @@
   pointer-events: none;
   transition: transform 0.4s var(--kit-spring);
 }
+.kit-fc-art {
+  position: absolute;
+  left: 22px;
+  top: 18px;
+  width: 104px;
+  height: 104px;
+  pointer-events: none;
+  transition: transform 0.4s var(--kit-spring);
+}
 @media (hover: hover) {
+  .kit-fc:hover .kit-fc-art,
   .kit-fc:hover .kit-fc-folder {
     transform: translateY(-4px);
   }

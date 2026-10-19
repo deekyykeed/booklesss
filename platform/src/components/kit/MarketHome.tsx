@@ -114,6 +114,21 @@ const counts: Record<string, number> = COURSES.reduce(
   { all: COURSES.length } as Record<string, number>,
 );
 
+/* COURSE ICONS, a test (owner, 2026-10-19): Higgsfield-made art in place of
+ * the folder. The four real courses are in the frosted-icon pin's style (ink
+ * shape, grey layer behind); the next four are drawn off the folder itself.
+ * Every other course keeps the folder until it gets one. */
+const COURSE_ART = new Set([
+  "economics",
+  "corporate-finance",
+  "strategic-management",
+  "treasury-management",
+  "ph-financial-management",
+  "ph-investment-analysis",
+  "ph-personal-finance",
+  "ph-financial-accounting",
+]);
+
 const CREATORS = ["Chanda Mwila", "Kondwani Mulenga", "Natasha Phiri", "Bwalya Zulu", "Luyando Sakala", "Musonda Kabwe"];
 
 const hueOf = (cat: string) => CATEGORIES.find((c) => c.id === cat)?.hue ?? "#5c68fe";
@@ -217,6 +232,7 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
                       { label: "Share" },
                     ]}
                     onOpen={() => open(c.id)}
+                    art={COURSE_ART.has(c.id) ? `/kit/courses/${c.id}.png` : undefined}
                 />
               </li>
             ))}
