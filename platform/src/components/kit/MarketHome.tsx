@@ -214,7 +214,6 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
                 <FolderCard
                     title={c.title}
                     description={c.subtitle}
-                    eyebrow={catOf(c.cat).id === "all" ? "COURSE" : catOf(c.cat).label.toUpperCase()}
                     /* The three numbers that decide a pick (owner, 2026-10-19):
                        how many lessons, how long, how many quick checks. Units
                        went — a count of folders tells a student nothing. */

@@ -649,14 +649,15 @@
 /* A title may run to two lines, so a card fills its row and its text block
  * hangs from the bottom (owner, 2026-10-19: "align the title and subtitle to
  * the bottom so if it's one word it sits lower") — the slack goes above the
- * eyebrow, and neighbours share a height whatever their title did. */
+ * title (the category eyebrow went on 2026-10-19, owner: "remove that tag"),
+ * and neighbours share a height whatever their title did. */
 .kit-mk-grid > li {
   display: flex;
 }
 .kit-mk-grid .kit-fc {
   flex: 1;
 }
-.kit-mk-grid .kit-fc-eyebrow {
+.kit-mk-grid .kit-fc-title {
   margin-top: auto;
 }
 .kit-mk-grid .kit-fc-stats {
