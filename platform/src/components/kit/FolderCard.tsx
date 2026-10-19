@@ -2,7 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { HugeIcon, type HugeIconName } from "@/components/icons/huge";
-import { HappyFolder, Surface, useCountUp } from "./primitives";
+import { Button, Surface } from "./primitives";
 
 /* The folder card at REAL SIZE (owner, 2026-10-19: "in Paper everything is
  * way too scaled up … bring Paper back to proportions; the smallest text for
@@ -39,30 +39,7 @@ function useSize<T extends HTMLElement>() {
   return [ref, size] as const;
 }
 
-function useSeen(el: React.RefObject<HTMLElement | null>) {
-  const [seen, setSeen] = useState(false);
-  useEffect(() => {
-    const node = el.current;
-    if (!node) return;
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) {
-          setSeen(true);
-          io.disconnect();
-        }
-      },
-      { threshold: 0.35 },
-    );
-    io.observe(node);
-    return () => io.disconnect();
-  }, [el]);
-  return seen;
-}
-
-function Count({ n, run, fixed }: { n: number; run: boolean; fixed?: boolean }) {
-  const v = useCountUp(n, run);
-  return <>{fixed ? n : v}</>;
-}
+/* The numbers no longer count up (owner, 2026-10-19: "stop them doing that"). */
 
 export function FolderCard({
   title,
@@ -85,7 +62,6 @@ export function FolderCard({
   state?: "hover" | "selected" | "menu";
 }) {
   const [ref, { w, h }] = useSize<HTMLDivElement>();
-  const seen = useSeen(ref);
   const [menu, setMenu] = useState(state === "menu");
   const [selected, setSelected] = useState(state === "selected");
   const menuRef = useRef<HTMLDivElement>(null);
@@ -140,7 +116,11 @@ export function FolderCard({
     >
       {/* A two-up phone card is ~174px wide; 38px corners eat it, so it gets 26. */}
       {w > 0 && h > 0 && <Surface w={w} h={h} r={w < 240 ? 26 : RADIUS} s={SMOOTHING} />}
-      <HappyFolder className="kit-fc-folder" />
+      {/* The folder art is a FILE, not inline SVG (owner, 2026-10-19: "glitchy
+          when I scroll"). Inline, every card carried its own six blur filters
+          and a dozen blurred shapes, and 33 cards of that repainted on every
+          scroll. As an <img> the browser rasterises it once and caches it. */}
+      <img className="kit-fc-folder" src="/kit/happy-folder.svg" alt="" draggable={false} />
       {actions.length > 0 && (
         <button
           type="button"
@@ -183,22 +163,21 @@ export function FolderCard({
       )}
       <div className="kit-fc-stats">
         {stats.map((st, i) => (
-          <span key={i} className={`kit-stat kit-stat--${st.kind ?? "file"}`} title={`${st.n} ${st.label}`}>
+          <span key={i} className="kit-stat" title={`${st.n} ${st.label}`}>
             <HugeIcon name={st.icon} size={16} />
-            <Count n={st.n} run={seen} fixed={!!state} />
+            {st.n}
           </span>
         ))}
         {/* In the row, not floating (owner, 2026-10-19: "don't make the
             button float, just stack it in the same row"). */}
-        {/* The play is the Done bead from Filter idea 7 (owner, 2026-10-19:
-            "just the icon container and the icon as the play button"): a
-            40px purple bead, a lighter fill, a darker core, the play glyph. */}
+        {/* The glass Start button, in the row. Hidden on phones (app.css),
+            where the whole card is the button. */}
         {onOpen && (
-          <button type="button" className="kit-fc-play" aria-label={`Start ${title}`} onClick={onOpen}>
-            <span className="kit-fc-play-fill" aria-hidden />
-            <span className="kit-fc-play-core" aria-hidden />
-            <HugeIcon name="play" size={17} strokeWidth={2.4} />
-          </button>
+          <span className="kit-fc-start">
+            <Button size="sm" icon="play" onClick={onOpen}>
+              Start
+            </Button>
+          </span>
         )}
       </div>
     </div>
