@@ -164,8 +164,10 @@ export function FolderCard({
         </div>
       )}
       {eyebrow && <span className="kit-fc-eyebrow">{eyebrow}</span>}
+      {/* The h3 is a two-line box with its text at the bottom; the span is
+          the clamp (a line-clamp box cannot align its own lines). */}
       <h3 className="kit-fc-title" title={title}>
-        {title}
+        <span>{title}</span>
       </h3>
       {description && (
         <p className="kit-fc-desc" title={description}>

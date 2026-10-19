@@ -1238,16 +1238,21 @@
   color: #000000;
   /* Two lines before the ellipsis (owner, 2026-10-19): "Strategic
    * Management" was cut at one line on a two-up phone card. */
+  /* Always two lines tall (owner: "fixed to accommodate two lines even if
+   * there's only one, so there is no change in height"); a one-line title
+   * sits at the bottom of the box, against its description. The clamp is on
+   * the inner span — a line-clamp box cannot align its own lines. */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: calc(2 * 1.2em);
+}
+.kit-fc-title > span {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
   overflow-wrap: anywhere;
-  /* Always two lines tall (owner: "fixed to accommodate two lines even if
-   * there's only one, so there is no change in height"); a one-line title
-   * sits at the bottom of the box, against its description. */
-  min-height: calc(2 * 1.2em);
-  -webkit-box-pack: end;
 }
 .kit-fc-desc {
   margin: 4px 0 0;
