@@ -2148,3 +2148,104 @@
     transition-duration: 0.001ms !important;
   }
 }
+
+/* ---- The buttons, from the owner's two spec pins (2026-10-19: "I'd like my
+ * buttons to look like this"). Values copied from the specs, not tuned:
+ *
+ *   PRIMARY (was the gradient glass): fill #1D1F23 under a white 15%→0%
+ *   linear gradient; a 1.5px white-15% stroke on the TOP only; shadows
+ *   0 4 7 black 20% and a 1.5px solid black ring; white text with a
+ *   0 4 4 black-40% text shadow.
+ *
+ *   SOFT: fill #E3E3E3 at 80%; a stroke graded #FDFDFD (100%) → #F1F1F1
+ *   (0%) top to bottom; shadows 0 2 4 black 10% and a 1px black-16% ring.
+ *
+ * Plain rounded corners: the squircle clip-path would cut the outside
+ * ring and shadow off, and neither reference is a squircle. */
+.kit-btn--glass,
+.kit-btn--soft {
+  --lip: 0px;
+  filter: none;
+}
+.kit-btn--glass .kit-btn-glow,
+.kit-btn--glass .kit-btn-lip,
+.kit-btn--glass .kit-btn-face::after {
+  display: none;
+}
+.kit-btn--glass .kit-btn-face,
+.kit-btn--soft .kit-btn-face {
+  clip-path: none;
+  font-weight: 500;
+}
+.kit-btn--glass .kit-btn-face {
+  color: #ffffff;
+  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 100%), #1d1f23;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.15),
+    0 0 0 1.5px #000000,
+    0 4px 7px rgba(0, 0, 0, 0.2);
+}
+.kit-btn--glass .kit-btn-face > svg {
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.4));
+}
+.kit-btn--soft .kit-btn-face {
+  color: #2b2b2b;
+  border: 2px solid transparent;
+  background:
+    linear-gradient(#e7e7e7, #e7e7e7) padding-box,
+    linear-gradient(180deg, #fdfdfd 0%, rgba(241, 241, 241, 0) 100%) border-box,
+    #e7e7e7 border-box;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.16),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+}
+@media (hover: hover) {
+  .kit-btn--glass:hover:not(:disabled) .kit-btn-face {
+    transform: none;
+    filter: none;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.02) 100%), #26292e;
+  }
+  .kit-btn--soft:hover:not(:disabled) .kit-btn-face {
+    background:
+      linear-gradient(#ececec, #ececec) padding-box,
+      linear-gradient(180deg, #ffffff 0%, rgba(241, 241, 241, 0) 100%) border-box,
+      #ececec border-box;
+  }
+}
+.kit-btn--glass[data-state="hover"] .kit-btn-face {
+  transform: none;
+  filter: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.02) 100%), #26292e;
+}
+.kit-btn--soft[data-state="hover"] .kit-btn-face {
+  background:
+    linear-gradient(#ececec, #ececec) padding-box,
+    linear-gradient(180deg, #ffffff 0%, rgba(241, 241, 241, 0) 100%) border-box,
+    #ececec border-box;
+}
+/* Pressed: the face sinks a pixel and the drop shadow tightens. */
+.kit-btn--glass:active:not(:disabled) .kit-btn-face,
+.kit-btn--glass[data-state="pressed"] .kit-btn-face {
+  transform: translateY(1px) scale(0.99);
+  filter: none;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.1),
+    0 0 0 1.5px #000000,
+    0 1px 2px rgba(0, 0, 0, 0.25);
+}
+.kit-btn--soft:active:not(:disabled) .kit-btn-face,
+.kit-btn--soft[data-state="pressed"] .kit-btn-face {
+  transform: translateY(1px) scale(0.99);
+  background:
+    linear-gradient(#e0e0e0, #e0e0e0) padding-box,
+    linear-gradient(180deg, #f6f6f6 0%, rgba(241, 241, 241, 0) 100%) border-box,
+    #e0e0e0 border-box;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.16),
+    0 1px 1px rgba(0, 0, 0, 0.08);
+}
+.kit-btn--glass:disabled .kit-btn-face {
+  filter: none;
+  opacity: 0.45;
+}

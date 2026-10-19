@@ -192,6 +192,7 @@ const ICONS = {
   mail: "mail-01",
   settings: "settings-02",
   add: "add-01", // the thin + on a sidebar row
+  filter: "filter", // the marketplace Filters button (owner, 2026-10-19: popups, not a sliding row)
   "more-vertical": "more-vertical", // the folder card's options, the real glyph (owner: "get an actual Hugeicon")
 };
 

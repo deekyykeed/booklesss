@@ -4,7 +4,7 @@ import { useMemo, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { HugeIcon } from "@/components/icons/huge";
 import { COURSES as REAL } from "@/lib/courses";
-import { CATEGORIES, CategoryBar, CategoryMark } from "./CategoryBar";
+import { CATEGORIES, CategoryFilter, CategoryMark } from "./CategoryBar";
 import { FolderCard } from "./FolderCard";
 import { Button } from "./primitives";
 
@@ -54,6 +54,11 @@ const COURSES: Course[] = REAL.map((c) => ({
   checks: c.totalCheckpoints,
   mins: c.lessonIds.length * MINS_PER_STEP,
 }));
+
+const counts: Record<string, number> = COURSES.reduce(
+  (n, c) => ({ ...n, [c.cat]: (n[c.cat] ?? 0) + 1 }),
+  { all: COURSES.length } as Record<string, number>,
+);
 
 const CREATORS = ["Chanda Mwila", "Kondwani Mulenga", "Natasha Phiri", "Bwalya Zulu", "Luyando Sakala", "Musonda Kabwe"];
 
@@ -121,15 +126,13 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
         </span>
       </header>
 
-      <CategoryBar value={cat} onChange={setCat} onAdd={() => {}} />
-
-
       <section className="kit-mk-section">
         <header>
           <h3>{q ? `Results for “${q}”` : cat === "all" ? "Courses" : `${catLabel} courses`}</h3>
           <span>
             {shown.length} {shown.length === 1 ? "course" : "courses"}
           </span>
+          <CategoryFilter value={cat} onChange={setCat} counts={counts} />
         </header>
         {shown.length === 0 ? (
           <p className="kit-mk-empty">No {catLabel.toLowerCase()} course yet. Make the first one in Studio.</p>

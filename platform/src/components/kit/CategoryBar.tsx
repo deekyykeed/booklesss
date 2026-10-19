@@ -1,7 +1,8 @@
 "use client";
 
-import type { CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { HugeIcon } from "@/components/icons/huge";
+import { Button } from "./primitives";
 import { PlumpIcon, type PlumpIconName } from "@/components/icons/plump";
 import { SolarIcon, type SolarIconName } from "@/components/icons/solar";
 
@@ -46,6 +47,96 @@ export function CategoryMark({ c, look, size }: { c: Category; look: CategoryLoo
   }
   const name = `${c.solar}-${look === "bold" ? "bold" : "bold-duotone"}` as SolarIconName;
   return <SolarIcon name={name} size={size} style={{ color: c.hue }} />;
+}
+
+/* Categories as a POPUP, not a sliding row (owner, 2026-10-19: "remove the
+ * sliding filters and just use popups instead so I don't have to deal with
+ * this sliding off the screen"). One Filters button; the panel drops from
+ * it, right-aligned to it, so on a phone it can never leave the screen.
+ * Layout off the owner's filter-panel pin: a titled header with a close, a
+ * search, a caps-free section label, and one row per category carrying its
+ * mark, its name, a count and the check when chosen. */
+export function CategoryFilter({
+  value,
+  onChange,
+  counts = {},
+  categories = CATEGORIES,
+}: {
+  value: string;
+  onChange: (id: string) => void;
+  /** Courses per category id; a category with none shows no badge. */
+  counts?: Record<string, number>;
+  categories?: Category[];
+}) {
+  const [open, setOpen] = useState(false);
+  const [q, setQ] = useState("");
+  const root = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const away = (e: PointerEvent) => !root.current?.contains(e.target as Node) && setOpen(false);
+    const esc = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("pointerdown", away);
+    document.addEventListener("keydown", esc);
+    return () => {
+      document.removeEventListener("pointerdown", away);
+      document.removeEventListener("keydown", esc);
+    };
+  }, [open]);
+
+  const chosen = categories.find((c) => c.id === value);
+  const t = q.trim().toLowerCase();
+  const shown = categories.filter((c) => !t || c.label.toLowerCase().includes(t));
+
+  return (
+    <div className="kit-flt" ref={root}>
+      <Button variant="soft" size="sm" icon="filter" onClick={() => setOpen((o) => !o)}>
+        {chosen && chosen.id !== "all" ? chosen.label : "Filters"}
+      </Button>
+      {open && (
+        <div className="kit-flt-pop" role="dialog" aria-label="Filters">
+          <header className="kit-flt-head">
+            <strong>Filters</strong>
+            <button type="button" className="kit-flt-x" aria-label="Close filters" onClick={() => setOpen(false)}>
+              <HugeIcon name="x" size={18} />
+            </button>
+          </header>
+          <label className="kit-flt-search">
+            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search categories" aria-label="Search categories" />
+            <HugeIcon name="search" size={18} />
+          </label>
+          <span className="kit-flt-label">Categories</span>
+          <div className="kit-flt-list" role="radiogroup" aria-label="Categories">
+            {shown.map((c) => {
+              const on = c.id === value;
+              const n = counts[c.id] ?? 0;
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={on}
+                  className="kit-flt-row"
+                  data-on={on ? "" : undefined}
+                  onClick={() => {
+                    onChange(c.id);
+                    setOpen(false);
+                    setQ("");
+                  }}
+                >
+                  <CategoryMark c={c} look="bold" size={18} />
+                  <span className="kit-flt-name">{c.label}</span>
+                  {n > 0 && <span className="kit-flt-count">{n}</span>}
+                  <span className="kit-flt-tick">{on && <HugeIcon name="check" size={18} />}</span>
+                </button>
+              );
+            })}
+            {shown.length === 0 && <p className="kit-flt-none">No category called “{q}”.</p>}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export function CategoryBar({
