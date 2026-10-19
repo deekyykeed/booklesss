@@ -25,7 +25,7 @@ import { Button, Surface } from "./primitives";
 export type FolderStat = { icon?: HugeIconName; solar?: SolarIconName; n: number; label: string; unit?: string; kind?: "image" | "video" | "file" };
 export type FolderAction = { label: string; danger?: boolean; onPick?: () => void };
 
-const RADIUS = 38;
+const RADIUS = 24;
 const SMOOTHING = 0.8;
 
 function useSize<T extends HTMLElement>() {
@@ -121,8 +121,8 @@ export function FolderCard({
         else setSelected((s) => !s);
       }}
     >
-      {/* A two-up phone card is ~174px wide; 38px corners eat it, so it gets 26. */}
-      {w > 0 && h > 0 && <Surface w={w} h={h} r={w < 240 ? 26 : RADIUS} s={SMOOTHING} />}
+      {/* Tighter corners (owner, 2026-10-19); a two-up phone card gets 18. */}
+      {w > 0 && h > 0 && <Surface w={w} h={h} r={w < 240 ? 18 : RADIUS} s={SMOOTHING} />}
       {/* The folder art is a FILE, not inline SVG (owner, 2026-10-19: "glitchy
           when I scroll"). Inline, every card carried its own six blur filters
           and a dozen blurred shapes, and 33 cards of that repainted on every

@@ -1073,7 +1073,7 @@
   flex-direction: column;
   min-width: 0;
   padding: 132px 24px 28px;
-  border-radius: 38px;
+  border-radius: 24px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: transform 0.3s var(--kit-ease);

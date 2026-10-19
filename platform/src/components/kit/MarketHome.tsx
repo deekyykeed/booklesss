@@ -114,24 +114,6 @@ const counts: Record<string, number> = COURSES.reduce(
   { all: COURSES.length } as Record<string, number>,
 );
 
-/* COURSE ICONS, a test (owner, 2026-10-19): Higgsfield-made art in place of
- * the folder. The four real courses are in the frosted-icon pin's style (ink
- * shape, grey layer behind); the next four are drawn off the folder itself.
- * Every other course keeps the folder until it gets one. */
-/* Bump when an icon file is replaced, or browsers keep the cached one. */
-const ART_VERSION = 2;
-
-const COURSE_ART = new Set([
-  "economics",
-  "corporate-finance",
-  "strategic-management",
-  "treasury-management",
-  "ph-financial-management",
-  "ph-investment-analysis",
-  "ph-personal-finance",
-  "ph-financial-accounting",
-]);
-
 const CREATORS = ["Chanda Mwila", "Kondwani Mulenga", "Natasha Phiri", "Bwalya Zulu", "Luyando Sakala", "Musonda Kabwe"];
 
 const hueOf = (cat: string) => CATEGORIES.find((c) => c.id === cat)?.hue ?? "#5c68fe";
@@ -225,9 +207,9 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
                        how many lessons, how long, how many quick checks. Units
                        went — a count of folders tells a student nothing. */
                     stats={[
-                      { solar: "videocamera-record-bold-duotone", n: c.steps, label: "lessons" },
-                      { solar: "clock-circle-bold-duotone", n: Math.max(1, Math.round(c.mins / 60)), unit: "h", label: "hours" },
-                      { solar: "clipboard-check-bold-duotone", n: c.checks, label: "quick checks" },
+                      { icon: "video", n: c.steps, label: "lessons" },
+                      { icon: "clock-1", n: Math.max(1, Math.round(c.mins / 60)), unit: "h", label: "hours" },
+                      { icon: "task-done", n: c.checks, label: "quick checks" },
                     ]}
                     actions={[
                       { label: "Open", onPick: () => open(c.id) },
@@ -235,7 +217,6 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
                       { label: "Share" },
                     ]}
                     onOpen={() => open(c.id)}
-                    art={COURSE_ART.has(c.id) ? `/kit/courses/${c.id}.png?v=${ART_VERSION}` : undefined}
                 />
               </li>
             ))}
