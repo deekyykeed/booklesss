@@ -871,9 +871,15 @@
     margin-top: 2px;
     font-size: 13px;
   }
+  /* On a phone the two course-shape numbers (lessons, hours) sit together on
+   * the left and the quick-checks count stands alone on the right
+   * (owner, 2026-10-19: "2 of the similar ones grouped, then space"). */
   .kit-mk-grid .kit-fc-stats {
     gap: 10px;
     margin-top: 14px;
+  }
+  .kit-mk-grid .kit-fc-stats .kit-stat:last-child {
+    margin-left: auto;
   }
   .kit-mk-grid .kit-fc-stats .kit-stat {
     gap: 3px;
