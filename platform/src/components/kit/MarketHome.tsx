@@ -203,11 +203,13 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
                     title={c.title}
                     description={c.subtitle}
                     eyebrow={catOf(c.cat).id === "all" ? "COURSE" : catOf(c.cat).label.toUpperCase()}
+                    /* The three numbers that decide a pick (owner, 2026-10-19):
+                       how many lessons, how long, how many quick checks. Units
+                       went — a count of folders tells a student nothing. */
                     stats={[
-                      { icon: "image", n: c.units, label: "units", kind: "image" },
-                      { icon: "video", n: c.steps, label: "steps", kind: "video" },
-                      { icon: "file", n: c.checks, label: "quick checks", kind: "file" },
-                      { icon: "video", n: Math.round(c.mins / 60), label: "hours", kind: "video" },
+                      { icon: "video", n: c.steps, label: "lessons" },
+                      { icon: "clock-1", n: Math.max(1, Math.round(c.mins / 60)), unit: "h", label: "hours" },
+                      { icon: "task-done", n: c.checks, label: "quick checks" },
                     ]}
                     actions={[
                       { label: "Open", onPick: () => open(c.id) },

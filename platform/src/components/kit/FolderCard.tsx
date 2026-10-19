@@ -18,7 +18,7 @@ import { Button, Surface } from "./primitives";
  * which was drawn at the reference's size and then zoomed to fit, so the
  * number in the code was never the size on the screen. */
 
-export type FolderStat = { icon: HugeIconName; n: number; label: string; kind?: "image" | "video" | "file" };
+export type FolderStat = { icon: HugeIconName; n: number; label: string; unit?: string; kind?: "image" | "video" | "file" };
 export type FolderAction = { label: string; danger?: boolean; onPick?: () => void };
 
 const RADIUS = 38;
@@ -166,6 +166,7 @@ export function FolderCard({
           <span key={i} className="kit-stat" title={`${st.n} ${st.label}`}>
             <HugeIcon name={st.icon} size={16} />
             {st.n}
+            {st.unit}
           </span>
         ))}
         {/* In the row, not floating (owner, 2026-10-19: "don't make the

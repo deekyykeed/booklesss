@@ -837,7 +837,7 @@
     gap: 10px;
   }
   .kit-mk-grid .kit-fc {
-    padding: 68px 12px 12px;
+    padding: 76px 14px 16px;
   }
   .kit-mk-grid .kit-fc-folder {
     left: 0;
@@ -872,8 +872,8 @@
     font-size: 13px;
   }
   .kit-mk-grid .kit-fc-stats {
-    gap: 8px;
-    margin-top: 10px;
+    gap: 10px;
+    margin-top: 14px;
   }
   .kit-mk-grid .kit-fc-stats .kit-stat {
     gap: 3px;
@@ -1060,7 +1060,7 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  padding: 122px 24px 24px;
+  padding: 132px 24px 28px;
   border-radius: 38px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -1208,8 +1208,8 @@
 .kit-fc-stats {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-top: 12px;
+  gap: 16px;
+  margin-top: 20px;
 }
 .kit-fc-stats .kit-stat {
   flex: none;

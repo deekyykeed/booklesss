@@ -193,6 +193,7 @@ const ICONS = {
   settings: "settings-02",
   add: "add-01", // the thin + on a sidebar row
   filter: "filter", // the marketplace Filters button (owner, 2026-10-19: popups, not a sliding row)
+  "task-done": "task-done-01", // the course card's quick-checks stat
   "more-vertical": "more-vertical", // the folder card's options, the real glyph (owner: "get an actual Hugeicon")
 };
 
