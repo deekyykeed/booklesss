@@ -1221,6 +1221,15 @@
 .kit-stat svg {
   color: var(--kit-count);
 }
+/* Solar duotone on the course card (owner, 2026-10-19, off the frosted-icon
+ * pin): the front layer is ink, the back layer a light grey rather than the
+ * set's half-strength ink. */
+.kit-fc .kit-stat svg {
+  color: #1a1a1a;
+}
+.kit-fc .kit-stat svg [opacity] {
+  opacity: 0.22;
+}
 
 /* ---------------------------------------------------------------- 5 · plus */
 

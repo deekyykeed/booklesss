@@ -40,6 +40,10 @@ const ICONS = [
   "bolt-bold-duotone", // Streak — the zap it replaces
   "notebook-minimalistic-bold-duotone", // Coverage — an open book
   "clock-circle-bold-duotone", // Time this week
+  // the marketplace course card's three stats (owner, 2026-10-19: "use Solar
+  // duotone" — ink front, light-grey back, off the frosted-icon pin)
+  "videocamera-record-bold-duotone", // lessons
+  "clipboard-check-bold-duotone", // quick checks
   /* Callout kinds — the mark at the top-left of an in-text container, and now
      the ONLY thing there: the owner dropped the word beside it (2026-08-02), so
      each of these has to carry its kind alone. See CALLOUTS in

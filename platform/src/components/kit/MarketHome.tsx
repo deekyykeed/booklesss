@@ -207,9 +207,9 @@ export function MarketHome({ onMenu, name = "Deeky" }: { onMenu?: () => void; na
                        how many lessons, how long, how many quick checks. Units
                        went — a count of folders tells a student nothing. */
                     stats={[
-                      { icon: "video", n: c.steps, label: "lessons" },
-                      { icon: "clock-1", n: Math.max(1, Math.round(c.mins / 60)), unit: "h", label: "hours" },
-                      { icon: "task-done", n: c.checks, label: "quick checks" },
+                      { solar: "videocamera-record-bold-duotone", n: c.steps, label: "lessons" },
+                      { solar: "clock-circle-bold-duotone", n: Math.max(1, Math.round(c.mins / 60)), unit: "h", label: "hours" },
+                      { solar: "clipboard-check-bold-duotone", n: c.checks, label: "quick checks" },
                     ]}
                     actions={[
                       { label: "Open", onPick: () => open(c.id) },

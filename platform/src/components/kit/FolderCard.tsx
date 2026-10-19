@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { HugeIcon, type HugeIconName } from "@/components/icons/huge";
+import { SolarIcon, type SolarIconName } from "@/components/icons/solar";
 import { Button, Surface } from "./primitives";
 
 /* The folder card at REAL SIZE (owner, 2026-10-19: "in Paper everything is
@@ -18,7 +19,10 @@ import { Button, Surface } from "./primitives";
  * which was drawn at the reference's size and then zoomed to fit, so the
  * number in the code was never the size on the screen. */
 
-export type FolderStat = { icon: HugeIconName; n: number; label: string; unit?: string; kind?: "image" | "video" | "file" };
+/* A stat's mark is a Solar Bold Duotone (owner, 2026-10-19): ink in front, a
+ * light-grey back layer, like the frosted-icon pin. `icon` keeps a Hugeicon
+ * for the showcase states. */
+export type FolderStat = { icon?: HugeIconName; solar?: SolarIconName; n: number; label: string; unit?: string; kind?: "image" | "video" | "file" };
 export type FolderAction = { label: string; danger?: boolean; onPick?: () => void };
 
 const RADIUS = 38;
@@ -164,7 +168,7 @@ export function FolderCard({
       <div className="kit-fc-stats">
         {stats.map((st, i) => (
           <span key={i} className="kit-stat" title={`${st.n} ${st.label}`}>
-            <HugeIcon name={st.icon} size={16} />
+            {st.solar ? <SolarIcon name={st.solar} size={16} /> : st.icon ? <HugeIcon name={st.icon} size={16} /> : null}
             {st.n}
             {st.unit}
           </span>
