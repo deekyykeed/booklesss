@@ -796,11 +796,6 @@
   .kit-mk-creators {
     grid-auto-columns: 112px;
   }
-  /* One course per row on a phone, stretched to the row. */
-  .kit-mk-grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
-  }
 }
 @media (max-width: 639px) {
   .kit-app-main {
@@ -832,9 +827,77 @@
   .kit-mk-creators {
     grid-auto-columns: 112px;
   }
+  /* Two courses per row on a phone (owner, 2026-10-19: "reduce the cards
+   * enough in text and elements, especially the folder, so I can fit 2
+   * columns on mobile"). A real compact card, not a zoomed one: every
+   * value below is the px on screen at ~174px wide. */
   .kit-mk-grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .kit-mk-grid .kit-fc {
+    padding: 68px 12px 12px;
+  }
+  .kit-mk-grid .kit-fc-folder {
+    left: 0;
+    top: 2px;
+    width: 76px;
+    height: 72px;
+  }
+  .kit-mk-grid .kit-fc-dots {
+    right: 6px;
+    top: 6px;
+    width: 30px;
+    height: 30px;
+  }
+  .kit-mk-grid .kit-fc-dots svg {
+    width: 20px;
+    height: 20px;
+  }
+  .kit-mk-grid .kit-fc-menu {
+    right: 6px;
+    top: 40px;
+    width: 160px;
+  }
+  .kit-mk-grid .kit-fc-eyebrow {
+    font-size: 10px;
+    line-height: 13px;
+  }
+  .kit-mk-grid .kit-fc-title {
+    font-size: 15px;
+  }
+  .kit-mk-grid .kit-fc-desc {
+    margin-top: 2px;
+    font-size: 13px;
+  }
+  .kit-mk-grid .kit-fc-stats {
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .kit-mk-grid .kit-fc-stats .kit-stat {
+    gap: 3px;
+    font-size: 11px;
+    line-height: 16px;
+  }
+  .kit-mk-grid .kit-fc-stats .kit-stat svg {
+    width: 12px;
+    height: 12px;
+  }
+  /* Three counts fit beside the play button; hours goes. */
+  .kit-mk-grid .kit-fc-stats .kit-stat:nth-of-type(4) {
+    display: none;
+  }
+  /* Start becomes the play circle alone, still in the row. */
+  .kit-mk-grid .kit-fc-start .kit-btn {
+    --h: 28px;
+    --icon: 14px;
+  }
+  .kit-mk-grid .kit-fc-start .kit-btn-face {
+    width: var(--h);
+    padding: 0;
+  }
+  .kit-mk-grid .kit-fc-start .kit-btn-face > span {
+    display: none;
   }
 }
 

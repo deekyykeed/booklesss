@@ -138,7 +138,8 @@ export function FolderCard({
         else setSelected((s) => !s);
       }}
     >
-      {w > 0 && h > 0 && <Surface w={w} h={h} r={RADIUS} s={SMOOTHING} />}
+      {/* A two-up phone card is ~174px wide; 38px corners eat it, so it gets 26. */}
+      {w > 0 && h > 0 && <Surface w={w} h={h} r={w < 240 ? 26 : RADIUS} s={SMOOTHING} />}
       <HappyFolder className="kit-fc-folder" />
       {actions.length > 0 && (
         <button
