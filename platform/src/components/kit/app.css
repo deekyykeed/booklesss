@@ -838,6 +838,7 @@
   }
   .kit-mk-grid .kit-fc {
     padding: 76px 14px 16px;
+    border-radius: 18px;
   }
   .kit-mk-grid .kit-fc-folder {
     left: 0;
