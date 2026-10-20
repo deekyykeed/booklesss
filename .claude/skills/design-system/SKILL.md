@@ -132,13 +132,51 @@ marketplace styles in `kit/app.css`. `/dashboard` renders `AppShell`.
   change, measure the rendered px on the live site and look at the
   screenshot.
 - **Text that doesn't fit truncates at one size.** Do not shrink each title
-  to fit; that gives a grid of mismatched sizes.
+  to fit; that gives a grid of mismatched sizes. A course-card title gets two
+  lines before it truncates (below); a description gets one.
 - **Buttons:** sm 36 / md 44 / lg 52 tall, sizes set by `data-size` in CSS.
   On a phone every app button is sm. The glass light is a blurred rim down
   the right edge curving into the top, built like the folder's. There is no
   white spot and nothing follows the pointer. A press is eased (140ms down,
   280ms back), never a cut.
 - **Category icons are Solar Bold** (`CategoryBar`, default `look="bold"`).
+  The sliding category track was replaced by a **Filters popup**
+  (`CategoryFilter`) beside the "Courses" heading.
+- **The kit's face is Inter** (owner, 2026-10-19, off the Paper dashboard
+  board — "not Rubik"): `--kit-sans` reads the root layout's `--font-inter`,
+  so the kit registers no face of its own; DM Mono stays for the wordmark
+  and hints. Rubik was the face for one day (2026-10-18).
+- **The marketplace course card (`FolderCard` in `.kit-mk-grid`), as settled
+  2026-10-19 after nine live rounds:**
+  - **No eyebrow.** The category tag above the title went ("remove that
+    tag"); the title is the first line of text.
+  - **Title 22px/700 (15 on a phone), ALWAYS two lines tall.** The `h3` is a
+    flex column with `justify-content:flex-end` and `min-height:
+    calc(2 * 1.2em)`; an inner `<span>` carries the two-line clamp. A
+    one-line title sits at the bottom of the box, against its description,
+    and no card changes height for its title. (`-webkit-box-pack` on the
+    clamp box does nothing — that is why the span exists.)
+  - **Cards fill their grid row** (`> li { display:flex }`, `.kit-fc {
+    flex:1 }`) and the text block hangs from the bottom (`margin-top:auto`
+    on the title). Neighbours match whatever their copy did.
+  - **Three stats, Hugeicons strokes:** `video` lessons, `clock-1` hours,
+    `task-done` quick checks. On a phone the first two sit together and the
+    third stands alone on the right (`:nth-of-type(3) { margin-left:auto }`).
+    Not Solar duotone — tried, reverted.
+  - **The stats row is inset exactly as far as the sides:** 24px desktop,
+    14px phone (bottom padding 13 + a 13px line-box). "Square to the bottom
+    and the left and right."
+  - **Corners 31px desktop, 22px phone** — the midpoint between the 38/26
+    the card launched with and the 24/18 it was cut to ("not as much as
+    before, find midpoint"). The SVG `Surface` draws them; the CSS
+    `border-radius` on `.kit-fc` still reads 60 under the squircle override.
+  - **The folder is the art, for every course.** `public/kit/happy-folder.svg`
+    as a lazy `<img>`; the 8 Higgsfield-made course icons were tried and
+    reverted the next day. Inline SVG with blur filters per card caused
+    scroll jank — keep the art a file.
+  - **Eight cards a page, then "See more"** (`PAGE` in `MarketHome`); a new
+    filter or search resets to the first page. The owner expects filtering,
+    not scrolling. `Surface` is memoised, search is `useDeferredValue`.
 - **A popup inside a scaled card undoes the scale** (`zoom: calc(1 /
   var(--kit-z))`) and keeps itself on screen after opening. Small marks get
   an invisible hit pad (`::before`) of at least 44px real.

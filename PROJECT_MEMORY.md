@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-10-18 (session 70)
+**Last updated:** 2026-10-20 (session 71)
 
 ---
 
@@ -92,6 +92,31 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
+**From session 71 (2026-10-19, the marketplace course card settled on the
+live site and five pins plus the old course card built in Paper. Linear NOT
+reachable: `linear-server` still needs its one-time OAuth, so nothing below
+has a ticket.)**
+
+- [ ] **The greeting on /dashboard is Inter.** The Paper board it was matched
+      to ("Booklesss" file, page app.dasboard) sets the greeting in Familjen
+      Grotesk, which the app dropped for Ranade on 2026-09-18. Owner to say
+      whether the greeting goes to Ranade, or Familjen comes back for it.
+- [ ] **Desktop `.kit-fc` CSS `border-radius` reads 60px** under the
+      `corner-shape: squircle` override while the SVG surface draws 31. It was
+      60 before the radius changes too; the visible shape is the SVG. Decide
+      whether the override should track the surface.
+- [ ] **The Paper Marketplace boards (1440/1024/768/390 + shell) are behind
+      the live card:** they still show the eyebrow, the old sliding category
+      track, the creators strip, and none of the two-line title / 3 stats.
+      Only the shell 8R8-0 lost the creators strip.
+- [ ] **Creators strip is still on the live marketplace** (invented names).
+- [ ] **Course-card variations** ("try to carry it a bunch of different
+      ways") were asked for on 2026-10-19 and never started.
+- [ ] Owner wants to iterate on the OLD course card (`home/CourseCard.tsx`)
+      in Paper — it is on the Marketplace page as "Old course card
+      (home/CourseCard.tsx, as built)", two instances. Satoshi and Ranade are
+      not in Paper, so it wears Inter and Familjen there.
+
 **From session 70 (2026-10-18, the video pivot gets an app: the kit, the Ron
 sidebar shell and the marketplace's first page at /dashboard. Linear NOT
 reachable: `linear-server` still needs its one-time OAuth, so nothing below
@@ -99,9 +124,8 @@ has a ticket.)**
 
 - [ ] **Evening and night buttons exist on /components only.** Owner was asked
       whether the app should switch to them by the clock; no answer yet.
-- [ ] **Desktop folder titles truncate at 44px** ("Corporate Fina…") because
-      the cards draw at the Components page's own scale. A smaller desktop
-      size has to change /components too, so it stays one rule.
+- [x] ~~Desktop folder titles truncate at 44px~~ → fixed session 71: the
+      title is 22px (15 on a phone) and takes two lines before the ellipsis.
 - [ ] **Saved, Creators, More, Notifications, Settings and Account** in the
       app sidebar show a "Built next" placeholder. Explore, My courses and
       Studio work.
@@ -1803,6 +1827,61 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-10-19 (session 71 — the course card settled, five pins and the old card in Paper)
+
+**Done:** The marketplace course card went through nine live pushes and
+ended here: Hugeicons stats (video, clock, task-done) instead of Solar
+duotone; the 8 Higgsfield course icons deleted and every course back on the
+Happy Files folder; corners 31px desktop / 22px phone (the midpoint of 38→24
+and 26→18); the stats row inset equal to the sides (24 / 14); the title box
+always two lines tall with a one-line title sitting at the bottom of it;
+cards fill their grid row so neighbours match; the category eyebrow removed;
+the kit's face is **Inter** (the Paper dashboard board's text face), Rubik no
+longer loaded. Speed: the grid shows 8 courses with a "See more" button,
+the card `Surface` is memoised, search is deferred, folder images lazy.
+
+In Paper, five pins built as given on "Pins (built as given)": three library
+screens sharing one sidebar (Keep the story going, Happy reading, Book
+detail), the Conversations app, and the Architecture Magazine page (at 2×,
+the pin was 800×600). Plus the old `home/CourseCard.tsx` transcribed from
+source onto the Marketplace page, two instances, every value the
+component's own.
+
+**What Worked:**
+- `.kit-mk-grid > li { display:flex }` + `.kit-fc { flex:1 }` with
+  `margin-top:auto` on the title: equal row heights and a bottom-hung text
+  block in four lines of CSS.
+- A two-line title that bottom-aligns: the `h3` is `display:flex;
+  flex-direction:column; justify-content:flex-end; min-height: calc(2*1.2em)`
+  and an inner `<span>` carries the `-webkit-line-clamp`.
+- `<x-paper-clone>` of the sidebar and top bar across the three library pins
+  — one build, three boards. Recolour a cloned active state via
+  `update_styles` on the cloned path nodes.
+- Hugeicons paths straight from
+  `node_modules/@hugeicons/core-free-icons/dist/esm/<Name>Icon.js` with a
+  regex, cached as `icons.json` in the scratchpad, rendered by a 15-line
+  `svg.py`. No generator run needed for Paper work.
+- Resolving a pin.it link: fetch with a browser UA, regex every
+  `i.pinimg.com/(originals|736x)/…` URL, take the most frequent; `originals`
+  sometimes 403s, so fall back to the `736x` copy.
+- Playwright polling the live site for a marker only the new deploy has
+  (`line-clamp`, a class, a font family), then measuring the DOM instead of
+  eyeballing a screenshot.
+
+**Dead Ends (do not retry):**
+- **`-webkit-box-pack: end` on a `-webkit-line-clamp` box** is ignored; a
+  one-line title stayed at the top of its two-line box. Use the h3-flex +
+  inner-span split above.
+- **Higgsfield-made course icons** (frosted pin style and folder style, 8
+  courses, ~4 credits) — owner reverted them the next morning: "revert all
+  of those images back to the folder icon". The folder stays.
+- **A playwright probe that polls for a deploy inside a foreground Bash
+  call** hits the 600 s cap and gets backgrounded mid-loop; the output file
+  then holds only the first viewport. Run deploy-polling probes with
+  `run_in_background` from the start.
+- **Reading the old course card off the live site** — `/dashboard/courses`
+  redirects to `/` (gated). It had to be built from the source files.
 
 ### Session 2026-10-18 (session 70 — the kit, the app shell and the marketplace's first page)
 
