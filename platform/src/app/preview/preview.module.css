@@ -625,3 +625,30 @@
   background: var(--red);
   color: #fff;
 }
+
+/* ---- squircles, the app's way (see globals.css → "the composer's corners") ----
+ * Same superellipse as the app's `.squircle` class, behind @supports, with the
+ * radius moved as a PAIR at the app's ~1.28 ratio (22 → 28, 29 → 37), because a
+ * superellipse at the same number reads tighter. Browsers without corner-shape
+ * keep the round numbers above.
+ *
+ * Deliberately NOT squircled:
+ *  - the notch's inner (bottom-left) corner — it is concentric with the 46px
+ *    button, and only a circular arc keeps that 8px ring even all the way round;
+ *  - circles and full capsules (buttons, avatars, chips, pills, the nav) — they
+ *    are genuinely round, the same exception the reader's source strip makes. */
+@supports (corner-shape: superellipse(2.4)) {
+  .card {
+    corner-shape: superellipse(2.4);
+    border-radius: 28px;
+  }
+  .notch {
+    corner-shape: round superellipse(2.4) round round;
+    border-top-right-radius: 28px;
+  }
+  .page:not([data-theme="light"]) .schedule,
+  .page[data-theme="light"] .schedule {
+    corner-shape: superellipse(2.4);
+    border-radius: 37px;
+  }
+}
