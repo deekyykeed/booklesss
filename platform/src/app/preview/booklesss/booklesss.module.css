@@ -1,0 +1,289 @@
+/* Additions for the Booklesss version of the CRM preview. The page, card and
+ * notch come from ../preview.module.css; everything here is what a course of
+ * VIDEOS needs that a client card did not: thumbnails, runtimes, segments. */
+
+.root {
+  --thumb: #3a3a3a;
+  --thumb-ink: rgba(255, 255, 255, 0.9);
+  --cap: #b4b4b4;
+}
+.root[data-theme="light"] {
+  --thumb: #d9d9d9;
+  --thumb-ink: #ffffff;
+  --cap: #5c5c5c;
+}
+
+/* notch buttons (links or buttons), same 46px circle as the CRM notch */
+.nb {
+  position: absolute;
+  top: 8px;
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  border: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: #1c1c1c;
+  color: #ffffff;
+}
+[data-theme="light"] .nb {
+  background: #f5f5f5;
+  color: #000000;
+}
+.nb.nbSolid,
+[data-theme="light"] .nb.nbSolid {
+  background: #b9ff66;
+  color: #000000;
+}
+
+/* video thumbnails: blank placeholders, a play mark and a runtime */
+.thumb {
+  position: relative;
+  flex-shrink: 0;
+  display: block;
+  border-radius: 14px;
+  background: var(--thumb);
+  overflow: hidden;
+}
+@supports (corner-shape: superellipse(2.4)) {
+  .thumb {
+    corner-shape: superellipse(2.4);
+    border-radius: 18px;
+  }
+}
+.limeThumb .thumb {
+  background: rgba(0, 0, 0, 0.14);
+}
+.thumbPlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--thumb-ink);
+}
+.dur {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  height: 16px;
+  padding: 0 5px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.62);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.02em;
+}
+
+/* a fan of three thumbnails in the avatar slot: "this folder holds videos" */
+.fan {
+  position: absolute;
+  left: 10px;
+  top: 9px;
+  width: 70px;
+  height: 47px;
+}
+.fan > span {
+  position: absolute;
+  top: 0;
+  border: 2px solid var(--surface);
+}
+.fan > span:nth-child(1) {
+  left: 0;
+}
+.fan > span:nth-child(2) {
+  left: 12px;
+}
+.fan > span:nth-child(3) {
+  left: 24px;
+}
+
+/* one pill per video */
+.segs {
+  display: flex;
+  gap: 3px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 11px;
+  background: var(--dots);
+  align-items: center;
+}
+.segs > span {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--dot-off);
+}
+.segs > span.segOn {
+  background: #b9ff66;
+}
+.limeThumb .segs {
+  background: rgba(0, 0, 0, 0.1);
+}
+.limeThumb .segs > span {
+  background: rgba(0, 0, 0, 0.15);
+}
+.limeThumb .segs > span.segOn {
+  background: #000;
+}
+
+/* the resume pill on a video card: a played bar under the label */
+.played {
+  position: absolute;
+  left: 46px;
+  right: 40px;
+  bottom: 7px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(127, 127, 127, 0.25);
+  overflow: hidden;
+}
+.played > span {
+  display: block;
+  height: 100%;
+  background: currentColor;
+}
+
+.wordmark {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.linkPill {
+  margin: 14px 16px 0;
+  height: 48px;
+  border-radius: 24px;
+  border: 1px dashed var(--chip-line);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.badge {
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 10px;
+  background: #b9ff66;
+  color: #000;
+  font-size: 10px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.faces {
+  display: flex;
+}
+.faces > span {
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  background: #c9c9c9;
+  border: 2px solid var(--surface);
+}
+.faces > span + span {
+  margin-left: -10px;
+}
+.faces > span:nth-child(2) {
+  background: #b5b5b5;
+}
+.faces > span:nth-child(3) {
+  background: #a5a5a5;
+}
+
+.dashed {
+  flex-shrink: 0;
+  border-radius: 14px;
+  border: 1.5px dashed var(--chip-line);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: center;
+  line-height: 12px;
+}
+
+.meter {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--dot-off);
+  overflow: hidden;
+}
+.meter > span {
+  display: block;
+  height: 100%;
+  background: #b9ff66;
+}
+
+/* gallery page */
+.intro {
+  padding: 22px 16px 4px;
+}
+.intro h1 {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 40px;
+}
+.intro p {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--cap);
+}
+.variant {
+  padding: 34px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.vhead {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.vnum {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cap);
+}
+.vname {
+  font-size: 22px;
+  font-weight: 500;
+}
+.notes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--cap);
+}
+.notes b {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
