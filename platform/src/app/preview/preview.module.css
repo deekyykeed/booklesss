@@ -629,8 +629,9 @@
 /* ---- squircles, the app's way (see globals.css → "the composer's corners") ----
  * Same superellipse as the app's `.squircle` class, behind @supports, with the
  * radius moved as a PAIR, because a superellipse at the same number reads
- * tighter. Two steps of the app's ~1.28 ratio (22 → 36, 29 → 44): one step
- * (28) still read tighter than the reference's cards (owner, 2026-10-20). Browsers without corner-shape
+ * tighter. Three steps of the app's ~1.28 ratio (22 → 46, 29 → 54): the owner
+ * asked for more twice on 2026-10-20. The schedule is capped at 54, just
+ * under half its ~110px height, past which it turns into a pill. Browsers without corner-shape
  * keep the round numbers above.
  *
  * Deliberately NOT squircled:
@@ -641,15 +642,15 @@
 @supports (corner-shape: superellipse(2.4)) {
   .card {
     corner-shape: superellipse(2.4);
-    border-radius: 36px;
+    border-radius: 46px;
   }
   .notch {
     corner-shape: round superellipse(2.4) round round;
-    border-top-right-radius: 36px;
+    border-top-right-radius: 46px;
   }
   .page:not([data-theme="light"]) .schedule,
   .page[data-theme="light"] .schedule {
     corner-shape: superellipse(2.4);
-    border-radius: 44px;
+    border-radius: 54px;
   }
 }
