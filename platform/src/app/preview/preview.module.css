@@ -640,9 +640,12 @@
  *  - circles and full capsules (buttons, avatars, chips, pills, the nav) — they
  *    are genuinely round, the same exception the reader's source strip makes. */
 @supports (corner-shape: superellipse(2.4)) {
+  /* tl / bl / br one step rounder than tr (owner, 2026-10-20): the top-right
+     is under the notch and has to match its outer corner, the other three
+     carry the card's silhouette. */
   .card {
     corner-shape: superellipse(2.4);
-    border-radius: 46px;
+    border-radius: 59px 46px 59px 59px;
   }
   .notch {
     corner-shape: round superellipse(2.4) round round;
