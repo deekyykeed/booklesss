@@ -88,6 +88,7 @@ const SKIP = [
   "/components",
   // a desktop page by design, with its own 1024/768/390 layouts
   "/preview/marketplace",
+  "/preview/categories",
 ];
 
 /** Exact paths that skip the gate — "/" can't go in SKIP, whose prefix rule

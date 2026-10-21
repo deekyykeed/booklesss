@@ -1,0 +1,410 @@
+/* Courses by category. Every number is the Paper board's own ("Booklesss
+   Platform" > "Courses by category" > "· 1440" and "· 390"). Two layouts:
+
+   - 600 and up: covers 220 x 308, rows with arrows, 40px page edge
+   - under 600: covers 156 x 218 (wide enough that "Microeconomics" fits at
+     17px), "See all" instead of arrows, 16px edge
+
+   Each row scrolls on its own and snaps to a cover. The last cover in view is
+   cut by the screen edge on purpose: that is what says the row moves. */
+
+.page {
+  --ink: #1e1e24;
+  --muted: #8c8980;
+  --line: #dedbd1;
+
+  min-height: 100vh;
+  padding-bottom: 64px;
+  background: #f1efe5;
+  color: var(--ink);
+  font-family: var(--cat-urbanist), system-ui, sans-serif;
+}
+
+/* ── top bar, tabs, heading (the lummi.ai layout) ─────────── */
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 40px 14px;
+}
+
+.logo {
+  width: 38px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1.5px dashed #b9b5aa;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.search {
+  width: 640px;
+  max-width: 100%;
+  height: 52px;
+  padding: 0 20px;
+  border-radius: 26px;
+  border: 1.5px solid #dcd9cf;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.search svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  outline: none;
+  font: 500 17px/22px var(--cat-urbanist), system-ui, sans-serif;
+  color: var(--ink);
+  text-overflow: ellipsis;
+}
+
+.search input::placeholder {
+  color: var(--muted);
+}
+
+.menu {
+  margin-left: auto;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.menu svg {
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+
+.tabs {
+  display: flex;
+  gap: 36px;
+  padding: 0 40px;
+  border-bottom: 1px solid var(--line);
+}
+
+.tab {
+  padding: 14px 0 12px;
+  margin-bottom: -1px;
+  border-bottom: 2.5px solid transparent;
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.tabOn {
+  font-weight: 600;
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+.heading {
+  padding: 48px 40px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.heading h1 {
+  margin: 0;
+  font-size: 56px;
+  line-height: 60px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.heading p {
+  margin: 0;
+  max-width: 640px;
+  font-size: 19px;
+  line-height: 30px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+/* ── a category: header, then a row that swipes ───────────── */
+
+.category {
+  padding-top: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.catHead {
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.catTitle {
+  margin: 0;
+  font-size: 28px;
+  line-height: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.catTitle span {
+  margin-left: 8px;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+
+.arrows {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.prev,
+.next {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease;
+}
+
+.next {
+  border-radius: 50%;
+  border: 1px solid #cfccc2;
+}
+
+.prev:disabled,
+.next:disabled {
+  color: #b5b2a8;
+  cursor: default;
+}
+
+.next:disabled {
+  border-color: #e2dfd6;
+}
+
+.prev svg,
+.next svg {
+  width: 22px;
+  height: 22px;
+}
+
+.seeAll {
+  display: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: 600 15px/20px var(--cat-urbanist), system-ui, sans-serif;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.row {
+  display: flex;
+  gap: 28px;
+  padding: 0 40px 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 40px;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+
+.row::-webkit-scrollbar {
+  display: none;
+}
+
+.course {
+  flex: 0 0 220px;
+  width: 220px;
+  min-width: 0;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.cover {
+  width: 220px;
+  height: 308px;
+  padding: 18px;
+  box-sizing: border-box;
+  border-radius: 2px;
+  box-shadow: #3c37284d -8px 14px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  transition: transform 260ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@media (hover: hover) {
+  .course:hover .cover {
+    transform: translateY(-4px);
+  }
+}
+
+.coverTitle {
+  margin: 0;
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.coverMeta {
+  margin: 0;
+  padding-top: 6px;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.sub {
+  margin: 16px 0 0;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meta {
+  margin: 2px 0 0;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── 390: the phone ──────────────────────────────────────── */
+
+@media (max-width: 599px) {
+  .page {
+    padding-bottom: 48px;
+  }
+  .top {
+    gap: 12px;
+    padding: 14px 16px 10px;
+  }
+  .search {
+    flex: 1;
+    width: auto;
+    height: 48px;
+    padding: 0 16px;
+    border-radius: 24px;
+    gap: 10px;
+  }
+  .search input {
+    font-size: 16px;
+  }
+  .menu,
+  .menu svg {
+    width: 26px;
+    height: 26px;
+  }
+  .tabs {
+    gap: 26px;
+    padding: 0 16px;
+  }
+  .tab {
+    padding: 12px 0 10px;
+    font-size: 16px;
+    line-height: 20px;
+  }
+  .heading {
+    padding: 32px 16px 0;
+    gap: 10px;
+  }
+  .heading h1 {
+    font-size: 34px;
+    line-height: 38px;
+  }
+  .heading p {
+    font-size: 16px;
+    line-height: 26px;
+  }
+  .category {
+    padding-top: 36px;
+    gap: 16px;
+  }
+  .catHead {
+    padding: 0 16px;
+  }
+  .catTitle {
+    font-size: 22px;
+    line-height: 28px;
+  }
+  .catTitle span {
+    font-size: 14px;
+    line-height: 18px;
+  }
+  .arrows {
+    display: none;
+  }
+  .seeAll {
+    display: block;
+  }
+  .row {
+    gap: 12px;
+    padding: 0 16px 16px;
+    scroll-padding-inline: 16px;
+  }
+  .course {
+    flex-basis: 156px;
+    width: 156px;
+  }
+  .cover {
+    width: 156px;
+    height: 218px;
+    padding: 12px;
+    box-shadow: #3c37284d -5px 10px 16px;
+  }
+  .coverTitle {
+    font-size: 17px;
+    line-height: 21px;
+  }
+  .coverMeta {
+    padding-top: 4px;
+    font-size: 13px;
+    line-height: 16px;
+  }
+  .sub {
+    margin-top: 12px;
+    font-size: 15px;
+    line-height: 20px;
+  }
+  .meta {
+    font-size: 13px;
+    line-height: 18px;
+  }
+}
