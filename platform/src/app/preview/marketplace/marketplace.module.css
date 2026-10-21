@@ -383,7 +383,7 @@
   height: 18px;
   flex-shrink: 0;
   fill: var(--stat-icon);
-  filter: drop-shadow(0 2px 1px #3c372826);
+  filter: drop-shadow(0 2px 1px #3c372814);
 }
 
 /* ── 768: one card a row at the sketch's own width ───────── */
