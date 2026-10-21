@@ -22,19 +22,21 @@
   --red: #e05a5a;
   --dark: #2a2a33;
 
-  /* preview stack, desktop */
+  /* preview stack, desktop. The back two sit CENTRED on the front one and
+     peek about 18px each, off the owner's album-stack pin (pin.it/5wfGcF3YP,
+     2026-10-22: "go with my pin, just don't touch radius"). Corners stay 2px. */
   --fw: 141px;
   --fh: 204px;
-  --mw: 127px;
-  --mh: 183px;
-  --mt: 18px;
-  --ml: 45px;
-  --bw: 108px;
-  --bh: 156px;
-  --bt: 42px;
-  --bl: 81px;
-  --sw: 189px;
-  --swh: 209px;
+  --mw: 128px;
+  --mh: 186px;
+  --mt: 9px;
+  --ml: 28px;
+  --bw: 114px;
+  --bh: 162px;
+  --bt: 21px;
+  --bl: 57px;
+  --sw: 171px;
+  --swh: 191px;
   --mdx: 13px;
   --bdx: 20px;
   --front-shadow: #3c372857 -16px 28px 44px, #3c372833 0 4px 10px, #1e1e2433 4px 0 10px;
@@ -407,15 +409,15 @@
   .page {
     --fw: 91px;
     --fh: 132px;
-    --mw: 82px;
-    --mh: 118px;
-    --mt: 12px;
-    --ml: 29px;
-    --bw: 70px;
-    --bh: 101px;
-    --bt: 28px;
-    --bl: 52px;
-    --sw: 122px;
+    --mw: 83px;
+    --mh: 120px;
+    --mt: 6px;
+    --ml: 18px;
+    --bw: 74px;
+    --bh: 105px;
+    --bt: 14px;
+    --bl: 37px;
+    --sw: 111px;
     --front-shadow: #3c372857 -9px 15px 24px, #3c372833 0 2px 6px, #1e1e2433 2px 0 6px;
     --mid-shadow: #3c37284d -4px 8px 12px, #1e1e2433 2px 0 6px;
     --back-shadow: #3c37284d -4px 8px 12px;
