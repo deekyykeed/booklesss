@@ -475,4 +475,13 @@
     gap: 14px;
     padding-bottom: 0;
   }
+  /* owner, 2026-10-22: 28 was too big on a phone */
+  .title {
+    font-size: 20px;
+    line-height: 24px;
+  }
+  .badge {
+    width: 18px;
+    height: 18px;
+  }
 }
