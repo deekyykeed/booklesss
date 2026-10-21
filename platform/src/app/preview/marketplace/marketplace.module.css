@@ -1,0 +1,478 @@
+/* The library marketplace preview. Every number is the Paper board's own
+   ("Booklesss Platform" > "Library + course card" > "Marketplace · 1440 / 1024 /
+   768 / 390"). Four layouts, one set of tokens:
+
+   - 1440 and up: three cards a row, preview stack at 85% (front 141 x 204)
+   - from ~976: two a row (the grid fills itself; 432 is the narrowest card
+     whose text column still fits "Administration" at 28px)
+   - 600 to 975: one a row, at the sketch card's own 504
+   - under 600: the phone stack, 55% (front 91 x 132), so the text stays on
+     the right at full size
+
+   The stack is compact at rest ON PURPOSE (owner: "they space out a little
+   more when on hover"): hover fans the two back previews out and the stack
+   takes the extra width, pushing the text right. Phones never hover. */
+
+.page {
+  --ink: #1e1e24;
+  --line: #cfccc2;
+  --stat: #7f7f81;
+  --stat-icon: #c8c8c8;
+  --sub: #8e8e93;
+  --red: #e05a5a;
+  --dark: #2a2a33;
+
+  /* preview stack, desktop */
+  --fw: 141px;
+  --fh: 204px;
+  --mw: 127px;
+  --mh: 183px;
+  --mt: 18px;
+  --ml: 45px;
+  --bw: 108px;
+  --bh: 156px;
+  --bt: 42px;
+  --bl: 81px;
+  --sw: 189px;
+  --swh: 209px;
+  --mdx: 13px;
+  --bdx: 20px;
+  --front-shadow: #3c372857 -16px 28px 44px, #3c372833 0 4px 10px, #1e1e2433 4px 0 10px;
+  --mid-shadow: #3c37284d -8px 14px 22px, #1e1e2433 4px 0 10px;
+  --back-shadow: #3c37284d -8px 14px 22px;
+
+  min-height: 100vh;
+  background: #f1efe5;
+  color: var(--ink);
+  font-family: var(--mk-montserrat), system-ui, sans-serif;
+}
+
+.wrap {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 40px 64px;
+}
+
+/* ── top bar ─────────────────────────────────────────────── */
+
+.top {
+  height: 62px;
+  padding-top: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: content-box;
+}
+
+.left,
+.right {
+  display: flex;
+  align-items: center;
+}
+
+.left {
+  gap: 24px;
+  min-width: 0;
+}
+
+.right {
+  gap: 14px;
+}
+
+.logo {
+  width: 38px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1.5px dashed #b9b5aa;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.search svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.search input {
+  width: 280px;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  font: 400 14px/18px var(--mk-montserrat), system-ui, sans-serif;
+  color: var(--ink);
+  outline: none;
+  text-overflow: ellipsis;
+}
+
+.search input::placeholder {
+  color: #8c8980;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a8d8c8 0%, #5e6b5f 100%);
+  flex-shrink: 0;
+}
+
+.name {
+  font-size: 16.5px;
+  line-height: 22px;
+  font-weight: 500;
+}
+
+.bell {
+  width: 26px;
+  height: 26px;
+  margin-left: 26px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.bell svg {
+  width: 26px;
+  height: 26px;
+  display: block;
+}
+
+/* ── hero ────────────────────────────────────────────────── */
+
+.hero {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+}
+
+.heroText {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 600px;
+}
+
+.headline {
+  margin: 0;
+  font: 600 51px/62px var(--mk-rubik), system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.intro {
+  margin: 0;
+  max-width: 520px;
+  font-size: 13.5px;
+  line-height: 22px;
+}
+
+.count {
+  margin: 0;
+  padding-bottom: 2px;
+  font-size: 16px;
+  line-height: 22px;
+  white-space: nowrap;
+}
+
+.count b {
+  color: var(--red);
+  font-weight: 500;
+}
+
+/* ── filters ─────────────────────────────────────────────── */
+
+.filters {
+  margin-top: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px 10px;
+}
+
+.subjects,
+.refine {
+  display: flex;
+  gap: 10px;
+}
+
+.chip {
+  height: 37px;
+  padding: 0 18px;
+  border-radius: 19px;
+  border: 1px solid var(--line);
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  font: 500 13.5px/18px var(--mk-montserrat), system-ui, sans-serif;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+
+.chip:hover {
+  border-color: #b9b5aa;
+}
+
+.chip.on {
+  background: var(--dark);
+  border-color: var(--dark);
+  color: #fff;
+}
+
+.refine .chip {
+  padding-right: 14px;
+}
+
+.chev {
+  width: 14px;
+  height: 14px;
+}
+
+/* ── grid ────────────────────────────────────────────────── */
+
+.grid {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(432px, 1fr));
+  gap: 56px 32px;
+}
+
+/* ── course card ─────────────────────────────────────────── */
+
+.card {
+  display: flex;
+  gap: 18px;
+  height: var(--fh);
+  min-width: 0;
+  cursor: pointer;
+}
+
+.stack {
+  position: relative;
+  width: var(--sw);
+  height: var(--fh);
+  flex-shrink: 0;
+  transition: width 320ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.front,
+.mid,
+.back {
+  position: absolute;
+  border-radius: 2px;
+  transition: transform 320ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.front {
+  left: 0;
+  top: 0;
+  width: var(--fw);
+  height: var(--fh);
+  box-shadow: var(--front-shadow);
+}
+
+.mid {
+  left: var(--ml);
+  top: var(--mt);
+  width: var(--mw);
+  height: var(--mh);
+  box-shadow: var(--mid-shadow);
+}
+
+.back {
+  left: var(--bl);
+  top: var(--bt);
+  width: var(--bw);
+  height: var(--bh);
+  box-shadow: var(--back-shadow);
+}
+
+@media (hover: hover) and (min-width: 600px) {
+  .card:hover .stack {
+    width: var(--swh);
+  }
+  .card:hover .mid {
+    transform: translateX(var(--mdx));
+  }
+  .card:hover .back {
+    transform: translateX(var(--bdx));
+  }
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 26px;
+  padding-bottom: 14px;
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.title {
+  margin: 0;
+  font: 700 28px/32px var(--mk-rubik), system-ui, sans-serif;
+  letter-spacing: -0.025em;
+  color: #000;
+}
+
+.last {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.badge {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.sub {
+  margin: 0;
+  font: 500 16px/22px var(--mk-rubik), system-ui, sans-serif;
+  color: var(--sub);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pair {
+  display: flex;
+  gap: 18px;
+}
+
+.stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 500 16px/20px var(--mk-rubik), system-ui, sans-serif;
+  color: var(--stat);
+  white-space: nowrap;
+}
+
+.stat svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  fill: var(--stat-icon);
+  filter: drop-shadow(0 1px 1px #3c372826);
+}
+
+/* ── 768: one card a row at the sketch's own width ───────── */
+
+@media (max-width: 975px) {
+  .grid {
+    grid-template-columns: minmax(0, 504px);
+    row-gap: 40px;
+  }
+  .heroText {
+    max-width: 560px;
+  }
+  .intro {
+    max-width: 440px;
+  }
+}
+
+/* ── 390: the phone ──────────────────────────────────────── */
+
+@media (max-width: 599px) {
+  .page {
+    --fw: 91px;
+    --fh: 132px;
+    --mw: 82px;
+    --mh: 118px;
+    --mt: 12px;
+    --ml: 29px;
+    --bw: 70px;
+    --bh: 101px;
+    --bt: 28px;
+    --bl: 52px;
+    --sw: 122px;
+    --front-shadow: #3c372857 -9px 15px 24px, #3c372833 0 2px 6px, #1e1e2433 2px 0 6px;
+    --mid-shadow: #3c37284d -4px 8px 12px, #1e1e2433 2px 0 6px;
+    --back-shadow: #3c37284d -4px 8px 12px;
+  }
+  .wrap {
+    padding: 0 16px 40px;
+  }
+  .left {
+    gap: 16px;
+  }
+  .search input {
+    width: 170px;
+  }
+  .name {
+    display: none;
+  }
+  .avatar {
+    display: none;
+  }
+  .bell {
+    margin-left: 0;
+  }
+  .hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .heroText {
+    gap: 12px;
+  }
+  .headline {
+    font-size: 34px;
+    line-height: 40px;
+  }
+  .filters {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .subjects {
+    max-width: calc(100% + 16px);
+    margin-right: -16px;
+    padding-right: 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .subjects::-webkit-scrollbar {
+    display: none;
+  }
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 32px;
+  }
+  .card {
+    gap: 14px;
+  }
+  .text {
+    gap: 14px;
+    padding-bottom: 0;
+  }
+}
