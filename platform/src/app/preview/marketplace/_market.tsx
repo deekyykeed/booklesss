@@ -12,7 +12,8 @@ type Course = {
   verified: boolean;
   videos: number;
   time: string;
-  students: number;
+  /** how long since a video was last added, shown short: 2d, 1w */
+  updated: string;
   /** front, middle, back: the three preview videos, as gradients until there are stills */
   covers: [string, string, string];
 };
@@ -21,12 +22,12 @@ const g = (a: string, b: string, c?: string) =>
   c ? `linear-gradient(170deg, ${a} 0%, ${b} 55%, ${c} 100%)` : `linear-gradient(170deg, ${a} 0%, ${b} 100%)`;
 
 const COURSES: Course[] = [
-  { title: ["Corporate", "Finance"], sub: "Valuation, capital and risk.", subject: "Finance", verified: true, videos: 45, time: "6h 20m", students: 28, covers: [g("#2F5A3E", "#1C3826", "#0F2016"), g("#A23A1C", "#5E1A0E"), g("#3A6390", "#1C3456")] },
-  { title: ["Treasury", "Management"], sub: "Cash, funding and risk.", subject: "Finance", verified: true, videos: 52, time: "7h 05m", students: 19, covers: [g("#2E4A7A", "#1B2D52", "#101A33"), g("#C9A55A", "#7A5A22"), g("#2E5560", "#132A30")] },
-  { title: ["Strategic", "Management"], sub: "How firms compete.", subject: "Business", verified: true, videos: 38, time: "4h 50m", students: 41, covers: [g("#8E2A22", "#5E1A12", "#3A0E08"), g("#262E44", "#151A28"), g("#C0533C", "#7A2A1C")] },
-  { title: ["Principles of", "Economics"], sub: "Markets, prices and policy.", subject: "Economics", verified: true, videos: 64, time: "8h 15m", students: 57, covers: [g("#8BA36A", "#5E7A46", "#3F5630"), g("#A23A1C", "#5E1A0E"), g("#2E5560", "#132A30")] },
-  { title: ["Business", "Administration"], sub: "How organisations are run.", subject: "Business", verified: false, videos: 31, time: "3h 40m", students: 12, covers: [g("#5B3A5E", "#3E2541", "#24142A"), g("#D8C39A", "#A8895A"), g("#28402F", "#14241A")] },
-  { title: ["Financial", "Accounting"], sub: "Records and statements.", subject: "Accounting", verified: false, videos: 27, time: "3h 10m", students: 9, covers: [g("#3A6390", "#264870", "#1C3456"), g("#B33A33", "#7A1F1C"), g("#2F5A3E", "#0F2016")] },
+  { title: ["Corporate", "Finance"], sub: "Valuation, capital and risk.", subject: "Finance", verified: true, videos: 45, time: "6h 20m", updated: "2d", covers: [g("#2F5A3E", "#1C3826", "#0F2016"), g("#A23A1C", "#5E1A0E"), g("#3A6390", "#1C3456")] },
+  { title: ["Treasury", "Management"], sub: "Cash, funding and risk.", subject: "Finance", verified: true, videos: 52, time: "7h 05m", updated: "5d", covers: [g("#2E4A7A", "#1B2D52", "#101A33"), g("#C9A55A", "#7A5A22"), g("#2E5560", "#132A30")] },
+  { title: ["Strategic", "Management"], sub: "How firms compete.", subject: "Business", verified: true, videos: 38, time: "4h 50m", updated: "1w", covers: [g("#8E2A22", "#5E1A12", "#3A0E08"), g("#262E44", "#151A28"), g("#C0533C", "#7A2A1C")] },
+  { title: ["Principles of", "Economics"], sub: "Markets, prices and policy.", subject: "Economics", verified: true, videos: 64, time: "8h 15m", updated: "3d", covers: [g("#8BA36A", "#5E7A46", "#3F5630"), g("#A23A1C", "#5E1A0E"), g("#2E5560", "#132A30")] },
+  { title: ["Business", "Administration"], sub: "How organisations are run.", subject: "Business", verified: false, videos: 31, time: "3h 40m", updated: "2w", covers: [g("#5B3A5E", "#3E2541", "#24142A"), g("#D8C39A", "#A8895A"), g("#28402F", "#14241A")] },
+  { title: ["Financial", "Accounting"], sub: "Records and statements.", subject: "Accounting", verified: false, videos: 27, time: "3h 10m", updated: "4d", covers: [g("#3A6390", "#264870", "#1C3456"), g("#B33A33", "#7A1F1C"), g("#2F5A3E", "#0F2016")] },
 ];
 
 const SUBJECTS: ("All" | Subject)[] = ["All", "Finance", "Business", "Economics", "Accounting"];
@@ -42,10 +43,9 @@ const Clock = () => (
     <path fillRule="evenodd" clipRule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10M12 7.25a.75.75 0 0 1 .75.75v3.69l2.28 2.28a.75.75 0 1 1-1.06 1.06l-2.5-2.5a.75.75 0 0 1-.22-.53V8a.75.75 0 0 1 .75-.75" />
   </svg>
 );
-const User = () => (
+const Refresh = () => (
   <svg viewBox="0 0 24 24" aria-hidden>
-    <circle cx="12" cy="6" r="4" />
-    <path d="M20 17.5c0 2.485 0 4.5-8 4.5s-8-2.015-8-4.5S7.582 13 12 13s8 2.015 8 4.5" />
+    <path d="M12.079 2.25c-4.794 0-8.734 3.663-9.118 8.333H2a.75.75 0 0 0-.528 1.283l1.68 1.666a.75.75 0 0 0 1.056 0l1.68-1.666a.75.75 0 0 0-.528-1.283h-.893c.38-3.831 3.638-6.833 7.612-6.833a7.66 7.66 0 0 1 6.537 3.643a.75.75 0 1 0 1.277-.786A9.16 9.16 0 0 0 12.08 2.25m8.761 8.217a.75.75 0 0 0-1.054 0L18.1 12.133a.75.75 0 0 0 .527 1.284h.899c-.382 3.83-3.651 6.833-7.644 6.833a7.7 7.7 0 0 1-6.565-3.644a.75.75 0 1 0-1.277.788a9.2 9.2 0 0 0 7.842 4.356c4.808 0 8.765-3.66 9.15-8.333H22a.75.75 0 0 0 .527-1.284z" />
   </svg>
 );
 const Verified = () => (
@@ -90,7 +90,7 @@ function CourseCard({ c }: { c: Course }) {
             <span className={m.stat} title="Videos"><Play />{c.videos}</span>
             <span className={m.stat} title="Total time"><Clock />{c.time}</span>
           </div>
-          <span className={m.stat} title="Students"><User />{c.students}</span>
+          <span className={m.stat} title="Last updated"><Refresh />{c.updated}</span>
         </div>
       </div>
     </article>
