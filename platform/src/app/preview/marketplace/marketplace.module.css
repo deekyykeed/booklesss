@@ -166,7 +166,7 @@
 
 .headline {
   margin: 0;
-  font: 600 51px/62px var(--mk-rubik), system-ui, sans-serif;
+  font: 600 51px/62px var(--mk-urbanist), system-ui, sans-serif;
   letter-spacing: -0.02em;
 }
 
@@ -331,8 +331,8 @@
 
 .title {
   margin: 0;
-  font: 700 28px/32px var(--mk-rubik), system-ui, sans-serif;
-  letter-spacing: -0.025em;
+  font: 700 28px/32px var(--mk-urbanist), system-ui, sans-serif;
+  letter-spacing: -0.02em;
   color: #000;
 }
 
@@ -351,7 +351,7 @@
 
 .sub {
   margin: 0;
-  font: 500 16px/22px var(--mk-rubik), system-ui, sans-serif;
+  font: 500 16px/22px var(--mk-urbanist), system-ui, sans-serif;
   color: var(--sub);
   white-space: nowrap;
   overflow: hidden;
@@ -373,7 +373,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font: 500 16px/20px var(--mk-rubik), system-ui, sans-serif;
+  font: 500 16px/20px var(--mk-urbanist), system-ui, sans-serif;
   color: var(--stat);
   white-space: nowrap;
 }
@@ -383,7 +383,7 @@
   height: 18px;
   flex-shrink: 0;
   fill: var(--stat-icon);
-  filter: drop-shadow(0 1px 1px #3c372826);
+  filter: drop-shadow(0 2px 1px #3c372826);
 }
 
 /* ── 768: one card a row at the sketch's own width ───────── */

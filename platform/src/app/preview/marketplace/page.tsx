@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Montserrat, Rubik } from "next/font/google";
+import { Montserrat, Urbanist } from "next/font/google";
 import { Marketplace } from "./_market";
 
 /* THE LIBRARY MARKETPLACE (owner, 2026-10-22).
@@ -14,11 +14,14 @@ import { Marketplace } from "./_market";
  * invented, and two of the six courses (Business Administration, Financial
  * Accounting) are not built. Not indexed, not linked from anywhere. */
 
-const rubik = Rubik({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--mk-rubik" });
+/* Urbanist, the face the /preview CRM screens use (owner, 2026-10-22: "im
+ * keeping urbanist"). It replaced Rubik at the same weights: 700 titles, 600
+ * headline, 500 subtitles and stats. */
+const urbanist = Urbanist({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--mk-urbanist" });
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["400", "500"], variable: "--mk-montserrat" });
 
 export const metadata: Metadata = { title: "Marketplace preview", robots: { index: false, follow: false } };
 
 export default function MarketplacePreview() {
-  return <Marketplace className={`${rubik.variable} ${montserrat.variable}`} />;
+  return <Marketplace className={`${urbanist.variable} ${montserrat.variable}`} />;
 }
