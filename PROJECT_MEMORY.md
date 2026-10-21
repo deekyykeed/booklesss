@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-10-20 (session 71)
+**Last updated:** 2026-10-22 (session 72)
 
 ---
 
@@ -92,6 +92,23 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
+**From session 72 (2026-10-20→22, the Dribbble CRM shots rebuilt in Paper and
+on the phone, then converted to Booklesss course folders of videos. Linear
+NOT reachable: `linear-server` still needs its one-time OAuth.)**
+
+- [ ] **Look at the three preview pages on a phone** — none was ever seen
+      rendered by the session (no browser connected); only HTML and CSS were
+      verified live. booklesss.app/preview (the CRM as given),
+      /preview/booklesss (converted), /preview/booklesss/cards (7 card
+      versions with reasons). Logo/wordmark flips `?theme=light`.
+- [ ] **Owner to pick a course-card version** (or a mix) from /cards, then it
+      gets built into the real marketplace and the /preview folder deleted.
+- [ ] **Avatar vs the 59px top-left corner** on the preview cards: the corner
+      now curves close round the avatar slot; nudge it in if it reads tight.
+- [ ] **Paper is behind the live preview**: the 390 boards have no squircles
+      (Paper has no corner-shape) and there are no Paper boards for the
+      Booklesss conversion or the 7 card versions.
+
 **From session 71 (2026-10-19, the marketplace course card settled on the
 live site and five pins plus the old course card built in Paper. Linear NOT
 reachable: `linear-server` still needs its one-time OAuth, so nothing below
@@ -110,8 +127,8 @@ has a ticket.)**
       track, the creators strip, and none of the two-line title / 3 stats.
       Only the shell 8R8-0 lost the creators strip.
 - [ ] **Creators strip is still on the live marketplace** (invented names).
-- [ ] **Course-card variations** ("try to carry it a bunch of different
-      ways") were asked for on 2026-10-19 and never started.
+- [x] ~~**Course-card variations**~~ → ✅ seven built at
+      /preview/booklesss/cards in session 72, each with shows/buttons/why.
 - [ ] Owner wants to iterate on the OLD course card (`home/CourseCard.tsx`)
       in Paper — it is on the Marketplace page as "Old course card
       (home/CourseCard.tsx, as built)", two instances. Satoshi and Ranade are
@@ -1827,6 +1844,37 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-10-20→22 (session 72 — a Dribbble CRM rebuilt, put on the phone, and turned into course folders of videos)
+
+**Done:** Both RonDesignLab "HubSpot CRM" shots (light + dark) rebuilt in
+Paper, file "Booklesss Platform", new page "CRM Dashboard ref (built as
+given)": 1440 dark/light boards, then 390 dark/light boards. The notched card
+corner got its convex roll-off fillets, then made concentric (owner: the
+circle must look like it fits): 46px buttons, 8px ring, inner radius 31.
+Shipped three noindex preview routes: `/preview` (the CRM as given, mobile),
+`/preview/booklesss` (same structure, clients→courses, tasks→videos students
+generated, schedule→today's videos, stats→videos/watched/hours) and
+`/preview/booklesss/cards` (7 course-card versions: Progress, Filmstrip, Up
+next, Made by students, Topics, Make the next one, On this phone — each with
+what it shows, its buttons, and why). Squircles added the app's way
+(`corner-shape: superellipse(2.4)` behind @supports); owner pushed radius
+four times: cards now 59 tl/bl/br, 46 tr (under the notch), schedule 54.
+
+**What Worked:** Dribbble blocks curl/WebFetch (HTTP 202 empty body) but
+`r.jina.ai/<url>` returns the markdown with every cdn.dribbble.com image URL;
+strip the query string for the 1600×1200 originals. Hugeicons paths read
+straight from `platform/node_modules/@hugeicons/core-free-icons/dist/esm/<Name>Icon.js`.
+Paper `x-paper-clone` of finished desktop cards made the mobile boards cheap
+and kept the notch geometry identical. Verifying a deploy by fetching the live
+CSS chunks and grepping for the new rule (`/_next/static/immutable/...`).
+
+**Dead Ends (do not retry):** Recolouring a duplicated Paper artboard by
+setting `color` on the SVG or its parent does NOT change icon strokes — the
+`currentColor` was resolved at write time; set `stroke` on each path node.
+Grepping live CSS under `/_next/static/chunks/` found nothing: production
+serves them from `/_next/static/immutable/chunks/`. Claude-in-Chrome was not
+connected all session, so nothing was screenshotted on a phone.
 
 ### Session 2026-10-19 (session 71 — the course card settled, five pins and the old card in Paper)
 
