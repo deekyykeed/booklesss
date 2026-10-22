@@ -195,10 +195,11 @@
 .title {
   margin: 0;
   color: var(--ink);
+  font-family: var(--mk-aveton), var(--mk-rubik), system-ui, sans-serif;
   font-size: 1.6em;
   line-height: 1.25;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-weight: 400;
+  letter-spacing: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
