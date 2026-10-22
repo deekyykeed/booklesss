@@ -7,6 +7,7 @@ import { SETS } from "./sets";
 import m from "./market.module.css";
 
 const SUBJECTS: Subject[] = ["Finance", "Business", "Economics"];
+const { Card } = SETS[0];
 const SAVED_KEY = "booklesss:market-saved:v1";
 
 type Sort = "newest" | "shortest" | "most-videos" | "top-rated";
@@ -133,48 +134,40 @@ export function Market({ className }: { className: string }) {
           {active ? ` · ${active} ${active === 1 ? "filter" : "filters"} on` : ""}
         </p>
 
-        {/* the featured strip: every featured course, full-bleed, each drawn
-            by a different set so the strip is also a tour of the designs */}
+        {/* the featured strip: the featured courses, full-bleed, in a row */}
         {featured.length > 0 && (
           <section className={m.set} aria-label="Featured">
             <div className={m.setHead}>
               <h2 className={m.setTitle}>Featured</h2>
-              <p className={m.setFrom}>Full-bleed covers, one per design</p>
             </div>
             <div className={m.row}>
-              {featured.map((course, i) => {
-                const set = SETS[i % SETS.length];
-                return (
-                  <div key={course.slug} className={m.slot} style={{ "--w": `${set.width}px` } as React.CSSProperties}>
-                    <set.Card course={course} index={i} featured />
-                  </div>
-                );
-              })}
+              {featured.map((course, i) => (
+                <div key={course.slug} className={m.slot}>
+                  <Card course={course} index={i} featured />
+                </div>
+              ))}
             </div>
           </section>
         )}
 
-        {SETS.map((set, i) => (
-          <section key={set.id} className={m.set} aria-label={set.name} style={{ "--w": `${set.width}px` } as React.CSSProperties}>
-            <div className={m.setHead}>
-              <h2 className={m.setTitle}>
-                <span className={m.setNo}>{String(i + 1).padStart(2, "0")}</span> {set.name}
-              </h2>
-              <p className={m.setFrom}>{set.from}</p>
+        {/* every course that passes the filters, as a grid of small cards;
+            a featured one keeps its full-bleed cover in the grid too */}
+        <section className={m.set} aria-label="All courses">
+          <div className={m.setHead}>
+            <h2 className={m.setTitle}>{subject ?? "All courses"}</h2>
+          </div>
+          {visible.length ? (
+            <div className={m.grid}>
+              {visible.map((course, index) => (
+                <div key={course.slug} className={m.cell}>
+                  <Card course={course} index={index} featured={!!course.featured} />
+                </div>
+              ))}
             </div>
-            {visible.length ? (
-              <div className={m.row}>
-                {visible.map((course, index) => (
-                  <div key={course.slug} className={m.slot}>
-                    <set.Card course={course} index={index} featured={!!course.featured} />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className={m.empty}>Nothing here with these filters.</p>
-            )}
-          </section>
-        ))}
+          ) : (
+            <p className={m.empty}>Nothing here with these filters.</p>
+          )}
+        </section>
 
         {open && (
           <div className={m.scrim} onClick={() => setOpen(false)}>

@@ -17,10 +17,16 @@ export type Course = {
     name: string;
     /** "@mwila" */
     handle: string;
-    /** an id in /public/avatars (the Kameleon set) */
+    /** an id in /public/avatars (the Kameleon set), kept as the offline fallback */
     avatar: string;
+    /** the creator's portrait, a real picture like the reference's (owner:
+     *  "the profile pic stays"): /preview/market/people/<slug>.webp */
+    photo: string;
     verified: boolean;
   };
+  /** the card's cover art, an abstract image like the reference's:
+   *  /preview/market/covers/<slug>.webp */
+  cover: string;
   videos: number;
   minutes: number;
   rating: number;

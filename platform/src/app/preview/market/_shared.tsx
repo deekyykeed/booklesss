@@ -125,9 +125,24 @@ export function Verified({ size = 18, ring, className, style }: { size?: number;
   );
 }
 
-/** A creator's picture: the Kameleon badge from /public/avatars. */
+/** A creator's picture: their portrait, falling back to the Kameleon badge
+ *  if the file is missing. `size` is only the intrinsic hint; the set sizes
+ *  it in CSS. */
 export function Avatar({ course, size = 56, className, style }: { course: Course; size?: number; className?: string; style?: CSSProperties }) {
-  return <img src={`/avatars/${course.creator.avatar}.svg`} alt="" width={size} height={size} className={className} style={{ display: "block", borderRadius: "50%", ...style }} />;
+  return (
+    <img
+      src={course.creator.photo}
+      alt=""
+      width={size}
+      height={size}
+      className={className}
+      style={{ display: "block", borderRadius: "50%", objectFit: "cover", ...style }}
+      onError={(e) => {
+        const img = e.currentTarget;
+        if (!img.src.endsWith(".svg")) img.src = `/avatars/${course.creator.avatar}.svg`;
+      }}
+    />
+  );
 }
 
 /* ── formatters ─────────────────────────────────────────────── */
@@ -156,7 +171,8 @@ const c = (
   title,
   subject,
   blurb,
-  creator: { name, handle: "@" + name.split(" ")[0].toLowerCase(), avatar, verified },
+  creator: { name, handle: "@" + name.split(" ")[0].toLowerCase(), avatar, photo: `/preview/market/people/${slug}.webp`, verified },
+  cover: `/preview/market/covers/${slug}.webp`,
   videos,
   minutes,
   rating,

@@ -13,7 +13,7 @@
   min-height: 100vh;
   background: var(--bg);
   color: var(--ink);
-  font-family: var(--mk-inter), system-ui, sans-serif;
+  font-family: var(--mk-rubik), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -66,7 +66,7 @@
   background: transparent;
   outline: none;
   color: var(--ink);
-  font: 500 16px/22px var(--mk-inter), system-ui, sans-serif;
+  font: 500 16px/22px var(--mk-rubik), system-ui, sans-serif;
 }
 
 .search input::placeholder {
@@ -134,7 +134,7 @@
     #00000099 -1px 0 1px;
   color: #97989a;
   text-shadow: #00000073 0 1px 1px;
-  font: 500 15px/20px var(--mk-inter), system-ui, sans-serif;
+  font: 500 15px/20px var(--mk-rubik), system-ui, sans-serif;
   letter-spacing: 0.02em;
   cursor: pointer;
   white-space: nowrap;
@@ -227,7 +227,7 @@
   border-radius: 9px;
   background: #1d9bf0;
   color: #fff;
-  font: 600 11px/18px var(--mk-inter), system-ui, sans-serif;
+  font: 600 11px/18px var(--mk-rubik), system-ui, sans-serif;
   box-shadow: 0 0 0 2px var(--bg);
 }
 
@@ -284,11 +284,36 @@
   display: none;
 }
 
-/* each card gets the set's width, capped to the phone */
+/* THE CARD IS THE PIN'S OWN SIZE. The Free UI Cards pin draws its card 246px
+   wide, and the owner's reaction to a 300px version was "ridiculously big",
+   so 246 is the ceiling. The card is drawn in em off a container query, so a
+   narrower cell (two across on a phone) scales the whole card down rather
+   than reflowing it. */
+.slot,
+.cell {
+  container-type: inline-size;
+}
+
 .slot {
   flex: 0 0 auto;
-  width: min(var(--w), calc(100vw - 2 * var(--edge)));
+  width: min(246px, calc(100vw - 2 * var(--edge)));
   scroll-snap-align: start;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 246px);
+  justify-content: start;
+  gap: 16px;
+  padding: 6px var(--edge) 8px;
+}
+
+/* a phone: two across, the card scales to the cell */
+@media (max-width: 559px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
 }
 
 .empty {
@@ -366,7 +391,7 @@
   border-radius: 10px;
   background: #212224;
   color: #c8c9cb;
-  font: 500 14px/38px var(--mk-inter), system-ui, sans-serif;
+  font: 500 14px/38px var(--mk-rubik), system-ui, sans-serif;
   cursor: pointer;
 }
 
@@ -437,7 +462,7 @@
   height: 46px;
   border: 0;
   border-radius: 12px;
-  font: 600 15px/46px var(--mk-inter), system-ui, sans-serif;
+  font: 600 15px/46px var(--mk-rubik), system-ui, sans-serif;
   cursor: pointer;
 }
 

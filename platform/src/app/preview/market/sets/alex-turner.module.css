@@ -1,241 +1,314 @@
-/* Alex Turner card: the Paper board's numbers, 300px wide. Three variants
-   set the surfaces; the layout never changes between them. */
+/* The Free UI Cards card, measured off the pin at its own 246px width. Every
+   length is em: 1em = 1/24.6 of the cell, so a 246px cell draws the card at
+   exactly the pin's pixels (10px per em) and a 170px phone cell draws the
+   same card at 6.9px per em. Nothing here is a fixed px. */
 
 .card {
+  font-size: 4.065cqi;
+  position: relative;
+  isolation: isolate;
   box-sizing: border-box;
   width: 100%;
-  padding: 17px;
-  border-radius: 34px;
+  padding: 1em 1em 1.2em;
+  border-radius: 2.8em;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  font-family: var(--mk-inter), system-ui, sans-serif;
+  overflow: hidden;
+  font-family: var(--mk-rubik), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-.dark {
-  background: #1e1e1e;
-  box-shadow: #00000030 0 96px 72px -36px;
-  --ink: #fff;
-  --sub: #8a8a8a;
-  --label: #d0d0d0;
-  --chip-bg: #ffffff2b;
-  --chip-ink: #fff;
-  --chip-ring: transparent;
-  --save-bg: #1c1c1c;
-  --save-ring: #3a3a3a;
-  --save-ink: #e6e6e6;
-  --stats-ring: transparent;
-  --cta: linear-gradient(180deg, #62a2fa 0%, #3b78ec 100%);
-  --cta-ink: #fff;
-  --cta-ring: transparent;
+@supports not (font-size: 1cqi) {
+  .card {
+    font-size: 10px;
+  }
 }
+
+/* ── the three surfaces ─────────────────────────────────────── */
 
 .light {
   background: #fff;
-  box-shadow:
-    #e6e6e6 0 0 0 1px,
-    #0000001a 0 72px 60px -36px;
-  --ink: #1f1f1f;
-  --sub: #a3a3a3;
-  --label: #555;
+  box-shadow: #00000024 0 1.2em 2.8em -1.2em;
+  --ink: #1a1a1a;
+  --sub: #8e8e93;
   --chip-bg: #fff;
   --chip-ink: #1a1a1a;
-  --chip-ring: #ececec;
+  --chip-shadow: #0000001f 0 0.2em 0.8em;
   --save-bg: #fff;
-  --save-ring: #ececec;
-  --save-ink: #4a4a4a;
-  --stats-ring: transparent;
-  --cta: linear-gradient(180deg, #fff 0%, #f3f3f3 100%);
-  --cta-ink: #222;
-  --cta-ring: #e3e3e3;
+  --save-ring: #e6e6e6;
+  --save-ink: #5a5a5e;
+  --stats-ring: #ededed;
+  --cta: #111;
+  --cta-ink: #fff;
 }
 
-/* Jordan Blake: the cover fills the whole card and everything sits on it */
+.dark {
+  background: #1c1c1e;
+  box-shadow: #00000059 0 1.2em 2.8em -1.2em;
+  --ink: #fff;
+  --sub: #8e8e93;
+  --chip-bg: #ffffff2b;
+  --chip-ink: #fff;
+  --chip-shadow: none;
+  --save-bg: #2a2a2c;
+  --save-ring: #3a3a3c;
+  --save-ink: #e6e6e6;
+  --stats-ring: #343436;
+  --cta: linear-gradient(180deg, #62a2fa 0%, #3b78ec 100%);
+  --cta-ink: #fff;
+}
+
+/* Jordan Blake: the cover fills the card, everything sits on it */
 .bleed {
-  background-image: var(--bleed);
-  box-shadow: #00000030 0 96px 72px -36px;
+  background: #2a1a2e;
+  box-shadow: #00000059 0 1.2em 2.8em -1.2em;
   --ink: #fff;
   --sub: #ffffffb8;
-  --label: #ffffffcc;
   --chip-bg: #ffffff2e;
   --chip-ink: #fff;
-  --chip-ring: transparent;
+  --chip-shadow: none;
   --save-bg: #00000040;
   --save-ring: #ffffff33;
   --save-ink: #fff;
-  --stats-ring: #ffffff33;
+  --stats-ring: #ffffff40;
   --cta: #fff;
   --cta-ink: #1a1a1a;
-  --cta-ring: transparent;
-}
-
-.top {
-  position: relative;
-  height: 137px;
-  flex-shrink: 0;
 }
 
 .cover {
-  height: 112px;
-  border-radius: 24px;
-  background-image: var(--cover);
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.bleed .cover {
-  background: transparent;
+.shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, #00000000 45%, #00000094 100%);
+}
+
+/* ── banner, portrait, chip ─────────────────────────────────── */
+
+.top {
+  position: relative;
+  height: 13.5em;
+  flex-shrink: 0;
+}
+
+.banner {
+  display: block;
+  width: 100%;
+  height: 10.4em;
+  border-radius: 2.2em;
+  object-fit: cover;
 }
 
 .avatar {
   position: absolute;
-  left: 14px;
-  top: 72px;
-  width: 65px;
-  height: 65px;
-  background: var(--avatar);
+  left: 0.4em;
+  top: 7.7em;
+  width: 5.4em;
+  height: 5.4em;
+  box-shadow: 0 0 0 0.3em var(--ring, #fff);
+  background: #d9d9de;
 }
 
+.light .avatar {
+  --ring: #fff;
+}
+
+.dark .avatar {
+  --ring: #1c1c1e;
+}
+
+.bleed .avatar {
+  --ring: #f3e7dc;
+}
+
+/* the blue check, bottom-right of the portrait; sizes beat the inline px */
 .badge {
   position: absolute;
-  left: 60px;
-  top: 118px;
+  left: 4.2em;
+  top: 11.4em;
+  width: 1.8em !important;
+  height: 1.8em !important;
+  box-shadow: 0 0 0 0.2em var(--ring, #fff) !important;
+}
+
+.badge svg {
+  width: 100%;
+  height: 100%;
 }
 
 .chip {
   position: absolute;
-  right: 7px;
-  top: 96px;
-  height: 34px;
-  padding: 0 14px 0 12px;
-  border-radius: 17px;
+  right: 0.4em;
+  top: 8.9em;
+  height: 3em;
+  padding: 0 1.2em 0 1em;
+  border-radius: 1.5em;
   background: var(--chip-bg);
-  box-shadow: var(--chip-ring) 0 0 0 1px inset;
+  box-shadow: var(--chip-shadow);
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 0.6em;
   color: var(--chip-ink);
-  font-size: 13px;
-  line-height: 17px;
+  font-size: 1em;
+  line-height: 1;
   font-weight: 600;
+  white-space: nowrap;
 }
 
-.mark {
-  width: 17px;
-  height: 17px;
-  border-radius: 4px;
-  background: var(--chip);
-  display: grid;
-  place-items: center;
+.chip > span:first-child {
+  font-size: 1.2em;
 }
 
-.mark::after {
-  content: "";
-  width: 7px;
-  height: 7px;
-  border-radius: 2px;
-  background: #fff;
+.dot {
+  width: 0.9em;
+  height: 0.9em;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
+
+/* ── title, creator, save ───────────────────────────────────── */
 
 .who {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 55px;
-  padding-left: 10px;
-  gap: 10px;
+  gap: 0.8em;
+  min-height: 4em;
+  padding: 0 0.4em;
 }
 
 .names {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0.3em;
 }
 
 .title {
   margin: 0;
   color: var(--ink);
-  font-size: 18px;
-  line-height: 22px;
-  font-weight: 500;
+  font-size: 1.6em;
+  line-height: 1.25;
+  font-weight: 600;
   letter-spacing: -0.01em;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .by {
   margin: 0;
   color: var(--sub);
-  font-size: 13px;
-  line-height: 17px;
-  font-weight: 500;
+  font-size: 1.2em;
+  line-height: 1.25;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .save {
   flex-shrink: 0;
-  width: 43px;
-  height: 43px;
-  margin-right: 7px;
+  width: 3.2em;
+  height: 3.2em;
   padding: 0;
   border: 0;
   border-radius: 50%;
   background: var(--save-bg);
-  box-shadow: var(--save-ring) 0 0 0 1px inset;
+  box-shadow: var(--save-ring) 0 0 0 0.1em inset;
   color: var(--save-ink);
   display: grid;
   place-items: center;
   cursor: pointer;
 }
 
+.save svg {
+  width: 1.5em;
+  height: 1.5em;
+}
+
 .save[aria-pressed="true"] {
   color: #3b82f6;
 }
 
+/* ── stats ──────────────────────────────────────────────────── */
+
 .stats {
-  height: 52px;
-  padding: 0 10px 0 12px;
-  border-radius: 17px;
-  box-shadow: var(--stats-ring) 0 0 0 1px inset;
+  margin-top: 1.4em;
+  height: 5.4em;
+  padding: 0 0.6em;
+  border-radius: 1.4em;
+  box-shadow: var(--stats-ring) 0 0 0 0.1em inset;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .stat {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  column-gap: 0.5em;
+  row-gap: 0.25em;
   align-items: center;
-  gap: 11px;
 }
 
-.stat div {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+.stat svg {
+  grid-row: 1 / 3;
+  width: 1.4em;
+  height: 1.4em;
+}
+
+.star {
+  color: #f5b50a;
+}
+
+.play {
+  color: #3b82f6;
+}
+
+.clock {
+  color: #a35bf0;
 }
 
 .stat b {
   color: var(--ink);
-  font-size: 13px;
-  line-height: 16px;
+  font-size: 1.1em;
+  line-height: 1.1;
   font-weight: 600;
   white-space: nowrap;
 }
 
 .stat span {
-  color: var(--label);
-  font-size: 12px;
-  line-height: 14px;
-  font-weight: 500;
+  color: var(--sub);
+  font-size: 1em;
+  line-height: 1.1;
+  font-weight: 400;
 }
 
+.bleed .stat span {
+  color: #ffffffcc;
+}
+
+/* ── button ─────────────────────────────────────────────────── */
+
 .cta {
-  height: 43px;
+  margin-top: 1.4em;
+  height: 3.6em;
   border: 0;
-  border-radius: 22px;
+  border-radius: 1.8em;
   background: var(--cta);
-  box-shadow: var(--cta-ring) 0 0 0 1px inset;
   color: var(--cta-ink);
-  font: 500 13px/17px var(--mk-inter), system-ui, sans-serif;
+  font-family: inherit;
+  font-size: 1.2em;
+  font-weight: 600;
   cursor: pointer;
 }

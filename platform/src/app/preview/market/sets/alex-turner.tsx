@@ -1,41 +1,42 @@
 "use client";
 
-import type { CSSProperties } from "react";
 import { Avatar, Clock, Play, SaveButton, Star, Verified, fmtTime } from "../_shared";
 import type { CardSet, CardProps, Subject } from "../_types";
 import s from "./alex-turner.module.css";
 
-/* The Liam O'Connor / Alex Turner profile cards (Pinterest, Spline's free UI
-   cards): a 34px-radius card with a cover image, the avatar breaking its
-   bottom edge, a company chip, name and role beside a round bookmark, three
-   stats and a full-width button. Three variants, as the pins have them: dark,
-   light, and Jordan Blake's full-bleed cover, which is the FEATURED course
-   (owner: "the one covered with the image will be a featured course"). Every
-   measure is the Paper board
-   "Course card · dark + light" on the Course UI page (300px card). */
+/* The Free UI Cards pin (Spline): a 246px card with a banner image, the
+   creator's portrait breaking its bottom edge, a chip over the banner, the
+   title and creator beside a round bookmark, three stats and a full-width
+   button. Three variants, as the pins have them: light, dark, and Jordan
+   Blake's full-bleed cover, which is the FEATURED course (owner: "the one
+   covered with the image will be a featured course").
 
-const CHIP: Record<Subject, string> = { Finance: "#3E82F7", Business: "#F5A623", Economics: "#34C77B" };
+   Every measure is the pin's own, in em off the cell width (see the CSS), so
+   the card is the pin's 246px on a desktop and shrinks whole on a phone —
+   the owner's call after a 300px version: "ridiculously big... keep them
+   sized small, properly". */
+
+const DOT: Record<Subject, string> = { Finance: "#3E82F7", Business: "#F5A623", Economics: "#34C77B" };
 
 function Card({ course, index, featured }: CardProps) {
-  // featured = Jordan Blake's full-bleed card; the rest alternate dark / light
-  const variant = featured ? "bleed" : index % 2 ? "light" : "dark";
-  const [light, dark] = course.tone;
-  const ring = variant === "light" ? "#FFFFFF" : variant === "dark" ? "#1E1E1E" : dark;
-  const vars = {
-    "--cover": `linear-gradient(160deg, ${light} 0%, ${dark} 100%)`,
-    "--bleed": `linear-gradient(135deg, ${light} 0%, ${dark} 70%, #0E0F11 100%)`,
-    "--avatar": light,
-    "--chip": CHIP[course.subject],
-  } as CSSProperties;
+  const variant = featured ? "bleed" : index % 2 ? "dark" : "light";
+  const ring = variant === "light" ? "#FFFFFF" : variant === "dark" ? "#1C1C1E" : "#FFFFFF";
 
   return (
-    <article className={`${s.card} ${s[variant]}`} style={vars}>
+    <article className={`${s.card} ${s[variant]}`}>
+      {featured && (
+        <>
+          <img className={s.cover} src={course.cover} alt="" />
+          <span className={s.shade} aria-hidden />
+        </>
+      )}
+
       <div className={s.top}>
-        <div className={s.cover} />
-        <Avatar course={course} size={65} className={s.avatar} />
-        {course.creator.verified && <Verified size={22} ring={ring} className={s.badge} />}
+        {!featured && <img className={s.banner} src={course.cover} alt="" />}
+        <Avatar course={course} size={54} className={s.avatar} />
+        {course.creator.verified && <Verified size={18} ring={ring} className={s.badge} />}
         <span className={s.chip}>
-          <span className={s.mark} />
+          <span className={s.dot} style={{ background: DOT[course.subject] }} />
           {course.subject}
         </span>
       </div>
@@ -45,30 +46,24 @@ function Card({ course, index, featured }: CardProps) {
           <h3 className={s.title}>{course.title}</h3>
           <p className={s.by}>{course.creator.name}</p>
         </div>
-        <SaveButton course={course} className={s.save} size={18} />
+        <SaveButton course={course} className={s.save} size={14} />
       </div>
 
       <div className={s.stats}>
         <div className={s.stat}>
-          <Star size={19} style={{ color: "#F5B50A" }} />
-          <div>
-            <b>{course.rating.toFixed(1)}</b>
-            <span>Rating</span>
-          </div>
+          <Star size={14} className={s.star} />
+          <b>{course.rating.toFixed(1)}</b>
+          <span>Rating</span>
         </div>
         <div className={s.stat}>
-          <Play size={19} style={{ color: "#3B82F6" }} />
-          <div>
-            <b>{course.videos}</b>
-            <span>Videos</span>
-          </div>
+          <Play size={14} className={s.play} />
+          <b>{course.videos}</b>
+          <span>Videos</span>
         </div>
         <div className={s.stat}>
-          <Clock size={19} style={{ color: "#A35BF0" }} />
-          <div>
-            <b>{fmtTime(course.minutes)}</b>
-            <span>Time</span>
-          </div>
+          <Clock size={14} className={s.clock} />
+          <b>{fmtTime(course.minutes)}</b>
+          <span>Time</span>
         </div>
       </div>
 
@@ -81,8 +76,8 @@ function Card({ course, index, featured }: CardProps) {
 
 export default {
   id: "alex-turner",
-  name: "Alex Turner",
-  from: "Pinterest · Liam O'Connor and Alex Turner cards by Spline",
-  width: 300,
+  name: "Free UI Cards",
+  from: "Pinterest · Free UI Cards by Spline",
+  width: 246,
   Card,
 } satisfies CardSet;
