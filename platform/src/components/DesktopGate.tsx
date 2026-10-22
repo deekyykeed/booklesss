@@ -90,6 +90,7 @@ const SKIP = [
   "/preview/marketplace",
   "/preview/categories",
   "/preview/books",
+  "/preview/market",
 ];
 
 /** Exact paths that skip the gate — "/" can't go in SKIP, whose prefix rule
