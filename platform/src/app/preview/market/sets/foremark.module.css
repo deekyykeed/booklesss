@@ -1,0 +1,240 @@
+/* Foremark, ×1.06 of the reference (292 → 310). The cover's pale tint and
+   its two blobs are mixed from the course's light tone, so the card keeps
+   the reference's construction and takes the course's colour. */
+
+.card {
+  --cov: color-mix(in oklab, var(--t0) 22%, #fff);
+  position: relative;
+  width: 100%;
+  padding: 7px 7px 18px;
+  box-sizing: border-box;
+  background: #252525;
+  border-radius: 34px;
+  overflow: hidden;
+  color: #fff;
+  font-family: var(--mk-inter-tight), system-ui, sans-serif;
+}
+
+.cover {
+  position: relative;
+  height: 333px;
+  border-radius: 28px;
+  overflow: hidden;
+  background: linear-gradient(150deg, var(--t0) 0%, color-mix(in oklab, var(--t0) 80%, #fff) 35%, color-mix(in oklab, var(--t0) 45%, #fff) 70%, var(--cov) 100%);
+}
+
+.blobA,
+.blobB {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.blobA {
+  width: 812px;
+  height: 812px;
+  left: -510px;
+  top: -618px;
+  background: radial-gradient(circle at 70% 70%, #fff8f6 0%, color-mix(in oklab, var(--t0) 8%, #fff) 60%, color-mix(in oklab, var(--t0) 12%, #fff) 100%);
+  box-shadow: color-mix(in oklab, var(--t0) 55%, transparent) 4px 8px 22px;
+}
+
+.blobB {
+  width: 852px;
+  height: 852px;
+  left: 167px;
+  top: -76px;
+  background: linear-gradient(200deg, color-mix(in oklab, var(--t0) 14%, #fff) 0%, color-mix(in oklab, var(--t0) 20%, #fff) 40%, color-mix(in oklab, var(--t0) 26%, #fff) 100%);
+  box-shadow: color-mix(in oklab, var(--t0) 35%, transparent) -8px -6px 26px;
+}
+
+.wedge {
+  position: absolute;
+  left: 224px;
+  top: 201px;
+  width: 71px;
+  height: 80px;
+  clip-path: polygon(100% 0%, 4% 47%, 0% 50%, 4% 53%, 100% 100%);
+  background: linear-gradient(200deg, var(--t0) 0%, color-mix(in oklab, var(--t0) 80%, #fff) 60%, color-mix(in oklab, var(--t0) 50%, #fff) 100%);
+}
+
+.save {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: #252525;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.save[aria-pressed="true"] {
+  background: #fff;
+  color: #252525;
+}
+
+/* the tile sits on the cover's lower edge, text beside it on the cover */
+.head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: -93px;
+  padding: 0 10px;
+  position: relative;
+}
+
+.tile {
+  position: relative;
+  flex-shrink: 0;
+  width: 82px;
+  height: 82px;
+  border-radius: 19px;
+  background: linear-gradient(160deg, #2a2a2a 0%, #0e0e0e 100%);
+  box-shadow: #ffffff1f 0 1px 0 inset;
+  display: grid;
+  place-items: center;
+}
+
+.badge {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+}
+
+.who {
+  min-width: 0;
+  padding-top: 2px;
+}
+
+.title {
+  margin: 0;
+  font-size: 19px;
+  line-height: 23px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #111;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.handle {
+  margin: 0;
+  font-size: 13px;
+  line-height: 15px;
+  color: #8a817e;
+}
+
+.pill {
+  margin-top: 8px;
+  height: 30px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 15px;
+  background: #252525;
+  color: #fff;
+  font: 400 14px/17px var(--mk-inter-tight), system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.body {
+  padding: 14px 10px 0;
+}
+
+.bio {
+  margin: 0;
+  max-width: 232px;
+  font-size: 13px;
+  line-height: 17px;
+  color: #dedede;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.stats {
+  display: flex;
+  gap: 18px;
+  margin-top: 14px;
+  font-size: 12px;
+  line-height: 17px;
+  color: #8c8c8c;
+  white-space: nowrap;
+}
+
+.stats b {
+  font-weight: 500;
+  color: #fff;
+}
+
+.link {
+  margin: 14px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 17px;
+}
+
+/* ── featured: the cover fills the card, content at the bottom over a scrim ── */
+
+.featured {
+  min-height: 462px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.fCover {
+  position: absolute;
+  inset: 0;
+  height: auto;
+  border-radius: 0;
+}
+
+.fSave {
+  position: absolute;
+  top: 21px;
+  right: 21px;
+  z-index: 2;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #00000000 30%, #000000ad 68%, #000000de 100%);
+}
+
+.fBody {
+  position: relative;
+  padding: 0 7px 18px;
+}
+
+.featured .head {
+  margin-top: 0;
+}
+
+.fTitle,
+.fHandle {
+  color: #fff;
+}
+
+.fHandle {
+  color: #ffffffa6;
+}
+
+.fPill {
+  background: #f3f3f3;
+  color: #111;
+}
+
+.featured .bio {
+  color: #fff;
+}

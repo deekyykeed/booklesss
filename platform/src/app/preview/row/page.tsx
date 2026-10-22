@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-import { Inter, Rubik } from "next/font/google";
+import { Archivo, Inter, Inter_Tight, Instrument_Sans, Manrope, Poppins, Rubik, Urbanist } from "next/font/google";
+import localFont from "next/font/local";
+import { Rows } from "./_rows";
 import r from "./row.module.css";
 
 /* ONE ROW OF COURSE CARDS (owner, 2026-10-22: "get that live for me to see,
@@ -10,12 +12,27 @@ import r from "./row.module.css";
  * 390". It started as the dark Free UI card, then took the Details button's
  * style for its button and for its own border, and its name and role became
  * "Financial Management" / "Alex Turner". Every value below is Paper's.
- * Only the card and the row: no header, no filters, nothing else yet.
+ * Below it, every other card design in its own row (./_rows.tsx), same
+ * content and same 250px width, so the designs compare like for like.
  *
  * ⚠️ Placeholder content throughout. Not indexed, not linked from anywhere. */
 
 const inter = Inter({ subsets: ["latin"], weight: ["500", "600"], variable: "--row-inter" });
 const rubik = Rubik({ subsets: ["latin"], weight: ["500"], variable: "--row-rubik" });
+
+/* the faces the other card sets are set in, under the names they expect
+   (they were built for /preview/market) */
+const mkInter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--mk-inter" });
+const mkInterTight = Inter_Tight({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--mk-inter-tight" });
+const mkUrbanist = Urbanist({ subsets: ["latin"], weight: ["500", "600", "700", "800"], variable: "--mk-urbanist" });
+const mkInstrument = Instrument_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--mk-instrument" });
+const mkManrope = Manrope({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--mk-manrope" });
+const mkPoppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--mk-poppins" });
+const mkArchivo = Archivo({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--mk-archivo" });
+const mkRubik = Rubik({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--mk-rubik" });
+const mkAveton = localFont({ src: "../market/Aveton-Regular.ttf", weight: "400", variable: "--mk-aveton", fallback: ["system-ui", "sans-serif"] });
+
+const mk = [mkInter, mkInterTight, mkUrbanist, mkInstrument, mkManrope, mkPoppins, mkArchivo, mkRubik, mkAveton].map((f) => f.variable).join(" ");
 
 export const metadata: Metadata = { title: "Course row preview", robots: { index: false, follow: false } };
 
@@ -105,12 +122,13 @@ function Card() {
 
 export default function RowPreview() {
   return (
-    <main className={`${inter.variable} ${rubik.variable} ${r.page}`}>
+    <main className={`${inter.variable} ${rubik.variable} ${mk} ${r.page}`}>
       <div className={r.row}>
         {Array.from({ length: 6 }, (_, i) => (
           <Card key={i} />
         ))}
       </div>
+      <Rows />
     </main>
   );
 }

@@ -1,0 +1,246 @@
+/* Jorixent, ×0.81 of the reference (395 → 320). Every number below is the
+   reference's times 0.81, rounded. */
+
+.card {
+  position: relative;
+  width: 100%;
+  background: #e4e4e4;
+  border-radius: 23px;
+  overflow: hidden;
+  color: #111;
+  font-family: var(--mk-inter-tight), system-ui, sans-serif;
+}
+
+/* the header: the course's light tone with two discs of its dark tone */
+.head {
+  position: relative;
+  height: 224px;
+  background: var(--t0);
+  overflow: hidden;
+}
+
+.discL,
+.discR {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--t1);
+}
+
+.discL {
+  width: 441px;
+  height: 441px;
+  left: -259px;
+  top: 2px;
+}
+
+.discR {
+  width: 421px;
+  height: 421px;
+  left: 139px;
+  top: -204px;
+}
+
+/* the reference has no save; a small round one sits in the header's corner */
+.save {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: #e4e4e4d9;
+  color: #111;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.save[aria-pressed="true"] {
+  background: #111;
+  color: #e4e4e4;
+}
+
+/* the picture breaks the header's bottom edge, centred on it */
+.pic {
+  position: absolute;
+  left: 22px;
+  top: 175px;
+  width: 99px;
+  height: 99px;
+  border-radius: 50%;
+  border: 5px solid #e4e4e4;
+  box-sizing: border-box;
+  background: var(--t1);
+}
+
+.pic img {
+  width: 89px;
+  height: 89px;
+}
+
+.badge {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+}
+
+.pill {
+  position: absolute;
+  right: 23px;
+  top: 248px;
+  height: 35px;
+  padding: 0 28px;
+  border: 0;
+  border-radius: 18px;
+  background: #000;
+  color: #fff;
+  font: 400 13px/16px var(--mk-inter-tight), system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.body {
+  padding: 59px 24px 26px 28px;
+}
+
+.title {
+  margin: 0;
+  font-size: 17px;
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.handle {
+  margin: 1px 0 0;
+  font-size: 13px;
+  line-height: 16px;
+  color: #9a9a9a;
+}
+
+.bio {
+  margin: 12px 0 0;
+  max-width: 220px;
+  font-size: 14px;
+  line-height: 19px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.stats {
+  display: flex;
+  gap: 20px;
+  margin-top: 15px;
+  font-size: 13px;
+  line-height: 16px;
+  color: #9a9a9a;
+  white-space: nowrap;
+}
+
+.stats b {
+  font-weight: 600;
+  color: #111;
+  margin-right: 1px;
+}
+
+.link {
+  margin: 11px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 500;
+}
+
+/* ── featured: the disc art fills the card, text in white over a scrim ── */
+
+.featured {
+  min-height: 452px;
+  background: var(--t0);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.fDiscL,
+.fDiscR {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--t1);
+}
+
+.fDiscL {
+  width: 640px;
+  height: 640px;
+  left: -380px;
+  top: 40px;
+}
+
+.fDiscR {
+  width: 560px;
+  height: 560px;
+  left: 150px;
+  top: -300px;
+}
+
+.fSave {
+  z-index: 2;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #00000000 32%, #000000b8 72%, #000000e0 100%);
+}
+
+.fBody {
+  position: relative;
+  padding: 0 24px 24px 28px;
+}
+
+.fTop {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.fPic {
+  position: relative;
+  left: auto;
+  top: auto;
+  width: 79px;
+  height: 79px;
+  border-color: #0e0f11;
+}
+
+.fPic img {
+  width: 69px;
+  height: 69px;
+}
+
+.fPill {
+  position: static;
+  background: #e4e4e4;
+  color: #111;
+}
+
+.featured .title,
+.featured .bio,
+.featured .link,
+.featured .stats b {
+  color: #fff;
+}
+
+.featured .handle,
+.featured .stats {
+  color: #ffffffa6;
+}
