@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-10-22 (session 72)
+**Last updated:** 2026-11-01 (session 73)
 
 ---
 
@@ -91,6 +91,31 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 73 (2026-10-30→11-01, a wrap start and Apify connected; no
+product work. Linear NOT reachable: `linear-server` still needs its one-time
+OAuth, and the connected "Linear" connector is Khadzika's.)**
+
+- [ ] **This log stops before the evening of 2026-10-22.** Five commits that
+      day are in no session entry: `/preview/categories`, `/preview/books`,
+      `/preview/market` (the dark marketplace), and `/preview/row`, "one row
+      of the final course card". Ask the owner whether a card was picked
+      there; if so, the session-72 "pick a course-card version" item is done.
+- [ ] **Supabase: since 2026-10-30, a NEW table in `public` gets no Data API
+      access without explicit grants.** Existing tables are unaffected. Any new
+      `tools/*.sql` table needs `grant` lines for anon / authenticated /
+      service_role in the same file, or supabase-js returns "permission denied".
+- [ ] **Vercel Hobby team is at 75% of its 10 GB Deployment Storage** (email
+      2026-10-21). Every push deploys. Delete old deployments or go Pro (Pro is
+      already needed to move the repo into the suppliers-inc org).
+- [ ] **GitHub will soon require 2FA on `deekyykeed`** (email 2026-10-29).
+      Pushes, and so deploys, stop if it lapses. Owner to set it up.
+- [ ] **Apify plugin reconnect.** Signed in on 2026-10-30 and worked (Free
+      plan, $5/month, $0 used, cycle resets the 12th). By 11-01 it showed
+      `CONNECT_TIMEOUT` in the same session; check `/mcp` before relying on it.
+- [ ] **Two raw takes wait in `Booklesss Bucket`** (explainer-edit's drop zone):
+      `A001_10241451_D930.mp4` (4.2 GB, 25 Oct) and `brain-budget.mp4` (56 MB,
+      13 Oct). Edit them or clear them.
 
 **From session 72 (2026-10-20→22, the Dribbble CRM shots rebuilt in Paper and
 on the phone, then converted to Booklesss course folders of videos. Linear
@@ -1844,6 +1869,29 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-10-30→11-01 (session 73 — wrap start, Apify connected, no product work)
+
+**Done:** Wrap start: briefing from this doc alone, since the Booklesss Linear
+was signed out. Found two Apify MCP entries pointing at the same
+`https://mcp.apify.com`: the claude.ai plugin `plugin:apify:apify` and a
+hand-added user-level `apify` in `~/.claude.json`. Removed the user-level one
+(`claude mcp remove apify -s user`, backup taken first). The owner signed in to
+the plugin through `/mcp`, and its 15 tools loaded. Read the account: Free
+plan, $5/month usage credit, $0 used, cycle 12 Oct → 11 Nov, 7-day data
+retention, 5 concurrent runs. No repo code changed.
+
+**What Worked:** Proving the server side before blaming it: a bare POST to
+`https://mcp.apify.com` answers 401 with a `WWW-Authenticate` naming OAuth,
+and `/.well-known/oauth-protected-resource` + `oauth-authorization-server`
+both return metadata, so a "not connecting" Apify is a client-side sign-in
+problem. Account balance comes from reading `https://api.apify.com/v2/users/me/limits`
+as an MCP resource on the plugin (`ReadMcpResourceTool`), no actor run needed.
+
+**Dead Ends (do not retry):** The claude.ai "Linear" connector (id
+`5e5a72ff…`) is connected but `get_workspace` returns **Khadzika**; it is not
+the Booklesss tracker, so it was not used. A removed MCP entry stays listed as
+"needs auth" until a new session starts; that is not a failed removal.
 
 ### Session 2026-10-20→22 (session 72 — a Dribbble CRM rebuilt, put on the phone, and turned into course folders of videos)
 
