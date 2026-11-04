@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Urbanist } from "next/font/google";
+import localFont from "next/font/local";
 import { Categories } from "./_categories";
 
 /* COURSES BY CATEGORY (owner, 2026-10-22).
@@ -13,7 +13,7 @@ import { Categories } from "./_categories";
  * ⚠️ Placeholder data throughout: twelve of the eighteen courses are not
  * built, and every count is invented. Not indexed, not linked from anywhere. */
 
-const urbanist = Urbanist({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--cat-urbanist" });
+const urbanist = localFont({ src: "../../../fonts/urbanist.woff2", weight: "100 900", variable: "--cat-urbanist" });
 
 export const metadata: Metadata = { title: "Courses by category preview", robots: { index: false, follow: false } };
 

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Urbanist } from "next/font/google";
+import localFont from "next/font/local";
 import type { ReactNode } from "react";
 import s from "./preview.module.css";
 
@@ -16,9 +16,9 @@ import s from "./preview.module.css";
  * flips to `?theme=light` and back. Not indexed. Delete this folder once the
  * cards are in the real app. */
 
-const urbanist = Urbanist({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
+const urbanist = localFont({
+  src: "../../fonts/urbanist.woff2",
+  weight: "100 900",
   variable: "--font-urbanist",
 });
 

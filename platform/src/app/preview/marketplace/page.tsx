@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Montserrat, Urbanist } from "next/font/google";
+import localFont from "next/font/local";
 import { Marketplace } from "./_market";
 
 /* THE LIBRARY MARKETPLACE (owner, 2026-10-22).
@@ -17,8 +17,8 @@ import { Marketplace } from "./_market";
 /* Urbanist, the face the /preview CRM screens use (owner, 2026-10-22: "im
  * keeping urbanist"). It replaced Rubik at the same weights: 700 titles, 600
  * headline, 500 subtitles and stats. */
-const urbanist = Urbanist({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--mk-urbanist" });
-const montserrat = Montserrat({ subsets: ["latin"], weight: ["400", "500"], variable: "--mk-montserrat" });
+const urbanist = localFont({ src: "../../../fonts/urbanist.woff2", weight: "100 900", variable: "--mk-urbanist" });
+const montserrat = localFont({ src: "../../../fonts/montserrat.woff2", weight: "100 900", variable: "--mk-montserrat" });
 
 export const metadata: Metadata = { title: "Marketplace preview", robots: { index: false, follow: false } };
 

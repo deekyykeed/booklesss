@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Urbanist } from "next/font/google";
+import localFont from "next/font/local";
 import base from "../../preview.module.css";
 import b from "../booklesss.module.css";
 import { VARIANTS } from "../_cards";
@@ -11,7 +11,7 @@ import { Back, COURSES } from "../_ui";
  * structure (notch top-right, identity slot top-left, title, line, footer);
  * the variable is the information and the actions. Placeholder data. */
 
-const urbanist = Urbanist({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-urbanist" });
+const urbanist = localFont({ src: "../../../../fonts/urbanist.woff2", weight: "100 900", variable: "--font-urbanist" });
 
 export const metadata: Metadata = { title: "Course card versions", robots: { index: false, follow: false } };
 

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Urbanist } from "next/font/google";
+import localFont from "next/font/local";
 import base from "../preview.module.css";
 import b from "./booklesss.module.css";
 import { ProgressCard } from "./_cards";
@@ -38,7 +38,7 @@ import {
  * course codes or school names, per the house rule. Not indexed. The seven
  * card versions live at /preview/booklesss/cards. */
 
-const urbanist = Urbanist({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-urbanist" });
+const urbanist = localFont({ src: "../../../fonts/urbanist.woff2", weight: "100 900", variable: "--font-urbanist" });
 
 export const metadata: Metadata = { title: "Preview", robots: { index: false, follow: false } };
 

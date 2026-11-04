@@ -1,4 +1,4 @@
-import { DM_Mono } from "next/font/google";
+import localFont from "next/font/local";
 
 /* INTER IS THE KIT'S MAIN FACE (owner, 2026-10-19: "pull in the font that is
  * used on the Booklesss dashboard in Paper, not Rubik" — that board's text is
@@ -8,7 +8,7 @@ import { DM_Mono } from "next/font/google";
  * 2026-10-18 and loaded here as `--font-kit-main` — gone with the swap, so a
  * face nothing draws is not paid for. DM Mono stays for the wordmark and the
  * small uppercase hints. One module so /components and the app load the same
- * instances. */
-const dmMono = DM_Mono({ subsets: ["latin"], weight: ["400"], variable: "--font-dm-mono", display: "swap" });
+ * instances. Vendored in src/fonts/ like every Google face (see layout.tsx). */
+const dmMono = localFont({ src: "../../fonts/dm-mono.woff2", weight: "400", variable: "--font-dm-mono", display: "swap" });
 
 export const kitFonts = dmMono.variable;

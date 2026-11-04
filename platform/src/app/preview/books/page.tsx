@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, Oswald, Urbanist } from "next/font/google";
+import localFont from "next/font/local";
 import { Books } from "./_books";
 
 /* COURSES AS BOOKS (owner, 2026-10-22).
@@ -15,9 +15,9 @@ import { Books } from "./_books";
  * ⚠️ Placeholder data throughout: most of these courses are not built, and
  * every count is invented. Not indexed, not linked from anywhere. */
 
-const urbanist = Urbanist({ subsets: ["latin"], weight: ["500", "600", "700", "800", "900"], variable: "--bk-urbanist" });
-const bebas = Bebas_Neue({ subsets: ["latin"], weight: "400", variable: "--bk-bebas" });
-const oswald = Oswald({ subsets: ["latin"], weight: ["400", "500"], variable: "--bk-oswald" });
+const urbanist = localFont({ src: "../../../fonts/urbanist.woff2", weight: "100 900", variable: "--bk-urbanist" });
+const bebas = localFont({ src: "../../../fonts/bebas-neue.woff2", weight: "400", variable: "--bk-bebas" });
+const oswald = localFont({ src: "../../../fonts/oswald.woff2", weight: "200 700", variable: "--bk-oswald" });
 
 export const metadata: Metadata = { title: "Courses as books preview", robots: { index: false, follow: false } };
 

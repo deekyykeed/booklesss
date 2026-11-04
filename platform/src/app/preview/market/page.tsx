@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Rubik, Urbanist } from "next/font/google";
 import localFont from "next/font/local";
 import { Market } from "./_market";
 
@@ -18,8 +17,8 @@ import { Market } from "./_market";
  * ⚠️ Placeholder data: creators, ratings and counts are invented. Not indexed,
  * not linked from anywhere. */
 
-const rubik = Rubik({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--mk-rubik" });
-const urbanist = Urbanist({ subsets: ["latin"], weight: ["500", "600", "700", "800"], variable: "--mk-urbanist" });
+const rubik = localFont({ src: "../../../fonts/rubik.woff2", weight: "300 900", variable: "--mk-rubik" });
+const urbanist = localFont({ src: "../../../fonts/urbanist.woff2", weight: "100 900", variable: "--mk-urbanist" });
 /* Aveton (FlawlessAndCo), the owner's file, 2026-10-22: the display face for
    the wordmark, headings and course titles. It carries letters, space and the
    full stop ONLY (56 glyphs, no digits or punctuation), so anything with a

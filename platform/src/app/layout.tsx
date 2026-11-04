@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Rubik, Bricolage_Grotesque } from "next/font/google";
 import localFont from "next/font/local";
 import { RegisterSW } from "@/components/RegisterSW";
 import { AppEnter } from "@/components/AppEnter";
@@ -19,9 +18,25 @@ import "./globals.css";
 // wanted back — re-register it with next/font/local and put --font-ernon
 // at the front of --font-display.
 
-// Self-hosted at build time by next/font — no Google round-trip, no CLS.
-const inter = Inter({
-  subsets: ["latin"],
+/* EVERY FACE IN THE APP IS A FILE IN src/fonts/, Google's included
+ * (2026-11-03). Inter, Rubik and Bricolage came through next/font/google,
+ * which downloads them from Google AT BUILD TIME — so a build is only as
+ * reliable as Google's font CDN in that minute. On 2026-11-01 it wasn't: the
+ * production build of a commit that changed one Markdown file died with
+ * "Module not found" inside next/font's generated Inter CSS, and nothing in
+ * the repo was wrong. The Google families are vendored now, latin subset, one
+ * variable woff2 per family (one static file per weight where Google has no
+ * variable cut). SIL Open Font Licence, so vendoring is allowed.
+ *
+ * To add or refresh one: request
+ * https://fonts.googleapis.com/css2?family=<Family>:wght@<min>..<max> with a
+ * current Chrome user agent, take the src url under the latin comment, save it
+ * here. Never reach for next/font/google again — the build would go back to
+ * depending on someone else's uptime, which is the reason given for Ranade and
+ * Satoshi below. */
+const inter = localFont({
+  src: "../fonts/inter.woff2",
+  weight: "100 900",
   variable: "--font-inter",
   display: "swap",
 });
@@ -113,17 +128,17 @@ const burbank = localFont({
   display: "swap",
 });
 
-/* Rubik at 400 and 500, Bricolage at 800. Both are variable families upstream;
-   naming the weights takes static instances instead, which is smaller than
-   shipping an axis for two stops.
+/* Rubik at 400 and 500, Bricolage at 700 and 800, each drawn from the
+   family's variable file. That file is also what the preview routes load for
+   their own Rubik, so it is one cached download wherever it appears.
    The 500 is the hero subtitle (owner, 2026-08-06: "increase the opacity and
    weight of the subtitle text"). It is a real cut, not a synthesised bold —
    which matters at 16px over a photograph, where faux-bold thickens strokes
    unevenly and reads as blur rather than weight. 400 stays for the trust
    line. */
-const rubik = Rubik({
-  subsets: ["latin"],
-  weight: ["400", "500"],
+const rubik = localFont({
+  src: "../fonts/rubik.woff2",
+  weight: "300 900",
   variable: "--font-rubik",
   display: "swap",
 });
@@ -150,9 +165,9 @@ const rubik = Rubik({
  * most-visited screen, not on every route. If the tabs go back to Familjen,
  * drop "700" here in the same edit or the app keeps paying for a face nothing
  * draws. */
-const bricolage = Bricolage_Grotesque({
-  subsets: ["latin"],
-  weight: ["700", "800"],
+const bricolage = localFont({
+  src: "../fonts/bricolage-grotesque.woff2",
+  weight: "200 800",
   variable: "--font-bricolage",
   display: "swap",
 });

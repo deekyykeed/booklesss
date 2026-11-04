@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Archivo, Inter, Inter_Tight, Instrument_Sans, Manrope, Poppins, Rubik, Urbanist } from "next/font/google";
 import localFont from "next/font/local";
 import { Rows } from "./_rows";
 import r from "./row.module.css";
@@ -17,19 +16,26 @@ import r from "./row.module.css";
  *
  * ⚠️ Placeholder content throughout. Not indexed, not linked from anywhere. */
 
-const inter = Inter({ subsets: ["latin"], weight: ["500", "600"], variable: "--row-inter" });
-const rubik = Rubik({ subsets: ["latin"], weight: ["500"], variable: "--row-rubik" });
+const inter = localFont({ src: "../../../fonts/inter.woff2", weight: "100 900", variable: "--row-inter" });
+const rubik = localFont({ src: "../../../fonts/rubik.woff2", weight: "300 900", variable: "--row-rubik" });
 
 /* the faces the other card sets are set in, under the names they expect
    (they were built for /preview/market) */
-const mkInter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--mk-inter" });
-const mkInterTight = Inter_Tight({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--mk-inter-tight" });
-const mkUrbanist = Urbanist({ subsets: ["latin"], weight: ["500", "600", "700", "800"], variable: "--mk-urbanist" });
-const mkInstrument = Instrument_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--mk-instrument" });
-const mkManrope = Manrope({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--mk-manrope" });
-const mkPoppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--mk-poppins" });
-const mkArchivo = Archivo({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--mk-archivo" });
-const mkRubik = Rubik({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--mk-rubik" });
+const mkInter = localFont({ src: "../../../fonts/inter.woff2", weight: "100 900", variable: "--mk-inter" });
+const mkInterTight = localFont({ src: "../../../fonts/inter-tight.woff2", weight: "100 900", variable: "--mk-inter-tight" });
+const mkUrbanist = localFont({ src: "../../../fonts/urbanist.woff2", weight: "100 900", variable: "--mk-urbanist" });
+const mkInstrument = localFont({ src: "../../../fonts/instrument-sans.woff2", weight: "400 700", variable: "--mk-instrument" });
+const mkManrope = localFont({ src: "../../../fonts/manrope.woff2", weight: "200 800", variable: "--mk-manrope" });
+const mkPoppins = localFont({
+  src: [
+    { path: "../../../fonts/poppins-400.woff2", weight: "400" },
+    { path: "../../../fonts/poppins-500.woff2", weight: "500" },
+    { path: "../../../fonts/poppins-600.woff2", weight: "600" },
+  ],
+  variable: "--mk-poppins",
+});
+const mkArchivo = localFont({ src: "../../../fonts/archivo.woff2", weight: "100 900", variable: "--mk-archivo" });
+const mkRubik = localFont({ src: "../../../fonts/rubik.woff2", weight: "300 900", variable: "--mk-rubik" });
 const mkAveton = localFont({ src: "../market/Aveton-Regular.ttf", weight: "400", variable: "--mk-aveton", fallback: ["system-ui", "sans-serif"] });
 
 const mk = [mkInter, mkInterTight, mkUrbanist, mkInstrument, mkManrope, mkPoppins, mkArchivo, mkRubik, mkAveton].map((f) => f.variable).join(" ");
