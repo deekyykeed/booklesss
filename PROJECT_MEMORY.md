@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-11-01 (session 73)
+**Last updated:** 2026-11-08 (session 74)
 
 ---
 
@@ -91,6 +91,25 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 74 (2026-11-07→08, a wrap start, then a day of Suppliers Inc
+outreach, the business that lives in `Basket-Plans/`, logged there in
+`OUTREACH-STATUS.md`. No Booklesss product work. Linear NOT reachable:
+`linear-server` still needs its one-time OAuth.)**
+
+- [x] ~~GitHub 2FA on `deekyykeed`~~ → ✅ enabled 6 Nov (passkey added too).
+      Save the recovery codes GitHub asked for.
+- [x] ~~Production build failed 1 Nov~~ → ✅ fixed by `7736bf0` (fonts
+      vendored), deployed READY 4 Nov. That commit has no session entry.
+- [ ] **Paper's ZK411.20 subscription charge failed again (5 Nov, Visa
+      8151).** Paper is the design source of truth: update the card.
+- [ ] **Vercel Deployment Storage at 75% again** (notice 4 Nov).
+- [ ] **⚠️ A collections email** from `cadexrcc.com` (5 Nov) claims a Google
+      Workspace balance of 16.91 under "TECH SPOT - Deeky Mvula". Check
+      billing in the Admin console directly, never through the email.
+- [ ] **The Claude GitHub App asked for more permissions** (6 Nov); ignoring
+      it keeps the current ones.
+- [ ] The course-card pick on /preview/row: owner said "not yet" on 7 Nov.
 
 **From session 73 (2026-10-30→11-01, a wrap start and Apify connected; no
 product work. Linear NOT reachable: `linear-server` still needs its one-time
@@ -1869,6 +1888,29 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-11-07→08 (session 74 — wrap start, then Suppliers Inc outreach)
+
+**Done:** Wrap start for Booklesss: briefing from this doc and the inbox,
+Linear still signed out. The rest of the session was Suppliers Inc, logged in
+`Basket-Plans/OUTREACH-STATUS.md`. Batch 3's 66 first emails were finished,
+88 follow-up addresses were mailbox-checked ($0.07), and five replies went out
+on the owner's yes. Batch 2 moved to Mon 16 Nov, `send-due` v5 now threads
+October follow-ups, and the plan for the week is in
+`Basket-Plans/_Temp/outreach/MONDAY-16.md`. A side session
+("website-paper-ui") did the dashboard's Solar icons, Higgsfield on Usage,
+and the Suppliers Inc landing page in Paper. Found Senke's Chirundu mine MOU
+(a Khadzika Claude Doc) for signing, unchanged.
+
+**What Worked:** For the inbox in this shared Gmail, a keyword search for this
+project's own services (booklesss, vercel, supabase, github) beside the unread
+list. Most unread mail is Khadzika's. A call ask that names a dated day ("Tuesday 17 or
+Wednesday 18 November") stays true whichever day the email goes.
+
+**Dead Ends (do not retry):** Testing `screen_outreach.screen()` with `if`:
+it returns a list, so everything "passes". Use `gmail_send.check(build(row))`.
+Building a prospect's preview site inside Suppliers Inc: the owner wants each
+one in a local folder, one per session.
 
 ### Session 2026-10-30→11-01 (session 73 — wrap start, Apify connected, no product work)
 
