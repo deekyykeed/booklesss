@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-11-10 (session 75)
+**Last updated:** 2026-11-10 (session 76)
 
 ---
 
@@ -92,6 +92,29 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
+**From session 76 (2026-11-10, Suppliers Inc only; Linear still unreachable.)**
+
+- [ ] **Rezk Tyres said yes to a call on Thursday 12 Nov at 10:00** (Amer
+      Amcha, Country Manager, reply 10 Nov 08:43). Record it with
+      `reply_flow.py book --at`, build their site in a local folder, and send
+      the "before the call" link once you've checked the site.
+- [ ] **Farmfeed's Email 2 (v5-followup) waits for your yes** to queue it
+      (`Basket-Plans/_Temp/outreach/followups-v5-two/emails.md`). The cut-off
+      is 12 Nov 18:00, because the email names Friday and Monday.
+- [ ] **Crystal Premix's Email 2 is held**: they run their own concrete
+      trucks, so "I handle delivery" may not be true. Your call on the wording.
+- [ ] Replies waiting on you: Lusaka Agrovet ("Yes why not"), Cater Warehouse
+      (wants an office visit, and no visits are approved yet), Sawpower (free
+      Wednesday 18 Nov). Also a bounce from info@akzgroup.com.
+- [ ] Website session ([local_6b8f1053]): the four breakpoints are in Paper,
+      and suppliers.deekymvula.com serves them with demo numbers in place of
+      XX. The footer is rebuilt from your pin. The motion on tablet and phone
+      hasn't been watched, and the site isn't in git.
+- [ ] Dashboard restyle session ([local_58fff1fc]): three cards and the
+      remaining pages are still to do. It stopped at the usage limit.
+- [ ] Folder move: run `move_to_suppliers_inc.py` yourself from plain
+      PowerShell, with VS Code and Claude closed.
+
 **From session 75 (2026-11-09→10, Suppliers Inc only; Linear still
 unreachable.)**
 
@@ -99,13 +122,13 @@ unreachable.)**
       read `sent` after 09:35 on 10 Nov. Any still queued at 11 Nov 18:00 are
       held on purpose (their weekday names would go wrong). Then
       `smail sync` and read the thread of any bounce.
-- [ ] Two follow-ups are overdue and those companies heard the old offer: the
-      owner's call what to send them.
+- [x] ~~Two follow-ups are overdue~~ → rewritten to v5 in session 76, and
+      waiting on the owner (see above).
 - [ ] Google sign-in for `send-due` lasts 7 days: renew by about 15 Nov
       (`python _Tools/gmail_oauth.py`).
-- [ ] Basket-Plans has a large pile of uncommitted work from several sessions
-      (`.claude/` skills, `_Tools/`, `draft.py`, desk code). Nobody has
-      committed it; the session that owns each piece should.
+- [x] ~~Basket-Plans uncommitted pile~~ → committed in session 76 as
+      `5a46d63` on `desk` (pushed, not deployed). `_Temp/` and `__pycache__/`
+      are now gitignored there.
 
 **From session 74 (2026-11-07→08, a wrap start, then a day of Suppliers Inc
 outreach, the business that lives in `Basket-Plans/`, logged there in
@@ -1903,6 +1926,20 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-11-10 (session 76: follow-ups, two nested sessions, wrap)
+
+**Done:** Only Suppliers Inc work. Crystal Premix and Farmfeed's overdue Email 2s were rewritten to
+the v5 rules (73 words each, all checks pass, nothing queued). Two nested sessions ran: the
+website (Paper, four breakpoints, live at suppliers.deekymvula.com with demo figures) and the
+dashboard restyle from two pins (partly done). Rezk Tyres booked a call for Thu 12 Nov 10:00. The
+Basket-Plans work left uncommitted since 6 Nov is now committed as `5a46d63` on `desk`.
+**What Worked:** Starting nested sessions with `start_session` and messaging them by id. The
+outreach `make.py` pattern (build `emails.json`/`emails.md` and run screen, `target_fails` and
+`batch_overlap` in one script) caught a missing "call" word and a 77-word draft before the owner
+saw them.
+**Dead Ends (do not retry):** Starting a session from a Remote Control turn fails; start it from
+the desktop app. The key in `emails.json` is `id`, not `prospect_id`.
 
 ### Session 2026-11-09→10 (session 75 — Suppliers Inc dashboard and batch 3)
 
