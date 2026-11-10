@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-11-08 (session 74)
+**Last updated:** 2026-11-10 (session 75)
 
 ---
 
@@ -91,6 +91,21 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 75 (2026-11-09→10, Suppliers Inc only; Linear still
+unreachable.)**
+
+- [ ] Check batch 3 went: 66 rows in `outreach_queue` (batch-3) should all
+      read `sent` after 09:35 on 10 Nov. Any still queued at 11 Nov 18:00 are
+      held on purpose (their weekday names would go wrong). Then
+      `smail sync` and read the thread of any bounce.
+- [ ] Two follow-ups are overdue and those companies heard the old offer: the
+      owner's call what to send them.
+- [ ] Google sign-in for `send-due` lasts 7 days: renew by about 15 Nov
+      (`python _Tools/gmail_oauth.py`).
+- [ ] Basket-Plans has a large pile of uncommitted work from several sessions
+      (`.claude/` skills, `_Tools/`, `draft.py`, desk code). Nobody has
+      committed it; the session that owns each piece should.
 
 **From session 74 (2026-11-07→08, a wrap start, then a day of Suppliers Inc
 outreach, the business that lives in `Basket-Plans/`, logged there in
@@ -1888,6 +1903,33 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-11-09→10 (session 75 — Suppliers Inc dashboard and batch 3)
+
+**Done:** All Suppliers Inc; no Booklesss product work. Batch 2's 94 first
+emails went out 9 Nov. The dashboard artifact
+(claude.ai/artifact/QmzbNQUD4QrTNCYacSv3HY) got an Email schedule on the
+Overview (a `schedule` dataset unioning sends, queue and written drafts; five
+folding lists, sent at the top; tap a row to read its text), and the top
+stat cards were reworked (now v31: companies emailed, replies, waiting for
+your yes, going out next, ready to write). On the owner's critique of the
+copy, side session "batch3-rewrite" put new rules in the outreach skill and
+`draft.py` (a full greeting, the owner's own frame "I build websites and run
+traffic", markup on top of the supplier's price so it never eats their profit,
+no lure lines, own words per email) and rewrote all 66 twice
+(`v5-full-sentences`). The owner approved them and they were queued in
+`outreach_queue` for 10 Nov 08:30–09:35 Lusaka, `send_before` 11 Nov 18:00,
+with the sender's Google sign-in checked live.
+
+**What Worked:** `smail queue` writes `_Temp/outreach/queue.sql`, which is too
+big for one MCP call (57 KB); splitting it into four files on the
+`insert into` boundary and running each worked. `POST {"check": true}` to
+`send-due` with the anon key confirms the Gmail sign-in in one call.
+
+**Dead Ends (do not retry):** The six-shared-words overlap check: it made
+every email dodge its neighbours' wording and came out clipped ("Your profit
+holds."). It now fails only near-identical emails. Bare "Hello," to a shared
+inbox: the owner wants "Hello to the team at <short name>,".
 
 ### Session 2026-11-07→08 (session 74 — wrap start, then Suppliers Inc outreach)
 
