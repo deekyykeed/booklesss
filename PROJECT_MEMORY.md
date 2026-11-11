@@ -109,9 +109,10 @@ Slack channel post → login-gated web step link → read. The platform is now o
       whether each email reads friendly and sharp.
 - [ ] Grocery ads session ([local_8be0689a]): pick version A or B. B puts the price as a tag
       on the photo. Both prices are K000.00 placeholders.
-- [ ] Website session ([local_6b8f1053]): the redrawn lower sections are live at
-      suppliers.deekymvula.com. The new card-stack hero is on all four boards in Paper and
-      not live: the site still shows the three-card hero and the black button.
+- [ ] Website session ([local_6b8f1053]): the card-stack hero, the green buttons and the
+      redrawn lower sections are all live at suppliers.deekymvula.com (checked in your Chrome at
+      your window size). Still open: the nav's Join Now button is black, the phone's card
+      stack has very small type, and the site isn't in git.
 - [ ] Dashboard ([local_58fff1fc]): four pages live (Overview, Companies, Results, Leads and
       usage), plus a Positive replies card and an email popup on Results (version 40).
       Narrow widths were checked on a local copy with sample rows, not on the live page.
