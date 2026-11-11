@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-11-10 (session 76)
+**Last updated:** 2026-11-11 (session 77)
 
 ---
 
@@ -92,26 +92,49 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
+**From session 77 (2026-11-11, Suppliers Inc only; Linear still unreachable.)**
+
+- [ ] **Phone Farmfeed** (you said you'd call). Its October email bounced on 26 Oct, so no
+      email reached them. The numbers and the one named person are in `prospect_contacts`
+      (prospect 70). Ask for a working email address. If a time is agreed, record it with
+      `reply_flow.py book`, then build their site in a local folder.
+- [ ] **Crystal Premix's October email bounced too** (26 Oct). Reach them by phone or the
+      contact form on their site (`prospect_contacts`, prospect 52). The delivery question
+      still stands: they run their own concrete trucks.
+- [ ] **Batch 3's Email 2s fall due about 14–17 Nov** (66 companies, first emails sent 10 Nov).
+      Write each one fresh under the 11 Nov rules (one agent per email, no template,
+      who I am a level above their trade), and check each address for a bounce first.
+- [ ] **The next first-email batch** goes through `leads draft` under `v6-own-words`. Read the
+      drafts before approving any: the checks catch a template, and a person still judges
+      whether each email reads friendly and sharp.
+- [ ] Grocery ads session ([local_8be0689a]): pick version A or B. B puts the price as a tag
+      on the photo. Both prices are K000.00 placeholders.
+- [ ] Website session ([local_6b8f1053]): the redrawn lower sections are live at
+      suppliers.deekymvula.com. The new card-stack hero is on all four boards in Paper and
+      not live: the site still shows the three-card hero and the black button.
+- [ ] Dashboard ([local_58fff1fc]): four pages live (Overview, Companies, Results, Leads and
+      usage), plus a Positive replies card and an email popup on Results (version 40).
+      Narrow widths were checked on a local copy with sample rows, not on the live page.
+- [ ] Firecrawl's included credits ran out on 11 Nov (Gmail alerts). Research is Apify-only
+      until about 6 Dec anyway.
+
 **From session 76 (2026-11-10, Suppliers Inc only; Linear still unreachable.)**
 
 - [ ] **Rezk Tyres said yes to a call on Thursday 12 Nov at 10:00** (Amer
       Amcha, Country Manager, reply 10 Nov 08:43). Record it with
       `reply_flow.py book --at`, build their site in a local folder, and send
       the "before the call" link once you've checked the site.
-- [ ] **Farmfeed's Email 2 (v5-followup) waits for your yes** to queue it
-      (`Basket-Plans/_Temp/outreach/followups-v5-two/emails.md`). The cut-off
-      is 12 Nov 18:00, because the email names Friday and Monday.
-- [ ] **Crystal Premix's Email 2 is held**: they run their own concrete
-      trucks, so "I handle delivery" may not be true. Your call on the wording.
+- [x] ~~Farmfeed's Email 2~~ → never queued: its October email bounced on 26 Oct
+      (found in session 77). You'll phone them.
+- [x] ~~Crystal Premix's Email 2~~ → its October email bounced too (session 77).
 - [ ] Replies waiting on you: Lusaka Agrovet ("Yes why not"), Cater Warehouse
       (wants an office visit, and no visits are approved yet), Sawpower (free
       Wednesday 18 Nov). Also a bounce from info@akzgroup.com.
-- [ ] Website session ([local_6b8f1053]): the four breakpoints are in Paper,
+- [x] ~~Website session~~ → moved on, see session 77. Was: the four breakpoints are in Paper,
       and suppliers.deekymvula.com serves them with demo numbers in place of
       XX. The footer is rebuilt from your pin. The motion on tablet and phone
       hasn't been watched, and the site isn't in git.
-- [ ] Dashboard restyle session ([local_58fff1fc]): three cards and the
-      remaining pages are still to do. It stopped at the usage limit.
+- [x] ~~Dashboard restyle session~~ → four pages done (session 77).
 - [ ] Folder move: run `move_to_suppliers_inc.py` yourself from plain
       PowerShell, with VS Code and Claude closed.
 
@@ -1926,6 +1949,25 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-11-11 (session 77: outreach without a template, two bounces found, wrap)
+
+**Done:** Only Suppliers Inc work. The owner read batch 3 after it went (66 first emails, 10 Nov)
+and found one template with the product swapped in, and "I build websites for [their exact
+trade] suppliers" read as a convenient lie. The outreach skill now gives five points, not
+sentences: one agent per email, friendly and sharp, and who I am a level above their trade.
+`batch_overlap.py` fails shared five-word runs over 15% and shared openings, against the batch
+and the last batch sent. `leads draft` refuses their own trade in the who-I-am sentence, takes
+`--model`, and labels rows `v6-own-words`. Basket-Plans `b700c97` on `desk`. Farmfeed's
+follow-up was rewritten and approved, then not queued: its October email had bounced on 26 Oct,
+and so had Crystal Premix's. Both addresses are marked dead in `prospect_contacts`, and
+`smail queue` now inserts nothing for a bounced address. The owner will phone Farmfeed.
+**What Worked:** Running the new overlap check on the 66 sent emails before trusting it. It
+refused all 66, and 48 named their own trade. It then caught my own hand-written follow-ups
+borrowing batch-3 phrases. `EXPLAIN insert ...` type-checks generated SQL without writing a row.
+**Dead Ends (do not retry):** One writer doing a whole batch (that's how batch 3 became one
+template). Drafting a follow-up without first checking `outreach_events` for a bounce: session
+76 rewrote two follow-ups for addresses that never got the first email.
 
 ### Session 2026-11-10 (session 76: follow-ups, two nested sessions, wrap)
 
