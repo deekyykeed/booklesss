@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-11-11 (session 77)
+**Last updated:** 2026-11-12 (session 78)
 
 ---
 
@@ -92,6 +92,35 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
+**From session 78 (2026-11-12, Suppliers Inc only; Linear still unreachable.)**
+
+- [ ] **Fri 13 Nov: check the 65 emails went.** `outreach_queue` batches `batch-3-email2` (61, 08:00 to 09:00
+      Lusaka) and `batch-4` (4, 09:02 to 09:05) should all read `sent` after 09:05. Then `smail sync` and
+      read any bounce. 46 of them name Friday as a call day and arrive on a Friday: watch replies for
+      "today?" confusion.
+- [ ] **Add two secrets in Supabase** (project vrlmsgchoekxuldbueqm, Edge Functions > Secrets):
+      `APIFY_TOKEN` and `FIRECRAWL_API_KEY`. The hourly `usage-snapshot` job has failed every run since
+      6 Nov because neither is set, so the dashboard's Apify and Firecrawl meters still show 6 Nov.
+- [ ] **Apify security incident** (Apify email, 12 Nov 16:03): an unauthorised party viewed account
+      information. Read it and decide whether to rotate the Apify API token before adding it to Supabase.
+- [ ] **The 2 overdue follow-ups (Farmfeed, Crystal Premix) cost 10 points** on the dashboard score until
+      they are dealt with. Both October emails bounced, so it's a phone call or a contact form.
+- [ ] **Batch 5** goes through `leads draft` under `v7-plain` (opens on what I do, no "I run Suppliers
+      Inc", no profit line) and picks a person's own address first. Your CHECK verdicts open most of it:
+      23 of the 53 CHECK companies have a person's address. Leslupa, Renault and Isuzu still wait on you.
+- [ ] **Calls you'll book next week:** Rezk, Zamseed (asked for Fri 13 Nov 10:00) and PPZ. You chose
+      not to reply for now. The other replies from session 77 still wait.
+- [ ] Rezk's preview site ([rezk-site, local_a6c2a2a2]) waits for you to open Paper Desktop.
+- [ ] Khadzika: Hyperneumatics has sent no quote. Kyle Hood asked for your number for a short call
+      (12 Nov 09:28). That thread belongs to the Khadzika project.
+- [ ] Google Play: the WhatsApp Business trial ended and now charges $9.49 a month (12 Nov). Keep or
+      cancel.
+- [ ] The cadexrcc.com "Google Workspace balance due" email (12 Nov) looks like phishing. Don't pay
+      or click it.
+- [ ] Gmail delay notice for info@krutec.co (12 Nov 17:48, retrying 46 hours). Not traced to a send yet.
+- [ ] Dashboard: the Claude Code meter only moves when a session saves a reading (`get_usage` →
+      `usage_snapshots`). A "reset since this reading" label was offered, not built.
+
 **From session 77 (2026-11-11, Suppliers Inc only; Linear still unreachable.)**
 
 - [ ] **Phone Farmfeed** (you said you'd call). Its October email bounced on 26 Oct, so no
@@ -101,12 +130,8 @@ Slack channel post → login-gated web step link → read. The platform is now o
 - [ ] **Crystal Premix's October email bounced too** (26 Oct). Reach them by phone or the
       contact form on their site (`prospect_contacts`, prospect 52). The delivery question
       still stands: they run their own concrete trucks.
-- [ ] **Batch 3's Email 2s fall due about 14–17 Nov** (66 companies, first emails sent 10 Nov).
-      Write each one fresh under the 11 Nov rules (one agent per email, no template,
-      who I am a level above their trade), and check each address for a bounce first.
-- [ ] **The next first-email batch** goes through `leads draft` under `v6-own-words`. Read the
-      drafts before approving any: the checks catch a template, and a person still judges
-      whether each email reads friendly and sharp.
+- [x] ~~Batch 3's Email 2s~~ → 62 written, approved unchanged and 61 queued for Fri 13 Nov (session 78).
+- [x] ~~The next first-email batch~~ → batch 4, 4 emails, queued for Fri 13 Nov (session 78).
 - [ ] Grocery ads session ([local_8be0689a]): pick version A or B. B puts the price as a tag
       on the photo. Both prices are K000.00 placeholders.
 - [ ] Website session ([local_6b8f1053]): the card-stack hero, the green buttons and the
@@ -121,10 +146,8 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 **From session 76 (2026-11-10, Suppliers Inc only; Linear still unreachable.)**
 
-- [ ] **Rezk Tyres said yes to a call on Thursday 12 Nov at 10:00** (Amer
-      Amcha, Country Manager, reply 10 Nov 08:43). Record it with
-      `reply_flow.py book --at`, build their site in a local folder, and send
-      the "before the call" link once you've checked the site.
+- [x] ~~Rezk Tyres call on Thursday 12 Nov~~ → not held. You'll book it yourself next week, no
+      reply until then (session 78).
 - [x] ~~Farmfeed's Email 2~~ → never queued: its October email bounced on 26 Oct
       (found in session 77). You'll phone them.
 - [x] ~~Crystal Premix's Email 2~~ → its October email bounced too (session 77).
@@ -1950,6 +1973,59 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-11-12 (session 78: 65 emails queued for Friday, plainer outreach rules, a capacity score on the dashboard, wrap)
+
+**Done:**
+- Wrap Start. You chose not to reply to Rezk, Zamseed or PPZ and to book those calls yourself next week. No
+  confirmation went to Amer.
+- Three linked sessions:
+  - rezk-site: building Rezk's preview site in Paper, and waiting for Paper Desktop to be opened. Its built-in
+    browser hit Facebook pages that redirect to a Meta login, which raised the security-key prompt; it never signed in.
+  - Batch 4: four first emails (Alph-Teck, Eureka, Frasmac, Genprop, `v6-own-words`).
+  - Batch 3 Email 2: 62 drafts (`v6-followup`).
+- You approved all 66 drafts unchanged, the 4 held ones included. You kept Northwold, Weighgrid and Techfields in
+  after a direct question. Auto Drift was refused by the bounce guard.
+- 65 emails queued for Fri 13 Nov:
+  - 61 batch-3 Email 2s, 08:00 to 09:00 Lusaka.
+  - 4 batch-4 first emails, 09:02 to 09:05.
+  - Checked twice in `outreach_queue`. The batch-3 session briefly said they should not go; it was told
+    otherwise, changed nothing, and recorded your approval.
+- New outreach rules for future emails only, under copy version `v7-plain`:
+  - Open on what I do.
+  - Never "I run Suppliers Inc".
+  - No line about their profit.
+  - Clear, straightforward sentences.
+  
+  `_Tools/leads/draft.py` refuses an email that breaks them.
+- "Favour people": `leads draft` now picks a person's own address first and `risky` addresses last, and research
+  looks for a named person's address before falling back to a shared inbox. A person's address replied 10.5%
+  (8 of 76) against 1.1% (2 of 189) for shared inboxes.
+- Dashboard (the Data-type artifact, QmzbNQUD4QrTNCYacSv3HY):
+  - A fresh Claude Code reading.
+  - The "Suppliers Inc" brand block removed from the sidebar.
+  - A new overview card: one bar for "Working at X% of a normal full day". It covers emails day by day,
+    delivery, replies (lagged 2 working days, ±20%), +20 per booked call, −5 per overdue follow-up, and −10 when
+    nothing is approved for the next working day. It has a mark at 100%, and the bar ends at 110% or 10% past
+    your best 10 days. It reads 4% today: 14 points minus 10 for the 2 overdue follow-ups.
+  - A "What moves your replies" panel, splitting reply and bounce rates by copy and by address quality.
+- Found: the hourly `usage-snapshot` edge function has failed every run since 6 Nov. `APIFY_TOKEN` and
+  `FIRECRAWL_API_KEY` were never added to Supabase's function secrets.
+
+**What Worked:**
+- Inserting the 65 queue rows through Supabase REST with the same bounce guard, from a scratch script. The
+  alternative was retyping a 66 KB SQL file into the MCP.
+- The dashboard's own `data/users/me/runs` document named the empty card's cause in one read: `rows: 0, value:
+  true` means the source has no loader.
+- Measuring reply lag before designing the cushion: every reply on record came the same day or the next.
+
+**Dead Ends (do not retry):**
+- A new Supabase dataset on this dashboard loads as "a value, 0 rows" unless its id is added to the page's
+  `rowsOf` loader list, and every mark on it then reads "no column figure".
+- A new class called `.k-bar` collided with the page's own `.k-bar` (the stage bars). Coming later in the CSS, it
+  squashed "Pipeline by stage" from version 43 until the fix in 45. Grep a class name against the page before
+  adding it.
+- `str_replace` on the stored page failed when the old text carried a trailing space the stored text didn't have.
 
 ### Session 2026-11-11 (session 77: outreach without a template, two bounces found, wrap)
 
