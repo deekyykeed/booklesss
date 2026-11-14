@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-11-12 (session 78)
+**Last updated:** 2026-11-14 (session 79)
 
 ---
 
@@ -92,19 +92,43 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
+**From session 79 (2026-11-13→14, Suppliers Inc only; Booklesss's Linear still unreachable.)**
+
+- [ ] **Before Monday 08:00: renew the Gmail sign-in** (`python _Tools/gmail_oauth.py` in `Basket-Plans`, then the
+      `GMAIL_REFRESH_TOKEN` secret in Supabase). It lasts 7 days and runs out about 15 Nov; batch 2's 8 Email 2s
+      (`batch-2-email2`, Mon 16 Nov 08:00 to 08:07, sent as new emails with their own subjects) won't go without it.
+- [ ] **Mon 16 Nov: check the 8 went** (`outreach_queue` batch `batch-2-email2` all `sent` after 08:07), then read
+      any bounce.
+- [ ] **Replies waiting on you:** Links Care ("please call anytime"), Link Mining Supplies (Roy Gopaul, offered
+      Saturday 14 Nov; Zambia +260 965 782330), SkyPluc (Aaron, "call me on 0972 290033"), LSI T-Shirts (has its own
+      site), Kaylite (not a retailer). Plus the older ones: Rezk, Zamseed, PPZ, Lusaka Agrovet, Cater Warehouse,
+      Sawpower (free Wed 18 Nov), and Chris Auto, Amerex, Commercial Refrigeration (agreed to calls in October).
+- [ ] **Draft first emails for the 18 suppliers the A/B email hunt found addresses for.** Research is saved; the
+      command is in `Basket-Plans/_Temp/outreach/email-hunt-ab/NEXT.md`. Show the owner the exact finals before queuing.
+- [ ] **A-tier calls:** ask for the named manager at Micmar (Martin Maiseke), Hybrid Poultry (Nelson Kikolea, GM),
+      Southern Cross Motors (Ronny Palale, MD), Good Time Steel (Jibo Huang, GM), Automotive Equipment (Tarak Mehta,
+      MD), Action Auto (Michael Bentley, MD), Farm Depot (Simon Bentley, MD). Names, titles and emails are in
+      `prospect_contacts`; phone numbers are the company lines on file.
+- [ ] **Email search for the C tier and the 41 A/B still phone-only:** priced at about $5 for all 342; Facebook pages
+      gave the best yield (14 of 20 listed an email). Owner's call.
+- [ ] **Dashboard session** ([dashboard-calm, local_f5cbea32-f193-47db-9646-3b9cd3888305]): Companies and Results pages
+      done, usage cards reworked; it reports Apify now updates through its connector and only `FIRECRAWL_API_KEY` is
+      still missing from Supabase secrets. Check its pages and tell it what's next.
+- [ ] **Tidy the Apify duplicates:** Apify is installed twice as a plugin (`apify@inline`, `apify@synced`)
+      and the desktop app also has an Apify extension; one connection is enough.
+- [ ] The managers lookup's LinkedIn search is loose: 13 of the 29 A companies had no confirmed page (Tata,
+      Eureka, Lemmer, Pioneer Power, Vitalite, Carbon, Foam King, AMG, Office Machine Services, CTM, LSI, B2K,
+      Tractors Zambia). A by-hand LinkedIn search would find some.
+
 **From session 78 (2026-11-12, Suppliers Inc only; Linear still unreachable.)**
 
-- [ ] **Fri 13 Nov: check the 65 emails went.** `outreach_queue` batches `batch-3-email2` (61, 08:00 to 09:00
-      Lusaka) and `batch-4` (4, 09:02 to 09:05) should all read `sent` after 09:05. Then `smail sync` and
-      read any bounce. 46 of them name Friday as a call day and arrive on a Friday: watch replies for
-      "today?" confusion.
-- [ ] **Add two secrets in Supabase** (project vrlmsgchoekxuldbueqm, Edge Functions > Secrets):
-      `APIFY_TOKEN` and `FIRECRAWL_API_KEY`. The hourly `usage-snapshot` job has failed every run since
-      6 Nov because neither is set, so the dashboard's Apify and Firecrawl meters still show 6 Nov.
-- [ ] **Apify security incident** (Apify email, 12 Nov 16:03): an unauthorised party viewed account
-      information. Read it and decide whether to rotate the Apify API token before adding it to Supabase.
-- [ ] **The 2 overdue follow-ups (Farmfeed, Crystal Premix) cost 10 points** on the dashboard score until
-      they are dealt with. Both October emails bounced, so it's a phone call or a contact form.
+- [x] ~~Fri 13 Nov: check the 65 emails went~~ → ✅ all 65 sent on time (session 79).
+- [ ] **Add `FIRECRAWL_API_KEY` in Supabase** (project vrlmsgchoekxuldbueqm, Edge Functions > Secrets). Apify no
+      longer needs `APIFY_TOKEN` there: the dashboard session moved its meter onto the connector (13 Nov).
+- [x] ~~Apify security incident~~ → ✅ Apify reset every token and OAuth connection itself; the plugin was signed
+      in again on 13 Nov. Reset 2FA on Apify if you use it.
+- [x] ~~The 2 overdue follow-ups (Farmfeed, Crystal Premix)~~ → both now count as bounced, not overdue. Farmfeed now
+      has named people and a risky email for its Procurement Head (session 79).
 - [ ] **Batch 5** goes through `leads draft` under `v7-plain` (opens on what I do, no "I run Suppliers
       Inc", no profit line) and picks a person's own address first. Your CHECK verdicts open most of it:
       23 of the 53 CHECK companies have a person's address. Leslupa, Renault and Isuzu still wait on you.
@@ -113,8 +137,7 @@ Slack channel post → login-gated web step link → read. The platform is now o
 - [ ] Rezk's preview site ([rezk-site, local_a6c2a2a2]) waits for you to open Paper Desktop.
 - [ ] Khadzika: Hyperneumatics has sent no quote. Kyle Hood asked for your number for a short call
       (12 Nov 09:28). That thread belongs to the Khadzika project.
-- [ ] Google Play: the WhatsApp Business trial ended and now charges $9.49 a month (12 Nov). Keep or
-      cancel.
+- [x] ~~Google Play: the WhatsApp Business trial~~ → cancellation receipt 12 Nov 13:16 (session 79).
 - [ ] The cadexrcc.com "Google Workspace balance due" email (12 Nov) looks like phishing. Don't pay
       or click it.
 - [ ] Gmail delay notice for info@krutec.co (12 Nov 17:48, retrying 46 hours). Not traced to a send yet.
@@ -1973,6 +1996,36 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-11-13→14 (session 79: Friday's 65 went, batch 2 Email 2 queued as new emails, a worth score, the A-tier check, wrap)
+
+**Done:** Only Suppliers Inc work.
+- All 65 emails went on Friday; 3 positive replies the same morning (Links Care, Link Mining Supplies, later SkyPluc).
+- The score read 0% because 10 follow-ups were overdue (−50). 8 were batch 2's Email 2s, never written. They were
+  written one writer per email under `v7-plain`, rewritten for plainness, approved, and queued for Mon 16 Nov 08:00.
+- Owner's rule: follow-ups go as new emails, not in the old thread. The skill, screen, queue tool and follow-up
+  builder all enforce it; Monday's 8 were switched to new subjects with a fresh yes.
+- Worth score: `leads.py score`, migration 0022, 816 prospects scored (A 34, B 203, C 579).
+- A-tier check for $1.33: LinkedIn pages (15 confirmed), 64 managers with 24 emails, live Facebook ads for 10. All
+  saved and scored. A/B email hunt for $0.27: 20 of 61 phone-only companies got a checked email.
+- A Fable 5.2 session started on the dashboard ("numbers first, details on demand").
+- Apify's 11 Nov incident had cancelled the plugin's sign-in; it reconnected after the owner clicked Connect in `/mcp`.
+  Claude was fully restarted on the owner's request to bring connectors back.
+
+**What Worked:**
+- Running Actors in the owner's Chrome (Apify console) while the MCP was down: Monaco `setValue` for the JSON input, a
+  max-cost cap per run, and reading the dataset by id from the console tab. Written into the Apify memory.
+- Checking every LinkedIn and Ad Library match against a Zambian address or our website: about half were the wrong company.
+- Facebook pages for phone-only companies: 14 of 20 listed an email, for about $0.008 each.
+- `get-actor-run` / the run list before retrying after the MCP dropped mid-call: the run had already started and finished.
+
+**Dead Ends (do not retry):**
+- Hand-rewriting all writers' drafts at once: longer emails that shared phrases with each other. Fix only the flagged
+  wording in each writer's own draft.
+- The contact scraper with a browser on 18 Zambian sites: most never loaded, no emails. Facebook and Google did better.
+- LinkedIn company search by bare name: about half wrong, and it has no location filter. Add the full name and "Zambia".
+- `save.py` that PATCHes `prospects.email` in a loop: one duplicate address (unique index) stopped the loop. Check
+  for the address on another prospect first.
 
 ### Session 2026-11-12 (session 78: 65 emails queued for Friday, plainer outreach rules, a capacity score on the dashboard, wrap)
 
