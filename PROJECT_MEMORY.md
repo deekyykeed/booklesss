@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-11-14 (session 79)
+**Last updated:** 2026-11-14 (session 80)
 
 ---
 
@@ -92,11 +92,23 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
+**From session 80 (2026-11-14, wrap start then the Gmail sign-in made permanent; Booklesss's Linear still unreachable.)**
+
+- [ ] **Read the `GMAIL_REFRESH_TOKEN` digest in Supabase** (Edge Functions > Secrets, after a reload): it should start
+      `dd29e44ba0f1` (the 19:09 token under the published app). If it still reads `3496437036a9`, the evening paste
+      didn't save and that token dies about 21 Nov. Also confirm Google Cloud > Audience says "In production". Chrome
+      dropped before either could be seen; `send-due`'s check passed but would pass with either token.
+- [ ] **New replies on 14 Nov, waiting on you:** Unity Packages (Niraj Ratnani, Ndola, +260 770663313) wants a call
+      **Wednesday 18 Nov** and asks for a time and an invite. Good Time Steel (Jackson): "sounds ok", call their sales
+      person Alan Phiri 0971151444. Zampipe will review and come back. Lusaka Bearings is away until 24 Nov.
+- [ ] Sociallite (Google sign-in, 13:14) and a TikTok for Business login code (17:54) came in on 14 Nov. Fine if they
+      were you; if not, check both accounts.
+- [ ] The 7 changed sound effects in `Demand/video/public/sfx/` (dated 18 Oct) are still uncommitted: commit or restore.
+
 **From session 79 (2026-11-13→14, Suppliers Inc only; Booklesss's Linear still unreachable.)**
 
-- [ ] **Before Monday 08:00: renew the Gmail sign-in** (`python _Tools/gmail_oauth.py` in `Basket-Plans`, then the
-      `GMAIL_REFRESH_TOKEN` secret in Supabase). It lasts 7 days and runs out about 15 Nov; batch 2's 8 Email 2s
-      (`batch-2-email2`, Mon 16 Nov 08:00 to 08:07, sent as new emails with their own subjects) won't go without it.
+- [x] ~~Before Monday 08:00: renew the Gmail sign-in~~ → ✅ renewed 14 Nov, and the Google app was published, so no
+      more weekly renewals (session 80). Batch 2's 8 Email 2s stay queued for Mon 16 Nov 08:00 to 08:07.
 - [ ] **Mon 16 Nov: check the 8 went** (`outreach_queue` batch `batch-2-email2` all `sent` after 08:07), then read
       any bounce.
 - [ ] **Replies waiting on you:** Links Care ("please call anytime"), Link Mining Supplies (Roy Gopaul, offered
@@ -194,7 +206,7 @@ unreachable.)**
       `smail sync` and read the thread of any bounce.
 - [x] ~~Two follow-ups are overdue~~ → rewritten to v5 in session 76, and
       waiting on the owner (see above).
-- [ ] Google sign-in for `send-due` lasts 7 days: renew by about 15 Nov
+- [x] ~~Google sign-in for `send-due` lasts 7 days: renew by about 15 Nov~~ → ✅ app published 14 Nov (session 80)
       (`python _Tools/gmail_oauth.py`).
 - [x] ~~Basket-Plans uncommitted pile~~ → committed in session 76 as
       `5a46d63` on `desk` (pushed, not deployed). `_Temp/` and `__pycache__/`
@@ -1996,6 +2008,35 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-11-14 (session 80: wrap start, then the Gmail sign-in stops expiring, wrap)
+
+**Done:** Only Suppliers Inc work.
+- Wrap start: nothing new since session 79's wrap. Linear unreachable (`linear-server` needs OAuth; the connected Linear
+  is Khadzika's), so the briefing came from this file.
+- Gmail sign-in renewed at 08:36 and pasted; `send-due`'s check ok. Monday's 8 confirmed queued (08:00 to 08:07,
+  cut-off Tue 17 Nov 18:00).
+- The owner asked to end the weekly renewals. Done: a privacy page at suppliers.deekymvula.com/privacy (static, in
+  `Basket-Plans/_Temp/website/landing-page/live/privacy/`, deployed with `vercel deploy --prod` from `live/`, not in
+  git), Branding given the home page, the privacy link and `deekymvula.com`, the app published to In production
+  (unverified, no logo), a fresh token at 19:09 pasted by the owner, check ok again.
+- `gmail_oauth.py` fixed and pushed on `desk` (154b94a), with the outreach skill and OUTREACH-STATUS updated.
+
+**What Worked:**
+- Putting the token on the clipboard with PowerShell (never printed) and opening the Supabase secrets page with the
+  name typed; the owner pastes. Matching the row's SHA256 digest to the local file's hash proves which token is saved.
+- Checking `send-due` from SQL: `net.http_post` with the Authorization header lifted out of `cron.job`, then reading
+  `net._http_response`. No key ever typed.
+- The consent screen tells Testing from production: "currently being tested" vs "hasn't been verified".
+- Finding a hand-deployed site's folder from the session transcript (`grep` the `.jsonl` for its `vercel deploy` and
+  `cd` lines) when no `.vercel/project.json` search would finish on OneDrive.
+
+**Dead Ends (do not retry):**
+- `run_in_terminal` for the sign-in script: the tool sent Ctrl-C when the command didn't return in 2 s. Run it with
+  Bash in the background instead.
+- The old single-threaded `gmail_oauth.py`: Chrome's idle preconnect sockets blocked it and the tab spun for minutes.
+  Fixed (threaded server, 10 s read timeout).
+- Ripgrep over `C:\Users\deeky` for a `.vercel/project.json`: times out on OneDrive.
 
 ### Session 2026-11-13→14 (session 79: Friday's 65 went, batch 2 Email 2 queued as new emails, a worth score, the A-tier check, wrap)
 
