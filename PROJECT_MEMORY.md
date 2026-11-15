@@ -1,6 +1,6 @@
 # Booklesss — Project Memory
 
-**Last updated:** 2026-11-14 (session 80)
+**Last updated:** 2026-11-15 (session 81)
 
 ---
 
@@ -91,6 +91,18 @@ Slack channel post → login-gated web step link → read. The platform is now o
   tutor demo structure): see the session-13 plan in the repo PRs.
 
 ## Next Session
+
+**From session 81 (2026-11-15, wrap start, Gmail token confirmed, a pins session started; Linear still unreachable.)**
+
+- [ ] **Pins session** ([si-pins-site, local_ec20f017-9c34-4772-8e31-e269c7d409e4], Fable 5.2 high, still running at
+      wrap): the 17-scene "Pallet Ross" site from a Pinterest video is rebuilt in Paper, one artboard per scroll stop.
+      The card-cascade transition and the app dock are kept apart. No animation built yet. Check its Paper page and
+      tell it what's next.
+- [ ] Paper's charge failed a third time on 15 Nov (ZK430.28). Update the card.
+- [ ] FNB "Proof of Payment" emails with PDFs (12, 13, 15 Nov, noreply@fnb.co.za): left unread. Treat as phishing
+      unless you expect money from an FNB customer.
+- [ ] Wrap end was cut short by the usage limit: the end-of-session email check, the Gmail relabel (`--days 2`) and
+      the skill walk did not run.
 
 **From session 80 (2026-11-14, wrap start then the Gmail sign-in made permanent; Booklesss's Linear still unreachable.)**
 
@@ -2008,6 +2020,23 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-11-15 (session 81: wrap start, the Gmail token confirmed, a pins website session, wrap)
+
+**Done:** Only Suppliers Inc work.
+- Wrap start: in sync; Linear unreachable; inbox read (new mail almost all Khadzika's). Labeller run with the Suppliers
+  Inc config (`Basket-Plans/_Tools/gmail_labels.suppliers-inc.json`): 65 threads labelled, none labelled before.
+- `GMAIL_REFRESH_TOKEN` in Supabase confirmed as the 19:09 token (`dd29e44ba0f1`), and the Google app "In production".
+- info@krutec.co bounce traced to Khadzika's calibration RFQ.
+- Started [si-pins-site] on Fable 5.2 high: a site recreated in Paper from a Pinterest video (see its memory files).
+
+**What Worked:**
+- Reading the Supabase secrets page with `get_page_text` in Chrome: names, digests and update times in one read, no
+  values shown. Fingerprinting the local token with a SHA256 prefix, never printing it.
+
+**Dead Ends (do not retry):**
+- `python -I` ignores `PYTHONIOENCODING`, so printing a non-cp1252 character (a full-width colon in a Chinese subject)
+  crashed. Call `sys.stdout.reconfigure(encoding="utf-8")` in the script instead.
 
 ### Session 2026-11-14 (session 80: wrap start, then the Gmail sign-in stops expiring, wrap)
 
