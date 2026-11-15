@@ -94,10 +94,9 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 **From session 80 (2026-11-14, wrap start then the Gmail sign-in made permanent; Booklesss's Linear still unreachable.)**
 
-- [ ] **Read the `GMAIL_REFRESH_TOKEN` digest in Supabase** (Edge Functions > Secrets, after a reload): it should start
-      `dd29e44ba0f1` (the 19:09 token under the published app). If it still reads `3496437036a9`, the evening paste
-      didn't save and that token dies about 21 Nov. Also confirm Google Cloud > Audience says "In production". Chrome
-      dropped before either could be seen; `send-due`'s check passed but would pass with either token.
+- [x] ~~Read the `GMAIL_REFRESH_TOKEN` digest in Supabase~~ → ✅ checked 15 Nov (session 81): the digest is
+      `dd29e44ba0f1…`, updated 14 Nov 18:00 UTC, and matches the local token file. Google Auth Platform > Audience for
+      project `suppliers-inc-outreach` reads "In production". No more weekly renewals.
 - [ ] **New replies on 14 Nov, waiting on you:** Unity Packages (Niraj Ratnani, Ndola, +260 770663313) wants a call
       **Wednesday 18 Nov** and asks for a time and an invite. Good Time Steel (Jackson): "sounds ok", call their sales
       person Alan Phiri 0971151444. Zampipe will review and come back. Lusaka Bearings is away until 24 Nov.
@@ -152,7 +151,8 @@ Slack channel post → login-gated web step link → read. The platform is now o
 - [x] ~~Google Play: the WhatsApp Business trial~~ → cancellation receipt 12 Nov 13:16 (session 79).
 - [ ] The cadexrcc.com "Google Workspace balance due" email (12 Nov) looks like phishing. Don't pay
       or click it.
-- [ ] Gmail delay notice for info@krutec.co (12 Nov 17:48, retrying 46 hours). Not traced to a send yet.
+- [x] ~~Gmail delay notice for info@krutec.co~~ → traced in session 81: Khadzika's 82-item calibration RFQ. It failed for good
+      on 14 Nov (krutec.co has no mail server). It belongs to the Khadzika project.
 - [ ] Dashboard: the Claude Code meter only moves when a session saves a reading (`get_usage` →
       `usage_snapshots`). A "reset since this reading" label was offered, not built.
 
