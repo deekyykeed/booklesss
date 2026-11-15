@@ -92,6 +92,25 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
+**From the side session of 15 Nov 2026 (the "Pallet Ross" site from a Pinterest video, rebuilt in Paper for Suppliers Inc)**
+
+- [ ] **Animate the sections like the video.** Owner: watch each move frame by frame first. Pull every frame (30 fps)
+      between two scroll stops, note start, end, timing, easing and stacking for each moving element, build one
+      transition, show it, then the next. Stops and artboard ids are in the hand-over note (path below).
+- [ ] **Owner to say:** is this Suppliers Inc's own site or a client's? The copy is still the reference's own wording.
+      "Our own twist" comes after the animations.
+- [ ] **Owner to say:** do the cards that repeat across sections count as doubles? The hero and Showcase share three
+      card images, and the six posters appear in both "Whether you are an artist" and "Our vision" (the video moves the
+      same cards between them).
+- [ ] **Text too small to read in the video, guessed for now:** bubble names @coplin and @andrea, the grey line on the
+      "Where Art Meets Market" card, the phone list lines other than "Personal Identity", the line under
+      "Trisha Woodward", the third price card's footer line, the last logo in the trusted strip.
+- [ ] Regenerate the knight poster (`gen/s06_p4_knight.jpg`): the render carries a tiny "A24" mark nobody asked for.
+- [ ] Other widths (1280, 768, 390) are not built. Only 1440 exists.
+- Where it all is: Paper file "Suppliers Inc", page "Pin video site — Pallet Ross rebuild". Files in
+  `Basket-Plans/_Temp/website/pin-video-site/` (gitignored there, not in any repo). Hand-over note:
+  `C:/Users/deeky/AppData/Local/Claude-Data/claude_pzs8sxrjxfjjc/side-session-notes/local_c4fc8181-f8b8-4752-8ae6-a1ea5fd62165/pin-video-site-rebuild.md`.
+
 **From session 81 (2026-11-15, wrap start, Gmail token confirmed, a pins session started; Linear still unreachable.)**
 
 - [ ] **Pins session** ([si-pins-site, local_ec20f017-9c34-4772-8e31-e269c7d409e4], Fable 5.2 high, still running at
@@ -2020,6 +2039,34 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-11-15 (side session of 81: the "Pallet Ross" site from a Pinterest video, rebuilt in Paper)
+
+**Done:** Only Suppliers Inc design work, all in Paper. No code, nothing deployed.
+- The owner's pin (https://pin.it/3JJJHgez0) is a 43-second, 720x540 video of an art-marketplace landing page being
+  scrolled. Downloaded it, split it into its sections and rebuilt every section at 1440 on a new Paper page,
+  "Pin video site — Pallet Ross rebuild", in the Suppliers Inc file. No existing page was touched.
+- 66 images made with Higgsfield from crops of the video, 27.75 credits (745.3 to 717.55), logged to `usage_snapshots`.
+- First pass copied each video frame as a section, so the tail of one section was built again inside the next
+  (the banner under Trusted, the gallery tiles under Membership, and so on). The owner caught it. Fixed by finding
+  where the scroll fully stops and keeping one artboard per stop, with only that section's content.
+- Kept apart from the sections: the card-cascade transition (16 to 17 s) and the app dock (passed without a stop).
+
+**What Worked:**
+- Finding scroll stops by measuring the vertical shift between frames at 10 fps (shift 0 for half a second or more).
+  Plain frame difference misses stops where a marquee or a card animation keeps moving.
+- A forked agent ran all the Higgsfield generation in the background (59 images) while the layouts were built.
+- One reference crop per section, naming the card in the prompt ("the second card from the left"), instead of one
+  upload per image.
+- Paper `export` for checking: it writes files to disk, so a side-by-side sheet costs one image read for three scenes.
+- Measuring type from the frame (x-height rows and ink boxes with PIL) to set font size and line height.
+
+**Dead Ends (do not retry):**
+- Treating each paused viewport as a section. A viewport also shows the neighbours' edges.
+- A Bash command holding seven signed upload URLs: it fails to parse. Write them to a .sh file and run that.
+- `duplicate_nodes` with a parentId expecting the copy on top: it lands at the back. Move it to the end.
+- `x-paper-clone` with no style for an absolutely placed node: it drops into the flow. Set left and top again.
+- A text glyph for an icon (the dock asterisk): replaced with the Hugeicons one.
 
 ### Session 2026-11-15 (session 81: wrap start, the Gmail token confirmed, a pins website session, wrap)
 
