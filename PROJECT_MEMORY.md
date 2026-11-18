@@ -92,9 +92,31 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 ## Next Session
 
+**From session 82 (2026-11-16→18, Monday's outreach around a week away for calls, drafts move into Supabase, a proposal
+whiteboard. Booklesss's Linear still unreachable.)**
+
+- [ ] **31 October Email 3s wait for your yes**: on the dashboard under "Waiting for your yes", text in
+      `Basket-Plans/_Temp/outreach/batch-1-email3/REVIEW.md`. Their planned start (Tue 17 Nov 08:00) has passed, so
+      re-time them on the yes. Cut-off Fri 20 Nov 18:00. 4 more are held (Battery King, Boxpack, Phillips Pharmaceuticals,
+      Almacs Steel): each one's only new fact was weak.
+- [ ] **The 8 batch-2 Email 2s are held** (status `cancelled`). Re-dated for 23–27 Nov in `batch-2-email2/REDATED.md`.
+      You said "hold them". They go only on a fresh yes.
+- [ ] **Calls, week of 23 Nov**: 16 call-backs, plus Kaylite and LSI, with numbers, in
+      `Basket-Plans/_Temp/outreach/calls-week-23-nov/CALLS.md` and in `reply_flow.call_notes`. Nothing was sent to them.
+      The emails promise the site is built before the call: Commercial Refrigeration, Amerex and Chris Auto first.
+- [ ] **Proposal**: whiteboard "Supplier proposal plan" (claude.ai/artifact/AahADwTWoAJHJByvcLkVMq). Five decisions are yours:
+      margin, who pays it, what counts as your customer, when money moves, delivery cost. Kaylite (Liam Gibson, Watex hose
+      pipes) is waiting for it. Your angle: "I run ads and they only pay for customers I brought in"; their own site is fine.
+- [ ] **LSI T-Shirts reply** drafted in chat on 16 Nov, waiting for your yes.
+- [ ] **Batch 4's Email 2 (4) is due Thu 19 Nov; batch 3's Email 3 (52) is due Mon 23 Nov.** One writer per email. Drafts go
+      to `outreach_queue` as `draft`, and the outreach skill now says so.
+- [ ] **"Check on my ads" card** (Google Ads "Search · Torque serv" stopped 16 Nov: "Unsupported language"). Not started.
+- [ ] The 7 sound effects in `Demand/video/public/sfx/` (18 Oct) are still uncommitted: commit or restore.
+
 **From the side session of 15 Nov 2026 (the "Pallet Ross" site from a Pinterest video, rebuilt in Paper for Suppliers Inc)**
 
-- [ ] **Animate the sections like the video.** Owner: watch each move frame by frame first. Pull every frame (30 fps)
+- [x] ~~**Animate the sections like the video.**~~ → ✅ all 16 transitions built and signed off on 16 Nov by the website
+      session (`anim/site.html`); "our own twist" is next, when you ask. Was: watch each move frame by frame first. Pull every frame (30 fps)
       between two scroll stops, note start, end, timing, easing and stacking for each moving element, build one
       transition, show it, then the next. Stops and artboard ids are in the hand-over note (path below).
 - [ ] **Owner to say:** is this Suppliers Inc's own site or a client's? The copy is still the reference's own wording.
@@ -117,18 +139,17 @@ Slack channel post → login-gated web step link → read. The platform is now o
       wrap): the 17-scene "Pallet Ross" site from a Pinterest video is rebuilt in Paper, one artboard per scroll stop.
       The card-cascade transition and the app dock are kept apart. No animation built yet. Check its Paper page and
       tell it what's next.
-- [ ] Paper's charge failed a third time on 15 Nov (ZK430.28). Update the card.
+- [x] ~~Paper's charge failed a third time on 15 Nov (ZK430.28).~~ → ✅ you made a new payment (16 Nov).
 - [ ] FNB "Proof of Payment" emails with PDFs (12, 13, 15 Nov, noreply@fnb.co.za): left unread. Treat as phishing
       unless you expect money from an FNB customer.
-- [ ] Wrap end was cut short by the usage limit: the end-of-session email check, the Gmail relabel (`--days 2`) and
-      the skill walk did not run.
+- [x] ~~Wrap end was cut short by the usage limit~~ → ✅ email check, relabel and skill walk done in session 82.
 
 **From session 80 (2026-11-14, wrap start then the Gmail sign-in made permanent; Booklesss's Linear still unreachable.)**
 
 - [x] ~~Read the `GMAIL_REFRESH_TOKEN` digest in Supabase~~ → ✅ checked 15 Nov (session 81): the digest is
       `dd29e44ba0f1…`, updated 14 Nov 18:00 UTC, and matches the local token file. Google Auth Platform > Audience for
       project `suppliers-inc-outreach` reads "In production". No more weekly renewals.
-- [ ] **New replies on 14 Nov, waiting on you:** Unity Packages (Niraj Ratnani, Ndola, +260 770663313) wants a call
+- [x] ~~**New replies on 14 Nov, waiting on you:**~~ → moved to the week-of-23-Nov call sheet (session 82). Was: Unity Packages (Niraj Ratnani, Ndola, +260 770663313) wants a call
       **Wednesday 18 Nov** and asks for a time and an invite. Good Time Steel (Jackson): "sounds ok", call their sales
       person Alan Phiri 0971151444. Zampipe will review and come back. Lusaka Bearings is away until 24 Nov.
 - [ ] Sociallite (Google sign-in, 13:14) and a TikTok for Business login code (17:54) came in on 14 Nov. Fine if they
@@ -139,9 +160,8 @@ Slack channel post → login-gated web step link → read. The platform is now o
 
 - [x] ~~Before Monday 08:00: renew the Gmail sign-in~~ → ✅ renewed 14 Nov, and the Google app was published, so no
       more weekly renewals (session 80). Batch 2's 8 Email 2s stay queued for Mon 16 Nov 08:00 to 08:07.
-- [ ] **Mon 16 Nov: check the 8 went** (`outreach_queue` batch `batch-2-email2` all `sent` after 08:07), then read
-      any bounce.
-- [ ] **Replies waiting on you:** Links Care ("please call anytime"), Link Mining Supplies (Roy Gopaul, offered
+- [x] ~~**Mon 16 Nov: check the 8 went**~~ → held before 08:00 on 16 Nov: they asked for calls in a week you're away.
+- [x] ~~**Replies waiting on you:**~~ → all on the week-of-23-Nov call sheet with numbers (session 82). Was: Links Care ("please call anytime"), Link Mining Supplies (Roy Gopaul, offered
       Saturday 14 Nov; Zambia +260 965 782330), SkyPluc (Aaron, "call me on 0972 290033"), LSI T-Shirts (has its own
       site), Kaylite (not a retailer). Plus the older ones: Rezk, Zamseed, PPZ, Lusaka Agrovet, Cater Warehouse,
       Sawpower (free Wed 18 Nov), and Chris Auto, Amerex, Commercial Refrigeration (agreed to calls in October).
@@ -2039,6 +2059,38 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
+
+### Session 2026-11-16→18 (session 82: Monday's outreach re-planned around a week away, 47 Email 3s sent, drafts move into Supabase, a proposal whiteboard)
+
+**Done:** Only Suppliers Inc work.
+- The owner is away for calls 16–20 Nov. Batch 2's 8 Email 2s were held before their 08:00 send because all of them asked
+  for a call that week. Re-dated versions are written, and he said "hold them". All 16 call-backs are saved with their
+  numbers (call sheet and `reply_flow.call_notes`). Unity Packages and PPZ were added to `reply_flow` by hand, because they
+  replied from another address and `watch-replies` missed them.
+- October Email 3: 82 were due. One Sonnet writer per email, with a new gate (`batch-1-email3/check.py`). 47 were approved
+  and sent 16 Nov 12:24 to 13:10, brought forward from 13:00 on his word. A scheduled task at 14:15 wrote the rest: 31
+  drafts now wait for his yes, and 4 are held.
+- `outreach_queue.status` gained `draft` (migration `outreach_queue_draft_status`). The dashboard shows drafts as "Needs
+  your yes" and counts them in Next, Work left and Waiting for your yes. Cancelled rows are off the schedule.
+- Kaylite and LSI, read in full: an opening (Watex hose pipes, asks for a proposal with the margin) and an objection, not
+  noes. A "Supplier proposal plan" whiteboard holds his angle and the five decisions left.
+- The website session finished all 16 transitions of the Pallet Ross site.
+
+**What Worked:**
+- Writers in parallel, at most 20 at once on Sonnet, each running the gate itself. About 170k tokens each; briefs cut to
+  five pages of 3,000 characters saved about 30%. A scheduled task carried the second half past the 5-hour limit.
+- In the overlap check, swapping each email's call dates for placeholder words unique to that email. Deleting the dates
+  shortened the emails and inflated every percentage.
+- Sending early by moving `send_at`, and checking each text's sha before switching `draft` to `queued`.
+
+**Dead Ends (do not retry):**
+- Allowing each three-word opening only once in an 80-email batch where every email opens on what I do. It forced
+  inverted sentences ("Websites for building suppliers are what I build"). Now: the first word is I or My, and an opening
+  may be shared by up to 10.
+- Importing `fetch_pages.py` to reuse one function: its module-level code re-fetched every site.
+- Calling a reply a "no" from its snippet (Kaylite, LSI). Read the whole thread.
+- `start_session` in a turn that also carried an automated notification: refused. A proposal card works.
+- `smail.py followups` with a 5-minute timeout: it reads Gmail address by address and runs longer. Run it in the background.
 
 ### Session 2026-11-15 (side session of 81: the "Pallet Ross" site from a Pinterest video, rebuilt in Paper)
 
