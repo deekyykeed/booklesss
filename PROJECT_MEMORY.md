@@ -249,9 +249,11 @@ whiteboard. Booklesss's Linear still unreachable.)**
       24 Nov (session 83). It now also covers the desk's real Claude history
       (Desktop-Booklesss-Basket-Plans, 233 MB), the gmail-labels skill path and
       the scheduled tasks, and it splits memories into company-wide, desk and
-      websites. To run: pause OneDrive, paste the wait-then-run command into a
-      PowerShell window opened from the Start menu (not the app's terminal),
-      then quit Claude from the tray and quit VS Code. Afterwards, from
+      websites. To run: double-click `Desktop/MOVE-TO-SUPPLIERS-INC.bat`
+      (owner plans to, after a restart). It force-closes Claude and VS Code
+      itself, retries for 30 s if OneDrive holds a folder, and keeps its window
+      open. The 24 Nov PowerShell attempt sat waiting because Claude was
+      still running. Afterwards, from
       `Desktop/Suppliers Inc`: commit the Booklesss CLAUDE.md line the script
       rewrites, update `project_umbrella_consolidation` and the memory index,
       and delete the old Claude folders once everything checks out.
