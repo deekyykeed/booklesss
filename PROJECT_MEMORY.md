@@ -245,8 +245,16 @@ whiteboard. Booklesss's Linear still unreachable.)**
       XX. The footer is rebuilt from your pin. The motion on tablet and phone
       hasn't been watched, and the site isn't in git.
 - [x] ~~Dashboard restyle session~~ → four pages done (session 77).
-- [ ] Folder move: run `move_to_suppliers_inc.py` yourself from plain
-      PowerShell, with VS Code and Claude closed.
+- [ ] Folder move: `move_to_suppliers_inc.py` was checked and dry-run on
+      24 Nov (session 83). It now also covers the desk's real Claude history
+      (Desktop-Booklesss-Basket-Plans, 233 MB), the gmail-labels skill path and
+      the scheduled tasks, and it splits memories into company-wide, desk and
+      websites. To run: pause OneDrive, paste the wait-then-run command into a
+      PowerShell window opened from the Start menu (not the app's terminal),
+      then quit Claude from the tray and quit VS Code. Afterwards, from
+      `Desktop/Suppliers Inc`: commit the Booklesss CLAUDE.md line the script
+      rewrites, update `project_umbrella_consolidation` and the memory index,
+      and delete the old Claude folders once everything checks out.
 
 **From session 75 (2026-11-09→10, Suppliers Inc only; Linear still
 unreachable.)**
