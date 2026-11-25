@@ -245,18 +245,15 @@ whiteboard. Booklesss's Linear still unreachable.)**
       XX. The footer is rebuilt from your pin. The motion on tablet and phone
       hasn't been watched, and the site isn't in git.
 - [x] ~~Dashboard restyle session~~ → four pages done (session 77).
-- [ ] Folder move: `move_to_suppliers_inc.py` was checked and dry-run on
-      24 Nov (session 83). It now also covers the desk's real Claude history
-      (Desktop-Booklesss-Basket-Plans, 233 MB), the gmail-labels skill path and
-      the scheduled tasks, and it splits memories into company-wide, desk and
-      websites. To run: double-click `Desktop/MOVE-TO-SUPPLIERS-INC.bat`
-      (owner plans to, after a restart). It force-closes Claude and VS Code
-      itself, retries for 30 s if OneDrive holds a folder, and keeps its window
-      open. The 24 Nov PowerShell attempt sat waiting because Claude was
-      still running. Afterwards, from
-      `Desktop/Suppliers Inc`: commit the Booklesss CLAUDE.md line the script
-      rewrites, update `project_umbrella_consolidation` and the memory index,
-      and delete the old Claude folders once everything checks out.
+- [x] ~~Folder move~~ → done 25 Nov. `Desktop/Suppliers Inc` holds
+      `suppliers-inc/` and `websites/`; Booklesss no longer has `Basket-Plans/`
+      or `Partnr/`. The .bat run stopped at a git prompt (OneDrive lock on a
+      stale worktree's logs), so the last two steps (Claude history + memories,
+      9 `~/.claude.json` entries) were run from the Booklesss session; backup at
+      `~/.claude.json.before-suppliers-inc`. Still to do, once Suppliers Inc
+      sessions look right: delete `Desktop/MOVE-TO-SUPPLIERS-INC.bat` and the
+      old Claude folders (`Desktop-Basket-Plans`, `Desktop-Booklesss-Basket-Plans`,
+      `Desktop-Partnr`).
 
 **From session 75 (2026-11-09→10, Suppliers Inc only; Linear still
 unreachable.)**
