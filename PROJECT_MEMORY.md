@@ -93,8 +93,8 @@ Slack channel post → login-gated web step link → read. The platform is now o
 ## Next Session
 
 **Suppliers Inc moved out (25 Nov 2026).** Its open items and its session log
-(sessions 74–82 and the 15 Nov side session) are in `Desktop/Suppliers Inc/PROJECT_MEMORY.md`.
-Open Claude in `Desktop/Suppliers Inc` for that work; this file is Booklesss only.
+(sessions 74–82 and the 15 Nov side session) are in `Desktop/Suppliers Inc/suppliers-inc/PROJECT_MEMORY.md`.
+Open Claude on the suppliers-inc repo for that work; this file is Booklesss only.
 
 - [ ] The 7 sound effects in `Demand/video/public/sfx/` (18 Oct) are still uncommitted: commit or restore.
 
@@ -1891,7 +1891,7 @@ Confirm structure → lesson-skill scaffold → step-skill writes 1.1.
 ---
 
 ## Session Log
-Sessions 74–82 were Suppliers Inc only and moved to `Desktop/Suppliers Inc/PROJECT_MEMORY.md` on 25 Nov 2026.
+Sessions 74–82 were Suppliers Inc only and moved to `Desktop/Suppliers Inc/suppliers-inc/PROJECT_MEMORY.md` on 25 Nov 2026.
 
 ### Session 2026-10-30→11-01 (session 73 — wrap start, Apify connected, no product work)
 

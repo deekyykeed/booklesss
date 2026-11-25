@@ -2,7 +2,7 @@
 
 **One sentence:** Booklesss sells branded PDF study notes plus a Slack community to Zambian university students (ZCAS, UNZA), at K360/month for one course or K600/month for everything.
 
-**Owned by Suppliers Inc** (2026-11-09; Partnr is retired). Booklesss keeps its own folder at `Desktop/Booklesss`, beside `Desktop/Suppliers Inc`, which holds the sourcing desk and the client websites and has its own `CLAUDE.md` and `PROJECT_MEMORY.md`. Students still see Booklesss, and the domain, repo and Supabase project are unchanged.
+**Owned by Suppliers Inc** (2026-11-09; Partnr is retired). Booklesss keeps its own folder at `Desktop/Booklesss`, beside `Desktop/Suppliers Inc`, which holds the sourcing desk and the client websites; the company's rules and notes are in its `suppliers-inc` repo (`COMPANY.md`, `PROJECT_MEMORY.md`). Students still see Booklesss, and the domain, repo and Supabase project are unchanged.
 
 This file is the map. Read top to bottom and you know the state of the business, where everything lives, and what to do next. Keep it honest — update it when reality changes.
 
